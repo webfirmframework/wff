@@ -14,6 +14,7 @@
 	</properties>
 
 	<name>wffweb</name>
+	<description>A java framework to develop web applications</description>
 	<url>http://webfirmframework.com</url>
 
 	<licenses>
@@ -22,6 +23,15 @@
 			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
 		</license>
 	</licenses>
+
+	<developers>
+		<developer>
+			<name>Web Firm Framework</name>
+			<email>webfirm.framework@gmail.com</email>
+			<organization>Webfirmframework</organization>
+			<organizationUrl>http://www.webfirmframework.com</organizationUrl>
+		</developer>
+	</developers>
 
 	<profiles>
 		<profile>
