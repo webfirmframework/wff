@@ -23,7 +23,8 @@ Html html = new Html(null) {
         	};
        	 
 };
-
+// prepends the doc type <!DOCTYPE html>
+html.setPrependDocType(true);
 System.out.println(html.toHtmlString()); 
 ~~~
 prints the following output
