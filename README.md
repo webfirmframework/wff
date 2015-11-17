@@ -178,18 +178,11 @@ It will add width 100% in aboutParagraph and will change color to brown, its gen
 ##### How to resolve dependency in maven?
 Add the following code in your pom.xml file. 
 ```
-<repositories>
-	<repository>
-		<id>wff</id>
-		<url>https://github.com/webfirmframework/wff/raw/master</url>
-	</repository>
-</repositories>
-
 <dependencies>
 	<dependency>
 		<groupId>com.webfirmframework</groupId>
 		<artifactId>wffweb</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
+		<version>1.0.0-alpha-1</version>
 	</dependency>
 </dependencies>
 ```
