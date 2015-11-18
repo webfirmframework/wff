@@ -26,11 +26,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.css.CssLengthUnit;
+import com.webfirmframework.wffweb.io.OutputBuffer;
 import com.webfirmframework.wffweb.tag.html.Html;
 import com.webfirmframework.wffweb.tag.html.attribute.Width;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Style;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.Hidden;
+import com.webfirmframework.wffweb.view.AbstractHtmlView;
 
 /**
  * 
@@ -142,6 +144,34 @@ public class TagPrintTest implements Serializable {
         Html html = new Html(null);
         String expectedString = "<html></html>";
         Assert.assertEquals(expectedString, html.toString());
+    }
+    
+    @SuppressWarnings("serial")
+    private class SampleAbstractHtmlView extends AbstractHtmlView {
+
+        @Override
+        public void develop(OutputBuffer out) {
+            Html html = new Html(null);
+            out.append(html);
+        }
+        
+    }
+    
+    @Test
+    public void testSingleHtmlTag2() throws Exception {
+        SampleAbstractHtmlView view = new SampleAbstractHtmlView();
+        String expectedString = "<html></html>";
+        Assert.assertEquals(expectedString, view.toString());
+        Assert.assertEquals(expectedString, view.toString());
+    }
+    
+    @Test(expected = AssertionError.class)
+    public void testSingleHtmlTag3() throws Exception {
+        SampleAbstractHtmlView view = new SampleAbstractHtmlView();
+        view.setPreserveOutputBufferContent(true);
+        String expectedString = "<html></html>";
+        Assert.assertEquals(expectedString, view.toString());
+        Assert.assertEquals(expectedString, view.toString());
     }
 
 }

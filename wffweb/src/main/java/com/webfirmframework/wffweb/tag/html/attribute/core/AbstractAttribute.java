@@ -1,16 +1,16 @@
 package com.webfirmframework.wffweb.tag.html.attribute.core;
 
+import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.webfirmframework.wffweb.tag.core.AbstractTagBase;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.util.StringBuilderUtil;
-
-import java.util.Set;
 
 public abstract class AbstractAttribute extends AbstractTagBase {
 
@@ -24,6 +24,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     private AbstractHtml ownerTag;
 
     private StringBuilder tagBuilder;
+
+    private transient Charset charset = Charset.defaultCharset();
 
     {
         init();
@@ -56,7 +58,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         if (rebuild || isRebuild() || isModified()) {
             beforePrintStructure();
             tagBuilder.delete(0, tagBuilder.length());
-//            tagBuildzer.append(" ");
+            // tagBuildzer.append(" ");
             tagBuilder.append(getAttributeName());
             if (getAttributeValue() != null) {
                 tagBuilder.append("=\"");
@@ -98,8 +100,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
              * if (Character.isWhitespace(tagBuilder.charAt(lastIndex))) {
              * tagBuilder.deleteCharAt(lastIndex); }
              */
-//            result = StringBuilderUtil.getTrimmedString(tagBuilder) + "\"";
-//            tagBuilder.append("\"");
+            // result = StringBuilderUtil.getTrimmedString(tagBuilder) + "\"";
+            // tagBuilder.append("\"");
             setRebuild(false);
         }
         tagBuilder.trimToSize();
@@ -145,6 +147,40 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     /*
      * (non-Javadoc)
      *
+     * @see com.webfirmframework.wffweb.tag.core.TagBase#toHtmlString(java.nio.
+     * charset.Charset)
+     */
+    @Override
+    public String toHtmlString(final Charset charset) {
+        final Charset previousCharset = this.charset;
+        try {
+            this.charset = charset;
+            return toHtmlString();
+        } finally {
+            this.charset = previousCharset;
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.webfirmframework.wffweb.tag.core.TagBase#toHtmlString(java.lang.
+     * String)
+     */
+    @Override
+    public String toHtmlString(final String charset) {
+        final Charset previousCharset = this.charset;
+        try {
+            this.charset = Charset.forName(charset);
+            return toHtmlString();
+        } finally {
+            this.charset = previousCharset;
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     *
      * @see com.webfirmframework.wffweb.tag.Base#toHtmlString(boolean)
      *
      * @since 1.0.0
@@ -156,6 +192,45 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         return getPrintStructure(rebuild);
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.webfirmframework.wffweb.tag.core.TagBase#toHtmlString(boolean,
+     * java.nio.charset.Charset)
+     */
+    @Override
+    public String toHtmlString(final boolean rebuild, final Charset charset) {
+        final Charset previousCharset = this.charset;
+        try {
+            this.charset = charset;
+            return toHtmlString(rebuild);
+        } finally {
+            this.charset = previousCharset;
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.webfirmframework.wffweb.tag.core.TagBase#toHtmlString(boolean,
+     * java.lang.String)
+     */
+    @Override
+    public String toHtmlString(final boolean rebuild, final String charset) {
+        final Charset previousCharset = this.charset;
+        try {
+            this.charset = Charset.forName(charset);
+            return toHtmlString(rebuild);
+        } finally {
+            this.charset = previousCharset;
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.lang.Object#toString()
+     */
     @Override
     public String toString() {
         return getPrintStructure();
@@ -184,7 +259,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         if (this.attributeValueMap != null
                 && !this.attributeValueMap.equals(attributeValueMap)) {
             setModified(true);
-        } else if (this.attributeValueMap == null && attributeValueMap != null) {
+        } else if (this.attributeValueMap == null
+                && attributeValueMap != null) {
             setModified(true);
         }
         this.attributeValueMap = attributeValueMap;
@@ -261,9 +337,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected boolean removeFromAttributeValueMap(final String key,
             final String value) {
-        if (value == getAttributeValueMap().get(key)
-                || (value != null && value.equals(getAttributeValueMap().get(
-                        key)))) {
+        if (value == getAttributeValueMap().get(key) || (value != null
+                && value.equals(getAttributeValueMap().get(key)))) {
             getAttributeValueMap().remove(key);
             setModified(true);
             return true;
@@ -353,7 +428,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         if (this.attributeValueSet != null
                 && !this.attributeValueSet.equals(attributeValueSet)) {
             setModified(true);
-        } else if (this.attributeValueSet == null && attributeValueSet != null) {
+        } else if (this.attributeValueSet == null
+                && attributeValueSet != null) {
             setModified(true);
         }
         this.attributeValueSet = attributeValueSet;
@@ -429,5 +505,20 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected void beforePrintStructure() {
         // TODO override and use
+    }
+
+    /**
+     * @return the charset
+     */
+    public Charset getCharset() {
+        return charset;
+    }
+
+    /**
+     * @param charset
+     *            the charset to set
+     */
+    public void setCharset(final Charset charset) {
+        this.charset = charset;
     }
 }

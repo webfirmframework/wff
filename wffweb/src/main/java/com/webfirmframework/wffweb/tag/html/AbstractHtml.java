@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.tag.html;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -57,6 +58,8 @@ public abstract class AbstractHtml extends AbstractTagBase {
     private boolean htmlStartSBAsFirst;
 
     private OutputStream outputStream;
+
+    private transient Charset charset = Charset.defaultCharset();
 
     {
         init();
@@ -248,7 +251,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
             for (final AbstractHtml child : children) {
                 child.setRebuild(rebuild);
                 tagBuilder.append(child.getOpeningTag());
-//                tagBuilder.append("\n");// TODO should be removed later
+                // tagBuilder.append("\n");// TODO should be removed later
                 if (isHtmlStartSBAsFirst() && htmlMiddleSB != null) {
                     tagBuilder.append(getHtmlMiddleSB());
                 }
@@ -262,7 +265,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
                 recurChildren(childrenOfChildren, rebuild);
 
                 tagBuilder.append(child.getClosingTag());
-//                tagBuilder.append("\n");// TODO should be removed later
+                // tagBuilder.append("\n");// TODO should be removed later
             }
         }
     }
@@ -282,30 +285,32 @@ public abstract class AbstractHtml extends AbstractTagBase {
         if (children != null && children.size() > 0) {
             for (final AbstractHtml child : children) {
                 child.setRebuild(rebuild);
-                outputStream.write(child.getOpeningTag().getBytes());
+                outputStream.write(child.getOpeningTag().getBytes(charset));
                 if (isHtmlStartSBAsFirst() && htmlMiddleSB != null) {
-                    outputStream.write(getHtmlMiddleSB().toString().getBytes());
+                    outputStream.write(
+                            getHtmlMiddleSB().toString().getBytes(charset));
                 }
 
                 final List<AbstractHtml> childrenOfChildren = child
                         .getChildren();
 
                 if (!isHtmlStartSBAsFirst() && htmlMiddleSB != null) {
-                    outputStream.write(getHtmlMiddleSB().toString().getBytes());
+                    outputStream.write(
+                            getHtmlMiddleSB().toString().getBytes(charset));
                 }
                 recurChildrenToOutputStream(childrenOfChildren, rebuild);
-                outputStream.write(child.getClosingTag().getBytes());
+                outputStream.write(child.getClosingTag().getBytes(charset));
             }
         }
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.tag.TagBase#toHtmlString()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -315,16 +320,86 @@ public abstract class AbstractHtml extends AbstractTagBase {
 
     /*
      * (non-Javadoc)
-     * 
+     *
+     * @see com.webfirmframework.wffweb.tag.core.TagBase#toHtmlString(java.nio.
+     * charset.Charset)
+     */
+    @Override
+    public String toHtmlString(final Charset charset) {
+        final Charset previousCharset = this.charset;
+        try {
+            this.charset = charset;
+            final String htmlString = toHtmlString();
+            return htmlString;
+        } finally {
+            this.charset = previousCharset;
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.webfirmframework.wffweb.tag.core.TagBase#toHtmlString(java.lang.
+     * String)
+     */
+    @Override
+    public String toHtmlString(final String charset) {
+        final Charset previousCharset = this.charset;
+        try {
+            this.charset = Charset.forName(charset);
+            final String htmlString = toHtmlString();
+            return htmlString;
+        } finally {
+            this.charset = previousCharset;
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     *
      * @see com.webfirmframework.wffweb.tag.TagBase#toHtmlString(boolean)
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
     public String toHtmlString(final boolean rebuild) {
         return getPrintStructure(rebuild);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.webfirmframework.wffweb.tag.core.TagBase#toHtmlString(boolean,
+     * java.nio.charset.Charset)
+     */
+    @Override
+    public String toHtmlString(final boolean rebuild, final Charset charset) {
+        final Charset previousCharset = this.charset;
+        try {
+            this.charset = charset;
+            return toHtmlString(rebuild);
+        } finally {
+            this.charset = previousCharset;
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.webfirmframework.wffweb.tag.core.TagBase#toHtmlString(boolean,
+     * java.lang.String)
+     */
+    @Override
+    public String toHtmlString(final boolean rebuild, final String charset) {
+        final Charset previousCharset = this.charset;
+        try {
+            this.charset = Charset.forName(charset);
+            return toHtmlString(rebuild);
+        } finally {
+            this.charset = previousCharset;
+        }
     }
 
     /**
@@ -333,25 +408,131 @@ public abstract class AbstractHtml extends AbstractTagBase {
      * @throws IOException
      */
     public void toOutputStream(final OutputStream os) throws IOException {
-        outputStream = os;
-        writePrintStructureToOutputStream(true);
-        outputStream = null;
+        try {
+            outputStream = os;
+            writePrintStructureToOutputStream(true);
+        } finally {
+            outputStream = null;
+        }
+    }
+
+    /**
+     * @param os
+     *            the object of {@code OutputStream} to write to.
+     * @param charset
+     *            the charset
+     * @throws IOException
+     */
+    public void toOutputStream(final OutputStream os, final Charset charset)
+            throws IOException {
+        final Charset previousCharset = this.charset;
+        try {
+            this.charset = charset;
+            outputStream = os;
+            writePrintStructureToOutputStream(true);
+        } finally {
+            outputStream = null;
+            this.charset = previousCharset;
+        }
+    }
+
+    /**
+     * @param os
+     *            the object of {@code OutputStream} to write to.
+     * @param charset
+     *            the charset
+     * @throws IOException
+     */
+    public void toOutputStream(final OutputStream os, final String charset)
+            throws IOException {
+        final Charset previousCharset = this.charset;
+        try {
+            this.charset = Charset.forName(charset);
+            ;
+            outputStream = os;
+            writePrintStructureToOutputStream(true);
+        } finally {
+            outputStream = null;
+            this.charset = previousCharset;
+        }
+    }
+
+    /**
+     * @param os
+     *            the object of {@code OutputStream} to write to.
+     * @param rebuild
+     *            true to rebuild & false to write previously built bytes.
+     *
+     * @throws IOException
+     */
+    public void toOutputStream(final OutputStream os, final boolean rebuild)
+            throws IOException {
+        try {
+            outputStream = os;
+            writePrintStructureToOutputStream(rebuild);
+        } finally {
+            outputStream = null;
+        }
+    }
+
+    /**
+     * @param os
+     *            the object of {@code OutputStream} to write to.
+     * @param rebuild
+     *            true to rebuild & false to write previously built bytes.
+     * @param charset
+     *            the charset
+     * @throws IOException
+     */
+    public void toOutputStream(final OutputStream os, final boolean rebuild,
+            final Charset charset) throws IOException {
+        final Charset previousCharset = this.charset;
+        try {
+            this.charset = charset;
+            outputStream = os;
+            writePrintStructureToOutputStream(rebuild);
+        } finally {
+            outputStream = null;
+            this.charset = previousCharset;
+        }
+    }
+
+    /**
+     * @param os
+     *            the object of {@code OutputStream} to write to.
+     * @param rebuild
+     *            true to rebuild & false to write previously built bytes.
+     * @param charset
+     *            the charset
+     * @throws IOException
+     */
+    public void toOutputStream(final OutputStream os, final boolean rebuild,
+            final String charset) throws IOException {
+        final Charset previousCharset = this.charset;
+        try {
+            this.charset = Charset.forName(charset);
+            outputStream = os;
+            writePrintStructureToOutputStream(rebuild);
+        } finally {
+            outputStream = null;
+            this.charset = previousCharset;
+        }
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.tag.TagBase#toString()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
     public String toString() {
-        final String printStructure = getPrintStructure(getSharedObject()
-                .isChildModified()
-                && !getSharedObject().getRebuiltTags().contains(this));
+        final String printStructure = getPrintStructure(
+                getSharedObject().isChildModified()
+                        && !getSharedObject().getRebuiltTags().contains(this));
         if (getParent() == null) {
             getSharedObject().setChildModified(false);
         } else {
@@ -381,15 +562,15 @@ public abstract class AbstractHtml extends AbstractTagBase {
      */
     private void buildOpeningTag(final boolean rebuild) {
         final String attributeHtmlString = AttributeUtil.getThis()
-                .getAttributeHtmlString(rebuild, attributes);
+                .getAttributeHtmlString(rebuild, charset, attributes);
         htmlStartSB.delete(0, htmlStartSB.length());
         if (getTagName() != null) {
             htmlStartSB.append("<");
             htmlStartSB.append(getTagName());
-            //attributeHtmlString will be starting with a space
-//            if (!attributeHtmlString.isEmpty()) {
-//                htmlStartSB.append(" ");
-//            }
+            // attributeHtmlString will be starting with a space
+            // if (!attributeHtmlString.isEmpty()) {
+            // htmlStartSB.append(" ");
+            // }
             htmlStartSB.append(attributeHtmlString);
             htmlStartSB.append(">");
         }
@@ -560,5 +741,20 @@ public abstract class AbstractHtml extends AbstractTagBase {
     @Override
     public AbstractHtml clone() throws CloneNotSupportedException {
         return deepClone(this);
+    }
+
+    /**
+     * @return the charset
+     */
+    public Charset getCharset() {
+        return charset;
+    }
+
+    /**
+     * @param charset
+     *            the charset to set
+     */
+    public void setCharset(final Charset charset) {
+        this.charset = charset;
     }
 }

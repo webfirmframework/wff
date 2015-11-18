@@ -53,11 +53,12 @@ public class OutputBuffer {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
+        stringBuilder.trimToSize();
         return stringBuilder.toString();
     }
 
@@ -79,4 +80,17 @@ public class OutputBuffer {
     public void setRebuild(final boolean rebuild) {
         this.rebuild = rebuild;
     }
+
+    /**
+     * @param newLength
+     *            sets the length to the output buffer so that the first chars
+     *            up to newLength will be kept and the remaining will be
+     *            removed.
+     * @since 1.0.0
+     * @author WFF
+     */
+    public void setLength(final int newLength) {
+        stringBuilder.setLength(newLength);
+    }
+
 }

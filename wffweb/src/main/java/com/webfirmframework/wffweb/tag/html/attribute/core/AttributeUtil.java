@@ -19,6 +19,8 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute.core;
 
+import java.nio.charset.Charset;
+
 /**
  *
  * @author WFF
@@ -60,7 +62,7 @@ public class AttributeUtil {
                  * attribute; attributeSB.append("width=\"");
                  * attributeSB.append(width); attributeSB.append("\""); } else
                  * if (attribute instanceof Width) {
-                 * 
+                 *
                  * }
                  */
                 attributeSB.append(attribute.toHtmlString(rebuild));
@@ -69,4 +71,24 @@ public class AttributeUtil {
         return attributeSB.toString();
     }
 
+    /**
+     * @param rebuild
+     * @param attributes
+     * @param charset
+     *            the charset
+     * @return the attributes string starting with a space.
+     * @author WFF
+     * @since 1.0.0
+     */
+    public String getAttributeHtmlString(final boolean rebuild,
+            final Charset charset, final AbstractAttribute... attributes) {
+        final StringBuilder attributeSB = new StringBuilder();
+        if (attributes != null) {
+            for (final AbstractAttribute attribute : attributes) {
+                attributeSB.append(" ");
+                attributeSB.append(attribute.toHtmlString(rebuild, charset));
+            }
+        }
+        return attributeSB.toString();
+    }
 }
