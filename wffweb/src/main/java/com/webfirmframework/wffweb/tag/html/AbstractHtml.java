@@ -43,7 +43,9 @@ public abstract class AbstractHtml extends AbstractTagBase {
     private AbstractHtml parent;
     private List<AbstractHtml> children;
     private String openingTag;
-    private String closingTag;
+
+    // should be initialized with empty string
+    private String closingTag = "";
     private StringBuilder htmlStartSB;
     private StringBuilder htmlMiddleSB;
     private StringBuilder htmlEndSB;
@@ -60,6 +62,8 @@ public abstract class AbstractHtml extends AbstractTagBase {
     private OutputStream outputStream;
 
     private transient Charset charset = Charset.defaultCharset();
+
+    private boolean selfClosingTag;
 
     {
         init();
@@ -132,6 +136,37 @@ public abstract class AbstractHtml extends AbstractTagBase {
     }
 
     /**
+     * should be invoked to generate opening and closing tag base class
+     * containing the functionalities to generate html string.
+     *
+     * @param tagName
+     *            TODO
+     * @param base
+     *            TODO
+     * @author WFF
+     */
+    protected AbstractHtml(final boolean selfClosingTag, final String tagName,
+            final AbstractHtml base, final AbstractAttribute[] attributes) {
+        this.selfClosingTag = selfClosingTag;
+        this.tagName = tagName;
+        this.attributes = attributes;
+        markOwnerTag(attributes);
+        if (selfClosingTag) {
+            buildSelfClosingTag(false);
+        } else {
+            buildOpeningTag(false);
+            buildClosingTag();
+        }
+        if (base != null) {
+            setParent(base);
+            base.getChildren().add(this);
+            setSharedObject(base.getSharedObject());
+        } else {
+            setSharedObject(new AbstractHtml5SharedObject());
+        }
+    }
+
+    /**
      * marks the owner tag in the attributes
      *
      * @param attributes
@@ -173,7 +208,11 @@ public abstract class AbstractHtml extends AbstractTagBase {
 
     public String getOpeningTag() {
         if (isRebuild() || isModified()) {
-            buildOpeningTag(isRebuild() || isModified());
+            if (selfClosingTag) {
+                buildSelfClosingTag(true);
+            } else {
+                buildOpeningTag(true);
+            }
         }
         return openingTag;
     }
@@ -596,6 +635,25 @@ public abstract class AbstractHtml extends AbstractTagBase {
         }
         htmlEndSB.trimToSize();
         setClosingTag(htmlEndSB.toString());
+    }
+
+    /**
+     *
+     * @since 1.0.0
+     * @author WFF
+     */
+    private void buildSelfClosingTag(final boolean rebuild) {
+        final String attributeHtmlString = AttributeUtil.getThis()
+                .getAttributeHtmlString(rebuild, charset, attributes);
+        htmlStartSB.delete(0, htmlStartSB.length());
+        if (getTagName() != null) {
+            htmlStartSB.append("<");
+            htmlStartSB.append(getTagName());
+            htmlStartSB.append(attributeHtmlString);
+            htmlStartSB.append("/>");
+        }
+        htmlStartSB.trimToSize();
+        setOpeningTag(htmlStartSB.toString());
     }
 
     /**

@@ -19,6 +19,8 @@ public class Br extends AbstractHtml {
 
     public static final Logger LOGGER = Logger.getLogger(Br.class.getName());
 
+    private static boolean selfClosing = true;
+
     {
         init();
     }
@@ -35,10 +37,13 @@ public class Br extends AbstractHtml {
      * @since 1.0.0
      */
     public Br(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(Br.class.getSimpleName().toLowerCase(), base, attributes);
+        super(selfClosing, Br.class.getSimpleName().toLowerCase(), base,
+                attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof BaseAttribute || abstractAttribute instanceof GlobalAttribute))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof BaseAttribute
+                                || abstractAttribute instanceof GlobalAttribute))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of BaseAttribute");
                 }
@@ -53,6 +58,22 @@ public class Br extends AbstractHtml {
      * @since 1.0.0
      */
     protected void init() {
+    }
+
+    /**
+     * @param selfClosing
+     *            <code>true</code> to set as self closing tag and
+     *            <code>false</code> for not to set as self closing tag. The
+     *            default value is <code>true</code>.
+     * @since 1.0.0
+     * @author WFF
+     */
+    public static void setSelfClosing(final boolean selfClosing) {
+        Br.selfClosing = selfClosing;
+    }
+
+    public static boolean isSelfClosing() {
+        return selfClosing;
     }
 
 }
