@@ -13,11 +13,12 @@ import com.webfirmframework.wffweb.tag.html.identifier.TitleAttribute;
  * @version 1.0.0
  *
  */
-public class Title extends AbstractHtml {
+public class TitleTag extends AbstractHtml {
 
     private static final long serialVersionUID = 6611460345846279788L;
 
-    public static final Logger LOGGER = Logger.getLogger(Title.class.getName());
+    public static final Logger LOGGER = Logger
+            .getLogger(TitleTag.class.getName());
 
     {
         init();
@@ -34,11 +35,14 @@ public class Title extends AbstractHtml {
      *
      * @since 1.0.0
      */
-    public Title(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(Title.class.getSimpleName().toLowerCase(), base, attributes);
+    public TitleTag(final AbstractHtml base,
+            final AbstractAttribute... attributes) {
+        super(TagNameConstants.TITLE_TAG, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof TitleAttribute || abstractAttribute instanceof GlobalAttribute))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof TitleAttribute
+                                || abstractAttribute instanceof GlobalAttribute))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of TitleAttribute");
                 }
