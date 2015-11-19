@@ -15,6 +15,10 @@
  */
 package com.webfirmframework.wffweb.tag.html;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
+
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 
 /**
@@ -42,26 +46,237 @@ public abstract class DocType extends AbstractHtml {
         super(tagName, base, attributes);
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.webfirmframework.wffweb.tag.html.AbstractHtml#toHtmlString()
+     */
     @Override
     public String toHtmlString() {
         if (prependDocType) {
-            return docTypeTag + "\n" + super.toHtmlString();
+            return new String((docTypeTag + "\n" + super.toHtmlString())
+                    .getBytes(getCharset()), getCharset());
         }
         return super.toHtmlString();
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * com.webfirmframework.wffweb.tag.html.AbstractHtml#toHtmlString(java.nio.
+     * charset.Charset)
+     */
+    @Override
+    public String toHtmlString(final Charset charset) {
+        final Charset previousCharset = super.getCharset();
+        try {
+            super.setCharset(previousCharset);
+            if (prependDocType) {
+                return new String(
+                        (docTypeTag + "\n" + super.toHtmlString(charset))
+                                .getBytes(getCharset()),
+                        getCharset());
+            }
+            return super.toHtmlString(charset);
+        } finally {
+            super.setCharset(previousCharset);
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * com.webfirmframework.wffweb.tag.html.AbstractHtml#toHtmlString(java.lang.
+     * String)
+     */
+    @Override
+    public String toHtmlString(final String charset) {
+        final Charset previousCharset = super.getCharset();
+        try {
+            super.setCharset(previousCharset);
+            if (prependDocType) {
+                return new String(
+                        (docTypeTag + "\n" + super.toHtmlString(charset))
+                                .getBytes(getCharset()),
+                        getCharset());
+            }
+            return super.toHtmlString(charset);
+        } finally {
+            super.setCharset(previousCharset);
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * com.webfirmframework.wffweb.tag.html.AbstractHtml#toHtmlString(boolean)
+     */
     @Override
     public String toHtmlString(final boolean rebuild) {
         if (prependDocType) {
-            return docTypeTag + "\n" + super.toHtmlString();
+            return new String((docTypeTag + "\n" + super.toHtmlString(rebuild))
+                    .getBytes(getCharset()), getCharset());
         }
         return super.toHtmlString(rebuild);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * com.webfirmframework.wffweb.tag.html.AbstractHtml#toHtmlString(boolean,
+     * java.nio.charset.Charset)
+     */
+    @Override
+    public String toHtmlString(final boolean rebuild, final Charset charset) {
+        final Charset previousCharset = super.getCharset();
+        try {
+            super.setCharset(previousCharset);
+            if (prependDocType) {
+                return new String((docTypeTag + "\n"
+                        + super.toHtmlString(rebuild, charset))
+                                .getBytes(getCharset()),
+                        getCharset());
+            }
+            return super.toHtmlString(rebuild, charset);
+        } finally {
+            super.setCharset(previousCharset);
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * com.webfirmframework.wffweb.tag.html.AbstractHtml#toHtmlString(boolean,
+     * java.lang.String)
+     */
+    @Override
+    public String toHtmlString(final boolean rebuild, final String charset) {
+        final Charset previousCharset = super.getCharset();
+        try {
+            super.setCharset(previousCharset);
+            if (prependDocType) {
+                return new String((docTypeTag + "\n"
+                        + super.toHtmlString(rebuild, charset))
+                                .getBytes(getCharset()),
+                        getCharset());
+            }
+            return super.toHtmlString(rebuild, charset);
+        } finally {
+            super.setCharset(previousCharset);
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * com.webfirmframework.wffweb.tag.html.AbstractHtml#toOutputStream(java.io.
+     * OutputStream)
+     */
+    @Override
+    public void toOutputStream(final OutputStream os) throws IOException {
+        super.toOutputStream(os);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * com.webfirmframework.wffweb.tag.html.AbstractHtml#toOutputStream(java.io.
+     * OutputStream, boolean)
+     */
+    @Override
+    public void toOutputStream(final OutputStream os, final boolean rebuild)
+            throws IOException {
+        super.toOutputStream(os, rebuild);
+    }
+
+    /**
+     * @param os
+     *            object of OutputStream to which the bytes to be written
+     * @param charset
+     *            the charset to encode for the bytes
+     * @throws IOException
+     * @since 1.0.0
+     * @author WFF
+     */
+    @Override
+    public void toOutputStream(final OutputStream os, final Charset charset)
+            throws IOException {
+        if (prependDocType) {
+            os.write((docTypeTag + "\n").getBytes(charset));
+        }
+        super.toOutputStream(os, charset);
+    }
+
+    /**
+     * @param os
+     *            object of OutputStream to which the bytes to be written
+     * @param charset
+     *            the charset to encode for the bytes
+     * @throws IOException
+     * @since 1.0.0
+     * @author WFF
+     */
+    @Override
+    public void toOutputStream(final OutputStream os, final String charset)
+            throws IOException {
+        if (prependDocType) {
+            os.write((docTypeTag + "\n").getBytes(charset));
+        }
+        super.toOutputStream(os, charset);
+    }
+
+    /**
+     * @param os
+     *            object of OutputStream to which the bytes to be written
+     * @param rebuild
+     *            true to rebuild the tags
+     * @param charset
+     *            the charset to encode for the bytes
+     * @throws IOException
+     * @since 1.0.0
+     * @author WFF
+     */
+    @Override
+    public void toOutputStream(final OutputStream os, final boolean rebuild,
+            final Charset charset) throws IOException {
+        if (prependDocType) {
+            os.write((docTypeTag + "\n").getBytes(charset));
+        }
+        super.toOutputStream(os, rebuild, charset);
+    }
+
+    /**
+     * @param os
+     *            object of OutputStream to which the bytes to be written
+     * @param rebuild
+     *            true to rebuild the tags
+     * @param charset
+     *            the charset to encode for the bytes
+     * @throws IOException
+     * @since 1.0.0
+     * @author WFF
+     */
+    @Override
+    public void toOutputStream(final OutputStream os, final boolean rebuild,
+            final String charset) throws IOException {
+        if (prependDocType) {
+            os.write((docTypeTag + "\n").getBytes(charset));
+        }
+        super.toOutputStream(os, rebuild, charset);
     }
 
     @Override
     public String toString() {
         if (prependDocType) {
-            return docTypeTag + "\n" + super.toHtmlString();
+            return new String((docTypeTag + "\n" + super.toHtmlString())
+                    .getBytes(getCharset()), getCharset());
         }
         return super.toString();
     }

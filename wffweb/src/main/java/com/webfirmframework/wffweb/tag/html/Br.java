@@ -19,7 +19,7 @@ public class Br extends AbstractHtml {
 
     public static final Logger LOGGER = Logger.getLogger(Br.class.getName());
 
-    private static boolean selfClosing = true;
+    private static TagType tagType = TagType.SELF_CLOSING;
 
     {
         init();
@@ -37,7 +37,7 @@ public class Br extends AbstractHtml {
      * @since 1.0.0
      */
     public Br(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(selfClosing, Br.class.getSimpleName().toLowerCase(), base,
+        super(tagType, Br.class.getSimpleName().toLowerCase(), base,
                 attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
@@ -69,11 +69,36 @@ public class Br extends AbstractHtml {
      * @author WFF
      */
     public static void setSelfClosing(final boolean selfClosing) {
-        Br.selfClosing = selfClosing;
+        Br.tagType = selfClosing ? TagType.SELF_CLOSING : TagType.NON_CLOSING;
     }
 
+    /**
+     * @param nonClosing
+     *            <code>true</code> to set as self closing tag and
+     *            <code>false</code> for not to set as self closing tag. The
+     *            default value is <code>true</code>.
+     * @since 1.0.0
+     * @author WFF
+     */
+    public static void setNonClosing(final boolean nonClosing) {
+        Br.tagType = nonClosing ? TagType.NON_CLOSING : TagType.SELF_CLOSING;
+    }
+
+    /**
+     * @return
+     * @since 1.0.0
+     * @author WFF
+     */
     public static boolean isSelfClosing() {
-        return selfClosing;
+        return Br.tagType == TagType.SELF_CLOSING;
     }
 
+    /**
+     * @return
+     * @since 1.0.0
+     * @author WFF
+     */
+    public static boolean isNonClosing() {
+        return Br.tagType == TagType.NON_CLOSING;
+    }
 }

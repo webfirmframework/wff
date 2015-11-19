@@ -63,7 +63,14 @@ public abstract class AbstractHtml extends AbstractTagBase {
 
     private transient Charset charset = Charset.defaultCharset();
 
-    private boolean selfClosingTag;
+    public static enum TagType {
+        OPENING_CLOSING, SELF_CLOSING, NON_CLOSING;
+
+        private TagType() {
+        }
+    }
+
+    private TagType tagType = TagType.OPENING_CLOSING;
 
     {
         init();
@@ -139,24 +146,27 @@ public abstract class AbstractHtml extends AbstractTagBase {
      * should be invoked to generate opening and closing tag base class
      * containing the functionalities to generate html string.
      *
+     * @param tagType
+     *
      * @param tagName
      *            TODO
      * @param base
      *            TODO
      * @author WFF
      */
-    protected AbstractHtml(final boolean selfClosingTag, final String tagName,
+    protected AbstractHtml(final TagType tagType, final String tagName,
             final AbstractHtml base, final AbstractAttribute[] attributes) {
-        this.selfClosingTag = selfClosingTag;
+        this.tagType = tagType;
         this.tagName = tagName;
         this.attributes = attributes;
         markOwnerTag(attributes);
-        if (selfClosingTag) {
-            buildSelfClosingTag(false);
-        } else {
-            buildOpeningTag(false);
+
+        buildOpeningTag(false);
+
+        if (tagType == TagType.OPENING_CLOSING) {
             buildClosingTag();
         }
+
         if (base != null) {
             setParent(base);
             base.getChildren().add(this);
@@ -208,11 +218,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
 
     public String getOpeningTag() {
         if (isRebuild() || isModified()) {
-            if (selfClosingTag) {
-                buildSelfClosingTag(true);
-            } else {
-                buildOpeningTag(true);
-            }
+            buildOpeningTag(true);
         }
         return openingTag;
     }
@@ -606,12 +612,16 @@ public abstract class AbstractHtml extends AbstractTagBase {
         if (getTagName() != null) {
             htmlStartSB.append("<");
             htmlStartSB.append(getTagName());
-            // attributeHtmlString will be starting with a space
-            // if (!attributeHtmlString.isEmpty()) {
-            // htmlStartSB.append(" ");
-            // }
             htmlStartSB.append(attributeHtmlString);
-            htmlStartSB.append(">");
+            if (tagType == TagType.OPENING_CLOSING) {
+                htmlStartSB.append(">");
+            } else if (tagType == TagType.SELF_CLOSING) {
+                htmlStartSB.append("/>");
+            } else {
+                // here it will be tagType == TagType.NON_CLOSING as there are
+                // three types in TagType class
+                htmlStartSB.append(">");
+            }
         }
         htmlStartSB.trimToSize();
         setOpeningTag(htmlStartSB.toString());
@@ -635,25 +645,6 @@ public abstract class AbstractHtml extends AbstractTagBase {
         }
         htmlEndSB.trimToSize();
         setClosingTag(htmlEndSB.toString());
-    }
-
-    /**
-     *
-     * @since 1.0.0
-     * @author WFF
-     */
-    private void buildSelfClosingTag(final boolean rebuild) {
-        final String attributeHtmlString = AttributeUtil.getThis()
-                .getAttributeHtmlString(rebuild, charset, attributes);
-        htmlStartSB.delete(0, htmlStartSB.length());
-        if (getTagName() != null) {
-            htmlStartSB.append("<");
-            htmlStartSB.append(getTagName());
-            htmlStartSB.append(attributeHtmlString);
-            htmlStartSB.append("/>");
-        }
-        htmlStartSB.trimToSize();
-        setOpeningTag(htmlStartSB.toString());
     }
 
     /**

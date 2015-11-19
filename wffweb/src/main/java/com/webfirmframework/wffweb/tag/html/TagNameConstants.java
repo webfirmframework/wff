@@ -24,6 +24,10 @@ package com.webfirmframework.wffweb.tag.html;
 public class TagNameConstants {
 
     public static final String TITLE_TAG = "title";
+    
+    public static final String LINK = "link";
+    
+    public static final String META = "meta";
 
     /**
      *
