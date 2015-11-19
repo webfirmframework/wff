@@ -176,7 +176,7 @@ It will add width 100% in aboutParagraph and will change color to brown, its gen
 ```
 
 
-##### How to resolve dependency in maven?
+##### How to resolve dependency by maven?
 Add the following code in your pom.xml file. 
 ```
 <dependencies>
@@ -186,6 +186,12 @@ Add the following code in your pom.xml file.
 		<version>1.0.0-alpha-2</version>
 	</dependency>
 </dependencies>
+```
+##### How to resolve dependency by ivy?
+Add the following code in your ivy.xml file. 
+```
+<dependency org="com.webfirmframework" name="wffweb" rev="1.0.0-alpha-2" />
+
 ```
 
 Refer https://github.com/webfirmframework/wff/wiki for more details
