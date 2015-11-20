@@ -55,7 +55,7 @@ public abstract class DocType extends AbstractHtml {
     public String toHtmlString() {
         if (prependDocType) {
             return new String((docTypeTag + "\n" + super.toHtmlString())
-                    .getBytes(getCharset()), getCharset());
+                    .getBytes(getCharset()));
         }
         return super.toHtmlString();
     }
@@ -71,14 +71,13 @@ public abstract class DocType extends AbstractHtml {
     public String toHtmlString(final Charset charset) {
         final Charset previousCharset = super.getCharset();
         try {
-            super.setCharset(previousCharset);
+            super.setCharset(charset);
             if (prependDocType) {
-                return new String(
-                        (docTypeTag + "\n" + super.toHtmlString(charset))
-                                .getBytes(getCharset()),
-                        getCharset());
+                return new String((docTypeTag + "\n"
+                        + super.toHtmlString(super.getCharset()))
+                                .getBytes(super.getCharset()));
             }
-            return super.toHtmlString(charset);
+            return super.toHtmlString(super.getCharset());
         } finally {
             super.setCharset(previousCharset);
         }
@@ -95,14 +94,13 @@ public abstract class DocType extends AbstractHtml {
     public String toHtmlString(final String charset) {
         final Charset previousCharset = super.getCharset();
         try {
-            super.setCharset(previousCharset);
+            super.setCharset(Charset.forName(charset));
             if (prependDocType) {
-                return new String(
-                        (docTypeTag + "\n" + super.toHtmlString(charset))
-                                .getBytes(getCharset()),
-                        getCharset());
+                return new String((docTypeTag + "\n"
+                        + super.toHtmlString(super.getCharset()))
+                                .getBytes(super.getCharset()));
             }
-            return super.toHtmlString(charset);
+            return super.toHtmlString(super.getCharset());
         } finally {
             super.setCharset(previousCharset);
         }
@@ -118,7 +116,7 @@ public abstract class DocType extends AbstractHtml {
     public String toHtmlString(final boolean rebuild) {
         if (prependDocType) {
             return new String((docTypeTag + "\n" + super.toHtmlString(rebuild))
-                    .getBytes(getCharset()), getCharset());
+                    .getBytes(getCharset()));
         }
         return super.toHtmlString(rebuild);
     }
@@ -134,14 +132,15 @@ public abstract class DocType extends AbstractHtml {
     public String toHtmlString(final boolean rebuild, final Charset charset) {
         final Charset previousCharset = super.getCharset();
         try {
-            super.setCharset(previousCharset);
+            super.setCharset(charset);
             if (prependDocType) {
-                return new String((docTypeTag + "\n"
-                        + super.toHtmlString(rebuild, charset))
-                                .getBytes(getCharset()),
-                        getCharset());
+                return new String(
+                        (docTypeTag + "\n"
+                                + super.toHtmlString(rebuild,
+                                        super.getCharset()))
+                                                .getBytes(getCharset()));
             }
-            return super.toHtmlString(rebuild, charset);
+            return super.toHtmlString(rebuild, super.getCharset());
         } finally {
             super.setCharset(previousCharset);
         }
@@ -160,12 +159,13 @@ public abstract class DocType extends AbstractHtml {
         try {
             super.setCharset(previousCharset);
             if (prependDocType) {
-                return new String((docTypeTag + "\n"
-                        + super.toHtmlString(rebuild, charset))
-                                .getBytes(getCharset()),
-                        getCharset());
+                return new String(
+                        (docTypeTag + "\n"
+                                + super.toHtmlString(rebuild,
+                                        super.getCharset()))
+                                                .getBytes(getCharset()));
             }
-            return super.toHtmlString(rebuild, charset);
+            return super.toHtmlString(rebuild, super.getCharset());
         } finally {
             super.setCharset(previousCharset);
         }
@@ -226,10 +226,11 @@ public abstract class DocType extends AbstractHtml {
     @Override
     public void toOutputStream(final OutputStream os, final String charset)
             throws IOException {
+        final Charset cs = Charset.forName(charset);
         if (prependDocType) {
-            os.write((docTypeTag + "\n").getBytes(charset));
+            os.write((docTypeTag + "\n").getBytes(cs));
         }
-        super.toOutputStream(os, charset);
+        super.toOutputStream(os, cs);
     }
 
     /**
@@ -266,10 +267,11 @@ public abstract class DocType extends AbstractHtml {
     @Override
     public void toOutputStream(final OutputStream os, final boolean rebuild,
             final String charset) throws IOException {
+        final Charset cs = Charset.forName(charset);
         if (prependDocType) {
-            os.write((docTypeTag + "\n").getBytes(charset));
+            os.write((docTypeTag + "\n").getBytes(cs));
         }
-        super.toOutputStream(os, rebuild, charset);
+        super.toOutputStream(os, rebuild, cs);
     }
 
     @Override
