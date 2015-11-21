@@ -12,33 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * @author WFF
  */
-package com.webfirmframework.wffweb.tag.html;
+package com.webfirmframework.wffweb.tag.html.identifier;
+
+import com.webfirmframework.wffweb.tag.core.TagBase;
 
 /**
+ * Identifier interface for {@code I} attributes
+ *
  * @author WFF
- * @since 1.0.0
- * @version 1.0.0
  *
  */
-public class TagNameConstants {
+public interface IAttribute extends TagBase {
 
-    public static final String TITLE_TAG = "title";
-    
-    public static final String LINK = "link";
-    
-    public static final String META = "meta";
-    
-    public static final String BR = "br";
-
-    public static final String BASE = "base";
-
-    /**
-     *
-     * @author WFF
-     * @since 1.0.0
-     */
-    private TagNameConstants() {
-        throw new AssertionError();
-    }
 }

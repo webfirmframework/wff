@@ -27,8 +27,8 @@ import com.webfirmframework.wffweb.css.ListStyleImage;
 import com.webfirmframework.wffweb.css.ListStylePosition;
 import com.webfirmframework.wffweb.css.ListStyleType;
 import com.webfirmframework.wffweb.css.css3.ColumnRule;
-import com.webfirmframework.wffweb.tag.html.Address;
 import com.webfirmframework.wffweb.tag.html.Html;
+import com.webfirmframework.wffweb.tag.html.formatting.Address;
 import com.webfirmframework.wffweb.util.StringBuilderUtil;
 
 /**

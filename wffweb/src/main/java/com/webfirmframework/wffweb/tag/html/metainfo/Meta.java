@@ -1,11 +1,14 @@
-package com.webfirmframework.wffweb.tag.html;
+package com.webfirmframework.wffweb.tag.html.metainfo;
 
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.settings.WffConfiguration;
+import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.TagNameConstants;
+import com.webfirmframework.wffweb.tag.html.AbstractHtml.TagType;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.BaseAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
+import com.webfirmframework.wffweb.tag.html.identifier.MetaAttribute;
 
 /**
  * @author WFF
@@ -13,11 +16,11 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
  * @version 1.0.0
  *
  */
-public class Br extends AbstractHtml {
+public class Meta extends AbstractHtml {
 
-    private static final long serialVersionUID = -5453277466587731148L;
+    private static final long serialVersionUID = 1572469371688480234L;
 
-    public static final Logger LOGGER = Logger.getLogger(Br.class.getName());
+    public static final Logger LOGGER = Logger.getLogger(Meta.class.getName());
 
     private static TagType tagType = TagType.SELF_CLOSING;
 
@@ -36,15 +39,16 @@ public class Br extends AbstractHtml {
      *
      * @since 1.0.0
      */
-    public Br(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(tagType, TagNameConstants.BR, base, attributes);
+    public Meta(final AbstractHtml base,
+            final AbstractAttribute... attributes) {
+        super(tagType, TagNameConstants.META, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
                 if (!(abstractAttribute != null
-                        && (abstractAttribute instanceof BaseAttribute
+                        && (abstractAttribute instanceof MetaAttribute
                                 || abstractAttribute instanceof GlobalAttribute))) {
                     LOGGER.warning(abstractAttribute
-                            + " is not an instance of BaseAttribute");
+                            + " is not an instance of MetaAttribute");
                 }
             }
         }
@@ -68,7 +72,7 @@ public class Br extends AbstractHtml {
      * @author WFF
      */
     public static void setSelfClosing(final boolean selfClosing) {
-        Br.tagType = selfClosing ? TagType.SELF_CLOSING : TagType.NON_CLOSING;
+        Meta.tagType = selfClosing ? TagType.SELF_CLOSING : TagType.NON_CLOSING;
     }
 
     /**
@@ -80,7 +84,7 @@ public class Br extends AbstractHtml {
      * @author WFF
      */
     public static void setNonClosing(final boolean nonClosing) {
-        Br.tagType = nonClosing ? TagType.NON_CLOSING : TagType.SELF_CLOSING;
+        Meta.tagType = nonClosing ? TagType.NON_CLOSING : TagType.SELF_CLOSING;
     }
 
     /**
@@ -89,7 +93,7 @@ public class Br extends AbstractHtml {
      * @author WFF
      */
     public static boolean isSelfClosing() {
-        return Br.tagType == TagType.SELF_CLOSING;
+        return Meta.tagType == TagType.SELF_CLOSING;
     }
 
     /**
@@ -98,6 +102,7 @@ public class Br extends AbstractHtml {
      * @author WFF
      */
     public static boolean isNonClosing() {
-        return Br.tagType == TagType.NON_CLOSING;
+        return Meta.tagType == TagType.NON_CLOSING;
     }
+
 }

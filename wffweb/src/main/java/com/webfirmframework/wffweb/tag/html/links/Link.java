@@ -1,11 +1,14 @@
-package com.webfirmframework.wffweb.tag.html;
+package com.webfirmframework.wffweb.tag.html.links;
 
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.settings.WffConfiguration;
+import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.TagNameConstants;
+import com.webfirmframework.wffweb.tag.html.AbstractHtml.TagType;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.BaseAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
+import com.webfirmframework.wffweb.tag.html.identifier.LinkAttribute;
 
 /**
  * @author WFF
@@ -13,11 +16,11 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
  * @version 1.0.0
  *
  */
-public class Br extends AbstractHtml {
+public class Link extends AbstractHtml {
 
-    private static final long serialVersionUID = -5453277466587731148L;
+    private static final long serialVersionUID = 7364825383842623208L;
 
-    public static final Logger LOGGER = Logger.getLogger(Br.class.getName());
+    public static final Logger LOGGER = Logger.getLogger(Link.class.getName());
 
     private static TagType tagType = TagType.SELF_CLOSING;
 
@@ -36,15 +39,16 @@ public class Br extends AbstractHtml {
      *
      * @since 1.0.0
      */
-    public Br(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(tagType, TagNameConstants.BR, base, attributes);
+    public Link(final AbstractHtml base,
+            final AbstractAttribute... attributes) {
+        super(tagType, TagNameConstants.LINK, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
                 if (!(abstractAttribute != null
-                        && (abstractAttribute instanceof BaseAttribute
+                        && (abstractAttribute instanceof LinkAttribute
                                 || abstractAttribute instanceof GlobalAttribute))) {
                     LOGGER.warning(abstractAttribute
-                            + " is not an instance of BaseAttribute");
+                            + " is not an instance of LinkAttribute");
                 }
             }
         }
@@ -68,7 +72,7 @@ public class Br extends AbstractHtml {
      * @author WFF
      */
     public static void setSelfClosing(final boolean selfClosing) {
-        Br.tagType = selfClosing ? TagType.SELF_CLOSING : TagType.NON_CLOSING;
+        Link.tagType = selfClosing ? TagType.SELF_CLOSING : TagType.NON_CLOSING;
     }
 
     /**
@@ -80,24 +84,25 @@ public class Br extends AbstractHtml {
      * @author WFF
      */
     public static void setNonClosing(final boolean nonClosing) {
-        Br.tagType = nonClosing ? TagType.NON_CLOSING : TagType.SELF_CLOSING;
+        Link.tagType = nonClosing ? TagType.NON_CLOSING : TagType.SELF_CLOSING;
     }
 
     /**
-     * @return true if it is set as self closing tag otherwise false
+     * @return
      * @since 1.0.0
      * @author WFF
      */
     public static boolean isSelfClosing() {
-        return Br.tagType == TagType.SELF_CLOSING;
+        return Link.tagType == TagType.SELF_CLOSING;
     }
 
     /**
-     * @return true if it is set as non closing tag otherwise false
+     * @return
      * @since 1.0.0
      * @author WFF
      */
     public static boolean isNonClosing() {
-        return Br.tagType == TagType.NON_CLOSING;
+        return Link.tagType == TagType.NON_CLOSING;
     }
+
 }

@@ -23,8 +23,8 @@ import java.util.Set;
 import com.webfirmframework.wffweb.css.css3.ColumnRule;
 import com.webfirmframework.wffweb.css.css3.ColumnRuleColor;
 import com.webfirmframework.wffweb.css.css3.ColumnRuleWidth;
-import com.webfirmframework.wffweb.tag.html.Div;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.Draggable;
+import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 import com.webfirmframework.wffweb.util.StringBuilderUtil;
 
 /**

@@ -1,8 +1,11 @@
-package com.webfirmframework.wffweb.tag.html;
+package com.webfirmframework.wffweb.tag.html.metainfo;
 
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.settings.WffConfiguration;
+import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.TagNameConstants;
+import com.webfirmframework.wffweb.tag.html.AbstractHtml.TagType;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.BaseAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
@@ -13,11 +16,11 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
  * @version 1.0.0
  *
  */
-public class Br extends AbstractHtml {
+public class Base extends AbstractHtml {
 
-    private static final long serialVersionUID = -5453277466587731148L;
+    private static final long serialVersionUID = 5978964154955982397L;
 
-    public static final Logger LOGGER = Logger.getLogger(Br.class.getName());
+    public static final Logger LOGGER = Logger.getLogger(Base.class.getName());
 
     private static TagType tagType = TagType.SELF_CLOSING;
 
@@ -36,8 +39,9 @@ public class Br extends AbstractHtml {
      *
      * @since 1.0.0
      */
-    public Br(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(tagType, TagNameConstants.BR, base, attributes);
+    public Base(final AbstractHtml base,
+            final AbstractAttribute... attributes) {
+        super(tagType, TagNameConstants.BASE, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
                 if (!(abstractAttribute != null
@@ -68,7 +72,7 @@ public class Br extends AbstractHtml {
      * @author WFF
      */
     public static void setSelfClosing(final boolean selfClosing) {
-        Br.tagType = selfClosing ? TagType.SELF_CLOSING : TagType.NON_CLOSING;
+        Base.tagType = selfClosing ? TagType.SELF_CLOSING : TagType.NON_CLOSING;
     }
 
     /**
@@ -80,7 +84,7 @@ public class Br extends AbstractHtml {
      * @author WFF
      */
     public static void setNonClosing(final boolean nonClosing) {
-        Br.tagType = nonClosing ? TagType.NON_CLOSING : TagType.SELF_CLOSING;
+        Base.tagType = nonClosing ? TagType.NON_CLOSING : TagType.SELF_CLOSING;
     }
 
     /**
@@ -89,7 +93,7 @@ public class Br extends AbstractHtml {
      * @author WFF
      */
     public static boolean isSelfClosing() {
-        return Br.tagType == TagType.SELF_CLOSING;
+        return Base.tagType == TagType.SELF_CLOSING;
     }
 
     /**
@@ -98,6 +102,7 @@ public class Br extends AbstractHtml {
      * @author WFF
      */
     public static boolean isNonClosing() {
-        return Br.tagType == TagType.NON_CLOSING;
+        return Base.tagType == TagType.NON_CLOSING;
     }
+
 }
