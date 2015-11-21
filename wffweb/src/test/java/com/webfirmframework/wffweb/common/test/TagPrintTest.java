@@ -27,11 +27,19 @@ import org.junit.Test;
 
 import com.webfirmframework.wffweb.css.CssLengthUnit;
 import com.webfirmframework.wffweb.io.OutputBuffer;
+import com.webfirmframework.wffweb.tag.html.Br;
 import com.webfirmframework.wffweb.tag.html.Html;
+import com.webfirmframework.wffweb.tag.html.AbstractHtml.TagType;
 import com.webfirmframework.wffweb.tag.html.attribute.Width;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Style;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.Hidden;
+import com.webfirmframework.wffweb.tag.html.links.Link;
+import com.webfirmframework.wffweb.tag.html.metainfo.Base;
+import com.webfirmframework.wffweb.tag.html.metainfo.Head;
+import com.webfirmframework.wffweb.tag.html.metainfo.Meta;
+import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
+import com.webfirmframework.wffweb.tag.htmlwff.CustomTag;
 import com.webfirmframework.wffweb.view.AbstractHtmlView;
 
 /**
@@ -173,5 +181,114 @@ public class TagPrintTest implements Serializable {
         Assert.assertEquals(expectedString, view.toString());
         Assert.assertEquals(expectedString, view.toString());
     }
+    
+    @Test
+    public void testCustomTag1() throws Exception {
+        CustomTag customTag = new CustomTag("newtag", TagType.OPENING_CLOSING, null) {
+            CustomTag c = new CustomTag("anothertag", TagType.OPENING_CLOSING,
+                    this);
+        };
+        String expectedString = "<newtag><anothertag></anothertag></newtag>";
+        Assert.assertEquals(expectedString, customTag.toHtmlString());
+    }
+    
+    
+    @Test
+    public void testCustomTag2() throws Exception {
+        CustomTag customTag = new CustomTag("newtag", TagType.OPENING_CLOSING, null) {
+            CustomTag c = new CustomTag("anothertag", TagType.SELF_CLOSING,
+                    this);
+        };
+        String expectedString = "<newtag><anothertag/></newtag>";
+        Assert.assertEquals(expectedString, customTag.toHtmlString());
+    }
 
+    @Test
+    public void testCustomTag3() throws Exception {
+        CustomTag customTag = new CustomTag("newtag", TagType.OPENING_CLOSING, null) {
+            CustomTag c = new CustomTag("anothertag", TagType.NON_CLOSING,
+                    this);
+        };
+        String expectedString = "<newtag><anothertag></newtag>";
+        Assert.assertEquals(expectedString, customTag.toHtmlString());
+    }
+    
+    
+    @Test
+    public void testCustomTag4() throws Exception {
+        CustomTag customTag = new CustomTag("newtag", TagType.NON_CLOSING, null) {
+            CustomTag c = new CustomTag("anothertag", TagType.OPENING_CLOSING,
+                    this);
+        };
+        String expectedString = "<newtag><anothertag></anothertag>";
+        Assert.assertEquals(expectedString, customTag.toHtmlString());
+    }
+    
+    
+    @Test
+    public void testCustomTag5() throws Exception {
+        CustomTag customTag = new CustomTag("newtag", TagType.NON_CLOSING, null) {
+            CustomTag c = new CustomTag("anothertag", TagType.SELF_CLOSING,
+                    this);
+        };
+        String expectedString = "<newtag><anothertag/>";
+        Assert.assertEquals(expectedString, customTag.toHtmlString());
+    }
+
+    @Test
+    public void testCustomTag6() throws Exception {
+        CustomTag customTag = new CustomTag("newtag", TagType.NON_CLOSING, null) {
+            CustomTag c = new CustomTag("anothertag", TagType.NON_CLOSING,
+                    this);
+        };
+        String expectedString = "<newtag><anothertag>";
+        Assert.assertEquals(expectedString, customTag.toHtmlString());
+    }
+    
+    @Test
+    public void testCustomTag7() throws Exception {
+        CustomTag customTag = new CustomTag("newtag", TagType.SELF_CLOSING, null) {
+            CustomTag c = new CustomTag("anothertag", TagType.OPENING_CLOSING,
+                    this);
+        };
+        String expectedString = "<newtag/><anothertag></anothertag>";
+        Assert.assertEquals(expectedString, customTag.toHtmlString());
+    }
+    
+    
+    @Test
+    public void testCustomTag8() throws Exception {
+        CustomTag customTag = new CustomTag("newtag", TagType.SELF_CLOSING, null) {
+            CustomTag c = new CustomTag("anothertag", TagType.SELF_CLOSING,
+                    this);
+        };
+        String expectedString = "<newtag/><anothertag/>";
+        Assert.assertEquals(expectedString, customTag.toHtmlString());
+    }
+
+    @Test
+    public void testCustomTag9() throws Exception {
+        CustomTag customTag = new CustomTag("newtag", TagType.SELF_CLOSING, null) {
+            CustomTag c = new CustomTag("anothertag", TagType.NON_CLOSING,
+                    this);
+        };
+        String expectedString = "<newtag/><anothertag>";
+        Assert.assertEquals(expectedString, customTag.toHtmlString());
+    }
+    
+    @Test
+    public void testMetaInfoTags() throws Exception {
+        Div div = new Div(null, new Id("1")) {
+            Br br = new Br(this);
+            Link link = new Link(this);
+            Meta meta = new Meta(this);
+            Div div = new Div(this, new Id("2"));
+            Head head = new Head(null);
+            Base base = new Base(null);
+
+        };
+        String expectedString = "<div id=\"1\"><br/><link/><meta/><div id=\"2\"></div></div>";
+        Assert.assertEquals(expectedString, div.toHtmlString());
+    }
+    
 }
