@@ -312,7 +312,7 @@ public abstract class DocType extends AbstractHtml {
     }
 
     /**
-     * the default doc type is <code> <!DOCTYPE html></code>
+     * the default doc type is <code><!DOCTYPE html></code>
      *
      * @param docTypeTag
      *            the docTypeTag to set
