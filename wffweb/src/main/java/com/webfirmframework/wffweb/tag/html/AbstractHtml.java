@@ -374,6 +374,8 @@ public abstract class AbstractHtml extends AbstractTagBase {
         final Charset previousCharset = this.charset;
         try {
             this.charset = charset;
+            // assigning it to new variable is very important here as this
+            // line of code should invoke before finally block
             final String htmlString = toHtmlString();
             return htmlString;
         } finally {
@@ -392,6 +394,8 @@ public abstract class AbstractHtml extends AbstractTagBase {
         final Charset previousCharset = this.charset;
         try {
             this.charset = Charset.forName(charset);
+            // assigning it to new variable is very important here as this
+            // line of code should invoke before finally block
             final String htmlString = toHtmlString();
             return htmlString;
         } finally {
@@ -424,7 +428,10 @@ public abstract class AbstractHtml extends AbstractTagBase {
         final Charset previousCharset = this.charset;
         try {
             this.charset = charset;
-            return toHtmlString(rebuild);
+            // assigning it to new variable is very important here as this
+            // line of code should invoke before finally block
+            final String htmlString = toHtmlString(rebuild);
+            return htmlString;
         } finally {
             this.charset = previousCharset;
         }
@@ -441,7 +448,10 @@ public abstract class AbstractHtml extends AbstractTagBase {
         final Charset previousCharset = this.charset;
         try {
             this.charset = Charset.forName(charset);
-            return toHtmlString(rebuild);
+            // assigning it to new variable is very important here as this
+            // line of code should invoke before finally block
+            final String htmlString = toHtmlString(rebuild);
+            return htmlString;
         } finally {
             this.charset = previousCharset;
         }
@@ -493,7 +503,6 @@ public abstract class AbstractHtml extends AbstractTagBase {
         final Charset previousCharset = this.charset;
         try {
             this.charset = Charset.forName(charset);
-            ;
             outputStream = os;
             writePrintStructureToOutputStream(true);
         } finally {

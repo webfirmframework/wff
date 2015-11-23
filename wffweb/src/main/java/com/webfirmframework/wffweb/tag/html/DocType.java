@@ -73,11 +73,18 @@ public abstract class DocType extends AbstractHtml {
         try {
             super.setCharset(charset);
             if (prependDocType) {
-                return new String((docTypeTag + "\n"
+                // assigning it to new variable is very important here as this
+                // line of code should invoke before finally block
+                final String htmlString = new String((docTypeTag + "\n"
                         + super.toHtmlString(super.getCharset()))
                                 .getBytes(super.getCharset()));
+                return htmlString;
             }
-            return super.toHtmlString(super.getCharset());
+
+            // assigning it to new variable is very important here as this line
+            // of code should invoke before finally block
+            final String htmlString = super.toHtmlString(super.getCharset());
+            return htmlString;
         } finally {
             super.setCharset(previousCharset);
         }
@@ -96,11 +103,17 @@ public abstract class DocType extends AbstractHtml {
         try {
             super.setCharset(Charset.forName(charset));
             if (prependDocType) {
-                return new String((docTypeTag + "\n"
+                // assigning it to new variable is very important here as this
+                // line of code should invoke before finally block
+                final String htmlString = new String((docTypeTag + "\n"
                         + super.toHtmlString(super.getCharset()))
                                 .getBytes(super.getCharset()));
+                return htmlString;
             }
-            return super.toHtmlString(super.getCharset());
+            // assigning it to new variable is very important here as this
+            // line of code should invoke before finally block
+            final String htmlString = super.toHtmlString(super.getCharset());
+            return htmlString;
         } finally {
             super.setCharset(previousCharset);
         }
@@ -134,13 +147,20 @@ public abstract class DocType extends AbstractHtml {
         try {
             super.setCharset(charset);
             if (prependDocType) {
-                return new String(
+                // assigning it to new variable is very important here as this
+                // line of code should invoke before finally block
+                final String htmlString = new String(
                         (docTypeTag + "\n"
                                 + super.toHtmlString(rebuild,
                                         super.getCharset()))
                                                 .getBytes(getCharset()));
+                return htmlString;
             }
-            return super.toHtmlString(rebuild, super.getCharset());
+            // assigning it to new variable is very important here as this
+            // line of code should invoke before finally block
+            final String htmlString = super.toHtmlString(rebuild,
+                    super.getCharset());
+            return htmlString;
         } finally {
             super.setCharset(previousCharset);
         }
@@ -159,13 +179,20 @@ public abstract class DocType extends AbstractHtml {
         try {
             super.setCharset(previousCharset);
             if (prependDocType) {
-                return new String(
+                // assigning it to new variable is very important here as this
+                // line of code should invoke before finally block
+                final String htmlString = new String(
                         (docTypeTag + "\n"
                                 + super.toHtmlString(rebuild,
                                         super.getCharset()))
                                                 .getBytes(getCharset()));
+                return htmlString;
             }
-            return super.toHtmlString(rebuild, super.getCharset());
+            // assigning it to new variable is very important here as this
+            // line of code should invoke before finally block
+            final String htmlString = super.toHtmlString(rebuild,
+                    super.getCharset());
+            return htmlString;
         } finally {
             super.setCharset(previousCharset);
         }
