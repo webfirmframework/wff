@@ -183,7 +183,7 @@ Add the following code in your pom.xml file.
 	<dependency>
 		<groupId>com.webfirmframework</groupId>
 		<artifactId>wffweb</artifactId>
-		<version>1.0.0-alpha-2</version>
+		<version>1.0.0-alpha-4</version>
 	</dependency>
 </dependencies>
 ```
