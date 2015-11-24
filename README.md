@@ -190,7 +190,7 @@ Add the following code in your pom.xml file.
 ##### How to resolve dependency by ivy?
 Add the following code in your ivy.xml file. 
 ```
-<dependency org="com.webfirmframework" name="wffweb" rev="1.0.0-alpha-2" />
+<dependency org="com.webfirmframework" name="wffweb" rev="1.0.0-alpha-4" />
 
 ```
 
