@@ -32,21 +32,21 @@ public class InvalidValueException extends WffRuntimeException {
         super();
     }
 
-    public InvalidValueException(final String arg0, final Throwable arg1,
-            final boolean arg2, final boolean arg3) {
-        super(arg0, arg1, arg2, arg3);
+    public InvalidValueException(final String message, final Throwable cause,
+            final boolean enableSuppression, final boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
     }
 
-    public InvalidValueException(final String arg0, final Throwable arg1) {
-        super(arg0, arg1);
+    public InvalidValueException(final String message, final Throwable cause) {
+        super(message, cause);
     }
 
-    public InvalidValueException(final String arg0) {
-        super(arg0);
+    public InvalidValueException(final String message) {
+        super(message);
     }
 
-    public InvalidValueException(final Throwable arg0) {
-        super(arg0);
+    public InvalidValueException(final Throwable cause) {
+        super(cause);
     }
 
 }
