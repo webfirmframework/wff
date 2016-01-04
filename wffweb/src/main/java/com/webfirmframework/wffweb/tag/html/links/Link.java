@@ -5,7 +5,6 @@ import java.util.logging.Logger;
 import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
-import com.webfirmframework.wffweb.tag.html.AbstractHtml.TagType;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.LinkAttribute;
