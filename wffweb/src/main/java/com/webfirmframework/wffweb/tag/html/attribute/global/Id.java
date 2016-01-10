@@ -16,6 +16,8 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute.global;
 
+import java.util.UUID;
+
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
@@ -26,10 +28,9 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
  */
 public class Id extends AbstractAttribute implements GlobalAttribute {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = -3589199170250333206L;
+    private static final long serialVersionUID = 6708598288439173571L;
+
+    private UUID uuid;
 
     {
         super.setAttributeName(AttributeNameConstants.ID);
@@ -55,6 +56,18 @@ public class Id extends AbstractAttribute implements GlobalAttribute {
      */
     public Id(final String value) {
         setAttributeValue(value);
+    }
+
+    /**
+     * value for the id attribute.
+     *
+     * @param id
+     * @since 1.0.0
+     * @author WFF
+     */
+    public Id(final UUID uuid) {
+        this.uuid = uuid;
+        setAttributeValue(uuid.toString());
     }
 
     /**
@@ -120,6 +133,7 @@ public class Id extends AbstractAttribute implements GlobalAttribute {
     public void setValue(final String id) {
         if (id != null) {
             setAttributeValue(id);
+            uuid = null;
         }
     }
 
@@ -132,6 +146,7 @@ public class Id extends AbstractAttribute implements GlobalAttribute {
      */
     public void setValue(final int id) {
         setAttributeValue(String.valueOf(id));
+        uuid = null;
     }
 
     /**
@@ -143,6 +158,7 @@ public class Id extends AbstractAttribute implements GlobalAttribute {
      */
     public void setValue(final long id) {
         setAttributeValue(String.valueOf(id));
+        uuid = null;
     }
 
     /**
@@ -154,6 +170,7 @@ public class Id extends AbstractAttribute implements GlobalAttribute {
      */
     public void setValue(final float id) {
         setAttributeValue(String.valueOf(id));
+        uuid = null;
     }
 
     /**
@@ -165,9 +182,33 @@ public class Id extends AbstractAttribute implements GlobalAttribute {
      */
     public void setValue(final double id) {
         setAttributeValue(String.valueOf(id));
+        uuid = null;
+    }
+
+    /**
+     * value for the id attribute.
+     *
+     * @param id
+     * @since 1.0.0
+     * @author WFF
+     */
+    public void setValue(final UUID uuid) {
+        if (uuid != null) {
+            setAttributeValue(uuid.toString());
+            this.uuid = uuid;
+        }
     }
 
     public String getValue() {
         return getAttributeValue();
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(final UUID uuid) {
+        setAttributeValue(uuid.toString());
+        this.uuid = uuid;
     }
 }
