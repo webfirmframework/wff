@@ -16,8 +16,6 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute;
 
-import java.net.URL;
-
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.AAttribute;
 
@@ -52,7 +50,7 @@ public class Href extends AbstractAttribute implements AAttribute {
      * the current document. URLs are not restricted to Web (HTTP)-based
      * documents. URLs might use any protocol supported by the browser. For
      * example, file, ftp, and mailto work in most user agents.
-     * 
+     *
      * @param url
      *            the url.
      * @since 1.0.0
