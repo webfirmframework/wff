@@ -199,14 +199,33 @@ public class Id extends AbstractAttribute implements GlobalAttribute {
         }
     }
 
+    /**
+     * @return the value for the attribute set
+     * @since 1.0.0
+     * @author WFF
+     */
     public String getValue() {
         return getAttributeValue();
     }
 
+    /**
+     * @return the {@code UUID} set by {@code Id#setValue(UUID)},
+     *         {@code Id#setUuid(UUID)} or {@code Id#Id(UUID)}.
+     * @since 1.0.0
+     * @author WFF
+     */
     public UUID getUuid() {
         return uuid;
     }
 
+    /**
+     * To set {@code UUID} as id value.
+     *
+     * @param uuid
+     *            the {@code UUID} object
+     * @since 1.0.0
+     * @author WFF
+     */
     public void setUuid(final UUID uuid) {
         setAttributeValue(uuid.toString());
         this.uuid = uuid;
