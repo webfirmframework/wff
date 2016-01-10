@@ -42,6 +42,7 @@ public class AttributeNameConstants {
     public static final String DOWNLOAD = "download";
     public static final String HREF = "href";
     public static final String HREFLANG = "hreflang";
+    public static final String MEDIA = "media";
 
     /**
      * 
