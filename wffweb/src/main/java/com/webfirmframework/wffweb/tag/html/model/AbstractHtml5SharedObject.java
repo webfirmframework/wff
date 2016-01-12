@@ -29,7 +29,7 @@ import com.webfirmframework.wffweb.tag.core.AbstractTagBase;
  */
 public class AbstractHtml5SharedObject implements Serializable {
 
-    private static final long serialVersionUID = -505355481390467389L;
+    private static final long serialVersionUID = 1_0_0L;
 
     private boolean childModified;
     private Set<AbstractTagBase> rebuiltTags;

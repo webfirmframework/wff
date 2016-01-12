@@ -43,7 +43,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
 public class WebkitColumnRuleColor extends
         AbstractCssProperty<WebkitColumnRuleColor> {
 
-    private static final long serialVersionUID = -8845994093539107693L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";

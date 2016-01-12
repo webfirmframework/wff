@@ -48,7 +48,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
 public class Color extends AbstractCssProperty<Color> implements
         StateChangeInformer<Bean> {
 
-    private static final long serialVersionUID = -5956993150889056774L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger.getLogger(Color.class.getName());
 

@@ -64,7 +64,7 @@ import com.webfirmframework.wffweb.util.StringUtil;
 public class BorderWidth extends AbstractCssProperty<BorderWidth> implements
         StateChangeInformer<CssProperty> {
 
-    private static final long serialVersionUID = 6592682201749301761L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger.getLogger(BorderWidth.class
             .getName());

@@ -35,7 +35,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
  */
 public class MathTag extends AbstractHtml {
 
-    private static final long serialVersionUID = 4464472568684022453L;
+    private static final long serialVersionUID = 1_0_0L;
     
     public static final Logger LOGGER = Logger.getLogger(MathTag.class
             .getName());

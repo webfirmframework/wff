@@ -16,7 +16,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.StrongAttribute;
  */
 public class Strong extends AbstractHtml {
 
-    private static final long serialVersionUID = -3832738775921110018L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger
             .getLogger(Strong.class.getName());

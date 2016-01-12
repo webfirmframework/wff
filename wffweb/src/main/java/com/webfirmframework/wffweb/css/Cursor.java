@@ -43,7 +43,7 @@ import com.webfirmframework.wffweb.informer.StateChangeInformer;
 public class Cursor extends AbstractCssProperty<Cursor> implements
         StateChangeInformer<Bean> {
 
-    private static final long serialVersionUID = 5454489827209160574L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final String ALIAS = "alias";
     public static final String ALL_SCROLL = "all-scroll";

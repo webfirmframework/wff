@@ -16,7 +16,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.TableAttribute;
  */
 public class Table extends AbstractHtml {
 
-    private static final long serialVersionUID = -3264643206028975385L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger.getLogger(Table.class.getName());
 

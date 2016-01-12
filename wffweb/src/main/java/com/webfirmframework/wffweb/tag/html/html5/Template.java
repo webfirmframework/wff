@@ -32,7 +32,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.TemplateAttribute;
  */
 public class Template extends AbstractHtml {
 
-    private static final long serialVersionUID = 7192199842760325571L;
+    private static final long serialVersionUID = 1_0_0L;
     
     public static final Logger LOGGER = Logger.getLogger(Template.class
             .getName());

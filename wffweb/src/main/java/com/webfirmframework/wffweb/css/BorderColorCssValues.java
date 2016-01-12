@@ -34,7 +34,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
 public class BorderColorCssValues extends AbstractBean<BorderColorCssValues>
         implements StateChangeInformer<Bean> {
 
-    private static final long serialVersionUID = -5840355060958262635L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger
             .getLogger(BorderColorCssValues.class.getName());

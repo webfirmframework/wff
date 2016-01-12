@@ -31,7 +31,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  */
 public class MinWidth extends AbstractCssProperty<MinWidth> {
 
-    private static final long serialVersionUID = -7869903676008952998L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";

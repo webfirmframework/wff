@@ -31,7 +31,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.AAttribute;
  */
 public class Hreflang extends AbstractAttribute implements AAttribute {
 
-    private static final long serialVersionUID = -5181147072987036609L;
+    private static final long serialVersionUID = 1_0_0L;
 
     private Locale locale;
 

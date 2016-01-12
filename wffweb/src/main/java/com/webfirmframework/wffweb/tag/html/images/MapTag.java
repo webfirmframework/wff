@@ -18,7 +18,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.MapTagAttribute;
  */
 public class MapTag extends AbstractHtml {
 
-    private static final long serialVersionUID = -6390034820666115022L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger
             .getLogger(MapTag.class.getName());

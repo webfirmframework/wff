@@ -67,7 +67,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
 public class Margin extends AbstractCssProperty<Margin> implements
         StateChangeInformer<CssProperty> {
 
-    private static final long serialVersionUID = -8845443194856462730L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger
             .getLogger(Margin.class.getName());

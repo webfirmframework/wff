@@ -43,7 +43,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  */
 public class MozFlexShrink extends AbstractCssProperty<MozFlexShrink> {
 
-    private static final long serialVersionUID = -7077343797973845573L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";

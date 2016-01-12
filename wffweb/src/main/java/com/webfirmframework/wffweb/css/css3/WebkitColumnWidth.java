@@ -42,7 +42,7 @@ import com.webfirmframework.wffweb.css.core.AbstractCssProperty;
  */
 public class WebkitColumnWidth extends AbstractCssProperty<WebkitColumnWidth> {
 
-    private static final long serialVersionUID = 6592682201749301761L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final String AUTO = "auto";
     public static final String INITIAL = "initial";

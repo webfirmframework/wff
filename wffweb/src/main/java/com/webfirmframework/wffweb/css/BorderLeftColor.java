@@ -50,7 +50,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
 public class BorderLeftColor extends AbstractCssProperty<BorderLeftColor>
         implements StateChangeInformer<Bean> {
 
-    private static final long serialVersionUID = -4845743770560612651L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger.getLogger(BorderLeftColor.class
             .getName());

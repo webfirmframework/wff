@@ -34,7 +34,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
  */
 public class Dropzone extends AbstractAttribute implements GlobalAttribute {
 
-    private static final long serialVersionUID = -7284208910391317640L;
+    private static final long serialVersionUID = 1_0_0L;
 
     /**
      * Dropping the data will result in a copy of the dragged data

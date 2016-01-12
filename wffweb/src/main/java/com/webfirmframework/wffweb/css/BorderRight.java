@@ -49,7 +49,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
 public class BorderRight extends AbstractCssProperty<BorderRight> implements
         StateChangeInformer<CssProperty> {
 
-    private static final long serialVersionUID = -9061561124352498130L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger.getLogger(BorderRight.class
             .getName());

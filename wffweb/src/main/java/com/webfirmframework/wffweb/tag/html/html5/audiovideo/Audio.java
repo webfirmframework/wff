@@ -32,7 +32,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
  */
 public class Audio extends AbstractHtml {
 
-    private static final long serialVersionUID = 6830709952220094224L;
+    private static final long serialVersionUID = 1_0_0L;
     
     public static final Logger LOGGER = Logger.getLogger(Audio.class.getName());
 

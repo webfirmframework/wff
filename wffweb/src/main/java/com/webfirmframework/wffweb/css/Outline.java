@@ -56,7 +56,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
 public class Outline extends AbstractCssProperty<Outline> implements
         StateChangeInformer<CssProperty> {
 
-    private static final long serialVersionUID = -5377365815860805780L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger.getLogger(Outline.class
             .getName());

@@ -42,7 +42,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  */
 public class MozColumnRuleColor extends AbstractCssProperty<MozColumnRuleColor> {
 
-    private static final long serialVersionUID = 3806608037876450911L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";

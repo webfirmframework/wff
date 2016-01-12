@@ -45,7 +45,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  */
 public class FlexBasis extends AbstractCssProperty<FlexBasis> {
 
-    private static final long serialVersionUID = -2644738631045118259L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final String AUTO = "auto";
     public static final String INITIAL = "initial";

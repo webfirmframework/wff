@@ -42,7 +42,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  */
 public class FontSize extends AbstractCssProperty<FontSize> {
 
-    private static final long serialVersionUID = 4700774106107459060L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";

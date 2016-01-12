@@ -29,7 +29,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.AAttribute;
  */
 public class Name extends AbstractAttribute implements AAttribute {
 
-    private static final long serialVersionUID = 7353237495761437346L;
+    private static final long serialVersionUID = 1_0_0L;
 
     {
         super.setAttributeName(AttributeNameConstants.NAME);

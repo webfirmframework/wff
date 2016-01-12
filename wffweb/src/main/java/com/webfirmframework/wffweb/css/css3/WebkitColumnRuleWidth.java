@@ -44,7 +44,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
 public class WebkitColumnRuleWidth extends
         AbstractCssProperty<WebkitColumnRuleWidth> {
 
-    private static final long serialVersionUID = 3699538135868882215L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final String MEDIUM = "medium";
     public static final String THIN = "thin";

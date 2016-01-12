@@ -34,7 +34,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.AAttribute;
  */
 public class Href extends AbstractAttribute implements AAttribute {
 
-    private static final long serialVersionUID = -6386894498448817139L;
+    private static final long serialVersionUID = 1_0_0L;
 
     {
         super.setAttributeName(AttributeNameConstants.HREF);

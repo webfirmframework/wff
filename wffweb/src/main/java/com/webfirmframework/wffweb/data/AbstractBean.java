@@ -25,7 +25,7 @@ import com.webfirmframework.wffweb.informer.StateChangeInformer;
  */
 public abstract class AbstractBean<FORCLASS> implements Bean {
 
-    private static final long serialVersionUID = 2419106357920307594L;
+    private static final long serialVersionUID = 1_0_0L;
 
     private StateChangeInformer<Bean> stateChangeInformer;
 

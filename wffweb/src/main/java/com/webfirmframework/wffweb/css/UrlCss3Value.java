@@ -27,7 +27,7 @@ import com.webfirmframework.wffweb.data.AbstractBean;
  */
 public class UrlCss3Value extends AbstractBean<UrlCss3Value> {
 
-    private static final long serialVersionUID = -1428936350199499458L;
+    private static final long serialVersionUID = 1_0_0L;
 
     private String url;
     private int x = -1;

@@ -16,7 +16,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
  */
 public class Area extends AbstractHtml implements AreaAttribute {
 
-    private static final long serialVersionUID = 2464390234286675206L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger.getLogger(Area.class.getName());
 

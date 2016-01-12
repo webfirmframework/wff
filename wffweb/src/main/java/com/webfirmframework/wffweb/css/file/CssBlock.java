@@ -23,7 +23,7 @@ package com.webfirmframework.wffweb.css.file;
  */
 public abstract class CssBlock extends AbstractCssFileBlock {
 
-    private static final long serialVersionUID = -5292997802763048395L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public CssBlock(final String name) {
         super(name);

@@ -41,7 +41,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  */
 public class ColumnRuleWidth extends AbstractCssProperty<ColumnRuleWidth> {
 
-    private static final long serialVersionUID = 6592682201749301761L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final String MEDIUM = "medium";
     public static final String THIN = "thin";

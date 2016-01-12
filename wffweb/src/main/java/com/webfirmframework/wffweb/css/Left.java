@@ -43,7 +43,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  */
 public class Left extends AbstractCssProperty<Left> {
 
-    private static final long serialVersionUID = -8897204355329692970L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final String AUTO = "auto";
     public static final String INITIAL = "initial";

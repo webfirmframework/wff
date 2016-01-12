@@ -13,7 +13,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.HtmlAttribute;
  */
 public class Width extends AbstractAttribute implements HtmlAttribute {
 
-    private static final long serialVersionUID = -5674912710167819237L;
+    private static final long serialVersionUID = 1_0_0L;
 
     private String htmlString;
     private float value;

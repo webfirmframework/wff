@@ -32,7 +32,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
  */
 public class Progress extends AbstractHtml {
 
-    private static final long serialVersionUID = -5723033089914030871L;
+    private static final long serialVersionUID = 1_0_0L;
     
     public static final Logger LOGGER = Logger.getLogger(Progress.class
             .getName());

@@ -15,7 +15,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.TitleAttribute;
  */
 public class TitleTag extends AbstractHtml {
 
-    private static final long serialVersionUID = 6611460345846279788L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger
             .getLogger(TitleTag.class.getName());

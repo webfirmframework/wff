@@ -31,7 +31,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  */
 public class WidthCss extends AbstractCssProperty<WidthCss> {
 
-    private static final long serialVersionUID = -2209608764223622235L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final String AUTO = "auto";
     public static final String INITIAL = "initial";

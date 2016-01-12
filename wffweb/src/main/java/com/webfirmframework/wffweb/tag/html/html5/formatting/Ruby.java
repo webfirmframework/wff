@@ -32,7 +32,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
  */
 public class Ruby extends AbstractHtml {
 
-    private static final long serialVersionUID = 4940899829956867215L;
+    private static final long serialVersionUID = 1_0_0L;
     
     public static final Logger LOGGER = Logger.getLogger(Ruby.class.getName());
 

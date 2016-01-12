@@ -40,7 +40,7 @@ import com.webfirmframework.wffweb.css.core.AbstractCssProperty;
  */
 public class MarginBottom extends AbstractCssProperty<MarginBottom> {
 
-    private static final long serialVersionUID = -4411314091069024390L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";

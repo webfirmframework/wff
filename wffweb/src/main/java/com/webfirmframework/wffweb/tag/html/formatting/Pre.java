@@ -16,7 +16,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.PreAttribute;
  */
 public class Pre extends AbstractHtml {
 
-    private static final long serialVersionUID = -7141193515376129373L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger.getLogger(Pre.class.getName());
 

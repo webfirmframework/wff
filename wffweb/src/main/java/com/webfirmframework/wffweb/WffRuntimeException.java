@@ -25,7 +25,7 @@ public class WffRuntimeException extends RuntimeException {
     /**
      *
      */
-    private static final long serialVersionUID = 8601187117009386371L;
+    private static final long serialVersionUID = 1_0_0L;
 
     /**
      * Constructs a new runtime exception with {@code null} as its detail

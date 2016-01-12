@@ -51,14 +51,14 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  */
 public class FontFamily extends AbstractCssProperty<FontFamily> {
 
-    private static final long serialVersionUID = 5158758085864560797L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger.getLogger(FontFamily.class
             .getName());
 
     private static final Set<String> FONT_FAMILY_NAMES = new HashSet<String>() {
 
-        private static final long serialVersionUID = 4902810087857601778L;
+        private static final long serialVersionUID = 1_0_0L;
 
         @Override
         public boolean add(final String value) {

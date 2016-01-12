@@ -26,7 +26,7 @@ import com.webfirmframework.wffweb.data.AbstractBean;
  */
 public class HslaCssValue extends AbstractBean<HslaCssValue> {
 
-    private static final long serialVersionUID = -1428936350199499458L;
+    private static final long serialVersionUID = 1_0_0L;
 
     private String hsl = "hsla(0, 0%, 0%, 1)";
     private int h = 0;

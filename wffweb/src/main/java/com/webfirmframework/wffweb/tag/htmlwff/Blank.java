@@ -32,7 +32,7 @@ public class Blank extends AbstractHtml {
     /**
      *
      */
-    private static final long serialVersionUID = 6048758894943757808L;
+    private static final long serialVersionUID = 1_0_0L;
 
     {
         init();

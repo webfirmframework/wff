@@ -34,7 +34,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
  */
 public class Draggable extends AbstractAttribute implements GlobalAttribute {
 
-    private static final long serialVersionUID = -5767944391127164764L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final String AUTO = "auto";
 

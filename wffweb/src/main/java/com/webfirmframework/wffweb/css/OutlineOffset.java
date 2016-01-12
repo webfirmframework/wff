@@ -47,7 +47,7 @@ import com.webfirmframework.wffweb.css.core.AbstractCssProperty;
  */
 public class OutlineOffset extends AbstractCssProperty<OutlineOffset> {
 
-    private static final long serialVersionUID = 6592682201749301761L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";

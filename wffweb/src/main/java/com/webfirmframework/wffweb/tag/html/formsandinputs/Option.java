@@ -16,7 +16,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.OptionAttribute;
  */
 public class Option extends AbstractHtml {
 
-    private static final long serialVersionUID = 6278816658492286903L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger
             .getLogger(Option.class.getName());

@@ -36,7 +36,7 @@ public class Lang extends AbstractAttribute implements GlobalAttribute {
     /**
      *
      */
-    private static final long serialVersionUID = 5935318368717315102L;
+    private static final long serialVersionUID = 1_0_0L;
 
     {
         super.setAttributeName(AttributeNameConstants.LANG);

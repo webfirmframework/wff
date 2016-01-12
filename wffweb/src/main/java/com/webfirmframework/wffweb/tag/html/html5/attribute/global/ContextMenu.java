@@ -36,7 +36,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
  */
 public class ContextMenu extends AbstractAttribute implements GlobalAttribute {
 
-    private static final long serialVersionUID = -5758178452794083721L;
+    private static final long serialVersionUID = 1_0_0L;
 
     {
         setAttributeName(AttributeNameConstants.CONTEXTMENU);

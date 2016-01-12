@@ -26,7 +26,7 @@ public class NullValueException extends WffRuntimeException {
     /**
      *
      */
-    private static final long serialVersionUID = -5172525411555949692L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public NullValueException() {
         super();

@@ -16,7 +16,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.NoScriptAttribute;
  */
 public class NoScript extends AbstractHtml {
 
-    private static final long serialVersionUID = 4184980176696014045L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger.getLogger(NoScript.class
             .getName());

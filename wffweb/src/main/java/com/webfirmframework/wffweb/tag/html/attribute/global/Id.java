@@ -28,7 +28,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
  */
 public class Id extends AbstractAttribute implements GlobalAttribute {
 
-    private static final long serialVersionUID = 6708598288439173571L;
+    private static final long serialVersionUID = 1_0_0L;
 
     private UUID uuid;
 

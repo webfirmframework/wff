@@ -30,7 +30,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.HtmlAttribute;
  */
 public class Html extends DocType {
 
-    private static final long serialVersionUID = -4423308034687414913L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger.getLogger(Html.class.getName());
 

@@ -32,7 +32,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.AAttribute;
  */
 public class Media extends AbstractAttribute implements AAttribute {
 
-    private static final long serialVersionUID = -4291926622555435669L;
+    private static final long serialVersionUID = 1_0_0L;
 
     {
         super.setAttributeName(AttributeNameConstants.MEDIA);

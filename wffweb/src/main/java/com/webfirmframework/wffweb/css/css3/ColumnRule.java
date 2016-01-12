@@ -45,7 +45,7 @@ import com.webfirmframework.wffweb.util.StringBuilderUtil;
 public class ColumnRule extends AbstractCssProperty<ColumnRule> implements
         StateChangeInformer<CssProperty> {
 
-    private static final long serialVersionUID = -4845743770560612651L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";

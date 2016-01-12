@@ -16,7 +16,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
  */
 public class Abbr extends AbstractHtml implements AbbrAttribute {
 
-    private static final long serialVersionUID = 1638191307734065147L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger.getLogger(Abbr.class.getName());
 

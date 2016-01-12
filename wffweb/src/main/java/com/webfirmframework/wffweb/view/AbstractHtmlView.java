@@ -31,7 +31,7 @@ import com.webfirmframework.wffweb.io.OutputBuffer;
  */
 public abstract class AbstractHtmlView implements HtmlView {
 
-    private static final long serialVersionUID = 1836494599206744660L;
+    private static final long serialVersionUID = 1_0_0L;
 
     private boolean preserveOutputBufferContent;
 

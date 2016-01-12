@@ -16,7 +16,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
  */
 public class Address extends AbstractHtml implements AddressAttribute {
 
-    private static final long serialVersionUID = 2284359939126420736L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger.getLogger(Address.class
             .getName());

@@ -33,7 +33,7 @@ public class ClassAttribute extends AbstractAttribute implements
     /**
      *
      */
-    private static final long serialVersionUID = 7590762027609320123L;
+    private static final long serialVersionUID = 1_0_0L;
 
     {
         super.setAttributeName(AttributeNameConstants.CLASS);

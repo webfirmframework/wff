@@ -32,7 +32,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
  */
 public class Wbr extends AbstractHtml {
 
-    private static final long serialVersionUID = -5818482783819907312L;
+    private static final long serialVersionUID = 1_0_0L;
     
     public static final Logger LOGGER = Logger.getLogger(Wbr.class.getName());
 

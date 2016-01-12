@@ -38,7 +38,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
  */
 public class Hidden extends AbstractAttribute implements GlobalAttribute {
 
-    private static final long serialVersionUID = 5678145903455808119L;
+    private static final long serialVersionUID = 1_0_0L;
 
     private Boolean hidden;
 

@@ -39,7 +39,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  */
 public class LetterSpacing extends AbstractCssProperty<LetterSpacing> {
 
-    private static final long serialVersionUID = -2367508630006872285L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final String NORMAL = "normal";
     public static final String INITIAL = "initial";

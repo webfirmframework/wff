@@ -33,7 +33,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.AAttribute;
  */
 public class Rel extends AbstractAttribute implements AAttribute {
 
-    private static final long serialVersionUID = 3826286590597724539L;
+    private static final long serialVersionUID = 1_0_0L;
 
     /**
      * Links to an alternate version of the document (i.e. print page,

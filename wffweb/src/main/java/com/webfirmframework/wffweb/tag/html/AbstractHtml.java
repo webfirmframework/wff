@@ -38,7 +38,7 @@ import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
  */
 public abstract class AbstractHtml extends AbstractTagBase {
 
-    private static final long serialVersionUID = 6203912802304548327L;
+    private static final long serialVersionUID = 1_0_0L;
 
     private AbstractHtml parent;
     private List<AbstractHtml> children;

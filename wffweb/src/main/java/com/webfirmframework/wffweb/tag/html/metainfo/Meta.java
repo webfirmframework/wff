@@ -17,7 +17,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.MetaAttribute;
  */
 public class Meta extends AbstractHtml {
 
-    private static final long serialVersionUID = 1572469371688480234L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger.getLogger(Meta.class.getName());
 

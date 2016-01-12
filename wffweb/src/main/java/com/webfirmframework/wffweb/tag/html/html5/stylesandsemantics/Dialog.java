@@ -32,7 +32,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
  */
 public class Dialog extends AbstractHtml {
 
-    private static final long serialVersionUID = 6960105498707928163L;
+    private static final long serialVersionUID = 1_0_0L;
     
     public static final Logger LOGGER = Logger.getLogger(Dialog.class
             .getName());

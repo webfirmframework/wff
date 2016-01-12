@@ -16,7 +16,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.SelectAttribute;
  */
 public class Select extends AbstractHtml {
 
-    private static final long serialVersionUID = -2375191579373789816L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger
             .getLogger(Select.class.getName());

@@ -32,7 +32,7 @@ import com.webfirmframework.wffweb.css.core.CssProperty;
  */
 public abstract class AbstractCssFileBlock implements CssFileBlock {
 
-    private static final long serialVersionUID = -8972598498590221214L;
+    private static final long serialVersionUID = 1_0_0L;
 
     private final Set<CssProperty> cssProperties;
     private final Map<String, CssProperty> cssPropertiesAsMap;
@@ -55,7 +55,7 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
 
         cssProperties = new LinkedHashSet<CssProperty>() {
 
-            private static final long serialVersionUID = -6748761366913315418L;
+            private static final long serialVersionUID = 1_0_0L;
 
             private StringBuilder toStringBuilder;
 

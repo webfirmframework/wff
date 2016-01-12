@@ -32,7 +32,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
  */
 public class Canvas extends AbstractHtml {
 
-    private static final long serialVersionUID = -7467923278469190254L;
+    private static final long serialVersionUID = 1_0_0L;
     
     public static final Logger LOGGER = Logger
             .getLogger(Canvas.class.getName());

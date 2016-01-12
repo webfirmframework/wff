@@ -48,7 +48,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  */
 public class FontSizeAdjust extends AbstractCssProperty<FontSizeAdjust> {
 
-    private static final long serialVersionUID = -7389135908994164874L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";

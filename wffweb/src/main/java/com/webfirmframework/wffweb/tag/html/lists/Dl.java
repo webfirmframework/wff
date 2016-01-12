@@ -16,7 +16,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
  */
 public class Dl extends AbstractHtml {
 
-    private static final long serialVersionUID = -237258601659442398L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger.getLogger(Dl.class.getName());
 

@@ -16,7 +16,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
  */
 public class BlockQuote extends AbstractHtml {
 
-    private static final long serialVersionUID = 4666968284416384159L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger.getLogger(BlockQuote.class
             .getName());

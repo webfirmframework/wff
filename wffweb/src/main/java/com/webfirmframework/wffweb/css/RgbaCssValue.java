@@ -26,7 +26,7 @@ import com.webfirmframework.wffweb.data.AbstractBean;
  */
 public class RgbaCssValue extends AbstractBean<RgbaCssValue> {
 
-    private static final long serialVersionUID = -4969679294877560554L;
+    private static final long serialVersionUID = 1_0_0L;
 
     private String rgba = "rgba(0, 0, 0, 1)";
     private int r = 0;

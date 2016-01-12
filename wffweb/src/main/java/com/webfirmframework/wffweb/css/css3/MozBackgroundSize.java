@@ -44,7 +44,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  */
 public class MozBackgroundSize extends AbstractCssProperty<MozBackgroundSize> {
 
-    private static final long serialVersionUID = -3006702771910518149L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";

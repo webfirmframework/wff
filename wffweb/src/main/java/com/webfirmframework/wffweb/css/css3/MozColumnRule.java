@@ -45,7 +45,7 @@ import com.webfirmframework.wffweb.util.StringBuilderUtil;
 public class MozColumnRule extends AbstractCssProperty<MozColumnRule> implements
         StateChangeInformer<CssProperty> {
 
-    private static final long serialVersionUID = 6246717661523964842L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";

@@ -27,7 +27,7 @@ import com.webfirmframework.wffweb.css.core.AbstractCssProperty;
  */
 public class CustomCssProperty extends AbstractCssProperty<CustomCssProperty> {
 
-    private static final long serialVersionUID = 5504399335567529831L;
+    private static final long serialVersionUID = 1_0_0L;
 
     private String cssName;
     private String cssValue;

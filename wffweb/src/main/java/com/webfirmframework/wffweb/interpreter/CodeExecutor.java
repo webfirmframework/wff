@@ -31,7 +31,7 @@ public abstract class CodeExecutor implements Serializable, Cloneable {
     /**
      *
      */
-    private static final long serialVersionUID = 1336503712961427444L;
+    private static final long serialVersionUID = 1_0_0L;
 
     @SuppressWarnings("unused")
     private CodeExecutor() {

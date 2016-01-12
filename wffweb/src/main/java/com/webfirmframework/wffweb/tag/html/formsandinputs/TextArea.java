@@ -16,7 +16,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.TextAreaAttribute;
  */
 public class TextArea extends AbstractHtml {
 
-    private static final long serialVersionUID = -4542196019946629083L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger.getLogger(TextArea.class
             .getName());

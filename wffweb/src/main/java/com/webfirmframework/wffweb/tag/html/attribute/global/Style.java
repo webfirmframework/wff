@@ -404,7 +404,7 @@ public class Style extends AbstractAttribute implements GlobalAttribute,
     /**
      *
      */
-    private static final long serialVersionUID = 8782128758686592519L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger.getLogger(Style.class.getName());
 
@@ -714,7 +714,7 @@ public class Style extends AbstractAttribute implements GlobalAttribute,
         super.setAttributeName(AttributeNameConstants.STYLE);
         abstractCssPropertyClassObjects = new HashMap<String, AbstractCssProperty<?>>() {
 
-            private static final long serialVersionUID = 5951657409544605131L;
+            private static final long serialVersionUID = 1_0_0L;
 
             @Override
             public AbstractCssProperty<?> put(final String key,
@@ -1372,7 +1372,7 @@ public class Style extends AbstractAttribute implements GlobalAttribute,
     // TODO review this code later
     private final Set<CssProperty> cssProperties = new HashSet<CssProperty>() {
 
-        private static final long serialVersionUID = 9037795754507525307L;
+        private static final long serialVersionUID = 1_0_0L;
 
         @Override
         public boolean add(final CssProperty cssProperty) {

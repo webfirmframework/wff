@@ -25,7 +25,7 @@ import java.io.Serializable;
  */
 public abstract class AtKeyframes implements Serializable, Cloneable {
 
-    private static final long serialVersionUID = -7603396917058861207L;
+    private static final long serialVersionUID = 1_0_0L;
 
     private String name;
 

@@ -52,7 +52,7 @@ import com.webfirmframework.wffweb.util.StringUtil;
 public class Font extends AbstractCssProperty<Font> implements
         StateChangeInformer<CssProperty> {
 
-    private static final long serialVersionUID = 5748667714146360272L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger.getLogger(Font.class.getName());
 

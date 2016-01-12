@@ -33,7 +33,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
  */
 public class Dir extends AbstractAttribute implements GlobalAttribute {
 
-    private static final long serialVersionUID = -5245357271722857401L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final String AUTO = "auto";
     public static final String LTR = "ltr";

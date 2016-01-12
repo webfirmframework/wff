@@ -44,7 +44,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  */
 public class FlexGrow extends AbstractCssProperty<FlexGrow> {
 
-    private static final long serialVersionUID = -5748102479962415962L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";

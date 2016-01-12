@@ -75,7 +75,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  */
 public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
 
-    private static final long serialVersionUID = 6946589316340309319L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger.getLogger(BorderImageSlice.class
             .getName());

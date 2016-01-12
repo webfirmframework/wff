@@ -16,7 +16,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.OptGroupAttribute;
  */
 public class OptGroup extends AbstractHtml {
 
-    private static final long serialVersionUID = -2476158356970495260L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger.getLogger(OptGroup.class
             .getName());

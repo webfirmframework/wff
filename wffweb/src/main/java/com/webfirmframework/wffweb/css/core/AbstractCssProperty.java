@@ -27,7 +27,7 @@ import com.webfirmframework.wffweb.informer.StateChangeInformer;
 public abstract class AbstractCssProperty<EXTENDEDCLASS extends AbstractCssProperty<EXTENDEDCLASS>>
         implements CssProperty {
 
-    private static final long serialVersionUID = -4638374762627545370L;
+    private static final long serialVersionUID = 1_0_0L;
 
     private StateChangeInformer<CssProperty> stateChangeInformer;
 

@@ -43,7 +43,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  */
 public class MozColumnRuleWidth extends AbstractCssProperty<MozColumnRuleWidth> {
 
-    private static final long serialVersionUID = -1834129213799855247L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final String MEDIUM = "medium";
     public static final String THIN = "thin";

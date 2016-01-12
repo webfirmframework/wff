@@ -16,7 +16,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.TBodyAttribute;
  */
 public class TBody extends AbstractHtml {
 
-    private static final long serialVersionUID = -5175402917762565358L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger.getLogger(TBody.class.getName());
 

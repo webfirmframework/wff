@@ -42,7 +42,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  */
 public class MozColumnCount extends AbstractCssProperty<MozColumnCount> {
 
-    private static final long serialVersionUID = -5549500115558914973L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";

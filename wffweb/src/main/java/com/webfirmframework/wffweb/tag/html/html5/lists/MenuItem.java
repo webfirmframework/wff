@@ -32,7 +32,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
  */
 public class MenuItem extends AbstractHtml {
 
-    private static final long serialVersionUID = -4330473368076590704L;
+    private static final long serialVersionUID = 1_0_0L;
     
     public static final Logger LOGGER = Logger.getLogger(MenuItem.class
             .getName());

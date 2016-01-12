@@ -31,7 +31,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  */
 public class MinHeight extends AbstractCssProperty<MinHeight> {
 
-    private static final long serialVersionUID = -6109449750271342174L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";

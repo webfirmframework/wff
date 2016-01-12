@@ -29,7 +29,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
  */
 public abstract class DocType extends AbstractHtml {
 
-    private static final long serialVersionUID = -6563575503502210744L;
+    private static final long serialVersionUID = 1_0_0L;
 
     private boolean prependDocType;
 

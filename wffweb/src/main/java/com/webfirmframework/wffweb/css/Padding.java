@@ -67,7 +67,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
 public class Padding extends AbstractCssProperty<Padding> implements
         StateChangeInformer<CssProperty> {
 
-    private static final long serialVersionUID = -4845743770560612651L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger.getLogger(Padding.class
             .getName());

@@ -49,7 +49,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
 public class BorderTop extends AbstractCssProperty<BorderTop> implements
         StateChangeInformer<CssProperty> {
 
-    private static final long serialVersionUID = -2209608764223622235L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger.getLogger(BorderTop.class
             .getName());

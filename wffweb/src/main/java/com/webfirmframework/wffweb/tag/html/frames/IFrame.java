@@ -16,7 +16,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.IFrameAttribute;
  */
 public class IFrame extends AbstractHtml {
 
-    private static final long serialVersionUID = -2142602481616922431L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger
             .getLogger(IFrame.class.getName());

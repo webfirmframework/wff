@@ -52,7 +52,7 @@ import com.webfirmframework.wffweb.util.StringBuilderUtil;
 public class Icon extends AbstractCssProperty<Icon> implements
         StateChangeInformer<Bean> {
 
-    private static final long serialVersionUID = -2448806742430513218L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";

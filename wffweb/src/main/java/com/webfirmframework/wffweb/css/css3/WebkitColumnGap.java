@@ -42,7 +42,7 @@ import com.webfirmframework.wffweb.css.core.AbstractCssProperty;
  */
 public class WebkitColumnGap extends AbstractCssProperty<WebkitColumnGap> {
 
-    private static final long serialVersionUID = -3423020466266873583L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final String NORMAL = "normal";
     public static final String INITIAL = "initial";

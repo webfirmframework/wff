@@ -75,7 +75,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  */
 public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
 
-    private static final long serialVersionUID = 577767184157280660L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger.getLogger(BorderImageWidth.class
             .getName());

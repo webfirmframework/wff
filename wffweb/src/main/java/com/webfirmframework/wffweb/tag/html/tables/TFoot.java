@@ -16,7 +16,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.TFootAttribute;
  */
 public class TFoot extends AbstractHtml {
 
-    private static final long serialVersionUID = 8063489265504937861L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger.getLogger(TFoot.class.getName());
 

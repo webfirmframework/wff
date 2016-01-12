@@ -28,7 +28,7 @@ import com.webfirmframework.wffweb.tag.html.AbstractHtml;
  */
 public abstract class ForEach<EACHTYPE> implements Serializable, Cloneable {
 
-    private static final long serialVersionUID = 3188840631498040541L;
+    private static final long serialVersionUID = 1_0_0L;
 
     @SuppressWarnings("unused")
     private ForEach() {

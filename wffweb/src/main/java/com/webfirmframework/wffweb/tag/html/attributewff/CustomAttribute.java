@@ -29,7 +29,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
 public class CustomAttribute extends AbstractAttribute implements
         GlobalAttribute {
 
-    private static final long serialVersionUID = 2325330310487939699L;
+    private static final long serialVersionUID = 1_0_0L;
 
     {
         init();

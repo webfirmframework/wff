@@ -55,7 +55,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
 public class MsFlex extends AbstractCssProperty<MsFlex> implements
         StateChangeInformer<CssProperty> {
 
-    private static final long serialVersionUID = 391670407924214307L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger
             .getLogger(MsFlex.class.getName());

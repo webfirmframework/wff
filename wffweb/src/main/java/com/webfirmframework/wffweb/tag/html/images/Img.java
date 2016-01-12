@@ -16,7 +16,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.ImgAttribute;
  */
 public class Img extends AbstractHtml {
 
-    private static final long serialVersionUID = -5117655473801234837L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger.getLogger(Img.class.getName());
 

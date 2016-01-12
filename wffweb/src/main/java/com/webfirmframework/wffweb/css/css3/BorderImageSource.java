@@ -56,7 +56,7 @@ import com.webfirmframework.wffweb.util.StringBuilderUtil;
 public class BorderImageSource extends AbstractCssProperty<BorderImageSource>
         implements StateChangeInformer<Bean> {
 
-    private static final long serialVersionUID = -1460963851474756325L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";

@@ -16,7 +16,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.StyleAttribute;
  */
 public class StyleTag extends AbstractHtml {
 
-    private static final long serialVersionUID = 4278519627629046910L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger.getLogger(StyleTag.class
             .getName());

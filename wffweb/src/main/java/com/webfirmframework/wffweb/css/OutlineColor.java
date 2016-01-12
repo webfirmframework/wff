@@ -51,7 +51,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
 public class OutlineColor extends AbstractCssProperty<OutlineColor> implements
         StateChangeInformer<Bean> {
 
-    private static final long serialVersionUID = -7919225063536984589L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger.getLogger(OutlineColor.class
             .getName());

@@ -32,7 +32,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
  */
 public class Mark extends AbstractHtml {
 
-    private static final long serialVersionUID = -6631809086664968936L;
+    private static final long serialVersionUID = 1_0_0L;
     
     public static final Logger LOGGER = Logger.getLogger(Mark.class.getName());
 

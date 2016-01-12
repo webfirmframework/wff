@@ -43,7 +43,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  */
 public class Top extends AbstractCssProperty<Top> {
 
-    private static final long serialVersionUID = 486031404815866669L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final String AUTO = "auto";
     public static final String INITIAL = "initial";

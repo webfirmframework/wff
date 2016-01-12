@@ -26,7 +26,7 @@ import com.webfirmframework.wffweb.data.AbstractBean;
  */
 public class RgbCssValue extends AbstractBean<RgbCssValue> {
 
-    private static final long serialVersionUID = -1428936350199499458L;
+    private static final long serialVersionUID = 1_0_0L;
 
     private String rgb = "rgb(0, 0, 0)";
     private int r = 0;

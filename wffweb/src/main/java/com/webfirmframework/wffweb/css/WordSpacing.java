@@ -39,7 +39,7 @@ import com.webfirmframework.wffweb.css.core.AbstractCssProperty;
  */
 public class WordSpacing extends AbstractCssProperty<WordSpacing> {
 
-    private static final long serialVersionUID = 6592682201749301761L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final String NORMAL = "normal";
     public static final String INITIAL = "initial";

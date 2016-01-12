@@ -32,7 +32,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
  */
 public class Embed extends AbstractHtml {
 
-    private static final long serialVersionUID = -5994173226987154228L;
+    private static final long serialVersionUID = 1_0_0L;
     
     public static final Logger LOGGER = Logger.getLogger(Embed.class.getName());
 

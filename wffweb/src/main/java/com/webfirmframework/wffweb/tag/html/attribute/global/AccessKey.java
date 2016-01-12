@@ -29,7 +29,7 @@ public class AccessKey extends AbstractAttribute implements GlobalAttribute {
     /**
      *
      */
-    private static final long serialVersionUID = -6204684325182471972L;
+    private static final long serialVersionUID = 1_0_0L;
 
     {
         super.setAttributeName(AttributeNameConstants.ACCESSKEY);

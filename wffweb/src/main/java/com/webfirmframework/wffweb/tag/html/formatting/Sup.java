@@ -16,7 +16,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.SupAttribute;
  */
 public class Sup extends AbstractHtml {
 
-    private static final long serialVersionUID = -8092619824306328950L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger.getLogger(Sup.class.getName());
 

@@ -29,7 +29,7 @@ import com.webfirmframework.wffweb.css.core.AbstractCssProperty;
  */
 public class ListStyleImage extends AbstractCssProperty<ListStyleImage> {
 
-    private static final long serialVersionUID = -2209608764223622235L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final String NONE = "none";
     public static final String INITIAL = "initial";

@@ -14,7 +14,7 @@ import com.webfirmframework.wffweb.util.StringBuilderUtil;
 
 public abstract class AbstractAttribute extends AbstractTagBase {
 
-    private static final long serialVersionUID = 2129619684296404972L;
+    private static final long serialVersionUID = 1_0_0L;
 
     private String attributeName;
     private String attributeValue;

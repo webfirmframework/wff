@@ -43,7 +43,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  */
 public class WebkitFlexShrink extends AbstractCssProperty<WebkitFlexShrink> {
 
-    private static final long serialVersionUID = -8533557195162161226L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";

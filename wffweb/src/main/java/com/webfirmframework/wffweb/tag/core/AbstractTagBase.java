@@ -25,7 +25,7 @@ public abstract class AbstractTagBase implements TagBase {
     /**
      *
      */
-    private static final long serialVersionUID = 5458640407778791302L;
+    private static final long serialVersionUID = 1_0_0L;
     private boolean rebuild = true;
     private boolean modified;
 

@@ -34,7 +34,7 @@ import com.webfirmframework.wffweb.css.core.CssProperty;
  */
 public abstract class CssFile implements Serializable, Cloneable {
 
-    private static final long serialVersionUID = -8632692337439580349L;
+    private static final long serialVersionUID = 1_0_0L;
 
     private final Map<String, Set<AbstractCssFileBlock>> selectorCssFileBlocks = new LinkedHashMap<String, Set<AbstractCssFileBlock>>();
 
@@ -42,7 +42,7 @@ public abstract class CssFile implements Serializable, Cloneable {
 
     private final Set<AbstractCssFileBlock> cssBlocks = new LinkedHashSet<AbstractCssFileBlock>() {
 
-        private static final long serialVersionUID = -5048157316614162071L;
+        private static final long serialVersionUID = 1_0_0L;
 
         private final StringBuilder toStringBuilder = new StringBuilder();
 

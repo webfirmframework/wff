@@ -16,7 +16,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.SpanAttribute;
  */
 public class Span extends AbstractHtml {
 
-    private static final long serialVersionUID = -6296436921836158942L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger.getLogger(Span.class.getName());
 

@@ -38,7 +38,7 @@ import com.webfirmframework.wffweb.util.StringBuilderUtil;
 public class ListStyle extends AbstractCssProperty<ListStyle> implements
         StateChangeInformer<CssProperty> {
 
-    private static final long serialVersionUID = -2209608764223622235L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger.getLogger(ListStyle.class
             .getName());

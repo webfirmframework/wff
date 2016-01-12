@@ -52,7 +52,7 @@ import com.webfirmframework.wffweb.util.StringBuilderUtil;
 public class BackgroundImage extends AbstractCssProperty<BackgroundImage>
         implements StateChangeInformer<Bean> {
 
-    private static final long serialVersionUID = -6671418908718507000L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";

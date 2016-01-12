@@ -44,7 +44,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  */
 public class OBackgroundSize extends AbstractCssProperty<OBackgroundSize> {
 
-    private static final long serialVersionUID = 7764081862874481319L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";

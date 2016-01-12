@@ -31,7 +31,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  */
 public class MaxWidth extends AbstractCssProperty<MaxWidth> {
 
-    private static final long serialVersionUID = -163608463543190756L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";

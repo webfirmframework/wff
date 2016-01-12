@@ -48,7 +48,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  */
 public class Perspective extends AbstractCssProperty<Perspective> {
 
-    private static final long serialVersionUID = -9092368880942913180L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final String NONE = "none";
 

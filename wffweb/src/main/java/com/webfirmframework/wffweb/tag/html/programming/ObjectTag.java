@@ -18,7 +18,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.ObjectTagAttribute;
  */
 public class ObjectTag extends AbstractHtml {
 
-    private static final long serialVersionUID = -2835606088144122533L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger.getLogger(ObjectTag.class
             .getName());

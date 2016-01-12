@@ -37,7 +37,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.AAttribute;
  */
 public class Download extends AbstractAttribute implements AAttribute {
 
-    private static final long serialVersionUID = -3323262521382659991L;
+    private static final long serialVersionUID = 1_0_0L;
 
     {
         super.setAttributeName(AttributeNameConstants.DOWNLOAD);

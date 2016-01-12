@@ -32,7 +32,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
  */
 public class Footer extends AbstractHtml {
 
-    private static final long serialVersionUID = 8668639051566871949L;
+    private static final long serialVersionUID = 1_0_0L;
     
     public static final Logger LOGGER = Logger
             .getLogger(Footer.class.getName());

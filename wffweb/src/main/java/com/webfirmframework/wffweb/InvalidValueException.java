@@ -26,7 +26,7 @@ public class InvalidValueException extends WffRuntimeException {
     /**
      *
      */
-    private static final long serialVersionUID = -8083377221733123071L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public InvalidValueException() {
         super();

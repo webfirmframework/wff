@@ -49,7 +49,7 @@ import com.webfirmframework.wffweb.view.AbstractHtmlView;
  */
 public class TagPrintTest implements Serializable {
 
-    private static final long serialVersionUID = -1647646828936136849L;
+    private static final long serialVersionUID = 1_0_0L;
     
     private long beforeTimeMillis;
 

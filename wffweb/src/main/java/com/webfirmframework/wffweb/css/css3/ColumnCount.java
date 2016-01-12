@@ -42,7 +42,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  */
 public class ColumnCount extends AbstractCssProperty<ColumnCount> {
 
-    private static final long serialVersionUID = 8398296769670716705L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";

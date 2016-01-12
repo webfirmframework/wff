@@ -32,7 +32,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
  */
 public class Meter extends AbstractHtml {
 
-    private static final long serialVersionUID = -1539613141700186470L;
+    private static final long serialVersionUID = 1_0_0L;
     
     public static final Logger LOGGER = Logger.getLogger(Meter.class.getName());
 

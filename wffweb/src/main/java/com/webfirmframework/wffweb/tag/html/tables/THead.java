@@ -16,7 +16,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.THeadAttribute;
  */
 public class THead extends AbstractHtml {
 
-    private static final long serialVersionUID = -5377063299902352764L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger.getLogger(THead.class.getName());
 

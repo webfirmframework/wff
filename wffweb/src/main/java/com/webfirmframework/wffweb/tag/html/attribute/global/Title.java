@@ -34,7 +34,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
  */
 public class Title extends AbstractAttribute implements GlobalAttribute {
 
-    private static final long serialVersionUID = -6128803106768453224L;
+    private static final long serialVersionUID = 1_0_0L;
 
     {
         super.setAttributeName(AttributeNameConstants.TITLE);

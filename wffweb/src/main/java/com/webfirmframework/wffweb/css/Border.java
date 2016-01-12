@@ -47,7 +47,7 @@ import com.webfirmframework.wffweb.util.StringBuilderUtil;
 public class Border extends AbstractCssProperty<Border> implements
         StateChangeInformer<Bean> {
 
-    private static final long serialVersionUID = -5807146130018751165L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger
             .getLogger(Border.class.getName());

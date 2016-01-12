@@ -46,7 +46,7 @@ import com.webfirmframework.wffweb.util.StringBuilderUtil;
 public class Columns extends AbstractCssProperty<Columns> implements
         StateChangeInformer<CssProperty> {
 
-    private static final long serialVersionUID = 2951122909092025935L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger.getLogger(Columns.class
             .getName());
