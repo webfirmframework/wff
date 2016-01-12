@@ -16,7 +16,6 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute;
 
-import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.AAttribute;
 
@@ -24,7 +23,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.AAttribute;
  *
  * <code>name</code> attribute for the element. This attribute is supported by
  * multiple tags.
- * 
+ *
  * @author WFF
  *
  */

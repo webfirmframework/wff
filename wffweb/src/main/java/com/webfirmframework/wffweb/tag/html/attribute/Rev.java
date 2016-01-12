@@ -23,10 +23,10 @@ import com.webfirmframework.wffweb.tag.html.identifier.AAttribute;
  * This attribute specifies a reverse link, the inverse relationship of the rel
  * attribute. It is useful for indicating where an object came from, such as the
  * author of a document.
- * 
+ *
  * <code>rev</code> attribute for the element. NB: This attribute is not
  * supported by html5.
- * 
+ *
  * @author WFF
  *
  */

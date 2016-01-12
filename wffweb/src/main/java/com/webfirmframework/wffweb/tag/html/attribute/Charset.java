@@ -23,14 +23,13 @@ import com.webfirmframework.wffweb.tag.html.identifier.AAttribute;
  *
  * <code>charset</code> attribute for the element. NB: This attribute is not
  * supported by html5
- * 
+ *
  * @author WFF
  *
  */
 public class Charset extends AbstractAttribute implements AAttribute {
 
     private static final long serialVersionUID = 1_0_0L;
-
 
     {
         super.setAttributeName(AttributeNameConstants.CHARSET);

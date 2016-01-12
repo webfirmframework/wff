@@ -31,7 +31,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.AAttribute;
  *
  *
  * <code>type</code> attribute for the element.
- * 
+ *
  * @author WFF
  *
  */

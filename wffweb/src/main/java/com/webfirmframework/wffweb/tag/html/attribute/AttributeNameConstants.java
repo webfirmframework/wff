@@ -52,7 +52,7 @@ public class AttributeNameConstants {
     public static final String TYPE = "type";
 
     /**
-     * 
+     *
      * @author WFF
      * @since 1.0.0
      */

@@ -35,7 +35,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.AAttribute;
  *
  * <code>shape</code> attribute for the element.NB: This attribute is not
  * supported by html5
- * 
+ *
  * @author WFF
  *
  */
