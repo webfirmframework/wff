@@ -45,6 +45,11 @@ public class AttributeNameConstants {
     public static final String MEDIA = "media";
     public static final String NAME = "name";
     public static final String REL = "rel";
+    public static final String CHARSET = "charset";
+    public static final String REV = "rev";
+    public static final String SHAPE = "shape";
+    public static final String TARGET = "target";
+    public static final String TYPE = "type";
 
     /**
      * 
