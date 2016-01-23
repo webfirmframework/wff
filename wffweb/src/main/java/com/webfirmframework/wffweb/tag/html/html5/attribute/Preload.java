@@ -14,34 +14,44 @@
  * limitations under the License.
  * @author WFF
  */
-package com.webfirmframework.wffweb.tag.html.attribute;
+package com.webfirmframework.wffweb.tag.html.html5.attribute;
 
+import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.AreaAttribute;
+import com.webfirmframework.wffweb.tag.html.html5.identifier.AudioAttribute;
 
 /**
  *
- * <code>coords</code> attribute for the element.
+ * <code>preload</code> attribute for the element.
  * 
- * A set of values specifying the coordinates of the hot-spot region. The number
- * and meaning of the values depend upon the value specified for the shape
- * attribute. For a rect or rectangle shape, the coords value is two x,y pairs:
- * left, top, right, and bottom. For a circle shape, the value is x,y,r where
- * x,y is a pair specifying the center of the circle and r is a value for the
- * radius. For a poly or polygon< shape, the value is a set of x,y pairs for
- * each point in the polygon: x1,y1,x2,y2,x3,y3, and so on. In HTML4, the values
- * are numbers of pixels or percentages, if a percent sign (%) is appended; in
- * HTML5, the values are numbers of CSS pixels.
+ * <pre>
+ * 
+ * This enumerated attribute is intended to provide a hint to the browser about what the author thinks will lead to the best user experience. It may have one of the following values:
+ * 
+ *  none: indicates that the audio should not be preloaded;
+ *  metadata: indicates that only audio metadata (e.g. length) is fetched;
+ *  auto: indicates that the whole audio file could be downloaded, even if the user is not expected to use it;
+ *  the empty string: synonym of the auto value.
+ * 
+ * If not set, its default value is browser-defined (i.e. each browser may have its own default value). The spec advises it to be set to metadata.
+ * 
+ * </pre>
  *
  * @author WFF
  *
  */
-public class Coords extends AbstractAttribute implements AreaAttribute {
+public class Preload extends AbstractAttribute implements AudioAttribute {
+
+    public static final String AUTO = "auto";
+
+    public static final String METADATA = "metadata";
+
+    public static final String NONE = "none";
 
     private static final long serialVersionUID = 1_0_0L;
 
     {
-        super.setAttributeName(AttributeNameConstants.COORDS);
+        super.setAttributeName(AttributeNameConstants.PRELOAD);
         init();
     }
 
@@ -52,15 +62,12 @@ public class Coords extends AbstractAttribute implements AreaAttribute {
      * @since 1.0.0
      * @author WFF
      */
-    public Coords(final String value) {
+    public Preload(final String value) {
         setAttributeValue(value);
     }
 
     /**
-     * sets the value for this attribute.
-     * 
-     * Specifies an alternate text for the area. Required if the href attribute
-     * is present
+     * sets the value for this attribute
      *
      * @param value
      *            the value for the attribute.

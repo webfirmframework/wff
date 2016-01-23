@@ -17,31 +17,25 @@
 package com.webfirmframework.wffweb.tag.html.attribute;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.AreaAttribute;
+import com.webfirmframework.wffweb.tag.html.html5.identifier.AudioAttribute;
 
 /**
  *
- * <code>coords</code> attribute for the element.
+ * <code>src</code> attribute for the element.
  * 
- * A set of values specifying the coordinates of the hot-spot region. The number
- * and meaning of the values depend upon the value specified for the shape
- * attribute. For a rect or rectangle shape, the coords value is two x,y pairs:
- * left, top, right, and bottom. For a circle shape, the value is x,y,r where
- * x,y is a pair specifying the center of the circle and r is a value for the
- * radius. For a poly or polygon< shape, the value is a set of x,y pairs for
- * each point in the polygon: x1,y1,x2,y2,x3,y3, and so on. In HTML4, the values
- * are numbers of pixels or percentages, if a percent sign (%) is appended; in
- * HTML5, the values are numbers of CSS pixels.
+ * The URL of the audio to embed. This is subject to HTTP access controls. This
+ * is optional; you may instead use the <source> element within the audio block
+ * to specify the audio to embed.
  *
  * @author WFF
  *
  */
-public class Coords extends AbstractAttribute implements AreaAttribute {
+public class Src extends AbstractAttribute implements AudioAttribute {
 
     private static final long serialVersionUID = 1_0_0L;
 
     {
-        super.setAttributeName(AttributeNameConstants.COORDS);
+        super.setAttributeName(AttributeNameConstants.SRC);
         init();
     }
 
@@ -52,15 +46,12 @@ public class Coords extends AbstractAttribute implements AreaAttribute {
      * @since 1.0.0
      * @author WFF
      */
-    public Coords(final String value) {
+    public Src(final String value) {
         setAttributeValue(value);
     }
 
     /**
-     * sets the value for this attribute.
-     * 
-     * Specifies an alternate text for the area. Required if the href attribute
-     * is present
+     * sets the value for this attribute
      *
      * @param value
      *            the value for the attribute.

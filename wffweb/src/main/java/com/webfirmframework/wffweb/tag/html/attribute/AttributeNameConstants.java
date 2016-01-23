@@ -50,6 +50,15 @@ public class AttributeNameConstants {
     public static final String SHAPE = "shape";
     public static final String TARGET = "target";
     public static final String TYPE = "type";
+    public static final String PRELOAD = "preload";
+    public static final String AUTOPLAY = "autoplay";
+    public static final String ALT = "alt";
+    public static final String NOHREF = "nohref";
+    public static final String COORDS = "coords";
+    public static final String CONTROLS = "controls";
+    public static final String LOOP = "loop";
+    public static final String MUTED = "muted";
+    public static final String SRC = "src";
 
     /**
      *

@@ -37,7 +37,7 @@ public class Alt extends AbstractAttribute implements AreaAttribute {
     private static final long serialVersionUID = 1_0_0L;
 
     {
-        super.setAttributeName(AttributeNameConstants.NAME);
+        super.setAttributeName(AttributeNameConstants.ALT);
         init();
     }
 
