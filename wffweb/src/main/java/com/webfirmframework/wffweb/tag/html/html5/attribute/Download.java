@@ -19,6 +19,7 @@ package com.webfirmframework.wffweb.tag.html.html5.attribute;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.AAttribute;
+import com.webfirmframework.wffweb.tag.html.identifier.AreaAttribute;
 
 /**
  * This attribute, if present, indicates that the author intends the hyperlink
@@ -35,7 +36,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.AAttribute;
  * @author WFF
  *
  */
-public class Download extends AbstractAttribute implements AAttribute {
+public class Download extends AbstractAttribute implements AAttribute, AreaAttribute {
 
     private static final long serialVersionUID = 1_0_0L;
 

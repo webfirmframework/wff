@@ -20,6 +20,7 @@ import java.util.Locale;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.AAttribute;
+import com.webfirmframework.wffweb.tag.html.identifier.AreaAttribute;
 
 /**
  * This attribute indicates the language of the linked resource. It is purely
@@ -29,7 +30,8 @@ import com.webfirmframework.wffweb.tag.html.identifier.AAttribute;
  * @author WFF
  *
  */
-public class Hreflang extends AbstractAttribute implements AAttribute {
+public class Hreflang extends AbstractAttribute
+        implements AAttribute, AreaAttribute {
 
     private static final long serialVersionUID = 1_0_0L;
 

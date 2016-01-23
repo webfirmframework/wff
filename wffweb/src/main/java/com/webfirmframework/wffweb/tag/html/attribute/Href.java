@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.tag.html.attribute;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.AAttribute;
+import com.webfirmframework.wffweb.tag.html.identifier.AreaAttribute;
 
 /**
  * This was the single required attribute for anchors defining a hypertext
@@ -32,7 +33,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.AAttribute;
  * @author WFF
  *
  */
-public class Href extends AbstractAttribute implements AAttribute {
+public class Href extends AbstractAttribute implements AAttribute, AreaAttribute {
 
     private static final long serialVersionUID = 1_0_0L;
 

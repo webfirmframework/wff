@@ -17,31 +17,31 @@
 package com.webfirmframework.wffweb.tag.html.attribute;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.AAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.AreaAttribute;
 
 /**
  *
- * This attribute specifies the media type in the form of a MIME type for the
- * link target. Generally, this is provided strictly as advisory information;
- * however, in the future a browser might add a small icon for multimedia types.
- * For example, a browser might add a small speaker icon when type is set to
- * audio/wav. For a complete list of recognized MIME types, see
- * http://www.w3.org/TR/html4/references.html#ref-MIMETYPES. Use this attribute
- * only if the href attribute is present.
- *
- *
- * <code>type</code> attribute for the element.
+ * <code>coords</code> attribute for the element.
+ * 
+ * A set of values specifying the coordinates of the hot-spot region. The number
+ * and meaning of the values depend upon the value specified for the shape
+ * attribute. For a rect or rectangle shape, the coords value is two x,y pairs:
+ * left, top, right, and bottom. For a circle shape, the value is x,y,r where
+ * x,y is a pair specifying the center of the circle and r is a value for the
+ * radius. For a poly or polygon< shape, the value is a set of x,y pairs for
+ * each point in the polygon: x1,y1,x2,y2,x3,y3, and so on. In HTML4, the values
+ * are numbers of pixels or percentages, if a percent sign (%) is appended; in
+ * HTML5, the values are numbers of CSS pixels.
  *
  * @author WFF
  *
  */
-public class Type extends AbstractAttribute implements AAttribute, AreaAttribute {
+public class Coords extends AbstractAttribute implements AreaAttribute {
 
     private static final long serialVersionUID = 1_0_0L;
 
     {
-        super.setAttributeName(AttributeNameConstants.TYPE);
+        super.setAttributeName(AttributeNameConstants.NAME);
         init();
     }
 
@@ -52,12 +52,15 @@ public class Type extends AbstractAttribute implements AAttribute, AreaAttribute
      * @since 1.0.0
      * @author WFF
      */
-    public Type(final String value) {
+    public Coords(final String value) {
         setAttributeValue(value);
     }
 
     /**
-     * sets the value for this attribute
+     * sets the value for this attribute.
+     * 
+     * Specifies an alternate text for the area. Required if the href attribute
+     * is present
      *
      * @param value
      *            the value for the attribute.

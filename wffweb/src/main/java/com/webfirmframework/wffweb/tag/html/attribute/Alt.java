@@ -17,47 +17,46 @@
 package com.webfirmframework.wffweb.tag.html.attribute;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.AAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.AreaAttribute;
 
 /**
  *
- * This attribute specifies the media type in the form of a MIME type for the
- * link target. Generally, this is provided strictly as advisory information;
- * however, in the future a browser might add a small icon for multimedia types.
- * For example, a browser might add a small speaker icon when type is set to
- * audio/wav. For a complete list of recognized MIME types, see
- * http://www.w3.org/TR/html4/references.html#ref-MIMETYPES. Use this attribute
- * only if the href attribute is present.
- *
- *
- * <code>type</code> attribute for the element.
- *
+ * <code>alt</code> attribute for the element.
+ * 
+ * A text string alternative to display on browsers that do not display images.
+ * The text should be phrased so that it presents the user with the same kind of
+ * choice as the image would offer when displayed without the alternative text.
+ * In HTML4, this attribute is required, but may be the empty string (""). In
+ * HTML5, this attribute is required only if the href attribute is used.
+ * 
  * @author WFF
  *
  */
-public class Type extends AbstractAttribute implements AAttribute, AreaAttribute {
+public class Alt extends AbstractAttribute implements AreaAttribute {
 
     private static final long serialVersionUID = 1_0_0L;
 
     {
-        super.setAttributeName(AttributeNameConstants.TYPE);
+        super.setAttributeName(AttributeNameConstants.NAME);
         init();
     }
 
     /**
      *
      * @param value
-     *            the value for the attribute
+     *            the coordinates value for the attribute
      * @since 1.0.0
      * @author WFF
      */
-    public Type(final String value) {
+    public Alt(final String value) {
         setAttributeValue(value);
     }
 
     /**
-     * sets the value for this attribute
+     * sets the value for this attribute.
+     * 
+     * Specifies an alternate text for the area. Required if the href attribute
+     * is present
      *
      * @param value
      *            the value for the attribute.

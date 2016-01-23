@@ -17,31 +17,25 @@
 package com.webfirmframework.wffweb.tag.html.attribute;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.AAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.AreaAttribute;
 
 /**
  *
- * This attribute specifies the media type in the form of a MIME type for the
- * link target. Generally, this is provided strictly as advisory information;
- * however, in the future a browser might add a small icon for multimedia types.
- * For example, a browser might add a small speaker icon when type is set to
- * audio/wav. For a complete list of recognized MIME types, see
- * http://www.w3.org/TR/html4/references.html#ref-MIMETYPES. Use this attribute
- * only if the href attribute is present.
- *
- *
- * <code>type</code> attribute for the element.
- *
+ * <code>nohref</code> attribute for the element.
+ * 
+ * Indicates that no hyperlink exists for the associated area. Either this
+ * attribute or the href attribute must be present in the element.
+ * 
+ * 
  * @author WFF
  *
  */
-public class Type extends AbstractAttribute implements AAttribute, AreaAttribute {
+public class Nohref extends AbstractAttribute implements AreaAttribute {
 
     private static final long serialVersionUID = 1_0_0L;
 
     {
-        super.setAttributeName(AttributeNameConstants.TYPE);
+        super.setAttributeName(AttributeNameConstants.NAME);
         init();
     }
 
@@ -52,12 +46,15 @@ public class Type extends AbstractAttribute implements AAttribute, AreaAttribute
      * @since 1.0.0
      * @author WFF
      */
-    public Type(final String value) {
+    public Nohref(final String value) {
         setAttributeValue(value);
     }
 
     /**
-     * sets the value for this attribute
+     * sets the value for this attribute.
+     * 
+     * Specifies an alternate text for the area. Required if the href attribute
+     * is present
      *
      * @param value
      *            the value for the attribute.

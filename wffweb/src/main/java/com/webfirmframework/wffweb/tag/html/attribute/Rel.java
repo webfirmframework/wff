@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.tag.html.attribute;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.AAttribute;
+import com.webfirmframework.wffweb.tag.html.identifier.AreaAttribute;
 
 /**
  * For anchors containing the href attribute, this attribute specifies the
@@ -31,7 +32,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.AAttribute;
  * @author WFF
  *
  */
-public class Rel extends AbstractAttribute implements AAttribute {
+public class Rel extends AbstractAttribute implements AAttribute, AreaAttribute {
 
     private static final long serialVersionUID = 1_0_0L;
 
