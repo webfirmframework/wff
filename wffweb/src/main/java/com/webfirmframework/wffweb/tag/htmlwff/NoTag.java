@@ -23,12 +23,12 @@ import java.util.List;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 
 /**
- *
+ * It's a tag which makes child content without any opening closing tag.
  *
  * @author WFF
  * @since 1.0.0
  */
-public class Blank extends AbstractHtml {
+public class NoTag extends AbstractHtml {
 
     // TODO This class needs to be tested properly
 
@@ -49,7 +49,7 @@ public class Blank extends AbstractHtml {
      *
      * @since 1.0.0
      */
-    public Blank(final AbstractHtml base, final AbstractHtml... children) {
+    public NoTag(final AbstractHtml base, final AbstractHtml... children) {
         super(base, Arrays.asList(children));
     }
 
@@ -64,7 +64,7 @@ public class Blank extends AbstractHtml {
      *
      * @since 1.0.0
      */
-    public Blank(final AbstractHtml base,
+    public NoTag(final AbstractHtml base,
             final Collection<AbstractHtml> children) {
         super(base, children);
     }
@@ -79,7 +79,7 @@ public class Blank extends AbstractHtml {
      *
      * @since 1.0.0
      */
-    public Blank(final AbstractHtml base, final String childContent) {
+    public NoTag(final AbstractHtml base, final String childContent) {
         super(base, childContent);
     }
 
@@ -160,7 +160,7 @@ public class Blank extends AbstractHtml {
      * @author WFF
      */
     public void addChild(final String child) {
-        super.getChildren().add(new Blank(this, child));
+        super.getChildren().add(new NoTag(this, child));
     }
 
     /**
