@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.tag.html.attribute;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.AAttribute;
+import com.webfirmframework.wffweb.tag.html.identifier.MapTagAttribute;
 
 /**
  *
@@ -27,7 +28,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.AAttribute;
  * @author WFF
  *
  */
-public class Name extends AbstractAttribute implements AAttribute {
+public class Name extends AbstractAttribute implements AAttribute, MapTagAttribute {
 
     private static final long serialVersionUID = 1_0_0L;
 
