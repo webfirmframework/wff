@@ -19,6 +19,7 @@ package com.webfirmframework.wffweb.tag.html.attribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.AAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.AreaAttribute;
+import com.webfirmframework.wffweb.tag.html.identifier.BaseAttribute;
 
 /**
  * <pre>
@@ -38,7 +39,8 @@ import com.webfirmframework.wffweb.tag.html.identifier.AreaAttribute;
  * @author WFF
  *
  */
-public class Target extends AbstractAttribute implements AAttribute, AreaAttribute {
+public class Target extends AbstractAttribute
+        implements AAttribute, AreaAttribute, BaseAttribute {
 
     private static final long serialVersionUID = 1_0_0L;
 
