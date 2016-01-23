@@ -14,7 +14,7 @@
  * limitations under the License.
  * @author WFF
  */
-package com.webfirmframework.wffweb.css;
+package com.webfirmframework.wffweb.css.temp;
 
 /**
  *

@@ -14,12 +14,14 @@
  * limitations under the License.
  * @author WFF
  */
-package com.webfirmframework.wffweb.css;
+package com.webfirmframework.wffweb.css.temp;
 
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import com.webfirmframework.wffweb.css.CssColorName;
+import com.webfirmframework.wffweb.css.FontWeight;
 import com.webfirmframework.wffweb.css.css3.ColumnRule;
 import com.webfirmframework.wffweb.css.css3.ColumnRuleColor;
 import com.webfirmframework.wffweb.css.css3.ColumnRuleWidth;
