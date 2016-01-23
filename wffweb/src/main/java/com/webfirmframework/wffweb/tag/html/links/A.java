@@ -5,8 +5,8 @@ import java.util.logging.Logger;
 import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.AAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
+import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
+import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
 /**
  * @author WFF
@@ -14,7 +14,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
  * @version 1.0.0
  *
  */
-public class A extends AbstractHtml implements AAttribute {
+public class A extends AbstractHtml implements AAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -39,7 +39,7 @@ public class A extends AbstractHtml implements AAttribute {
         super(A.class.getSimpleName().toLowerCase(), base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof AAttribute || abstractAttribute instanceof GlobalAttribute))) {
+                if (!(abstractAttribute != null && (abstractAttribute instanceof AAttributable || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of AAttribute");
                 }

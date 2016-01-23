@@ -4,8 +4,8 @@ import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.HeadAttribute;
+import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
+import com.webfirmframework.wffweb.tag.html.identifier.HeadAttributable;
 
 /**
  * @author WFF
@@ -37,7 +37,7 @@ public class Head extends AbstractHtml {
     public Head(final AbstractHtml base, final AbstractAttribute... attributes) {
         super(Head.class.getSimpleName().toLowerCase(), base, attributes);
         for (final AbstractAttribute abstractAttribute : attributes) {
-            if (!(abstractAttribute != null && (abstractAttribute instanceof HeadAttribute || abstractAttribute instanceof GlobalAttribute))) {
+            if (!(abstractAttribute != null && (abstractAttribute instanceof HeadAttributable || abstractAttribute instanceof GlobalAttributable))) {
                 LOGGER.warning(abstractAttribute
                         + " is not an instance of HeadAttribute");
             }

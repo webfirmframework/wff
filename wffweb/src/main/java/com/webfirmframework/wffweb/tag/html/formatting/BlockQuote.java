@@ -5,8 +5,8 @@ import java.util.logging.Logger;
 import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.BlockQuoteAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
+import com.webfirmframework.wffweb.tag.html.identifier.BlockQuoteAttributable;
+import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
 /**
  * @author WFF
@@ -41,7 +41,7 @@ public class BlockQuote extends AbstractHtml {
         super(BlockQuote.class.getSimpleName().toLowerCase(), base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof BlockQuoteAttribute || abstractAttribute instanceof GlobalAttribute))) {
+                if (!(abstractAttribute != null && (abstractAttribute instanceof BlockQuoteAttributable || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of BlockQuoteAttribute");
                 }

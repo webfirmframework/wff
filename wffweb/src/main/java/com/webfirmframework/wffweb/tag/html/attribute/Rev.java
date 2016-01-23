@@ -17,7 +17,7 @@
 package com.webfirmframework.wffweb.tag.html.attribute;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.AAttribute;
+import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
 
 /**
  * This attribute specifies a reverse link, the inverse relationship of the rel
@@ -30,7 +30,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.AAttribute;
  * @author WFF
  *
  */
-public class Rev extends AbstractAttribute implements AAttribute {
+public class Rev extends AbstractAttribute implements AAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 

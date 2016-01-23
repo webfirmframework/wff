@@ -208,7 +208,7 @@ import com.webfirmframework.wffweb.csswff.CustomCssProperty;
 import com.webfirmframework.wffweb.informer.StateChangeInformer;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
+import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
 // @formatter:off
 /**
@@ -398,7 +398,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
  *</pre>
  **/
 // @formatter:on
-public class Style extends AbstractAttribute implements GlobalAttribute,
+public class Style extends AbstractAttribute implements GlobalAttributable,
         StateChangeInformer<CssProperty> {
 
     /**

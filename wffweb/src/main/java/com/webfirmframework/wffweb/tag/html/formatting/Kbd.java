@@ -5,8 +5,8 @@ import java.util.logging.Logger;
 import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.KbdAttribute;
+import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
+import com.webfirmframework.wffweb.tag.html.identifier.KbdAttributable;
 
 /**
  * @author WFF
@@ -39,7 +39,7 @@ public class Kbd extends AbstractHtml {
         super(Kbd.class.getSimpleName().toLowerCase(), base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof KbdAttribute || abstractAttribute instanceof GlobalAttribute))) {
+                if (!(abstractAttribute != null && (abstractAttribute instanceof KbdAttributable || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of KddAttribute");
                 }

@@ -20,13 +20,13 @@ import java.util.UUID;
 
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
+import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
 /**
  * @author WFF
  *
  */
-public class Id extends AbstractAttribute implements GlobalAttribute {
+public class Id extends AbstractAttribute implements GlobalAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 

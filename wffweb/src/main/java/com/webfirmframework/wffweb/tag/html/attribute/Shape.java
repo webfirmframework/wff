@@ -17,8 +17,8 @@
 package com.webfirmframework.wffweb.tag.html.attribute;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.AAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.AreaAttribute;
+import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
+import com.webfirmframework.wffweb.tag.html.identifier.AreaAttributable;
 
 /**
  * This attribute is used to define a selectable region for hypertext source
@@ -40,7 +40,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.AreaAttribute;
  * @author WFF
  *
  */
-public class Shape extends AbstractAttribute implements AAttribute, AreaAttribute {
+public class Shape extends AbstractAttribute implements AAttributable, AreaAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 

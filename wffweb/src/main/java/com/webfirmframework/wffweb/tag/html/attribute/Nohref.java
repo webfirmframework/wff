@@ -17,7 +17,7 @@
 package com.webfirmframework.wffweb.tag.html.attribute;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.AreaAttribute;
+import com.webfirmframework.wffweb.tag.html.identifier.AreaAttributable;
 
 /**
  *
@@ -30,7 +30,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.AreaAttribute;
  * @author WFF
  *
  */
-public class Nohref extends AbstractAttribute implements AreaAttribute {
+public class Nohref extends AbstractAttribute implements AreaAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 

@@ -18,7 +18,7 @@ package com.webfirmframework.wffweb.tag.html.html5.attribute.global;
 
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
+import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
 /**
  * {@code <element contenteditable="true|false">}
@@ -33,7 +33,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
  *
  */
 public class ContentEditable extends AbstractAttribute implements
-        GlobalAttribute {
+        GlobalAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
     private boolean editable;

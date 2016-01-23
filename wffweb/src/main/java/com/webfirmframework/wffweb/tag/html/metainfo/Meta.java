@@ -6,8 +6,8 @@ import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.MetaAttribute;
+import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
+import com.webfirmframework.wffweb.tag.html.identifier.MetaAttributable;
 
 /**
  * @author WFF
@@ -44,8 +44,8 @@ public class Meta extends AbstractHtml {
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
                 if (!(abstractAttribute != null
-                        && (abstractAttribute instanceof MetaAttribute
-                                || abstractAttribute instanceof GlobalAttribute))) {
+                        && (abstractAttribute instanceof MetaAttributable
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of MetaAttribute");
                 }

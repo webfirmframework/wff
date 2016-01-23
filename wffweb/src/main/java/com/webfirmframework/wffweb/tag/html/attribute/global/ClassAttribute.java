@@ -21,14 +21,14 @@ import java.util.Collection;
 
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
+import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
 /**
  * @author WFF
  *
  */
 public class ClassAttribute extends AbstractAttribute implements
-        GlobalAttribute {
+        GlobalAttributable {
 
     /**
      *

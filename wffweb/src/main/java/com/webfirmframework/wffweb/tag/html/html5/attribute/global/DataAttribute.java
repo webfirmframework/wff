@@ -19,13 +19,13 @@ package com.webfirmframework.wffweb.tag.html.html5.attribute.global;
 import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
+import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
 /**
  * @author WFF
  *
  */
-public class DataAttribute extends AbstractAttribute implements GlobalAttribute {
+public class DataAttribute extends AbstractAttribute implements GlobalAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 

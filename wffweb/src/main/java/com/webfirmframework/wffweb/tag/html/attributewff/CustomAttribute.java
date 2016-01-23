@@ -18,7 +18,7 @@ package com.webfirmframework.wffweb.tag.html.attributewff;
 
 import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
+import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
 /**
  * This is a custom attribute to create an attribute with any name and value.
@@ -27,7 +27,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
  *
  */
 public class CustomAttribute extends AbstractAttribute implements
-        GlobalAttribute {
+        GlobalAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 

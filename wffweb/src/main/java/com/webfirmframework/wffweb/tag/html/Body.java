@@ -3,8 +3,8 @@ package com.webfirmframework.wffweb.tag.html;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.BrAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
+import com.webfirmframework.wffweb.tag.html.identifier.BrAttributable;
+import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
 /**
  * @author WFF
@@ -36,7 +36,7 @@ public class Body extends AbstractHtml {
     public Body(final AbstractHtml base, final AbstractAttribute... attributes) {
         super(Body.class.getSimpleName().toLowerCase(), base, attributes);
         for (final AbstractAttribute abstractAttribute : attributes) {
-            if (!(abstractAttribute != null && (abstractAttribute instanceof BrAttribute || abstractAttribute instanceof GlobalAttribute))) {
+            if (!(abstractAttribute != null && (abstractAttribute instanceof BrAttributable || abstractAttribute instanceof GlobalAttributable))) {
                 LOGGER.warning(abstractAttribute
                         + " is not an instance of BrAttribute");
             }

@@ -4,8 +4,8 @@ import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.DivAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
+import com.webfirmframework.wffweb.tag.html.identifier.DivAttributable;
+import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
 /**
  * @author WFF
@@ -36,7 +36,7 @@ public class Div extends AbstractHtml {
     public Div(final AbstractHtml base, final AbstractAttribute... attributes) {
         super(Div.class.getSimpleName().toLowerCase(), base, attributes);
         for (final AbstractAttribute abstractAttribute : attributes) {
-            if (!(abstractAttribute != null && (abstractAttribute instanceof DivAttribute || abstractAttribute instanceof GlobalAttribute))) {
+            if (!(abstractAttribute != null && (abstractAttribute instanceof DivAttributable || abstractAttribute instanceof GlobalAttributable))) {
                 LOGGER.warning(abstractAttribute
                         + " is not an instance of DivAttribute");
             }

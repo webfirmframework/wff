@@ -18,13 +18,13 @@ package com.webfirmframework.wffweb.tag.html.attribute.global;
 
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
+import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
 /**
  * @author WFF
  *
  */
-public class AccessKey extends AbstractAttribute implements GlobalAttribute {
+public class AccessKey extends AbstractAttribute implements GlobalAttributable {
 
     /**
      *

@@ -3,7 +3,7 @@ package com.webfirmframework.wffweb.tag.html.attribute;
 import com.webfirmframework.wffweb.css.CssLengthUnit;
 import com.webfirmframework.wffweb.css.core.LengthUnit;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.HtmlAttribute;
+import com.webfirmframework.wffweb.tag.html.identifier.HtmlAttributable;
 
 /**
  * This is a width attribute.
@@ -11,7 +11,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.HtmlAttribute;
  * @author WFF
  *
  */
-public class Width extends AbstractAttribute implements HtmlAttribute {
+public class Width extends AbstractAttribute implements HtmlAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 

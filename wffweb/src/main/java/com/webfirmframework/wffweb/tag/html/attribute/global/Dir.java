@@ -18,7 +18,7 @@ package com.webfirmframework.wffweb.tag.html.attribute.global;
 
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
+import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
 /**
  * {@code <element dir="ltr|rtl|auto"> }
@@ -31,7 +31,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
  * @author WFF
  *
  */
-public class Dir extends AbstractAttribute implements GlobalAttribute {
+public class Dir extends AbstractAttribute implements GlobalAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 

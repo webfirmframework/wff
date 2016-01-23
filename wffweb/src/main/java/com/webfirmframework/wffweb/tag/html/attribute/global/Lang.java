@@ -18,7 +18,7 @@ package com.webfirmframework.wffweb.tag.html.attribute.global;
 
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
+import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
 /**
  * The lang attribute specifies the language of the element's content.</br>
@@ -31,7 +31,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttribute;
  * @author WFF
  *
  */
-public class Lang extends AbstractAttribute implements GlobalAttribute {
+public class Lang extends AbstractAttribute implements GlobalAttributable {
 
     /**
      *
