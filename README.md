@@ -176,22 +176,23 @@ It will add width 100% in aboutParagraph and will change color to brown, its gen
 ```
 
 
-##### How to resolve dependency by maven?
-Add the following code in your pom.xml file. 
-```
-<dependencies>
-	<dependency>
-		<groupId>com.webfirmframework</groupId>
-		<artifactId>wffweb</artifactId>
-		<version>1.0.0-alpha-4</version>
-	</dependency>
-</dependencies>
-```
-##### How to resolve dependency by ivy?
-Add the following code in your ivy.xml file. 
-```
-<dependency org="com.webfirmframework" name="wffweb" rev="1.0.0-alpha-4" />
+##### Checkout 
 
-```
+[How to resolve wffweb dependency in maven pom.xml](https://github.com/webfirmframework/wff/wiki/How-to-resolve-wffweb-dependency-in-maven-pom.xml)
 
-Refer https://github.com/webfirmframework/wff/wiki for more details
+[How to resolve wffweb dependency in ivy](https://github.com/webfirmframework/wff/wiki/How-to-resolve-wffweb-dependency-in-ivy)
+
+[How to resolve wffweb dependency in Apache Buildr](https://github.com/webfirmframework/wff/wiki/How-to-resolve-wffweb-dependency-in-Apache-Buildr)
+
+[How to resolve wffweb dependency in Gradle Grails](https://github.com/webfirmframework/wff/wiki/How-to-resolve-wffweb-dependency-in-Gradle-Grails)
+
+[How to resolve wffweb dependency in Groovy Grape](https://github.com/webfirmframework/wff/wiki/How-to-resolve-wffweb-dependency-in-Groovy-Grape)
+
+[How to resolve wffweb dependency in Leiningen](https://github.com/webfirmframework/wff/wiki/How-to-resolve-wffweb-dependency-in-Leiningen)
+
+[How to resolve wffweb dependency in Scala SBT](https://github.com/webfirmframework/wff/wiki/How-to-resolve-wffweb-dependency-in-Scala-SBT)
+
+[wffweb released versions](https://github.com/webfirmframework/wff/wiki/wffweb-released-versions)
+
+
+[Refer wiki for more examples](https://github.com/webfirmframework/wff/wiki for more details)
