@@ -35,10 +35,12 @@ public class Hr extends AbstractHtml {
      * @since 1.0.0
      */
     public Hr(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(Hr.class.getSimpleName().toLowerCase(), base, attributes);
+        super(TagNameConstants.HR, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof HrAttributable || abstractAttribute instanceof GlobalAttributable))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof HrAttributable
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of HrAttribute");
                 }
@@ -49,7 +51,6 @@ public class Hr extends AbstractHtml {
     /**
      * invokes only once per object
      *
-     * @author WFF
      * @since 1.0.0
      */
     protected void init() {

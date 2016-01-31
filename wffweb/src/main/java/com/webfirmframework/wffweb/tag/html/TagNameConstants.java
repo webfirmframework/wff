@@ -24,14 +24,36 @@ package com.webfirmframework.wffweb.tag.html;
 public class TagNameConstants {
 
     public static final String TITLE_TAG = "title";
-    
+
     public static final String LINK = "link";
-    
+
     public static final String META = "meta";
-    
+
     public static final String BR = "br";
 
     public static final String BASE = "base";
+
+    public static final String BASEFONT = "basefont";
+
+    public static final String H1 = "h1";
+
+    public static final String H2 = "h2";
+
+    public static final String H3 = "h3";
+
+    public static final String H4 = "h4";
+
+    public static final String H5 = "h5";
+
+    public static final String BODY = "body";
+
+    public static final String HR = "hr";
+
+    public static final String HTML = "html";
+
+    public static final String P = "p";
+
+    public static final String QFN = "qfn";
 
     /**
      *

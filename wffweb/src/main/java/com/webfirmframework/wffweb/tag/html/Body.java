@@ -33,10 +33,13 @@ public class Body extends AbstractHtml {
      *
      * @since 1.0.0
      */
-    public Body(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(Body.class.getSimpleName().toLowerCase(), base, attributes);
+    public Body(final AbstractHtml base,
+            final AbstractAttribute... attributes) {
+        super(TagNameConstants.BODY, base, attributes);
         for (final AbstractAttribute abstractAttribute : attributes) {
-            if (!(abstractAttribute != null && (abstractAttribute instanceof BrAttributable || abstractAttribute instanceof GlobalAttributable))) {
+            if (!(abstractAttribute != null
+                    && (abstractAttribute instanceof BrAttributable
+                            || abstractAttribute instanceof GlobalAttributable))) {
                 LOGGER.warning(abstractAttribute
                         + " is not an instance of BrAttribute");
             }

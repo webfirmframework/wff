@@ -24,8 +24,6 @@ public class H2 extends AbstractHtml {
     }
 
     /**
-     * Represents the root of an HTML or XHTML document. All other elements must
-     * be descendants of this element.
      *
      * @param base
      *            i.e. parent tag of this tag
@@ -35,10 +33,12 @@ public class H2 extends AbstractHtml {
      * @since 1.0.0
      */
     public H2(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(H2.class.getSimpleName().toLowerCase(), base, attributes);
+        super(TagNameConstants.H2, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof H2Attributable || abstractAttribute instanceof GlobalAttributable))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof H2Attributable
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of H2Attribute");
                 }
@@ -49,7 +49,6 @@ public class H2 extends AbstractHtml {
     /**
      * invokes only once per object
      *
-     * @author WFF
      * @since 1.0.0
      */
     protected void init() {

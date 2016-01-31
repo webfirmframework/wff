@@ -60,6 +60,7 @@ public class AttributeNameConstants {
     public static final String MUTED = "muted";
     public static final String SRC = "src";
     public static final String VALUE = "value";
+    public static final String COLOR = "color";
 
     /**
      *

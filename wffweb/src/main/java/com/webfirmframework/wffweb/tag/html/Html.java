@@ -50,11 +50,14 @@ public class Html extends DocType {
      * @author WFF
      * @since 1.0.0
      */
-    public Html(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(Html.class.getSimpleName().toLowerCase(), base, attributes);
+    public Html(final AbstractHtml base,
+            final AbstractAttribute... attributes) {
+        super(TagNameConstants.HTML, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof HtmlAttributable || abstractAttribute instanceof GlobalAttributable))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof HtmlAttributable
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of HtmlAttribute");
                 }

@@ -35,10 +35,12 @@ public class Qfn extends AbstractHtml {
      * @since 1.0.0
      */
     public Qfn(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(Qfn.class.getSimpleName().toLowerCase(), base, attributes);
+        super(TagNameConstants.QFN, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof QfnAttributable || abstractAttribute instanceof GlobalAttributable))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof QfnAttributable
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of QfnAttribute");
                 }

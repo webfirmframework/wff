@@ -5,7 +5,9 @@
  * @author WFF
  *
  */
-//@XmlSchema(namespace = "https://docs.oracle.com/javase/specs/jls/se7/html/jls-7.html#jls-7.4", elementFormDefault = XmlNsForm.QUALIFIED)
+// @XmlSchema(namespace =
+// "https://docs.oracle.com/javase/specs/jls/se7/html/jls-7.html#jls-7.4",
+// elementFormDefault = XmlNsForm.QUALIFIED)
 package com.webfirmframework.wffweb.tag.html;
 
 // @formatter:off

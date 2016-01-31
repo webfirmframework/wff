@@ -24,8 +24,6 @@ public class H4 extends AbstractHtml {
     }
 
     /**
-     * Represents the root of an HTML or XHTML document. All other elements must
-     * be descendants of this element.
      *
      * @param base
      *            i.e. parent tag of this tag
@@ -35,10 +33,12 @@ public class H4 extends AbstractHtml {
      * @since 1.0.0
      */
     public H4(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(H4.class.getSimpleName().toLowerCase(), base, attributes);
+        super(TagNameConstants.H4, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof H4Attributable || abstractAttribute instanceof GlobalAttributable))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof H4Attributable
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of H4Attribute");
                 }
@@ -49,7 +49,6 @@ public class H4 extends AbstractHtml {
     /**
      * invokes only once per object
      *
-     * @author WFF
      * @since 1.0.0
      */
     protected void init() {
