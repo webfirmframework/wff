@@ -215,6 +215,16 @@ public class TagNameConstants {
 
     public static final String UL = "ul";
 
+    public static final String HEAD = "head";
+
+    public static final String NOSCRIPT = "noscript";
+
+    public static final String OBJECT = "object";
+
+    public static final String PARAM = "param";
+
+    public static final String SCRIPT = "script";
+
     /**
      *
      * @author WFF

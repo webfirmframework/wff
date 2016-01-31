@@ -3,6 +3,7 @@ package com.webfirmframework.wffweb.tag.html.metainfo;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.HeadAttributable;
@@ -36,7 +37,7 @@ public class Head extends AbstractHtml {
      */
     public Head(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(Head.class.getSimpleName().toLowerCase(), base, attributes);
+        super(TagNameConstants.HEAD.toLowerCase(), base, attributes);
         for (final AbstractAttribute abstractAttribute : attributes) {
             if (!(abstractAttribute != null
                     && (abstractAttribute instanceof HeadAttributable
