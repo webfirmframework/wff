@@ -3,6 +3,7 @@ package com.webfirmframework.wffweb.tag.html.stylesandsemantics;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.DivAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
@@ -35,7 +36,7 @@ public class Div extends AbstractHtml {
      * @since 1.0.0
      */
     public Div(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(Div.class.getSimpleName().toLowerCase(), base, attributes);
+        super(TagNameConstants.DIV, base, attributes);
         for (final AbstractAttribute abstractAttribute : attributes) {
             if (!(abstractAttribute != null
                     && (abstractAttribute instanceof DivAttributable

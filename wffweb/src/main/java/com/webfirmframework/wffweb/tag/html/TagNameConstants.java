@@ -225,6 +225,32 @@ public class TagNameConstants {
 
     public static final String SCRIPT = "script";
 
+    public static final String DIV = "div";
+
+    public static final String SPAN = "span";
+
+    public static final String STYLE = "style";
+
+    public static final String CAPTION = "caption";
+
+    public static final String COL = "col";
+
+    public static final String COLGROUP = "colgroup";
+
+    public static final String TABLE = "table";
+
+    public static final String TBODY = "tbody";
+
+    public static final String TD = "td";
+
+    public static final String TFOOT = "tfoot";
+
+    public static final String TH = "th";
+
+    public static final String THEAD = "thead";
+
+    public static final String TR = "tr";
+
     /**
      *
      * @author WFF
