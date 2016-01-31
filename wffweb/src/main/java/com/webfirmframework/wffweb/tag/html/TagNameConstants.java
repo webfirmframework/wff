@@ -203,6 +203,18 @@ public class TagNameConstants {
 
     public static final String A = "a";
 
+    public static final String DD = "dd";
+
+    public static final String DL = "dl";
+
+    public static final String DT = "dt";
+
+    public static final String LI = "li";
+
+    public static final String OL = "ol";
+
+    public static final String UL = "ul";
+
     /**
      *
      * @author WFF
