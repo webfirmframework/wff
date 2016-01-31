@@ -163,6 +163,12 @@ public class TagNameConstants {
 
     public static final String OUTPUT = "output";
 
+    public static final String CANVAS = "canvas";
+
+    public static final String FIGCAPTION = "figcaption";
+
+    public static final String FIGURE = "figure";
+
     /**
      *
      * @author WFF
