@@ -35,11 +35,14 @@ public class Table extends AbstractHtml {
      *
      * @since 1.0.0
      */
-    public Table(final AbstractHtml base, final AbstractAttribute... attributes) {
+    public Table(final AbstractHtml base,
+            final AbstractAttribute... attributes) {
         super(Table.class.getSimpleName().toLowerCase(), base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof TableAttributable || abstractAttribute instanceof GlobalAttributable))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof TableAttributable
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of TableAttribute");
                 }

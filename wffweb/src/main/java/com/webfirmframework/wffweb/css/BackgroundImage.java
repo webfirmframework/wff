@@ -33,11 +33,11 @@ import com.webfirmframework.wffweb.util.StringBuilderUtil;
 /**
  * <pre>
  * The background-image property sets one or more background images for an element.
- * 
+ *
  * The background of an element is the total size of the element, including padding and border (but not the margin).
- * 
+ *
  * By default, a background-image is placed at the top-left corner of an element, and repeated both vertically and horizontally.
- * 
+ *
  * Tip: Always set a background-color to be used if the image is unavailable.
  * Default value:  none
  * Inherited:      no
@@ -58,11 +58,11 @@ public class BackgroundImage extends AbstractCssProperty<BackgroundImage>
     public static final String INHERIT = "inherit";
     public static final String NONE = "none";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(
-            INITIAL, INHERIT, NONE);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays
+            .asList(INITIAL, INHERIT, NONE);
 
-    public static final Logger LOGGER = Logger.getLogger(BackgroundImage.class
-            .getName());
+    public static final Logger LOGGER = Logger
+            .getLogger(BackgroundImage.class.getName());
 
     private String cssValue;
 
@@ -75,7 +75,7 @@ public class BackgroundImage extends AbstractCssProperty<BackgroundImage>
 
     /**
      * the default value is <code>none</code>
-     * 
+     *
      * @author WFF
      * @since 1.0.0
      */
@@ -85,8 +85,8 @@ public class BackgroundImage extends AbstractCssProperty<BackgroundImage>
 
     /**
      * @param cssValue
-     *            the cssValue to set. </br> eg:-
-     *            {@code url(images/BackgroundDesign.png)}
+     *            the cssValue to set. </br>
+     *            eg:- {@code url(images/BackgroundDesign.png)}
      * @author WFF
      */
     public BackgroundImage(final String cssValue) {
@@ -142,11 +142,11 @@ public class BackgroundImage extends AbstractCssProperty<BackgroundImage>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssName()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -156,11 +156,11 @@ public class BackgroundImage extends AbstractCssProperty<BackgroundImage>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssValue()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -400,7 +400,8 @@ public class BackgroundImage extends AbstractCssProperty<BackgroundImage>
 
     @Override
     public void stateChanged(final Bean stateChangedObject) {
-        if (urlCss3Values != null && stateChangedObject instanceof UrlCss3Value) {
+        if (urlCss3Values != null
+                && stateChangedObject instanceof UrlCss3Value) {
             final UrlCss3Value urlCss3Value = (UrlCss3Value) stateChangedObject;
             if (urlCss3Value.getX() > -1 || urlCss3Value.getY() > -1) {
                 throw new InvalidValueException(

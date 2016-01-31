@@ -35,11 +35,14 @@ public class Label extends AbstractHtml {
      *
      * @since 1.0.0
      */
-    public Label(final AbstractHtml base, final AbstractAttribute... attributes) {
+    public Label(final AbstractHtml base,
+            final AbstractAttribute... attributes) {
         super(Label.class.getSimpleName().toLowerCase(), base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof LabelAttributable || abstractAttribute instanceof GlobalAttributable))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof LabelAttributable
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of LabelAttribute");
                 }

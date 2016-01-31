@@ -22,9 +22,9 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
 /**
  * {@code <element draggable="true|false|auto">}
- * 
+ *
  * <pre>
- * 
+ *
  * The draggable attribute specifies whether an element is draggable or not.
  *
  * </pre>

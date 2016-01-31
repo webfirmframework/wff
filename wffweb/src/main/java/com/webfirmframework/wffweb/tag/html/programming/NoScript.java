@@ -18,8 +18,8 @@ public class NoScript extends AbstractHtml {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final Logger LOGGER = Logger.getLogger(NoScript.class
-            .getName());
+    public static final Logger LOGGER = Logger
+            .getLogger(NoScript.class.getName());
 
     {
         init();
@@ -41,7 +41,9 @@ public class NoScript extends AbstractHtml {
         super(NoScript.class.getSimpleName().toLowerCase(), base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof NoScriptAttributable || abstractAttribute instanceof GlobalAttributable))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof NoScriptAttributable
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of NoScriptAttribute");
                 }

@@ -33,7 +33,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 public class KeyGen extends AbstractHtml {
 
     private static final long serialVersionUID = 1_0_0L;
-    
+
     public static final Logger LOGGER = Logger
             .getLogger(KeyGen.class.getName());
 
@@ -57,7 +57,9 @@ public class KeyGen extends AbstractHtml {
         super(KeyGen.class.getSimpleName().toLowerCase(), base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof KeyGenAttribute || abstractAttribute instanceof GlobalAttributable))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof KeyGenAttribute
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of KeyGenAttribute");
                 }

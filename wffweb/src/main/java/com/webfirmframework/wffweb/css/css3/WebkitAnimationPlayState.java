@@ -128,8 +128,8 @@ public enum WebkitAnimationPlayState implements CssProperty {
      * @author WFF
      */
     public static WebkitAnimationPlayState getThis(final String cssValue) {
-        final String enumString = TagStringUtil.toUpperCase(cssValue).replace(
-                "-", "_");
+        final String enumString = TagStringUtil.toUpperCase(cssValue)
+                .replace("-", "_");
 
         WebkitAnimationPlayState correspondingObject = null;
         try {

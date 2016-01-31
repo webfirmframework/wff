@@ -69,6 +69,52 @@ public class TagNameConstants {
 
     public static final String VIDEO = "video";
 
+    public static final String ABBR = "abbr";
+
+    public static final String ADDRESS = "address";
+
+    public static final String B = "b";
+
+    public static final String BDO = "bdo";
+
+    public static final String BLOCKQUOTE = "blockquote";
+
+    public static final String CITE = "cite";
+
+    public static final String CODE = "code";
+
+    public static final String DEL = "del";
+
+    public static final String DFN = "dfn";
+
+    public static final String EM = "em";
+
+    public static final String I = "i";
+
+    public static final String INS = "ins";
+
+    public static final String KBD = "kbd";
+
+    public static final String PRE = "pre";
+
+    public static final String Q = "q";
+
+    public static final String S = "s";
+
+    public static final String SAMP = "samp";
+
+    public static final String SMALL = "small";
+
+    public static final String STRONG = "strong";
+
+    public static final String SUB = "sub";
+
+    public static final String SUP = "sup";
+
+    public static final String U = "u";
+
+    public static final String VAR = "var";
+
     /**
      *
      * @author WFF

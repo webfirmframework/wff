@@ -33,7 +33,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 public class Embed extends AbstractHtml {
 
     private static final long serialVersionUID = 1_0_0L;
-    
+
     public static final Logger LOGGER = Logger.getLogger(Embed.class.getName());
 
     {
@@ -51,11 +51,14 @@ public class Embed extends AbstractHtml {
      *
      * @since 1.0.0
      */
-    public Embed(final AbstractHtml base, final AbstractAttribute... attributes) {
+    public Embed(final AbstractHtml base,
+            final AbstractAttribute... attributes) {
         super(Embed.class.getSimpleName().toLowerCase(), base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof EmbedAttribute || abstractAttribute instanceof GlobalAttributable))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof EmbedAttribute
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of EmbedAttribute");
                 }

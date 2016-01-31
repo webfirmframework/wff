@@ -77,8 +77,8 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final Logger LOGGER = Logger.getLogger(BorderImageSlice.class
-            .getName());
+    public static final Logger LOGGER = Logger
+            .getLogger(BorderImageSlice.class.getName());
 
     public static final String FILL = "fill";
     public static final String INITIAL = "initial";
@@ -86,8 +86,8 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
 
     protected static final String DEFAULT_VALUE = "100%";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(
-            INITIAL, INHERIT);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays
+            .asList(INITIAL, INHERIT);
 
     private String cssValue;
 
@@ -146,7 +146,8 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
      * @param value
      * @param cssLengthUnit
      */
-    public BorderImageSlice(final float value, final CssLengthUnit cssLengthUnit) {
+    public BorderImageSlice(final float value,
+            final CssLengthUnit cssLengthUnit) {
         setCssValue(value + "" + cssLengthUnit);
     }
 
@@ -237,8 +238,8 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
                     return this;
                 }
 
-                final String cssValueWithoutFill = trimmedCssValue.replace(
-                        FILL, "");
+                final String cssValueWithoutFill = trimmedCssValue.replace(FILL,
+                        "");
 
                 final int lengthOfFill = FILL.length();
 
@@ -248,10 +249,9 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
                 final int lengthBeforeRemovingFill = trimmedCssValue.length();
 
                 if ((lengthBeforeRemovingFill - lengthWithFill) > 0) {
-                    throw new InvalidValueException(
-                            "The given cssValue '"
-                                    + cssValue
-                                    + "' is invalid as it contains more that one 'fill' value.");
+                    throw new InvalidValueException("The given cssValue '"
+                            + cssValue
+                            + "' is invalid as it contains more that one 'fill' value.");
                 }
 
                 middle = lengthBeforeRemovingFill == lengthWithFill ? FILL
@@ -727,20 +727,21 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
             final CssLengthUnit leftUnit, final String middle) {
 
         if ((ObjectUtil.isEqual(top, right) && topUnit == rightUnit)
-                && (ObjectUtil.isEqual(right, bottom) && ObjectUtil.isEqual(
-                        rightUnit, bottomUnit))
-                && (ObjectUtil.isEqual(bottom, left) && bottomUnit == leftUnit)) {
+                && (ObjectUtil.isEqual(right, bottom)
+                        && ObjectUtil.isEqual(rightUnit, bottomUnit))
+                && (ObjectUtil.isEqual(bottom, left)
+                        && bottomUnit == leftUnit)) {
 
             if (middle != null) {
-                return (top != null && topUnit != null ? String.valueOf(top)
-                        .concat(topUnit.getUnit()) : top != null ? String
-                        .valueOf(top) : DEFAULT_VALUE).concat(" ").concat(
-                        middle);
+                return (top != null && topUnit != null
+                        ? String.valueOf(top).concat(topUnit.getUnit())
+                        : top != null ? String.valueOf(top) : DEFAULT_VALUE)
+                                .concat(" ").concat(middle);
             }
 
-            return top != null && topUnit != null ? String.valueOf(top).concat(
-                    topUnit.getUnit()) : top != null ? String.valueOf(top)
-                    : DEFAULT_VALUE;
+            return top != null && topUnit != null
+                    ? String.valueOf(top).concat(topUnit.getUnit())
+                    : top != null ? String.valueOf(top) : DEFAULT_VALUE;
 
         } else if ((ObjectUtil.isEqual(top, bottom) && topUnit == bottomUnit)
                 && (ObjectUtil.isEqual(right, left) && rightUnit == leftUnit)) {
@@ -857,8 +858,8 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
      * @since 1.0.0
      */
     public static boolean isValid(final String cssValue) {
-        final String trimmedCssValue = StringUtil
-                .convertToSingleSpace(TagStringUtil.toLowerCase(cssValue.trim()));
+        final String trimmedCssValue = StringUtil.convertToSingleSpace(
+                TagStringUtil.toLowerCase(cssValue.trim()));
 
         if (PREDEFINED_CONSTANTS.contains(trimmedCssValue)) {
             return true;

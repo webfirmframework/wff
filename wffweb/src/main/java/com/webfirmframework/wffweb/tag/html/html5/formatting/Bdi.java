@@ -33,7 +33,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 public class Bdi extends AbstractHtml {
 
     private static final long serialVersionUID = 1_0_0L;
-    
+
     public static final Logger LOGGER = Logger.getLogger(Bdi.class.getName());
 
     {
@@ -55,7 +55,9 @@ public class Bdi extends AbstractHtml {
         super(Bdi.class.getSimpleName().toLowerCase(), base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof BdiAttribute || abstractAttribute instanceof GlobalAttributable))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof BdiAttribute
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of BdiAttribute");
                 }

@@ -29,9 +29,9 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
 /**
  * <pre>
  * -moz-flex-basis: <i>length</i>|auto|initial|inherit;
- * 
+ *
  * The -moz-flex-basis property specifies the initial length of a flexible item.
- * 
+ *
  * Note: If the element is not a flexible item, the -moz-flex-basis property has no effect.
  * Default value:  auto
  * Inherited:      no
@@ -51,8 +51,8 @@ public class MozFlexBasis extends AbstractCssProperty<MozFlexBasis> {
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(
-            INITIAL, INHERIT, AUTO);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays
+            .asList(INITIAL, INHERIT, AUTO);
 
     private String cssValue;
     private Float value;
@@ -143,11 +143,11 @@ public class MozFlexBasis extends AbstractCssProperty<MozFlexBasis> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssName()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -157,11 +157,11 @@ public class MozFlexBasis extends AbstractCssProperty<MozFlexBasis> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssValue()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -214,11 +214,12 @@ public class MozFlexBasis extends AbstractCssProperty<MozFlexBasis> {
             } else {
                 final String trimmedCssValue = cssValue.trim();
                 boolean invalidValue = true;
-                for (final CssLengthUnit cssLengthUnit : CssLengthUnit.values()) {
+                for (final CssLengthUnit cssLengthUnit : CssLengthUnit
+                        .values()) {
                     final String unit = cssLengthUnit.getUnit();
                     if (trimmedCssValue.endsWith(unit)) {
-                        final String valueOnly = trimmedCssValue.replaceFirst(
-                                unit, "");
+                        final String valueOnly = trimmedCssValue
+                                .replaceFirst(unit, "");
                         try {
                             value = Float.parseFloat(valueOnly);
                         } catch (final NumberFormatException e) {
@@ -239,9 +240,8 @@ public class MozFlexBasis extends AbstractCssProperty<MozFlexBasis> {
                     invalidValue = false;
                 }
                 if (invalidValue) {
-                    throw new InvalidValueException(
-                            cssValue
-                                    + " is an invalid value. The value format should be as for example 75px, 85%, initial, inherit etc..");
+                    throw new InvalidValueException(cssValue
+                            + " is an invalid value. The value format should be as for example 75px, 85%, initial, inherit etc..");
                 }
             }
             if (getStateChangeInformer() != null) {
@@ -249,8 +249,7 @@ public class MozFlexBasis extends AbstractCssProperty<MozFlexBasis> {
             }
         } catch (final NumberFormatException e) {
             throw new InvalidValueException(
-                    cssValue
-                            + " is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit.",
+                    cssValue + " is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit.",
                     e);
         }
         return this;
@@ -297,8 +296,8 @@ public class MozFlexBasis extends AbstractCssProperty<MozFlexBasis> {
      * @since 1.0.0
      */
     public static boolean isValid(final String cssValue) {
-        final String trimmedCssValue = TagStringUtil.toLowerCase(cssValue
-                .trim());
+        final String trimmedCssValue = TagStringUtil
+                .toLowerCase(cssValue.trim());
         if (trimmedCssValue.contains(" ")) {
             return false;
         }

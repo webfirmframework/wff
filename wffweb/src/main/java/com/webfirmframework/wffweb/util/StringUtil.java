@@ -70,7 +70,8 @@ public class StringUtil {
             return null;
         }
 
-        final int endIndex = inputString.indexOf(endingWith, startIndex + 1) + 1;
+        final int endIndex = inputString.indexOf(endingWith, startIndex + 1)
+                + 1;
         if (startIndex > endIndex || startIndex < 0 || endIndex < 0) {
             return null;
         }
@@ -110,7 +111,8 @@ public class StringUtil {
             return null;
         }
 
-        final int endIndex = inputString.indexOf(endingWith, startIndex + 1) + 1;
+        final int endIndex = inputString.indexOf(endingWith, startIndex + 1)
+                + 1;
         if (startIndex > endIndex || startIndex < 0 || endIndex < 0) {
             return null;
         }
@@ -119,8 +121,9 @@ public class StringUtil {
 
     /**
      * gets all substrings as an array which starts and ends with the given
-     * values.</br> Note:- it will never return null instead it will return an
-     * empty array (having length zero).
+     * values.</br>
+     * Note:- it will never return null instead it will return an empty array
+     * (having length zero).
      *
      * <pre>
      *
@@ -429,8 +432,9 @@ public class StringUtil {
 
     /**
      * gets all start and end indexes as an array of array which start and end
-     * with the given values.</br> Note:- it will never return null instead it
-     * will return an empty array (having length zero).
+     * with the given values.</br>
+     * Note:- it will never return null instead it will return an empty array
+     * (having length zero).
      *
      * <pre>
      *

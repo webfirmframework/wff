@@ -34,7 +34,8 @@ import com.webfirmframework.wffweb.tag.html.identifier.BaseAttributable;
  * @author WFF
  *
  */
-public class Href extends AbstractAttribute implements AAttributable, AreaAttributable, BaseAttributable {
+public class Href extends AbstractAttribute
+        implements AAttributable, AreaAttributable, BaseAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 

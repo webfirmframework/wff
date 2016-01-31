@@ -40,8 +40,8 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class WebkitColumnRuleColor extends
-        AbstractCssProperty<WebkitColumnRuleColor> {
+public class WebkitColumnRuleColor
+        extends AbstractCssProperty<WebkitColumnRuleColor> {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -154,9 +154,8 @@ public class WebkitColumnRuleColor extends
             throw new NullValueException(
                     "null is an invalid value. The value should be any color for example #0000ff. Or, initial/inherit.");
         } else if (cssValue.trim().isEmpty()) {
-            throw new InvalidValueException(
-                    cssValue
-                            + " is an invalid value. The value should be any color for example #0000ff. Or, initial/inherit.");
+            throw new InvalidValueException(cssValue
+                    + " is an invalid value. The value should be any color for example #0000ff. Or, initial/inherit.");
         } else {
             this.cssValue = cssValue.trim();
             if (getStateChangeInformer() != null) {

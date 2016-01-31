@@ -138,8 +138,8 @@ public enum AlignItems implements CssProperty {
      * @author WFF
      */
     public static AlignItems getThis(final String cssValue) {
-        final String enumString = TagStringUtil.toUpperCase(cssValue).replace(
-                "-", "_");
+        final String enumString = TagStringUtil.toUpperCase(cssValue)
+                .replace("-", "_");
 
         AlignItems correspondingObject = null;
         try {

@@ -127,8 +127,8 @@ public enum TextDecorationStyle implements CssProperty {
      * @author WFF
      */
     public static TextDecorationStyle getThis(final String cssValue) {
-        final String enumString = TagStringUtil.toUpperCase(cssValue).replace(
-                "-", "_");
+        final String enumString = TagStringUtil.toUpperCase(cssValue)
+                .replace("-", "_");
 
         TextDecorationStyle correspondingObject = null;
         try {

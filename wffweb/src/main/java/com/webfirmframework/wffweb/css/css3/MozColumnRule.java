@@ -27,9 +27,9 @@ import com.webfirmframework.wffweb.util.StringBuilderUtil;
 /**
  * <pre>
  * -moz-column-rule: <i>-moz-column-rule-width -moz-column-rule-style -moz-column-rule-color</i>|initial|inherit;
- * 
+ *
  * The -moz-column-rule property is a shorthand property for setting all the -moz-column-rule-* properties.
- * 
+ *
  * The -moz-column-rule property sets the width, style, and color of the rule between columns.
  * Default value:  medium none <i>color</i>
  * Inherited:      no
@@ -42,8 +42,8 @@ import com.webfirmframework.wffweb.util.StringBuilderUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class MozColumnRule extends AbstractCssProperty<MozColumnRule> implements
-        StateChangeInformer<CssProperty> {
+public class MozColumnRule extends AbstractCssProperty<MozColumnRule>
+        implements StateChangeInformer<CssProperty> {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -101,11 +101,11 @@ public class MozColumnRule extends AbstractCssProperty<MozColumnRule> implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssName()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -115,11 +115,11 @@ public class MozColumnRule extends AbstractCssProperty<MozColumnRule> implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssValue()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -161,9 +161,8 @@ public class MozColumnRule extends AbstractCssProperty<MozColumnRule> implements
             throw new NullValueException(
                     "null is an invalid value. The value should be any color for example medium none #0000ff. Or, initial/inherit.");
         } else if (cssValue.trim().isEmpty()) {
-            throw new InvalidValueException(
-                    cssValue
-                            + " is an invalid value. The value should be any color for example medium none #0000ff. Or, initial/inherit.");
+            throw new InvalidValueException(cssValue
+                    + " is an invalid value. The value should be any color for example medium none #0000ff. Or, initial/inherit.");
         } else {
 
             final String trimmedCssValue = cssValue.trim();
@@ -218,9 +217,8 @@ public class MozColumnRule extends AbstractCssProperty<MozColumnRule> implements
                     this.mozColumnRuleColor.setAlreadyInUse(false);
                 }
                 if (invalid) {
-                    throw new InvalidValueException(
-                            cssValue
-                                    + " is an invalid value. The value format should be as for example '25px dotted green'. Or, initial/inherit.");
+                    throw new InvalidValueException(cssValue
+                            + " is an invalid value. The value format should be as for example '25px dotted green'. Or, initial/inherit.");
                 }
                 this.cssValue = StringBuilderUtil
                         .getTrimmedString(cssValueBuilder);

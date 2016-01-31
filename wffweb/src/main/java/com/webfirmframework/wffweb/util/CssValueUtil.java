@@ -51,7 +51,8 @@ public class CssValueUtil {
      * The given value is used by Web Firm Framework Index Based Extraction
      * algorithm to extract css value parts, i.e. the
      * {@code CssValueUtil#split(String)} is extracting values based on the
-     * given values. </br> Eg :-
+     * given values. </br>
+     * Eg :-
      *
      * <pre>
      * addCssValuePartStartEndValue(&quot;rgb(&quot;, &quot;)&quot;);
@@ -72,14 +73,15 @@ public class CssValueUtil {
     }
 
     /**
-     * splits each cssValue part based on the css rule. </br> This extraction is
-     * done based on the Web Firm Framework Index Based Extraction algorithm. It
-     * will throw InvalidValueException if the given cssValue contains no space
-     * in between any valid cssValue part, eg:-
+     * splits each cssValue part based on the css rule. </br>
+     * This extraction is done based on the Web Firm Framework Index Based
+     * Extraction algorithm. It will throw InvalidValueException if the given
+     * cssValue contains no space in between any valid cssValue part, eg:-
      * <code>rgb(1, 2, 5)rgb(11, 12, 15)</code>. And, it doesn't validate the
      * extracted cssValue parts so the extracted cssValue parts (i.e. the
-     * returned {@code List<String>}) may contain invalid cssValue
-     * part.</br></br> Sample code to test
+     * returned {@code List<String>}) may contain invalid cssValue part.</br>
+     * </br>
+     * Sample code to test
      *
      * <pre>
      * final List&lt;String&gt; splitTest = CssValueUtil.split(&quot;hsla(7, 8, 9, 1) red rgb(3, 5, 6) rgb(7, 8, 9) rgba(7, 8, 9, 1) middle hsl(10, 11, 12) green   blue&quot;);
@@ -124,8 +126,8 @@ public class CssValueUtil {
             }
 
             if (startAndEndIndexes.size() == 0) {
-                return Arrays.asList(StringUtil.convertToSingleSpace(cssValue)
-                        .split(" "));
+                return Arrays.asList(
+                        StringUtil.convertToSingleSpace(cssValue).split(" "));
             }
 
             final List<String> cssValueParts = new ArrayList<String>();
@@ -184,9 +186,9 @@ public class CssValueUtil {
                                         + "'");
                     }
 
-                    cssValueParts.add(cssValue.substring(
-                            currentStartEndIndex[0],
-                            currentStartEndIndex[1] + 1));
+                    cssValueParts
+                            .add(cssValue.substring(currentStartEndIndex[0],
+                                    currentStartEndIndex[1] + 1));
 
                 } else {
 
@@ -220,9 +222,9 @@ public class CssValueUtil {
 
                     }
 
-                    cssValueParts.add(cssValue.substring(
-                            currentStartEndIndex[0],
-                            currentStartEndIndex[1] + 1));
+                    cssValueParts
+                            .add(cssValue.substring(currentStartEndIndex[0],
+                                    currentStartEndIndex[1] + 1));
 
                 }
 
@@ -276,7 +278,8 @@ public class CssValueUtil {
         if (cssValue == null) {
             throw new NullValueException("the cssValue should not be null.");
         } else if (cssValue.trim().isEmpty()) {
-            throw new InvalidValueException("the cssValue should not be blank.");
+            throw new InvalidValueException(
+                    "the cssValue should not be blank.");
         }
     }
 

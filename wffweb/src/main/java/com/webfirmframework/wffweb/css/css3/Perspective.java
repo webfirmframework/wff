@@ -26,15 +26,15 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
 /**
  * <pre>
  * perspective: length|none;
- * 
+ *
  * The perspective property defines how many pixels a 3D element is placed from the view. This property allows you to change the perspective on how 3D elements are viewed.
- * 
+ *
  * When defining the perspective property for an element, it is the CHILD elements that get the perspective view, NOT the element itself.
- * 
+ *
  * Note: The perspective property only affects 3D transformed elements!
- * 
+ *
  * Tip: Use this property together with the perspective-origin property, which allows you to change the bottom position of 3D elements.
- * 
+ *
  * To better understand the perspective property, view a demo.
  * Default value:  none
  * Inherited:      no
@@ -141,11 +141,11 @@ public class Perspective extends AbstractCssProperty<Perspective> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssName()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -155,11 +155,11 @@ public class Perspective extends AbstractCssProperty<Perspective> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssValue()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -212,11 +212,12 @@ public class Perspective extends AbstractCssProperty<Perspective> {
             } else {
                 final String trimmedCssValue = cssValue.trim();
                 boolean invalidValue = true;
-                for (final CssLengthUnit cssLengthUnit : CssLengthUnit.values()) {
+                for (final CssLengthUnit cssLengthUnit : CssLengthUnit
+                        .values()) {
                     final String unit = cssLengthUnit.getUnit();
                     if (trimmedCssValue.endsWith(unit)) {
-                        final String valueOnly = trimmedCssValue.replaceFirst(
-                                unit, "");
+                        final String valueOnly = trimmedCssValue
+                                .replaceFirst(unit, "");
                         try {
                             value = Float.parseFloat(valueOnly);
                         } catch (final NumberFormatException e) {
@@ -235,9 +236,8 @@ public class Perspective extends AbstractCssProperty<Perspective> {
                     invalidValue = false;
                 }
                 if (invalidValue) {
-                    throw new InvalidValueException(
-                            cssValue
-                                    + " is an invalid value. The value format should be as for example 75px, 85%, initial, inherit etc..");
+                    throw new InvalidValueException(cssValue
+                            + " is an invalid value. The value format should be as for example 75px, 85%, initial, inherit etc..");
                 }
             }
             if (getStateChangeInformer() != null) {
@@ -245,8 +245,7 @@ public class Perspective extends AbstractCssProperty<Perspective> {
             }
         } catch (final NumberFormatException e) {
             throw new InvalidValueException(
-                    cssValue
-                            + " is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit.",
+                    cssValue + " is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit.",
                     e);
         }
         return this;
@@ -273,8 +272,8 @@ public class Perspective extends AbstractCssProperty<Perspective> {
      * @since 1.0.0
      */
     public static boolean isValid(final String cssValue) {
-        final String trimmedCssValue = TagStringUtil.toLowerCase(cssValue
-                .trim());
+        final String trimmedCssValue = TagStringUtil
+                .toLowerCase(cssValue.trim());
         if (trimmedCssValue.contains(" ")) {
             return false;
         }

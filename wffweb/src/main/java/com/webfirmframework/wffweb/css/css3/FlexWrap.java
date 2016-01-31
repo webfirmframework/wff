@@ -118,8 +118,8 @@ public enum FlexWrap implements CssProperty {
      * @author WFF
      */
     public static FlexWrap getThis(final String cssValue) {
-        final String enumString = TagStringUtil.toUpperCase(cssValue).replace(
-                "-", "_");
+        final String enumString = TagStringUtil.toUpperCase(cssValue)
+                .replace("-", "_");
 
         FlexWrap correspondingObject = null;
         try {

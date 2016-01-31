@@ -127,8 +127,8 @@ public enum MozTextDecorationStyle implements CssProperty {
      * @author WFF
      */
     public static MozTextDecorationStyle getThis(final String cssValue) {
-        final String enumString = TagStringUtil.toUpperCase(cssValue).replace(
-                "-", "_");
+        final String enumString = TagStringUtil.toUpperCase(cssValue)
+                .replace("-", "_");
 
         MozTextDecorationStyle correspondingObject = null;
         try {

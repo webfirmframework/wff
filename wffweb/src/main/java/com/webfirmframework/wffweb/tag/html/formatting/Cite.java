@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.CiteAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
@@ -35,11 +36,14 @@ public class Cite extends AbstractHtml {
      *
      * @since 1.0.0
      */
-    public Cite(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(Cite.class.getSimpleName().toLowerCase(), base, attributes);
+    public Cite(final AbstractHtml base,
+            final AbstractAttribute... attributes) {
+        super(TagNameConstants.CITE, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof CiteAttributable || abstractAttribute instanceof GlobalAttributable))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof CiteAttributable
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of CiteAttribute");
                 }

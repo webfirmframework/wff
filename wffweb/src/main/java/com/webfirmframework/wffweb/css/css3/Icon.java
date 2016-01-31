@@ -35,9 +35,9 @@ import com.webfirmframework.wffweb.util.StringBuilderUtil;
 /**
  * <pre>
  * icon: auto|<i>URL<i>|initial|inherit;
- * 
+ *
  * The icon property provides the author the ability to style an element with an iconic equivalent.
- * 
+ *
  * Note: An element's icon is not used unless the "content" property is set to the value "icon"!
  * Default value:  auto
  * Inherited:      no
@@ -49,8 +49,8 @@ import com.webfirmframework.wffweb.util.StringBuilderUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class Icon extends AbstractCssProperty<Icon> implements
-        StateChangeInformer<Bean> {
+public class Icon extends AbstractCssProperty<Icon>
+        implements StateChangeInformer<Bean> {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -58,8 +58,8 @@ public class Icon extends AbstractCssProperty<Icon> implements
     public static final String INHERIT = "inherit";
     public static final String NONE = "none";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(
-            INITIAL, INHERIT, NONE);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays
+            .asList(INITIAL, INHERIT, NONE);
 
     public static final Logger LOGGER = Logger.getLogger(Icon.class.getName());
 
@@ -84,8 +84,8 @@ public class Icon extends AbstractCssProperty<Icon> implements
 
     /**
      * @param cssValue
-     *            the cssValue to set. </br> eg:-
-     *            {@code url(images/BackgroundDesign.png)}
+     *            the cssValue to set. </br>
+     *            eg:- {@code url(images/BackgroundDesign.png)}
      * @author WFF
      */
     public Icon(final String cssValue) {
@@ -140,11 +140,11 @@ public class Icon extends AbstractCssProperty<Icon> implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssName()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -154,11 +154,11 @@ public class Icon extends AbstractCssProperty<Icon> implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssValue()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -398,7 +398,8 @@ public class Icon extends AbstractCssProperty<Icon> implements
 
     @Override
     public void stateChanged(final Bean stateChangedObject) {
-        if (urlCss3Values != null && stateChangedObject instanceof UrlCss3Value) {
+        if (urlCss3Values != null
+                && stateChangedObject instanceof UrlCss3Value) {
             final UrlCss3Value urlCss3Value = (UrlCss3Value) stateChangedObject;
             if (urlCss3Value.getX() > -1 || urlCss3Value.getY() > -1) {
                 throw new InvalidValueException(

@@ -27,8 +27,8 @@ import com.webfirmframework.wffweb.css.core.LengthUnit;
 public enum CssLengthUnit implements LengthUnit {
     // should be in descending order of length
     VMIN("vmin"), VMAX("vmax"), REM("rem"), VW("vw"), VH("vh"), PX("px"), PT(
-            "pt"), PC("pc"), MM("mm"), IN("in"), EX("ex"), EM("em"), CM("cm"), CH(
-            "ch"), PER("%"), ;
+            "pt"), PC("pc"), MM("mm"), IN("in"), EX("ex"), EM("em"), CM(
+                    "cm"), CH("ch"), PER("%"),;
 
     private String valueString;
 

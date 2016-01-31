@@ -27,7 +27,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
 /**
  * <pre>
  * column-rule-color: color|initial|inherit;
- * 
+ *
  * The column-rule-color property specifies the color of the rule between columns.
  * Default value:  The current color of the element (In this java class it will be as <i>initial</i>)
  * Inherited:      no
@@ -92,11 +92,11 @@ public class ColumnRuleColor extends AbstractCssProperty<ColumnRuleColor> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssName()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -106,11 +106,11 @@ public class ColumnRuleColor extends AbstractCssProperty<ColumnRuleColor> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssValue()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -151,9 +151,8 @@ public class ColumnRuleColor extends AbstractCssProperty<ColumnRuleColor> {
             throw new NullValueException(
                     "null is an invalid value. The value should be any color for example #0000ff. Or, initial/inherit.");
         } else if (cssValue.trim().isEmpty()) {
-            throw new InvalidValueException(
-                    cssValue
-                            + " is an invalid value. The value should be any color for example #0000ff. Or, initial/inherit.");
+            throw new InvalidValueException(cssValue
+                    + " is an invalid value. The value should be any color for example #0000ff. Or, initial/inherit.");
         } else {
             this.cssValue = cssValue.trim();
             if (getStateChangeInformer() != null) {

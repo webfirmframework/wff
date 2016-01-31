@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.html5.identifier.AddressAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
@@ -18,8 +19,8 @@ public class Address extends AbstractHtml implements AddressAttribute {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final Logger LOGGER = Logger.getLogger(Address.class
-            .getName());
+    public static final Logger LOGGER = Logger
+            .getLogger(Address.class.getName());
 
     {
         init();
@@ -38,10 +39,12 @@ public class Address extends AbstractHtml implements AddressAttribute {
      */
     public Address(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(Address.class.getSimpleName().toLowerCase(), base, attributes);
+        super(TagNameConstants.ADDRESS, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof AddressAttribute || abstractAttribute instanceof GlobalAttributable))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof AddressAttribute
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of AddressAttribute");
                 }

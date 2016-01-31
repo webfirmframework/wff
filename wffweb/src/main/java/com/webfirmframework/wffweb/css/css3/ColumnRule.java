@@ -27,9 +27,9 @@ import com.webfirmframework.wffweb.util.StringBuilderUtil;
 /**
  * <pre>
  * column-rule: <i>column-rule-width column-rule-style column-rule-color</i>|initial|inherit;
- * 
+ *
  * The column-rule property is a shorthand property for setting all the column-rule-* properties.
- * 
+ *
  * The column-rule property sets the width, style, and color of the rule between columns.
  * Default value:  medium none <i>color</i>
  * Inherited:      no
@@ -42,8 +42,8 @@ import com.webfirmframework.wffweb.util.StringBuilderUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class ColumnRule extends AbstractCssProperty<ColumnRule> implements
-        StateChangeInformer<CssProperty> {
+public class ColumnRule extends AbstractCssProperty<ColumnRule>
+        implements StateChangeInformer<CssProperty> {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -101,11 +101,11 @@ public class ColumnRule extends AbstractCssProperty<ColumnRule> implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssName()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -115,11 +115,11 @@ public class ColumnRule extends AbstractCssProperty<ColumnRule> implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssValue()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -162,9 +162,8 @@ public class ColumnRule extends AbstractCssProperty<ColumnRule> implements
             throw new NullValueException(
                     "null is an invalid value. The value should be any color for example medium none #0000ff. Or, initial/inherit.");
         } else if ((trimmedCssValue = cssValue.trim()).isEmpty()) {
-            throw new InvalidValueException(
-                    cssValue
-                            + " is an invalid value. The value should be any color for example medium none #0000ff. Or, initial/inherit.");
+            throw new InvalidValueException(cssValue
+                    + " is an invalid value. The value should be any color for example medium none #0000ff. Or, initial/inherit.");
         }
 
         final String[] cssValueParts = trimmedCssValue.split(" ");
@@ -216,9 +215,8 @@ public class ColumnRule extends AbstractCssProperty<ColumnRule> implements
                 this.columnRuleColor.setAlreadyInUse(false);
             }
             if (invalid) {
-                throw new InvalidValueException(
-                        cssValue
-                                + " is an invalid value. The value format should be as for example '25px dotted green'. Or, initial/inherit.");
+                throw new InvalidValueException(cssValue
+                        + " is an invalid value. The value format should be as for example '25px dotted green'. Or, initial/inherit.");
             }
             this.cssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder);
             this.columnRuleWidth = columnRuleWidth;
@@ -277,7 +275,8 @@ public class ColumnRule extends AbstractCssProperty<ColumnRule> implements
      * @since 1.0.0
      * @author WFF
      */
-    public ColumnRule setColumnRuleWidth(final ColumnRuleWidth columnRuleWidth) {
+    public ColumnRule setColumnRuleWidth(
+            final ColumnRuleWidth columnRuleWidth) {
 
         final StringBuilder cssValueBuilder = new StringBuilder();
 
@@ -332,7 +331,8 @@ public class ColumnRule extends AbstractCssProperty<ColumnRule> implements
      * @author WFF
      * @return
      */
-    public ColumnRule setColumnRuleStyle(final ColumnRuleStyle columnRuleStyle) {
+    public ColumnRule setColumnRuleStyle(
+            final ColumnRuleStyle columnRuleStyle) {
 
         final StringBuilder cssValueBuilder = new StringBuilder();
 
@@ -378,7 +378,8 @@ public class ColumnRule extends AbstractCssProperty<ColumnRule> implements
      * @author WFF
      * @return the current instance.
      */
-    public ColumnRule setColumnRuleColor(final ColumnRuleColor columnRuleColor) {
+    public ColumnRule setColumnRuleColor(
+            final ColumnRuleColor columnRuleColor) {
 
         final StringBuilder cssValueBuilder = new StringBuilder();
 

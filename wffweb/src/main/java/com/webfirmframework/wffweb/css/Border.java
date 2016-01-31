@@ -30,13 +30,13 @@ import com.webfirmframework.wffweb.util.StringBuilderUtil;
 /**
  * <pre>
  * border: border-width border-style border-color|initial|inherit;
- * 
+ *
  * The border shorthand property sets all the border properties in one
  * declaration.
- * 
+ *
  * The properties that can be set, are (in order): border-width, border-style,
  * and border-color.
- * 
+ *
  * It does not matter if one of the values above are missing, e.g. border:solid
  * #ff0000; is allowed.
  * </pre>
@@ -44,8 +44,8 @@ import com.webfirmframework.wffweb.util.StringBuilderUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class Border extends AbstractCssProperty<Border> implements
-        StateChangeInformer<Bean> {
+public class Border extends AbstractCssProperty<Border>
+        implements StateChangeInformer<Bean> {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -96,11 +96,11 @@ public class Border extends AbstractCssProperty<Border> implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssName()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -110,11 +110,11 @@ public class Border extends AbstractCssProperty<Border> implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssValue()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -142,9 +142,8 @@ public class Border extends AbstractCssProperty<Border> implements
             throw new NullValueException(
                     "null is an invalid value. The value format should be as for example cjk-ideographic inside url(\"Sqpurple.gif\"). Or, initial/inherit.");
         } else if ((trimmedCssValue = cssValue.trim()).isEmpty()) {
-            throw new NullValueException(
-                    cssValue
-                            + " is an invalid value. The value format should be as for example cjk-ideographic inside url(\"Sqpurple.gif\"). Or, initial/inherit.");
+            throw new NullValueException(cssValue
+                    + " is an invalid value. The value format should be as for example cjk-ideographic inside url(\"Sqpurple.gif\"). Or, initial/inherit.");
         }
 
         final List<String> cssValueParts = CssValueUtil.split(trimmedCssValue);
@@ -214,9 +213,8 @@ public class Border extends AbstractCssProperty<Border> implements
             invalid = false;
         }
         if (invalid) {
-            throw new InvalidValueException(
-                    cssValue
-                            + " is an invalid value. The value format should be as for example cjk-ideographic inside url(\"Sqpurple.gif\"). Or, initial/inherit.");
+            throw new InvalidValueException(cssValue
+                    + " is an invalid value. The value format should be as for example cjk-ideographic inside url(\"Sqpurple.gif\"). Or, initial/inherit.");
         }
         this.cssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder);
         this.borderWidthValue = borderWidthValue;
@@ -246,15 +244,15 @@ public class Border extends AbstractCssProperty<Border> implements
             return false;
         }
 
-        if (INITIAL.equals(trimmedCssValue) || INHERIT.equals(trimmedCssValue)) {
+        if (INITIAL.equals(trimmedCssValue)
+                || INHERIT.equals(trimmedCssValue)) {
             return true;
         }
 
         final List<String> cssValueParts = CssValueUtil.split(trimmedCssValue);
 
-        if (cssValueParts.size() > 1
-                && (trimmedCssValue.contains(INITIAL) || trimmedCssValue
-                        .contains(INHERIT))) {
+        if (cssValueParts.size() > 1 && (trimmedCssValue.contains(INITIAL)
+                || trimmedCssValue.contains(INHERIT))) {
             return false;
         }
 
@@ -335,10 +333,9 @@ public class Border extends AbstractCssProperty<Border> implements
             if (INITIAL.equals(borderWidthValue)
                     || INHERIT.equals(borderWidthValue)
                     || !BorderTopWidth.isValid(borderWidthValue)) {
-                throw new InvalidValueException(
-                        "The given value '"
-                                + borderWidthValue
-                                + "' is not valid, please try with a valid value like medium/thin/thick or 75px");
+                throw new InvalidValueException("The given value '"
+                        + borderWidthValue
+                        + "' is not valid, please try with a valid value like medium/thin/thick or 75px");
             }
             cssValueBuilder.append(borderWidthValue);
             cssValueBuilder.append(" ");
@@ -442,7 +439,8 @@ public class Border extends AbstractCssProperty<Border> implements
         if (borderColorCssValues != null
                 && borderColorCssValues.isAlreadyInUse()
                 && this.borderColorCssValues != borderColorCssValues) {
-            LOGGER.warning("the given borderColorCssValues is already used by another object so a new object or the previous object (if it exists) of BorderColorCssValues will be used");
+            LOGGER.warning(
+                    "the given borderColorCssValues is already used by another object so a new object or the previous object (if it exists) of BorderColorCssValues will be used");
             return setCssValue(cssValue);
         }
 

@@ -1,9 +1,9 @@
 /**
- * 
+ *
  */
 /**
  * This package contains formatting classes.
- * 
+ *
  * @author WFF
  *
  */

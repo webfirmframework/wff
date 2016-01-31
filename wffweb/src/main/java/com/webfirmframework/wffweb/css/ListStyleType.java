@@ -121,8 +121,8 @@ public enum ListStyleType implements CssProperty {
      * @author WFF
      */
     public static ListStyleType getThis(final String cssValue) {
-        final String enumString = TagStringUtil.toUpperCase(cssValue).replace(
-                "-", "_");
+        final String enumString = TagStringUtil.toUpperCase(cssValue)
+                .replace("-", "_");
 
         ListStyleType correspondingObject = null;
         try {

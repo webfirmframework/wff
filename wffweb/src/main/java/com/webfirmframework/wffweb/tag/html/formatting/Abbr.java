@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.AbbrAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
@@ -35,12 +36,15 @@ public class Abbr extends AbstractHtml implements AbbrAttributable {
      *
      * @since 1.0.0
      */
-    public Abbr(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(Abbr.class.getSimpleName().toLowerCase(), base, attributes);
+    public Abbr(final AbstractHtml base,
+            final AbstractAttribute... attributes) {
+        super(TagNameConstants.ABBR, base, attributes);
 
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof AbbrAttributable || abstractAttribute instanceof GlobalAttributable))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof AbbrAttributable
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of AAttribute");
                 }

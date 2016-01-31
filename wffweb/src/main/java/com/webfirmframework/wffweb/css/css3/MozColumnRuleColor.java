@@ -27,7 +27,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
 /**
  * <pre>
  * -moz-column-rule-color: color|initial|inherit;
- * 
+ *
  * The -moz-column-rule-color property specifies the color of the rule between columns.
  * Default value:  The current color of the element (In this java class it will be as <i>initial</i>)
  * Inherited:      no
@@ -40,7 +40,8 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class MozColumnRuleColor extends AbstractCssProperty<MozColumnRuleColor> {
+public class MozColumnRuleColor
+        extends AbstractCssProperty<MozColumnRuleColor> {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -92,11 +93,11 @@ public class MozColumnRuleColor extends AbstractCssProperty<MozColumnRuleColor> 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssName()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -106,11 +107,11 @@ public class MozColumnRuleColor extends AbstractCssProperty<MozColumnRuleColor> 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssValue()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -151,9 +152,8 @@ public class MozColumnRuleColor extends AbstractCssProperty<MozColumnRuleColor> 
             throw new NullValueException(
                     "null is an invalid value. The value should be any color for example #0000ff. Or, initial/inherit.");
         } else if (cssValue.trim().isEmpty()) {
-            throw new InvalidValueException(
-                    cssValue
-                            + " is an invalid value. The value should be any color for example #0000ff. Or, initial/inherit.");
+            throw new InvalidValueException(cssValue
+                    + " is an invalid value. The value should be any color for example #0000ff. Or, initial/inherit.");
         } else {
             this.cssValue = cssValue.trim();
             if (getStateChangeInformer() != null) {

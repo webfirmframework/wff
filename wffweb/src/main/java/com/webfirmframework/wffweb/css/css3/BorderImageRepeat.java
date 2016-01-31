@@ -55,8 +55,8 @@ public class BorderImageRepeat extends AbstractCssProperty<BorderImageRepeat> {
     public static final String REPEAT = "repeat";
     public static final String ROUND = "round";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(
-            INITIAL, INHERIT, STRETCH, REPEAT, ROUND);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays
+            .asList(INITIAL, INHERIT, STRETCH, REPEAT, ROUND);
 
     private String cssValue;
 
@@ -143,9 +143,8 @@ public class BorderImageRepeat extends AbstractCssProperty<BorderImageRepeat> {
                         "null is an invalid value. The value format should be as for example 'round stretch'/'round'. Or, initial/inherit.");
             } else {
 
-                final String trimmedCssValue = StringUtil
-                        .convertToSingleSpace(TagStringUtil
-                                .toLowerCase(cssValue.trim()));
+                final String trimmedCssValue = StringUtil.convertToSingleSpace(
+                        TagStringUtil.toLowerCase(cssValue.trim()));
 
                 final String[] verticalHorzontal = trimmedCssValue.split(" ");
 
@@ -172,10 +171,9 @@ public class BorderImageRepeat extends AbstractCssProperty<BorderImageRepeat> {
                         vertical = verticalHorzontal[1];
                         this.cssValue = trimmedCssValue;
                     } else {
-                        throw new InvalidValueException(
-                                "the given cssValue '"
-                                        + cssValue
-                                        + "' is invalid. The value format should be as for example 'round stretch'/'round'. Or, initial/inherit.");
+                        throw new InvalidValueException("the given cssValue '"
+                                + cssValue
+                                + "' is invalid. The value format should be as for example 'round stretch'/'round'. Or, initial/inherit.");
                     }
                 } else {
                     throw new InvalidValueException(
@@ -216,8 +214,8 @@ public class BorderImageRepeat extends AbstractCssProperty<BorderImageRepeat> {
                 cssValue = inputVertical;
             }
         } else {
-            throw new InvalidValueException("The given vertical value '"
-                    + vertical + "' is invalid.");
+            throw new InvalidValueException(
+                    "The given vertical value '" + vertical + "' is invalid.");
         }
     }
 
@@ -231,8 +229,8 @@ public class BorderImageRepeat extends AbstractCssProperty<BorderImageRepeat> {
         if (horizontal == null) {
             throw new NullValueException("The vertical value cannot be null.");
         }
-        final String inputHorizontal = TagStringUtil.toLowerCase(horizontal
-                .trim());
+        final String inputHorizontal = TagStringUtil
+                .toLowerCase(horizontal.trim());
         if (!INITIAL.equals(vertical) && !INHERIT.equals(inputHorizontal)
                 && PREDEFINED_CONSTANTS.contains(inputHorizontal)) {
             this.horizontal = inputHorizontal;
@@ -242,8 +240,8 @@ public class BorderImageRepeat extends AbstractCssProperty<BorderImageRepeat> {
                 cssValue = inputHorizontal;
             }
         } else {
-            throw new InvalidValueException("The given vertical value '"
-                    + vertical + "' is invalid.");
+            throw new InvalidValueException(
+                    "The given vertical value '" + vertical + "' is invalid.");
         }
     }
 
@@ -295,8 +293,8 @@ public class BorderImageRepeat extends AbstractCssProperty<BorderImageRepeat> {
      * @since 1.0.0
      */
     public static boolean isValid(final String cssValue) {
-        final String trimmedCssValue = TagStringUtil.toLowerCase(cssValue
-                .trim());
+        final String trimmedCssValue = TagStringUtil
+                .toLowerCase(cssValue.trim());
 
         final String[] cssValueParts = trimmedCssValue.split(" ");
         if (cssValueParts.length > 2) {

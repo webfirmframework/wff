@@ -29,7 +29,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
 /**
  * <pre>
  * column-width: auto|length|initial|inherit;
- * 
+ *
  * The column-width property specifies the width of the columns.
  * Default value:  auto
  * Inherited:      no
@@ -50,8 +50,8 @@ public class ColumnWidth extends AbstractCssProperty<ColumnWidth> {
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(
-            INITIAL, INHERIT, AUTO);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays
+            .asList(INITIAL, INHERIT, AUTO);
 
     private String cssValue;
     private Float value;
@@ -142,11 +142,11 @@ public class ColumnWidth extends AbstractCssProperty<ColumnWidth> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssName()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -156,11 +156,11 @@ public class ColumnWidth extends AbstractCssProperty<ColumnWidth> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssValue()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -215,11 +215,12 @@ public class ColumnWidth extends AbstractCssProperty<ColumnWidth> {
                 final String trimmedCssValue = TagStringUtil
                         .toLowerCase(cssValue.trim());
                 boolean invalidValue = true;
-                for (final CssLengthUnit cssLengthUnit : CssLengthUnit.values()) {
+                for (final CssLengthUnit cssLengthUnit : CssLengthUnit
+                        .values()) {
                     final String unit = cssLengthUnit.getUnit();
                     if (trimmedCssValue.endsWith(unit)) {
-                        final String valueOnly = cssValue
-                                .replaceFirst(unit, "");
+                        final String valueOnly = cssValue.replaceFirst(unit,
+                                "");
                         try {
                             value = Float.parseFloat(valueOnly);
                         } catch (final NumberFormatException e) {
@@ -240,9 +241,8 @@ public class ColumnWidth extends AbstractCssProperty<ColumnWidth> {
                     invalidValue = false;
                 }
                 if (invalidValue) {
-                    throw new InvalidValueException(
-                            cssValue
-                                    + " is an invalid value. The value format should be as for example 75px, 85%, initial, inherit etc..");
+                    throw new InvalidValueException(cssValue
+                            + " is an invalid value. The value format should be as for example 75px, 85%, initial, inherit etc..");
                 }
             }
             if (getStateChangeInformer() != null) {
@@ -253,8 +253,7 @@ public class ColumnWidth extends AbstractCssProperty<ColumnWidth> {
             throw e;
         } catch (final NumberFormatException e) {
             throw new InvalidValueException(
-                    cssValue
-                            + " is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit.",
+                    cssValue + " is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit.",
                     e);
         }
         return this;
@@ -300,8 +299,8 @@ public class ColumnWidth extends AbstractCssProperty<ColumnWidth> {
      * @since 1.0.0
      */
     public static boolean isValid(final String cssValue) {
-        final String trimmedCssValue = TagStringUtil.toLowerCase(cssValue
-                .trim());
+        final String trimmedCssValue = TagStringUtil
+                .toLowerCase(cssValue.trim());
         if (trimmedCssValue.contains(" ")) {
             return false;
         }

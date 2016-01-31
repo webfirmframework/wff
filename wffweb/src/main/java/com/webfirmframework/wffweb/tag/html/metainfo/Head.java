@@ -34,10 +34,13 @@ public class Head extends AbstractHtml {
      *
      * @since 1.0.0
      */
-    public Head(final AbstractHtml base, final AbstractAttribute... attributes) {
+    public Head(final AbstractHtml base,
+            final AbstractAttribute... attributes) {
         super(Head.class.getSimpleName().toLowerCase(), base, attributes);
         for (final AbstractAttribute abstractAttribute : attributes) {
-            if (!(abstractAttribute != null && (abstractAttribute instanceof HeadAttributable || abstractAttribute instanceof GlobalAttributable))) {
+            if (!(abstractAttribute != null
+                    && (abstractAttribute instanceof HeadAttributable
+                            || abstractAttribute instanceof GlobalAttributable))) {
                 LOGGER.warning(abstractAttribute
                         + " is not an instance of HeadAttribute");
             }

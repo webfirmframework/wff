@@ -23,18 +23,18 @@ import com.webfirmframework.wffweb.tag.html.html5.identifier.AudioAttribute;
 /**
  *
  * <code>preload</code> attribute for the element.
- * 
+ *
  * <pre>
- * 
+ *
  * This enumerated attribute is intended to provide a hint to the browser about what the author thinks will lead to the best user experience. It may have one of the following values:
- * 
+ *
  *  none: indicates that the audio should not be preloaded;
  *  metadata: indicates that only audio metadata (e.g. length) is fetched;
  *  auto: indicates that the whole audio file could be downloaded, even if the user is not expected to use it;
  *  the empty string: synonym of the auto value.
- * 
+ *
  * If not set, its default value is browser-defined (i.e. each browser may have its own default value). The spec advises it to be set to metadata.
- * 
+ *
  * </pre>
  *
  * @author WFF

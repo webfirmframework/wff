@@ -130,8 +130,8 @@ public enum WebkitColumnRuleStyle implements CssProperty {
      * @author WFF
      */
     public static WebkitColumnRuleStyle getThis(final String cssValue) {
-        final String enumString = TagStringUtil.toUpperCase(cssValue).replace(
-                "-", "_");
+        final String enumString = TagStringUtil.toUpperCase(cssValue)
+                .replace("-", "_");
 
         WebkitColumnRuleStyle correspondingObject = null;
         try {

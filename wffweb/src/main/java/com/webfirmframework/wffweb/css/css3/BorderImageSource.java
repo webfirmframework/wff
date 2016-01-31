@@ -62,8 +62,8 @@ public class BorderImageSource extends AbstractCssProperty<BorderImageSource>
     public static final String INHERIT = "inherit";
     public static final String NONE = "none";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(
-            INITIAL, INHERIT, NONE);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays
+            .asList(INITIAL, INHERIT, NONE);
 
     public static final Logger LOGGER = Logger
             .getLogger(BorderImageSource.class.getName());
@@ -89,8 +89,8 @@ public class BorderImageSource extends AbstractCssProperty<BorderImageSource>
 
     /**
      * @param cssValue
-     *            the cssValue to set. </br> eg:-
-     *            {@code url(images/BackgroundDesign.png)}
+     *            the cssValue to set. </br>
+     *            eg:- {@code url(images/BackgroundDesign.png)}
      * @author WFF
      */
     public BorderImageSource(final String cssValue) {
@@ -404,7 +404,8 @@ public class BorderImageSource extends AbstractCssProperty<BorderImageSource>
 
     @Override
     public void stateChanged(final Bean stateChangedObject) {
-        if (urlCss3Values != null && stateChangedObject instanceof UrlCss3Value) {
+        if (urlCss3Values != null
+                && stateChangedObject instanceof UrlCss3Value) {
             final UrlCss3Value urlCss3Value = (UrlCss3Value) stateChangedObject;
             if (urlCss3Value.getX() > -1 || urlCss3Value.getY() > -1) {
                 throw new InvalidValueException(

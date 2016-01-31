@@ -45,8 +45,8 @@ public class PaddingTop extends AbstractCssProperty<PaddingTop> {
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(
-            INITIAL, INHERIT);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays
+            .asList(INITIAL, INHERIT);
 
     private String cssValue;
     private Float value;
@@ -209,11 +209,12 @@ public class PaddingTop extends AbstractCssProperty<PaddingTop> {
             } else {
                 final String trimmedCssValue = cssValue.trim();
                 boolean invalidValue = true;
-                for (final CssLengthUnit cssLengthUnit : CssLengthUnit.values()) {
+                for (final CssLengthUnit cssLengthUnit : CssLengthUnit
+                        .values()) {
                     final String unit = cssLengthUnit.getUnit();
                     if (trimmedCssValue.endsWith(unit)) {
-                        final String valueOnly = trimmedCssValue.replaceFirst(
-                                unit, "");
+                        final String valueOnly = trimmedCssValue
+                                .replaceFirst(unit, "");
                         try {
                             value = Float.parseFloat(valueOnly);
                             if (value < 0) {
@@ -237,9 +238,8 @@ public class PaddingTop extends AbstractCssProperty<PaddingTop> {
                     invalidValue = false;
                 }
                 if (invalidValue) {
-                    throw new InvalidValueException(
-                            cssValue
-                                    + " is an invalid value. The value format should be as for example 75px, 85%, initial, inherit etc..");
+                    throw new InvalidValueException(cssValue
+                            + " is an invalid value. The value format should be as for example 75px, 85%, initial, inherit etc..");
                 }
             }
             if (getStateChangeInformer() != null) {
@@ -248,8 +248,7 @@ public class PaddingTop extends AbstractCssProperty<PaddingTop> {
         } catch (final NumberFormatException | InvalidValueException e) {
             this.cssValue = previousCssValue;
             throw new InvalidValueException(
-                    cssValue
-                            + " is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit.",
+                    cssValue + " is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit.",
                     e);
         }
         return this;

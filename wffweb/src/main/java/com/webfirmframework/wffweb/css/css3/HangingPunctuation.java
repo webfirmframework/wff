@@ -118,8 +118,8 @@ public enum HangingPunctuation implements CssProperty {
      * @author WFF
      */
     public static HangingPunctuation getThis(final String cssValue) {
-        final String enumString = TagStringUtil.toUpperCase(cssValue).replace(
-                "-", "_");
+        final String enumString = TagStringUtil.toUpperCase(cssValue)
+                .replace("-", "_");
 
         HangingPunctuation correspondingObject = null;
         try {

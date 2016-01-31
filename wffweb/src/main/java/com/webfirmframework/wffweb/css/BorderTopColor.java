@@ -52,15 +52,15 @@ public class BorderTopColor extends AbstractCssProperty<BorderTopColor>
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final Logger LOGGER = Logger.getLogger(BorderTopColor.class
-            .getName());
+    public static final Logger LOGGER = Logger
+            .getLogger(BorderTopColor.class.getName());
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
     public static final String TRANSPARENT = "transparent";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(
-            INITIAL, INHERIT, TRANSPARENT);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays
+            .asList(INITIAL, INHERIT, TRANSPARENT);
 
     private String cssValue;
 
@@ -184,9 +184,8 @@ public class BorderTopColor extends AbstractCssProperty<BorderTopColor>
                 throw new NullValueException(
                         "null is an invalid value. The value should be any color for example #0000ff, rgb(15, 25, 155) Or, initial/inherit/transparent.");
             } else if (!isValid(cssValue)) {
-                throw new InvalidValueException(
-                        cssValue
-                                + " is an invalid value. The value should be any color for example #0000ff, rgb(15, 25, 155) Or, initial/inherit/transparent.");
+                throw new InvalidValueException(cssValue
+                        + " is an invalid value. The value should be any color for example #0000ff, rgb(15, 25, 155) Or, initial/inherit/transparent.");
             } else {
                 this.cssValue = cssValue.trim();
                 if (RgbCssValue.isValid(cssValue)) {
@@ -440,8 +439,8 @@ public class BorderTopColor extends AbstractCssProperty<BorderTopColor>
             throw new NullValueException("rgbaCssValue can not be null");
         }
         if (this.rgbaCssValue != null) {
-            if (rgbaCssValue.isAlreadyInUse()
-                    && this.rgbaCssValue.getStateChangeInformer() != rgbaCssValue
+            if (rgbaCssValue.isAlreadyInUse() && this.rgbaCssValue
+                    .getStateChangeInformer() != rgbaCssValue
                             .getStateChangeInformer()) {
                 try {
                     final RgbaCssValue rgbaCssValueClone = CloneUtil
@@ -542,8 +541,8 @@ public class BorderTopColor extends AbstractCssProperty<BorderTopColor>
             throw new NullValueException("hslaCssValue can not be null");
         }
         if (this.hslaCssValue != null) {
-            if (hslaCssValue.isAlreadyInUse()
-                    && this.hslaCssValue.getStateChangeInformer() != hslaCssValue
+            if (hslaCssValue.isAlreadyInUse() && this.hslaCssValue
+                    .getStateChangeInformer() != hslaCssValue
                             .getStateChangeInformer()) {
                 try {
                     final HslaCssValue hslaCssValueClone = CloneUtil

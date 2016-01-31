@@ -22,11 +22,11 @@ import com.webfirmframework.wffweb.tag.html.identifier.AreaAttributable;
 /**
  *
  * <code>nohref</code> attribute for the element.
- * 
+ *
  * Indicates that no hyperlink exists for the associated area. Either this
  * attribute or the href attribute must be present in the element.
- * 
- * 
+ *
+ *
  * @author WFF
  *
  */
@@ -52,7 +52,7 @@ public class Nohref extends AbstractAttribute implements AreaAttributable {
 
     /**
      * sets the value for this attribute.
-     * 
+     *
      * Specifies an alternate text for the area. Required if the href attribute
      * is present
      *

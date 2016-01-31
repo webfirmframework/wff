@@ -18,8 +18,8 @@ public class StyleTag extends AbstractHtml {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final Logger LOGGER = Logger.getLogger(StyleTag.class
-            .getName());
+    public static final Logger LOGGER = Logger
+            .getLogger(StyleTag.class.getName());
 
     {
         init();
@@ -41,7 +41,9 @@ public class StyleTag extends AbstractHtml {
         super("style", base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof StyleAttributable || abstractAttribute instanceof GlobalAttributable))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof StyleAttributable
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of StyleAttribute");
                 }

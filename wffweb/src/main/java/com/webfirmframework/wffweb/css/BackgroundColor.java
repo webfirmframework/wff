@@ -30,11 +30,11 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
 /**
  * <pre>
  * background-color: color|transparent|initial|inherit;
- * 
+ *
  * The background-color property sets the background color of an element.
- * 
+ *
  * The background of an element is the total size of the element, including padding and border (but not the margin).
- * 
+ *
  * Tip: Use a background color and a text color that makes the text easy to read.
  * Default value:  transparent
  * Inherited:      no
@@ -52,8 +52,8 @@ public class BackgroundColor extends AbstractCssProperty<BackgroundColor>
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final Logger LOGGER = Logger.getLogger(BackgroundColor.class
-            .getName());
+    public static final Logger LOGGER = Logger
+            .getLogger(BackgroundColor.class.getName());
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
@@ -116,11 +116,11 @@ public class BackgroundColor extends AbstractCssProperty<BackgroundColor>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssName()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -130,11 +130,11 @@ public class BackgroundColor extends AbstractCssProperty<BackgroundColor>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssValue()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -175,9 +175,8 @@ public class BackgroundColor extends AbstractCssProperty<BackgroundColor>
             throw new NullValueException(
                     "null is an invalid value. The value should be any color for example #0000ff, rgb(15, 25, 155) Or, initial/inherit/transparent.");
         } else if (!isValid(cssValue)) {
-            throw new InvalidValueException(
-                    cssValue
-                            + " is an invalid value. The value should be any color for example #0000ff, rgb(15, 25, 155) Or, initial/inherit/transparent.");
+            throw new InvalidValueException(cssValue
+                    + " is an invalid value. The value should be any color for example #0000ff, rgb(15, 25, 155) Or, initial/inherit/transparent.");
         } else {
             this.cssValue = cssValue.trim();
             if (RgbCssValue.isValid(cssValue)) {
@@ -423,8 +422,8 @@ public class BackgroundColor extends AbstractCssProperty<BackgroundColor>
             throw new NullValueException("rgbaCssValue can not be null");
         }
         if (this.rgbaCssValue != null) {
-            if (rgbaCssValue.isAlreadyInUse()
-                    && this.rgbaCssValue.getStateChangeInformer() != rgbaCssValue
+            if (rgbaCssValue.isAlreadyInUse() && this.rgbaCssValue
+                    .getStateChangeInformer() != rgbaCssValue
                             .getStateChangeInformer()) {
                 try {
                     final RgbaCssValue rgbaCssValueClone = CloneUtil
@@ -525,8 +524,8 @@ public class BackgroundColor extends AbstractCssProperty<BackgroundColor>
             throw new NullValueException("hslaCssValue can not be null");
         }
         if (this.hslaCssValue != null) {
-            if (hslaCssValue.isAlreadyInUse()
-                    && this.hslaCssValue.getStateChangeInformer() != hslaCssValue
+            if (hslaCssValue.isAlreadyInUse() && this.hslaCssValue
+                    .getStateChangeInformer() != hslaCssValue
                             .getStateChangeInformer()) {
                 try {
                     final HslaCssValue hslaCssValueClone = CloneUtil

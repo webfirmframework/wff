@@ -30,13 +30,13 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
 /**
  * <pre>
  * perspective-origin: <i>x-axis y-axis</i>|initial|inherit;
- * 
+ *
  * The perspective-origin property defines where a 3D element is based in the x- and the y-axis. This property allows you to change the bottom position of 3D elements.
- * 
+ *
  * When defining the perspective-origin property for an element, it is the CHILD elements that are positioned, NOT the element itself.
- * 
+ *
  * Note: This property must be used together with the perspective property, and only affects 3D transformed elements!
- * 
+ *
  * To better understand the perspective-origin property, view a demo.
  * Default value:  50% 50%
  * Inherited:      no
@@ -55,8 +55,8 @@ public class PerspectiveOrigin extends AbstractCssProperty<PerspectiveOrigin> {
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(
-            INITIAL, INHERIT);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays
+            .asList(INITIAL, INHERIT);
 
     private String cssValue;
     private Float xAxis;
@@ -203,11 +203,11 @@ public class PerspectiveOrigin extends AbstractCssProperty<PerspectiveOrigin> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssName()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -217,11 +217,11 @@ public class PerspectiveOrigin extends AbstractCssProperty<PerspectiveOrigin> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssValue()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -354,9 +354,8 @@ public class PerspectiveOrigin extends AbstractCssProperty<PerspectiveOrigin> {
                 }
 
                 if (invalidValue) {
-                    throw new InvalidValueException(
-                            cssValue
-                                    + " is an invalid value. The value format should be as for example 75px, 85%, 125px 10px, initial, inherit etc..");
+                    throw new InvalidValueException(cssValue
+                            + " is an invalid value. The value format should be as for example 75px, 85%, 125px 10px, initial, inherit etc..");
                 }
             }
             if (getStateChangeInformer() != null) {
@@ -364,8 +363,7 @@ public class PerspectiveOrigin extends AbstractCssProperty<PerspectiveOrigin> {
             }
         } catch (final NumberFormatException e) {
             throw new InvalidValueException(
-                    cssValue
-                            + " is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit.",
+                    cssValue + " is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit.",
                     e);
         }
         return this;
@@ -402,8 +400,8 @@ public class PerspectiveOrigin extends AbstractCssProperty<PerspectiveOrigin> {
      * @since 1.0.0
      */
     public static boolean isValid(final String cssValue) {
-        final String trimmedCssValue = TagStringUtil.toLowerCase(cssValue
-                .trim());
+        final String trimmedCssValue = TagStringUtil
+                .toLowerCase(cssValue.trim());
 
         final String[] cssValueParts = trimmedCssValue.split(" ");
         if (cssValueParts.length > 2) {

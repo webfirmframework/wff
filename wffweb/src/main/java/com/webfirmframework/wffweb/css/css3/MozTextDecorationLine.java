@@ -128,8 +128,8 @@ public enum MozTextDecorationLine implements CssProperty {
      * @author WFF
      */
     public static MozTextDecorationLine getThis(final String cssValue) {
-        final String enumString = TagStringUtil.toUpperCase(cssValue).replace(
-                "-", "_");
+        final String enumString = TagStringUtil.toUpperCase(cssValue)
+                .replace("-", "_");
 
         MozTextDecorationLine correspondingObject = null;
         try {

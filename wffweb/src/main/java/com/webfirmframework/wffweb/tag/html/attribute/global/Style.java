@@ -398,8 +398,8 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
  *</pre>
  **/
 // @formatter:on
-public class Style extends AbstractAttribute implements GlobalAttributable,
-        StateChangeInformer<CssProperty> {
+public class Style extends AbstractAttribute
+        implements GlobalAttributable, StateChangeInformer<CssProperty> {
 
     /**
      *
@@ -658,8 +658,8 @@ public class Style extends AbstractAttribute implements GlobalAttributable,
         CSSPROPERTY_CLASSES.put(CssNameConstants.O_BACKGROUND_SIZE,
                 OBackgroundSize.class);
         CSSPROPERTY_CLASSES.put(CssNameConstants.OPACITY, Opacity.class);
-        CSSPROPERTY_CLASSES
-                .put(CssNameConstants.PERSPECTIVE, Perspective.class);
+        CSSPROPERTY_CLASSES.put(CssNameConstants.PERSPECTIVE,
+                Perspective.class);
         CSSPROPERTY_CLASSES.put(CssNameConstants.PERSPECTIVE_ORIGIN,
                 PerspectiveOrigin.class);
         CSSPROPERTY_CLASSES.put(CssNameConstants.BACKGROUND_IMAGE,
@@ -755,8 +755,8 @@ public class Style extends AbstractAttribute implements GlobalAttributable,
 
     /**
      * @param styles
-     *            styles separated by semicolon.</br> eg :-
-     *            {@code color:blue;text-align:center }
+     *            styles separated by semicolon.</br>
+     *            eg :- {@code color:blue;text-align:center }
      */
     public Style(final String styles) {
         extractStylesAndAddToAttributeValueMap(styles);
@@ -764,10 +764,12 @@ public class Style extends AbstractAttribute implements GlobalAttributable,
 
     /**
      * @param styles
-     *            {@code Map} containing styles,</br> eg : </br>
+     *            {@code Map} containing styles,</br>
+     *            eg : </br>
      *            {@code
      * Map<String, String> styles = new HashMap<String, String>();
-     * } </br> {@code
+     * } </br>
+     *            {@code
      * styles.put("color", "green");
      * }
      *
@@ -854,8 +856,8 @@ public class Style extends AbstractAttribute implements GlobalAttributable,
 
     /**
      * @param cssProperties
-     *            styles separated by semicolon.</br> eg :-
-     *            {@code color:blue;text-align:center }
+     *            styles separated by semicolon.</br>
+     *            eg :- {@code color:blue;text-align:center }
      *
      * @since 1.0.0
      * @author WFF
@@ -866,16 +868,19 @@ public class Style extends AbstractAttribute implements GlobalAttributable,
 
     /**
      * @param cssProperties
-     *            {@code Map} containing styles,</br> eg : </br>
+     *            {@code Map} containing styles,</br>
+     *            eg : </br>
      *            {@code
      * Map<String, String> cssProperties = new HashMap<String, String>();
-     * } </br> {@code
+     * } </br>
+     *            {@code
      * cssProperties.put("color", "green");
      * }
      * @return true if the values are added otherwise false.
      */
     public boolean addCssProperties(final Map<String, String> cssProperties) {
-        final boolean addAllToAttributeValueMap = addAllToAttributeValueMap(cssProperties);
+        final boolean addAllToAttributeValueMap = addAllToAttributeValueMap(
+                cssProperties);
         if (addAllToAttributeValueMap) {
             final Set<String> cssNames = cssProperties.keySet();
             for (final String cssName : cssNames) {
@@ -938,8 +943,8 @@ public class Style extends AbstractAttribute implements GlobalAttributable,
             for (final CssProperty styleValue : cssProperties) {
                 final CssProperty cssProperty = styleValue;
                 final boolean addToAttributeValueMap = addToAttributeValueMap(
-                        cssProperty.getCssName(), styleValue.getCssValue()
-                                + " " + IMPORTANT);
+                        cssProperty.getCssName(),
+                        styleValue.getCssValue() + " " + IMPORTANT);
                 if (addToAttributeValueMap) {
                     if (styleValue instanceof AbstractCssProperty) {
                         abstractCssPropertyClassObjects.put(
@@ -1020,8 +1025,8 @@ public class Style extends AbstractAttribute implements GlobalAttributable,
         if (cssProperty instanceof AbstractCssProperty<?>) {
             final AbstractCssProperty<?> abstractCssProperty = (AbstractCssProperty<?>) cssProperty;
             if (abstractCssProperty.isAlreadyInUse()
-                    && abstractCssPropertyClassObjects.get(cssProperty
-                            .getCssName()) != cssProperty) {
+                    && abstractCssPropertyClassObjects
+                            .get(cssProperty.getCssName()) != cssProperty) {
                 try {
                     cssProperty = abstractCssProperty.clone();
                     // hashcode should be replaced with getUuid after its
@@ -1036,9 +1041,8 @@ public class Style extends AbstractAttribute implements GlobalAttributable,
         }
         final boolean addToAttributeValueMap = addToAttributeValueMap(
                 cssProperty.getCssName(), cssProperty.getCssValue());
-        if (addToAttributeValueMap
-                || abstractCssPropertyClassObjects
-                        .get(cssProperty.getCssName()) != cssProperty) {
+        if (addToAttributeValueMap || abstractCssPropertyClassObjects
+                .get(cssProperty.getCssName()) != cssProperty) {
             if (cssProperty instanceof AbstractCssProperty) {
 
                 abstractCssPropertyClassObjects.put(cssProperty.getCssName(),
@@ -1073,7 +1077,8 @@ public class Style extends AbstractAttribute implements GlobalAttributable,
             cssProperties.remove(getCssProperty(cssName));
             setFromRemoveCssProperty(false);
         }
-        final boolean removeFromAttributeValueMap = removeFromAttributeValueMap(cssName);
+        final boolean removeFromAttributeValueMap = removeFromAttributeValueMap(
+                cssName);
         if (removeFromAttributeValueMap) {
             abstractCssPropertyClassObjects.remove(cssName);
         }
@@ -1093,14 +1098,14 @@ public class Style extends AbstractAttribute implements GlobalAttributable,
      *         contain the given styleName and value.
      * @author WFF
      */
-    public boolean removeCssProperty(final String cssName, final String cssValue) {
+    public boolean removeCssProperty(final String cssName,
+            final String cssValue) {
 
         final String value = getAttributeValueMap().get(cssName);
         // the value may contain !important that's why startsWith method is used
         // here.
-        if (value != null
-                && value.startsWith(cssValue.toLowerCase()
-                        .replace(CssConstants.IMPORTANT, "").trim())) {
+        if (value != null && value.startsWith(cssValue.toLowerCase()
+                .replace(CssConstants.IMPORTANT, "").trim())) {
             return removeCssProperty(cssName);
         }
 
@@ -1121,7 +1126,8 @@ public class Style extends AbstractAttribute implements GlobalAttributable,
         final AbstractCssProperty<?> abstractCssProperty = abstractCssPropertyClassObjects
                 .get(cssProperty.getCssName());
         if (abstractCssProperty != null && abstractCssProperty != cssProperty) {
-            LOGGER.warning("The added CssProperty object is different. Use the same object which was used to add the style.");
+            LOGGER.warning(
+                    "The added CssProperty object is different. Use the same object which was used to add the style.");
             return false;
         }
         setFromRemoveCssProperty(true);
@@ -1138,7 +1144,8 @@ public class Style extends AbstractAttribute implements GlobalAttributable,
      * @since 1.0.0
      * @author WFF
      */
-    public List<Boolean> removeCssProperties(final CssProperty... cssProperties) {
+    public List<Boolean> removeCssProperties(
+            final CssProperty... cssProperties) {
         final List<Boolean> removedStatus = new ArrayList<Boolean>();
         for (final CssProperty cssProperty : cssProperties) {
             removedStatus.add(removeCssProperty(cssProperty));
@@ -1184,8 +1191,8 @@ public class Style extends AbstractAttribute implements GlobalAttributable,
         final String trimmedStyleName = styleName.trim();
         final String value = getAttributeValueMap().get(trimmedStyleName);
         if (value != null && !value.isEmpty()) {
-            return addToAttributeValueMap(trimmedStyleName, value + " "
-                    + IMPORTANT);
+            return addToAttributeValueMap(trimmedStyleName,
+                    value + " " + IMPORTANT);
         }
         return false;
     }
@@ -1224,12 +1231,12 @@ public class Style extends AbstractAttribute implements GlobalAttributable,
                 if (styleNameValue.length == 2
                         && !styleNameValue[0].trim().isEmpty()
                         && !styleNameValue[1].trim().isEmpty()) {
-                    addToAttributeValueMap(styleNameValue[0], styleNameValue[1]);
+                    addToAttributeValueMap(styleNameValue[0],
+                            styleNameValue[1]);
                     getCssProperty(each);// to save the corresponding object to
                                          // abstractCssPropertyClassObjects
                 } else {
-                    LOGGER.warning("\""
-                            + styles
+                    LOGGER.warning("\"" + styles
                             + "\" contains invalid value or no value for any style name in it.");
                 }
             }
@@ -1297,10 +1304,12 @@ public class Style extends AbstractAttribute implements GlobalAttributable,
      *         This object be may type casted in to the corresponding enum,
      *         eg:-</br>
      *         {@code CssProperty cssProperty = style.getCssProperty(CssConstants.ALIGN_CONTENT);}
-     *         </br> {@code if (cssProperty != null &&
+     *         </br>
+     *         {@code if (cssProperty != null &&
      *         CssConstants.ALIGN_CONTENT.equals(cssProperty.getName())) } </br>
      *         {@code      AlignContent alignContent = (AlignContent) cssProperty;}
-     *         </br> {@code  } </br>
+     *         </br>
+     *         {@code  } </br>
      * @since 1.0.0
      * @author WFF
      */
@@ -1319,8 +1328,8 @@ public class Style extends AbstractAttribute implements GlobalAttributable,
             value = value.toUpperCase().replace(IMPORTANT_UPPERCASE, "")
                     .replace("-", "_").trim();
 
-            final CssProperty cssProperty = (CssProperty) Enum.valueOf(
-                    classClass, value);
+            final CssProperty cssProperty = (CssProperty) Enum
+                    .valueOf(classClass, value);
             setFromAddCssProperty(true);
             cssProperties.add(cssProperty);
             setFromAddCssProperty(false);
@@ -1355,7 +1364,8 @@ public class Style extends AbstractAttribute implements GlobalAttributable,
             }
         } else if ((value = getAttributeValueMap().get(cssName)) != null) {
             value = value.toLowerCase().replace(IMPORTANT, "");
-            final CustomCssProperty customCssProperty = new CustomCssProperty(cssName, value);
+            final CustomCssProperty customCssProperty = new CustomCssProperty(
+                    cssName, value);
             customCssProperty.setAlreadyInUse(true);
             customCssProperty.setStateChangeInformer(this);
             abstractCssPropertyClassObjects.put(cssName, customCssProperty);

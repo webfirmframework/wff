@@ -33,9 +33,9 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 public class Dialog extends AbstractHtml {
 
     private static final long serialVersionUID = 1_0_0L;
-    
-    public static final Logger LOGGER = Logger.getLogger(Dialog.class
-            .getName());
+
+    public static final Logger LOGGER = Logger
+            .getLogger(Dialog.class.getName());
 
     {
         init();
@@ -57,7 +57,9 @@ public class Dialog extends AbstractHtml {
         super(Dialog.class.getSimpleName().toLowerCase(), base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof DialogAttribute || abstractAttribute instanceof GlobalAttributable))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof DialogAttribute
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of DialogAttribute");
                 }

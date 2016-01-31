@@ -28,7 +28,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
 /**
  * <pre>
  *  -moz-column-count: <i>number</i>|auto|initial|inherit;
- * 
+ *
  * The -moz-column-count property specifies the number of columns an element should be divided into.
  * Default value:  auto
  * Inherited:      no
@@ -48,8 +48,8 @@ public class MozColumnCount extends AbstractCssProperty<MozColumnCount> {
     public static final String INHERIT = "inherit";
     public static final String AUTO = "auto";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(
-            INITIAL, INHERIT, AUTO);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays
+            .asList(INITIAL, INHERIT, AUTO);
 
     private String cssValue;
     private Integer value;
@@ -95,11 +95,11 @@ public class MozColumnCount extends AbstractCssProperty<MozColumnCount> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssName()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -109,11 +109,11 @@ public class MozColumnCount extends AbstractCssProperty<MozColumnCount> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssValue()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -179,9 +179,8 @@ public class MozColumnCount extends AbstractCssProperty<MozColumnCount> {
                         value = Integer.valueOf(trimmedCssValue);
                         this.cssValue = value.toString();
                     } catch (final NumberFormatException e) {
-                        throw new InvalidValueException(
-                                cssValue
-                                        + " is an invalid value. The value format should be as for example 0.5, initial, inherit etc..");
+                        throw new InvalidValueException(cssValue
+                                + " is an invalid value. The value format should be as for example 0.5, initial, inherit etc..");
                     }
                 }
 
@@ -236,16 +235,15 @@ public class MozColumnCount extends AbstractCssProperty<MozColumnCount> {
      * @since 1.0.0
      */
     public static boolean isValid(final String cssValue) {
-        final String trimmedCssValue = TagStringUtil.toLowerCase(cssValue
-                .trim());
+        final String trimmedCssValue = TagStringUtil
+                .toLowerCase(cssValue.trim());
         if (trimmedCssValue.contains(" ")) {
             return false;
         }
         try {
             final int parsedValue = Integer.parseInt(trimmedCssValue);
-            if (parsedValue == 0
-                    && (trimmedCssValue.contains("-") || trimmedCssValue
-                            .contains("+"))) {
+            if (parsedValue == 0 && (trimmedCssValue.contains("-")
+                    || trimmedCssValue.contains("+"))) {
                 return false;
             }
             return true;

@@ -57,7 +57,7 @@ public class WffConfiguration {
     /**
      * gives warning message on inappropriate usage of code if it is set to
      * true.
-     * 
+     *
      * @param directionWarningOn
      *            the directionWarningOn to set
      * @author WFF

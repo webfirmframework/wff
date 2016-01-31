@@ -28,26 +28,29 @@ import com.webfirmframework.wffweb.informer.StateChangeInformer;
 import com.webfirmframework.wffweb.util.StringBuilderUtil;
 
 /**
- * list-style: list-style-type list-style-position list-style-image|initial|inherit;
+ * list-style: list-style-type list-style-position
+ * list-style-image|initial|inherit;
  *
  *
- * Formal syntax: <'list-style-type'> || <'list-style-position'> || <'list-style-image'>
+ * Formal syntax: <'list-style-type'> || <'list-style-position'> ||
+ * <'list-style-image'>
+ * 
  * @author WFF
  * @since 1.0.0
  */
-public class ListStyle extends AbstractCssProperty<ListStyle> implements
-        StateChangeInformer<CssProperty> {
+public class ListStyle extends AbstractCssProperty<ListStyle>
+        implements StateChangeInformer<CssProperty> {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final Logger LOGGER = Logger.getLogger(ListStyle.class
-            .getName());
+    public static final Logger LOGGER = Logger
+            .getLogger(ListStyle.class.getName());
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(
-            INITIAL, INHERIT);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays
+            .asList(INITIAL, INHERIT);
 
     private String cssValue;
 
@@ -90,11 +93,11 @@ public class ListStyle extends AbstractCssProperty<ListStyle> implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssName()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -104,11 +107,11 @@ public class ListStyle extends AbstractCssProperty<ListStyle> implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssValue()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -138,9 +141,8 @@ public class ListStyle extends AbstractCssProperty<ListStyle> implements
             throw new NullValueException(
                     "null is an invalid value. The value format should be as for example cjk-ideographic inside url(\"Sqpurple.gif\"). Or, initial/inherit.");
         } else if ((trimmedCssValue = cssValue.trim()).isEmpty()) {
-            throw new NullValueException(
-                    cssValue
-                            + " is an invalid value. The value format should be as for example cjk-ideographic inside url(\"Sqpurple.gif\"). Or, initial/inherit.");
+            throw new NullValueException(cssValue
+                    + " is an invalid value. The value format should be as for example cjk-ideographic inside url(\"Sqpurple.gif\"). Or, initial/inherit.");
         }
 
         final String[] cssValueParts = trimmedCssValue.split(" ");
@@ -192,9 +194,8 @@ public class ListStyle extends AbstractCssProperty<ListStyle> implements
                     listStyleImage = this.listStyleImage;
                 }
             } else {
-                throw new InvalidValueException(
-                        cssValue
-                                + " is an invalid value. The value format should be as for example cjk-ideographic inside url(\"Sqpurple.gif\"). Or, initial/inherit.");
+                throw new InvalidValueException(cssValue
+                        + " is an invalid value. The value format should be as for example cjk-ideographic inside url(\"Sqpurple.gif\"). Or, initial/inherit.");
             }
         }
 
@@ -216,9 +217,8 @@ public class ListStyle extends AbstractCssProperty<ListStyle> implements
             invalid = false;
         }
         if (invalid) {
-            throw new InvalidValueException(
-                    cssValue
-                            + " is an invalid value. The value format should be as for example cjk-ideographic inside url(\"Sqpurple.gif\"). Or, initial/inherit.");
+            throw new InvalidValueException(cssValue
+                    + " is an invalid value. The value format should be as for example cjk-ideographic inside url(\"Sqpurple.gif\"). Or, initial/inherit.");
         }
         this.cssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder);
         this.listStyleType = listStyleType;
@@ -400,7 +400,8 @@ public class ListStyle extends AbstractCssProperty<ListStyle> implements
 
         if (listStyleImage != null && listStyleImage.isAlreadyInUse()
                 && this.listStyleImage != listStyleImage) {
-            LOGGER.warning("the given listStyleImage is already used by another object so a new object or the previous object (if it exists) of ListStyleImage will be used");
+            LOGGER.warning(
+                    "the given listStyleImage is already used by another object so a new object or the previous object (if it exists) of ListStyleImage will be used");
             return setCssValue(cssValue);
         }
 

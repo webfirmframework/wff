@@ -20,8 +20,8 @@ public class ObjectTag extends AbstractHtml {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final Logger LOGGER = Logger.getLogger(ObjectTag.class
-            .getName());
+    public static final Logger LOGGER = Logger
+            .getLogger(ObjectTag.class.getName());
 
     {
         init();
@@ -43,7 +43,9 @@ public class ObjectTag extends AbstractHtml {
         super("object", base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof ObjectTagAttributable || abstractAttribute instanceof GlobalAttributable))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof ObjectTagAttributable
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of ObjectTagAttribute");
                 }

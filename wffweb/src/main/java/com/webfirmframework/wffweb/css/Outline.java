@@ -53,19 +53,19 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class Outline extends AbstractCssProperty<Outline> implements
-        StateChangeInformer<CssProperty> {
+public class Outline extends AbstractCssProperty<Outline>
+        implements StateChangeInformer<CssProperty> {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final Logger LOGGER = Logger.getLogger(Outline.class
-            .getName());
+    public static final Logger LOGGER = Logger
+            .getLogger(Outline.class.getName());
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(
-            INITIAL, INHERIT);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays
+            .asList(INITIAL, INHERIT);
 
     private String cssValue;
 
@@ -156,9 +156,8 @@ public class Outline extends AbstractCssProperty<Outline> implements
                     "null is an invalid value. The value format should be as for example medium none color Or initial/inherit.");
         } else if ((trimmedCssValue = TagStringUtil
                 .toLowerCase(cssValue.trim())).isEmpty()) {
-            throw new NullValueException(
-                    cssValue
-                            + " is an invalid value. The value format should be as for example medium none color Or initial/inherit.");
+            throw new NullValueException(cssValue
+                    + " is an invalid value. The value format should be as for example medium none color Or initial/inherit.");
         }
 
         final List<String> cssValueParts = CssValueUtil.split(trimmedCssValue);
@@ -248,9 +247,8 @@ public class Outline extends AbstractCssProperty<Outline> implements
         }
 
         if (invalid) {
-            throw new InvalidValueException(
-                    cssValue
-                            + " is an invalid value. The value format should be as for example medium none color Or initial/inherit.");
+            throw new InvalidValueException(cssValue
+                    + " is an invalid value. The value format should be as for example medium none color Or initial/inherit.");
         }
         this.cssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder);
         this.outlineColor = outlineColor;
@@ -370,7 +368,8 @@ public class Outline extends AbstractCssProperty<Outline> implements
 
         if (outlineWidth != null && outlineWidth.isAlreadyInUse()
                 && this.outlineWidth != outlineWidth) {
-            LOGGER.warning("the given outlineWidth is already used by another object so a new object or the previous object (if it exists) of OutlineWidth will be used");
+            LOGGER.warning(
+                    "the given outlineWidth is already used by another object so a new object or the previous object (if it exists) of OutlineWidth will be used");
             return setCssValue(cssValue);
         }
 
@@ -448,7 +447,8 @@ public class Outline extends AbstractCssProperty<Outline> implements
 
         if (outlineColor != null && outlineColor.isAlreadyInUse()
                 && this.outlineColor != outlineColor) {
-            LOGGER.warning("the given outlineColor is already used by another object so a new object or the previous object (if it exists) of OutlineColor will be used");
+            LOGGER.warning(
+                    "the given outlineColor is already used by another object so a new object or the previous object (if it exists) of OutlineColor will be used");
             return setCssValue(cssValue);
         }
 

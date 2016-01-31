@@ -22,7 +22,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.AreaAttributable;
 /**
  *
  * <code>coords</code> attribute for the element.
- * 
+ *
  * A set of values specifying the coordinates of the hot-spot region. The number
  * and meaning of the values depend upon the value specified for the shape
  * attribute. For a rect or rectangle shape, the coords value is two x,y pairs:
@@ -58,7 +58,7 @@ public class Coords extends AbstractAttribute implements AreaAttributable {
 
     /**
      * sets the value for this attribute.
-     * 
+     *
      * Specifies an alternate text for the area. Required if the href attribute
      * is present
      *

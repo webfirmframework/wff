@@ -25,7 +25,8 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
  * @author WFF
  *
  */
-public class DataAttribute extends AbstractAttribute implements GlobalAttributable {
+public class DataAttribute extends AbstractAttribute
+        implements GlobalAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -38,18 +39,19 @@ public class DataAttribute extends AbstractAttribute implements GlobalAttributab
             throw new NullValueException(
                     "attributeNameExension can not be null");
         }
-        super.setAttributeName(AttributeNameConstants.DATA
-                .concat(attributeNameExension));
+        super.setAttributeName(
+                AttributeNameConstants.DATA.concat(attributeNameExension));
         setAttributeValue(null);
     }
 
-    public DataAttribute(final String attributeNameExension, final String value) {
+    public DataAttribute(final String attributeNameExension,
+            final String value) {
         if (attributeNameExension == null) {
             throw new NullValueException(
                     "attributeNameExension can not be null");
         }
-        super.setAttributeName(AttributeNameConstants.DATA
-                .concat(attributeNameExension));
+        super.setAttributeName(
+                AttributeNameConstants.DATA.concat(attributeNameExension));
         setAttributeValue(value);
     }
 

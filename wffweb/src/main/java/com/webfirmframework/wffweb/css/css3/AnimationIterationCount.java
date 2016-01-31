@@ -40,8 +40,8 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class AnimationIterationCount extends
-        AbstractCssProperty<AnimationIterationCount> {
+public class AnimationIterationCount
+        extends AbstractCssProperty<AnimationIterationCount> {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -49,8 +49,8 @@ public class AnimationIterationCount extends
     public static final String INHERIT = "inherit";
     public static final String INFINITE = "infinite";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(
-            INITIAL, INHERIT, INFINITE);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays
+            .asList(INITIAL, INHERIT, INFINITE);
 
     private String cssValue;
     private Integer value;
@@ -185,9 +185,8 @@ public class AnimationIterationCount extends
                         value = Integer.valueOf(trimmedCssValue);
                         this.cssValue = value.toString();
                     } catch (final NumberFormatException e) {
-                        throw new InvalidValueException(
-                                cssValue
-                                        + " is an invalid value. The value format should be as for example 0.5, initial, inherit etc..");
+                        throw new InvalidValueException(cssValue
+                                + " is an invalid value. The value format should be as for example 0.5, initial, inherit etc..");
                     }
                 }
 
@@ -242,16 +241,15 @@ public class AnimationIterationCount extends
      * @since 1.0.0
      */
     public static boolean isValid(final String cssValue) {
-        final String trimmedCssValue = TagStringUtil.toLowerCase(cssValue
-                .trim());
+        final String trimmedCssValue = TagStringUtil
+                .toLowerCase(cssValue.trim());
         if (trimmedCssValue.contains(" ")) {
             return false;
         }
         try {
             final int parsedValue = Integer.parseInt(trimmedCssValue);
-            if (parsedValue == 0
-                    && (trimmedCssValue.contains("-") || trimmedCssValue
-                            .contains("+"))) {
+            if (parsedValue == 0 && (trimmedCssValue.contains("-")
+                    || trimmedCssValue.contains("+"))) {
                 return false;
             }
             return true;

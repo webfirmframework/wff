@@ -117,8 +117,8 @@ public enum TextAlign implements CssProperty {
      * @author WFF
      */
     public static TextAlign getThis(final String cssValue) {
-        final String enumString = TagStringUtil.toUpperCase(cssValue).replace(
-                "-", "_");
+        final String enumString = TagStringUtil.toUpperCase(cssValue)
+                .replace("-", "_");
 
         TextAlign correspondingObject = null;
         try {

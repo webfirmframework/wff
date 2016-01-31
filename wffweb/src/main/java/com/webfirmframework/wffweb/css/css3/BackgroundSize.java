@@ -30,7 +30,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
 /**
  * <pre>
  * background-size: auto|<i>length</i>|cover|contain|initial|inherit;
- * 
+ *
  * The background-size property specifies the size of the background images.
  * Default value:  auto
  * Inherited:      no
@@ -52,8 +52,8 @@ public class BackgroundSize extends AbstractCssProperty<BackgroundSize> {
     public static final String COVER = "cover";
     public static final String CONTAIN = "contain";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(
-            INITIAL, INHERIT, AUTO, COVER, CONTAIN);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays
+            .asList(INITIAL, INHERIT, AUTO, COVER, CONTAIN);
 
     private String cssValue;
     private Float width;
@@ -200,11 +200,11 @@ public class BackgroundSize extends AbstractCssProperty<BackgroundSize> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssName()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -214,11 +214,11 @@ public class BackgroundSize extends AbstractCssProperty<BackgroundSize> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssValue()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -351,9 +351,8 @@ public class BackgroundSize extends AbstractCssProperty<BackgroundSize> {
                 }
 
                 if (invalidValue) {
-                    throw new InvalidValueException(
-                            cssValue
-                                    + " is an invalid value. The value format should be as for example 75px, 85%, 125px 10px, initial, inherit etc..");
+                    throw new InvalidValueException(cssValue
+                            + " is an invalid value. The value format should be as for example 75px, 85%, 125px 10px, initial, inherit etc..");
                 }
             }
             if (getStateChangeInformer() != null) {
@@ -361,8 +360,7 @@ public class BackgroundSize extends AbstractCssProperty<BackgroundSize> {
             }
         } catch (final NumberFormatException e) {
             throw new InvalidValueException(
-                    cssValue
-                            + " is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit.",
+                    cssValue + " is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit.",
                     e);
         }
         return this;
@@ -399,8 +397,8 @@ public class BackgroundSize extends AbstractCssProperty<BackgroundSize> {
      * @since 1.0.0
      */
     public static boolean isValid(final String cssValue) {
-        final String trimmedCssValue = TagStringUtil.toLowerCase(cssValue
-                .trim());
+        final String trimmedCssValue = TagStringUtil
+                .toLowerCase(cssValue.trim());
 
         final String[] cssValueParts = trimmedCssValue.split(" ");
         if (cssValueParts.length > 2) {

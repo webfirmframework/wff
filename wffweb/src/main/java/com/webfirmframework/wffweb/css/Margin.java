@@ -64,8 +64,8 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class Margin extends AbstractCssProperty<Margin> implements
-        StateChangeInformer<CssProperty> {
+public class Margin extends AbstractCssProperty<Margin>
+        implements StateChangeInformer<CssProperty> {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -76,8 +76,8 @@ public class Margin extends AbstractCssProperty<Margin> implements
     public static final String INHERIT = "inherit";
     private static final String AUTO = "auto";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(
-            INITIAL, INHERIT, AUTO);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays
+            .asList(INITIAL, INHERIT, AUTO);
 
     private String cssValue;
 
@@ -340,7 +340,8 @@ public class Margin extends AbstractCssProperty<Margin> implements
                     marginLeft.setCssValue(extractedMargins[3]);
                 }
             } else {
-                throw new InvalidValueException("the given cssValue is invalid");
+                throw new InvalidValueException(
+                        "the given cssValue is invalid");
             }
 
             this.cssValue = marginString;
@@ -395,7 +396,7 @@ public class Margin extends AbstractCssProperty<Margin> implements
      * argument is already used by another object, then the existing/cloned
      * object will be used. And throws {@code NullValueException} if any of the
      * given argument is null.
-     * 
+     *
      * @param marginTop
      * @param marginRight
      * @param marginBottom
@@ -414,10 +415,8 @@ public class Margin extends AbstractCssProperty<Margin> implements
                     || MarginTop.INHERIT.equals(marginTop.getCssValue())
                     || MarginRight.INITIAL.equals(marginRight.getCssValue())
                     || MarginRight.INHERIT.equals(marginRight.getCssValue())
-                    || MarginBottom.INITIAL
-                            .equals(marginBottom.getCssValue())
-                    || MarginBottom.INHERIT
-                            .equals(marginBottom.getCssValue())
+                    || MarginBottom.INITIAL.equals(marginBottom.getCssValue())
+                    || MarginBottom.INHERIT.equals(marginBottom.getCssValue())
                     || MarginLeft.INITIAL.equals(marginLeft.getCssValue())
                     || MarginLeft.INHERIT.equals(marginLeft.getCssValue())) {
                 throw new InvalidValueException(
@@ -437,15 +436,16 @@ public class Margin extends AbstractCssProperty<Margin> implements
                     this.marginLeft.setAlreadyInUse(false);
                 }
 
-                if (marginTop.isAlreadyInUse()
-                        && this.marginTop != marginTop) {
+                if (marginTop.isAlreadyInUse() && this.marginTop != marginTop) {
                     if (this.marginTop != null) {
-                        marginTopTemp = this.marginTop.setCssValue(marginTop
-                                .getCssValue());
-                        LOGGER.warning("the given marginTop is already used by another object so the existing object is used");
+                        marginTopTemp = this.marginTop
+                                .setCssValue(marginTop.getCssValue());
+                        LOGGER.warning(
+                                "the given marginTop is already used by another object so the existing object is used");
                     } else {
                         marginTopTemp = marginTop.clone();
-                        LOGGER.warning("the given marginTop is already used by another object so its clone is assigned");
+                        LOGGER.warning(
+                                "the given marginTop is already used by another object so its clone is assigned");
                     }
                 } else {
                     marginTopTemp = marginTop;
@@ -456,10 +456,12 @@ public class Margin extends AbstractCssProperty<Margin> implements
                     if (this.marginRight != null) {
                         marginRightTemp = this.marginRight
                                 .setCssValue(marginTop.getCssValue());
-                        LOGGER.warning("the given marginRight is already used by another object so the existing object is used");
+                        LOGGER.warning(
+                                "the given marginRight is already used by another object so the existing object is used");
                     } else {
                         marginRightTemp = marginRight.clone();
-                        LOGGER.warning("the given marginRight is already used by another object so its clone is assigned");
+                        LOGGER.warning(
+                                "the given marginRight is already used by another object so its clone is assigned");
                     }
 
                 } else {
@@ -471,10 +473,12 @@ public class Margin extends AbstractCssProperty<Margin> implements
                     if (this.marginBottom != null) {
                         marginBottomTemp = this.marginBottom
                                 .setCssValue(marginTop.getCssValue());
-                        LOGGER.warning("the given marginBottom is already used by another object so the existing object is used");
+                        LOGGER.warning(
+                                "the given marginBottom is already used by another object so the existing object is used");
                     } else {
                         marginBottomTemp = marginBottom.clone();
-                        LOGGER.warning("the given marginBottom is already used by another object so its clone is assigned");
+                        LOGGER.warning(
+                                "the given marginBottom is already used by another object so its clone is assigned");
                     }
 
                 } else {
@@ -486,10 +490,12 @@ public class Margin extends AbstractCssProperty<Margin> implements
                     if (this.marginLeft != null) {
                         marginLeftTemp = this.marginLeft
                                 .setCssValue(marginTop.getCssValue());
-                        LOGGER.warning("the given marginLeft is already used by another object so the existing object is used");
+                        LOGGER.warning(
+                                "the given marginLeft is already used by another object so the existing object is used");
                     } else {
                         marginLeftTemp = marginLeft.clone();
-                        LOGGER.warning("the given marginLeft is already used by another object so its clone is assigned");
+                        LOGGER.warning(
+                                "the given marginLeft is already used by another object so its clone is assigned");
                     }
 
                 } else {
@@ -631,8 +637,8 @@ public class Margin extends AbstractCssProperty<Margin> implements
      * (non-Javadoc)
      *
      * @see
-     * com.webfirmframework.wffweb.informer.StateChangeInformer#stateChanged(java.lang
-     * .Object)
+     * com.webfirmframework.wffweb.informer.StateChangeInformer#stateChanged(
+     * java.lang .Object)
      */
     @Override
     public void stateChanged(final CssProperty stateChangedObject) {
@@ -654,7 +660,8 @@ public class Margin extends AbstractCssProperty<Margin> implements
         } else if (stateChangedObject instanceof MarginBottom) {
             final MarginBottom marginBottom = (MarginBottom) stateChangedObject;
             if (MarginBottom.INITIAL.equals(marginBottom.getCssValue())
-                    || MarginBottom.INHERIT.equals(marginBottom.getCssValue())) {
+                    || MarginBottom.INHERIT
+                            .equals(marginBottom.getCssValue())) {
                 throw new InvalidValueException(
                         "marginBottom cannot have initial/inherit as its cssValue");
             }
@@ -667,7 +674,8 @@ public class Margin extends AbstractCssProperty<Margin> implements
             }
         }
 
-        assignProducedCssValue(marginTop, marginRight, marginBottom, marginLeft);
+        assignProducedCssValue(marginTop, marginRight, marginBottom,
+                marginLeft);
 
     }
 
@@ -688,9 +696,8 @@ public class Margin extends AbstractCssProperty<Margin> implements
      */
     public static boolean isValid(final String cssValue) {
         final String trimmedCssValue;
-        if (cssValue == null
-                || (trimmedCssValue = TagStringUtil
-                        .toLowerCase(cssValue.trim())).isEmpty()) {
+        if (cssValue == null || (trimmedCssValue = TagStringUtil
+                .toLowerCase(cssValue.trim())).isEmpty()) {
             return false;
         }
 
@@ -702,7 +709,8 @@ public class Margin extends AbstractCssProperty<Margin> implements
 
         for (final String eachPart : cssValueParts) {
             final boolean valid = MarginTop.isValid(eachPart);
-            if ((valid && (INITIAL.equals(eachPart) || INHERIT.equals(eachPart)))
+            if ((valid
+                    && (INITIAL.equals(eachPart) || INHERIT.equals(eachPart)))
                     || !valid) {
                 return false;
             }

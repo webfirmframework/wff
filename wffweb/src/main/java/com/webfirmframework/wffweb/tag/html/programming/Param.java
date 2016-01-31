@@ -35,11 +35,14 @@ public class Param extends AbstractHtml {
      *
      * @since 1.0.0
      */
-    public Param(final AbstractHtml base, final AbstractAttribute... attributes) {
+    public Param(final AbstractHtml base,
+            final AbstractAttribute... attributes) {
         super(Param.class.getSimpleName().toLowerCase(), base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof ParamAttributable || abstractAttribute instanceof GlobalAttributable))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof ParamAttributable
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of ParamAttribute");
                 }

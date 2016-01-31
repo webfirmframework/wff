@@ -117,8 +117,8 @@ public enum CaptionSide implements CssProperty {
      * @author WFF
      */
     public static CaptionSide getThis(final String cssValue) {
-        final String enumString = TagStringUtil.toUpperCase(cssValue).replace(
-                "-", "_");
+        final String enumString = TagStringUtil.toUpperCase(cssValue)
+                .replace("-", "_");
 
         CaptionSide correspondingObject = null;
         try {

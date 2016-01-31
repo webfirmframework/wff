@@ -52,8 +52,8 @@ public class MozBackgroundSize extends AbstractCssProperty<MozBackgroundSize> {
     public static final String COVER = "cover";
     public static final String CONTAIN = "contain";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(
-            INITIAL, INHERIT, AUTO, COVER, CONTAIN);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays
+            .asList(INITIAL, INHERIT, AUTO, COVER, CONTAIN);
 
     private String cssValue;
     private Float width;
@@ -351,9 +351,8 @@ public class MozBackgroundSize extends AbstractCssProperty<MozBackgroundSize> {
                 }
 
                 if (invalidValue) {
-                    throw new InvalidValueException(
-                            cssValue
-                                    + " is an invalid value. The value format should be as for example 75px, 85%, 125px 10px, initial, inherit etc..");
+                    throw new InvalidValueException(cssValue
+                            + " is an invalid value. The value format should be as for example 75px, 85%, 125px 10px, initial, inherit etc..");
                 }
             }
             if (getStateChangeInformer() != null) {
@@ -361,8 +360,7 @@ public class MozBackgroundSize extends AbstractCssProperty<MozBackgroundSize> {
             }
         } catch (final NumberFormatException e) {
             throw new InvalidValueException(
-                    cssValue
-                            + " is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit.",
+                    cssValue + " is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit.",
                     e);
         }
         return this;
@@ -399,8 +397,8 @@ public class MozBackgroundSize extends AbstractCssProperty<MozBackgroundSize> {
      * @since 1.0.0
      */
     public static boolean isValid(final String cssValue) {
-        final String trimmedCssValue = TagStringUtil.toLowerCase(cssValue
-                .trim());
+        final String trimmedCssValue = TagStringUtil
+                .toLowerCase(cssValue.trim());
 
         final String[] cssValueParts = trimmedCssValue.split(" ");
         if (cssValueParts.length > 2) {

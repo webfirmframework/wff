@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.DfnAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
@@ -36,10 +37,12 @@ public class Dfn extends AbstractHtml {
      * @since 1.0.0
      */
     public Dfn(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(Dfn.class.getSimpleName().toLowerCase(), base, attributes);
+        super(TagNameConstants.DFN, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof DfnAttributable || abstractAttribute instanceof GlobalAttributable))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof DfnAttributable
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of DfnAttribute");
                 }

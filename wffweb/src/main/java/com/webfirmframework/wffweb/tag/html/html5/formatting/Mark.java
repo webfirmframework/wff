@@ -33,7 +33,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 public class Mark extends AbstractHtml {
 
     private static final long serialVersionUID = 1_0_0L;
-    
+
     public static final Logger LOGGER = Logger.getLogger(Mark.class.getName());
 
     {
@@ -51,11 +51,14 @@ public class Mark extends AbstractHtml {
      *
      * @since 1.0.0
      */
-    public Mark(final AbstractHtml base, final AbstractAttribute... attributes) {
+    public Mark(final AbstractHtml base,
+            final AbstractAttribute... attributes) {
         super(Mark.class.getSimpleName().toLowerCase(), base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof MarkAttribute || abstractAttribute instanceof GlobalAttributable))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof MarkAttribute
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of MarkAttribute");
                 }

@@ -60,8 +60,8 @@ public class CssEnumUtil {
                 || cssValue.length() > highestLength) {
             return false;
         }
-        final boolean contains = cssValues.contains(TagStringUtil
-                .toUpperCase(cssValue));
+        final boolean contains = cssValues
+                .contains(TagStringUtil.toUpperCase(cssValue));
         return contains;
     }
 

@@ -84,11 +84,11 @@ public class ListStyleImage extends AbstractCssProperty<ListStyleImage> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssName()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -98,11 +98,11 @@ public class ListStyleImage extends AbstractCssProperty<ListStyleImage> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssValue()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -131,25 +131,24 @@ public class ListStyleImage extends AbstractCssProperty<ListStyleImage> {
             if (cssValue == null) {
                 throw new NullValueException(
                         "null is an invalid value. The value format should be as for example url(/images/Test.png). Or, initial/inherit.");
-            } else if ((trimmedCssValue = cssValue.trim())
-                    .equalsIgnoreCase(INITIAL)
-                    || trimmedCssValue.equalsIgnoreCase(INHERIT)
+            } else if ((trimmedCssValue = cssValue.trim()).equalsIgnoreCase(
+                    INITIAL) || trimmedCssValue.equalsIgnoreCase(INHERIT)
                     || trimmedCssValue.equalsIgnoreCase(NONE)) {
                 this.cssValue = cssValue.trim().toLowerCase();
                 url = null;
             } else if (trimmedCssValue.toLowerCase().startsWith("url(")
                     && trimmedCssValue.endsWith(")")) {
-                url = trimmedCssValue.substring(trimmedCssValue.toLowerCase()
-                        .indexOf("url(") + 4, trimmedCssValue.indexOf(')'));
+                url = trimmedCssValue.substring(
+                        trimmedCssValue.toLowerCase().indexOf("url(") + 4,
+                        trimmedCssValue.indexOf(')'));
                 if (url.startsWith("\"") && url.endsWith("\"")) {
                     url = url.substring(url.indexOf('\"') + 1,
                             url.lastIndexOf('\"'));
                 }
                 this.cssValue = "url(\"" + url + "\")";
             } else {
-                throw new InvalidValueException(
-                        cssValue
-                                + " is an invalid value. The value format should be as for example url(/images/Test.png). Or, initial/inherit.");
+                throw new InvalidValueException(cssValue
+                        + " is an invalid value. The value format should be as for example url(/images/Test.png). Or, initial/inherit.");
             }
 
             if (getStateChangeInformer() != null) {
@@ -161,8 +160,7 @@ public class ListStyleImage extends AbstractCssProperty<ListStyleImage> {
         } catch (final NumberFormatException e) {
             this.cssValue = previousCssValue;
             throw new InvalidValueException(
-                    cssValue
-                            + " is an invalid value. The value format should be as for example url(/images/Test.png). Or, initial/inherit.",
+                    cssValue + " is an invalid value. The value format should be as for example url(/images/Test.png). Or, initial/inherit.",
                     e);
         }
         return this;
@@ -247,8 +245,7 @@ public class ListStyleImage extends AbstractCssProperty<ListStyleImage> {
         String trimmedCssValue = null;
         if (cssValue == null) {
             return false;
-        } else if ((trimmedCssValue = cssValue.trim())
-                .equalsIgnoreCase(INITIAL)
+        } else if ((trimmedCssValue = cssValue.trim()).equalsIgnoreCase(INITIAL)
                 || trimmedCssValue.equalsIgnoreCase(INHERIT)
                 || trimmedCssValue.equalsIgnoreCase(NONE)) {
             return true;

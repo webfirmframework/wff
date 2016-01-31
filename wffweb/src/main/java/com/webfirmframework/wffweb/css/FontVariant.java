@@ -124,8 +124,8 @@ public enum FontVariant implements CssProperty {
      * @author WFF
      */
     public static FontVariant getThis(final String cssValue) {
-        final String enumString = TagStringUtil.toUpperCase(cssValue).replace(
-                "-", "_");
+        final String enumString = TagStringUtil.toUpperCase(cssValue)
+                .replace("-", "_");
 
         FontVariant correspondingObject = null;
         try {

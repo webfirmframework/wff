@@ -18,8 +18,8 @@ public class Caption extends AbstractHtml {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final Logger LOGGER = Logger.getLogger(Caption.class
-            .getName());
+    public static final Logger LOGGER = Logger
+            .getLogger(Caption.class.getName());
 
     {
         init();
@@ -41,7 +41,9 @@ public class Caption extends AbstractHtml {
         super(Caption.class.getSimpleName().toLowerCase(), base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof CaptionAttributable || abstractAttribute instanceof GlobalAttributable))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof CaptionAttributable
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of CaptionAttribute");
                 }

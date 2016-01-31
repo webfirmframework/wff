@@ -51,8 +51,8 @@ public class FlexBasis extends AbstractCssProperty<FlexBasis> {
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(
-            INITIAL, INHERIT, AUTO);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays
+            .asList(INITIAL, INHERIT, AUTO);
 
     private String cssValue;
     private Float value;
@@ -215,11 +215,12 @@ public class FlexBasis extends AbstractCssProperty<FlexBasis> {
             } else {
                 final String trimmedCssValue = cssValue.trim();
                 boolean invalidValue = true;
-                for (final CssLengthUnit cssLengthUnit : CssLengthUnit.values()) {
+                for (final CssLengthUnit cssLengthUnit : CssLengthUnit
+                        .values()) {
                     final String unit = cssLengthUnit.getUnit();
                     if (trimmedCssValue.endsWith(unit)) {
-                        final String valueOnly = trimmedCssValue.replaceFirst(
-                                unit, "");
+                        final String valueOnly = trimmedCssValue
+                                .replaceFirst(unit, "");
                         try {
                             value = Float.parseFloat(valueOnly);
                         } catch (final NumberFormatException e) {
@@ -240,9 +241,8 @@ public class FlexBasis extends AbstractCssProperty<FlexBasis> {
                     invalidValue = false;
                 }
                 if (invalidValue) {
-                    throw new InvalidValueException(
-                            cssValue
-                                    + " is an invalid value. The value format should be as for example 75px, 85%, initial, inherit etc..");
+                    throw new InvalidValueException(cssValue
+                            + " is an invalid value. The value format should be as for example 75px, 85%, initial, inherit etc..");
                 }
             }
             if (getStateChangeInformer() != null) {
@@ -251,8 +251,7 @@ public class FlexBasis extends AbstractCssProperty<FlexBasis> {
         } catch (final InvalidValueException e) {
             this.cssValue = previousCssValue;
             throw new InvalidValueException(
-                    cssValue
-                            + " is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit.",
+                    cssValue + " is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit.",
                     e);
         }
         return this;
@@ -299,8 +298,8 @@ public class FlexBasis extends AbstractCssProperty<FlexBasis> {
      * @since 1.0.0
      */
     public static boolean isValid(final String cssValue) {
-        final String trimmedCssValue = TagStringUtil.toLowerCase(cssValue
-                .trim());
+        final String trimmedCssValue = TagStringUtil
+                .toLowerCase(cssValue.trim());
         if (trimmedCssValue.contains(" ")) {
             return false;
         }

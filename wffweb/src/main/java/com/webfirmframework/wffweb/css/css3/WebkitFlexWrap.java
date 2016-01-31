@@ -118,8 +118,8 @@ public enum WebkitFlexWrap implements CssProperty {
      * @author WFF
      */
     public static WebkitFlexWrap getThis(final String cssValue) {
-        final String enumString = TagStringUtil.toUpperCase(cssValue).replace(
-                "-", "_");
+        final String enumString = TagStringUtil.toUpperCase(cssValue)
+                .replace("-", "_");
 
         WebkitFlexWrap correspondingObject = null;
         try {

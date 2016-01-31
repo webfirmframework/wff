@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.BlockQuoteAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
@@ -18,8 +19,8 @@ public class BlockQuote extends AbstractHtml {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final Logger LOGGER = Logger.getLogger(BlockQuote.class
-            .getName());
+    public static final Logger LOGGER = Logger
+            .getLogger(BlockQuote.class.getName());
 
     {
         init();
@@ -38,10 +39,12 @@ public class BlockQuote extends AbstractHtml {
      */
     public BlockQuote(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(BlockQuote.class.getSimpleName().toLowerCase(), base, attributes);
+        super(TagNameConstants.BLOCKQUOTE, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof BlockQuoteAttributable || abstractAttribute instanceof GlobalAttributable))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof BlockQuoteAttributable
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of BlockQuoteAttribute");
                 }

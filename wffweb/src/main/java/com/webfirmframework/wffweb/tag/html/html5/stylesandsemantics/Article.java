@@ -33,9 +33,9 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 public class Article extends AbstractHtml {
 
     private static final long serialVersionUID = 1_0_0L;
-    
-    public static final Logger LOGGER = Logger.getLogger(Article.class
-            .getName());
+
+    public static final Logger LOGGER = Logger
+            .getLogger(Article.class.getName());
 
     {
         init();
@@ -57,7 +57,9 @@ public class Article extends AbstractHtml {
         super(Article.class.getSimpleName().toLowerCase(), base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof ArticleAttribute || abstractAttribute instanceof GlobalAttributable))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof ArticleAttribute
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of ArticleAttribute");
                 }

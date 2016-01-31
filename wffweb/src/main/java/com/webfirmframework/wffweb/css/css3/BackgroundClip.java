@@ -118,8 +118,8 @@ public enum BackgroundClip implements CssProperty {
      * @author WFF
      */
     public static BackgroundClip getThis(final String cssValue) {
-        final String enumString = TagStringUtil.toUpperCase(cssValue).replace(
-                "-", "_");
+        final String enumString = TagStringUtil.toUpperCase(cssValue)
+                .replace("-", "_");
 
         BackgroundClip correspondingObject = null;
         try {

@@ -118,8 +118,8 @@ public enum OverflowX implements CssProperty {
      * @author WFF
      */
     public static OverflowX getThis(final String cssValue) {
-        final String enumString = TagStringUtil.toUpperCase(cssValue).replace(
-                "-", "_");
+        final String enumString = TagStringUtil.toUpperCase(cssValue)
+                .replace("-", "_");
 
         OverflowX correspondingObject = null;
         try {

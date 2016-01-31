@@ -48,8 +48,8 @@ public class ColumnCount extends AbstractCssProperty<ColumnCount> {
     public static final String INHERIT = "inherit";
     public static final String AUTO = "auto";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(
-            INITIAL, INHERIT, AUTO);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays
+            .asList(INITIAL, INHERIT, AUTO);
 
     private String cssValue;
     private Integer value;
@@ -180,9 +180,8 @@ public class ColumnCount extends AbstractCssProperty<ColumnCount> {
                         value = Integer.valueOf(trimmedCssValue);
                         this.cssValue = value.toString();
                     } catch (final NumberFormatException e) {
-                        throw new InvalidValueException(
-                                cssValue
-                                        + " is an invalid value. The value format should be as for example 0.5, initial, inherit etc..");
+                        throw new InvalidValueException(cssValue
+                                + " is an invalid value. The value format should be as for example 0.5, initial, inherit etc..");
                     }
                 }
 
@@ -238,16 +237,15 @@ public class ColumnCount extends AbstractCssProperty<ColumnCount> {
      * @since 1.0.0
      */
     public static boolean isValid(final String cssValue) {
-        final String trimmedCssValue = TagStringUtil.toLowerCase(cssValue
-                .trim());
+        final String trimmedCssValue = TagStringUtil
+                .toLowerCase(cssValue.trim());
         if (trimmedCssValue.contains(" ")) {
             return false;
         }
         try {
             final int parsedValue = Integer.parseInt(trimmedCssValue);
-            if (parsedValue == 0
-                    && (trimmedCssValue.contains("-") || trimmedCssValue
-                            .contains("+"))) {
+            if (parsedValue == 0 && (trimmedCssValue.contains("-")
+                    || trimmedCssValue.contains("+"))) {
                 return false;
             }
             return true;

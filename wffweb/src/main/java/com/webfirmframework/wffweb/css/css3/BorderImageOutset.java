@@ -83,8 +83,8 @@ public class BorderImageOutset extends AbstractCssProperty<BorderImageOutset> {
 
     protected static final String DEFAULT_VALUE = "0";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(
-            INITIAL, INHERIT);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays
+            .asList(INITIAL, INHERIT);
 
     private String cssValue;
 
@@ -205,8 +205,8 @@ public class BorderImageOutset extends AbstractCssProperty<BorderImageOutset> {
             throw new InvalidValueException(
                     "blank string is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit/medium/thin/thick.");
         } else {
-            final String trimmedCssValue = TagStringUtil.toLowerCase(cssValue
-                    .trim());
+            final String trimmedCssValue = TagStringUtil
+                    .toLowerCase(cssValue.trim());
 
             if (PREDEFINED_CONSTANTS.contains(trimmedCssValue)) {
                 this.cssValue = trimmedCssValue;
@@ -233,9 +233,9 @@ public class BorderImageOutset extends AbstractCssProperty<BorderImageOutset> {
                     top = right = bottom = left = (Float) lengthValueAndUnitAll[0];
                     topUnit = rightUnit = bottomUnit = leftUnit = null;
                 } else {
-                    throw new InvalidValueException("'" + extractedWidths[0]
-                            + "' is invalid in '" + borderImageWidthString
-                            + "'");
+                    throw new InvalidValueException(
+                            "'" + extractedWidths[0] + "' is invalid in '"
+                                    + borderImageWidthString + "'");
                 }
 
             } else if (extractedWidths.length == 2) {
@@ -250,9 +250,9 @@ public class BorderImageOutset extends AbstractCssProperty<BorderImageOutset> {
                     top = bottom = (Float) lengthValueAndUnitTopBottom[0];
                     topUnit = bottomUnit = null;
                 } else {
-                    throw new InvalidValueException("'" + extractedWidths[0]
-                            + "' is invalid in '" + borderImageWidthString
-                            + "'");
+                    throw new InvalidValueException(
+                            "'" + extractedWidths[0] + "' is invalid in '"
+                                    + borderImageWidthString + "'");
                 }
 
                 final Object[] lengthValueAndUnitRightLeft = CssLengthUtil
@@ -265,9 +265,9 @@ public class BorderImageOutset extends AbstractCssProperty<BorderImageOutset> {
                     right = left = (Float) lengthValueAndUnitRightLeft[0];
                     rightUnit = leftUnit = null;
                 } else {
-                    throw new InvalidValueException("'" + extractedWidths[1]
-                            + "' is invalid in '" + borderImageWidthString
-                            + "'");
+                    throw new InvalidValueException(
+                            "'" + extractedWidths[1] + "' is invalid in '"
+                                    + borderImageWidthString + "'");
                 }
 
             } else if (extractedWidths.length == 3) {
@@ -281,9 +281,9 @@ public class BorderImageOutset extends AbstractCssProperty<BorderImageOutset> {
                     top = (Float) lengthValueAndUnitTop[0];
                     topUnit = null;
                 } else {
-                    throw new InvalidValueException("'" + extractedWidths[0]
-                            + "' is invalid in '" + borderImageWidthString
-                            + "'");
+                    throw new InvalidValueException(
+                            "'" + extractedWidths[0] + "' is invalid in '"
+                                    + borderImageWidthString + "'");
                 }
 
                 final Object[] lengthValueAndUnitRightLeft = CssLengthUtil
@@ -295,9 +295,9 @@ public class BorderImageOutset extends AbstractCssProperty<BorderImageOutset> {
                     right = left = (Float) lengthValueAndUnitRightLeft[0];
                     rightUnit = leftUnit = null;
                 } else {
-                    throw new InvalidValueException("'" + extractedWidths[1]
-                            + "' is invalid in '" + borderImageWidthString
-                            + "'");
+                    throw new InvalidValueException(
+                            "'" + extractedWidths[1] + "' is invalid in '"
+                                    + borderImageWidthString + "'");
                 }
 
                 final Object[] lengthValueAndUnitBottom = CssLengthUtil
@@ -309,9 +309,9 @@ public class BorderImageOutset extends AbstractCssProperty<BorderImageOutset> {
                     bottom = (Float) lengthValueAndUnitBottom[0];
                     bottomUnit = null;
                 } else {
-                    throw new InvalidValueException("'" + extractedWidths[2]
-                            + "' is invalid in '" + borderImageWidthString
-                            + "'");
+                    throw new InvalidValueException(
+                            "'" + extractedWidths[2] + "' is invalid in '"
+                                    + borderImageWidthString + "'");
                 }
 
             } else if (extractedWidths.length == 4) {
@@ -325,9 +325,9 @@ public class BorderImageOutset extends AbstractCssProperty<BorderImageOutset> {
                     top = (Float) lengthValueAndUnitTop[0];
                     topUnit = null;
                 } else {
-                    throw new InvalidValueException("'" + extractedWidths[0]
-                            + "' is invalid in '" + borderImageWidthString
-                            + "'");
+                    throw new InvalidValueException(
+                            "'" + extractedWidths[0] + "' is invalid in '"
+                                    + borderImageWidthString + "'");
                 }
 
                 final Object[] lengthValueAndUnitRight = CssLengthUtil
@@ -339,9 +339,9 @@ public class BorderImageOutset extends AbstractCssProperty<BorderImageOutset> {
                     right = (Float) lengthValueAndUnitRight[0];
                     rightUnit = null;
                 } else {
-                    throw new InvalidValueException("'" + extractedWidths[1]
-                            + "' is invalid in '" + borderImageWidthString
-                            + "'");
+                    throw new InvalidValueException(
+                            "'" + extractedWidths[1] + "' is invalid in '"
+                                    + borderImageWidthString + "'");
                 }
                 final Object[] lengthValueAndUnitBottom = CssLengthUtil
                         .getLengthValueAndUnit(extractedWidths[2]);
@@ -352,9 +352,9 @@ public class BorderImageOutset extends AbstractCssProperty<BorderImageOutset> {
                     bottom = (Float) lengthValueAndUnitBottom[0];
                     bottomUnit = null;
                 } else {
-                    throw new InvalidValueException("'" + extractedWidths[2]
-                            + "' is invalid in '" + borderImageWidthString
-                            + "'");
+                    throw new InvalidValueException(
+                            "'" + extractedWidths[2] + "' is invalid in '"
+                                    + borderImageWidthString + "'");
                 }
 
                 final Object[] lengthValueAndUnitLeft = CssLengthUtil
@@ -366,13 +366,14 @@ public class BorderImageOutset extends AbstractCssProperty<BorderImageOutset> {
                     left = (Float) lengthValueAndUnitLeft[0];
                     leftUnit = null;
                 } else {
-                    throw new InvalidValueException("'" + extractedWidths[3]
-                            + "' is invalid in '" + borderImageWidthString
-                            + "'");
+                    throw new InvalidValueException(
+                            "'" + extractedWidths[3] + "' is invalid in '"
+                                    + borderImageWidthString + "'");
                 }
 
             } else {
-                throw new InvalidValueException("the given cssValue is invalid");
+                throw new InvalidValueException(
+                        "the given cssValue is invalid");
             }
 
             this.cssValue = getProducedCssValue(top, topUnit, right, rightUnit,
@@ -645,13 +646,14 @@ public class BorderImageOutset extends AbstractCssProperty<BorderImageOutset> {
             final CssLengthUnit leftUnit) {
 
         if ((ObjectUtil.isEqual(top, right) && topUnit == rightUnit)
-                && (ObjectUtil.isEqual(right, bottom) && ObjectUtil.isEqual(
-                        rightUnit, bottomUnit))
-                && (ObjectUtil.isEqual(bottom, left) && bottomUnit == leftUnit)) {
+                && (ObjectUtil.isEqual(right, bottom)
+                        && ObjectUtil.isEqual(rightUnit, bottomUnit))
+                && (ObjectUtil.isEqual(bottom, left)
+                        && bottomUnit == leftUnit)) {
 
-            return top != null && topUnit != null ? String.valueOf(top).concat(
-                    topUnit.getUnit()) : top != null ? String.valueOf(top)
-                    : DEFAULT_VALUE;
+            return top != null && topUnit != null
+                    ? String.valueOf(top).concat(topUnit.getUnit())
+                    : top != null ? String.valueOf(top) : DEFAULT_VALUE;
 
         } else if ((ObjectUtil.isEqual(top, bottom) && topUnit == bottomUnit)
                 && (ObjectUtil.isEqual(right, left) && rightUnit == leftUnit)) {
@@ -753,8 +755,8 @@ public class BorderImageOutset extends AbstractCssProperty<BorderImageOutset> {
      * @since 1.0.0
      */
     public static boolean isValid(final String cssValue) {
-        final String trimmedCssValue = TagStringUtil.toLowerCase(cssValue
-                .trim());
+        final String trimmedCssValue = TagStringUtil
+                .toLowerCase(cssValue.trim());
 
         if (PREDEFINED_CONSTANTS.contains(trimmedCssValue)) {
             return true;

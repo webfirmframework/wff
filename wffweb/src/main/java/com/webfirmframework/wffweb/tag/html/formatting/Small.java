@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.SmallAttributable;
@@ -35,11 +36,14 @@ public class Small extends AbstractHtml {
      *
      * @since 1.0.0
      */
-    public Small(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(Small.class.getSimpleName().toLowerCase(), base, attributes);
+    public Small(final AbstractHtml base,
+            final AbstractAttribute... attributes) {
+        super(TagNameConstants.SMALL, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof SmallAttributable || abstractAttribute instanceof GlobalAttributable))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof SmallAttributable
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of SmallAttribute");
                 }

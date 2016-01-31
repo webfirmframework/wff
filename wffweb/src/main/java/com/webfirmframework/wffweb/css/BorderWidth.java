@@ -61,13 +61,13 @@ import com.webfirmframework.wffweb.util.StringUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class BorderWidth extends AbstractCssProperty<BorderWidth> implements
-        StateChangeInformer<CssProperty> {
+public class BorderWidth extends AbstractCssProperty<BorderWidth>
+        implements StateChangeInformer<CssProperty> {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final Logger LOGGER = Logger.getLogger(BorderWidth.class
-            .getName());
+    public static final Logger LOGGER = Logger
+            .getLogger(BorderWidth.class.getName());
 
     public static final String MEDIUM = "medium";
     public static final String THIN = "thin";
@@ -75,8 +75,8 @@ public class BorderWidth extends AbstractCssProperty<BorderWidth> implements
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(
-            INITIAL, INHERIT, MEDIUM, THIN, THICK);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays
+            .asList(INITIAL, INHERIT, MEDIUM, THIN, THICK);
 
     private String cssValue;
 
@@ -357,7 +357,8 @@ public class BorderWidth extends AbstractCssProperty<BorderWidth> implements
                     borderLeftWidth.setCssValue(extractedWidths[3]);
                 }
             } else {
-                throw new InvalidValueException("the given cssValue is invalid");
+                throw new InvalidValueException(
+                        "the given cssValue is invalid");
             }
 
             this.cssValue = borderWidthString;
@@ -440,20 +441,20 @@ public class BorderWidth extends AbstractCssProperty<BorderWidth> implements
                 && borderBottomWidth != null && borderLeftWidth != null) {
 
             if (BorderTopWidth.INITIAL.equals(borderTopWidth.getCssValue())
-                    || BorderTopWidth.INHERIT.equals(borderTopWidth
-                            .getCssValue())
-                    || BorderRightWidth.INITIAL.equals(borderRightWidth
-                            .getCssValue())
-                    || BorderRightWidth.INHERIT.equals(borderRightWidth
-                            .getCssValue())
-                    || BorderBottomWidth.INITIAL.equals(borderBottomWidth
-                            .getCssValue())
-                    || BorderBottomWidth.INHERIT.equals(borderBottomWidth
-                            .getCssValue())
-                    || BorderLeftWidth.INITIAL.equals(borderLeftWidth
-                            .getCssValue())
-                    || BorderLeftWidth.INHERIT.equals(borderLeftWidth
-                            .getCssValue())) {
+                    || BorderTopWidth.INHERIT
+                            .equals(borderTopWidth.getCssValue())
+                    || BorderRightWidth.INITIAL
+                            .equals(borderRightWidth.getCssValue())
+                    || BorderRightWidth.INHERIT
+                            .equals(borderRightWidth.getCssValue())
+                    || BorderBottomWidth.INITIAL
+                            .equals(borderBottomWidth.getCssValue())
+                    || BorderBottomWidth.INHERIT
+                            .equals(borderBottomWidth.getCssValue())
+                    || BorderLeftWidth.INITIAL
+                            .equals(borderLeftWidth.getCssValue())
+                    || BorderLeftWidth.INHERIT
+                            .equals(borderLeftWidth.getCssValue())) {
                 throw new InvalidValueException(
                         "Any or all of the given arguments have initial/inherit constant value as its cssValue");
             }
@@ -476,10 +477,12 @@ public class BorderWidth extends AbstractCssProperty<BorderWidth> implements
                     if (this.borderTopWidth != null) {
                         borderTopWidthTemp = this.borderTopWidth
                                 .setCssValue(borderTopWidth.getCssValue());
-                        LOGGER.warning("the given borderTopWidth is already used by another object so the existing object is used");
+                        LOGGER.warning(
+                                "the given borderTopWidth is already used by another object so the existing object is used");
                     } else {
                         borderTopWidthTemp = borderTopWidth.clone();
-                        LOGGER.warning("the given borderTopWidth is already used by another object so its clone is assigned");
+                        LOGGER.warning(
+                                "the given borderTopWidth is already used by another object so its clone is assigned");
                     }
                 } else {
                     borderTopWidthTemp = borderTopWidth;
@@ -490,10 +493,12 @@ public class BorderWidth extends AbstractCssProperty<BorderWidth> implements
                     if (this.borderRightWidth != null) {
                         borderRightWidthTemp = this.borderRightWidth
                                 .setCssValue(borderTopWidth.getCssValue());
-                        LOGGER.warning("the given borderRightWidth is already used by another object so the existing object is used");
+                        LOGGER.warning(
+                                "the given borderRightWidth is already used by another object so the existing object is used");
                     } else {
                         borderRightWidthTemp = borderRightWidth.clone();
-                        LOGGER.warning("the given borderRightWidth is already used by another object so its clone is assigned");
+                        LOGGER.warning(
+                                "the given borderRightWidth is already used by another object so its clone is assigned");
                     }
 
                 } else {
@@ -505,10 +510,12 @@ public class BorderWidth extends AbstractCssProperty<BorderWidth> implements
                     if (this.borderBottomWidth != null) {
                         borderBottomWidthTemp = this.borderBottomWidth
                                 .setCssValue(borderTopWidth.getCssValue());
-                        LOGGER.warning("the given borderBottomWidth is already used by another object so the existing object is used");
+                        LOGGER.warning(
+                                "the given borderBottomWidth is already used by another object so the existing object is used");
                     } else {
                         borderBottomWidthTemp = borderBottomWidth.clone();
-                        LOGGER.warning("the given borderBottomWidth is already used by another object so its clone is assigned");
+                        LOGGER.warning(
+                                "the given borderBottomWidth is already used by another object so its clone is assigned");
                     }
 
                 } else {
@@ -520,10 +527,12 @@ public class BorderWidth extends AbstractCssProperty<BorderWidth> implements
                     if (this.borderLeftWidth != null) {
                         borderLeftWidthTemp = this.borderLeftWidth
                                 .setCssValue(borderTopWidth.getCssValue());
-                        LOGGER.warning("the given borderLeftWidth is already used by another object so the existing object is used");
+                        LOGGER.warning(
+                                "the given borderLeftWidth is already used by another object so the existing object is used");
                     } else {
                         borderLeftWidthTemp = borderLeftWidth.clone();
-                        LOGGER.warning("the given borderLeftWidth is already used by another object so its clone is assigned");
+                        LOGGER.warning(
+                                "the given borderLeftWidth is already used by another object so its clone is assigned");
                     }
 
                 } else {
@@ -676,8 +685,8 @@ public class BorderWidth extends AbstractCssProperty<BorderWidth> implements
      * (non-Javadoc)
      *
      * @see
-     * com.webfirmframework.wffweb.informer.StateChangeInformer#stateChanged(java.lang
-     * .Object)
+     * com.webfirmframework.wffweb.informer.StateChangeInformer#stateChanged(
+     * java.lang .Object)
      */
     @Override
     public void stateChanged(final CssProperty stateChangedObject) {
@@ -685,33 +694,33 @@ public class BorderWidth extends AbstractCssProperty<BorderWidth> implements
         if (stateChangedObject instanceof BorderTopWidth) {
             final BorderTopWidth borderTopWidth = (BorderTopWidth) stateChangedObject;
             if (BorderTopWidth.INITIAL.equals(borderTopWidth.getCssValue())
-                    || BorderTopWidth.INHERIT.equals(borderTopWidth
-                            .getCssValue())) {
+                    || BorderTopWidth.INHERIT
+                            .equals(borderTopWidth.getCssValue())) {
                 throw new InvalidValueException(
                         "borderTopWidth cannot have initial/inherit as its cssValue");
             }
         } else if (stateChangedObject instanceof BorderRightWidth) {
             final BorderRightWidth borderRightWidth = (BorderRightWidth) stateChangedObject;
             if (BorderRightWidth.INITIAL.equals(borderRightWidth.getCssValue())
-                    || BorderRightWidth.INHERIT.equals(borderRightWidth
-                            .getCssValue())) {
+                    || BorderRightWidth.INHERIT
+                            .equals(borderRightWidth.getCssValue())) {
                 throw new InvalidValueException(
                         "borderRightWidth cannot have initial/inherit as its cssValue");
             }
         } else if (stateChangedObject instanceof BorderBottomWidth) {
             final BorderBottomWidth borderBottomWidth = (BorderBottomWidth) stateChangedObject;
-            if (BorderBottomWidth.INITIAL.equals(borderBottomWidth
-                    .getCssValue())
-                    || BorderBottomWidth.INHERIT.equals(borderBottomWidth
-                            .getCssValue())) {
+            if (BorderBottomWidth.INITIAL
+                    .equals(borderBottomWidth.getCssValue())
+                    || BorderBottomWidth.INHERIT
+                            .equals(borderBottomWidth.getCssValue())) {
                 throw new InvalidValueException(
                         "borderBottomWidth cannot have initial/inherit as its cssValue");
             }
         } else if (stateChangedObject instanceof BorderLeftWidth) {
             final BorderLeftWidth borderLeftWidth = (BorderLeftWidth) stateChangedObject;
             if (BorderLeftWidth.INITIAL.equals(borderLeftWidth.getCssValue())
-                    || BorderLeftWidth.INHERIT.equals(borderLeftWidth
-                            .getCssValue())) {
+                    || BorderLeftWidth.INHERIT
+                            .equals(borderLeftWidth.getCssValue())) {
                 throw new InvalidValueException(
                         "borderLeftWidth cannot have initial/inherit as its cssValue");
             }
@@ -742,8 +751,8 @@ public class BorderWidth extends AbstractCssProperty<BorderWidth> implements
             for (final CssLengthUnit cssLengthUnit : CssLengthUnit.values()) {
                 final String unit = cssLengthUnit.getUnit();
                 if (cssValuePart.endsWith(unit)) {
-                    final String valueOnly = cssValuePart
-                            .replaceFirst(unit, "");
+                    final String valueOnly = cssValuePart.replaceFirst(unit,
+                            "");
                     try {
                         Float.parseFloat(valueOnly);
                     } catch (final NumberFormatException e) {

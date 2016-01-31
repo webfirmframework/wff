@@ -30,16 +30,16 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
 /**
  * <pre>
  * outline-color: invert|color|initial|inherit;
- * 
+ *
  * An outline is a line that is drawn around elements (outside the borders) to make the element "stand out".
- * 
+ *
  * The outline-color property specifies the color of an outline.
- * 
+ *
  * Note: Always declare the outline-style property before the outline-color property. An element must have an outline before you change the color of it.
  * Default value:  invert
  * Inherited:      no
  * Animatable:     yes, see individual properties
- * 
+ *
  * Version:        CSS2
  * JavaScript syntax:      object.style.outlineColor="#FF0000"
  * </pre>
@@ -48,13 +48,13 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  * @version
  * @since 1.0.0
  */
-public class OutlineColor extends AbstractCssProperty<OutlineColor> implements
-        StateChangeInformer<Bean> {
+public class OutlineColor extends AbstractCssProperty<OutlineColor>
+        implements StateChangeInformer<Bean> {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final Logger LOGGER = Logger.getLogger(OutlineColor.class
-            .getName());
+    public static final Logger LOGGER = Logger
+            .getLogger(OutlineColor.class.getName());
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
@@ -117,11 +117,11 @@ public class OutlineColor extends AbstractCssProperty<OutlineColor> implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssName()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -131,11 +131,11 @@ public class OutlineColor extends AbstractCssProperty<OutlineColor> implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssValue()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -176,9 +176,8 @@ public class OutlineColor extends AbstractCssProperty<OutlineColor> implements
             throw new NullValueException(
                     "null is an invalid value. The value should be any color for example #0000ff, rgb(15, 25, 155) Or, initial/inherit/invert.");
         } else if (!isValid(cssValue)) {
-            throw new InvalidValueException(
-                    cssValue
-                            + " is an invalid value. The value should be any color for example #0000ff, rgb(15, 25, 155) Or, initial/inherit/invert.");
+            throw new InvalidValueException(cssValue
+                    + " is an invalid value. The value should be any color for example #0000ff, rgb(15, 25, 155) Or, initial/inherit/invert.");
         } else {
             this.cssValue = cssValue.trim();
             if (RgbCssValue.isValid(cssValue)) {
@@ -427,8 +426,8 @@ public class OutlineColor extends AbstractCssProperty<OutlineColor> implements
             throw new NullValueException(" rgbaCssVal can not be null");
         }
         if (this.rgbaCssValue != null) {
-            if (rgbaCssValue.isAlreadyInUse()
-                    && this.rgbaCssValue.getStateChangeInformer() != rgbaCssValue
+            if (rgbaCssValue.isAlreadyInUse() && this.rgbaCssValue
+                    .getStateChangeInformer() != rgbaCssValue
                             .getStateChangeInformer()) {
                 try {
                     final RgbaCssValue rgbaCssValueClone = CloneUtil
@@ -529,8 +528,8 @@ public class OutlineColor extends AbstractCssProperty<OutlineColor> implements
             throw new NullValueException("hslaCssValue can not be null");
         }
         if (this.hslaCssValue != null) {
-            if (hslaCssValue.isAlreadyInUse()
-                    && this.hslaCssValue.getStateChangeInformer() != hslaCssValue
+            if (hslaCssValue.isAlreadyInUse() && this.hslaCssValue
+                    .getStateChangeInformer() != hslaCssValue
                             .getStateChangeInformer()) {
                 try {
                     final HslaCssValue hslaCssValueClone = CloneUtil

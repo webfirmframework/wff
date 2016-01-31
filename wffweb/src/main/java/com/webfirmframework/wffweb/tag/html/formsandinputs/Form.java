@@ -35,11 +35,14 @@ public class Form extends AbstractHtml {
      *
      * @since 1.0.0
      */
-    public Form(final AbstractHtml base, final AbstractAttribute... attributes) {
+    public Form(final AbstractHtml base,
+            final AbstractAttribute... attributes) {
         super(Form.class.getSimpleName().toLowerCase(), base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof FormAttributable || abstractAttribute instanceof GlobalAttributable))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof FormAttributable
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of FormAttribute");
                 }

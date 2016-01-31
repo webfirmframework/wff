@@ -41,8 +41,8 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class WebkitColumnRuleWidth extends
-        AbstractCssProperty<WebkitColumnRuleWidth> {
+public class WebkitColumnRuleWidth
+        extends AbstractCssProperty<WebkitColumnRuleWidth> {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -216,11 +216,12 @@ public class WebkitColumnRuleWidth extends
             } else {
                 final String trimmedCssValue = cssValue.trim();
                 boolean invalidValue = true;
-                for (final CssLengthUnit cssLengthUnit : CssLengthUnit.values()) {
+                for (final CssLengthUnit cssLengthUnit : CssLengthUnit
+                        .values()) {
                     final String unit = cssLengthUnit.getUnit();
                     if (trimmedCssValue.endsWith(unit)) {
-                        final String valueOnly = cssValue
-                                .replaceFirst(unit, "");
+                        final String valueOnly = cssValue.replaceFirst(unit,
+                                "");
                         try {
                             value = Float.parseFloat(valueOnly);
                         } catch (final NumberFormatException e) {
@@ -243,9 +244,8 @@ public class WebkitColumnRuleWidth extends
                     invalidValue = false;
                 }
                 if (invalidValue) {
-                    throw new InvalidValueException(
-                            cssValue
-                                    + " is an invalid value. The value format should be as for example 75px, 85%, initial, inherit etc..");
+                    throw new InvalidValueException(cssValue
+                            + " is an invalid value. The value format should be as for example 75px, 85%, initial, inherit etc..");
                 }
             }
             if (getStateChangeInformer() != null) {
@@ -254,8 +254,7 @@ public class WebkitColumnRuleWidth extends
         } catch (final NumberFormatException e) {
             e.printStackTrace();
             throw new InvalidValueException(
-                    cssValue
-                            + " is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit.",
+                    cssValue + " is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit.",
                     e);
         }
         return this;

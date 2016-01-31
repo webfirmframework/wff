@@ -122,8 +122,8 @@ public enum WebkitColumnSpan implements CssProperty {
      * @author WFF
      */
     public static WebkitColumnSpan getThis(final String cssValue) {
-        final String enumString = TagStringUtil.toUpperCase(cssValue).replace(
-                "-", "_");
+        final String enumString = TagStringUtil.toUpperCase(cssValue)
+                .replace("-", "_");
 
         WebkitColumnSpan correspondingObject = null;
         try {

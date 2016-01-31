@@ -32,9 +32,9 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
 /**
  * <pre>
  * The border-top shorthand property sets all the top border properties in one declaration.
- * 
+ *
  * The properties that can be set, are (in order): border-top-width, border-top-style, and border-top-color.
- * 
+ *
  * If one of the values above are missing, e.g. border-top:solid #ff0000, the default value for the missing property will be inserted, if any.
  * Default value:  medium none color
  * Inherited:      no
@@ -46,19 +46,19 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class BorderTop extends AbstractCssProperty<BorderTop> implements
-        StateChangeInformer<CssProperty> {
+public class BorderTop extends AbstractCssProperty<BorderTop>
+        implements StateChangeInformer<CssProperty> {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final Logger LOGGER = Logger.getLogger(BorderTop.class
-            .getName());
+    public static final Logger LOGGER = Logger
+            .getLogger(BorderTop.class.getName());
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(
-            INITIAL, INHERIT);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays
+            .asList(INITIAL, INHERIT);
 
     private String cssValue;
 
@@ -101,11 +101,11 @@ public class BorderTop extends AbstractCssProperty<BorderTop> implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssName()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -115,11 +115,11 @@ public class BorderTop extends AbstractCssProperty<BorderTop> implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssValue()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -149,9 +149,8 @@ public class BorderTop extends AbstractCssProperty<BorderTop> implements
                     "null is an invalid value. The value format should be as for example medium none color Or initial/inherit.");
         } else if ((trimmedCssValue = TagStringUtil
                 .toLowerCase(cssValue.trim())).isEmpty()) {
-            throw new NullValueException(
-                    cssValue
-                            + " is an invalid value. The value format should be as for example medium none color Or initial/inherit.");
+            throw new NullValueException(cssValue
+                    + " is an invalid value. The value format should be as for example medium none color Or initial/inherit.");
         }
 
         final List<String> cssValueParts = CssValueUtil.split(trimmedCssValue);
@@ -240,9 +239,8 @@ public class BorderTop extends AbstractCssProperty<BorderTop> implements
             this.borderTopColor.setAlreadyInUse(false);
         }
         if (invalid) {
-            throw new InvalidValueException(
-                    cssValue
-                            + " is an invalid value. The value format should be as for example medium none color Or initial/inherit.");
+            throw new InvalidValueException(cssValue
+                    + " is an invalid value. The value format should be as for example medium none color Or initial/inherit.");
         }
         this.cssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder);
         this.borderTopWidth = borderTopWidth;
@@ -365,7 +363,8 @@ public class BorderTop extends AbstractCssProperty<BorderTop> implements
 
         if (borderTopWidth != null && borderTopWidth.isAlreadyInUse()
                 && this.borderTopWidth != borderTopWidth) {
-            LOGGER.warning("the given borderTopWidth is already used by another object so a new object or the previous object (if it exists) of BorderTopWidth will be used");
+            LOGGER.warning(
+                    "the given borderTopWidth is already used by another object so a new object or the previous object (if it exists) of BorderTopWidth will be used");
             return setCssValue(cssValue);
         }
 
@@ -445,7 +444,8 @@ public class BorderTop extends AbstractCssProperty<BorderTop> implements
 
         if (borderTopColor != null && borderTopColor.isAlreadyInUse()
                 && this.borderTopColor != borderTopColor) {
-            LOGGER.warning("the given borderTopColor is already used by another object so a new object or the previous object (if it exists) of BorderTopColor will be used");
+            LOGGER.warning(
+                    "the given borderTopColor is already used by another object so a new object or the previous object (if it exists) of BorderTopColor will be used");
             return setCssValue(cssValue);
         }
 
@@ -483,13 +483,13 @@ public class BorderTop extends AbstractCssProperty<BorderTop> implements
             setBorderTopColor(borderTopColor);
         }
     }
-    
+
     /**
-     * 
+     *
      * @author WFF
      * @since 1.0.0
      */
-    protected void addPredefinedConstant(String constant) {
+    protected void addPredefinedConstant(final String constant) {
         PREDEFINED_CONSTANTS.add(constant);
     }
 

@@ -27,9 +27,9 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
 /**
  * <pre>
  * border-bottom-width: medium|thin|thick|length|initial|inherit;
- * 
+ *
  * The border-bottom-width property sets the width of an element's bottom border.
- * 
+ *
  * Note: Always declare the border-style property before the border-bottom-width property. An element must have borders before you can change the width.
  * Default value:  medium
  * Inherited:      no
@@ -52,8 +52,8 @@ public class BorderBottomWidth extends AbstractCssProperty<BorderBottomWidth> {
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(
-            INITIAL, INHERIT, MEDIUM, THIN, THICK);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays
+            .asList(INITIAL, INHERIT, MEDIUM, THIN, THICK);
 
     private String cssValue;
     private Float value;
@@ -145,11 +145,11 @@ public class BorderBottomWidth extends AbstractCssProperty<BorderBottomWidth> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssName()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -159,11 +159,11 @@ public class BorderBottomWidth extends AbstractCssProperty<BorderBottomWidth> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssValue()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -220,11 +220,12 @@ public class BorderBottomWidth extends AbstractCssProperty<BorderBottomWidth> {
                 final String trimmedCssValue = TagStringUtil
                         .toLowerCase(cssValue.trim());
                 boolean invalidValue = true;
-                for (final CssLengthUnit cssLengthUnit : CssLengthUnit.values()) {
+                for (final CssLengthUnit cssLengthUnit : CssLengthUnit
+                        .values()) {
                     final String unit = cssLengthUnit.getUnit();
                     if (trimmedCssValue.endsWith(unit)) {
-                        final String valueOnly = trimmedCssValue.replaceFirst(
-                                unit, "");
+                        final String valueOnly = trimmedCssValue
+                                .replaceFirst(unit, "");
                         try {
                             value = Float.parseFloat(valueOnly);
                         } catch (final NumberFormatException e) {
@@ -243,9 +244,8 @@ public class BorderBottomWidth extends AbstractCssProperty<BorderBottomWidth> {
                     invalidValue = false;
                 }
                 if (invalidValue) {
-                    throw new InvalidValueException(
-                            cssValue
-                                    + " is an invalid value. The value format should be as for example 75px, 85%, initial, inherit etc..");
+                    throw new InvalidValueException(cssValue
+                            + " is an invalid value. The value format should be as for example 75px, 85%, initial, inherit etc..");
                 }
             }
             if (getStateChangeInformer() != null) {
@@ -254,8 +254,7 @@ public class BorderBottomWidth extends AbstractCssProperty<BorderBottomWidth> {
         } catch (final NumberFormatException | InvalidValueException e) {
             this.cssValue = previousCssValue;
             throw new InvalidValueException(
-                    cssValue
-                            + " is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit.",
+                    cssValue + " is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit.",
                     e);
         }
         return this;

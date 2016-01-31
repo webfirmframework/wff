@@ -118,8 +118,8 @@ public enum OverflowY implements CssProperty {
      * @author WFF
      */
     public static OverflowY getThis(final String cssValue) {
-        final String enumString = TagStringUtil.toUpperCase(cssValue).replace(
-                "-", "_");
+        final String enumString = TagStringUtil.toUpperCase(cssValue)
+                .replace("-", "_");
 
         OverflowY correspondingObject = null;
         try {

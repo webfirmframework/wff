@@ -130,8 +130,8 @@ public enum MozColumnRuleStyle implements CssProperty {
      * @author WFF
      */
     public static MozColumnRuleStyle getThis(final String cssValue) {
-        final String enumString = TagStringUtil.toUpperCase(cssValue).replace(
-                "-", "_");
+        final String enumString = TagStringUtil.toUpperCase(cssValue)
+                .replace("-", "_");
 
         MozColumnRuleStyle correspondingObject = null;
         try {

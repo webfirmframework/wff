@@ -118,8 +118,8 @@ public enum WordBreak implements CssProperty {
      * @author WFF
      */
     public static WordBreak getThis(final String cssValue) {
-        final String enumString = TagStringUtil.toUpperCase(cssValue).replace(
-                "-", "_");
+        final String enumString = TagStringUtil.toUpperCase(cssValue)
+                .replace("-", "_");
 
         WordBreak correspondingObject = null;
         try {

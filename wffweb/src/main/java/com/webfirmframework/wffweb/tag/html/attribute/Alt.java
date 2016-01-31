@@ -22,13 +22,13 @@ import com.webfirmframework.wffweb.tag.html.identifier.AreaAttributable;
 /**
  *
  * <code>alt</code> attribute for the element.
- * 
+ *
  * A text string alternative to display on browsers that do not display images.
  * The text should be phrased so that it presents the user with the same kind of
  * choice as the image would offer when displayed without the alternative text.
  * In HTML4, this attribute is required, but may be the empty string (""). In
  * HTML5, this attribute is required only if the href attribute is used.
- * 
+ *
  * @author WFF
  *
  */
@@ -54,7 +54,7 @@ public class Alt extends AbstractAttribute implements AreaAttributable {
 
     /**
      * sets the value for this attribute.
-     * 
+     *
      * Specifies an alternate text for the area. Required if the href attribute
      * is present
      *

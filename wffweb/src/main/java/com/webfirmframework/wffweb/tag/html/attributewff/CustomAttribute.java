@@ -26,8 +26,8 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
  * @author WFF
  *
  */
-public class CustomAttribute extends AbstractAttribute implements
-        GlobalAttributable {
+public class CustomAttribute extends AbstractAttribute
+        implements GlobalAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 

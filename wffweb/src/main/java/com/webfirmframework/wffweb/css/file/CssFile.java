@@ -55,7 +55,8 @@ public abstract class CssFile implements Serializable, Cloneable {
         }
 
         @Override
-        public boolean addAll(final Collection<? extends AbstractCssFileBlock> c) {
+        public boolean addAll(
+                final Collection<? extends AbstractCssFileBlock> c) {
             setModified(super.addAll(c));
             for (final AbstractCssFileBlock abstractCssFileBlock : c) {
                 abstractCssFileBlock.addCssFile(CssFile.this);
@@ -113,8 +114,8 @@ public abstract class CssFile implements Serializable, Cloneable {
                             toStringBuilder.append('{');
                             final Map<String, CssProperty> cssProperties = new LinkedHashMap<String, CssProperty>();
                             for (final AbstractCssFileBlock cssFileBlock : cssFileBlocks) {
-                                cssProperties.putAll(cssFileBlock
-                                        .getCssPropertiesAsMap());
+                                cssProperties.putAll(
+                                        cssFileBlock.getCssPropertiesAsMap());
                             }
 
                             for (final CssProperty cssProperty : cssProperties
@@ -122,8 +123,8 @@ public abstract class CssFile implements Serializable, Cloneable {
                                 toStringBuilder
                                         .append(cssProperty.getCssName());
                                 toStringBuilder.append(':');
-                                toStringBuilder.append(cssProperty
-                                        .getCssValue());
+                                toStringBuilder
+                                        .append(cssProperty.getCssValue());
                                 toStringBuilder.append(';');
                             }
                             toStringBuilder.append('}');
@@ -159,8 +160,7 @@ public abstract class CssFile implements Serializable, Cloneable {
         try {
             for (final Field field : this.getClass().getDeclaredFields()) {
 
-                if (AbstractCssFileBlock.class
-                        .isAssignableFrom(field.getType())
+                if (AbstractCssFileBlock.class.isAssignableFrom(field.getType())
                         && !field.isAnnotationPresent(ExcludeCssBlock.class)) {
 
                     final boolean accessible = field.isAccessible();
@@ -290,7 +290,8 @@ public abstract class CssFile implements Serializable, Cloneable {
      * will be
      * <code>.test4-class{list-style-position:outside;background-repeat:no-repeat;}</code>
      * .<br/>
-     * <code>private CssBlock cssBlock1 = new CssBlock(".test4-class") </code>{<br/>
+     * <code>private CssBlock cssBlock1 = new CssBlock(".test4-class") </code>{
+     * <br/>
      * <code>         @Override</code><br/>
      * <code>         protected void load(Set<CssProperty> cssProperties) {</code>
      * <br/>
@@ -298,7 +299,8 @@ public abstract class CssFile implements Serializable, Cloneable {
      * <br/>
      * <code>         }</code><br/>
      * <code> }; </code><br/>
-     * <code>private CssBlock cssBlock2 = new CssBlock(".test4-class") </code>{<br/>
+     * <code>private CssBlock cssBlock2 = new CssBlock(".test4-class") </code>{
+     * <br/>
      * <code>         @Override</code><br/>
      * <code>         protected void load(Set<CssProperty> cssProperties) {</code>
      * <br/>

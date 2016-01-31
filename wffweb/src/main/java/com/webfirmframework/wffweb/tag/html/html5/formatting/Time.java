@@ -33,7 +33,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 public class Time extends AbstractHtml {
 
     private static final long serialVersionUID = 1_0_0L;
-    
+
     public static final Logger LOGGER = Logger.getLogger(Time.class.getName());
 
     {
@@ -51,11 +51,14 @@ public class Time extends AbstractHtml {
      *
      * @since 1.0.0
      */
-    public Time(final AbstractHtml base, final AbstractAttribute... attributes) {
+    public Time(final AbstractHtml base,
+            final AbstractAttribute... attributes) {
         super(Time.class.getSimpleName().toLowerCase(), base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof TimeAttribute || abstractAttribute instanceof GlobalAttributable))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof TimeAttribute
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of TimeAttribute");
                 }

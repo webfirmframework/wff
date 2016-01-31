@@ -36,7 +36,7 @@ public class RgbaCssValue extends AbstractBean<RgbaCssValue> {
 
     /**
      * The default value is rgba(0, 0, 0, 1)
-     * 
+     *
      * @author WFF
      * @since 1.0.0
      */
@@ -83,45 +83,40 @@ public class RgbaCssValue extends AbstractBean<RgbaCssValue> {
         if (rgbaString.startsWith("rgba(") && rgbaString.contains(")")) {
             final String rgba = rgbaString.replace(",", ", ");
 
-            final String[] rgbaStringParts = rgbaString.substring(
-                    rgbaString.indexOf('(') + 1, rgbaString.lastIndexOf(')'))
+            final String[] rgbaStringParts = rgbaString
+                    .substring(rgbaString.indexOf('(') + 1,
+                            rgbaString.lastIndexOf(')'))
                     .split("[,]");
 
             if (rgbaStringParts.length == 4) {
                 r = Integer.parseInt(rgbaStringParts[0]);
                 if (r < 0 || r > 255) {
-                    throw new InvalidValueException(
-                            rgbaString
-                                    + " is not a valid rgba string. r value in rgbaString should be inbetween 0 to 255, eg: rgba(255, 25, 15, 0.1)");
+                    throw new InvalidValueException(rgbaString
+                            + " is not a valid rgba string. r value in rgbaString should be inbetween 0 to 255, eg: rgba(255, 25, 15, 0.1)");
                 }
                 g = Integer.parseInt(rgbaStringParts[1]);
                 if (g < 0 || g > 255) {
-                    throw new InvalidValueException(
-                            rgbaString
-                                    + " is not a valid rgba string. g value in rgbaString should be inbetween 0 to 255, eg: rgba(255, 25, 15, 0.1)");
+                    throw new InvalidValueException(rgbaString
+                            + " is not a valid rgba string. g value in rgbaString should be inbetween 0 to 255, eg: rgba(255, 25, 15, 0.1)");
                 }
                 b = Integer.parseInt(rgbaStringParts[2]);
                 if (b < 0 || b > 255) {
-                    throw new InvalidValueException(
-                            rgbaString
-                                    + " is not a valid rgba string. b value in rgbaString should be inbetween 0 to 255, eg: rgba(255, 25, 15, 0.1)");
+                    throw new InvalidValueException(rgbaString
+                            + " is not a valid rgba string. b value in rgbaString should be inbetween 0 to 255, eg: rgba(255, 25, 15, 0.1)");
                 }
                 a = Float.parseFloat(rgbaStringParts[3]);
                 if (a < 0 || a > 1) {
-                    throw new InvalidValueException(
-                            rgbaString
-                                    + " is not a valid rgba string. a value (i.e. alpha) in rgbaString should be inbetween 0 to 1, eg: rgba(255, 25, 15, 0.1)");
+                    throw new InvalidValueException(rgbaString
+                            + " is not a valid rgba string. a value (i.e. alpha) in rgbaString should be inbetween 0 to 1, eg: rgba(255, 25, 15, 0.1)");
                 }
                 this.rgba = rgba;
             } else {
-                throw new InvalidValueException(
-                        rgbaString
-                                + " is not a valid rgba string. It should be in the format of rgba(255, 25, 15, 0.1)");
+                throw new InvalidValueException(rgbaString
+                        + " is not a valid rgba string. It should be in the format of rgba(255, 25, 15, 0.1)");
             }
         } else {
-            throw new InvalidValueException(
-                    rgbaString
-                            + " is not a valid rgba string. It should be in the format of rgba(255, 25, 15, 0.1)");
+            throw new InvalidValueException(rgbaString
+                    + " is not a valid rgba string. It should be in the format of rgba(255, 25, 15, 0.1)");
         }
     }
 
@@ -289,9 +284,10 @@ public class RgbaCssValue extends AbstractBean<RgbaCssValue> {
             rgbaString = rgbaString.replace(" ", "").toLowerCase();
             if (rgbaString.startsWith("rgba(") && rgbaString.contains(")")) {
 
-                final String[] rgbaStringParts = rgbaString.substring(
-                        rgbaString.indexOf('(') + 1,
-                        rgbaString.lastIndexOf(')')).split("[,]");
+                final String[] rgbaStringParts = rgbaString
+                        .substring(rgbaString.indexOf('(') + 1,
+                                rgbaString.lastIndexOf(')'))
+                        .split("[,]");
 
                 if (rgbaStringParts.length == 4) {
                     final int r = Integer.parseInt(rgbaStringParts[0]);

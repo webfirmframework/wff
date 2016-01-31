@@ -66,20 +66,20 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class BorderColor extends AbstractCssProperty<BorderColor> implements
-        StateChangeInformer<CssProperty> {
+public class BorderColor extends AbstractCssProperty<BorderColor>
+        implements StateChangeInformer<CssProperty> {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final Logger LOGGER = Logger.getLogger(BorderColor.class
-            .getName());
+    public static final Logger LOGGER = Logger
+            .getLogger(BorderColor.class.getName());
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
     public static final String TRANSPARENT = "transparent";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(
-            INITIAL, INHERIT, TRANSPARENT);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays
+            .asList(INITIAL, INHERIT, TRANSPARENT);
 
     private String cssValue;
 
@@ -355,7 +355,8 @@ public class BorderColor extends AbstractCssProperty<BorderColor> implements
                     borderLeftColor.setCssValue(extractedColors.get(3));
                 }
             } else {
-                throw new InvalidValueException("the given cssValue is invalid");
+                throw new InvalidValueException(
+                        "the given cssValue is invalid");
             }
 
             this.cssValue = borderColorString;
@@ -422,20 +423,20 @@ public class BorderColor extends AbstractCssProperty<BorderColor> implements
                 && borderBottomColor != null && borderLeftColor != null) {
 
             if (BorderTopColor.INITIAL.equals(borderTopColor.getCssValue())
-                    || BorderTopColor.INHERIT.equals(borderTopColor
-                            .getCssValue())
-                    || BorderRightColor.INITIAL.equals(borderRightColor
-                            .getCssValue())
-                    || BorderRightColor.INHERIT.equals(borderRightColor
-                            .getCssValue())
-                    || BorderBottomColor.INITIAL.equals(borderBottomColor
-                            .getCssValue())
-                    || BorderBottomColor.INHERIT.equals(borderBottomColor
-                            .getCssValue())
-                    || BorderLeftColor.INITIAL.equals(borderLeftColor
-                            .getCssValue())
-                    || BorderLeftColor.INHERIT.equals(borderLeftColor
-                            .getCssValue())) {
+                    || BorderTopColor.INHERIT
+                            .equals(borderTopColor.getCssValue())
+                    || BorderRightColor.INITIAL
+                            .equals(borderRightColor.getCssValue())
+                    || BorderRightColor.INHERIT
+                            .equals(borderRightColor.getCssValue())
+                    || BorderBottomColor.INITIAL
+                            .equals(borderBottomColor.getCssValue())
+                    || BorderBottomColor.INHERIT
+                            .equals(borderBottomColor.getCssValue())
+                    || BorderLeftColor.INITIAL
+                            .equals(borderLeftColor.getCssValue())
+                    || BorderLeftColor.INHERIT
+                            .equals(borderLeftColor.getCssValue())) {
                 throw new InvalidValueException(
                         "Any or all of the given arguments have initial/inherit constant value as its cssValue");
             }
@@ -464,28 +465,32 @@ public class BorderColor extends AbstractCssProperty<BorderColor> implements
                 } else {
                     if (borderTopColor.isAlreadyInUse()) {
                         borderTopColorTemp = borderTopColor.clone();
-                        LOGGER.warning("the given borderTopColor is already used by another object so its clone is assigned");
+                        LOGGER.warning(
+                                "the given borderTopColor is already used by another object so its clone is assigned");
                     } else {
                         borderTopColorTemp = borderTopColor;
                     }
 
                     if (borderRightColor.isAlreadyInUse()) {
                         borderRightColorTemp = borderRightColor.clone();
-                        LOGGER.warning("the given borderRightColor is already used by another object so its clone is assigned");
+                        LOGGER.warning(
+                                "the given borderRightColor is already used by another object so its clone is assigned");
                     } else {
                         borderRightColorTemp = borderRightColor;
                     }
 
                     if (borderBottomColor.isAlreadyInUse()) {
                         borderBottomColorTemp = borderBottomColor.clone();
-                        LOGGER.warning("the given borderBottomColor is already used by another object so its clone is assigned");
+                        LOGGER.warning(
+                                "the given borderBottomColor is already used by another object so its clone is assigned");
                     } else {
                         borderBottomColorTemp = borderBottomColor;
                     }
 
                     if (borderLeftColor.isAlreadyInUse()) {
                         borderLeftColorTemp = borderLeftColor.clone();
-                        LOGGER.warning("the given borderLeftColor is already used by another object so its clone is assigned");
+                        LOGGER.warning(
+                                "the given borderLeftColor is already used by another object so its clone is assigned");
                     } else {
                         borderLeftColorTemp = borderLeftColor;
                     }
@@ -628,8 +633,8 @@ public class BorderColor extends AbstractCssProperty<BorderColor> implements
      * (non-Javadoc)
      *
      * @see
-     * com.webfirmframework.wffweb.informer.StateChangeInformer#stateChanged(java.lang
-     * .Object)
+     * com.webfirmframework.wffweb.informer.StateChangeInformer#stateChanged(
+     * java.lang .Object)
      */
     @Override
     public void stateChanged(final CssProperty stateChangedObject) {
@@ -637,33 +642,33 @@ public class BorderColor extends AbstractCssProperty<BorderColor> implements
         if (stateChangedObject instanceof BorderTopColor) {
             final BorderTopColor borderTopColor = (BorderTopColor) stateChangedObject;
             if (BorderTopColor.INITIAL.equals(borderTopColor.getCssValue())
-                    || BorderTopColor.INHERIT.equals(borderTopColor
-                            .getCssValue())) {
+                    || BorderTopColor.INHERIT
+                            .equals(borderTopColor.getCssValue())) {
                 throw new InvalidValueException(
                         "borderTopColor cannot have initial/inherit as its cssValue");
             }
         } else if (stateChangedObject instanceof BorderRightColor) {
             final BorderRightColor borderRightColor = (BorderRightColor) stateChangedObject;
             if (BorderRightColor.INITIAL.equals(borderRightColor.getCssValue())
-                    || BorderRightColor.INHERIT.equals(borderRightColor
-                            .getCssValue())) {
+                    || BorderRightColor.INHERIT
+                            .equals(borderRightColor.getCssValue())) {
                 throw new InvalidValueException(
                         "borderRightColor cannot have initial/inherit as its cssValue");
             }
         } else if (stateChangedObject instanceof BorderBottomColor) {
             final BorderBottomColor borderBottomColor = (BorderBottomColor) stateChangedObject;
-            if (BorderBottomColor.INITIAL.equals(borderBottomColor
-                    .getCssValue())
-                    || BorderBottomColor.INHERIT.equals(borderBottomColor
-                            .getCssValue())) {
+            if (BorderBottomColor.INITIAL
+                    .equals(borderBottomColor.getCssValue())
+                    || BorderBottomColor.INHERIT
+                            .equals(borderBottomColor.getCssValue())) {
                 throw new InvalidValueException(
                         "borderBottomColor cannot have initial/inherit as its cssValue");
             }
         } else if (stateChangedObject instanceof BorderLeftColor) {
             final BorderLeftColor borderLeftColor = (BorderLeftColor) stateChangedObject;
             if (BorderLeftColor.INITIAL.equals(borderLeftColor.getCssValue())
-                    || BorderLeftColor.INHERIT.equals(borderLeftColor
-                            .getCssValue())) {
+                    || BorderLeftColor.INHERIT
+                            .equals(borderLeftColor.getCssValue())) {
                 throw new InvalidValueException(
                         "borderLeftColor cannot have initial/inherit as its cssValue");
             }
@@ -691,9 +696,8 @@ public class BorderColor extends AbstractCssProperty<BorderColor> implements
      */
     public static boolean isValid(final String cssValue) {
         final String trimmedCssValue;
-        if (cssValue == null
-                || (trimmedCssValue = TagStringUtil
-                        .toLowerCase(cssValue.trim())).isEmpty()) {
+        if (cssValue == null || (trimmedCssValue = TagStringUtil
+                .toLowerCase(cssValue.trim())).isEmpty()) {
             return false;
         }
         if (INITIAL.equalsIgnoreCase(trimmedCssValue)
@@ -705,7 +709,8 @@ public class BorderColor extends AbstractCssProperty<BorderColor> implements
 
         for (final String eachPart : cssValueParts) {
             final boolean valid = BorderTopColor.isValid(eachPart);
-            if ((valid && (INITIAL.equals(eachPart) || INHERIT.equals(eachPart)))
+            if ((valid
+                    && (INITIAL.equals(eachPart) || INHERIT.equals(eachPart)))
                     || !valid) {
                 return false;
             }

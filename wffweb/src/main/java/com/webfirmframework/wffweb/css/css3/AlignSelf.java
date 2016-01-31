@@ -138,8 +138,8 @@ public enum AlignSelf implements CssProperty {
      * @author WFF
      */
     public static AlignSelf getThis(final String cssValue) {
-        final String enumString = TagStringUtil.toUpperCase(cssValue).replace(
-                "-", "_");
+        final String enumString = TagStringUtil.toUpperCase(cssValue)
+                .replace("-", "_");
 
         AlignSelf correspondingObject = null;
         try {

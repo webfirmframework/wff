@@ -45,8 +45,8 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  * @version 1.0.0
  * @since 1.0.0
  */
-public class Color extends AbstractCssProperty<Color> implements
-        StateChangeInformer<Bean> {
+public class Color extends AbstractCssProperty<Color>
+        implements StateChangeInformer<Bean> {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -174,9 +174,8 @@ public class Color extends AbstractCssProperty<Color> implements
             throw new NullValueException(
                     "null is an invalid value. The value should be any color for example #0000ff, rgb(15, 25, 155) Or, initial/inherit.");
         } else if (!isValid(cssValue)) {
-            throw new InvalidValueException(
-                    cssValue
-                            + " is an invalid value. The value should be any color for example #0000ff, rgb(15, 25, 155) Or, initial/inherit.");
+            throw new InvalidValueException(cssValue
+                    + " is an invalid value. The value should be any color for example #0000ff, rgb(15, 25, 155) Or, initial/inherit.");
         } else {
             this.cssValue = cssValue.trim();
             if (RgbCssValue.isValid(cssValue)) {
@@ -414,8 +413,8 @@ public class Color extends AbstractCssProperty<Color> implements
             throw new NullValueException("rgbaCssValue can not be null");
         }
         if (this.rgbaCssValue != null) {
-            if (rgbaCssValue.isAlreadyInUse()
-                    && this.rgbaCssValue.getStateChangeInformer() != rgbaCssValue
+            if (rgbaCssValue.isAlreadyInUse() && this.rgbaCssValue
+                    .getStateChangeInformer() != rgbaCssValue
                             .getStateChangeInformer()) {
                 try {
                     final RgbaCssValue rgbaCssValueClone = CloneUtil
@@ -516,8 +515,8 @@ public class Color extends AbstractCssProperty<Color> implements
             throw new NullValueException("hslaCssValue can not be null");
         }
         if (this.hslaCssValue != null) {
-            if (hslaCssValue.isAlreadyInUse()
-                    && this.hslaCssValue.getStateChangeInformer() != hslaCssValue
+            if (hslaCssValue.isAlreadyInUse() && this.hslaCssValue
+                    .getStateChangeInformer() != hslaCssValue
                             .getStateChangeInformer()) {
                 try {
                     final HslaCssValue hslaCssValueClone = CloneUtil

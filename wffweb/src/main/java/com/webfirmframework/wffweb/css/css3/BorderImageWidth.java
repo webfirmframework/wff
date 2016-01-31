@@ -36,31 +36,31 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  * <pre>
  *
  * border-image-width: number|%|auto|initial|inherit;
- * 
+ *
  * The border-image-width property sets the width of an element's four borders. This property can have from one to four values.
- * 
+ *
  * Examples:
- * 
+ *
  *     border-image-width:5px 10px 15px 10px;
  *         top border is 5px
  *         right border is 10px
  *         bottom border is 15px
  *         border is 10px
- * 
+ *
  *     border-image-width:5px 10px 15px;
  *         top border is 5px
  *         right and left borders are 10px
  *         bottom border is 15px
- * 
+ *
  *     border-image-width:5px 10px;
  *         top and bottom borders are 5px
  *         right and left borders are 10px
- * 
+ *
  *     border-image-width:5px;
  *         all four borders are 5px
- * 
+ *
  * The border-image-width property specifies the width of the border image.
- * 
+ *
  * Tip: Also look at the border-image property (a shorthand property for setting all the border-image-* properties).
  * Default value:  1
  * Inherited:      no
@@ -77,15 +77,15 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final Logger LOGGER = Logger.getLogger(BorderImageWidth.class
-            .getName());
+    public static final Logger LOGGER = Logger
+            .getLogger(BorderImageWidth.class.getName());
 
     public static final String AUTO = "auto";
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(
-            INITIAL, INHERIT, AUTO);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays
+            .asList(INITIAL, INHERIT, AUTO);
 
     private String cssValue;
 
@@ -141,7 +141,8 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
      * @param value
      * @param cssLengthUnit
      */
-    public BorderImageWidth(final float value, final CssLengthUnit cssLengthUnit) {
+    public BorderImageWidth(final float value,
+            final CssLengthUnit cssLengthUnit) {
         setCssValue(value + "" + cssLengthUnit);
     }
 
@@ -157,11 +158,11 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssName()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -171,11 +172,11 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssValue()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -205,8 +206,8 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
             throw new InvalidValueException(
                     "blank string is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit/medium/thin/thick.");
         } else {
-            final String trimmedCssValue = TagStringUtil.toLowerCase(cssValue
-                    .trim());
+            final String trimmedCssValue = TagStringUtil
+                    .toLowerCase(cssValue.trim());
 
             if (PREDEFINED_CONSTANTS.contains(trimmedCssValue)) {
                 this.cssValue = trimmedCssValue;
@@ -233,9 +234,9 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
                     top = right = bottom = left = (Float) lengthValueAndUnitAll[0];
                     topUnit = rightUnit = bottomUnit = leftUnit = null;
                 } else if (!AUTO.equals(extractedWidths[0])) {
-                    throw new InvalidValueException("'" + extractedWidths[0]
-                            + "' is invalid in '" + borderImageWidthString
-                            + "'");
+                    throw new InvalidValueException(
+                            "'" + extractedWidths[0] + "' is invalid in '"
+                                    + borderImageWidthString + "'");
                 }
 
             } else if (extractedWidths.length == 2) {
@@ -250,9 +251,9 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
                     top = bottom = (Float) lengthValueAndUnitTopBottom[0];
                     topUnit = bottomUnit = null;
                 } else if (!AUTO.equals(extractedWidths[0])) {
-                    throw new InvalidValueException("'" + extractedWidths[0]
-                            + "' is invalid in '" + borderImageWidthString
-                            + "'");
+                    throw new InvalidValueException(
+                            "'" + extractedWidths[0] + "' is invalid in '"
+                                    + borderImageWidthString + "'");
                 }
 
                 final Object[] lengthValueAndUnitRightLeft = CssLengthUtil
@@ -265,9 +266,9 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
                     right = left = (Float) lengthValueAndUnitRightLeft[0];
                     rightUnit = leftUnit = null;
                 } else if (!AUTO.equals(extractedWidths[1])) {
-                    throw new InvalidValueException("'" + extractedWidths[1]
-                            + "' is invalid in '" + borderImageWidthString
-                            + "'");
+                    throw new InvalidValueException(
+                            "'" + extractedWidths[1] + "' is invalid in '"
+                                    + borderImageWidthString + "'");
                 }
 
             } else if (extractedWidths.length == 3) {
@@ -281,9 +282,9 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
                     top = (Float) lengthValueAndUnitTop[0];
                     topUnit = null;
                 } else if (!AUTO.equals(extractedWidths[0])) {
-                    throw new InvalidValueException("'" + extractedWidths[0]
-                            + "' is invalid in '" + borderImageWidthString
-                            + "'");
+                    throw new InvalidValueException(
+                            "'" + extractedWidths[0] + "' is invalid in '"
+                                    + borderImageWidthString + "'");
                 }
 
                 final Object[] lengthValueAndUnitRightLeft = CssLengthUtil
@@ -295,9 +296,9 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
                     right = left = (Float) lengthValueAndUnitRightLeft[0];
                     rightUnit = leftUnit = null;
                 } else if (!AUTO.equals(extractedWidths[1])) {
-                    throw new InvalidValueException("'" + extractedWidths[1]
-                            + "' is invalid in '" + borderImageWidthString
-                            + "'");
+                    throw new InvalidValueException(
+                            "'" + extractedWidths[1] + "' is invalid in '"
+                                    + borderImageWidthString + "'");
                 }
 
                 final Object[] lengthValueAndUnitBottom = CssLengthUtil
@@ -309,9 +310,9 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
                     bottom = (Float) lengthValueAndUnitBottom[0];
                     bottomUnit = null;
                 } else if (!AUTO.equals(extractedWidths[2])) {
-                    throw new InvalidValueException("'" + extractedWidths[2]
-                            + "' is invalid in '" + borderImageWidthString
-                            + "'");
+                    throw new InvalidValueException(
+                            "'" + extractedWidths[2] + "' is invalid in '"
+                                    + borderImageWidthString + "'");
                 }
 
             } else if (extractedWidths.length == 4) {
@@ -325,9 +326,9 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
                     top = (Float) lengthValueAndUnitTop[0];
                     topUnit = null;
                 } else if (!AUTO.equals(extractedWidths[0])) {
-                    throw new InvalidValueException("'" + extractedWidths[0]
-                            + "' is invalid in '" + borderImageWidthString
-                            + "'");
+                    throw new InvalidValueException(
+                            "'" + extractedWidths[0] + "' is invalid in '"
+                                    + borderImageWidthString + "'");
                 }
 
                 final Object[] lengthValueAndUnitRight = CssLengthUtil
@@ -339,9 +340,9 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
                     right = (Float) lengthValueAndUnitRight[0];
                     rightUnit = null;
                 } else if (!AUTO.equals(extractedWidths[1])) {
-                    throw new InvalidValueException("'" + extractedWidths[1]
-                            + "' is invalid in '" + borderImageWidthString
-                            + "'");
+                    throw new InvalidValueException(
+                            "'" + extractedWidths[1] + "' is invalid in '"
+                                    + borderImageWidthString + "'");
                 }
                 final Object[] lengthValueAndUnitBottom = CssLengthUtil
                         .getLengthValueAndUnit(extractedWidths[2]);
@@ -352,9 +353,9 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
                     bottom = (Float) lengthValueAndUnitBottom[0];
                     bottomUnit = null;
                 } else if (!AUTO.equals(extractedWidths[2])) {
-                    throw new InvalidValueException("'" + extractedWidths[2]
-                            + "' is invalid in '" + borderImageWidthString
-                            + "'");
+                    throw new InvalidValueException(
+                            "'" + extractedWidths[2] + "' is invalid in '"
+                                    + borderImageWidthString + "'");
                 }
 
                 final Object[] lengthValueAndUnitLeft = CssLengthUtil
@@ -366,13 +367,14 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
                     left = (Float) lengthValueAndUnitLeft[0];
                     leftUnit = null;
                 } else if (!AUTO.equals(extractedWidths[3])) {
-                    throw new InvalidValueException("'" + extractedWidths[3]
-                            + "' is invalid in '" + borderImageWidthString
-                            + "'");
+                    throw new InvalidValueException(
+                            "'" + extractedWidths[3] + "' is invalid in '"
+                                    + borderImageWidthString + "'");
                 }
 
             } else {
-                throw new InvalidValueException("the given cssValue is invalid");
+                throw new InvalidValueException(
+                        "the given cssValue is invalid");
             }
 
             this.cssValue = getProducedCssValue(top, topUnit, right, rightUnit,
@@ -655,13 +657,14 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
             final CssLengthUnit leftUnit) {
 
         if ((ObjectUtil.isEqual(top, right) && topUnit == rightUnit)
-                && (ObjectUtil.isEqual(right, bottom) && ObjectUtil.isEqual(
-                        rightUnit, bottomUnit))
-                && (ObjectUtil.isEqual(bottom, left) && bottomUnit == leftUnit)) {
+                && (ObjectUtil.isEqual(right, bottom)
+                        && ObjectUtil.isEqual(rightUnit, bottomUnit))
+                && (ObjectUtil.isEqual(bottom, left)
+                        && bottomUnit == leftUnit)) {
 
-            return top != null && topUnit != null ? String.valueOf(top).concat(
-                    topUnit.getUnit()) : top != null ? String.valueOf(top)
-                    : AUTO;
+            return top != null && topUnit != null
+                    ? String.valueOf(top).concat(topUnit.getUnit())
+                    : top != null ? String.valueOf(top) : AUTO;
 
         } else if ((ObjectUtil.isEqual(top, bottom) && topUnit == bottomUnit)
                 && (ObjectUtil.isEqual(right, left) && rightUnit == leftUnit)) {
@@ -781,8 +784,8 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
      * @since 1.0.0
      */
     public static boolean isValid(final String cssValue) {
-        final String trimmedCssValue = TagStringUtil.toLowerCase(cssValue
-                .trim());
+        final String trimmedCssValue = TagStringUtil
+                .toLowerCase(cssValue.trim());
 
         if (PREDEFINED_CONSTANTS.contains(trimmedCssValue)) {
             return true;

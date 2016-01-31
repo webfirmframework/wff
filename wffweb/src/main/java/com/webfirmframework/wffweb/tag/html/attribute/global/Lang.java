@@ -22,10 +22,18 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
 /**
  * The lang attribute specifies the language of the element's content.</br>
- * <b>Sample html :-</b></br> {@code
- * <p>This is a paragraph.</p>
- * }</br> {@code
- * <p lang="fr">Ceci est un paragraphe.</p>
+ * <b>Sample html :-</b></br>
+ * {@code
+ * 
+<p>
+This is a paragraph.
+</p>
+ * }</br>
+ * {@code
+ * 
+<p lang="fr">
+Ceci est un paragraphe.
+</p>
  * }
  *
  * @author WFF

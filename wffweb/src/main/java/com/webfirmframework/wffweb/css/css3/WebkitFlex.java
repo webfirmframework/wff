@@ -32,18 +32,18 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  * <pre>
  *
  * -webkit-flex: <i>-webkit-flex-grow -webkit-flex-shrink -webkit-flex-basis</i>|auto|initial|inherit;
- * 
+ *
  * The flex property specifies the length of the item, relative to the rest of the flexible items inside the same container.
- * 
+ *
  * The flex property is a shorthand for the -webkit-flex-grow, -webkit-flex-shrink, and the -webkit-flex-basis properties.
- * 
+ *
  * Note: If the element is not a flexible item, the flex property has no effect.
  * Default value:  0 1 auto
  * Inherited:      no
  * Animatable:     yes
  * Version:        CSS3
  * JavaScript syntax:      object.style.webkitFlex="1"
- * 
+ *
  * <i>
  * The undefined value for -webkit-flex-grow, -webkit-flex-shrink and -webkit-flex-basis in -webkit-flex property is 1, 1 and 0% respectively.
  * </i>
@@ -52,20 +52,20 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class WebkitFlex extends AbstractCssProperty<WebkitFlex> implements
-        StateChangeInformer<CssProperty> {
+public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
+        implements StateChangeInformer<CssProperty> {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final Logger LOGGER = Logger.getLogger(WebkitFlex.class
-            .getName());
+    public static final Logger LOGGER = Logger
+            .getLogger(WebkitFlex.class.getName());
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
     public static final String AUTO = "auto";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(
-            INITIAL, INHERIT, AUTO);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays
+            .asList(INITIAL, INHERIT, AUTO);
 
     private String cssValue;
 
@@ -107,11 +107,11 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex> implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssName()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -121,11 +121,11 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex> implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssValue()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -154,9 +154,8 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex> implements
                     "null is an invalid value. The value format should be as for example \"0 1 auto\" or initial/inherit.");
         } else if ((trimmedCssValue = TagStringUtil
                 .toLowerCase(cssValue.trim())).isEmpty()) {
-            throw new NullValueException(
-                    cssValue
-                            + " is an invalid value. The value format should be as for example \"0 1 auto\" or initial/inherit.");
+            throw new NullValueException(cssValue
+                    + " is an invalid value. The value format should be as for example \"0 1 auto\" or initial/inherit.");
         }
 
         final String[] cssValueParts = trimmedCssValue.split(" ");
@@ -284,9 +283,8 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex> implements
         cssValueBuilder.append(webkitFlexBasis.getCssValue());
 
         if (invalid) {
-            throw new InvalidValueException(
-                    cssValue
-                            + " is an invalid value. The value format should be as for example \"0 1 auto\" or initial/inherit.");
+            throw new InvalidValueException(cssValue
+                    + " is an invalid value. The value format should be as for example \"0 1 auto\" or initial/inherit.");
         }
         this.cssValue = cssValueBuilder.toString();
 
@@ -410,13 +408,15 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex> implements
 
         if (this.webkitFlexGrow != null) {
             this.webkitFlexGrow.setCssValue(webkitFlexGrow.getCssValue());
-            LOGGER.warning("copied the cssValue from the given webkitFlexGrow to the existing webkitFlexGrow object.");
+            LOGGER.warning(
+                    "copied the cssValue from the given webkitFlexGrow to the existing webkitFlexGrow object.");
         } else {
             if (webkitFlexGrow.isAlreadyInUse()) {
                 this.webkitFlexGrow = new WebkitFlexGrow(webkitFlexGrow);
                 this.webkitFlexGrow.setAlreadyInUse(true);
                 this.webkitFlexGrow.setStateChangeInformer(this);
-                LOGGER.warning("created a new object of WebkitFlexGrow as the given webkitFlexGrow object is already used by another object");
+                LOGGER.warning(
+                        "created a new object of WebkitFlexGrow as the given webkitFlexGrow object is already used by another object");
             } else {
                 this.webkitFlexGrow = webkitFlexGrow;
                 this.webkitFlexGrow.setAlreadyInUse(true);
@@ -475,13 +475,15 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex> implements
 
         if (this.webkitFlexShrink != null) {
             this.webkitFlexShrink.setCssValue(webkitFlexShrink.getCssValue());
-            LOGGER.warning("copied the cssValue from the given webkitFlexShrink to the existing webkitFlexShrink object.");
+            LOGGER.warning(
+                    "copied the cssValue from the given webkitFlexShrink to the existing webkitFlexShrink object.");
         } else {
             if (webkitFlexShrink.isAlreadyInUse()) {
                 this.webkitFlexShrink = new WebkitFlexShrink(webkitFlexShrink);
                 this.webkitFlexShrink.setAlreadyInUse(true);
                 this.webkitFlexShrink.setStateChangeInformer(this);
-                LOGGER.warning("created a new object of WebkitFlexShrink as the given webkitFlexShrink object is already used by another object");
+                LOGGER.warning(
+                        "created a new object of WebkitFlexShrink as the given webkitFlexShrink object is already used by another object");
             } else {
                 this.webkitFlexShrink = webkitFlexShrink;
                 this.webkitFlexShrink.setAlreadyInUse(true);
@@ -508,7 +510,8 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex> implements
         return this;
     }
 
-    public WebkitFlex setWebkitFlexBasis(final WebkitFlexBasis webkitFlexBasis) {
+    public WebkitFlex setWebkitFlexBasis(
+            final WebkitFlexBasis webkitFlexBasis) {
         if (webkitFlexBasis == null) {
             throw new InvalidValueException("webkitFlexBasis cannot be null");
         }
@@ -539,13 +542,15 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex> implements
 
         if (this.webkitFlexBasis != null) {
             this.webkitFlexBasis.setCssValue(webkitFlexBasis.getCssValue());
-            LOGGER.warning("copied the cssValue from the given webkitFlexBasis to the existing webkitFlexBasis object.");
+            LOGGER.warning(
+                    "copied the cssValue from the given webkitFlexBasis to the existing webkitFlexBasis object.");
         } else {
             if (webkitFlexBasis.isAlreadyInUse()) {
                 this.webkitFlexBasis = new WebkitFlexBasis(webkitFlexBasis);
                 this.webkitFlexBasis.setAlreadyInUse(true);
                 this.webkitFlexBasis.setStateChangeInformer(this);
-                LOGGER.warning("created a new object of WebkitFlexBasis as the given webkitFlexBasis object is already used by another object");
+                LOGGER.warning(
+                        "created a new object of WebkitFlexBasis as the given webkitFlexBasis object is already used by another object");
             } else {
                 this.webkitFlexBasis = webkitFlexBasis;
                 this.webkitFlexBasis.setAlreadyInUse(true);

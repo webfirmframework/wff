@@ -28,7 +28,8 @@ import com.webfirmframework.wffweb.tag.html.identifier.MapTagAttributable;
  * @author WFF
  *
  */
-public class Name extends AbstractAttribute implements AAttributable, MapTagAttributable {
+public class Name extends AbstractAttribute
+        implements AAttributable, MapTagAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 

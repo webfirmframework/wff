@@ -32,9 +32,9 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
 /**
  * <pre>
  * border-right-color: <i>color</i>|transparent|initial|inherit;
- * 
+ *
  * The border-right-color property sets the color of an element's right border.
- * 
+ *
  * Note: Always declare the border-style property before the border-right-color property. An element must have borders before you can change the color.
  * Default value:  black
  * Inherited:      no
@@ -52,15 +52,15 @@ public class BorderRightColor extends AbstractCssProperty<BorderRightColor>
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final Logger LOGGER = Logger.getLogger(BorderRightColor.class
-            .getName());
+    public static final Logger LOGGER = Logger
+            .getLogger(BorderRightColor.class.getName());
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
     public static final String TRANSPARENT = "transparent";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(
-            INITIAL, INHERIT, TRANSPARENT);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays
+            .asList(INITIAL, INHERIT, TRANSPARENT);
 
     private String cssValue;
 
@@ -120,11 +120,11 @@ public class BorderRightColor extends AbstractCssProperty<BorderRightColor>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssName()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -134,11 +134,11 @@ public class BorderRightColor extends AbstractCssProperty<BorderRightColor>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssValue()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -181,9 +181,8 @@ public class BorderRightColor extends AbstractCssProperty<BorderRightColor>
                 throw new NullValueException(
                         "null is an invalid value. The value should be any color for example #0000ff, rgb(15, 25, 155) Or, initial/inherit/transparent.");
             } else if (!isValid(cssValue)) {
-                throw new InvalidValueException(
-                        cssValue
-                                + " is an invalid value. The value should be any color for example #0000ff, rgb(15, 25, 155) Or, initial/inherit/transparent.");
+                throw new InvalidValueException(cssValue
+                        + " is an invalid value. The value should be any color for example #0000ff, rgb(15, 25, 155) Or, initial/inherit/transparent.");
             } else {
                 this.cssValue = cssValue.trim();
                 if (RgbCssValue.isValid(cssValue)) {
@@ -437,8 +436,8 @@ public class BorderRightColor extends AbstractCssProperty<BorderRightColor>
             throw new NullValueException("rgbaCssValue can not be null");
         }
         if (this.rgbaCssValue != null) {
-            if (rgbaCssValue.isAlreadyInUse()
-                    && this.rgbaCssValue.getStateChangeInformer() != rgbaCssValue
+            if (rgbaCssValue.isAlreadyInUse() && this.rgbaCssValue
+                    .getStateChangeInformer() != rgbaCssValue
                             .getStateChangeInformer()) {
                 try {
                     final RgbaCssValue rgbaCssValueClone = CloneUtil
@@ -539,8 +538,8 @@ public class BorderRightColor extends AbstractCssProperty<BorderRightColor>
             throw new NullValueException("hslaCssValue can not be null");
         }
         if (this.hslaCssValue != null) {
-            if (hslaCssValue.isAlreadyInUse()
-                    && this.hslaCssValue.getStateChangeInformer() != hslaCssValue
+            if (hslaCssValue.isAlreadyInUse() && this.hslaCssValue
+                    .getStateChangeInformer() != hslaCssValue
                             .getStateChangeInformer()) {
                 try {
                     final HslaCssValue hslaCssValueClone = CloneUtil

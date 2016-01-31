@@ -27,9 +27,9 @@ import com.webfirmframework.wffweb.util.StringBuilderUtil;
 /**
  * <pre>
  * -webkit-column-rule: <i>-webkit-column-rule-width -webkit-column-rule-style -webkit-column-rule-color</i>|initial|inherit;
- * 
+ *
  * The -webkit-column-rule property is a shorthand property for setting all the -webkit-column-rule-* properties.
- * 
+ *
  * The -webkit-column-rule property sets the width, style, and color of the rule between columns.
  * Default value:  medium none <i>color</i>
  * Inherited:      no
@@ -101,11 +101,11 @@ public class WebkitColumnRule extends AbstractCssProperty<WebkitColumnRule>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssName()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -115,11 +115,11 @@ public class WebkitColumnRule extends AbstractCssProperty<WebkitColumnRule>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssValue()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -161,9 +161,8 @@ public class WebkitColumnRule extends AbstractCssProperty<WebkitColumnRule>
             throw new NullValueException(
                     "null is an invalid value. The value should be any color for example medium none #0000ff. Or, initial/inherit.");
         } else if (cssValue.trim().isEmpty()) {
-            throw new InvalidValueException(
-                    cssValue
-                            + " is an invalid value. The value should be any color for example medium none #0000ff. Or, initial/inherit.");
+            throw new InvalidValueException(cssValue
+                    + " is an invalid value. The value should be any color for example medium none #0000ff. Or, initial/inherit.");
         } else {
 
             final String trimmedCssValue = cssValue.trim();
@@ -219,9 +218,8 @@ public class WebkitColumnRule extends AbstractCssProperty<WebkitColumnRule>
                     this.webkitColumnRuleColor.setAlreadyInUse(false);
                 }
                 if (invalid) {
-                    throw new InvalidValueException(
-                            cssValue
-                                    + " is an invalid value. The value format should be as for example '25px dotted green'. Or, initial/inherit.");
+                    throw new InvalidValueException(cssValue
+                            + " is an invalid value. The value format should be as for example '25px dotted green'. Or, initial/inherit.");
                 }
                 this.cssValue = StringBuilderUtil
                         .getTrimmedString(cssValueBuilder);
@@ -428,11 +426,13 @@ public class WebkitColumnRule extends AbstractCssProperty<WebkitColumnRule>
     @Override
     public void stateChanged(final CssProperty stateChangedObject) {
         if (stateChangedObject instanceof WebkitColumnRuleColor) {
-            setWebkitColumnRuleColor((WebkitColumnRuleColor) stateChangedObject);
+            setWebkitColumnRuleColor(
+                    (WebkitColumnRuleColor) stateChangedObject);
         }
 
         if (stateChangedObject instanceof WebkitColumnRuleWidth) {
-            setWebkitColumnRuleWidth((WebkitColumnRuleWidth) stateChangedObject);
+            setWebkitColumnRuleWidth(
+                    (WebkitColumnRuleWidth) stateChangedObject);
         }
     }
 

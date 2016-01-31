@@ -117,8 +117,8 @@ public enum PageBreakAfter implements CssProperty {
      * @author WFF
      */
     public static PageBreakAfter getThis(final String cssValue) {
-        final String enumString = TagStringUtil.toUpperCase(cssValue).replace(
-                "-", "_");
+        final String enumString = TagStringUtil.toUpperCase(cssValue)
+                .replace("-", "_");
 
         PageBreakAfter correspondingObject = null;
         try {

@@ -94,8 +94,8 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
                 if (removed) {
                     setModified(removed);
                     if (o instanceof CssProperty) {
-                        cssPropertiesAsMap.remove(((CssProperty) o)
-                                .getCssName());
+                        cssPropertiesAsMap
+                                .remove(((CssProperty) o).getCssName());
                     }
                 }
                 return removed;
@@ -108,8 +108,8 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
                     setModified(removedAll);
                     for (final Object object : c) {
                         if (object instanceof CssProperty) {
-                            cssPropertiesAsMap.remove(((CssProperty) object)
-                                    .getCssName());
+                            cssPropertiesAsMap.remove(
+                                    ((CssProperty) object).getCssName());
                         }
                     }
                 }

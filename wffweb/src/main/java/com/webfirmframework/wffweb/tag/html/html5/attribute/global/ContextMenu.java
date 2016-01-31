@@ -22,11 +22,11 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
 /**
  * {@code <element contextmenu="menu_id">}
- * 
+ *
  * <pre>
- * 
+ *
  * The contextmenu attribute specifies a context menu for an element. The context menu appears when a user right-clicks on the element.
- * 
+ *
  * The value of the contextmenu attribute is the id of the <menu> element to open.
  *
  * </pre>
@@ -34,7 +34,8 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
  * @author WFF
  *
  */
-public class ContextMenu extends AbstractAttribute implements GlobalAttributable {
+public class ContextMenu extends AbstractAttribute
+        implements GlobalAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 

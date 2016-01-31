@@ -128,8 +128,8 @@ public enum WebkitBackfaceVisibility implements CssProperty {
      * @author WFF
      */
     public static WebkitBackfaceVisibility getThis(final String cssValue) {
-        final String enumString = TagStringUtil.toUpperCase(cssValue).replace(
-                "-", "_");
+        final String enumString = TagStringUtil.toUpperCase(cssValue)
+                .replace("-", "_");
 
         WebkitBackfaceVisibility correspondingObject = null;
         try {

@@ -32,9 +32,9 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
 /**
  * <pre>
  * The border-right shorthand property sets all the right border properties in one declaration.
- * 
+ *
  * The properties that can be set, are (in order): border-right-width, border-right-style, and border-right-color.
- * 
+ *
  * If one of the values above are missing, e.g. border-right:solid #ff0000, the default value for the missing property will be inserted, if any.
  * Default value:  medium none color
  * Inherited:      no
@@ -46,19 +46,19 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class BorderRight extends AbstractCssProperty<BorderRight> implements
-        StateChangeInformer<CssProperty> {
+public class BorderRight extends AbstractCssProperty<BorderRight>
+        implements StateChangeInformer<CssProperty> {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final Logger LOGGER = Logger.getLogger(BorderRight.class
-            .getName());
+    public static final Logger LOGGER = Logger
+            .getLogger(BorderRight.class.getName());
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(
-            INITIAL, INHERIT);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays
+            .asList(INITIAL, INHERIT);
 
     private String cssValue;
 
@@ -101,11 +101,11 @@ public class BorderRight extends AbstractCssProperty<BorderRight> implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssName()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -115,11 +115,11 @@ public class BorderRight extends AbstractCssProperty<BorderRight> implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssValue()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -149,9 +149,8 @@ public class BorderRight extends AbstractCssProperty<BorderRight> implements
                     "null is an invalid value. The value format should be as for example medium none color Or initial/inherit.");
         } else if ((trimmedCssValue = TagStringUtil
                 .toLowerCase(cssValue.trim())).isEmpty()) {
-            throw new NullValueException(
-                    cssValue
-                            + " is an invalid value. The value format should be as for example medium none color Or initial/inherit.");
+            throw new NullValueException(cssValue
+                    + " is an invalid value. The value format should be as for example medium none color Or initial/inherit.");
         }
 
         final List<String> cssValueParts = CssValueUtil.split(trimmedCssValue);
@@ -193,7 +192,8 @@ public class BorderRight extends AbstractCssProperty<BorderRight> implements
         BorderRightColor borderRightColor = null;
 
         for (final String eachPart : cssValueParts) {
-            if (borderRightWidth == null && BorderRightWidth.isValid(eachPart)) {
+            if (borderRightWidth == null
+                    && BorderRightWidth.isValid(eachPart)) {
                 if (this.borderRightWidth == null) {
                     borderRightWidth = new BorderRightWidth(eachPart);
                     borderRightWidth.setStateChangeInformer(this);
@@ -240,9 +240,8 @@ public class BorderRight extends AbstractCssProperty<BorderRight> implements
             this.borderRightColor.setAlreadyInUse(false);
         }
         if (invalid) {
-            throw new InvalidValueException(
-                    cssValue
-                            + " is an invalid value. The value format should be as for example medium none color Or initial/inherit.");
+            throw new InvalidValueException(cssValue
+                    + " is an invalid value. The value format should be as for example medium none color Or initial/inherit.");
         }
         this.cssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder);
         this.borderRightWidth = borderRightWidth;
@@ -280,7 +279,8 @@ public class BorderRight extends AbstractCssProperty<BorderRight> implements
         for (final String eachPart : cssValueParts) {
 
             boolean invalid = true;
-            if (borderRightWidth == null && BorderRightWidth.isValid(eachPart)) {
+            if (borderRightWidth == null
+                    && BorderRightWidth.isValid(eachPart)) {
                 borderRightWidth = new BorderRightWidth(eachPart);
                 invalid = false;
             } else if (borderRightStyle == null
@@ -368,7 +368,8 @@ public class BorderRight extends AbstractCssProperty<BorderRight> implements
 
         if (borderRightWidth != null && borderRightWidth.isAlreadyInUse()
                 && this.borderRightWidth != borderRightWidth) {
-            LOGGER.warning("the given borderRightWidth is already used by another object so a new object or the previous object (if it exists) of BorderRightWidth will be used");
+            LOGGER.warning(
+                    "the given borderRightWidth is already used by another object so a new object or the previous object (if it exists) of BorderRightWidth will be used");
             return setCssValue(cssValue);
         }
 
@@ -452,7 +453,8 @@ public class BorderRight extends AbstractCssProperty<BorderRight> implements
 
         if (borderRightColor != null && borderRightColor.isAlreadyInUse()
                 && this.borderRightColor != borderRightColor) {
-            LOGGER.warning("the given borderRightColor is already used by another object so a new object or the previous object (if it exists) of BorderRightColor will be used");
+            LOGGER.warning(
+                    "the given borderRightColor is already used by another object so a new object or the previous object (if it exists) of BorderRightColor will be used");
             return setCssValue(cssValue);
         }
 

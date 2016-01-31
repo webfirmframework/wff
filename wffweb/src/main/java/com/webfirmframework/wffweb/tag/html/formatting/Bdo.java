@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.BdoAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
@@ -36,10 +37,12 @@ public class Bdo extends AbstractHtml {
      * @since 1.0.0
      */
     public Bdo(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(Bdo.class.getSimpleName().toLowerCase(), base, attributes);
+        super(TagNameConstants.BDO, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof BdoAttributable || abstractAttribute instanceof GlobalAttributable))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof BdoAttributable
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of BdoAttribute");
                 }

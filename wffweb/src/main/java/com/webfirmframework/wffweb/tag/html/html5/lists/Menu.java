@@ -33,7 +33,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 public class Menu extends AbstractHtml {
 
     private static final long serialVersionUID = 1_0_0L;
-    
+
     public static final Logger LOGGER = Logger.getLogger(Menu.class.getName());
 
     {
@@ -51,11 +51,14 @@ public class Menu extends AbstractHtml {
      *
      * @since 1.0.0
      */
-    public Menu(final AbstractHtml base, final AbstractAttribute... attributes) {
+    public Menu(final AbstractHtml base,
+            final AbstractAttribute... attributes) {
         super(Menu.class.getSimpleName().toLowerCase(), base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof MenuAttribute || abstractAttribute instanceof GlobalAttributable))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof MenuAttribute
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of MenuAttribute");
                 }

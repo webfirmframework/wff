@@ -62,8 +62,8 @@ public class CloneUtil {
             return objectToBeClonned;
         }
         final Set<T> objectsSet = new HashSet<T>(Arrays.asList(objects));
-        return objectsSet.contains(objectToBeClonned) ? deepClone(objectToBeClonned)
-                : objectToBeClonned;
+        return objectsSet.contains(objectToBeClonned)
+                ? deepClone(objectToBeClonned) : objectToBeClonned;
     }
 
     /**
@@ -90,8 +90,8 @@ public class CloneUtil {
             return objectToBeClonned;
         }
         final Set<T> objectsSet = new HashSet<T>(objects);
-        return objectsSet.contains(objectToBeClonned) ? deepClone(objectToBeClonned)
-                : objectToBeClonned;
+        return objectsSet.contains(objectToBeClonned)
+                ? deepClone(objectToBeClonned) : objectToBeClonned;
     }
 
     /**
@@ -117,8 +117,8 @@ public class CloneUtil {
         if (objectToBeClonned == null || objects == null) {
             return objectToBeClonned;
         }
-        return objects.contains(objectToBeClonned) ? deepClone(objectToBeClonned)
-                : objectToBeClonned;
+        return objects.contains(objectToBeClonned)
+                ? deepClone(objectToBeClonned) : objectToBeClonned;
     }
 
     /**
@@ -139,9 +139,8 @@ public class CloneUtil {
      * @since 1.0.0
      * @author WFF
      */
-    public static <T> T deepCloneOnlyIfDoesNotContain(
-            final T objectToBeClonned, final T[] objects)
-            throws CloneNotSupportedException {
+    public static <T> T deepCloneOnlyIfDoesNotContain(final T objectToBeClonned,
+            final T[] objects) throws CloneNotSupportedException {
         if (objectToBeClonned == null) {
             return objectToBeClonned;
         }
@@ -171,9 +170,8 @@ public class CloneUtil {
      * @since 1.0.0
      * @author WFF
      */
-    public static <T> T deepCloneOnlyIfDoesNotContain(
-            final T objectToBeClonned, final List<T> objects)
-            throws CloneNotSupportedException {
+    public static <T> T deepCloneOnlyIfDoesNotContain(final T objectToBeClonned,
+            final List<T> objects) throws CloneNotSupportedException {
         if (objectToBeClonned == null) {
             return objectToBeClonned;
         }
@@ -203,9 +201,8 @@ public class CloneUtil {
      * @since 1.0.0
      * @author WFF
      */
-    public static <T> T deepCloneOnlyIfDoesNotContain(
-            final T objectToBeClonned, final Set<T> objects)
-            throws CloneNotSupportedException {
+    public static <T> T deepCloneOnlyIfDoesNotContain(final T objectToBeClonned,
+            final Set<T> objects) throws CloneNotSupportedException {
         if (objectToBeClonned == null) {
             return objectToBeClonned;
         }
@@ -247,10 +244,9 @@ public class CloneUtil {
 
             return (T) ois.readObject();
         } catch (final NotSerializableException e) {
-            throw new CloneNotSupportedException(
-                    e.getMessage()
-                            + " is not serializable. Implement java.io.Serializable in "
-                            + e.getMessage());
+            throw new CloneNotSupportedException(e.getMessage()
+                    + " is not serializable. Implement java.io.Serializable in "
+                    + e.getMessage());
         } catch (final Exception e) {
             throw new CloneNotSupportedException(e.getMessage());
         } finally {

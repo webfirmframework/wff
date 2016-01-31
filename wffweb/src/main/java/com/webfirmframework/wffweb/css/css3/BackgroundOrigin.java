@@ -118,8 +118,8 @@ public enum BackgroundOrigin implements CssProperty {
      * @author WFF
      */
     public static BackgroundOrigin getThis(final String cssValue) {
-        final String enumString = TagStringUtil.toUpperCase(cssValue).replace(
-                "-", "_");
+        final String enumString = TagStringUtil.toUpperCase(cssValue)
+                .replace("-", "_");
 
         BackgroundOrigin correspondingObject = null;
         try {

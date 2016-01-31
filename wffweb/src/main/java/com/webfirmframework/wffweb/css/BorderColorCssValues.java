@@ -72,7 +72,8 @@ public class BorderColorCssValues extends AbstractBean<BorderColorCssValues>
      *            cssValue to set.And, {@code null} will throw
      *            {@code NullValueException}
      */
-    public BorderColorCssValues(final BorderColorCssValues borderColorCssValue) {
+    public BorderColorCssValues(
+            final BorderColorCssValues borderColorCssValue) {
         if (borderColorCssValue == null) {
             throw new NullValueException("borderColorCssValue can not be null");
         }
@@ -121,8 +122,8 @@ public class BorderColorCssValues extends AbstractBean<BorderColorCssValues>
             throw new NullValueException("rgbaCssValue can not be null");
         }
         if (this.rgbaCssValue != null) {
-            if (rgbaCssValue.isAlreadyInUse()
-                    && this.rgbaCssValue.getStateChangeInformer() != rgbaCssValue
+            if (rgbaCssValue.isAlreadyInUse() && this.rgbaCssValue
+                    .getStateChangeInformer() != rgbaCssValue
                             .getStateChangeInformer()) {
                 try {
                     final RgbaCssValue rgbaCssValueClone = CloneUtil
@@ -172,8 +173,8 @@ public class BorderColorCssValues extends AbstractBean<BorderColorCssValues>
             throw new NullValueException("hslaCssValue can not be null");
         }
         if (this.hslaCssValue != null) {
-            if (hslaCssValue.isAlreadyInUse()
-                    && this.hslaCssValue.getStateChangeInformer() != hslaCssValue
+            if (hslaCssValue.isAlreadyInUse() && this.hslaCssValue
+                    .getStateChangeInformer() != hslaCssValue
                             .getStateChangeInformer()) {
                 try {
                     final HslaCssValue hslaCssValueClone = CloneUtil
@@ -247,9 +248,8 @@ public class BorderColorCssValues extends AbstractBean<BorderColorCssValues>
                 throw new NullValueException(
                         "null is an invalid value. The value should be any color for example #0000ff, rgb(15, 25, 155), rgba(15, 25, 155, 0.5) Or, initial/inherit/transparent.");
             } else if (!isValid(cssValue)) {
-                throw new InvalidValueException(
-                        cssValue
-                                + " is an invalid value. The value should be any color for example #0000ff, rgb(15, 25, 155), rgba(15, 25, 155, 0.5) Or, initial/inherit/transparent.");
+                throw new InvalidValueException(cssValue
+                        + " is an invalid value. The value should be any color for example #0000ff, rgb(15, 25, 155), rgba(15, 25, 155, 0.5) Or, initial/inherit/transparent.");
             } else {
                 this.cssValue = cssValue.trim();
                 if (RgbCssValue.isValid(cssValue)) {

@@ -22,7 +22,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
 /**
  * {@code <element dir="ltr|rtl|auto"> }
- * 
+ *
  * <pre>
  *
  * The dir attribute specifies the text direction of the element's content.

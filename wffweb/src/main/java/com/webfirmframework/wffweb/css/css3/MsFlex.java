@@ -32,18 +32,18 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  * <pre>
  *
  * -ms-flex: <i>-flex-grow -flex-shrink -flex-basis</i>|auto|initial|inherit;
- * 
+ *
  * The flex property specifies the length of the item, relative to the rest of the flexible items inside the same container.
- * 
+ *
  * The flex property is a shorthand for the -ms-flex-grow, -ms-flex-shrink, and the -ms-flex-basis properties.
- * 
+ *
  * Note: If the element is not a flexible item, the flex property has no effect.
  * Default value:  0 1 auto
  * Inherited:      no
  * Animatable:     yes
  * Version:        CSS3
  * JavaScript syntax:      object.style.msFlex="1"
- * 
+ *
  * <i>
  * The undefined value for -flex-grow, -flex-shrink and -flex-basis in -ms-flex property is 1, 1 and 0% respectively.
  * </i>
@@ -52,8 +52,8 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class MsFlex extends AbstractCssProperty<MsFlex> implements
-        StateChangeInformer<CssProperty> {
+public class MsFlex extends AbstractCssProperty<MsFlex>
+        implements StateChangeInformer<CssProperty> {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -64,8 +64,8 @@ public class MsFlex extends AbstractCssProperty<MsFlex> implements
     public static final String INHERIT = "inherit";
     public static final String AUTO = "auto";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(
-            INITIAL, INHERIT, AUTO);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays
+            .asList(INITIAL, INHERIT, AUTO);
 
     private String cssValue;
 
@@ -107,11 +107,11 @@ public class MsFlex extends AbstractCssProperty<MsFlex> implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssName()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -121,11 +121,11 @@ public class MsFlex extends AbstractCssProperty<MsFlex> implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssValue()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -154,9 +154,8 @@ public class MsFlex extends AbstractCssProperty<MsFlex> implements
                     "null is an invalid value. The value format should be as for example \"0 1 auto\" or initial/inherit.");
         } else if ((trimmedCssValue = TagStringUtil
                 .toLowerCase(cssValue.trim())).isEmpty()) {
-            throw new NullValueException(
-                    cssValue
-                            + " is an invalid value. The value format should be as for example \"0 1 auto\" or initial/inherit.");
+            throw new NullValueException(cssValue
+                    + " is an invalid value. The value format should be as for example \"0 1 auto\" or initial/inherit.");
         }
 
         final String[] cssValueParts = trimmedCssValue.split(" ");
@@ -282,9 +281,8 @@ public class MsFlex extends AbstractCssProperty<MsFlex> implements
         cssValueBuilder.append(flexBasis.getCssValue());
 
         if (invalid) {
-            throw new InvalidValueException(
-                    cssValue
-                            + " is an invalid value. The value format should be as for example \"0 1 auto\" or initial/inherit.");
+            throw new InvalidValueException(cssValue
+                    + " is an invalid value. The value format should be as for example \"0 1 auto\" or initial/inherit.");
         }
         this.cssValue = cssValueBuilder.toString();
 
@@ -405,13 +403,15 @@ public class MsFlex extends AbstractCssProperty<MsFlex> implements
 
         if (this.flexGrow != null) {
             this.flexGrow.setCssValue(flexGrow.getCssValue());
-            LOGGER.warning("copied the cssValue from the given flexGrow to the existing flexGrow object.");
+            LOGGER.warning(
+                    "copied the cssValue from the given flexGrow to the existing flexGrow object.");
         } else {
             if (flexGrow.isAlreadyInUse()) {
                 this.flexGrow = new FlexGrow(flexGrow);
                 this.flexGrow.setAlreadyInUse(true);
                 this.flexGrow.setStateChangeInformer(this);
-                LOGGER.warning("created a new object of FlexGrow as the given flexGrow object is already used by another object");
+                LOGGER.warning(
+                        "created a new object of FlexGrow as the given flexGrow object is already used by another object");
             } else {
                 this.flexGrow = flexGrow;
                 this.flexGrow.setAlreadyInUse(true);
@@ -469,13 +469,15 @@ public class MsFlex extends AbstractCssProperty<MsFlex> implements
 
         if (this.flexShrink != null) {
             this.flexShrink.setCssValue(flexShrink.getCssValue());
-            LOGGER.warning("copied the cssValue from the given flexShrink to the existing flexShrink object.");
+            LOGGER.warning(
+                    "copied the cssValue from the given flexShrink to the existing flexShrink object.");
         } else {
             if (flexShrink.isAlreadyInUse()) {
                 this.flexShrink = new FlexShrink(flexShrink);
                 this.flexShrink.setAlreadyInUse(true);
                 this.flexShrink.setStateChangeInformer(this);
-                LOGGER.warning("created a new object of FlexShrink as the given flexShrink object is already used by another object");
+                LOGGER.warning(
+                        "created a new object of FlexShrink as the given flexShrink object is already used by another object");
             } else {
                 this.flexShrink = flexShrink;
                 this.flexShrink.setAlreadyInUse(true);
@@ -533,13 +535,15 @@ public class MsFlex extends AbstractCssProperty<MsFlex> implements
 
         if (this.flexBasis != null) {
             this.flexBasis.setCssValue(flexBasis.getCssValue());
-            LOGGER.warning("copied the cssValue from the given flexBasis to the existing flexBasis object.");
+            LOGGER.warning(
+                    "copied the cssValue from the given flexBasis to the existing flexBasis object.");
         } else {
             if (flexBasis.isAlreadyInUse()) {
                 this.flexBasis = new FlexBasis(flexBasis);
                 this.flexBasis.setAlreadyInUse(true);
                 this.flexBasis.setStateChangeInformer(this);
-                LOGGER.warning("created a new object of FlexBasis as the given flexBasis object is already used by another object");
+                LOGGER.warning(
+                        "created a new object of FlexBasis as the given flexBasis object is already used by another object");
             } else {
                 this.flexBasis = flexBasis;
                 this.flexBasis.setAlreadyInUse(true);

@@ -49,8 +49,8 @@ public class Opacity extends AbstractCssProperty<Opacity> {
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(
-            INITIAL, INHERIT);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays
+            .asList(INITIAL, INHERIT);
 
     private String cssValue;
     private Float value;
@@ -195,9 +195,8 @@ public class Opacity extends AbstractCssProperty<Opacity> {
                         value = tempValue;
                         this.cssValue = value.toString();
                     } catch (final NumberFormatException e) {
-                        throw new InvalidValueException(
-                                cssValue
-                                        + " is an invalid value. The value format should be as for example 0.5, initial, inherit etc..");
+                        throw new InvalidValueException(cssValue
+                                + " is an invalid value. The value format should be as for example 0.5, initial, inherit etc..");
                     }
                 }
 
@@ -242,8 +241,8 @@ public class Opacity extends AbstractCssProperty<Opacity> {
      * @since 1.0.0
      */
     public static boolean isValid(final String cssValue) {
-        final String trimmedCssValue = TagStringUtil.toLowerCase(cssValue
-                .trim());
+        final String trimmedCssValue = TagStringUtil
+                .toLowerCase(cssValue.trim());
         if (trimmedCssValue.contains(" ")) {
             return false;
         }
@@ -252,9 +251,8 @@ public class Opacity extends AbstractCssProperty<Opacity> {
             if (parsedValue < 0 || parsedValue > 1) {
                 return false;
             }
-            if (parsedValue == 0
-                    && (trimmedCssValue.contains("-") || trimmedCssValue
-                            .contains("+"))) {
+            if (parsedValue == 0 && (trimmedCssValue.contains("-")
+                    || trimmedCssValue.contains("+"))) {
                 return false;
             }
             return true;

@@ -33,7 +33,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 public class Meter extends AbstractHtml {
 
     private static final long serialVersionUID = 1_0_0L;
-    
+
     public static final Logger LOGGER = Logger.getLogger(Meter.class.getName());
 
     {
@@ -51,11 +51,14 @@ public class Meter extends AbstractHtml {
      *
      * @since 1.0.0
      */
-    public Meter(final AbstractHtml base, final AbstractAttribute... attributes) {
+    public Meter(final AbstractHtml base,
+            final AbstractAttribute... attributes) {
         super(Meter.class.getSimpleName().toLowerCase(), base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof MeterAttribute || abstractAttribute instanceof GlobalAttributable))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof MeterAttribute
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of MeterAttribute");
                 }

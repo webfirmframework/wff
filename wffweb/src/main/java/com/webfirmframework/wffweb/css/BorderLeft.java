@@ -46,19 +46,19 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class BorderLeft extends AbstractCssProperty<BorderLeft> implements
-        StateChangeInformer<CssProperty> {
+public class BorderLeft extends AbstractCssProperty<BorderLeft>
+        implements StateChangeInformer<CssProperty> {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final Logger LOGGER = Logger.getLogger(BorderLeft.class
-            .getName());
+    public static final Logger LOGGER = Logger
+            .getLogger(BorderLeft.class.getName());
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(
-            INITIAL, INHERIT);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays
+            .asList(INITIAL, INHERIT);
 
     private String cssValue;
 
@@ -149,9 +149,8 @@ public class BorderLeft extends AbstractCssProperty<BorderLeft> implements
                     "null is an invalid value. The value format should be as for example medium none color Or initial/inherit.");
         } else if ((trimmedCssValue = TagStringUtil
                 .toLowerCase(cssValue.trim())).isEmpty()) {
-            throw new NullValueException(
-                    cssValue
-                            + " is an invalid value. The value format should be as for example medium none color Or initial/inherit.");
+            throw new NullValueException(cssValue
+                    + " is an invalid value. The value format should be as for example medium none color Or initial/inherit.");
         }
 
         final List<String> cssValueParts = CssValueUtil.split(trimmedCssValue);
@@ -240,9 +239,8 @@ public class BorderLeft extends AbstractCssProperty<BorderLeft> implements
             this.borderLeftColor.setAlreadyInUse(false);
         }
         if (invalid) {
-            throw new InvalidValueException(
-                    cssValue
-                            + " is an invalid value. The value format should be as for example medium none color Or initial/inherit.");
+            throw new InvalidValueException(cssValue
+                    + " is an invalid value. The value format should be as for example medium none color Or initial/inherit.");
         }
         this.cssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder);
         this.borderLeftWidth = borderLeftWidth;
@@ -333,7 +331,8 @@ public class BorderLeft extends AbstractCssProperty<BorderLeft> implements
         return borderLeftWidth;
     }
 
-    public BorderLeft setBorderLeftWidth(final BorderLeftWidth borderLeftWidth) {
+    public BorderLeft setBorderLeftWidth(
+            final BorderLeftWidth borderLeftWidth) {
 
         final StringBuilder cssValueBuilder = new StringBuilder();
 
@@ -342,7 +341,8 @@ public class BorderLeft extends AbstractCssProperty<BorderLeft> implements
             final String borderLeftWidthCssValue = borderLeftWidth
                     .getCssValue();
             if (BorderLeftWidth.INITIAL.equals(borderLeftWidthCssValue)
-                    || BorderLeftWidth.INHERIT.equals(borderLeftWidthCssValue)) {
+                    || BorderLeftWidth.INHERIT
+                            .equals(borderLeftWidthCssValue)) {
                 throw new InvalidValueException(
                         "borderLeftWidth cannot have initial/inherit as its cssValue");
             }
@@ -366,7 +366,8 @@ public class BorderLeft extends AbstractCssProperty<BorderLeft> implements
 
         if (borderLeftWidth != null && borderLeftWidth.isAlreadyInUse()
                 && this.borderLeftWidth != borderLeftWidth) {
-            LOGGER.warning("the given borderLeftWidth is already used by another object so a new object or the previous object (if it exists) of BorderLeftWidth will be used");
+            LOGGER.warning(
+                    "the given borderLeftWidth is already used by another object so a new object or the previous object (if it exists) of BorderLeftWidth will be used");
             return setCssValue(cssValue);
         }
 
@@ -387,7 +388,8 @@ public class BorderLeft extends AbstractCssProperty<BorderLeft> implements
         return this;
     }
 
-    public BorderLeft setBorderLeftStyle(final BorderLeftStyle borderLeftStyle) {
+    public BorderLeft setBorderLeftStyle(
+            final BorderLeftStyle borderLeftStyle) {
 
         final StringBuilder cssValueBuilder = new StringBuilder();
 
@@ -417,7 +419,8 @@ public class BorderLeft extends AbstractCssProperty<BorderLeft> implements
         return this;
     }
 
-    public BorderLeft setBorderLeftColor(final BorderLeftColor borderLeftColor) {
+    public BorderLeft setBorderLeftColor(
+            final BorderLeftColor borderLeftColor) {
 
         final StringBuilder cssValueBuilder = new StringBuilder();
 
@@ -435,7 +438,8 @@ public class BorderLeft extends AbstractCssProperty<BorderLeft> implements
             final String borderLeftColorCssValue = borderLeftColor
                     .getCssValue();
             if (BorderLeftColor.INITIAL.equals(borderLeftColorCssValue)
-                    || BorderLeftColor.INHERIT.equals(borderLeftColorCssValue)) {
+                    || BorderLeftColor.INHERIT
+                            .equals(borderLeftColorCssValue)) {
                 throw new InvalidValueException(
                         "borderLeftColor cannot have initial/inherit as its cssValue");
             }
@@ -447,7 +451,8 @@ public class BorderLeft extends AbstractCssProperty<BorderLeft> implements
 
         if (borderLeftColor != null && borderLeftColor.isAlreadyInUse()
                 && this.borderLeftColor != borderLeftColor) {
-            LOGGER.warning("the given borderLeftColor is already used by another object so a new object or the previous object (if it exists) of BorderLeftColor will be used");
+            LOGGER.warning(
+                    "the given borderLeftColor is already used by another object so a new object or the previous object (if it exists) of BorderLeftColor will be used");
             return setCssValue(cssValue);
         }
 

@@ -49,8 +49,8 @@ import com.webfirmframework.wffweb.util.StringUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class Font extends AbstractCssProperty<Font> implements
-        StateChangeInformer<CssProperty> {
+public class Font extends AbstractCssProperty<Font>
+        implements StateChangeInformer<CssProperty> {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -164,12 +164,12 @@ public class Font extends AbstractCssProperty<Font> implements
             throw new NullValueException(
                     "null is an invalid value. The value format should be as for example italic small-caps bold 12px arial,sans-serif Or initial/inherit.");
         } else if ((trimmedCssValue = cssValue.trim()).isEmpty()) {
-            throw new NullValueException(
-                    cssValue
-                            + " is an invalid value. The value format should be as for example italic small-caps bold 12px arial,sans-serif Or initial/inherit.");
+            throw new NullValueException(cssValue
+                    + " is an invalid value. The value format should be as for example italic small-caps bold 12px arial,sans-serif Or initial/inherit.");
         }
 
-        final String[] cssValueParts = getExtractedSubCssValues(trimmedCssValue);
+        final String[] cssValueParts = getExtractedSubCssValues(
+                trimmedCssValue);
 
         // @formatter:off
         /*
@@ -248,8 +248,8 @@ public class Font extends AbstractCssProperty<Font> implements
                     lineHeight = this.lineHeight;
                 }
             } else if (fontFamily == null
-                    && (!FontFamily.isValidateFontFamilyNameGlobally() || FontFamily
-                            .isValid(eachPart))) {
+                    && (!FontFamily.isValidateFontFamilyNameGlobally()
+                            || FontFamily.isValid(eachPart))) {
                 if (this.fontFamily == null) {
                     fontFamily = new FontFamily(eachPart);
                     fontFamily.setStateChangeInformer(this);
@@ -259,9 +259,8 @@ public class Font extends AbstractCssProperty<Font> implements
                     fontFamily = this.fontFamily;
                 }
             } else {
-                throw new InvalidValueException(
-                        cssValue
-                                + " is an invalid value. The value format should be as for example italic small-caps bold 12px arial,sans-serif Or initial/inherit.");
+                throw new InvalidValueException(cssValue
+                        + " is an invalid value. The value format should be as for example italic small-caps bold 12px arial,sans-serif Or initial/inherit.");
             }
         }
 
@@ -308,9 +307,8 @@ public class Font extends AbstractCssProperty<Font> implements
             invalid = false;
         }
         if (invalid) {
-            throw new InvalidValueException(
-                    cssValue
-                            + " is an invalid value. The value format should be as for example italic small-caps bold 12px arial,sans-serif Or initial/inherit.");
+            throw new InvalidValueException(cssValue
+                    + " is an invalid value. The value format should be as for example italic small-caps bold 12px arial,sans-serif Or initial/inherit.");
         }
         this.cssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder);
         this.fontStyle = fontStyle;
@@ -385,8 +383,8 @@ public class Font extends AbstractCssProperty<Font> implements
                 lineHeight = new LineHeight(eachPart);
                 invalid = false;
             } else if (fontFamily == null
-                    && (!FontFamily.isValidateFontFamilyNameGlobally() || FontFamily
-                            .isValid(eachPart))) {
+                    && (!FontFamily.isValidateFontFamilyNameGlobally()
+                            || FontFamily.isValid(eachPart))) {
                 fontFamily = new FontFamily(eachPart);
                 invalid = false;
             }
@@ -719,7 +717,8 @@ public class Font extends AbstractCssProperty<Font> implements
 
         if (fontSize != null && fontSize.isAlreadyInUse()
                 && this.fontSize != fontSize) {
-            LOGGER.warning("the given fontSize is already used by another object so a new object or the previous object (if it exists) of FontSize will be used");
+            LOGGER.warning(
+                    "the given fontSize is already used by another object so a new object or the previous object (if it exists) of FontSize will be used");
             return setCssValue(cssValue);
         }
 
@@ -792,7 +791,8 @@ public class Font extends AbstractCssProperty<Font> implements
 
         if (lineHeight != null && lineHeight.isAlreadyInUse()
                 && this.lineHeight != lineHeight) {
-            LOGGER.warning("the given lineHeight is already used by another object so a new object or the previous object (if it exists) of FontSize will be used");
+            LOGGER.warning(
+                    "the given lineHeight is already used by another object so a new object or the previous object (if it exists) of FontSize will be used");
             return setCssValue(cssValue);
         }
 
@@ -865,7 +865,8 @@ public class Font extends AbstractCssProperty<Font> implements
 
         if (fontFamily != null && fontFamily.isAlreadyInUse()
                 && this.fontFamily != fontFamily) {
-            LOGGER.warning("the given fontFamily is already used by another object so a new object or the previous object (if it exists) of FontSize will be used");
+            LOGGER.warning(
+                    "the given fontFamily is already used by another object so a new object or the previous object (if it exists) of FontSize will be used");
             return setCssValue(cssValue);
         }
 

@@ -28,9 +28,9 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
 /**
  * <pre>
  * -webkit-flex-grow: <i>number</i>|initial|inherit;
- * 
+ *
  * The flex-grow property specifies how much the item will grow relative to the rest of the flexible items inside the same container.
- * 
+ *
  * Note: If the element is not a flexible item, the -webkit-flex-grow property has no effect.
  * Default value:  0
  * Inherited:      no
@@ -49,8 +49,8 @@ public class WebkitFlexGrow extends AbstractCssProperty<WebkitFlexGrow> {
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(
-            INITIAL, INHERIT);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays
+            .asList(INITIAL, INHERIT);
 
     private String cssValue;
     private Float value;
@@ -97,11 +97,11 @@ public class WebkitFlexGrow extends AbstractCssProperty<WebkitFlexGrow> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssName()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -111,11 +111,11 @@ public class WebkitFlexGrow extends AbstractCssProperty<WebkitFlexGrow> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.webfirmframework.wffweb.css.CssProperty#getCssValue()
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @author WFF
      */
     @Override
@@ -182,9 +182,8 @@ public class WebkitFlexGrow extends AbstractCssProperty<WebkitFlexGrow> {
                         value = Float.valueOf(trimmedCssValue);
                         this.cssValue = value.toString();
                     } catch (final NumberFormatException e) {
-                        throw new InvalidValueException(
-                                cssValue
-                                        + " is an invalid value. The value format should be as for example 0.5, initial, inherit etc..");
+                        throw new InvalidValueException(cssValue
+                                + " is an invalid value. The value format should be as for example 0.5, initial, inherit etc..");
                     }
                 }
 
@@ -229,8 +228,8 @@ public class WebkitFlexGrow extends AbstractCssProperty<WebkitFlexGrow> {
      * @since 1.0.0
      */
     public static boolean isValid(final String cssValue) {
-        final String trimmedCssValue = TagStringUtil.toLowerCase(cssValue
-                .trim());
+        final String trimmedCssValue = TagStringUtil
+                .toLowerCase(cssValue.trim());
         if (trimmedCssValue.contains(" ")) {
             return false;
         }

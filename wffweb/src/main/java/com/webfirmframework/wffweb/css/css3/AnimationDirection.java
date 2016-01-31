@@ -127,8 +127,8 @@ public enum AnimationDirection implements CssProperty {
      * @author WFF
      */
     public static AnimationDirection getThis(final String cssValue) {
-        final String enumString = TagStringUtil.toUpperCase(cssValue).replace(
-                "-", "_");
+        final String enumString = TagStringUtil.toUpperCase(cssValue)
+                .replace("-", "_");
 
         AnimationDirection correspondingObject = null;
         try {

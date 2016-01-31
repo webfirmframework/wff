@@ -35,11 +35,14 @@ public class TFoot extends AbstractHtml {
      *
      * @since 1.0.0
      */
-    public TFoot(final AbstractHtml base, final AbstractAttribute... attributes) {
+    public TFoot(final AbstractHtml base,
+            final AbstractAttribute... attributes) {
         super(TFoot.class.getSimpleName().toLowerCase(), base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof TFootAttributable || abstractAttribute instanceof GlobalAttributable))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof TFootAttributable
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of TFootAttribute");
                 }

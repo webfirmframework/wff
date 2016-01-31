@@ -22,9 +22,9 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
 /**
  * {@code <element contenteditable="true|false">}
- * 
+ *
  * <pre>
- * 
+ *
  * The contenteditable attribute specifies whether the content of an element is editable or not.
  *
  * </pre>
@@ -32,8 +32,8 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
  * @author WFF
  *
  */
-public class ContentEditable extends AbstractAttribute implements
-        GlobalAttributable {
+public class ContentEditable extends AbstractAttribute
+        implements GlobalAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
     private boolean editable;

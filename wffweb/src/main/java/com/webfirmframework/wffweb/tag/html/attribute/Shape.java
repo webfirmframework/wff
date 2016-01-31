@@ -40,7 +40,8 @@ import com.webfirmframework.wffweb.tag.html.identifier.AreaAttributable;
  * @author WFF
  *
  */
-public class Shape extends AbstractAttribute implements AAttributable, AreaAttributable {
+public class Shape extends AbstractAttribute
+        implements AAttributable, AreaAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 

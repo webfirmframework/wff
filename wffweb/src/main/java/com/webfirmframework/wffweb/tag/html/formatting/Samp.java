@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.SampAttributable;
@@ -35,11 +36,14 @@ public class Samp extends AbstractHtml {
      *
      * @since 1.0.0
      */
-    public Samp(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(Samp.class.getSimpleName().toLowerCase(), base, attributes);
+    public Samp(final AbstractHtml base,
+            final AbstractAttribute... attributes) {
+        super(TagNameConstants.SAMP, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof SampAttributable || abstractAttribute instanceof GlobalAttributable))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof SampAttributable
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of SampAttribute");
                 }

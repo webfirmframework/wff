@@ -71,39 +71,35 @@ public class HslCssValue extends AbstractBean<HslCssValue> {
         if (hslString.startsWith("hsl(") && hslString.contains(")")) {
             final String hsl = hslString.replace(",", ", ");
 
-            final String[] hslStringParts = hslString.substring(
-                    hslString.indexOf('(') + 1, hslString.lastIndexOf(')'))
+            final String[] hslStringParts = hslString
+                    .substring(hslString.indexOf('(') + 1,
+                            hslString.lastIndexOf(')'))
                     .split("[,]");
 
             if (hslStringParts.length == 3) {
                 h = Integer.parseInt(hslStringParts[0]);
                 if (h < 0 || h > 360) {
-                    throw new InvalidValueException(
-                            hslString
-                                    + " is not a valid hsl string. h value in hslString should be in between 0 to 360, eg: hsl(120, 25%, 15%)");
+                    throw new InvalidValueException(hslString
+                            + " is not a valid hsl string. h value in hslString should be in between 0 to 360, eg: hsl(120, 25%, 15%)");
                 }
                 s = Float.parseFloat(hslStringParts[1].replace("%", ""));
                 if (s < 0 || s > 100) {
-                    throw new InvalidValueException(
-                            hslString
-                                    + " is not a valid hsl string. s value in hslString should be in between 0 to 100, eg: hsl(120, 25%, 15%)");
+                    throw new InvalidValueException(hslString
+                            + " is not a valid hsl string. s value in hslString should be in between 0 to 100, eg: hsl(120, 25%, 15%)");
                 }
                 l = Float.parseFloat(hslStringParts[2].replace("%", ""));
                 if (l < 0 || l > 100) {
-                    throw new InvalidValueException(
-                            hslString
-                                    + " is not a valid hsl string. l value in hslString should be in between 0 to 100, eg: hsl(120, 25%, 15%)");
+                    throw new InvalidValueException(hslString
+                            + " is not a valid hsl string. l value in hslString should be in between 0 to 100, eg: hsl(120, 25%, 15%)");
                 }
                 this.hsl = hsl;
             } else {
-                throw new InvalidValueException(
-                        hslString
-                                + " is not a valid hsl string. It should be in the format of hsl(120, 25%, 15%)");
+                throw new InvalidValueException(hslString
+                        + " is not a valid hsl string. It should be in the format of hsl(120, 25%, 15%)");
             }
         } else {
-            throw new InvalidValueException(
-                    hslString
-                            + " is not a valid hsl string. It should be in the format of hsl(120, 25%, 15%)");
+            throw new InvalidValueException(hslString
+                    + " is not a valid hsl string. It should be in the format of hsl(120, 25%, 15%)");
         }
     }
 
@@ -250,8 +246,9 @@ public class HslCssValue extends AbstractBean<HslCssValue> {
             hslString = hslString.replace(" ", "").toLowerCase();
             if (hslString.startsWith("hsl(") && hslString.contains(")")) {
 
-                final String[] hslStringParts = hslString.substring(
-                        hslString.indexOf('(') + 1, hslString.lastIndexOf(')'))
+                final String[] hslStringParts = hslString
+                        .substring(hslString.indexOf('(') + 1,
+                                hslString.lastIndexOf(')'))
                         .split("[,]");
 
                 if (hslStringParts.length == 3) {
@@ -262,16 +259,16 @@ public class HslCssValue extends AbstractBean<HslCssValue> {
                     if (!hslStringParts[1].endsWith("%")) {
                         return false;
                     }
-                    final float g = Float.parseFloat(hslStringParts[1].replace(
-                            "%", ""));
+                    final float g = Float
+                            .parseFloat(hslStringParts[1].replace("%", ""));
                     if (g < 0 || g > 100) {
                         return false;
                     }
                     if (!hslStringParts[2].endsWith("%")) {
                         return false;
                     }
-                    final float b = Float.parseFloat(hslStringParts[2].replace(
-                            "%", ""));
+                    final float b = Float
+                            .parseFloat(hslStringParts[2].replace("%", ""));
                     if (b < 0 || b > 100) {
                         return false;
                     }

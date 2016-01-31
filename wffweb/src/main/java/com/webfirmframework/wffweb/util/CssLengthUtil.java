@@ -96,7 +96,8 @@ public class CssLengthUtil {
      * <code>555px</code>, the returned array may be used as
      *
      * <pre>
-     * Object[] lengthValueAndUnit = CssLengthUtil.getLengthValueAndUnit(&quot;555px&quot;);
+     * Object[] lengthValueAndUnit = CssLengthUtil
+     *         .getLengthValueAndUnit(&quot;555px&quot;);
      * Float value = (Float) lengthValueAndUnit[0];
      *
      * // the object will be equal to CssLengthUnit.PX

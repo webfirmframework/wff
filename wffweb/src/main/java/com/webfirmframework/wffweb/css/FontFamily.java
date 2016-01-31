@@ -53,8 +53,8 @@ public class FontFamily extends AbstractCssProperty<FontFamily> {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final Logger LOGGER = Logger.getLogger(FontFamily.class
-            .getName());
+    public static final Logger LOGGER = Logger
+            .getLogger(FontFamily.class.getName());
 
     private static final Set<String> FONT_FAMILY_NAMES = new HashSet<String>() {
 
@@ -208,8 +208,8 @@ public class FontFamily extends AbstractCssProperty<FontFamily> {
 
     /**
      * @param cssValue
-     *            The value should be a fontFamilies sequence for example
-     *            \"Times New Roman\", Georgia, Serif Or initial/inherit.
+     *            The value should be a fontFamilies sequence for example \
+     *            "Times New Roman\", Georgia, Serif Or initial/inherit.
      * @since 1.0.0
      * @author WFF
      */
@@ -270,12 +270,11 @@ public class FontFamily extends AbstractCssProperty<FontFamily> {
 
             final String familyName = trimmed.substring(begin, end);
             if (validate) {
-                if (!FONT_FAMILY_NAMES.contains(TagStringUtil
-                        .toLowerCase(familyName))) {
-                    throw new InvalidValueException(
-                            "font-family name "
-                                    + familyName
-                                    + " is not valid against the family names added by addFontFamilyName and addFontFamilyNames methods");
+                if (!FONT_FAMILY_NAMES
+                        .contains(TagStringUtil.toLowerCase(familyName))) {
+                    throw new InvalidValueException("font-family name "
+                            + familyName
+                            + " is not valid against the family names added by addFontFamilyName and addFontFamilyNames methods");
                 }
 
             }
@@ -400,7 +399,8 @@ public class FontFamily extends AbstractCssProperty<FontFamily> {
      * @author WFF
      * @since 1.0.0
      */
-    public void setValidateFontFamilyName(final boolean validateFontFamilyName) {
+    public void setValidateFontFamilyName(
+            final boolean validateFontFamilyName) {
         this.validateFontFamilyName = validateFontFamilyName;
     }
 

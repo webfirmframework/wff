@@ -118,8 +118,8 @@ public enum WebkitAnimationFillMode implements CssProperty {
      * @author WFF
      */
     public static WebkitAnimationFillMode getThis(final String cssValue) {
-        final String enumString = TagStringUtil.toUpperCase(cssValue).replace(
-                "-", "_");
+        final String enumString = TagStringUtil.toUpperCase(cssValue)
+                .replace("-", "_");
 
         WebkitAnimationFillMode correspondingObject = null;
         try {

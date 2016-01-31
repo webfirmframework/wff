@@ -25,7 +25,7 @@ import com.webfirmframework.wffweb.tag.html.html5.identifier.AudioAttribute;
  *
  * A Boolean attribute which indicates whether the audio will be initially
  * silenced.
- * 
+ *
  * @author WFF
  *
  */

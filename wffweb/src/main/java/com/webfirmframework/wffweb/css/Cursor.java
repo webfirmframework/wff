@@ -40,8 +40,8 @@ import com.webfirmframework.wffweb.informer.StateChangeInformer;
  * @author WFF
  * @since 1.0.0
  */
-public class Cursor extends AbstractCssProperty<Cursor> implements
-        StateChangeInformer<Bean> {
+public class Cursor extends AbstractCssProperty<Cursor>
+        implements StateChangeInformer<Bean> {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -147,7 +147,8 @@ public class Cursor extends AbstractCssProperty<Cursor> implements
 
     /**
      * @param cssValue
-     *            the cssValue to set. </br> eg:- {@code Cursor.ALIAS}
+     *            the cssValue to set. </br>
+     *            eg:- {@code Cursor.ALIAS}
      * @author WFF
      */
     public Cursor(final String cssValue) {
@@ -209,7 +210,8 @@ public class Cursor extends AbstractCssProperty<Cursor> implements
      *            an array of {@code UrlCss3Value} objects.
      * @author WFF
      */
-    public Cursor(final String cursorType, final UrlCss3Value... urlCss3Values) {
+    public Cursor(final String cursorType,
+            final UrlCss3Value... urlCss3Values) {
         setCursorUrls(cursorType, urlCss3Values);
     }
 
@@ -263,8 +265,8 @@ public class Cursor extends AbstractCssProperty<Cursor> implements
         }
 
         final String[] cssValueParts = cssValue.split(",");
-        final String cursorType = cssValueParts[cssValueParts.length - 1]
-                .trim().toLowerCase();
+        final String cursorType = cssValueParts[cssValueParts.length - 1].trim()
+                .toLowerCase();
         if (!ALL_CURSORTYPES.contains(cursorType.trim())) {
             throw new InvalidValueException(
                     "The last cursor should be the inbuild cursor like auto, default etc..");
@@ -289,7 +291,8 @@ public class Cursor extends AbstractCssProperty<Cursor> implements
                 if ((cssValueParts.length - 1) == urlCss3Values.length) {
                     urlCss3ValuesTemp = urlCss3Values;
                 } else {
-                    urlCss3ValuesTemp = new UrlCss3Value[cssValueParts.length - 1];
+                    urlCss3ValuesTemp = new UrlCss3Value[cssValueParts.length
+                            - 1];
                 }
                 for (int i = 0; i < cssValueParts.length - 1; i++) {
                     final UrlCss3Value urlCss3Value;
@@ -307,7 +310,8 @@ public class Cursor extends AbstractCssProperty<Cursor> implements
                     cssValueBuilder.append(", ");
                 }
 
-                for (int i = cssValueParts.length - 1; i < urlCss3Values.length; i++) {
+                for (int i = cssValueParts.length
+                        - 1; i < urlCss3Values.length; i++) {
                     urlCss3Values[i].setAlreadyInUse(false);
                 }
 
@@ -399,9 +403,8 @@ public class Cursor extends AbstractCssProperty<Cursor> implements
             throw new NullValueException("cursorUrls is null");
         }
         if (!ALL_CURSORTYPES.contains(cursorType.trim().toLowerCase())) {
-            throw new InvalidValueException(
-                    cursorType
-                            + " is invalid. The cursorType should be any predefined cursor type, eg default, auto etc..");
+            throw new InvalidValueException(cursorType
+                    + " is invalid. The cursorType should be any predefined cursor type, eg default, auto etc..");
         }
         final StringBuilder sb = new StringBuilder();
         for (final String cursorUrl : cursorUrls) {
@@ -435,9 +438,8 @@ public class Cursor extends AbstractCssProperty<Cursor> implements
             throw new NullValueException("urlCss3Values is null");
         }
         if (!ALL_CURSORTYPES.contains(cursorType.trim().toLowerCase())) {
-            throw new InvalidValueException(
-                    cursorType
-                            + " is invalid. The cursorType should be any predefined cursor type, eg default, auto etc..");
+            throw new InvalidValueException(cursorType
+                    + " is invalid. The cursorType should be any predefined cursor type, eg default, auto etc..");
         }
         if (this.urlCss3Values != null) {
             for (final UrlCss3Value urlCss3Value : this.urlCss3Values) {

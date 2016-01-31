@@ -27,8 +27,8 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
  * @author WFF
  *
  */
-public class ClassAttribute extends AbstractAttribute implements
-        GlobalAttributable {
+public class ClassAttribute extends AbstractAttribute
+        implements GlobalAttributable {
 
     /**
      *

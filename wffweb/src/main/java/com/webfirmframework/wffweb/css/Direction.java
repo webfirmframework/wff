@@ -117,8 +117,8 @@ public enum Direction implements CssProperty {
      * @author WFF
      */
     public static Direction getThis(final String cssValue) {
-        final String enumString = TagStringUtil.toUpperCase(cssValue).replace(
-                "-", "_");
+        final String enumString = TagStringUtil.toUpperCase(cssValue)
+                .replace("-", "_");
 
         Direction correspondingObject = null;
         try {

@@ -35,11 +35,14 @@ public class THead extends AbstractHtml {
      *
      * @since 1.0.0
      */
-    public THead(final AbstractHtml base, final AbstractAttribute... attributes) {
+    public THead(final AbstractHtml base,
+            final AbstractAttribute... attributes) {
         super(THead.class.getSimpleName().toLowerCase(), base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof THeadAttributable || abstractAttribute instanceof GlobalAttributable))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof THeadAttributable
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of THeadAttribute");
                 }

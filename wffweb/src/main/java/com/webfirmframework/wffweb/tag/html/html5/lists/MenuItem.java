@@ -33,9 +33,9 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 public class MenuItem extends AbstractHtml {
 
     private static final long serialVersionUID = 1_0_0L;
-    
-    public static final Logger LOGGER = Logger.getLogger(MenuItem.class
-            .getName());
+
+    public static final Logger LOGGER = Logger
+            .getLogger(MenuItem.class.getName());
 
     {
         init();
@@ -57,7 +57,9 @@ public class MenuItem extends AbstractHtml {
         super(MenuItem.class.getSimpleName().toLowerCase(), base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof MenuItemAttribute || abstractAttribute instanceof GlobalAttributable))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof MenuItemAttribute
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of MenuItemAttribute");
                 }

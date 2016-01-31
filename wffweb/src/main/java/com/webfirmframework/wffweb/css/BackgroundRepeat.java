@@ -117,8 +117,8 @@ public enum BackgroundRepeat implements CssProperty {
      * @author WFF
      */
     public static BackgroundRepeat getThis(final String cssValue) {
-        final String enumString = TagStringUtil.toUpperCase(cssValue).replace(
-                "-", "_");
+        final String enumString = TagStringUtil.toUpperCase(cssValue)
+                .replace("-", "_");
 
         BackgroundRepeat correspondingObject = null;
         try {

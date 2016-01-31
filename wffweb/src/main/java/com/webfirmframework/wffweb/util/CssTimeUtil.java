@@ -44,7 +44,7 @@ public class CssTimeUtil {
      * Object[] timeValueAsPremitiveAndUnit = CssTimeUtil
      *         .getTimeValueAsPremitiveAndUnit(&quot;555ms&quot;);
      * float value = (float) timeValueAsPremitiveAndUnit[0];
-     * 
+     *
      * // the object will be equal to CssTimeUnit.MS
      * CssTimeUnit unit = (CssTimeUnit) timeValueAsPremitiveAndUnit[1];
      * </pre>
@@ -62,7 +62,8 @@ public class CssTimeUtil {
      * @author WFF
      * @since 1.0.0
      */
-    public static Object[] getTimeValueAsPremitiveAndUnit(final String cssValue) {
+    public static Object[] getTimeValueAsPremitiveAndUnit(
+            final String cssValue) {
         for (final CssTimeUnit cssTimeUnit : CssTimeUnit.values()) {
             final String unit = cssTimeUnit.getUnit();
             if (cssValue.endsWith(unit)) {
@@ -85,7 +86,7 @@ public class CssTimeUtil {
      * <pre>
      * Object[] timeValueAndUnit = CssTimeUtil.getTimeValueAndUnit(&quot;555ms&quot;);
      * Float value = (Float) timeValueAndUnit[0];
-     * 
+     *
      * // the object will be equal to CssTimeUnit.MS
      * CssTimeUnit unit = (CssTimeUnit) timeValueAndUnit[1];
      * </pre>
@@ -109,7 +110,8 @@ public class CssTimeUtil {
             if (cssValue.endsWith(unit)) {
                 final String valueOnly = cssValue.replaceFirst(unit, "");
                 try {
-                    return new Object[] { Float.valueOf(valueOnly), cssTimeUnit };
+                    return new Object[] { Float.valueOf(valueOnly),
+                            cssTimeUnit };
                 } catch (final NumberFormatException e) {
                     return new Object[0];
                 }

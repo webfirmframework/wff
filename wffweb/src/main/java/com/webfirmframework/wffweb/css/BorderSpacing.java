@@ -28,7 +28,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
 /**
  * <pre>
  * border-spacing: <i>length</i>|initial|inherit;
- * 
+ *
  * The border-spacing property sets the distance between the borders of adjacent cells (only for the "separated borders" model).
  * Default value:  0
  * Inherited:      yes
@@ -47,8 +47,8 @@ public class BorderSpacing extends AbstractCssProperty<BorderSpacing> {
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(
-            INITIAL, INHERIT);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays
+            .asList(INITIAL, INHERIT);
 
     private String cssValue;
     private Float horizontalValue;
@@ -113,7 +113,8 @@ public class BorderSpacing extends AbstractCssProperty<BorderSpacing> {
      */
     public BorderSpacing(final float horizontalValue,
             final CssLengthUnit horizontalCssLengthUnit,
-            final float verticalValue, final CssLengthUnit verticalCssLengthUnit) {
+            final float verticalValue,
+            final CssLengthUnit verticalCssLengthUnit) {
 
         this.horizontalValue = Float.valueOf(horizontalValue);
         this.verticalValue = Float.valueOf(verticalValue);
@@ -147,7 +148,8 @@ public class BorderSpacing extends AbstractCssProperty<BorderSpacing> {
      */
     public BorderSpacing setValue(final float horizontalValue,
             final CssLengthUnit horizontalCssLengthUnit,
-            final float verticalValue, final CssLengthUnit verticalCssLengthUnit) {
+            final float verticalValue,
+            final CssLengthUnit verticalCssLengthUnit) {
 
         this.horizontalValue = Float.valueOf(horizontalValue);
         this.verticalValue = Float.valueOf(verticalValue);
@@ -335,8 +337,10 @@ public class BorderSpacing extends AbstractCssProperty<BorderSpacing> {
 
                         // nano optimized way to check if both horizontalValue
                         // and verticalValue are equal.
-                        if (Float.floatToIntBits(horizontalValue.floatValue()) == Float
-                                .floatToIntBits(horizontalValue.floatValue())
+                        if (Float.floatToIntBits(
+                                horizontalValue.floatValue()) == Float
+                                        .floatToIntBits(
+                                                horizontalValue.floatValue())
                                 && horizontalCssLengthUnit == verticalCssLengthUnit) {
                             this.cssValue = horizontalValue + ""
                                     + verticalCssLengthUnit;
@@ -351,9 +355,8 @@ public class BorderSpacing extends AbstractCssProperty<BorderSpacing> {
                 }
 
                 if (invalidValue) {
-                    throw new InvalidValueException(
-                            cssValue
-                                    + " is an invalid value. The value format should be as for example 75px, 85%, 125px 10px, initial, inherit etc..");
+                    throw new InvalidValueException(cssValue
+                            + " is an invalid value. The value format should be as for example 75px, 85%, 125px 10px, initial, inherit etc..");
                 }
             }
             if (getStateChangeInformer() != null) {
@@ -361,8 +364,7 @@ public class BorderSpacing extends AbstractCssProperty<BorderSpacing> {
             }
         } catch (final NumberFormatException e) {
             throw new InvalidValueException(
-                    cssValue
-                            + " is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit.",
+                    cssValue + " is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit.",
                     e);
         }
         return this;
@@ -399,8 +401,8 @@ public class BorderSpacing extends AbstractCssProperty<BorderSpacing> {
      * @since 1.0.0
      */
     public static boolean isValid(final String cssValue) {
-        final String trimmedCssValue = TagStringUtil.toLowerCase(cssValue
-                .trim());
+        final String trimmedCssValue = TagStringUtil
+                .toLowerCase(cssValue.trim());
 
         final String[] cssValueParts = trimmedCssValue.split(" ");
         if (cssValueParts.length > 2) {

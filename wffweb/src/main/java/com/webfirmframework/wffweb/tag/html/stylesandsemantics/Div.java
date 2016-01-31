@@ -18,6 +18,7 @@ public class Div extends AbstractHtml {
     private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger.getLogger(Div.class.getName());
+
     {
         init();
     }
@@ -36,7 +37,9 @@ public class Div extends AbstractHtml {
     public Div(final AbstractHtml base, final AbstractAttribute... attributes) {
         super(Div.class.getSimpleName().toLowerCase(), base, attributes);
         for (final AbstractAttribute abstractAttribute : attributes) {
-            if (!(abstractAttribute != null && (abstractAttribute instanceof DivAttributable || abstractAttribute instanceof GlobalAttributable))) {
+            if (!(abstractAttribute != null
+                    && (abstractAttribute instanceof DivAttributable
+                            || abstractAttribute instanceof GlobalAttributable))) {
                 LOGGER.warning(abstractAttribute
                         + " is not an instance of DivAttribute");
             }

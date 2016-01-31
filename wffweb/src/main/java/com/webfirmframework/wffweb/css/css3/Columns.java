@@ -43,19 +43,19 @@ import com.webfirmframework.wffweb.util.StringBuilderUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class Columns extends AbstractCssProperty<Columns> implements
-        StateChangeInformer<CssProperty> {
+public class Columns extends AbstractCssProperty<Columns>
+        implements StateChangeInformer<CssProperty> {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final Logger LOGGER = Logger.getLogger(Columns.class
-            .getName());
+    public static final Logger LOGGER = Logger
+            .getLogger(Columns.class.getName());
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(
-            INITIAL, INHERIT);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays
+            .asList(INITIAL, INHERIT);
 
     private String cssValue;
 
@@ -143,9 +143,8 @@ public class Columns extends AbstractCssProperty<Columns> implements
             throw new NullValueException(
                     "null is an invalid value. The value format should be as for example 17px 2. Or, initial/inherit.");
         } else if ((trimmedCssValue = cssValue.trim()).isEmpty()) {
-            throw new NullValueException(
-                    cssValue
-                            + " is an invalid value. The value format should be as for example 17px 2. Or, initial/inherit.");
+            throw new NullValueException(cssValue
+                    + " is an invalid value. The value format should be as for example 17px 2. Or, initial/inherit.");
         }
 
         final String[] cssValueParts = trimmedCssValue.split(" ");
@@ -202,9 +201,8 @@ public class Columns extends AbstractCssProperty<Columns> implements
                     columnCount = this.columnCount;
                 }
             } else {
-                throw new InvalidValueException(
-                        cssValue
-                                + " is an invalid value. The value format should be as for example 17px 2. Or, initial/inherit.");
+                throw new InvalidValueException(cssValue
+                        + " is an invalid value. The value format should be as for example 17px 2. Or, initial/inherit.");
             }
         }
 
@@ -221,9 +219,8 @@ public class Columns extends AbstractCssProperty<Columns> implements
             invalid = false;
         }
         if (invalid) {
-            throw new InvalidValueException(
-                    cssValue
-                            + " is an invalid value. The value format should be as for example 17px 2. Or, initial/inherit.");
+            throw new InvalidValueException(cssValue
+                    + " is an invalid value. The value format should be as for example 17px 2. Or, initial/inherit.");
         }
         this.cssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder);
         this.columnWidth = columnWidth;
@@ -331,7 +328,8 @@ public class Columns extends AbstractCssProperty<Columns> implements
 
         if (columnWidth != null && columnWidth.isAlreadyInUse()
                 && this.columnWidth != columnWidth) {
-            LOGGER.warning("the given columnWidth is already used by another object so a new object or the previous object (if it exists) of ColumnWidth will be used");
+            LOGGER.warning(
+                    "the given columnWidth is already used by another object so a new object or the previous object (if it exists) of ColumnWidth will be used");
             return setCssValue(cssValue);
         }
 
@@ -378,7 +376,8 @@ public class Columns extends AbstractCssProperty<Columns> implements
 
         if (columnCount != null && columnCount.isAlreadyInUse()
                 && this.columnCount != columnCount) {
-            LOGGER.warning("the given columnCount is already used by another object so a new object or the previous object (if it exists) of ColumnWidth will be used");
+            LOGGER.warning(
+                    "the given columnCount is already used by another object so a new object or the previous object (if it exists) of ColumnWidth will be used");
             return setCssValue(cssValue);
         }
 

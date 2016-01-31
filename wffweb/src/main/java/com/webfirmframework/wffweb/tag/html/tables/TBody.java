@@ -35,11 +35,14 @@ public class TBody extends AbstractHtml {
      *
      * @since 1.0.0
      */
-    public TBody(final AbstractHtml base, final AbstractAttribute... attributes) {
+    public TBody(final AbstractHtml base,
+            final AbstractAttribute... attributes) {
         super(TBody.class.getSimpleName().toLowerCase(), base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof TBodyAttributable || abstractAttribute instanceof GlobalAttributable))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof TBodyAttributable
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of TBodyAttribute");
                 }
