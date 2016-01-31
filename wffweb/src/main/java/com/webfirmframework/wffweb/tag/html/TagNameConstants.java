@@ -169,6 +169,14 @@ public class TagNameConstants {
 
     public static final String FIGURE = "figure";
 
+    public static final String NAV = "nav";
+
+    public static final String MENU = "menu";
+
+    public static final String MENUITEM = "menuitem";
+
+    public static final String EMBED = "embed";
+
     /**
      *
      * @author WFF
