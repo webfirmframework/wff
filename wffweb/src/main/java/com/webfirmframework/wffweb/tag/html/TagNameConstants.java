@@ -195,6 +195,14 @@ public class TagNameConstants {
 
     public static final String SUMMARY = "summary";
 
+    public static final String AREA = "area";
+
+    public static final String IMG = "img";
+
+    public static final String MAP = "map";
+
+    public static final String A = "a";
+
     /**
      *
      * @author WFF
