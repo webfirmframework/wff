@@ -59,6 +59,7 @@ public class AttributeNameConstants {
     public static final String LOOP = "loop";
     public static final String MUTED = "muted";
     public static final String SRC = "src";
+    public static final String VALUE = "value";
 
     /**
      *
