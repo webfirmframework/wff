@@ -37,7 +37,7 @@ public class Head extends AbstractHtml {
      */
     public Head(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.HEAD.toLowerCase(), base, attributes);
+        super(TagNameConstants.HEAD, base, attributes);
         for (final AbstractAttribute abstractAttribute : attributes) {
             if (!(abstractAttribute != null
                     && (abstractAttribute instanceof HeadAttributable
