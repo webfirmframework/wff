@@ -34,7 +34,7 @@ import com.webfirmframework.wffweb.util.StringBuilderUtil;
  *
  * Formal syntax: <'list-style-type'> || <'list-style-position'> ||
  * <'list-style-image'>
- * 
+ *
  * @author WFF
  * @since 1.0.0
  */

@@ -115,6 +115,26 @@ public class TagNameConstants {
 
     public static final String VAR = "var";
 
+    public static final String BUTTON = "button";
+
+    public static final String FIELDSET = "fieldset";
+
+    public static final String FORM = "form";
+
+    public static final String INPUT = "input";
+
+    public static final String LABEL = "label";
+
+    public static final String LEGEND = "legend";
+
+    public static final String OPTGROUP = "optgroup";
+
+    public static final String OPTION = "option";
+
+    public static final String SELECT = "select";
+
+    public static final String TEXTAREA = "textarea";
+
     /**
      *
      * @author WFF
