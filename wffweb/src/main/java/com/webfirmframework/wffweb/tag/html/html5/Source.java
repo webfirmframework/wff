@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.html5.identifier.SourceAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
@@ -33,7 +34,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 public class Source extends AbstractHtml {
 
     private static final long serialVersionUID = 1_0_0L;
-    
+
     public static final Logger LOGGER = Logger
             .getLogger(Source.class.getName());
 
@@ -54,10 +55,12 @@ public class Source extends AbstractHtml {
      */
     public Source(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(Source.class.getSimpleName().toLowerCase(), base, attributes);
+        super(TagNameConstants.SOURCE, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof SourceAttribute || abstractAttribute instanceof GlobalAttributable))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof SourceAttribute
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of SourceAttribute");
                 }

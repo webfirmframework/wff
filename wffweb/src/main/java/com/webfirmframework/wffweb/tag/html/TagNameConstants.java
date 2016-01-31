@@ -55,6 +55,20 @@ public class TagNameConstants {
 
     public static final String QFN = "qfn";
 
+    public static final String DATA = "data";
+
+    public static final String MATH = "math";
+
+    public static final String SOURCE = "source";
+
+    public static final String SVG = "svg";
+
+    public static final String TEMPLATE = "template";
+
+    public static final String TRACK = "track";
+
+    public static final String VIDEO = "video";
+
     /**
      *
      * @author WFF

@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.TemplateAttributable;
@@ -33,9 +34,9 @@ import com.webfirmframework.wffweb.tag.html.identifier.TemplateAttributable;
 public class Template extends AbstractHtml {
 
     private static final long serialVersionUID = 1_0_0L;
-    
-    public static final Logger LOGGER = Logger.getLogger(Template.class
-            .getName());
+
+    public static final Logger LOGGER = Logger
+            .getLogger(Template.class.getName());
 
     {
         init();
@@ -54,10 +55,12 @@ public class Template extends AbstractHtml {
      */
     public Template(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(Template.class.getSimpleName().toLowerCase(), base, attributes);
+        super(TagNameConstants.TEMPLATE, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof TemplateAttributable || abstractAttribute instanceof GlobalAttributable))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof TemplateAttributable
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of TemplateAttribute");
                 }

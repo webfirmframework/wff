@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.html5.identifier.TrackAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
@@ -33,7 +34,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 public class Track extends AbstractHtml {
 
     private static final long serialVersionUID = 1_0_0L;
-    
+
     public static final Logger LOGGER = Logger.getLogger(Track.class.getName());
 
     {
@@ -51,11 +52,14 @@ public class Track extends AbstractHtml {
      *
      * @since 1.0.0
      */
-    public Track(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(Track.class.getSimpleName().toLowerCase(), base, attributes);
+    public Track(final AbstractHtml base,
+            final AbstractAttribute... attributes) {
+        super(TagNameConstants.TRACK, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null && (abstractAttribute instanceof TrackAttribute || abstractAttribute instanceof GlobalAttributable))) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof TrackAttribute
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of TrackAttribute");
                 }
