@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.html5.identifier.AudioAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
@@ -53,7 +54,7 @@ public class Audio extends AbstractHtml {
      */
     public Audio(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(Audio.class.getSimpleName().toLowerCase(), base, attributes);
+        super(TagNameConstants.AUDIO, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
                 if (!(abstractAttribute != null

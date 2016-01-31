@@ -135,6 +135,28 @@ public class TagNameConstants {
 
     public static final String TEXTAREA = "textarea";
 
+    public static final String IFRAME = "iframe";
+
+    public static final String AUDIO = "audio";
+
+    public static final String BDI = "bdi";
+
+    public static final String MARK = "mark";
+
+    public static final String METER = "meter";
+
+    public static final String PROGRESS = "progress";
+
+    public static final String RP = "rp";
+
+    public static final String RT = "rt";
+
+    public static final String RUBY = "ruby";
+
+    public static final String TIME = "time";
+
+    public static final String WBR = "wbr";
+
     /**
      *
      * @author WFF
