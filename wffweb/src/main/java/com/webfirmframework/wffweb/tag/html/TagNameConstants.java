@@ -177,6 +177,24 @@ public class TagNameConstants {
 
     public static final String EMBED = "embed";
 
+    public static final String ARTICLE = "article";
+
+    public static final String ASIDE = "aside";
+
+    public static final String DETAILS = "details";
+
+    public static final String DIALOG = "dialog";
+
+    public static final String FOOTER = "footer";
+
+    public static final String HEADER = "header";
+
+    public static final String MAIN = "main";
+
+    public static final String SECTION = "section";
+
+    public static final String SUMMARY = "summary";
+
     /**
      *
      * @author WFF
