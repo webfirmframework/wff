@@ -157,6 +157,12 @@ public class TagNameConstants {
 
     public static final String WBR = "wbr";
 
+    public static final String DATALIST = "datalist";
+
+    public static final String KEYGEN = "keygen";
+
+    public static final String OUTPUT = "output";
+
     /**
      *
      * @author WFF
