@@ -14,56 +14,50 @@
  * limitations under the License.
  * @author WFF
  */
-package com.webfirmframework.wffweb.tag.html.attribute;
+package com.webfirmframework.wffweb.tag.html.html5.attribute;
 
+import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.AreaAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 
 /**
  *
- * <code>alt</code> attribute for the element.
+ * <code>formnovalidate</code> attribute for the element.
  *
- * A text string alternative to display on browsers that do not display images.
- * The text should be phrased so that it presents the user with the same kind of
- * choice as the image would offer when displayed without the alternative text.
- * In HTML4, this attribute is required, but may be the empty string (""). In
- * HTML5, this attribute is required only if the href attribute is used.
+ * If the input element is a submit button or image, this Boolean attribute
+ * specifies that the form is not to be validated when it is submitted. If this
+ * attribute is specified, it overrides the novalidate attribute of the
+ * element's form owner.
  *
  * @author WFF
- *
+ * @since 1.0.0
  */
-public class Alt extends AbstractAttribute
-        implements AreaAttributable, InputAttributable {
+public class Formnovalidate extends AbstractAttribute
+        implements InputAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
     {
-        super.setAttributeName(AttributeNameConstants.ALT);
+        super.setAttributeName(AttributeNameConstants.FORMNOVALIDATE);
         init();
     }
 
     /**
      *
      * @param value
-     *            the coordinates value for the attribute
+     *            the value for the attribute
      * @since 1.0.0
-     * @author WFF
      */
-    public Alt(final String value) {
+    public Formnovalidate(final String value) {
         setAttributeValue(value);
     }
 
     /**
-     * sets the value for this attribute.
-     *
-     * Specifies an alternate text for the area. Required if the href attribute
-     * is present
+     * sets the value for this attribute
      *
      * @param value
      *            the value for the attribute.
      * @since 1.0.0
-     * @author WFF
      */
     protected void setValue(final String value) {
         super.setAttributeValue(value);
@@ -74,7 +68,6 @@ public class Alt extends AbstractAttribute
      *
      * @return the value of the attribute
      * @since 1.0.0
-     * @author WFF
      */
     public String getValue() {
         return super.getAttributeValue();
@@ -83,7 +76,6 @@ public class Alt extends AbstractAttribute
     /**
      * invokes only once per object
      *
-     * @author WFF
      * @since 1.0.0
      */
     protected void init() {

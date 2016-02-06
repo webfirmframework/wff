@@ -14,56 +14,52 @@
  * limitations under the License.
  * @author WFF
  */
-package com.webfirmframework.wffweb.tag.html.attribute;
+package com.webfirmframework.wffweb.tag.html.html5.attribute;
 
+import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.AreaAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 
 /**
  *
- * <code>alt</code> attribute for the element.
+ * <code>autofocus</code> attribute for the element. <br/>
  *
- * A text string alternative to display on browsers that do not display images.
- * The text should be phrased so that it presents the user with the same kind of
- * choice as the image would offer when displayed without the alternative text.
- * In HTML4, this attribute is required, but may be the empty string (""). In
- * HTML5, this attribute is required only if the href attribute is used.
+ * This Boolean attribute lets you specify that a form control should have input
+ * focus when the page loads, unless the user overrides it, for example by
+ * typing in a different control. Only one form element in a document can have
+ * the autofocus attribute, which is a Boolean. It cannot be applied if the type
+ * attribute is set to hidden (that is, you cannot automatically set focus to a
+ * hidden control). Note that the focusing of the control may occur before the
+ * firing of the DOMContentLoaded event.
  *
  * @author WFF
- *
+ * @since 1.0.0
  */
-public class Alt extends AbstractAttribute
-        implements AreaAttributable, InputAttributable {
+public class Autofocus extends AbstractAttribute implements InputAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
     {
-        super.setAttributeName(AttributeNameConstants.ALT);
+        super.setAttributeName(AttributeNameConstants.AUTOFOCUS);
         init();
     }
 
     /**
      *
      * @param value
-     *            the coordinates value for the attribute
+     *            the value for the attribute
      * @since 1.0.0
-     * @author WFF
      */
-    public Alt(final String value) {
+    public Autofocus(final String value) {
         setAttributeValue(value);
     }
 
     /**
-     * sets the value for this attribute.
-     *
-     * Specifies an alternate text for the area. Required if the href attribute
-     * is present
+     * sets the value for this attribute
      *
      * @param value
      *            the value for the attribute.
      * @since 1.0.0
-     * @author WFF
      */
     protected void setValue(final String value) {
         super.setAttributeValue(value);
@@ -74,7 +70,6 @@ public class Alt extends AbstractAttribute
      *
      * @return the value of the attribute
      * @since 1.0.0
-     * @author WFF
      */
     public String getValue() {
         return super.getAttributeValue();
@@ -83,7 +78,6 @@ public class Alt extends AbstractAttribute
     /**
      * invokes only once per object
      *
-     * @author WFF
      * @since 1.0.0
      */
     protected void init() {

@@ -11,7 +11,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
  * @author WFF
  *
  */
-public class Width extends AbstractAttribute implements InputAttributable {
+public class Height extends AbstractAttribute implements InputAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -20,7 +20,7 @@ public class Width extends AbstractAttribute implements InputAttributable {
     private LengthUnit cssLengthUnit;
 
     {
-        super.setAttributeName(AttributeNameConstants.WIDTH);
+        super.setAttributeName(AttributeNameConstants.HEIGHT);
         init();
     }
 
@@ -30,7 +30,7 @@ public class Width extends AbstractAttribute implements InputAttributable {
      * @author WFF
      * @since 1.0.0
      */
-    public Width() {
+    public Height() {
         value = 100;
         cssLengthUnit = CssLengthUnit.PER;
         htmlString = (int) value + "" + CssLengthUnit.PER.getUnit();
@@ -43,7 +43,7 @@ public class Width extends AbstractAttribute implements InputAttributable {
      * @author WFF
      * @since 1.0.0
      */
-    public Width(final float percent) {
+    public Height(final float percent) {
         value = percent;
         cssLengthUnit = CssLengthUnit.PER;
         htmlString = percent + "" + CssLengthUnit.PER.getUnit();
@@ -58,7 +58,7 @@ public class Width extends AbstractAttribute implements InputAttributable {
      * @author WFF
      * @since 1.0.0
      */
-    public Width(final int value, final CssLengthUnit cssLengthUnit) {
+    public Height(final int value, final CssLengthUnit cssLengthUnit) {
         this.value = value;
         this.cssLengthUnit = cssLengthUnit;
         htmlString = value + "" + cssLengthUnit.getUnit();
@@ -74,7 +74,7 @@ public class Width extends AbstractAttribute implements InputAttributable {
      * @author WFF
      * @since 1.0.0
      */
-    public Width(final int value, final LengthUnit lengthUnit) {
+    public Height(final int value, final LengthUnit lengthUnit) {
         this.value = value;
         cssLengthUnit = lengthUnit;
         htmlString = value + "" + lengthUnit.getUnit();
@@ -105,7 +105,7 @@ public class Width extends AbstractAttribute implements InputAttributable {
      * @since 1.0.0
      * @author WFF
      */
-    public Width setValue(final int value, final CssLengthUnit cssLengthUnit) {
+    public Height setValue(final int value, final CssLengthUnit cssLengthUnit) {
         this.value = value;
         this.cssLengthUnit = cssLengthUnit;
         htmlString = value + "" + cssLengthUnit.getUnit();
@@ -123,7 +123,7 @@ public class Width extends AbstractAttribute implements InputAttributable {
      * @since 1.0.0
      * @author WFF
      */
-    public Width setValue(final int value, final LengthUnit lengthUnit) {
+    public Height setValue(final int value, final LengthUnit lengthUnit) {
         this.value = value;
         cssLengthUnit = lengthUnit;
         htmlString = value + "" + lengthUnit.getUnit();
@@ -140,7 +140,7 @@ public class Width extends AbstractAttribute implements InputAttributable {
      * @since 1.0.0
      * @author WFF
      */
-    public Width setValue(final float value,
+    public Height setValue(final float value,
             final CssLengthUnit cssLengthUnit) {
         this.value = value;
         this.cssLengthUnit = cssLengthUnit;
@@ -158,7 +158,7 @@ public class Width extends AbstractAttribute implements InputAttributable {
      * @since 1.0.0
      * @author WFF
      */
-    public Width setValue(final float value, final LengthUnit lengthUnit) {
+    public Height setValue(final float value, final LengthUnit lengthUnit) {
         this.value = value;
         cssLengthUnit = lengthUnit;
         htmlString = value + "" + lengthUnit.getUnit();

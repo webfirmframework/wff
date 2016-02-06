@@ -103,6 +103,30 @@ public class AttributeNameConstants {
 
     public static final String SIZE = "size";
 
+    public static final String ACCEPT = "accept";
+
+    public static final String ALIGN = "align";
+
+    public static final String AUTOCOMPLETE = "autocomplete";
+
+    public static final String AUTOFOCUS = "autofocus";
+
+    public static final String FORM = "form";
+
+    public static final String FORMACTION = "formaction";
+
+    public static final String FORMENCTYPE = "formenctype";
+
+    public static final String FORMMETHOD = "formmethod";
+
+    public static final String FORMNOVALIDATE = "formnovalidate";
+
+    public static final String FORMTARGET = "formtarget";
+
+    public static final String WIDTH = "width";
+
+    public static final String HEIGHT = "height";
+
     /**
      *
      * @author WFF
