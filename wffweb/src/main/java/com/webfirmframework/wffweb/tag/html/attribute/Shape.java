@@ -38,7 +38,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.AreaAttributable;
  * supported by html5
  *
  * @author WFF
- *
+ * @since 1.0.0
  */
 public class Shape extends AbstractAttribute
         implements AAttributable, AreaAttributable {

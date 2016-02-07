@@ -28,7 +28,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
  * supported by html5.
  *
  * @author WFF
- *
+ * @since 1.0.0
  */
 public class Rev extends AbstractAttribute implements AAttributable {
 

@@ -17,22 +17,31 @@
 package com.webfirmframework.wffweb.tag.html.attribute;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
+import com.webfirmframework.wffweb.tag.html.identifier.AreaAttributable;
 
 /**
  *
- * <code>charset</code> attribute for the element. NB: This attribute is not
- * supported by html5
+ * <code>coords</code> attribute for the element.
+ *
+ * A set of values specifying the coordinates of the hot-spot region. The number
+ * and meaning of the values depend upon the value specified for the shape
+ * attribute. For a rect or rectangle shape, the coords value is two x,y pairs:
+ * left, top, right, and bottom. For a circle shape, the value is x,y,r where
+ * x,y is a pair specifying the center of the circle and r is a value for the
+ * radius. For a poly or polygon< shape, the value is a set of x,y pairs for
+ * each point in the polygon: x1,y1,x2,y2,x3,y3, and so on. In HTML4, the values
+ * are numbers of pixels or percentages, if a percent sign (%) is appended; in
+ * HTML5, the values are numbers of CSS pixels.
  *
  * @author WFF
  * @since 1.0.0
  */
-public class Charset extends AbstractAttribute implements AAttributable {
+public class CoOrds extends AbstractAttribute implements AreaAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
     {
-        super.setAttributeName(AttributeNameConstants.CHARSET);
+        super.setAttributeName(AttributeNameConstants.COORDS);
         init();
     }
 
@@ -43,12 +52,15 @@ public class Charset extends AbstractAttribute implements AAttributable {
      * @since 1.0.0
      * @author WFF
      */
-    public Charset(final String value) {
+    public CoOrds(final String value) {
         setAttributeValue(value);
     }
 
     /**
-     * sets the value for this attribute
+     * sets the value for this attribute.
+     *
+     * Specifies an alternate text for the area. Required if the href attribute
+     * is present
      *
      * @param value
      *            the value for the attribute.

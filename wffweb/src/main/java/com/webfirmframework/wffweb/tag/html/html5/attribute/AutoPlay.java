@@ -28,63 +28,39 @@ import com.webfirmframework.wffweb.tag.html.html5.identifier.AudioAttributable;
  * for the entire audio file to finish downloading.
  *
  * @author WFF
- *
+ * @since 1.0.0
  */
-public class Autoplay extends AbstractAttribute implements AudioAttributable {
+public class AutoPlay extends AbstractAttribute implements AudioAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
-
-    private Boolean autoplay;
 
     {
         super.setAttributeName(AttributeNameConstants.AUTOPLAY);
         init();
     }
 
-    public Autoplay() {
+    public AutoPlay() {
         setAttributeValue(null);
     }
 
-    public Autoplay(final Boolean autoplay) {
-        if (autoplay == null) {
-            setAttributeValue(null);
-        } else {
-            setAttributeValue(String.valueOf(autoplay));
-        }
-        this.autoplay = autoplay;
+    public AutoPlay(final String value) {
+        setAttributeValue(value);
+    }
+
+    public void setValue(final String value) {
+        setAttributeValue(value);
+    }
+
+    public String getValue() {
+        return getAttributeValue();
     }
 
     /**
      * invokes only once per object
      *
-     * @author WFF
      * @since 1.0.0
      */
     protected void init() {
-    }
-
-    /**
-     * @return the autoplay
-     * @author WFF
-     * @since 1.0.0
-     */
-    public boolean isAutoplay() {
-        return autoplay == null || autoplay.booleanValue() ? true : false;
-    }
-
-    /**
-     * @param autoplay
-     *            the autoplay to set. {@code null} will remove the value.
-     * @author WFF
-     * @since 1.0.0
-     */
-    public void setAutoplay(final Boolean autoplay) {
-        if (autoplay == null) {
-            setAttributeValue(null);
-        } else {
-            setAttributeValue(String.valueOf(autoplay));
-        }
-        this.autoplay = autoplay;
     }
 
 }

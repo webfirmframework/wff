@@ -32,7 +32,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
  * </pre>
  *
  * @author WFF
- *
+ * @since 1.0.0
  */
 public class Align extends AbstractAttribute implements InputAttributable {
 

@@ -130,6 +130,28 @@ public class AttributeNameConstants {
     public static final String CHECKED = "checked";
 
     public static final String DISABLED = "disabled";
+    
+    public static final String LIST = "list";
+
+    public static final String MAX = "max";
+
+    public static final String MIN = "min";
+
+    public static final String MAXLENGTH = "maxlength";
+
+    public static final String MINLENGTH = "minlength";
+
+    public static final String MULTIPLE = "multiple";
+
+    public static final String PATTERN = "pattern";
+
+    public static final String PLACEHOLDER = "placeholder";
+
+    public static final String READONLY = "readonly";
+
+    public static final String REQUIRED = "required";
+
+    public static final String STEP = "step";
 
     /**
      *

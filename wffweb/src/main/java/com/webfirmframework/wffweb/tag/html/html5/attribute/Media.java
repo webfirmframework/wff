@@ -28,7 +28,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
  * for the device it runs on.
  *
  * @author WFF
- *
+ * @since 1.0.0
  */
 public class Media extends AbstractAttribute implements AAttributable {
 

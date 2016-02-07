@@ -30,6 +30,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.AreaAttributable;
  * for the element.
  *
  * @author WFF
+ * @since 1.0.0
  *
  */
 public class Rel extends AbstractAttribute

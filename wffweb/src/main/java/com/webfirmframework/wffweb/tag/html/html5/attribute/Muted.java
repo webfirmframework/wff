@@ -27,13 +27,11 @@ import com.webfirmframework.wffweb.tag.html.html5.identifier.AudioAttributable;
  * silenced.
  *
  * @author WFF
- *
+ * @since 1.0.0
  */
 public class Muted extends AbstractAttribute implements AudioAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
-
-    private Boolean muted;
 
     {
         super.setAttributeName(AttributeNameConstants.MUTED);
@@ -44,46 +42,23 @@ public class Muted extends AbstractAttribute implements AudioAttributable {
         setAttributeValue(null);
     }
 
-    public Muted(final Boolean muted) {
-        if (muted == null) {
-            setAttributeValue(null);
-        } else {
-            setAttributeValue(String.valueOf(muted));
-        }
-        this.muted = muted;
+    public Muted(final String value) {
+        setAttributeValue(value);
+    }
+
+    public void setValue(final String value) {
+        setAttributeValue(value);
+    }
+
+    public String getValue() {
+        return getAttributeValue();
     }
 
     /**
      * invokes only once per object
      *
-     * @author WFF
      * @since 1.0.0
      */
     protected void init() {
     }
-
-    /**
-     * @return the muted
-     * @author WFF
-     * @since 1.0.0
-     */
-    public boolean isMuted() {
-        return muted == null || muted.booleanValue() ? true : false;
-    }
-
-    /**
-     * @param muted
-     *            the muted to set. {@code null} will remove the value.
-     * @author WFF
-     * @since 1.0.0
-     */
-    public void setLoop(final Boolean muted) {
-        if (muted == null) {
-            setAttributeValue(null);
-        } else {
-            setAttributeValue(String.valueOf(muted));
-        }
-        this.muted = muted;
-    }
-
 }

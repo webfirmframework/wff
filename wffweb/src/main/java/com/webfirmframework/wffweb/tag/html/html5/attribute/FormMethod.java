@@ -14,25 +14,36 @@
  * limitations under the License.
  * @author WFF
  */
-package com.webfirmframework.wffweb.tag.html.attribute;
+package com.webfirmframework.wffweb.tag.html.html5.attribute;
 
+import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
+import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 
 /**
  *
- * <code>charset</code> attribute for the element. NB: This attribute is not
- * supported by html5
+ * <code>formmethod</code> attribute for the element. <br/>
  *
- * @author WFF
+ * <pre>
+ * If the input element is a submit button or image, this attribute specifies the HTTP method that the browser uses to submit the form.
+ * Possible values are:
+ *      post: The data from the form is included in the body of the form and is sent to the server.
+ *      get: The data from the form are appended to the form attribute URI, with a '?' as a separator, and the resulting URI is sent to the server. Use this method when the form has no side-effects and contains only ASCII characters.
+ * If specified, this attribute overrides the method attribute of the element's form owner.
+ *
+ *
+ * </pre>
+ *
  * @since 1.0.0
+ * @author WFF
+ *
  */
-public class Charset extends AbstractAttribute implements AAttributable {
+public class FormMethod extends AbstractAttribute implements InputAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
     {
-        super.setAttributeName(AttributeNameConstants.CHARSET);
+        super.setAttributeName(AttributeNameConstants.FORMMETHOD);
         init();
     }
 
@@ -41,9 +52,8 @@ public class Charset extends AbstractAttribute implements AAttributable {
      * @param value
      *            the value for the attribute
      * @since 1.0.0
-     * @author WFF
      */
-    public Charset(final String value) {
+    public FormMethod(final String value) {
         setAttributeValue(value);
     }
 
@@ -53,7 +63,6 @@ public class Charset extends AbstractAttribute implements AAttributable {
      * @param value
      *            the value for the attribute.
      * @since 1.0.0
-     * @author WFF
      */
     protected void setValue(final String value) {
         super.setAttributeValue(value);
@@ -64,7 +73,6 @@ public class Charset extends AbstractAttribute implements AAttributable {
      *
      * @return the value of the attribute
      * @since 1.0.0
-     * @author WFF
      */
     public String getValue() {
         return super.getAttributeValue();
@@ -73,7 +81,6 @@ public class Charset extends AbstractAttribute implements AAttributable {
     /**
      * invokes only once per object
      *
-     * @author WFF
      * @since 1.0.0
      */
     protected void init() {

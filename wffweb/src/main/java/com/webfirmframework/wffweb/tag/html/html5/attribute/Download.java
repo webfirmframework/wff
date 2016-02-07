@@ -34,7 +34,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.AreaAttributable;
  * browsers are likely to adjust file names accordingly.
  *
  * @author WFF
- *
+ * @since 1.0.0
  */
 public class Download extends AbstractAttribute
         implements AAttributable, AreaAttributable {

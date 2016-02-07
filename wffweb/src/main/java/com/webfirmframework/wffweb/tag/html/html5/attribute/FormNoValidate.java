@@ -32,7 +32,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
  * @author WFF
  * @since 1.0.0
  */
-public class Formnovalidate extends AbstractAttribute
+public class FormNoValidate extends AbstractAttribute
         implements InputAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
@@ -48,7 +48,7 @@ public class Formnovalidate extends AbstractAttribute
      *            the value for the attribute
      * @since 1.0.0
      */
-    public Formnovalidate(final String value) {
+    public FormNoValidate(final String value) {
         setAttributeValue(value);
     }
 

@@ -14,25 +14,31 @@
  * limitations under the License.
  * @author WFF
  */
-package com.webfirmframework.wffweb.tag.html.attribute;
+package com.webfirmframework.wffweb.tag.html.html5.attribute;
 
+import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
+import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 
 /**
  *
- * <code>charset</code> attribute for the element. NB: This attribute is not
- * supported by html5
+ * <code>list</code> attribute for the element.<br/>
+ * list for input :- <br/>
+ * Identifies a list of pre-defined options to suggest to the user. The value
+ * must be the id of a {@code <datalist>} element in the same document. The
+ * browser displays only options that are valid values for this input element.
+ * This attribute is ignored when the type attribute's value is hidden,
+ * checkbox, radio, file, or a button type.
  *
  * @author WFF
  * @since 1.0.0
  */
-public class Charset extends AbstractAttribute implements AAttributable {
+public class List extends AbstractAttribute implements InputAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
     {
-        super.setAttributeName(AttributeNameConstants.CHARSET);
+        super.setAttributeName(AttributeNameConstants.LIST);
         init();
     }
 
@@ -41,9 +47,8 @@ public class Charset extends AbstractAttribute implements AAttributable {
      * @param value
      *            the value for the attribute
      * @since 1.0.0
-     * @author WFF
      */
-    public Charset(final String value) {
+    public List(final String value) {
         setAttributeValue(value);
     }
 
@@ -53,7 +58,6 @@ public class Charset extends AbstractAttribute implements AAttributable {
      * @param value
      *            the value for the attribute.
      * @since 1.0.0
-     * @author WFF
      */
     protected void setValue(final String value) {
         super.setAttributeValue(value);
@@ -64,7 +68,6 @@ public class Charset extends AbstractAttribute implements AAttributable {
      *
      * @return the value of the attribute
      * @since 1.0.0
-     * @author WFF
      */
     public String getValue() {
         return super.getAttributeValue();
@@ -73,7 +76,6 @@ public class Charset extends AbstractAttribute implements AAttributable {
     /**
      * invokes only once per object
      *
-     * @author WFF
      * @since 1.0.0
      */
     protected void init() {

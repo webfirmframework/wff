@@ -37,7 +37,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.BaseAttributable;
  * <code>target</code> attribute for the element.
  *
  * @author WFF
- *
+ * @since 1.0.0
  */
 public class Target extends AbstractAttribute
         implements AAttributable, AreaAttributable, BaseAttributable {

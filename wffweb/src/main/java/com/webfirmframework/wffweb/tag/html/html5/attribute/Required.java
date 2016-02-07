@@ -14,43 +14,45 @@
  * limitations under the License.
  * @author WFF
  */
-package com.webfirmframework.wffweb.tag.html.attribute;
+package com.webfirmframework.wffweb.tag.html.html5.attribute;
 
+import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.html5.identifier.AudioAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 
 /**
- * {@code <element checked> }
+ * <code>required</code> attribute for the element.<br/>
  *
- * When the value of the type attribute is radio or checkbox, the presence of
- * this Boolean attribute indicates that the control is selected by default;
- * otherwise it is ignored.
- *
- * Firefox will, unlike other browsers, by default, persist the dynamic checked
- * state of an {@code <input>} across page loads. Use the autocomplete attribute
- * to control this feature.
+ * <i>required</i> attribute for <i>input</i> element :- <br/>
+ * This attribute specifies that the user must fill in a value before submitting
+ * a form. It cannot be used when the type attribute is hidden, image, or a
+ * button type (submit, reset, or button). The :optional and :required CSS
+ * pseudo-classes will be applied to the field as appropriate.
  *
  * @author WFF
  * @since 1.0.0
+ *
  */
-public class Checked extends AbstractAttribute implements InputAttributable {
+public class Required extends AbstractAttribute
+        implements AudioAttributable, InputAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
     {
-        super.setAttributeName(AttributeNameConstants.CHECKED);
+        super.setAttributeName(AttributeNameConstants.REQUIRED);
         init();
     }
 
-    public Checked() {
+    public Required() {
         setAttributeValue(null);
     }
 
-    public Checked(String value) {
+    public Required(final String value) {
         setAttributeValue(value);
     }
 
-    public void setValue(String value) {
+    public void setValue(final String value) {
         setAttributeValue(value);
     }
 
@@ -65,5 +67,4 @@ public class Checked extends AbstractAttribute implements InputAttributable {
      */
     protected void init() {
     }
-
 }

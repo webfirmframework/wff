@@ -31,7 +31,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
  * HTML5, this attribute is required only if the href attribute is used.
  *
  * @author WFF
- *
+ * @since 1.0.0
  */
 public class Alt extends AbstractAttribute
         implements AreaAttributable, InputAttributable {

@@ -22,7 +22,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 
 /**
  *
- * <code>align</code> attribute for the element.
+ * <code>autocomplete</code> attribute for the element.
  *
  * <pre>
  * This attribute indicates whether the value of the control can be automatically completed by the browser.
@@ -94,8 +94,12 @@ import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
  * @author WFF
  * @since 1.0.0
  */
-public class Autocomplete extends AbstractAttribute
+public class AutoComplete extends AbstractAttribute
         implements InputAttributable {
+
+    public static final String ON = "on";
+
+    public static final String OFF = "off";
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -110,7 +114,7 @@ public class Autocomplete extends AbstractAttribute
      *            the value for the attribute
      * @since 1.0.0
      */
-    public Autocomplete(final String value) {
+    public AutoComplete(final String value) {
         setAttributeValue(value);
     }
 

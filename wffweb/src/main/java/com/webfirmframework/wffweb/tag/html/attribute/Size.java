@@ -24,7 +24,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.BaseFontAttributable;
  * <code>size</code> attribute for the element.
  *
  * @author WFF
- *
+ * @since 1.0.0
  */
 public class Size extends AbstractAttribute implements BaseFontAttributable {
 
@@ -44,6 +44,17 @@ public class Size extends AbstractAttribute implements BaseFontAttributable {
      */
     public Size(final String value) {
         setAttributeValue(value);
+    }
+
+    /**
+     *
+     * @param value
+     *            the value for the attribute
+     * @since 1.0.0
+     * @author WFF
+     */
+    public Size(final int value) {
+        setAttributeValue(String.valueOf(value));
     }
 
     /**

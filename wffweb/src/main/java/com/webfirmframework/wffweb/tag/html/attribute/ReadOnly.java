@@ -16,64 +16,49 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute;
 
+import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
+import com.webfirmframework.wffweb.tag.html.html5.identifier.AudioAttributable;
 
 /**
+ * <code>readonly</code> attribute for the element.<br/>
  *
- * <code>charset</code> attribute for the element. NB: This attribute is not
- * supported by html5
+ * <i>readonly</i> attribute for <i>input</i> element :- <br/>
+ * This Boolean attribute indicates that the user cannot modify the value of the
+ * control. It is ignored if the value of the type attribute is hidden, range,
+ * color, checkbox, radio, file, or a button type (such as button or submit).
  *
  * @author WFF
  * @since 1.0.0
  */
-public class Charset extends AbstractAttribute implements AAttributable {
+public class ReadOnly extends AbstractAttribute implements AudioAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
     {
-        super.setAttributeName(AttributeNameConstants.CHARSET);
+        super.setAttributeName(AttributeNameConstants.READONLY);
         init();
     }
 
-    /**
-     *
-     * @param value
-     *            the value for the attribute
-     * @since 1.0.0
-     * @author WFF
-     */
-    public Charset(final String value) {
+    public ReadOnly() {
+        setAttributeValue(null);
+    }
+
+    public ReadOnly(String value) {
         setAttributeValue(value);
     }
 
-    /**
-     * sets the value for this attribute
-     *
-     * @param value
-     *            the value for the attribute.
-     * @since 1.0.0
-     * @author WFF
-     */
-    protected void setValue(final String value) {
-        super.setAttributeValue(value);
+    public void setValue(String value) {
+        setAttributeValue(value);
     }
 
-    /**
-     * gets the value of this attribute
-     *
-     * @return the value of the attribute
-     * @since 1.0.0
-     * @author WFF
-     */
     public String getValue() {
-        return super.getAttributeValue();
+        return getAttributeValue();
     }
 
     /**
      * invokes only once per object
      *
-     * @author WFF
      * @since 1.0.0
      */
     protected void init() {

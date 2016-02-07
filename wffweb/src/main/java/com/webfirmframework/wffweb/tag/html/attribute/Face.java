@@ -24,7 +24,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.BaseFontAttributable;
  * <code>face</code> attribute for the element.
  *
  * @author WFF
- *
+ * @since 1.0.0
  */
 public class Face extends AbstractAttribute implements BaseFontAttributable {
 

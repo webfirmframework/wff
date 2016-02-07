@@ -14,66 +14,52 @@
  * limitations under the License.
  * @author WFF
  */
-package com.webfirmframework.wffweb.tag.html.attribute;
+package com.webfirmframework.wffweb.tag.html.html5.attribute;
 
+import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
+import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 
 /**
+ * <code>multiple</code> attribute for the element.<br/>
  *
- * <code>charset</code> attribute for the element. NB: This attribute is not
- * supported by html5
+ * <i>multiple</i> attribute for <i>input</i> element :- <br/>
+ *
+ * This Boolean attribute indicates whether the user can enter more than one
+ * value. This attribute applies when the type attribute is set to email or
+ * file; otherwise it is ignored.
  *
  * @author WFF
  * @since 1.0.0
  */
-public class Charset extends AbstractAttribute implements AAttributable {
+public class Multiple extends AbstractAttribute implements InputAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
     {
-        super.setAttributeName(AttributeNameConstants.CHARSET);
+        super.setAttributeName(AttributeNameConstants.MULTIPLE);
         init();
     }
 
-    /**
-     *
-     * @param value
-     *            the value for the attribute
-     * @since 1.0.0
-     * @author WFF
-     */
-    public Charset(final String value) {
+    public Multiple() {
+        setAttributeValue(null);
+    }
+
+    public Multiple(final String value) {
         setAttributeValue(value);
     }
 
-    /**
-     * sets the value for this attribute
-     *
-     * @param value
-     *            the value for the attribute.
-     * @since 1.0.0
-     * @author WFF
-     */
-    protected void setValue(final String value) {
-        super.setAttributeValue(value);
+    public void setValue(final String value) {
+        setAttributeValue(value);
     }
 
-    /**
-     * gets the value of this attribute
-     *
-     * @return the value of the attribute
-     * @since 1.0.0
-     * @author WFF
-     */
     public String getValue() {
-        return super.getAttributeValue();
+        return getAttributeValue();
     }
 
     /**
      * invokes only once per object
      *
-     * @author WFF
      * @since 1.0.0
      */
     protected void init() {

@@ -14,38 +14,32 @@
  * limitations under the License.
  * @author WFF
  */
-package com.webfirmframework.wffweb.tag.html.html5.attribute;
+package com.webfirmframework.wffweb.tag.html.attribute;
 
-import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 
 /**
  *
- * <code>formtarget</code> attribute for the element.
- *
- * If the input element is a submit button or image, this Boolean attribute
- * specifies that the form is not to be validated when it is submitted. If this
- * attribute is specified, it overrides the novalidate attribute of the
- * element's form owner.
+ * <code>minlength</code> attribute for the element.<br/>
+ * <i>minlength</i> attribute for <i>input</i> element :- <br/>
+ * If the value of the type attribute is text, email, search, password, tel, or
+ * url, this attribute specifies the minimum number of characters (in Unicode
+ * code points) that the user can enter; for other control types, it is ignored.
+ * <br/>
+ * <br/>
  *
  * @author WFF
  * @since 1.0.0
  */
-public class Formtarget extends AbstractAttribute implements InputAttributable {
+public class MinLength extends AbstractAttribute implements InputAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final String BLANK = "_blank";
-
-    public static final String SELF = "_self";
-
-    public static final String PARENT = "_parent";
-
-    public static final String TOP = "_top";
+    private int value;
 
     {
-        super.setAttributeName(AttributeNameConstants.FORMTARGET);
+        super.setAttributeName(AttributeNameConstants.MINLENGTH);
         init();
     }
 
@@ -55,8 +49,9 @@ public class Formtarget extends AbstractAttribute implements InputAttributable {
      *            the value for the attribute
      * @since 1.0.0
      */
-    public Formtarget(final String value) {
-        setAttributeValue(value);
+    public MinLength(final int value) {
+        this.value = value;
+        setAttributeValue(String.valueOf(value));
     }
 
     /**
@@ -66,8 +61,9 @@ public class Formtarget extends AbstractAttribute implements InputAttributable {
      *            the value for the attribute.
      * @since 1.0.0
      */
-    protected void setValue(final String value) {
-        super.setAttributeValue(value);
+    protected void setValue(final int value) {
+        this.value = value;
+        super.setAttributeValue(String.valueOf(value));
     }
 
     /**
@@ -76,8 +72,8 @@ public class Formtarget extends AbstractAttribute implements InputAttributable {
      * @return the value of the attribute
      * @since 1.0.0
      */
-    public String getValue() {
-        return super.getAttributeValue();
+    public int getValue() {
+        return value;
     }
 
     /**

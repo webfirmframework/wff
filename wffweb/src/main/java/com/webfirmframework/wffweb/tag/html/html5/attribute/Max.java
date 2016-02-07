@@ -14,28 +14,29 @@
  * limitations under the License.
  * @author WFF
  */
-package com.webfirmframework.wffweb.tag.html.attribute;
+package com.webfirmframework.wffweb.tag.html.html5.attribute;
 
+import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.AreaAttributable;
+import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 
 /**
  *
- * <code>nohref</code> attribute for the element.
- *
- * Indicates that no hyperlink exists for the associated area. Either this
- * attribute or the href attribute must be present in the element.
- *
+ * <code>max</code> attribute for the element.<br/>
+ * <i>max</i> attribute for <i>input</i> element :- <br/>
+ * The maximum (numeric or date-time) value for this item, which must not be
+ * less than its minimum (min attribute) value.<br/>
+ * <br/>
  *
  * @author WFF
- *
+ * @since 1.0.0
  */
-public class Nohref extends AbstractAttribute implements AreaAttributable {
+public class Max extends AbstractAttribute implements InputAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
     {
-        super.setAttributeName(AttributeNameConstants.NOHREF);
+        super.setAttributeName(AttributeNameConstants.MAX);
         init();
     }
 
@@ -44,22 +45,17 @@ public class Nohref extends AbstractAttribute implements AreaAttributable {
      * @param value
      *            the value for the attribute
      * @since 1.0.0
-     * @author WFF
      */
-    public Nohref(final String value) {
+    public Max(final String value) {
         setAttributeValue(value);
     }
 
     /**
-     * sets the value for this attribute.
-     *
-     * Specifies an alternate text for the area. Required if the href attribute
-     * is present
+     * sets the value for this attribute
      *
      * @param value
      *            the value for the attribute.
      * @since 1.0.0
-     * @author WFF
      */
     protected void setValue(final String value) {
         super.setAttributeValue(value);
@@ -70,7 +66,6 @@ public class Nohref extends AbstractAttribute implements AreaAttributable {
      *
      * @return the value of the attribute
      * @since 1.0.0
-     * @author WFF
      */
     public String getValue() {
         return super.getAttributeValue();
@@ -79,7 +74,6 @@ public class Nohref extends AbstractAttribute implements AreaAttributable {
     /**
      * invokes only once per object
      *
-     * @author WFF
      * @since 1.0.0
      */
     protected void init() {

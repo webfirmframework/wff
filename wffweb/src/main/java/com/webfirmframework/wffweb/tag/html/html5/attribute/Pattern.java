@@ -14,25 +14,34 @@
  * limitations under the License.
  * @author WFF
  */
-package com.webfirmframework.wffweb.tag.html.attribute;
+package com.webfirmframework.wffweb.tag.html.html5.attribute;
 
+import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
+import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 
 /**
  *
- * <code>charset</code> attribute for the element. NB: This attribute is not
- * supported by html5
+ * <code>pattern</code> attribute for the element.<br/>
+ *
+ * <i>pattern</i> attribute for <i>input</i> element :- <br/>
+ * A regular expression that the control's value is checked against. The pattern
+ * must match the entire value, not just some subset. Use the title attribute to
+ * describe the pattern to help the user. This attribute applies when the value
+ * of the type attribute is text, search, tel, url, email or password; otherwise
+ * it is ignored. The regular expression language is the same as JavaScript's.
+ * The pattern is not surrounded by forward slashes.
+ *
  *
  * @author WFF
  * @since 1.0.0
  */
-public class Charset extends AbstractAttribute implements AAttributable {
+public class Pattern extends AbstractAttribute implements InputAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
     {
-        super.setAttributeName(AttributeNameConstants.CHARSET);
+        super.setAttributeName(AttributeNameConstants.PATTERN);
         init();
     }
 
@@ -43,7 +52,7 @@ public class Charset extends AbstractAttribute implements AAttributable {
      * @since 1.0.0
      * @author WFF
      */
-    public Charset(final String value) {
+    public Pattern(final String value) {
         setAttributeValue(value);
     }
 

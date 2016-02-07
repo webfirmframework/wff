@@ -14,35 +14,36 @@
  * limitations under the License.
  * @author WFF
  */
-package com.webfirmframework.wffweb.tag.html.html5.attribute;
+package com.webfirmframework.wffweb.tag.html.attribute;
 
-import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 
 /**
  *
- * <code>formenctype</code> attribute for the element. <br/>
- *
- * <pre>
- * If the input element is a submit button or image, this attribute specifies the type of content that is used to submit the form to the server. 
- * Possible values are:
- *      application/x-www-form-urlencoded: The default value if the attribute is not specified.
- *      multipart/form-data: Use this value if you are using an {@code<input>} element with the type attribute set to file.
- *      text/plain
- * If this attribute is specified, it overrides the enctype attribute of the element's form owner.
- * </pre>
+ * <code>maxlength</code> attribute for the element.<br/>
+ * <i>maxlength</i> attribute for <i>input</i> element :- <br/>
+ * If the value of the type attribute is text, email, search, password, tel, or
+ * url, this attribute specifies the maximum number of characters (in Unicode
+ * code points) that the user can enter; for other control types, it is ignored.
+ * It can exceed the value of the size attribute. If it is not specified, the
+ * user can enter an unlimited number of characters. Specifying a negative
+ * number results in the default behavior; that is, the user can enter an
+ * unlimited number of characters. The constraint is evaluated only when the
+ * value of the attribute has been changed.<br/>
+ * <br/>
  *
  * @author WFF
  * @since 1.0.0
  */
-public class Formenctype extends AbstractAttribute
-        implements InputAttributable {
+public class MaxLength extends AbstractAttribute implements InputAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
+    private int value;
+
     {
-        super.setAttributeName(AttributeNameConstants.FORMENCTYPE);
+        super.setAttributeName(AttributeNameConstants.MAXLENGTH);
         init();
     }
 
@@ -52,8 +53,9 @@ public class Formenctype extends AbstractAttribute
      *            the value for the attribute
      * @since 1.0.0
      */
-    public Formenctype(final String value) {
-        setAttributeValue(value);
+    public MaxLength(final int value) {
+        this.value = value;
+        setAttributeValue(String.valueOf(value));
     }
 
     /**
@@ -63,8 +65,9 @@ public class Formenctype extends AbstractAttribute
      *            the value for the attribute.
      * @since 1.0.0
      */
-    protected void setValue(final String value) {
-        super.setAttributeValue(value);
+    protected void setValue(final int value) {
+        this.value = value;
+        super.setAttributeValue(String.valueOf(value));
     }
 
     /**
@@ -73,8 +76,8 @@ public class Formenctype extends AbstractAttribute
      * @return the value of the attribute
      * @since 1.0.0
      */
-    public String getValue() {
-        return super.getAttributeValue();
+    public int getValue() {
+        return value;
     }
 
     /**

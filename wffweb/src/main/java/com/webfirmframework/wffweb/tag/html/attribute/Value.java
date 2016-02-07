@@ -25,7 +25,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
  * multiple tags.
  *
  * @author WFF
- *
+ * @since 1.0.0
  */
 public class Value extends AbstractAttribute implements InputAttributable {
 

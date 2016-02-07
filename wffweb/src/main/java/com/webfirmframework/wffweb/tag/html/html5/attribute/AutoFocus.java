@@ -35,7 +35,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
  * @author WFF
  * @since 1.0.0
  */
-public class Autofocus extends AbstractAttribute implements InputAttributable {
+public class AutoFocus extends AbstractAttribute implements InputAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -44,35 +44,20 @@ public class Autofocus extends AbstractAttribute implements InputAttributable {
         init();
     }
 
-    /**
-     *
-     * @param value
-     *            the value for the attribute
-     * @since 1.0.0
-     */
-    public Autofocus(final String value) {
+    public AutoFocus() {
+        setAttributeValue(null);
+    }
+
+    public AutoFocus(final String value) {
         setAttributeValue(value);
     }
 
-    /**
-     * sets the value for this attribute
-     *
-     * @param value
-     *            the value for the attribute.
-     * @since 1.0.0
-     */
-    protected void setValue(final String value) {
-        super.setAttributeValue(value);
+    public void setValue(final String value) {
+        setAttributeValue(value);
     }
 
-    /**
-     * gets the value of this attribute
-     *
-     * @return the value of the attribute
-     * @since 1.0.0
-     */
     public String getValue() {
-        return super.getAttributeValue();
+        return getAttributeValue();
     }
 
     /**

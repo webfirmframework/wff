@@ -18,18 +18,20 @@ package com.webfirmframework.wffweb.tag.html.attribute;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
+import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.MapTagAttributable;
 
 /**
  *
  * <code>name</code> attribute for the element. This attribute is supported by
  * multiple tags.
- *
+ * 
+ * @since 1.0.0
  * @author WFF
  *
  */
 public class Name extends AbstractAttribute
-        implements AAttributable, MapTagAttributable {
+        implements AAttributable, MapTagAttributable, InputAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 

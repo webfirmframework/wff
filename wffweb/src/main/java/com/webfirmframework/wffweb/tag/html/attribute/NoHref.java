@@ -21,27 +21,21 @@ import com.webfirmframework.wffweb.tag.html.identifier.AreaAttributable;
 
 /**
  *
- * <code>coords</code> attribute for the element.
+ * <code>nohref</code> attribute for the element.
  *
- * A set of values specifying the coordinates of the hot-spot region. The number
- * and meaning of the values depend upon the value specified for the shape
- * attribute. For a rect or rectangle shape, the coords value is two x,y pairs:
- * left, top, right, and bottom. For a circle shape, the value is x,y,r where
- * x,y is a pair specifying the center of the circle and r is a value for the
- * radius. For a poly or polygon< shape, the value is a set of x,y pairs for
- * each point in the polygon: x1,y1,x2,y2,x3,y3, and so on. In HTML4, the values
- * are numbers of pixels or percentages, if a percent sign (%) is appended; in
- * HTML5, the values are numbers of CSS pixels.
+ * Indicates that no hyperlink exists for the associated area. Either this
+ * attribute or the href attribute must be present in the element.
+ *
  *
  * @author WFF
- *
+ * @since 1.0.0
  */
-public class Coords extends AbstractAttribute implements AreaAttributable {
+public class NoHref extends AbstractAttribute implements AreaAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
     {
-        super.setAttributeName(AttributeNameConstants.COORDS);
+        super.setAttributeName(AttributeNameConstants.NOHREF);
         init();
     }
 
@@ -52,7 +46,7 @@ public class Coords extends AbstractAttribute implements AreaAttributable {
      * @since 1.0.0
      * @author WFF
      */
-    public Coords(final String value) {
+    public NoHref(final String value) {
         setAttributeValue(value);
     }
 

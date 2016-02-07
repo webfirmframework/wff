@@ -14,25 +14,30 @@
  * limitations under the License.
  * @author WFF
  */
-package com.webfirmframework.wffweb.tag.html.attribute;
+package com.webfirmframework.wffweb.tag.html.html5.attribute;
 
+import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
+import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 
 /**
  *
- * <code>charset</code> attribute for the element. NB: This attribute is not
- * supported by html5
+ * <code>formaction</code> attribute for the element. <br/>
+ *
+ * The URI of a program that processes the information submitted by the input
+ * element, if it is a submit button or image. If specified, it overrides the
+ * action attribute of the element's form owner.
+ *
  *
  * @author WFF
  * @since 1.0.0
  */
-public class Charset extends AbstractAttribute implements AAttributable {
+public class FormAction extends AbstractAttribute implements InputAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
     {
-        super.setAttributeName(AttributeNameConstants.CHARSET);
+        super.setAttributeName(AttributeNameConstants.FORMACTION);
         init();
     }
 
@@ -41,9 +46,8 @@ public class Charset extends AbstractAttribute implements AAttributable {
      * @param value
      *            the value for the attribute
      * @since 1.0.0
-     * @author WFF
      */
-    public Charset(final String value) {
+    public FormAction(final String value) {
         setAttributeValue(value);
     }
 
@@ -53,7 +57,6 @@ public class Charset extends AbstractAttribute implements AAttributable {
      * @param value
      *            the value for the attribute.
      * @since 1.0.0
-     * @author WFF
      */
     protected void setValue(final String value) {
         super.setAttributeValue(value);
@@ -64,7 +67,6 @@ public class Charset extends AbstractAttribute implements AAttributable {
      *
      * @return the value of the attribute
      * @since 1.0.0
-     * @author WFF
      */
     public String getValue() {
         return super.getAttributeValue();
@@ -73,7 +75,6 @@ public class Charset extends AbstractAttribute implements AAttributable {
     /**
      * invokes only once per object
      *
-     * @author WFF
      * @since 1.0.0
      */
     protected void init() {

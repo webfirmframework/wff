@@ -25,7 +25,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.BaseFontAttributable;
  * multiple tags.
  *
  * @author WFF
- *
+ * @since 1.0.0
  */
 public class ColorAttribute extends AbstractAttribute
         implements BaseFontAttributable {

@@ -28,9 +28,9 @@ import com.webfirmframework.wffweb.tag.html.identifier.AreaAttributable;
  * HTML4. Use this attribute only if the href attribute is present.
  *
  * @author WFF
- *
+ * @since 1.0.0
  */
-public class Hreflang extends AbstractAttribute
+public class HrefLang extends AbstractAttribute
         implements AAttributable, AreaAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
@@ -53,7 +53,7 @@ public class Hreflang extends AbstractAttribute
      * @since 1.0.0
      * @author WFF
      */
-    public Hreflang(final String languageCode) {
+    public HrefLang(final String languageCode) {
         locale = null;
         setAttributeValue(languageCode);
     }
@@ -69,7 +69,7 @@ public class Hreflang extends AbstractAttribute
      * @since 1.0.0
      * @author WFF
      */
-    public Hreflang(final Locale language) {
+    public HrefLang(final Locale language) {
         locale = language;
         setAttributeValue(language.getCountry());
     }

@@ -22,22 +22,25 @@ import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 
 /**
  *
- * <code>formaction</code> attribute for the element. <br/>
+ * <code>placeholder</code> attribute for the element.<br/>
  *
- * The URI of a program that processes the information submitted by the input
- * element, if it is a submit button or image. If specified, it overrides the
- * action attribute of the element's form owner.
+ * <i>placeholder</i> attribute for <i>input</i> element :- <br/>
+ * A hint to the user of what can be entered in the control . The placeholder
+ * text must not contain carriage returns or line-feeds. This attribute applies
+ * when the value of the type attribute is text, search, tel, url or email;
+ * otherwise it is ignored.
  *
  *
  * @author WFF
  * @since 1.0.0
  */
-public class Formaction extends AbstractAttribute implements InputAttributable {
+public class Placeholder extends AbstractAttribute
+        implements InputAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
     {
-        super.setAttributeName(AttributeNameConstants.FORMACTION);
+        super.setAttributeName(AttributeNameConstants.PLACEHOLDER);
         init();
     }
 
@@ -46,8 +49,9 @@ public class Formaction extends AbstractAttribute implements InputAttributable {
      * @param value
      *            the value for the attribute
      * @since 1.0.0
+     * @author WFF
      */
-    public Formaction(final String value) {
+    public Placeholder(final String value) {
         setAttributeValue(value);
     }
 
@@ -57,6 +61,7 @@ public class Formaction extends AbstractAttribute implements InputAttributable {
      * @param value
      *            the value for the attribute.
      * @since 1.0.0
+     * @author WFF
      */
     protected void setValue(final String value) {
         super.setAttributeValue(value);
@@ -67,6 +72,7 @@ public class Formaction extends AbstractAttribute implements InputAttributable {
      *
      * @return the value of the attribute
      * @since 1.0.0
+     * @author WFF
      */
     public String getValue() {
         return super.getAttributeValue();
@@ -75,6 +81,7 @@ public class Formaction extends AbstractAttribute implements InputAttributable {
     /**
      * invokes only once per object
      *
+     * @author WFF
      * @since 1.0.0
      */
     protected void init() {

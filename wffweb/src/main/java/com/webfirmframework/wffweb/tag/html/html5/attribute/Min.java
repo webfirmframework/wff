@@ -22,28 +22,21 @@ import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 
 /**
  *
- * <code>formmethod</code> attribute for the element. <br/>
+ * <code>min</code> attribute for the element.<br/>
+ * <i>min</i> attribute for <i>input</i> element :- <br/>
+ * The minimum (numeric or date-time) value for this item, which must not be
+ * greater than its maximum (max attribute) value.<br/>
+ * <br/>
  *
- * <pre>
- * If the input element is a submit button or image, this attribute specifies the HTTP method that the browser uses to submit the form. 
- * Possible values are:
- *      post: The data from the form is included in the body of the form and is sent to the server.
- *      get: The data from the form are appended to the form attribute URI, with a '?' as a separator, and the resulting URI is sent to the server. Use this method when the form has no side-effects and contains only ASCII characters.
- * If specified, this attribute overrides the method attribute of the element's form owner.
- * 
- * 
- * </pre>
- * 
- * @since 1.0.0
  * @author WFF
- *
+ * @since 1.0.0
  */
-public class Formmethod extends AbstractAttribute implements InputAttributable {
+public class Min extends AbstractAttribute implements InputAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
     {
-        super.setAttributeName(AttributeNameConstants.FORMMETHOD);
+        super.setAttributeName(AttributeNameConstants.MIN);
         init();
     }
 
@@ -53,7 +46,7 @@ public class Formmethod extends AbstractAttribute implements InputAttributable {
      *            the value for the attribute
      * @since 1.0.0
      */
-    public Formmethod(final String value) {
+    public Min(final String value) {
         setAttributeValue(value);
     }
 

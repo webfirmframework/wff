@@ -27,7 +27,7 @@ import com.webfirmframework.wffweb.tag.html.html5.identifier.AudioAttributable;
  * upon reaching the end of the audio.
  *
  * @author WFF
- *
+ * @since 1.0.0
  */
 public class Loop extends AbstractAttribute implements AudioAttributable {
 

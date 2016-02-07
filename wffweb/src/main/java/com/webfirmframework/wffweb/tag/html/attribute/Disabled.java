@@ -32,13 +32,11 @@ import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
  * to control this feature.
  *
  * @author WFF
- *
+ * @since 1.0.0
  */
 public class Disabled extends AbstractAttribute implements InputAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
-
-    private Boolean disabled;
 
     {
         super.setAttributeName(AttributeNameConstants.DISABLED);
@@ -49,46 +47,24 @@ public class Disabled extends AbstractAttribute implements InputAttributable {
         setAttributeValue(null);
     }
 
-    public Disabled(final Boolean disabled) {
-        if (disabled == null) {
-            setAttributeValue(null);
-        } else {
-            setAttributeValue(String.valueOf(disabled));
-        }
-        this.disabled = disabled;
+    public Disabled(String value) {
+        setAttributeValue(value);
+    }
+
+    public void setValue(String value) {
+        setAttributeValue(value);
+    }
+
+    public String getValue() {
+        return getAttributeValue();
     }
 
     /**
      * invokes only once per object
      *
-     * @author WFF
      * @since 1.0.0
      */
     protected void init() {
-    }
-
-    /**
-     * @return the disabled
-     * @author WFF
-     * @since 1.0.0
-     */
-    public boolean isDisabled() {
-        return disabled == null || disabled.booleanValue() ? true : false;
-    }
-
-    /**
-     * @param disabled
-     *            the disabled to set. {@code null} will remove the value.
-     * @author WFF
-     * @since 1.0.0
-     */
-    public void setDisabled(final Boolean disabled) {
-        if (disabled == null) {
-            setAttributeValue(null);
-        } else {
-            setAttributeValue(String.valueOf(disabled));
-        }
-        this.disabled = disabled;
     }
 
 }
