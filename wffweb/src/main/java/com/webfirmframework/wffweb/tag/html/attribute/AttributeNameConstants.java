@@ -127,6 +127,10 @@ public class AttributeNameConstants {
 
     public static final String HEIGHT = "height";
 
+    public static final String CHECKED = "checked";
+
+    public static final String DISABLED = "disabled";
+
     /**
      *
      * @author WFF

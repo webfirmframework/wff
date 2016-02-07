@@ -1,0 +1,94 @@
+/*
+ * Copyright 2014-2016 Web Firm Framework
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * @author WFF
+ */
+package com.webfirmframework.wffweb.tag.html.attribute;
+
+import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
+
+/**
+ * {@code <element checked> }
+ *
+ * This Boolean attribute indicates that the form control is not available for
+ * interaction. In particular, the click event will not be dispatched on
+ * disabled controls. Also, a disabled control's value isn't submitted with the
+ * form.
+ * 
+ * Firefox will, unlike other browsers, by default, persist the dynamic disabled
+ * state of an {@code <input>} across page loads. Use the autocomplete attribute
+ * to control this feature.
+ *
+ * @author WFF
+ *
+ */
+public class Disabled extends AbstractAttribute implements InputAttributable {
+
+    private static final long serialVersionUID = 1_0_0L;
+
+    private Boolean disabled;
+
+    {
+        super.setAttributeName(AttributeNameConstants.DISABLED);
+        init();
+    }
+
+    public Disabled() {
+        setAttributeValue(null);
+    }
+
+    public Disabled(final Boolean disabled) {
+        if (disabled == null) {
+            setAttributeValue(null);
+        } else {
+            setAttributeValue(String.valueOf(disabled));
+        }
+        this.disabled = disabled;
+    }
+
+    /**
+     * invokes only once per object
+     *
+     * @author WFF
+     * @since 1.0.0
+     */
+    protected void init() {
+    }
+
+    /**
+     * @return the disabled
+     * @author WFF
+     * @since 1.0.0
+     */
+    public boolean isDisabled() {
+        return disabled == null || disabled.booleanValue() ? true : false;
+    }
+
+    /**
+     * @param disabled
+     *            the disabled to set. {@code null} will remove the value.
+     * @author WFF
+     * @since 1.0.0
+     */
+    public void setDisabled(final Boolean disabled) {
+        if (disabled == null) {
+            setAttributeValue(null);
+        } else {
+            setAttributeValue(String.valueOf(disabled));
+        }
+        this.disabled = disabled;
+    }
+
+}
