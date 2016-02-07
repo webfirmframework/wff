@@ -22,7 +22,7 @@ import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.html5.identifier.SectionAttribute;
+import com.webfirmframework.wffweb.tag.html.html5.identifier.SectionAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
 /**
@@ -59,7 +59,7 @@ public class Section extends AbstractHtml {
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
                 if (!(abstractAttribute != null
-                        && (abstractAttribute instanceof SectionAttribute
+                        && (abstractAttribute instanceof SectionAttributable
                                 || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of SectionAttribute");

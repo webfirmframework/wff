@@ -17,7 +17,7 @@
 package com.webfirmframework.wffweb.tag.html.attribute;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.html5.identifier.AudioAttribute;
+import com.webfirmframework.wffweb.tag.html.html5.identifier.AudioAttributable;
 
 /**
  *
@@ -30,7 +30,7 @@ import com.webfirmframework.wffweb.tag.html.html5.identifier.AudioAttribute;
  * @author WFF
  *
  */
-public class Src extends AbstractAttribute implements AudioAttribute {
+public class Src extends AbstractAttribute implements AudioAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 

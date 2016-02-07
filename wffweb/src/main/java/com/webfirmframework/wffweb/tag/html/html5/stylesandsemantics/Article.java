@@ -22,7 +22,7 @@ import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.html5.identifier.ArticleAttribute;
+import com.webfirmframework.wffweb.tag.html.html5.identifier.ArticleAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
 /**
@@ -59,7 +59,7 @@ public class Article extends AbstractHtml {
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
                 if (!(abstractAttribute != null
-                        && (abstractAttribute instanceof ArticleAttribute
+                        && (abstractAttribute instanceof ArticleAttributable
                                 || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of ArticleAttribute");

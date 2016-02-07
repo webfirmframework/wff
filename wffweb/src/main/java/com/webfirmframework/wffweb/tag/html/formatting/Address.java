@@ -6,7 +6,7 @@ import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.html5.identifier.AddressAttribute;
+import com.webfirmframework.wffweb.tag.html.html5.identifier.AddressAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
 /**
@@ -15,7 +15,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
  * @version 1.0.0
  *
  */
-public class Address extends AbstractHtml implements AddressAttribute {
+public class Address extends AbstractHtml implements AddressAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -43,7 +43,7 @@ public class Address extends AbstractHtml implements AddressAttribute {
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
                 if (!(abstractAttribute != null
-                        && (abstractAttribute instanceof AddressAttribute
+                        && (abstractAttribute instanceof AddressAttributable
                                 || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of AddressAttribute");

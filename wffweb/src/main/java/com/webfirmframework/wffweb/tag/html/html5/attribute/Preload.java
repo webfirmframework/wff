@@ -18,7 +18,7 @@ package com.webfirmframework.wffweb.tag.html.html5.attribute;
 
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.html5.identifier.AudioAttribute;
+import com.webfirmframework.wffweb.tag.html.html5.identifier.AudioAttributable;
 
 /**
  *
@@ -40,7 +40,7 @@ import com.webfirmframework.wffweb.tag.html.html5.identifier.AudioAttribute;
  * @author WFF
  *
  */
-public class Preload extends AbstractAttribute implements AudioAttribute {
+public class Preload extends AbstractAttribute implements AudioAttributable {
 
     public static final String AUTO = "auto";
 

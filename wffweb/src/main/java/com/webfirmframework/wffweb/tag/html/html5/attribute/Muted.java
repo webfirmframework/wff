@@ -18,7 +18,7 @@ package com.webfirmframework.wffweb.tag.html.html5.attribute;
 
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.html5.identifier.AudioAttribute;
+import com.webfirmframework.wffweb.tag.html.html5.identifier.AudioAttributable;
 
 /**
  * {@code <element muted> }
@@ -29,7 +29,7 @@ import com.webfirmframework.wffweb.tag.html.html5.identifier.AudioAttribute;
  * @author WFF
  *
  */
-public class Muted extends AbstractAttribute implements AudioAttribute {
+public class Muted extends AbstractAttribute implements AudioAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
