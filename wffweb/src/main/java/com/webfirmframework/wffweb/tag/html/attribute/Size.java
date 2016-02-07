@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.tag.html.attribute;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.BaseFontAttributable;
+import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 
 /**
  *
@@ -26,7 +27,8 @@ import com.webfirmframework.wffweb.tag.html.identifier.BaseFontAttributable;
  * @author WFF
  * @since 1.0.0
  */
-public class Size extends AbstractAttribute implements BaseFontAttributable {
+public class Size extends AbstractAttribute
+        implements BaseFontAttributable, InputAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
