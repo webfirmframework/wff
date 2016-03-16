@@ -16,6 +16,8 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute.global;
 
+import java.util.Locale;
+
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
@@ -24,13 +26,13 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
  * The lang attribute specifies the language of the element's content.</br>
  * <b>Sample html :-</b></br>
  * {@code
- * 
+ *
 <p>
 This is a paragraph.
 </p>
  * }</br>
  * {@code
- * 
+ *
 <p lang="fr">
 Ceci est un paragraphe.
 </p>
@@ -65,6 +67,15 @@ public class Lang extends AbstractAttribute implements GlobalAttributable {
     }
 
     /**
+     * @param lang
+     *            eg: fr
+     * @author WFF
+     */
+    public Lang(final Locale locale) {
+        setAttributeValue(locale.getLanguage());
+    }
+
+    /**
      * invokes only once per object
      *
      * @author WFF
@@ -91,4 +102,14 @@ public class Lang extends AbstractAttribute implements GlobalAttributable {
     public String getValue() {
         return getAttributeValue();
     }
+
+    /**
+     * @return the corresponding locale for the language
+     * @since 1.0.0
+     * @author WFF
+     */
+    public Locale getLocale() {
+        return new Locale(getAttributeValue());
+    }
+
 }
