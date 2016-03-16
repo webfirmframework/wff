@@ -16,8 +16,6 @@
  */
 package com.webfirmframework.wffweb.common.test;
 
-import static org.junit.Assert.*;
-
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 
@@ -28,9 +26,9 @@ import org.junit.Test;
 
 import com.webfirmframework.wffweb.css.CssLengthUnit;
 import com.webfirmframework.wffweb.io.OutputBuffer;
+import com.webfirmframework.wffweb.tag.html.AbstractHtml.TagType;
 import com.webfirmframework.wffweb.tag.html.Br;
 import com.webfirmframework.wffweb.tag.html.Html;
-import com.webfirmframework.wffweb.tag.html.AbstractHtml.TagType;
 import com.webfirmframework.wffweb.tag.html.attribute.Width;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Style;
