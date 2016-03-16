@@ -19,6 +19,7 @@ package com.webfirmframework.wffweb.common.test;
 import static org.junit.Assert.*;
 
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -291,4 +292,50 @@ public class TagPrintTest implements Serializable {
         Assert.assertEquals(expectedString, div.toHtmlString());
     }
     
+    @Test
+    public void testToHtmlString() throws Exception {
+        Html html = new Html(null, new Hidden(), new Id("htmlId"), new Style(
+                "color:red;width:15px"));
+        html.setPrependDocType(true);
+        String expectedString = "<!DOCTYPE html>\n<html hidden id=\"htmlId\" style=\"color: red; width: 15px;\"></html>";
+        Assert.assertEquals(expectedString, html.toHtmlString());
+
+    }
+    
+    @Test
+    public void testToHtmlStringWithCharset1() throws Exception {
+        Html html = new Html(null, new Hidden(), new Id("htmlId"), new Style(
+                "color:red;width:15px"));
+        html.setPrependDocType(true);
+        String expectedString = "<!DOCTYPE html>\n<html hidden id=\"htmlId\" style=\"color: red; width: 15px;\"></html>";
+        Assert.assertEquals(expectedString, html.toHtmlString(StandardCharsets.UTF_8));
+    }
+    
+    @Test
+    public void testToHtmlStringWithCharset2() throws Exception {
+        Html html = new Html(null, new Hidden(), new Id("htmlId"), new Style(
+                "color:red;width:15px"));
+        html.setPrependDocType(true);
+        String expectedString = "<!DOCTYPE html>\n<html hidden id=\"htmlId\" style=\"color: red; width: 15px;\"></html>";
+        Assert.assertEquals(expectedString, html.toHtmlString(StandardCharsets.UTF_8.name()));
+    }
+    
+    @Test
+    public void testToHtmlStringWithCharset3() throws Exception {
+        Html html = new Html(null, new Hidden(), new Id("htmlId"), new Style(
+                "color:red;width:15px"));
+        html.setPrependDocType(true);
+        String expectedString = "<!DOCTYPE html>\n<html hidden id=\"htmlId\" style=\"color: red; width: 15px;\"></html>";
+        Assert.assertEquals(expectedString, html.toHtmlString(true, StandardCharsets.UTF_8));
+    }
+    
+    @Test
+    public void testToHtmlStringWithCharset4() throws Exception {
+        Html html = new Html(null, new Hidden(), new Id("htmlId"), new Style(
+                "color:red;width:15px"));
+        html.setPrependDocType(true);
+        String expectedString = "<!DOCTYPE html>\n<html hidden id=\"htmlId\" style=\"color: red; width: 15px;\"></html>";
+        Assert.assertEquals(expectedString, html.toHtmlString(true, StandardCharsets.UTF_8.name()));
+    }
+
 }

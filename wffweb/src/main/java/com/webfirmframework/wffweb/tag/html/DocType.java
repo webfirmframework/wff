@@ -75,8 +75,8 @@ public abstract class DocType extends AbstractHtml {
             if (prependDocType) {
                 // assigning it to new variable is very important here as this
                 // line of code should invoke before finally block
-                final String htmlString = new String((docTypeTag + "\n"
-                        + super.toHtmlString(super.getCharset()))
+                final String htmlString = new String(
+                        (super.toHtmlString(super.getCharset()))
                                 .getBytes(super.getCharset()));
                 return htmlString;
             }
@@ -105,8 +105,8 @@ public abstract class DocType extends AbstractHtml {
             if (prependDocType) {
                 // assigning it to new variable is very important here as this
                 // line of code should invoke before finally block
-                final String htmlString = new String((docTypeTag + "\n"
-                        + super.toHtmlString(super.getCharset()))
+                final String htmlString = new String(
+                        (super.toHtmlString(super.getCharset()))
                                 .getBytes(super.getCharset()));
                 return htmlString;
             }
@@ -150,10 +150,8 @@ public abstract class DocType extends AbstractHtml {
                 // assigning it to new variable is very important here as this
                 // line of code should invoke before finally block
                 final String htmlString = new String(
-                        (docTypeTag + "\n"
-                                + super.toHtmlString(rebuild,
-                                        super.getCharset()))
-                                                .getBytes(getCharset()));
+                        (super.toHtmlString(rebuild, super.getCharset()))
+                                .getBytes(getCharset()));
                 return htmlString;
             }
             // assigning it to new variable is very important here as this
@@ -182,10 +180,8 @@ public abstract class DocType extends AbstractHtml {
                 // assigning it to new variable is very important here as this
                 // line of code should invoke before finally block
                 final String htmlString = new String(
-                        (docTypeTag + "\n"
-                                + super.toHtmlString(rebuild,
-                                        super.getCharset()))
-                                                .getBytes(getCharset()));
+                        (super.toHtmlString(rebuild, super.getCharset()))
+                                .getBytes(getCharset()));
                 return htmlString;
             }
             // assigning it to new variable is very important here as this
