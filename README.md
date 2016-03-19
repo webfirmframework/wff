@@ -197,5 +197,6 @@ It will add width 100% in aboutParagraph and will change color to brown, its gen
 
 [Refer wiki for more examples](https://github.com/webfirmframework/wff/wiki for more details)
 
+[You can request features or report bugs here](https://github.com/webfirmframework/wff/issues)
 
 Feel free to write us @ admin@webfirmframework.com for any assistance.
