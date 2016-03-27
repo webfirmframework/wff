@@ -19,9 +19,9 @@ package com.webfirmframework.wffweb.tag.html;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.webfirmframework.wffweb.clone.CloneUtil;
@@ -193,7 +193,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
     }
 
     private void init() {
-        children = new ArrayList<AbstractHtml>();
+        children = new LinkedList<AbstractHtml>();
         tagBuilder = new StringBuilder();
         htmlStartSB = new StringBuilder();
         htmlEndSB = new StringBuilder();
