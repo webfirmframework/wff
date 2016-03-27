@@ -615,21 +615,21 @@ public abstract class AbstractHtml extends AbstractTagBase {
      * @author WFF
      */
     private void buildOpeningTag(final boolean rebuild) {
-        final String attributeHtmlString = AttributeUtil.getThis()
+        final String attributeHtmlString = AttributeUtil
                 .getAttributeHtmlString(rebuild, charset, attributes);
         htmlStartSB.delete(0, htmlStartSB.length());
         if (getTagName() != null) {
-            htmlStartSB.append("<");
+            htmlStartSB.append('<');
             htmlStartSB.append(getTagName());
             htmlStartSB.append(attributeHtmlString);
             if (tagType == TagType.OPENING_CLOSING) {
-                htmlStartSB.append(">");
+                htmlStartSB.append('>');
             } else if (tagType == TagType.SELF_CLOSING) {
-                htmlStartSB.append("/>");
+                htmlStartSB.append(new char[] { '/', '>' });
             } else {
                 // here it will be tagType == TagType.NON_CLOSING as there are
                 // three types in TagType class
-                htmlStartSB.append(">");
+                htmlStartSB.append('>');
             }
         }
         htmlStartSB.trimToSize();
@@ -644,9 +644,9 @@ public abstract class AbstractHtml extends AbstractTagBase {
     private void buildClosingTag() {
         htmlEndSB.delete(0, htmlEndSB.length());
         if (getTagName() != null) {
-            htmlEndSB.append("</");
+            htmlEndSB.append(new char[]{'<', '/'});
             htmlEndSB.append(getTagName());
-            htmlEndSB.append(">");
+            htmlEndSB.append('>');
         } else {
             if (htmlStartSB != null) {
                 htmlEndSB.append(getHtmlMiddleSB());

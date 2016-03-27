@@ -138,7 +138,7 @@ public class TagPrintTest implements Serializable {
     public void testMultipleAttributesToHtmlString() throws Exception {
         Html html = new Html(null, new Hidden(), new Id("htmlId"), new Style(
                 "color:red;width:15px"));
-        String expectedString = "<html hidden id=\"htmlId\" style=\"color: red; width: 15px;\"></html>";
+        String expectedString = "<html hidden id=\"htmlId\" style=\"color:red;width:15px;\"></html>";
         Assert.assertEquals(expectedString, html.toString());
 
         if (html.toHtmlString().contains("\0")) {
@@ -295,7 +295,7 @@ public class TagPrintTest implements Serializable {
         Html html = new Html(null, new Hidden(), new Id("htmlId"), new Style(
                 "color:red;width:15px"));
         html.setPrependDocType(true);
-        String expectedString = "<!DOCTYPE html>\n<html hidden id=\"htmlId\" style=\"color: red; width: 15px;\"></html>";
+        String expectedString = "<!DOCTYPE html>\n<html hidden id=\"htmlId\" style=\"color:red;width:15px;\"></html>";
         Assert.assertEquals(expectedString, html.toHtmlString());
 
     }
@@ -305,7 +305,7 @@ public class TagPrintTest implements Serializable {
         Html html = new Html(null, new Hidden(), new Id("htmlId"), new Style(
                 "color:red;width:15px"));
         html.setPrependDocType(true);
-        String expectedString = "<!DOCTYPE html>\n<html hidden id=\"htmlId\" style=\"color: red; width: 15px;\"></html>";
+        String expectedString = "<!DOCTYPE html>\n<html hidden id=\"htmlId\" style=\"color:red;width:15px;\"></html>";
         Assert.assertEquals(expectedString, html.toHtmlString(StandardCharsets.UTF_8));
     }
     
@@ -314,7 +314,7 @@ public class TagPrintTest implements Serializable {
         Html html = new Html(null, new Hidden(), new Id("htmlId"), new Style(
                 "color:red;width:15px"));
         html.setPrependDocType(true);
-        String expectedString = "<!DOCTYPE html>\n<html hidden id=\"htmlId\" style=\"color: red; width: 15px;\"></html>";
+        String expectedString = "<!DOCTYPE html>\n<html hidden id=\"htmlId\" style=\"color:red;width:15px;\"></html>";
         Assert.assertEquals(expectedString, html.toHtmlString(StandardCharsets.UTF_8.name()));
     }
     
@@ -323,7 +323,7 @@ public class TagPrintTest implements Serializable {
         Html html = new Html(null, new Hidden(), new Id("htmlId"), new Style(
                 "color:red;width:15px"));
         html.setPrependDocType(true);
-        String expectedString = "<!DOCTYPE html>\n<html hidden id=\"htmlId\" style=\"color: red; width: 15px;\"></html>";
+        String expectedString = "<!DOCTYPE html>\n<html hidden id=\"htmlId\" style=\"color:red;width:15px;\"></html>";
         Assert.assertEquals(expectedString, html.toHtmlString(true, StandardCharsets.UTF_8));
     }
     
@@ -332,7 +332,7 @@ public class TagPrintTest implements Serializable {
         Html html = new Html(null, new Hidden(), new Id("htmlId"), new Style(
                 "color:red;width:15px"));
         html.setPrependDocType(true);
-        String expectedString = "<!DOCTYPE html>\n<html hidden id=\"htmlId\" style=\"color: red; width: 15px;\"></html>";
+        String expectedString = "<!DOCTYPE html>\n<html hidden id=\"htmlId\" style=\"color:red;width:15px;\"></html>";
         Assert.assertEquals(expectedString, html.toHtmlString(true, StandardCharsets.UTF_8.name()));
     }
 

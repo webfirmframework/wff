@@ -61,33 +61,33 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             // tagBuildzer.append(" ");
             tagBuilder.append(getAttributeName());
             if (getAttributeValue() != null) {
-                tagBuilder.append("=\"");
+                tagBuilder.append(new char[]{'=', '"'});
                 tagBuilder.append(getAttributeValue());
-                result = StringBuilderUtil.getTrimmedString(tagBuilder) + "\"";
-                tagBuilder.append("\"");
+                result = StringBuilderUtil.getTrimmedString(tagBuilder) + '"';
+                tagBuilder.append('"');
             } else if (attributeValueMap != null
                     && attributeValueMap.size() > 0) {
-                tagBuilder.append("=\"");
+                tagBuilder.append(new char[]{'=', '"'});
                 final Set<Entry<String, String>> entrySet = getAttributeValueMap()
                         .entrySet();
                 for (final Entry<String, String> entry : entrySet) {
                     tagBuilder.append(entry.getKey());
-                    tagBuilder.append(": ");
+                    tagBuilder.append(':');
                     tagBuilder.append(entry.getValue());
-                    tagBuilder.append("; ");
+                    tagBuilder.append(';');
                 }
 
-                result = StringBuilderUtil.getTrimmedString(tagBuilder) + "\"";
-                tagBuilder.append("\"");
+                result = StringBuilderUtil.getTrimmedString(tagBuilder) + '"';
+                tagBuilder.append('"');
             } else if (attributeValueSet != null
                     && attributeValueSet.size() > 0) {
-                tagBuilder.append("=\"");
+                tagBuilder.append(new char[]{'=', '"'});
                 for (final String each : getAttributeValueSet()) {
                     tagBuilder.append(each);
-                    tagBuilder.append(" ");
+//                    tagBuilder.append(" ");
                 }
-                result = StringBuilderUtil.getTrimmedString(tagBuilder) + "\"";
-                tagBuilder.append("\"");
+                result = StringBuilderUtil.getTrimmedString(tagBuilder) + '"';
+                tagBuilder.append('"');
             } else {
                 result = tagBuilder.toString();
             }

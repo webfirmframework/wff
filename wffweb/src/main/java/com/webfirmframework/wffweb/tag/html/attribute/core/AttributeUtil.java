@@ -28,20 +28,11 @@ import java.nio.charset.Charset;
  */
 public class AttributeUtil {
 
-    private static AttributeUtil attributeUtil;
-
-    static {
-        attributeUtil = new AttributeUtil();
-    }
-
     /**
      *
      */
     private AttributeUtil() {
-    }
-
-    public static AttributeUtil getThis() {
-        return attributeUtil;
+        throw new AssertionError();
     }
 
     /**
@@ -51,12 +42,12 @@ public class AttributeUtil {
      * @author WFF
      * @since 1.0.0
      */
-    public String getAttributeHtmlString(final boolean rebuild,
+    public static final String getAttributeHtmlString(final boolean rebuild,
             final AbstractAttribute... attributes) {
         final StringBuilder attributeSB = new StringBuilder();
         if (attributes != null) {
             for (final AbstractAttribute attribute : attributes) {
-                attributeSB.append(" ");
+                attributeSB.append(' ');
                 /*
                  * if (attribute instanceof Width) { Width width = (Width)
                  * attribute; attributeSB.append("width=\"");
@@ -80,12 +71,12 @@ public class AttributeUtil {
      * @author WFF
      * @since 1.0.0
      */
-    public String getAttributeHtmlString(final boolean rebuild,
+    public static final String getAttributeHtmlString(final boolean rebuild,
             final Charset charset, final AbstractAttribute... attributes) {
         final StringBuilder attributeSB = new StringBuilder();
         if (attributes != null) {
             for (final AbstractAttribute attribute : attributes) {
-                attributeSB.append(" ");
+                attributeSB.append(' ');
                 attributeSB.append(attribute.toHtmlString(rebuild, charset));
             }
         }

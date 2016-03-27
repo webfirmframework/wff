@@ -144,10 +144,10 @@ public class StyleTest {
                 Style style = new Style();
                 Cursor cursor = new Cursor();
                 style.addCssProperty(cursor);
-                assertTrue(style.toString().equals("style=\"cursor: default;\""));
+                assertTrue(style.toString().equals("style=\"cursor:default;\""));
                 cursor.setCursorUrls("auto", "Test.gif", "TestImage.png");
                 System.out.println(style.toString());
-                assertTrue(style.toString().equals("style=\"cursor: url(\"Test.gif\"), url(\"TestImage.png\"), auto;\""));
+                assertTrue(style.toString().equals("style=\"cursor:url(\"Test.gif\"), url(\"TestImage.png\"), auto;\""));
             }
             
             System.out.println("testAddStyle success");
