@@ -83,12 +83,12 @@ public abstract class AbstractHtml extends AbstractTagBase {
 
     public AbstractHtml(final AbstractHtml base,
             final Collection<AbstractHtml> children) {
-        getChildren().addAll(children);
+        children.addAll(children);
         buildOpeningTag(false);
         buildClosingTag();
         if (base != null) {
             setParent(base);
-            base.getChildren().add(this);
+            base.children.add(this);
             setSharedObject(base.getSharedObject());
         } else {
             setSharedObject(new AbstractHtml5SharedObject());
@@ -108,7 +108,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
         buildClosingTag();
         if (base != null) {
             setParent(base);
-            base.getChildren().add(this);
+            base.children.add(this);
             setSharedObject(base.getSharedObject());
         } else {
             setSharedObject(new AbstractHtml5SharedObject());
@@ -135,7 +135,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
         buildClosingTag();
         if (base != null) {
             setParent(base);
-            base.getChildren().add(this);
+            base.children.add(this);
             setSharedObject(base.getSharedObject());
         } else {
             setSharedObject(new AbstractHtml5SharedObject());
@@ -169,7 +169,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
 
         if (base != null) {
             setParent(base);
-            base.getChildren().add(this);
+            base.children.add(this);
             setSharedObject(base.getSharedObject());
         } else {
             setSharedObject(new AbstractHtml5SharedObject());
@@ -302,7 +302,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
                 }
 
                 final List<AbstractHtml> childrenOfChildren = child
-                        .getChildren();
+                        .children;
 
                 if (!isHtmlStartSBAsFirst() && htmlMiddleSB != null) {
                     tagBuilder.append(getHtmlMiddleSB());
@@ -337,7 +337,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
                 }
 
                 final List<AbstractHtml> childrenOfChildren = child
-                        .getChildren();
+                        .children;
 
                 if (!isHtmlStartSBAsFirst() && htmlMiddleSB != null) {
                     outputStream.write(
