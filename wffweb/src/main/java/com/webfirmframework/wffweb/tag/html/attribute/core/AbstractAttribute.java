@@ -59,15 +59,15 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             beforePrintStructure();
             tagBuilder.delete(0, tagBuilder.length());
             // tagBuildzer.append(" ");
-            tagBuilder.append(getAttributeName());
-            if (getAttributeValue() != null) {
-                tagBuilder.append(new char[]{'=', '"'});
-                tagBuilder.append(getAttributeValue());
+            tagBuilder.append(attributeName);
+            if (attributeValue != null) {
+                tagBuilder.append(new char[] { '=', '"' });
+                tagBuilder.append(attributeValue);
                 result = StringBuilderUtil.getTrimmedString(tagBuilder) + '"';
                 tagBuilder.append('"');
             } else if (attributeValueMap != null
                     && attributeValueMap.size() > 0) {
-                tagBuilder.append(new char[]{'=', '"'});
+                tagBuilder.append(new char[] { '=', '"' });
                 final Set<Entry<String, String>> entrySet = getAttributeValueMap()
                         .entrySet();
                 for (final Entry<String, String> entry : entrySet) {
@@ -81,10 +81,10 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 tagBuilder.append('"');
             } else if (attributeValueSet != null
                     && attributeValueSet.size() > 0) {
-                tagBuilder.append(new char[]{'=', '"'});
+                tagBuilder.append(new char[] { '=', '"' });
                 for (final String each : getAttributeValueSet()) {
                     tagBuilder.append(each);
-//                    tagBuilder.append(" ");
+                    // tagBuilder.append(" ");
                 }
                 result = StringBuilderUtil.getTrimmedString(tagBuilder) + '"';
                 tagBuilder.append('"');
@@ -401,8 +401,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     @Override
     public void setModified(final boolean modified) {
         super.setModified(modified);
-        if (getOwnerTag() != null && getOwnerTag().getSharedObject() != null) {
-            getOwnerTag().getSharedObject().setChildModified(modified);
+        if (ownerTag != null && ownerTag.getSharedObject() != null) {
+            ownerTag.getSharedObject().setChildModified(modified);
         }
     }
 

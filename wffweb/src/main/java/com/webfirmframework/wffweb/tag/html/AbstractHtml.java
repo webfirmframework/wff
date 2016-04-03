@@ -333,7 +333,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
                 }
                 recurChildren(childrenOfChildren, rebuild);
 
-                tagBuilder.append(child.getClosingTag());
+                tagBuilder.append(child.closingTag);
                 // tagBuilder.append("\n");// TODO should be removed later
             }
         }
@@ -367,7 +367,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
                             getHtmlMiddleSB().toString().getBytes(charset));
                 }
                 recurChildrenToOutputStream(childrenOfChildren, rebuild);
-                outputStream.write(child.getClosingTag().getBytes(charset));
+                outputStream.write(child.closingTag.getBytes(charset));
             }
         }
     }
@@ -641,9 +641,9 @@ public abstract class AbstractHtml extends AbstractTagBase {
         final String attributeHtmlString = AttributeUtil
                 .getAttributeHtmlString(rebuild, charset, attributes);
         htmlStartSB.delete(0, htmlStartSB.length());
-        if (getTagName() != null) {
+        if (tagName != null) {
             htmlStartSB.append('<');
-            htmlStartSB.append(getTagName());
+            htmlStartSB.append(tagName);
             htmlStartSB.append(attributeHtmlString);
             if (tagType == TagType.OPENING_CLOSING) {
                 htmlStartSB.append('>');
@@ -669,9 +669,9 @@ public abstract class AbstractHtml extends AbstractTagBase {
      */
     private void buildClosingTag() {
         htmlEndSB.delete(0, htmlEndSB.length());
-        if (getTagName() != null) {
+        if (tagName != null) {
             htmlEndSB.append(new char[] { '<', '/' });
-            htmlEndSB.append(getTagName());
+            htmlEndSB.append(tagName);
             htmlEndSB.append('>');
         } else {
             if (htmlStartSB != null) {
