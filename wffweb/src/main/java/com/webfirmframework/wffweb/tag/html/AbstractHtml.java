@@ -654,9 +654,12 @@ public abstract class AbstractHtml extends AbstractTagBase {
                 // three types in TagType class
                 htmlStartSB.append('>');
             }
+            htmlStartSB.trimToSize();
+            setOpeningTag(htmlStartSB.toString());
+        } else {
+            htmlStartSB.trimToSize();
+            setOpeningTag("");
         }
-        htmlStartSB.trimToSize();
-        setOpeningTag(htmlStartSB.toString());
     }
 
     /**
