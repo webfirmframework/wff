@@ -83,6 +83,9 @@ public abstract class AbstractHtml extends AbstractTagBase {
 
     public AbstractHtml(final AbstractHtml base,
             final Collection<AbstractHtml> children) {
+
+        initInConstructor();
+
         children.addAll(children);
         buildOpeningTag(false);
         buildClosingTag();
@@ -102,6 +105,9 @@ public abstract class AbstractHtml extends AbstractTagBase {
      *            any text, it can also be html text.
      */
     public AbstractHtml(final AbstractHtml base, final String childContent) {
+
+        initInConstructor();
+
         setHtmlStartSBAsFirst(true);
         getHtmlMiddleSB().append(childContent);
         buildOpeningTag(false);
@@ -130,6 +136,9 @@ public abstract class AbstractHtml extends AbstractTagBase {
             final AbstractAttribute[] attributes) {
         this.tagName = tagName;
         this.attributes = attributes;
+
+        initInConstructor();
+
         markOwnerTag(attributes);
         buildOpeningTag(false);
         buildClosingTag();
@@ -159,6 +168,9 @@ public abstract class AbstractHtml extends AbstractTagBase {
         this.tagType = tagType;
         this.tagName = tagName;
         this.attributes = attributes;
+
+        initInConstructor();
+
         markOwnerTag(attributes);
 
         buildOpeningTag(false);
@@ -195,9 +207,22 @@ public abstract class AbstractHtml extends AbstractTagBase {
     private void init() {
         children = new LinkedList<AbstractHtml>();
         tagBuilder = new StringBuilder();
-        htmlStartSB = new StringBuilder();
-        htmlEndSB = new StringBuilder();
         setRebuild(true);
+    }
+
+    /**
+     * to initialize objects in the constructor
+     *
+     * @since 1.0.0
+     * @author WFF
+     */
+    private void initInConstructor() {
+        htmlStartSB = new StringBuilder(tagName == null ? 0
+                : tagName.length() + 2
+                        + ((attributes == null ? 0 : attributes.length) * 16));
+
+        htmlEndSB = new StringBuilder(
+                tagName == null ? 16 : tagName.length() + 3);
     }
 
     public AbstractHtml getParent() {
@@ -301,8 +326,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
                     tagBuilder.append(getHtmlMiddleSB());
                 }
 
-                final List<AbstractHtml> childrenOfChildren = child
-                        .children;
+                final List<AbstractHtml> childrenOfChildren = child.children;
 
                 if (!isHtmlStartSBAsFirst() && htmlMiddleSB != null) {
                     tagBuilder.append(getHtmlMiddleSB());
@@ -336,8 +360,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
                             getHtmlMiddleSB().toString().getBytes(charset));
                 }
 
-                final List<AbstractHtml> childrenOfChildren = child
-                        .children;
+                final List<AbstractHtml> childrenOfChildren = child.children;
 
                 if (!isHtmlStartSBAsFirst() && htmlMiddleSB != null) {
                     outputStream.write(
@@ -644,7 +667,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
     private void buildClosingTag() {
         htmlEndSB.delete(0, htmlEndSB.length());
         if (getTagName() != null) {
-            htmlEndSB.append(new char[]{'<', '/'});
+            htmlEndSB.append(new char[] { '<', '/' });
             htmlEndSB.append(getTagName());
             htmlEndSB.append('>');
         } else {
