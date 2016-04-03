@@ -610,7 +610,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
         final String printStructure = getPrintStructure(
                 getSharedObject().isChildModified()
                         && !getSharedObject().getRebuiltTags().contains(this));
-        if (getParent() == null) {
+        if (parent == null) {
             getSharedObject().setChildModified(false);
         } else {
             getSharedObject().getRebuiltTags().add(this);
