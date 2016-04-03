@@ -44,22 +44,16 @@ public class AttributeUtil {
      */
     public static final String getAttributeHtmlString(final boolean rebuild,
             final AbstractAttribute... attributes) {
-        final StringBuilder attributeSB = new StringBuilder();
         if (attributes != null) {
+            final StringBuilder attributeSB = new StringBuilder(
+                    attributes.length * 16);
             for (final AbstractAttribute attribute : attributes) {
                 attributeSB.append(' ');
-                /*
-                 * if (attribute instanceof Width) { Width width = (Width)
-                 * attribute; attributeSB.append("width=\"");
-                 * attributeSB.append(width); attributeSB.append("\""); } else
-                 * if (attribute instanceof Width) {
-                 *
-                 * }
-                 */
                 attributeSB.append(attribute.toHtmlString(rebuild));
             }
+            return attributeSB.toString();
         }
-        return attributeSB.toString();
+        return "";
     }
 
     /**
@@ -73,13 +67,15 @@ public class AttributeUtil {
      */
     public static final String getAttributeHtmlString(final boolean rebuild,
             final Charset charset, final AbstractAttribute... attributes) {
-        final StringBuilder attributeSB = new StringBuilder();
         if (attributes != null) {
+            final StringBuilder attributeSB = new StringBuilder(
+                    attributes.length * 16);
             for (final AbstractAttribute attribute : attributes) {
                 attributeSB.append(' ');
                 attributeSB.append(attribute.toHtmlString(rebuild, charset));
             }
+            return attributeSB.toString();
         }
-        return attributeSB.toString();
+        return "";
     }
 }
