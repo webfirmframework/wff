@@ -90,11 +90,11 @@ public abstract class AbstractHtml extends AbstractTagBase {
         buildOpeningTag(false);
         buildClosingTag();
         if (base != null) {
-            setParent(base);
+            parent = base;
+            sharedObject = base.sharedObject;
             base.children.add(this);
-            setSharedObject(base.getSharedObject());
         } else {
-            setSharedObject(new AbstractHtml5SharedObject());
+            sharedObject = new AbstractHtml5SharedObject();
         }
 
     }
@@ -113,11 +113,11 @@ public abstract class AbstractHtml extends AbstractTagBase {
         buildOpeningTag(false);
         buildClosingTag();
         if (base != null) {
-            setParent(base);
+            parent = base;
+            sharedObject = base.sharedObject;
             base.children.add(this);
-            setSharedObject(base.getSharedObject());
         } else {
-            setSharedObject(new AbstractHtml5SharedObject());
+            sharedObject = new AbstractHtml5SharedObject();
         }
         setRebuild(true);
     }
@@ -143,11 +143,11 @@ public abstract class AbstractHtml extends AbstractTagBase {
         buildOpeningTag(false);
         buildClosingTag();
         if (base != null) {
-            setParent(base);
+            parent = base;
+            sharedObject = base.sharedObject;
             base.children.add(this);
-            setSharedObject(base.getSharedObject());
         } else {
-            setSharedObject(new AbstractHtml5SharedObject());
+            sharedObject = new AbstractHtml5SharedObject();
         }
     }
 
@@ -180,11 +180,11 @@ public abstract class AbstractHtml extends AbstractTagBase {
         }
 
         if (base != null) {
-            setParent(base);
+            parent = base;
+            sharedObject = base.sharedObject;
             base.children.add(this);
-            setSharedObject(base.getSharedObject());
         } else {
-            setSharedObject(new AbstractHtml5SharedObject());
+            sharedObject = new AbstractHtml5SharedObject();
         }
     }
 
