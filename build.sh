@@ -1,2 +1,2 @@
 #!/bin/sh
-cd $CI_HOME/wffweb
+cd wffweb
