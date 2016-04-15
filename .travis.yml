@@ -11,6 +11,4 @@ before_install: cd wffweb
 
 install: mvn -B install -U -DskipTests=true
 
-before_script: cd wffweb
-
 script: mvn -B verify -U -Dmaven.javadoc.skip=true
