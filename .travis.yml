@@ -7,12 +7,10 @@ jdk:
   - oraclejdk7
   - openjdk7
 
-env:
-  global:
-    - REPO="webfirmframework/wff"
-    - CI_HOME=`pwd`/$REPO
-script: build.sh
+before_install: cd wffweb
 
 install: mvn -B install -U -DskipTests=true
+
+before_script: cd wffweb
 
 script: mvn -B verify -U -Dmaven.javadoc.skip=true
