@@ -7,6 +7,6 @@ jdk:
   - oraclejdk7
   - openjdk7
 
-install: mvn -B install -U -DskipTests=true
+install: wffweb/mvn -B install -U -DskipTests=true
 
-script: mvn -B verify -U -Dmaven.javadoc.skip=true
+script: wffweb/mvn -B verify -U -Dmaven.javadoc.skip=true
