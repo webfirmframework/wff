@@ -11,7 +11,7 @@ env:
   global:
     - REPO="webfirmframework/wff"
     - CI_HOME=`pwd`/$REPO
-script: sh -c 'cd $CI_HOME/wffweb'
+script: build.sh
 
 install: mvn -B install -U -DskipTests=true
 
