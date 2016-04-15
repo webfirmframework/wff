@@ -12,3 +12,8 @@ before_install: cd wffweb
 install: mvn -B install -U -DskipTests=true
 
 script: mvn -B verify -U -Dmaven.javadoc.skip=true
+
+branches:
+  only:
+    - master
+    - /^release.*$/
