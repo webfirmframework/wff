@@ -7,4 +7,8 @@ jdk:
   - oraclejdk7
   - openjdk7
 
-mvn test
+install: mvn -B install -U -DskipTests=true
+
+branches:
+  only:
+    - master
