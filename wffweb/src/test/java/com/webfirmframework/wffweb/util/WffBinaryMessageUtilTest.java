@@ -207,11 +207,18 @@ public class WffBinaryMessageUtilTest {
         
         for (int i = 0; i < 1000; i++) {
             
-            byte[][] values = new byte[10][0];
-            
-            for (int j = 0; j < values.length; j++) {
-                values[j] = ("valueeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"+j).getBytes();
-            }
+            byte[][] values = {
+                    new byte[] {'v', 'a', 'l', 'u', 'e', '1'}, 
+                    new byte[] {'v', 'a', 'l', 'u', 'e', '2'}, 
+                    new byte[] {'v', 'a', 'l', 'u', 'e', '3'}, 
+                    new byte[] {'v', 'a', 'l', 'u', 'e', '4'}, 
+                    new byte[] {'v', 'a', 'l', 'u', 'e', '5'}, 
+                    new byte[] {'v', 'a', 'l', 'u', 'e', '6'}, 
+                    new byte[] {'v', 'a', 'l', 'u', 'e', '7'}, 
+                    new byte[] {'v', 'a', 'l', 'u', 'e', '8'}, 
+                    new byte[] {'v', 'a', 'l', 'u', 'e', '9'}, 
+                    new byte[] {'v', 'a', 'l', 'u', 'e', '1', '0'} 
+                    };
             
             nameValues.add(new NameValue("nameeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee4".getBytes(), values));
         }
