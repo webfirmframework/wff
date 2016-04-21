@@ -23,7 +23,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.webfirmframework.wffweb.common.algo.NameValue;
+import com.webfirmframework.wffweb.util.data.NameValue;
 
 public class WffBinaryMessageUtilTest {
 

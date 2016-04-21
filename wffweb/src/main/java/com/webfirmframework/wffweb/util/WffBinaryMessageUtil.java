@@ -18,7 +18,7 @@ package com.webfirmframework.wffweb.util;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.webfirmframework.wffweb.common.algo.NameValue;
+import com.webfirmframework.wffweb.util.data.NameValue;
 
 public enum WffBinaryMessageUtil {
 
