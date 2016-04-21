@@ -16,4 +16,4 @@ script: mvn -B verify -U -Dmaven.javadoc.skip=true
 branches:
   only:
     - master
-    - /^release.*$/
+    - develop
