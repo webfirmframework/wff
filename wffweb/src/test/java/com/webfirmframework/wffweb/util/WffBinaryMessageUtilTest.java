@@ -199,13 +199,21 @@ public class WffBinaryMessageUtilTest {
     
     @Test
     public void testPerformanceOfWffBinaryMessageToNameValuesAndWiseVersa() {
+        
         List<NameValue> nameValues = new LinkedList<NameValue>();
         nameValues.add(new NameValue("name3".getBytes(), new byte[][]{"value3".getBytes(), "value41".getBytes()}));
         nameValues.add(new NameValue("name1".getBytes(), new byte[][]{"value1".getBytes()}));
         nameValues.add(new NameValue("name2".getBytes(), new byte[][]{"value2".getBytes()}));
         
         for (int i = 0; i < 1000; i++) {
-            nameValues.add(new NameValue("name4".getBytes(), new byte[][]{"value41".getBytes(), "value42".getBytes()}));
+            
+            byte[][] values = new byte[10][0];
+            
+            for (int j = 0; j < values.length; j++) {
+                values[j] = ("valueeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"+j).getBytes();
+            }
+            
+            nameValues.add(new NameValue("nameeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee4".getBytes(), values));
         }
 
         byte[] message = WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues);
