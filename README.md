@@ -1,3 +1,6 @@
+[![Build Status](https://api.travis-ci.org/webfirmframework/wff.svg?branch=master)](https://travis-ci.org/webfirmframework/wff)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.webfirmframework/wffweb/badge.svg)](http://search.maven.org/#artifactdetails%7Ccom.webfirmframework%7Cwffweb%7C1.0.2%7Cjar)
+
 # wffweb
 
 Web Firm Framework is a java framework to build web applications. The advantage of using this framework is its ability to generate html and css dynamically. In version-1.0.0, it is providing features to generate html & css dynamically and some other sophisticated features for ui development. It also provides some inbuilt support for optimized html/css output. It supports html5 and css3 for the ui generation.  As it is java framework we don’t have to keep any separate html/css files, instead we are keeping java files for ui (for html/css generation). A simple rest api or even servlet support is enough to create web applications with this framework. The performance rate will be very high with applications developed by this framework.
