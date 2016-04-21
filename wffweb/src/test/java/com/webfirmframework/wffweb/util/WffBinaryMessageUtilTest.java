@@ -15,10 +15,13 @@
  */
 package com.webfirmframework.wffweb.util;
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.*;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -27,6 +30,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.webfirmframework.wffweb.util.data.NameValue;
 
 public class WffBinaryMessageUtilTest {
@@ -227,22 +232,22 @@ public class WffBinaryMessageUtilTest {
             nameValues.add(new NameValue("nameeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee4".getBytes(), values));
         }
 
-        final long beforeMillis = System.currentTimeMillis();
+        long beforeMillis = System.currentTimeMillis();
         
         byte[] message = WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues);
         
         List<NameValue> actualNameValues = WffBinaryMessageUtil.VERSION_1.parse(message);
         
-        final long afterMillis = System.currentTimeMillis();
+        long afterMillis = System.currentTimeMillis();
         
-        final long totalMillisTaken = afterMillis - beforeMillis;
+        final long totalMillisTakenForWffBinaryMessage = afterMillis - beforeMillis;
         
-        if (totalMillisTaken > 100) {
+        if (totalMillisTakenForWffBinaryMessage > 100) {
             Assert.fail(testName.getMethodName() + " took "
-                    + totalMillisTaken + " ms, maximum 100mx is allowed");
+                    + totalMillisTakenForWffBinaryMessage + " ms, maximum 100mx is allowed");
         } else {
             System.out.println(testName.getMethodName() + " took just "
-                    + totalMillisTaken + " ms for building and parsing "
+                    + totalMillisTakenForWffBinaryMessage + " ms for building and parsing "
                     + MAX_NAME_VALUE_PAIRS + " name-value pairs.");
         }
         
@@ -261,7 +266,56 @@ public class WffBinaryMessageUtilTest {
             }
             
         }
+        
+        try {
+            
+            Map<String, List<String>> jsonObject = new HashMap<String, List<String>>();
+            
+            for (int i = 0; i < MAX_NAME_VALUE_PAIRS; i++) {
+                List<String> values = new LinkedList<String>();
+                values.add("value1");
+                values.add("value2");
+                values.add("value3");
+                values.add("value4");
+                values.add("value5");
+                values.add("value6");
+                values.add("value7");
+                values.add("value8");
+                values.add("value9");
+                values.add("value10");
+                jsonObject.put("name " + i , values);   
+            }
+            
+            ObjectMapper objectMapper = new ObjectMapper();
+            
+            beforeMillis = System.currentTimeMillis();
+            
+            byte[] jsonValueAsBytes = objectMapper.writeValueAsBytes(jsonObject);
+            
+            @SuppressWarnings({ "unused", "rawtypes" })
+            Map parsed = objectMapper.readValue(jsonValueAsBytes, Map.class);
+            
+            afterMillis = System.currentTimeMillis();
+            
+            final long totalMillisTakenForJacksonFasterxml = afterMillis - beforeMillis;
+            
+            System.out.println("totalMillisTaken for jackson faster xml buiding and parsing " + totalMillisTakenForJacksonFasterxml);
+            
+            assertTrue(totalMillisTakenForWffBinaryMessage < totalMillisTakenForJacksonFasterxml);
+            
+            if (totalMillisTakenForWffBinaryMessage < totalMillisTakenForJacksonFasterxml) {
+                int timesFaster = (int) ((double) totalMillisTakenForJacksonFasterxml / (double) totalMillisTakenForWffBinaryMessage);
+                System.out.println("wff binary message building and parsing is " + timesFaster+ " times faster than jackson fasterxml parsing and bulding of json.");
+                timesFaster = Math.round(timesFaster);
+            }
+            
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+    
 
     @Test
     public void testGetWffBinaryMessageBytes1() {
