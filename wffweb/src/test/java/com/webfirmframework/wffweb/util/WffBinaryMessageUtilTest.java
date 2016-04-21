@@ -204,8 +204,6 @@ public class WffBinaryMessageUtilTest {
     @Test
     public void testPerformanceOfWffBinaryMessageToNameValuesAndWiseVersa() {
         
-        final long beforeMillis = System.currentTimeMillis();
-        
         List<NameValue> nameValues = new LinkedList<NameValue>();
         nameValues.add(new NameValue("name3".getBytes(), new byte[][]{"value3".getBytes(), "value41".getBytes()}));
         nameValues.add(new NameValue("name1".getBytes(), new byte[][]{"value1".getBytes()}));
@@ -229,6 +227,8 @@ public class WffBinaryMessageUtilTest {
             nameValues.add(new NameValue("nameeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee4".getBytes(), values));
         }
 
+        final long beforeMillis = System.currentTimeMillis();
+        
         byte[] message = WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues);
         
         List<NameValue> actualNameValues = WffBinaryMessageUtil.VERSION_1.parse(message);
