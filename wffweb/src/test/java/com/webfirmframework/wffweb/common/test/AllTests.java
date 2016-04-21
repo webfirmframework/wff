@@ -125,6 +125,7 @@ import com.webfirmframework.wffweb.util.CssLengthUtilTest;
 import com.webfirmframework.wffweb.util.CssValueUtilTest;
 import com.webfirmframework.wffweb.util.ObjectUtilTest;
 import com.webfirmframework.wffweb.util.StringUtilTest;
+import com.webfirmframework.wffweb.util.WffBinaryMessageUtilTest;
 
 /**
  *
@@ -174,7 +175,7 @@ import com.webfirmframework.wffweb.util.StringUtilTest;
         ColumnsTest.class, CssLengthUtilTest.class, ObjectUtilTest.class,
         BorderImageRepeatTest.class, BorderImageWidthTest.class,
         BorderImageOutsetTest.class, BorderImageSliceTest.class,
-        BorderImageSourceTest.class })
+        BorderImageSourceTest.class, WffBinaryMessageUtilTest.class })
 public class AllTests {
 
 }
