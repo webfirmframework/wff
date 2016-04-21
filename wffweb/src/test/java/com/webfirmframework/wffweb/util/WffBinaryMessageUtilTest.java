@@ -45,9 +45,10 @@ public class WffBinaryMessageUtilTest {
     @After
     public void afterTest() throws Exception {
         afterMillis = System.currentTimeMillis();
-        if ((afterMillis - beforeMillis) > 100) {
-            Assert.fail(testName.getMethodName() + " took "
-                    + (afterMillis - beforeMillis) + "ms");
+        final long totalMillisTaken = afterMillis - beforeMillis;
+        if (totalMillisTaken > 100) {
+            Assert.fail(testName.getMethodName() + " took " + totalMillisTaken
+                    + "ms");
         }
     }
 
@@ -198,7 +199,6 @@ public class WffBinaryMessageUtilTest {
     
     @Test
     public void testPerformanceOfWffBinaryMessageToNameValuesAndWiseVersa() {
-        System.out.println(beforeMillis);
         List<NameValue> nameValues = new LinkedList<NameValue>();
         nameValues.add(new NameValue("name3".getBytes(), new byte[][]{"value3".getBytes(), "value41".getBytes()}));
         nameValues.add(new NameValue("name1".getBytes(), new byte[][]{"value1".getBytes()}));
