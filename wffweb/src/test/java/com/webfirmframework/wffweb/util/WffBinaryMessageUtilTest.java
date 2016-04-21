@@ -46,10 +46,13 @@ public class WffBinaryMessageUtilTest {
     public void afterTest() throws Exception {
         afterMillis = System.currentTimeMillis();
         final long totalMillisTaken = afterMillis - beforeMillis;
-        if (totalMillisTaken > 100) {
-            Assert.fail(testName.getMethodName() + " took " + totalMillisTaken
-                    + "ms");
+
+        if (!"testPerformanceOfWffBinaryMessageToNameValuesAndWiseVersa"
+                .equals(testName.getMethodName())) {
+            System.out.println(testName.getMethodName() + " took "
+                    + totalMillisTaken + " ms");
         }
+
     }
 
     //@formatter:off
@@ -196,16 +199,19 @@ public class WffBinaryMessageUtilTest {
         }
     }
    
+    private static final int MAX_NAME_VALUE_PAIRS = 1000;
     
     @Test
     public void testPerformanceOfWffBinaryMessageToNameValuesAndWiseVersa() {
+        
+        final long beforeMillis = System.currentTimeMillis();
         
         List<NameValue> nameValues = new LinkedList<NameValue>();
         nameValues.add(new NameValue("name3".getBytes(), new byte[][]{"value3".getBytes(), "value41".getBytes()}));
         nameValues.add(new NameValue("name1".getBytes(), new byte[][]{"value1".getBytes()}));
         nameValues.add(new NameValue("name2".getBytes(), new byte[][]{"value2".getBytes()}));
         
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < MAX_NAME_VALUE_PAIRS; i++) {
             
             byte[][] values = {
                     new byte[] {'v', 'a', 'l', 'u', 'e', '1'}, 
@@ -226,6 +232,19 @@ public class WffBinaryMessageUtilTest {
         byte[] message = WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues);
         
         List<NameValue> actualNameValues = WffBinaryMessageUtil.VERSION_1.parse(message);
+        
+        final long afterMillis = System.currentTimeMillis();
+        
+        final long totalMillisTaken = afterMillis - beforeMillis;
+        
+        if (totalMillisTaken > 100) {
+            Assert.fail(testName.getMethodName() + " took "
+                    + totalMillisTaken + " ms, maximum 100mx is allowed");
+        } else {
+            System.out.println(testName.getMethodName() + " took just "
+                    + totalMillisTaken + " ms for building and parsing "
+                    + MAX_NAME_VALUE_PAIRS + " name-value pairs.");
+        }
         
         for (int i = 0; i < actualNameValues.size(); i++) {
             
