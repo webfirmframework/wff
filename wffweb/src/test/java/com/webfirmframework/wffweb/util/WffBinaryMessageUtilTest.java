@@ -15,17 +15,41 @@
  */
 package com.webfirmframework.wffweb.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
 
 import java.util.LinkedList;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 
 import com.webfirmframework.wffweb.util.data.NameValue;
 
 public class WffBinaryMessageUtilTest {
+
+    @Rule
+    public TestName testName = new TestName();
+
+    private long beforeMillis;
+    private long afterMillis;
+
+    @Before
+    public void beforeTest() throws Exception {
+        beforeMillis = System.currentTimeMillis();
+    }
+
+    @After
+    public void afterTest() throws Exception {
+        afterMillis = System.currentTimeMillis();
+        if ((afterMillis - beforeMillis) > 100) {
+            Assert.fail(testName.getMethodName() + " took "
+                    + (afterMillis - beforeMillis) + "ms");
+        }
+    }
 
     //@formatter:off
     @Test
@@ -149,6 +173,40 @@ public class WffBinaryMessageUtilTest {
         nameValues.add(new NameValue("name3".getBytes(), new byte[][]{"value3".getBytes(), "value41".getBytes()}));
         nameValues.add(new NameValue("name1".getBytes(), new byte[][]{"value1".getBytes()}));
         nameValues.add(new NameValue("name2".getBytes(), new byte[][]{"value2".getBytes()}));
+
+        byte[] message = WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues);
+        
+        List<NameValue> actualNameValues = WffBinaryMessageUtil.VERSION_1.parse(message);
+        
+        for (int i = 0; i < actualNameValues.size(); i++) {
+            
+            final NameValue expectedNameValue = nameValues.get(i);
+            
+            NameValue actualNameValue = actualNameValues.get(i);
+            
+            assertArrayEquals(expectedNameValue.getName(), actualNameValue.getName());
+            
+            final byte[][] values = expectedNameValue.getValues();
+            
+            for (int j = 0; j < values.length; j++) {
+                assertArrayEquals(expectedNameValue.getValues()[j], actualNameValue.getValues()[j]);
+            }
+            
+        }
+    }
+   
+    
+    @Test
+    public void testPerformanceOfWffBinaryMessageToNameValuesAndWiseVersa() {
+        System.out.println(beforeMillis);
+        List<NameValue> nameValues = new LinkedList<NameValue>();
+        nameValues.add(new NameValue("name3".getBytes(), new byte[][]{"value3".getBytes(), "value41".getBytes()}));
+        nameValues.add(new NameValue("name1".getBytes(), new byte[][]{"value1".getBytes()}));
+        nameValues.add(new NameValue("name2".getBytes(), new byte[][]{"value2".getBytes()}));
+        
+        for (int i = 0; i < 1000; i++) {
+            nameValues.add(new NameValue("name4".getBytes(), new byte[][]{"value41".getBytes(), "value42".getBytes()}));
+        }
 
         byte[] message = WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues);
         
