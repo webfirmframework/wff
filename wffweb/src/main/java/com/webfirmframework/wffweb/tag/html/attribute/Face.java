@@ -76,6 +76,7 @@ public class Face extends AbstractAttribute implements BaseFontAttributable {
      * @since 1.0.0
      */
     protected void init() {
+        // to override and use this method
     }
 
 }
