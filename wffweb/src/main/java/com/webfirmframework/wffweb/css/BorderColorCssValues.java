@@ -367,10 +367,8 @@ public class BorderColorCssValues extends AbstractBean<BorderColorCssValues>
                     16);
             // Long.parseLong("FFFFFF", 16) gives 16777215L;
             final long maxCssValue = 16777215L;
-            if (value > maxCssValue || value < 0) {
-                return false;
-            }
-            return true;
+
+            return !(value > maxCssValue || value < 0);
         } catch (final NumberFormatException ex) {
         }
 
