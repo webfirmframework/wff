@@ -948,12 +948,12 @@ public class Style extends AbstractAttribute
                 final boolean addToAttributeValueMap = addToAttributeValueMap(
                         cssProperty.getCssName(),
                         styleValue.getCssValue() + " " + IMPORTANT);
-                if (addToAttributeValueMap) {
-                    if (styleValue instanceof AbstractCssProperty) {
-                        abstractCssPropertyClassObjects.put(
-                                cssProperty.getCssName(),
-                                (AbstractCssProperty<?>) cssProperty);
-                    }
+
+                if (addToAttributeValueMap
+                        && styleValue instanceof AbstractCssProperty) {
+                    abstractCssPropertyClassObjects.put(
+                            cssProperty.getCssName(),
+                            (AbstractCssProperty<?>) cssProperty);
                 }
             }
         } else {
