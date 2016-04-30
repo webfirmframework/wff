@@ -61,6 +61,7 @@ public class Controls extends AbstractAttribute implements AudioAttributable {
      * @since 1.0.0
      */
     protected void init() {
+        // to override and use this method
     }
 
     /**

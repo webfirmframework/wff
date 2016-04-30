@@ -78,7 +78,8 @@ public class Width extends AbstractAttribute implements InputAttributable {
         setAttributeValue(htmlString);
     }
 
-    private void init() {
+    protected void init() {
+        // to override and use this method
     }
 
     /**
