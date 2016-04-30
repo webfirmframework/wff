@@ -293,10 +293,13 @@ public class ColumnGap extends AbstractCssProperty<ColumnGap> {
      * @since 1.0.0
      */
     public static boolean isValid(final String cssValue) {
+
         final String trimmedCssValue = cssValue.trim().toLowerCase();
+
         if (trimmedCssValue.contains(" ")) {
             return false;
         }
+
         for (final CssLengthUnit cssLengthUnit : CssLengthUnit.values()) {
             final String unit = cssLengthUnit.getUnit();
             if (trimmedCssValue.endsWith(unit)) {
@@ -309,9 +312,7 @@ public class ColumnGap extends AbstractCssProperty<ColumnGap> {
                 return true;
             }
         }
-        if (PREDEFINED_CONSTANTS.contains(trimmedCssValue)) {
-            return true;
-        }
-        return false;
+
+        return PREDEFINED_CONSTANTS.contains(trimmedCssValue);
     }
 }
