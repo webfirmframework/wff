@@ -269,15 +269,13 @@ public class FontFamily extends AbstractCssProperty<FontFamily> {
             }
 
             final String familyName = trimmed.substring(begin, end);
-            if (validate) {
-                if (!FONT_FAMILY_NAMES
-                        .contains(TagStringUtil.toLowerCase(familyName))) {
-                    throw new InvalidValueException("font-family name "
-                            + familyName
-                            + " is not valid against the family names added by addFontFamilyName and addFontFamilyNames methods");
-                }
 
+            if (validate && !FONT_FAMILY_NAMES
+                    .contains(TagStringUtil.toLowerCase(familyName))) {
+                throw new InvalidValueException("font-family name " + familyName
+                        + " is not valid against the family names added by addFontFamilyName and addFontFamilyNames methods");
             }
+
             parts[count] = familyName;
 
             count++;
