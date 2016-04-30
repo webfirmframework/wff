@@ -325,11 +325,10 @@ public class HslaCssValue extends AbstractBean<HslaCssValue> {
                     if (b < 0 || b > 100) {
                         return false;
                     }
+
                     final float a = Float.parseFloat(hslStringParts[3]);
-                    if (a < 0 || a > 1) {
-                        return false;
-                    }
-                    return true;
+
+                    return !(a < 0 || a > 1);
                 }
                 return false;
             }
