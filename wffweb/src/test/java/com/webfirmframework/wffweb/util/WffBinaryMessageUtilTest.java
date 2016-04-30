@@ -36,7 +36,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.webfirmframework.wffweb.util.data.NameValue;
 
+import de.undercouch.bson4jackson.BsonFactory;
+
 public class WffBinaryMessageUtilTest {
+
+    private static final int MAX_NAME_VALUE_PAIRS = 1000;
 
     @Rule
     public TestName testName = new TestName();
@@ -205,30 +209,10 @@ public class WffBinaryMessageUtilTest {
         }
     }
    
-    private static final int MAX_NAME_VALUE_PAIRS = 1000;
-    
     @Test
     public void testPerformanceOfWffBinaryMessageToNameValuesAndWiseVersa() {
         
-        List<NameValue> nameValues = new LinkedList<NameValue>();
-        
-        for (int i = 0; i < MAX_NAME_VALUE_PAIRS; i++) {
-            
-            byte[][] values = {
-                    new byte[] {'v', 'a', 'l', 'u', 'e', '1'}, 
-                    new byte[] {'v', 'a', 'l', 'u', 'e', '2'}, 
-                    new byte[] {'v', 'a', 'l', 'u', 'e', '3'}, 
-                    new byte[] {'v', 'a', 'l', 'u', 'e', '4'}, 
-                    new byte[] {'v', 'a', 'l', 'u', 'e', '5'}, 
-                    new byte[] {'v', 'a', 'l', 'u', 'e', '6'}, 
-                    new byte[] {'v', 'a', 'l', 'u', 'e', '7'}, 
-                    new byte[] {'v', 'a', 'l', 'u', 'e', '8'}, 
-                    new byte[] {'v', 'a', 'l', 'u', 'e', '9'}, 
-                    new byte[] {'v', 'a', 'l', 'u', 'e', '1', '0'} 
-                    };
-            
-            nameValues.add(new NameValue(("nameeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" + i).getBytes(), values));
-        }
+        List<NameValue> nameValues = getProducedNameValues();
 
         long beforeMillis = System.currentTimeMillis();
         
@@ -267,22 +251,7 @@ public class WffBinaryMessageUtilTest {
         
         try {
             
-            Map<String, List<String>> jsonObject = new HashMap<String, List<String>>();
-            
-            for (int i = 0; i < MAX_NAME_VALUE_PAIRS; i++) {
-                List<String> values = new LinkedList<String>();
-                values.add("value1");
-                values.add("value2");
-                values.add("value3");
-                values.add("value4");
-                values.add("value5");
-                values.add("value6");
-                values.add("value7");
-                values.add("value8");
-                values.add("value9");
-                values.add("value10");
-                jsonObject.put("nameeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" + i , values);   
-            }
+            Map<String, List<String>> jsonObject = getProducedJsonObject();
             
             ObjectMapper objectMapper = new ObjectMapper();
             
@@ -312,10 +281,8 @@ public class WffBinaryMessageUtilTest {
             e.printStackTrace();
         }
     }
-    
-    @Test
-    public void testWffBinaryMessageBytesLengthIsLowerThanBson() throws Exception {
-        
+
+    private List<NameValue> getProducedNameValues() {
         List<NameValue> nameValues = new LinkedList<NameValue>();
         
         for (int i = 0; i < MAX_NAME_VALUE_PAIRS; i++) {
@@ -335,9 +302,33 @@ public class WffBinaryMessageUtilTest {
             
             nameValues.add(new NameValue(("nameeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" + i).getBytes(), values));
         }
+        return nameValues;
+    }
+    
+    @Test
+    public void testWffBinaryMessageBytesLengthIsLowerThanBson() throws Exception {
+        
+        List<NameValue> nameValues = getProducedNameValues();
 
         byte[] message = WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues);
         
+        Map<String, List<String>> jsonObject = getProducedJsonObject();
+        
+        ObjectMapper bsonMapper = new ObjectMapper(
+                new BsonFactory());
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bsonMapper.writeValue(baos, jsonObject);
+        byte[] bsonBytes = baos.toByteArray();
+        assertTrue(message.length < bsonBytes.length);
+        
+        if (message.length < bsonBytes.length) {
+            System.out.println("the length of wff binary message is lower than bson bytes, the ratio wff binary message:bson = " + (message.length + ":" + bsonBytes.length)+ ", gain is " + (bsonBytes.length - message.length) + " bytes");
+        }
+        
+    }
+
+    private Map<String, List<String>> getProducedJsonObject() {
         Map<String, List<String>> jsonObject = new HashMap<String, List<String>>();
         
         for (int i = 0; i < MAX_NAME_VALUE_PAIRS; i++) {
@@ -354,19 +345,7 @@ public class WffBinaryMessageUtilTest {
             values.add("value10");
             jsonObject.put("nameeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" + i , values);   
         }
-        
-        ObjectMapper bsonMapper = new ObjectMapper(
-                new de.undercouch.bson4jackson.BsonFactory());
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bsonMapper.writeValue(baos, jsonObject);
-        byte[] bsonBytes = baos.toByteArray();
-        assertTrue(message.length < bsonBytes.length);
-        
-        if (message.length < bsonBytes.length) {
-            System.out.println("the length of wff binary message is lower than bson bytes, the ratio wff binary message:bson = " + (message.length + ":" + bsonBytes.length)+ ", gain is " + (bsonBytes.length - message.length) + " bytes");
-        }
-        
+        return jsonObject;
     }
     
 
