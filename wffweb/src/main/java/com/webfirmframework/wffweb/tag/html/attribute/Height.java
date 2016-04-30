@@ -79,6 +79,7 @@ public class Height extends AbstractAttribute implements InputAttributable {
     }
 
     private void init() {
+        // to override and use this method
     }
 
     /**
