@@ -35,7 +35,9 @@ public class StringBuilderUtil {
      * @author WFF
      */
     public static String getTrimmedString(final StringBuilder sb) {
-        int first, last;
+
+        int first;
+        int last;
 
         for (first = 0; first < sb.length(); first++) {
             if (!Character.isWhitespace(sb.charAt(first))) {
