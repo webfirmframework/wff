@@ -955,15 +955,17 @@ public class Style extends AbstractAttribute
             }
         } else {
             for (final CssProperty styleValue : cssProperties) {
+
                 final CssProperty cssProperty = styleValue;
+
                 final boolean addToAttributeValueMap = addToAttributeValueMap(
                         cssProperty.getCssName(), styleValue.getCssValue());
-                if (addToAttributeValueMap) {
-                    if (styleValue instanceof AbstractCssProperty) {
-                        abstractCssPropertyClassObjects.put(
-                                cssProperty.getCssName(),
-                                (AbstractCssProperty<?>) cssProperty);
-                    }
+
+                if (addToAttributeValueMap
+                        && styleValue instanceof AbstractCssProperty) {
+                    abstractCssPropertyClassObjects.put(
+                            cssProperty.getCssName(),
+                            (AbstractCssProperty<?>) cssProperty);
                 }
             }
         }
