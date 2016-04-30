@@ -421,7 +421,10 @@ public class Style extends AbstractAttribute
     protected Map<String, AbstractCssProperty<?>> abstractCssPropertyClassObjects;
 
     private boolean fromAddCssProperty;
+
     private boolean fromRemoveCssProperty;
+
+    private boolean clearOnlyInCssProperties;
 
     static {
         CSSPROPERTY_CLASSES.put(CssNameConstants.ALIGN_CONTENT,
@@ -1380,7 +1383,6 @@ public class Style extends AbstractAttribute
         return null;
     }
 
-    private boolean clearOnlyInCssProperties;
     // TODO review this code later
     private final Set<CssProperty> cssProperties = new HashSet<CssProperty>() {
 
