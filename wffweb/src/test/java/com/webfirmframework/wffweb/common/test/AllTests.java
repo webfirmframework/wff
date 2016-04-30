@@ -115,6 +115,7 @@ import com.webfirmframework.wffweb.css.css3.WebkitColumnGapTest;
 import com.webfirmframework.wffweb.css.css3.WebkitColumnRuleColorTest;
 import com.webfirmframework.wffweb.css.css3.WebkitColumnRuleTest;
 import com.webfirmframework.wffweb.css.css3.WebkitColumnRuleWidthTest;
+import com.webfirmframework.wffweb.css.css3.WebkitColumnSpanTest;
 import com.webfirmframework.wffweb.css.css3.WebkitColumnWidthTest;
 import com.webfirmframework.wffweb.css.css3.WebkitFlexBasisTest;
 import com.webfirmframework.wffweb.css.css3.WebkitFlexGrowTest;
@@ -175,7 +176,8 @@ import com.webfirmframework.wffweb.util.WffBinaryMessageUtilTest;
         ColumnsTest.class, CssLengthUtilTest.class, ObjectUtilTest.class,
         BorderImageRepeatTest.class, BorderImageWidthTest.class,
         BorderImageOutsetTest.class, BorderImageSliceTest.class,
-        BorderImageSourceTest.class, WffBinaryMessageUtilTest.class })
+        BorderImageSourceTest.class, WffBinaryMessageUtilTest.class,
+        ColumnCountTest.class, WebkitColumnSpanTest.class })
 public class AllTests {
 
 }

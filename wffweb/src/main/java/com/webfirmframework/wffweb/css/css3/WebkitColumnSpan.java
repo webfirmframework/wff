@@ -37,8 +37,6 @@ public enum WebkitColumnSpan implements CssProperty {
 
     ONE("1"), ALL("all"), INITIAL("initial"), INHERIT("inherit");
 
-    private final String upperCaseSuperToString;
-
     private final String superToString;
 
     private final String toString;
@@ -53,17 +51,18 @@ public enum WebkitColumnSpan implements CssProperty {
     static {
         Collection<String> upperCaseSuperToStringsTemp = new ArrayList<String>();
 
-        int min = values()[0].upperCaseSuperToString.length();
+        int min = values()[0].superToString.length();
         int max = 0;
         for (int i = 0; i < values().length; i++) {
-            final int length = values()[i].upperCaseSuperToString.length();
+            final int length = values()[i].superToString.length();
             if (max < length) {
                 max = length;
             }
             if (min > length) {
                 min = length;
             }
-            upperCaseSuperToStringsTemp.add(values()[i].upperCaseSuperToString);
+            upperCaseSuperToStringsTemp
+                    .add(TagStringUtil.toUpperCase(values()[i].superToString));
         }
         LOWEST_LENGTH = min;
         HIGHEST_LENGTH = max;
@@ -76,7 +75,6 @@ public enum WebkitColumnSpan implements CssProperty {
 
     private WebkitColumnSpan(final String value) {
         superToString = value;
-        upperCaseSuperToString = TagStringUtil.toUpperCase(superToString);
         toString = getCssName() + ": " + getCssValue();
     }
 
