@@ -73,44 +73,48 @@ public class HslaCssValue extends AbstractBean<HslaCssValue> {
      * @since 1.0.0
      * @author WFF
      */
-    private void extractAndAssign(String hslString) {
-        hslString = hslString.replace(" ", "").toLowerCase();
-        if (hslString.startsWith("hsla(") && hslString.contains(")")) {
-            final String hsl = hslString.replace(",", ", ");
+    private void extractAndAssign(final String hslString) {
 
-            final String[] hslStringParts = hslString
-                    .substring(hslString.indexOf('(') + 1,
-                            hslString.lastIndexOf(')'))
+        final String hslStringLowerCase = hslString.replace(" ", "")
+                .toLowerCase();
+
+        if (hslStringLowerCase.startsWith("hsla(")
+                && hslStringLowerCase.contains(")")) {
+            final String hsl = hslStringLowerCase.replace(",", ", ");
+
+            final String[] hslStringParts = hslStringLowerCase
+                    .substring(hslStringLowerCase.indexOf('(') + 1,
+                            hslStringLowerCase.lastIndexOf(')'))
                     .split("[,]");
 
             if (hslStringParts.length == 4) {
                 h = Integer.parseInt(hslStringParts[0]);
                 if (h < 0 || h > 360) {
-                    throw new InvalidValueException(hslString
+                    throw new InvalidValueException(hslStringLowerCase
                             + " is not a valid hsl string. h value in hslString should be in between 0 to 360, eg: hsla(120, 25%, 15%, 1)");
                 }
                 s = Float.parseFloat(hslStringParts[1].replace("%", ""));
                 if (s < 0 || s > 100) {
-                    throw new InvalidValueException(hslString
+                    throw new InvalidValueException(hslStringLowerCase
                             + " is not a valid hsl string. s value in hslString should be in between 0 to 100, eg: hsla(120, 25%, 15%, 1)");
                 }
                 l = Float.parseFloat(hslStringParts[2].replace("%", ""));
                 if (l < 0 || l > 100) {
-                    throw new InvalidValueException(hslString
+                    throw new InvalidValueException(hslStringLowerCase
                             + " is not a valid hsl string. l value in hslString should be in between 0 to 100, eg: hsla(120, 25%, 15%, 1)");
                 }
                 a = Float.parseFloat(hslStringParts[3]);
                 if (a < 0 || a > 1) {
-                    throw new InvalidValueException(hslString
+                    throw new InvalidValueException(hslStringLowerCase
                             + " is not a valid hsl string. h value in hslString should be in between 0 to 360, eg: hsla(120, 25%, 15%, 1)");
                 }
                 this.hsl = hsl;
             } else {
-                throw new InvalidValueException(hslString
+                throw new InvalidValueException(hslStringLowerCase
                         + " is not a valid hsl string. It should be in the format of hsla(120, 25%, 15%, 1)");
             }
         } else {
-            throw new InvalidValueException(hslString
+            throw new InvalidValueException(hslStringLowerCase
                     + " is not a valid hsl string. It should be in the format of hsla(120, 25%, 15%, 1)");
         }
     }
