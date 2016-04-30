@@ -347,10 +347,8 @@ public class LineHeight extends AbstractCssProperty<LineHeight> {
         }
 
         try {
-            if (Float.parseFloat(trimmedCssValue) < 0) {
-                return false;
-            }
-            return true;
+
+            return !(Float.parseFloat(trimmedCssValue) < 0);
         } catch (final NumberFormatException e) {
             // NOP
         }
