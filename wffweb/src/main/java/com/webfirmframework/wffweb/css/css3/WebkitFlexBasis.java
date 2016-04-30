@@ -297,11 +297,14 @@ public class WebkitFlexBasis extends AbstractCssProperty<WebkitFlexBasis> {
      * @since 1.0.0
      */
     public static boolean isValid(final String cssValue) {
+
         final String trimmedCssValue = TagStringUtil
                 .toLowerCase(cssValue.trim());
+
         if (trimmedCssValue.contains(" ")) {
             return false;
         }
+
         for (final CssLengthUnit cssLengthUnit : CssLengthUnit.values()) {
             final String unit = cssLengthUnit.getUnit();
             if (trimmedCssValue.endsWith(unit)) {
@@ -314,9 +317,7 @@ public class WebkitFlexBasis extends AbstractCssProperty<WebkitFlexBasis> {
                 return true;
             }
         }
-        if (PREDEFINED_CONSTANTS.contains(trimmedCssValue)) {
-            return true;
-        }
-        return false;
+
+        return PREDEFINED_CONSTANTS.contains(trimmedCssValue);
     }
 }
