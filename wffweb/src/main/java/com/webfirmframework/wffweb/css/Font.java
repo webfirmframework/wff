@@ -189,30 +189,30 @@ public class Font extends AbstractCssProperty<Font>
         */
         // @formatter:on
 
-        if (cssValueParts.length == 1) {
-            if (PREDEFINED_CONSTANTS.contains(trimmedCssValue)) {
-                fontStyle = null;
-                fontVariant = null;
-                fontWeight = null;
-                if (fontSize != null) {
-                    fontSize.setAlreadyInUse(false);
-                    fontSize = null;
-                }
-                if (lineHeight != null) {
-                    lineHeight.setAlreadyInUse(false);
-                    lineHeight = null;
-                }
-                if (fontFamily != null) {
-                    fontFamily.setAlreadyInUse(false);
-                    fontFamily = null;
-                }
+        if (cssValueParts.length == 1
+                && PREDEFINED_CONSTANTS.contains(trimmedCssValue)) {
 
-                this.cssValue = trimmedCssValue;
-                if (getStateChangeInformer() != null) {
-                    getStateChangeInformer().stateChanged(this);
-                }
-                return this;
+            fontStyle = null;
+            fontVariant = null;
+            fontWeight = null;
+            if (fontSize != null) {
+                fontSize.setAlreadyInUse(false);
+                fontSize = null;
             }
+            if (lineHeight != null) {
+                lineHeight.setAlreadyInUse(false);
+                lineHeight = null;
+            }
+            if (fontFamily != null) {
+                fontFamily.setAlreadyInUse(false);
+                fontFamily = null;
+            }
+
+            this.cssValue = trimmedCssValue;
+            if (getStateChangeInformer() != null) {
+                getStateChangeInformer().stateChanged(this);
+            }
+            return this;
         }
 
         FontStyle fontStyle = null;
