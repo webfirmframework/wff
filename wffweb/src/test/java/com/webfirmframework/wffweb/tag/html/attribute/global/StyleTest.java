@@ -204,7 +204,7 @@ public class StyleTest {
             
             style.addCssProperty("dfd", "ddddfd");
             
-            CssProperty cssProperty = style.getCssProperty("dfd");
+            style.getCssProperty("dfd");
             
             assertNotNull(style
                     .getCssProperty(CssNameConstants.ALIGN_CONTENT));
@@ -365,6 +365,7 @@ public class StyleTest {
         if (cssProperty != null
                 && CssNameConstants.ALIGN_CONTENT.equals(cssProperty.getCssName())) {
             AlignContent alignContent = (AlignContent) cssProperty;
+            System.out.println("alignContent.getCssValue() "+alignContent.getCssValue());
             System.out.println("cssProperty.getValue()"
                     + cssProperty.getCssValue());
         }
