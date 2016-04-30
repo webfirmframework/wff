@@ -86,6 +86,7 @@ public class FormTarget extends AbstractAttribute implements InputAttributable {
      * @since 1.0.0
      */
     protected void init() {
+        // to override and use this method
     }
 
 }

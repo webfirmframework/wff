@@ -89,6 +89,7 @@ public class Size extends AbstractAttribute
      * @since 1.0.0
      */
     protected void init() {
+        // to override and use this method
     }
 
 }
