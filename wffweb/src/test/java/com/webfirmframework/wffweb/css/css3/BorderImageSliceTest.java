@@ -16,22 +16,17 @@
 package com.webfirmframework.wffweb.css.css3;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import org.junit.Assert;
-
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.css.CssLengthUnit;
 import com.webfirmframework.wffweb.css.CssNameConstants;
-import com.webfirmframework.wffweb.css.css3.BorderImageSlice;
-import com.webfirmframework.wffweb.css.css3.BorderImageWidth;
 
 /**
  * @author WFF
@@ -71,61 +66,69 @@ public class BorderImageSliceTest {
      * .
      */
     @Test
-    public void testBorderImageSliceString() {
-        {
-            BorderImageSlice borderImageSlice = new BorderImageSlice(
-                    "5 15 25 35");
-            assertEquals("5.0 15.0 25.0 35.0", borderImageSlice.getCssValue());
+    public void testBorderImageSliceString1() {
+        BorderImageSlice borderImageSlice = new BorderImageSlice("5 15 25 35");
+        assertEquals("5.0 15.0 25.0 35.0", borderImageSlice.getCssValue());
 
-            assertTrue(5F == borderImageSlice.getTop());
-            assertTrue(15F == borderImageSlice.getRight());
-            assertTrue(25F == borderImageSlice.getBottom());
-            assertTrue(35F == borderImageSlice.getLeft());
-            assertNull(borderImageSlice.getTopUnit());
-            assertNull(borderImageSlice.getRightUnit());
-            assertNull(borderImageSlice.getBottomUnit());
-            assertNull(borderImageSlice.getLeftUnit());
-        }
-        {
-            BorderImageSlice borderImageSlice = new BorderImageSlice(
-                    "5px 15px 25px 35px");
-            assertEquals("5.0px 15.0px 25.0px 35.0px",
-                    borderImageSlice.getCssValue());
+        assertTrue(5F == borderImageSlice.getTop());
+        assertTrue(15F == borderImageSlice.getRight());
+        assertTrue(25F == borderImageSlice.getBottom());
+        assertTrue(35F == borderImageSlice.getLeft());
+        assertNull(borderImageSlice.getTopUnit());
+        assertNull(borderImageSlice.getRightUnit());
+        assertNull(borderImageSlice.getBottomUnit());
+        assertNull(borderImageSlice.getLeftUnit());
 
-            assertTrue(5F == borderImageSlice.getTop());
-            assertTrue(15F == borderImageSlice.getRight());
-            assertTrue(25F == borderImageSlice.getBottom());
-            assertTrue(35F == borderImageSlice.getLeft());
+    }
 
-            assertNotNull(borderImageSlice.getTopUnit());
-            assertNotNull(borderImageSlice.getRightUnit());
-            assertNotNull(borderImageSlice.getBottomUnit());
-            assertNotNull(borderImageSlice.getLeftUnit());
+    @Test
+    public void testBorderImageSliceString2() {
+        BorderImageSlice borderImageSlice = new BorderImageSlice(
+                "5px 15px 25px 35px");
+        assertEquals("5.0px 15.0px 25.0px 35.0px",
+                borderImageSlice.getCssValue());
 
-            assertEquals(CssLengthUnit.PX, borderImageSlice.getTopUnit());
-            assertEquals(CssLengthUnit.PX, borderImageSlice.getRightUnit());
-            assertEquals(CssLengthUnit.PX, borderImageSlice.getBottomUnit());
-            assertEquals(CssLengthUnit.PX, borderImageSlice.getLeftUnit());
-        }
-        {
-            BorderImageSlice borderImageSlice = new BorderImageSlice(
-                    "25px 25px 25px 25px");
-            assertEquals("25.0px", borderImageSlice.getCssValue());
-            assertTrue(25F == borderImageSlice.getTop());
-            assertTrue(25F == borderImageSlice.getRight());
-            assertTrue(25F == borderImageSlice.getBottom());
-            assertTrue(25F == borderImageSlice.getLeft());
+        assertTrue(5F == borderImageSlice.getTop());
+        assertTrue(15F == borderImageSlice.getRight());
+        assertTrue(25F == borderImageSlice.getBottom());
+        assertTrue(35F == borderImageSlice.getLeft());
 
-            assertNotNull(borderImageSlice.getTopUnit());
-            assertNotNull(borderImageSlice.getRightUnit());
-            assertNotNull(borderImageSlice.getBottomUnit());
-            assertNotNull(borderImageSlice.getLeftUnit());
+        assertNotNull(borderImageSlice.getTopUnit());
+        assertNotNull(borderImageSlice.getRightUnit());
+        assertNotNull(borderImageSlice.getBottomUnit());
+        assertNotNull(borderImageSlice.getLeftUnit());
 
-            assertEquals(CssLengthUnit.PX, borderImageSlice.getTopUnit());
-            assertEquals(CssLengthUnit.PX, borderImageSlice.getRightUnit());
-            assertEquals(CssLengthUnit.PX, borderImageSlice.getBottomUnit());
-            assertEquals(CssLengthUnit.PX, borderImageSlice.getLeftUnit());
-        }
+        assertEquals(CssLengthUnit.PX, borderImageSlice.getTopUnit());
+        assertEquals(CssLengthUnit.PX, borderImageSlice.getRightUnit());
+        assertEquals(CssLengthUnit.PX, borderImageSlice.getBottomUnit());
+        assertEquals(CssLengthUnit.PX, borderImageSlice.getLeftUnit());
+
+    }
+
+    @Test
+    public void testBorderImageSliceString3() {
+        BorderImageSlice borderImageSlice = new BorderImageSlice(
+                "25px 25px 25px 25px");
+        assertEquals("25.0px", borderImageSlice.getCssValue());
+        assertTrue(25F == borderImageSlice.getTop());
+        assertTrue(25F == borderImageSlice.getRight());
+        assertTrue(25F == borderImageSlice.getBottom());
+        assertTrue(25F == borderImageSlice.getLeft());
+
+        assertNotNull(borderImageSlice.getTopUnit());
+        assertNotNull(borderImageSlice.getRightUnit());
+        assertNotNull(borderImageSlice.getBottomUnit());
+        assertNotNull(borderImageSlice.getLeftUnit());
+
+        assertEquals(CssLengthUnit.PX, borderImageSlice.getTopUnit());
+        assertEquals(CssLengthUnit.PX, borderImageSlice.getRightUnit());
+        assertEquals(CssLengthUnit.PX, borderImageSlice.getBottomUnit());
+        assertEquals(CssLengthUnit.PX, borderImageSlice.getLeftUnit());
+
+    }
+
+    @Test
+    public void testBorderImageSliceString4() {
         {
             BorderImageSlice borderImageSlice = new BorderImageSlice(
                     "25px 25px 55px 55px");
@@ -152,29 +155,32 @@ public class BorderImageSliceTest {
         {
             BorderImageSlice borderImageSlice = new BorderImageSlice(
                     "35px 25px 45px 25px ");
-            assertEquals("35.0px 25.0px 45.0px", borderImageSlice.getCssValue());
+            assertEquals("35.0px 25.0px 45.0px",
+                    borderImageSlice.getCssValue());
         }
         {
             BorderImageSlice borderImageSlice = new BorderImageSlice(
                     "35px 25px 35px 25px ");
             assertEquals("35.0px 25.0px", borderImageSlice.getCssValue());
         }
-        {
-            BorderImageSlice borderImageSlice = new BorderImageSlice(
-                    BorderImageSlice.INHERIT);
-            assertEquals(BorderImageSlice.INHERIT,
-                    borderImageSlice.getCssValue());
 
-            assertNull(borderImageSlice.getTop());
-            assertNull(borderImageSlice.getRight());
-            assertNull(borderImageSlice.getBottom());
-            assertNull(borderImageSlice.getLeft());
+    }
 
-            assertNull(borderImageSlice.getTopUnit());
-            assertNull(borderImageSlice.getRightUnit());
-            assertNull(borderImageSlice.getBottomUnit());
-            assertNull(borderImageSlice.getLeftUnit());
-        }
+    @Test
+    public void testBorderImageSliceString5() {
+        BorderImageSlice borderImageSlice = new BorderImageSlice(
+                BorderImageSlice.INHERIT);
+        assertEquals(BorderImageSlice.INHERIT, borderImageSlice.getCssValue());
+
+        assertNull(borderImageSlice.getTop());
+        assertNull(borderImageSlice.getRight());
+        assertNull(borderImageSlice.getBottom());
+        assertNull(borderImageSlice.getLeft());
+
+        assertNull(borderImageSlice.getTopUnit());
+        assertNull(borderImageSlice.getRightUnit());
+        assertNull(borderImageSlice.getBottomUnit());
+        assertNull(borderImageSlice.getLeftUnit());
     }
 
     /**
@@ -185,7 +191,8 @@ public class BorderImageSliceTest {
     @Test
     public void testBorderImageSliceBorderImageSlice() {
         {
-            BorderImageSlice borderImageSlice = new BorderImageSlice("35px 25px 35px 25px ");
+            BorderImageSlice borderImageSlice = new BorderImageSlice(
+                    "35px 25px 35px 25px ");
             assertEquals("35.0px 25.0px", borderImageSlice.getCssValue());
         }
         {
@@ -292,7 +299,8 @@ public class BorderImageSliceTest {
 
     /**
      * Test method for
-     * {@link com.webfirmframework.wffweb.css.css3.BorderImageSlice#getCssName()}.
+     * {@link com.webfirmframework.wffweb.css.css3.BorderImageSlice#getCssName()}
+     * .
      */
     @Test
     public void testGetCssName() {
@@ -302,7 +310,8 @@ public class BorderImageSliceTest {
 
     /**
      * Test method for
-     * {@link com.webfirmframework.wffweb.css.css3.BorderImageSlice#getCssValue()}.
+     * {@link com.webfirmframework.wffweb.css.css3.BorderImageSlice#getCssValue()}
+     * .
      */
     @Test
     public void testGetCssValue() {
@@ -332,14 +341,15 @@ public class BorderImageSliceTest {
         {
             BorderImageSlice borderImageSlice = new BorderImageSlice(
                     "35px 25px 45px 25px ");
-            assertEquals("35.0px 25.0px 45.0px", borderImageSlice.getCssValue());
+            assertEquals("35.0px 25.0px 45.0px",
+                    borderImageSlice.getCssValue());
         }
         {
             BorderImageSlice borderImageSlice = new BorderImageSlice(
                     "35px 25px 35px 25px ");
             assertEquals("35.0px 25.0px", borderImageSlice.getCssValue());
         }
-        
+
         {
             BorderImageSlice borderImageSlice = new BorderImageSlice(
                     "35px 25px 35px 25px fill");
@@ -361,22 +371,25 @@ public class BorderImageSliceTest {
         {
             BorderImageSlice borderImageSlice = new BorderImageSlice(
                     "25px 25px 55px 55px");
-            assertEquals(CssNameConstants.BORDER_IMAGE_SLICE
-                    + ": 25.0px 25.0px 55.0px 55.0px",
+            assertEquals(
+                    CssNameConstants.BORDER_IMAGE_SLICE
+                            + ": 25.0px 25.0px 55.0px 55.0px",
                     borderImageSlice.toString());
         }
         {
             BorderImageSlice borderImageSlice = new BorderImageSlice(
                     "25px 25px 25px 55px");
-            assertEquals(CssNameConstants.BORDER_IMAGE_SLICE
-                    + ": 25.0px 25.0px 25.0px 55.0px",
+            assertEquals(
+                    CssNameConstants.BORDER_IMAGE_SLICE
+                            + ": 25.0px 25.0px 25.0px 55.0px",
                     borderImageSlice.toString());
         }
         {
             BorderImageSlice borderImageSlice = new BorderImageSlice(
                     "25px 25px 55px 55px");
-            assertEquals(CssNameConstants.BORDER_IMAGE_SLICE
-                    + ": 25.0px 25.0px 55.0px 55.0px",
+            assertEquals(
+                    CssNameConstants.BORDER_IMAGE_SLICE
+                            + ": 25.0px 25.0px 55.0px 55.0px",
                     borderImageSlice.toString());
         }
         {
@@ -388,14 +401,17 @@ public class BorderImageSliceTest {
         {
             BorderImageSlice borderImageSlice = new BorderImageSlice(
                     "35px 25px 45px 25px ");
-            assertEquals(CssNameConstants.BORDER_IMAGE_SLICE
-                    + ": 35.0px 25.0px 45.0px", borderImageSlice.toString());
+            assertEquals(
+                    CssNameConstants.BORDER_IMAGE_SLICE
+                            + ": 35.0px 25.0px 45.0px",
+                    borderImageSlice.toString());
         }
         {
             BorderImageSlice borderImageSlice = new BorderImageSlice(
                     "35px 25px 35px 25px ");
-            assertEquals(CssNameConstants.BORDER_IMAGE_SLICE
-                    + ": 35.0px 25.0px", borderImageSlice.toString());
+            assertEquals(
+                    CssNameConstants.BORDER_IMAGE_SLICE + ": 35.0px 25.0px",
+                    borderImageSlice.toString());
         }
     }
 
@@ -433,7 +449,8 @@ public class BorderImageSliceTest {
 
     /**
      * Test method for
-     * {@link com.webfirmframework.wffweb.css.css3.BorderImageSlice#setAsInitial()}.
+     * {@link com.webfirmframework.wffweb.css.css3.BorderImageSlice#setAsInitial()}
+     * .
      */
     @Test
     public void testSetAsInitial() {
@@ -477,7 +494,8 @@ public class BorderImageSliceTest {
 
     /**
      * Test method for
-     * {@link com.webfirmframework.wffweb.css.css3.BorderImageSlice#setAsInherit()}.
+     * {@link com.webfirmframework.wffweb.css.css3.BorderImageSlice#setAsInherit()}
+     * .
      */
     @Test
     public void testSetAsInherit() {
@@ -520,7 +538,8 @@ public class BorderImageSliceTest {
 
     /**
      * Test method for
-     * {@link com.webfirmframework.wffweb.css.css3.BorderImageWidth#setAsAuto()}.
+     * {@link com.webfirmframework.wffweb.css.css3.BorderImageWidth#setAsAuto()}
+     * .
      */
     @Test
     public void testSetAsAuto() {
@@ -801,45 +820,52 @@ public class BorderImageSliceTest {
     /*
      * @Test public void testGetTop() { fail("Not yet implemented"); }
      *//**
-     * Test method for
-     * {@link com.webfirmframework.wffweb.css.css3.BorderImageSlice#getTopUnit()}.
-     */
+       * Test method for
+       * {@link com.webfirmframework.wffweb.css.css3.BorderImageSlice#getTopUnit()}
+       * .
+       */
     /*
      * @Test public void testGetTopUnit() { fail("Not yet implemented"); }
      *//**
-     * Test method for
-     * {@link com.webfirmframework.wffweb.css.css3.BorderImageSlice#getRight()}.
-     */
+       * Test method for
+       * {@link com.webfirmframework.wffweb.css.css3.BorderImageSlice#getRight()}
+       * .
+       */
     /*
      * @Test public void testGetRight() { fail("Not yet implemented"); }
      *//**
-     * Test method for
-     * {@link com.webfirmframework.wffweb.css.css3.BorderImageSlice#getRightUnit()}.
-     */
+       * Test method for
+       * {@link com.webfirmframework.wffweb.css.css3.BorderImageSlice#getRightUnit()}
+       * .
+       */
     /*
      * @Test public void testGetRightUnit() { fail("Not yet implemented"); }
      *//**
-     * Test method for
-     * {@link com.webfirmframework.wffweb.css.css3.BorderImageSlice#getBottom()}.
-     */
+       * Test method for
+       * {@link com.webfirmframework.wffweb.css.css3.BorderImageSlice#getBottom()}
+       * .
+       */
     /*
      * @Test public void testGetBottom() { fail("Not yet implemented"); }
      *//**
-     * Test method for
-     * {@link com.webfirmframework.wffweb.css.css3.BorderImageSlice#getBottomUnit()}.
-     */
+       * Test method for
+       * {@link com.webfirmframework.wffweb.css.css3.BorderImageSlice#getBottomUnit()}
+       * .
+       */
     /*
      * @Test public void testGetBottomUnit() { fail("Not yet implemented"); }
      *//**
-     * Test method for
-     * {@link com.webfirmframework.wffweb.css.css3.BorderImageSlice#getLeft()}.
-     */
+       * Test method for
+       * {@link com.webfirmframework.wffweb.css.css3.BorderImageSlice#getLeft()}
+       * .
+       */
     /*
      * @Test public void testGetLeft() { fail("Not yet implemented"); }
      *//**
-     * Test method for
-     * {@link com.webfirmframework.wffweb.css.css3.BorderImageSlice#getLeftUnit()}.
-     */
+       * Test method for
+       * {@link com.webfirmframework.wffweb.css.css3.BorderImageSlice#getLeftUnit()}
+       * .
+       */
     /*
      * @Test public void testGetLeftUnit() { fail("Not yet implemented"); }
      */
@@ -861,21 +887,25 @@ public class BorderImageSliceTest {
                         CssLengthUnit.CM, 15F, CssLengthUnit.EM, 20F,
                         CssLengthUnit.EX, null));
 
-        assertEquals("5.0px fill", BorderImageSlice.getProducedCssValue(5F,
-                CssLengthUnit.PX, 5F, CssLengthUnit.PX, 5F, CssLengthUnit.PX,
-                5F, CssLengthUnit.PX, BorderImageSlice.FILL));
+        assertEquals("5.0px fill",
+                BorderImageSlice.getProducedCssValue(5F, CssLengthUnit.PX, 5F,
+                        CssLengthUnit.PX, 5F, CssLengthUnit.PX, 5F,
+                        CssLengthUnit.PX, BorderImageSlice.FILL));
 
-        assertEquals("5.0px", BorderImageSlice.getProducedCssValue(5F,
-                CssLengthUnit.PX, 5F, CssLengthUnit.PX, 5F, CssLengthUnit.PX,
-                5F, CssLengthUnit.PX, null));
+        assertEquals("5.0px",
+                BorderImageSlice.getProducedCssValue(5F, CssLengthUnit.PX, 5F,
+                        CssLengthUnit.PX, 5F, CssLengthUnit.PX, 5F,
+                        CssLengthUnit.PX, null));
 
-        assertEquals("5.0px 15.0px fill", BorderImageSlice.getProducedCssValue(
-                5F, CssLengthUnit.PX, 15F, CssLengthUnit.PX, 5F,
-                CssLengthUnit.PX, 15F, CssLengthUnit.PX, BorderImageSlice.FILL));
+        assertEquals("5.0px 15.0px fill",
+                BorderImageSlice.getProducedCssValue(5F, CssLengthUnit.PX, 15F,
+                        CssLengthUnit.PX, 5F, CssLengthUnit.PX, 15F,
+                        CssLengthUnit.PX, BorderImageSlice.FILL));
 
-        assertEquals("5.0px 15.0px", BorderImageSlice.getProducedCssValue(5F,
-                CssLengthUnit.PX, 15F, CssLengthUnit.PX, 5F, CssLengthUnit.PX,
-                15F, CssLengthUnit.PX, null));
+        assertEquals("5.0px 15.0px",
+                BorderImageSlice.getProducedCssValue(5F, CssLengthUnit.PX, 15F,
+                        CssLengthUnit.PX, 5F, CssLengthUnit.PX, 15F,
+                        CssLengthUnit.PX, null));
 
         assertEquals("5.0px 15.0px 25.0px fill",
                 BorderImageSlice.getProducedCssValue(5F, CssLengthUnit.PX, 15F,
@@ -924,11 +954,13 @@ public class BorderImageSliceTest {
             assertTrue(valid);
         }
         {
-            final boolean valid = BorderImageSlice.isValid("45px  25px 15px 45rem fill");
+            final boolean valid = BorderImageSlice
+                    .isValid("45px  25px 15px 45rem fill");
             assertTrue(valid);
         }
         {
-            final boolean valid = BorderImageSlice.isValid("45px 25px 15px 45rem fill");
+            final boolean valid = BorderImageSlice
+                    .isValid("45px 25px 15px 45rem fill");
             assertTrue(valid);
         }
         {
@@ -940,7 +972,8 @@ public class BorderImageSliceTest {
             assertFalse(valid);
         }
         {
-            final boolean valid = BorderImageSlice.isValid("45rem fill 45rem fill");
+            final boolean valid = BorderImageSlice
+                    .isValid("45rem fill 45rem fill");
             assertFalse(valid);
         }
     }
@@ -958,17 +991,17 @@ public class BorderImageSliceTest {
                 .hasPredefinedConstantValue());
         assertFalse(new BorderImageSlice().hasPredefinedConstantValue());
     }
-    
+
     /**
      * Test method for
-     * {@link com.webfirmframework.wffweb.css.css3.BorderImageSlice#addFill()}
-     * .
+     * {@link com.webfirmframework.wffweb.css.css3.BorderImageSlice#addFill()} .
      */
     @Test
     public void testAddFill() {
 
-        BorderImageSlice borderImageSlice = new BorderImageSlice("5.0ch 10.0cm 15.0em 20.0ex fill");
-        
+        BorderImageSlice borderImageSlice = new BorderImageSlice(
+                "5.0ch 10.0cm 15.0em 20.0ex fill");
+
         assertEquals("5.0ch 10.0cm 15.0em 20.0ex fill",
                 borderImageSlice.getCssValue());
 
@@ -977,21 +1010,25 @@ public class BorderImageSliceTest {
                         CssLengthUnit.CM, 15F, CssLengthUnit.EM, 20F,
                         CssLengthUnit.EX, null));
 
-        assertEquals("5.0px fill", BorderImageSlice.getProducedCssValue(5F,
-                CssLengthUnit.PX, 5F, CssLengthUnit.PX, 5F, CssLengthUnit.PX,
-                5F, CssLengthUnit.PX, BorderImageSlice.FILL));
+        assertEquals("5.0px fill",
+                BorderImageSlice.getProducedCssValue(5F, CssLengthUnit.PX, 5F,
+                        CssLengthUnit.PX, 5F, CssLengthUnit.PX, 5F,
+                        CssLengthUnit.PX, BorderImageSlice.FILL));
 
-        assertEquals("5.0px", BorderImageSlice.getProducedCssValue(5F,
-                CssLengthUnit.PX, 5F, CssLengthUnit.PX, 5F, CssLengthUnit.PX,
-                5F, CssLengthUnit.PX, null));
+        assertEquals("5.0px",
+                BorderImageSlice.getProducedCssValue(5F, CssLengthUnit.PX, 5F,
+                        CssLengthUnit.PX, 5F, CssLengthUnit.PX, 5F,
+                        CssLengthUnit.PX, null));
 
-        assertEquals("5.0px 15.0px fill", BorderImageSlice.getProducedCssValue(
-                5F, CssLengthUnit.PX, 15F, CssLengthUnit.PX, 5F,
-                CssLengthUnit.PX, 15F, CssLengthUnit.PX, BorderImageSlice.FILL));
+        assertEquals("5.0px 15.0px fill",
+                BorderImageSlice.getProducedCssValue(5F, CssLengthUnit.PX, 15F,
+                        CssLengthUnit.PX, 5F, CssLengthUnit.PX, 15F,
+                        CssLengthUnit.PX, BorderImageSlice.FILL));
 
-        assertEquals("5.0px 15.0px", BorderImageSlice.getProducedCssValue(5F,
-                CssLengthUnit.PX, 15F, CssLengthUnit.PX, 5F, CssLengthUnit.PX,
-                15F, CssLengthUnit.PX, null));
+        assertEquals("5.0px 15.0px",
+                BorderImageSlice.getProducedCssValue(5F, CssLengthUnit.PX, 15F,
+                        CssLengthUnit.PX, 5F, CssLengthUnit.PX, 15F,
+                        CssLengthUnit.PX, null));
 
         assertEquals("5.0px 15.0px 25.0px fill",
                 BorderImageSlice.getProducedCssValue(5F, CssLengthUnit.PX, 15F,
@@ -1002,19 +1039,19 @@ public class BorderImageSliceTest {
                 BorderImageSlice.getProducedCssValue(5F, CssLengthUnit.PX, 15F,
                         CssLengthUnit.PX, 25F, CssLengthUnit.PX, 15F,
                         CssLengthUnit.PX, null));
-    
+
     }
-    
+
     @Test(expected = InvalidValueException.class)
     public void testSetCssValueInvalidValue1() throws Exception {
         new BorderImageSlice().setCssValue("fill 45px fill");
     }
-    
+
     @Test(expected = InvalidValueException.class)
     public void testSetCssValueInvalidValue2() throws Exception {
         new BorderImageSlice().setCssValue("15px fill 45px fill");
     }
-    
+
     /**
      * Test method for
      * {@link com.webfirmframework.wffweb.css.css3.BorderImageSlice#removeFill()}
