@@ -216,11 +216,10 @@ public class RgbCssValue extends AbstractBean<RgbCssValue> {
                     if (g < 0 || g > 255) {
                         return false;
                     }
+
                     final int b = Integer.parseInt(rgbStringParts[2]);
-                    if (b < 0 || b > 255) {
-                        return false;
-                    }
-                    return true;
+
+                    return !(b < 0 || b > 255);
                 }
                 return false;
             }
