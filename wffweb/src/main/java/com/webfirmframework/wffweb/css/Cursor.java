@@ -132,9 +132,6 @@ public class Cursor extends AbstractCssProperty<Cursor>
 
     private String cssValue;
 
-    // currently this variable is unused but it might be required for future
-    // update.
-    @SuppressWarnings("unused")
     private String[] cursorUrls;
 
     private String cursorType;
@@ -370,6 +367,18 @@ public class Cursor extends AbstractCssProperty<Cursor>
      */
     public String getCursorType() {
         return cursorType;
+    }
+
+    /**
+     * @return the cursor urls as an array set by
+     *         {@code Cursor#setCursorUrls(String, String...)} method. The
+     *         returned array is just a copy of the cursor urls, modifying it
+     *         will not affect the {@code Cursor} object.
+     * @since 1.0.0
+     * @author WFF
+     */
+    public String[] getCursorUrls() {
+        return cursorUrls;
     }
 
     /**
