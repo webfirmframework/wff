@@ -245,14 +245,17 @@ public class HslCssValue extends AbstractBean<HslCssValue> {
      * @since 1.0.0
      * @author WFF
      */
-    public static boolean isValid(String hslString) {
+    public static boolean isValid(final String hslString) {
         try {
-            hslString = hslString.replace(" ", "").toLowerCase();
-            if (hslString.startsWith("hsl(") && hslString.contains(")")) {
+            final String hslStringLowerCase = hslString.replace(" ", "")
+                    .toLowerCase();
 
-                final String[] hslStringParts = hslString
-                        .substring(hslString.indexOf('(') + 1,
-                                hslString.lastIndexOf(')'))
+            if (hslStringLowerCase.startsWith("hsl(")
+                    && hslStringLowerCase.contains(")")) {
+
+                final String[] hslStringParts = hslStringLowerCase
+                        .substring(hslStringLowerCase.indexOf('(') + 1,
+                                hslStringLowerCase.lastIndexOf(')'))
                         .split("[,]");
 
                 if (hslStringParts.length == 3) {
