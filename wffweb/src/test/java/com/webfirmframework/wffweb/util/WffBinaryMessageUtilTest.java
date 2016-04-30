@@ -42,7 +42,6 @@ public class WffBinaryMessageUtilTest {
     public TestName testName = new TestName();
 
     private long beforeMillis;
-    private long afterMillis;
 
     @Before
     public void beforeTest() throws Exception {
@@ -51,7 +50,7 @@ public class WffBinaryMessageUtilTest {
 
     @After
     public void afterTest() throws Exception {
-        afterMillis = System.currentTimeMillis();
+        long afterMillis = System.currentTimeMillis();
         final long totalMillisTaken = afterMillis - beforeMillis;
 
         if (!"testPerformanceOfWffBinaryMessageToNameValuesAndWiseVersa"
