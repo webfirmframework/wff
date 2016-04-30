@@ -1039,6 +1039,11 @@ public class BorderImageSliceTest {
                 BorderImageSlice.getProducedCssValue(5F, CssLengthUnit.PX, 15F,
                         CssLengthUnit.PX, 25F, CssLengthUnit.PX, 15F,
                         CssLengthUnit.PX, null));
+        
+        final BorderImageSlice borderImageSlice2 = new BorderImageSlice("5.0px 15.0px 25.0px");
+        borderImageSlice2.addFill();
+        assertEquals("5.0px 15.0px 25.0px fill",
+                borderImageSlice2.getCssValue());
 
     }
 
@@ -1059,6 +1064,10 @@ public class BorderImageSliceTest {
      */
     @Test
     public void testRemoveFill() {
+        final BorderImageSlice borderImageSlice2 = new BorderImageSlice("5.0px 15.0px 25.0px fill");
+        borderImageSlice2.removeFill();
+        assertEquals("5.0px 15.0px 25.0px",
+                borderImageSlice2.getCssValue());
     }
 
 }

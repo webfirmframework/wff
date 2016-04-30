@@ -478,7 +478,7 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
 
     public void removeFill() {
         middle = null;
-        cssValue = cssValue.replace(FILL, "").concat(" ").concat(FILL);
+        cssValue = cssValue.replace(FILL, "").trim();
         if (getStateChangeInformer() != null) {
             getStateChangeInformer().stateChanged(this);
         }
