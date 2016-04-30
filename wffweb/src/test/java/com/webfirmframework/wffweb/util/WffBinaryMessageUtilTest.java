@@ -15,7 +15,8 @@
  */
 package com.webfirmframework.wffweb.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -355,7 +356,7 @@ public class WffBinaryMessageUtilTest {
             jsonObject.put("nameeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" + i , values);   
         }
         
-        com.fasterxml.jackson.databind.ObjectMapper bsonMapper = new com.fasterxml.jackson.databind.ObjectMapper(
+        ObjectMapper bsonMapper = new ObjectMapper(
                 new de.undercouch.bson4jackson.BsonFactory());
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
