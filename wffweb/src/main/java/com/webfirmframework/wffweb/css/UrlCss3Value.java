@@ -58,10 +58,13 @@ public class UrlCss3Value extends AbstractBean<UrlCss3Value> {
      * @since 1.0.0
      * @author WFF
      */
-    private void extractAndAssign(String urlString) {
-        urlString = urlString.trim();
-        if (urlString.startsWith("url(") && urlString.contains(")")) {
-            final String[] urlStringParts = urlString.split("[)]");
+    private void extractAndAssign(final String urlString) {
+
+        final String urlStringTrimmed = urlString.trim();
+
+        if (urlStringTrimmed.startsWith("url(")
+                && urlStringTrimmed.contains(")")) {
+            final String[] urlStringParts = urlStringTrimmed.split("[)]");
 
             String extractedUrl = urlStringParts[0]
                     .substring(urlStringParts[0].indexOf('('));
@@ -85,7 +88,7 @@ public class UrlCss3Value extends AbstractBean<UrlCss3Value> {
                 }
             }
         } else {
-            throw new InvalidValueException(urlString
+            throw new InvalidValueException(urlStringTrimmed
                     + " is not a valid url string. It should be in the format of url(\"Test.png\")75 158  or url(\"Testing.png\")");
         }
     }
