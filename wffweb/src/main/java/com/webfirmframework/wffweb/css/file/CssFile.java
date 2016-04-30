@@ -145,9 +145,6 @@ public abstract class CssFile implements Serializable, Cloneable {
 
     private boolean initialized;
 
-    public CssFile() {
-    }
-
     protected final void initCssFile() {
         if (!initialized) {
             updateCssBlocks();
