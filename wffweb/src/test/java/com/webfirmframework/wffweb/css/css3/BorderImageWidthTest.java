@@ -908,7 +908,7 @@ public class BorderImageWidthTest {
      * .
      */
     @Test
-    public void testIsValid() {
+    public void testIsValid1() {
 
         {
             final boolean valid = BorderImageWidth.isValid("45px");
@@ -933,6 +933,16 @@ public class BorderImageWidthTest {
             final boolean invalid = BorderImageWidth.isValid("45sem");
             Assert.assertFalse(invalid);
         }
+
+    }
+
+    /**
+     * Test method for
+     * {@link com.webfirmframework.wffweb.css.css3.BorderImageWidth#isValid(java.lang.String)}
+     * .
+     */
+    @Test
+    public void testIsValid2() {
         {
             final boolean valid = BorderImageWidth.isValid("45rem");
             assertTrue(valid);
@@ -949,6 +959,15 @@ public class BorderImageWidthTest {
             final boolean valid = BorderImageWidth.isValid("auto auto auto");
             assertTrue(valid);
         }
+    }
+
+    /**
+     * Test method for
+     * {@link com.webfirmframework.wffweb.css.css3.BorderImageWidth#isValid(java.lang.String)}
+     * .
+     */
+    @Test
+    public void testIsValid3() {
         {
             final boolean valid = BorderImageWidth
                     .isValid("auto auto auto auto");
@@ -969,6 +988,16 @@ public class BorderImageWidthTest {
                     .isValid("auto auto 45px 45px");
             assertTrue(valid);
         }
+
+    }
+
+    /**
+     * Test method for
+     * {@link com.webfirmframework.wffweb.css.css3.BorderImageWidth#isValid(java.lang.String)}
+     * .
+     */
+    @Test
+    public void testIsValid4() {
         {
             final boolean valid = BorderImageWidth
                     .isValid("45px 45px auto auto");
@@ -988,6 +1017,16 @@ public class BorderImageWidthTest {
                     .isValid("auto 45px 45px 45px");
             assertTrue(valid);
         }
+
+    }
+
+    /**
+     * Test method for
+     * {@link com.webfirmframework.wffweb.css.css3.BorderImageWidth#isValid(java.lang.String)}
+     * .
+     */
+    @Test
+    public void testIsValid5() {
         {
             final boolean valid = BorderImageWidth
                     .isValid("auto 15px auto auto");
@@ -1008,7 +1047,6 @@ public class BorderImageWidthTest {
                     .isValid("12px auto auto auto");
             assertTrue(valid);
         }
-
     }
 
     /**
