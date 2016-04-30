@@ -33,9 +33,6 @@ public abstract class AbstractCssProperty<EXTENDEDCLASS extends AbstractCssPrope
 
     private boolean alreadyInUse;
 
-    public AbstractCssProperty() {
-    }
-
     /**
      * @param value
      *            to set the value portion in style, eg <code>center</code> for
