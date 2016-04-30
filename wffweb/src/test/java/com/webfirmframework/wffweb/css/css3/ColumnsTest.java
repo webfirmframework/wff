@@ -27,9 +27,6 @@ import org.junit.Test;
 
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.css.CssNameConstants;
-import com.webfirmframework.wffweb.css.css3.ColumnCount;
-import com.webfirmframework.wffweb.css.css3.ColumnWidth;
-import com.webfirmframework.wffweb.css.css3.Columns;
 
 /**
  * 
@@ -339,10 +336,10 @@ public class ColumnsTest {
     @Test(expected = InvalidValueException.class)
     public void testColumnsSetCssValueInvalidValueValue() {
         try {
-            Columns columns = new Columns("disc outside initial");
+            new Columns("disc outside initial");
         } catch (Exception e1) {
             try {
-                Columns columns = new Columns("disc outside inherit");
+                new Columns("disc outside inherit");
             } catch (Exception e2) {
                 Columns columns = new Columns();
                 try {
