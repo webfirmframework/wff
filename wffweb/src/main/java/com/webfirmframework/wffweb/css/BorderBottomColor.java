@@ -299,15 +299,19 @@ public class BorderBottomColor extends AbstractCssProperty<BorderBottomColor>
         if (CssColorName.isValid(trimmedCssValue)) {
             return true;
         }
+
         if (RgbCssValue.isValid(trimmedCssValue)) {
             return true;
         }
+
         if (RgbaCssValue.isValid(trimmedCssValue)) {
             return true;
         }
+
         if (HslCssValue.isValid(trimmedCssValue)) {
             return true;
         }
+
         if (HslaCssValue.isValid(trimmedCssValue)) {
             return true;
         }
@@ -316,12 +320,11 @@ public class BorderBottomColor extends AbstractCssProperty<BorderBottomColor>
             if (!trimmedCssValue.startsWith("#")) {
                 return false;
             }
+
             final long value = Long.parseLong(cssValue.replaceFirst("[#]", ""),
                     16);
-            if (value > CommonConstants.FFFFFF_HEX_VALUE || value < 0) {
-                return false;
-            }
-            return true;
+
+            return !(value > CommonConstants.FFFFFF_HEX_VALUE || value < 0);
         } catch (final NumberFormatException ex) {
         }
 
