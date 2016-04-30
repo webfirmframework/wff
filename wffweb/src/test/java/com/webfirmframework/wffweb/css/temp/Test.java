@@ -43,15 +43,9 @@ public class Test {
         
         System.out.println(div);
 
-        if (true) {
-            return;
-        }
 
         System.out.println(FontWeight.isValid("100"));
         System.out.println(CssColorName.isValid("lime"));
-        if (true) {
-            return;
-        }
 
         String familyNames = "\"Times New Roman\", Georgia, Serif";
         final String[] parts = getExtractFamilyNames(familyNames);
@@ -154,7 +148,8 @@ public class Test {
         final boolean validLength = ColumnRuleWidth.isValid("5px");
         System.out.println("validLength " + validLength);
 
-        final CssColorName[] values = CssColorName.values();
+        CssColorName.values();
+        
         final boolean valid = CssColorName.isValid("steelblue");
         System.out.println("valid SteelBlue " + valid);
         System.out.println("object "
