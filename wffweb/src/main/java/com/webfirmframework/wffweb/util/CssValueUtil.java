@@ -33,10 +33,6 @@ import com.webfirmframework.wffweb.NullValueException;
  */
 public class CssValueUtil {
 
-    private CssValueUtil() {
-        throw new AssertionError();
-    }
-
     private static final Map<String, String> CSS_VALUE_PART_START_END_VALUES;
 
     static {
@@ -45,6 +41,10 @@ public class CssValueUtil {
         CSS_VALUE_PART_START_END_VALUES.put("rgba(", ")");
         CSS_VALUE_PART_START_END_VALUES.put("hsl(", ")");
         CSS_VALUE_PART_START_END_VALUES.put("hsla(", ")");
+    }
+
+    private CssValueUtil() {
+        throw new AssertionError();
     }
 
     /**
