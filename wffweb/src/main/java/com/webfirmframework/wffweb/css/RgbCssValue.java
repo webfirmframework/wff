@@ -66,39 +66,43 @@ public class RgbCssValue extends AbstractBean<RgbCssValue> {
      * @since 1.0.0
      * @author WFF
      */
-    private void extractAndAssign(String rgbString) {
-        rgbString = rgbString.replace(" ", "").toLowerCase();
-        if (rgbString.startsWith("rgb(") && rgbString.contains(")")) {
-            final String rgb = rgbString.replace(",", ", ");
+    private void extractAndAssign(final String rgbString) {
 
-            final String[] rgbStringParts = rgbString
-                    .substring(rgbString.indexOf('(') + 1,
-                            rgbString.lastIndexOf(')'))
+        final String rgbStringLowerCase = rgbString.replace(" ", "")
+                .toLowerCase();
+
+        if (rgbStringLowerCase.startsWith("rgb(")
+                && rgbStringLowerCase.contains(")")) {
+            final String rgb = rgbStringLowerCase.replace(",", ", ");
+
+            final String[] rgbStringParts = rgbStringLowerCase
+                    .substring(rgbStringLowerCase.indexOf('(') + 1,
+                            rgbStringLowerCase.lastIndexOf(')'))
                     .split("[,]");
 
             if (rgbStringParts.length == 3) {
                 r = Integer.parseInt(rgbStringParts[0]);
                 if (r < 0 || r > 255) {
-                    throw new InvalidValueException(rgbString
+                    throw new InvalidValueException(rgbStringLowerCase
                             + " is not a valid rgb string. r value in rgbString should be inbetween 0 to 255, eg: rgb(255, 25, 15)");
                 }
                 g = Integer.parseInt(rgbStringParts[1]);
                 if (g < 0 || g > 255) {
-                    throw new InvalidValueException(rgbString
+                    throw new InvalidValueException(rgbStringLowerCase
                             + " is not a valid rgb string. g value in rgbString should be inbetween 0 to 255, eg: rgb(255, 25, 15)");
                 }
                 b = Integer.parseInt(rgbStringParts[2]);
                 if (b < 0 || b > 255) {
-                    throw new InvalidValueException(rgbString
+                    throw new InvalidValueException(rgbStringLowerCase
                             + " is not a valid rgb string. b value in rgbString should be inbetween 0 to 255, eg: rgb(255, 25, 15)");
                 }
                 this.rgb = rgb;
             } else {
-                throw new InvalidValueException(rgbString
+                throw new InvalidValueException(rgbStringLowerCase
                         + " is not a valid rgb string. It should be in the format of rgb(255, 25, 15)");
             }
         } else {
-            throw new InvalidValueException(rgbString
+            throw new InvalidValueException(rgbStringLowerCase
                     + " is not a valid rgb string. It should be in the format of rgb(255, 25, 15)");
         }
     }
