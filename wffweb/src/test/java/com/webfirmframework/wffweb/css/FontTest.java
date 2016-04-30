@@ -632,10 +632,10 @@ public class FontTest {
     public void testFontSetCssValueInvalidValueValue() {
         try {
             FontFamily.setValidateFontFamilyNameGlobally(true);
-            Font font = new Font("disc normal initial");
+            new Font("disc normal initial");
         } catch (Exception e1) {
             try {
-                Font font = new Font("disc normal inherit");
+                new Font("disc normal inherit");
             } catch (Exception e2) {
                 Font font = new Font();
                 String cssValue = font.getCssValue();
