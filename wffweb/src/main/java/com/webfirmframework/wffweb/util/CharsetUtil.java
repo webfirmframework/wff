@@ -43,19 +43,19 @@ public class CharsetUtil {
      * @since 1.0.0
      * @author WFF
      */
-    public static char[] getUpperCaseCharset(int upto) {
-        upto++;
-        final char[] characters = CHACHED_UPPER_CASE_CHARSETS.get(upto);
+    public static char[] getUpperCaseCharset(final int upto) {
+        final int uptoPlusOne = upto + 1;
+        final char[] characters = CHACHED_UPPER_CASE_CHARSETS.get(uptoPlusOne);
         if (characters != null) {
             return characters;
         }
-        final char[] charset = new char[upto];
+        final char[] charset = new char[uptoPlusOne];
         char index = 0;
-        while (index < upto) {
+        while (index < uptoPlusOne) {
             charset[index] = Character.toUpperCase(index);
             index++;
         }
-        CHACHED_UPPER_CASE_CHARSETS.put(upto, charset);
+        CHACHED_UPPER_CASE_CHARSETS.put(uptoPlusOne, charset);
         return charset;
     }
 
@@ -68,19 +68,19 @@ public class CharsetUtil {
      * @since 1.0.0
      * @author WFF
      */
-    public static char[] getLowerCaseCharset(int upto) {
-        upto++;
-        final char[] characters = CHACHED_LOWER_CASE_CHARSETS.get(upto);
+    public static char[] getLowerCaseCharset(final int upto) {
+        final int uptoPlusOne = upto + 1;
+        final char[] characters = CHACHED_LOWER_CASE_CHARSETS.get(uptoPlusOne);
         if (characters != null) {
             return characters;
         }
-        final char[] charset = new char[upto];
+        final char[] charset = new char[uptoPlusOne];
         char index = 0;
-        while (index < upto) {
+        while (index < uptoPlusOne) {
             charset[index] = Character.toLowerCase(index);
             index++;
         }
-        CHACHED_LOWER_CASE_CHARSETS.put(upto, charset);
+        CHACHED_LOWER_CASE_CHARSETS.put(uptoPlusOne, charset);
         return charset;
     }
 
