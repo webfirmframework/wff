@@ -290,14 +290,18 @@ public class HslaCssValue extends AbstractBean<HslaCssValue> {
      * @since 1.0.0
      * @author WFF
      */
-    public static boolean isValid(String hslString) {
+    public static boolean isValid(final String hslString) {
         try {
-            hslString = hslString.replace(" ", "").toLowerCase();
-            if (hslString.startsWith("hsla(") && hslString.contains(")")) {
 
-                final String[] hslStringParts = hslString
-                        .substring(hslString.indexOf('(') + 1,
-                                hslString.lastIndexOf(')'))
+            final String hslStringLowerCase = hslString.replace(" ", "")
+                    .toLowerCase();
+
+            if (hslStringLowerCase.startsWith("hsla(")
+                    && hslStringLowerCase.contains(")")) {
+
+                final String[] hslStringParts = hslStringLowerCase
+                        .substring(hslStringLowerCase.indexOf('(') + 1,
+                                hslStringLowerCase.lastIndexOf(')'))
                         .split("[,]");
 
                 if (hslStringParts.length == 4) {
