@@ -318,15 +318,15 @@ public class BorderTopColor extends AbstractCssProperty<BorderTopColor>
         }
 
         try {
+
             if (!trimmedCssValue.startsWith("#")) {
                 return false;
             }
+
             final long value = Long.parseLong(cssValue.replaceFirst("[#]", ""),
                     16);
-            if (value > CommonConstants.FFFFFF_HEX_VALUE || value < 0) {
-                return false;
-            }
-            return true;
+
+            return !(value > CommonConstants.FFFFFF_HEX_VALUE || value < 0);
         } catch (final NumberFormatException ex) {
         }
 
