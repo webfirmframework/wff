@@ -51,6 +51,7 @@ public class AccessKey extends AbstractAttribute implements GlobalAttributable {
      * @since 1.0.0
      */
     protected void init() {
+        // to override and use this method
     }
 
     /**
