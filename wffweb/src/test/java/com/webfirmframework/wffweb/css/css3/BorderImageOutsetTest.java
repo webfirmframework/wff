@@ -15,18 +15,17 @@
  */
 package com.webfirmframework.wffweb.css.css3;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import org.junit.Assert;
-
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.css.CssLengthUnit;
 import com.webfirmframework.wffweb.css.CssNameConstants;
-import com.webfirmframework.wffweb.css.css3.BorderImageOutset;
 
 /**
  * @author WFF
@@ -62,61 +61,88 @@ public class BorderImageOutsetTest {
      * .
      */
     @Test
-    public void testBorderImageOutsetString() {
-        {
-            BorderImageOutset borderImageOutset = new BorderImageOutset(
-                    "5 15 25 35");
-            assertEquals("5.0 15.0 25.0 35.0", borderImageOutset.getCssValue());
+    public void testBorderImageOutsetString1() {
 
-            assertTrue(5F == borderImageOutset.getTop());
-            assertTrue(15F == borderImageOutset.getRight());
-            assertTrue(25F == borderImageOutset.getBottom());
-            assertTrue(35F == borderImageOutset.getLeft());
-            assertNull(borderImageOutset.getTopUnit());
-            assertNull(borderImageOutset.getRightUnit());
-            assertNull(borderImageOutset.getBottomUnit());
-            assertNull(borderImageOutset.getLeftUnit());
-        }
-        {
-            BorderImageOutset borderImageOutset = new BorderImageOutset(
-                    "5px 15px 25px 35px");
-            assertEquals("5.0px 15.0px 25.0px 35.0px",
-                    borderImageOutset.getCssValue());
+        BorderImageOutset borderImageOutset = new BorderImageOutset(
+                "5 15 25 35");
+        assertEquals("5.0 15.0 25.0 35.0", borderImageOutset.getCssValue());
 
-            assertTrue(5F == borderImageOutset.getTop());
-            assertTrue(15F == borderImageOutset.getRight());
-            assertTrue(25F == borderImageOutset.getBottom());
-            assertTrue(35F == borderImageOutset.getLeft());
+        assertTrue(5F == borderImageOutset.getTop());
+        assertTrue(15F == borderImageOutset.getRight());
+        assertTrue(25F == borderImageOutset.getBottom());
+        assertTrue(35F == borderImageOutset.getLeft());
+        assertNull(borderImageOutset.getTopUnit());
+        assertNull(borderImageOutset.getRightUnit());
+        assertNull(borderImageOutset.getBottomUnit());
+        assertNull(borderImageOutset.getLeftUnit());
 
-            assertNotNull(borderImageOutset.getTopUnit());
-            assertNotNull(borderImageOutset.getRightUnit());
-            assertNotNull(borderImageOutset.getBottomUnit());
-            assertNotNull(borderImageOutset.getLeftUnit());
+    }
 
-            assertEquals(CssLengthUnit.PX, borderImageOutset.getTopUnit());
-            assertEquals(CssLengthUnit.PX, borderImageOutset.getRightUnit());
-            assertEquals(CssLengthUnit.PX, borderImageOutset.getBottomUnit());
-            assertEquals(CssLengthUnit.PX, borderImageOutset.getLeftUnit());
-        }
-        {
-            BorderImageOutset borderImageOutset = new BorderImageOutset(
-                    "25px 25px 25px 25px");
-            assertEquals("25.0px", borderImageOutset.getCssValue());
-            assertTrue(25F == borderImageOutset.getTop());
-            assertTrue(25F == borderImageOutset.getRight());
-            assertTrue(25F == borderImageOutset.getBottom());
-            assertTrue(25F == borderImageOutset.getLeft());
+    /**
+     * Test method for
+     * {@link com.webfirmframework.wffweb.css.css3.BorderImageOutset#BorderImageOutset(java.lang.String)}
+     * .
+     */
+    @Test
+    public void testBorderImageOutsetString2() {
 
-            assertNotNull(borderImageOutset.getTopUnit());
-            assertNotNull(borderImageOutset.getRightUnit());
-            assertNotNull(borderImageOutset.getBottomUnit());
-            assertNotNull(borderImageOutset.getLeftUnit());
+        BorderImageOutset borderImageOutset = new BorderImageOutset(
+                "5px 15px 25px 35px");
+        assertEquals("5.0px 15.0px 25.0px 35.0px",
+                borderImageOutset.getCssValue());
 
-            assertEquals(CssLengthUnit.PX, borderImageOutset.getTopUnit());
-            assertEquals(CssLengthUnit.PX, borderImageOutset.getRightUnit());
-            assertEquals(CssLengthUnit.PX, borderImageOutset.getBottomUnit());
-            assertEquals(CssLengthUnit.PX, borderImageOutset.getLeftUnit());
-        }
+        assertTrue(5F == borderImageOutset.getTop());
+        assertTrue(15F == borderImageOutset.getRight());
+        assertTrue(25F == borderImageOutset.getBottom());
+        assertTrue(35F == borderImageOutset.getLeft());
+
+        assertNotNull(borderImageOutset.getTopUnit());
+        assertNotNull(borderImageOutset.getRightUnit());
+        assertNotNull(borderImageOutset.getBottomUnit());
+        assertNotNull(borderImageOutset.getLeftUnit());
+
+        assertEquals(CssLengthUnit.PX, borderImageOutset.getTopUnit());
+        assertEquals(CssLengthUnit.PX, borderImageOutset.getRightUnit());
+        assertEquals(CssLengthUnit.PX, borderImageOutset.getBottomUnit());
+        assertEquals(CssLengthUnit.PX, borderImageOutset.getLeftUnit());
+
+    }
+
+    /**
+     * Test method for
+     * {@link com.webfirmframework.wffweb.css.css3.BorderImageOutset#BorderImageOutset(java.lang.String)}
+     * .
+     */
+    @Test
+    public void testBorderImageOutsetString3() {
+
+        BorderImageOutset borderImageOutset = new BorderImageOutset(
+                "25px 25px 25px 25px");
+        assertEquals("25.0px", borderImageOutset.getCssValue());
+        assertTrue(25F == borderImageOutset.getTop());
+        assertTrue(25F == borderImageOutset.getRight());
+        assertTrue(25F == borderImageOutset.getBottom());
+        assertTrue(25F == borderImageOutset.getLeft());
+
+        assertNotNull(borderImageOutset.getTopUnit());
+        assertNotNull(borderImageOutset.getRightUnit());
+        assertNotNull(borderImageOutset.getBottomUnit());
+        assertNotNull(borderImageOutset.getLeftUnit());
+
+        assertEquals(CssLengthUnit.PX, borderImageOutset.getTopUnit());
+        assertEquals(CssLengthUnit.PX, borderImageOutset.getRightUnit());
+        assertEquals(CssLengthUnit.PX, borderImageOutset.getBottomUnit());
+        assertEquals(CssLengthUnit.PX, borderImageOutset.getLeftUnit());
+
+    }
+
+    /**
+     * Test method for
+     * {@link com.webfirmframework.wffweb.css.css3.BorderImageOutset#BorderImageOutset(java.lang.String)}
+     * .
+     */
+    @Test
+    public void testBorderImageOutsetString4() {
         {
             BorderImageOutset borderImageOutset = new BorderImageOutset(
                     "25px 25px 55px 55px");
@@ -151,22 +177,31 @@ public class BorderImageOutsetTest {
                     "35px 25px 35px 25px ");
             assertEquals("35.0px 25.0px", borderImageOutset.getCssValue());
         }
-        {
-            BorderImageOutset borderImageOutset = new BorderImageOutset(
-                    BorderImageOutset.INHERIT);
-            assertEquals(BorderImageOutset.INHERIT,
-                    borderImageOutset.getCssValue());
 
-            assertNull(borderImageOutset.getTop());
-            assertNull(borderImageOutset.getRight());
-            assertNull(borderImageOutset.getBottom());
-            assertNull(borderImageOutset.getLeft());
+    }
 
-            assertNull(borderImageOutset.getTopUnit());
-            assertNull(borderImageOutset.getRightUnit());
-            assertNull(borderImageOutset.getBottomUnit());
-            assertNull(borderImageOutset.getLeftUnit());
-        }
+    /**
+     * Test method for
+     * {@link com.webfirmframework.wffweb.css.css3.BorderImageOutset#BorderImageOutset(java.lang.String)}
+     * .
+     */
+    @Test
+    public void testBorderImageOutsetString5() {
+
+        BorderImageOutset borderImageOutset = new BorderImageOutset(
+                BorderImageOutset.INHERIT);
+        assertEquals(BorderImageOutset.INHERIT,
+                borderImageOutset.getCssValue());
+
+        assertNull(borderImageOutset.getTop());
+        assertNull(borderImageOutset.getRight());
+        assertNull(borderImageOutset.getBottom());
+        assertNull(borderImageOutset.getLeft());
+
+        assertNull(borderImageOutset.getTopUnit());
+        assertNull(borderImageOutset.getRightUnit());
+        assertNull(borderImageOutset.getBottomUnit());
+        assertNull(borderImageOutset.getLeftUnit());
     }
 
     /**
@@ -190,6 +225,7 @@ public class BorderImageOutsetTest {
      */
     @Test
     public void testBorderImageOutsetFloat() {
+
         BorderImageOutset borderImageOutset = new BorderImageOutset(55F);
         assertEquals("55.0%", borderImageOutset.getCssValue());
 
@@ -221,6 +257,7 @@ public class BorderImageOutsetTest {
      */
     @Test
     public void testBorderImageOutsetFloatCssLengthUnit() {
+
         BorderImageOutset borderImageOutset = new BorderImageOutset(55F,
                 CssLengthUnit.EM);
         assertEquals("55.0em", borderImageOutset.getCssValue());
@@ -253,6 +290,7 @@ public class BorderImageOutsetTest {
      */
     @Test
     public void testSetPercent() {
+
         BorderImageOutset borderImageOutset = new BorderImageOutset();
         borderImageOutset.setPercent(55F);
         assertEquals("55.0%", borderImageOutset.getCssValue());
@@ -280,7 +318,8 @@ public class BorderImageOutsetTest {
 
     /**
      * Test method for
-     * {@link com.webfirmframework.wffweb.css.css3.BorderImageOutset#getCssName()}.
+     * {@link com.webfirmframework.wffweb.css.css3.BorderImageOutset#getCssName()}
+     * .
      */
     @Test
     public void testGetCssName() {
@@ -290,7 +329,8 @@ public class BorderImageOutsetTest {
 
     /**
      * Test method for
-     * {@link com.webfirmframework.wffweb.css.css3.BorderImageOutset#getCssValue()}.
+     * {@link com.webfirmframework.wffweb.css.css3.BorderImageOutset#getCssValue()}
+     * .
      */
     @Test
     public void testGetCssValue() {
@@ -332,29 +372,33 @@ public class BorderImageOutsetTest {
 
     /**
      * Test method for
-     * {@link com.webfirmframework.wffweb.css.css3.BorderImageOutset#toString()}.
+     * {@link com.webfirmframework.wffweb.css.css3.BorderImageOutset#toString()}
+     * .
      */
     @Test
     public void testToString() {
         {
             BorderImageOutset borderImageOutset = new BorderImageOutset(
                     "25px 25px 55px 55px");
-            assertEquals(CssNameConstants.BORDER_IMAGE_OUTSET
-                    + ": 25.0px 25.0px 55.0px 55.0px",
+            assertEquals(
+                    CssNameConstants.BORDER_IMAGE_OUTSET
+                            + ": 25.0px 25.0px 55.0px 55.0px",
                     borderImageOutset.toString());
         }
         {
             BorderImageOutset borderImageOutset = new BorderImageOutset(
                     "25px 25px 25px 55px");
-            assertEquals(CssNameConstants.BORDER_IMAGE_OUTSET
-                    + ": 25.0px 25.0px 25.0px 55.0px",
+            assertEquals(
+                    CssNameConstants.BORDER_IMAGE_OUTSET
+                            + ": 25.0px 25.0px 25.0px 55.0px",
                     borderImageOutset.toString());
         }
         {
             BorderImageOutset borderImageOutset = new BorderImageOutset(
                     "25px 25px 55px 55px");
-            assertEquals(CssNameConstants.BORDER_IMAGE_OUTSET
-                    + ": 25.0px 25.0px 55.0px 55.0px",
+            assertEquals(
+                    CssNameConstants.BORDER_IMAGE_OUTSET
+                            + ": 25.0px 25.0px 55.0px 55.0px",
                     borderImageOutset.toString());
         }
         {
@@ -366,14 +410,17 @@ public class BorderImageOutsetTest {
         {
             BorderImageOutset borderImageOutset = new BorderImageOutset(
                     "35px 25px 45px 25px ");
-            assertEquals(CssNameConstants.BORDER_IMAGE_OUTSET
-                    + ": 35.0px 25.0px 45.0px", borderImageOutset.toString());
+            assertEquals(
+                    CssNameConstants.BORDER_IMAGE_OUTSET
+                            + ": 35.0px 25.0px 45.0px",
+                    borderImageOutset.toString());
         }
         {
             BorderImageOutset borderImageOutset = new BorderImageOutset(
                     "35px 25px 35px 25px ");
-            assertEquals(CssNameConstants.BORDER_IMAGE_OUTSET
-                    + ": 35.0px 25.0px", borderImageOutset.toString());
+            assertEquals(
+                    CssNameConstants.BORDER_IMAGE_OUTSET + ": 35.0px 25.0px",
+                    borderImageOutset.toString());
         }
     }
 
@@ -411,7 +458,8 @@ public class BorderImageOutsetTest {
 
     /**
      * Test method for
-     * {@link com.webfirmframework.wffweb.css.css3.BorderImageOutset#setAsInitial()}.
+     * {@link com.webfirmframework.wffweb.css.css3.BorderImageOutset#setAsInitial()}
+     * .
      */
     @Test
     public void testSetAsInitial() {
@@ -455,7 +503,8 @@ public class BorderImageOutsetTest {
 
     /**
      * Test method for
-     * {@link com.webfirmframework.wffweb.css.css3.BorderImageOutset#setAsInherit()}.
+     * {@link com.webfirmframework.wffweb.css.css3.BorderImageOutset#setAsInherit()}
+     * .
      */
     @Test
     public void testSetAsInherit() {
@@ -538,9 +587,9 @@ public class BorderImageOutsetTest {
     @Test
     public void testSetBorderImageTopRightBottomLeftFloatCssLengthUnitFloatCssLengthUnitFloatCssLengthUnitFloatCssLengthUnit() {
         BorderImageOutset borderImageOutset = new BorderImageOutset();
-        borderImageOutset.setBorderImageTopRightBottomLeft(5F,
-                CssLengthUnit.CH, 10F, CssLengthUnit.CM, 15F, CssLengthUnit.EM,
-                20F, CssLengthUnit.EX);
+        borderImageOutset.setBorderImageTopRightBottomLeft(5F, CssLengthUnit.CH,
+                10F, CssLengthUnit.CM, 15F, CssLengthUnit.EM, 20F,
+                CssLengthUnit.EX);
         assertEquals("5.0ch 10.0cm 15.0em 20.0ex",
                 borderImageOutset.getCssValue());
 
@@ -573,9 +622,9 @@ public class BorderImageOutsetTest {
     @Test
     public void testSetTop() {
         BorderImageOutset borderImageOutset = new BorderImageOutset();
-        borderImageOutset.setBorderImageTopRightBottomLeft(5F,
-                CssLengthUnit.CH, 10F, CssLengthUnit.CM, 15F, CssLengthUnit.EM,
-                20F, CssLengthUnit.EX);
+        borderImageOutset.setBorderImageTopRightBottomLeft(5F, CssLengthUnit.CH,
+                10F, CssLengthUnit.CM, 15F, CssLengthUnit.EM, 20F,
+                CssLengthUnit.EX);
         assertEquals("5.0ch 10.0cm 15.0em 20.0ex",
                 borderImageOutset.getCssValue());
 
@@ -614,9 +663,9 @@ public class BorderImageOutsetTest {
     @Test
     public void testSetRight() {
         BorderImageOutset borderImageOutset = new BorderImageOutset();
-        borderImageOutset.setBorderImageTopRightBottomLeft(5F,
-                CssLengthUnit.CH, 10F, CssLengthUnit.CM, 15F, CssLengthUnit.EM,
-                20F, CssLengthUnit.EX);
+        borderImageOutset.setBorderImageTopRightBottomLeft(5F, CssLengthUnit.CH,
+                10F, CssLengthUnit.CM, 15F, CssLengthUnit.EM, 20F,
+                CssLengthUnit.EX);
         assertEquals("5.0ch 10.0cm 15.0em 20.0ex",
                 borderImageOutset.getCssValue());
 
@@ -655,9 +704,9 @@ public class BorderImageOutsetTest {
     @Test
     public void testSetBottom() {
         BorderImageOutset borderImageOutset = new BorderImageOutset();
-        borderImageOutset.setBorderImageTopRightBottomLeft(5F,
-                CssLengthUnit.CH, 10F, CssLengthUnit.CM, 15F, CssLengthUnit.EM,
-                20F, CssLengthUnit.EX);
+        borderImageOutset.setBorderImageTopRightBottomLeft(5F, CssLengthUnit.CH,
+                10F, CssLengthUnit.CM, 15F, CssLengthUnit.EM, 20F,
+                CssLengthUnit.EX);
         assertEquals("5.0ch 10.0cm 15.0em 20.0ex",
                 borderImageOutset.getCssValue());
 
@@ -696,9 +745,9 @@ public class BorderImageOutsetTest {
     @Test
     public void testSetLeft() {
         BorderImageOutset borderImageOutset = new BorderImageOutset();
-        borderImageOutset.setBorderImageTopRightBottomLeft(5F,
-                CssLengthUnit.CH, 10F, CssLengthUnit.CM, 15F, CssLengthUnit.EM,
-                20F, CssLengthUnit.EX);
+        borderImageOutset.setBorderImageTopRightBottomLeft(5F, CssLengthUnit.CH,
+                10F, CssLengthUnit.CM, 15F, CssLengthUnit.EM, 20F,
+                CssLengthUnit.EX);
         assertEquals("5.0ch 10.0cm 15.0em 20.0ex",
                 borderImageOutset.getCssValue());
 
@@ -736,45 +785,52 @@ public class BorderImageOutsetTest {
     /*
      * @Test public void testGetTop() { fail("Not yet implemented"); }
      *//**
-     * Test method for
-     * {@link com.webfirmframework.wffweb.css.css3.BorderImageOutset#getTopUnit()}.
-     */
+       * Test method for
+       * {@link com.webfirmframework.wffweb.css.css3.BorderImageOutset#getTopUnit()}
+       * .
+       */
     /*
      * @Test public void testGetTopUnit() { fail("Not yet implemented"); }
      *//**
-     * Test method for
-     * {@link com.webfirmframework.wffweb.css.css3.BorderImageOutset#getRight()}.
-     */
+       * Test method for
+       * {@link com.webfirmframework.wffweb.css.css3.BorderImageOutset#getRight()}
+       * .
+       */
     /*
      * @Test public void testGetRight() { fail("Not yet implemented"); }
      *//**
-     * Test method for
-     * {@link com.webfirmframework.wffweb.css.css3.BorderImageOutset#getRightUnit()}.
-     */
+       * Test method for
+       * {@link com.webfirmframework.wffweb.css.css3.BorderImageOutset#getRightUnit()}
+       * .
+       */
     /*
      * @Test public void testGetRightUnit() { fail("Not yet implemented"); }
      *//**
-     * Test method for
-     * {@link com.webfirmframework.wffweb.css.css3.BorderImageOutset#getBottom()}.
-     */
+       * Test method for
+       * {@link com.webfirmframework.wffweb.css.css3.BorderImageOutset#getBottom()}
+       * .
+       */
     /*
      * @Test public void testGetBottom() { fail("Not yet implemented"); }
      *//**
-     * Test method for
-     * {@link com.webfirmframework.wffweb.css.css3.BorderImageOutset#getBottomUnit()}.
-     */
+       * Test method for
+       * {@link com.webfirmframework.wffweb.css.css3.BorderImageOutset#getBottomUnit()}
+       * .
+       */
     /*
      * @Test public void testGetBottomUnit() { fail("Not yet implemented"); }
      *//**
-     * Test method for
-     * {@link com.webfirmframework.wffweb.css.css3.BorderImageOutset#getLeft()}.
-     */
+       * Test method for
+       * {@link com.webfirmframework.wffweb.css.css3.BorderImageOutset#getLeft()}
+       * .
+       */
     /*
      * @Test public void testGetLeft() { fail("Not yet implemented"); }
      *//**
-     * Test method for
-     * {@link com.webfirmframework.wffweb.css.css3.BorderImageOutset#getLeftUnit()}.
-     */
+       * Test method for
+       * {@link com.webfirmframework.wffweb.css.css3.BorderImageOutset#getLeftUnit()}
+       * .
+       */
     /*
      * @Test public void testGetLeftUnit() { fail("Not yet implemented"); }
      */
@@ -787,21 +843,23 @@ public class BorderImageOutsetTest {
     @Test
     public void testGetProducedCssValue() {
         assertEquals("5.0ch 10.0cm 15.0em 20.0ex",
-                BorderImageOutset.getProducedCssValue(5F, CssLengthUnit.CH,
-                        10F, CssLengthUnit.CM, 15F, CssLengthUnit.EM, 20F,
+                BorderImageOutset.getProducedCssValue(5F, CssLengthUnit.CH, 10F,
+                        CssLengthUnit.CM, 15F, CssLengthUnit.EM, 20F,
                         CssLengthUnit.EX));
 
-        assertEquals("5.0px", BorderImageOutset.getProducedCssValue(5F,
-                CssLengthUnit.PX, 5F, CssLengthUnit.PX, 5F, CssLengthUnit.PX,
-                5F, CssLengthUnit.PX));
+        assertEquals("5.0px",
+                BorderImageOutset.getProducedCssValue(5F, CssLengthUnit.PX, 5F,
+                        CssLengthUnit.PX, 5F, CssLengthUnit.PX, 5F,
+                        CssLengthUnit.PX));
 
-        assertEquals("5.0px 15.0px", BorderImageOutset.getProducedCssValue(5F,
-                CssLengthUnit.PX, 15F, CssLengthUnit.PX, 5F, CssLengthUnit.PX,
-                15F, CssLengthUnit.PX));
+        assertEquals("5.0px 15.0px",
+                BorderImageOutset.getProducedCssValue(5F, CssLengthUnit.PX, 15F,
+                        CssLengthUnit.PX, 5F, CssLengthUnit.PX, 15F,
+                        CssLengthUnit.PX));
 
         assertEquals("5.0px 15.0px 25.0px",
-                BorderImageOutset.getProducedCssValue(5F, CssLengthUnit.PX,
-                        15F, CssLengthUnit.PX, 25F, CssLengthUnit.PX, 15F,
+                BorderImageOutset.getProducedCssValue(5F, CssLengthUnit.PX, 15F,
+                        CssLengthUnit.PX, 25F, CssLengthUnit.PX, 15F,
                         CssLengthUnit.PX));
     }
 
