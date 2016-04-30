@@ -301,10 +301,7 @@ public class BorderImageRepeat extends AbstractCssProperty<BorderImageRepeat> {
             return false;
         }
         if (cssValueParts.length == 1) {
-            if (PREDEFINED_CONSTANTS.contains(trimmedCssValue)) {
-                return true;
-            }
-            return false;
+            return PREDEFINED_CONSTANTS.contains(trimmedCssValue);
         }
 
         boolean valid = false;
