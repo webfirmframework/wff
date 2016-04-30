@@ -101,7 +101,7 @@ public class FontTest {
         assertEquals(FontStyle.ITALIC, font1.getFontStyle());
         assertEquals(FontVariant.SMALL_CAPS, font1.getFontVariant());
         assertEquals("bold", font1.getFontWeight().getCssValue());
-        assertNull(font1.getFontSize());;
+        assertNull(font1.getFontSize());
         assertEquals("1.4", font1.getLineHeight().getCssValue());
         assertEquals("arial,sans-serif", font1.getFontFamily().getCssValue());
         
@@ -261,7 +261,7 @@ public class FontTest {
         assertEquals(FontStyle.ITALIC, font.getFontStyle());
         assertEquals(FontVariant.SMALL_CAPS, font.getFontVariant());
         assertEquals("bold", font.getFontWeight().getCssValue());
-        assertNull(font.getFontSize());;
+        assertNull(font.getFontSize());
         assertEquals("1.4", font.getLineHeight().getCssValue());
         assertEquals("arial,sans-serif", font.getFontFamily().getCssValue());
         
