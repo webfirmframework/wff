@@ -15,18 +15,17 @@
  */
 package com.webfirmframework.wffweb.css.css3;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import org.junit.Assert;
-
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.css.CssLengthUnit;
 import com.webfirmframework.wffweb.css.CssNameConstants;
-import com.webfirmframework.wffweb.css.css3.BorderImageWidth;
 
 /**
  * @author WFF
@@ -43,6 +42,7 @@ public class BorderImageWidthTest {
      */
     @Test
     public void testBorderImageWidth() {
+
         BorderImageWidth borderImageWidth = new BorderImageWidth();
         assertEquals("1.0", borderImageWidth.getCssValue());
 
@@ -62,61 +62,87 @@ public class BorderImageWidthTest {
      * .
      */
     @Test
-    public void testBorderImageWidthString() {
-        {
-            BorderImageWidth borderImageWidth = new BorderImageWidth(
-                    "5 15 25 35");
-            assertEquals("5.0 15.0 25.0 35.0", borderImageWidth.getCssValue());
+    public void testBorderImageWidthString1() {
 
-            assertTrue(5F == borderImageWidth.getTop());
-            assertTrue(15F == borderImageWidth.getRight());
-            assertTrue(25F == borderImageWidth.getBottom());
-            assertTrue(35F == borderImageWidth.getLeft());
-            assertNull(borderImageWidth.getTopUnit());
-            assertNull(borderImageWidth.getRightUnit());
-            assertNull(borderImageWidth.getBottomUnit());
-            assertNull(borderImageWidth.getLeftUnit());
-        }
-        {
-            BorderImageWidth borderImageWidth = new BorderImageWidth(
-                    "5px 15px 25px 35px");
-            assertEquals("5.0px 15.0px 25.0px 35.0px",
-                    borderImageWidth.getCssValue());
+        BorderImageWidth borderImageWidth = new BorderImageWidth("5 15 25 35");
+        assertEquals("5.0 15.0 25.0 35.0", borderImageWidth.getCssValue());
 
-            assertTrue(5F == borderImageWidth.getTop());
-            assertTrue(15F == borderImageWidth.getRight());
-            assertTrue(25F == borderImageWidth.getBottom());
-            assertTrue(35F == borderImageWidth.getLeft());
+        assertTrue(5F == borderImageWidth.getTop());
+        assertTrue(15F == borderImageWidth.getRight());
+        assertTrue(25F == borderImageWidth.getBottom());
+        assertTrue(35F == borderImageWidth.getLeft());
+        assertNull(borderImageWidth.getTopUnit());
+        assertNull(borderImageWidth.getRightUnit());
+        assertNull(borderImageWidth.getBottomUnit());
+        assertNull(borderImageWidth.getLeftUnit());
 
-            assertNotNull(borderImageWidth.getTopUnit());
-            assertNotNull(borderImageWidth.getRightUnit());
-            assertNotNull(borderImageWidth.getBottomUnit());
-            assertNotNull(borderImageWidth.getLeftUnit());
+    }
 
-            assertEquals(CssLengthUnit.PX, borderImageWidth.getTopUnit());
-            assertEquals(CssLengthUnit.PX, borderImageWidth.getRightUnit());
-            assertEquals(CssLengthUnit.PX, borderImageWidth.getBottomUnit());
-            assertEquals(CssLengthUnit.PX, borderImageWidth.getLeftUnit());
-        }
-        {
-            BorderImageWidth borderImageWidth = new BorderImageWidth(
-                    "25px 25px 25px 25px");
-            assertEquals("25.0px", borderImageWidth.getCssValue());
-            assertTrue(25F == borderImageWidth.getTop());
-            assertTrue(25F == borderImageWidth.getRight());
-            assertTrue(25F == borderImageWidth.getBottom());
-            assertTrue(25F == borderImageWidth.getLeft());
+    /**
+     * Test method for
+     * {@link com.webfirmframework.wffweb.css.css3.BorderImageWidth#BorderImageWidth(java.lang.String)}
+     * .
+     */
+    @Test
+    public void testBorderImageWidthString2() {
 
-            assertNotNull(borderImageWidth.getTopUnit());
-            assertNotNull(borderImageWidth.getRightUnit());
-            assertNotNull(borderImageWidth.getBottomUnit());
-            assertNotNull(borderImageWidth.getLeftUnit());
+        BorderImageWidth borderImageWidth = new BorderImageWidth(
+                "5px 15px 25px 35px");
+        assertEquals("5.0px 15.0px 25.0px 35.0px",
+                borderImageWidth.getCssValue());
 
-            assertEquals(CssLengthUnit.PX, borderImageWidth.getTopUnit());
-            assertEquals(CssLengthUnit.PX, borderImageWidth.getRightUnit());
-            assertEquals(CssLengthUnit.PX, borderImageWidth.getBottomUnit());
-            assertEquals(CssLengthUnit.PX, borderImageWidth.getLeftUnit());
-        }
+        assertTrue(5F == borderImageWidth.getTop());
+        assertTrue(15F == borderImageWidth.getRight());
+        assertTrue(25F == borderImageWidth.getBottom());
+        assertTrue(35F == borderImageWidth.getLeft());
+
+        assertNotNull(borderImageWidth.getTopUnit());
+        assertNotNull(borderImageWidth.getRightUnit());
+        assertNotNull(borderImageWidth.getBottomUnit());
+        assertNotNull(borderImageWidth.getLeftUnit());
+
+        assertEquals(CssLengthUnit.PX, borderImageWidth.getTopUnit());
+        assertEquals(CssLengthUnit.PX, borderImageWidth.getRightUnit());
+        assertEquals(CssLengthUnit.PX, borderImageWidth.getBottomUnit());
+        assertEquals(CssLengthUnit.PX, borderImageWidth.getLeftUnit());
+
+    }
+
+    /**
+     * Test method for
+     * {@link com.webfirmframework.wffweb.css.css3.BorderImageWidth#BorderImageWidth(java.lang.String)}
+     * .
+     */
+    @Test
+    public void testBorderImageWidthString3() {
+
+        BorderImageWidth borderImageWidth = new BorderImageWidth(
+                "25px 25px 25px 25px");
+        assertEquals("25.0px", borderImageWidth.getCssValue());
+        assertTrue(25F == borderImageWidth.getTop());
+        assertTrue(25F == borderImageWidth.getRight());
+        assertTrue(25F == borderImageWidth.getBottom());
+        assertTrue(25F == borderImageWidth.getLeft());
+
+        assertNotNull(borderImageWidth.getTopUnit());
+        assertNotNull(borderImageWidth.getRightUnit());
+        assertNotNull(borderImageWidth.getBottomUnit());
+        assertNotNull(borderImageWidth.getLeftUnit());
+
+        assertEquals(CssLengthUnit.PX, borderImageWidth.getTopUnit());
+        assertEquals(CssLengthUnit.PX, borderImageWidth.getRightUnit());
+        assertEquals(CssLengthUnit.PX, borderImageWidth.getBottomUnit());
+        assertEquals(CssLengthUnit.PX, borderImageWidth.getLeftUnit());
+
+    }
+
+    /**
+     * Test method for
+     * {@link com.webfirmframework.wffweb.css.css3.BorderImageWidth#BorderImageWidth(java.lang.String)}
+     * .
+     */
+    @Test
+    public void testBorderImageWidthString4() {
         {
             BorderImageWidth borderImageWidth = new BorderImageWidth(
                     "25px 25px 55px 55px");
@@ -143,28 +169,38 @@ public class BorderImageWidthTest {
         {
             BorderImageWidth borderImageWidth = new BorderImageWidth(
                     "35px 25px 45px 25px ");
-            assertEquals("35.0px 25.0px 45.0px", borderImageWidth.getCssValue());
+            assertEquals("35.0px 25.0px 45.0px",
+                    borderImageWidth.getCssValue());
         }
         {
             BorderImageWidth borderImageWidth = new BorderImageWidth(
                     "35px 25px 35px 25px ");
             assertEquals("35.0px 25.0px", borderImageWidth.getCssValue());
         }
-        {
-            BorderImageWidth borderImageWidth = new BorderImageWidth(
-                    BorderImageWidth.AUTO);
-            assertEquals(BorderImageWidth.AUTO, borderImageWidth.getCssValue());
 
-            assertNull(borderImageWidth.getTop());
-            assertNull(borderImageWidth.getRight());
-            assertNull(borderImageWidth.getBottom());
-            assertNull(borderImageWidth.getLeft());
+    }
 
-            assertNull(borderImageWidth.getTopUnit());
-            assertNull(borderImageWidth.getRightUnit());
-            assertNull(borderImageWidth.getBottomUnit());
-            assertNull(borderImageWidth.getLeftUnit());
-        }
+    /**
+     * Test method for
+     * {@link com.webfirmframework.wffweb.css.css3.BorderImageWidth#BorderImageWidth(java.lang.String)}
+     * .
+     */
+    @Test
+    public void testBorderImageWidthString5() {
+
+        BorderImageWidth borderImageWidth = new BorderImageWidth(
+                BorderImageWidth.AUTO);
+        assertEquals(BorderImageWidth.AUTO, borderImageWidth.getCssValue());
+
+        assertNull(borderImageWidth.getTop());
+        assertNull(borderImageWidth.getRight());
+        assertNull(borderImageWidth.getBottom());
+        assertNull(borderImageWidth.getLeft());
+
+        assertNull(borderImageWidth.getTopUnit());
+        assertNull(borderImageWidth.getRightUnit());
+        assertNull(borderImageWidth.getBottomUnit());
+        assertNull(borderImageWidth.getLeftUnit());
     }
 
     /**
@@ -246,7 +282,8 @@ public class BorderImageWidthTest {
 
     /**
      * Test method for
-     * {@link com.webfirmframework.wffweb.css.css3.BorderImageWidth#setPercent(float)}.
+     * {@link com.webfirmframework.wffweb.css.css3.BorderImageWidth#setPercent(float)}
+     * .
      */
     @Test
     public void testSetPercent() {
@@ -277,7 +314,8 @@ public class BorderImageWidthTest {
 
     /**
      * Test method for
-     * {@link com.webfirmframework.wffweb.css.css3.BorderImageWidth#getCssName()}.
+     * {@link com.webfirmframework.wffweb.css.css3.BorderImageWidth#getCssName()}
+     * .
      */
     @Test
     public void testGetCssName() {
@@ -287,7 +325,8 @@ public class BorderImageWidthTest {
 
     /**
      * Test method for
-     * {@link com.webfirmframework.wffweb.css.css3.BorderImageWidth#getCssValue()}.
+     * {@link com.webfirmframework.wffweb.css.css3.BorderImageWidth#getCssValue()}
+     * .
      */
     @Test
     public void testGetCssValue() {
@@ -317,7 +356,8 @@ public class BorderImageWidthTest {
         {
             BorderImageWidth borderImageWidth = new BorderImageWidth(
                     "35px 25px 45px 25px ");
-            assertEquals("35.0px 25.0px 45.0px", borderImageWidth.getCssValue());
+            assertEquals("35.0px 25.0px 45.0px",
+                    borderImageWidth.getCssValue());
         }
         {
             BorderImageWidth borderImageWidth = new BorderImageWidth(
@@ -335,22 +375,25 @@ public class BorderImageWidthTest {
         {
             BorderImageWidth borderImageWidth = new BorderImageWidth(
                     "25px 25px 55px 55px");
-            assertEquals(CssNameConstants.BORDER_IMAGE_WIDTH
-                    + ": 25.0px 25.0px 55.0px 55.0px",
+            assertEquals(
+                    CssNameConstants.BORDER_IMAGE_WIDTH
+                            + ": 25.0px 25.0px 55.0px 55.0px",
                     borderImageWidth.toString());
         }
         {
             BorderImageWidth borderImageWidth = new BorderImageWidth(
                     "25px 25px 25px 55px");
-            assertEquals(CssNameConstants.BORDER_IMAGE_WIDTH
-                    + ": 25.0px 25.0px 25.0px 55.0px",
+            assertEquals(
+                    CssNameConstants.BORDER_IMAGE_WIDTH
+                            + ": 25.0px 25.0px 25.0px 55.0px",
                     borderImageWidth.toString());
         }
         {
             BorderImageWidth borderImageWidth = new BorderImageWidth(
                     "25px 25px 55px 55px");
-            assertEquals(CssNameConstants.BORDER_IMAGE_WIDTH
-                    + ": 25.0px 25.0px 55.0px 55.0px",
+            assertEquals(
+                    CssNameConstants.BORDER_IMAGE_WIDTH
+                            + ": 25.0px 25.0px 55.0px 55.0px",
                     borderImageWidth.toString());
         }
         {
@@ -362,14 +405,17 @@ public class BorderImageWidthTest {
         {
             BorderImageWidth borderImageWidth = new BorderImageWidth(
                     "35px 25px 45px 25px ");
-            assertEquals(CssNameConstants.BORDER_IMAGE_WIDTH
-                    + ": 35.0px 25.0px 45.0px", borderImageWidth.toString());
+            assertEquals(
+                    CssNameConstants.BORDER_IMAGE_WIDTH
+                            + ": 35.0px 25.0px 45.0px",
+                    borderImageWidth.toString());
         }
         {
             BorderImageWidth borderImageWidth = new BorderImageWidth(
                     "35px 25px 35px 25px ");
-            assertEquals(CssNameConstants.BORDER_IMAGE_WIDTH
-                    + ": 35.0px 25.0px", borderImageWidth.toString());
+            assertEquals(
+                    CssNameConstants.BORDER_IMAGE_WIDTH + ": 35.0px 25.0px",
+                    borderImageWidth.toString());
         }
     }
 
@@ -407,7 +453,8 @@ public class BorderImageWidthTest {
 
     /**
      * Test method for
-     * {@link com.webfirmframework.wffweb.css.css3.BorderImageWidth#setAsInitial()}.
+     * {@link com.webfirmframework.wffweb.css.css3.BorderImageWidth#setAsInitial()}
+     * .
      */
     @Test
     public void testSetAsInitial() {
@@ -451,7 +498,8 @@ public class BorderImageWidthTest {
 
     /**
      * Test method for
-     * {@link com.webfirmframework.wffweb.css.css3.BorderImageWidth#setAsInherit()}.
+     * {@link com.webfirmframework.wffweb.css.css3.BorderImageWidth#setAsInherit()}
+     * .
      */
     @Test
     public void testSetAsInherit() {
@@ -494,7 +542,8 @@ public class BorderImageWidthTest {
 
     /**
      * Test method for
-     * {@link com.webfirmframework.wffweb.css.css3.BorderImageWidth#setAsAuto()}.
+     * {@link com.webfirmframework.wffweb.css.css3.BorderImageWidth#setAsAuto()}
+     * .
      */
     @Test
     public void testSetAsAuto() {
@@ -775,45 +824,52 @@ public class BorderImageWidthTest {
     /*
      * @Test public void testGetTop() { fail("Not yet implemented"); }
      *//**
-     * Test method for
-     * {@link com.webfirmframework.wffweb.css.css3.BorderImageWidth#getTopUnit()}.
-     */
+       * Test method for
+       * {@link com.webfirmframework.wffweb.css.css3.BorderImageWidth#getTopUnit()}
+       * .
+       */
     /*
      * @Test public void testGetTopUnit() { fail("Not yet implemented"); }
      *//**
-     * Test method for
-     * {@link com.webfirmframework.wffweb.css.css3.BorderImageWidth#getRight()}.
-     */
+       * Test method for
+       * {@link com.webfirmframework.wffweb.css.css3.BorderImageWidth#getRight()}
+       * .
+       */
     /*
      * @Test public void testGetRight() { fail("Not yet implemented"); }
      *//**
-     * Test method for
-     * {@link com.webfirmframework.wffweb.css.css3.BorderImageWidth#getRightUnit()}.
-     */
+       * Test method for
+       * {@link com.webfirmframework.wffweb.css.css3.BorderImageWidth#getRightUnit()}
+       * .
+       */
     /*
      * @Test public void testGetRightUnit() { fail("Not yet implemented"); }
      *//**
-     * Test method for
-     * {@link com.webfirmframework.wffweb.css.css3.BorderImageWidth#getBottom()}.
-     */
+       * Test method for
+       * {@link com.webfirmframework.wffweb.css.css3.BorderImageWidth#getBottom()}
+       * .
+       */
     /*
      * @Test public void testGetBottom() { fail("Not yet implemented"); }
      *//**
-     * Test method for
-     * {@link com.webfirmframework.wffweb.css.css3.BorderImageWidth#getBottomUnit()}.
-     */
+       * Test method for
+       * {@link com.webfirmframework.wffweb.css.css3.BorderImageWidth#getBottomUnit()}
+       * .
+       */
     /*
      * @Test public void testGetBottomUnit() { fail("Not yet implemented"); }
      *//**
-     * Test method for
-     * {@link com.webfirmframework.wffweb.css.css3.BorderImageWidth#getLeft()}.
-     */
+       * Test method for
+       * {@link com.webfirmframework.wffweb.css.css3.BorderImageWidth#getLeft()}
+       * .
+       */
     /*
      * @Test public void testGetLeft() { fail("Not yet implemented"); }
      *//**
-     * Test method for
-     * {@link com.webfirmframework.wffweb.css.css3.BorderImageWidth#getLeftUnit()}.
-     */
+       * Test method for
+       * {@link com.webfirmframework.wffweb.css.css3.BorderImageWidth#getLeftUnit()}
+       * .
+       */
     /*
      * @Test public void testGetLeftUnit() { fail("Not yet implemented"); }
      */
@@ -830,13 +886,15 @@ public class BorderImageWidthTest {
                         CssLengthUnit.CM, 15F, CssLengthUnit.EM, 20F,
                         CssLengthUnit.EX));
 
-        assertEquals("5.0px", BorderImageWidth.getProducedCssValue(5F,
-                CssLengthUnit.PX, 5F, CssLengthUnit.PX, 5F, CssLengthUnit.PX,
-                5F, CssLengthUnit.PX));
+        assertEquals("5.0px",
+                BorderImageWidth.getProducedCssValue(5F, CssLengthUnit.PX, 5F,
+                        CssLengthUnit.PX, 5F, CssLengthUnit.PX, 5F,
+                        CssLengthUnit.PX));
 
-        assertEquals("5.0px 15.0px", BorderImageWidth.getProducedCssValue(5F,
-                CssLengthUnit.PX, 15F, CssLengthUnit.PX, 5F, CssLengthUnit.PX,
-                15F, CssLengthUnit.PX));
+        assertEquals("5.0px 15.0px",
+                BorderImageWidth.getProducedCssValue(5F, CssLengthUnit.PX, 15F,
+                        CssLengthUnit.PX, 5F, CssLengthUnit.PX, 15F,
+                        CssLengthUnit.PX));
 
         assertEquals("5.0px 15.0px 25.0px",
                 BorderImageWidth.getProducedCssValue(5F, CssLengthUnit.PX, 15F,
@@ -967,8 +1025,8 @@ public class BorderImageWidthTest {
         assertTrue(new BorderImageWidth(BorderImageWidth.AUTO)
                 .hasPredefinedConstantValue());
         assertFalse(new BorderImageWidth().hasPredefinedConstantValue());
-        assertFalse(new BorderImageWidth("auto 10px")
-                .hasPredefinedConstantValue());
+        assertFalse(
+                new BorderImageWidth("auto 10px").hasPredefinedConstantValue());
     }
 
 }
