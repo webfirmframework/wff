@@ -306,11 +306,10 @@ public class RgbaCssValue extends AbstractBean<RgbaCssValue> {
                     if (b < 0 || b > 255) {
                         return false;
                     }
+
                     final float a = Float.parseFloat(rgbaStringParts[3]);
-                    if (a < 0 || a > 1) {
-                        return false;
-                    }
-                    return true;
+
+                    return !(a < 0 || a > 1);
                 }
                 return false;
             }
