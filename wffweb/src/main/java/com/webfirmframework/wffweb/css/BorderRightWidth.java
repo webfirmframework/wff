@@ -335,9 +335,7 @@ public class BorderRightWidth extends AbstractCssProperty<BorderRightWidth> {
                 return true;
             }
         }
-        if (PREDEFINED_CONSTANTS.contains(trimmedCssValue)) {
-            return true;
-        }
-        return false;
+
+        return PREDEFINED_CONSTANTS.contains(trimmedCssValue);
     }
 }
