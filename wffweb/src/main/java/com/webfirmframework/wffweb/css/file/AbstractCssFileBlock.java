@@ -35,19 +35,22 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
     private static final long serialVersionUID = 1_0_0L;
 
     private final Set<CssProperty> cssProperties;
+
     private final Map<String, CssProperty> cssPropertiesAsMap;
+
     private final Set<CssFile> cssFiles;
+
     private String selectors;
 
-    public AbstractCssFileBlock(final String selectors) {
-        this.selectors = selectors;
-    }
+    private boolean modified;
 
     @SuppressWarnings("unused")
     private AbstractCssFileBlock() {
     }
 
-    private boolean modified;
+    public AbstractCssFileBlock(final String selectors) {
+        this.selectors = selectors;
+    }
 
     {
         cssFiles = new LinkedHashSet<CssFile>();
