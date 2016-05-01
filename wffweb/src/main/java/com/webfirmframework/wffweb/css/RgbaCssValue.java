@@ -283,14 +283,16 @@ public class RgbaCssValue extends AbstractBean<RgbaCssValue> {
      * @since 1.0.0
      * @author WFF
      */
-    public static boolean isValid(String rgbaString) {
+    public static boolean isValid(final String rgbaString) {
         try {
-            rgbaString = rgbaString.replace(" ", "").toLowerCase();
-            if (rgbaString.startsWith("rgba(") && rgbaString.contains(")")) {
+            final String rgbaStringLowerCase = rgbaString.replace(" ", "")
+                    .toLowerCase();
+            if (rgbaStringLowerCase.startsWith("rgba(")
+                    && rgbaStringLowerCase.contains(")")) {
 
-                final String[] rgbaStringParts = rgbaString
-                        .substring(rgbaString.indexOf('(') + 1,
-                                rgbaString.lastIndexOf(')'))
+                final String[] rgbaStringParts = rgbaStringLowerCase
+                        .substring(rgbaStringLowerCase.indexOf('(') + 1,
+                                rgbaStringLowerCase.lastIndexOf(')'))
                         .split("[,]");
 
                 if (rgbaStringParts.length == 4) {
