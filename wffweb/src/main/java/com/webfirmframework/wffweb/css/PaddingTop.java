@@ -303,9 +303,7 @@ public class PaddingTop extends AbstractCssProperty<PaddingTop> {
                 return true;
             }
         }
-        if (PREDEFINED_CONSTANTS.contains(trimmedCssValue)) {
-            return true;
-        }
-        return false;
+
+        return PREDEFINED_CONSTANTS.contains(trimmedCssValue);
     }
 }
