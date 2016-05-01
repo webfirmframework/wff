@@ -247,15 +247,15 @@ public class Opacity extends AbstractCssProperty<Opacity> {
             return false;
         }
         try {
+
             final float parsedValue = Float.parseFloat(trimmedCssValue);
+
             if (parsedValue < 0 || parsedValue > 1) {
                 return false;
             }
-            if (parsedValue == 0 && (trimmedCssValue.contains("-")
-                    || trimmedCssValue.contains("+"))) {
-                return false;
-            }
-            return true;
+
+            return !(parsedValue == 0 && (trimmedCssValue.contains("-")
+                    || trimmedCssValue.contains("+")));
         } catch (final NumberFormatException e) {
         }
 
