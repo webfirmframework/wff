@@ -197,14 +197,16 @@ public class RgbCssValue extends AbstractBean<RgbCssValue> {
      * @since 1.0.0
      * @author WFF
      */
-    public static boolean isValid(String rgbString) {
+    public static boolean isValid(final String rgbString) {
         try {
-            rgbString = rgbString.replace(" ", "").toLowerCase();
-            if (rgbString.startsWith("rgb(") && rgbString.contains(")")) {
+            final String rgbStringLowerCase = rgbString.replace(" ", "")
+                    .toLowerCase();
+            if (rgbStringLowerCase.startsWith("rgb(")
+                    && rgbStringLowerCase.contains(")")) {
 
-                final String[] rgbStringParts = rgbString
-                        .substring(rgbString.indexOf('(') + 1,
-                                rgbString.lastIndexOf(')'))
+                final String[] rgbStringParts = rgbStringLowerCase
+                        .substring(rgbStringLowerCase.indexOf('(') + 1,
+                                rgbStringLowerCase.lastIndexOf(')'))
                         .split("[,]");
 
                 if (rgbStringParts.length == 3) {
