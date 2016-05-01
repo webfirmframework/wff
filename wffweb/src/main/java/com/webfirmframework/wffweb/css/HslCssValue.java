@@ -274,12 +274,11 @@ public class HslCssValue extends AbstractBean<HslCssValue> {
                     if (!hslStringParts[2].endsWith("%")) {
                         return false;
                     }
+
                     final float b = Float
                             .parseFloat(hslStringParts[2].replace("%", ""));
-                    if (b < 0 || b > 100) {
-                        return false;
-                    }
-                    return true;
+
+                    return !(b < 0 || b > 100);
                 }
                 return false;
             }
