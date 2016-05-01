@@ -310,9 +310,7 @@ public class WebkitColumnGap extends AbstractCssProperty<WebkitColumnGap> {
                 return true;
             }
         }
-        if (PREDEFINED_CONSTANTS.contains(trimmedCssValue)) {
-            return true;
-        }
-        return false;
+
+        return PREDEFINED_CONSTANTS.contains(trimmedCssValue);
     }
 }
