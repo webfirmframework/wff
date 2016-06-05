@@ -153,6 +153,8 @@ public class AttributeNameConstants {
 
     public static final String STEP = "step";
 
+    public static final String CONTENT = "content";
+
     /**
      *
      * @author WFF

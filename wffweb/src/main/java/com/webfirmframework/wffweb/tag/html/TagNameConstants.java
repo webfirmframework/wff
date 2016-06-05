@@ -251,6 +251,8 @@ public class TagNameConstants {
 
     public static final String TR = "tr";
 
+    public static final String HGROUP = "hgroup";
+
     /**
      *
      * @author WFF
