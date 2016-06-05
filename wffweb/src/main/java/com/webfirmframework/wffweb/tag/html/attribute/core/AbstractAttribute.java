@@ -84,7 +84,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 tagBuilder.append(new char[] { '=', '"' });
                 for (final String each : getAttributeValueSet()) {
                     tagBuilder.append(each);
-                    // tagBuilder.append(" ");
+                    tagBuilder.append(' ');
                 }
                 result = StringBuilderUtil.getTrimmedString(tagBuilder) + '"';
                 tagBuilder.append('"');
