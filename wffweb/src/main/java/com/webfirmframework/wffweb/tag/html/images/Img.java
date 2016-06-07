@@ -21,6 +21,8 @@ public class Img extends AbstractHtml {
 
     public static final Logger LOGGER = Logger.getLogger(Img.class.getName());
 
+    private static TagType tagType = TagType.NON_CLOSING;
+
     {
         init();
     }
@@ -37,7 +39,7 @@ public class Img extends AbstractHtml {
      * @since 1.0.0
      */
     public Img(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(TagNameConstants.IMG, base, attributes);
+        super(tagType, TagNameConstants.IMG, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
                 if (!(abstractAttribute != null
@@ -58,6 +60,21 @@ public class Img extends AbstractHtml {
      */
     protected void init() {
         // to override and use this method
+    }
+
+    /**
+     * @return the tagType
+     */
+    public static TagType getTagType() {
+        return tagType;
+    }
+
+    /**
+     * @param tagType
+     *            the tagType to set
+     */
+    public static void setTagType(TagType tagType) {
+        Img.tagType = tagType;
     }
 
 }

@@ -23,45 +23,52 @@ public class ClassAttributeTest {
 
     @Test
     public void testClassAttribute() {
-//        fail("Not yet implemented");
+        // fail("Not yet implemented");
     }
 
     @Test
     public void testClassAttributeString() {
         {
             ClassAttribute classAttribute = new ClassAttribute("class1 class2");
-            assertEquals("class=\"class1 class2\"", classAttribute.toHtmlString());
+            assertEquals("class=\"class1 class2\"",
+                    classAttribute.toHtmlString());
         }
         {
             ClassAttribute classAttribute = new ClassAttribute("class1");
             assertEquals("class=\"class1\"", classAttribute.toHtmlString());
         }
-//        fail("Not yet implemented");
+
+        {
+            ClassAttribute classAttribute = new ClassAttribute("class1",
+                    "class2");
+            assertEquals("class=\"class1 class2\"",
+                    classAttribute.toHtmlString());
+        }
     }
 
     @Test
     public void testAddClassNames() {
-//        fail("Not yet implemented");
+        // fail("Not yet implemented");
     }
 
     @Test
     public void testAddNewClassNames() {
-//        fail("Not yet implemented");
+        // fail("Not yet implemented");
     }
 
     @Test
     public void testAddAllClassNames() {
-//        fail("Not yet implemented");
+        // fail("Not yet implemented");
     }
 
     @Test
     public void testRemoveAllClassNames() {
-//        fail("Not yet implemented");
+        // fail("Not yet implemented");
     }
 
     @Test
     public void testRemoveClassName() {
-//        fail("Not yet implemented");
+        // fail("Not yet implemented");
     }
 
 }

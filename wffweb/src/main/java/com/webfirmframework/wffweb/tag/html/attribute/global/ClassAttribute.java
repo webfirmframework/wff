@@ -44,21 +44,25 @@ public class ClassAttribute extends AbstractAttribute
     }
 
     /**
-     * one or more class name separated by space.
+     * one or more class name separated by space or as an array of class names.
      *
      * @param classNames
      */
-    public ClassAttribute(final String classNames) {
-        /*
-         * should not call addClassNames(final String className) instead of the
-         * below duplicate code since the addClassNames method may be overridden
-         * by the extended class.
-         */
-        String trimmmedValue = null;
-        if (classNames != null
-                && !(trimmmedValue = classNames.trim()).isEmpty()) {
-            final String[] values = trimmmedValue.split(" ");
-            addAllToAttributeValueSet(Arrays.asList(values));
+    public ClassAttribute(final String... classNames) {
+        if (classNames != null) {
+            /*
+             * should not call addClassNames(final String className) instead of
+             * the below duplicate code since the addClassNames method may be
+             * overridden by the extended class.
+             */
+            for (final String className : classNames) {
+                String trimmmedValue = null;
+                if (className != null
+                        && !(trimmmedValue = className.trim()).isEmpty()) {
+                    final String[] values = trimmmedValue.split(" ");
+                    addAllToAttributeValueSet(Arrays.asList(values));
+                }
+            }
         }
     }
 
@@ -76,16 +80,21 @@ public class ClassAttribute extends AbstractAttribute
      * adds the given class names.
      *
      * @param classNames
-     *            one or more class names separated by space.
+     *            one or more class names separated by space or as an array of
+     *            class names.
      * @since 1.0.0
      * @author WFF
      */
-    public void addClassNames(final String classNames) {
-        String trimmmedValue = null;
-        if (classNames != null
-                && !(trimmmedValue = classNames.trim()).isEmpty()) {
-            final String[] values = trimmmedValue.split(" ");
-            addAllToAttributeValueSet(Arrays.asList(values));
+    public void addClassNames(final String... classNames) {
+        if (classNames != null) {
+            for (final String className : classNames) {
+                String trimmmedValue = null;
+                if (className != null
+                        && !(trimmmedValue = className.trim()).isEmpty()) {
+                    final String[] values = trimmmedValue.split(" ");
+                    addAllToAttributeValueSet(Arrays.asList(values));
+                }
+            }
         }
     }
 
@@ -93,17 +102,23 @@ public class ClassAttribute extends AbstractAttribute
      * removed all current class names and adds the given class names.
      *
      * @param classNames
-     *            one or more class names separated by space.
+     *            one or more class names separated by space or an array of
+     *            class names.
      * @since 1.0.0
      * @author WFF
      */
-    public void addNewClassNames(final String classNames) {
-        String trimmmedValue = null;
-        if (classNames != null
-                && !(trimmmedValue = classNames.trim()).isEmpty()) {
-            final String[] values = trimmmedValue.split(" ");
-            removeAllFromAttributeValueSet();
-            addAllToAttributeValueSet(Arrays.asList(values));
+    public void addNewClassNames(final String... classNames) {
+
+        if (classNames != null) {
+            for (final String className : classNames) {
+                String trimmmedValue = null;
+                if (className != null
+                        && !(trimmmedValue = className.trim()).isEmpty()) {
+                    final String[] values = trimmmedValue.split(" ");
+                    removeAllFromAttributeValueSet();
+                    addAllToAttributeValueSet(Arrays.asList(values));
+                }
+            }
         }
     }
 
