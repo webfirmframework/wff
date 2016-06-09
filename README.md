@@ -31,6 +31,25 @@ Html html = new Html(null) {
 html.setPrependDocType(true);
 System.out.println(html.toHtmlString()); 
 ~~~
+
+or the same in another coding style
+~~~
+Html html = new Html(null) {
+       {	 
+              new Head(this);
+       
+              new Body(this) {
+                     { 
+                            new NoTag(this, "Hello World");
+                     }
+              };
+       } 
+};
+// prepends the doc type <!DOCTYPE html>
+html.setPrependDocType(true);
+System.out.println(html.toHtmlString()); 
+~~~
+
 prints the following output
 ~~~
 <!DOCTYPE html>
