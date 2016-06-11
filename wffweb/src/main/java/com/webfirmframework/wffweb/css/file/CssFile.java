@@ -105,7 +105,7 @@ public abstract class CssFile implements Serializable, Cloneable {
                 toStringBuilder.delete(0, toStringBuilder.length());
 
                 if (isOptimizeCssString()) {
-                    for (final Entry<String, Set<AbstractCssFileBlock>> entry : getSelectorCssFileBlocks()
+                    for (final Entry<String, Set<AbstractCssFileBlock>> entry : selectorCssFileBlocks
                             .entrySet()) {
                         final Set<AbstractCssFileBlock> cssFileBlocks = entry
                                 .getValue();
@@ -244,11 +244,11 @@ public abstract class CssFile implements Serializable, Cloneable {
 
     private void addToSelectorCssFileBlocks(
             final AbstractCssFileBlock cssFileBlock) {
-        Set<AbstractCssFileBlock> abstractCssFileBlocks = getSelectorCssFileBlocks()
+        Set<AbstractCssFileBlock> abstractCssFileBlocks = selectorCssFileBlocks
                 .get(cssFileBlock.getSelectors());
         if (abstractCssFileBlocks == null) {
             abstractCssFileBlocks = new LinkedHashSet<AbstractCssFileBlock>();
-            getSelectorCssFileBlocks().put(cssFileBlock.getSelectors(),
+            selectorCssFileBlocks.put(cssFileBlock.getSelectors(),
                     abstractCssFileBlocks);
         }
         abstractCssFileBlocks.add(cssFileBlock);
@@ -256,7 +256,7 @@ public abstract class CssFile implements Serializable, Cloneable {
 
     private void removeFromSelectorFileBlocks(
             final AbstractCssFileBlock cssFileBlock) {
-        final Set<AbstractCssFileBlock> abstractCssFileBlocks = getSelectorCssFileBlocks()
+        final Set<AbstractCssFileBlock> abstractCssFileBlocks = selectorCssFileBlocks
                 .get(cssFileBlock.getSelectors());
         if (abstractCssFileBlocks != null) {
             abstractCssFileBlocks.remove(cssFileBlock);
