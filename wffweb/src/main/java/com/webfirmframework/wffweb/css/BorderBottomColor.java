@@ -296,23 +296,11 @@ public class BorderBottomColor extends AbstractCssProperty<BorderBottomColor>
             return true;
         }
 
-        if (CssColorName.isValid(trimmedCssValue)) {
-            return true;
-        }
-
-        if (RgbCssValue.isValid(trimmedCssValue)) {
-            return true;
-        }
-
-        if (RgbaCssValue.isValid(trimmedCssValue)) {
-            return true;
-        }
-
-        if (HslCssValue.isValid(trimmedCssValue)) {
-            return true;
-        }
-
-        if (HslaCssValue.isValid(trimmedCssValue)) {
+        if (CssColorName.isValid(trimmedCssValue)
+                || RgbCssValue.isValid(trimmedCssValue)
+                || RgbaCssValue.isValid(trimmedCssValue)
+                || HslCssValue.isValid(trimmedCssValue)
+                || HslaCssValue.isValid(trimmedCssValue)) {
             return true;
         }
 
@@ -326,6 +314,7 @@ public class BorderBottomColor extends AbstractCssProperty<BorderBottomColor>
 
             return !(value > CommonConstants.FFFFFF_HEX_VALUE || value < 0);
         } catch (final NumberFormatException ex) {
+            // NOP
         }
 
         return false;
