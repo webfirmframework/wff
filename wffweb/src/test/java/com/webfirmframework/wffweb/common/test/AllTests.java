@@ -121,8 +121,10 @@ import com.webfirmframework.wffweb.css.css3.WebkitFlexBasisTest;
 import com.webfirmframework.wffweb.css.css3.WebkitFlexGrowTest;
 import com.webfirmframework.wffweb.css.css3.WebkitFlexShrinkTest;
 import com.webfirmframework.wffweb.css.css3.WebkitFlexTest;
+import com.webfirmframework.wffweb.tag.html.HrTest;
 import com.webfirmframework.wffweb.tag.html.attribute.global.ClassAttributeTest;
 import com.webfirmframework.wffweb.tag.html.attribute.global.StyleTest;
+import com.webfirmframework.wffweb.tag.html.formsandinputs.InputTest;
 import com.webfirmframework.wffweb.tag.html.images.ImgTest;
 import com.webfirmframework.wffweb.util.CssLengthUtilTest;
 import com.webfirmframework.wffweb.util.CssValueUtilTest;
@@ -180,7 +182,8 @@ import com.webfirmframework.wffweb.util.WffBinaryMessageUtilTest;
         BorderImageOutsetTest.class, BorderImageSliceTest.class,
         BorderImageSourceTest.class, WffBinaryMessageUtilTest.class,
         ColumnCountTest.class, WebkitColumnSpanTest.class,
-        ClassAttributeTest.class, ImgTest.class })
+        ClassAttributeTest.class, ImgTest.class, HrTest.class,
+        InputTest.class })
 public class AllTests {
 
 }
