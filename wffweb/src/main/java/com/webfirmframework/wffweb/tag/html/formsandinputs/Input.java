@@ -21,6 +21,8 @@ public class Input extends AbstractHtml {
 
     public static final Logger LOGGER = Logger.getLogger(Input.class.getName());
 
+    private static TagType tagType = TagType.NON_CLOSING;
+
     {
         init();
     }
@@ -38,7 +40,7 @@ public class Input extends AbstractHtml {
      */
     public Input(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.INPUT, base, attributes);
+        super(tagType, TagNameConstants.INPUT, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
                 if (!(abstractAttribute != null
@@ -59,6 +61,21 @@ public class Input extends AbstractHtml {
      */
     protected void init() {
         // to override and use this method
+    }
+
+    /**
+     * @return the tagType
+     */
+    public static TagType getTagType() {
+        return tagType;
+    }
+
+    /**
+     * @param tagType
+     *            the tagType to set
+     */
+    public static void setTagType(final TagType tagType) {
+        Input.tagType = tagType;
     }
 
 }

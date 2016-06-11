@@ -73,7 +73,7 @@ public class Img extends AbstractHtml {
      * @param tagType
      *            the tagType to set
      */
-    public static void setTagType(TagType tagType) {
+    public static void setTagType(final TagType tagType) {
         Img.tagType = tagType;
     }
 

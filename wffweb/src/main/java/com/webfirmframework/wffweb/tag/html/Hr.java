@@ -19,6 +19,8 @@ public class Hr extends AbstractHtml {
 
     public static final Logger LOGGER = Logger.getLogger(Hr.class.getName());
 
+    private static TagType tagType = TagType.NON_CLOSING;
+
     {
         init();
     }
@@ -35,7 +37,7 @@ public class Hr extends AbstractHtml {
      * @since 1.0.0
      */
     public Hr(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(TagNameConstants.HR, base, attributes);
+        super(tagType, TagNameConstants.HR, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             for (final AbstractAttribute abstractAttribute : attributes) {
                 if (!(abstractAttribute != null
@@ -55,6 +57,21 @@ public class Hr extends AbstractHtml {
      */
     protected void init() {
         // to override and use this method
+    }
+
+    /**
+     * @return the tagType
+     */
+    public static TagType getTagType() {
+        return tagType;
+    }
+
+    /**
+     * @param tagType
+     *            the tagType to set
+     */
+    public static void setTagType(final TagType tagType) {
+        Hr.tagType = tagType;
     }
 
 }

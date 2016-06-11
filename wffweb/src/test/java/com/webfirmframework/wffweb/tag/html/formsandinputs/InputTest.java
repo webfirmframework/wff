@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.webfirmframework.wffweb.tag.html.images;
+package com.webfirmframework.wffweb.tag.html.formsandinputs;
 
 import static org.junit.Assert.assertEquals;
 
@@ -21,33 +21,33 @@ import org.junit.Test;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml.TagType;
 
-public class ImgTest {
+public class InputTest {
 
     @Test
-    public void testImg1() {
+    public void testInput1() {
 
-        Img img = new Img(null);
-        assertEquals("<img>", img.toHtmlString());
+        Input input = new Input(null);
+        assertEquals("<input>", input.toHtmlString());
         
-        Img.setTagType(TagType.OPENING_CLOSING);
-        img = new Img(null);
-        assertEquals("<img></img>", img.toHtmlString());
+        Input.setTagType(TagType.OPENING_CLOSING);
+        input = new Input(null);
+        assertEquals("<input></input>", input.toHtmlString());
         
-        Img.setTagType(TagType.SELF_CLOSING);
-        img = new Img(null);
-        assertEquals("<img/>", img.toHtmlString());
+        Input.setTagType(TagType.SELF_CLOSING);
+        input = new Input(null);
+        assertEquals("<input/>", input.toHtmlString());
         
-        Img.setTagType(TagType.NON_CLOSING);
-        img = new Img(null);
-        assertEquals("<img>", img.toHtmlString());
+        Input.setTagType(TagType.NON_CLOSING);
+        input = new Input(null);
+        assertEquals("<input>", input.toHtmlString());
     }
 
     @Test
-    public void testImg2() {
+    public void testInput2() {
 
-        Img.setTagType(TagType.SELF_CLOSING);
-        Img img = new Img(null);
-        assertEquals("<img/>", img.toHtmlString());
+        Input.setTagType(TagType.SELF_CLOSING);
+        Input input = new Input(null);
+        assertEquals("<input/>", input.toHtmlString());
 
     }
 

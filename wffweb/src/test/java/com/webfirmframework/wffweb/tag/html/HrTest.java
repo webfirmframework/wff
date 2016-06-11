@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.webfirmframework.wffweb.tag.html.images;
+package com.webfirmframework.wffweb.tag.html;
 
 import static org.junit.Assert.assertEquals;
 
@@ -21,33 +21,33 @@ import org.junit.Test;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml.TagType;
 
-public class ImgTest {
+public class HrTest {
 
     @Test
-    public void testImg1() {
+    public void testHr1() {
 
-        Img img = new Img(null);
-        assertEquals("<img>", img.toHtmlString());
+        Hr hr = new Hr(null);
+        assertEquals("<hr>", hr.toHtmlString());
         
-        Img.setTagType(TagType.OPENING_CLOSING);
-        img = new Img(null);
-        assertEquals("<img></img>", img.toHtmlString());
+        Hr.setTagType(TagType.OPENING_CLOSING);
+        hr = new Hr(null);
+        assertEquals("<hr></hr>", hr.toHtmlString());
         
-        Img.setTagType(TagType.SELF_CLOSING);
-        img = new Img(null);
-        assertEquals("<img/>", img.toHtmlString());
+        Hr.setTagType(TagType.SELF_CLOSING);
+        hr = new Hr(null);
+        assertEquals("<hr/>", hr.toHtmlString());
         
-        Img.setTagType(TagType.NON_CLOSING);
-        img = new Img(null);
-        assertEquals("<img>", img.toHtmlString());
+        Hr.setTagType(TagType.NON_CLOSING);
+        hr = new Hr(null);
+        assertEquals("<hr>", hr.toHtmlString());
     }
 
     @Test
-    public void testImg2() {
+    public void testHr2() {
 
-        Img.setTagType(TagType.SELF_CLOSING);
-        Img img = new Img(null);
-        assertEquals("<img/>", img.toHtmlString());
+        Hr.setTagType(TagType.SELF_CLOSING);
+        Hr hr = new Hr(null);
+        assertEquals("<hr/>", hr.toHtmlString());
 
     }
 
