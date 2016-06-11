@@ -16,14 +16,15 @@
 */
 package com.webfirmframework.wffweb.css;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Assert;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.InvalidValueException;
-import com.webfirmframework.wffweb.css.CssLengthUnit;
-import com.webfirmframework.wffweb.css.CssNameConstants;
-import com.webfirmframework.wffweb.css.LineHeight;
 
 /**
  * 
@@ -151,8 +152,8 @@ public class LineHeightTest {
         LineHeight lineHeight = new LineHeight();
         lineHeight.setAsInitial();
         assertEquals(LineHeight.INITIAL, lineHeight.getCssValue());
-        Assert.assertNull(lineHeight.getValue());
-        Assert.assertNull(lineHeight.getUnit());
+        assertNull(lineHeight.getValue());
+        assertNull(lineHeight.getUnit());
     }
 
     @Test
@@ -161,7 +162,7 @@ public class LineHeightTest {
         lineHeight.setAsInherit();
         assertEquals(LineHeight.INHERIT, lineHeight.getCssValue());
         Assert.assertNull(lineHeight.getValue());
-        Assert.assertNull(lineHeight.getUnit());
+        assertNull(lineHeight.getUnit());
     }
     
     
@@ -171,25 +172,25 @@ public class LineHeightTest {
             final boolean valid = LineHeight.isValid("45px");
             assertTrue(valid);
             final boolean invalid = LineHeight.isValid("55");
-            Assert.assertTrue(invalid);
+            assertTrue(invalid);
         }
         {
             final boolean valid = LineHeight.isValid("45em");
             assertTrue(valid);
             final boolean invalid = LineHeight.isValid("dfd");
-            Assert.assertFalse(invalid);
+            assertFalse(invalid);
         }
         {
             final boolean valid = LineHeight.isValid("45%");
             assertTrue(valid);
             final boolean invalid = LineHeight.isValid("45 px");
-            Assert.assertFalse(invalid);
+            assertFalse(invalid);
         }
         {
             final boolean valid = LineHeight.isValid("45em");
             assertTrue(valid);
             final boolean invalid = LineHeight.isValid("45sem");
-            Assert.assertFalse(invalid);
+            assertFalse(invalid);
         }
         {
             final boolean valid = LineHeight.isValid("45rem");
@@ -197,7 +198,7 @@ public class LineHeightTest {
         }
         {
             final boolean valid = LineHeight.isValid("-1px");
-            Assert.assertFalse(valid);
+            assertFalse(valid);
         }
     }
     
