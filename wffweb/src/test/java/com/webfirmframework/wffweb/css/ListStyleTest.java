@@ -26,6 +26,7 @@ import static org.junit.Assert.fail;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.InvalidValueException;
+import com.webfirmframework.wffweb.util.StringBuilderUtil;
 
 /**
  *
@@ -294,25 +295,25 @@ public class ListStyleTest {
         }
 
         final StringBuilder cssValueBuilder = new StringBuilder();
-        // boolean invalid = true;
+         boolean invalid = true;
         if (listStyleType != null) {
             cssValueBuilder.append(listStyleType.getCssValue());
             cssValueBuilder.append(" ");
-            // invalid = false;
+             invalid = false;
         }
         if (listStylePosition != null) {
             cssValueBuilder.append(listStylePosition.getCssValue());
             cssValueBuilder.append(" ");
-            // invalid = false;
+             invalid = false;
         }
         if (listStyleImage != null) {
             cssValueBuilder.append(listStyleImage.getCssValue());
             cssValueBuilder.append(" ");
-            // invalid = false;
+             invalid = false;
         }
-        // System.out.println(invalid);
-        // System.out.println(StringBuilderUtil.getTrimmedString(cssValueBuilder));
-        // System.out.println(ListStyle.isValid(sample));
+         assertFalse(invalid);
+         assertEquals("cjk-ideographic inside url(\"Sqpurple.gif\")", StringBuilderUtil.getTrimmedString(cssValueBuilder));
+         assertTrue(ListStyle.isValid(sample));
 
         // System.out.println(part1);
         // System.out.println(part2);
