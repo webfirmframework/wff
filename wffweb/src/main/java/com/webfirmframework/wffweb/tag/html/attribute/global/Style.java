@@ -420,10 +420,13 @@ public class Style extends AbstractAttribute
      */
     protected Map<String, AbstractCssProperty<?>> abstractCssPropertyClassObjects;
 
+    // for internal use.
     private boolean fromAddCssProperty;
 
+    // for internal use.
     private boolean fromRemoveCssProperty;
 
+    // for internal use.
     private boolean clearOnlyInCssProperties;
 
     static {
@@ -1026,14 +1029,17 @@ public class Style extends AbstractAttribute
      * @author WFF
      * @return the added {@code CssProperty} objects as a {@code CssProperty}.
      */
-    public CssProperty addCssProperty(CssProperty cssProperty) {
+    public CssProperty addCssProperty(final CssProperty cssProperty) {
+
+        CssProperty sameOrCloneCssProperty = cssProperty;
+
         if (cssProperty instanceof AbstractCssProperty<?>) {
             final AbstractCssProperty<?> abstractCssProperty = (AbstractCssProperty<?>) cssProperty;
             if (abstractCssProperty.isAlreadyInUse()
                     && abstractCssPropertyClassObjects
                             .get(cssProperty.getCssName()) != cssProperty) {
                 try {
-                    cssProperty = abstractCssProperty.clone();
+                    sameOrCloneCssProperty = abstractCssProperty.clone();
                     // hashcode should be replaced with getUuid after its
                     // implementation.
                     LOGGER.warning("cloned cssProperty " + cssProperty
@@ -1044,23 +1050,28 @@ public class Style extends AbstractAttribute
                 }
             }
         }
-        final boolean addToAttributeValueMap = addToAttributeValueMap(
-                cssProperty.getCssName(), cssProperty.getCssValue());
-        if (addToAttributeValueMap || abstractCssPropertyClassObjects
-                .get(cssProperty.getCssName()) != cssProperty) {
-            if (cssProperty instanceof AbstractCssProperty) {
 
-                abstractCssPropertyClassObjects.put(cssProperty.getCssName(),
-                        (AbstractCssProperty<?>) cssProperty);
+        final boolean addToAttributeValueMap = addToAttributeValueMap(
+                sameOrCloneCssProperty.getCssName(),
+                sameOrCloneCssProperty.getCssValue());
+        if (addToAttributeValueMap
+                || abstractCssPropertyClassObjects.get(sameOrCloneCssProperty
+                        .getCssName()) != sameOrCloneCssProperty) {
+            if (sameOrCloneCssProperty instanceof AbstractCssProperty) {
+
+                abstractCssPropertyClassObjects.put(
+                        sameOrCloneCssProperty.getCssName(),
+                        (AbstractCssProperty<?>) sameOrCloneCssProperty);
                 // internally does the following
-                // ((AbstractCssProperty<?>) cssProperty).setAlreadyInUse(true);
-                // ((AbstractCssProperty<?>) cssProperty)
+                // ((AbstractCssProperty<?>)
+                // sameOrCloneCssProperty).setAlreadyInUse(true);
+                // ((AbstractCssProperty<?>) sameOrCloneCssProperty)
                 // .setStateChangeInformer(this);
             }
-            setFromAddCssProperty(true);
-            cssProperties.add(cssProperty);
-            setFromAddCssProperty(false);
-            return cssProperty;
+            fromAddCssProperty = true;
+            cssProperties.add(sameOrCloneCssProperty);
+            fromAddCssProperty = false;
+            return sameOrCloneCssProperty;
         }
         return null;
     }
@@ -1078,9 +1089,9 @@ public class Style extends AbstractAttribute
      */
     public boolean removeCssProperty(final String cssName) {
         if (getAttributeValueMap().get(cssName) != null) {
-            setFromRemoveCssProperty(true);
+            fromRemoveCssProperty = true;
             cssProperties.remove(getCssProperty(cssName));
-            setFromRemoveCssProperty(false);
+            fromRemoveCssProperty = false;
         }
         final boolean removeFromAttributeValueMap = removeFromAttributeValueMap(
                 cssName);
@@ -1135,9 +1146,9 @@ public class Style extends AbstractAttribute
                     "The added CssProperty object is different. Use the same object which was used to add the style.");
             return false;
         }
-        setFromRemoveCssProperty(true);
+        fromRemoveCssProperty = true;
         cssProperties.remove(cssProperty);
-        setFromRemoveCssProperty(false);
+        fromRemoveCssProperty = false;
         return removeCssProperty(cssProperty.getCssName(),
                 cssProperty.getCssValue());
     }
@@ -1336,9 +1347,9 @@ public class Style extends AbstractAttribute
 
             final CssProperty cssProperty = (CssProperty) Enum
                     .valueOf(classClass, value);
-            setFromAddCssProperty(true);
+            fromAddCssProperty = true;
             cssProperties.add(cssProperty);
-            setFromAddCssProperty(false);
+            fromAddCssProperty = false;
             return cssProperty;
             // given priority for optimization rather than coding standard.
         } else if (classClass != null
@@ -1361,9 +1372,9 @@ public class Style extends AbstractAttribute
                             abstractCssProperty);
                 }
                 abstractCssProperty.setCssValue(value);
-                setFromAddCssProperty(true);
+                fromAddCssProperty = true;
                 cssProperties.add(abstractCssProperty);
-                setFromAddCssProperty(false);
+                fromAddCssProperty = false;
                 return abstractCssProperty;
             } catch (InstantiationException | IllegalAccessException e) {
                 LOGGER.severe(String.valueOf(e));
@@ -1375,9 +1386,9 @@ public class Style extends AbstractAttribute
             customCssProperty.setAlreadyInUse(true);
             customCssProperty.setStateChangeInformer(this);
             abstractCssPropertyClassObjects.put(cssName, customCssProperty);
-            setFromAddCssProperty(true);
+            fromAddCssProperty = true;
             cssProperties.add(customCssProperty);
-            setFromAddCssProperty(false);
+            fromAddCssProperty = false;
             return customCssProperty;
         }
 
@@ -1392,7 +1403,7 @@ public class Style extends AbstractAttribute
         @Override
         public boolean add(final CssProperty cssProperty) {
             synchronized (this) {
-                if (!isFromAddCssProperty()) {
+                if (!fromAddCssProperty) {
                     addCssProperty(cssProperty);
                 }
                 return super.add(cssProperty);
@@ -1403,7 +1414,7 @@ public class Style extends AbstractAttribute
         public boolean addAll(
                 final Collection<? extends CssProperty> cssProperties) {
             synchronized (this) {
-                if (!isFromAddCssProperty()) {
+                if (!fromAddCssProperty) {
                     for (final CssProperty cssProperty : cssProperties) {
                         addCssProperty(cssProperty);
                     }
@@ -1415,7 +1426,7 @@ public class Style extends AbstractAttribute
         @Override
         public void clear() {
             synchronized (this) {
-                if (!isClearOnlyInCssProperties()) {
+                if (!clearOnlyInCssProperties) {
                     for (final CssProperty cssProperty : this) {
                         removeCssProperty(cssProperty);
                     }
@@ -1427,7 +1438,7 @@ public class Style extends AbstractAttribute
         @Override
         public boolean remove(final Object cssProperty) {
             synchronized (this) {
-                if (!isFromRemoveCssProperty()) {
+                if (!fromRemoveCssProperty) {
                     try {
                         removeCssProperty((CssProperty) cssProperty);
                     } catch (final Exception e) {
@@ -1442,7 +1453,7 @@ public class Style extends AbstractAttribute
         @Override
         public boolean removeAll(final Collection<?> cssProperties) {
             synchronized (this) {
-                if (!isFromRemoveCssProperty()) {
+                if (!fromRemoveCssProperty) {
                     try {
                         for (final Object cssProperty : cssProperties) {
                             removeCssProperty((CssProperty) cssProperty);
@@ -1477,75 +1488,6 @@ public class Style extends AbstractAttribute
     @Override
     protected void beforePrintStructure() {
         // TODO update the collection values if it has any value change.
-    }
-
-    /**
-     * for internal use.
-     *
-     * @return the fromRemoveCssProperty
-     * @author WFF
-     * @since 1.0.0
-     */
-    boolean isFromRemoveCssProperty() {
-        return fromRemoveCssProperty;
-    }
-
-    /**
-     * for internal use.
-     *
-     * @param fromRemoveCssProperty
-     *            the fromRemoveCssProperty to set
-     * @author WFF
-     * @since 1.0.0
-     */
-    void setFromRemoveCssProperty(final boolean fromRemoveCssProperty) {
-        this.fromRemoveCssProperty = fromRemoveCssProperty;
-    }
-
-    /**
-     * for internal use.
-     *
-     * @return the fromAddCssProperty
-     * @author WFF
-     * @since 1.0.0
-     */
-    boolean isFromAddCssProperty() {
-        return fromAddCssProperty;
-    }
-
-    /**
-     * for internal use.
-     *
-     * @param fromAddCssProperty
-     *            the fromAddCssProperty to set
-     * @author WFF
-     * @since 1.0.0
-     */
-    void setFromAddCssProperty(final boolean fromAddCssProperty) {
-        this.fromAddCssProperty = fromAddCssProperty;
-    }
-
-    /**
-     * for internal use.
-     *
-     * @return the clearOnlyInCssProperties
-     * @author WFF
-     * @since 1.0.0
-     */
-    boolean isClearOnlyInCssProperties() {
-        return clearOnlyInCssProperties;
-    }
-
-    /**
-     * for internal use.
-     *
-     * @param clearOnlyInCssProperties
-     *            the clearOnlyInCssProperties to set
-     * @author WFF
-     * @since 1.0.0
-     */
-    void setClearOnlyInCssProperties(final boolean clearOnlyInCssProperties) {
-        this.clearOnlyInCssProperties = clearOnlyInCssProperties;
     }
 
     /**
