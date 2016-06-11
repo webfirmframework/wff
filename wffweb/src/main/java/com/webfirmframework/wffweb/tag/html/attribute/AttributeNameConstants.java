@@ -155,6 +155,8 @@ public class AttributeNameConstants {
 
     public static final String CONTENT = "content";
 
+    public static final String METHOD = "method";
+
     /**
      *
      * @author WFF
