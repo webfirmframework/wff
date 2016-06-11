@@ -17,14 +17,10 @@
 package com.webfirmframework.wffweb.css;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
 import org.junit.Test;
-
-import com.webfirmframework.wffweb.css.CssLengthUnit;
-import com.webfirmframework.wffweb.css.CssNameConstants;
-import com.webfirmframework.wffweb.css.OutlineOffset;
 
 /**
  * 
@@ -149,8 +145,8 @@ public class OutlineOffsetTest {
         OutlineOffset outlineOffset = new OutlineOffset();
         outlineOffset.setAsInitial();
         assertEquals(OutlineOffset.INITIAL, outlineOffset.getCssValue());
-        Assert.assertNull(outlineOffset.getValue());
-        Assert.assertNull(outlineOffset.getUnit());
+       assertNull(outlineOffset.getValue());
+       assertNull(outlineOffset.getUnit());
     }
 
     @Test
@@ -158,8 +154,8 @@ public class OutlineOffsetTest {
         OutlineOffset outlineOffset = new OutlineOffset();
         outlineOffset.setAsInherit();
         assertEquals(OutlineOffset.INHERIT, outlineOffset.getCssValue());
-        Assert.assertNull(outlineOffset.getValue());
-        Assert.assertNull(outlineOffset.getUnit());
+       assertNull(outlineOffset.getValue());
+       assertNull(outlineOffset.getUnit());
     }
 
 }

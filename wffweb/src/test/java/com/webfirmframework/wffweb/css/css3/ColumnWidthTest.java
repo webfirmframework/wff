@@ -17,14 +17,14 @@
 package com.webfirmframework.wffweb.css.css3;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.css.CssLengthUnit;
 import com.webfirmframework.wffweb.css.CssNameConstants;
-import com.webfirmframework.wffweb.css.css3.ColumnWidth;
 
 /**
  * 
@@ -142,8 +142,8 @@ public class ColumnWidthTest {
         ColumnWidth columnWidth = new ColumnWidth();
         columnWidth.setAsInitial();
         assertEquals(ColumnWidth.INITIAL, columnWidth.getCssValue());
-        Assert.assertNull(columnWidth.getValue());
-        Assert.assertNull(columnWidth.getUnit());
+       assertNull(columnWidth.getValue());
+       assertNull(columnWidth.getUnit());
     }
 
     @Test
@@ -151,8 +151,8 @@ public class ColumnWidthTest {
         ColumnWidth columnWidth = new ColumnWidth();
         columnWidth.setAsInherit();
         assertEquals(ColumnWidth.INHERIT, columnWidth.getCssValue());
-        Assert.assertNull(columnWidth.getValue());
-        Assert.assertNull(columnWidth.getUnit());
+       assertNull(columnWidth.getValue());
+       assertNull(columnWidth.getUnit());
     }
 
     @Test
@@ -161,8 +161,8 @@ public class ColumnWidthTest {
         columnWidth.setAsInherit();
         columnWidth.setAsAuto();
         assertEquals(ColumnWidth.AUTO, columnWidth.getCssValue());
-        Assert.assertNull(columnWidth.getValue());
-        Assert.assertNull(columnWidth.getUnit());
+       assertNull(columnWidth.getValue());
+       assertNull(columnWidth.getUnit());
     }
     
     @Test
@@ -175,25 +175,25 @@ public class ColumnWidthTest {
             final boolean valid = ColumnWidth.isValid("45px");
             assertTrue(valid);
             final boolean invalid = ColumnWidth.isValid("55");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = ColumnWidth.isValid("45em");
             assertTrue(valid);
             final boolean invalid = ColumnWidth.isValid("dfd");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = ColumnWidth.isValid("45%");
             assertTrue(valid);
             final boolean invalid = ColumnWidth.isValid("45 px");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = ColumnWidth.isValid("45em");
             assertTrue(valid);
             final boolean invalid = ColumnWidth.isValid("45sem");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = ColumnWidth.isValid("45rem");

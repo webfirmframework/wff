@@ -17,14 +17,11 @@
 package com.webfirmframework.wffweb.css;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
 import org.junit.Test;
-
-import com.webfirmframework.wffweb.css.CssLengthUnit;
-import com.webfirmframework.wffweb.css.CssNameConstants;
-import com.webfirmframework.wffweb.css.WidthCss;
 
 /**
  * 
@@ -142,8 +139,8 @@ public class WidthCssTest {
         WidthCss widthCss = new WidthCss();
         widthCss.setAsInitial();
         assertEquals(WidthCss.INITIAL, widthCss.getCssValue());
-        Assert.assertNull(widthCss.getValue());
-        Assert.assertNull(widthCss.getUnit());
+       assertNull(widthCss.getValue());
+       assertNull(widthCss.getUnit());
     }
 
     @Test
@@ -151,8 +148,8 @@ public class WidthCssTest {
         WidthCss widthCss = new WidthCss();
         widthCss.setAsInherit();
         assertEquals(WidthCss.INHERIT, widthCss.getCssValue());
-        Assert.assertNull(widthCss.getValue());
-        Assert.assertNull(widthCss.getUnit());
+       assertNull(widthCss.getValue());
+       assertNull(widthCss.getUnit());
     }
 
     @Test
@@ -161,8 +158,8 @@ public class WidthCssTest {
         widthCss.setAsInherit();
         widthCss.setAsAuto();
         assertEquals(WidthCss.AUTO, widthCss.getCssValue());
-        Assert.assertNull(widthCss.getValue());
-        Assert.assertNull(widthCss.getUnit());
+       assertNull(widthCss.getValue());
+       assertNull(widthCss.getUnit());
     }
 
     @Test
@@ -171,25 +168,25 @@ public class WidthCssTest {
             final boolean valid = WidthCss.isValid("45px");
             assertTrue(valid);
             final boolean invalid = WidthCss.isValid("55");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = WidthCss.isValid("45em");
             assertTrue(valid);
             final boolean invalid = WidthCss.isValid("dfd");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = WidthCss.isValid("45%");
             assertTrue(valid);
             final boolean invalid = WidthCss.isValid("45 px");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = WidthCss.isValid("45em");
             assertTrue(valid);
             final boolean invalid = WidthCss.isValid("45sem");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = WidthCss.isValid("45rem");

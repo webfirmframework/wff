@@ -17,16 +17,14 @@
 package com.webfirmframework.wffweb.css;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import org.junit.Assert;
 import org.junit.Test;
-
-import com.webfirmframework.wffweb.css.BorderTopColor;
-import com.webfirmframework.wffweb.css.CssNameConstants;
-import com.webfirmframework.wffweb.css.HslCssValue;
-import com.webfirmframework.wffweb.css.HslaCssValue;
-import com.webfirmframework.wffweb.css.RgbCssValue;
-import com.webfirmframework.wffweb.css.RgbaCssValue;
 
 /**
  * 
@@ -44,7 +42,7 @@ public class BorderTopColorTest {
     @Test
     public void testBorderTopColorString() {
         BorderTopColor borderTopColor = new BorderTopColor("#0000ff");
-        assertEquals("#0000ff", borderTopColor.getCssValue());   
+        assertEquals("#0000ff", borderTopColor.getCssValue());
     }
 
     @Test
@@ -58,19 +56,20 @@ public class BorderTopColorTest {
     public void testSetValue() {
         BorderTopColor borderTopColor = new BorderTopColor();
         borderTopColor.setValue("#0000ff");
-        assertEquals("#0000ff", borderTopColor.getCssValue());   
+        assertEquals("#0000ff", borderTopColor.getCssValue());
     }
 
     @Test
     public void testGetCssName() {
         BorderTopColor borderTopColor = new BorderTopColor();
-        assertEquals(CssNameConstants.BORDER_TOP_COLOR, borderTopColor.getCssName());
+        assertEquals(CssNameConstants.BORDER_TOP_COLOR,
+                borderTopColor.getCssName());
     }
 
     @Test
     public void testGetCssValue() {
         BorderTopColor borderTopColor = new BorderTopColor("#0000ff");
-        assertEquals("#0000ff", borderTopColor.getCssValue());   
+        assertEquals("#0000ff", borderTopColor.getCssValue());
     }
 
     @Test
@@ -83,37 +82,37 @@ public class BorderTopColorTest {
     @Test
     public void testGetValue() {
         BorderTopColor borderTopColor = new BorderTopColor("#0000ff");
-        assertEquals("#0000ff", borderTopColor.getValue());   
+        assertEquals("#0000ff", borderTopColor.getValue());
     }
 
     @Test
     public void testSetCssValueString() {
         BorderTopColor borderTopColor = new BorderTopColor();
         borderTopColor.setCssValue("#0000ff");
-        assertEquals("#0000ff", borderTopColor.getCssValue());   
+        assertEquals("#0000ff", borderTopColor.getCssValue());
     }
 
     @Test
     public void testSetAsInitial() {
         BorderTopColor borderTopColor = new BorderTopColor();
         borderTopColor.setAsInitial();
-        assertEquals(BorderTopColor.INITIAL, borderTopColor.getCssValue());   
+        assertEquals(BorderTopColor.INITIAL, borderTopColor.getCssValue());
     }
 
     @Test
     public void testSetAsInherit() {
         BorderTopColor borderTopColor = new BorderTopColor();
         borderTopColor.setAsInherit();
-        assertEquals(BorderTopColor.INHERIT, borderTopColor.getCssValue());   
+        assertEquals(BorderTopColor.INHERIT, borderTopColor.getCssValue());
     }
-    
+
     @Test
     public void testSetAsTransparent() {
         BorderTopColor borderTopColor = new BorderTopColor();
         borderTopColor.setAsTransparent();
-        assertEquals(BorderTopColor.TRANSPARENT, borderTopColor.getCssValue());   
+        assertEquals(BorderTopColor.TRANSPARENT, borderTopColor.getCssValue());
     }
-    
+
     @Test
     public void testSetRgbCssValue() {
         try {
@@ -121,74 +120,79 @@ public class BorderTopColorTest {
             RgbCssValue rgbCssValue = new RgbCssValue("rgb(15, 25, 255)");
             borderTopColor.setRgbCssValue(rgbCssValue);
             borderTopColor.setRgbCssValue(rgbCssValue);
-            assertEquals(CssNameConstants.BORDER_TOP_COLOR + ": rgb(15, 25, 255)", borderTopColor.toString());
+            assertEquals(
+                    CssNameConstants.BORDER_TOP_COLOR + ": rgb(15, 25, 255)",
+                    borderTopColor.toString());
             assertEquals("rgb(15, 25, 255)", borderTopColor.getCssValue());
-            
+
             BorderTopColor borderTopColor2 = new BorderTopColor();
             borderTopColor2.setRgbCssValue(rgbCssValue);
             RgbCssValue rgbCssValueClone = borderTopColor2.getRgbCssValue();
-            Assert.assertNotEquals(borderTopColor.getRgbCssValue(), rgbCssValueClone);
-            
+            assertNotEquals(borderTopColor.getRgbCssValue(), rgbCssValueClone);
+
             RgbCssValue rgbCssValue2 = new RgbCssValue("rgb(55, 5, 255)");
             borderTopColor2.setRgbCssValue(rgbCssValue2);
-            Assert.assertNotEquals(rgbCssValueClone, borderTopColor2.getRgbCssValue());
-            Assert.assertEquals(rgbCssValue2, borderTopColor2.getRgbCssValue());
-            
+            assertNotEquals(rgbCssValueClone, borderTopColor2.getRgbCssValue());
+            assertEquals(rgbCssValue2, borderTopColor2.getRgbCssValue());
+
             borderTopColor2.setAsTransparent();
-            assertEquals(BorderTopColor.TRANSPARENT, borderTopColor2.getCssValue());
-            Assert.assertNull(borderTopColor2.getRgbCssValue());
-            Assert.assertFalse(rgbCssValue2.isAlreadyInUse());
-            
+            assertEquals(BorderTopColor.TRANSPARENT,
+                    borderTopColor2.getCssValue());
+            assertNull(borderTopColor2.getRgbCssValue());
+            assertFalse(rgbCssValue2.isAlreadyInUse());
+
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail();
+            fail();
         }
-        
+
         {
             BorderTopColor color = new BorderTopColor();
             RgbCssValue rgbCssValue = new RgbCssValue("rgb(15, 25, 255)");
-            Assert.assertFalse(rgbCssValue.isAlreadyInUse());
+            assertFalse(rgbCssValue.isAlreadyInUse());
             color.setRgbCssValue(rgbCssValue);
-            Assert.assertTrue(rgbCssValue.isAlreadyInUse());
-            
-            RgbaCssValue rgbaCssValue = new RgbaCssValue("rgba(15, 25, 100, 1)");
-            Assert.assertFalse(rgbaCssValue.isAlreadyInUse());
+            assertTrue(rgbCssValue.isAlreadyInUse());
+
+            RgbaCssValue rgbaCssValue = new RgbaCssValue(
+                    "rgba(15, 25, 100, 1)");
+            assertFalse(rgbaCssValue.isAlreadyInUse());
             color.setRgbaCssValue(rgbaCssValue);
-            Assert.assertTrue(rgbaCssValue.isAlreadyInUse());
-            
-            Assert.assertFalse(rgbCssValue.isAlreadyInUse());
-            Assert.assertNull(color.getRgbCssValue());
+            assertTrue(rgbaCssValue.isAlreadyInUse());
+
+            assertFalse(rgbCssValue.isAlreadyInUse());
+            assertNull(color.getRgbCssValue());
             color.setAsTransparent();
-            Assert.assertNull(color.getRgbaCssValue());
-            Assert.assertNull(color.getRgbCssValue());
-            Assert.assertNull(color.getHslCssValue());
-            Assert.assertNull(color.getHslaCssValue());
-            
+            assertNull(color.getRgbaCssValue());
+            assertNull(color.getRgbCssValue());
+            assertNull(color.getHslCssValue());
+            assertNull(color.getHslaCssValue());
+
             HslCssValue hslCssValue = new HslCssValue("hsl(15, 25%, 100%)");
-            Assert.assertFalse(hslCssValue.isAlreadyInUse());
+            assertFalse(hslCssValue.isAlreadyInUse());
             color.setHslCssValue(hslCssValue);
-            Assert.assertTrue(hslCssValue.isAlreadyInUse());
-            
-            Assert.assertNull(color.getRgbaCssValue());
-            Assert.assertNull(color.getRgbCssValue());
-            Assert.assertNotNull(color.getHslCssValue());
-            Assert.assertNull(color.getHslaCssValue());
-            
-            HslaCssValue hslaCssValue = new HslaCssValue("hsla(15, 25%, 100%, 1)");
-            Assert.assertFalse(hslaCssValue.isAlreadyInUse());
+            assertTrue(hslCssValue.isAlreadyInUse());
+
+            assertNull(color.getRgbaCssValue());
+            assertNull(color.getRgbCssValue());
+            assertNotNull(color.getHslCssValue());
+            assertNull(color.getHslaCssValue());
+
+            HslaCssValue hslaCssValue = new HslaCssValue(
+                    "hsla(15, 25%, 100%, 1)");
+            assertFalse(hslaCssValue.isAlreadyInUse());
             color.setHslaCssValue(hslaCssValue);
-            Assert.assertTrue(hslaCssValue.isAlreadyInUse());
-            
-            Assert.assertNull(color.getRgbaCssValue());
-            Assert.assertNull(color.getRgbCssValue());
-            Assert.assertNull(color.getHslCssValue());
-            Assert.assertNotNull(color.getHslaCssValue());
-            
+            assertTrue(hslaCssValue.isAlreadyInUse());
+
+            assertNull(color.getRgbaCssValue());
+            assertNull(color.getRgbCssValue());
+            assertNull(color.getHslCssValue());
+            assertNotNull(color.getHslaCssValue());
+
             color.setAsTransparent();
-            Assert.assertNull(color.getRgbaCssValue());
-            Assert.assertNull(color.getRgbCssValue());
-            Assert.assertNull(color.getHslCssValue());
-            Assert.assertNull(color.getHslaCssValue());
+            assertNull(color.getRgbaCssValue());
+            assertNull(color.getRgbCssValue());
+            assertNull(color.getHslCssValue());
+            assertNull(color.getHslaCssValue());
         }
     }
 }

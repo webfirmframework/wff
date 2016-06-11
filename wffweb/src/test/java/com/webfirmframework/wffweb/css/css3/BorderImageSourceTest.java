@@ -26,7 +26,6 @@ import org.junit.Test;
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.css.CssNameConstants;
 import com.webfirmframework.wffweb.css.UrlCss3Value;
-import com.webfirmframework.wffweb.css.css3.BorderImageSource;
 
 /**
  * @author WFF

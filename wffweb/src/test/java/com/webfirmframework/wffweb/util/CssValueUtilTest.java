@@ -15,13 +15,13 @@
  */
 package com.webfirmframework.wffweb.util;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.InvalidValueException;
-import com.webfirmframework.wffweb.util.CssValueUtil;
 
 /**
  * @author WFF
@@ -38,15 +38,15 @@ public class CssValueUtilTest {
     public void testSplit1() {
         final List<String> cssValueParts = CssValueUtil.split("hsla(7, 8, 9, 1) red rgb(3, 5, 6) rgb(7, 8, 9) rgba(7, 8, 9, 1) middle hsl(10, 11, 12) green   blue");
         
-        Assert.assertEquals("hsla(7, 8, 9, 1)", cssValueParts.get(0));
-        Assert.assertEquals("red", cssValueParts.get(1));
-        Assert.assertEquals("rgb(3, 5, 6)", cssValueParts.get(2));
-        Assert.assertEquals("rgb(7, 8, 9)", cssValueParts.get(3));
-        Assert.assertEquals("rgba(7, 8, 9, 1)", cssValueParts.get(4));
-        Assert.assertEquals("middle", cssValueParts.get(5));
-        Assert.assertEquals("hsl(10, 11, 12)", cssValueParts.get(6));
-        Assert.assertEquals("green", cssValueParts.get(7));
-        Assert.assertEquals("blue", cssValueParts.get(8));
+       assertEquals("hsla(7, 8, 9, 1)", cssValueParts.get(0));
+       assertEquals("red", cssValueParts.get(1));
+       assertEquals("rgb(3, 5, 6)", cssValueParts.get(2));
+       assertEquals("rgb(7, 8, 9)", cssValueParts.get(3));
+       assertEquals("rgba(7, 8, 9, 1)", cssValueParts.get(4));
+       assertEquals("middle", cssValueParts.get(5));
+       assertEquals("hsl(10, 11, 12)", cssValueParts.get(6));
+       assertEquals("green", cssValueParts.get(7));
+       assertEquals("blue", cssValueParts.get(8));
     }
     
     /**
@@ -56,15 +56,15 @@ public class CssValueUtilTest {
     public void testSplit2() {
         final List<String> cssValueParts = CssValueUtil.split("white red rgb(3, 5, 6) rgb(7, 8, 9) rgba(7, 8, 9, 1) middle hsl(10, 11, 12) green   blue");
         
-        Assert.assertEquals("white", cssValueParts.get(0));
-        Assert.assertEquals("red", cssValueParts.get(1));
-        Assert.assertEquals("rgb(3, 5, 6)", cssValueParts.get(2));
-        Assert.assertEquals("rgb(7, 8, 9)", cssValueParts.get(3));
-        Assert.assertEquals("rgba(7, 8, 9, 1)", cssValueParts.get(4));
-        Assert.assertEquals("middle", cssValueParts.get(5));
-        Assert.assertEquals("hsl(10, 11, 12)", cssValueParts.get(6));
-        Assert.assertEquals("green", cssValueParts.get(7));
-        Assert.assertEquals("blue", cssValueParts.get(8));
+       assertEquals("white", cssValueParts.get(0));
+       assertEquals("red", cssValueParts.get(1));
+       assertEquals("rgb(3, 5, 6)", cssValueParts.get(2));
+       assertEquals("rgb(7, 8, 9)", cssValueParts.get(3));
+       assertEquals("rgba(7, 8, 9, 1)", cssValueParts.get(4));
+       assertEquals("middle", cssValueParts.get(5));
+       assertEquals("hsl(10, 11, 12)", cssValueParts.get(6));
+       assertEquals("green", cssValueParts.get(7));
+       assertEquals("blue", cssValueParts.get(8));
     }
     
     /**
@@ -74,15 +74,15 @@ public class CssValueUtilTest {
     public void testSplit3() {
         final List<String> cssValueParts = CssValueUtil.split("white  red rgb(3, 5, 6) rgb(7, 8, 9) rgba(7, 8, 9, 1) middle  blue green   hsl(10, 11, 12)");
         
-        Assert.assertEquals("white", cssValueParts.get(0));
-        Assert.assertEquals("red", cssValueParts.get(1));
-        Assert.assertEquals("rgb(3, 5, 6)", cssValueParts.get(2));
-        Assert.assertEquals("rgb(7, 8, 9)", cssValueParts.get(3));
-        Assert.assertEquals("rgba(7, 8, 9, 1)", cssValueParts.get(4));
-        Assert.assertEquals("middle", cssValueParts.get(5));
-        Assert.assertEquals("blue", cssValueParts.get(6));
-        Assert.assertEquals("green", cssValueParts.get(7));
-        Assert.assertEquals("hsl(10, 11, 12)", cssValueParts.get(8));
+       assertEquals("white", cssValueParts.get(0));
+       assertEquals("red", cssValueParts.get(1));
+       assertEquals("rgb(3, 5, 6)", cssValueParts.get(2));
+       assertEquals("rgb(7, 8, 9)", cssValueParts.get(3));
+       assertEquals("rgba(7, 8, 9, 1)", cssValueParts.get(4));
+       assertEquals("middle", cssValueParts.get(5));
+       assertEquals("blue", cssValueParts.get(6));
+       assertEquals("green", cssValueParts.get(7));
+       assertEquals("hsl(10, 11, 12)", cssValueParts.get(8));
     }
     
     /**
@@ -92,9 +92,9 @@ public class CssValueUtilTest {
     public void testSplit4() {
         final List<String> cssValueParts = CssValueUtil.split("55px solid green");
         
-        Assert.assertEquals("55px", cssValueParts.get(0));
-        Assert.assertEquals("solid", cssValueParts.get(1));
-        Assert.assertEquals("green", cssValueParts.get(2));
+       assertEquals("55px", cssValueParts.get(0));
+       assertEquals("solid", cssValueParts.get(1));
+       assertEquals("green", cssValueParts.get(2));
     }
     
     /**
@@ -104,9 +104,9 @@ public class CssValueUtilTest {
     public void testSplit5() {
         final List<String> cssValueParts = CssValueUtil.split("55px  solid   green");
         
-        Assert.assertEquals("55px", cssValueParts.get(0));
-        Assert.assertEquals("solid", cssValueParts.get(1));
-        Assert.assertEquals("green", cssValueParts.get(2));
+       assertEquals("55px", cssValueParts.get(0));
+       assertEquals("solid", cssValueParts.get(1));
+       assertEquals("green", cssValueParts.get(2));
     }
     
     /**

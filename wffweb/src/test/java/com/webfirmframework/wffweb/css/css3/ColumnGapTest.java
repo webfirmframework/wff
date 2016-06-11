@@ -17,14 +17,14 @@
 package com.webfirmframework.wffweb.css.css3;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.css.CssLengthUnit;
 import com.webfirmframework.wffweb.css.CssNameConstants;
-import com.webfirmframework.wffweb.css.css3.ColumnGap;
 
 /**
  * 
@@ -142,8 +142,8 @@ public class ColumnGapTest {
         ColumnGap columnGap = new ColumnGap();
         columnGap.setAsInitial();
         assertEquals(ColumnGap.INITIAL, columnGap.getCssValue());
-        Assert.assertNull(columnGap.getValue());
-        Assert.assertNull(columnGap.getUnit());
+       assertNull(columnGap.getValue());
+       assertNull(columnGap.getUnit());
     }
 
     @Test
@@ -151,8 +151,8 @@ public class ColumnGapTest {
         ColumnGap columnGap = new ColumnGap();
         columnGap.setAsInherit();
         assertEquals(ColumnGap.INHERIT, columnGap.getCssValue());
-        Assert.assertNull(columnGap.getValue());
-        Assert.assertNull(columnGap.getUnit());
+       assertNull(columnGap.getValue());
+       assertNull(columnGap.getUnit());
     }
     
     @Test
@@ -161,8 +161,8 @@ public class ColumnGapTest {
         columnGap.setAsInherit();
         columnGap.setAsNormal();
         assertEquals(ColumnGap.NORMAL, columnGap.getCssValue());
-        Assert.assertNull(columnGap.getValue());
-        Assert.assertNull(columnGap.getUnit());
+       assertNull(columnGap.getValue());
+       assertNull(columnGap.getUnit());
     }
     
     @Test
@@ -171,25 +171,25 @@ public class ColumnGapTest {
             final boolean valid = ColumnGap.isValid("45px");
             assertTrue(valid);
             final boolean invalid = ColumnGap.isValid("55");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = ColumnGap.isValid("45em");
             assertTrue(valid);
             final boolean invalid = ColumnGap.isValid("dfd");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = ColumnGap.isValid("45%");
             assertTrue(valid);
             final boolean invalid = ColumnGap.isValid("45 px");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = ColumnGap.isValid("45em");
             assertTrue(valid);
             final boolean invalid = ColumnGap.isValid("45sem");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = ColumnGap.isValid("45rem");

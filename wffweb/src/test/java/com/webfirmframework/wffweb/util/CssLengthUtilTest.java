@@ -15,12 +15,11 @@
  */
 package com.webfirmframework.wffweb.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.css.CssLengthUnit;
-import com.webfirmframework.wffweb.util.CssLengthUtil;
 
 /**
  * @author WFF

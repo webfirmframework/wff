@@ -17,9 +17,10 @@
 package com.webfirmframework.wffweb.css;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -146,8 +147,8 @@ public class PaddingTopTest {
         final PaddingTop paddingTop = new PaddingTop();
         paddingTop.setAsInitial();
         assertEquals(PaddingTop.INITIAL, paddingTop.getCssValue());
-        Assert.assertNull(paddingTop.getValue());
-        Assert.assertNull(paddingTop.getUnit());
+       assertNull(paddingTop.getValue());
+       assertNull(paddingTop.getUnit());
     }
 
     @Test
@@ -155,8 +156,8 @@ public class PaddingTopTest {
         final PaddingTop paddingTop = new PaddingTop();
         paddingTop.setAsInherit();
         assertEquals(PaddingTop.INHERIT, paddingTop.getCssValue());
-        Assert.assertNull(paddingTop.getValue());
-        Assert.assertNull(paddingTop.getUnit());
+       assertNull(paddingTop.getValue());
+       assertNull(paddingTop.getUnit());
     }
 
     @Test
@@ -165,25 +166,25 @@ public class PaddingTopTest {
             final boolean valid = PaddingTop.isValid("45px");
             assertTrue(valid);
             final boolean invalid = PaddingTop.isValid("55");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = PaddingTop.isValid("45em");
             assertTrue(valid);
             final boolean invalid = PaddingTop.isValid("dfd");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = PaddingTop.isValid("45%");
             assertTrue(valid);
             final boolean invalid = PaddingTop.isValid("45 px");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = PaddingTop.isValid("45em");
             assertTrue(valid);
             final boolean invalid = PaddingTop.isValid("45sem");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = PaddingTop.isValid("45rem");
@@ -191,7 +192,7 @@ public class PaddingTopTest {
         }
         {
             final boolean valid = PaddingTop.isValid("-1px");
-            Assert.assertFalse(valid);
+           assertFalse(valid);
         }
     }
 

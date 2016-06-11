@@ -21,7 +21,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.css.CssLengthUnit;
@@ -913,25 +912,25 @@ public class BorderImageWidthTest {
         {
             final boolean valid = BorderImageWidth.isValid("45px");
             assertTrue(valid);
-            Assert.assertTrue(BorderImageWidth.isValid("55"));
+           assertTrue(BorderImageWidth.isValid("55"));
         }
         {
             final boolean valid = BorderImageWidth.isValid("45em 45px");
             assertTrue(valid);
             final boolean invalid = BorderImageWidth.isValid("45em dfd 45px");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = BorderImageWidth.isValid("45%");
             assertTrue(valid);
             final boolean invalid = BorderImageWidth.isValid("45 px");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = BorderImageWidth.isValid("45em");
             assertTrue(valid);
             final boolean invalid = BorderImageWidth.isValid("45sem");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
 
     }

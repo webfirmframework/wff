@@ -17,15 +17,13 @@
 package com.webfirmframework.wffweb.css;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.InvalidValueException;
-import com.webfirmframework.wffweb.css.CssLengthUnit;
-import com.webfirmframework.wffweb.css.CssNameConstants;
-import com.webfirmframework.wffweb.css.LetterSpacing;
 
 /**
  * 
@@ -143,8 +141,8 @@ public class LetterSpacingTest {
         LetterSpacing letterSpacing = new LetterSpacing();
         letterSpacing.setAsInitial();
         assertEquals(LetterSpacing.INITIAL, letterSpacing.getCssValue());
-        Assert.assertNull(letterSpacing.getValue());
-        Assert.assertNull(letterSpacing.getUnit());
+       assertNull(letterSpacing.getValue());
+       assertNull(letterSpacing.getUnit());
     }
 
     @Test
@@ -152,8 +150,8 @@ public class LetterSpacingTest {
         LetterSpacing letterSpacing = new LetterSpacing();
         letterSpacing.setAsInherit();
         assertEquals(LetterSpacing.INHERIT, letterSpacing.getCssValue());
-        Assert.assertNull(letterSpacing.getValue());
-        Assert.assertNull(letterSpacing.getUnit());
+       assertNull(letterSpacing.getValue());
+       assertNull(letterSpacing.getUnit());
     }
     
     
@@ -163,25 +161,25 @@ public class LetterSpacingTest {
             final boolean valid = LetterSpacing.isValid("45px");
             assertTrue(valid);
             final boolean invalid = LetterSpacing.isValid("55");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = LetterSpacing.isValid("45em");
             assertTrue(valid);
             final boolean invalid = LetterSpacing.isValid("dfd");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = LetterSpacing.isValid("45%");
             assertTrue(valid);
             final boolean invalid = LetterSpacing.isValid("45 px");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = LetterSpacing.isValid("45em");
             assertTrue(valid);
             final boolean invalid = LetterSpacing.isValid("45sem");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = LetterSpacing.isValid("45rem");
@@ -189,7 +187,7 @@ public class LetterSpacingTest {
         }
         {
             final boolean valid = LetterSpacing.isValid("-1px");
-            Assert.assertFalse(valid);
+           assertFalse(valid);
         }
     }
     

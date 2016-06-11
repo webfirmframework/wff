@@ -17,15 +17,14 @@
 package com.webfirmframework.wffweb.css.css3;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.css.CssLengthUnit;
 import com.webfirmframework.wffweb.css.CssNameConstants;
-import com.webfirmframework.wffweb.css.css3.ColumnGap;
-import com.webfirmframework.wffweb.css.css3.MozColumnGap;
 
 /**
  * 
@@ -150,8 +149,8 @@ public class MozColumnGapTest {
         MozColumnGap columnGap = new MozColumnGap();
         columnGap.setAsInherit();
         assertEquals(MozColumnGap.INHERIT, columnGap.getCssValue());
-        Assert.assertNull(columnGap.getValue());
-        Assert.assertNull(columnGap.getUnit());
+       assertNull(columnGap.getValue());
+       assertNull(columnGap.getUnit());
     }
     
     @Test
@@ -160,8 +159,8 @@ public class MozColumnGapTest {
         columnGap.setAsInherit();
         columnGap.setAsNormal();
         assertEquals(MozColumnGap.NORMAL, columnGap.getCssValue());
-        Assert.assertNull(columnGap.getValue());
-        Assert.assertNull(columnGap.getUnit());
+       assertNull(columnGap.getValue());
+       assertNull(columnGap.getUnit());
     }
     
     @Test
@@ -170,25 +169,25 @@ public class MozColumnGapTest {
             final boolean valid = MozColumnGap.isValid("45px");
             assertTrue(valid);
             final boolean invalid = MozColumnGap.isValid("55");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = MozColumnGap.isValid("45em");
             assertTrue(valid);
             final boolean invalid = MozColumnGap.isValid("dfd");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = MozColumnGap.isValid("45%");
             assertTrue(valid);
             final boolean invalid = MozColumnGap.isValid("45 px");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = MozColumnGap.isValid("45em");
             assertTrue(valid);
             final boolean invalid = MozColumnGap.isValid("45sem");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = MozColumnGap.isValid("45rem");

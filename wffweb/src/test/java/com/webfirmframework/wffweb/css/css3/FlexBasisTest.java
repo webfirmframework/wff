@@ -17,14 +17,14 @@
 package com.webfirmframework.wffweb.css.css3;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.css.CssLengthUnit;
 import com.webfirmframework.wffweb.css.CssNameConstants;
-import com.webfirmframework.wffweb.css.css3.FlexBasis;
 
 /**
  * 
@@ -142,8 +142,8 @@ public class FlexBasisTest {
         FlexBasis flexBasis = new FlexBasis();
         flexBasis.setAsInitial();
         assertEquals(FlexBasis.INITIAL, flexBasis.getCssValue());
-        Assert.assertNull(flexBasis.getValue());
-        Assert.assertNull(flexBasis.getUnit());
+       assertNull(flexBasis.getValue());
+       assertNull(flexBasis.getUnit());
     }
 
     @Test
@@ -151,8 +151,8 @@ public class FlexBasisTest {
         FlexBasis flexBasis = new FlexBasis();
         flexBasis.setAsInherit();
         assertEquals(FlexBasis.INHERIT, flexBasis.getCssValue());
-        Assert.assertNull(flexBasis.getValue());
-        Assert.assertNull(flexBasis.getUnit());
+       assertNull(flexBasis.getValue());
+       assertNull(flexBasis.getUnit());
     }
 
     @Test
@@ -161,8 +161,8 @@ public class FlexBasisTest {
         flexBasis.setAsInherit();
         flexBasis.setAsAuto();
         assertEquals(FlexBasis.AUTO, flexBasis.getCssValue());
-        Assert.assertNull(flexBasis.getValue());
-        Assert.assertNull(flexBasis.getUnit());
+       assertNull(flexBasis.getValue());
+       assertNull(flexBasis.getUnit());
     }
 
     @Test
@@ -171,25 +171,25 @@ public class FlexBasisTest {
             final boolean valid = FlexBasis.isValid("45px");
             assertTrue(valid);
             final boolean invalid = FlexBasis.isValid("55");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = FlexBasis.isValid("45em");
             assertTrue(valid);
             final boolean invalid = FlexBasis.isValid("dfd");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = FlexBasis.isValid("45%");
             assertTrue(valid);
             final boolean invalid = FlexBasis.isValid("45 px");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = FlexBasis.isValid("45em");
             assertTrue(valid);
             final boolean invalid = FlexBasis.isValid("45sem");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = FlexBasis.isValid("45rem");

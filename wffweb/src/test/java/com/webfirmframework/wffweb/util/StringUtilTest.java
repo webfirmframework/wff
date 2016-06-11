@@ -21,8 +21,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.webfirmframework.wffweb.util.StringUtil;
-
 /**
  * @author WFF
  * @since 1.0.0

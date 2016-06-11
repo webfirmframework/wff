@@ -17,13 +17,12 @@
 package com.webfirmframework.wffweb.css;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
-import org.junit.Assert;
 import org.junit.Test;
-
-import com.webfirmframework.wffweb.css.BorderBottomColor;
-import com.webfirmframework.wffweb.css.CssNameConstants;
-import com.webfirmframework.wffweb.css.RgbCssValue;
 
 /**
  * 
@@ -124,21 +123,21 @@ public class BorderBottomColorTest {
             BorderBottomColor borderBottomColor2 = new BorderBottomColor();
             borderBottomColor2.setRgbCssValue(rgbCssValue);
             RgbCssValue rgbCssValueClone = borderBottomColor2.getRgbCssValue();
-            Assert.assertNotEquals(borderBottomColor.getRgbCssValue(), rgbCssValueClone);
+           assertNotEquals(borderBottomColor.getRgbCssValue(), rgbCssValueClone);
             
             RgbCssValue rgbCssValue2 = new RgbCssValue("rgb(55, 5, 255)");
             borderBottomColor2.setRgbCssValue(rgbCssValue2);
-            Assert.assertNotEquals(rgbCssValueClone, borderBottomColor2.getRgbCssValue());
-            Assert.assertEquals(rgbCssValue2, borderBottomColor2.getRgbCssValue());
+           assertNotEquals(rgbCssValueClone, borderBottomColor2.getRgbCssValue());
+           assertEquals(rgbCssValue2, borderBottomColor2.getRgbCssValue());
             
             borderBottomColor2.setAsTransparent();
             assertEquals(BorderBottomColor.TRANSPARENT, borderBottomColor2.getCssValue());
-            Assert.assertNull(borderBottomColor2.getRgbCssValue());
-            Assert.assertFalse(rgbCssValue2.isAlreadyInUse());
+           assertNull(borderBottomColor2.getRgbCssValue());
+           assertFalse(rgbCssValue2.isAlreadyInUse());
             
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail();
+           fail();
         }
     }
 }

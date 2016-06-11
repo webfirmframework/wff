@@ -16,14 +16,11 @@
 */
 package com.webfirmframework.wffweb.css;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
 import org.junit.Test;
-
-import com.webfirmframework.wffweb.css.BorderBottomWidth;
-import com.webfirmframework.wffweb.css.CssLengthUnit;
-import com.webfirmframework.wffweb.css.CssNameConstants;
 
 /**
  * 

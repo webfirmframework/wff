@@ -17,15 +17,14 @@
 package com.webfirmframework.wffweb.css.css3;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.css.CssLengthUnit;
 import com.webfirmframework.wffweb.css.CssNameConstants;
-import com.webfirmframework.wffweb.css.css3.ColumnGap;
-import com.webfirmframework.wffweb.css.css3.WebkitColumnGap;
 
 /**
  * 
@@ -143,8 +142,8 @@ public class WebkitColumnGapTest {
         WebkitColumnGap columnGap = new WebkitColumnGap();
         columnGap.setAsInitial();
         assertEquals(WebkitColumnGap.INITIAL, columnGap.getCssValue());
-        Assert.assertNull(columnGap.getValue());
-        Assert.assertNull(columnGap.getUnit());
+       assertNull(columnGap.getValue());
+       assertNull(columnGap.getUnit());
     }
 
     @Test
@@ -152,8 +151,8 @@ public class WebkitColumnGapTest {
         WebkitColumnGap columnGap = new WebkitColumnGap();
         columnGap.setAsInherit();
         assertEquals(WebkitColumnGap.INHERIT, columnGap.getCssValue());
-        Assert.assertNull(columnGap.getValue());
-        Assert.assertNull(columnGap.getUnit());
+       assertNull(columnGap.getValue());
+       assertNull(columnGap.getUnit());
     }
     
     @Test
@@ -162,8 +161,8 @@ public class WebkitColumnGapTest {
         columnGap.setAsInherit();
         columnGap.setAsNormal();
         assertEquals(WebkitColumnGap.NORMAL, columnGap.getCssValue());
-        Assert.assertNull(columnGap.getValue());
-        Assert.assertNull(columnGap.getUnit());
+       assertNull(columnGap.getValue());
+       assertNull(columnGap.getUnit());
     }
     
     @Test
@@ -172,25 +171,25 @@ public class WebkitColumnGapTest {
             final boolean valid = WebkitColumnGap.isValid("45px");
             assertTrue(valid);
             final boolean invalid = WebkitColumnGap.isValid("55");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = WebkitColumnGap.isValid("45em");
             assertTrue(valid);
             final boolean invalid = WebkitColumnGap.isValid("dfd");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = WebkitColumnGap.isValid("45%");
             assertTrue(valid);
             final boolean invalid = WebkitColumnGap.isValid("45 px");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = WebkitColumnGap.isValid("45em");
             assertTrue(valid);
             final boolean invalid = WebkitColumnGap.isValid("45sem");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = WebkitColumnGap.isValid("45rem");

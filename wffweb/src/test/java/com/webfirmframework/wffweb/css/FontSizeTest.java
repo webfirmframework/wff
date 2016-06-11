@@ -17,14 +17,11 @@
 package com.webfirmframework.wffweb.css;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
 import org.junit.Test;
-
-import com.webfirmframework.wffweb.css.CssLengthUnit;
-import com.webfirmframework.wffweb.css.CssNameConstants;
-import com.webfirmframework.wffweb.css.FontSize;
 
 /**
  * 
@@ -142,8 +139,8 @@ public class FontSizeTest {
         FontSize fontSize = new FontSize();
         fontSize.setAsInitial();
         assertEquals(FontSize.INITIAL, fontSize.getCssValue());
-        Assert.assertNull(fontSize.getValue());
-        Assert.assertNull(fontSize.getUnit());
+       assertNull(fontSize.getValue());
+       assertNull(fontSize.getUnit());
     }
 
     @Test
@@ -151,8 +148,8 @@ public class FontSizeTest {
         FontSize fontSize = new FontSize();
         fontSize.setAsInherit();
         assertEquals(FontSize.INHERIT, fontSize.getCssValue());
-        Assert.assertNull(fontSize.getValue());
-        Assert.assertNull(fontSize.getUnit());
+       assertNull(fontSize.getValue());
+       assertNull(fontSize.getUnit());
     }
 
     @Test
@@ -161,8 +158,8 @@ public class FontSizeTest {
         fontSize.setAsInherit();
         fontSize.setAsMedium();
         assertEquals(FontSize.MEDIUM, fontSize.getCssValue());
-        Assert.assertNull(fontSize.getValue());
-        Assert.assertNull(fontSize.getUnit());
+       assertNull(fontSize.getValue());
+       assertNull(fontSize.getUnit());
     }
 
     @Test
@@ -215,25 +212,25 @@ public class FontSizeTest {
             final boolean valid = FontSize.isValid("45px");
             assertTrue(valid);
             final boolean invalid = FontSize.isValid("55");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = FontSize.isValid("45em");
             assertTrue(valid);
             final boolean invalid = FontSize.isValid("dfd");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = FontSize.isValid("45%");
             assertTrue(valid);
             final boolean invalid = FontSize.isValid("45 px");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = FontSize.isValid("45em");
             assertTrue(valid);
             final boolean invalid = FontSize.isValid("45sem");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = FontSize.isValid("45rem");

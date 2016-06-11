@@ -15,19 +15,17 @@
  */
 package com.webfirmframework.wffweb.css;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.NullValueException;
-import com.webfirmframework.wffweb.css.CssNameConstants;
-import com.webfirmframework.wffweb.css.Margin;
-import com.webfirmframework.wffweb.css.MarginBottom;
-import com.webfirmframework.wffweb.css.MarginLeft;
-import com.webfirmframework.wffweb.css.MarginRight;
-import com.webfirmframework.wffweb.css.MarginTop;
 
 /**
  * 
@@ -364,7 +362,7 @@ public class MarginTest {
             final boolean valid = Margin.isValid("45px");
             assertTrue(valid);
             final boolean invalid = Margin.isValid("55");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = Margin.isValid("45PX");
@@ -374,19 +372,19 @@ public class MarginTest {
             final boolean valid = Margin.isValid("45em");
             assertTrue(valid);
             final boolean invalid = Margin.isValid("dfd");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = Margin.isValid("45%");
             assertTrue(valid);
             final boolean invalid = Margin.isValid("45 px");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = Margin.isValid("45em");
             assertTrue(valid);
             final boolean invalid = Margin.isValid("45sem");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = Margin.isValid("45rem");
@@ -394,43 +392,43 @@ public class MarginTest {
         }
         {
             final boolean valid = Margin.isValid("-1px");
-            Assert.assertFalse(valid);
+           assertFalse(valid);
         }
         {
             final boolean valid = Margin.isValid("25px 23px 17px -1px");
-            Assert.assertFalse(valid);
+           assertFalse(valid);
         }
         {
             final boolean valid = Margin.isValid("-25px 23px 17px 1px");
-            Assert.assertFalse(valid);
+           assertFalse(valid);
         }
         {
             final boolean valid = Margin.isValid("25px -23px 17px 1px");
-            Assert.assertFalse(valid);
+           assertFalse(valid);
         }
         {
             final boolean valid = Margin.isValid("25px 23px -17px 1px");
-            Assert.assertFalse(valid);
+           assertFalse(valid);
         }
         {
             final boolean valid = Margin.isValid("25px 23px 17px -1px");
-            Assert.assertFalse(valid);
+           assertFalse(valid);
         }
         {
             final boolean valid = Margin.isValid("25px 23px 17px initial");
-            Assert.assertFalse(valid);
+           assertFalse(valid);
         }
         {
             final boolean valid = Margin.isValid("25px 23px 17PX initial");
-            Assert.assertFalse(valid);
+           assertFalse(valid);
         }
         {
             final boolean valid = Margin.isValid("25px 23px 17PX initial");
-            Assert.assertFalse(valid);
+           assertFalse(valid);
         }
         {
             final boolean valid = Margin.isValid("25px 23px 17px INHERIT");
-            Assert.assertFalse(valid);
+           assertFalse(valid);
         }
     }
     

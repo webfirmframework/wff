@@ -17,14 +17,13 @@
 package com.webfirmframework.wffweb.css.css3;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.css.CssLengthUnit;
 import com.webfirmframework.wffweb.css.CssNameConstants;
-import com.webfirmframework.wffweb.css.css3.MozColumnWidth;
 
 /**
  * 
@@ -142,8 +141,8 @@ public class MozColumnWidthTest {
         MozColumnWidth webkitColumnWidth = new MozColumnWidth();
         webkitColumnWidth.setAsInitial();
         assertEquals(MozColumnWidth.INITIAL, webkitColumnWidth.getCssValue());
-        Assert.assertNull(webkitColumnWidth.getValue());
-        Assert.assertNull(webkitColumnWidth.getUnit());
+       assertNull(webkitColumnWidth.getValue());
+       assertNull(webkitColumnWidth.getUnit());
     }
 
     @Test
@@ -151,8 +150,8 @@ public class MozColumnWidthTest {
         MozColumnWidth webkitColumnWidth = new MozColumnWidth();
         webkitColumnWidth.setAsInherit();
         assertEquals(MozColumnWidth.INHERIT, webkitColumnWidth.getCssValue());
-        Assert.assertNull(webkitColumnWidth.getValue());
-        Assert.assertNull(webkitColumnWidth.getUnit());
+       assertNull(webkitColumnWidth.getValue());
+       assertNull(webkitColumnWidth.getUnit());
     }
 
     @Test
@@ -161,8 +160,8 @@ public class MozColumnWidthTest {
         webkitColumnWidth.setAsInherit();
         webkitColumnWidth.setAsAuto();
         assertEquals(MozColumnWidth.AUTO, webkitColumnWidth.getCssValue());
-        Assert.assertNull(webkitColumnWidth.getValue());
-        Assert.assertNull(webkitColumnWidth.getUnit());
+       assertNull(webkitColumnWidth.getValue());
+       assertNull(webkitColumnWidth.getUnit());
     }
 
 }

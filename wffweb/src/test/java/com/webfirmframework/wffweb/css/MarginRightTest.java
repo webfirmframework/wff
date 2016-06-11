@@ -17,15 +17,13 @@
 package com.webfirmframework.wffweb.css;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.InvalidValueException;
-import com.webfirmframework.wffweb.css.CssLengthUnit;
-import com.webfirmframework.wffweb.css.CssNameConstants;
-import com.webfirmframework.wffweb.css.MarginRight;
 
 /**
  * 
@@ -143,8 +141,8 @@ public class MarginRightTest {
         MarginRight marginRight = new MarginRight();
         marginRight.setAsInitial();
         assertEquals(MarginRight.INITIAL, marginRight.getCssValue());
-        Assert.assertNull(marginRight.getValue());
-        Assert.assertNull(marginRight.getUnit());
+       assertNull(marginRight.getValue());
+       assertNull(marginRight.getUnit());
     }
 
     @Test
@@ -152,8 +150,8 @@ public class MarginRightTest {
         MarginRight marginRight = new MarginRight();
         marginRight.setAsInherit();
         assertEquals(MarginRight.INHERIT, marginRight.getCssValue());
-        Assert.assertNull(marginRight.getValue());
-        Assert.assertNull(marginRight.getUnit());
+       assertNull(marginRight.getValue());
+       assertNull(marginRight.getUnit());
     }
     
     @Test
@@ -161,8 +159,8 @@ public class MarginRightTest {
         MarginRight marginRight = new MarginRight();
         marginRight.setAsAuto();
         assertEquals(MarginRight.AUTO, marginRight.getCssValue());
-        Assert.assertNull(marginRight.getValue());
-        Assert.assertNull(marginRight.getUnit());
+       assertNull(marginRight.getValue());
+       assertNull(marginRight.getUnit());
     }
     
     
@@ -172,25 +170,25 @@ public class MarginRightTest {
             final boolean valid = MarginRight.isValid("45px");
             assertTrue(valid);
             final boolean invalid = MarginRight.isValid("55");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = MarginRight.isValid("45em");
             assertTrue(valid);
             final boolean invalid = MarginRight.isValid("dfd");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = MarginRight.isValid("45%");
             assertTrue(valid);
             final boolean invalid = MarginRight.isValid("45 px");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = MarginRight.isValid("45em");
             assertTrue(valid);
             final boolean invalid = MarginRight.isValid("45sem");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = MarginRight.isValid("45rem");
@@ -198,7 +196,7 @@ public class MarginRightTest {
         }
         {
             final boolean valid = MarginRight.isValid("-1px");
-            Assert.assertFalse(valid);
+           assertFalse(valid);
         }
     }
     

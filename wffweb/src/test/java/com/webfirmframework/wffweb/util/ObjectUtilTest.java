@@ -15,11 +15,10 @@
  */
 package com.webfirmframework.wffweb.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-
-import com.webfirmframework.wffweb.util.ObjectUtil;
 
 /**
  * @author WFF

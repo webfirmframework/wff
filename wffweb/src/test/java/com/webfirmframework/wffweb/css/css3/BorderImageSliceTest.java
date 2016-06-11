@@ -21,7 +21,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.InvalidValueException;
@@ -929,25 +928,25 @@ public class BorderImageSliceTest {
         {
             final boolean valid = BorderImageSlice.isValid("45px");
             assertTrue(valid);
-            Assert.assertTrue(BorderImageSlice.isValid("55"));
+           assertTrue(BorderImageSlice.isValid("55"));
         }
         {
             final boolean valid = BorderImageSlice.isValid("45em 45px");
             assertTrue(valid);
             final boolean invalid = BorderImageSlice.isValid("45em dfd 45px");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = BorderImageSlice.isValid("45%");
             assertTrue(valid);
             final boolean invalid = BorderImageSlice.isValid("45 px");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = BorderImageSlice.isValid("45em");
             assertTrue(valid);
             final boolean invalid = BorderImageSlice.isValid("45sem");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = BorderImageSlice.isValid("45rem");

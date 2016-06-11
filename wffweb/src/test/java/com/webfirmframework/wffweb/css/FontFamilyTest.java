@@ -20,9 +20,6 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.InvalidValueException;
-import com.webfirmframework.wffweb.css.CssNameConstants;
-import com.webfirmframework.wffweb.css.FontFamily;
-import com.webfirmframework.wffweb.css.GenericFontFamilyNameContants;
 
 /**
  * @author WFF

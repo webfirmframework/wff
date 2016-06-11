@@ -17,15 +17,13 @@
 package com.webfirmframework.wffweb.css;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.InvalidValueException;
-import com.webfirmframework.wffweb.css.CssLengthUnit;
-import com.webfirmframework.wffweb.css.CssNameConstants;
-import com.webfirmframework.wffweb.css.MarginBottom;
 
 /**
  * 
@@ -143,8 +141,8 @@ public class MarginBottomTest {
         MarginBottom marginBottom = new MarginBottom();
         marginBottom.setAsInitial();
         assertEquals(MarginBottom.INITIAL, marginBottom.getCssValue());
-        Assert.assertNull(marginBottom.getValue());
-        Assert.assertNull(marginBottom.getUnit());
+       assertNull(marginBottom.getValue());
+       assertNull(marginBottom.getUnit());
     }
 
     @Test
@@ -152,8 +150,8 @@ public class MarginBottomTest {
         MarginBottom marginBottom = new MarginBottom();
         marginBottom.setAsInherit();
         assertEquals(MarginBottom.INHERIT, marginBottom.getCssValue());
-        Assert.assertNull(marginBottom.getValue());
-        Assert.assertNull(marginBottom.getUnit());
+       assertNull(marginBottom.getValue());
+       assertNull(marginBottom.getUnit());
     }
     
     @Test
@@ -161,8 +159,8 @@ public class MarginBottomTest {
         MarginBottom marginBottom = new MarginBottom();
         marginBottom.setAsAuto();
         assertEquals(MarginBottom.AUTO, marginBottom.getCssValue());
-        Assert.assertNull(marginBottom.getValue());
-        Assert.assertNull(marginBottom.getUnit());
+       assertNull(marginBottom.getValue());
+       assertNull(marginBottom.getUnit());
     }    
     
     @Test
@@ -171,25 +169,25 @@ public class MarginBottomTest {
             final boolean valid = MarginBottom.isValid("45px");
             assertTrue(valid);
             final boolean invalid = MarginBottom.isValid("55");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = MarginBottom.isValid("45em");
             assertTrue(valid);
             final boolean invalid = MarginBottom.isValid("dfd");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = MarginBottom.isValid("45%");
             assertTrue(valid);
             final boolean invalid = MarginBottom.isValid("45 px");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = MarginBottom.isValid("45em");
             assertTrue(valid);
             final boolean invalid = MarginBottom.isValid("45sem");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = MarginBottom.isValid("45rem");
@@ -197,7 +195,7 @@ public class MarginBottomTest {
         }
         {
             final boolean valid = MarginBottom.isValid("-1px");
-            Assert.assertFalse(valid);
+           assertFalse(valid);
         }
     }
     

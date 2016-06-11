@@ -15,17 +15,15 @@
  */
 package com.webfirmframework.wffweb.css;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.InvalidValueException;
-import com.webfirmframework.wffweb.css.BorderRight;
-import com.webfirmframework.wffweb.css.BorderRightColor;
-import com.webfirmframework.wffweb.css.BorderRightStyle;
-import com.webfirmframework.wffweb.css.BorderRightWidth;
-import com.webfirmframework.wffweb.css.CssColorName;
-import com.webfirmframework.wffweb.css.CssNameConstants;
 
 /**
  * @author WFF

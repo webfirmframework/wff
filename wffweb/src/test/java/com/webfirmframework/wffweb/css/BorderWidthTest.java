@@ -15,19 +15,17 @@
  */
 package com.webfirmframework.wffweb.css;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.NullValueException;
-import com.webfirmframework.wffweb.css.BorderBottomWidth;
-import com.webfirmframework.wffweb.css.BorderLeftWidth;
-import com.webfirmframework.wffweb.css.BorderRightWidth;
-import com.webfirmframework.wffweb.css.BorderTopWidth;
-import com.webfirmframework.wffweb.css.BorderWidth;
-import com.webfirmframework.wffweb.css.CssNameConstants;
 
 /**
  * 
@@ -378,25 +376,25 @@ public class BorderWidthTest {
             final boolean valid = BorderWidth.isValid("45px");
             assertTrue(valid);
             final boolean invalid = BorderWidth.isValid("55");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = BorderWidth.isValid("45em 45px");
             assertTrue(valid);
             final boolean invalid = BorderWidth.isValid("45em dfd 45px");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = BorderWidth.isValid("45%");
             assertTrue(valid);
             final boolean invalid = BorderWidth.isValid("45 px");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = BorderWidth.isValid("45em");
             assertTrue(valid);
             final boolean invalid = BorderWidth.isValid("45sem");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = BorderWidth.isValid("45rem");

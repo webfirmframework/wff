@@ -17,14 +17,14 @@
 package com.webfirmframework.wffweb.css.css3;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.css.CssLengthUnit;
 import com.webfirmframework.wffweb.css.CssNameConstants;
-import com.webfirmframework.wffweb.css.css3.Perspective;
 
 /**
  * 
@@ -141,8 +141,8 @@ public class PerspectiveTest {
         Perspective perspective = new Perspective();
         perspective.setAsAuto();
         assertEquals(Perspective.NONE, perspective.getCssValue());
-        Assert.assertNull(perspective.getValue());
-        Assert.assertNull(perspective.getUnit());
+       assertNull(perspective.getValue());
+       assertNull(perspective.getUnit());
     }
 
     @Test
@@ -151,25 +151,25 @@ public class PerspectiveTest {
             final boolean valid = Perspective.isValid("45px");
             assertTrue(valid);
             final boolean invalid = Perspective.isValid("55");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = Perspective.isValid("45em");
             assertTrue(valid);
             final boolean invalid = Perspective.isValid("dfd");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = Perspective.isValid("45%");
             assertTrue(valid);
             final boolean invalid = Perspective.isValid("45 px");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = Perspective.isValid("45em");
             assertTrue(valid);
             final boolean invalid = Perspective.isValid("45sem");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = Perspective.isValid("45rem");

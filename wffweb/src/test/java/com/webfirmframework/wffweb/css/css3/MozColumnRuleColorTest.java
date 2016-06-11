@@ -21,7 +21,6 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.css.CssNameConstants;
-import com.webfirmframework.wffweb.css.css3.MozColumnRuleColor;
 
 /**
  * 

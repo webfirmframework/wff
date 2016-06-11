@@ -17,15 +17,13 @@
 package com.webfirmframework.wffweb.css;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.InvalidValueException;
-import com.webfirmframework.wffweb.css.CssLengthUnit;
-import com.webfirmframework.wffweb.css.CssNameConstants;
-import com.webfirmframework.wffweb.css.Left;
 
 /**
  * 
@@ -143,8 +141,8 @@ public class LeftTest {
         Left left = new Left();
         left.setAsInitial();
         assertEquals(Left.INITIAL, left.getCssValue());
-        Assert.assertNull(left.getValue());
-        Assert.assertNull(left.getUnit());
+       assertNull(left.getValue());
+       assertNull(left.getUnit());
     }
 
     @Test
@@ -152,8 +150,8 @@ public class LeftTest {
         Left left = new Left();
         left.setAsInherit();
         assertEquals(Left.INHERIT, left.getCssValue());
-        Assert.assertNull(left.getValue());
-        Assert.assertNull(left.getUnit());
+       assertNull(left.getValue());
+       assertNull(left.getUnit());
     }
     
     
@@ -163,25 +161,25 @@ public class LeftTest {
             final boolean valid = Left.isValid("45px");
             assertTrue(valid);
             final boolean invalid = Left.isValid("55");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = Left.isValid("45em");
             assertTrue(valid);
             final boolean invalid = Left.isValid("dfd");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = Left.isValid("45%");
             assertTrue(valid);
             final boolean invalid = Left.isValid("45 px");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = Left.isValid("45em");
             assertTrue(valid);
             final boolean invalid = Left.isValid("45sem");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = Left.isValid("45rem");
@@ -189,7 +187,7 @@ public class LeftTest {
         }
         {
             final boolean valid = Left.isValid("-1px");
-            Assert.assertFalse(valid);
+           assertFalse(valid);
         }
     }
     

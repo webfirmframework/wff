@@ -17,14 +17,13 @@
 package com.webfirmframework.wffweb.css.css3;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.css.CssLengthUnit;
 import com.webfirmframework.wffweb.css.CssNameConstants;
-import com.webfirmframework.wffweb.css.css3.ColumnRuleWidth;
 
 /**
  * 
@@ -142,8 +141,8 @@ public class ColumnRuleWidthTest {
         ColumnRuleWidth columnRuleWidth = new ColumnRuleWidth();
         columnRuleWidth.setAsInitial();
         assertEquals(ColumnRuleWidth.INITIAL, columnRuleWidth.getCssValue());
-        Assert.assertNull(columnRuleWidth.getValue());
-        Assert.assertNull(columnRuleWidth.getUnit());
+       assertNull(columnRuleWidth.getValue());
+       assertNull(columnRuleWidth.getUnit());
     }
 
     @Test
@@ -151,8 +150,8 @@ public class ColumnRuleWidthTest {
         ColumnRuleWidth columnRuleWidth = new ColumnRuleWidth();
         columnRuleWidth.setAsInherit();
         assertEquals(ColumnRuleWidth.INHERIT, columnRuleWidth.getCssValue());
-        Assert.assertNull(columnRuleWidth.getValue());
-        Assert.assertNull(columnRuleWidth.getUnit());
+       assertNull(columnRuleWidth.getValue());
+       assertNull(columnRuleWidth.getUnit());
     }
 
     @Test
@@ -161,8 +160,8 @@ public class ColumnRuleWidthTest {
         columnRuleWidth.setAsInherit();
         columnRuleWidth.setAsMedium();
         assertEquals(ColumnRuleWidth.MEDIUM, columnRuleWidth.getCssValue());
-        Assert.assertNull(columnRuleWidth.getValue());
-        Assert.assertNull(columnRuleWidth.getUnit());
+       assertNull(columnRuleWidth.getValue());
+       assertNull(columnRuleWidth.getUnit());
     }
     
     @Test
@@ -171,8 +170,8 @@ public class ColumnRuleWidthTest {
         columnRuleWidth.setAsInherit();
         columnRuleWidth.setAsThick();
         assertEquals(ColumnRuleWidth.THICK, columnRuleWidth.getCssValue());
-        Assert.assertNull(columnRuleWidth.getValue());
-        Assert.assertNull(columnRuleWidth.getUnit());
+       assertNull(columnRuleWidth.getValue());
+       assertNull(columnRuleWidth.getUnit());
     }
     
     @Test

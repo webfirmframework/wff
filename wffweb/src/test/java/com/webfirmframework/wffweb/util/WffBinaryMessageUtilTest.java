@@ -17,6 +17,7 @@ package com.webfirmframework.wffweb.util;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -26,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -225,7 +225,7 @@ public class WffBinaryMessageUtilTest {
         final long totalMillisTakenForWffBinaryMessage = afterMillis - beforeMillis;
         
         if (totalMillisTakenForWffBinaryMessage > 100) {
-            Assert.fail(testName.getMethodName() + " took "
+           fail(testName.getMethodName() + " took "
                     + totalMillisTakenForWffBinaryMessage + " ms, maximum 100mx is allowed");
         } else {
             System.out.println(testName.getMethodName() + " took just "
@@ -367,7 +367,7 @@ public class WffBinaryMessageUtilTest {
                 0, 0, 0, 4, 'k', 'e', 'y', '3', 0, 0, 0, 21, 0, 0, 0, 6, 'v', 'a', 'l', 'u', 'e', '3', 0, 0, 0, 7, 'v', 'a', 'l', 'u', 'e', '4', '1', 'A' 
                 };
         
-        Assert.assertArrayEquals(expectedMessage, actualMessage);
+       assertArrayEquals(expectedMessage, actualMessage);
         
     }
     
@@ -389,7 +389,7 @@ public class WffBinaryMessageUtilTest {
                 0, 0, 0, 4, 'k', 'e', 'y', '2', 0, 0, 0, 6, 'v', 'a', 'l', 'u', 'e', '2'
                 };
         
-        Assert.assertArrayEquals(expectedMessage, actualMessage);
+       assertArrayEquals(expectedMessage, actualMessage);
         
     }
     

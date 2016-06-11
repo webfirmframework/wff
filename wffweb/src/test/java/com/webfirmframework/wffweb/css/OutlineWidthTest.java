@@ -17,14 +17,10 @@
 package com.webfirmframework.wffweb.css;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
 import org.junit.Test;
-
-import com.webfirmframework.wffweb.css.CssLengthUnit;
-import com.webfirmframework.wffweb.css.CssNameConstants;
-import com.webfirmframework.wffweb.css.OutlineWidth;
 
 /**
  * 
@@ -142,8 +138,8 @@ public class OutlineWidthTest {
         OutlineWidth outlineWidth = new OutlineWidth();
         outlineWidth.setAsInitial();
         assertEquals(OutlineWidth.INITIAL, outlineWidth.getCssValue());
-        Assert.assertNull(outlineWidth.getValue());
-        Assert.assertNull(outlineWidth.getUnit());
+       assertNull(outlineWidth.getValue());
+       assertNull(outlineWidth.getUnit());
     }
 
     @Test
@@ -151,8 +147,8 @@ public class OutlineWidthTest {
         OutlineWidth outlineWidth = new OutlineWidth();
         outlineWidth.setAsInherit();
         assertEquals(OutlineWidth.INHERIT, outlineWidth.getCssValue());
-        Assert.assertNull(outlineWidth.getValue());
-        Assert.assertNull(outlineWidth.getUnit());
+       assertNull(outlineWidth.getValue());
+       assertNull(outlineWidth.getUnit());
     }
 
     @Test
@@ -161,8 +157,8 @@ public class OutlineWidthTest {
         outlineWidth.setAsInherit();
         outlineWidth.setAsMedium();
         assertEquals(OutlineWidth.MEDIUM, outlineWidth.getCssValue());
-        Assert.assertNull(outlineWidth.getValue());
-        Assert.assertNull(outlineWidth.getUnit());
+       assertNull(outlineWidth.getValue());
+       assertNull(outlineWidth.getUnit());
     }
     
     @Test
@@ -171,8 +167,8 @@ public class OutlineWidthTest {
         outlineWidth.setAsInherit();
         outlineWidth.setAsThick();
         assertEquals(OutlineWidth.THICK, outlineWidth.getCssValue());
-        Assert.assertNull(outlineWidth.getValue());
-        Assert.assertNull(outlineWidth.getUnit());
+       assertNull(outlineWidth.getValue());
+       assertNull(outlineWidth.getUnit());
     }
     
     @Test
@@ -181,8 +177,8 @@ public class OutlineWidthTest {
         outlineWidth.setAsInherit();
         outlineWidth.setAsThin();
         assertEquals(OutlineWidth.THIN, outlineWidth.getCssValue());
-        Assert.assertNull(outlineWidth.getValue());
-        Assert.assertNull(outlineWidth.getUnit());
+       assertNull(outlineWidth.getValue());
+       assertNull(outlineWidth.getUnit());
     }
 
 }

@@ -25,7 +25,6 @@ import org.junit.Test;
 
 import com.webfirmframework.wffweb.css.CssLengthUnit;
 import com.webfirmframework.wffweb.css.CssNameConstants;
-import com.webfirmframework.wffweb.css.css3.BackgroundSize;
 
 /**
  * @author WFF

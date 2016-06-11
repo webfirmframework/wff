@@ -16,18 +16,15 @@
  */
 package com.webfirmframework.wffweb.css;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.InvalidValueException;
-import com.webfirmframework.wffweb.css.CssNameConstants;
-import com.webfirmframework.wffweb.css.Font;
-import com.webfirmframework.wffweb.css.FontFamily;
-import com.webfirmframework.wffweb.css.FontSize;
-import com.webfirmframework.wffweb.css.FontStyle;
-import com.webfirmframework.wffweb.css.FontVariant;
-import com.webfirmframework.wffweb.css.FontWeight;
 
 /**
  * 

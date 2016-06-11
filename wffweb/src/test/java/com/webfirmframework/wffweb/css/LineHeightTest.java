@@ -21,7 +21,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.InvalidValueException;
@@ -38,7 +37,7 @@ public class LineHeightTest {
         LineHeight lineHeight = new LineHeight();
         assertEquals(LineHeight.NORMAL, lineHeight.getCssValue());
         lineHeight.setCssValue("1.4");
-        Assert.assertNull(lineHeight.getUnit());
+       assertNull(lineHeight.getUnit());
         
     }
     
@@ -161,7 +160,7 @@ public class LineHeightTest {
         LineHeight lineHeight = new LineHeight();
         lineHeight.setAsInherit();
         assertEquals(LineHeight.INHERIT, lineHeight.getCssValue());
-        Assert.assertNull(lineHeight.getValue());
+       assertNull(lineHeight.getValue());
         assertNull(lineHeight.getUnit());
     }
     

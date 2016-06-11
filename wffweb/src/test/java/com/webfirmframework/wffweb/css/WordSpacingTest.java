@@ -16,14 +16,11 @@
 */
 package com.webfirmframework.wffweb.css;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
 import org.junit.Test;
-
-import com.webfirmframework.wffweb.css.CssLengthUnit;
-import com.webfirmframework.wffweb.css.CssNameConstants;
-import com.webfirmframework.wffweb.css.WordSpacing;
 
 /**
  * 
@@ -141,8 +138,8 @@ public class WordSpacingTest {
         WordSpacing wordSpacing = new WordSpacing();
         wordSpacing.setAsInitial();
         assertEquals(WordSpacing.INITIAL, wordSpacing.getCssValue());
-        Assert.assertNull(wordSpacing.getValue());
-        Assert.assertNull(wordSpacing.getUnit());
+       assertNull(wordSpacing.getValue());
+       assertNull(wordSpacing.getUnit());
     }
 
     @Test
@@ -150,8 +147,8 @@ public class WordSpacingTest {
         WordSpacing wordSpacing = new WordSpacing();
         wordSpacing.setAsInherit();
         assertEquals(WordSpacing.INHERIT, wordSpacing.getCssValue());
-        Assert.assertNull(wordSpacing.getValue());
-        Assert.assertNull(wordSpacing.getUnit());
+       assertNull(wordSpacing.getValue());
+       assertNull(wordSpacing.getUnit());
     }
 
     @Test
@@ -160,8 +157,8 @@ public class WordSpacingTest {
         wordSpacing.setAsInherit();
         wordSpacing.setAsNormal();
         assertEquals(WordSpacing.NORMAL, wordSpacing.getCssValue());
-        Assert.assertNull(wordSpacing.getValue());
-        Assert.assertNull(wordSpacing.getUnit());
+       assertNull(wordSpacing.getValue());
+       assertNull(wordSpacing.getUnit());
     }
 
 }

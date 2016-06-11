@@ -16,15 +16,12 @@
 */
 package com.webfirmframework.wffweb.css.css3;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.css.CssNameConstants;
-import com.webfirmframework.wffweb.css.css3.WebkitColumnRule;
-import com.webfirmframework.wffweb.css.css3.WebkitColumnRuleColor;
-import com.webfirmframework.wffweb.css.css3.WebkitColumnRuleStyle;
-import com.webfirmframework.wffweb.css.css3.WebkitColumnRuleWidth;
 
 /**
  * 

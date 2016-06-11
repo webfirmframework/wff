@@ -26,12 +26,6 @@ import static org.junit.Assert.fail;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.InvalidValueException;
-import com.webfirmframework.wffweb.css.Border;
-import com.webfirmframework.wffweb.css.BorderColorCssValues;
-import com.webfirmframework.wffweb.css.BorderStyle;
-import com.webfirmframework.wffweb.css.BorderWidth;
-import com.webfirmframework.wffweb.css.CssColorName;
-import com.webfirmframework.wffweb.css.CssNameConstants;
 
 
 /**

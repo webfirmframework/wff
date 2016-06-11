@@ -17,14 +17,13 @@
 package com.webfirmframework.wffweb.css.css3;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.css.CssLengthUnit;
 import com.webfirmframework.wffweb.css.CssNameConstants;
-import com.webfirmframework.wffweb.css.css3.WebkitColumnRuleWidth;
 
 /**
  * 
@@ -149,8 +148,8 @@ public class WebkitColumnRuleWidthTest {
         WebkitColumnRuleWidth webkitColumnRuleWidth = new WebkitColumnRuleWidth();
         webkitColumnRuleWidth.setAsInherit();
         assertEquals(WebkitColumnRuleWidth.INHERIT, webkitColumnRuleWidth.getCssValue());
-        Assert.assertNull(webkitColumnRuleWidth.getValue());
-        Assert.assertNull(webkitColumnRuleWidth.getUnit());
+       assertNull(webkitColumnRuleWidth.getValue());
+       assertNull(webkitColumnRuleWidth.getUnit());
     }
 
     @Test
@@ -159,8 +158,8 @@ public class WebkitColumnRuleWidthTest {
         webkitColumnRuleWidth.setAsInherit();
         webkitColumnRuleWidth.setAsMedium();
         assertEquals(WebkitColumnRuleWidth.MEDIUM, webkitColumnRuleWidth.getCssValue());
-        Assert.assertNull(webkitColumnRuleWidth.getValue());
-        Assert.assertNull(webkitColumnRuleWidth.getUnit());
+       assertNull(webkitColumnRuleWidth.getValue());
+       assertNull(webkitColumnRuleWidth.getUnit());
     }
     
     @Test
@@ -169,8 +168,8 @@ public class WebkitColumnRuleWidthTest {
         webkitColumnRuleWidth.setAsInherit();
         webkitColumnRuleWidth.setAsThick();
         assertEquals(WebkitColumnRuleWidth.THICK, webkitColumnRuleWidth.getCssValue());
-        Assert.assertNull(webkitColumnRuleWidth.getValue());
-        Assert.assertNull(webkitColumnRuleWidth.getUnit());
+       assertNull(webkitColumnRuleWidth.getValue());
+       assertNull(webkitColumnRuleWidth.getUnit());
     }
     
     @Test
@@ -183,8 +182,8 @@ public class WebkitColumnRuleWidthTest {
             e.printStackTrace();
         }
         assertEquals(WebkitColumnRuleWidth.THIN, webkitColumnRuleWidth.getCssValue());
-        Assert.assertNull(webkitColumnRuleWidth.getValue());
-        Assert.assertNull(webkitColumnRuleWidth.getUnit());
+       assertNull(webkitColumnRuleWidth.getValue());
+       assertNull(webkitColumnRuleWidth.getUnit());
     }
 
 }

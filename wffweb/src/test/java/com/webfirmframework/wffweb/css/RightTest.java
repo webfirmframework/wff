@@ -17,15 +17,13 @@
 package com.webfirmframework.wffweb.css;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.InvalidValueException;
-import com.webfirmframework.wffweb.css.CssLengthUnit;
-import com.webfirmframework.wffweb.css.CssNameConstants;
-import com.webfirmframework.wffweb.css.Right;
 
 /**
  * 
@@ -143,8 +141,8 @@ public class RightTest {
         Right right = new Right();
         right.setAsInitial();
         assertEquals(Right.INITIAL, right.getCssValue());
-        Assert.assertNull(right.getValue());
-        Assert.assertNull(right.getUnit());
+       assertNull(right.getValue());
+       assertNull(right.getUnit());
     }
 
     @Test
@@ -152,8 +150,8 @@ public class RightTest {
         Right right = new Right();
         right.setAsInherit();
         assertEquals(Right.INHERIT, right.getCssValue());
-        Assert.assertNull(right.getValue());
-        Assert.assertNull(right.getUnit());
+       assertNull(right.getValue());
+       assertNull(right.getUnit());
     }
     
     
@@ -163,25 +161,25 @@ public class RightTest {
             final boolean valid = Right.isValid("45px");
             assertTrue(valid);
             final boolean invalid = Right.isValid("55");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = Right.isValid("45em");
             assertTrue(valid);
             final boolean invalid = Right.isValid("dfd");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = Right.isValid("45%");
             assertTrue(valid);
             final boolean invalid = Right.isValid("45 px");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = Right.isValid("45em");
             assertTrue(valid);
             final boolean invalid = Right.isValid("45sem");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = Right.isValid("45rem");
@@ -189,7 +187,7 @@ public class RightTest {
         }
         {
             final boolean valid = Right.isValid("-1px");
-            Assert.assertFalse(valid);
+           assertFalse(valid);
         }
     }
     

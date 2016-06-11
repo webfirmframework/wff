@@ -21,17 +21,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.NullValueException;
-import com.webfirmframework.wffweb.css.BorderBottomColor;
-import com.webfirmframework.wffweb.css.BorderColor;
-import com.webfirmframework.wffweb.css.BorderLeftColor;
-import com.webfirmframework.wffweb.css.BorderRightColor;
-import com.webfirmframework.wffweb.css.BorderTopColor;
-import com.webfirmframework.wffweb.css.CssNameConstants;
 
 /**
  * 
@@ -374,7 +367,7 @@ public class BorderColorTest {
             final boolean valid = BorderColor.isValid("green");
             assertTrue(valid);
             final boolean invalid = BorderColor.isValid("blu");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = BorderColor.isValid("GREEN");
@@ -384,7 +377,7 @@ public class BorderColorTest {
             final boolean valid = BorderColor.isValid("WHITE");
             assertTrue(valid);
             final boolean invalid = BorderColor.isValid("dfd");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = BorderColor.isValid("TRANSPARENT");
@@ -404,39 +397,39 @@ public class BorderColorTest {
         }
         {
             final boolean valid = BorderColor.isValid("red green blue dfdf");
-            Assert.assertFalse(valid);
+           assertFalse(valid);
         }
         {
             final boolean valid = BorderColor.isValid("dfdf red green blue");
-            Assert.assertFalse(valid);
+           assertFalse(valid);
         }
         {
             final boolean valid = BorderColor.isValid("red dfdf green blue");
-            Assert.assertFalse(valid);
+           assertFalse(valid);
         }
         {
             final boolean valid = BorderColor.isValid("red green -dfdf blue");
-            Assert.assertFalse(valid);
+           assertFalse(valid);
         }
         {
             final boolean valid = BorderColor.isValid("red green blue dfdf");
-            Assert.assertFalse(valid);
+           assertFalse(valid);
         }
         {
             final boolean valid = BorderColor.isValid("red green blue initial");
-            Assert.assertFalse(valid);
+           assertFalse(valid);
         }
         {
             final boolean valid = BorderColor.isValid("red green blue inherit");
-            Assert.assertFalse(valid);
+           assertFalse(valid);
         }
         {
             final boolean valid = BorderColor.isValid("red green blue INITIAL");
-            Assert.assertFalse(valid);
+           assertFalse(valid);
         }
         {
             final boolean valid = BorderColor.isValid("red green blue INHERIT");
-            Assert.assertFalse(valid);
+           assertFalse(valid);
         }
     }
     

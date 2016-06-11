@@ -15,17 +15,18 @@
  */
 package com.webfirmframework.wffweb.css.css3;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.css.CssLengthUnit;
 import com.webfirmframework.wffweb.css.CssNameConstants;
-import com.webfirmframework.wffweb.css.css3.WebkitFlex;
-import com.webfirmframework.wffweb.css.css3.WebkitFlexBasis;
-import com.webfirmframework.wffweb.css.css3.WebkitFlexGrow;
-import com.webfirmframework.wffweb.css.css3.WebkitFlexShrink;
 
 /**
  * @author WFF

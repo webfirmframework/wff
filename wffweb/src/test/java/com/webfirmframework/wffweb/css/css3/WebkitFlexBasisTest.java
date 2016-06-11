@@ -17,14 +17,14 @@
 package com.webfirmframework.wffweb.css.css3;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.css.CssLengthUnit;
 import com.webfirmframework.wffweb.css.CssNameConstants;
-import com.webfirmframework.wffweb.css.css3.WebkitFlexBasis;
 
 /**
  * 
@@ -142,8 +142,8 @@ public class WebkitFlexBasisTest {
         WebkitFlexBasis flexBasis = new WebkitFlexBasis();
         flexBasis.setAsInitial();
         assertEquals(WebkitFlexBasis.INITIAL, flexBasis.getCssValue());
-        Assert.assertNull(flexBasis.getValue());
-        Assert.assertNull(flexBasis.getUnit());
+       assertNull(flexBasis.getValue());
+       assertNull(flexBasis.getUnit());
     }
 
     @Test
@@ -151,8 +151,8 @@ public class WebkitFlexBasisTest {
         WebkitFlexBasis flexBasis = new WebkitFlexBasis();
         flexBasis.setAsInherit();
         assertEquals(WebkitFlexBasis.INHERIT, flexBasis.getCssValue());
-        Assert.assertNull(flexBasis.getValue());
-        Assert.assertNull(flexBasis.getUnit());
+       assertNull(flexBasis.getValue());
+       assertNull(flexBasis.getUnit());
     }
 
     @Test
@@ -161,8 +161,8 @@ public class WebkitFlexBasisTest {
         flexBasis.setAsInherit();
         flexBasis.setAsAuto();
         assertEquals(WebkitFlexBasis.AUTO, flexBasis.getCssValue());
-        Assert.assertNull(flexBasis.getValue());
-        Assert.assertNull(flexBasis.getUnit());
+       assertNull(flexBasis.getValue());
+       assertNull(flexBasis.getUnit());
     }
 
     @Test
@@ -171,25 +171,25 @@ public class WebkitFlexBasisTest {
             final boolean valid = WebkitFlexBasis.isValid("45px");
             assertTrue(valid);
             final boolean invalid = WebkitFlexBasis.isValid("55");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = WebkitFlexBasis.isValid("45em");
             assertTrue(valid);
             final boolean invalid = WebkitFlexBasis.isValid("dfd");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = WebkitFlexBasis.isValid("45%");
             assertTrue(valid);
             final boolean invalid = WebkitFlexBasis.isValid("45 px");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = WebkitFlexBasis.isValid("45em");
             assertTrue(valid);
             final boolean invalid = WebkitFlexBasis.isValid("45sem");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = WebkitFlexBasis.isValid("45rem");

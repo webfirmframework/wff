@@ -17,15 +17,13 @@
 package com.webfirmframework.wffweb.css;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.InvalidValueException;
-import com.webfirmframework.wffweb.css.Bottom;
-import com.webfirmframework.wffweb.css.CssLengthUnit;
-import com.webfirmframework.wffweb.css.CssNameConstants;
 
 /**
  * 
@@ -143,8 +141,8 @@ public class BottomTest {
         Bottom bottom = new Bottom();
         bottom.setAsInitial();
         assertEquals(Bottom.INITIAL, bottom.getCssValue());
-        Assert.assertNull(bottom.getValue());
-        Assert.assertNull(bottom.getUnit());
+       assertNull(bottom.getValue());
+       assertNull(bottom.getUnit());
     }
 
     @Test
@@ -152,8 +150,8 @@ public class BottomTest {
         Bottom bottom = new Bottom();
         bottom.setAsInherit();
         assertEquals(Bottom.INHERIT, bottom.getCssValue());
-        Assert.assertNull(bottom.getValue());
-        Assert.assertNull(bottom.getUnit());
+       assertNull(bottom.getValue());
+       assertNull(bottom.getUnit());
     }
     
     
@@ -163,25 +161,25 @@ public class BottomTest {
             final boolean valid = Bottom.isValid("45px");
             assertTrue(valid);
             final boolean invalid = Bottom.isValid("55");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = Bottom.isValid("45em");
             assertTrue(valid);
             final boolean invalid = Bottom.isValid("dfd");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = Bottom.isValid("45%");
             assertTrue(valid);
             final boolean invalid = Bottom.isValid("45 px");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = Bottom.isValid("45em");
             assertTrue(valid);
             final boolean invalid = Bottom.isValid("45sem");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = Bottom.isValid("45rem");
@@ -189,7 +187,7 @@ public class BottomTest {
         }
         {
             final boolean valid = Bottom.isValid("-1px");
-            Assert.assertFalse(valid);
+           assertFalse(valid);
         }
     }
     

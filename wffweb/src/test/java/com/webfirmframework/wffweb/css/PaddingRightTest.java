@@ -17,15 +17,13 @@
 package com.webfirmframework.wffweb.css;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.InvalidValueException;
-import com.webfirmframework.wffweb.css.CssLengthUnit;
-import com.webfirmframework.wffweb.css.CssNameConstants;
-import com.webfirmframework.wffweb.css.PaddingRight;
 
 /**
  * 
@@ -143,8 +141,8 @@ public class PaddingRightTest {
         PaddingRight paddingRight = new PaddingRight();
         paddingRight.setAsInitial();
         assertEquals(PaddingRight.INITIAL, paddingRight.getCssValue());
-        Assert.assertNull(paddingRight.getValue());
-        Assert.assertNull(paddingRight.getUnit());
+       assertNull(paddingRight.getValue());
+       assertNull(paddingRight.getUnit());
     }
 
     @Test
@@ -152,8 +150,8 @@ public class PaddingRightTest {
         PaddingRight paddingRight = new PaddingRight();
         paddingRight.setAsInherit();
         assertEquals(PaddingRight.INHERIT, paddingRight.getCssValue());
-        Assert.assertNull(paddingRight.getValue());
-        Assert.assertNull(paddingRight.getUnit());
+       assertNull(paddingRight.getValue());
+       assertNull(paddingRight.getUnit());
     }
     
     
@@ -163,25 +161,25 @@ public class PaddingRightTest {
             final boolean valid = PaddingRight.isValid("45px");
             assertTrue(valid);
             final boolean invalid = PaddingRight.isValid("55");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = PaddingRight.isValid("45em");
             assertTrue(valid);
             final boolean invalid = PaddingRight.isValid("dfd");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = PaddingRight.isValid("45%");
             assertTrue(valid);
             final boolean invalid = PaddingRight.isValid("45 px");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = PaddingRight.isValid("45em");
             assertTrue(valid);
             final boolean invalid = PaddingRight.isValid("45sem");
-            Assert.assertFalse(invalid);
+           assertFalse(invalid);
         }
         {
             final boolean valid = PaddingRight.isValid("45rem");
@@ -190,7 +188,7 @@ public class PaddingRightTest {
         
         {
             final boolean valid = PaddingRight.isValid("-1px");
-            Assert.assertFalse(valid);
+           assertFalse(valid);
         }
     }
 
