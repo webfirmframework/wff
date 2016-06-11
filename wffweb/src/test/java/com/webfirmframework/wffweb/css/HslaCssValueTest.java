@@ -65,7 +65,8 @@ public class HslaCssValueTest {
      */
     @Test
     public void testHslaCssValueHslaCssValue() {
-        HslaCssValue hslaCssValue1 = new HslaCssValue("hsla(120, 10%, 100%, 1)");
+        HslaCssValue hslaCssValue1 = new HslaCssValue(
+                "hsla(120, 10%, 100%, 1)");
         HslaCssValue hslaCssValue = new HslaCssValue(hslaCssValue1);
         assertEquals("hsla(120, 10%, 100%, 1)", hslaCssValue.getValue());
         assertEquals(120F, hslaCssValue.getH(), 0);
@@ -75,7 +76,8 @@ public class HslaCssValueTest {
 
     /**
      * Test method for
-     * {@link com.webfirmframework.wffweb.css.HslaCssValue#setHsla(java.lang.String)}.
+     * {@link com.webfirmframework.wffweb.css.HslaCssValue#setHsla(java.lang.String)}
+     * .
      */
     @Test
     public void testSetHsl() {
@@ -90,7 +92,8 @@ public class HslaCssValueTest {
 
     /**
      * Test method for
-     * {@link com.webfirmframework.wffweb.css.HslaCssValue#HslaCssValue(int, int, int, float)}.
+     * {@link com.webfirmframework.wffweb.css.HslaCssValue#HslaCssValue(int, int, int, float)}
+     * .
      */
     @Test
     public void testHslaCssValueIntIntInt() {
@@ -103,7 +106,8 @@ public class HslaCssValueTest {
     }
 
     /**
-     * Test method for {@link com.webfirmframework.wffweb.css.HslaCssValue#getH()}.
+     * Test method for
+     * {@link com.webfirmframework.wffweb.css.HslaCssValue#getH()}.
      */
     @Test
     public void testGetH() {
@@ -116,7 +120,8 @@ public class HslaCssValueTest {
     }
 
     /**
-     * Test method for {@link com.webfirmframework.wffweb.css.HslaCssValue#setH(int)}.
+     * Test method for
+     * {@link com.webfirmframework.wffweb.css.HslaCssValue#setH(int)}.
      */
     @Test
     public void testSetH() {
@@ -124,7 +129,8 @@ public class HslaCssValueTest {
     }
 
     /**
-     * Test method for {@link com.webfirmframework.wffweb.css.HslaCssValue#getS()}.
+     * Test method for
+     * {@link com.webfirmframework.wffweb.css.HslaCssValue#getS()}.
      */
     @Test
     public void testGetS() {
@@ -137,7 +143,8 @@ public class HslaCssValueTest {
     }
 
     /**
-     * Test method for {@link com.webfirmframework.wffweb.css.HslaCssValue#setS(int)}.
+     * Test method for
+     * {@link com.webfirmframework.wffweb.css.HslaCssValue#setS(int)}.
      */
     @Test
     public void testSetS() {
@@ -145,7 +152,8 @@ public class HslaCssValueTest {
     }
 
     /**
-     * Test method for {@link com.webfirmframework.wffweb.css.HslaCssValue#getL()}.
+     * Test method for
+     * {@link com.webfirmframework.wffweb.css.HslaCssValue#getL()}.
      */
     @Test
     public void testGetL() {
@@ -158,7 +166,8 @@ public class HslaCssValueTest {
     }
 
     /**
-     * Test method for {@link com.webfirmframework.wffweb.css.HslaCssValue#getSUnit()}.
+     * Test method for
+     * {@link com.webfirmframework.wffweb.css.HslaCssValue#getSUnit()}.
      */
     @Test
     public void testGetSUnit() {
@@ -166,7 +175,8 @@ public class HslaCssValueTest {
     }
 
     /**
-     * Test method for {@link com.webfirmframework.wffweb.css.HslaCssValue#getLUnit()}.
+     * Test method for
+     * {@link com.webfirmframework.wffweb.css.HslaCssValue#getLUnit()}.
      */
     @Test
     public void testGetLUnit() {
@@ -174,25 +184,34 @@ public class HslaCssValueTest {
     }
 
     /**
-     * Test method for {@link com.webfirmframework.wffweb.css.HslaCssValue#setL(int)}.
+     * Test method for
+     * {@link com.webfirmframework.wffweb.css.HslaCssValue#setL(int)}.
      */
     @Test
     public void testSetL() {
-        testGetL();
+        HslaCssValue hslaCssValue = new HslaCssValue(120, 10, 100, 0.5F);
+        assertEquals("hsla(120, 10.0%, 100.0%, 0.5)", hslaCssValue.getValue());
+        assertEquals(100F, hslaCssValue.getL(), 0);
+        hslaCssValue.setL(55);
+        assertEquals(55F, hslaCssValue.getL(), 0);
+        assertEquals(0.5F, hslaCssValue.getA(), 0);
     }
 
     /**
-     * Test method for {@link com.webfirmframework.wffweb.css.HslaCssValue#toString()}.
+     * Test method for
+     * {@link com.webfirmframework.wffweb.css.HslaCssValue#toString()}.
      */
     @Test
     public void testToString() {
-        HslaCssValue hslaCssValue1 = new HslaCssValue("hsla(120, 10%, 100%, 1)");
+        HslaCssValue hslaCssValue1 = new HslaCssValue(
+                "hsla(120, 10%, 100%, 1)");
         HslaCssValue hslaCssValue = new HslaCssValue(hslaCssValue1);
         assertEquals("hsla(120, 10%, 100%, 1)", hslaCssValue.toString());
     }
 
     /**
-     * Test method for {@link com.webfirmframework.wffweb.css.HslaCssValue#getValue()}.
+     * Test method for
+     * {@link com.webfirmframework.wffweb.css.HslaCssValue#getValue()}.
      */
     @Test
     public void testGetValue() {
@@ -206,7 +225,7 @@ public class HslaCssValueTest {
         assertEquals("hsla(220, 55.0%, 75.0%, 0.5)", hslaCssValue.getValue());
 
     }
-    
+
     @Test(expected = InvalidValueException.class)
     public void testSetHInvalidValue() {
         HslaCssValue hslaCssValue = new HslaCssValue();
@@ -216,7 +235,7 @@ public class HslaCssValueTest {
             hslaCssValue.setH(-1);
         }
     }
-    
+
     @Test(expected = InvalidValueException.class)
     public void testSetSInvalidValue() {
         HslaCssValue hslaCssValue = new HslaCssValue();
@@ -226,7 +245,7 @@ public class HslaCssValueTest {
             hslaCssValue.setS(-1);
         }
     }
-    
+
     @Test(expected = InvalidValueException.class)
     public void testSetLInvalidValue() {
         HslaCssValue hslaCssValue = new HslaCssValue();
@@ -236,7 +255,7 @@ public class HslaCssValueTest {
             hslaCssValue.setL(-1);
         }
     }
-    
+
     @Test(expected = InvalidValueException.class)
     public void testSetAInvalidValue() {
         HslaCssValue hslaCssValue = new HslaCssValue();
@@ -249,7 +268,8 @@ public class HslaCssValueTest {
 
     /**
      * Test method for
-     * {@link com.webfirmframework.wffweb.css.HslaCssValue#isValid(java.lang.String)}.
+     * {@link com.webfirmframework.wffweb.css.HslaCssValue#isValid(java.lang.String)}
+     * .
      */
     @Test
     public void testIsValid() {
