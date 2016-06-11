@@ -51,29 +51,29 @@ public abstract class CssFile implements Serializable, Cloneable {
             setModified(super.add(e));
             e.addCssFile(CssFile.this);
             addToSelectorCssFileBlocks(e);
-            return isModified();
+            return modified;
         }
 
         @Override
         public boolean addAll(
                 final Collection<? extends AbstractCssFileBlock> c) {
-            setModified(super.addAll(c));
+            modified = super.addAll(c);
             for (final AbstractCssFileBlock abstractCssFileBlock : c) {
                 abstractCssFileBlock.addCssFile(CssFile.this);
                 addToSelectorCssFileBlocks(abstractCssFileBlock);
             }
-            return isModified();
+            return modified;
         }
 
         @Override
         public boolean remove(final Object o) {
-            setModified(super.remove(o));
+            modified = super.remove(o);
             if (o instanceof AbstractCssFileBlock) {
                 final AbstractCssFileBlock cssFileBlock = (AbstractCssFileBlock) o;
                 cssFileBlock.removeCssFile(CssFile.this);
                 removeFromSelectorFileBlocks(cssFileBlock);
             }
-            return isModified();
+            return modified;
         }
 
         @Override
@@ -86,7 +86,7 @@ public abstract class CssFile implements Serializable, Cloneable {
                     removeFromSelectorFileBlocks(cssFileBlock);
                 }
             }
-            return isModified();
+            return modified;
         }
 
         @Override
@@ -101,7 +101,7 @@ public abstract class CssFile implements Serializable, Cloneable {
 
         @Override
         public String toString() {
-            if (isModified()) {
+            if (modified) {
                 toStringBuilder.delete(0, toStringBuilder.length());
 
                 if (isOptimizeCssString()) {
@@ -228,17 +228,8 @@ public abstract class CssFile implements Serializable, Cloneable {
      */
     public String toCssString(final boolean rebuild) {
         initCssFile();
-        setModified(rebuild);
+        modified = rebuild;
         return cssBlocks.toString();
-    }
-
-    /**
-     * @return the modified
-     * @since 1.0.0
-     * @author WFF
-     */
-    boolean isModified() {
-        return modified;
     }
 
     /**
