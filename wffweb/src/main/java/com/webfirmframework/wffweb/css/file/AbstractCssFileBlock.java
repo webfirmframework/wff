@@ -128,7 +128,7 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
 
             @Override
             public String toString() {
-                if (isModified()) {
+                if (modified) {
                     toStringBuilder.delete(0, toStringBuilder.length());
                     for (final CssProperty cssProperty : this) {
                         toStringBuilder.append(cssProperty.getCssName());
@@ -194,21 +194,12 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
     }
 
     /**
-     * @return the modified
-     * @since 1.0.0
-     * @author WFF
-     */
-    boolean isModified() {
-        return modified;
-    }
-
-    /**
      * @param modified
      *            the modified to set
      * @since 1.0.0
      * @author WFF
      */
-    void setModified(final boolean modified) {
+    private void setModified(final boolean modified) {
         if (modified) {
             for (final CssFile cssFile : cssFiles) {
                 cssFile.setModified(true);
