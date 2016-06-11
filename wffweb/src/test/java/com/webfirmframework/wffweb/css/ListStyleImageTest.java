@@ -112,7 +112,6 @@ public class ListStyleImageTest {
         listStyleImage.setUrl("http://project.com/images/TestImage.png");
         assertEquals("url(\"http://project.com/images/TestImage.png\")",
                 listStyleImage.getCssValue());
-        // fail("Not yet implemented");
     }
 
     @Test
@@ -121,22 +120,27 @@ public class ListStyleImageTest {
         listStyleImage.setUrl("http://project.com/images/TestImage.png");
         assertEquals("url(\"http://project.com/images/TestImage.png\")",
                 listStyleImage.getCssValue());
-        // fail("Not yet implemented");
     }
 
     @Test
     public void testSetAsInitial() {
-        // fail("Not yet implemented");
+        ListStyleImage listStyleImage = new ListStyleImage();
+        listStyleImage.setAsInitial();
+        assertEquals("initial", listStyleImage.getCssValue());
     }
 
     @Test
     public void testSetAsInherit() {
-        // fail("Not yet implemented");
+        ListStyleImage listStyleImage = new ListStyleImage();
+        listStyleImage.setAsInherit();
+        assertEquals("inherit", listStyleImage.getCssValue());
     }
 
     @Test
     public void testSetAsNone() {
-        // fail("Not yet implemented");
+        ListStyleImage listStyleImage = new ListStyleImage();
+        listStyleImage.setAsNone();
+        assertEquals("none", listStyleImage.getCssValue());
     }
 
     @Test
