@@ -149,7 +149,7 @@ public class BorderImageSourceTest {
     }
 
     /**
-     * Test method for {@link com.webfirmframework.wffweb.css.BorderImageSource#toString()}.
+     * Test method for {@link com.webfirmframework.wffweb.css.BorderImageSource#toHtmlString()}.
      */
     @Test
     public void testToString() {

@@ -214,7 +214,7 @@ public class WebkitBackgroundSizeTest {
     }
 
     /**
-     * Test method for {@link com.webfirmframework.wffweb.css.WebkitBackgroundSize#toString()}
+     * Test method for {@link com.webfirmframework.wffweb.css.WebkitBackgroundSize#toHtmlString()}
      * .
      */
     @Test

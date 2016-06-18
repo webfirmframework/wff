@@ -214,7 +214,7 @@ public class MozBackgroundSizeTest {
     }
 
     /**
-     * Test method for {@link com.webfirmframework.wffweb.css.MozBackgroundSize#toString()}
+     * Test method for {@link com.webfirmframework.wffweb.css.MozBackgroundSize#toHtmlString()}
      * .
      */
     @Test

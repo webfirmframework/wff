@@ -383,7 +383,16 @@ public abstract class AbstractHtml extends AbstractTagBase {
      */
     @Override
     public String toHtmlString() {
-        return getPrintStructure(true);
+        final String printStructure = getPrintStructure(
+                getSharedObject().isChildModified()
+                        && !getSharedObject().getRebuiltTags().contains(this));
+
+        if (parent == null) {
+            getSharedObject().setChildModified(false);
+        } else {
+            getSharedObject().getRebuiltTags().add(this);
+        }
+        return printStructure;
     }
 
     /*
@@ -599,23 +608,13 @@ public abstract class AbstractHtml extends AbstractTagBase {
     /*
      * (non-Javadoc)
      *
-     * @see com.webfirmframework.wffweb.tag.TagBase#toString()
-     *
-     * @since 1.0.0
-     *
-     * @author WFF
+     * @see java.lang.Object#toString()
      */
+    // it is not a best practice to print html string by this method because if
+    // it is used in ThreadLocal class it may cause memory leak.
     @Override
     public String toString() {
-        final String printStructure = getPrintStructure(
-                getSharedObject().isChildModified()
-                        && !getSharedObject().getRebuiltTags().contains(this));
-        if (parent == null) {
-            getSharedObject().setChildModified(false);
-        } else {
-            getSharedObject().getRebuiltTags().add(this);
-        }
-        return printStructure;
+        return super.toString();
     }
 
     /**

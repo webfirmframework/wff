@@ -27,7 +27,9 @@ import com.webfirmframework.wffweb.tag.core.TagBase;
  * @since 1.0.0
  */
 public class OutputBuffer {
+
     private final StringBuilder stringBuilder;
+
     private boolean rebuild;
 
     /**
@@ -56,8 +58,15 @@ public class OutputBuffer {
      *
      * @see java.lang.Object#toString()
      */
+    // never modify or override this method to print html string. It may cause
+    // memory leak as the object is used in ThreadLocal class,
+    // check com.webfirmframework.wffweb.view.AbstractHtmlView
     @Override
-    public String toString() {
+    public final String toString() {
+        return super.toString();
+    }
+
+    public String toBuilderString() {
         stringBuilder.trimToSize();
         return stringBuilder.toString();
     }

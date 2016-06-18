@@ -55,7 +55,7 @@ public abstract class DocType extends AbstractHtml {
     public String toHtmlString() {
         if (prependDocType) {
             return new String((docTypeTag + "\n" + super.toHtmlString())
-                    .getBytes(getCharset()));
+                    .getBytes(getCharset()), getCharset());
         }
         return super.toHtmlString();
     }
@@ -297,12 +297,15 @@ public abstract class DocType extends AbstractHtml {
         super.toOutputStream(os, rebuild, cs);
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.webfirmframework.wffweb.tag.html.AbstractHtml#toString()
+     */
+    // it is not a best practice to print html string by this method because if
+    // it is used in ThreadLocal class it may cause memory leak.
     @Override
     public String toString() {
-        if (prependDocType) {
-            return new String((docTypeTag + "\n" + super.toHtmlString())
-                    .getBytes(getCharset()), getCharset());
-        }
         return super.toString();
     }
 

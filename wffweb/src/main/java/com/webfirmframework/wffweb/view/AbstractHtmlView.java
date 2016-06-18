@@ -62,7 +62,7 @@ public abstract class AbstractHtmlView implements HtmlView {
             outputBuffer.setLength(0);
         }
         develop(outputBuffer);
-        return outputBuffer.toString();
+        return outputBuffer.toBuilderString();
     }
 
     @Override
@@ -95,7 +95,7 @@ public abstract class AbstractHtmlView implements HtmlView {
             outputBuffer.setLength(0);
         }
         develop(outputBuffer);
-        return outputBuffer.toString();
+        return outputBuffer.toBuilderString();
     }
 
     @Override
@@ -120,14 +120,16 @@ public abstract class AbstractHtmlView implements HtmlView {
         }
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.lang.Object#toString()
+     */
+    // it is not a best practice to print html string by this method because if
+    // it is used in ThreadLocal class it may cause memory leak.
     @Override
     public String toString() {
-        final OutputBuffer outputBuffer = outputBufferTL.get();
-        if (!preserveOutputBufferContent) {
-            outputBuffer.setLength(0);
-        }
-        develop(outputBuffer);
-        return outputBuffer.toString();
+        return super.toString();
     }
 
     /**

@@ -214,7 +214,7 @@ public class PerspectiveOriginTest {
     }
 
     /**
-     * Test method for {@link com.webfirmframework.wffweb.css.PerspectiveOrigin#toString()}
+     * Test method for {@link com.webfirmframework.wffweb.css.PerspectiveOrigin#toHtmlString()}
      * .
      */
     @Test

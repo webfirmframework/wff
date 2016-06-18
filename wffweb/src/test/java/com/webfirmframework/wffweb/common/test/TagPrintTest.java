@@ -157,18 +157,18 @@ public class TagPrintTest implements Serializable {
         // System.out.println();
         // System.out.println(expected);
         html1.setPrependDocType(true);
-       assertEquals(expected, html1.toString());
+       assertEquals(expected, html1.toHtmlString());
 
         {
             width1.setValue(56, CssLengthUnit.PER);
             final String expected2 = "<!DOCTYPE html>\n<html1 width=\"56%\" id=\"html1Id\"><html2 width=\"2.0%\"><html3 width=\"3.0%\"></html3><html4 width=\"4.0%\"></html4></html2></html1>";
-           assertEquals(expected2, html1.toString());
+           assertEquals(expected2, html1.toHtmlString());
         }
 
         {
             width1.setValue(55, CssLengthUnit.PX);
             final String expected2 = "<!DOCTYPE html>\n<html1 width=\"55px\" id=\"html1Id\"><html2 width=\"2.0%\"><html3 width=\"3.0%\"></html3><html4 width=\"4.0%\"></html4></html2></html1>";
-           assertEquals(expected2, html1.toString());
+           assertEquals(expected2, html1.toHtmlString());
         }
 
     }
@@ -178,7 +178,7 @@ public class TagPrintTest implements Serializable {
         final Html html = new Html(null, new Hidden(), new Id("htmlId"),
                 new Style("color:red;width:15px"));
         final String expectedString = "<html hidden id=\"htmlId\" style=\"color:red;width:15px;\"></html>";
-       assertEquals(expectedString, html.toString());
+       assertEquals(expectedString, html.toHtmlString());
 
         if (html.toHtmlString().contains("\0")) {
             System.out.println("yes contains");
@@ -189,7 +189,7 @@ public class TagPrintTest implements Serializable {
     public void testSingleHtmlTag() throws Exception {
         final Html html = new Html(null);
         final String expectedString = "<html></html>";
-       assertEquals(expectedString, html.toString());
+       assertEquals(expectedString, html.toHtmlString());
     }
 
     @SuppressWarnings("serial")
@@ -212,8 +212,8 @@ public class TagPrintTest implements Serializable {
     public void testSingleHtmlTag2() throws Exception {
         final SampleAbstractHtmlView view = new SampleAbstractHtmlView();
         final String expectedString = "<html></html>";
-       assertEquals(expectedString, view.toString());
-       assertEquals(expectedString, view.toString());
+       assertEquals(expectedString, view.toHtmlString());
+       assertEquals(expectedString, view.toHtmlString());
     }
 
     @Test(expected = AssertionError.class)
@@ -221,8 +221,8 @@ public class TagPrintTest implements Serializable {
         final SampleAbstractHtmlView view = new SampleAbstractHtmlView();
         view.setPreserveOutputBufferContent(true);
         final String expectedString = "<html></html>";
-       assertEquals(expectedString, view.toString());
-       assertEquals(expectedString, view.toString());
+       assertEquals(expectedString, view.toHtmlString());
+       assertEquals(expectedString, view.toHtmlString());
     }
 
     @Test
