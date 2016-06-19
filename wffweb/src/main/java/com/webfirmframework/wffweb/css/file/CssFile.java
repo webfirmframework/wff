@@ -198,15 +198,15 @@ public abstract class CssFile implements Serializable, Cloneable {
         return cssBlocks;
     }
 
-    /**
-     * @return the css string. i.e. the contents in the css file as a string.
-     * @since 1.0.0
-     * @author WFF
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
      */
+    // it's not a best practice to print css by toString method of this class.
     @Override
     public String toString() {
-        initCssFile();
-        return cssBlocks.toString();
+        return super.toString();
     }
 
     /**

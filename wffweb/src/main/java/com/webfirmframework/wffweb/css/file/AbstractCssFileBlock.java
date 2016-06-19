@@ -44,6 +44,8 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
 
     private boolean modified;
 
+    private boolean loadedOnce;
+
     @SuppressWarnings("unused")
     private AbstractCssFileBlock() {
     }
@@ -54,6 +56,7 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
 
     {
         cssFiles = new LinkedHashSet<CssFile>();
+
         cssPropertiesAsMap = new LinkedHashMap<String, CssProperty>();
 
         cssProperties = new LinkedHashSet<CssProperty>() {
@@ -141,7 +144,7 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
                 return toStringBuilder.toString();
             }
         };
-        load(cssProperties);
+
     }
 
     protected abstract void load(Set<CssProperty> cssProperties);
@@ -156,7 +159,7 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
 
     @Override
     public String toString() {
-        return toCssString();
+        return super.toString();
     }
 
     /**
@@ -190,6 +193,10 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
      * @author WFF
      */
     public Set<CssProperty> getCssProperties() {
+        if (!loadedOnce) {
+            load(cssProperties);
+            loadedOnce = true;
+        }
         return cssProperties;
     }
 
@@ -224,6 +231,10 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
      * @author WFF
      */
     Map<String, CssProperty> getCssPropertiesAsMap() {
+        if (!loadedOnce) {
+            load(cssProperties);
+            loadedOnce = true;
+        }
         return cssPropertiesAsMap;
     }
 }
