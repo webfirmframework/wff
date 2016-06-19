@@ -19,7 +19,7 @@
  */
 package com.webfirmframework.wffweb.io;
 
-import com.webfirmframework.wffweb.tag.core.TagBase;
+import com.webfirmframework.wffweb.tag.core.AbstractTagBase;
 
 /**
  *
@@ -45,7 +45,7 @@ public class OutputBuffer {
      * @author WFF
      * @since 1.0.0
      */
-    public void append(final TagBase base) {
+    public void append(final AbstractTagBase base) {
         stringBuilder.append(base.toHtmlString());
     }
 
