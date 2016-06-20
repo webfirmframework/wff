@@ -198,6 +198,7 @@ It will add width 100% in aboutParagraph and will change color to brown, its gen
 </html>
 ```
 
+The framework size is very low so you can build complete web application alone with this framework which can be run on [low cost low memory servers](http://www.mochahost.com/6128-46-1-253.html).
 
 ##### Checkout 
 
