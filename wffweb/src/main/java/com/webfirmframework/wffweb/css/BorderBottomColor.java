@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.css;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.InvalidValueException;
@@ -375,9 +376,11 @@ public class BorderBottomColor extends AbstractCssProperty<BorderBottomColor>
             throw new NullValueException("rgbCssValue can not be null");
         }
         if (this.rgbCssValue != null) {
-            if (rgbCssValue.isAlreadyInUse()
-                    && this.rgbCssValue.getStateChangeInformer() != rgbCssValue
-                            .getStateChangeInformer()) {
+            if (rgbCssValue.isAlreadyInUse() && !Objects.equals(
+                    this.rgbCssValue.getStateChangeInformer(),
+                    rgbCssValue.getStateChangeInformer())
+
+            ) {
                 try {
                     final RgbCssValue rgbCssValueClone = CloneUtil
                             .deepClone(rgbCssValue);
@@ -426,9 +429,9 @@ public class BorderBottomColor extends AbstractCssProperty<BorderBottomColor>
             throw new NullValueException("rgbCssValue can not be null");
         }
         if (this.rgbaCssValue != null) {
-            if (rgbaCssValue.isAlreadyInUse() && this.rgbaCssValue
-                    .getStateChangeInformer() != rgbaCssValue
-                            .getStateChangeInformer()) {
+            if (rgbaCssValue.isAlreadyInUse() && !Objects.equals(
+                    this.rgbaCssValue.getStateChangeInformer(),
+                    rgbaCssValue.getStateChangeInformer())) {
                 try {
                     final RgbaCssValue rgbaCssValueClone = CloneUtil
                             .deepClone(rgbaCssValue);
@@ -477,9 +480,9 @@ public class BorderBottomColor extends AbstractCssProperty<BorderBottomColor>
             throw new NullValueException("hslCssValue can not be null");
         }
         if (this.hslCssValue != null) {
-            if (hslCssValue.isAlreadyInUse()
-                    && this.hslCssValue.getStateChangeInformer() != hslCssValue
-                            .getStateChangeInformer()) {
+            if (hslCssValue.isAlreadyInUse() && !Objects.equals(
+                    this.hslCssValue.getStateChangeInformer(),
+                    hslCssValue.getStateChangeInformer())) {
                 try {
                     final HslCssValue hslCssValueClone = CloneUtil
                             .deepClone(hslCssValue);
@@ -528,9 +531,9 @@ public class BorderBottomColor extends AbstractCssProperty<BorderBottomColor>
             throw new NullValueException("hslCssValue can not be null");
         }
         if (this.hslaCssValue != null) {
-            if (hslaCssValue.isAlreadyInUse() && this.hslaCssValue
-                    .getStateChangeInformer() != hslaCssValue
-                            .getStateChangeInformer()) {
+            if (hslaCssValue.isAlreadyInUse() && !Objects.equals(
+                    this.hslaCssValue.getStateChangeInformer(),
+                    hslaCssValue.getStateChangeInformer())) {
                 try {
                     final HslaCssValue hslaCssValueClone = CloneUtil
                             .deepClone(hslaCssValue);

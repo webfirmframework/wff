@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.css;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.InvalidValueException;
@@ -367,7 +368,7 @@ public class BorderBottom extends AbstractCssProperty<BorderBottom>
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
         if (borderBottomWidth != null && borderBottomWidth.isAlreadyInUse()
-                && this.borderBottomWidth != borderBottomWidth) {
+                && !Objects.equals(this.borderBottomWidth, borderBottomWidth)) {
             LOGGER.warning(
                     "the given borderBottomWidth is already used by another object so a new object or the previous object (if it exists) of BorderBottomWidth will be used");
             return setCssValue(cssValue);
@@ -452,7 +453,7 @@ public class BorderBottom extends AbstractCssProperty<BorderBottom>
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
         if (borderBottomColor != null && borderBottomColor.isAlreadyInUse()
-                && this.borderBottomColor != borderBottomColor) {
+                && !Objects.equals(this.borderBottomColor, borderBottomColor)) {
             LOGGER.warning(
                     "the given borderBottomColor is already used by another object so a new object or the previous object (if it exists) of BorderBottomColor will be used");
             return setCssValue(cssValue);
