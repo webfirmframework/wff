@@ -15,6 +15,8 @@
  */
 package com.webfirmframework.wffweb.util;
 
+import java.util.Objects;
+
 /**
  *
  * @author WFF
@@ -65,8 +67,7 @@ public class ObjectUtil {
      * @since 1.0.0
      */
     public static boolean isEqual(final Object object1, final Object object2) {
-        return (object1 == object2)
-                || (object1 != null && object1.equals(object2));
+        return Objects.equals(object1, object2);
     }
 
 }
