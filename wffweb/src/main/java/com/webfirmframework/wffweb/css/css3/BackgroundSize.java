@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.css.css3;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.NullValueException;
@@ -158,7 +159,8 @@ public class BackgroundSize extends AbstractCssProperty<BackgroundSize> {
         this.widthLengthUnit = widthLengthUnit;
         this.heightLengthUnit = heightLengthUnit;
 
-        if (width == height && widthLengthUnit == heightLengthUnit) {
+        if (width == height
+                && Objects.equals(widthLengthUnit, heightLengthUnit)) {
             cssValue = width + "" + widthLengthUnit;
         } else {
             final StringBuilder sb = new StringBuilder();

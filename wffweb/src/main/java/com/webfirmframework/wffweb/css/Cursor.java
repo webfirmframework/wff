@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.InvalidValueException;
@@ -463,7 +464,8 @@ public class Cursor extends AbstractCssProperty<Cursor>
                     final UrlCss3Value clonedUrlCss3Value = CloneUtil
                             .<UrlCss3Value> deepCloneOnlyIfDoesNotContain(
                                     urlCss3Value, this.urlCss3Values);
-                    if (clonedUrlCss3Value != urlCss3Value) {
+
+                    if (!Objects.equals(clonedUrlCss3Value, urlCss3Value)) {
                         urlCss3Value = clonedUrlCss3Value;
                         LOGGER.warning("cloned urlCss3Value " + urlCss3Value
                                 + "(hashcode: " + urlCss3Value.hashCode()

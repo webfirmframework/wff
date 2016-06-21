@@ -29,6 +29,9 @@ public class UrlCss3Value extends AbstractBean<UrlCss3Value> {
 
     private static final long serialVersionUID = 1_0_0L;
 
+    // NB : it should not override equals and hashcode methods as its objects
+    // are equalized by Objects.equals(obj1, obj2) method in some places.
+
     private String url;
     private int x = -1;
     private int y = -1;

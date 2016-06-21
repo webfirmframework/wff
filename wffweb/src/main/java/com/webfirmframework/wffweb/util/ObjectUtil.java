@@ -65,14 +65,8 @@ public class ObjectUtil {
      * @since 1.0.0
      */
     public static boolean isEqual(final Object object1, final Object object2) {
-        if (object1 == null && object2 == null) {
-            return true;
-        }
-        if (object1 != null && object2 != null) {
-            return object1.equals(object2);
-        }
-
-        return false;
+        return (object1 == object2)
+                || (object1 != null && object1.equals(object2));
     }
 
 }

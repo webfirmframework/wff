@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.css.css3;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.InvalidValueException;
@@ -649,14 +650,16 @@ public class BorderImageOutset extends AbstractCssProperty<BorderImageOutset> {
                 && (ObjectUtil.isEqual(right, bottom)
                         && ObjectUtil.isEqual(rightUnit, bottomUnit))
                 && (ObjectUtil.isEqual(bottom, left)
-                        && bottomUnit == leftUnit)) {
+                        && Objects.equals(bottomUnit, leftUnit))) {
 
             return top != null && topUnit != null
                     ? String.valueOf(top).concat(topUnit.getUnit())
                     : top != null ? String.valueOf(top) : DEFAULT_VALUE;
 
-        } else if ((ObjectUtil.isEqual(top, bottom) && topUnit == bottomUnit)
-                && (ObjectUtil.isEqual(right, left) && rightUnit == leftUnit)) {
+        } else if ((ObjectUtil.isEqual(top, bottom)
+                && Objects.equals(topUnit, bottomUnit))
+                && (ObjectUtil.isEqual(right, left)
+                        && Objects.equals(rightUnit, leftUnit))) {
 
             final StringBuilder cssValueBuilder = new StringBuilder();
             if (top != null) {
@@ -677,7 +680,8 @@ public class BorderImageOutset extends AbstractCssProperty<BorderImageOutset> {
 
             return cssValueBuilder.toString();
 
-        } else if ((ObjectUtil.isEqual(right, left) && rightUnit == leftUnit)) {
+        } else if ((ObjectUtil.isEqual(right, left)
+                && Objects.equals(rightUnit, leftUnit))) {
             final StringBuilder cssValueBuilder = new StringBuilder();
             if (top != null) {
                 cssValueBuilder.append(top);
