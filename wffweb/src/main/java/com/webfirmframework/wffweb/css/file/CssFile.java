@@ -16,8 +16,11 @@
  */
 package com.webfirmframework.wffweb.css.file;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -246,6 +249,92 @@ public abstract class CssFile implements Serializable, Cloneable {
         initCssFile();
         modified = rebuild;
         return cssBlocks.toString();
+    }
+
+    /**
+     * @param os
+     *            the {@code OutputStream} object to write
+     * @param charset
+     *            the charset type of bytes to write
+     * @throws IOException
+     * @since 1.1.2
+     * @author WFF
+     */
+    public void toOutputStream(final OutputStream os, final String charset)
+            throws IOException {
+
+        initCssFile();
+
+        if (isOptimizeCssString()) {
+            for (final Entry<String, Set<AbstractCssFileBlock>> entry : selectorCssFileBlocks
+                    .entrySet()) {
+                final Set<AbstractCssFileBlock> cssFileBlocks = entry
+                        .getValue();
+                if (cssFileBlocks.size() > 0) {
+
+                    boolean exclude = true;
+
+                    final Map<String, CssProperty> cssProperties = new LinkedHashMap<String, CssProperty>();
+                    for (final AbstractCssFileBlock cssFileBlock : cssFileBlocks) {
+
+                        // should be called before
+                        // cssFileBlock.isExcludeCssBlock()
+                        final Map<String, CssProperty> cssPropertiesAsMap = cssFileBlock
+                                .getCssPropertiesAsMap();
+
+                        if (!cssFileBlock.isExcludeCssBlock()) {
+                            cssProperties.putAll(cssPropertiesAsMap);
+                            exclude = false;
+                        }
+                    }
+
+                    if (exclude) {
+                        continue;
+                    }
+
+                    os.write(entry.getKey().getBytes(charset));
+                    os.write("{".getBytes(charset));
+
+                    for (final CssProperty cssProperty : cssProperties
+                            .values()) {
+                        os.write(cssProperty.getCssName().getBytes(charset));
+                        os.write(":".getBytes(charset));
+                        os.write(cssProperty.getCssValue().getBytes(charset));
+                        os.write(";".getBytes(charset));
+                    }
+                    os.write("}".getBytes(charset));
+                }
+            }
+        } else {
+            for (final AbstractCssFileBlock cssFileBlock : cssBlocks) {
+                os.write(cssFileBlock.toCssString().getBytes(charset));
+            }
+        }
+    }
+
+    /**
+     * @param os
+     *            the {@code OutputStream} object to write
+     * @param charset
+     *            the charset type of bytes to write
+     * @throws IOException
+     * @since 1.1.2
+     * @author WFF
+     */
+    public void toOutputStream(final OutputStream os, final Charset charset)
+            throws IOException {
+        toOutputStream(os, charset.name());
+    }
+
+    /**
+     * @param os
+     *            the {@code OutputStream} object to write
+     * @throws IOException
+     * @since 1.1.2
+     * @author WFF
+     */
+    public void toOutputStream(final OutputStream os) throws IOException {
+        toOutputStream(os, Charset.defaultCharset().name());
     }
 
     /**
