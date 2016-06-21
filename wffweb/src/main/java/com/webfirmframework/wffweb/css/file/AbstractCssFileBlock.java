@@ -46,6 +46,8 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
 
     private boolean loadedOnce;
 
+    private boolean excludeCssBlock;
+
     @SuppressWarnings("unused")
     private AbstractCssFileBlock() {
     }
@@ -236,5 +238,22 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
             loadedOnce = true;
         }
         return cssPropertiesAsMap;
+    }
+
+    /**
+     * @return the excludeCssBlock true if the css block has been excluded, i.e.
+     *         it will not be contained in the generated css.
+     */
+    public boolean isExcludeCssBlock() {
+        return excludeCssBlock;
+    }
+
+    /**
+     * @param excludeCssBlock
+     *            the excludeCssBlock to set. If it is set to true, then this
+     *            css block will not be contained in the generated css.
+     */
+    protected void setExcludeCssBlock(final boolean excludeCssBlock) {
+        this.excludeCssBlock = excludeCssBlock;
     }
 }

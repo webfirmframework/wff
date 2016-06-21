@@ -40,6 +40,10 @@ public abstract class CssFile implements Serializable, Cloneable {
 
     private boolean optimizeCssString = true;
 
+    private boolean modified;
+
+    private boolean initialized;
+
     private final Set<AbstractCssFileBlock> cssBlocks = new LinkedHashSet<AbstractCssFileBlock>() {
 
         private static final long serialVersionUID = 1_0_0L;
@@ -110,13 +114,29 @@ public abstract class CssFile implements Serializable, Cloneable {
                         final Set<AbstractCssFileBlock> cssFileBlocks = entry
                                 .getValue();
                         if (cssFileBlocks.size() > 0) {
-                            toStringBuilder.append(entry.getKey());
-                            toStringBuilder.append('{');
+
+                            boolean exclude = true;
+
                             final Map<String, CssProperty> cssProperties = new LinkedHashMap<String, CssProperty>();
                             for (final AbstractCssFileBlock cssFileBlock : cssFileBlocks) {
-                                cssProperties.putAll(
-                                        cssFileBlock.getCssPropertiesAsMap());
+
+                                // should be called before
+                                // cssFileBlock.isExcludeCssBlock()
+                                final Map<String, CssProperty> cssPropertiesAsMap = cssFileBlock
+                                        .getCssPropertiesAsMap();
+
+                                if (!cssFileBlock.isExcludeCssBlock()) {
+                                    cssProperties.putAll(cssPropertiesAsMap);
+                                    exclude = false;
+                                }
                             }
+
+                            if (exclude) {
+                                continue;
+                            }
+
+                            toStringBuilder.append(entry.getKey());
+                            toStringBuilder.append('{');
 
                             for (final CssProperty cssProperty : cssProperties
                                     .values()) {
@@ -140,10 +160,6 @@ public abstract class CssFile implements Serializable, Cloneable {
             return toStringBuilder.toString();
         }
     };
-
-    private boolean modified;
-
-    private boolean initialized;
 
     protected final void initCssFile() {
         if (!initialized) {
@@ -200,7 +216,7 @@ public abstract class CssFile implements Serializable, Cloneable {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#toString()
      */
     // it's not a best practice to print css by toString method of this class.
