@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.css.css3;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.InvalidValueException;
@@ -395,7 +396,7 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
             throw new InvalidValueException("flexGrow cannot be null");
         }
 
-        if (this.flexGrow == flexGrow) {
+        if (Objects.equals(this.flexGrow, flexGrow)) {
             return this;
         }
 
@@ -452,7 +453,7 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
             throw new InvalidValueException("flexShrink cannot be null");
         }
 
-        if (this.flexShrink == flexShrink) {
+        if (Objects.equals(this.flexShrink, flexShrink)) {
             return this;
         }
 
@@ -509,7 +510,7 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
             throw new InvalidValueException("flexBasis cannot be null");
         }
 
-        if (this.flexBasis == flexBasis) {
+        if (Objects.equals(this.flexBasis, flexBasis)) {
             return this;
         }
 

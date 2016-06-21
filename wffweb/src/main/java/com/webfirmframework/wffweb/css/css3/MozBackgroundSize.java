@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.css.css3;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.NullValueException;
@@ -125,7 +126,8 @@ public class MozBackgroundSize extends AbstractCssProperty<MozBackgroundSize> {
         this.widthCssLengthUnit = widthCssLengthUnit;
         this.heightCssLengthUnit = heightCssLengthUnit;
 
-        if (width == height && widthCssLengthUnit == heightCssLengthUnit) {
+        if (width == height
+                && Objects.equals(widthCssLengthUnit, heightCssLengthUnit)) {
             cssValue = width + "" + widthCssLengthUnit;
         } else {
             final StringBuilder sb = new StringBuilder();
@@ -158,7 +160,8 @@ public class MozBackgroundSize extends AbstractCssProperty<MozBackgroundSize> {
         this.widthCssLengthUnit = widthCssLengthUnit;
         this.heightCssLengthUnit = heightCssLengthUnit;
 
-        if (width == height && widthCssLengthUnit == heightCssLengthUnit) {
+        if (width == height
+                && Objects.equals(widthCssLengthUnit, heightCssLengthUnit)) {
             cssValue = width + "" + widthCssLengthUnit;
         } else {
             final StringBuilder sb = new StringBuilder();
@@ -338,7 +341,8 @@ public class MozBackgroundSize extends AbstractCssProperty<MozBackgroundSize> {
                         // and height are equal.
                         if (Float.floatToIntBits(width.floatValue()) == Float
                                 .floatToIntBits(width.floatValue())
-                                && widthCssLengthUnit == heightCssLengthUnit) {
+                                && Objects.equals(widthCssLengthUnit,
+                                        heightCssLengthUnit)) {
                             this.cssValue = width + "" + heightCssLengthUnit;
                         } else {
                             this.cssValue = trimmedCssValue;

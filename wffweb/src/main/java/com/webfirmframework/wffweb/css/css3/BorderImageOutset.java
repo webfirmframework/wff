@@ -646,7 +646,8 @@ public class BorderImageOutset extends AbstractCssProperty<BorderImageOutset> {
             final CssLengthUnit bottomUnit, final Float left,
             final CssLengthUnit leftUnit) {
 
-        if ((ObjectUtil.isEqual(top, right) && topUnit == rightUnit)
+        if ((ObjectUtil.isEqual(top, right)
+                && Objects.equals(topUnit, rightUnit))
                 && (ObjectUtil.isEqual(right, bottom)
                         && ObjectUtil.isEqual(rightUnit, bottomUnit))
                 && (ObjectUtil.isEqual(bottom, left)

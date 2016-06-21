@@ -104,7 +104,7 @@ public class CustomTag extends AbstractHtml {
      * @author WFF
      */
     public boolean isSelfClosing() {
-        return tagType == TagType.SELF_CLOSING;
+        return TagType.SELF_CLOSING.equals(tagType);
     }
 
     /**
@@ -113,6 +113,6 @@ public class CustomTag extends AbstractHtml {
      * @author WFF
      */
     public boolean isNonClosing() {
-        return tagType == TagType.NON_CLOSING;
+        return TagType.NON_CLOSING.equals(tagType);
     }
 }

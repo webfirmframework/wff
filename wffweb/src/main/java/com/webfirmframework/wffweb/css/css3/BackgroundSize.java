@@ -126,7 +126,8 @@ public class BackgroundSize extends AbstractCssProperty<BackgroundSize> {
         this.widthLengthUnit = widthLengthUnit;
         this.heightLengthUnit = heightLengthUnit;
 
-        if (width == height && widthLengthUnit == heightLengthUnit) {
+        if (width == height
+                && Objects.equals(widthLengthUnit, heightLengthUnit)) {
             cssValue = width + "" + widthLengthUnit;
         } else {
             final StringBuilder sb = new StringBuilder();
@@ -340,7 +341,8 @@ public class BackgroundSize extends AbstractCssProperty<BackgroundSize> {
                         // and height are equal.
                         if (Float.floatToIntBits(width.floatValue()) == Float
                                 .floatToIntBits(width.floatValue())
-                                && widthLengthUnit == heightLengthUnit) {
+                                && Objects.equals(widthLengthUnit,
+                                        heightLengthUnit)) {
                             this.cssValue = width + "" + heightLengthUnit;
                         } else {
                             this.cssValue = trimmedCssValue;

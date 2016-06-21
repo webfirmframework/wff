@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.css.css3;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.InvalidValueException;
@@ -726,11 +727,12 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
             final CssLengthUnit bottomUnit, final Float left,
             final CssLengthUnit leftUnit, final String middle) {
 
-        if ((ObjectUtil.isEqual(top, right) && topUnit == rightUnit)
+        if ((ObjectUtil.isEqual(top, right)
+                && Objects.equals(topUnit, rightUnit))
                 && (ObjectUtil.isEqual(right, bottom)
                         && ObjectUtil.isEqual(rightUnit, bottomUnit))
                 && (ObjectUtil.isEqual(bottom, left)
-                        && bottomUnit == leftUnit)) {
+                        && Objects.equals(bottomUnit, leftUnit))) {
 
             if (middle != null) {
                 return (top != null && topUnit != null
@@ -743,8 +745,10 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
                     ? String.valueOf(top).concat(topUnit.getUnit())
                     : top != null ? String.valueOf(top) : DEFAULT_VALUE;
 
-        } else if ((ObjectUtil.isEqual(top, bottom) && topUnit == bottomUnit)
-                && (ObjectUtil.isEqual(right, left) && rightUnit == leftUnit)) {
+        } else if ((ObjectUtil.isEqual(top, bottom)
+                && Objects.equals(topUnit, bottomUnit))
+                && (ObjectUtil.isEqual(right, left)
+                        && Objects.equals(rightUnit, leftUnit))) {
 
             final StringBuilder cssValueBuilder = new StringBuilder();
             if (top != null) {
@@ -769,7 +773,8 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
             }
 
             return cssValueBuilder.toString();
-        } else if ((ObjectUtil.isEqual(right, left) && rightUnit == leftUnit)) {
+        } else if ((ObjectUtil.isEqual(right, left)
+                && Objects.equals(rightUnit, leftUnit))) {
             final StringBuilder cssValueBuilder = new StringBuilder();
             if (top != null) {
                 cssValueBuilder.append(top);

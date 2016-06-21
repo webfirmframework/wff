@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.css.css3;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.InvalidValueException;
@@ -56,6 +57,9 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
         implements StateChangeInformer<CssProperty> {
 
     private static final long serialVersionUID = 1_0_0L;
+
+    // NB : it should not override equals and hashcode methods as its objects
+    // are equalized by Objects.equals(obj1, obj2) method in some places.
 
     public static final Logger LOGGER = Logger
             .getLogger(MozFlex.class.getName());
@@ -398,7 +402,7 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
             throw new InvalidValueException("mozFlexGrow cannot be null");
         }
 
-        if (this.mozFlexGrow == mozFlexGrow) {
+        if (Objects.equals(this.mozFlexGrow, mozFlexGrow)) {
             return this;
         }
 
@@ -455,7 +459,7 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
             throw new InvalidValueException("mozFlexShrink cannot be null");
         }
 
-        if (this.mozFlexShrink == mozFlexShrink) {
+        if (Objects.equals(this.mozFlexShrink, mozFlexShrink)) {
             return this;
         }
 
@@ -512,7 +516,7 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
             throw new InvalidValueException("mozFlexBasis cannot be null");
         }
 
-        if (this.mozFlexBasis == mozFlexBasis) {
+        if (Objects.equals(this.mozFlexBasis, mozFlexBasis)) {
             return this;
         }
 

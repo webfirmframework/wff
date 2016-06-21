@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.css;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.NullValueException;
@@ -122,8 +123,8 @@ public class BorderSpacing extends AbstractCssProperty<BorderSpacing> {
         this.horizontalCssLengthUnit = horizontalCssLengthUnit;
         this.verticalCssLengthUnit = verticalCssLengthUnit;
 
-        if (horizontalValue == verticalValue
-                && horizontalCssLengthUnit == verticalCssLengthUnit) {
+        if (horizontalValue == verticalValue && Objects
+                .equals(horizontalCssLengthUnit, verticalCssLengthUnit)) {
             cssValue = horizontalValue + "" + horizontalCssLengthUnit;
         } else {
             final StringBuilder sb = new StringBuilder();
@@ -157,8 +158,8 @@ public class BorderSpacing extends AbstractCssProperty<BorderSpacing> {
         this.horizontalCssLengthUnit = horizontalCssLengthUnit;
         this.verticalCssLengthUnit = verticalCssLengthUnit;
 
-        if (horizontalValue == verticalValue
-                && horizontalCssLengthUnit == verticalCssLengthUnit) {
+        if (horizontalValue == verticalValue && Objects
+                .equals(horizontalCssLengthUnit, verticalCssLengthUnit)) {
             cssValue = horizontalValue + "" + horizontalCssLengthUnit;
         } else {
             final StringBuilder sb = new StringBuilder();
@@ -341,7 +342,10 @@ public class BorderSpacing extends AbstractCssProperty<BorderSpacing> {
                                 horizontalValue.floatValue()) == Float
                                         .floatToIntBits(
                                                 horizontalValue.floatValue())
-                                && horizontalCssLengthUnit == verticalCssLengthUnit) {
+                                && Objects.equals(horizontalCssLengthUnit,
+                                        verticalCssLengthUnit)
+
+                        ) {
                             this.cssValue = horizontalValue + ""
                                     + verticalCssLengthUnit;
                         } else {

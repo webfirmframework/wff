@@ -90,7 +90,7 @@ public class Br extends AbstractHtml {
      * @author WFF
      */
     public static boolean isSelfClosing() {
-        return Br.tagType == TagType.SELF_CLOSING;
+        return TagType.SELF_CLOSING.equals(Br.tagType);
     }
 
     /**
@@ -99,6 +99,6 @@ public class Br extends AbstractHtml {
      * @author WFF
      */
     public static boolean isNonClosing() {
-        return Br.tagType == TagType.NON_CLOSING;
+        return TagType.NON_CLOSING.equals(Br.tagType);
     }
 }
