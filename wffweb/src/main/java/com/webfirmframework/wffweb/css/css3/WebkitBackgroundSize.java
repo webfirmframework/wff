@@ -127,7 +127,8 @@ public class WebkitBackgroundSize
         this.widthCssLengthUnit = widthCssLengthUnit;
         this.heightCssLengthUnit = heightCssLengthUnit;
 
-        if (width == height && widthCssLengthUnit == heightCssLengthUnit) {
+        if (width == height
+                && Objects.equals(widthCssLengthUnit, heightCssLengthUnit)) {
             cssValue = width + "" + widthCssLengthUnit;
         } else {
             final StringBuilder sb = new StringBuilder();
@@ -160,7 +161,8 @@ public class WebkitBackgroundSize
         this.widthCssLengthUnit = widthCssLengthUnit;
         this.heightCssLengthUnit = heightCssLengthUnit;
 
-        if (width == height && widthCssLengthUnit == heightCssLengthUnit) {
+        if (width == height
+                && Objects.equals(widthCssLengthUnit, heightCssLengthUnit)) {
             cssValue = width + "" + widthCssLengthUnit;
         } else {
             final StringBuilder sb = new StringBuilder();

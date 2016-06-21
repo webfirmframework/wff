@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -1140,7 +1141,8 @@ public class Style extends AbstractAttribute
     public boolean removeCssProperty(final CssProperty cssProperty) {
         final AbstractCssProperty<?> abstractCssProperty = abstractCssPropertyClassObjects
                 .get(cssProperty.getCssName());
-        if (abstractCssProperty != null && abstractCssProperty != cssProperty) {
+        if (abstractCssProperty != null
+                && !Objects.equals(abstractCssProperty, cssProperty)) {
             LOGGER.warning(
                     "The added CssProperty object is different. Use the same object which was used to add the style.");
             return false;

@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.css.css3;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.NullValueException;
@@ -128,7 +129,8 @@ public class PerspectiveOrigin extends AbstractCssProperty<PerspectiveOrigin> {
         this.xAxisCssLengthUnit = xAxisCssLengthUnit;
         this.yAxisCssLengthUnit = yAxisCssLengthUnit;
 
-        if (xAxis == yAxis && xAxisCssLengthUnit == yAxisCssLengthUnit) {
+        if (xAxis == yAxis
+                && Objects.equals(xAxisCssLengthUnit, yAxisCssLengthUnit)) {
             cssValue = xAxis + "" + xAxisCssLengthUnit;
         } else {
             final StringBuilder sb = new StringBuilder();
@@ -161,7 +163,8 @@ public class PerspectiveOrigin extends AbstractCssProperty<PerspectiveOrigin> {
         this.xAxisCssLengthUnit = xAxisCssLengthUnit;
         this.yAxisCssLengthUnit = yAxisCssLengthUnit;
 
-        if (xAxis == yAxis && xAxisCssLengthUnit == yAxisCssLengthUnit) {
+        if (xAxis == yAxis
+                && Objects.equals(xAxisCssLengthUnit, yAxisCssLengthUnit)) {
             cssValue = xAxis + "" + xAxisCssLengthUnit;
         } else {
             final StringBuilder sb = new StringBuilder();
@@ -341,7 +344,8 @@ public class PerspectiveOrigin extends AbstractCssProperty<PerspectiveOrigin> {
                         // and yAxis are equal.
                         if (Float.floatToIntBits(xAxis.floatValue()) == Float
                                 .floatToIntBits(xAxis.floatValue())
-                                && xAxisCssLengthUnit == yAxisCssLengthUnit) {
+                                && Objects.equals(xAxisCssLengthUnit,
+                                        yAxisCssLengthUnit)) {
                             this.cssValue = xAxis + "" + yAxisCssLengthUnit;
                         } else {
                             this.cssValue = trimmedCssValue;
