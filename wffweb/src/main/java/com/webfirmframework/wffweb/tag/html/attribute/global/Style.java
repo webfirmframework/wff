@@ -61,7 +61,6 @@ import com.webfirmframework.wffweb.css.Bottom;
 import com.webfirmframework.wffweb.css.CaptionSide;
 import com.webfirmframework.wffweb.css.Clear;
 import com.webfirmframework.wffweb.css.Color;
-import com.webfirmframework.wffweb.css.CssConstants;
 import com.webfirmframework.wffweb.css.CssNameConstants;
 import com.webfirmframework.wffweb.css.Cursor;
 import com.webfirmframework.wffweb.css.Direction;
@@ -1120,8 +1119,8 @@ public class Style extends AbstractAttribute
         final String value = getAttributeValueMap().get(cssName);
         // the value may contain !important that's why startsWith method is used
         // here.
-        if (value != null && value.startsWith(cssValue.toLowerCase()
-                .replace(CssConstants.IMPORTANT, "").trim())) {
+        if (value != null && value.startsWith(
+                cssValue.toLowerCase().replace(IMPORTANT, "").trim())) {
             return removeCssProperty(cssName);
         }
 
