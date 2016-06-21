@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Collection;
+import java.util.Objects;
 
 import org.junit.Test;
 
@@ -384,7 +385,7 @@ public class StyleTest {
         try {
             WidthCss clonedWidthCss = widthCss.clone();
             System.out.println("clonedWidthCss " + clonedWidthCss);
-            if (clonedWidthCss != widthCss) {
+            if (!Objects.equals(clonedWidthCss, widthCss)) {
                 System.out.println("SUCCESS : clonedWidthCss != widthCss");
             }
         } catch (CloneNotSupportedException e) {

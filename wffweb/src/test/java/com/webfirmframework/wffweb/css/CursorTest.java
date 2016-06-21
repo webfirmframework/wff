@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.junit.Test;
 
@@ -54,7 +55,7 @@ public class CursorTest {
         cssValue = "url(\"Another.png\") , url(yes.png) 7 8  ,    default";
         cursor.setCssValue(cssValue);
         List<UrlCss3Value> urlCss3ValuesSecond = cursor.getUrlCss3Values();//each time returns a new unmodifiable List
-        assertFalse(urlCss3ValuesSecond == urlCss3ValuesFirst);
+        assertFalse(Objects.equals(urlCss3ValuesSecond, urlCss3ValuesFirst));
         cssValue = "url(\"No.png\") 77 98  ,    default";
         cursor.setCssValue(cssValue);
         List<UrlCss3Value> urlCss3ValuesThird = cursor.getUrlCss3Values();
@@ -64,7 +65,7 @@ public class CursorTest {
         assertEquals(77, urlCss3ValuesFirst.get(0).getX());
         assertEquals(98, urlCss3ValuesFirst.get(0).getY());
 
-        assertFalse(urlCss3ValuesSecond == urlCss3ValuesThird);
+        assertFalse(Objects.equals(urlCss3ValuesSecond, urlCss3ValuesThird));
         assertEquals(Cursor.DEFAULT, cursor.getCursorType());
 
         // TODO add code to check state change informer
