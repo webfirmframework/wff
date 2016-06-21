@@ -55,7 +55,7 @@ public class CursorTest {
         cssValue = "url(\"Another.png\") , url(yes.png) 7 8  ,    default";
         cursor.setCssValue(cssValue);
         List<UrlCss3Value> urlCss3ValuesSecond = cursor.getUrlCss3Values();//each time returns a new unmodifiable List
-        assertFalse(Objects.equals(urlCss3ValuesSecond, urlCss3ValuesFirst));
+        assertFalse(urlCss3ValuesSecond == urlCss3ValuesFirst);
         cssValue = "url(\"No.png\") 77 98  ,    default";
         cursor.setCssValue(cssValue);
         List<UrlCss3Value> urlCss3ValuesThird = cursor.getUrlCss3Values();
