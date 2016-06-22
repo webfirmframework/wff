@@ -97,4 +97,14 @@ public abstract class AbstractCssProperty<EXTENDEDCLASS extends AbstractCssPrope
             stateChangeInformer = null;
         }
     }
+
+    /**
+     * @return the css string of the property
+     * @since 1.1.2
+     * @author WFF
+     */
+    public String toCssString() {
+        return getCssName() + ":" + getCssValue();
+    }
+
 }
