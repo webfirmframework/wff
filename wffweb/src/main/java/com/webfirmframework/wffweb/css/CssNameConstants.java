@@ -194,6 +194,8 @@ public class CssNameConstants {
     public static final String WORD_BREAK = "word-break";
     public static final String WORD_SPACING = "word-spacing";
     public static final String WORD_WRAP = "word-wrap";
+    public static final String UNICODE_RANGE = "unicode-range";
+    public static final String SRC = "src";
 
     private CssNameConstants() {
         throw new AssertionError();
