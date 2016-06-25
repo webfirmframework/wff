@@ -47,6 +47,8 @@ public abstract class CssFile implements Serializable, Cloneable {
 
     private boolean initialized;
 
+    private boolean rebuild;
+
     private final Set<AbstractCssFileBlock> cssBlocks = new LinkedHashSet<AbstractCssFileBlock>() {
 
         private static final long serialVersionUID = 1_0_0L;
@@ -111,7 +113,7 @@ public abstract class CssFile implements Serializable, Cloneable {
             if (modified) {
                 toStringBuilder.delete(0, toStringBuilder.length());
 
-                if (isOptimizeCssString()) {
+                if (optimizeCssString) {
                     for (final Entry<String, Set<AbstractCssFileBlock>> entry : selectorCssFileBlocks
                             .entrySet()) {
                         final Set<AbstractCssFileBlock> cssFileBlocks = entry
@@ -126,7 +128,7 @@ public abstract class CssFile implements Serializable, Cloneable {
                                 // should be called before
                                 // cssFileBlock.isExcludeCssBlock()
                                 final Map<String, CssProperty> cssPropertiesAsMap = cssFileBlock
-                                        .getCssPropertiesAsMap();
+                                        .getCssPropertiesAsMap(rebuild);
 
                                 if (!cssFileBlock.isExcludeCssBlock()) {
                                     cssProperties.putAll(cssPropertiesAsMap);
@@ -160,6 +162,8 @@ public abstract class CssFile implements Serializable, Cloneable {
                 }
                 setModified(false);
             }
+
+            rebuild = false;
             return toStringBuilder.toString();
         }
     };
@@ -248,6 +252,7 @@ public abstract class CssFile implements Serializable, Cloneable {
     public String toCssString(final boolean rebuild) {
         initCssFile();
         modified = rebuild;
+        this.rebuild = rebuild;
         return cssBlocks.toString();
     }
 
@@ -262,6 +267,22 @@ public abstract class CssFile implements Serializable, Cloneable {
      */
     public void toOutputStream(final OutputStream os, final String charset)
             throws IOException {
+        toOutputStream(os, charset, false);
+    }
+
+    /**
+     * @param os
+     *            the {@code OutputStream} object to write
+     * @param charset
+     *            the charset type of bytes to write
+     * @param rebuild
+     *            the load method in CssBlocked will be invoked a gain
+     * @throws IOException
+     * @since 1.1.2
+     * @author WFF
+     */
+    public void toOutputStream(final OutputStream os, final String charset,
+            final boolean rebuild) throws IOException {
 
         initCssFile();
 
@@ -280,7 +301,7 @@ public abstract class CssFile implements Serializable, Cloneable {
                         // should be called before
                         // cssFileBlock.isExcludeCssBlock()
                         final Map<String, CssProperty> cssPropertiesAsMap = cssFileBlock
-                                .getCssPropertiesAsMap();
+                                .getCssPropertiesAsMap(rebuild);
 
                         if (!cssFileBlock.isExcludeCssBlock()) {
                             cssProperties.putAll(cssPropertiesAsMap);
@@ -307,9 +328,23 @@ public abstract class CssFile implements Serializable, Cloneable {
             }
         } else {
             for (final AbstractCssFileBlock cssFileBlock : cssBlocks) {
-                os.write(cssFileBlock.toCssString().getBytes(charset));
+                os.write(cssFileBlock.toCssString(rebuild).getBytes(charset));
             }
         }
+    }
+
+    /**
+     * @param os
+     *            the {@code OutputStream} object to write
+     * @param rebuild
+     *            the load method in CssBlocked will be invoked a gain
+     * @throws IOException
+     * @since 1.1.2
+     * @author WFF
+     */
+    public void toOutputStream(final OutputStream os, final boolean rebuild)
+            throws IOException {
+        toOutputStream(os, Charset.defaultCharset().name(), rebuild);
     }
 
     /**
@@ -323,7 +358,21 @@ public abstract class CssFile implements Serializable, Cloneable {
      */
     public void toOutputStream(final OutputStream os, final Charset charset)
             throws IOException {
-        toOutputStream(os, charset.name());
+        toOutputStream(os, charset.name(), false);
+    }
+
+    /**
+     * @param os
+     *            the {@code OutputStream} object to write
+     * @param charset
+     *            the charset type of bytes to write
+     * @throws IOException
+     * @since 1.1.2
+     * @author WFF
+     */
+    public void toOutputStream(final OutputStream os, final Charset charset,
+            final boolean rebuild) throws IOException {
+        toOutputStream(os, charset.name(), rebuild);
     }
 
     /**
@@ -334,7 +383,7 @@ public abstract class CssFile implements Serializable, Cloneable {
      * @author WFF
      */
     public void toOutputStream(final OutputStream os) throws IOException {
-        toOutputStream(os, Charset.defaultCharset().name());
+        toOutputStream(os, Charset.defaultCharset().name(), false);
     }
 
     /**

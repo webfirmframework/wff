@@ -170,6 +170,11 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
      * @author WFF
      */
     public String toCssString() {
+        if (!loadedOnce) {
+            cssProperties.clear();
+            load(cssProperties);
+            loadedOnce = true;
+        }
         return selectors + "{" + cssProperties.toString() + "}";
     }
 
@@ -180,6 +185,11 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
      * @author WFF
      */
     public String toCssString(final boolean rebuild) {
+        if (rebuild || !loadedOnce) {
+            cssProperties.clear();
+            load(cssProperties);
+            loadedOnce = true;
+        }
         setModified(rebuild);
         return toCssString();
     }
@@ -196,6 +206,7 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
      */
     public Set<CssProperty> getCssProperties() {
         if (!loadedOnce) {
+            cssProperties.clear();
             load(cssProperties);
             loadedOnce = true;
         }
@@ -227,13 +238,16 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
     }
 
     /**
+     * rebuild true to rebuild, the load method will be invoked again.
+     * 
      * @return the cssProperties as map with key as the cssName and value as
      *         {@code CssProperty}.
      * @since 1.0.0
      * @author WFF
      */
-    Map<String, CssProperty> getCssPropertiesAsMap() {
-        if (!loadedOnce) {
+    Map<String, CssProperty> getCssPropertiesAsMap(final boolean rebuild) {
+        if (rebuild || !loadedOnce) {
+            cssProperties.clear();
             load(cssProperties);
             loadedOnce = true;
         }
