@@ -108,5 +108,20 @@ public class CssFileTest {
         cssString = new String(baos.toByteArray());
         assertEquals("test-class1{font-style:normal;background-color:green;}test-class2{font-style:oblique;}", cssString);
     }
+    
+    @Test
+    public void testToOutputStreamBooleanTrue2WithPrependCharset() throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        
+        final SampleCssFile sampleCssFile = new SampleCssFile(FontWeight.BOLDER);
+        sampleCssFile.setPrependCharset(true);
+        sampleCssFile.toOutputStream(baos);
+        String cssString = new String(baos.toByteArray());
+        
+        baos = new ByteArrayOutputStream();
+        sampleCssFile.toOutputStream(baos);
+        cssString = new String(baos.toByteArray());
+        assertEquals("@CHARSET \"UTF-8\";\ntest-class1{font-style:normal;background-color:green;}test-class2{font-style:oblique;}", cssString);
+    }
 
 }

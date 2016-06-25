@@ -49,6 +49,8 @@ public abstract class CssFile implements Serializable, Cloneable {
 
     private boolean rebuild;
 
+    private boolean prependCharset;
+
     private final Set<AbstractCssFileBlock> cssBlocks = new LinkedHashSet<AbstractCssFileBlock>() {
 
         private static final long serialVersionUID = 1_0_0L;
@@ -280,7 +282,7 @@ public abstract class CssFile implements Serializable, Cloneable {
     /**
      * @param os
      *            the {@code OutputStream} object to write
-     * @param charset
+     * @param charsetName
      *            the charset type of bytes to write
      * @param rebuild
      *            the load method in CssBlocked will be invoked a gain
@@ -288,8 +290,14 @@ public abstract class CssFile implements Serializable, Cloneable {
      * @since 1.1.2
      * @author WFF
      */
-    public void toOutputStream(final OutputStream os, final String charset,
+    public void toOutputStream(final OutputStream os, final String charsetName,
             final boolean rebuild) throws IOException {
+
+        if (prependCharset) {
+            final String cssCharsetDeclaration = "@CHARSET \"" + charsetName
+                    + "\";\n";
+            os.write(cssCharsetDeclaration.getBytes(charsetName));
+        }
 
         initCssFile();
 
@@ -320,17 +328,19 @@ public abstract class CssFile implements Serializable, Cloneable {
                         continue;
                     }
 
-                    os.write(entry.getKey().getBytes(charset));
-                    os.write("{".getBytes(charset));
+                    os.write(entry.getKey().getBytes(charsetName));
+                    os.write("{".getBytes(charsetName));
 
                     for (final CssProperty cssProperty : cssProperties
                             .values()) {
-                        os.write(cssProperty.getCssName().getBytes(charset));
-                        os.write(":".getBytes(charset));
-                        os.write(cssProperty.getCssValue().getBytes(charset));
-                        os.write(";".getBytes(charset));
+                        os.write(
+                                cssProperty.getCssName().getBytes(charsetName));
+                        os.write(":".getBytes(charsetName));
+                        os.write(cssProperty.getCssValue()
+                                .getBytes(charsetName));
+                        os.write(";".getBytes(charsetName));
                     }
-                    os.write("}".getBytes(charset));
+                    os.write("}".getBytes(charsetName));
                 }
             }
         } else {
@@ -339,7 +349,7 @@ public abstract class CssFile implements Serializable, Cloneable {
                 // cssFileBlock.isExcludeCssBlock method
                 final String cssString = cssFileBlock.toCssString(rebuild);
                 if (!cssFileBlock.isExcludeCssBlock()) {
-                    os.write(cssString.getBytes(charset));
+                    os.write(cssString.getBytes(charsetName));
                 }
             }
         }
@@ -483,6 +493,31 @@ public abstract class CssFile implements Serializable, Cloneable {
      */
     final Map<String, Set<AbstractCssFileBlock>> getSelectorCssFileBlocks() {
         return selectorCssFileBlocks;
+    }
+
+    /**
+     * @return true or false
+     * @since 1.1.2
+     * @author WFF
+     */
+    public boolean isPrependCharset() {
+        return prependCharset;
+    }
+
+    /**
+     * prepends the charset declaration (eg: <code>@CHARSET "UTF-8";</code>)
+     * while writing css string to the output stream by {@code toOutputStream}
+     * methods.
+     *
+     * @param prependCharset
+     *            true to prepend the charset declaration (eg:
+     *            <code>@CHARSET "UTF-8";</code>) while writing css string to
+     *            the output stream by {@code toOutputStream} methods.
+     * @since 1.1.2
+     * @author WFF
+     */
+    public void setPrependCharset(final boolean prependCharset) {
+        this.prependCharset = prependCharset;
     }
 
 }
