@@ -57,7 +57,7 @@ public abstract class CssFile implements Serializable, Cloneable {
 
         @Override
         public boolean add(final AbstractCssFileBlock e) {
-            setModified(super.add(e));
+            modified = super.add(e);
             e.addCssFile(CssFile.this);
             addToSelectorCssFileBlocks(e);
             return modified;
@@ -100,7 +100,7 @@ public abstract class CssFile implements Serializable, Cloneable {
 
         @Override
         public void clear() {
-            setModified(true);
+            modified = true;
             for (final AbstractCssFileBlock cssFileBlock : this) {
                 cssFileBlock.removeCssFile(CssFile.this);
                 removeFromSelectorFileBlocks(cssFileBlock);
@@ -110,7 +110,8 @@ public abstract class CssFile implements Serializable, Cloneable {
 
         @Override
         public String toString() {
-            if (modified) {
+            if (rebuild || modified) {
+
                 toStringBuilder.delete(0, toStringBuilder.length());
 
                 if (optimizeCssString) {
@@ -157,7 +158,13 @@ public abstract class CssFile implements Serializable, Cloneable {
                     }
                 } else {
                     for (final AbstractCssFileBlock cssFileBlock : this) {
-                        toStringBuilder.append(cssFileBlock.toCssString());
+                        // this statement should be called before
+                        // cssFileBlock.isExcludeCssBlock method
+                        final String cssString = cssFileBlock
+                                .toCssString(rebuild);
+                        if (!cssFileBlock.isExcludeCssBlock()) {
+                            toStringBuilder.append(cssString);
+                        }
                     }
                 }
                 setModified(false);
@@ -299,7 +306,7 @@ public abstract class CssFile implements Serializable, Cloneable {
                     for (final AbstractCssFileBlock cssFileBlock : cssFileBlocks) {
 
                         // should be called before
-                        // cssFileBlock.isExcludeCssBlock()
+                        // cssFileBlock.isExcludeCssBlock method
                         final Map<String, CssProperty> cssPropertiesAsMap = cssFileBlock
                                 .getCssPropertiesAsMap(rebuild);
 
@@ -328,7 +335,12 @@ public abstract class CssFile implements Serializable, Cloneable {
             }
         } else {
             for (final AbstractCssFileBlock cssFileBlock : cssBlocks) {
-                os.write(cssFileBlock.toCssString(rebuild).getBytes(charset));
+                // this statement should be called before
+                // cssFileBlock.isExcludeCssBlock method
+                final String cssString = cssFileBlock.toCssString(rebuild);
+                if (!cssFileBlock.isExcludeCssBlock()) {
+                    os.write(cssString.getBytes(charset));
+                }
             }
         }
     }

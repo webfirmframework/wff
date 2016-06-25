@@ -174,6 +174,7 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
             cssProperties.clear();
             load(cssProperties);
             loadedOnce = true;
+            setModified(true);
         }
         return selectors + "{" + cssProperties.toString() + "}";
     }
@@ -189,9 +190,9 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
             cssProperties.clear();
             load(cssProperties);
             loadedOnce = true;
+            setModified(true);
         }
-        setModified(rebuild);
-        return toCssString();
+        return selectors + "{" + cssProperties.toString() + "}";
     }
 
     @Override
@@ -209,6 +210,7 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
             cssProperties.clear();
             load(cssProperties);
             loadedOnce = true;
+            setModified(true);
         }
         return cssProperties;
     }
@@ -239,7 +241,7 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
 
     /**
      * rebuild true to rebuild, the load method will be invoked again.
-     * 
+     *
      * @return the cssProperties as map with key as the cssName and value as
      *         {@code CssProperty}.
      * @since 1.0.0
@@ -250,6 +252,7 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
             cssProperties.clear();
             load(cssProperties);
             loadedOnce = true;
+            setModified(true);
         }
         return cssPropertiesAsMap;
     }
