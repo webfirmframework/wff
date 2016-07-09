@@ -157,6 +157,8 @@ public class AttributeNameConstants {
 
     public static final String METHOD = "method";
 
+    public static final String HTTP_EQUIV = "http-equiv";
+
     /**
      *
      * @author WFF
