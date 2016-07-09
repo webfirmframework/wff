@@ -16,6 +16,7 @@
 package com.webfirmframework.wffweb.util;
 
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -377,7 +378,9 @@ public class WffBinaryMessageUtilTest {
         List<NameValue> nameValues = new LinkedList<NameValue>();
         nameValues.add(new NameValue("key1".getBytes(), new byte[][]{"value1".getBytes()}));
         nameValues.add(new NameValue("key3".getBytes(), new byte[][]{"value3".getBytes(), "value41".getBytes()}));
+        nameValues.add(new NameValue("key4".getBytes(), new byte[0][0]));
         nameValues.add(new NameValue("key2".getBytes(), new byte[][]{"value2".getBytes()}));
+        nameValues.add(new NameValue("key5".getBytes(), new byte[0][0]));
 
         byte[] actualMessage = WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues);
      
@@ -386,10 +389,13 @@ public class WffBinaryMessageUtilTest {
                 //key length                    value length
                 0, 0, 0, 4, 'k', 'e', 'y', '1', 0, 0, 0, 6, 'v', 'a', 'l', 'u', 'e', '1', 
                 0, 0, 0, 4, 'k', 'e', 'y', '3', 0, 0, 0, 21, 0, 0, 0, 6, 'v', 'a', 'l', 'u', 'e', '3', 0, 0, 0, 7, 'v', 'a', 'l', 'u', 'e', '4', '1', 'A', 
-                0, 0, 0, 4, 'k', 'e', 'y', '2', 0, 0, 0, 6, 'v', 'a', 'l', 'u', 'e', '2'
+                0, 0, 0, 4, 'k', 'e', 'y', '4', 0, 0, 0, 0,
+                0, 0, 0, 4, 'k', 'e', 'y', '2', 0, 0, 0, 6, 'v', 'a', 'l', 'u', 'e', '2',
+                0, 0, 0, 4, 'k', 'e', 'y', '5', 0, 0, 0, 0
                 };
         
        assertArrayEquals(expectedMessage, actualMessage);
+       assertEquals(expectedMessage.length, actualMessage.length);
         
     }
     

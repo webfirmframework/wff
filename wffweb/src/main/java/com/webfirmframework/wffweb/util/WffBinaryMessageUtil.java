@@ -153,6 +153,7 @@ public enum WffBinaryMessageUtil {
                     System.arraycopy(new byte[] { 0, 0, 0, 0 }, 0,
                             wffBinaryMessageBytes, wffBinaryMessageBytesIndex,
                             maxNoValueLengthBytes);
+                    wffBinaryMessageBytesIndex += maxNoValueLengthBytes;
                 } else {
 
                     // if it's an array of values
