@@ -106,11 +106,13 @@ import com.webfirmframework.wffweb.css.PageBreakBefore;
 import com.webfirmframework.wffweb.css.PageBreakInside;
 import com.webfirmframework.wffweb.css.Position;
 import com.webfirmframework.wffweb.css.Right;
+import com.webfirmframework.wffweb.css.Src;
 import com.webfirmframework.wffweb.css.TableLayout;
 import com.webfirmframework.wffweb.css.TextAlign;
 import com.webfirmframework.wffweb.css.TextTransform;
 import com.webfirmframework.wffweb.css.Top;
 import com.webfirmframework.wffweb.css.UnicodeBidi;
+import com.webfirmframework.wffweb.css.UnicodeRange;
 import com.webfirmframework.wffweb.css.Visibility;
 import com.webfirmframework.wffweb.css.WhiteSpace;
 import com.webfirmframework.wffweb.css.WidthCss;
@@ -714,6 +716,10 @@ public class Style extends AbstractAttribute
                 BorderImageSlice.class);
         CSSPROPERTY_CLASSES.put(CssNameConstants.BORDER_IMAGE_SOURCE,
                 BorderImageSource.class);
+        CSSPROPERTY_CLASSES.put(CssNameConstants.UNICODE_RANGE,
+                UnicodeRange.class);
+        CSSPROPERTY_CLASSES.put(CssNameConstants.SRC,
+                Src.class);
     }
 
     {
