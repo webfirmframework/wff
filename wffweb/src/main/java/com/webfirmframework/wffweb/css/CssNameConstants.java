@@ -158,6 +158,7 @@ public class CssNameConstants {
     public static final String POSITION = "position";
     public static final String RESIZE = "resize";
     public static final String RIGHT = "right";
+    public static final String SRC = "src";
     public static final String TABLE_LAYOUT = "table-layout";
     public static final String TEXT_ALIGN = "text-align";
     public static final String TEXT_ALIGN_LAST = "text-align-last";
@@ -169,6 +170,7 @@ public class CssNameConstants {
     public static final String TOP = "top";
     public static final String TRANSFORM_STYLE = "transform-style";
     public static final String UNICODE_BIDI = "unicode-bidi";
+    public static final String UNICODE_RANGE = "unicode-range";
     public static final String VISIBILITY = "visibility";
     public static final String WEBKIT_ANIMATION_DIRECTION = "-webkit-animation-direction";
     public static final String WEBKIT_ANIMATION_FILL_MODE = "-webkit-animation-fill-mode";
@@ -194,8 +196,6 @@ public class CssNameConstants {
     public static final String WORD_BREAK = "word-break";
     public static final String WORD_SPACING = "word-spacing";
     public static final String WORD_WRAP = "word-wrap";
-    public static final String UNICODE_RANGE = "unicode-range";
-    public static final String SRC = "src";
 
     private CssNameConstants() {
         throw new AssertionError();
