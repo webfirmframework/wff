@@ -399,6 +399,15 @@ public class WffBinaryMessageUtilTest {
         
     }
     
+    @Test
+    public void testGetOptimizedBytesFromIntAndGetIntFromOptimizedBytes() {
+        for (long i = 0; i <= Integer.MAX_VALUE; i++) {
+            byte[] optimizedBytesFromInt = WffBinaryMessageUtil.getOptimizedBytesFromInt((int) i);
+            int intFromOptimizedBytes = WffBinaryMessageUtil.getIntFromOptimizedBytes(optimizedBytesFromInt);
+            assertEquals(i, intFromOptimizedBytes);
+        }
+    }
+    
     //@formatter:on
 
 }

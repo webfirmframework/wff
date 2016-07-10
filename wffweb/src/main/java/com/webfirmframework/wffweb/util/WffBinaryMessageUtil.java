@@ -378,6 +378,30 @@ public enum WffBinaryMessageUtil {
     }
 
     /**
+     * @param bytes
+     *            the optimized bytes from which the integer value will be
+     *            obtained
+     * @return the integer value from the given bytes
+     * @since 1.1.3
+     * @author WFF
+     */
+    public static int getIntFromOptimizedBytes(final byte[] bytes) {
+        if (bytes.length == 4) {
+            return bytes[0] << 24 | (bytes[1] & 0xFF) << 16
+                    | (bytes[2] & 0xFF) << 8 | (bytes[3] & 0xFF);
+        } else if (bytes.length == 3) {
+            return (bytes[0] & 0xFF) << 16 | (bytes[1] & 0xFF) << 8
+                    | (bytes[2] & 0xFF);
+        } else if (bytes.length == 2) {
+            return (bytes[0] & 0xFF) << 8 | (bytes[1] & 0xFF);
+        } else if (bytes.length == 1) {
+            return (bytes[0] & 0xFF);
+        }
+        return bytes[0] << 24 | (bytes[1] & 0xFF) << 16 | (bytes[2] & 0xFF) << 8
+                | (bytes[3] & 0xFF);
+    }
+
+    /**
      * @param value
      *            the integer value to be converted to bytes.
      * @return the bytes for the corresponding integer given.
@@ -388,4 +412,39 @@ public enum WffBinaryMessageUtil {
         return new byte[] { (byte) (value >> 24), (byte) (value >> 16),
                 (byte) (value >> 8), (byte) value };
     }
+
+    /**
+     * @param value
+     *            the integer value to be converted to optimized bytes.
+     *            Optimized bytes means the minimum bytes required to represent
+     *            the given integer value.
+     * @return the bytes for the corresponding integer given.
+     * @since 1.1.3
+     * @author WFF
+     */
+    public static byte[] getOptimizedBytesFromInt(final int value) {
+
+        final byte zerothIndex = (byte) (value >> 24);
+        final byte firstIndex = (byte) (value >> 16);
+        final byte secondIndex = (byte) (value >> 8);
+        final byte thirdIndex = (byte) value;
+
+        if (zerothIndex == 0) {
+
+            if (firstIndex == 0) {
+
+                if (secondIndex == 0) {
+
+                    return new byte[] { thirdIndex };
+                }
+
+                return new byte[] { secondIndex, thirdIndex };
+            }
+
+            return new byte[] { firstIndex, secondIndex, thirdIndex };
+        }
+
+        return new byte[] { zerothIndex, firstIndex, secondIndex, thirdIndex };
+    }
+
 }
