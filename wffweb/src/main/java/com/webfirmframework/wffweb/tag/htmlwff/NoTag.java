@@ -65,7 +65,7 @@ public class NoTag extends AbstractHtml {
      * @since 1.0.0
      */
     public NoTag(final AbstractHtml base,
-            final Collection<AbstractHtml> children) {
+            final Collection<? extends AbstractHtml> children) {
         super(base, children);
     }
 

@@ -65,7 +65,7 @@ public class Blank extends AbstractHtml {
      * @since 1.0.0
      */
     public Blank(final AbstractHtml base,
-            final Collection<AbstractHtml> children) {
+            final Collection<? extends AbstractHtml> children) {
         super(base, children);
     }
 
