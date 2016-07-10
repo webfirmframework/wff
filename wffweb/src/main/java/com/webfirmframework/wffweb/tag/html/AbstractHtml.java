@@ -82,11 +82,11 @@ public abstract class AbstractHtml extends AbstractTagBase {
     }
 
     public AbstractHtml(final AbstractHtml base,
-            final Collection<AbstractHtml> children) {
+            final Collection<? extends AbstractHtml> children) {
 
         initInConstructor();
 
-        children.addAll(children);
+        this.children.addAll(children);
         buildOpeningTag(false);
         buildClosingTag();
         if (base != null) {
@@ -108,7 +108,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
 
         initInConstructor();
 
-        setHtmlStartSBAsFirst(true);
+        htmlStartSBAsFirst = true;
         getHtmlMiddleSB().append(childContent);
         buildOpeningTag(false);
         buildClosingTag();
@@ -248,16 +248,8 @@ public abstract class AbstractHtml extends AbstractTagBase {
         return openingTag;
     }
 
-    public void setOpeningTag(final String openingTag) {
-        this.openingTag = openingTag;
-    }
-
     public String getClosingTag() {
         return closingTag;
-    }
-
-    public void setClosingTag(final String closingTag) {
-        this.closingTag = closingTag;
     }
 
     /**
@@ -654,10 +646,10 @@ public abstract class AbstractHtml extends AbstractTagBase {
                 htmlStartSB.append('>');
             }
             htmlStartSB.trimToSize();
-            setOpeningTag(htmlStartSB.toString());
+            openingTag = htmlStartSB.toString();
         } else {
             htmlStartSB.trimToSize();
-            setOpeningTag("");
+            openingTag = "";
         }
     }
 
@@ -678,7 +670,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
             }
         }
         htmlEndSB.trimToSize();
-        setClosingTag(htmlEndSB.toString());
+        closingTag = htmlEndSB.toString();
     }
 
     /**
@@ -688,16 +680,6 @@ public abstract class AbstractHtml extends AbstractTagBase {
      */
     public AbstractHtml5SharedObject getSharedObject() {
         return sharedObject;
-    }
-
-    /**
-     * @param sharedObject
-     *            the sharedObject to set
-     * @since 1.0.0
-     * @author WFF
-     */
-    public void setSharedObject(final AbstractHtml5SharedObject sharedObject) {
-        this.sharedObject = sharedObject;
     }
 
     /**
@@ -719,16 +701,6 @@ public abstract class AbstractHtml extends AbstractTagBase {
      */
     public boolean isHtmlStartSBAsFirst() {
         return htmlStartSBAsFirst;
-    }
-
-    /**
-     * @param htmlStartSBAsFirst
-     *            the htmlStartSBAsFirst to set
-     * @since 1.0.0
-     * @author WFF
-     */
-    public void setHtmlStartSBAsFirst(final boolean htmlStartSBAsFirst) {
-        this.htmlStartSBAsFirst = htmlStartSBAsFirst;
     }
 
     protected AbstractHtml deepClone(final AbstractHtml objectToBeClonned)
