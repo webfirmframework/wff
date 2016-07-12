@@ -203,6 +203,9 @@ public abstract class DocType extends AbstractHtml {
      */
     @Override
     public void toOutputStream(final OutputStream os) throws IOException {
+        if (prependDocType) {
+            os.write((docTypeTag + "\n").getBytes(getCharset()));
+        }
         super.toOutputStream(os);
     }
 
@@ -216,6 +219,9 @@ public abstract class DocType extends AbstractHtml {
     @Override
     public void toOutputStream(final OutputStream os, final boolean rebuild)
             throws IOException {
+        if (prependDocType) {
+            os.write((docTypeTag + "\n").getBytes(getCharset()));
+        }
         super.toOutputStream(os, rebuild);
     }
 
