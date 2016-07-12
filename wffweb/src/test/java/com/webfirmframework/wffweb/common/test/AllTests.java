@@ -128,6 +128,8 @@ import com.webfirmframework.wffweb.tag.html.attribute.global.ClassAttributeTest;
 import com.webfirmframework.wffweb.tag.html.attribute.global.StyleTest;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.InputTest;
 import com.webfirmframework.wffweb.tag.html.images.ImgTest;
+import com.webfirmframework.wffweb.tag.htmlwff.BlankTest;
+import com.webfirmframework.wffweb.tag.htmlwff.NoTagTest;
 import com.webfirmframework.wffweb.util.CssLengthUtilTest;
 import com.webfirmframework.wffweb.util.CssValueUtilTest;
 import com.webfirmframework.wffweb.util.ObjectUtilTest;
@@ -185,7 +187,8 @@ import com.webfirmframework.wffweb.util.WffBinaryMessageUtilTest;
         BorderImageSourceTest.class, WffBinaryMessageUtilTest.class,
         ColumnCountTest.class, WebkitColumnSpanTest.class,
         ClassAttributeTest.class, ImgTest.class, HrTest.class, InputTest.class,
-        CssFileTest.class, WffBinaryMessageOutputStreamerTest.class })
+        CssFileTest.class, WffBinaryMessageOutputStreamerTest.class,
+        NoTagTest.class, BlankTest.class })
 public class AllTests {
 
 }
