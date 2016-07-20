@@ -34,8 +34,6 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
     private transient Charset charset = Charset.defaultCharset();
 
-    private ByteArrayOutputStream compressedByIndexBytes;
-
     {
         init();
     }
@@ -135,7 +133,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         final String charset = this.charset.name();
         // TODO review code
 
-        compressedByIndexBytes = new ByteArrayOutputStream();
+        final ByteArrayOutputStream compressedByIndexBytes = new ByteArrayOutputStream();
 
         byte[] compressedBytes = new byte[0];
 
@@ -144,8 +142,6 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
             beforePrintStructureCompressedByIndex();
             // tagBuildzer.append(" ");
-
-            compressedByIndexBytes.reset();
 
             final int attributeNameIndex = AttributeRegistry.getAttributeNames()
                     .indexOf(attributeName);
