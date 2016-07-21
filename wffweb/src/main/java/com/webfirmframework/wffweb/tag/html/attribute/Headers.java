@@ -14,20 +14,20 @@
  * limitations under the License.
  * @author WFF
  */
-package com.webfirmframework.wffweb.tag.html.attribute.global;
+package com.webfirmframework.wffweb.tag.html.attribute;
 
 import java.util.Arrays;
 import java.util.Collection;
 
-import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.HeadersAttributable;
+import com.webfirmframework.wffweb.tag.html.identifier.TdAttributable;
+import com.webfirmframework.wffweb.tag.html.identifier.ThAttributable;
 
 /**
  * @author WFF
  *
  */
-public class Headers extends AbstractAttribute implements HeadersAttributable {
+public class Headers extends AbstractAttribute implements ThAttributable, TdAttributable {
 
     /**
      *

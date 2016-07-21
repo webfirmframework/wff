@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.tag.html.attribute;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.ScopeAttributable;
+import com.webfirmframework.wffweb.tag.html.identifier.ThAttributable;
 
 /**
  *
@@ -34,7 +35,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.ScopeAttributable;
  * @author WFF
  * @since 1.1.3
  */
-public class Scope extends AbstractAttribute implements ScopeAttributable {
+public class Scope extends AbstractAttribute implements ThAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
