@@ -34,6 +34,7 @@ import com.webfirmframework.wffweb.tag.html.H2;
 import com.webfirmframework.wffweb.tag.html.H3;
 import com.webfirmframework.wffweb.tag.html.H4;
 import com.webfirmframework.wffweb.tag.html.H5;
+import com.webfirmframework.wffweb.tag.html.H6;
 import com.webfirmframework.wffweb.tag.html.Hr;
 import com.webfirmframework.wffweb.tag.html.Html;
 import com.webfirmframework.wffweb.tag.html.P;
@@ -390,6 +391,8 @@ public class TagRegistry {
                 Video.class.getSimpleName());
         TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.WBR,
                 Wbr.class.getSimpleName());
+        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.H6,
+                H6.class.getSimpleName());
 
         tagNames = new ArrayList<String>(initialCapacity);
         tagNamesSet = new HashSet<String>(initialCapacity);
@@ -461,10 +464,10 @@ public class TagRegistry {
         });
 
     }
-    
+
     /**
-     * @return
-     *  a map containing tag name as key and value as tag class name without package name
+     * @return a map containing tag name as key and value as tag class name
+     *         without package name
      * @since 1.1.3
      * @author WFF
      */
