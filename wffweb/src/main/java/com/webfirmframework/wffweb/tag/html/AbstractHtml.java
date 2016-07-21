@@ -25,10 +25,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.webfirmframework.wffweb.clone.CloneUtil;
+import com.webfirmframework.wffweb.streamer.WffBinaryMessageOutputStreamer;
 import com.webfirmframework.wffweb.tag.core.AbstractTagBase;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeUtil;
+import com.webfirmframework.wffweb.tag.html.core.TagRegistry;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
+import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
+import com.webfirmframework.wffweb.util.data.NameValue;
 
 /**
  * @author WFF
@@ -39,6 +43,8 @@ import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 public abstract class AbstractHtml extends AbstractTagBase {
 
     private static final long serialVersionUID = 1_0_0L;
+
+    protected static int tagNameIndex;
 
     private AbstractHtml parent;
     private List<AbstractHtml> children;
@@ -60,6 +66,9 @@ public abstract class AbstractHtml extends AbstractTagBase {
     private boolean htmlStartSBAsFirst;
 
     private OutputStream outputStream;
+
+    // for future development
+    private WffBinaryMessageOutputStreamer wffBinaryMessageOutputStreamer;
 
     private transient Charset charset = Charset.defaultCharset();
 
@@ -298,6 +307,19 @@ public abstract class AbstractHtml extends AbstractTagBase {
         recurChildrenToOutputStream(Arrays.asList(this), true);
     }
 
+    // for future development
+    /**
+     * @param rebuild
+     * @since 1.2.0
+     * @author WFF
+     * @throws IOException
+     */
+    protected void writePrintStructureToWffBinaryMessageOutputStream(
+            final boolean rebuild) throws IOException {
+        beforeWritePrintStructureToWffBinaryMessageOutputStream();
+        recurChildrenToWffBinaryMessageOutputStream(Arrays.asList(this), true);
+    }
+
     /**
      * to form html string from the children
      *
@@ -343,6 +365,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
      */
     private void recurChildrenToOutputStream(final List<AbstractHtml> children,
             final boolean rebuild) throws IOException {
+
         if (children != null && children.size() > 0) {
             for (final AbstractHtml child : children) {
                 child.setRebuild(rebuild);
@@ -360,6 +383,105 @@ public abstract class AbstractHtml extends AbstractTagBase {
                 }
                 recurChildrenToOutputStream(childrenOfChildren, rebuild);
                 outputStream.write(child.closingTag.getBytes(charset));
+            }
+        }
+    }
+
+    // for future development
+    /**
+     * to form html string from the children
+     *
+     * @param children
+     * @param rebuild
+     *            TODO
+     * @since 1.2.0
+     * @author WFF
+     * @throws IOException
+     */
+    private void recurChildrenToWffBinaryMessageOutputStream(
+            final List<AbstractHtml> children, final boolean rebuild)
+                    throws IOException {
+        if (children != null && children.size() > 0) {
+            for (final AbstractHtml child : children) {
+                child.setRebuild(rebuild);
+                // wffBinaryMessageOutputStreamer
+
+                // outputStream.write(child.getOpeningTag().getBytes(charset));
+
+                final NameValue nameValue = new NameValue();
+
+                final int tagNameIndex = TagRegistry.getTagNames()
+                        .indexOf(child.getTagName());
+
+                // if the tag index is -1 i.e. it's not indexed then the tag
+                // name prepended with 0 value byte should be set.
+                // If the first byte == 0 and length is greater than 1 then it's
+                // a tag name, if the first byte is greater than 0 then it is
+                // index bytes
+
+                byte[] closingTagNameConvertedBytes = null;
+                if (tagNameIndex == -1) {
+
+                    final byte[] tagNameBytes = child.getTagName()
+                            .getBytes(charset);
+
+                    final byte[] nameBytes = new byte[tagNameBytes.length + 1];
+
+                    nameBytes[0] = 0;
+
+                    System.arraycopy(tagNameBytes, 0, nameBytes, 1,
+                            tagNameBytes.length);
+                    nameValue.setName(nameBytes);
+                    closingTagNameConvertedBytes = nameBytes;
+                } else {
+                    final byte[] indexBytes = WffBinaryMessageUtil
+                            .getOptimizedBytesFromInt(tagNameIndex);
+                    nameValue.setName(indexBytes);
+                    closingTagNameConvertedBytes = WffBinaryMessageUtil
+                            .getOptimizedBytesFromInt((tagNameIndex * (-1)));
+                }
+
+                nameValue.setValues(
+                        child.getAttributeHtmlBytesCompressedByIndex(rebuild,
+                                charset));
+
+                wffBinaryMessageOutputStreamer.write(nameValue);
+
+                if (isHtmlStartSBAsFirst() && htmlMiddleSB != null) {
+
+                    final NameValue closingTagNameValue = new NameValue();
+                    closingTagNameValue.setName(new byte[0]);
+                    closingTagNameValue.setValues(new byte[][] {
+                            getHtmlMiddleSB().toString().getBytes(charset) });
+                    wffBinaryMessageOutputStreamer.write(closingTagNameValue);
+
+                    // outputStream.write(
+                    // getHtmlMiddleSB().toString().getBytes(charset));
+                }
+
+                final List<AbstractHtml> childrenOfChildren = child.children;
+
+                if (!isHtmlStartSBAsFirst() && htmlMiddleSB != null) {
+
+                    final NameValue closingTagNameValue = new NameValue();
+                    closingTagNameValue.setName(new byte[0]);
+                    closingTagNameValue.setValues(new byte[][] {
+                            getHtmlMiddleSB().toString().getBytes(charset) });
+                    wffBinaryMessageOutputStreamer.write(closingTagNameValue);
+
+                    // outputStream.write(
+                    // getHtmlMiddleSB().toString().getBytes(charset));
+                }
+
+                recurChildrenToWffBinaryMessageOutputStream(childrenOfChildren,
+                        rebuild);
+
+                final NameValue closingTagNameValue = new NameValue();
+                closingTagNameValue.setName(closingTagNameConvertedBytes);
+                closingTagNameValue.setValues(new byte[0][0]);
+                wffBinaryMessageOutputStreamer.write(closingTagNameValue);
+
+                // outputStream.write(child.closingTag.getBytes(charset));
             }
         }
     }
@@ -478,6 +600,31 @@ public abstract class AbstractHtml extends AbstractTagBase {
             return htmlString;
         } finally {
             this.charset = previousCharset;
+        }
+    }
+
+    // TODO for future implementation
+    /**
+     * @param os
+     *            the object of {@code OutputStream} to write to.
+     * @throws IOException
+     * @Deprecated this method is for future implementation so it should not be
+     *             consumed
+     */
+    @Deprecated
+    void toOutputStream(final boolean asWffBinaryMessage, final OutputStream os)
+            throws IOException {
+        if (asWffBinaryMessage) {
+            System.out.println("asWffBinaryMessage " + asWffBinaryMessage);
+            try {
+                wffBinaryMessageOutputStreamer = new WffBinaryMessageOutputStreamer(
+                        os);
+                writePrintStructureToWffBinaryMessageOutputStream(true);
+            } finally {
+                wffBinaryMessageOutputStreamer = null;
+            }
+        } else {
+            toOutputStream(os);
         }
     }
 
@@ -621,6 +768,12 @@ public abstract class AbstractHtml extends AbstractTagBase {
         return tagName;
     }
 
+    public byte[][] getAttributeHtmlBytesCompressedByIndex(
+            final boolean rebuild, final Charset charset) throws IOException {
+        return AttributeUtil.getAttributeHtmlBytesCompressedByIndex(rebuild,
+                charset, attributes);
+    }
+
     /**
      *
      * @param rebuild
@@ -727,6 +880,18 @@ public abstract class AbstractHtml extends AbstractTagBase {
      * @author WFF
      */
     protected void beforeWritePrintStructureToOutputStream() {
+        // TODO override and use
+    }
+
+    /**
+     * invokes just before
+     * {@code writePrintStructureToWffBinaryMessageOutputStream(final OutputStream}
+     * method.
+     *
+     * @since 1.2.0
+     * @author WFF
+     */
+    protected void beforeWritePrintStructureToWffBinaryMessageOutputStream() {
         // TODO override and use
     }
 
