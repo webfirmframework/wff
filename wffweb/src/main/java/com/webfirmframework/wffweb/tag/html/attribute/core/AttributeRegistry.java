@@ -34,6 +34,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.Charset;
 import com.webfirmframework.wffweb.tag.html.attribute.Checked;
 import com.webfirmframework.wffweb.tag.html.attribute.CoOrds;
+import com.webfirmframework.wffweb.tag.html.attribute.ColSpan;
 import com.webfirmframework.wffweb.tag.html.attribute.Disabled;
 import com.webfirmframework.wffweb.tag.html.attribute.Face;
 import com.webfirmframework.wffweb.tag.html.attribute.Height;
@@ -252,6 +253,8 @@ public class AttributeRegistry {
                 Value.class.getSimpleName());
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.WIDTH,
                 Width.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.COLSPAN,
+                ColSpan.class.getSimpleName());
 
         attributeNames = new ArrayList<String>(initialCapacity);
         attributeNamesSet = new HashSet<String>(initialCapacity);
@@ -321,10 +324,10 @@ public class AttributeRegistry {
     public static List<String> getAttributeNames() {
         return attributeNames;
     }
-    
+
     /**
-     * @return
-     * a map containing attribute name as key and value as tag class name without package name
+     * @return a map containing attribute name as key and value as tag class
+     *         name without package name
      * @since 1.0.0
      * @author WFF
      */

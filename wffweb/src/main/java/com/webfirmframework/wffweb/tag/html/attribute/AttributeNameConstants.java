@@ -159,6 +159,8 @@ public class AttributeNameConstants {
 
     public static final String WIDTH = "width";
 
+    public static final String COLSPAN = "colspan";
+
     /**
      *
      * @author WFF

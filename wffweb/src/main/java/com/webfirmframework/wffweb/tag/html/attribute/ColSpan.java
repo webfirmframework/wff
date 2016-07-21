@@ -14,87 +14,89 @@
  * limitations under the License.
  * @author WFF
  */
-package com.webfirmframework.wffweb.tag.html.attribute.global;
+package com.webfirmframework.wffweb.tag.html.attribute;
 
-import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
+import com.webfirmframework.wffweb.tag.html.identifier.TdAttributable;
+import com.webfirmframework.wffweb.tag.html.identifier.ThAttributable;
 
 /**
- * {@code <element tabindex="number"> }
- *
  * <pre>
- * The tabindex attribute specifies the tab order of an element (when the "tab" button is used for navigating).
+ * <td colspan="number">
+ * The colspan attribute defines the number of columns a cell should span.
+ *
  * </pre>
  *
  * @author WFF
  *
  */
-public class TabIndex extends AbstractAttribute implements GlobalAttributable {
+public class ColSpan extends AbstractAttribute
+        implements ThAttributable, TdAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    private int index;
+    private int value;
 
     {
-        super.setAttributeName(AttributeNameConstants.TABINDEX);
+        super.setAttributeName(AttributeNameConstants.COLSPAN);
         init();
     }
 
     @SuppressWarnings("unused")
-    private TabIndex() {
+    private ColSpan() {
     }
 
     /**
-     * @param index
-     *            the index
+     * @param value
+     *            the the number of columns to span
      * @since 1.1.3
      * @author WFF
      */
-    public TabIndex(final String index) {
-        this.index = Integer.parseInt(index);
-        setAttributeValue(index);
+    public ColSpan(final String value) {
+        this.value = Integer.parseInt(value);
+        setAttributeValue(value);
     }
 
     /**
-     * @param index
-     *            the index
+     * @param value
+     *            the the number of columns to span
      * @since 1.1.3
      * @author WFF
      */
-    public TabIndex(final int index) {
-        setAttributeValue(String.valueOf(index));
-        this.index = index;
+    public ColSpan(final int value) {
+        setAttributeValue(String.valueOf(value));
+        this.value = value;
     }
 
     /**
      * invokes only once per object
      *
      * @author WFF
-     * @since 1.0.0
+     * @since 1.1.3
      */
     protected void init() {
+        // NOP
         // to override and use this method
     }
 
     /**
-     * @return the index
+     * @return the the number of columns spanned
      * @author WFF
-     * @since 1.0.0
+     * @since 1.1.3
      */
-    public int getIndex() {
-        return index;
+    public int getValue() {
+        return value;
     }
 
     /**
      * @param index
-     *            the index to set
+     *            the the number of columns to span
      * @author WFF
-     * @since 1.0.0
+     * @since 1.1.3
      */
-    public void setIndex(final int index) {
+    public void setValue(final int index) {
         setAttributeValue(String.valueOf(index));
-        this.index = index;
+        value = index;
     }
 
 }
