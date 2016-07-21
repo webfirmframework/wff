@@ -77,7 +77,8 @@ public abstract class DocType extends AbstractHtml {
                 // line of code should invoke before finally block
                 final String htmlString = new String(
                         (super.toHtmlString(super.getCharset()))
-                                .getBytes(super.getCharset()));
+                                .getBytes(super.getCharset()),
+                        getCharset());
                 return htmlString;
             }
 
@@ -107,7 +108,8 @@ public abstract class DocType extends AbstractHtml {
                 // line of code should invoke before finally block
                 final String htmlString = new String(
                         (super.toHtmlString(super.getCharset()))
-                                .getBytes(super.getCharset()));
+                                .getBytes(super.getCharset()),
+                        getCharset());
                 return htmlString;
             }
             // assigning it to new variable is very important here as this
@@ -129,7 +131,7 @@ public abstract class DocType extends AbstractHtml {
     public String toHtmlString(final boolean rebuild) {
         if (prependDocType) {
             return new String((docTypeTag + "\n" + super.toHtmlString(rebuild))
-                    .getBytes(getCharset()));
+                    .getBytes(getCharset()), getCharset());
         }
         return super.toHtmlString(rebuild);
     }
@@ -151,7 +153,8 @@ public abstract class DocType extends AbstractHtml {
                 // line of code should invoke before finally block
                 final String htmlString = new String(
                         (super.toHtmlString(rebuild, super.getCharset()))
-                                .getBytes(getCharset()));
+                                .getBytes(getCharset()),
+                        getCharset());
                 return htmlString;
             }
             // assigning it to new variable is very important here as this
@@ -181,7 +184,8 @@ public abstract class DocType extends AbstractHtml {
                 // line of code should invoke before finally block
                 final String htmlString = new String(
                         (super.toHtmlString(rebuild, super.getCharset()))
-                                .getBytes(getCharset()));
+                                .getBytes(getCharset()),
+                        getCharset());
                 return htmlString;
             }
             // assigning it to new variable is very important here as this

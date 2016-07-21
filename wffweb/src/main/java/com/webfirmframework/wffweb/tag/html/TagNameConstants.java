@@ -253,6 +253,8 @@ public class TagNameConstants {
 
     public static final String WBR = "wbr";
 
+    public static final String H6 = "h6";
+
     /**
      *
      * @author WFF

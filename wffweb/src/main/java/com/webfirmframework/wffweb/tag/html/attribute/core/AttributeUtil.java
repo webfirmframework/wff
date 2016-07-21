@@ -19,7 +19,12 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute.core;
 
+import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+
+import com.webfirmframework.wffweb.tag.html.attribute.global.Style;
+import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
 
 /**
  *
@@ -78,4 +83,33 @@ public class AttributeUtil {
         }
         return "";
     }
+    
+    /**
+     * @param rebuild
+     * @param attributes
+     * @param charset
+     *            the charset
+     * @return the attributes bytes array compressed by index
+     * @author WFF
+     * @throws IOException
+     * @since 1.1.3
+     */
+    public static final byte[][] getAttributeHtmlBytesCompressedByIndex(
+            final boolean rebuild, final Charset charset,
+            final AbstractAttribute... attributes) throws IOException {
+
+        if (attributes != null) {
+            byte[][] attributesArray = new byte[attributes.length][0];
+
+            for (int i = 0; i < attributesArray.length; i++) {
+                AbstractAttribute attribute = attributes[i];
+                attributesArray[i] = attribute.toCompressedBytesByIndex(rebuild,
+                        charset);
+            }
+            return attributesArray;
+
+        }
+        return new byte[0][0];
+    }
+    
 }

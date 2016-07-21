@@ -159,6 +159,16 @@ public class AttributeNameConstants {
 
     public static final String WIDTH = "width";
 
+    public static final String COLSPAN = "colspan";
+
+    public static final String ROWSPAN = "rowspan";
+
+    public static final String HEADERS = "headers";
+
+    public static final String SCOPE = "scope";
+
+    public static final String SORTED = "sorted";
+
     /**
      *
      * @author WFF
