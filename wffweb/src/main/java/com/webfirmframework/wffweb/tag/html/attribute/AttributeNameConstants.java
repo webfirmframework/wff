@@ -167,6 +167,8 @@ public class AttributeNameConstants {
 
     public static final String SCOPE = "scope";
 
+    public static final String SORTED = "sorted";
+
     /**
      *
      * @author WFF

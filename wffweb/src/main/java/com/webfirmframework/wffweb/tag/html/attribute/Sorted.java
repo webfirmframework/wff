@@ -21,24 +21,15 @@ import com.webfirmframework.wffweb.tag.html.identifier.ThAttributable;
 
 /**
  *
- *
  * @author WFF
  * @since 1.1.3
  */
-public class Scope extends AbstractAttribute implements ThAttributable {
+public class Sorted extends AbstractAttribute implements ThAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final String COL = "col";
-
-    public static final String ROW = "row";
-
-    public static final String COLGROUP = "colgroup";
-
-    public static final String ROWGROUP = "rowgroup";
-
     {
-        super.setAttributeName(AttributeNameConstants.SCOPE);
+        super.setAttributeName(AttributeNameConstants.SORTED);
         init();
     }
 
@@ -49,7 +40,7 @@ public class Scope extends AbstractAttribute implements ThAttributable {
      * @since 1.1.3
      * @author WFF
      */
-    public Scope(final String value) {
+    public Sorted(final String value) {
         setAttributeValue(value);
     }
 

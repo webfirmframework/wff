@@ -54,6 +54,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.RowSpan;
 import com.webfirmframework.wffweb.tag.html.attribute.Scope;
 import com.webfirmframework.wffweb.tag.html.attribute.Shape;
 import com.webfirmframework.wffweb.tag.html.attribute.Size;
+import com.webfirmframework.wffweb.tag.html.attribute.Sorted;
 import com.webfirmframework.wffweb.tag.html.attribute.Target;
 import com.webfirmframework.wffweb.tag.html.attribute.Type;
 import com.webfirmframework.wffweb.tag.html.attribute.Value;
@@ -264,6 +265,8 @@ public class AttributeRegistry {
                 Headers.class.getSimpleName());
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.SCOPE,
                 Scope.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.SORTED,
+                Sorted.class.getSimpleName());
 
         attributeNames = new ArrayList<String>(initialCapacity);
         attributeNamesSet = new HashSet<String>(initialCapacity);
