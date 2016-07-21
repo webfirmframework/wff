@@ -163,6 +163,8 @@ public class AttributeNameConstants {
 
     public static final String ROWSPAN = "rowspan";
 
+    public static final String HEADERS = "headers";
+
     /**
      *
      * @author WFF

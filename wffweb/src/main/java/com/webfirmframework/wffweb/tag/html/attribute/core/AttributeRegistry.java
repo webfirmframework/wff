@@ -59,6 +59,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.Width;
 import com.webfirmframework.wffweb.tag.html.attribute.global.AccessKey;
 import com.webfirmframework.wffweb.tag.html.attribute.global.ClassAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Dir;
+import com.webfirmframework.wffweb.tag.html.attribute.global.Headers;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Lang;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Style;
@@ -258,6 +259,8 @@ public class AttributeRegistry {
                 ColSpan.class.getSimpleName());
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ROWSPAN,
                 RowSpan.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.HEADERS,
+                Headers.class.getSimpleName());
 
         attributeNames = new ArrayList<String>(initialCapacity);
         attributeNamesSet = new HashSet<String>(initialCapacity);
