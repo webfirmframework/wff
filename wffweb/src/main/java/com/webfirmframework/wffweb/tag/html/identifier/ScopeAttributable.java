@@ -19,11 +19,11 @@ package com.webfirmframework.wffweb.tag.html.identifier;
 import com.webfirmframework.wffweb.tag.core.TagBase;
 
 /**
- * identifier interface for Headers attribute
+ * Identifier interface for {@code Scope} attributes
  *
  * @author WFF
  *
  */
-public interface HeadersAttributable extends TagBase {
+public interface ScopeAttributable extends TagBase {
 
 }

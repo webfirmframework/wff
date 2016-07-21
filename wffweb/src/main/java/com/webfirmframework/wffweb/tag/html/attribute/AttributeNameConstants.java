@@ -165,6 +165,8 @@ public class AttributeNameConstants {
 
     public static final String HEADERS = "headers";
 
+    public static final String SCOPE = "scope";
+
     /**
      *
      * @author WFF
