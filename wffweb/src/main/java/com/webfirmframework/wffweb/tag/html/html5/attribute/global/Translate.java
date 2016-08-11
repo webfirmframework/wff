@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.tag.html.html5.attribute.global;
 
+import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
@@ -62,6 +63,26 @@ public class Translate extends AbstractAttribute implements GlobalAttributable {
     public Translate(final boolean translation) {
         setAttributeValue(translation ? "yes" : "no");
         this.translation = translation;
+    }
+
+    /**
+     * @param value
+     *            the translation to set. The argument should be {@code yes } or
+     *            {@code no }.
+     * @author WFF
+     * @since 1.1.4
+     */
+    public Translate(final String value) {
+        String trimmedValue = value.trim();
+        if (trimmedValue.equals("yes")) {
+            this.translation = true;
+            setAttributeValue("yes");
+        } else if (trimmedValue.equals("no")) {
+            this.translation = false;
+            setAttributeValue("no");
+        } else {
+            throw new InvalidValueException("the value must be yes or no");
+        }
     }
 
     /**
