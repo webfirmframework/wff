@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.tag.html.html5.attribute;
 
+import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.html5.identifier.AudioAttributable;
@@ -44,11 +45,33 @@ public class Loop extends AbstractAttribute implements AudioAttributable {
         setAttributeValue(null);
     }
 
+    /**
+     * @param value
+     *            the value may be <code>loop</code>
+     * @since 1.1.4
+     * @author WFF
+     */
+    public Loop(final String value) {
+        if ("loop".equals(value)) {
+            loop = true;
+            setAttributeValue("loop");
+        } else if ("true".equals(value)) {
+            loop = true;
+            setAttributeValue("true");
+        } else if ("false".equals(value)) {
+            loop = false;
+            setAttributeValue("false");
+        } else {
+            throw new InvalidValueException("the value must be loop");
+        }
+    }
+
     public Loop(final Boolean loop) {
         if (loop == null) {
             setAttributeValue(null);
         } else {
-            setAttributeValue(String.valueOf(loop));
+            setAttributeValue(
+                    loop.booleanValue() ? "loop" : String.valueOf(loop));
         }
         this.loop = loop;
     }
@@ -82,7 +105,8 @@ public class Loop extends AbstractAttribute implements AudioAttributable {
         if (loop == null) {
             setAttributeValue(null);
         } else {
-            setAttributeValue(String.valueOf(loop));
+            setAttributeValue(
+                    loop.booleanValue() ? "loop" : String.valueOf(loop));
         }
         this.loop = loop;
     }

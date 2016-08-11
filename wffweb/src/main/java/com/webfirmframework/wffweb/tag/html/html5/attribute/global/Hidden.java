@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.tag.html.html5.attribute.global;
 
+import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
@@ -51,11 +52,32 @@ public class Hidden extends AbstractAttribute implements GlobalAttributable {
         setAttributeValue(null);
     }
 
+    /**
+     *
+     *
+     * @param value
+     *            the value should be either true or false
+     * @author WFF
+     * @since 1.1.4
+     */
+    public Hidden(final String value) {
+        if ("hidden".equals(value)) {
+            hidden = true;
+        } else if ("true".equals(value) || "false".equals(value)) {
+            hidden = Boolean.parseBoolean(value);
+        } else {
+            throw new InvalidValueException(
+                    "the value should be either true or false");
+        }
+        setAttributeValue(value);
+    }
+
     public Hidden(final Boolean hidden) {
         if (hidden == null) {
             setAttributeValue(null);
         } else {
-            setAttributeValue(String.valueOf(hidden));
+            setAttributeValue(
+                    hidden.booleanValue() ? "hidden" : String.valueOf(hidden));
         }
         this.hidden = hidden;
     }
@@ -89,7 +111,8 @@ public class Hidden extends AbstractAttribute implements GlobalAttributable {
         if (hidden == null) {
             setAttributeValue(null);
         } else {
-            setAttributeValue(String.valueOf(hidden));
+            setAttributeValue(
+                    hidden.booleanValue() ? "hidden" : String.valueOf(hidden));
         }
         this.hidden = hidden;
     }

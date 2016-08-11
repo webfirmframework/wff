@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.tag.html.html5.attribute.global;
 
+import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
@@ -59,6 +60,30 @@ public class SpellCheck extends AbstractAttribute
         setAttributeValue(String.valueOf(check));
     }
 
+    /**
+     *
+     *
+     * @param value
+     *            the value should be either true or false
+     * @author WFF
+     * @since 1.1.4
+     */
+    public SpellCheck(final String value) {
+        if ("true".equals(value) || "false".equals(value)) {
+            check = Boolean.parseBoolean(value);
+        } else {
+            throw new InvalidValueException(
+                    "the value should be either true or false");
+        }
+        setAttributeValue(value);
+    }
+
+    /**
+     * @param check
+     *            true/false
+     * @since 1.0.0
+     * @author WFF
+     */
     public SpellCheck(final boolean check) {
         setAttributeValue(String.valueOf(check));
         this.check = check;

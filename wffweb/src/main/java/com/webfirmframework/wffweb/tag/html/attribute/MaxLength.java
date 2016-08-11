@@ -40,11 +40,37 @@ public class MaxLength extends AbstractAttribute implements InputAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
+    public static final int DEFAULT_VALUE = 524288;
+
     private int value;
 
     {
         super.setAttributeName(AttributeNameConstants.MAXLENGTH);
         init();
+    }
+
+    /**
+     * the default value is 524288
+     *
+     * @since 1.1.4
+     * @author WFF
+     */
+    public MaxLength() {
+        value = DEFAULT_VALUE;
+        setAttributeValue(String.valueOf(DEFAULT_VALUE));
+    }
+
+    /**
+     *
+     * @param value
+     *            should be number
+     * @since 1.1.4
+     * @author WFF
+     */
+    public MaxLength(final String value) {
+        final String trimmedValue = value.trim();
+        this.value = Integer.parseInt(trimmedValue);
+        setAttributeValue(trimmedValue);
     }
 
     /**

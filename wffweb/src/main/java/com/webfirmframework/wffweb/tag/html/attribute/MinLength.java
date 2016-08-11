@@ -46,6 +46,19 @@ public class MinLength extends AbstractAttribute implements InputAttributable {
     /**
      *
      * @param value
+     *            should be number
+     * @since 1.1.4
+     * @author WFF
+     */
+    public MinLength(final String value) {
+        final String trimmedValue = value.trim();
+        this.value = Integer.parseInt(trimmedValue);
+        setAttributeValue(trimmedValue);
+    }
+
+    /**
+     *
+     * @param value
      *            the value for the attribute
      * @since 1.0.0
      */
