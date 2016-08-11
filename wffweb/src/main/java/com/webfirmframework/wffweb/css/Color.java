@@ -93,6 +93,20 @@ public class Color extends AbstractCssProperty<Color>
     }
 
     /**
+     * @param cssColorName
+     *            the {@code CssColorName} object from which the color name will
+     *            be taken for cssValue to set. And, {@code null} will throw
+     *            {@code NullValueException}.
+     * @since 1.1.4
+     */
+    public Color(final CssColorName cssColorName) {
+        if (cssColorName == null) {
+            throw new NullValueException("cssColorName can not be null");
+        }
+        setCssValue(cssColorName.getColorName());
+    }
+
+    /**
      * @param rgbCssValue
      */
     public Color(final RgbCssValue rgbCssValue) {
@@ -110,6 +124,20 @@ public class Color extends AbstractCssProperty<Color>
      */
     public Color setValue(final String value) {
         setCssValue(value);
+        return this;
+    }
+
+    /**
+     *
+     * @param cssColorName
+     *            the cssColorName object from which the color name will be
+     *            taken for setting value.
+     * @return the current object
+     * @since 1.1.4
+     * @author WFF
+     */
+    public Color setValue(final CssColorName cssColorName) {
+        setCssValue(cssColorName.getColorName());
         return this;
     }
 
