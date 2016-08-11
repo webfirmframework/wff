@@ -21,10 +21,6 @@ package com.webfirmframework.wffweb.tag.html.attribute.core;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-
-import com.webfirmframework.wffweb.tag.html.attribute.global.Style;
-import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
 
 /**
  *
@@ -83,7 +79,7 @@ public class AttributeUtil {
         }
         return "";
     }
-    
+
     /**
      * @param rebuild
      * @param attributes
@@ -99,10 +95,10 @@ public class AttributeUtil {
             final AbstractAttribute... attributes) throws IOException {
 
         if (attributes != null) {
-            byte[][] attributesArray = new byte[attributes.length][0];
+            final byte[][] attributesArray = new byte[attributes.length][0];
 
             for (int i = 0; i < attributesArray.length; i++) {
-                AbstractAttribute attribute = attributes[i];
+                final AbstractAttribute attribute = attributes[i];
                 attributesArray[i] = attribute.toCompressedBytesByIndex(rebuild,
                         charset);
             }
@@ -111,5 +107,5 @@ public class AttributeUtil {
         }
         return new byte[0][0];
     }
-    
+
 }
