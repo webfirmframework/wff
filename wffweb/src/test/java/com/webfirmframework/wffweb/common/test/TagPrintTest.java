@@ -133,7 +133,7 @@ public class TagPrintTest implements Serializable {
                  */
                 private static final long serialVersionUID = 1L;
 
-                Html html3 = new Html(3, this, new Width(3)) {
+                Html html3 = new Html(3, this, new Width(3f)) {
 
                     /**
                      *
@@ -141,7 +141,7 @@ public class TagPrintTest implements Serializable {
                     private static final long serialVersionUID = 1L;
                 };
 
-                Html html4 = new Html(4, this, new Width(4)) {
+                Html html4 = new Html(4, this, new Width(4.4f)) {
 
                     /**
                      *
@@ -152,7 +152,7 @@ public class TagPrintTest implements Serializable {
             };
 
         };
-        final String expected = "<!DOCTYPE html>\n<html1 width=\"1.0%\" id=\"html1Id\"><html2 width=\"2.0%\"><html3 width=\"3.0%\"></html3><html4 width=\"4.0%\"></html4></html2></html1>";
+        final String expected = "<!DOCTYPE html>\n<html1 width=\"1%\" id=\"html1Id\"><html2 width=\"2%\"><html3 width=\"3.0%\"></html3><html4 width=\"4.4%\"></html4></html2></html1>";
         // System.out.println(html1);
         // System.out.println();
         // System.out.println(expected);
@@ -161,13 +161,13 @@ public class TagPrintTest implements Serializable {
 
         {
             width1.setValue(56, CssLengthUnit.PER);
-            final String expected2 = "<!DOCTYPE html>\n<html1 width=\"56%\" id=\"html1Id\"><html2 width=\"2.0%\"><html3 width=\"3.0%\"></html3><html4 width=\"4.0%\"></html4></html2></html1>";
+            final String expected2 = "<!DOCTYPE html>\n<html1 width=\"56%\" id=\"html1Id\"><html2 width=\"2%\"><html3 width=\"3.0%\"></html3><html4 width=\"4.4%\"></html4></html2></html1>";
            assertEquals(expected2, html1.toHtmlString());
         }
 
         {
             width1.setValue(55, CssLengthUnit.PX);
-            final String expected2 = "<!DOCTYPE html>\n<html1 width=\"55px\" id=\"html1Id\"><html2 width=\"2.0%\"><html3 width=\"3.0%\"></html3><html4 width=\"4.0%\"></html4></html2></html1>";
+            final String expected2 = "<!DOCTYPE html>\n<html1 width=\"55px\" id=\"html1Id\"><html2 width=\"2%\"><html3 width=\"3.0%\"></html3><html4 width=\"4.4%\"></html4></html2></html1>";
            assertEquals(expected2, html1.toHtmlString());
         }
 

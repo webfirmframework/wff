@@ -109,7 +109,12 @@ public class CssLengthUtil {
 
             return new Object[] { Float.parseFloat(value),
                     CssLengthUnit.valueOf(unit) };
-        } catch (final NumberFormatException e) {
+        } catch (final IllegalArgumentException e) {
+            // there will be IllegalArgumentException if the CssLengthUtil is
+            // invalid
+            // there will be NumberFormatException if the value is invalid
+            // if the given css value is invalid it should return an array with
+            // length zero
             return new Object[0];
         }
 
@@ -181,7 +186,12 @@ public class CssLengthUtil {
 
             return new Object[] { Float.valueOf(value),
                     CssLengthUnit.valueOf(unit) };
-        } catch (final NumberFormatException e) {
+        } catch (final IllegalArgumentException e) {
+            // there will be IllegalArgumentException if the CssLengthUtil is
+            // invalid
+            // there will be NumberFormatException if the value is invalid
+            // if the given css value is invalid it should return an array with
+            // length zero
             return new Object[0];
         }
 
