@@ -71,24 +71,48 @@ public class CssLengthUtil {
      */
     public static Object[] getLengthValueAsPremitiveAndUnit(
             final String cssValue) {
-        for (final CssLengthUnit cssLengthUnit : CssLengthUnit.values()) {
-            final String unit = cssLengthUnit.getUnit();
-            if (cssValue.endsWith(unit)) {
-                final String valueOnly = cssValue.replaceFirst(unit, "");
-                try {
-                    return new Object[] { Float.parseFloat(valueOnly),
-                            cssLengthUnit };
-                } catch (final NumberFormatException e) {
-                    return new Object[0];
-                }
+
+        final String trimmedCssValue = cssValue.trim();
+        final char[] cssValueChars = trimmedCssValue.toCharArray();
+
+        int lengthSeparationIndex = -1;
+
+        for (int i = cssValueChars.length - 1; i > -1; i--) {
+
+            final char c = cssValueChars[i];
+
+            if (!(c < '0' || c > '9')) {
+                // is a number
+                lengthSeparationIndex = i;
+                break;
             }
+
         }
 
+        final String value = trimmedCssValue
+                .substring(0, lengthSeparationIndex + 1).trim();
+
         try {
-            return new Object[] { Float.parseFloat(cssValue) };
+            if (lengthSeparationIndex == (cssValueChars.length - 1)) {
+                return new Object[] { Float.parseFloat(value) };
+            }
+
+            String unit = trimmedCssValue.substring(lengthSeparationIndex + 1)
+                    .trim();
+
+            if (unit.length() == 1 && unit.charAt(0) == '%') {
+                return new Object[] { Float.parseFloat(value),
+                        CssLengthUnit.PER };
+            } else {
+                unit = unit.toUpperCase();
+            }
+
+            return new Object[] { Float.parseFloat(value),
+                    CssLengthUnit.valueOf(unit) };
         } catch (final NumberFormatException e) {
             return new Object[0];
         }
+
     }
 
     /**
@@ -120,24 +144,47 @@ public class CssLengthUtil {
      * @since 1.0.0
      */
     public static Object[] getLengthValueAndUnit(final String cssValue) {
-        for (final CssLengthUnit cssLengthUnit : CssLengthUnit.values()) {
-            final String unit = cssLengthUnit.getUnit();
-            if (cssValue.endsWith(unit)) {
-                final String valueOnly = cssValue.replaceFirst(unit, "");
-                try {
-                    return new Object[] { Float.valueOf(valueOnly),
-                            cssLengthUnit };
-                } catch (final NumberFormatException e) {
-                    return new Object[0];
-                }
+
+        final String trimmedCssValue = cssValue.trim();
+        final char[] cssValueChars = trimmedCssValue.toCharArray();
+
+        int lengthSeparationIndex = -1;
+
+        for (int i = cssValueChars.length - 1; i > -1; i--) {
+
+            final char c = cssValueChars[i];
+
+            if (!(c < '0' || c > '9')) {
+                // is a number
+                lengthSeparationIndex = i;
+                break;
             }
+
         }
 
+        final String value = trimmedCssValue
+                .substring(0, lengthSeparationIndex + 1).trim();
+
         try {
-            return new Object[] { Float.valueOf(cssValue) };
+            if (lengthSeparationIndex == (cssValueChars.length - 1)) {
+                return new Object[] { Float.valueOf(value) };
+            }
+
+            String unit = trimmedCssValue.substring(lengthSeparationIndex + 1)
+                    .trim();
+
+            if (unit.length() == 1 && unit.charAt(0) == '%') {
+                return new Object[] { Float.valueOf(value), CssLengthUnit.PER };
+            } else {
+                unit = unit.toUpperCase();
+            }
+
+            return new Object[] { Float.valueOf(value),
+                    CssLengthUnit.valueOf(unit) };
         } catch (final NumberFormatException e) {
             return new Object[0];
         }
+
     }
 
 }

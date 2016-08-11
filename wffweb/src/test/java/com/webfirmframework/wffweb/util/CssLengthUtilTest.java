@@ -41,6 +41,9 @@ public class CssLengthUtilTest {
         assertEquals(CssLengthUnit.PX, CssLengthUtil.getLengthValueAsPremitiveAndUnit("5px")[1]);
         assertEquals(1, CssLengthUtil.getLengthValueAsPremitiveAndUnit("2").length);
         assertEquals(15F, CssLengthUtil.getLengthValueAsPremitiveAndUnit("15")[0]);
+        
+        assertEquals(25F, CssLengthUtil.getLengthValueAsPremitiveAndUnit(" 25 % ")[0]);
+        assertEquals(CssLengthUnit.PER, CssLengthUtil.getLengthValueAsPremitiveAndUnit(" 25 % ")[1]);
     }
 
     /**
@@ -55,6 +58,9 @@ public class CssLengthUtilTest {
         assertEquals(CssLengthUnit.PX, CssLengthUtil.getLengthValueAndUnit("5px")[1]);
         assertEquals(1, CssLengthUtil.getLengthValueAndUnit("2").length);
         assertEquals(15F, CssLengthUtil.getLengthValueAndUnit("15")[0]);
+        
+        assertEquals(25F, CssLengthUtil.getLengthValueAndUnit(" 25 % ")[0]);
+        assertEquals(CssLengthUnit.PER, CssLengthUtil.getLengthValueAndUnit(" 25 % ")[1]);
     }
 
 }
