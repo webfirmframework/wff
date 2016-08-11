@@ -1,9 +1,11 @@
 package com.webfirmframework.wffweb.tag.html.attribute;
 
+import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.css.CssLengthUnit;
 import com.webfirmframework.wffweb.css.core.LengthUnit;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
+import com.webfirmframework.wffweb.util.CssLengthUtil;
 
 /**
  * This is a width attribute.
@@ -34,6 +36,39 @@ public class Width extends AbstractAttribute implements InputAttributable {
         value = 100;
         cssLengthUnit = CssLengthUnit.PER;
         htmlString = (int) value + "" + CssLengthUnit.PER.getUnit();
+        setAttributeValue(htmlString);
+    }
+
+    /**
+     * eg:- <code>100%</code>
+     *
+     * @since 1.1.4
+     */
+    public Width(final String value) {
+        assignValues(value);
+    }
+
+    /**
+     * @param value
+     * @param cssLengthUnit
+     * @since 1.1.4
+     */
+    public Width(final float value, final CssLengthUnit cssLengthUnit) {
+        this.value = value;
+        this.cssLengthUnit = cssLengthUnit;
+        htmlString = value + "" + cssLengthUnit.getUnit();
+        setAttributeValue(htmlString);
+    }
+
+    /**
+     * @param percent
+     *            the percentage value to set.
+     * @since 1.1.4
+     */
+    public Width(final int percent) {
+        value = percent;
+        cssLengthUnit = CssLengthUnit.PER;
+        htmlString = percent + "" + CssLengthUnit.PER.getUnit();
         setAttributeValue(htmlString);
     }
 
@@ -173,6 +208,28 @@ public class Width extends AbstractAttribute implements InputAttributable {
      */
     public LengthUnit getUnit() {
         return cssLengthUnit;
+    }
+
+    private void assignValues(final String attributeValue) {
+
+        final Object[] lengthValueAsPremitiveAndUnit = CssLengthUtil
+                .getLengthValueAsPremitiveAndUnit(attributeValue);
+
+        if (lengthValueAsPremitiveAndUnit.length == 2) {
+            value = (float) lengthValueAsPremitiveAndUnit[0];
+            cssLengthUnit = (CssLengthUnit) lengthValueAsPremitiveAndUnit[1];
+
+        } else if (lengthValueAsPremitiveAndUnit.length == 1) {
+            value = (float) lengthValueAsPremitiveAndUnit[0];
+            cssLengthUnit = CssLengthUnit.PER;
+        } else {
+            throw new InvalidValueException(
+                    "the value should be in the format for eg: 100%");
+        }
+
+        htmlString = attributeValue;
+
+        setAttributeValue(htmlString);
     }
 
 }
