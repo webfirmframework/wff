@@ -169,6 +169,8 @@ public class AttributeNameConstants {
 
     public static final String SORTED = "sorted";
 
+    public static final String ENCTYPE = "enctype";
+
     /**
      *
      * @author WFF

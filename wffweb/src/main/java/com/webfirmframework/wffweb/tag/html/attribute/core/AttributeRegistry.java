@@ -36,6 +36,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.Checked;
 import com.webfirmframework.wffweb.tag.html.attribute.CoOrds;
 import com.webfirmframework.wffweb.tag.html.attribute.ColSpan;
 import com.webfirmframework.wffweb.tag.html.attribute.Disabled;
+import com.webfirmframework.wffweb.tag.html.attribute.EncType;
 import com.webfirmframework.wffweb.tag.html.attribute.Face;
 import com.webfirmframework.wffweb.tag.html.attribute.Headers;
 import com.webfirmframework.wffweb.tag.html.attribute.Height;
@@ -267,6 +268,8 @@ public class AttributeRegistry {
                 Scope.class.getSimpleName());
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.SORTED,
                 Sorted.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ENCTYPE,
+                EncType.class.getSimpleName());
 
         attributeNames = new ArrayList<String>(initialCapacity);
         attributeNamesSet = new HashSet<String>(initialCapacity);
