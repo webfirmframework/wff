@@ -70,7 +70,6 @@ import com.webfirmframework.wffweb.tag.html.attribute.global.Style;
 import com.webfirmframework.wffweb.tag.html.attribute.global.TabIndex;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Title;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.Form;
-import com.webfirmframework.wffweb.tag.html.html5.Data;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.AutoComplete;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.AutoFocus;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.AutoPlay;
@@ -94,6 +93,7 @@ import com.webfirmframework.wffweb.tag.html.html5.attribute.Required;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Step;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.ContentEditable;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.ContextMenu;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataAttribute;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.Draggable;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.Dropzone;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.Hidden;
@@ -152,7 +152,7 @@ public class AttributeRegistry {
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.COORDS,
                 CoOrds.class.getSimpleName());
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.DATA,
-                Data.class.getSimpleName());
+                DataAttribute.class.getSimpleName());
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.DIR,
                 Dir.class.getSimpleName());
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.DISABLED,
