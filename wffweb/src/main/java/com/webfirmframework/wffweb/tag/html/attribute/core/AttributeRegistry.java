@@ -28,6 +28,7 @@ import java.util.Set;
 
 import com.webfirmframework.wffweb.css.Color;
 import com.webfirmframework.wffweb.tag.html.attribute.Accept;
+import com.webfirmframework.wffweb.tag.html.attribute.Action;
 import com.webfirmframework.wffweb.tag.html.attribute.Align;
 import com.webfirmframework.wffweb.tag.html.attribute.Alt;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
@@ -270,6 +271,8 @@ public class AttributeRegistry {
                 Sorted.class.getSimpleName());
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ENCTYPE,
                 EncType.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ACTION,
+                Action.class.getSimpleName());
 
         attributeNames = new ArrayList<String>(initialCapacity);
         attributeNamesSet = new HashSet<String>(initialCapacity);

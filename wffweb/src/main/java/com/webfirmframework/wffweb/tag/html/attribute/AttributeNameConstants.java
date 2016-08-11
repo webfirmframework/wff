@@ -171,6 +171,8 @@ public class AttributeNameConstants {
 
     public static final String ENCTYPE = "enctype";
 
+    public static final String ACTION = "action";
+
     /**
      *
      * @author WFF
