@@ -73,12 +73,12 @@ public class Translate extends AbstractAttribute implements GlobalAttributable {
      * @since 1.1.4
      */
     public Translate(final String value) {
-        String trimmedValue = value.trim();
+        final String trimmedValue = value.trim();
         if (trimmedValue.equals("yes")) {
-            this.translation = true;
+            translation = true;
             setAttributeValue("yes");
         } else if (trimmedValue.equals("no")) {
-            this.translation = false;
+            translation = false;
             setAttributeValue("no");
         } else {
             throw new InvalidValueException("the value must be yes or no");
