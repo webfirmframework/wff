@@ -118,59 +118,53 @@ prints :-
 
 ##### Sample6 :-
 ```
-        final Style paragraphStyle = new Style("color:red");
+final Style paragraphStyle = new Style("color:red");
 
-        Html html = new Html(null, new CustomAttribute("some", "val"),
-                new Id("htmlId"), new Style("background:white;width:15px")) {
+Html html = new Html(null, new CustomAttribute("some", "val"), new Id("htmlId"),
+		new Style("background:white;width:15px")) {{
 
-            Div outerDiv = new Div(this, new Id("outerDivId")) {
+	new Div(this, new Id("outerDivId")) {
 
-                Div contentDiv = new Div(this) {
+		int paragraphCount = 0;
 
-                    H1 h1 = new H1(this) {
-                        Blank headerContent = new Blank(this,
-                                "Web Firm Framework");
-                    };
+		Div contentDiv = new Div(this) {
+			{
 
-                    CodeExecutor executor = new CodeExecutor(this) {
+				new H1(this) {
+					NoTag headerContent = new NoTag(this, "Web Firm Framework");
+				};
 
-                        private int paragraphCount;
+				for (paragraphCount = 1; paragraphCount < 4; paragraphCount++) {
+					new P(this, paragraphStyle) {
+						Blank paragraphContent = new Blank(this,
+								"Web Firm Framework Paragraph " + paragraphCount);
+					};
+				}
 
-                        @Override
-                        public void execute(AbstractHtml base) {
+			}
+		};
+	};
 
-                            for (paragraphCount = 1; paragraphCount < 4; paragraphCount++) {
-                                P aboutParagraph = new P(base, paragraphStyle) {
-                                    Blank paragraphContent = new Blank(this,
-                                            "Web Firm Framework Paragraph "
-                                                    + paragraphCount);
-                                };
-                            }
+	new Div(this, new Hidden());
+}};
 
-                        }
-                    };
+paragraphStyle.addCssProperty(AlignContent.CENTER);
 
-                };
-            };
-
-            Div hiddenDiv = new Div(this, new Hidden(null));
-        };
-        
 System.out.println(html.toHtmlString());
 ```
 prints
 
 ```
-<html some="val" id="htmlId" style="background: white; width: 15px;">
-   <div id="outerDivId">
-      <div>
-         <h1>Web Firm Framework</h1>
-         <p style="color: red;">Web Firm Framework Paragraph 1</p>
-         <p style="color: red;">Web Firm Framework Paragraph 2</p>
-         <p style="color: red;">Web Firm Framework Paragraph 3</p>
-      </div>
-   </div>
-   <div hidden></div>
+<html some="val" id="htmlId" style="background:white;width:15px;">
+<div id="outerDivId">
+    <div>
+        <h1>Web Firm Framework</h1>
+        <p style="color:red;align-content:center;">Web Firm Framework Paragraph 1</p>
+        <p style="color:red;align-content:center;">Web Firm Framework Paragraph 2</p>
+        <p style="color:red;align-content:center;">Web Firm Framework Paragraph 3</p>
+    </div>
+</div>
+<div hidden></div>
 </html>
 ```
 and we can add/change styles later, eg:-
@@ -188,16 +182,16 @@ System.out.println(html.toHtmlString());
 It will add width 100% in aboutParagraph and will change color to brown, its generated html code will be as follows
 
 ```
-<html some="val" id="htmlId" style="background: white; width: 15px;">
-   <div id="outerDivId">
-      <div>
-         <h1>Web Firm Framework</h1>
-         <p style="color: brown; width: 100.0%;">Web Firm Framework Paragraph 1</p>
-         <p style="color: brown; width: 100.0%;">Web Firm Framework Paragraph 2</p>
-         <p style="color: brown; width: 100.0%;">Web Firm Framework Paragraph 3</p>
-      </div>
-   </div>
-   <div hidden></div>
+<html some="val" id="htmlId" style="background:white;width:15px;">
+<div id="outerDivId">
+    <div>
+        <h1>Web Firm Framework</h1>
+        <p style="color:brown;align-content:center;width:100.0%;">Web Firm Framework Paragraph 1</p>
+        <p style="color:brown;align-content:center;width:100.0%;">Web Firm Framework Paragraph 2</p>
+        <p style="color:brown;align-content:center;width:100.0%;">Web Firm Framework Paragraph 3</p>
+    </div>
+</div>
+<div hidden></div>
 </html>
 ```
 
