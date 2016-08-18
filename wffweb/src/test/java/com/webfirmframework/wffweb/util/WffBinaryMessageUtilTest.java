@@ -466,7 +466,7 @@ public class WffBinaryMessageUtilTest {
         
         long before = System.currentTimeMillis();
         
-        for (int i = 0; i <= 2147483646/4; i++) {
+        for (int i = 0; i <= 2147483646/8; i++) {
             @SuppressWarnings("unused")
             int len = WffBinaryMessageUtil.getOptimizedBytesFromInt(i).length;
         }
@@ -478,7 +478,7 @@ public class WffBinaryMessageUtilTest {
         System.out.println("difference1 "+difference1);
         
         before = System.currentTimeMillis();
-        for (int i = 0; i <= 2147483646/4; i++) {
+        for (int i = 0; i <= 2147483646/8; i++) {
           @SuppressWarnings("unused")
           int len = WffBinaryMessageUtil.getLengthOfOptimizedBytesFromInt(i);
         }
