@@ -101,8 +101,8 @@ public enum WffBinaryMessageUtil {
 
                     }
 
-                    final int maxBytesLengthFromTotalBytes = getOptimizedBytesFromInt(
-                            maxValuesBytesLength).length;
+                    final int maxBytesLengthFromTotalBytes = getLengthOfOptimizedBytesFromInt(
+                            maxValuesBytesLength);
 
                     final int maxBytesLengthForAllValues = values.length
                             * maxBytesLengthFromTotalBytes;
@@ -118,11 +118,11 @@ public enum WffBinaryMessageUtil {
 
             }
 
-            final byte maxNoNameLengthBytes = (byte) getOptimizedBytesFromInt(
-                    maxNoOfNameBytes).length;
+            final byte maxNoNameLengthBytes = (byte) getLengthOfOptimizedBytesFromInt(
+                    maxNoOfNameBytes);
 
-            final byte maxNoValueLengthBytes = (byte) getOptimizedBytesFromInt(
-                    maxNoOfValuesBytes).length;
+            final byte maxNoValueLengthBytes = (byte) getLengthOfOptimizedBytesFromInt(
+                    maxNoOfValuesBytes);
 
             int totalLengthOfBinaryMessage = 2;
 
@@ -490,6 +490,29 @@ public enum WffBinaryMessageUtil {
         }
 
         return new byte[] { zerothIndex, firstIndex, secondIndex, thirdIndex };
+    }
+
+    /**
+     * @param value
+     *            the integer value to be converted to optimized bytes.
+     *            Optimized bytes means the minimum bytes required to represent
+     *            the given integer value.
+     * @return the array length of the bytes for the corresponding integer
+     *         given.
+     * @since 1.1.5
+     * @author WFF
+     */
+    public static int getLengthOfOptimizedBytesFromInt(final int value) {
+
+        if (value < 256) {
+            return 1;
+        } else if (value < 65536) {
+            return 2;
+        } else if (value < 16777216) {
+            return 3;
+        }
+
+        return 4;
     }
 
     /**

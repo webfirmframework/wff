@@ -183,9 +183,9 @@ public class WffBinaryMessageUtilTest {
     
     @Test
     public void testParse5() {
-        
         List<NameValue> nameValues = new LinkedList<NameValue>();
         nameValues.add(new NameValue("name3".getBytes(), new byte[][]{"value3".getBytes(), "value41".getBytes()}));
+        nameValues.add(new NameValue("".getBytes(), new byte[0][0]));
         nameValues.add(new NameValue("name1".getBytes(), new byte[][]{"value1".getBytes()}));
         nameValues.add(new NameValue("name2".getBytes(), new byte[][]{"value2".getBytes()}));
 
@@ -193,7 +193,7 @@ public class WffBinaryMessageUtilTest {
         
         List<NameValue> actualNameValues = WffBinaryMessageUtil.VERSION_1.parse(message);
         
-        for (int i = 0; i < actualNameValues.size(); i++) {
+        for (int i = 0; i < nameValues.size(); i++) {
             
             final NameValue expectedNameValue = nameValues.get(i);
             
@@ -451,6 +451,43 @@ public class WffBinaryMessageUtilTest {
             int intFromOptimizedBytes = WffBinaryMessageUtil.getIntFromOptimizedBytes(optimizedBytesFromInt);
             assertEquals(i, intFromOptimizedBytes);
         }
+    }
+    
+    @Test
+    public void testGetLengthOfOptimizedBytesFromInt() {
+        assertEquals(WffBinaryMessageUtil.getOptimizedBytesFromInt(255).length, WffBinaryMessageUtil.getLengthOfOptimizedBytesFromInt(255));
+        assertEquals(WffBinaryMessageUtil.getOptimizedBytesFromInt(256).length, WffBinaryMessageUtil.getLengthOfOptimizedBytesFromInt(256));
+        assertEquals(WffBinaryMessageUtil.getOptimizedBytesFromInt(65535).length, WffBinaryMessageUtil.getLengthOfOptimizedBytesFromInt(65535));
+        assertEquals(WffBinaryMessageUtil.getOptimizedBytesFromInt(65536).length, WffBinaryMessageUtil.getLengthOfOptimizedBytesFromInt(65536));
+        assertEquals(WffBinaryMessageUtil.getOptimizedBytesFromInt(16777215).length, WffBinaryMessageUtil.getLengthOfOptimizedBytesFromInt(16777215));
+        assertEquals(WffBinaryMessageUtil.getOptimizedBytesFromInt(16777216).length, WffBinaryMessageUtil.getLengthOfOptimizedBytesFromInt(16777216));
+        assertEquals(WffBinaryMessageUtil.getOptimizedBytesFromInt(2147483646).length, WffBinaryMessageUtil.getLengthOfOptimizedBytesFromInt(2147483646));
+        assertEquals(WffBinaryMessageUtil.getOptimizedBytesFromInt(2147483647).length, WffBinaryMessageUtil.getLengthOfOptimizedBytesFromInt(2147483647));
+        
+        long before = System.currentTimeMillis();
+        
+        for (int i = 0; i <= 2147483646/4; i++) {
+            @SuppressWarnings("unused")
+            int len = WffBinaryMessageUtil.getOptimizedBytesFromInt(i).length;
+        }
+        
+        long after = System.currentTimeMillis();
+        
+        long difference1 = after - before;
+        
+        System.out.println("difference1 "+difference1);
+        
+        before = System.currentTimeMillis();
+        for (int i = 0; i <= 2147483646/4; i++) {
+          @SuppressWarnings("unused")
+          int len = WffBinaryMessageUtil.getLengthOfOptimizedBytesFromInt(i);
+        }
+        after = System.currentTimeMillis();
+        long difference2 = after - before;
+        System.out.println("difference2 "+difference2);
+        
+        //proves getLengthOfOptimizedBytesFromInt gives better performance
+        assertTrue(difference1 > difference2);
     }
     
     //@formatter:on
