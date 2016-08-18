@@ -475,6 +475,8 @@ public class WffBinaryMessageUtilTest {
         
         long difference1 = after - before;
         
+        System.out.println("difference1 "+difference1);
+        
         before = System.currentTimeMillis();
         for (int i = 0; i <= 2147483646/4; i++) {
           @SuppressWarnings("unused")
@@ -482,6 +484,9 @@ public class WffBinaryMessageUtilTest {
         }
         after = System.currentTimeMillis();
         long difference2 = after - before;
+        
+        System.out.println("difference2 "+difference2);
+        
         
         //proves getLengthOfOptimizedBytesFromInt gives better performance
         assertTrue(difference1 > difference2);
