@@ -361,15 +361,60 @@ public class WffBinaryMessageUtilTest {
         byte[] actualMessage = WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues);
      
         
-        byte[] expectedMessage = { 4, 4,
+        byte[] expectedMessage = { 1, 1,
                 //key length                    value length
-                0, 0, 0, 4, 'k', 'e', 'y', '1', 0, 0, 0, 6, 'v', 'a', 'l', 'u', 'e', '1', 
-                0, 0, 0, 4, 'k', 'e', 'y', '2', 0, 0, 0, 6, 'v', 'a', 'l', 'u', 'e', '2',
-                0, 0, 0, 4, 'k', 'e', 'y', '3', 0, 0, 0, 21, 0, 0, 0, 6, 'v', 'a', 'l', 'u', 'e', '3', 0, 0, 0, 7, 'v', 'a', 'l', 'u', 'e', '4', '1', 'A' 
+                4, 'k', 'e', 'y', '1', 6, 'v', 'a', 'l', 'u', 'e', '1', 
+                4, 'k', 'e', 'y', '2', 6, 'v', 'a', 'l', 'u', 'e', '2',
+                4, 'k', 'e', 'y', '3', 15, 6, 'v', 'a', 'l', 'u', 'e', '3', 7, 'v', 'a', 'l', 'u', 'e', '4', '1', 'A' 
                 };
         
        assertArrayEquals(expectedMessage, actualMessage);
         
+    }
+    
+    @Test
+    public void testGetWffBinaryMessageBytesEncodingDecodeing() {
+        
+        List<NameValue> nameValues = new LinkedList<NameValue>();
+        nameValues.add(new NameValue("key1".getBytes(), new byte[][]{"value1".getBytes()}));
+        nameValues.add(new NameValue("key2".getBytes(), new byte[][]{"value2".getBytes()}));
+        nameValues.add(new NameValue("key3".getBytes(), new byte[][]{"value3".getBytes(), "value41".getBytes()}));
+
+        byte[] actualMessage = WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues);
+     
+        
+        byte[] expectedMessage = { 1, 1,
+                //key length                    value length
+                4, 'k', 'e', 'y', '1', 6, 'v', 'a', 'l', 'u', 'e', '1', 
+                4, 'k', 'e', 'y', '2', 6, 'v', 'a', 'l', 'u', 'e', '2',
+                4, 'k', 'e', 'y', '3', 15, 6, 'v', 'a', 'l', 'u', 'e', '3', 7, 'v', 'a', 'l', 'u', 'e', '4', '1', 'A' 
+                };
+        
+       assertArrayEquals(expectedMessage, actualMessage);
+       
+       List<NameValue> decodedNameValues = WffBinaryMessageUtil.VERSION_1.parse(actualMessage);
+       
+       for (int i = 0; i < decodedNameValues.size(); i++) {
+           
+           NameValue decodedNameValue = decodedNameValues.get(i);
+           NameValue nameValue = nameValues.get(i);
+           
+           assertArrayEquals(nameValue.getName(), decodedNameValue.getName());
+           assertArrayEquals(nameValue.getValues(), decodedNameValue.getValues());
+           
+           assertEquals(nameValue.getValues().length, decodedNameValue.getValues().length);
+           
+           for (int j = 0; j < decodedNameValue.getValues().length; j++) {
+               byte[] value = nameValue.getValues()[j];
+               byte[] decodedValue = decodedNameValue.getValues()[j];
+               assertArrayEquals(value, decodedValue);
+           }
+           
+       }
+       
+       actualMessage = WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues);
+       
+       assertArrayEquals(expectedMessage, actualMessage);
     }
     
     @Test
@@ -385,13 +430,13 @@ public class WffBinaryMessageUtilTest {
         byte[] actualMessage = WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues);
      
         
-        byte[] expectedMessage = { 4, 4,
+        byte[] expectedMessage = { 1, 1,
                 //key length                    value length
-                0, 0, 0, 4, 'k', 'e', 'y', '1', 0, 0, 0, 6, 'v', 'a', 'l', 'u', 'e', '1', 
-                0, 0, 0, 4, 'k', 'e', 'y', '3', 0, 0, 0, 21, 0, 0, 0, 6, 'v', 'a', 'l', 'u', 'e', '3', 0, 0, 0, 7, 'v', 'a', 'l', 'u', 'e', '4', '1', 'A', 
-                0, 0, 0, 4, 'k', 'e', 'y', '4', 0, 0, 0, 0,
-                0, 0, 0, 4, 'k', 'e', 'y', '2', 0, 0, 0, 6, 'v', 'a', 'l', 'u', 'e', '2',
-                0, 0, 0, 4, 'k', 'e', 'y', '5', 0, 0, 0, 0
+                4, 'k', 'e', 'y', '1', 6, 'v', 'a', 'l', 'u', 'e', '1', 
+                4, 'k', 'e', 'y', '3', 15, 6, 'v', 'a', 'l', 'u', 'e', '3', 7, 'v', 'a', 'l', 'u', 'e', '4', '1', 'A', 
+                4, 'k', 'e', 'y', '4', 0,
+                4, 'k', 'e', 'y', '2', 6, 'v', 'a', 'l', 'u', 'e', '2',
+                4, 'k', 'e', 'y', '5', 0
                 };
         
        assertArrayEquals(expectedMessage, actualMessage);
