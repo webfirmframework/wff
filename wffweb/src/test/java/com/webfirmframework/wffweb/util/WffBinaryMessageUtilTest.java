@@ -466,7 +466,7 @@ public class WffBinaryMessageUtilTest {
         
         long before = System.currentTimeMillis();
         
-        for (int i = 0; i <= 2147483646/8; i++) {
+        for (int i = 0; i <= 35566; i++) {
             @SuppressWarnings("unused")
             int len = WffBinaryMessageUtil.getOptimizedBytesFromInt(i).length;
         }
@@ -475,20 +475,20 @@ public class WffBinaryMessageUtilTest {
         
         long difference1 = after - before;
         
-        System.out.println("difference1 "+difference1);
+        System.out.println("time taken for getOptimizedBytesFromInt "+difference1);
         
         before = System.currentTimeMillis();
-        for (int i = 0; i <= 2147483646/8; i++) {
+        for (int i = 0; i <= 35566; i++) {
           @SuppressWarnings("unused")
           int len = WffBinaryMessageUtil.getLengthOfOptimizedBytesFromInt(i);
         }
         after = System.currentTimeMillis();
         long difference2 = after - before;
         
-        System.out.println("difference2 "+difference2);
+        System.out.println("time taken for getLengthOfOptimizedBytesFromInt "+difference2);
         
         
-        //proves getLengthOfOptimizedBytesFromInt gives better performance
+        //proves getLengthOfOptimizedBytesFromInt gives better performance 
         assertTrue(difference1 > difference2);
     }
     

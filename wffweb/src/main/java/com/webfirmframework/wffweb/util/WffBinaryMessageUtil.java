@@ -504,11 +504,32 @@ public enum WffBinaryMessageUtil {
      */
     public static int getLengthOfOptimizedBytesFromInt(final int value) {
 
-        if (value < 256) {
-            return 1;
-        } else if (value < 65536) {
-            return 2;
-        } else if (value < 16777216) {
+        // simple checking just like the below commented is heavy, which is
+        // proved in performance testing
+        // if (value < 256) {
+        // return 1;
+        // } else if (value < 65536) {
+        // return 2;
+        // } else if (value < 16777216) {
+        // return 3;
+        // }
+
+        final byte zerothIndex = (byte) (value >> 24);
+        final byte firstIndex = (byte) (value >> 16);
+        final byte secondIndex = (byte) (value >> 8);
+
+        if (zerothIndex == 0) {
+
+            if (firstIndex == 0) {
+
+                if (secondIndex == 0) {
+
+                    return 1;
+                }
+
+                return 2;
+            }
+
             return 3;
         }
 
