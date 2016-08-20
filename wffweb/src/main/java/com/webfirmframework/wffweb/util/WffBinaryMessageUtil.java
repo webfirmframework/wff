@@ -29,43 +29,42 @@ public enum WffBinaryMessageUtil {
      * The wff binary message is composed as follows :- <br/>
      * The first byte represents the maximum number of bytes for name length
      * bytes. The second byte represents the maximum number of bytes for the
-     * value length bytes. The remaining bytes represent the name-value pairs.
+     * values length bytes. The remaining bytes represent the name-values pairs.
      *
      * <pre>
-     * Name value pair :-
+     * Name values pair :-
      *
      * <table border="1">
      * <tr>
      * <td>name length bytes</td>
      * <td>name bytes</td>
-     * <td>value length bytes</td>
-     * <td>value bytes</td>
+     * <td>values length bytes</td>
+     * <td>values bytes</td>
      * </tr>
      * </table>
      *
      * </pre>
      *
-     * Here, the name length bytes is the length of name bytes and value length
-     * bytes is the length of value bytes.<br/>
+     * Here, the name length bytes is the length of name bytes and values length
+     * bytes is the length of values bytes.<br/>
      *
-     * If the value bytes is an array of values then each value is prepended
-     * with length of value and will be appended with char {@code A}.
+     * The values in name-values pair is an array of value, the values is
+     * composed as follows
      *
      * <pre>
      * Value as an array :-
      * <table border="1">
      * <tr>
-     * <td>total value length bytes</td>
+     * <td>total values length bytes</td>
      * <td>value length bytes</td>
      * <td>value bytes</td>
      * <td>value length bytes</td>
      * <td>value bytes</td>
-     * <td>{@code A}</td>
      * </tr>
      * </table>
      *
-     * Here, total value length bytes = sum of (value length bytes + value bytes + value length bytes + value bytes) no. of bytes.
-     * And, {@code A} is represented as the extra identifier byte which represents the value as an array. The {@code total value length bytes} doesn't include the length of {@code A}.
+     * Here, total values length bytes = sum of (value length bytes + value bytes + value length bytes + value bytes) no. of bytes.
+     *
      * </pre>
      *
      *
@@ -138,30 +137,20 @@ public enum WffBinaryMessageUtil {
                     totalLengthOfBinaryMessage += maxNoValueLengthBytes;
                 } else {
 
-                    // if it's an array of values
-                    if (values.length > 1) {
-                        final int totalNoOfValueLengthBytes = maxNoValueLengthBytes
-                                * values.length;
-                        int totalNoOfValueBytes = 0;
+                    // values will always be an array
+                    final int totalNoOfValueLengthBytes = maxNoValueLengthBytes
+                            * values.length;
+                    int totalNoOfValueBytes = 0;
 
-                        for (final byte[] value : values) {
-                            totalNoOfValueBytes += value.length;
-                        }
-
-                        totalLengthOfBinaryMessage += totalNoOfValueLengthBytes
-                                + totalNoOfValueBytes;
-
-                        totalLengthOfBinaryMessage += maxNoValueLengthBytes;
-                        // increment for extra identifier byte
-                        totalLengthOfBinaryMessage++;
-                    } else {
-                        int totalNoOfValueBytes = 0;
-                        for (final byte[] value : values) {
-                            totalNoOfValueBytes += value.length;
-                        }
-                        totalLengthOfBinaryMessage += maxNoValueLengthBytes
-                                + totalNoOfValueBytes;
+                    for (final byte[] value : values) {
+                        totalNoOfValueBytes += value.length;
                     }
+
+                    totalLengthOfBinaryMessage += totalNoOfValueLengthBytes
+                            + totalNoOfValueBytes;
+
+                    totalLengthOfBinaryMessage += maxNoValueLengthBytes;
+
                 }
 
             }
@@ -199,17 +188,25 @@ public enum WffBinaryMessageUtil {
                     wffBinaryMessageBytesIndex += maxNoValueLengthBytes;
                 } else {
 
-                    // if it's an array of values
-                    if (values.length > 1) {
+                    // it will always be an array of values
+                    int valueLegth = 0;
+                    for (final byte[] value : values) {
+                        valueLegth += value.length;
+                    }
 
-                        int valueLegth = 0;
-                        for (final byte[] value : values) {
-                            valueLegth += value.length;
-                        }
+                    valueLegth += (maxNoValueLengthBytes * values.length);
 
-                        valueLegth += (maxNoValueLengthBytes * values.length);
+                    byte[] valueLegthBytes = getLastBytesFromInt(valueLegth,
+                            maxNoValueLengthBytes);
 
-                        byte[] valueLegthBytes = getLastBytesFromInt(valueLegth,
+                    System.arraycopy(valueLegthBytes, 0, wffBinaryMessageBytes,
+                            wffBinaryMessageBytesIndex, valueLegthBytes.length);
+
+                    wffBinaryMessageBytesIndex += valueLegthBytes.length;
+
+                    for (final byte[] value : values) {
+
+                        valueLegthBytes = getLastBytesFromInt(value.length,
                                 maxNoValueLengthBytes);
 
                         System.arraycopy(valueLegthBytes, 0,
@@ -219,45 +216,11 @@ public enum WffBinaryMessageUtil {
 
                         wffBinaryMessageBytesIndex += valueLegthBytes.length;
 
-                        for (final byte[] value : values) {
-
-                            valueLegthBytes = getLastBytesFromInt(value.length,
-                                    maxNoValueLengthBytes);
-
-                            System.arraycopy(valueLegthBytes, 0,
-                                    wffBinaryMessageBytes,
-                                    wffBinaryMessageBytesIndex,
-                                    valueLegthBytes.length);
-
-                            wffBinaryMessageBytesIndex += valueLegthBytes.length;
-
-                            System.arraycopy(value, 0, wffBinaryMessageBytes,
-                                    wffBinaryMessageBytesIndex, value.length);
-                            wffBinaryMessageBytesIndex += value.length;
-                        }
-
-                        System.arraycopy(new byte[] { 'A' }, 0,
-                                wffBinaryMessageBytes,
-                                wffBinaryMessageBytesIndex, 1);
-
-                        wffBinaryMessageBytesIndex++;
-                    } else {
-
-                        for (final byte[] value : values) {
-
-                            final byte[] valueLegthBytes = getLastBytesFromInt(
-                                    value.length, maxNoValueLengthBytes);
-
-                            System.arraycopy(valueLegthBytes, 0,
-                                    wffBinaryMessageBytes,
-                                    wffBinaryMessageBytesIndex,
-                                    valueLegthBytes.length);
-                            wffBinaryMessageBytesIndex += valueLegthBytes.length;
-                            System.arraycopy(value, 0, wffBinaryMessageBytes,
-                                    wffBinaryMessageBytesIndex, value.length);
-                            wffBinaryMessageBytesIndex += value.length;
-                        }
+                        System.arraycopy(value, 0, wffBinaryMessageBytes,
+                                wffBinaryMessageBytesIndex, value.length);
+                        wffBinaryMessageBytesIndex += value.length;
                     }
+
                 }
 
             }
@@ -306,28 +269,10 @@ public enum WffBinaryMessageUtil {
                         valueBytes.length);
                 messageIndex = messageIndex + valueBytes.length - 1;
 
-                // if the value is an array then the last extra byte will be A
-                final int extraIdentifierByteIndex = messageIndex + 1;
-
-                if (extraIdentifierByteIndex < message.length) {
-
-                    final byte extraIdentifierByte = message[extraIdentifierByteIndex];
-
-                    if ('A' == extraIdentifierByte) {
-                        messageIndex++;
-
-                        // process array values
-                        final byte[][] extractEachValueBytes = extractValuesFromArray(
-                                valueLengthBytes, valueLengthBytesLength,
-                                valueBytes);
-                        nameValue.setValues(extractEachValueBytes);
-
-                    } else {
-                        nameValue.setValues(new byte[][] { valueBytes });
-                    }
-                } else {
-                    nameValue.setValues(new byte[][] { valueBytes });
-                }
+                // process array values
+                final byte[][] extractEachValueBytes = extractValuesFromArray(
+                        valueLengthBytes, valueLengthBytesLength, valueBytes);
+                nameValue.setValues(extractEachValueBytes);
 
                 nameValues.add(nameValue);
 

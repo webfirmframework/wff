@@ -363,9 +363,9 @@ public class WffBinaryMessageUtilTest {
         
         byte[] expectedMessage = { 1, 1,
                 //key length                    value length
-                4, 'k', 'e', 'y', '1', 6, 'v', 'a', 'l', 'u', 'e', '1', 
-                4, 'k', 'e', 'y', '2', 6, 'v', 'a', 'l', 'u', 'e', '2',
-                4, 'k', 'e', 'y', '3', 15, 6, 'v', 'a', 'l', 'u', 'e', '3', 7, 'v', 'a', 'l', 'u', 'e', '4', '1', 'A' 
+                4, 'k', 'e', 'y', '1', 7, 6, 'v', 'a', 'l', 'u', 'e', '1', 
+                4, 'k', 'e', 'y', '2', 7, 6, 'v', 'a', 'l', 'u', 'e', '2',
+                4, 'k', 'e', 'y', '3', 15, 6, 'v', 'a', 'l', 'u', 'e', '3', 7, 'v', 'a', 'l', 'u', 'e', '4', '1' 
                 };
         
        assertArrayEquals(expectedMessage, actualMessage);
@@ -385,9 +385,9 @@ public class WffBinaryMessageUtilTest {
         
         byte[] expectedMessage = { 1, 1,
                 //key length                    value length
-                4, 'k', 'e', 'y', '1', 6, 'v', 'a', 'l', 'u', 'e', '1', 
-                4, 'k', 'e', 'y', '2', 6, 'v', 'a', 'l', 'u', 'e', '2',
-                4, 'k', 'e', 'y', '3', 15, 6, 'v', 'a', 'l', 'u', 'e', '3', 7, 'v', 'a', 'l', 'u', 'e', '4', '1', 'A' 
+                4, 'k', 'e', 'y', '1', 7, 6, 'v', 'a', 'l', 'u', 'e', '1', 
+                4, 'k', 'e', 'y', '2', 7, 6, 'v', 'a', 'l', 'u', 'e', '2',
+                4, 'k', 'e', 'y', '3', 15, 6, 'v', 'a', 'l', 'u', 'e', '3', 7, 'v', 'a', 'l', 'u', 'e', '4', '1' 
                 };
         
        assertArrayEquals(expectedMessage, actualMessage);
@@ -432,11 +432,11 @@ public class WffBinaryMessageUtilTest {
         
         byte[] expectedMessage = { 1, 1,
                 //key length                    value length
-                4, 'k', 'e', 'y', '1', 6, 'v', 'a', 'l', 'u', 'e', '1', 
-                4, 'k', 'e', 'y', '3', 15, 6, 'v', 'a', 'l', 'u', 'e', '3', 7, 'v', 'a', 'l', 'u', 'e', '4', '1', 'A', 
+                4, 'k', 'e', 'y', '1', 7, 6, 'v', 'a', 'l', 'u', 'e', '1', 
+                4, 'k', 'e', 'y', '3', 15, 6, 'v', 'a', 'l', 'u', 'e', '3', 7, 'v', 'a', 'l', 'u', 'e', '4', '1', 
                 4, 'k', 'e', 'y', '4', 0,
-                4, 'k', 'e', 'y', '2', 6, 'v', 'a', 'l', 'u', 'e', '2',
-                4, 'k', 'e', 'y', '5', 0
+                4, 'k', 'e', 'y', '2', 7, 6, 'v', 'a', 'l', 'u', 'e', '2',
+                4, 'k', 'e', 'y', '5', 0,
                 };
         
        assertArrayEquals(expectedMessage, actualMessage);
@@ -466,7 +466,7 @@ public class WffBinaryMessageUtilTest {
         
         long before = System.currentTimeMillis();
         
-        for (int i = 0; i <= 35566; i++) {
+        for (int i = 0; i <= 35566 * 2; i++) {
             @SuppressWarnings("unused")
             int len = WffBinaryMessageUtil.getOptimizedBytesFromInt(i).length;
         }
@@ -478,7 +478,7 @@ public class WffBinaryMessageUtilTest {
         System.out.println("time taken for getOptimizedBytesFromInt "+difference1);
         
         before = System.currentTimeMillis();
-        for (int i = 0; i <= 35566; i++) {
+        for (int i = 0; i <= 35566 * 2; i++) {
           @SuppressWarnings("unused")
           int len = WffBinaryMessageUtil.getLengthOfOptimizedBytesFromInt(i);
         }

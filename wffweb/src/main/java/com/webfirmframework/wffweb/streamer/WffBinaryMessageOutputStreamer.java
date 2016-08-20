@@ -145,56 +145,34 @@ public class WffBinaryMessageOutputStreamer {
             totalBytesWritten += maxNoValueLengthBytes;
         } else {
 
-            // if it's an array of values
-            if (values.length > 1) {
+            int valueLegth = 0;
+            for (final byte[] value : values) {
+                valueLegth += value.length;
+            }
 
-                int valueLegth = 0;
-                for (final byte[] value : values) {
-                    valueLegth += value.length;
-                }
+            valueLegth += (maxNoValueLengthBytes * values.length);
 
-                valueLegth += (maxNoValueLengthBytes * values.length);
+            byte[] valueLegthBytes = WffBinaryMessageUtil
+                    .getBytesFromInt(valueLegth);
 
-                byte[] valueLegthBytes = WffBinaryMessageUtil
-                        .getBytesFromInt(valueLegth);
+            writeByChunk(valueLegthBytes);
+
+            totalBytesWritten += valueLegthBytes.length;
+
+            for (final byte[] value : values) {
+
+                valueLegthBytes = WffBinaryMessageUtil
+                        .getBytesFromInt(value.length);
 
                 writeByChunk(valueLegthBytes);
 
                 totalBytesWritten += valueLegthBytes.length;
 
-                for (final byte[] value : values) {
+                writeByChunk(value);
 
-                    valueLegthBytes = WffBinaryMessageUtil
-                            .getBytesFromInt(value.length);
-
-                    writeByChunk(valueLegthBytes);
-
-                    totalBytesWritten += valueLegthBytes.length;
-
-                    writeByChunk(value);
-
-                    totalBytesWritten += value.length;
-                }
-
-                writeByChunk(new byte[] { 'A' });
-
-                totalBytesWritten++;
-            } else {
-
-                for (final byte[] value : values) {
-
-                    final byte[] valueLegthBytes = WffBinaryMessageUtil
-                            .getBytesFromInt(value.length);
-
-                    writeByChunk(valueLegthBytes);
-
-                    totalBytesWritten += valueLegthBytes.length;
-
-                    writeByChunk(value);
-
-                    totalBytesWritten += value.length;
-                }
+                totalBytesWritten += value.length;
             }
+
         }
 
         return totalBytesWritten;
