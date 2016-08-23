@@ -401,8 +401,6 @@ public class TagPrintTest implements Serializable {
         final String expectedString2 = "<!DOCTYPE html>\n<html hidden id=\"htmlId\" style=\"color:red;width:15px;\"></html>";
         
         Assert.assertTrue(expectedString.equals(html.toHtmlString(StandardCharsets.UTF_8)) || expectedString2.equals(html.toHtmlString(StandardCharsets.UTF_8)));
-       assertEquals(expectedString,
-                html.toHtmlString(StandardCharsets.UTF_8));
     }
 
     @Test
