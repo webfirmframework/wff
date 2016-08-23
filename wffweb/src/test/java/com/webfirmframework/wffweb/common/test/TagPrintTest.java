@@ -200,10 +200,25 @@ public class TagPrintTest implements Serializable {
 
     @Test
     public void testMultipleAttributesToHtmlString() throws Exception {
+        
         final Html html = new Html(null, new Hidden(), new Id("htmlId"),
                 new Style("color:red;width:15px"));
+        
         final String expectedString = "<html id=\"htmlId\" style=\"color:red;width:15px;\" hidden></html>";
-       assertEquals(expectedString, html.toHtmlString());
+        final String expectedString1 = "<html id=\"htmlId\" hidden style=\"color:red;width:15px;\"></html>";
+        final String expectedString2 = "<html hidden id=\"htmlId\" style=\"color:red;width:15px;\"></html>";
+        final String expectedString3 = "<html hidden style=\"color:red;width:15px;\" id=\"htmlId\"></html>";
+        final String expectedString4 = "<html style=\"color:red;width:15px;\" hidden id=\"htmlId\"></html>";
+        final String expectedString5 = "<html style=\"color:red;width:15px;\" id=\"htmlId\" hidden></html>";
+        
+        if (!expectedString.equals(html.toHtmlString())
+            && !expectedString1.equals(html.toHtmlString())
+            && !expectedString2.equals(html.toHtmlString())
+            && !expectedString3.equals(html.toHtmlString())
+            && !expectedString4.equals(html.toHtmlString())
+            && !expectedString5.equals(html.toHtmlString()))  {
+            Assert.fail("testMultipleAttributesToHtmlString 1 to 5");
+        }
 
         if (html.toHtmlString().contains("\0")) {
             System.out.println("yes contains");
