@@ -399,10 +399,17 @@ public class TagPrintTest implements Serializable {
         
         //in oracle jdk 1.8 it comes as expectedString2 
         final String expectedString2 = "<!DOCTYPE html>\n<html hidden id=\"htmlId\" style=\"color:red;width:15px;\"></html>";
+        final String expectedString3 = "<!DOCTYPE html>\n<html hidden style=\"color:red;width:15px;\" id=\"htmlId\"></html>";
+        final String expectedString4 = "<!DOCTYPE html>\n<html style=\"color:red;width:15px;\" hidden id=\"htmlId\"></html>";
+        final String expectedString5 = "<!DOCTYPE html>\n<html style=\"color:red;width:15px;\" id=\"htmlId\" hidden></html>";
         
         if (!expectedString.equals(html.toHtmlString(StandardCharsets.UTF_8))
-                && !expectedString2.equals(html.toHtmlString(StandardCharsets.UTF_8))) {
-            Assert.fail("testToHtmlStringWithCharset1");
+                && !expectedString2.equals(html.toHtmlString(StandardCharsets.UTF_8))
+                && !expectedString3.equals(html.toHtmlString(StandardCharsets.UTF_8))
+                && !expectedString4.equals(html.toHtmlString(StandardCharsets.UTF_8))
+                && !expectedString5.equals(html.toHtmlString(StandardCharsets.UTF_8))) {
+            
+            Assert.fail("testToHtmlStringWithCharset1 could not match expectedString 1 to 5");
         }
         
     }
