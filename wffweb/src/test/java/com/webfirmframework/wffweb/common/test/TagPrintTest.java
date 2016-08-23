@@ -400,7 +400,11 @@ public class TagPrintTest implements Serializable {
         //in oracle jdk 1.8 it comes as expectedString2 
         final String expectedString2 = "<!DOCTYPE html>\n<html hidden id=\"htmlId\" style=\"color:red;width:15px;\"></html>";
         
-        Assert.assertTrue(expectedString.equals(html.toHtmlString(StandardCharsets.UTF_8)) || expectedString2.equals(html.toHtmlString(StandardCharsets.UTF_8)));
+        if (!expectedString.equals(html.toHtmlString(StandardCharsets.UTF_8))
+                && !expectedString2.equals(html.toHtmlString(StandardCharsets.UTF_8))) {
+            Assert.fail("testToHtmlStringWithCharset1");
+        }
+        
     }
 
     @Test
