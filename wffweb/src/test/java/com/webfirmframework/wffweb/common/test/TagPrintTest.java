@@ -23,6 +23,7 @@ import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -395,6 +396,11 @@ public class TagPrintTest implements Serializable {
                 new Style("color:red;width:15px"));
         html.setPrependDocType(true);
         final String expectedString = "<!DOCTYPE html>\n<html id=\"htmlId\" style=\"color:red;width:15px;\" hidden></html>";
+        
+        //in oracle jdk 1.8 it comes as expectedString2 
+        final String expectedString2 = "<!DOCTYPE html>\n<html hidden id=\"htmlId\" style=\"color:red;width:15px;\"></html>";
+        
+        Assert.assertTrue(expectedString.equals(html.toHtmlString(StandardCharsets.UTF_8)) || expectedString2.equals(html.toHtmlString(StandardCharsets.UTF_8)));
        assertEquals(expectedString,
                 html.toHtmlString(StandardCharsets.UTF_8));
     }
