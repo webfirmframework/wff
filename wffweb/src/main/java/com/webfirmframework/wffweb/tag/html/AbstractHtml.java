@@ -21,8 +21,10 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import com.webfirmframework.wffweb.clone.CloneUtil;
 import com.webfirmframework.wffweb.streamer.WffBinaryMessageOutputStreamer;
@@ -60,6 +62,8 @@ public abstract class AbstractHtml extends AbstractTagBase {
 
     private StringBuilder tagBuilder;
     private AbstractAttribute[] attributes;
+
+    private Map<String, AbstractAttribute> attributesMap;
 
     private AbstractHtml5SharedObject sharedObject;
 
@@ -144,7 +148,8 @@ public abstract class AbstractHtml extends AbstractTagBase {
     public AbstractHtml(final String tagName, final AbstractHtml base,
             final AbstractAttribute[] attributes) {
         this.tagName = tagName;
-        this.attributes = attributes;
+
+        initAttributes(attributes);
 
         initInConstructor();
 
@@ -158,6 +163,137 @@ public abstract class AbstractHtml extends AbstractTagBase {
         } else {
             sharedObject = new AbstractHtml5SharedObject();
         }
+    }
+
+    /**
+     * initializes attributes in this.attributes and also in attributesMap. this
+     * should be called only once per object.
+     *
+     * @param attributes
+     * @since 1.1.5
+     * @author WFF
+     */
+    private void initAttributes(final AbstractAttribute... attributes) {
+
+        if (attributes == null || attributes.length == 0) {
+            return;
+        }
+
+        attributesMap = new HashMap<String, AbstractAttribute>();
+
+        for (final AbstractAttribute attribute : attributes) {
+            attributesMap.put(attribute.getAttributeName(), attribute);
+        }
+
+        this.attributes = new AbstractAttribute[attributesMap.size()];
+        attributesMap.values().toArray(this.attributes);
+    }
+
+    /**
+     * adds the given attributes to this tag.
+     *
+     * @param attributes
+     *            attributes to add
+     * @since 1.2.0
+     * @author WFF
+     */
+    public void addAttributes(final AbstractAttribute... attributes) {
+
+        if (attributesMap == null) {
+            attributesMap = new HashMap<String, AbstractAttribute>();
+        }
+
+        if (this.attributes != null) {
+            for (final AbstractAttribute attribute : this.attributes) {
+                attributesMap.put(attribute.getAttributeName(), attribute);
+            }
+        }
+
+        for (final AbstractAttribute attribute : attributes) {
+            attribute.setOwnerTag(this);
+            final AbstractAttribute previous = attributesMap
+                    .put(attribute.getAttributeName(), attribute);
+            if (previous != null && !attribute.equals(previous)) {
+                previous.unsetOwnerTag(this);
+            }
+        }
+
+        this.attributes = new AbstractAttribute[attributesMap.size()];
+        attributesMap.values().toArray(this.attributes);
+        setModified(true);
+
+    }
+
+    /**
+     * removes the given attributes from this tag.
+     *
+     * @param attributes
+     *            attributes to remove
+     * @return true if any of the attributes are removed.
+     * @since 1.2.0
+     * @author WFF
+     */
+    public boolean removeAttributes(final AbstractAttribute... attributes) {
+
+        if (attributesMap == null) {
+            return false;
+        }
+
+        boolean removed = false;
+
+        for (final AbstractAttribute attribute : attributes) {
+
+            if (attribute.unsetOwnerTag(this)) {
+                attributesMap.remove(attribute.getAttributeName());
+                removed = true;
+            }
+
+        }
+
+        if (removed) {
+            this.attributes = new AbstractAttribute[attributesMap.size()];
+            attributesMap.values().toArray(this.attributes);
+            setModified(true);
+        }
+        return removed;
+    }
+
+    /**
+     * removes the given attributes from this tag.
+     *
+     * @param attributeNames
+     *            to remove the attributes having in the given names.
+     * @return true if any of the attributes are removed.
+     * @since 1.2.0
+     * @author WFF
+     */
+    public boolean removeAttributes(final String... attributeNames) {
+
+        if (attributesMap == null) {
+            return false;
+        }
+
+        boolean removed = false;
+
+        for (final String attributeName : attributeNames) {
+
+            final AbstractAttribute attribute = attributesMap
+                    .get(attributeName);
+
+            if (attribute != null) {
+                attribute.unsetOwnerTag(this);
+                attributesMap.remove(attributeName);
+                removed = true;
+            }
+
+        }
+
+        if (removed) {
+            attributes = new AbstractAttribute[attributesMap.size()];
+            attributesMap.values().toArray(attributes);
+            setModified(true);
+        }
+        return removed;
     }
 
     /**
@@ -176,7 +312,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
             final AbstractHtml base, final AbstractAttribute[] attributes) {
         this.tagType = tagType;
         this.tagName = tagName;
-        this.attributes = attributes;
+        initAttributes(attributes);
 
         initInConstructor();
 

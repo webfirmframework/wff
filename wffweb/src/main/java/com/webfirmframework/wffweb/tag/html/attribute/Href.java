@@ -71,7 +71,7 @@ public class Href extends AbstractAttribute
      * @since 1.0.0
      * @author WFF
      */
-    protected void setValue(final String url) {
+    public void setValue(final String url) {
         super.setAttributeValue(url);
     }
 

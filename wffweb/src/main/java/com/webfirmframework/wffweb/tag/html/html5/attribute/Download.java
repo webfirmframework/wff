@@ -100,7 +100,7 @@ public class Download extends AbstractAttribute
      * @since 1.0.0
      * @author WFF
      */
-    protected void setValue(final String filename) {
+    public void setValue(final String filename) {
         super.setAttributeValue(filename);
     }
 

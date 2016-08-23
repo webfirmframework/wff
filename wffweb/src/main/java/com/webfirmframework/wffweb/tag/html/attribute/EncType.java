@@ -92,7 +92,7 @@ public class EncType extends AbstractAttribute implements FormAttributable {
      * @since 1.1.4
      * @author WFF
      */
-    protected void setValue(final String value) {
+    public void setValue(final String value) {
         super.setAttributeValue(value);
     }
 

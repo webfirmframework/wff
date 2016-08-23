@@ -55,7 +55,7 @@ public class Content extends AbstractAttribute implements MetaAttributable {
      *            the value for the attribute.
      * @since 1.1.1
      */
-    protected void setValue(final String value) {
+    public void setValue(final String value) {
         super.setAttributeValue(value);
     }
 

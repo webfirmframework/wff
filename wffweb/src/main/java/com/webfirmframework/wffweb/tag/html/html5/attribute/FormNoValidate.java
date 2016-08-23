@@ -59,7 +59,7 @@ public class FormNoValidate extends AbstractAttribute
      *            the value for the attribute.
      * @since 1.0.0
      */
-    protected void setValue(final String value) {
+    public void setValue(final String value) {
         super.setAttributeValue(value);
     }
 

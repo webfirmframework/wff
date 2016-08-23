@@ -74,7 +74,7 @@ public class MinLength extends AbstractAttribute implements InputAttributable {
      *            the value for the attribute.
      * @since 1.0.0
      */
-    protected void setValue(final int value) {
+    public void setValue(final int value) {
         this.value = value;
         super.setAttributeValue(String.valueOf(value));
     }

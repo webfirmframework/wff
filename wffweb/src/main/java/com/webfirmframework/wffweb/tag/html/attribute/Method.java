@@ -69,7 +69,7 @@ public class Method extends AbstractAttribute implements FormAttributable {
      * @since 1.2.0
      * @author WFF
      */
-    protected void setValue(final String value) {
+    public void setValue(final String value) {
         super.setAttributeValue(value);
     }
 

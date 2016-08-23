@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -28,7 +29,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     private Map<String, String> attributeValueMap;
     private Set<String> attributeValueSet;
 
-    private AbstractHtml ownerTag;
+    private Set<AbstractHtml> ownerTags;
 
     private StringBuilder tagBuilder;
 
@@ -40,6 +41,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
     private void init() {
         tagBuilder = new StringBuilder();
+        ownerTags = new HashSet<AbstractHtml>();
         setRebuild(true);
     }
 
@@ -487,29 +489,66 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     }
 
     /**
-     * @return the ownerTag
+     * @returns one of the ownerTags
      * @since 1.0.0
      * @author WFF
+     * @deprecated this method may be removed later as there could be multiple
+     *             owner tags.
      */
+    @Deprecated
     public AbstractHtml getOwnerTag() {
-        return ownerTag;
+        if (ownerTags.iterator().hasNext()) {
+            ownerTags.iterator().next();
+        }
+        return null;
     }
 
     /**
+     * This method is for internal purpose.
+     *
+     * @return the tags which are consuming this attribute.
+     * @since 1.2.0
+     * @author WFF
+     */
+    public Set<AbstractHtml> getOwnerTags() {
+        return ownerTags;
+    }
+
+    /**
+     * NB:- this method is used for internal purpose, so it should not be
+     * consumed.
+     *
      * @param ownerTag
      *            the ownerTag to set
      * @since 1.0.0
      * @author WFF
      */
     public void setOwnerTag(final AbstractHtml ownerTag) {
-        this.ownerTag = ownerTag;
+        ownerTags.add(ownerTag);
+    }
+
+    /**
+     * NB:- this method is used for internal purpose, so it should not be
+     * consumed.
+     *
+     * @param ownerTag
+     *            the ownerTag to unset
+     * @return true if the given ownerTag is an owner of the attribute.
+     * @since 1.2.0
+     * @author WFF
+     */
+    public boolean unsetOwnerTag(final AbstractHtml ownerTag) {
+        return ownerTags.remove(ownerTag);
     }
 
     @Override
     public void setModified(final boolean modified) {
         super.setModified(modified);
-        if (ownerTag != null && ownerTag.getSharedObject() != null) {
-            ownerTag.getSharedObject().setChildModified(modified);
+
+        for (final AbstractHtml ownerTag : ownerTags) {
+            if (ownerTag.getSharedObject() != null) {
+                ownerTag.getSharedObject().setChildModified(modified);
+            }
         }
     }
 

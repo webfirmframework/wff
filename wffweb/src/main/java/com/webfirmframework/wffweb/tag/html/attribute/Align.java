@@ -72,7 +72,7 @@ public class Align extends AbstractAttribute implements InputAttributable {
      * @since 1.0.0
      * @author WFF
      */
-    protected void setValue(final String value) {
+    public void setValue(final String value) {
         super.setAttributeValue(value);
     }
 

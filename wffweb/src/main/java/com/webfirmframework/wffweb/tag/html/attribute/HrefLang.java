@@ -82,7 +82,7 @@ public class HrefLang extends AbstractAttribute
      * @since 1.0.0
      * @author WFF
      */
-    protected void setValue(final String languageCode) {
+    public void setValue(final String languageCode) {
         locale = null;
         super.setAttributeValue(languageCode);
     }
@@ -95,7 +95,7 @@ public class HrefLang extends AbstractAttribute
      * @since 1.0.0
      * @author WFF
      */
-    protected void setValue(final Locale language) {
+    public void setValue(final Locale language) {
         locale = language;
         super.setAttributeValue(language.getLanguage());
     }

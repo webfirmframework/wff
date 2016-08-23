@@ -52,7 +52,7 @@ public class Sorted extends AbstractAttribute implements ThAttributable {
      * @since 1.1.3
      * @author WFF
      */
-    protected void setValue(final String value) {
+    public void setValue(final String value) {
         super.setAttributeValue(value);
     }
 
