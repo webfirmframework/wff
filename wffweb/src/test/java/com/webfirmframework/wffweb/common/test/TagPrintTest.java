@@ -153,23 +153,47 @@ public class TagPrintTest implements Serializable {
             };
 
         };
-        final String expected = "<!DOCTYPE html>\n<html1 id=\"html1Id\" width=\"1%\"><html2 width=\"2%\"><html3 width=\"3.0%\"></html3><html4 width=\"4.4%\"></html4></html2></html1>";
+        
+        {
+            
+            final String expected = "<!DOCTYPE html>\n<html1 id=\"html1Id\" width=\"1%\"><html2 width=\"2%\"><html3 width=\"3.0%\"></html3><html4 width=\"4.4%\"></html4></html2></html1>";
+            final String expected2 = "<!DOCTYPE html>\n<html1 width=\"1%\" id=\"html1Id\"><html2 width=\"2%\"><html3 width=\"3.0%\"></html3><html4 width=\"4.4%\"></html4></html2></html1>";
+            
+            html1.setPrependDocType(true);
+            
+            if (!expected.equals(html1.toHtmlString())
+                    && !expected2.equals(html1.toHtmlString())) {
+                Assert.fail("testToStringPrint could not match expected 1 - 2");
+            }
+//            assertEquals(expected, html1.toHtmlString());
+        }
+        
+        
         // System.out.println(html1);
         // System.out.println();
         // System.out.println(expected);
-        html1.setPrependDocType(true);
-       assertEquals(expected, html1.toHtmlString());
+        
 
         {
             width1.setValue(56, CssLengthUnit.PER);
-            final String expected2 = "<!DOCTYPE html>\n<html1 id=\"html1Id\" width=\"56%\"><html2 width=\"2%\"><html3 width=\"3.0%\"></html3><html4 width=\"4.4%\"></html4></html2></html1>";
-           assertEquals(expected2, html1.toHtmlString());
+            final String expected = "<!DOCTYPE html>\n<html1 id=\"html1Id\" width=\"56%\"><html2 width=\"2%\"><html3 width=\"3.0%\"></html3><html4 width=\"4.4%\"></html4></html2></html1>";
+            final String expected2 = "<!DOCTYPE html>\n<html1 width=\"56%\" id=\"html1Id\"><html2 width=\"2%\"><html3 width=\"3.0%\"></html3><html4 width=\"4.4%\"></html4></html2></html1>";
+            
+            if (!expected.equals(html1.toHtmlString())
+                    && !expected2.equals(html1.toHtmlString())) {
+                Assert.fail("testToStringPrint could not match expected 1 - 2");
+            }
         }
 
         {
             width1.setValue(55, CssLengthUnit.PX);
-            final String expected2 = "<!DOCTYPE html>\n<html1 id=\"html1Id\" width=\"55px\"><html2 width=\"2%\"><html3 width=\"3.0%\"></html3><html4 width=\"4.4%\"></html4></html2></html1>";
-           assertEquals(expected2, html1.toHtmlString());
+            final String expected = "<!DOCTYPE html>\n<html1 id=\"html1Id\" width=\"55px\"><html2 width=\"2%\"><html3 width=\"3.0%\"></html3><html4 width=\"4.4%\"></html4></html2></html1>";
+            final String expected2 = "<!DOCTYPE html>\n<html1 width=\"55px\" id=\"html1Id\"><html2 width=\"2%\"><html3 width=\"3.0%\"></html3><html4 width=\"4.4%\"></html4></html2></html1>";
+            
+           if (!expected.equals(html1.toHtmlString())
+                   && !expected2.equals(html1.toHtmlString())) {
+               Assert.fail("testToStringPrint could not match expected 1 - 2");
+           }
         }
 
     }
