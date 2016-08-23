@@ -26,12 +26,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.webfirmframework.wffweb.css.Border;
 import com.webfirmframework.wffweb.css.Color;
 import com.webfirmframework.wffweb.tag.html.attribute.Accept;
 import com.webfirmframework.wffweb.tag.html.attribute.Action;
 import com.webfirmframework.wffweb.tag.html.attribute.Align;
 import com.webfirmframework.wffweb.tag.html.attribute.Alt;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
+import com.webfirmframework.wffweb.tag.html.attribute.CellPadding;
+import com.webfirmframework.wffweb.tag.html.attribute.CellSpacing;
 import com.webfirmframework.wffweb.tag.html.attribute.Charset;
 import com.webfirmframework.wffweb.tag.html.attribute.Checked;
 import com.webfirmframework.wffweb.tag.html.attribute.CoOrds;
@@ -273,6 +276,14 @@ public class AttributeRegistry {
                 EncType.class.getSimpleName());
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ACTION,
                 Action.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.BORDER,
+                Border.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
+                AttributeNameConstants.CELLPADDING,
+                CellPadding.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
+                AttributeNameConstants.CELLSPACING,
+                CellSpacing.class.getSimpleName());
 
         attributeNames = new ArrayList<String>(initialCapacity);
         attributeNamesSet = new HashSet<String>(initialCapacity);

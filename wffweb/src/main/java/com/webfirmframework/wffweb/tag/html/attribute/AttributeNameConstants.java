@@ -130,7 +130,7 @@ public class AttributeNameConstants {
     public static final String REL = "rel";
 
     public static final String REQUIRED = "required";
-    
+
     public static final String REV = "rev";
 
     public static final String SHAPE = "shape";
@@ -172,6 +172,12 @@ public class AttributeNameConstants {
     public static final String ENCTYPE = "enctype";
 
     public static final String ACTION = "action";
+
+    public static final String CELLPADDING = "cellpadding";
+
+    public static final String CELLSPACING = "cellspacing";
+
+    public static final String BORDER = "border";
 
     /**
      *
