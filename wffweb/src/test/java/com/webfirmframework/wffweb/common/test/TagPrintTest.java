@@ -386,7 +386,21 @@ public class TagPrintTest implements Serializable {
                 new Style("color:red;width:15px"));
         html.setPrependDocType(true);
         final String expectedString = "<!DOCTYPE html>\n<html id=\"htmlId\" style=\"color:red;width:15px;\" hidden></html>";
-       assertEquals(expectedString, html.toHtmlString());
+        
+       //in oracle jdk 1.8 it comes as expectedString2 
+       final String expectedString2 = "<!DOCTYPE html>\n<html hidden id=\"htmlId\" style=\"color:red;width:15px;\"></html>";
+       final String expectedString3 = "<!DOCTYPE html>\n<html hidden style=\"color:red;width:15px;\" id=\"htmlId\"></html>";
+       final String expectedString4 = "<!DOCTYPE html>\n<html style=\"color:red;width:15px;\" hidden id=\"htmlId\"></html>";
+       final String expectedString5 = "<!DOCTYPE html>\n<html style=\"color:red;width:15px;\" id=\"htmlId\" hidden></html>";
+       
+       if (!expectedString.equals(html.toHtmlString())
+               && !expectedString2.equals(html.toHtmlString())
+               && !expectedString3.equals(html.toHtmlString())
+               && !expectedString4.equals(html.toHtmlString())
+               && !expectedString5.equals(html.toHtmlString())) {
+           
+           Assert.fail("testToHtmlString could not match expectedString 1 to 5");
+       }
 
     }
 
@@ -420,8 +434,22 @@ public class TagPrintTest implements Serializable {
                 new Style("color:red;width:15px"));
         html.setPrependDocType(true);
         final String expectedString = "<!DOCTYPE html>\n<html id=\"htmlId\" style=\"color:red;width:15px;\" hidden></html>";
-       assertEquals(expectedString,
-                html.toHtmlString(StandardCharsets.UTF_8.name()));
+        
+        //in oracle jdk 1.8 it comes as expectedString2 
+        final String expectedString2 = "<!DOCTYPE html>\n<html hidden id=\"htmlId\" style=\"color:red;width:15px;\"></html>";
+        final String expectedString3 = "<!DOCTYPE html>\n<html hidden style=\"color:red;width:15px;\" id=\"htmlId\"></html>";
+        final String expectedString4 = "<!DOCTYPE html>\n<html style=\"color:red;width:15px;\" hidden id=\"htmlId\"></html>";
+        final String expectedString5 = "<!DOCTYPE html>\n<html style=\"color:red;width:15px;\" id=\"htmlId\" hidden></html>";
+        
+        if (!expectedString.equals(html.toHtmlString(StandardCharsets.UTF_8.name()))
+                && !expectedString2.equals(html.toHtmlString(StandardCharsets.UTF_8.name()))
+                && !expectedString3.equals(html.toHtmlString(StandardCharsets.UTF_8.name()))
+                && !expectedString4.equals(html.toHtmlString(StandardCharsets.UTF_8.name()))
+                && !expectedString5.equals(html.toHtmlString(StandardCharsets.UTF_8.name()))) {
+            
+            Assert.fail("testToHtmlStringWithCharset2 could not match expectedString 1 to 5");
+        }
+
     }
 
     @Test
@@ -430,8 +458,22 @@ public class TagPrintTest implements Serializable {
                 new Style("color:red;width:15px"));
         html.setPrependDocType(true);
         final String expectedString = "<!DOCTYPE html>\n<html id=\"htmlId\" style=\"color:red;width:15px;\" hidden></html>";
-       assertEquals(expectedString,
-                html.toHtmlString(true, StandardCharsets.UTF_8));
+        
+      //in oracle jdk 1.8 it comes as expectedString2 
+        final String expectedString2 = "<!DOCTYPE html>\n<html hidden id=\"htmlId\" style=\"color:red;width:15px;\"></html>";
+        final String expectedString3 = "<!DOCTYPE html>\n<html hidden style=\"color:red;width:15px;\" id=\"htmlId\"></html>";
+        final String expectedString4 = "<!DOCTYPE html>\n<html style=\"color:red;width:15px;\" hidden id=\"htmlId\"></html>";
+        final String expectedString5 = "<!DOCTYPE html>\n<html style=\"color:red;width:15px;\" id=\"htmlId\" hidden></html>";
+        
+        if (!expectedString.equals(html.toHtmlString(true, StandardCharsets.UTF_8))
+                && !expectedString2.equals(html.toHtmlString(true, StandardCharsets.UTF_8))
+                && !expectedString3.equals(html.toHtmlString(true, StandardCharsets.UTF_8))
+                && !expectedString4.equals(html.toHtmlString(true, StandardCharsets.UTF_8))
+                && !expectedString5.equals(html.toHtmlString(true, StandardCharsets.UTF_8))) {
+            
+            Assert.fail("testToHtmlStringWithCharset3 could not match expectedString 1 to 5");
+        }
+        
     }
 
     @Test
@@ -440,8 +482,22 @@ public class TagPrintTest implements Serializable {
                 new Style("color:red;width:15px"));
         html.setPrependDocType(true);
         final String expectedString = "<!DOCTYPE html>\n<html id=\"htmlId\" style=\"color:red;width:15px;\" hidden></html>";
-       assertEquals(expectedString,
-                html.toHtmlString(true, StandardCharsets.UTF_8.name()));
+        
+        //in oracle jdk 1.8 it comes as expectedString2 
+        final String expectedString2 = "<!DOCTYPE html>\n<html hidden id=\"htmlId\" style=\"color:red;width:15px;\"></html>";
+        final String expectedString3 = "<!DOCTYPE html>\n<html hidden style=\"color:red;width:15px;\" id=\"htmlId\"></html>";
+        final String expectedString4 = "<!DOCTYPE html>\n<html style=\"color:red;width:15px;\" hidden id=\"htmlId\"></html>";
+        final String expectedString5 = "<!DOCTYPE html>\n<html style=\"color:red;width:15px;\" id=\"htmlId\" hidden></html>";
+        
+        if (!expectedString.equals(html.toHtmlString(true, StandardCharsets.UTF_8.name()))
+                && !expectedString2.equals(html.toHtmlString(true, StandardCharsets.UTF_8.name()))
+                && !expectedString3.equals(html.toHtmlString(true, StandardCharsets.UTF_8.name()))
+                && !expectedString4.equals(html.toHtmlString(true, StandardCharsets.UTF_8.name()))
+                && !expectedString5.equals(html.toHtmlString(true, StandardCharsets.UTF_8.name()))) {
+            
+            Assert.fail("testToHtmlStringWithCharset3 could not match expectedString 1 to 5");
+        }
+
     }
 
 }
