@@ -170,7 +170,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
      * should be called only once per object.
      *
      * @param attributes
-     * @since 1.1.5
+     * @since 1.2.0
      * @author WFF
      */
     private void initAttributes(final AbstractAttribute... attributes) {
