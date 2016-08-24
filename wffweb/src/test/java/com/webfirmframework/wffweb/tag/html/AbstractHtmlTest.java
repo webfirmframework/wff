@@ -15,9 +15,10 @@
  */
 package com.webfirmframework.wffweb.tag.html;
 
+import static org.junit.Assert.*;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -25,8 +26,8 @@ import org.junit.Test;
 import com.webfirmframework.wffweb.tag.html.attribute.Name;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
-import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
-import com.webfirmframework.wffweb.util.data.NameValue;
+import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Span;
+import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 
 public class AbstractHtmlTest {
 
@@ -54,7 +55,7 @@ public class AbstractHtmlTest {
         byte[] wffMessageBytes = baos.toByteArray();
         System.out.println("wffMessageBytes.length "+wffMessageBytes.length);
         System.out.println("html.toHtmlString().length() "+html.toHtmlString().length());
-        List<NameValue> parse = WffBinaryMessageUtil.VERSION_1.parse(wffMessageBytes);
+//        List<NameValue> parse = WffBinaryMessageUtil.VERSION_1.parse(wffMessageBytes);
         
         
         
@@ -113,7 +114,57 @@ public class AbstractHtmlTest {
         Assert.assertEquals("<html name=\"another\"><div name=\"somename\"></div><div name=\"somename\"></div></html>", html.toHtmlString());
 
     }
-    
-    
+   
+    @Test
+    public void testHierarchy() throws Exception {
+        Div div = new Div(null, new Id("one")) {
+            {
+//            for (int i = 0; i < 100000; i++) {
+//                new Div(this);
+//            }
+                new NoTag(this, "some cont") {{
+                  new H2(this) {{
+                    new NoTag(this, "h1 contetn");  
+                  }};  
+                }};
+                new NoTag(this, "before span");
+                new Span(this, new Id("two")) {{
+                    new NoTag(this, "span child content");
+                }};
+                new NoTag(this, "after span");
+                new P(this, new Id("three"));
+            }
+        };
+        String htmlString = div.toHtmlString();
+        Assert.assertEquals("<div id=\"one\"><h2>h1 contetn</h2>some contbefore span<span id=\"two\">span child content</span>after span<p id=\"three\"></p></div>", htmlString);
+    }
+ 
+    @SuppressWarnings("serial")
+    @Test
+    public void testPerformance() {
+        
+        try {
+            long before = System.currentTimeMillis();
+            
+            
+            
+            Div div = new Div(null) {
+                {
+                    for (int i = 0; i < 100000; i++) {
+                        new Div(this);
+                    }
+
+                }
+            };
+            
+            String htmlString = div.toHtmlString();
+            
+            long after = System.currentTimeMillis();
+            
+            System.out.println(htmlString.length()+" tag bytes generation took " + (after - before)+" ms");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

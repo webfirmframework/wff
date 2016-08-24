@@ -484,16 +484,19 @@ public abstract class AbstractHtml extends AbstractTagBase {
             for (final AbstractHtml child : children) {
                 child.setRebuild(rebuild);
                 tagBuilder.append(child.getOpeningTag());
+                
                 // tagBuilder.append("\n");// TODO should be removed later
-                if (isHtmlStartSBAsFirst() && htmlMiddleSB != null) {
-                    tagBuilder.append(getHtmlMiddleSB());
-                }
+//                if (isHtmlStartSBAsFirst() && htmlMiddleSB != null) {
+//                    tagBuilder.append(getHtmlMiddleSB());
+//                    System.out.println("getHtmlMiddleSB() "+getHtmlMiddleSB());
+//                }
 
                 final List<AbstractHtml> childrenOfChildren = child.children;
 
-                if (!isHtmlStartSBAsFirst() && htmlMiddleSB != null) {
-                    tagBuilder.append(getHtmlMiddleSB());
-                }
+//                if (!isHtmlStartSBAsFirst() && htmlMiddleSB != null) {
+//                    tagBuilder.append(getHtmlMiddleSB());
+//                    System.out.println("getHtmlMiddleSB() "+getHtmlMiddleSB());
+//                }
                 recurChildren(childrenOfChildren, rebuild);
 
                 tagBuilder.append(child.closingTag);
@@ -519,17 +522,18 @@ public abstract class AbstractHtml extends AbstractTagBase {
             for (final AbstractHtml child : children) {
                 child.setRebuild(rebuild);
                 outputStream.write(child.getOpeningTag().getBytes(charset));
-                if (isHtmlStartSBAsFirst() && htmlMiddleSB != null) {
-                    outputStream.write(
-                            getHtmlMiddleSB().toString().getBytes(charset));
-                }
+                
+//                if (isHtmlStartSBAsFirst() && htmlMiddleSB != null) {
+//                    outputStream.write(
+//                            getHtmlMiddleSB().toString().getBytes(charset));
+//                }
 
                 final List<AbstractHtml> childrenOfChildren = child.children;
 
-                if (!isHtmlStartSBAsFirst() && htmlMiddleSB != null) {
-                    outputStream.write(
-                            getHtmlMiddleSB().toString().getBytes(charset));
-                }
+//                if (!isHtmlStartSBAsFirst() && htmlMiddleSB != null) {
+//                    outputStream.write(
+//                            getHtmlMiddleSB().toString().getBytes(charset));
+//                }
                 recurChildrenToOutputStream(childrenOfChildren, rebuild);
                 outputStream.write(child.closingTag.getBytes(charset));
             }
@@ -596,31 +600,31 @@ public abstract class AbstractHtml extends AbstractTagBase {
 
                 wffBinaryMessageOutputStreamer.write(nameValue);
 
-                if (isHtmlStartSBAsFirst() && htmlMiddleSB != null) {
-
-                    final NameValue closingTagNameValue = new NameValue();
-                    closingTagNameValue.setName(new byte[0]);
-                    closingTagNameValue.setValues(new byte[][] {
-                            getHtmlMiddleSB().toString().getBytes(charset) });
-                    wffBinaryMessageOutputStreamer.write(closingTagNameValue);
-
-                    // outputStream.write(
-                    // getHtmlMiddleSB().toString().getBytes(charset));
-                }
+//                if (isHtmlStartSBAsFirst() && htmlMiddleSB != null) {
+//
+//                    final NameValue closingTagNameValue = new NameValue();
+//                    closingTagNameValue.setName(new byte[0]);
+//                    closingTagNameValue.setValues(new byte[][] {
+//                            getHtmlMiddleSB().toString().getBytes(charset) });
+//                    wffBinaryMessageOutputStreamer.write(closingTagNameValue);
+//
+//                    // outputStream.write(
+//                    // getHtmlMiddleSB().toString().getBytes(charset));
+//                }
 
                 final List<AbstractHtml> childrenOfChildren = child.children;
 
-                if (!isHtmlStartSBAsFirst() && htmlMiddleSB != null) {
-
-                    final NameValue closingTagNameValue = new NameValue();
-                    closingTagNameValue.setName(new byte[0]);
-                    closingTagNameValue.setValues(new byte[][] {
-                            getHtmlMiddleSB().toString().getBytes(charset) });
-                    wffBinaryMessageOutputStreamer.write(closingTagNameValue);
-
-                    // outputStream.write(
-                    // getHtmlMiddleSB().toString().getBytes(charset));
-                }
+//                if (!isHtmlStartSBAsFirst() && htmlMiddleSB != null) {
+//
+//                    final NameValue closingTagNameValue = new NameValue();
+//                    closingTagNameValue.setName(new byte[0]);
+//                    closingTagNameValue.setValues(new byte[][] {
+//                            getHtmlMiddleSB().toString().getBytes(charset) });
+//                    wffBinaryMessageOutputStreamer.write(closingTagNameValue);
+//
+//                    // outputStream.write(
+//                    // getHtmlMiddleSB().toString().getBytes(charset));
+//                }
 
                 recurChildrenToWffBinaryMessageOutputStream(childrenOfChildren,
                         rebuild);
