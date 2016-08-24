@@ -46,7 +46,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  */
 public abstract class AbstractHtml extends AbstractTagBase {
 
-    private static final long serialVersionUID = 1_0_0L;
+    private static final long serialVersionUID = 1_1_0L;
 
     protected static int tagNameIndex;
 
