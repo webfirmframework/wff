@@ -22,9 +22,9 @@ import com.webfirmframework.wffweb.tag.html.identifier.AreaAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 
 /**
- * 
+ *
  * <code>type</code> attribute for the element.<br/>
- * 
+ *
  * <i>type</i> attribute for <i>a</i> element :- <br/>
  *
  * This attribute specifies the media type in the form of a MIME type for the
@@ -35,8 +35,8 @@ import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
  * http://www.w3.org/TR/html4/references.html#ref-MIMETYPES. Use this attribute
  * only if the href attribute is present. <br/>
  * <br/>
- * 
- * 
+ *
+ *
  * <i>type</i> attribute for <i>area</i> element :- <br/>
  * This attribute specifies the media type in the form of a MIME type for the
  * link target. Generally, this is provided strictly as advisory information;
@@ -46,9 +46,9 @@ import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
  * http://www.w3.org/TR/html4/references.html#ref-MIMETYPES. Use this attribute
  * only if the href attribute is present. <br/>
  * <br/>
- * 
+ *
  * <i>type</i> attribute for <i>area</i> element :- <br/>
- * 
+ *
  * <pre>
  * The type of control to display. The default type is text, if this attribute is not specified. Possible values are:
  * button: A push button with no default behavior.
@@ -78,10 +78,10 @@ import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
  * time: HTML5 A control for entering a time value with no time zone.
  * url: HTML5 A field for editing a URL. The input value is validated to contain either the empty string or a valid absolute URL before submitting. Line-breaks and leading or trailing whitespace are automatically removed from the input value. You can use attributes such as pattern and maxlength to restrict values entered in the control. The :valid and :invalid CSS pseudo-classes are applied as appropriate.
  * week: HTML5 A control for entering a date consisting of a week-year number and a week number with no time zone.
- * 
- * 
+ *
+ *
  * </pre>
- * 
+ *
  * @author WFF
  *
  */
@@ -90,51 +90,53 @@ public class Type extends AbstractAttribute
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final String button = "button";
+    public static final String BUTTON = "button";
 
-    public static final String checkbox = "checkbox";
+    public static final String CHECKBOX = "checkbox";
 
-    public static final String color = "color";
+    public static final String COLOR = "color";
 
-    public static final String date = "date";
+    public static final String DATE = "date";
 
-    public static final String datetime = "datetime";
+    public static final String DATETIME = "datetime";
 
-    public static final String datetime_local = "datetime-local";
+    public static final String DATETIME_LOCAL = "datetime-local";
 
-    public static final String email = "email";
+    public static final String EMAIL = "email";
 
-    public static final String file = "file";
+    public static final String FILE = "file";
 
-    public static final String hidden = "hidden";
+    public static final String HIDDEN = "hidden";
 
-    public static final String image = "image";
+    public static final String IMAGE = "image";
 
-    public static final String month = "month";
+    public static final String MONTH = "month";
 
-    public static final String number = "number";
+    public static final String NUMBER = "number";
 
-    public static final String password = "password";
+    public static final String PASSWORD = "password";
 
-    public static final String radio = "radio";
+    public static final String RADIO = "radio";
 
-    public static final String range = "range";
+    public static final String RANGE = "range";
 
-    public static final String reset = "reset";
+    public static final String RESET = "reset";
 
-    public static final String search = "search";
+    public static final String SEARCH = "search";
 
-    public static final String submit = "submit";
+    public static final String SUBMIT = "submit";
 
-    public static final String tel = "tel";
+    public static final String TEL = "tel";
 
-    public static final String text = "text";
+    public static final String TEXT = "text";
 
-    public static final String time = "time";
+    public static final String TIME = "time";
 
-    public static final String url = "url";
+    public static final String URL = "url";
 
-    public static final String week = "week";
+    public static final String WEEK = "week";
+
+    public static final String TEXT_JAVASCRIPT = "text/javascript";
 
     {
         super.setAttributeName(AttributeNameConstants.TYPE);

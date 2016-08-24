@@ -19,7 +19,7 @@ import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 
 public abstract class AbstractAttribute extends AbstractTagBase {
 
-    private static final long serialVersionUID = 1_0_0L;
+    private static final long serialVersionUID = 1_1_0L;
 
     public static final Logger LOGGER = Logger
             .getLogger(AbstractAttribute.class.getName());
