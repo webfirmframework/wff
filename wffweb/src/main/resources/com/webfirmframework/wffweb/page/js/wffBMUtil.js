@@ -30,6 +30,7 @@ var wffBMUtil = new function() {
 			var maxValuesBytesLength = 0;
 
 			for (var j = 0; j < values.length; j++) {
+				value = values[j];
 				if (value != null) {
 					maxValuesBytesLength += value.length;
 				}
@@ -387,6 +388,5 @@ var wffBMUtil = new function() {
 	};
 
 	this.getDoubleFromOptimizedSBytes = getDoubleFromOptimizedSBytes;
-	
 
 };
