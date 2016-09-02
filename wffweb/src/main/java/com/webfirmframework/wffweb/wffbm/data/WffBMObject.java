@@ -39,6 +39,7 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
     }
 
     public WffBMObject(final boolean outer) {
+        this.outer = outer;
     }
 
     public WffBMObject(final byte[] bMBytes) {

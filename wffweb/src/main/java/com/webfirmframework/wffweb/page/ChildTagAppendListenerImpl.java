@@ -39,7 +39,7 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
     public static final Logger LOGGER = Logger
             .getLogger(ChildTagRemoveListenerImpl.class.getName());
 
-    private static Object accessObject;
+    private Object accessObject;
 
     private BrowserPage browserPage;
 
@@ -51,7 +51,7 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
     ChildTagAppendListenerImpl(final BrowserPage browserPage,
             final Object accessObject) {
         this.browserPage = browserPage;
-        ChildTagAppendListenerImpl.accessObject = accessObject;
+        this.accessObject = accessObject;
     }
 
     @Override

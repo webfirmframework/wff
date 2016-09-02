@@ -49,8 +49,6 @@ public enum WffJsFile {
 
     private String filename;
 
-    private long fileLength;
-
     private String optimizedFileContent;
 
     private static final Set<String> FUNCTION_NAMES = new HashSet<String>();
@@ -71,7 +69,7 @@ public enum WffJsFile {
     private void init() {
         try {
 
-            fileLength = Files.size(
+            final long fileLength = Files.size(
                     Paths.get(WffJsFile.class.getResource(filename).toURI()));
 
             final List<String> allLines = Files.readAllLines(
