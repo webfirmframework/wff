@@ -44,7 +44,7 @@ public class AttributeRemoveListenerImpl implements AttributeRemoveListener {
     public void removedAttributes(final RemovedEvent event) {
 
         // should always be taken from browserPage as it could be changed
-        final WebSocketPushListener wsListener = browserPage.getWsListener();
+        final WebSocketPushListener wsListener = browserPage.wsListener;
 
         try {
 

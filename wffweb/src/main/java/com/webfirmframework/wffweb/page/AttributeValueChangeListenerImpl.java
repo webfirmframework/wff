@@ -46,7 +46,7 @@ class AttributeValueChangeListenerImpl implements AttributeValueChangeListener {
     @Override
     public void valueChanged(final Event event) {
         // should always be taken from browserPage as it could be changed
-        final WebSocketPushListener wsListener = browserPage.getWsListener();
+        final WebSocketPushListener wsListener = browserPage.wsListener;
 
         // in this listener, pushing value change of attribute to the
         // client

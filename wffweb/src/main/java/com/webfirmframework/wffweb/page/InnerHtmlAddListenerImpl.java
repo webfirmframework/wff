@@ -48,7 +48,7 @@ class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
     public void innerHtmlAdded(final Event event) {
 
         // should always be taken from browserPage as it could be changed
-        final WebSocketPushListener wsListener = browserPage.getWsListener();
+        final WebSocketPushListener wsListener = browserPage.wsListener;
 
         final AbstractHtml parentTag = event.getParentTag();
         final AbstractHtml innerHtmlTag = event.getInnerHtmlTag();

@@ -58,6 +58,16 @@ public abstract class BrowserPage implements Serializable {
     public static final Logger LOGGER = Logger
             .getLogger(BrowserPage.class.getName());
 
+    private String instanceId;
+
+    private AttributeValueChangeListener valueChangeListener;
+
+    private Map<String, AbstractHtml> tagByWffId;
+
+    private AbstractHtml abstractHtml;
+
+    WebSocketPushListener wsListener;
+
     // for security purpose, the class name should not be modified
     private static final class Security implements Serializable {
 
@@ -73,16 +83,6 @@ public abstract class BrowserPage implements Serializable {
         ACCESS_OBJECT = new Security();
     }
 
-    private String instanceId;
-
-    private AttributeValueChangeListener valueChangeListener;
-
-    private Map<String, AbstractHtml> tagByWffId;
-
-    private AbstractHtml abstractHtml;
-
-    private WebSocketPushListener wsListener;
-
     public abstract String webSocketUrl();
 
     {
@@ -97,10 +97,6 @@ public abstract class BrowserPage implements Serializable {
     public void setWebSocketPushListener(
             final WebSocketPushListener wsListener) {
         this.wsListener = wsListener;
-    }
-
-    WebSocketPushListener getWsListener() {
-        return wsListener;
     }
 
     String getNewDataWffId() {
