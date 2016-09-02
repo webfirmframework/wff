@@ -40,7 +40,7 @@ public class AttributeAddListenerImpl implements AttributeAddListener {
     public void addedAttributes(final AddEvent event) {
 
         // should always be taken from browserPage as it could be changed
-        final WebSocketPushListener wsListener = browserPage.wsListener;
+        final WebSocketPushListener wsListener = browserPage.getWsListener();
 
         try {
 

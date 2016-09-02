@@ -61,7 +61,7 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
 
             // should always be taken from browserPage as it could be changed
             final WebSocketPushListener wsListener = browserPage
-                    .wsListener;
+                    .getWsListener();
 
             final AbstractHtml parentTag = event.getParentTag();
             final AbstractHtml appendedChildTag = event.getAppendedChildTag();
@@ -136,7 +136,7 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
         try {
             // should always be taken from browserPage as it could be changed
             final WebSocketPushListener wsListener = browserPage
-                    .wsListener;
+                    .getWsListener();
 
             final AbstractHtml parentTag = event.getParentTag();
             final Collection<? extends AbstractHtml> appendedChildTags = event
@@ -218,7 +218,7 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
     @Override
     public void childMoved(final ChildMovedEvent event) {
         // should always be taken from browserPage as it could be changed
-        final WebSocketPushListener wsListener = browserPage.wsListener;
+        final WebSocketPushListener wsListener = browserPage.getWsListener();
 
         //@formatter:off
         // moved children tags from some parents to another task format (in this method moving only one child) :-
@@ -277,7 +277,7 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
     public void childrendAppendedOrMoved(final List<ChildMovedEvent> events) {
 
         // should always be taken from browserPage as it could be changed
-        final WebSocketPushListener wsListener = browserPage.wsListener;
+        final WebSocketPushListener wsListener = browserPage.getWsListener();
 
         //@formatter:off
         // moved children tags from some parents to another task format (in this method moving only one child) :-

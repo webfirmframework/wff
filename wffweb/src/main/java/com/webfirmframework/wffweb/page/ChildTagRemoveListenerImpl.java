@@ -57,7 +57,7 @@ class ChildTagRemoveListenerImpl implements ChildTagRemoveListener {
         try {
             // should always be taken from browserPage as it could be changed
             final WebSocketPushListener wsListener = browserPage
-                    .wsListener;
+                    .getWsListener();
             //@formatter:off
             // removed child task format :-
             // { "name": task_byte, "values" : [REMOVED_TAGS_byte_from_Task_enum]}, { "name": data-wff-id, "values" : [ parent_tag_name, html_string ]}
@@ -116,7 +116,7 @@ class ChildTagRemoveListenerImpl implements ChildTagRemoveListener {
     public void allChildrenRemoved(final Event event) {
 
         // should always be taken from browserPage as it could be changed
-        final WebSocketPushListener wsListener = browserPage.wsListener;
+        final WebSocketPushListener wsListener = browserPage.getWsListener();
 
         final AbstractHtml parentTag = event.getParentTag();
 

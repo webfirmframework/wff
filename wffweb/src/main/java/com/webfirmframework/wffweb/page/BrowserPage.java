@@ -66,7 +66,7 @@ public abstract class BrowserPage implements Serializable {
 
     private AbstractHtml abstractHtml;
 
-    WebSocketPushListener wsListener;
+    private WebSocketPushListener wsListener;
 
     // for security purpose, the class name should not be modified
     private static final class Security implements Serializable {
@@ -97,6 +97,10 @@ public abstract class BrowserPage implements Serializable {
     public void setWebSocketPushListener(
             final WebSocketPushListener wsListener) {
         this.wsListener = wsListener;
+    }
+
+    public WebSocketPushListener getWsListener() {
+        return wsListener;
     }
 
     String getNewDataWffId() {
