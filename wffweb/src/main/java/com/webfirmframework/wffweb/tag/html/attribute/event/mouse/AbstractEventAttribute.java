@@ -239,6 +239,10 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
 
                 this.serverAsyncMethod = serverAsyncMethod;
                 super.setAttributeValue(builder.toString());
+            } else {
+                this.serverAsyncMethod = serverAsyncMethod;
+                super.setAttributeValue("wffServerMethods.invokeAsync(this,'"
+                        + getAttributeName() + "')");
             }
 
         }
