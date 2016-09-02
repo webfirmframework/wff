@@ -4,16 +4,22 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Logger;
 
+import com.webfirmframework.wffweb.WffSecurityException;
+import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
 import com.webfirmframework.wffweb.tag.core.AbstractTagBase;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.attribute.listener.AttributeValueChangeListener;
 import com.webfirmframework.wffweb.util.StringBuilderUtil;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 
@@ -32,6 +38,10 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     private Set<AbstractHtml> ownerTags;
 
     private StringBuilder tagBuilder;
+
+    private AttributeValueChangeListener valueChangeListener;
+
+    private Set<AttributeValueChangeListener> valueChangeListeners;
 
     private transient Charset charset = Charset.defaultCharset();
 
@@ -365,13 +375,11 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected void setAttributeValueMap(
             final Map<String, String> attributeValueMap) {
-        if (this.attributeValueMap != null
-                && !this.attributeValueMap.equals(attributeValueMap)) {
-            setModified(true);
-        } else if (this.attributeValueMap == null
-                && attributeValueMap != null) {
+
+        if (!Objects.equals(attributeValueMap, this.attributeValueMap)) {
             setModified(true);
         }
+
         this.attributeValueMap = attributeValueMap;
     }
 
@@ -389,12 +397,41 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
         final Map<String, String> attributeValueMap = getAttributeValueMap();
 
-        if (!attributeValueMap.containsKey(key)
-                || !value.equals(attributeValueMap.get(key))) {
-            attributeValueMap.put(key, value);
+        final String previousValue = attributeValueMap.put(key, value);
+
+        if (!Objects.equals(previousValue, value)) {
+
             setModified(true);
+
+            if (valueChangeListener != null) {
+                // ownerTags should not be modified in the consuming
+                // part, here
+                // skipped it making unmodifiable to gain
+                // performance
+                final AttributeValueChangeListener.Event event = new AttributeValueChangeListener.Event(
+                        this, ownerTags);
+                valueChangeListener.valueChanged(event);
+            }
+            if (valueChangeListeners != null) {
+                for (final AttributeValueChangeListener listener : valueChangeListeners) {
+                    final AttributeValueChangeListener.Event event = new AttributeValueChangeListener.Event(
+                            AbstractAttribute.this,
+                            Collections.unmodifiableSet(ownerTags));
+                    listener.valueChanged(event);
+                }
+            }
+
             return true;
+
         }
+
+        // if (!attributeValueMap.containsKey(key)
+        // || !value.equals(attributeValueMap.get(key))) {
+        //
+        //
+        // setModified(true);
+        // return true;
+        // }
         return false;
     }
 
@@ -409,7 +446,27 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     protected boolean addAllToAttributeValueMap(final Map<String, String> map) {
         if (map != null && map.size() > 0) {
             getAttributeValueMap().putAll(map);
+
             setModified(true);
+
+            if (valueChangeListener != null) {
+                // ownerTags should not be modified in the consuming
+                // part, here
+                // skipped it making unmodifiable to gain
+                // performance
+                final AttributeValueChangeListener.Event event = new AttributeValueChangeListener.Event(
+                        this, ownerTags);
+                valueChangeListener.valueChanged(event);
+            }
+            if (valueChangeListeners != null) {
+                for (final AttributeValueChangeListener listener : valueChangeListeners) {
+                    final AttributeValueChangeListener.Event event = new AttributeValueChangeListener.Event(
+                            AbstractAttribute.this,
+                            Collections.unmodifiableSet(ownerTags));
+                    listener.valueChanged(event);
+                }
+            }
+
             return true;
         }
         return false;
@@ -446,11 +503,32 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected boolean removeFromAttributeValueMap(final String key,
             final String value) {
-        if (value == getAttributeValueMap().get(key) || (value != null
-                && value.equals(getAttributeValueMap().get(key)))) {
-            getAttributeValueMap().remove(key);
+        final String previousValue = getAttributeValueMap().remove(key);
+
+        if (!Objects.equals(previousValue, value)) {
+
             setModified(true);
+
+            if (valueChangeListener != null) {
+                // ownerTags should not be modified in the consuming
+                // part, here
+                // skipped it making unmodifiable to gain
+                // performance
+                final AttributeValueChangeListener.Event event = new AttributeValueChangeListener.Event(
+                        this, ownerTags);
+                valueChangeListener.valueChanged(event);
+            }
+            if (valueChangeListeners != null) {
+                for (final AttributeValueChangeListener listener : valueChangeListeners) {
+                    final AttributeValueChangeListener.Event event = new AttributeValueChangeListener.Event(
+                            AbstractAttribute.this,
+                            Collections.unmodifiableSet(ownerTags));
+                    listener.valueChanged(event);
+                }
+            }
+
             return true;
+
         }
         return false;
     }
@@ -459,6 +537,23 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         if (attributeValueMap != null && getAttributeValueMap().size() > 0) {
             getAttributeValueMap().clear();
             setModified(true);
+            if (valueChangeListener != null) {
+                // ownerTags should not be modified in the consuming
+                // part, here
+                // skipped it making unmodifiable to gain
+                // performance
+                final AttributeValueChangeListener.Event event = new AttributeValueChangeListener.Event(
+                        this, ownerTags);
+                valueChangeListener.valueChanged(event);
+            }
+            if (valueChangeListeners != null) {
+                for (final AttributeValueChangeListener listener : valueChangeListeners) {
+                    final AttributeValueChangeListener.Event event = new AttributeValueChangeListener.Event(
+                            AbstractAttribute.this,
+                            Collections.unmodifiableSet(ownerTags));
+                    listener.valueChanged(event);
+                }
+            }
         }
     }
 
@@ -478,14 +573,26 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @author WFF
      */
     protected void setAttributeValue(final String attributeValue) {
-        if (this.attributeValue != null
-                && !this.attributeValue.equals(attributeValue)) {
+        if (!Objects.equals(this.attributeValue, attributeValue)) {
             setModified(true);
-        } else if (this.attributeValue == null && attributeValue != null) {
-            setModified(true);
+            if (valueChangeListener != null) {
+                // ownerTags should not be modified in the consuming part, here
+                // skipped it making unmodifiable to gain performance
+                final AttributeValueChangeListener.Event event = new AttributeValueChangeListener.Event(
+                        AbstractAttribute.this, ownerTags);
+                valueChangeListener.valueChanged(event);
+            }
+
+            if (valueChangeListeners != null) {
+                for (final AttributeValueChangeListener listener : valueChangeListeners) {
+                    final AttributeValueChangeListener.Event event = new AttributeValueChangeListener.Event(
+                            AbstractAttribute.this,
+                            Collections.unmodifiableSet(ownerTags));
+                    listener.valueChanged(event);
+                }
+            }
         }
         this.attributeValue = attributeValue;
-
     }
 
     /**
@@ -498,20 +605,20 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     @Deprecated
     public AbstractHtml getOwnerTag() {
         if (ownerTags.iterator().hasNext()) {
-            ownerTags.iterator().next();
+            return ownerTags.iterator().next();
         }
         return null;
     }
 
     /**
-     * This method is for internal purpose.
      *
-     * @return the tags which are consuming this attribute.
+     * @return the tags which are consuming this attribute as an unmodifiable
+     *         set.
      * @since 1.2.0
      * @author WFF
      */
     public Set<AbstractHtml> getOwnerTags() {
-        return ownerTags;
+        return Collections.unmodifiableSet(ownerTags);
     }
 
     /**
@@ -553,6 +660,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     }
 
     /**
+     * NB:- this is only for getting values. Use addToAttributeValueSet method
+     * for adding
+     *
      * @return the attributeValueSet
      * @since 1.0.0
      * @author WFF
@@ -571,11 +681,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @author WFF
      */
     protected void setAttributeValueSet(final Set<String> attributeValueSet) {
-        if (this.attributeValueSet != null
-                && !this.attributeValueSet.equals(attributeValueSet)) {
-            setModified(true);
-        } else if (this.attributeValueSet == null
-                && attributeValueSet != null) {
+        if (!Objects.equals(this.attributeValueSet, attributeValueSet)) {
             setModified(true);
         }
         this.attributeValueSet = attributeValueSet;
@@ -587,10 +693,33 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @param value
      * @since 1.0.0
      * @author WFF
+     * @return
      */
-    protected void addToAttributeValueSet(final String value) {
-        getAttributeValueSet().add(value);
-        setModified(true);
+    protected boolean addToAttributeValueSet(final String value) {
+        final boolean added = getAttributeValueSet().add(value);
+
+        if (added) {
+            setModified(true);
+            if (valueChangeListener != null) {
+                // ownerTags should not be modified in the consuming
+                // part, here
+                // skipped it making unmodifiable to gain
+                // performance
+                final AttributeValueChangeListener.Event event = new AttributeValueChangeListener.Event(
+                        AbstractAttribute.this, ownerTags);
+                valueChangeListener.valueChanged(event);
+            }
+            if (valueChangeListeners != null) {
+                for (final AttributeValueChangeListener listener : valueChangeListeners) {
+                    final AttributeValueChangeListener.Event event = new AttributeValueChangeListener.Event(
+                            AbstractAttribute.this,
+                            Collections.unmodifiableSet(ownerTags));
+                    listener.valueChanged(event);
+                }
+            }
+
+        }
+        return added;
     }
 
     /**
@@ -601,9 +730,31 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @author WFF
      */
     protected void addAllToAttributeValueSet(final Collection<String> values) {
-        if (values != null && !getAttributeValueSet().containsAll(values)) {
-            getAttributeValueSet().addAll(values);
-            setModified(true);
+        if (values != null) {
+
+            final boolean added = getAttributeValueSet().addAll(values);
+
+            if (added) {
+                setModified(true);
+                if (valueChangeListener != null) {
+                    // ownerTags should not be modified in the consuming
+                    // part, here
+                    // skipped it making unmodifiable to gain
+                    // performance
+                    final AttributeValueChangeListener.Event event = new AttributeValueChangeListener.Event(
+                            AbstractAttribute.this, ownerTags);
+                    valueChangeListener.valueChanged(event);
+                }
+                if (valueChangeListeners != null) {
+                    for (final AttributeValueChangeListener listener : valueChangeListeners) {
+                        final AttributeValueChangeListener.Event event = new AttributeValueChangeListener.Event(
+                                AbstractAttribute.this,
+                                Collections.unmodifiableSet(ownerTags));
+                        listener.valueChanged(event);
+                    }
+                }
+            }
+
         }
     }
 
@@ -615,8 +766,30 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @author WFF
      */
     protected void removeFromAttributeValueSet(final String value) {
-        getAttributeValueSet().remove(value);
-        setModified(true);
+        final boolean removed = getAttributeValueSet().remove(value);
+
+        if (removed) {
+
+            setModified(true);
+
+            if (valueChangeListener != null) {
+                // ownerTags should not be modified in the consuming
+                // part, here
+                // skipped it making unmodifiable to gain
+                // performance
+                final AttributeValueChangeListener.Event event = new AttributeValueChangeListener.Event(
+                        AbstractAttribute.this, ownerTags);
+                valueChangeListener.valueChanged(event);
+            }
+            if (valueChangeListeners != null) {
+                for (final AttributeValueChangeListener listener : valueChangeListeners) {
+                    final AttributeValueChangeListener.Event event = new AttributeValueChangeListener.Event(
+                            AbstractAttribute.this,
+                            Collections.unmodifiableSet(ownerTags));
+                    listener.valueChanged(event);
+                }
+            }
+        }
     }
 
     /**
@@ -628,8 +801,29 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected void removeAllFromAttributeValueSet(
             final Collection<String> values) {
-        getAttributeValueSet().removeAll(values);
-        setModified(true);
+        final boolean removedAll = getAttributeValueSet().removeAll(values);
+
+        if (removedAll) {
+            setModified(true);
+            if (valueChangeListener != null) {
+                // ownerTags should not be modified in the consuming
+                // part, here
+                // skipped it making unmodifiable to gain
+                // performance
+                final AttributeValueChangeListener.Event event = new AttributeValueChangeListener.Event(
+                        AbstractAttribute.this, ownerTags);
+                valueChangeListener.valueChanged(event);
+            }
+            if (valueChangeListeners != null) {
+                for (final AttributeValueChangeListener listener : valueChangeListeners) {
+                    final AttributeValueChangeListener.Event event = new AttributeValueChangeListener.Event(
+                            AbstractAttribute.this,
+                            Collections.unmodifiableSet(ownerTags));
+                    listener.valueChanged(event);
+                }
+            }
+        }
+
     }
 
     /**
@@ -640,6 +834,25 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected void removeAllFromAttributeValueSet() {
         getAttributeValueSet().clear();
+        setModified(true);
+        if (valueChangeListener != null) {
+            // ownerTags should not be modified in the consuming
+            // part, here
+            // skipped it making unmodifiable to gain
+            // performance
+            final AttributeValueChangeListener.Event event = new AttributeValueChangeListener.Event(
+                    AbstractAttribute.this, ownerTags);
+            valueChangeListener.valueChanged(event);
+        }
+        if (valueChangeListeners != null) {
+            for (final AttributeValueChangeListener listener : valueChangeListeners) {
+                final AttributeValueChangeListener.Event event = new AttributeValueChangeListener.Event(
+                        AbstractAttribute.this,
+                        Collections.unmodifiableSet(ownerTags));
+                listener.valueChanged(event);
+            }
+        }
+
     }
 
     /**
@@ -680,4 +893,85 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     public void setCharset(final Charset charset) {
         this.charset = charset;
     }
+
+    /**
+     * NB:- This listener is used for internal purpose and should not be
+     * consumed. Instead, use addValueChangeListener and getValueChangeListeners
+     * methods.
+     *
+     * @param caller
+     *            object of this method
+     * @return the valueChangeListener
+     */
+    public AttributeValueChangeListener getValueChangeListener(
+            final Object accessObject) {
+        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE
+                .equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException(
+                    "Not allowed to consume this method. Instead, use addValueChangeListener and getValueChangeListeners methods.");
+        }
+        return valueChangeListener;
+    }
+
+    /**
+     * NB:- This listener is used for internal purpose and should not be
+     * consumed. Instead, use addValueChangeListener and getValueChangeListeners
+     * methods.
+     *
+     * @param valueChangeListener
+     *            the valueChangeListener to set
+     * @param caller
+     *            object of this method
+     */
+    public void setValueChangeListener(
+            final AttributeValueChangeListener valueChangeListener,
+            final Object accessObject) {
+
+        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE
+                .equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException(
+                    "Not allowed to consume this method. Instead, use addValueChangeListener and getValueChangeListeners methods.");
+        }
+        this.valueChangeListener = valueChangeListener;
+    }
+
+    /**
+     * adds value change lister which will be invoked when the value changed
+     *
+     * @param valueChangeListener
+     * @since 1.2.0
+     * @author WFF
+     */
+    public void addValueChangeListener(
+            final AttributeValueChangeListener valueChangeListener) {
+        if (valueChangeListeners == null) {
+            valueChangeListeners = new TreeSet<AttributeValueChangeListener>();
+        }
+
+        valueChangeListeners.add(valueChangeListener);
+    }
+
+    /**
+     * removes the corresponding value change listener
+     *
+     * @param valueChangeListener
+     * @since 1.2.0
+     * @author WFF
+     */
+    public void removeValueChangeListener(
+            final AttributeValueChangeListener valueChangeListener) {
+        if (valueChangeListeners != null) {
+            valueChangeListeners.remove(valueChangeListener);
+        }
+    }
+
+    /**
+     * @return the set of value change listeners
+     * @since 1.2.0
+     * @author WFF
+     */
+    public Set<AttributeValueChangeListener> getValueChangeListeners() {
+        return Collections.unmodifiableSet(valueChangeListeners);
+    }
+
 }

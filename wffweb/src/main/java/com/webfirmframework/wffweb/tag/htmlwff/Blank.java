@@ -101,7 +101,7 @@ public class Blank extends AbstractHtml {
      * @author WFF
      */
     public void addChildren(final List<AbstractHtml> children) {
-        super.getChildren().addAll(children);
+        super.appendChildren(children);
     }
 
     /**
@@ -112,7 +112,7 @@ public class Blank extends AbstractHtml {
      * @author WFF
      */
     public void addChild(final AbstractHtml child) {
-        super.getChildren().add(child);
+        super.appendChild(child);
     }
 
     /**
@@ -123,7 +123,7 @@ public class Blank extends AbstractHtml {
      * @author WFF
      */
     public void removeChildren(final List<AbstractHtml> children) {
-        super.getChildren().removeAll(children);
+        super.removeChildren(children);
     }
 
     /**
@@ -133,8 +133,9 @@ public class Blank extends AbstractHtml {
      * @since 1.0.0
      * @author WFF
      */
-    public void removeChild(final AbstractHtml child) {
-        super.getChildren().remove(child);
+    @Override
+    public boolean removeChild(final AbstractHtml child) {
+        return super.removeChild(child);
     }
 
     /**
@@ -161,7 +162,7 @@ public class Blank extends AbstractHtml {
      * @author WFF
      */
     public void addChild(final String child) {
-        super.getChildren().add(new Blank(this, child));
+        super.getChildren().add(new NoTag(this, child));
     }
 
     /**

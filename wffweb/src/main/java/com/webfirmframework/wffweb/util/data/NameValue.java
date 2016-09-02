@@ -21,14 +21,14 @@ public class NameValue implements Serializable {
 
     private static final long serialVersionUID = 1_1_0L;
 
-    private byte[] name;
+    private byte[] name = {};
 
-    private byte[][] values;
+    private byte[][] values = {};
 
     public NameValue() {
     }
 
-    public NameValue(byte[] name, byte[][] values) {
+    public NameValue(final byte[] name, final byte[][] values) {
         super();
         this.name = name;
         this.values = values;
@@ -38,7 +38,7 @@ public class NameValue implements Serializable {
         return name;
     }
 
-    public void setName(byte[] name) {
+    public void setName(final byte... name) {
         this.name = name;
     }
 
@@ -46,7 +46,7 @@ public class NameValue implements Serializable {
         return values;
     }
 
-    public void setValues(byte[][] values) {
+    public void setValues(final byte[]... values) {
         this.values = values;
     }
 

@@ -77,6 +77,12 @@ public enum WffBinaryMessageUtil {
         @Override
         public byte[] getWffBinaryMessageBytes(
                 final List<NameValue> nameValues) {
+            return getWffBinaryMessageBytes(
+                    nameValues.toArray(new NameValue[nameValues.size()]));
+        }
+
+        @Override
+        public byte[] getWffBinaryMessageBytes(final NameValue... nameValues) {
 
             int maxNoOfNameBytes = 0;
             int maxNoOfValuesBytes = 0;
@@ -356,6 +362,16 @@ public enum WffBinaryMessageUtil {
     }
 
     /**
+     * @param nameValues
+     * @return the wff binary message bytes for the given name value pairs
+     * @since 1.2.0
+     * @author WFF
+     */
+    public byte[] getWffBinaryMessageBytes(final NameValue... nameValues) {
+        throw new AssertionError();
+    }
+
+    /**
      * @param bytes
      *            from which the integer value will be obtained
      * @return the integer value from the given bytes
@@ -389,6 +405,117 @@ public enum WffBinaryMessageUtil {
         }
         return bytes[0] << 24 | (bytes[1] & 0xFF) << 16 | (bytes[2] & 0xFF) << 8
                 | (bytes[3] & 0xFF);
+    }
+
+    /**
+     * @param value
+     * @return the bytes for the given double value in the IEEE 754 Standard
+     * @since 1.2.0
+     * @author WFF
+     */
+    public static byte[] getOptimizedBytesFromDouble(final double value) {
+        return getOptimizedBytesFromLong(Double.doubleToLongBits(value));
+    }
+
+    /**
+     * @param value
+     * @return the bytes for the given long value
+     * @since 1.2.0
+     * @author WFF
+     */
+    public static byte[] getOptimizedBytesFromLong(final long value) {
+
+        final byte zerothIndex = (byte) (value >> 56L);
+        final byte firstIndex = (byte) (value >> 48L);
+        final byte secondIndex = (byte) (value >> 40L);
+        final byte thirdIndex = (byte) (value >> 32L);
+        final byte fourthIndex = (byte) (value >> 24L);
+        final byte fifthIndex = (byte) (value >> 16L);
+        final byte sixthIndex = (byte) (value >> 8L);
+        final byte seventhIndex = (byte) value;
+
+        if (zerothIndex == 0) {
+
+            if (firstIndex == 0) {
+
+                if (secondIndex == 0) {
+
+                    if (thirdIndex == 0) {
+
+                        if (fourthIndex == 0) {
+
+                            if (fifthIndex == 0) {
+
+                                if (sixthIndex == 0) {
+
+                                    return new byte[] { seventhIndex };
+                                }
+                                return new byte[] { sixthIndex, seventhIndex };
+                            }
+                            return new byte[] { fifthIndex, sixthIndex,
+                                    seventhIndex };
+                        }
+
+                        return new byte[] { fourthIndex, fifthIndex, sixthIndex,
+                                seventhIndex };
+                    }
+
+                    return new byte[] { thirdIndex, fourthIndex, fifthIndex,
+                            sixthIndex, seventhIndex };
+                }
+
+                return new byte[] { secondIndex, thirdIndex, fourthIndex,
+                        fifthIndex, sixthIndex, seventhIndex };
+            }
+
+            return new byte[] { firstIndex, secondIndex, thirdIndex,
+                    fourthIndex, fifthIndex, sixthIndex, seventhIndex };
+        }
+
+        return new byte[] { zerothIndex, firstIndex, secondIndex, thirdIndex,
+                fourthIndex, fifthIndex, sixthIndex, seventhIndex };
+    }
+
+    /**
+     * @param bytes
+     *            the optimized bytes from which the integer value will be
+     *            obtained
+     * @return the long value from the given bytes
+     * @since 1.2.0
+     * @author WFF
+     */
+    public static int getLongFromOptimizedBytes(final byte[] bytes) {
+
+        if (bytes.length == 8) {
+            return bytes[0] << 56L | bytes[1] << 48L | bytes[2] << 40L
+                    | bytes[3] << 32L | bytes[4] << 24L
+                    | (bytes[5] & 0xFF) << 16L | (bytes[6] & 0xFF) << 8L
+                    | (bytes[7] & 0xFF);
+        } else if (bytes.length == 7) {
+            return bytes[0] << 48L | bytes[1] << 40L | bytes[2] << 32L
+                    | bytes[3] << 24L | (bytes[4] & 0xFF) << 16L
+                    | (bytes[5] & 0xFF) << 8L | (bytes[6] & 0xFF);
+        } else if (bytes.length == 6) {
+            return bytes[0] << 40L | bytes[1] << 32L | bytes[2] << 24L
+                    | (bytes[3] & 0xFF) << 16L | (bytes[4] & 0xFF) << 8L
+                    | (bytes[5] & 0xFF);
+        } else if (bytes.length == 5) {
+            return bytes[0] << 32L | bytes[1] << 24L | (bytes[2] & 0xFF) << 16L
+                    | (bytes[3] & 0xFF) << 8L | (bytes[4] & 0xFF);
+        } else if (bytes.length == 4) {
+            return bytes[0] << 24L | (bytes[1] & 0xFF) << 16L
+                    | (bytes[2] & 0xFF) << 8L | (bytes[3] & 0xFF);
+        } else if (bytes.length == 3) {
+            return (bytes[0] & 0xFF) << 16L | (bytes[1] & 0xFF) << 8L
+                    | (bytes[2] & 0xFF);
+        } else if (bytes.length == 2) {
+            return (bytes[0] & 0xFF) << 8L | (bytes[1] & 0xFF);
+        } else if (bytes.length == 1) {
+            return (bytes[0] & 0xFF);
+        }
+        return bytes[0] << 56L | bytes[1] << 48L | bytes[2] << 40L
+                | bytes[3] << 32L | bytes[4] << 24L | (bytes[5] & 0xFF) << 16L
+                | (bytes[6] & 0xFF) << 8L | (bytes[7] & 0xFF);
     }
 
     /**

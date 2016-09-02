@@ -179,6 +179,8 @@ public class AttributeNameConstants {
 
     public static final String BORDER = "border";
 
+    public static final String ONCLICK = "onclick";
+
     /**
      *
      * @author WFF
