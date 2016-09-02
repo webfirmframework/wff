@@ -2,7 +2,7 @@
  * this file must be loaded first.
  * this file should not be formatted
  */
-wffGlobal = new function() {
+var window.wffGlobal = new function() {
 	console.log('test');
 	var wffId = -1;
 	
