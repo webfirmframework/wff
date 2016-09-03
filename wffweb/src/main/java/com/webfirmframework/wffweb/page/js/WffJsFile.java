@@ -1,10 +1,9 @@
 package com.webfirmframework.wffweb.page.js;
 
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -69,15 +68,29 @@ public enum WffJsFile {
     private void init() {
         try {
 
-            final long fileLength = Files.size(
-                    Paths.get(WffJsFile.class.getResource(filename).toURI()));
+            // this might make java.nio.file.FileSystemNotFoundException in
+            // production server.
+            // final List<String> allLines = Files.readAllLines(
+            // Paths.get(WffJsFile.class.getResource(filename).toURI()),
+            // StandardCharsets.UTF_8);
 
-            final List<String> allLines = Files.readAllLines(
-                    Paths.get(WffJsFile.class.getResource(filename).toURI()),
-                    StandardCharsets.UTF_8);
+            final InputStream in = WffJsFile.class
+                    .getResourceAsStream(filename);
+            final BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(in, "UTF-8"));
+
+            // this will might java.nio.file.FileSystemNotFoundException in
+            // production server.
+            // final long fileLength = Files.size(
+            // Paths.get(WffJsFile.class.getResource(filename).toURI()));
+
+            final long fileLength = in.available() > 0 ? in.available() : 16;
 
             final StringBuilder builder = new StringBuilder((int) fileLength);
-            for (final String eachLine : allLines) {
+
+            String eachLine = null;
+
+            while ((eachLine = reader.readLine()) != null) {
                 // replacing double spaces with single space
                 // by .replaceAll(" +", " ")
                 // will not be file as there could e double space variable
