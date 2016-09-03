@@ -33,7 +33,7 @@ var wffServerMethods = new function () {
 	this.invokeAsyncWithPreFun = function(tag, attr, preFun) {
 		console.log('invokeAsync tag', tag);
 		
-		if (preFun()) {
+		if (preFun(tag)) {
 			var taskNameValue = wffTaskUtil.getTaskNameValue(wffGlobal.taskValues.TASK, wffGlobal.taskValues.INVOKE_ASYNC_METHOD);
 
 			
@@ -50,13 +50,13 @@ var wffServerMethods = new function () {
 	this.invokeAsyncWithPreFilterFun = function(tag, attr, preFun, filterFun) {
 		console.log('invokeAsyncWithPreFilterFun tag', tag);
 		
-		if (preFun()) {
+		if (preFun(tag)) {
 			var taskNameValue = wffTaskUtil.getTaskNameValue(wffGlobal.taskValues.TASK, wffGlobal.taskValues.INVOKE_ASYNC_METHOD);
 
 			
 			var attrBytes = encoder.encode(attr);
 			
-			var jsObject = filterFun();
+			var jsObject = filterFun(tag);
 			var argumentBMObject = new WffBMObject(jsObject);
 			var argBytes = argumentBMObject.getBMBytes();
 			
@@ -79,7 +79,7 @@ var wffServerMethods = new function () {
 		
 		var attrBytes = encoder.encode(attr);
 		
-		var jsObject = filterFun();
+		var jsObject = filterFun(tag);
 		var argumentBMObject = new WffBMObject(jsObject);
 		var argBytes = argumentBMObject.getBMBytes();
 		
@@ -97,13 +97,13 @@ var wffServerMethods = new function () {
 //	this.invokeAsyncWithPreFilterPostFun = function(tag, attr, preFun, filterFun, postFun) {
 //		console.log('invokeAsyncWithPreFilterFun tag', tag);
 //		
-//		if (preFun()) {
+//		if (preFun(tag)) {
 //			var taskNameValue = wffTaskUtil.getTaskNameValue(wffGlobal.taskValues.TASK, wffGlobal.taskValues.INVOKE_ASYNC_METHOD);
 //
 //			
 //			var attrBytes = encoder.encode(attr);
 //			
-//			var argumentBMObject = filterFun();
+//			var argumentBMObject = filterFun(tag);
 //			
 //			var argBytes = argumentBMObject.getBMBytes();
 //			

@@ -31,7 +31,9 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
         implements EventAttribute {
 
     private static final long serialVersionUID = 1_0_0L;
+
     private ServerAsyncMethod serverAsyncMethod;
+
     private String jsPostFunctionBody;
 
     {
@@ -54,6 +56,15 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
         super.setAttributeValue(value);
     }
 
+    /**
+     * @param attributeName
+     * @param preJsFunctionBody
+     * @param serverAsyncMethod
+     * @param jsFilterFunctionBody
+     * @param postJsFunctionBody
+     * @since 1.2.0
+     * @author WFF
+     */
     protected AbstractEventAttribute(final String attributeName,
             final String preJsFunctionBody,
             final ServerAsyncMethod serverAsyncMethod,
@@ -113,7 +124,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
         final String functionBody = jsfunctionBody.trim();
         final StringBuilder builder = new StringBuilder();
 
-        builder.append("function(){");
+        builder.append("function(source){");
         builder.append(functionBody);
         if (functionBody.charAt(functionBody.length() - 1) != ';') {
             builder.append(';');

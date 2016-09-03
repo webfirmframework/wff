@@ -93,10 +93,10 @@ var wffWS = new function() {
 
 		webSocket.onclose = function(event) {
 			console.log("onclose", event);
-			setTimeout(function(){ 
-				console.log("1 seconds loop");
-				wffWS.openSocket(wffGlobal.WS_URL); 
-				}, 1000);
+//			setTimeout(function(){ 
+//				console.log("1 seconds loop");
+//				wffWS.openSocket(wffGlobal.WS_URL); 
+//				}, 1000);
 		};
 	};
 
