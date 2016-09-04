@@ -1,6 +1,6 @@
 var wffTaskUtil = new function () {
 	
-	var encoder = new TextEncoder("utf-8");
+	var encoder = wffGlobal.encoder;
 	
 	this.getTaskNameValue = function(nameByte, valueByte) {
 //		var tUtf8Bytes = encoder.encode(name);
