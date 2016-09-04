@@ -131,14 +131,14 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
                 final byte[] valueBytes = {
                         (byte) (value.booleanValue() ? 1 : 0) };
                 nameValue.setValues(new byte[] { valueType }, valueBytes);
-            } else if (valueType == BMValueType.OBJECT.getType()) {
+            } else if (valueType == BMValueType.BM_OBJECT.getType()) {
 
                 final WffBMObject value = (WffBMObject) valueValueType
                         .getValue();
                 final byte[] valueBytes = value.build(false);
                 nameValue.setValues(new byte[] { valueType }, valueBytes);
 
-            } else if (valueType == BMValueType.ARRAY.getType()) {
+            } else if (valueType == BMValueType.BM_ARRAY.getType()) {
 
                 final WffBMArray value = (WffBMArray) valueValueType.getValue();
                 final byte[] valueBytes = value.build();
@@ -216,13 +216,13 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
                     final ValueValueType valueValueType = new ValueValueType(
                             name, valueType, value[0] == 1);
                     wffBMObject.put(name, valueValueType);
-                } else if (valueType == BMValueType.OBJECT.getType()) {
+                } else if (valueType == BMValueType.BM_OBJECT.getType()) {
 
                     final ValueValueType valueValueType = new ValueValueType(
                             name, valueType, new WffBMObject(value, false));
                     wffBMObject.put(name, valueValueType);
 
-                } else if (valueType == BMValueType.ARRAY.getType()) {
+                } else if (valueType == BMValueType.BM_ARRAY.getType()) {
                     final ValueValueType valueValueType = new ValueValueType(
                             name, valueType, new WffBMArray(value, false));
                     wffBMObject.put(name, valueValueType);

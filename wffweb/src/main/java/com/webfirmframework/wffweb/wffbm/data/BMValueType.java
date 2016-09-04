@@ -18,7 +18,7 @@ package com.webfirmframework.wffweb.wffbm.data;
 public enum BMValueType {
 
     // this order should not be changed
-    STRING, NUMBER, UNDEFINED, NULL, BOOLEAN, OBJECT, ARRAY, REG_EXP, FUNCTION;
+    STRING, NUMBER, UNDEFINED, NULL, BOOLEAN, BM_OBJECT, BM_ARRAY, REG_EXP, FUNCTION, BM_BYTE_ARRAY;
 
     private byte type;
 

@@ -68,7 +68,7 @@ public class WffBMArray extends LinkedList<Object> implements WffData {
 
             if (outer) {
                 final NameValue typeNameValue = iterator.next();
-                if (typeNameValue.getName()[0] == BMType.OBJECT.getType()) {
+                if (typeNameValue.getName()[0] == BMType.ARRAY.getType()) {
                     this.outer = true;
                 } else {
                     throw new WffRuntimeException(
@@ -114,13 +114,13 @@ public class WffBMArray extends LinkedList<Object> implements WffData {
                     for (final byte[] value : values) {
                         this.add(value[0] == 1);
                     }
-                } else if (valueType == BMValueType.OBJECT.getType()) {
+                } else if (valueType == BMValueType.BM_OBJECT.getType()) {
 
                     for (final byte[] value : values) {
                         this.add(new WffBMObject(value));
                     }
 
-                } else if (valueType == BMValueType.ARRAY.getType()) {
+                } else if (valueType == BMValueType.BM_ARRAY.getType()) {
 
                     for (final byte[] value : values) {
 
@@ -135,6 +135,10 @@ public class WffBMArray extends LinkedList<Object> implements WffData {
 
                     for (final byte[] value : values) {
                         this.add(new String(value, "UTF-8"));
+                    }
+                } else if (valueType == BMValueType.BM_BYTE_ARRAY.getType()) {
+                    for (final byte[] value : values) {
+                        this.add(new WffBMByteArray(value, false));
                     }
                 }
 
@@ -167,7 +171,7 @@ public class WffBMArray extends LinkedList<Object> implements WffData {
 
         if (outer) {
             final NameValue typeNameValue = new NameValue();
-            typeNameValue.setName(new byte[] { BMType.OBJECT.getType() });
+            typeNameValue.setName(new byte[] { BMType.ARRAY.getType() });
             nameValues.add(typeNameValue);
         }
 
@@ -218,7 +222,7 @@ public class WffBMArray extends LinkedList<Object> implements WffData {
                 values[count] = valueBytes;
                 count++;
             }
-        } else if (valueType == BMValueType.OBJECT.getType()) {
+        } else if (valueType == BMValueType.BM_OBJECT.getType()) {
             int count = 0;
             for (final Object eachValue : this) {
                 final WffBMObject value = (WffBMObject) eachValue;
@@ -226,7 +230,7 @@ public class WffBMArray extends LinkedList<Object> implements WffData {
                 count++;
             }
 
-        } else if (valueType == BMValueType.ARRAY.getType()) {
+        } else if (valueType == BMValueType.BM_ARRAY.getType()) {
 
             int count = 0;
             for (final Object eachValue : this) {
@@ -248,6 +252,15 @@ public class WffBMArray extends LinkedList<Object> implements WffData {
             for (final Object eachValue : this) {
                 final String value = (String) eachValue;
                 values[count] = value.getBytes("UTF-8");
+                count++;
+            }
+        } else if (valueType == BMValueType.BM_BYTE_ARRAY.getType()) {
+
+            int count = 0;
+            for (final Object eachValue : this) {
+                @SuppressWarnings("resource")
+                final WffBMByteArray value = (WffBMByteArray) eachValue;
+                values[count] = value.build(false);
                 count++;
             }
         }

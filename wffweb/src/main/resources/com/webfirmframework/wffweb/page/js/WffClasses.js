@@ -18,6 +18,8 @@ getValueTypeByte = function(valueType) {
 		return 7;
 	} else if (valueType == '[object Function]') {
 		return 8;
+	} else if (valueType == '[object Int8Array]') {
+		return 9;
 	}
 
 	return -1;
@@ -100,6 +102,34 @@ var WffBMArray = function(jsArray, outer) {
 						values.push([]);
 					}
 				}
+			} else if (arrayValType == 5) {
+				for (var i = 0; i < jsArray.length; i++) {
+					values
+							.push(new WffBMObject(jsArray[i], false)
+									.getBMBytes());
+				}
+			} else if (arrayValType == 6) {
+				for (var i = 0; i < jsArray.length; i++) {
+					values.push(new WffBMArray(jsArray[i], false).getBMBytes());
+				}
+			}
+			if (arrayValType == 7 || arrayValType == 8) {
+				for (var i = 0; i < jsArray.length; i++) {
+					if (arrayValType != 2 && arrayValType != 3) {
+						values.push(encoder.encode(jsArray[i].toString()));
+					} else {
+						values.push([]);
+					}
+				}
+			} else if (arrayValType == 9) {
+				for (var i = 0; i < jsArray.length; i++) {
+					if (jsArray[i] === undefined || jsArray[i] == null) {
+						values.push.push([]);
+					} else {
+						values.push(new WffBMByteArray(jsArray[i], false)
+								.getBMBytes());
+					}
+				}
 			}
 			console.log('values', values);
 
@@ -112,6 +142,56 @@ var WffBMArray = function(jsArray, outer) {
 
 	this.getBMBytes = function getBMBytes() {
 		return getWffBMArray(this.jsArray, this.outer);
+	};
+
+	return this;
+};
+
+var WffBMByteArray = function(uInt8Array, outer) {
+
+	var encoder = wffGlobal.encoder;
+	var decoder = wffGlobal.decoder;
+
+	this.jsArray = uInt8Array;
+	this.outer = outer;
+
+	getWffBMByteArray = function(uInt8Array, outer) {
+
+		var nameValues = [];
+
+		console.log('outer yes', outer);
+
+		if (outer === undefined || outer) {
+			console.log('added outer ');
+
+			// nameValue for representing object or array
+			var typeNameValue = {
+				name : [ 1 ],
+				values : []
+			};
+			nameValues.push(typeNameValue);
+		}
+
+		// even if it is a byte array, each value is a number
+		var arrayValType = 1;
+
+		console.log('arrayValType', arrayValType);
+
+		var nameValue = {
+			name : [ arrayValType ]
+		};
+
+		nameValues.push(nameValue);
+
+		nameValue.values = [ uInt8Array ];
+
+		console.log('values', values);
+
+		return wffBMUtil.getWffBinaryMessageBytes(nameValues);
+	};
+
+	this.getBMBytes = function getBMBytes() {
+		return getWffBMByteArray(this.jsArray, this.outer);
 	};
 
 	return this;
@@ -199,9 +279,11 @@ var WffBMObject = function(jsObject, outer) {
 					values.push(new WffBMArray(value, false).getBMBytes());
 				}
 
-			} else if (valType == 7) {
+			} else if (valType == 7 || arrayValType == 8) {
 				console.log("RegExp");
 				values.push(encoder.encode(value.toString()));
+			} else if (arrayValType == 9) {
+				values.push(new WffBMByteArray(value, false).getBMBytes());
 			}
 
 			nameValues.push(nameValue);
@@ -266,10 +348,13 @@ var JsObjectFromBMBytes = function(wffBMBytes, outer) {
 
 		} else if (values[0] == 7) {
 			// 7 for regex data type
-			this[name] = getStringFromBytes(values[1]);
+			this[name] = new RegExp(getStringFromBytes(values[1]));
 		} else if (values[0] == 8) {
 			// 8 for function data type
 			this[name] = eval("(" + getStringFromBytes(values[1]) + ")");
+		} else if (values[0] == 9) {
+			// 9 for byte array
+			this[name] = new  Uint8Array(values[1]);
 		}
 
 	}
@@ -336,12 +421,12 @@ var JsArrayFromBMBytes = function(wffBMBytes, outer) {
 		}
 	} else if (dataType == 6) {
 		for (var j = 0; j < values.length; j++) {
-			jsArray.push(JsArrayFromBMBytes(values[j], false));
+			jsArray.push(new JsArrayFromBMBytes(values[j], false));
 		}
 	} else if (dataType == 7) {
 		// 7 for regex data type
 		for (var j = 0; j < values.length; j++) {
-			jsArray.push(getStringFromBytes(values[j]));
+			jsArray.push(new RegExp(getStringFromBytes(values[j])));
 		}
 	} else if (dataType == 8) {
 		// 8 for function data type
@@ -349,6 +434,11 @@ var JsArrayFromBMBytes = function(wffBMBytes, outer) {
 			var fun = getStringFromBytes(values[j]);
 			var ary = [ eval("(" + fun + ")") ];
 			jsArray.push(ary[0]);
+		}
+	} else if (dataType == 9) {
+		// 9 for Uint8Array data type
+		for (var j = 0; j < values.length; j++) {
+			jsArray.push(new  Uint8Array(values[j]));
 		}
 	}
 
