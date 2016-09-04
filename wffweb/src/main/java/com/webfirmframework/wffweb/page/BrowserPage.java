@@ -85,11 +85,11 @@ public abstract class BrowserPage implements Serializable {
         ACCESS_OBJECT = new Security();
     }
 
-    public abstract String webSocketUrl();
-
     {
         instanceId = UUID.randomUUID().toString();
     }
+
+    public abstract String webSocketUrl();
 
     /**
      * @param wsListener
@@ -135,7 +135,6 @@ public abstract class BrowserPage implements Serializable {
         final NameValue task = nameValues.get(0);
         final byte taskValue = task.getValues()[0][0];
 
-        // T stands for Task
         if (Task.TASK.getValueByte() == task.getName()[0]) {
 
             // IM stands for Invoke Method
@@ -316,39 +315,6 @@ public abstract class BrowserPage implements Serializable {
 
                     new NoTag(script, WffJsFile
                             .getAllOptimizedContent(wsUrlWithInstanceId));
-
-                    // new Script(child, new Type("text/javascript"),
-                    // new Src("js/wffGlobal.js"));
-                    //
-                    // new Script(child, new Type("text/javascript"),
-                    // new Src("js/wffTagUtil.js"));
-                    // new Script(child, new Type("text/javascript"),
-                    // new Src("js/wffBMCRUIDUtil.js"));
-                    // new Script(child, new Type("text/javascript"),
-                    // new Src("js/wffClientCRUDUtil.js"));
-                    // new Script(child, new Type("text/javascript"),
-                    // new Src("js/wffWS.js"));
-                    // new Script(child, new Type("text/javascript"),
-                    // new Src("js/wffServerMethods.js"));
-
-                    // <script type="text/javascript"
-                    // src="js/wffTagUtil.js"></script>
-                    // <script type="text/javascript"
-                    // src="js/wffBMCRUIDUtil.js"></script>
-                    // <script type="text/javascript"
-                    // src="js/wffClientCRUDUtil.js"></script>
-                    // <script type="text/javascript"
-                    // src="js/wffWS.js"></script>
-
-                    // new Script(child, new Type("text/javascript")) {
-                    //
-                    // private static final long serialVersionUID = 1L;
-                    //
-                    // {
-                    // new NoTag(this, WffClientEventsContent
-                    // .getContent(wsUrlWithInstanceId));
-                    // }
-                    // };
 
                     break outerLoop;
                 }
