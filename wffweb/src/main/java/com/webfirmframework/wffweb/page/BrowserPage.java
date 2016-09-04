@@ -15,6 +15,8 @@
  */
 package com.webfirmframework.wffweb.page;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
@@ -399,7 +401,27 @@ public abstract class BrowserPage implements Serializable {
     }
 
     public final String toHtmlString() {
+        initAbstractHtml();
+        return abstractHtml.toHtmlString(true);
+    }
 
+    public final String toHtmlString(final String charset) {
+        initAbstractHtml();
+        return abstractHtml.toHtmlString(true, charset);
+    }
+
+    public final void toOutputStream(final OutputStream os) throws IOException {
+        initAbstractHtml();
+        abstractHtml.toOutputStream(os, true);
+    }
+
+    public final void toOutputStream(final OutputStream os,
+            final String charset) throws IOException {
+        initAbstractHtml();
+        abstractHtml.toOutputStream(os, true, charset);
+    }
+
+    private void initAbstractHtml() {
         if (abstractHtml == null) {
             abstractHtml = render();
 
@@ -426,11 +448,7 @@ public abstract class BrowserPage implements Serializable {
             addAttributeRemoveListener(abstractHtml);
             addInnerHtmlAddListener(abstractHtml);
         }
-
-        return abstractHtml.toHtmlString(true, "UTF-8");
     }
-
-    public abstract String[] pageUrls();
 
     /**
      * @return a unique id for this instance
