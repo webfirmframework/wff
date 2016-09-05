@@ -85,43 +85,43 @@ public class AbstractHtmlTest {
 
         html.addAttributes(name);
         Assert.assertTrue(name.getOwnerTags().contains(html));
-        Assert.assertEquals(
+        assertEquals(
                 "<html name=\"somename\"><div name=\"somename\"></div><div name=\"somename\"></div></html>",
                 html.toHtmlString());
 
         html.removeAttributes(name);
         Assert.assertFalse(name.getOwnerTags().contains(html));
-        Assert.assertEquals(
+        assertEquals(
                 "<html><div name=\"somename\"></div><div name=\"somename\"></div></html>",
                 html.toHtmlString());
 
         html.addAttributes(name);
         Assert.assertTrue(name.getOwnerTags().contains(html));
-        Assert.assertEquals(
+        assertEquals(
                 "<html name=\"somename\"><div name=\"somename\"></div><div name=\"somename\"></div></html>",
                 html.toHtmlString());
 
         name.setValue("another");
-        Assert.assertEquals(
+        assertEquals(
                 "<html name=\"another\"><div name=\"another\"></div><div name=\"another\"></div></html>",
                 html.toHtmlString());
 
         name.setValue("somename");
         html.removeAttributes("name");
         Assert.assertFalse(name.getOwnerTags().contains(html));
-        Assert.assertEquals(
+        assertEquals(
                 "<html><div name=\"somename\"></div><div name=\"somename\"></div></html>",
                 html.toHtmlString());
 
         html.addAttributes(name);
         Assert.assertTrue(name.getOwnerTags().contains(html));
-        Assert.assertEquals(
+        assertEquals(
                 "<html name=\"somename\"><div name=\"somename\"></div><div name=\"somename\"></div></html>",
                 html.toHtmlString());
 
         html.removeAttributes(new Name("somename"));
         Assert.assertTrue(name.getOwnerTags().contains(html));
-        Assert.assertEquals(
+        assertEquals(
                 "<html name=\"somename\"><div name=\"somename\"></div><div name=\"somename\"></div></html>",
                 html.toHtmlString());
 
@@ -129,7 +129,7 @@ public class AbstractHtmlTest {
         html.addAttributes(name2);
         Assert.assertFalse(name.getOwnerTags().contains(html));
         Assert.assertTrue(name2.getOwnerTags().contains(html));
-        Assert.assertEquals(
+        assertEquals(
                 "<html name=\"another\"><div name=\"somename\"></div><div name=\"somename\"></div></html>",
                 html.toHtmlString());
 
@@ -162,7 +162,7 @@ public class AbstractHtmlTest {
             }
         };
         String htmlString = div.toHtmlString();
-        Assert.assertEquals(
+        assertEquals(
                 "<div id=\"one\"><h2>h1 contetn</h2>some contbefore span<span id=\"two\">span child content</span>after span<p id=\"three\"></p></div>",
                 htmlString);
     }
