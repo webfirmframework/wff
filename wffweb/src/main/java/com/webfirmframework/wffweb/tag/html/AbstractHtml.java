@@ -1939,7 +1939,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
                 for (int i = 1; i < superParentValues.length; i++) {
                     final String attrNameValue = new String(
                             superParentValues[i], charset);
-                    final int indexOfHash = attrNameValue.indexOf("=");
+                    final int indexOfHash = attrNameValue.indexOf('=');
                     final String attrName = attrNameValue.substring(0,
                             indexOfHash);
                     final String attrValue = attrNameValue
@@ -1972,7 +1972,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
                     for (int j = 1; j < values.length; j++) {
                         final String attrNameValue = new String(values[j],
                                 charset);
-                        final int indexOfHash = attrNameValue.indexOf("=");
+                        final int indexOfHash = attrNameValue.indexOf('=');
                         final String attrName = attrNameValue.substring(0,
                                 indexOfHash);
                         final String attrValue = attrNameValue.substring(
