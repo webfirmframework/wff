@@ -128,6 +128,70 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     }
 
     /**
+     * gets the attribute name and value in the format of name=value. <br>
+     * Eg: style=color:green;background:blue <br>
+     * This reduces 2 bytes taken for ".
+     *
+     * @return the attribute name and value in the format of name=value. Eg:
+     *         style=color:green;background:blue
+     * @since 1.2.0
+     * @author WFF
+     */
+    protected String getWffPrintStructure() {
+        String result = "";
+        beforeWffPrintStructure();
+        final StringBuilder attrBuilder = new StringBuilder();
+
+        attrBuilder.append(attributeName);
+        if (attributeValue != null) {
+            attrBuilder.append(new char[] { '=' });
+            attrBuilder.append(attributeValue);
+            result = StringBuilderUtil.getTrimmedString(attrBuilder);
+        } else if (attributeValueMap != null && attributeValueMap.size() > 0) {
+            attrBuilder.append(new char[] { '=' });
+            final Set<Entry<String, String>> entrySet = getAttributeValueMap()
+                    .entrySet();
+            for (final Entry<String, String> entry : entrySet) {
+                attrBuilder.append(entry.getKey());
+                attrBuilder.append(':');
+                attrBuilder.append(entry.getValue());
+                attrBuilder.append(';');
+            }
+
+            result = StringBuilderUtil.getTrimmedString(attrBuilder);
+        } else if (attributeValueSet != null && attributeValueSet.size() > 0) {
+            attrBuilder.append(new char[] { '=' });
+            for (final String each : getAttributeValueSet()) {
+                attrBuilder.append(each);
+                attrBuilder.append(' ');
+            }
+            result = StringBuilderUtil.getTrimmedString(attrBuilder);
+        } else {
+            result = attrBuilder.toString();
+        }
+
+        return result;
+    }
+
+    /**
+     * gets the attribute name and value in the format of name=value. <br>
+     * Eg: style=color:green;background:blue <br>
+     * This reduces 2 bytes taken for ".
+     *
+     * @return the attribute name and value in the format of name=value. Eg:
+     *         style=color:green;background:blue;
+     * @since 1.2.0
+     * @author WFF
+     */
+    public String toWffString() {
+        return getWffPrintStructure();
+    }
+
+    protected void beforeWffPrintStructure() {
+        // NOT override and use if required
+    }
+
+    /**
      * gives compressed by index bytes for the attribute and value. The first
      * byte represents the attribute name index bytes length, the next bytes
      * represent the attribute name index bytes and the remaining bytes

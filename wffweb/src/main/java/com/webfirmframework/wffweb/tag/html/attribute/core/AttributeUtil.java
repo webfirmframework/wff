@@ -20,6 +20,7 @@
 package com.webfirmframework.wffweb.tag.html.attribute.core;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
 /**
@@ -101,6 +102,32 @@ public class AttributeUtil {
                 final AbstractAttribute attribute = attributes[i];
                 attributesArray[i] = attribute.toCompressedBytesByIndex(rebuild,
                         charset);
+            }
+            return attributesArray;
+
+        }
+        return new byte[0][0];
+    }
+
+    /**
+     * @param attributes
+     * @param charset
+     *            the charset
+     * @return the wff attributes strings bytes array.
+     * @author WFF
+     * @throws UnsupportedEncodingException
+     * @since 1.2.0
+     */
+    public static final byte[][] getWffAttributeBytes(final String charset,
+            final AbstractAttribute... attributes)
+                    throws UnsupportedEncodingException {
+
+        if (attributes != null) {
+            final byte[][] attributesArray = new byte[attributes.length][0];
+
+            for (int i = 0; i < attributesArray.length; i++) {
+                final AbstractAttribute attribute = attributes[i];
+                attributesArray[i] = attribute.toWffString().getBytes(charset);
             }
             return attributesArray;
 

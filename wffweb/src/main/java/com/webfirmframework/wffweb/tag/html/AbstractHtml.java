@@ -19,6 +19,7 @@ package com.webfirmframework.wffweb.tag.html;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,6 +35,7 @@ import java.util.Set;
 import java.util.Stack;
 
 import com.webfirmframework.wffweb.MethodNotImplementedException;
+import com.webfirmframework.wffweb.WffRuntimeException;
 import com.webfirmframework.wffweb.WffSecurityException;
 import com.webfirmframework.wffweb.clone.CloneUtil;
 import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
@@ -50,6 +52,8 @@ import com.webfirmframework.wffweb.tag.html.listener.ChildTagAppendListener.Chil
 import com.webfirmframework.wffweb.tag.html.listener.ChildTagRemoveListener;
 import com.webfirmframework.wffweb.tag.html.listener.InnerHtmlAddListener;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
+import com.webfirmframework.wffweb.tag.htmlwff.CustomTag;
+import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 import com.webfirmframework.wffweb.util.data.NameValue;
 
@@ -93,6 +97,9 @@ public abstract class AbstractHtml extends AbstractTagBase {
 
     // for future development
     private WffBinaryMessageOutputStreamer wffBinaryMessageOutputStreamer;
+
+    // only for toWffBMBytes method
+    private int wffSlotIndex = -1;
 
     private transient Charset charset = Charset.defaultCharset();
 
@@ -1777,4 +1784,213 @@ public abstract class AbstractHtml extends AbstractTagBase {
 
         }
     }
+
+    /**
+     * @return the Wff Binary Message bytes of this tag. It uses default charset
+     *         for encoding values.
+     * @since 1.2.0
+     * @author WFF
+     */
+    public byte[] toWffBMBytes() {
+        return toWffBMBytes(charset.name());
+    }
+
+    /**
+     * @param charset
+     * @return the Wff Binary Message bytes of this tag
+     * @since 1.2.0
+     * @author WFF
+     */
+    public byte[] toWffBMBytes(final String charset) {
+
+        try {
+            final List<NameValue> nameValues = new LinkedList<NameValue>();
+
+            final Stack<Set<AbstractHtml>> childrenStack = new Stack<Set<AbstractHtml>>();
+            childrenStack.push(new HashSet<AbstractHtml>(Arrays.asList(this)));
+
+            while (childrenStack.size() > 0) {
+
+                final Set<AbstractHtml> children = childrenStack.pop();
+
+                for (final AbstractHtml tag : children) {
+
+                    final String nodeName = tag.getTagName();
+
+                    if (nodeName != null && !nodeName.isEmpty()) {
+
+                        final NameValue nameValue = new NameValue();
+
+                        final byte[] nodeNameBytes = nodeName.getBytes(charset);
+                        final byte[][] wffAttributeBytes = AttributeUtil
+                                .getWffAttributeBytes(charset, tag.attributes);
+
+                        final int parentWffSlotIndex = tag.parent == null ? -1
+                                : tag.parent.wffSlotIndex;
+                        nameValue.setName(WffBinaryMessageUtil
+                                .getBytesFromInt(parentWffSlotIndex));
+
+                        final byte[][] values = new byte[wffAttributeBytes.length
+                                + 1][0];
+
+                        values[0] = nodeNameBytes;
+
+                        System.arraycopy(wffAttributeBytes, 0, values, 1,
+                                wffAttributeBytes.length);
+
+                        nameValue.setValues(values);
+                        tag.wffSlotIndex = nameValues.size();
+                        nameValues.add(nameValue);
+
+                    } else if (!tag.getClosingTag().isEmpty()) {
+
+                        final int parentWffSlotIndex = tag.parent == null ? -1
+                                : tag.parent.wffSlotIndex;
+
+                        final NameValue nameValue = new NameValue();
+
+                        // # short for #text
+                        final byte[] nodeNameBytes = "#".getBytes(charset);
+
+                        nameValue.setName(WffBinaryMessageUtil
+                                .getBytesFromInt(parentWffSlotIndex));
+
+                        final byte[][] values = new byte[2][0];
+
+                        values[0] = nodeNameBytes;
+                        values[1] = tag.getClosingTag().getBytes(charset);
+
+                        nameValue.setValues(values);
+
+                        tag.wffSlotIndex = nameValues.size();
+                        nameValues.add(nameValue);
+                    }
+
+                    final Set<AbstractHtml> subChildren = tag.children;
+
+                    if (subChildren != null && subChildren.size() > 0) {
+                        childrenStack.push(subChildren);
+                    }
+
+                }
+
+            }
+
+            final NameValue nameValue = nameValues.get(0);
+            nameValue.setName(new byte[] {});
+
+            return WffBinaryMessageUtil.VERSION_1
+                    .getWffBinaryMessageBytes(nameValues);
+        } catch (final UnsupportedEncodingException e) {
+            throw new WffRuntimeException(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * @param bmMessageBytes
+     * @return the AbstractHtml instance from the given Wff BM bytes. It uses
+     *         system default charset.
+     * @throws UnsupportedEncodingException
+     * @since 1.2.0
+     * @author WFF
+     */
+    public static AbstractHtml getTagFromWffBMBytes(
+            final byte[] bmMessageBytes) {
+        return getTagFromWffBMBytes(bmMessageBytes,
+                Charset.defaultCharset().name());
+    }
+
+    /**
+     * @param bmMessageBytes
+     * @param charset
+     *            of value bytes
+     * @return the AbstractHtml instance from the given Wff BM bytes
+     * @throws UnsupportedEncodingException
+     * @since 1.2.0
+     * @author WFF
+     */
+    public static AbstractHtml getTagFromWffBMBytes(final byte[] bmMessageBytes,
+            final String charset) {
+
+        try {
+            final List<NameValue> nameValuesAsList = WffBinaryMessageUtil.VERSION_1
+                    .parse(bmMessageBytes);
+
+            final NameValue[] nameValues = nameValuesAsList
+                    .toArray(new NameValue[nameValuesAsList.size()]);
+
+            final NameValue superParentNameValue = nameValues[0];
+            final byte[][] superParentValues = superParentNameValue.getValues();
+
+            final AbstractHtml[] allTags = new AbstractHtml[nameValues.length];
+
+            AbstractHtml parent = null;
+
+            if (superParentValues[0][0] == '#') {
+                parent = new NoTag(null,
+                        new String(superParentValues[1], charset));
+            } else {
+                final String tagName = new String(superParentValues[0],
+                        charset);
+
+                final AbstractAttribute[] attributes = new AbstractAttribute[superParentValues.length
+                        - 1];
+
+                for (int i = 1; i < superParentValues.length; i++) {
+                    final String attrNameValue = new String(
+                            superParentValues[i], charset);
+                    final int indexOfHash = attrNameValue.indexOf("=");
+                    final String attrName = attrNameValue.substring(0,
+                            indexOfHash);
+                    final String attrValue = attrNameValue
+                            .substring(indexOfHash + 1, attrNameValue.length());
+                    attributes[i - 1] = new CustomAttribute(attrName,
+                            attrValue);
+                }
+                parent = new CustomTag(tagName, null, attributes);
+            }
+            allTags[0] = parent;
+
+            for (int i = 1; i < nameValues.length; i++) {
+
+                final NameValue nameValue = nameValues[i];
+                final int indexOfParent = WffBinaryMessageUtil
+                        .getIntFromOptimizedBytes(nameValue.getName());
+
+                final byte[][] values = nameValue.getValues();
+
+                AbstractHtml child;
+                if (values[0][0] == '#') {
+                    child = new NoTag(allTags[indexOfParent],
+                            new String(values[1], charset));
+                } else {
+                    final String tagName = new String(values[0], charset);
+
+                    final AbstractAttribute[] attributes = new AbstractAttribute[values.length
+                            - 1];
+
+                    for (int j = 1; j < values.length; j++) {
+                        final String attrNameValue = new String(values[j],
+                                charset);
+                        final int indexOfHash = attrNameValue.indexOf("=");
+                        final String attrName = attrNameValue.substring(0,
+                                indexOfHash);
+                        final String attrValue = attrNameValue.substring(
+                                indexOfHash + 1, attrNameValue.length());
+                        attributes[j - 1] = new CustomAttribute(attrName,
+                                attrValue);
+                    }
+                    child = new CustomTag(tagName, allTags[indexOfParent],
+                            attributes);
+                }
+                allTags[i] = child;
+            }
+
+            return parent;
+        } catch (final UnsupportedEncodingException e) {
+            throw new WffRuntimeException(e.getMessage(), e);
+
+        }
+    }
+
 }

@@ -15,7 +15,7 @@
  */
 package com.webfirmframework.wffweb.tag.html;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -25,16 +25,18 @@ import org.junit.Test;
 
 import com.webfirmframework.wffweb.tag.html.attribute.Name;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
+import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Span;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 
+@SuppressWarnings("serial")
 public class AbstractHtmlTest {
 
-    //for future development
-//    @Test
+    // for future development
+    // @Test
     public void testToOutputStreamBooleanOutputStream() {
-        
+
         Html html = new Html(null, new Id("id1")) {
             {
                 for (int i = 0; i < 100; i++) {
@@ -43,7 +45,7 @@ public class AbstractHtmlTest {
                 }
             }
         };
-        
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             html.toOutputStream(true, baos);
@@ -51,103 +53,126 @@ public class AbstractHtmlTest {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        
+
         byte[] wffMessageBytes = baos.toByteArray();
-        System.out.println("wffMessageBytes.length "+wffMessageBytes.length);
-        System.out.println("html.toHtmlString().length() "+html.toHtmlString().length());
-//        List<NameValue> parse = WffBinaryMessageUtil.VERSION_1.parse(wffMessageBytes);
-        
-        
-        
+        System.out.println("wffMessageBytes.length " + wffMessageBytes.length);
+        System.out.println(
+                "html.toHtmlString().length() " + html.toHtmlString().length());
+        // List<NameValue> parse =
+        // WffBinaryMessageUtil.VERSION_1.parse(wffMessageBytes);
+
         System.out.println(html.toHtmlString());
-        
-//        fail("Not yet implemented");
+
+        // fail("Not yet implemented");
     }
-    
+
     @Test
     public void testAddRemoveAttributesAttributes() {
-        
+
         final Name name = new Name("somename");
-        
-        Html html = new Html(null) {{
-            Div div1 = new Div(this);
-            div1.addAttributes(name);
-            Div div2 = new Div(this);
-            div2.addAttributes(name);
-            
-            Assert.assertTrue(name.getOwnerTags().contains(div1));
-            Assert.assertTrue(name.getOwnerTags().contains(div2));
-        }};
-        
+
+        Html html = new Html(null) {
+            {
+                Div div1 = new Div(this);
+                div1.addAttributes(name);
+                Div div2 = new Div(this);
+                div2.addAttributes(name);
+
+                Assert.assertTrue(name.getOwnerTags().contains(div1));
+                Assert.assertTrue(name.getOwnerTags().contains(div2));
+            }
+        };
+
         html.addAttributes(name);
         Assert.assertTrue(name.getOwnerTags().contains(html));
-        Assert.assertEquals("<html name=\"somename\"><div name=\"somename\"></div><div name=\"somename\"></div></html>", html.toHtmlString());
-        
+        Assert.assertEquals(
+                "<html name=\"somename\"><div name=\"somename\"></div><div name=\"somename\"></div></html>",
+                html.toHtmlString());
+
         html.removeAttributes(name);
         Assert.assertFalse(name.getOwnerTags().contains(html));
-        Assert.assertEquals("<html><div name=\"somename\"></div><div name=\"somename\"></div></html>", html.toHtmlString());
-        
+        Assert.assertEquals(
+                "<html><div name=\"somename\"></div><div name=\"somename\"></div></html>",
+                html.toHtmlString());
+
         html.addAttributes(name);
         Assert.assertTrue(name.getOwnerTags().contains(html));
-        Assert.assertEquals("<html name=\"somename\"><div name=\"somename\"></div><div name=\"somename\"></div></html>", html.toHtmlString());
-        
+        Assert.assertEquals(
+                "<html name=\"somename\"><div name=\"somename\"></div><div name=\"somename\"></div></html>",
+                html.toHtmlString());
+
         name.setValue("another");
-        Assert.assertEquals("<html name=\"another\"><div name=\"another\"></div><div name=\"another\"></div></html>", html.toHtmlString());
-        
+        Assert.assertEquals(
+                "<html name=\"another\"><div name=\"another\"></div><div name=\"another\"></div></html>",
+                html.toHtmlString());
+
         name.setValue("somename");
         html.removeAttributes("name");
         Assert.assertFalse(name.getOwnerTags().contains(html));
-        Assert.assertEquals("<html><div name=\"somename\"></div><div name=\"somename\"></div></html>", html.toHtmlString());
-        
+        Assert.assertEquals(
+                "<html><div name=\"somename\"></div><div name=\"somename\"></div></html>",
+                html.toHtmlString());
+
         html.addAttributes(name);
         Assert.assertTrue(name.getOwnerTags().contains(html));
-        Assert.assertEquals("<html name=\"somename\"><div name=\"somename\"></div><div name=\"somename\"></div></html>", html.toHtmlString());
-        
+        Assert.assertEquals(
+                "<html name=\"somename\"><div name=\"somename\"></div><div name=\"somename\"></div></html>",
+                html.toHtmlString());
+
         html.removeAttributes(new Name("somename"));
         Assert.assertTrue(name.getOwnerTags().contains(html));
-        Assert.assertEquals("<html name=\"somename\"><div name=\"somename\"></div><div name=\"somename\"></div></html>", html.toHtmlString());
-        
+        Assert.assertEquals(
+                "<html name=\"somename\"><div name=\"somename\"></div><div name=\"somename\"></div></html>",
+                html.toHtmlString());
+
         Name name2 = new Name("another");
         html.addAttributes(name2);
         Assert.assertFalse(name.getOwnerTags().contains(html));
         Assert.assertTrue(name2.getOwnerTags().contains(html));
-        Assert.assertEquals("<html name=\"another\"><div name=\"somename\"></div><div name=\"somename\"></div></html>", html.toHtmlString());
+        Assert.assertEquals(
+                "<html name=\"another\"><div name=\"somename\"></div><div name=\"somename\"></div></html>",
+                html.toHtmlString());
 
     }
-   
+
     @Test
     public void testHierarchy() throws Exception {
         Div div = new Div(null, new Id("one")) {
             {
-//            for (int i = 0; i < 100000; i++) {
-//                new Div(this);
-//            }
-                new NoTag(this, "some cont") {{
-                  new H2(this) {{
-                    new NoTag(this, "h1 contetn");  
-                  }};  
-                }};
+                // for (int i = 0; i < 100000; i++) {
+                // new Div(this);
+                // }
+                new NoTag(this, "some cont") {
+                    {
+                        new H2(this) {
+                            {
+                                new NoTag(this, "h1 contetn");
+                            }
+                        };
+                    }
+                };
                 new NoTag(this, "before span");
-                new Span(this, new Id("two")) {{
-                    new NoTag(this, "span child content");
-                }};
+                new Span(this, new Id("two")) {
+                    {
+                        new NoTag(this, "span child content");
+                    }
+                };
                 new NoTag(this, "after span");
                 new P(this, new Id("three"));
             }
         };
         String htmlString = div.toHtmlString();
-        Assert.assertEquals("<div id=\"one\"><h2>h1 contetn</h2>some contbefore span<span id=\"two\">span child content</span>after span<p id=\"three\"></p></div>", htmlString);
+        Assert.assertEquals(
+                "<div id=\"one\"><h2>h1 contetn</h2>some contbefore span<span id=\"two\">span child content</span>after span<p id=\"three\"></p></div>",
+                htmlString);
     }
- 
-    @SuppressWarnings("serial")
+
     @Test
     public void testPerformance() {
-        
+
         try {
             long before = System.currentTimeMillis();
-            
-            
-            
+
             Div div = new Div(null) {
                 {
                     for (int i = 0; i < 100000; i++) {
@@ -156,15 +181,87 @@ public class AbstractHtmlTest {
 
                 }
             };
-            
+
             String htmlString = div.toHtmlString();
-            
+
             long after = System.currentTimeMillis();
-            
-            System.out.println(htmlString.length()+" tag bytes generation took " + (after - before)+" ms");
+
+            System.out.println("testPerformance "+htmlString.length()
+                    + " tag bytes generation took " + (after - before) + " ms");
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    @Test
+    public void testPerformanceBySack() {
+
+        try {
+            long before = System.currentTimeMillis();
+
+            Div div = new Div(null) {
+                {
+                    for (int i = 0; i < 100000; i++) {
+                        new Div(this);
+                    }
+
+                }
+            };
+
+            byte[] wffBytes = div.toWffBMBytes();
+            
+//            AbstractHtml.getTagFromWffBMBytes(wffBytes);
+
+            long after = System.currentTimeMillis();
+            
+            String htmlString = div.toHtmlString();
+            
+            System.out.println("htmlString.length() : "+htmlString.length()+ " wffBytes.length "+wffBytes.length);
+            System.out.println("htmlString.length() - wffBytes.length : "+(htmlString.length() - wffBytes.length));
+
+            System.out.println("testPerformanceBySack "+wffBytes.length
+                    + " tag bytes generation took " + (after - before) + " ms");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testToWffBMBytesAndGetTagFromWffBMBytes() {
+
+        Div div = new Div(null, new CustomAttribute("data-wff-id", "S1")) {
+            {
+                new Span(this, new CustomAttribute("data-wff-id", "S2")) {
+                    {
+                        new H1(this, new CustomAttribute("data-wff-id", "S3"));
+                        new H2(this, new CustomAttribute("data-wff-id", "S4"));
+                        new NoTag(this, "sample text") {
+                            {
+                                new H4(this, new CustomAttribute("data-wff-id",
+                                        "S6"));
+                            }
+                        };
+                    }
+                };
+
+                new H3(this, new CustomAttribute("data-wff-id", "S5"));
+            }
+        };
+
+        try {
+
+            byte[] wffBMBytes = div.toWffBMBytes("UTF-8");
+
+            AbstractHtml abstractHtml = AbstractHtml
+                    .getTagFromWffBMBytes(wffBMBytes);
+
+
+            assertEquals(div.toHtmlString(), abstractHtml.toHtmlString());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 }
