@@ -371,7 +371,7 @@ var wffBMUtil = new function() {
 	 *            standard value.
 	 * @returns the number
 	 */
-	getDoubleFromOptimizedSBytes = function(bytes) {
+	getDoubleFromOptimizedBytes = function(bytes) {
 		var buffer = new ArrayBuffer(8);
 		var uInt8Array = new Uint8Array(buffer);
 
@@ -384,6 +384,6 @@ var wffBMUtil = new function() {
 		return new Float64Array(buffer)[0];
 	};
 
-	this.getDoubleFromOptimizedSBytes = getDoubleFromOptimizedSBytes;
+	this.getDoubleFromOptimizedBytes = getDoubleFromOptimizedBytes;
 
 };

@@ -329,7 +329,7 @@ var JsObjectFromBMBytes = function(wffBMBytes, outer) {
 			this[name] = getStringFromBytes(values[1]);
 		} else if (values[0] == 1) {
 			// 1 for number data type
-			this[name] = wffBMUtil.getDoubleFromOptimizedSBytes(values[1]);
+			this[name] = wffBMUtil.getDoubleFromOptimizedBytes(values[1]);
 		} else if (values[0] == 2) {
 			// 2 for undefined data type
 			this[name] = undefined;
@@ -397,7 +397,7 @@ var JsArrayFromBMBytes = function(wffBMBytes, outer) {
 	} else if (dataType == 1) {
 		// 1 for number data type
 		for (var j = 0; j < values.length; j++) {
-			jsArray.push(wffBMUtil.getDoubleFromOptimizedSBytes(values[j]));
+			jsArray.push(wffBMUtil.getDoubleFromOptimizedBytes(values[j]));
 		}
 	} else if (dataType == 2) {
 		// 2 for undefined data type
