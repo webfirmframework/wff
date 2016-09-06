@@ -197,6 +197,12 @@ public class AttributeNameConstants {
 
     public static final String ONMOUSEUP = "onmouseup";
 
+    public static final String ONKEYDOWN = "onkeydown";
+
+    public static final String ONKEYPRESS = "onkeypress";
+
+    public static final String ONKEYUP = "onkeyup";
+
     /**
      *
      * @author WFF
