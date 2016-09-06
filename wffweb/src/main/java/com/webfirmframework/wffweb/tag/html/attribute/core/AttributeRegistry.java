@@ -97,6 +97,26 @@ import com.webfirmframework.wffweb.tag.html.attribute.event.frame.or.object.OnUn
 import com.webfirmframework.wffweb.tag.html.attribute.event.keyboard.OnKeyDown;
 import com.webfirmframework.wffweb.tag.html.attribute.event.keyboard.OnKeyPress;
 import com.webfirmframework.wffweb.tag.html.attribute.event.keyboard.OnKeyUp;
+import com.webfirmframework.wffweb.tag.html.attribute.event.media.OnCanPlay;
+import com.webfirmframework.wffweb.tag.html.attribute.event.media.OnCanPlayThrough;
+import com.webfirmframework.wffweb.tag.html.attribute.event.media.OnDurationChange;
+import com.webfirmframework.wffweb.tag.html.attribute.event.media.OnEmptied;
+import com.webfirmframework.wffweb.tag.html.attribute.event.media.OnEnded;
+import com.webfirmframework.wffweb.tag.html.attribute.event.media.OnLoadStart;
+import com.webfirmframework.wffweb.tag.html.attribute.event.media.OnLoadedData;
+import com.webfirmframework.wffweb.tag.html.attribute.event.media.OnLoadedMetaData;
+import com.webfirmframework.wffweb.tag.html.attribute.event.media.OnPause;
+import com.webfirmframework.wffweb.tag.html.attribute.event.media.OnPlay;
+import com.webfirmframework.wffweb.tag.html.attribute.event.media.OnPlaying;
+import com.webfirmframework.wffweb.tag.html.attribute.event.media.OnProgress;
+import com.webfirmframework.wffweb.tag.html.attribute.event.media.OnRateChange;
+import com.webfirmframework.wffweb.tag.html.attribute.event.media.OnSeeked;
+import com.webfirmframework.wffweb.tag.html.attribute.event.media.OnSeeking;
+import com.webfirmframework.wffweb.tag.html.attribute.event.media.OnStalled;
+import com.webfirmframework.wffweb.tag.html.attribute.event.media.OnSuspend;
+import com.webfirmframework.wffweb.tag.html.attribute.event.media.OnTimeUpdate;
+import com.webfirmframework.wffweb.tag.html.attribute.event.media.OnVolumeChange;
+import com.webfirmframework.wffweb.tag.html.attribute.event.media.OnWaiting;
 import com.webfirmframework.wffweb.tag.html.attribute.event.mouse.OnClick;
 import com.webfirmframework.wffweb.tag.html.attribute.event.mouse.OnContextMenu;
 import com.webfirmframework.wffweb.tag.html.attribute.event.mouse.OnDblClick;
@@ -431,6 +451,56 @@ public class AttributeRegistry {
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
                 AttributeNameConstants.ONBEFOREPRINT,
                 OnBeforePrint.class.getSimpleName());
+
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONCANPLAY,
+                OnCanPlay.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
+                AttributeNameConstants.ONCANPLAYTHROUGH,
+                OnCanPlayThrough.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
+                AttributeNameConstants.ONDURATIONCHANGE,
+                OnDurationChange.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONEMPTIED,
+                OnEmptied.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONENDED,
+                OnEnded.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
+                AttributeNameConstants.ONLOADEDDATA,
+                OnLoadedData.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
+                AttributeNameConstants.ONLOADEDMETADATA,
+                OnLoadedMetaData.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
+                AttributeNameConstants.ONLOADSTART,
+                OnLoadStart.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONPAUSE,
+                OnPause.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONPLAY,
+                OnPlay.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONPLAYING,
+                OnPlaying.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONPROGRESS,
+                OnProgress.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
+                AttributeNameConstants.ONRATECHANGE,
+                OnRateChange.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONSEEKED,
+                OnSeeked.class.getSimpleName());
+
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONSEEKING,
+                OnSeeking.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONSTALLED,
+                OnStalled.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONSUSPEND,
+                OnSuspend.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
+                AttributeNameConstants.ONTIMEUPDATE,
+                OnTimeUpdate.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
+                AttributeNameConstants.ONVOLUMECHANGE,
+                OnVolumeChange.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONWAITING,
+                OnWaiting.class.getSimpleName());
 
         attributeNames = new ArrayList<String>(initialCapacity);
         attributeNamesSet = new HashSet<String>(initialCapacity);

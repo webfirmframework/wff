@@ -267,6 +267,46 @@ public class AttributeNameConstants {
 
     public static final String ONBEFOREPRINT = "onbeforeprint";
 
+    public static final String ONCANPLAY = "oncanplay";
+
+    public static final String ONCANPLAYTHROUGH = "oncanplaythrough";
+
+    public static final String ONDURATIONCHANGE = "ondurationchange";
+
+    public static final String ONEMPTIED = "onemptied";
+
+    public static final String ONENDED = "onended";
+
+    public static final String ONLOADEDDATA = "onloadeddata";
+
+    public static final String ONLOADEDMETADATA = "onloadedmetadata";
+
+    public static final String ONLOADSTART = "onloadstart";
+
+    public static final String ONPAUSE = "onpause";
+
+    public static final String ONPLAY = "onplay";
+
+    public static final String ONPLAYING = "onplaying";
+
+    public static final String ONPROGRESS = "onprogress";
+
+    public static final String ONRATECHANGE = "onratechange";
+
+    public static final String ONSEEKED = "onseeked";
+
+    public static final String ONSEEKING = "onseeking";
+
+    public static final String ONSTALLED = "onstalled";
+
+    public static final String ONSUSPEND = "onsuspend";
+
+    public static final String ONTIMEUPDATE = "ontimeupdate";
+
+    public static final String ONVOLUMECHANGE = "onvolumechange";
+
+    public static final String ONWAITING = "onwaiting";
+
     /**
      *
      * @author WFF
