@@ -125,16 +125,19 @@ var wffClientCRUDUtil = new function() {
 				var parent = wffTagUtil.getTagByTagNameAndWffId(tagName, wffId);
 
 				for (var j = 1; j < values.length; j++) {
-					var htmlString = getStringFromBytes(values[j]);
+//					var htmlString = getStringFromBytes(values[j]);
 
-					var div = document.createElement('div');
-					div.innerHTML = htmlString;
-					var htmlNodes = div.firstChild;
+//					var div = document.createElement('div');
+//					div.innerHTML = htmlString;
+//					var htmlNodes = div.firstChild;
 
 					if (parent == undefined) {
 						console.log('parent == undefined', 'tagName', tagName,
 								'wffId', wffId);
 					}
+					
+					var htmlNodes = wffTagUtil.createTagFromWffBMBytes(values[j]);
+					
 					parent.appendChild(htmlNodes);
 				}
 			}
@@ -271,14 +274,21 @@ var wffClientCRUDUtil = new function() {
 						.getWffIdFromWffIdBytes(nameValues[i].name);
 				var values = nameValues[i].values;
 				var tagName = getStringFromBytes(values[0]);
-				var innerHtml = getStringFromBytes(values[1]);
+//				var innerHtml = getStringFromBytes(values[1]);
 				
-				console.log('innerHtml', innerHtml);
+//				console.log('innerHtml', innerHtml);
 
 				var parentTag = wffTagUtil.getTagByTagNameAndWffId(tagName,
 						wffId);
 				//it should be case sensitive node.innerHTML
-				parentTag.innerHTML = innerHtml;
+//				parentTag.innerHTML = innerHtml;
+				
+				while (parentTag.firstChild) {
+					parentTag.removeChild(parentTag.firstChild);
+				}
+				
+				var htmlNodes = wffTagUtil.createTagFromWffBMBytes(values[1]);
+				parentTag.appendChild(htmlNodes);
 			}
 
 		} 

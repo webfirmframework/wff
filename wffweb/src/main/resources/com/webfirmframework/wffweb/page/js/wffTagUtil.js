@@ -10,9 +10,8 @@ var wffTagUtil = new function() {
 	var getStringFromBytes = function(utf8Bytes) {
 		return decoder.decode(new Uint8Array(utf8Bytes));
 	};
-	
-	
-	this.createTagFromBytes = function (bytes) {
+
+	this.createTagFromBytes = function(bytes) {
 		var htmlString = getStringFromBytes(bytes);
 		var div = document.createElement('div');
 		div.innerHTML = htmlString;
@@ -83,9 +82,9 @@ var wffTagUtil = new function() {
 		console.log('wffIdBytes', wffIdBytes);
 		return wffIdBytes;
 	};
-	
-	this.splitAttrNameValue = function(attrNameValue) {
-		//attrNameValue will contain string like name=attr-name
+
+	splitAttrNameValue = function(attrNameValue) {
+		// attrNameValue will contain string like name=attr-name
 		var attrName;
 		var attrValue;
 		var indexOfSeparator = attrNameValue.indexOf('=');
@@ -97,8 +96,10 @@ var wffTagUtil = new function() {
 			attrName = attrNameValue;
 			attrValue = '';
 		}
-		return [attrName, attrValue];
+		return [ attrName, attrValue ];
 	};
+
+	this.splitAttrNameValue = splitAttrNameValue;
 
 	// getWffIdBytesFromTag = this.getWffIdBytesFromTag;
 	// var div = document.createElement('div');
@@ -106,5 +107,61 @@ var wffTagUtil = new function() {
 	// console.log('div', div);
 	// var v = getWffIdBytesFromTag(div);
 	// console.log('v' ,v);
+
+	this.createTagFromWffBMBytes = function(bytes) {
+		var nameValues = wffBMUtil.parseWffBinaryMessageBytes(bytes);
+
+		var superParentNameValue = nameValues[0];
+		var superParentValues = superParentNameValue.values;
+
+		var allTags = [];
+
+		var parent;
+		var parentTagName = getStringFromBytes(superParentValues[0]);
+		if (parentTagName === '#') {
+			var text = getStringFromBytes(superParentValues[1]);
+			parent = document.createDocumentFragment();
+			parent.appendChild(document.createTextNode(text));
+		} else {
+
+			parent = document.createElement(parentTagName);
+
+			for (var i = 1; i < superParentValues.length; i++) {
+				var attrNameValue = splitAttrNameValue(getStringFromBytes(superParentValues[i]));
+				parent.setAttribute(attrNameValue[0], attrNameValue[1]);
+			}
+		}
+
+		allTags.push(parent);
+
+		for (var i = 1; i < nameValues.length; i++) {
+			var name = nameValues[i].name;
+			var values = nameValues[i].values;
+
+			var tagName = getStringFromBytes(values[0]);
+
+			var child;
+
+			if (tagName === '#') {
+				var text = getStringFromBytes(values[1]);
+				child = document.createDocumentFragment();
+				child.appendChild(document.createTextNode(text));
+			} else {
+				child = document.createElement(tagName);
+
+				for (var j = 1; j < values.length; j++) {
+					var attrNameValue = splitAttrNameValue(getStringFromBytes(values[j]));
+					child.setAttribute(attrNameValue[0], attrNameValue[1]);
+				}
+			}
+
+			allTags.push(child);
+
+			var parentIndex = wffBMUtil.getIntFromOptimizedBytes(name);
+			allTags[parentIndex].appendChild(child);
+		}
+
+		return parent;
+	};
 
 };

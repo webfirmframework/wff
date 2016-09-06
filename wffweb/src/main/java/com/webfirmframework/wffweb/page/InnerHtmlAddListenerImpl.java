@@ -82,7 +82,7 @@ class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
                 final byte[] parentTagName = tagNameAndWffId[0];
 
                 nameValue.setValues(parentTagName,
-                        innerHtmlTag.toHtmlString("UTF-8").getBytes("UTF-8"));
+                        innerHtmlTag.toWffBMBytes("UTF-8"));
 
                 final byte[] wffBMBytes = WffBinaryMessageUtil.VERSION_1
                         .getWffBinaryMessageBytes(task, nameValue);

@@ -116,7 +116,7 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
             final byte[] parentTagName = tagNameAndWffId[0];
 
             nameValue.setValues(parentTagName,
-                    appendedChildTag.toHtmlString("UTF-8").getBytes("UTF-8"));
+                    appendedChildTag.toWffBMBytes("UTF-8"));
 
             final byte[] wffBMBytes = WffBinaryMessageUtil.VERSION_1
                     .getWffBinaryMessageBytes(task, nameValue);
@@ -198,7 +198,7 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
                 final byte[] parentTagName = tagNameAndWffId[0];
 
                 nameValue.setValues(parentTagName, appendedChildTag
-                        .toHtmlString("UTF-8").getBytes("UTF-8"));
+                        .toWffBMBytes("UTF-8"));
 
                 nameValues.add(nameValue);
             }
