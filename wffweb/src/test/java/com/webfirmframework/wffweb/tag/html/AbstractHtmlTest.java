@@ -208,7 +208,7 @@ public class AbstractHtmlTest {
                 }
             };
 
-            byte[] wffBytes = div.toWffBMBytes("UTF-8");
+            byte[] wffBytes = div.toWffBMBytes();
             
 //            AbstractHtml.getTagFromWffBMBytes(wffBytes);
 
@@ -220,39 +220,6 @@ public class AbstractHtmlTest {
             System.out.println("htmlString.length() - wffBytes.length : "+(htmlString.length() - wffBytes.length));
 
             System.out.println("testPerformanceBySack "+wffBytes.length
-                    + " tag bytes generation took " + (after - before) + " ms");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    
-    @Test
-    public void testPerformanceByDeque() {
-
-        try {
-            long before = System.currentTimeMillis();
-
-            Div div = new Div(null) {
-                {
-                    for (int i = 0; i < 100000; i++) {
-                        new Div(this);
-                    }
-
-                }
-            };
-
-            byte[] wffBytes = div.toWffBMBytes2("UTF-8");
-            
-//            AbstractHtml.getTagFromWffBMBytes(wffBytes);
-
-            long after = System.currentTimeMillis();
-            
-            String htmlString = div.toHtmlString();
-            
-//            System.out.println("htmlString.length() : "+htmlString.length()+ " wffBytes.length "+wffBytes.length);
-//            System.out.println("htmlString.length() - wffBytes.length : "+(htmlString.length() - wffBytes.length));
-
-            System.out.println("testPerformanceByDeque "+wffBytes.length
                     + " tag bytes generation took " + (after - before) + " ms");
         } catch (Exception e) {
             e.printStackTrace();
