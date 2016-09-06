@@ -24,8 +24,8 @@ import com.webfirmframework.wffweb.tag.html.identifier.TextAreaAttributable;
 
 /**
  *
- * <code>onpagehide</code> attribute for the element. This attribute is supported
- * by multiple tags.
+ * <code>onpagehide</code> attribute for the element. This attribute is
+ * supported by multiple tags.
  *
  * @since 1.2.0
  * @author WFF
