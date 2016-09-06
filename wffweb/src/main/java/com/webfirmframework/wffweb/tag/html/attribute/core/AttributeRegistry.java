@@ -64,6 +64,17 @@ import com.webfirmframework.wffweb.tag.html.attribute.Target;
 import com.webfirmframework.wffweb.tag.html.attribute.Type;
 import com.webfirmframework.wffweb.tag.html.attribute.Value;
 import com.webfirmframework.wffweb.tag.html.attribute.Width;
+import com.webfirmframework.wffweb.tag.html.attribute.event.form.OnBlur;
+import com.webfirmframework.wffweb.tag.html.attribute.event.form.OnChange;
+import com.webfirmframework.wffweb.tag.html.attribute.event.form.OnFocus;
+import com.webfirmframework.wffweb.tag.html.attribute.event.form.OnFocusIn;
+import com.webfirmframework.wffweb.tag.html.attribute.event.form.OnFocusOut;
+import com.webfirmframework.wffweb.tag.html.attribute.event.form.OnInput;
+import com.webfirmframework.wffweb.tag.html.attribute.event.form.OnInvalid;
+import com.webfirmframework.wffweb.tag.html.attribute.event.form.OnReset;
+import com.webfirmframework.wffweb.tag.html.attribute.event.form.OnSearch;
+import com.webfirmframework.wffweb.tag.html.attribute.event.form.OnSelect;
+import com.webfirmframework.wffweb.tag.html.attribute.event.form.OnSubmit;
 import com.webfirmframework.wffweb.tag.html.attribute.event.frame.or.object.OnAbort;
 import com.webfirmframework.wffweb.tag.html.attribute.event.frame.or.object.OnBeforeUnload;
 import com.webfirmframework.wffweb.tag.html.attribute.event.frame.or.object.OnError;
@@ -357,6 +368,28 @@ public class AttributeRegistry {
                 OnScroll.class.getSimpleName());
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONUNLOAD,
                 OnUnload.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONBLUR,
+                OnBlur.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONCHANGE,
+                OnChange.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONFOCUS,
+                OnFocus.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONFOCUSIN,
+                OnFocusIn.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONFOCUSOUT,
+                OnFocusOut.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONINPUT,
+                OnInput.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONINVALID,
+                OnInvalid.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONRESET,
+                OnReset.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONSEARCH,
+                OnSearch.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONSELECT,
+                OnSelect.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONSUBMIT,
+                OnSubmit.class.getSimpleName());
 
         attributeNames = new ArrayList<String>(initialCapacity);
         attributeNamesSet = new HashSet<String>(initialCapacity);

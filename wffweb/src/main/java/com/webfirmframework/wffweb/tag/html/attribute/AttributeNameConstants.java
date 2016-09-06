@@ -221,6 +221,28 @@ public class AttributeNameConstants {
 
     public static final String ONUNLOAD = "onunload";
 
+    public static final String ONBLUR = "onblur";
+
+    public static final String ONCHANGE = "onchange";
+
+    public static final String ONFOCUS = "onfocus";
+
+    public static final String ONFOCUSIN = "onfocusin";
+
+    public static final String ONFOCUSOUT = "onfocusout";
+
+    public static final String ONINPUT = "oninput";
+
+    public static final String ONINVALID = "oninvalid";
+
+    public static final String ONRESET = "onreset";
+
+    public static final String ONSEARCH = "onsearch";
+
+    public static final String ONSELECT = "onselect";
+
+    public static final String ONSUBMIT = "onsubmit";
+
     /**
      *
      * @author WFF
