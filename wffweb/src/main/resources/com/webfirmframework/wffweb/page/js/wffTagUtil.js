@@ -11,12 +11,13 @@ var wffTagUtil = new function() {
 		return decoder.decode(new Uint8Array(utf8Bytes));
 	};
 
-	this.createTagFromBytes = function(bytes) {
-		var htmlString = getStringFromBytes(bytes);
-		var div = document.createElement('div');
-		div.innerHTML = htmlString;
-		return div.firstChild;
-	};
+	//Not required for now
+//	this.createTagFromBytes = function(bytes) {
+//		var htmlString = getStringFromBytes(bytes);
+//		var div = document.createElement('div');
+//		div.innerHTML = htmlString;
+//		return div.firstChild;
+//	};
 
 	this.getTagByTagNameAndWffId = function(tagName, wffId) {
 		console.log('getTagByTagNameAndWffId tagName', tagName, 'wffId', wffId);

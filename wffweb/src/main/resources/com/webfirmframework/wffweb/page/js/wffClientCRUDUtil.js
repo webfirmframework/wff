@@ -205,7 +205,7 @@ var wffClientCRUDUtil = new function() {
 					previousParent.removeChild(childTag);
 				} else {
 					console.log('childTag === undefined', childTag);
-					childTag = wffTagUtil.createTagFromBytes(values[3]);
+					childTag = wffTagUtil.createTagFromWffBMBytes(values[3]);
 				}
 				currentParentTag.appendChild(childTag);
 

@@ -197,8 +197,8 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
 
                 final byte[] parentTagName = tagNameAndWffId[0];
 
-                nameValue.setValues(parentTagName, appendedChildTag
-                        .toWffBMBytes("UTF-8"));
+                nameValue.setValues(parentTagName,
+                        appendedChildTag.toWffBMBytes("UTF-8"));
 
                 nameValues.add(nameValue);
             }
@@ -331,8 +331,7 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
                         // tag
                         nameValue.setValues(currentTagName,
                                 movedChildWffIdBytes, movedChildTagName,
-                                movedChildTag.toHtmlString("UTF-8")
-                                        .getBytes("UTF-8"));
+                                movedChildTag.toWffBMBytes("UTF-8"));
                     } else {
                         nameValue.setValues(currentTagName,
                                 movedChildWffIdBytes, movedChildTagName);
