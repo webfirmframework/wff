@@ -21,10 +21,12 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -1807,6 +1809,98 @@ public abstract class AbstractHtml extends AbstractTagBase {
             final List<NameValue> nameValues = new LinkedList<NameValue>();
 
             final Stack<Set<AbstractHtml>> childrenStack = new Stack<Set<AbstractHtml>>();
+            childrenStack.push(new HashSet<AbstractHtml>(Arrays.asList(this)));
+
+            while (childrenStack.size() > 0) {
+
+                final Set<AbstractHtml> children = childrenStack.pop();
+
+                for (final AbstractHtml tag : children) {
+
+                    final String nodeName = tag.getTagName();
+
+                    if (nodeName != null && !nodeName.isEmpty()) {
+
+                        final NameValue nameValue = new NameValue();
+
+                        final byte[] nodeNameBytes = nodeName.getBytes(charset);
+                        final byte[][] wffAttributeBytes = AttributeUtil
+                                .getWffAttributeBytes(charset, tag.attributes);
+
+                        final int parentWffSlotIndex = tag.parent == null ? -1
+                                : tag.parent.wffSlotIndex;
+                        nameValue.setName(WffBinaryMessageUtil
+                                .getBytesFromInt(parentWffSlotIndex));
+
+                        final byte[][] values = new byte[wffAttributeBytes.length
+                                + 1][0];
+
+                        values[0] = nodeNameBytes;
+
+                        System.arraycopy(wffAttributeBytes, 0, values, 1,
+                                wffAttributeBytes.length);
+
+                        nameValue.setValues(values);
+                        tag.wffSlotIndex = nameValues.size();
+                        nameValues.add(nameValue);
+
+                    } else if (!tag.getClosingTag().isEmpty()) {
+
+                        final int parentWffSlotIndex = tag.parent == null ? -1
+                                : tag.parent.wffSlotIndex;
+
+                        final NameValue nameValue = new NameValue();
+
+                        // # short for #text
+                        final byte[] nodeNameBytes = "#".getBytes(charset);
+
+                        nameValue.setName(WffBinaryMessageUtil
+                                .getBytesFromInt(parentWffSlotIndex));
+
+                        final byte[][] values = new byte[2][0];
+
+                        values[0] = nodeNameBytes;
+                        values[1] = tag.getClosingTag().getBytes(charset);
+
+                        nameValue.setValues(values);
+
+                        tag.wffSlotIndex = nameValues.size();
+                        nameValues.add(nameValue);
+                    }
+
+                    final Set<AbstractHtml> subChildren = tag.children;
+
+                    if (subChildren != null && subChildren.size() > 0) {
+                        childrenStack.push(subChildren);
+                    }
+
+                }
+
+            }
+
+            final NameValue nameValue = nameValues.get(0);
+            nameValue.setName(new byte[] {});
+
+            return WffBinaryMessageUtil.VERSION_1
+                    .getWffBinaryMessageBytes(nameValues);
+        } catch (final UnsupportedEncodingException e) {
+            throw new WffRuntimeException(e.getMessage(), e);
+        }
+    }
+    
+    
+    /**
+     * @param charset
+     * @return the Wff Binary Message bytes of this tag
+     * @since 1.2.0
+     * @author WFF
+     */
+    public byte[] toWffBMBytes2(final String charset) {
+
+        try {
+            final List<NameValue> nameValues = new LinkedList<NameValue>();
+
+            final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<Set<AbstractHtml>>();
             childrenStack.push(new HashSet<AbstractHtml>(Arrays.asList(this)));
 
             while (childrenStack.size() > 0) {
