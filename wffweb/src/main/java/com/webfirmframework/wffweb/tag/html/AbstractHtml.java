@@ -1805,7 +1805,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
     public byte[] toWffBMBytes(final String charset) {
 
         try {
-            final List<NameValue> nameValues = new LinkedList<NameValue>();
+            final Deque<NameValue> nameValues = new ArrayDeque<NameValue>();
 
             // ArrayDeque give better performance than Stack, LinkedList
             final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<Set<AbstractHtml>>();
@@ -1878,7 +1878,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
 
             }
 
-            final NameValue nameValue = nameValues.get(0);
+            final NameValue nameValue = nameValues.getFirst();
             nameValue.setName(new byte[] {});
 
             return WffBinaryMessageUtil.VERSION_1
