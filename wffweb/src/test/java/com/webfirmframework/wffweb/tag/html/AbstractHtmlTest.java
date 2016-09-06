@@ -194,7 +194,7 @@ public class AbstractHtmlTest {
     }
     
     @Test
-    public void testPerformanceBySack() {
+    public void testPerformanceByArrayDeque() {
 
         try {
             long before = System.currentTimeMillis();
@@ -219,7 +219,7 @@ public class AbstractHtmlTest {
             System.out.println("htmlString.length() : "+htmlString.length()+ " wffBytes.length "+wffBytes.length);
             System.out.println("htmlString.length() - wffBytes.length : "+(htmlString.length() - wffBytes.length));
 
-            System.out.println("testPerformanceBySack "+wffBytes.length
+            System.out.println("testPerformanceByArrayDeque "+wffBytes.length
                     + " tag bytes generation took " + (after - before) + " ms");
         } catch (Exception e) {
             e.printStackTrace();
