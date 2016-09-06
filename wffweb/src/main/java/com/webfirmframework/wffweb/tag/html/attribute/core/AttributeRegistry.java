@@ -64,6 +64,9 @@ import com.webfirmframework.wffweb.tag.html.attribute.Target;
 import com.webfirmframework.wffweb.tag.html.attribute.Type;
 import com.webfirmframework.wffweb.tag.html.attribute.Value;
 import com.webfirmframework.wffweb.tag.html.attribute.Width;
+import com.webfirmframework.wffweb.tag.html.attribute.event.animation.AnimationEnd;
+import com.webfirmframework.wffweb.tag.html.attribute.event.animation.AnimationIteration;
+import com.webfirmframework.wffweb.tag.html.attribute.event.animation.AnimationStart;
 import com.webfirmframework.wffweb.tag.html.attribute.event.clipboard.OnCopy;
 import com.webfirmframework.wffweb.tag.html.attribute.event.clipboard.OnCut;
 import com.webfirmframework.wffweb.tag.html.attribute.event.clipboard.OnPaste;
@@ -501,6 +504,15 @@ public class AttributeRegistry {
                 OnVolumeChange.class.getSimpleName());
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONWAITING,
                 OnWaiting.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
+                AttributeNameConstants.ANIMATIONEND,
+                AnimationEnd.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
+                AttributeNameConstants.ANIMATIONITERATION,
+                AnimationIteration.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
+                AttributeNameConstants.ANIMATIONSTART,
+                AnimationStart.class.getSimpleName());
 
         attributeNames = new ArrayList<String>(initialCapacity);
         attributeNamesSet = new HashSet<String>(initialCapacity);

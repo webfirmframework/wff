@@ -307,6 +307,12 @@ public class AttributeNameConstants {
 
     public static final String ONWAITING = "onwaiting";
 
+    public static final String ANIMATIONEND = "animationend";
+
+    public static final String ANIMATIONITERATION = "animationiteration";
+
+    public static final String ANIMATIONSTART = "animationstart";
+
     /**
      *
      * @author WFF
