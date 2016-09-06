@@ -313,6 +313,8 @@ public class AttributeNameConstants {
 
     public static final String ANIMATIONSTART = "animationstart";
 
+    public static final String TRANSITIONEND = "transitionend";
+
     /**
      *
      * @author WFF
