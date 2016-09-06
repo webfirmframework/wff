@@ -263,6 +263,10 @@ public class AttributeNameConstants {
 
     public static final String ONPASTE = "onpaste";
 
+    public static final String ONAFTERPRINT = "onafterprint";
+
+    public static final String ONBEFOREPRINT = "onbeforeprint";
+
     /**
      *
      * @author WFF
