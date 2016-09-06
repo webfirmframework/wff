@@ -64,6 +64,15 @@ import com.webfirmframework.wffweb.tag.html.attribute.Target;
 import com.webfirmframework.wffweb.tag.html.attribute.Type;
 import com.webfirmframework.wffweb.tag.html.attribute.Value;
 import com.webfirmframework.wffweb.tag.html.attribute.Width;
+import com.webfirmframework.wffweb.tag.html.attribute.event.frame.or.object.OnAbort;
+import com.webfirmframework.wffweb.tag.html.attribute.event.frame.or.object.OnBeforeUnload;
+import com.webfirmframework.wffweb.tag.html.attribute.event.frame.or.object.OnError;
+import com.webfirmframework.wffweb.tag.html.attribute.event.frame.or.object.OnHashChange;
+import com.webfirmframework.wffweb.tag.html.attribute.event.frame.or.object.OnLoad;
+import com.webfirmframework.wffweb.tag.html.attribute.event.frame.or.object.OnPageHide;
+import com.webfirmframework.wffweb.tag.html.attribute.event.frame.or.object.OnPageShow;
+import com.webfirmframework.wffweb.tag.html.attribute.event.frame.or.object.OnScroll;
+import com.webfirmframework.wffweb.tag.html.attribute.event.frame.or.object.OnUnload;
 import com.webfirmframework.wffweb.tag.html.attribute.event.keyboard.OnKeyDown;
 import com.webfirmframework.wffweb.tag.html.attribute.event.keyboard.OnKeyPress;
 import com.webfirmframework.wffweb.tag.html.attribute.event.keyboard.OnKeyUp;
@@ -326,6 +335,28 @@ public class AttributeRegistry {
                 OnKeyPress.class.getSimpleName());
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONKEYUP,
                 OnKeyUp.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONABORT,
+                OnAbort.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
+                AttributeNameConstants.ONBEFOREUNLOAD,
+                OnBeforeUnload.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONERROR,
+                OnError.class.getSimpleName());
+
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
+                AttributeNameConstants.ONHASHCHANGE,
+                OnHashChange.class.getSimpleName());
+
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONLOAD,
+                OnLoad.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONPAGESHOW,
+                OnPageShow.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONPAGEHIDE,
+                OnPageHide.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONSCROLL,
+                OnScroll.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONUNLOAD,
+                OnUnload.class.getSimpleName());
 
         attributeNames = new ArrayList<String>(initialCapacity);
         attributeNamesSet = new HashSet<String>(initialCapacity);

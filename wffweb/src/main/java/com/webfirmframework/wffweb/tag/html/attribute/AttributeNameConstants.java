@@ -203,6 +203,24 @@ public class AttributeNameConstants {
 
     public static final String ONKEYUP = "onkeyup";
 
+    public static final String ONABORT = "onabort";
+
+    public static final String ONBEFOREUNLOAD = "onbeforeunload";
+
+    public static final String ONERROR = "onerror";
+
+    public static final String ONHASHCHANGE = "onhashchange";
+
+    public static final String ONLOAD = "onload";
+
+    public static final String ONPAGESHOW = "onpageshow";
+
+    public static final String ONPAGEHIDE = "onpagehide";
+
+    public static final String ONSCROLL = "onscroll";
+
+    public static final String ONUNLOAD = "onunload";
+
     /**
      *
      * @author WFF
