@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.util;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -76,7 +77,7 @@ public enum WffBinaryMessageUtil {
 
         @Override
         public byte[] getWffBinaryMessageBytes(
-                final List<NameValue> nameValues) {
+                final Collection<NameValue> nameValues) {
             return getWffBinaryMessageBytes(
                     nameValues.toArray(new NameValue[nameValues.size()]));
         }
@@ -357,7 +358,8 @@ public enum WffBinaryMessageUtil {
      * @since 1.0.0
      * @author WFF
      */
-    public byte[] getWffBinaryMessageBytes(final List<NameValue> nameValues) {
+    public byte[] getWffBinaryMessageBytes(
+            final Collection<NameValue> nameValues) {
         throw new AssertionError();
     }
 

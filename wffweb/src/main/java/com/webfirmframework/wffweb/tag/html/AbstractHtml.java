@@ -591,7 +591,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
         }
 
         boolean removed = false;
-        final List<String> removedAttributeNames = new LinkedList<String>();
+        final Deque<String> removedAttributeNames = new ArrayDeque<String>();
 
         for (final AbstractAttribute attribute : attributes) {
 

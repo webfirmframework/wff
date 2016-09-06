@@ -16,8 +16,8 @@
 package com.webfirmframework.wffweb.page;
 
 import java.io.UnsupportedEncodingException;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
@@ -62,7 +62,7 @@ class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
         try {
             final NameValue task = Task.ADDED_INNER_HTML.getTaskNameValue();
 
-            final List<NameValue> nameValues = new LinkedList<NameValue>();
+            final Deque<NameValue> nameValues = new ArrayDeque<NameValue>();
             nameValues.add(task);
 
             final AbstractAttribute attribute = parentTag

@@ -16,6 +16,8 @@
 package com.webfirmframework.wffweb.wffbm.data;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -167,7 +169,7 @@ public class WffBMArray extends LinkedList<Object> implements WffData {
     public byte[] build(final boolean outer)
             throws UnsupportedEncodingException {
 
-        final List<NameValue> nameValues = new LinkedList<NameValue>();
+        final Deque<NameValue> nameValues = new ArrayDeque<NameValue>();
 
         if (outer) {
             final NameValue typeNameValue = new NameValue();

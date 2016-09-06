@@ -18,8 +18,9 @@ package com.webfirmframework.wffweb.wffbm.data;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 import com.webfirmframework.wffweb.WffRuntimeException;
@@ -132,7 +133,7 @@ public class WffBMByteArray extends ByteArrayOutputStream
      * @author WFF
      */
     public byte[] build(final boolean outer) {
-        final List<NameValue> nameValues = new LinkedList<NameValue>();
+        final Deque<NameValue> nameValues = new ArrayDeque<NameValue>();
 
         if (outer) {
             final NameValue typeNameValue = new NameValue();

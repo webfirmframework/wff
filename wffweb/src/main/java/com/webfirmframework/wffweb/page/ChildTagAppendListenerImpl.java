@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -182,7 +181,7 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
             final NameValue task = Task.APPENDED_CHILDREN_TAGS
                     .getTaskNameValue();
 
-            final List<NameValue> nameValues = new LinkedList<NameValue>();
+            final Deque<NameValue> nameValues = new ArrayDeque<NameValue>();
             nameValues.add(task);
 
             for (final AbstractHtml appendedChildTag : appendedChildTags) {
@@ -290,7 +289,7 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
 
             final NameValue task = Task.MOVED_CHILDREN_TAGS.getTaskNameValue();
 
-            final List<NameValue> nameValues = new LinkedList<NameValue>();
+            final Deque<NameValue> nameValues = new ArrayDeque<NameValue>();
             nameValues.add(task);
 
             for (final ChildMovedEvent event : events) {
