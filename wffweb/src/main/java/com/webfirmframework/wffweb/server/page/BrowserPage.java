@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.webfirmframework.wffweb.page;
+package com.webfirmframework.wffweb.server.page;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -32,13 +32,13 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.NullValueException;
-import com.webfirmframework.wffweb.page.js.WffJsFile;
+import com.webfirmframework.wffweb.server.page.js.WffJsFile;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.Type;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.attribute.event.mouse.EventAttribute;
-import com.webfirmframework.wffweb.tag.html.attribute.event.mouse.ServerAsyncMethod;
+import com.webfirmframework.wffweb.tag.html.attribute.event.EventAttribute;
+import com.webfirmframework.wffweb.tag.html.attribute.event.ServerAsyncMethod;
 import com.webfirmframework.wffweb.tag.html.attribute.listener.AttributeValueChangeListener;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
 import com.webfirmframework.wffweb.tag.html.programming.Script;

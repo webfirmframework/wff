@@ -23,30 +23,31 @@ import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
 
 /**
  *
- * <code>onclick</code> attribute for the element. This attribute is supported by
- * multiple tags.
+ * <code>onmousedown</code> attribute for the element. This attribute is
+ * supported by multiple tags.
  *
  * @since 1.2.0
  * @author WFF
  *
  */
-public class OnClick extends AbstractEventAttribute implements AAttributable {
+public class OnMouseDown extends AbstractEventAttribute
+        implements AAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
     {
-        super.setAttributeName(AttributeNameConstants.ONCLICK);
+        super.setAttributeName(AttributeNameConstants.ONMOUSEDOWN);
         init();
     }
 
-    public OnClick() {
+    public OnMouseDown() {
     }
 
-    public OnClick(final ServerAsyncMethod serverAsyncMethod) {
+    public OnMouseDown(final ServerAsyncMethod serverAsyncMethod) {
         setServerAsyncMethod(null, serverAsyncMethod, null, null);
     }
 
-    public OnClick(final String preJsFunctionBody,
+    public OnMouseDown(final String preJsFunctionBody,
             final ServerAsyncMethod serverAsyncMethod,
             final String jsFilterFunctionBody,
             final String postJsFunctionBody) {
@@ -54,7 +55,7 @@ public class OnClick extends AbstractEventAttribute implements AAttributable {
                 jsFilterFunctionBody, postJsFunctionBody);
     }
 
-    public OnClick(final String value) {
+    public OnMouseDown(final String value) {
         setAttributeValue(value);
     }
 

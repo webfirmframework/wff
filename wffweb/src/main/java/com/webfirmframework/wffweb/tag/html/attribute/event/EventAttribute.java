@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.webfirmframework.wffweb.tag.html.attribute.event.mouse;
+package com.webfirmframework.wffweb.tag.html.attribute.event;
 
 public interface EventAttribute {
 

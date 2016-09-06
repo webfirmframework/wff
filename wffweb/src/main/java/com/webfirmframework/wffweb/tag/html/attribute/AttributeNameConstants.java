@@ -181,6 +181,22 @@ public class AttributeNameConstants {
 
     public static final String ONCLICK = "onclick";
 
+    public static final String ONCONTEXTMENU = "oncontextmenu";
+
+    public static final String ONDBLCLICK = "ondblclick";
+
+    public static final String ONMOUSEDOWN = "onmousedown";
+
+    public static final String ONMOUSEENTER = "onmouseenter";
+
+    public static final String ONMOUSELEAVE = "onmouseleave";
+
+    public static final String ONMOUSEMOVE = "onmousemove";
+
+    public static final String ONMOUSEOUT = "onmouseout";
+
+    public static final String ONMOUSEUP = "onmouseup";
+
     /**
      *
      * @author WFF

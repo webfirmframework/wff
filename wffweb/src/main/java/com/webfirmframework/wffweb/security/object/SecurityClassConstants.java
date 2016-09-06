@@ -19,7 +19,7 @@ public class SecurityClassConstants {
 
     public static final String ABSTRACT_HTML = "com.webfirmframework.wffweb.tag.html.AbstractHtml$Security";
 
-    public static final String BROWSER_PAGE = "com.webfirmframework.wffweb.page.BrowserPage$Security";
+    public static final String BROWSER_PAGE = "com.webfirmframework.wffweb.server.page.BrowserPage$Security";
 
     public SecurityClassConstants() {
         throw new AssertionError();

@@ -1,4 +1,4 @@
-package com.webfirmframework.wffweb.page.js;
+package com.webfirmframework.wffweb.server.page.js;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import com.webfirmframework.wffweb.page.Task;
+import com.webfirmframework.wffweb.server.page.Task;
 
 /**
  * @author visruth

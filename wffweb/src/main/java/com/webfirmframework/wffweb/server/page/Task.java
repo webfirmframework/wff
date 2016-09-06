@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.webfirmframework.wffweb.page;
+package com.webfirmframework.wffweb.server.page;
 
 import java.io.UnsupportedEncodingException;
 

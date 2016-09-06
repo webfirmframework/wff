@@ -65,6 +65,14 @@ import com.webfirmframework.wffweb.tag.html.attribute.Type;
 import com.webfirmframework.wffweb.tag.html.attribute.Value;
 import com.webfirmframework.wffweb.tag.html.attribute.Width;
 import com.webfirmframework.wffweb.tag.html.attribute.event.mouse.OnClick;
+import com.webfirmframework.wffweb.tag.html.attribute.event.mouse.OnContextMenu;
+import com.webfirmframework.wffweb.tag.html.attribute.event.mouse.OnDblClick;
+import com.webfirmframework.wffweb.tag.html.attribute.event.mouse.OnMouseDown;
+import com.webfirmframework.wffweb.tag.html.attribute.event.mouse.OnMouseEnter;
+import com.webfirmframework.wffweb.tag.html.attribute.event.mouse.OnMouseLeave;
+import com.webfirmframework.wffweb.tag.html.attribute.event.mouse.OnMouseMove;
+import com.webfirmframework.wffweb.tag.html.attribute.event.mouse.OnMouseOut;
+import com.webfirmframework.wffweb.tag.html.attribute.event.mouse.OnMouseUp;
 import com.webfirmframework.wffweb.tag.html.attribute.global.AccessKey;
 import com.webfirmframework.wffweb.tag.html.attribute.global.ClassAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Dir;
@@ -287,6 +295,28 @@ public class AttributeRegistry {
                 CellSpacing.class.getSimpleName());
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONCLICK,
                 OnClick.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
+                AttributeNameConstants.ONCONTEXTMENU,
+                OnContextMenu.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONDBLCLICK,
+                OnDblClick.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
+                AttributeNameConstants.ONMOUSEDOWN,
+                OnMouseDown.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
+                AttributeNameConstants.ONMOUSEENTER,
+                OnMouseEnter.class.getSimpleName());
+
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
+                AttributeNameConstants.ONMOUSELEAVE,
+                OnMouseLeave.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
+                AttributeNameConstants.ONMOUSEMOVE,
+                OnMouseMove.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONMOUSEOUT,
+                OnMouseOut.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONMOUSEUP,
+                OnMouseUp.class.getSimpleName());
 
         attributeNames = new ArrayList<String>(initialCapacity);
         attributeNamesSet = new HashSet<String>(initialCapacity);

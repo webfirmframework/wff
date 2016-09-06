@@ -14,7 +14,7 @@
  * limitations under the License.
  * @author WFF
  */
-package com.webfirmframework.wffweb.tag.html.attribute.event.mouse;
+package com.webfirmframework.wffweb.tag.html.attribute.event;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 
