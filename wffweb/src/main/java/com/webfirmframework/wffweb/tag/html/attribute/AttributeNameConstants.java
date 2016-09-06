@@ -243,6 +243,20 @@ public class AttributeNameConstants {
 
     public static final String ONSUBMIT = "onsubmit";
 
+    public static final String ONDRAG = "ondrag";
+
+    public static final String ONDRAGEND = "ondragend";
+
+    public static final String ONDRAGENTER = "ondragenter";
+
+    public static final String ONDRAGLEAVE = "ondragleave";
+
+    public static final String ONDRAGOVER = "ondragover";
+
+    public static final String ONDRAGSTART = "ondragstart";
+
+    public static final String ONDROP = "ondrop";
+
     /**
      *
      * @author WFF

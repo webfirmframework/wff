@@ -64,6 +64,13 @@ import com.webfirmframework.wffweb.tag.html.attribute.Target;
 import com.webfirmframework.wffweb.tag.html.attribute.Type;
 import com.webfirmframework.wffweb.tag.html.attribute.Value;
 import com.webfirmframework.wffweb.tag.html.attribute.Width;
+import com.webfirmframework.wffweb.tag.html.attribute.event.drag.OnDrag;
+import com.webfirmframework.wffweb.tag.html.attribute.event.drag.OnDragEnd;
+import com.webfirmframework.wffweb.tag.html.attribute.event.drag.OnDragEnter;
+import com.webfirmframework.wffweb.tag.html.attribute.event.drag.OnDragLeave;
+import com.webfirmframework.wffweb.tag.html.attribute.event.drag.OnDragOver;
+import com.webfirmframework.wffweb.tag.html.attribute.event.drag.OnDragStart;
+import com.webfirmframework.wffweb.tag.html.attribute.event.drag.OnDrop;
 import com.webfirmframework.wffweb.tag.html.attribute.event.form.OnBlur;
 import com.webfirmframework.wffweb.tag.html.attribute.event.form.OnChange;
 import com.webfirmframework.wffweb.tag.html.attribute.event.form.OnFocus;
@@ -390,6 +397,23 @@ public class AttributeRegistry {
                 OnSelect.class.getSimpleName());
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONSUBMIT,
                 OnSubmit.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONDRAG,
+                OnDrag.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONDRAGEND,
+                OnDragEnd.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
+                AttributeNameConstants.ONDRAGENTER,
+                OnDragEnter.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
+                AttributeNameConstants.ONDRAGLEAVE,
+                OnDragLeave.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONDRAGOVER,
+                OnDragOver.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
+                AttributeNameConstants.ONDRAGSTART,
+                OnDragStart.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONDROP,
+                OnDrop.class.getSimpleName());
 
         attributeNames = new ArrayList<String>(initialCapacity);
         attributeNamesSet = new HashSet<String>(initialCapacity);
