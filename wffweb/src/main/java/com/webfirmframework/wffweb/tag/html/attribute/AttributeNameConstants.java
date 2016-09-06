@@ -329,6 +329,14 @@ public class AttributeNameConstants {
 
     public static final String ONWHEEL = "onwheel";
 
+    public static final String ONTOUCHCANCEL = "ontouchcancel";
+
+    public static final String ONTOUCHEND = "ontouchend";
+
+    public static final String ONTOUCHMOVE = "ontouchmove";
+
+    public static final String ONTOUCHSTART = "ontouchstart";
+
     /**
      *
      * @author WFF
