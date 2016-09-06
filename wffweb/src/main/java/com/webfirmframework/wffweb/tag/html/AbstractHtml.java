@@ -1946,9 +1946,12 @@ public abstract class AbstractHtml extends AbstractTagBase {
                             indexOfHash);
                     final String attrValue = attrNameValue
                             .substring(indexOfHash + 1, attrNameValue.length());
+                    // CustomAttribute should be replaced with relevant class
+                    // later
                     attributes[i - 1] = new CustomAttribute(attrName,
                             attrValue);
                 }
+                // CustomTag should be replaced with relevant class later
                 parent = new CustomTag(tagName, null, attributes);
             }
             allTags[0] = parent;
@@ -1979,9 +1982,12 @@ public abstract class AbstractHtml extends AbstractTagBase {
                                 indexOfHash);
                         final String attrValue = attrNameValue.substring(
                                 indexOfHash + 1, attrNameValue.length());
+                        // CustomAttribute should be replaced with relevant
+                        // class later
                         attributes[j - 1] = new CustomAttribute(attrName,
                                 attrValue);
                     }
+                    // CustomTag should be replaced with relevant class later
                     child = new CustomTag(tagName, allTags[indexOfParent],
                             attributes);
                 }
