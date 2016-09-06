@@ -315,6 +315,20 @@ public class AttributeNameConstants {
 
     public static final String TRANSITIONEND = "transitionend";
 
+    public static final String ONONLINE = "ononline";
+
+    public static final String ONOFFLINE = "onoffline";
+
+    public static final String ONPOPSTATE = "onpopstate";
+
+    public static final String ONSHOW = "onshow";
+
+    public static final String ONSTORAGE = "onstorage";
+
+    public static final String ONTOGGLE = "ontoggle";
+
+    public static final String ONWHEEL = "onwheel";
+
     /**
      *
      * @author WFF

@@ -120,6 +120,13 @@ import com.webfirmframework.wffweb.tag.html.attribute.event.media.OnSuspend;
 import com.webfirmframework.wffweb.tag.html.attribute.event.media.OnTimeUpdate;
 import com.webfirmframework.wffweb.tag.html.attribute.event.media.OnVolumeChange;
 import com.webfirmframework.wffweb.tag.html.attribute.event.media.OnWaiting;
+import com.webfirmframework.wffweb.tag.html.attribute.event.misc.OnOffline;
+import com.webfirmframework.wffweb.tag.html.attribute.event.misc.OnOnline;
+import com.webfirmframework.wffweb.tag.html.attribute.event.misc.OnPopState;
+import com.webfirmframework.wffweb.tag.html.attribute.event.misc.OnShow;
+import com.webfirmframework.wffweb.tag.html.attribute.event.misc.OnStorage;
+import com.webfirmframework.wffweb.tag.html.attribute.event.misc.OnToggle;
+import com.webfirmframework.wffweb.tag.html.attribute.event.misc.OnWheel;
 import com.webfirmframework.wffweb.tag.html.attribute.event.mouse.OnClick;
 import com.webfirmframework.wffweb.tag.html.attribute.event.mouse.OnContextMenu;
 import com.webfirmframework.wffweb.tag.html.attribute.event.mouse.OnDblClick;
@@ -517,6 +524,20 @@ public class AttributeRegistry {
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
                 AttributeNameConstants.TRANSITIONEND,
                 TransitionEnd.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONOFFLINE,
+                OnOffline.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONONLINE,
+                OnOnline.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONPOPSTATE,
+                OnPopState.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONSHOW,
+                OnShow.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONSTORAGE,
+                OnStorage.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONTOGGLE,
+                OnToggle.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONWHEEL,
+                OnWheel.class.getSimpleName());
 
         attributeNames = new ArrayList<String>(initialCapacity);
         attributeNamesSet = new HashSet<String>(initialCapacity);
