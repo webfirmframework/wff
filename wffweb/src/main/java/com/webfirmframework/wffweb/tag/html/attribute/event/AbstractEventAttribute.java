@@ -63,9 +63,9 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      *            declaration). It must return true/false. This function will
      *            invoke at client side before {@code serverAsyncMethod}. If the
      *            jsPrefunction returns true then only {@code serverAsyncMethod}
-     *            method will invoke (if it is implemented). It has an implicit
-     *            object {@code source} which gives the reference of the current
-     *            tag. <br>
+     *            method will invoke (if it is implemented). It has implicit
+     *            objects like {@code event} and {@code source} which gives the
+     *            reference of the current tag. <br>
      *            Eg:-
      *
      *            <pre>
@@ -85,7 +85,8 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      *            The body part of a javascript function (without function
      *            declaration). It can return a javascript object so that it
      *            will be available at server side in {@code serverAsyncMethod}
-     *            as {@code wffBMObject} parameter. <br>
+     *            as {@code wffBMObject} parameter. There are implicit objects
+     *            {@code event} and {@code source} in the scope.<br>
      *            Eg:-
      *
      *            <pre>
@@ -97,7 +98,9 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      *            The body part of a javascript function (without function
      *            declaration). The {@code wffBMObject} returned by
      *            {@code serverAsyncMethod} will be available as an implicit
-     *            object {@code jsObject} in the scope.
+     *            object {@code jsObject} in the scope. There are common
+     *            implicit objects {@code event} and {@code source} in the
+     *            scope.
      * @since 1.2.0
      * @author WFF
      */
@@ -149,7 +152,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
             final ServerAsyncMethod serverAsyncMethod) {
         if (serverAsyncMethod != null) {
             this.serverAsyncMethod = serverAsyncMethod;
-            super.setAttributeValue("wffServerMethods.invokeAsync(this,'"
+            super.setAttributeValue("wffServerMethods.invokeAsync(event, this,'"
                     + getAttributeName() + "')");
         }
     }
@@ -160,7 +163,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
         final String functionBody = jsfunctionBody.trim();
         final StringBuilder builder = new StringBuilder();
 
-        builder.append("function(source){");
+        builder.append("function(event, source){");
         builder.append(functionBody);
         if (functionBody.charAt(functionBody.length() - 1) != ';') {
             builder.append(';');
@@ -176,9 +179,9 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      *            declaration). It must return true/false. This function will
      *            invoke at client side before {@code serverAsyncMethod}. If the
      *            jsPrefunction returns true then only {@code serverAsyncMethod}
-     *            method will invoke (if it is implemented). It has an implicit
-     *            object {@code source} which gives the reference of the current
-     *            tag. <br>
+     *            method will invoke (if it is implemented). It has implicit
+     *            objects like {@code event} and {@code source} which gives the
+     *            reference of the current tag. <br>
      *            Eg:-
      *
      *            <pre>
@@ -198,12 +201,12 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      *            The body part of a javascript function (without function
      *            declaration). It can return a javascript object so that it
      *            will be available at server side in {@code serverAsyncMethod}
-     *            as {@code wffBMObject} parameter. <br>
+     *            as {@code wffBMObject} parameter. There are implicit objects
+     *            {@code event} and {@code source} in the scope.<br>
      *            Eg:-
      *
      *            <pre>
      *            var bName = source.name;
-     *            //the js object can also contain UInt8Array value to transfer binary data to server.
      *            return {buttonName: bName, author:'wff', dateOfYear: 2014};
      *            </pre>
      *
@@ -211,7 +214,9 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      *            The body part of a javascript function (without function
      *            declaration). The {@code wffBMObject} returned by
      *            {@code serverAsyncMethod} will be available as an implicit
-     *            object {@code jsObject} in the scope.
+     *            object {@code jsObject} in the scope. There are common
+     *            implicit objects {@code event} and {@code source} in the
+     *            scope.
      * @since 1.2.0
      * @author WFF
      */
@@ -228,7 +233,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
                 final StringBuilder builder = new StringBuilder();
 
                 builder.append(
-                        "wffServerMethods.invokeAsyncWithPreFilterFun(this,'"
+                        "wffServerMethods.invokeAsyncWithPreFilterFun(event, this,'"
                                 + getAttributeName() + "',");
 
                 builder.append(getPreparedJsFunctionBody(jsPreFunctionBody));
@@ -246,8 +251,9 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
 
                 final StringBuilder builder = new StringBuilder();
 
-                builder.append("wffServerMethods.invokeAsyncWithPreFun(this,'"
-                        + getAttributeName() + "',");
+                builder.append(
+                        "wffServerMethods.invokeAsyncWithPreFun(event, this,'"
+                                + getAttributeName() + "',");
 
                 builder.append(getPreparedJsFunctionBody(jsPreFunctionBody));
                 builder.append(")");
@@ -263,7 +269,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
                 final StringBuilder builder = new StringBuilder();
 
                 builder.append(
-                        "wffServerMethods.invokeAsyncWithPreFilterFun(this,'"
+                        "wffServerMethods.invokeAsyncWithPreFilterFun(event, this,'"
                                 + getAttributeName() + "',");
 
                 builder.append(getPreparedJsFunctionBody(jsPreFunctionBody));
@@ -280,7 +286,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
                 final StringBuilder builder = new StringBuilder();
 
                 builder.append(
-                        "wffServerMethods.invokeAsyncWithFilterFun(this,'"
+                        "wffServerMethods.invokeAsyncWithFilterFun(event, this,'"
                                 + getAttributeName() + "',");
 
                 builder.append(getPreparedJsFunctionBody(jsFilterFunctionBody));
@@ -295,8 +301,9 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
 
                 final StringBuilder builder = new StringBuilder();
 
-                builder.append("wffServerMethods.invokeAsyncWithPreFun(this,'"
-                        + getAttributeName() + "',");
+                builder.append(
+                        "wffServerMethods.invokeAsyncWithPreFun(event, this,'"
+                                + getAttributeName() + "',");
 
                 builder.append(getPreparedJsFunctionBody(jsPreFunctionBody));
 
@@ -308,7 +315,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
                 final StringBuilder builder = new StringBuilder();
 
                 builder.append(
-                        "wffServerMethods.invokeAsyncWithFilterFun(this,'"
+                        "wffServerMethods.invokeAsyncWithFilterFun(event, this,'"
                                 + getAttributeName() + "',");
 
                 builder.append(getPreparedJsFunctionBody(jsFilterFunctionBody));
@@ -322,7 +329,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
 
                 final StringBuilder builder = new StringBuilder();
 
-                builder.append("wffServerMethods.invokeAsync(this,'"
+                builder.append("wffServerMethods.invokeAsync(event, this,'"
                         + getAttributeName() + "'");
 
                 builder.append(")");
@@ -333,8 +340,9 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
                 super.setAttributeValue(builder.toString());
             } else {
                 this.serverAsyncMethod = serverAsyncMethod;
-                super.setAttributeValue("wffServerMethods.invokeAsync(this,'"
-                        + getAttributeName() + "')");
+                super.setAttributeValue(
+                        "wffServerMethods.invokeAsync(event, this,'"
+                                + getAttributeName() + "')");
             }
 
         }

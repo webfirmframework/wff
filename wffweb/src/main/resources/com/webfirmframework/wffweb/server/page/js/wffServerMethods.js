@@ -17,7 +17,7 @@ var wffServerMethods = new function () {
 
 	var encoder = wffGlobal.encoder;
 	
-	this.invokeAsync = function(tag, attr) {
+	this.invokeAsync = function(event, tag, attr) {
 		console.log('invokeAsync tag', tag);
 		var taskNameValue = wffTaskUtil.getTaskNameValue(wffGlobal.taskValues.TASK, wffGlobal.taskValues.INVOKE_ASYNC_METHOD);
 
@@ -30,10 +30,10 @@ var wffServerMethods = new function () {
 		wffWS.send(wffBM);
 	};
 	
-	this.invokeAsyncWithPreFun = function(tag, attr, preFun) {
+	this.invokeAsyncWithPreFun = function(event, tag, attr, preFun) {
 		console.log('invokeAsync tag', tag);
 		
-		if (preFun(tag)) {
+		if (preFun(event, tag)) {
 			var taskNameValue = wffTaskUtil.getTaskNameValue(wffGlobal.taskValues.TASK, wffGlobal.taskValues.INVOKE_ASYNC_METHOD);
 
 			
@@ -47,16 +47,16 @@ var wffServerMethods = new function () {
 		
 	};
 	
-	this.invokeAsyncWithPreFilterFun = function(tag, attr, preFun, filterFun) {
+	this.invokeAsyncWithPreFilterFun = function(event, tag, attr, preFun, filterFun) {
 		console.log('invokeAsyncWithPreFilterFun tag', tag);
 		
-		if (preFun(tag)) {
+		if (preFun(event, tag)) {
 			var taskNameValue = wffTaskUtil.getTaskNameValue(wffGlobal.taskValues.TASK, wffGlobal.taskValues.INVOKE_ASYNC_METHOD);
 
 			
 			var attrBytes = encoder.encode(attr);
 			
-			var jsObject = filterFun(tag);
+			var jsObject = filterFun(event, tag);
 			var argumentBMObject = new WffBMObject(jsObject);
 			var argBytes = argumentBMObject.getBMBytes();
 			
@@ -71,7 +71,7 @@ var wffServerMethods = new function () {
 		
 	};
 	
-	this.invokeAsyncWithFilterFun = function(tag, attr, filterFun) {
+	this.invokeAsyncWithFilterFun = function(event, tag, attr, filterFun) {
 		console.log('invokeAsyncWithFilterFun tag', tag);
 		
 		var taskNameValue = wffTaskUtil.getTaskNameValue(wffGlobal.taskValues.TASK, wffGlobal.taskValues.INVOKE_ASYNC_METHOD);
@@ -79,7 +79,7 @@ var wffServerMethods = new function () {
 		
 		var attrBytes = encoder.encode(attr);
 		
-		var jsObject = filterFun(tag);
+		var jsObject = filterFun(event, tag);
 		var argumentBMObject = new WffBMObject(jsObject);
 		var argBytes = argumentBMObject.getBMBytes();
 		
