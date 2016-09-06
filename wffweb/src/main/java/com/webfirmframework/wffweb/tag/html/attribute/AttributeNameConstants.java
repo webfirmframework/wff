@@ -257,6 +257,12 @@ public class AttributeNameConstants {
 
     public static final String ONDROP = "ondrop";
 
+    public static final String ONCOPY = "oncopy";
+
+    public static final String ONCUT = "oncut";
+
+    public static final String ONPASTE = "onpaste";
+
     /**
      *
      * @author WFF

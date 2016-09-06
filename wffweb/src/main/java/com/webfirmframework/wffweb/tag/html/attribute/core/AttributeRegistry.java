@@ -64,6 +64,9 @@ import com.webfirmframework.wffweb.tag.html.attribute.Target;
 import com.webfirmframework.wffweb.tag.html.attribute.Type;
 import com.webfirmframework.wffweb.tag.html.attribute.Value;
 import com.webfirmframework.wffweb.tag.html.attribute.Width;
+import com.webfirmframework.wffweb.tag.html.attribute.event.clipboard.OnCopy;
+import com.webfirmframework.wffweb.tag.html.attribute.event.clipboard.OnCut;
+import com.webfirmframework.wffweb.tag.html.attribute.event.clipboard.OnPaste;
 import com.webfirmframework.wffweb.tag.html.attribute.event.drag.OnDrag;
 import com.webfirmframework.wffweb.tag.html.attribute.event.drag.OnDragEnd;
 import com.webfirmframework.wffweb.tag.html.attribute.event.drag.OnDragEnter;
@@ -414,6 +417,12 @@ public class AttributeRegistry {
                 OnDragStart.class.getSimpleName());
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONDROP,
                 OnDrop.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONCOPY,
+                OnCopy.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONCUT,
+                OnCut.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONPASTE,
+                OnPaste.class.getSimpleName());
 
         attributeNames = new ArrayList<String>(initialCapacity);
         attributeNamesSet = new HashSet<String>(initialCapacity);
