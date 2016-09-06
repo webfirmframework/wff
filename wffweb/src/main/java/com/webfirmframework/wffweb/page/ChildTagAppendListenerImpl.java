@@ -16,13 +16,14 @@
 package com.webfirmframework.wffweb.page;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Deque;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.Stack;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
@@ -67,7 +68,7 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
             final AbstractHtml appendedChildTag = event.getAppendedChildTag();
 
             // add data-wff-id to all tags including nested tags
-            final Stack<Set<AbstractHtml>> childrenStack = new Stack<Set<AbstractHtml>>();
+            final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<Set<AbstractHtml>>();
             childrenStack.push(new LinkedHashSet<AbstractHtml>(
                     Arrays.asList(appendedChildTag)));
 
@@ -143,7 +144,7 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
                     .getAppendedChildrenTags();
 
             // add data-wff-id to all tags including nested tags
-            final Stack<Set<AbstractHtml>> childrenStack = new Stack<Set<AbstractHtml>>();
+            final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<Set<AbstractHtml>>();
             childrenStack
                     .push(new LinkedHashSet<AbstractHtml>(appendedChildTags));
 

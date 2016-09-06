@@ -16,7 +16,8 @@
 package com.webfirmframework.wffweb.page;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
@@ -56,7 +57,7 @@ class DataWffIdUtil {
     static byte[][] getTagNameAndWffId(final AbstractHtml abstractHtml)
             throws UnsupportedEncodingException {
 
-        final Stack<AbstractHtml> parentStack = new Stack<AbstractHtml>();
+        final Deque<AbstractHtml> parentStack = new ArrayDeque<AbstractHtml>();
         parentStack.push(abstractHtml);
 
         while (parentStack.size() > 0) {

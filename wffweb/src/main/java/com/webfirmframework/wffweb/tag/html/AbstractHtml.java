@@ -34,7 +34,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Stack;
 
 import com.webfirmframework.wffweb.MethodNotImplementedException;
 import com.webfirmframework.wffweb.WffRuntimeException;
@@ -348,7 +347,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
     }
 
     private void initParentAndSharedObject(final AbstractHtml child) {
-        final Stack<Set<AbstractHtml>> childrenStack = new Stack<Set<AbstractHtml>>();
+        final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<Set<AbstractHtml>>();
         childrenStack.push(new HashSet<AbstractHtml>(Arrays.asList(child)));
 
         while (childrenStack.size() > 0) {
@@ -1714,7 +1713,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
 
         final AbstractHtml clonedObject = deepClone(this);
 
-        final Stack<Set<AbstractHtml>> childrenStack = new Stack<Set<AbstractHtml>>();
+        final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<Set<AbstractHtml>>();
         childrenStack.push(
                 new LinkedHashSet<AbstractHtml>(Arrays.asList(clonedObject)));
 
@@ -1766,7 +1765,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
         abstractHtml.parent = null;
         abstractHtml.sharedObject = new AbstractHtml5SharedObject();
 
-        final Stack<Set<AbstractHtml>> removedTagsStack = new Stack<Set<AbstractHtml>>();
+        final Deque<Set<AbstractHtml>> removedTagsStack = new ArrayDeque<Set<AbstractHtml>>();
         removedTagsStack
                 .push(new HashSet<AbstractHtml>(Arrays.asList(abstractHtml)));
 

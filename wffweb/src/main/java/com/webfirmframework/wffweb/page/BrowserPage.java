@@ -19,14 +19,15 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Stack;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -254,7 +255,7 @@ public abstract class BrowserPage implements Serializable {
                     BrowserPage.this);
         }
 
-        final Stack<Set<AbstractHtml>> childrenStack = new Stack<Set<AbstractHtml>>();
+        final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<Set<AbstractHtml>>();
         childrenStack.push(
                 new LinkedHashSet<AbstractHtml>(Arrays.asList(abstractHtml)));
 
@@ -294,7 +295,7 @@ public abstract class BrowserPage implements Serializable {
     private void embedScriptTag(final AbstractHtml abstractHtml,
             final String wsUrlWithInstanceId) {
 
-        final Stack<Set<AbstractHtml>> childrenStack = new Stack<Set<AbstractHtml>>();
+        final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<Set<AbstractHtml>>();
         childrenStack.push(
                 new LinkedHashSet<AbstractHtml>(Arrays.asList(abstractHtml)));
 
