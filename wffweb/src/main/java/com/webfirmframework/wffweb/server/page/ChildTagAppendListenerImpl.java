@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Deque;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -43,15 +44,19 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
 
     private BrowserPage browserPage;
 
+    private Map<String, AbstractHtml> tagByWffId;
+
     @SuppressWarnings("unused")
     private ChildTagAppendListenerImpl() {
         throw new AssertionError();
     }
 
     ChildTagAppendListenerImpl(final BrowserPage browserPage,
-            final Object accessObject) {
+            final Object accessObject,
+            final Map<String, AbstractHtml> tagByWffId) {
         this.browserPage = browserPage;
         this.accessObject = accessObject;
+        this.tagByWffId = tagByWffId;
     }
 
     @Override
@@ -78,6 +83,7 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
                     final String wffId = browserPage.getNewDataWffId();
                     child.addAttributes(accessObject, false,
                             new CustomAttribute("data-wff-id", wffId));
+                    tagByWffId.put(wffId, child);
 
                     final Set<AbstractHtml> subChildren = child
                             .getChildren(accessObject);
@@ -154,6 +160,7 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
                     final String wffId = browserPage.getNewDataWffId();
                     child.addAttributes(accessObject, false,
                             new CustomAttribute("data-wff-id", wffId));
+                    tagByWffId.put(wffId, child);
 
                     final Set<AbstractHtml> subChildren = child
                             .getChildren(accessObject);

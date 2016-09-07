@@ -365,9 +365,11 @@ public abstract class AbstractHtml extends AbstractTagBase {
                         && eachChild.getAttributeByName("data-wff-id") == null
                         && eachChild.getTagName() != null
                         && !eachChild.getTagName().isEmpty()) {
+
                     eachChild.addAttributes(false, new CustomAttribute(
                             "data-wff-id",
                             sharedObject.getNewDataWffId(ACCESS_OBJECT)));
+
                 }
 
                 final Set<AbstractHtml> subChildren = eachChild.children;

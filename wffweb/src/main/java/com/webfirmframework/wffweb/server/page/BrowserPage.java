@@ -23,7 +23,6 @@ import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -246,10 +245,6 @@ public abstract class BrowserPage implements Serializable {
 
     private void addDataWffIdAndAttrListener(final AbstractHtml abstractHtml) {
 
-        if (tagByWffId == null) {
-            tagByWffId = new HashMap<String, AbstractHtml>();
-        }
-
         if (valueChangeListener == null) {
             valueChangeListener = new AttributeValueChangeListenerImpl(
                     BrowserPage.this);
@@ -342,14 +337,15 @@ public abstract class BrowserPage implements Serializable {
     private void addChildTagAppendListener(final AbstractHtml abstractHtml) {
 
         abstractHtml.getSharedObject().setChildTagAppendListener(
-                new ChildTagAppendListenerImpl(this, ACCESS_OBJECT),
+                new ChildTagAppendListenerImpl(this, ACCESS_OBJECT, tagByWffId),
                 ACCESS_OBJECT);
     }
 
     private void addChildTagRemoveListener(final AbstractHtml abstractHtml) {
 
         abstractHtml.getSharedObject().setChildTagRemoveListener(
-                new ChildTagRemoveListenerImpl(this), ACCESS_OBJECT);
+                new ChildTagRemoveListenerImpl(this, ACCESS_OBJECT, tagByWffId),
+                ACCESS_OBJECT);
     }
 
     private void addAttributeAddListener(final AbstractHtml abstractHtml) {
@@ -364,7 +360,8 @@ public abstract class BrowserPage implements Serializable {
 
     private void addInnerHtmlAddListener(final AbstractHtml abstractHtml) {
         abstractHtml.getSharedObject().setInnerHtmlAddListener(
-                new InnerHtmlAddListenerImpl(this), ACCESS_OBJECT);
+                new InnerHtmlAddListenerImpl(this, ACCESS_OBJECT, tagByWffId),
+                ACCESS_OBJECT);
     }
 
     public final String toHtmlString() {
@@ -396,6 +393,9 @@ public abstract class BrowserPage implements Serializable {
                 throw new NullValueException(
                         "render must return an instance of AbstractHtml, eg:- new Html(null);");
             }
+
+            tagByWffId = abstractHtml.getSharedObject()
+                    .initTagByWffId(ACCESS_OBJECT);
 
             final String webSocketUrl = webSocketUrl();
             if (webSocketUrl == null) {

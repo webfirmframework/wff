@@ -17,7 +17,11 @@ package com.webfirmframework.wffweb.server.page;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayDeque;
+import java.util.Arrays;
 import java.util.Deque;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
@@ -35,13 +39,56 @@ class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
 
     private BrowserPage browserPage;
 
+    private Object accessObject;
+
+    private Map<String, AbstractHtml> tagByWffId;
+
     @SuppressWarnings("unused")
     private InnerHtmlAddListenerImpl() {
         throw new AssertionError();
     }
 
-    InnerHtmlAddListenerImpl(final BrowserPage browserPage) {
+    InnerHtmlAddListenerImpl(final BrowserPage browserPage,
+            final Object accessObject,
+            final Map<String, AbstractHtml> tagByWffId) {
         this.browserPage = browserPage;
+        this.accessObject = accessObject;
+        this.tagByWffId = tagByWffId;
+
+    }
+
+    /**
+     * adds to wffid map
+     *
+     * @param tag
+     * @since 1.2.0
+     * @author WFF
+     */
+    private void addInWffIdMap(final AbstractHtml tag) {
+
+        final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<Set<AbstractHtml>>();
+        childrenStack.push(new HashSet<AbstractHtml>(Arrays.asList(tag)));
+
+        while (childrenStack.size() > 0) {
+            final Set<AbstractHtml> children = childrenStack.pop();
+            for (final AbstractHtml child : children) {
+
+                final AbstractAttribute wffIdAttr = child
+                        .getAttributeByName("data-wff-id");
+
+                if (wffIdAttr != null) {
+                    tagByWffId.put(wffIdAttr.getAttributeValue(), child);
+                }
+
+                final Set<AbstractHtml> subChildren = child
+                        .getChildren(accessObject);
+                if (subChildren != null && subChildren.size() > 0) {
+                    childrenStack.push(subChildren);
+                }
+
+            }
+        }
+
     }
 
     @Override
@@ -88,6 +135,8 @@ class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
                         .getWffBinaryMessageBytes(task, nameValue);
 
                 wsListener.push(wffBMBytes);
+
+                addInWffIdMap(innerHtmlTag);
             } else {
                 LOGGER.severe("Could not find data-wff-id from owner tag");
             }

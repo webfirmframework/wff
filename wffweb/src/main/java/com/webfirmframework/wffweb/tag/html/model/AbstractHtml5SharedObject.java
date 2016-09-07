@@ -18,11 +18,14 @@ package com.webfirmframework.wffweb.tag.html.model;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.webfirmframework.wffweb.WffSecurityException;
 import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
 import com.webfirmframework.wffweb.tag.core.AbstractTagBase;
+import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.listener.AttributeAddListener;
 import com.webfirmframework.wffweb.tag.html.listener.AttributeRemoveListener;
 import com.webfirmframework.wffweb.tag.html.listener.ChildTagAppendListener;
@@ -51,6 +54,8 @@ public class AbstractHtml5SharedObject implements Serializable {
     private AttributeRemoveListener attributeRemoveListener;
 
     private InnerHtmlAddListener innerHtmlAddListener;
+
+    private Map<String, AbstractHtml> tagByWffId;
 
     private volatile int dataWffId = -1;
 
@@ -267,4 +272,41 @@ public class AbstractHtml5SharedObject implements Serializable {
         }
         this.innerHtmlAddListener = innerHtmlAddListener;
     }
+
+    /**
+     * @param accessObject
+     * @return the map containing wffid and tag
+     * @since 1.2.0
+     * @author WFF
+     */
+    public Map<String, AbstractHtml> getTagByWffId(final Object accessObject) {
+        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE
+                .equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException(
+                    "Not allowed to consume this method. This method is for internal use.");
+        }
+        if (tagByWffId == null) {
+            tagByWffId = new ConcurrentHashMap<String, AbstractHtml>();
+        }
+        return tagByWffId;
+    }
+
+    /**
+     * @param accessObject
+     * @since 1.2.0
+     * @author WFF
+     * @return the map containing wffid and tag
+     */
+    public Map<String, AbstractHtml> initTagByWffId(final Object accessObject) {
+        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE
+                .equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException(
+                    "Not allowed to consume this method. This method is for internal use.");
+        }
+        if (tagByWffId == null) {
+            tagByWffId = new ConcurrentHashMap<String, AbstractHtml>();
+        }
+        return tagByWffId;
+    }
+
 }
