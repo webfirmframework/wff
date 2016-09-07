@@ -254,9 +254,35 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
         this.outer = outer;
     }
 
-    public Object get(final String name) {
+    /**
+     * @param name
+     *            the key name
+     * @return the value
+     * @since 1.2.0
+     * @author WFF
+     */
+    public Object getValue(final String key) {
+        final ValueValueType valueValueType = super.get(key);
+        if (valueValueType == null) {
+            return null;
+        }
 
-        return null;
+        return valueValueType.getValue();
+    }
+
+    /**
+     *
+     * @param key
+     * @return the value type of this key
+     * @since 1.2.0
+     * @author WFF
+     */
+    public BMValueType getValueType(final String key) {
+        final ValueValueType valueValueType = super.get(key);
+        if (valueValueType == null) {
+            return null;
+        }
+        return BMValueType.getInstanceByType(valueValueType.getValueType());
     }
 
 }

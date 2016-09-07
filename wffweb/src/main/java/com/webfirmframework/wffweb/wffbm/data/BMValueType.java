@@ -15,6 +15,12 @@
  */
 package com.webfirmframework.wffweb.wffbm.data;
 
+/**
+ * BM Object/Array value type
+ * 
+ * @author WFF
+ *
+ */
 public enum BMValueType {
 
     // this order should not be changed
@@ -28,5 +34,15 @@ public enum BMValueType {
 
     public byte getType() {
         return type;
+    }
+
+    /**
+     * @param type
+     * @return the {@code BMValueType} instance by type
+     * @since 1.2.0
+     * @author WFF
+     */
+    public static BMValueType getInstanceByType(final byte type) {
+        return BMValueType.values()[type];
     }
 }
