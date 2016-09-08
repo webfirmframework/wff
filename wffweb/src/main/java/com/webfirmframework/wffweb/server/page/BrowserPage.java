@@ -184,7 +184,8 @@ public abstract class BrowserPage implements Serializable {
                             final ServerAsyncMethod serverAsyncMethod = eventAttr
                                     .getServerAsyncMethod();
 
-                            final ServerAsyncMethod.Event event = new ServerAsyncMethod.Event();
+                            final ServerAsyncMethod.Event event = new ServerAsyncMethod.Event(
+                                    methodTag);
 
                             final WffBMObject returnedObject = serverAsyncMethod
                                     .asyncMethod(wffBMObject, event);

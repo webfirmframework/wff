@@ -26,6 +26,11 @@ public interface ServerAsyncMethod extends Serializable {
 
         private AbstractHtml sourceTag;
 
+        public Event(final AbstractHtml sourceTag) {
+            super();
+            this.sourceTag = sourceTag;
+        }
+
         /**
          * @return the sourceTag
          */
