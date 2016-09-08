@@ -298,6 +298,27 @@ public abstract class AbstractHtml extends AbstractTagBase {
         return addChild(child, true);
     }
 
+    /**
+     * NB: This method is for internal use
+     * 
+     * @param accessObject
+     * @param child
+     * @param invokeListener
+     * @return
+     * @since 1.2.0
+     * @author WFF
+     */
+    public boolean addChild(final Object accessObject, final AbstractHtml child,
+            final boolean invokeListener) {
+        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE
+                .equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException(
+                    "Not allowed to consume this method. This method is for internal use.");
+        }
+
+        return addChild(child, invokeListener);
+    }
+
     private boolean addChild(final AbstractHtml child,
             final boolean invokeListener) {
 
@@ -1776,6 +1797,13 @@ public abstract class AbstractHtml extends AbstractTagBase {
             final Set<AbstractHtml> stackChildren = removedTagsStack.pop();
 
             for (final AbstractHtml stackChild : stackChildren) {
+                
+                AbstractAttribute dataWffId = stackChild.getAttributeByName("data-wff-id");
+                if (dataWffId != null) {
+                    String attributeValue = dataWffId.getAttributeValue();
+                    sharedObject.getTagByWffId(ACCESS_OBJECT).remove(attributeValue);
+                }
+                
                 stackChild.sharedObject = abstractHtml.sharedObject;
 
                 final Set<AbstractHtml> subChildren = stackChild.children;

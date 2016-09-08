@@ -280,8 +280,10 @@ public class AbstractHtml5SharedObject implements Serializable {
      * @author WFF
      */
     public Map<String, AbstractHtml> getTagByWffId(final Object accessObject) {
-        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE
-                .equals(accessObject.getClass().getName()))) {
+        if (accessObject == null || !((SecurityClassConstants.ABSTRACT_HTML
+                .equals(accessObject.getClass().getName()))
+                || (SecurityClassConstants.BROWSER_PAGE
+                        .equals(accessObject.getClass().getName())))) {
             throw new WffSecurityException(
                     "Not allowed to consume this method. This method is for internal use.");
         }

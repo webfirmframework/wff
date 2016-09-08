@@ -70,6 +70,8 @@ public abstract class BrowserPage implements Serializable {
 
     private WebSocketPushListener wsListener;
 
+    private String wffScriptTagId;
+
     // for security purpose, the class name should not be modified
     private static final class Security implements Serializable {
 
@@ -287,8 +289,13 @@ public abstract class BrowserPage implements Serializable {
 
     }
 
-    private void embedScriptTag(final AbstractHtml abstractHtml,
+    private void embedWffScriptIfRequired(final AbstractHtml abstractHtml,
             final String wsUrlWithInstanceId) {
+
+        if (wffScriptTagId != null && tagByWffId.containsKey(wffScriptTagId)) {
+            // no need to add script tag if it exists in the ui
+            return;
+        }
 
         final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<Set<AbstractHtml>>();
         childrenStack.push(
@@ -306,11 +313,19 @@ public abstract class BrowserPage implements Serializable {
 
                     bodyTagMissing = false;
 
-                    final Script script = new Script(child,
+                    wffScriptTagId = getNewDataWffId();
+                    final Script script = new Script(null,
+                            new CustomAttribute("data-wff-id", wffScriptTagId),
                             new Type("text/javascript"));
 
                     new NoTag(script, WffJsFile
                             .getAllOptimizedContent(wsUrlWithInstanceId));
+
+                    // to avoid invoking listener
+                    child.addChild(ACCESS_OBJECT, script, false);
+
+                    // ConcurrentHashMap cannot contain null as value
+                    tagByWffId.put(wffScriptTagId, script);
 
                     break outerLoop;
                 }
@@ -326,10 +341,20 @@ public abstract class BrowserPage implements Serializable {
         }
 
         if (bodyTagMissing) {
-            final Script script = new Script(abstractHtml,
+            wffScriptTagId = getNewDataWffId();
+
+            final Script script = new Script(null,
+                    new CustomAttribute("data-wff-id", wffScriptTagId),
                     new Type("text/javascript"));
             new NoTag(script,
                     WffJsFile.getAllOptimizedContent(wsUrlWithInstanceId));
+
+            // to avoid invoking listener
+            abstractHtml.addChild(ACCESS_OBJECT, script, false);
+
+            // ConcurrentHashMap cannot contain null as value
+            tagByWffId.put(wffScriptTagId, script);
+
         }
 
     }
@@ -382,6 +407,7 @@ public abstract class BrowserPage implements Serializable {
     public final void toOutputStream(final OutputStream os,
             final String charset) throws IOException {
         initAbstractHtml();
+
         abstractHtml.toOutputStream(os, true, charset);
     }
 
@@ -397,17 +423,6 @@ public abstract class BrowserPage implements Serializable {
             tagByWffId = abstractHtml.getSharedObject()
                     .initTagByWffId(ACCESS_OBJECT);
 
-            final String webSocketUrl = webSocketUrl();
-            if (webSocketUrl == null) {
-                throw new NullValueException(
-                        "webSocketUrl must return valid websocket url");
-            }
-
-            final String wsUrlWithInstanceId = webSocketUrl.indexOf("?") == -1
-                    ? webSocketUrl + "?wffInstanceId=" + getInstanceId()
-                    : webSocketUrl + "&wffInstanceId=" + getInstanceId();
-
-            embedScriptTag(abstractHtml, wsUrlWithInstanceId);
             addDataWffIdAndAttrListener(abstractHtml);
             addChildTagAppendListener(abstractHtml);
             addChildTagRemoveListener(abstractHtml);
@@ -415,6 +430,18 @@ public abstract class BrowserPage implements Serializable {
             addAttributeRemoveListener(abstractHtml);
             addInnerHtmlAddListener(abstractHtml);
         }
+
+        final String webSocketUrl = webSocketUrl();
+        if (webSocketUrl == null) {
+            throw new NullValueException(
+                    "webSocketUrl must return valid websocket url");
+        }
+
+        final String wsUrlWithInstanceId = webSocketUrl.indexOf("?") == -1
+                ? webSocketUrl + "?wffInstanceId=" + getInstanceId()
+                : webSocketUrl + "&wffInstanceId=" + getInstanceId();
+
+        embedWffScriptIfRequired(abstractHtml, wsUrlWithInstanceId);
     }
 
     /**

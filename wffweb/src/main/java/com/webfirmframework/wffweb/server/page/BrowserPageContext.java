@@ -180,17 +180,50 @@ public enum BrowserPageContext {
      * @author WFF
      */
     public void webSocketClosed(final String wffInstanceId) {
-        final String httpSessionId = instanceIdHttpSessionId.get(wffInstanceId);
+        // TODO implement later
+        // final String httpSessionId =
+        // instanceIdHttpSessionId.get(wffInstanceId);
+        // if (httpSessionId != null) {
+        // final Map<String, BrowserPage> browserPages =
+        // httpSessionIdBrowserPages
+        // .get(httpSessionId);
+        // if (browserPages != null) {
+        // final BrowserPage browserPage = browserPages
+        // .remove(wffInstanceId);
+        // if (browserPage == null) {
+        // LOGGER.warning(
+        // "The websocket is aready closed for this wffInstanceId");
+        // }
+        // }
+        // } else {
+        // LOGGER.warning(
+        // "The associatd HttpSession is alread closed for this instance id");
+        // }
+
+    }
+
+    /**
+     * should be called when the httpsession is closed. The closed http session
+     * id should be passed as an argument.
+     *
+     * @param httpSessionId
+     * @since 1.2.0
+     * @author WFF
+     */
+    public void httpSessionClosed(final String httpSessionId) {
+
         if (httpSessionId != null) {
             final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages
                     .get(httpSessionId);
             if (browserPages != null) {
-                final BrowserPage browserPage = browserPages
-                        .remove(wffInstanceId);
-                if (browserPage == null) {
-                    LOGGER.warning(
-                            "The websocket is aready closed for this wffInstanceId");
+
+                for (final String instanceId : browserPages.keySet()) {
+                    instanceIdHttpSessionId.remove(instanceId);
+                    instanceIdBrowserPage.remove(instanceId);
                 }
+
+                httpSessionIdBrowserPages.remove(httpSessionId);
+
             }
         } else {
             LOGGER.warning(
