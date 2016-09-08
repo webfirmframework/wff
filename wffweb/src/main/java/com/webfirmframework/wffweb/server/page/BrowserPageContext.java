@@ -32,6 +32,9 @@ public enum BrowserPageContext {
     public static final Logger LOGGER = Logger
             .getLogger(BrowserPageContext.class.getName());
 
+    /**
+     * key httpSessionId, value : (key: instanceId, value: BrowserPage)
+     */
     private final Map<String, Map<String, BrowserPage>> httpSessionIdBrowserPages;
 
     /**
@@ -180,26 +183,7 @@ public enum BrowserPageContext {
      * @author WFF
      */
     public void webSocketClosed(final String wffInstanceId) {
-        // TODO implement later
-        // final String httpSessionId =
-        // instanceIdHttpSessionId.get(wffInstanceId);
-        // if (httpSessionId != null) {
-        // final Map<String, BrowserPage> browserPages =
-        // httpSessionIdBrowserPages
-        // .get(httpSessionId);
-        // if (browserPages != null) {
-        // final BrowserPage browserPage = browserPages
-        // .remove(wffInstanceId);
-        // if (browserPage == null) {
-        // LOGGER.warning(
-        // "The websocket is aready closed for this wffInstanceId");
-        // }
-        // }
-        // } else {
-        // LOGGER.warning(
-        // "The associatd HttpSession is alread closed for this instance id");
-        // }
-
+        // NOP for future development
     }
 
     /**
