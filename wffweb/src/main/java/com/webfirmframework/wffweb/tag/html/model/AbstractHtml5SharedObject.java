@@ -26,6 +26,7 @@ import com.webfirmframework.wffweb.WffSecurityException;
 import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
 import com.webfirmframework.wffweb.tag.core.AbstractTagBase;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.attribute.listener.AttributeValueChangeListener;
 import com.webfirmframework.wffweb.tag.html.listener.AttributeAddListener;
 import com.webfirmframework.wffweb.tag.html.listener.AttributeRemoveListener;
 import com.webfirmframework.wffweb.tag.html.listener.ChildTagAppendListener;
@@ -56,6 +57,8 @@ public class AbstractHtml5SharedObject implements Serializable {
     private InnerHtmlAddListener innerHtmlAddListener;
 
     private Map<String, AbstractHtml> tagByWffId;
+
+    private AttributeValueChangeListener valueChangeListener;
 
     private volatile int dataWffId = -1;
 
@@ -309,6 +312,47 @@ public class AbstractHtml5SharedObject implements Serializable {
             tagByWffId = new ConcurrentHashMap<String, AbstractHtml>();
         }
         return tagByWffId;
+    }
+
+    /**
+     * NB:- This listener is used for internal purpose and should not be
+     * consumed. Instead, use addValueChangeListener and getValueChangeListeners
+     * methods.
+     *
+     * @param caller
+     *            object of this method
+     * @return the valueChangeListener
+     */
+    public AttributeValueChangeListener getValueChangeListener(
+            final Object accessObject) {
+        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_ATTRIBUTE
+                .equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException(
+                    "Not allowed to consume this method. Instead, use addValueChangeListener and getValueChangeListeners methods.");
+        }
+        return valueChangeListener;
+    }
+
+    /**
+     * NB:- This listener is used for internal purpose and should not be
+     * consumed. Instead, use addValueChangeListener and getValueChangeListeners
+     * methods.
+     *
+     * @param valueChangeListener
+     *            the valueChangeListener to set
+     * @param caller
+     *            object of this method
+     */
+    public void setValueChangeListener(
+            final AttributeValueChangeListener valueChangeListener,
+            final Object accessObject) {
+
+        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE
+                .equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException(
+                    "Not allowed to consume this method. Instead, use addValueChangeListener and getValueChangeListeners methods.");
+        }
+        this.valueChangeListener = valueChangeListener;
     }
 
 }

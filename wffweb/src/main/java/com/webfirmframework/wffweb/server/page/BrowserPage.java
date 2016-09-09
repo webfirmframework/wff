@@ -21,7 +21,6 @@ import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayDeque;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Deque;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -234,19 +233,13 @@ public abstract class BrowserPage implements Serializable {
 
     }
 
-    private void addValueChangeListenerInAttribute(
-            final Collection<AbstractAttribute> attribs) {
+    private void addAttrValueChangeListener(final AbstractHtml abstractHtml) {
 
-        for (final AbstractAttribute attr : attribs) {
-            if (attr == null
-                    || attr.getValueChangeListener(ACCESS_OBJECT) != null) {
-                continue;
-            }
-            attr.setValueChangeListener(valueChangeListener, ACCESS_OBJECT);
-        }
+        abstractHtml.getSharedObject()
+                .setValueChangeListener(valueChangeListener, ACCESS_OBJECT);
     }
 
-    private void addDataWffIdAndAttrListener(final AbstractHtml abstractHtml) {
+    private void addDataWffIdAttribute(final AbstractHtml abstractHtml) {
 
         if (valueChangeListener == null) {
             valueChangeListener = new AttributeValueChangeListenerImpl(
@@ -262,15 +255,6 @@ public abstract class BrowserPage implements Serializable {
             final Set<AbstractHtml> children = childrenStack.pop();
 
             for (final AbstractHtml child : children) {
-
-                // adding value change listener for all attributes except
-                // data-wff-id attribute
-                final Collection<AbstractAttribute> attributes = child
-                        .getAttributes();
-
-                if (attributes != null) {
-                    addValueChangeListenerInAttribute(attributes);
-                }
 
                 final String wffId = getNewDataWffId();
                 child.addAttributes(ACCESS_OBJECT, false,
@@ -424,7 +408,10 @@ public abstract class BrowserPage implements Serializable {
             tagByWffId = abstractHtml.getSharedObject()
                     .initTagByWffId(ACCESS_OBJECT);
 
-            addDataWffIdAndAttrListener(abstractHtml);
+            addDataWffIdAttribute(abstractHtml);
+            // attribute value change listener
+            // should be added only after adding data-wff-id attribute
+            addAttrValueChangeListener(abstractHtml);
             addChildTagAppendListener(abstractHtml);
             addChildTagRemoveListener(abstractHtml);
             addAttributeAddListener(abstractHtml);
