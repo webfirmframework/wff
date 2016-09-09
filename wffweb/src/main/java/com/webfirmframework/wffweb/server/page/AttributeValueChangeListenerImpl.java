@@ -22,8 +22,8 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
-import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.listener.AttributeValueChangeListener;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 import com.webfirmframework.wffweb.util.data.NameValue;
 
@@ -102,14 +102,12 @@ class AttributeValueChangeListenerImpl implements AttributeValueChangeListener {
 
                 for (final AbstractHtml owner : ownerTags) {
 
-                    final AbstractAttribute attribute = owner
-                            .getAttributeByName("data-wff-id");
+                    final DataWffId dataWffId = owner.getDataWffId();
 
-                    if (attribute != null) {
+                    if (dataWffId != null) {
 
                         final byte[] dataWffIdBytes = DataWffIdUtil
-                                .getDataWffIdBytes(
-                                        attribute.getAttributeValue());
+                                .getDataWffIdBytes(dataWffId.getValue());
 
                         dataWffIds[count] = dataWffIdBytes;
                         count++;

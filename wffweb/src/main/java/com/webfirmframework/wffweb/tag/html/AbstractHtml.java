@@ -46,6 +46,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeUtil;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
 import com.webfirmframework.wffweb.tag.html.core.TagRegistry;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.tag.html.listener.AttributeAddListener;
 import com.webfirmframework.wffweb.tag.html.listener.AttributeRemoveListener;
 import com.webfirmframework.wffweb.tag.html.listener.ChildTagAppendListener;
@@ -101,6 +102,8 @@ public abstract class AbstractHtml extends AbstractTagBase {
 
     // only for toWffBMBytes method
     private int wffSlotIndex = -1;
+
+    private DataWffId dataWffId;
 
     private transient Charset charset = Charset.defaultCharset();
 
@@ -300,7 +303,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
 
     /**
      * NB: This method is for internal use
-     * 
+     *
      * @param accessObject
      * @param child
      * @param invokeListener
@@ -383,12 +386,11 @@ public abstract class AbstractHtml extends AbstractTagBase {
                 // BrowserPage (if it is rended by BrowserPage then
                 // getLastDataWffId will not be -1)
                 if (sharedObject.getLastDataWffId(ACCESS_OBJECT) != -1
-                        && eachChild.getAttributeByName("data-wff-id") == null
+                        && eachChild.getDataWffId() == null
                         && eachChild.getTagName() != null
                         && !eachChild.getTagName().isEmpty()) {
 
-                    eachChild.addAttributes(false, new CustomAttribute(
-                            "data-wff-id",
+                    eachChild.setDataWffId(new DataWffId(
                             sharedObject.getNewDataWffId(ACCESS_OBJECT)));
 
                 }
@@ -461,25 +463,6 @@ public abstract class AbstractHtml extends AbstractTagBase {
      */
     public void addAttributes(final AbstractAttribute... attributes) {
         addAttributes(true, attributes);
-    }
-
-    /**
-     * adds the given attributes to this tag.
-     *
-     * @param attributes
-     *            attributes to add
-     * @since 1.2.0
-     * @author WFF
-     */
-    public void addAttributes(final Object accessObject,
-            final boolean invokeListener,
-            final AbstractAttribute... attributes) {
-        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE
-                .equals(accessObject.getClass().getName()))) {
-            throw new WffSecurityException(
-                    "Not allowed to consume this method. This method is for internal use.");
-        }
-        addAttributes(invokeListener, attributes);
     }
 
     /**
@@ -1797,13 +1780,14 @@ public abstract class AbstractHtml extends AbstractTagBase {
             final Set<AbstractHtml> stackChildren = removedTagsStack.pop();
 
             for (final AbstractHtml stackChild : stackChildren) {
-                
-                AbstractAttribute dataWffId = stackChild.getAttributeByName("data-wff-id");
+
+                final DataWffId dataWffId = stackChild.getDataWffId();
                 if (dataWffId != null) {
-                    String attributeValue = dataWffId.getAttributeValue();
-                    sharedObject.getTagByWffId(ACCESS_OBJECT).remove(attributeValue);
+                    final String attributeValue = dataWffId.getValue();
+                    sharedObject.getTagByWffId(ACCESS_OBJECT)
+                            .remove(attributeValue);
                 }
-                
+
                 stackChild.sharedObject = abstractHtml.sharedObject;
 
                 final Set<AbstractHtml> subChildren = stackChild.children;
@@ -2028,6 +2012,30 @@ public abstract class AbstractHtml extends AbstractTagBase {
         } catch (final UnsupportedEncodingException e) {
             throw new WffRuntimeException(e.getMessage(), e);
 
+        }
+    }
+
+    /**
+     * @return the dataWffId
+     */
+    public DataWffId getDataWffId() {
+        return dataWffId;
+    }
+
+    /**
+     * 
+     * adds data-wff-id for the tag if doesn't already exist. NB:- this method
+     * is ony for internal use.
+     * 
+     * @param dataWffId
+     *            the dataWffId to set
+     */
+    public void setDataWffId(final DataWffId dataWffId) {
+        if (this.dataWffId == null) {
+            addAttributes(false, dataWffId);
+            this.dataWffId = dataWffId;
+        } else {
+            throw new WffRuntimeException("dataWffId already exists");
         }
     }
 

@@ -25,7 +25,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
-import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.tag.html.listener.ChildTagRemoveListener;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 import com.webfirmframework.wffweb.util.data.NameValue;
@@ -65,10 +65,9 @@ class ChildTagRemoveListenerImpl implements ChildTagRemoveListener {
             final Set<AbstractHtml> children = childrenStack.pop();
             for (final AbstractHtml child : children) {
 
-                final AbstractAttribute dataWffId = child
-                        .getAttributeByName("data-wff-id");
+                final DataWffId dataWffId = child.getDataWffId();
                 if (dataWffId != null) {
-                    tagByWffId.remove(dataWffId.getAttributeValue());
+                    tagByWffId.remove(dataWffId.getValue());
                 }
 
                 final Set<AbstractHtml> subChildren = child
@@ -108,10 +107,9 @@ class ChildTagRemoveListenerImpl implements ChildTagRemoveListener {
 
             for (final AbstractHtml removedChildTag : removedChildrenTags) {
 
-                final AbstractAttribute attribute = removedChildTag
-                        .getAttributeByName("data-wff-id");
+                final DataWffId dataWffId = removedChildTag.getDataWffId();
 
-                if (attribute != null) {
+                if (dataWffId != null) {
 
                     final NameValue nameValue = new NameValue();
 
@@ -172,10 +170,9 @@ class ChildTagRemoveListenerImpl implements ChildTagRemoveListener {
             final NameValue task = Task.REMOVED_ALL_CHILDREN_TAGS
                     .getTaskNameValue();
 
-            final AbstractAttribute attribute = parentTag
-                    .getAttributeByName("data-wff-id");
+            final DataWffId dataWffId = parentTag.getDataWffId();
 
-            if (attribute != null) {
+            if (dataWffId != null) {
 
                 final NameValue nameValue = new NameValue();
 

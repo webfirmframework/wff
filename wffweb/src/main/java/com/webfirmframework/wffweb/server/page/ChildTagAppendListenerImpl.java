@@ -28,8 +28,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
-import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.tag.html.listener.ChildTagAppendListener;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 import com.webfirmframework.wffweb.util.data.NameValue;
@@ -81,10 +80,12 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
                 final Set<AbstractHtml> children = childrenStack.pop();
                 for (final AbstractHtml child : children) {
 
-                    final String wffId = browserPage.getNewDataWffId();
-                    child.addAttributes(accessObject, false,
-                            new CustomAttribute("data-wff-id", wffId));
-                    tagByWffId.put(wffId, child);
+                    if (child.getDataWffId() == null) {
+                        final String wffId = browserPage.getNewDataWffId();
+                        child.setDataWffId(new DataWffId(wffId));
+                    }
+
+                    tagByWffId.put(child.getDataWffId().getValue(), child);
 
                     final Set<AbstractHtml> subChildren = child
                             .getChildren(accessObject);
@@ -95,10 +96,9 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
                 }
             }
 
-            final AbstractAttribute attribute = parentTag
-                    .getAttributeByName("data-wff-id");
+            final DataWffId dataWffId = parentTag.getDataWffId();
 
-            if (attribute == null) {
+            if (dataWffId == null) {
                 LOGGER.warning(
                         "Could not find data-wff-id from direct parent tag");
             }
@@ -158,10 +158,12 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
                 final Set<AbstractHtml> children = childrenStack.pop();
                 for (final AbstractHtml child : children) {
 
-                    final String wffId = browserPage.getNewDataWffId();
-                    child.addAttributes(accessObject, false,
-                            new CustomAttribute("data-wff-id", wffId));
-                    tagByWffId.put(wffId, child);
+                    if (child.getDataWffId() == null) {
+                        final String wffId = browserPage.getNewDataWffId();
+                        child.setDataWffId(new DataWffId(wffId));
+                    }
+
+                    tagByWffId.put(child.getDataWffId().getValue(), child);
 
                     final Set<AbstractHtml> subChildren = child
                             .getChildren(accessObject);
@@ -172,10 +174,9 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
                 }
             }
 
-            final AbstractAttribute attribute = parentTag
-                    .getAttributeByName("data-wff-id");
+            final DataWffId dataWffId = parentTag.getDataWffId();
 
-            if (attribute == null) {
+            if (dataWffId == null) {
                 LOGGER.warning(
                         "Could not find data-wff-id from direct parent tag");
             }
@@ -239,11 +240,10 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
             final Set<AbstractHtml> children = childrenStack.pop();
             for (final AbstractHtml child : children) {
 
-                final AbstractAttribute wffIdAttr = child
-                        .getAttributeByName("data-wff-id");
+                final DataWffId wffIdAttr = child.getDataWffId();
 
                 if (wffIdAttr != null) {
-                    tagByWffId.put(wffIdAttr.getAttributeValue(), child);
+                    tagByWffId.put(wffIdAttr.getValue(), child);
                 }
 
                 final Set<AbstractHtml> subChildren = child
@@ -275,10 +275,10 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
 
             final NameValue task = Task.MOVED_CHILDREN_TAGS.getTaskNameValue();
 
-            final AbstractAttribute currentParentAttr = currentParentTag
-                    .getAttributeByName("data-wff-id");
+            final DataWffId currentParentDataWffIdAttr = currentParentTag
+                    .getDataWffId();
 
-            if (currentParentAttr != null) {
+            if (currentParentDataWffIdAttr != null) {
 
                 final NameValue nameValue = new NameValue();
 
@@ -348,10 +348,10 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
                         .getCurrentParentTag();
                 final AbstractHtml movedChildTag = event.getMovedChildTag();
 
-                final AbstractAttribute currentParentAttr = currentParentTag
-                        .getAttributeByName("data-wff-id");
+                final DataWffId currentParentDataWffIdAttr = currentParentTag
+                        .getDataWffId();
 
-                if (currentParentAttr != null) {
+                if (currentParentDataWffIdAttr != null) {
 
                     final NameValue nameValue = new NameValue();
 

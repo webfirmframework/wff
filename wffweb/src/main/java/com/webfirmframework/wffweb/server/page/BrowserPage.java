@@ -38,7 +38,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.event.EventAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.event.ServerAsyncMethod;
 import com.webfirmframework.wffweb.tag.html.attribute.listener.AttributeValueChangeListener;
-import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.tag.html.programming.Script;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
@@ -256,10 +256,12 @@ public abstract class BrowserPage implements Serializable {
 
             for (final AbstractHtml child : children) {
 
-                final String wffId = getNewDataWffId();
-                child.addAttributes(ACCESS_OBJECT, false,
-                        new CustomAttribute("data-wff-id", wffId));
-                tagByWffId.put(wffId, child);
+                if (child.getDataWffId() == null) {
+                    final String wffId = getNewDataWffId();
+                    child.setDataWffId(new DataWffId(wffId));
+                }
+
+                tagByWffId.put(child.getDataWffId().getValue(), child);
 
                 final Set<AbstractHtml> subChildren = child
                         .getChildren(ACCESS_OBJECT);
@@ -300,8 +302,9 @@ public abstract class BrowserPage implements Serializable {
 
                     wffScriptTagId = getNewDataWffId();
                     final Script script = new Script(null,
-                            new CustomAttribute("data-wff-id", wffScriptTagId),
                             new Type("text/javascript"));
+
+                    script.setDataWffId(new DataWffId(wffScriptTagId));
 
                     new NoTag(script, WffJsFile
                             .getAllOptimizedContent(wsUrlWithInstanceId));
@@ -328,9 +331,10 @@ public abstract class BrowserPage implements Serializable {
         if (bodyTagMissing) {
             wffScriptTagId = getNewDataWffId();
 
-            final Script script = new Script(null,
-                    new CustomAttribute("data-wff-id", wffScriptTagId),
-                    new Type("text/javascript"));
+            final Script script = new Script(null, new Type("text/javascript"));
+
+            script.setDataWffId(new DataWffId(wffScriptTagId));
+
             new NoTag(script,
                     WffJsFile.getAllOptimizedContent(wsUrlWithInstanceId));
 

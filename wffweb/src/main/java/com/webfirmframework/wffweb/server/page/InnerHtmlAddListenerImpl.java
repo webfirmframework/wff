@@ -25,7 +25,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
-import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.tag.html.listener.InnerHtmlAddListener;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 import com.webfirmframework.wffweb.util.data.NameValue;
@@ -73,11 +73,10 @@ class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
             final Set<AbstractHtml> children = childrenStack.pop();
             for (final AbstractHtml child : children) {
 
-                final AbstractAttribute wffIdAttr = child
-                        .getAttributeByName("data-wff-id");
+                final DataWffId wffIdAttr = child.getDataWffId();
 
                 if (wffIdAttr != null) {
-                    tagByWffId.put(wffIdAttr.getAttributeValue(), child);
+                    tagByWffId.put(wffIdAttr.getValue(), child);
                 }
 
                 final Set<AbstractHtml> subChildren = child
@@ -112,10 +111,9 @@ class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
             final Deque<NameValue> nameValues = new ArrayDeque<NameValue>();
             nameValues.add(task);
 
-            final AbstractAttribute attribute = parentTag
-                    .getAttributeByName("data-wff-id");
+            final DataWffId dataWffId = parentTag.getDataWffId();
 
-            if (attribute != null) {
+            if (dataWffId != null) {
 
                 final NameValue nameValue = new NameValue();
 

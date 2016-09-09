@@ -20,7 +20,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
-import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 
 class DataWffIdUtil {
@@ -65,11 +65,10 @@ class DataWffIdUtil {
             final AbstractHtml parent = parentStack.pop();
 
             if (parent.getTagName() != null && !parent.getTagName().isEmpty()) {
-                final AbstractAttribute attribute = parent
-                        .getAttributeByName("data-wff-id");
+                final DataWffId dataWffId = parent.getDataWffId();
 
                 final byte[] dataWffIdBytes = DataWffIdUtil
-                        .getDataWffIdBytes(attribute.getAttributeValue());
+                        .getDataWffIdBytes(dataWffId.getValue());
 
                 return new byte[][] { parent.getTagName().getBytes("UTF-8"),
                         dataWffIdBytes };
