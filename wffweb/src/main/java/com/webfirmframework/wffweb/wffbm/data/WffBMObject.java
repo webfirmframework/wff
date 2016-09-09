@@ -98,7 +98,7 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
         for (final Entry<String, ValueValueType> entry : super.entrySet()) {
             final String key = entry.getKey();
             final ValueValueType valueValueType = entry.getValue();
-            final byte valueType = valueValueType.getValueType();
+            final byte valueType = valueValueType.getValueTypeByte();
 
             final NameValue nameValue = new NameValue();
             nameValue.setName(key.getBytes("UTF-8"));
@@ -282,7 +282,7 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
         if (valueValueType == null) {
             return null;
         }
-        return BMValueType.getInstanceByType(valueValueType.getValueType());
+        return valueValueType.getValueType();
     }
 
 }
