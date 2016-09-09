@@ -27,6 +27,7 @@ import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
 import com.webfirmframework.wffweb.tag.core.AbstractTagBase;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attribute.listener.AttributeValueChangeListener;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.tag.html.listener.AttributeAddListener;
 import com.webfirmframework.wffweb.tag.html.listener.AttributeRemoveListener;
 import com.webfirmframework.wffweb.tag.html.listener.ChildTagAppendListener;
@@ -63,11 +64,11 @@ public class AbstractHtml5SharedObject implements Serializable {
     private volatile int dataWffId = -1;
 
     /**
-     * @return unique int id for data-wff-id attribute
+     * @return unique data-wff-id attribute
      * @since 1.2.0
      * @author WFF
      */
-    public String getNewDataWffId(final Object accessObject) {
+    public DataWffId getNewDataWffId(final Object accessObject) {
 
         if (accessObject == null || !((SecurityClassConstants.ABSTRACT_HTML
                 .equals(accessObject.getClass().getName()))
@@ -78,7 +79,7 @@ public class AbstractHtml5SharedObject implements Serializable {
         }
 
         final String id = "S" + (++dataWffId);
-        return id;
+        return new DataWffId(id);
     }
 
     public int getLastDataWffId(final Object accessObject) {

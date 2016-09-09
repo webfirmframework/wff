@@ -81,8 +81,7 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
                 for (final AbstractHtml child : children) {
 
                     if (child.getDataWffId() == null) {
-                        final String wffId = browserPage.getNewDataWffId();
-                        child.setDataWffId(new DataWffId(wffId));
+                        child.setDataWffId(browserPage.getNewDataWffId());
                     }
 
                     tagByWffId.put(child.getDataWffId().getValue(), child);
@@ -159,8 +158,7 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
                 for (final AbstractHtml child : children) {
 
                     if (child.getDataWffId() == null) {
-                        final String wffId = browserPage.getNewDataWffId();
-                        child.setDataWffId(new DataWffId(wffId));
+                        child.setDataWffId(browserPage.getNewDataWffId());
                     }
 
                     tagByWffId.put(child.getDataWffId().getValue(), child);

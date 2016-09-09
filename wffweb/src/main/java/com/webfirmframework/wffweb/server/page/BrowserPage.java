@@ -106,7 +106,7 @@ public abstract class BrowserPage implements Serializable {
         return wsListener;
     }
 
-    String getNewDataWffId() {
+    DataWffId getNewDataWffId() {
         return abstractHtml.getSharedObject().getNewDataWffId(ACCESS_OBJECT);
     }
 
@@ -257,8 +257,7 @@ public abstract class BrowserPage implements Serializable {
             for (final AbstractHtml child : children) {
 
                 if (child.getDataWffId() == null) {
-                    final String wffId = getNewDataWffId();
-                    child.setDataWffId(new DataWffId(wffId));
+                    child.setDataWffId(getNewDataWffId());
                 }
 
                 tagByWffId.put(child.getDataWffId().getValue(), child);
@@ -300,11 +299,13 @@ public abstract class BrowserPage implements Serializable {
 
                     bodyTagMissing = false;
 
-                    wffScriptTagId = getNewDataWffId();
+                    final DataWffId dataWffId = getNewDataWffId();
+
+                    wffScriptTagId = dataWffId.getValue();
                     final Script script = new Script(null,
                             new Type("text/javascript"));
 
-                    script.setDataWffId(new DataWffId(wffScriptTagId));
+                    script.setDataWffId(dataWffId);
 
                     new NoTag(script, WffJsFile
                             .getAllOptimizedContent(wsUrlWithInstanceId));
@@ -329,11 +330,13 @@ public abstract class BrowserPage implements Serializable {
         }
 
         if (bodyTagMissing) {
-            wffScriptTagId = getNewDataWffId();
+            final DataWffId dataWffId = getNewDataWffId();
+            ;
+            wffScriptTagId = dataWffId.getValue();
 
             final Script script = new Script(null, new Type("text/javascript"));
 
-            script.setDataWffId(new DataWffId(wffScriptTagId));
+            script.setDataWffId(dataWffId);
 
             new NoTag(script,
                     WffJsFile.getAllOptimizedContent(wsUrlWithInstanceId));

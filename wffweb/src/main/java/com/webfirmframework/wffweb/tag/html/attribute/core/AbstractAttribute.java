@@ -30,21 +30,6 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     public static final Logger LOGGER = Logger
             .getLogger(AbstractAttribute.class.getName());
 
-    private String attributeName;
-    private String attributeValue;
-    private Map<String, String> attributeValueMap;
-    private Set<String> attributeValueSet;
-
-    private Set<AbstractHtml> ownerTags;
-
-    private StringBuilder tagBuilder;
-
-    // private AttributeValueChangeListener valueChangeListener;
-
-    private Set<AttributeValueChangeListener> valueChangeListeners;
-
-    private transient Charset charset = Charset.defaultCharset();
-
     // for security purpose, the class name should not be modified
     private static final class Security implements Serializable {
 
@@ -59,6 +44,21 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     static {
         ACCESS_OBJECT = new Security();
     }
+
+    private String attributeName;
+    private String attributeValue;
+    private Map<String, String> attributeValueMap;
+    private Set<String> attributeValueSet;
+
+    private Set<AbstractHtml> ownerTags;
+
+    private StringBuilder tagBuilder;
+
+    // private AttributeValueChangeListener valueChangeListener;
+
+    private Set<AttributeValueChangeListener> valueChangeListeners;
+
+    private transient Charset charset = Charset.defaultCharset();
 
     {
         init();

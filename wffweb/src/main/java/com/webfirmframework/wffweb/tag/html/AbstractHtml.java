@@ -390,8 +390,8 @@ public abstract class AbstractHtml extends AbstractTagBase {
                         && eachChild.getTagName() != null
                         && !eachChild.getTagName().isEmpty()) {
 
-                    eachChild.setDataWffId(new DataWffId(
-                            sharedObject.getNewDataWffId(ACCESS_OBJECT)));
+                    eachChild.setDataWffId(
+                            sharedObject.getNewDataWffId(ACCESS_OBJECT));
 
                 }
 
@@ -2023,10 +2023,10 @@ public abstract class AbstractHtml extends AbstractTagBase {
     }
 
     /**
-     * 
+     *
      * adds data-wff-id for the tag if doesn't already exist. NB:- this method
      * is ony for internal use.
-     * 
+     *
      * @param dataWffId
      *            the dataWffId to set
      */
