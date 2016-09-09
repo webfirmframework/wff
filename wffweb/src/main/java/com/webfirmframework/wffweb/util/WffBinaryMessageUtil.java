@@ -479,48 +479,6 @@ public enum WffBinaryMessageUtil {
     }
 
     /**
-     * @param bytes
-     *            the optimized bytes from which the integer value will be
-     *            obtained
-     * @return the long value from the given bytes
-     * @since 1.2.0
-     * @author WFF
-     */
-    public static int getLongFromOptimizedBytes(final byte[] bytes) {
-
-        if (bytes.length == 8) {
-            return bytes[0] << 56L | bytes[1] << 48L | bytes[2] << 40L
-                    | bytes[3] << 32L | bytes[4] << 24L
-                    | (bytes[5] & 0xFF) << 16L | (bytes[6] & 0xFF) << 8L
-                    | (bytes[7] & 0xFF);
-        } else if (bytes.length == 7) {
-            return bytes[0] << 48L | bytes[1] << 40L | bytes[2] << 32L
-                    | bytes[3] << 24L | (bytes[4] & 0xFF) << 16L
-                    | (bytes[5] & 0xFF) << 8L | (bytes[6] & 0xFF);
-        } else if (bytes.length == 6) {
-            return bytes[0] << 40L | bytes[1] << 32L | bytes[2] << 24L
-                    | (bytes[3] & 0xFF) << 16L | (bytes[4] & 0xFF) << 8L
-                    | (bytes[5] & 0xFF);
-        } else if (bytes.length == 5) {
-            return bytes[0] << 32L | bytes[1] << 24L | (bytes[2] & 0xFF) << 16L
-                    | (bytes[3] & 0xFF) << 8L | (bytes[4] & 0xFF);
-        } else if (bytes.length == 4) {
-            return bytes[0] << 24L | (bytes[1] & 0xFF) << 16L
-                    | (bytes[2] & 0xFF) << 8L | (bytes[3] & 0xFF);
-        } else if (bytes.length == 3) {
-            return (bytes[0] & 0xFF) << 16L | (bytes[1] & 0xFF) << 8L
-                    | (bytes[2] & 0xFF);
-        } else if (bytes.length == 2) {
-            return (bytes[0] & 0xFF) << 8L | (bytes[1] & 0xFF);
-        } else if (bytes.length == 1) {
-            return (bytes[0] & 0xFF);
-        }
-        return bytes[0] << 56L | bytes[1] << 48L | bytes[2] << 40L
-                | bytes[3] << 32L | bytes[4] << 24L | (bytes[5] & 0xFF) << 16L
-                | (bytes[6] & 0xFF) << 8L | (bytes[7] & 0xFF);
-    }
-
-    /**
      * @param value
      *            the integer value to be converted to bytes.
      * @return the bytes for the corresponding integer given.

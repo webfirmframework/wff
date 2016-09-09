@@ -16,6 +16,7 @@
 package com.webfirmframework.wffweb.wffbm.data;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Iterator;
@@ -198,9 +199,8 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
                     wffBMObject.put(name, valueValueType);
                 } else if (valueType == BMValueType.NUMBER.getType()) {
 
-                    final double doubleValue = Double
-                            .longBitsToDouble(WffBinaryMessageUtil
-                                    .getLongFromOptimizedBytes(value));
+                    final double doubleValue = ByteBuffer.wrap(value)
+                            .getDouble(0);
 
                     final ValueValueType valueValueType = new ValueValueType(
                             name, valueType, doubleValue);
