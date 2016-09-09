@@ -369,7 +369,7 @@ public abstract class BrowserPage implements Serializable {
 
     private void addAttributeRemoveListener(final AbstractHtml abstractHtml) {
         abstractHtml.getSharedObject().setAttributeRemoveListener(
-                new AttributeRemoveListenerImpl(this), ACCESS_OBJECT);
+                new AttributeRemoveListenerImpl(this, tagByWffId), ACCESS_OBJECT);
     }
 
     private void addInnerHtmlAddListener(final AbstractHtml abstractHtml) {

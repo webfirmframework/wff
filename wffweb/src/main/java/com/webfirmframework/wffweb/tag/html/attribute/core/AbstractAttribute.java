@@ -654,6 +654,10 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @author WFF
      */
     public AbstractHtml[] getOwnerTags() {
+        // returning the set is not good because
+        // if the AbstractHtml needs to be
+        // modified while iterating the set will cause
+        // ConcurrentModificationException
         return ownerTags.toArray(new AbstractHtml[ownerTags.size()]);
     }
 

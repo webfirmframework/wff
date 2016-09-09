@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
+import java.util.Map;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
@@ -31,13 +32,17 @@ public class AttributeRemoveListenerImpl implements AttributeRemoveListener {
 
     private BrowserPage browserPage;
 
+    private Map<String, AbstractHtml> tagByWffId;
+
     @SuppressWarnings("unused")
     private AttributeRemoveListenerImpl() {
         throw new AssertionError();
     }
 
-    AttributeRemoveListenerImpl(final BrowserPage browserPage) {
+    AttributeRemoveListenerImpl(final BrowserPage browserPage,
+            final Map<String, AbstractHtml> tagByWffId) {
         this.browserPage = browserPage;
+        this.tagByWffId = tagByWffId;
     }
 
     @Override
@@ -49,6 +54,14 @@ public class AttributeRemoveListenerImpl implements AttributeRemoveListener {
         try {
 
             if (wsListener != null) {
+
+                final AbstractHtml removedFromTag = event.getRemovedFromTag();
+
+                if (removedFromTag.getDataWffId() == null
+                        || !tagByWffId.containsKey(
+                                removedFromTag.getDataWffId().getValue())) {
+                    return;
+                }
 
                 //@formatter:off
                 // removed attribute task format :-
@@ -63,9 +76,8 @@ public class AttributeRemoveListenerImpl implements AttributeRemoveListener {
                 // many attributes to one tag
                 nameValue.setName(Task.MANY_TO_ONE.getValueByte());
 
-                final AbstractHtml addedToTag = event.getRemovedFromTag();
                 final byte[][] tagNameAndWffId = DataWffIdUtil
-                        .getTagNameAndWffId(addedToTag);
+                        .getTagNameAndWffId(removedFromTag);
 
                 final String[] removedAttributes = event
                         .getRemovedAttributeNames();
