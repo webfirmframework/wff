@@ -69,7 +69,7 @@ public abstract class BrowserPage implements Serializable {
 
     private WebSocketPushListener wsListener;
 
-    private String wffScriptTagId;
+    private DataWffId wffScriptTagId;
 
     // for security purpose, the class name should not be modified
     private static final class Security implements Serializable {
@@ -299,13 +299,12 @@ public abstract class BrowserPage implements Serializable {
 
                     bodyTagMissing = false;
 
-                    final DataWffId dataWffId = getNewDataWffId();
+                    wffScriptTagId = getNewDataWffId();
 
-                    wffScriptTagId = dataWffId.getValue();
                     final Script script = new Script(null,
                             new Type("text/javascript"));
 
-                    script.setDataWffId(dataWffId);
+                    script.setDataWffId(wffScriptTagId);
 
                     new NoTag(script, WffJsFile
                             .getAllOptimizedContent(wsUrlWithInstanceId));
@@ -314,7 +313,7 @@ public abstract class BrowserPage implements Serializable {
                     child.addChild(ACCESS_OBJECT, script, false);
 
                     // ConcurrentHashMap cannot contain null as value
-                    tagByWffId.put(wffScriptTagId, script);
+                    tagByWffId.put(wffScriptTagId.getValue(), script);
 
                     break outerLoop;
                 }
@@ -330,13 +329,11 @@ public abstract class BrowserPage implements Serializable {
         }
 
         if (bodyTagMissing) {
-            final DataWffId dataWffId = getNewDataWffId();
-            ;
-            wffScriptTagId = dataWffId.getValue();
+            wffScriptTagId = getNewDataWffId();
 
             final Script script = new Script(null, new Type("text/javascript"));
 
-            script.setDataWffId(dataWffId);
+            script.setDataWffId(wffScriptTagId);
 
             new NoTag(script,
                     WffJsFile.getAllOptimizedContent(wsUrlWithInstanceId));
@@ -345,7 +342,7 @@ public abstract class BrowserPage implements Serializable {
             abstractHtml.addChild(ACCESS_OBJECT, script, false);
 
             // ConcurrentHashMap cannot contain null as value
-            tagByWffId.put(wffScriptTagId, script);
+            tagByWffId.put(wffScriptTagId.getValue(), script);
 
         }
 
