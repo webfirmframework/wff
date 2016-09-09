@@ -16,6 +16,8 @@
 package com.webfirmframework.wffweb.server.page;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -34,13 +36,17 @@ class AttributeValueChangeListenerImpl implements AttributeValueChangeListener {
 
     private BrowserPage browserPage;
 
+    private Map<String, AbstractHtml> tagByWffId;
+
     @SuppressWarnings("unused")
     private AttributeValueChangeListenerImpl() {
         throw new AssertionError();
     }
 
-    AttributeValueChangeListenerImpl(final BrowserPage browserPage) {
+    AttributeValueChangeListenerImpl(final BrowserPage browserPage,
+            final Map<String, AbstractHtml> tagByWffId) {
         this.browserPage = browserPage;
+        this.tagByWffId = tagByWffId;
     }
 
     @Override
@@ -74,7 +80,21 @@ class AttributeValueChangeListenerImpl implements AttributeValueChangeListener {
 
                 nameValue.setName(attrNameValue.getBytes("UTF-8"));
 
-                final Set<AbstractHtml> ownerTags = event.getOwnerTags();
+                final Set<AbstractHtml> ownerTags = new HashSet<AbstractHtml>(
+                        event.getOwnerTags());
+
+                // to remove ownerTags which don't exist in ui
+                ownerTags.retainAll(tagByWffId.values());
+
+                // for (AbstractHtml ownerTag : event.getOwnerTags()) {
+                // AbstractAttribute dataWffIdAttr = ownerTag
+                // .getAttributeByName("data-wff-id");
+                //
+                // if (dataWffIdAttr == null || !tagByWffId
+                // .containsKey(dataWffIdAttr.getAttributeValue())) {
+                // ownerTags.remove(ownerTag);
+                // }
+                // }
 
                 final byte[][] dataWffIds = new byte[ownerTags.size()][0];
 

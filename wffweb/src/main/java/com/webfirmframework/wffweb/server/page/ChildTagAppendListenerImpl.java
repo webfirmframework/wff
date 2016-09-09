@@ -20,6 +20,7 @@ import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -222,6 +223,40 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
 
     }
 
+    /**
+     * adds to wffid map
+     *
+     * @param tag
+     * @since 1.2.0
+     * @author WFF
+     */
+    private void addInWffIdMap(final AbstractHtml tag) {
+
+        final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<Set<AbstractHtml>>();
+        childrenStack.push(new HashSet<AbstractHtml>(Arrays.asList(tag)));
+
+        while (childrenStack.size() > 0) {
+            final Set<AbstractHtml> children = childrenStack.pop();
+            for (final AbstractHtml child : children) {
+
+                final AbstractAttribute wffIdAttr = child
+                        .getAttributeByName("data-wff-id");
+
+                if (wffIdAttr != null) {
+                    tagByWffId.put(wffIdAttr.getAttributeValue(), child);
+                }
+
+                final Set<AbstractHtml> subChildren = child
+                        .getChildren(accessObject);
+                if (subChildren != null && subChildren.size() > 0) {
+                    childrenStack.push(subChildren);
+                }
+
+            }
+        }
+
+    }
+
     @Override
     public void childMoved(final ChildMovedEvent event) {
         // should always be taken from browserPage as it could be changed
@@ -270,6 +305,9 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
                         .getWffBinaryMessageBytes(task, nameValue);
 
                 wsListener.push(wffBMBytes);
+
+                addInWffIdMap(movedChildTag);
+
             } else {
                 LOGGER.severe(
                         "Could not find data-wff-id from previousParentTag");
@@ -345,6 +383,8 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
                     }
 
                     nameValues.add(nameValue);
+
+                    addInWffIdMap(movedChildTag);
 
                 } else {
                     LOGGER.severe(

@@ -235,16 +235,16 @@ public abstract class BrowserPage implements Serializable {
 
     private void addAttrValueChangeListener(final AbstractHtml abstractHtml) {
 
+        if (valueChangeListener == null) {
+            valueChangeListener = new AttributeValueChangeListenerImpl(
+                    BrowserPage.this, tagByWffId);
+        }
+
         abstractHtml.getSharedObject()
                 .setValueChangeListener(valueChangeListener, ACCESS_OBJECT);
     }
 
     private void addDataWffIdAttribute(final AbstractHtml abstractHtml) {
-
-        if (valueChangeListener == null) {
-            valueChangeListener = new AttributeValueChangeListenerImpl(
-                    BrowserPage.this);
-        }
 
         final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<Set<AbstractHtml>>();
         childrenStack.push(
