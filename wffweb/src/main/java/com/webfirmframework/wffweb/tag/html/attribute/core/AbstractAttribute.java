@@ -649,13 +649,12 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
     /**
      *
-     * @return the tags which are consuming this attribute as an unmodifiable
-     *         set.
+     * @return the tags which are consuming this attribute as an array
      * @since 1.2.0
      * @author WFF
      */
-    public Set<AbstractHtml> getOwnerTags() {
-        return Collections.unmodifiableSet(ownerTags);
+    public AbstractHtml[] getOwnerTags() {
+        return ownerTags.toArray(new AbstractHtml[ownerTags.size()]);
     }
 
     /**

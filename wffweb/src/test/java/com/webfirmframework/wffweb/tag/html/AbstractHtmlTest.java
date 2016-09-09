@@ -19,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -78,25 +79,25 @@ public class AbstractHtmlTest {
                 Div div2 = new Div(this);
                 div2.addAttributes(name);
 
-                Assert.assertTrue(name.getOwnerTags().contains(div1));
-                Assert.assertTrue(name.getOwnerTags().contains(div2));
+                Assert.assertTrue(Arrays.asList(name.getOwnerTags()).contains(div1));
+                Assert.assertTrue(Arrays.asList(name.getOwnerTags()).contains(div2));
             }
         };
 
         html.addAttributes(name);
-        Assert.assertTrue(name.getOwnerTags().contains(html));
+        Assert.assertTrue(Arrays.asList(name.getOwnerTags()).contains(html));
         assertEquals(
                 "<html name=\"somename\"><div name=\"somename\"></div><div name=\"somename\"></div></html>",
                 html.toHtmlString());
 
         html.removeAttributes(name);
-        Assert.assertFalse(name.getOwnerTags().contains(html));
+        Assert.assertFalse(Arrays.asList(name.getOwnerTags()).contains(html));
         assertEquals(
                 "<html><div name=\"somename\"></div><div name=\"somename\"></div></html>",
                 html.toHtmlString());
 
         html.addAttributes(name);
-        Assert.assertTrue(name.getOwnerTags().contains(html));
+        Assert.assertTrue(Arrays.asList(name.getOwnerTags()).contains(html));
         assertEquals(
                 "<html name=\"somename\"><div name=\"somename\"></div><div name=\"somename\"></div></html>",
                 html.toHtmlString());
@@ -108,27 +109,27 @@ public class AbstractHtmlTest {
 
         name.setValue("somename");
         html.removeAttributes("name");
-        Assert.assertFalse(name.getOwnerTags().contains(html));
+        Assert.assertFalse(Arrays.asList(name.getOwnerTags()).contains(html));
         assertEquals(
                 "<html><div name=\"somename\"></div><div name=\"somename\"></div></html>",
                 html.toHtmlString());
 
         html.addAttributes(name);
-        Assert.assertTrue(name.getOwnerTags().contains(html));
+        Assert.assertTrue(Arrays.asList(name.getOwnerTags()).contains(html));
         assertEquals(
                 "<html name=\"somename\"><div name=\"somename\"></div><div name=\"somename\"></div></html>",
                 html.toHtmlString());
 
         html.removeAttributes(new Name("somename"));
-        Assert.assertTrue(name.getOwnerTags().contains(html));
+        Assert.assertTrue(Arrays.asList(name.getOwnerTags()).contains(html));
         assertEquals(
                 "<html name=\"somename\"><div name=\"somename\"></div><div name=\"somename\"></div></html>",
                 html.toHtmlString());
 
         Name name2 = new Name("another");
         html.addAttributes(name2);
-        Assert.assertFalse(name.getOwnerTags().contains(html));
-        Assert.assertTrue(name2.getOwnerTags().contains(html));
+        Assert.assertFalse(Arrays.asList(name.getOwnerTags()).contains(html));
+        Assert.assertTrue(Arrays.asList(name2.getOwnerTags()).contains(html));
         assertEquals(
                 "<html name=\"another\"><div name=\"somename\"></div><div name=\"somename\"></div></html>",
                 html.toHtmlString());

@@ -17,6 +17,8 @@ package com.webfirmframework.wffweb.tag.html.attribute.core;
 
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.tag.html.Html;
@@ -37,11 +39,11 @@ public class AbstractAttributeTest {
             {
                 Div div1 = new Div(this, name);
                 Div div2 = new Div(this, name);
-                assertTrue(name.getOwnerTags().contains(div1));
-                assertTrue(name.getOwnerTags().contains(div2));
+                assertTrue(Arrays.asList(name.getOwnerTags()).contains(div1));
+                assertTrue(Arrays.asList(name.getOwnerTags()).contains(div2));
             }
         };
-        assertTrue(name.getOwnerTags().contains(html));
+        assertTrue(Arrays.asList(name.getOwnerTags()).contains(html));
 
     }
 
