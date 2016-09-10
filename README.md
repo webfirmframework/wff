@@ -1,6 +1,6 @@
 [![Build Status](https://api.travis-ci.org/webfirmframework/wff.svg?branch=master)](https://travis-ci.org/webfirmframework/wff)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/410601e16dc54b0a973c03845ad790c2)](https://www.codacy.com/app/webfirm-framework/wff?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=webfirmframework/wff&amp;utm_campaign=Badge_Grade)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.webfirmframework/wffweb/badge.svg)](http://search.maven.org/#artifactdetails%7Ccom.webfirmframework%7Cwffweb%7C1.1.4%7Cjar)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.webfirmframework/wffweb/badge.svg)](http://search.maven.org/#artifactdetails%7Ccom.webfirmframework%7Cwffweb%7C2.0.0-beta-1%7Cjar)
 
 # wffweb
 
@@ -14,6 +14,8 @@ Developers who want to be a designer to develop very complex ui.
 In other ui development frameworks, the developer may face some helpless situations to satisfy some ui features because of their limited control to the developer, in this framework the developer has full control over html & css generation. In other frameworks, the html to java data structure will be different so the developer has to keep different logic in the code, but here it is same so the developer is able to make a one to one mapping with html to java with less modifications. An html to wff java code conversion tool is also provided in [webfirmframework.com](http://webfirmframework.com) website. In some complex ui development cases, we may have to keep a dedicated designer to develop the design html/css and the designer may be unaware of Java, in such cases we can convert these designed html/css to the corresponding webfirm java code. The designer will be able to understand the output html/css even if he/she doesn’t know the java because of the webfirm java code structure. It supports css3 and html5 and also a way to use custom css/html tags so that you will not have to wait for a new release to use new html tag or css.
 
 The framework size is very low so you can build complete web application alone with this framework which can be run on [low cost low memory servers](http://www.mochasupport.com/aff/idevaffiliate.php?id=6128&url=241).
+
+### [wffweb-2.0.0-beta-1 is released, want to know what's new in it?](https://www.youtube.com/watch?v=UWoNliHOy6A)
 
 Here are some sample codes
 
