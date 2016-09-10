@@ -17,21 +17,20 @@ var wffWS = new function() {
 			console.log("WebSocket is already opened.");
 			return;
 		}
-		
+
 		// Create a new instance of websocket
 		webSocket = new WebSocket(wsUtl);
-		
-		//this is required to send binary data
+
+		// this is required to send binary data
 		webSocket.binaryType = 'arraybuffer';
-		
+
 		webSocket.onopen = function(event) {
 			console.log("onopen", event);
-			
+
 			if (event.data === undefined) {
 				console.log("event.data === undefined");
 				return;
 			}
-				
 
 			var binary = new Uint8Array(event.data);
 			wffClientCRUDUtil.applyUpdates(binary);
@@ -47,13 +46,12 @@ var wffWS = new function() {
 			var binary = new Uint8Array(event.data);
 			console.log(binary);
 
-
 			// for (var i = 0; i < binary.length; i++) {
 			// console.log(i, binary[i]);
 			// }
 
 			var executed = wffClientMethods.exePostFun(binary);
-			
+
 			if (!executed) {
 				wffClientCRUDUtil.applyUpdates(binary);
 			}
@@ -93,10 +91,12 @@ var wffWS = new function() {
 
 		webSocket.onclose = function(event) {
 			console.log("onclose", event);
-			setTimeout(function(){ 
-				console.log("1 seconds loop");
-				wffWS.openSocket(wffGlobal.WS_URL); 
-				}, 1000);
+			setTimeout(function() {
+				if (!webSocket || webSocket.readyState == 3) {
+					console.log("2 seconds loop");
+					wffWS.openSocket(wffGlobal.WS_URL);
+				}
+			}, 2000);
 		};
 	};
 
