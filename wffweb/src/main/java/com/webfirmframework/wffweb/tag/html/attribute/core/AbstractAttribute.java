@@ -14,6 +14,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.WeakHashMap;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.tag.core.AbstractTagBase;
@@ -50,7 +51,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     private Map<String, String> attributeValueMap;
     private Set<String> attributeValueSet;
 
-    private Set<AbstractHtml> ownerTags;
+    private transient Set<AbstractHtml> ownerTags;
 
     private StringBuilder tagBuilder;
 
@@ -66,7 +67,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
     private void init() {
         tagBuilder = new StringBuilder();
-        ownerTags = new HashSet<AbstractHtml>();
+        ownerTags = Collections
+                .newSetFromMap(new WeakHashMap<AbstractHtml, Boolean>());
         setRebuild(true);
     }
 
