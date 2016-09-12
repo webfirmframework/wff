@@ -39,7 +39,7 @@ public enum BMValueType {
     /**
      * @param type
      * @return the {@code BMValueType} instance by type
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public static BMValueType getInstanceByType(final byte type) {

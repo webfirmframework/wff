@@ -24,7 +24,7 @@ public class DataWffId extends DataAttribute {
     /**
      * @param value
      *            the value for the attribute
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public DataWffId(final String value) {

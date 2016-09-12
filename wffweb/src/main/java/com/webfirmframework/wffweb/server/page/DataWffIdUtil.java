@@ -51,7 +51,7 @@ class DataWffIdUtil {
      * @return array containing tagName bytes and dataWffIdBytes of the given
      *         argument or its parent.
      * @throws UnsupportedEncodingException
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     static byte[][] getTagNameAndWffId(final AbstractHtml abstractHtml)

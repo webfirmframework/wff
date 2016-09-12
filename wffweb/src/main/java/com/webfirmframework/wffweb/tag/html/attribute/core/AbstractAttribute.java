@@ -151,7 +151,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      *
      * @return the attribute name and value in the format of name=value. Eg:
      *         style=color:green;background:blue
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     protected String getWffPrintStructure() {
@@ -197,7 +197,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      *
      * @return the attribute name and value in the format of name=value. Eg:
      *         style=color:green;background:blue;
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public String toWffString() {
@@ -652,7 +652,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     /**
      *
      * @return the tags which are consuming this attribute as an array
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public AbstractHtml[] getOwnerTags() {
@@ -683,7 +683,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @param ownerTag
      *            the ownerTag to unset
      * @return true if the given ownerTag is an owner of the attribute.
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public boolean unsetOwnerTag(final AbstractHtml ownerTag) {
@@ -867,7 +867,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * adds value change lister which will be invoked when the value changed
      *
      * @param valueChangeListener
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public void addValueChangeListener(
@@ -883,7 +883,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * removes the corresponding value change listener
      *
      * @param valueChangeListener
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public void removeValueChangeListener(
@@ -895,7 +895,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
     /**
      * @return the set of value change listeners
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public Set<AttributeValueChangeListener> getValueChangeListeners() {

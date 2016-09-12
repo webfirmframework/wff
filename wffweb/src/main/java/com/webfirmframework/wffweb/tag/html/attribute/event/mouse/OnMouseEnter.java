@@ -26,7 +26,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
  * <code>onmouseenter</code> attribute for the element. This attribute is
  * supported by multiple tags.
  *
- * @since 1.2.0
+ * @since 2.0.0
  * @author WFF
  *
  */
@@ -63,7 +63,7 @@ public class OnMouseEnter extends AbstractEventAttribute
      * invokes only once per object
      *
      * @author WFF
-     * @since 1.2.0
+     * @since 2.0.0
      */
     @Override
     protected void init() {

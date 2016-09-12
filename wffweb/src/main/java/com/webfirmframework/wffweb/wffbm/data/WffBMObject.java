@@ -258,7 +258,7 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
      * @param name
      *            the key name
      * @return the value
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public Object getValue(final String key) {
@@ -274,7 +274,7 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
      *
      * @param key
      * @return the value type of this key
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public BMValueType getValueType(final String key) {

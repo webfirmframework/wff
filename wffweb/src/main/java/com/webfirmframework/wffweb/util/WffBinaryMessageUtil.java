@@ -366,7 +366,7 @@ public enum WffBinaryMessageUtil {
     /**
      * @param nameValues
      * @return the wff binary message bytes for the given name value pairs
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public byte[] getWffBinaryMessageBytes(final NameValue... nameValues) {
@@ -412,7 +412,7 @@ public enum WffBinaryMessageUtil {
     /**
      * @param value
      * @return the bytes for the given double value in the IEEE 754 Standard
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public static byte[] getOptimizedBytesFromDouble(final double value) {
@@ -422,7 +422,7 @@ public enum WffBinaryMessageUtil {
     /**
      * @param value
      * @return the bytes for the given long value
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public static byte[] getOptimizedBytesFromLong(final long value) {

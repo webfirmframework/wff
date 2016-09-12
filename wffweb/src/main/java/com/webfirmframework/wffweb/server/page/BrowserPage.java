@@ -47,7 +47,7 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
 
 /**
  * @author WFF
- * @since 1.2.0
+ * @since 2.0.0
  */
 public abstract class BrowserPage implements Serializable {
 
@@ -123,7 +123,7 @@ public abstract class BrowserPage implements Serializable {
     /**
      * executes the task in the given wff binary message
      *
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      * @throws UnsupportedEncodingException
      */
@@ -438,7 +438,7 @@ public abstract class BrowserPage implements Serializable {
 
     /**
      * @return a unique id for this instance
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public String getInstanceId() {

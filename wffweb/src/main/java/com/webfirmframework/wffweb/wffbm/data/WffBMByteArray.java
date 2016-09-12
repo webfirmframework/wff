@@ -119,7 +119,7 @@ public class WffBMByteArray extends ByteArrayOutputStream
 
     /**
      * @return the wff bm array bytes
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public byte[] build() {

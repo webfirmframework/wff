@@ -23,7 +23,7 @@ import com.webfirmframework.wffweb.WffRuntimeException;
 
 /**
  * @author WFF
- * @since 1.2.0
+ * @since 2.0.0
  */
 public enum BrowserPageContext {
 
@@ -59,7 +59,7 @@ public enum BrowserPageContext {
      * @param httpSessionId
      * @param browserPage
      * @return the instance id (unique) of the browser page.
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public String addBrowserPage(final String httpSessionId,
@@ -90,7 +90,7 @@ public enum BrowserPageContext {
      * @param httpSessionId
      * @param instanceId
      * @return
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public BrowserPage getBrowserPage(final String httpSessionId,
@@ -111,7 +111,7 @@ public enum BrowserPageContext {
      *
      * @param instanceId
      * @return browser page object if it exists otherwise null.
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public BrowserPage getBrowserPage(final String instanceId) {
@@ -123,7 +123,7 @@ public enum BrowserPageContext {
      *
      * @param httpSessionId
      *            the session id of http session
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public void destroyContext(final String httpSessionId) {
@@ -149,7 +149,7 @@ public enum BrowserPageContext {
      * @param wffInstanceId
      *            the wffInstanceId which can be retried from the request
      *            parameter in websocket connection
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public void webSocketOpened(final String wffInstanceId) {
@@ -179,7 +179,7 @@ public enum BrowserPageContext {
      * @param wffInstanceId
      *            the wffInstanceId which can be retried from the request
      *            parameter in websocket connection
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public void webSocketClosed(final String wffInstanceId) {
@@ -191,7 +191,7 @@ public enum BrowserPageContext {
      * id should be passed as an argument.
      *
      * @param httpSessionId
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public void httpSessionClosed(final String httpSessionId) {
@@ -222,7 +222,7 @@ public enum BrowserPageContext {
      * @param wffInstanceId
      *            the wffInstanceId which can be retried from the request
      *            parameter in websocket connection.
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public BrowserPage websocketMessaged(final String wffInstanceId,

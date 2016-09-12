@@ -23,7 +23,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
  * All event attributes will be extend by this class. It contains some common
  * features which all event attribute classes want.
  *
- * @since 1.2.0
+ * @since 2.0.0
  * @author WFF
  *
  */
@@ -47,7 +47,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      *
      * @param value
      *            the value for the attribute
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     protected AbstractEventAttribute(final String attributeName,
@@ -101,7 +101,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      *            object {@code jsObject} in the scope. There are common
      *            implicit objects {@code event} and {@code source} in the
      *            scope.
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     protected AbstractEventAttribute(final String attributeName,
@@ -119,7 +119,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      * invokes only once per object
      *
      * @author WFF
-     * @since 1.2.0
+     * @since 2.0.0
      */
     protected void init() {
         // to override and use this method
@@ -130,7 +130,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      *
      * @param value
      *            the value for the attribute.
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public void setValue(final String value) {
@@ -141,7 +141,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      * gets the value of this attribute
      *
      * @return the value of the attribute
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public String getValue() {
@@ -217,7 +217,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      *            object {@code jsObject} in the scope. There are common
      *            implicit objects {@code event} and {@code source} in the
      *            scope.
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public void setServerAsyncMethod(final String jsPreFunctionBody,

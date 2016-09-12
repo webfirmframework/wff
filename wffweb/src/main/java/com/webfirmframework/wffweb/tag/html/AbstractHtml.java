@@ -308,7 +308,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
      * @param child
      * @param invokeListener
      * @return
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public boolean addChild(final Object accessObject, final AbstractHtml child,
@@ -434,7 +434,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
      * should be called only once per object.
      *
      * @param attributes
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     private void initAttributes(final AbstractAttribute... attributes) {
@@ -458,7 +458,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
      *
      * @param attributes
      *            attributes to add
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public void addAttributes(final AbstractAttribute... attributes) {
@@ -472,7 +472,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
      *            true to invoke listen
      * @param attributes
      *            attributes to add
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     private void addAttributes(final boolean invokeListener,
@@ -517,7 +517,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
 
     /**
      * @return the collection of attributes
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public Collection<AbstractAttribute> getAttributes() {
@@ -532,7 +532,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
      *
      * @return the attribute object for the given attribute name if exists
      *         otherwise returns null.
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public AbstractAttribute getAttributeByName(final String attributeName) {
@@ -548,7 +548,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
      * @param attributes
      *            attributes to remove
      * @return true if any of the attributes are removed.
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public boolean removeAttributes(final AbstractAttribute... attributes) {
@@ -563,7 +563,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
      * @param attributes
      *            attributes to remove
      * @return true if any of the attributes are removed.
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public boolean removeAttributes(final Object accessObject,
@@ -586,7 +586,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
      * @param attributes
      *            attributes to remove
      * @return true if any of the attributes are removed.
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     private boolean removeAttributes(final boolean invokeListener,
@@ -636,7 +636,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
      * @param attributeNames
      *            to remove the attributes having in the given names.
      * @return true if any of the attributes are removed.
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public boolean removeAttributes(final String... attributeNames) {
@@ -651,7 +651,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
      * @param attributeNames
      *            to remove the attributes having in the given names.
      * @return true if any of the attributes are removed.
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public boolean removeAttributes(final Object accessObject,
@@ -673,7 +673,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
      * @param attributeNames
      *            to remove the attributes having in the given names.
      * @return true if any of the attributes are removed.
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     private boolean removeAttributes(final boolean invokeListener,
@@ -927,7 +927,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
 
     /**
      * @param parent
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      * @deprecated This method is not allowed to use. It's not implemented.
      */
@@ -940,7 +940,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
 
     /**
      * @return the unmodifiable list of children
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public List<AbstractHtml> getChildren() {
@@ -953,7 +953,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
      * modified.
      *
      * @return the internal children object.
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public Set<AbstractHtml> getChildren(final Object accessObject) {
@@ -1033,7 +1033,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
     // for future development
     /**
      * @param rebuild
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      * @throws IOException
      */
@@ -1102,7 +1102,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
      * @param children
      * @param rebuild
      *            TODO
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      * @throws IOException
      */
@@ -1571,7 +1571,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
      * {@code writePrintStructureToWffBinaryMessageOutputStream(final OutputStream}
      * method.
      *
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     protected void beforeWritePrintStructureToWffBinaryMessageOutputStream() {
@@ -1712,7 +1712,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
      * @see java.lang.Cloneable
      * @see java.io.Serializable
      * @author WFF
-     * @since 1.2.0
+     * @since 2.0.0
      */
     public AbstractHtml clone(final String... excludeAttributes)
             throws CloneNotSupportedException {
@@ -1803,7 +1803,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
     /**
      * @return the Wff Binary Message bytes of this tag. It uses default charset
      *         for encoding values.
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public byte[] toWffBMBytes() {
@@ -1813,7 +1813,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
     /**
      * @param charset
      * @return the Wff Binary Message bytes of this tag
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public byte[] toWffBMBytes(final String charset) {
@@ -1907,7 +1907,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
      * @return the AbstractHtml instance from the given Wff BM bytes. It uses
      *         system default charset.
      * @throws UnsupportedEncodingException
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public static AbstractHtml getTagFromWffBMBytes(
@@ -1922,7 +1922,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
      *            of value bytes
      * @return the AbstractHtml instance from the given Wff BM bytes
      * @throws UnsupportedEncodingException
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public static AbstractHtml getTagFromWffBMBytes(final byte[] bmMessageBytes,

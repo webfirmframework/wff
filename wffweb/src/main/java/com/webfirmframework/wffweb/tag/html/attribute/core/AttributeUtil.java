@@ -116,7 +116,7 @@ public class AttributeUtil {
      * @return the wff attributes strings bytes array.
      * @author WFF
      * @throws UnsupportedEncodingException
-     * @since 1.2.0
+     * @since 2.0.0
      */
     public static final byte[][] getWffAttributeBytes(final String charset,
             final AbstractAttribute... attributes)

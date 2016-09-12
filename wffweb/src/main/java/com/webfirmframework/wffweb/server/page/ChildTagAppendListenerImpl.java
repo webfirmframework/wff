@@ -226,7 +226,7 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
      * adds to wffid map
      *
      * @param tag
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     private void addInWffIdMap(final AbstractHtml tag) {

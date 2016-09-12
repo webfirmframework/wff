@@ -65,7 +65,7 @@ public class AbstractHtml5SharedObject implements Serializable {
 
     /**
      * @return unique data-wff-id attribute
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public DataWffId getNewDataWffId(final Object accessObject) {
@@ -280,7 +280,7 @@ public class AbstractHtml5SharedObject implements Serializable {
     /**
      * @param accessObject
      * @return the map containing wffid and tag
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public Map<String, AbstractHtml> getTagByWffId(final Object accessObject) {
@@ -299,7 +299,7 @@ public class AbstractHtml5SharedObject implements Serializable {
 
     /**
      * @param accessObject
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      * @return the map containing wffid and tag
      */

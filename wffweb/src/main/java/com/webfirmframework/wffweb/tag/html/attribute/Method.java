@@ -23,7 +23,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.FormAttributable;
  *
  * <code>method</code> attribute for form tag.
  *
- * @since 1.2.0
+ * @since 2.0.0
  * @author WFF
  *
  */
@@ -54,7 +54,7 @@ public class Method extends AbstractAttribute implements FormAttributable {
      *
      * @param value
      *            the value for the attribute
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public Method(final String value) {
@@ -66,7 +66,7 @@ public class Method extends AbstractAttribute implements FormAttributable {
      *
      * @param value
      *            the value for the attribute.
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public void setValue(final String value) {
@@ -77,7 +77,7 @@ public class Method extends AbstractAttribute implements FormAttributable {
      * gets the value of this attribute
      *
      * @return the value of the attribute
-     * @since 1.2.0
+     * @since 2.0.0
      * @author WFF
      */
     public String getValue() {
@@ -88,7 +88,7 @@ public class Method extends AbstractAttribute implements FormAttributable {
      * invokes only once per object
      *
      * @author WFF
-     * @since 1.2.0
+     * @since 2.0.0
      */
     protected void init() {
         // to override and use this method
