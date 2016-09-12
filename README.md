@@ -15,7 +15,7 @@ In other ui development frameworks, the developer may face some helpless situati
 
 The framework size is very low so you can build complete web application alone with this framework which can be run on [low cost low memory servers](http://www.mochasupport.com/aff/idevaffiliate.php?id=6128&url=241).
 
-### [wffweb-2.0.0-beta-1 is released, want to know what's new in it?](https://www.youtube.com/watch?v=UWoNliHOy6A)
+### [wffweb-2.0.0 is released, want to know what's new in it?](https://www.youtube.com/watch?v=UWoNliHOy6A)
 
 Here are some sample codes
 
