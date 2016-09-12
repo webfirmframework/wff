@@ -54,10 +54,12 @@ public abstract class BrowserPage implements Serializable {
     // if this class' is refactored then SecurityClassConstants should be
     // updated.
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger
             .getLogger(BrowserPage.class.getName());
+
+    private static final boolean PRODUCTION_MODE = true;
 
     private String instanceId;
 
@@ -71,6 +73,8 @@ public abstract class BrowserPage implements Serializable {
 
     private DataWffId wffScriptTagId;
 
+    private static final Security ACCESS_OBJECT;
+
     // for security purpose, the class name should not be modified
     private static final class Security implements Serializable {
 
@@ -79,8 +83,6 @@ public abstract class BrowserPage implements Serializable {
         private Security() {
         }
     }
-
-    private static final Security ACCESS_OBJECT;
 
     static {
         ACCESS_OBJECT = new Security();
@@ -110,6 +112,12 @@ public abstract class BrowserPage implements Serializable {
         return abstractHtml.getSharedObject().getNewDataWffId(ACCESS_OBJECT);
     }
 
+    /**
+     * @param message
+     *            the bytes the received in onmessage
+     * @since 2.0.0
+     * @author WFF
+     */
     public void websocketMessaged(final byte[] message) {
         try {
             executeWffBMTask(message);
@@ -224,7 +232,9 @@ public abstract class BrowserPage implements Serializable {
                     }
 
                 } else {
-                    LOGGER.severe("No tag found for wffTagId " + wffTagId);
+                    if (!PRODUCTION_MODE) {
+                        LOGGER.severe("No tag found for wffTagId " + wffTagId);
+                    }
                 }
 
             }
@@ -369,7 +379,8 @@ public abstract class BrowserPage implements Serializable {
 
     private void addAttributeRemoveListener(final AbstractHtml abstractHtml) {
         abstractHtml.getSharedObject().setAttributeRemoveListener(
-                new AttributeRemoveListenerImpl(this, tagByWffId), ACCESS_OBJECT);
+                new AttributeRemoveListenerImpl(this, tagByWffId),
+                ACCESS_OBJECT);
     }
 
     private void addInnerHtmlAddListener(final AbstractHtml abstractHtml) {
@@ -378,21 +389,49 @@ public abstract class BrowserPage implements Serializable {
                 ACCESS_OBJECT);
     }
 
+    /**
+     * @return {@code String} equalent to the html string of the tag including
+     *         the child tags.
+     *
+     * @author WFF
+     */
     public final String toHtmlString() {
         initAbstractHtml();
         return abstractHtml.toHtmlString(true);
     }
 
+    /**
+     * @param charset
+     *            the charset
+     * @return {@code String} equalent to the html string of the tag including
+     *         the child tags.
+     * @author WFF
+     */
     public final String toHtmlString(final String charset) {
         initAbstractHtml();
         return abstractHtml.toHtmlString(true, charset);
     }
 
+    /**
+     * @param os
+     *            the object of {@code OutputStream} to write to.
+     *
+     * @throws IOException
+     */
     public final void toOutputStream(final OutputStream os) throws IOException {
         initAbstractHtml();
         abstractHtml.toOutputStream(os, true);
     }
 
+    /**
+     * @param os
+     *            the object of {@code OutputStream} to write to.
+     * @param rebuild
+     *            true to rebuild & false to write previously built bytes.
+     * @param charset
+     *            the charset
+     * @throws IOException
+     */
     public final void toOutputStream(final OutputStream os,
             final String charset) throws IOException {
         initAbstractHtml();

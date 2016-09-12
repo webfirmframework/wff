@@ -72,6 +72,8 @@ public abstract class AbstractHtml extends AbstractTagBase {
 
     private static final long serialVersionUID = 1_2_0L;
 
+    private static final Security ACCESS_OBJECT;
+
     protected static int tagNameIndex;
 
     private AbstractHtml parent;
@@ -107,6 +109,15 @@ public abstract class AbstractHtml extends AbstractTagBase {
 
     private transient Charset charset = Charset.defaultCharset();
 
+    private TagType tagType = TagType.OPENING_CLOSING;
+
+    public static enum TagType {
+        OPENING_CLOSING, SELF_CLOSING, NON_CLOSING;
+
+        private TagType() {
+        }
+    }
+
     // for security purpose, the class name should not be modified
     private static final class Security implements Serializable {
 
@@ -116,20 +127,9 @@ public abstract class AbstractHtml extends AbstractTagBase {
         }
     }
 
-    private static final Security ACCESS_OBJECT;
-
     static {
         ACCESS_OBJECT = new Security();
     }
-
-    public static enum TagType {
-        OPENING_CLOSING, SELF_CLOSING, NON_CLOSING;
-
-        private TagType() {
-        }
-    }
-
-    private TagType tagType = TagType.OPENING_CLOSING;
 
     {
         init();
