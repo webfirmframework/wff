@@ -3,7 +3,7 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.webfirmframework/wffweb/badge.svg)](http://search.maven.org/#artifactdetails%7Ccom.webfirmframework%7Cwffweb%7C2.0.0%7Cjar)
 
 # wffweb
-It's a java framework for realtime application development which can generate html5 and css3 from java code, [read more...](https://webfirmframework.github.io/)
+wffweb is one of the modules of webfirmframework. It's a java framework for realtime application development which can generate html5 and css3 from java code, [read more...](https://webfirmframework.github.io/)
 
 
 ### [wffweb-2.0.0 is released, want to know what's new in it?](https://www.youtube.com/watch?v=UWoNliHOy6A)
