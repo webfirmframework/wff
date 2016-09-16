@@ -3,17 +3,8 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.webfirmframework/wffweb/badge.svg)](http://search.maven.org/#artifactdetails%7Ccom.webfirmframework%7Cwffweb%7C2.0.0%7Cjar)
 
 # wffweb
+It's a java framework for realtime application development which can generate html5 and css3 from java code, [read more...](https://webfirmframework.github.io/)
 
-Web Firm Framework is a java framework to build web applications. The advantage of using this framework is its ability to generate html and css dynamically. In version-1.x.x, it is providing features to generate html & css dynamically and some other sophisticated features for ui development. It also provides some inbuilt support for optimized html/css output. It supports html5 and css3 for the ui generation.  As it is java framework we don’t have to keep any separate html/css files, instead we are keeping java files for ui (for html/css generation). A simple rest api or even servlet support is enough to create web applications with this framework. The performance rate will be very high with applications developed by this framework.
-
-##### Whom is this framework for?
-Developers who want to be a designer to develop very complex ui.
-
-
-##### What are the advantages of this framework over other ui frameworks?
-In other ui development frameworks, the developer may face some helpless situations to satisfy some ui features because of their limited control to the developer, in this framework the developer has full control over html & css generation. In other frameworks, the html to java data structure will be different so the developer has to keep different logic in the code, but here it is same so the developer is able to make a one to one mapping with html to java with less modifications. An html to wff java code conversion tool is also provided in [webfirmframework.com](http://webfirmframework.com) website. In some complex ui development cases, we may have to keep a dedicated designer to develop the design html/css and the designer may be unaware of Java, in such cases we can convert these designed html/css to the corresponding webfirm java code. The designer will be able to understand the output html/css even if he/she doesn’t know the java because of the webfirm java code structure. It supports css3 and html5 and also a way to use custom css/html tags so that you will not have to wait for a new release to use new html tag or css.
-
-The framework size is very low so you can build complete web application alone with this framework which can be run on [low cost low memory servers](http://www.mochasupport.com/aff/idevaffiliate.php?id=6128&url=241).
 
 ### [wffweb-2.0.0 is released, want to know what's new in it?](https://www.youtube.com/watch?v=UWoNliHOy6A)
 ##### [check out wffweb-2.x.x sample projects](https://github.com/webfirmframework/tomcat-8-wffweb-demo-apps)
