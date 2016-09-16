@@ -192,6 +192,8 @@ It will add width 100% in aboutParagraph and will change color to brown, its gen
 
 ##### Checkout 
 
+[Refer Developers Guide to get started](https://webfirmframework.github.io/developers-guide/get-started.html)
+
 [How to resolve wffweb dependency in maven pom.xml](https://github.com/webfirmframework/wff/wiki/How-to-resolve-wffweb-dependency-in-maven-pom.xml)
 
 [How to resolve wffweb dependency in ivy](https://github.com/webfirmframework/wff/wiki/How-to-resolve-wffweb-dependency-in-ivy)
@@ -207,9 +209,6 @@ It will add width 100% in aboutParagraph and will change color to brown, its gen
 [How to resolve wffweb dependency in Scala SBT](https://github.com/webfirmframework/wff/wiki/How-to-resolve-wffweb-dependency-in-Scala-SBT)
 
 [wffweb released versions](https://github.com/webfirmframework/wff/wiki/wffweb-released-versions)
-
-
-[Refer wiki for more examples](https://github.com/webfirmframework/wff/wiki for more details)
 
 [You can request features or report bugs here](https://github.com/webfirmframework/wff/issues)
 
