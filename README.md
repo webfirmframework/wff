@@ -194,21 +194,9 @@ It will add width 100% in aboutParagraph and will change color to brown, its gen
 
 [Refer Developers Guide to get started](https://webfirmframework.github.io/developers-guide/get-started.html)
 
-[How to resolve wffweb dependency in maven pom.xml](https://github.com/webfirmframework/wff/wiki/How-to-resolve-wffweb-dependency-in-maven-pom.xml)
+[How to resolve wffweb dependency in build tools like maven, ivy, Scala SBT, Leiningen, Grape, Gradle Grails or Apache Buildr](https://webfirmframework.github.io/developers-guide/how-to-resolve-dependency-in-build-tools.html)
 
-[How to resolve wffweb dependency in ivy](https://github.com/webfirmframework/wff/wiki/How-to-resolve-wffweb-dependency-in-ivy)
-
-[How to resolve wffweb dependency in Apache Buildr](https://github.com/webfirmframework/wff/wiki/How-to-resolve-wffweb-dependency-in-Apache-Buildr)
-
-[How to resolve wffweb dependency in Gradle Grails](https://github.com/webfirmframework/wff/wiki/How-to-resolve-wffweb-dependency-in-Gradle-Grails)
-
-[How to resolve wffweb dependency in Groovy Grape](https://github.com/webfirmframework/wff/wiki/How-to-resolve-wffweb-dependency-in-Groovy-Grape)
-
-[How to resolve wffweb dependency in Leiningen](https://github.com/webfirmframework/wff/wiki/How-to-resolve-wffweb-dependency-in-Leiningen)
-
-[How to resolve wffweb dependency in Scala SBT](https://github.com/webfirmframework/wff/wiki/How-to-resolve-wffweb-dependency-in-Scala-SBT)
-
-[wffweb released versions](https://github.com/webfirmframework/wff/wiki/wffweb-released-versions)
+[wffweb released versions](https://webfirmframework.github.io/developers-guide/wffweb-released-versions.html)
 
 [You can request features or report bugs here](https://github.com/webfirmframework/wff/issues)
 
