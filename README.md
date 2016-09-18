@@ -6,7 +6,7 @@
 wffweb is one of the modules of webfirmframework. It's an open source java framework for realtime application development which can generate html5 and css3 from java code, [read more...](https://webfirmframework.github.io/)
 
 
-### [wffweb-2.0.0 is released, want to know what's new in it?](https://www.youtube.com/watch?v=UWoNliHOy6A)
+#### [check out wffweb-2.x.x main features](https://www.youtube.com/watch?v=UWoNliHOy6A)
 ##### [check out wffweb-2.x.x sample projects](https://github.com/webfirmframework/tomcat-8-wffweb-demo-apps)
 
 Here are some sample codes
