@@ -9,7 +9,7 @@ window.wffGlobal = new function() {
 		return ++wffId;
 	};
 
-	this.taskValues = '${TASK_VALUES}';
+	this.taskValues = "${TASK_VALUES}";
 	this.WS_URL = "${WS_URL}";
 
 	if ((typeof TextEncoder) === "undefined") {
