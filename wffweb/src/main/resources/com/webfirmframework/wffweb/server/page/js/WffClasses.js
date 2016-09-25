@@ -351,7 +351,12 @@ var JsObjectFromBMBytes = function(wffBMBytes, outer) {
 			this[name] = new RegExp(getStringFromBytes(values[1]));
 		} else if (values[0] == 8) {
 			// 8 for function data type
-			this[name] = eval("(" + getStringFromBytes(values[1]) + ")");
+			//for ie window.execScript
+			if (window.execScript) {
+				this[name] = window.execScript("(" + getStringFromBytes(values[1]) + ")");
+			} else {
+				this[name] = eval("(" + getStringFromBytes(values[1]) + ")");
+			}
 		} else if (values[0] == 9) {
 			// 9 for byte array
 			this[name] = new  Uint8Array(values[1]);
@@ -432,7 +437,13 @@ var JsArrayFromBMBytes = function(wffBMBytes, outer) {
 		// 8 for function data type
 		for (var j = 0; j < values.length; j++) {
 			var fun = getStringFromBytes(values[j]);
-			var ary = [ eval("(" + fun + ")") ];
+			
+			var ary;
+			if (window.execScript) {
+				ary = [ window.execScript("(" + fun + ")") ];
+			} else {
+				ary = [ eval("(" + fun + ")") ];
+			}
 			jsArray.push(ary[0]);
 		}
 	} else if (dataType == 9) {

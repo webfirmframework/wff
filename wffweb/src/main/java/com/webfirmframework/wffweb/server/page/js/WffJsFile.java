@@ -167,7 +167,7 @@ public enum WffJsFile {
 
         if (allOptimizedContent != null) {
             return WFF_GLOBAL.optimizedFileContent.replace("${WS_URL}", wsUrl)
-                    .replace("${TASK_VALUES}", Task.getJsObjectString())
+                    .replace("'${TASK_VALUES}'", Task.getJsObjectString())
                     + allOptimizedContent;
         }
 
@@ -194,7 +194,7 @@ public enum WffJsFile {
             }
 
             return WFF_GLOBAL.optimizedFileContent.replace("${WS_URL}", wsUrl)
-                    .replace("${TASK_VALUES}", Task.getJsObjectString())
+                    .replace("'${TASK_VALUES}'", Task.getJsObjectString())
                     + allOptimizedContent;
         } catch (final Exception e) {
             e.printStackTrace();
