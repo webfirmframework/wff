@@ -55,6 +55,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.NoHref;
 import com.webfirmframework.wffweb.tag.html.attribute.ReadOnly;
 import com.webfirmframework.wffweb.tag.html.attribute.Rel;
 import com.webfirmframework.wffweb.tag.html.attribute.Rev;
+import com.webfirmframework.wffweb.tag.html.attribute.Role;
 import com.webfirmframework.wffweb.tag.html.attribute.RowSpan;
 import com.webfirmframework.wffweb.tag.html.attribute.Scope;
 import com.webfirmframework.wffweb.tag.html.attribute.Shape;
@@ -553,6 +554,8 @@ public class AttributeRegistry {
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
                 AttributeNameConstants.ONTOUCHSTART,
                 OnTouchStart.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ROLE,
+                Role.class.getSimpleName());
 
         attributeNames = new ArrayList<String>(initialCapacity);
         attributeNamesSet = new HashSet<String>(initialCapacity);

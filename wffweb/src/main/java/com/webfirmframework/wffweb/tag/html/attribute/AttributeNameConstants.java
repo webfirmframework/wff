@@ -337,6 +337,8 @@ public class AttributeNameConstants {
 
     public static final String ONTOUCHSTART = "ontouchstart";
 
+    public static final String ROLE = "role";
+
     /**
      *
      * @author WFF
