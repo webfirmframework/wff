@@ -24,7 +24,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.ImgAttributable;
 /**
  *
  * @author WFF
- * @since 2.0.0
+ * @since 2.0.2
  */
 public class Sizes extends AbstractAttribute
         implements ImgAttributable, SourceAttributable {
@@ -40,7 +40,7 @@ public class Sizes extends AbstractAttribute
      *
      * @param value
      *            the value for the attribute
-     * @since 2.0.0
+     * @since 2.0.2
      */
     public Sizes(final String value) {
         setAttributeValue(value);
@@ -51,7 +51,7 @@ public class Sizes extends AbstractAttribute
      *
      * @param value
      *            the value for the attribute.
-     * @since 2.0.0
+     * @since 2.0.2
      */
     public void setValue(final String value) {
         super.setAttributeValue(value);
@@ -61,7 +61,7 @@ public class Sizes extends AbstractAttribute
      * gets the value of this attribute
      *
      * @return the value of the attribute
-     * @since 2.0.0
+     * @since 2.0.2
      */
     public String getValue() {
         return super.getAttributeValue();
@@ -70,7 +70,7 @@ public class Sizes extends AbstractAttribute
     /**
      * invokes only once per object
      *
-     * @since 2.0.0
+     * @since 2.0.2
      */
     protected void init() {
         // to override and use this method
