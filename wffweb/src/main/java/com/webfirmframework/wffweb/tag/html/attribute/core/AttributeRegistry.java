@@ -170,6 +170,7 @@ import com.webfirmframework.wffweb.tag.html.html5.attribute.Min;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Multiple;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Muted;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Pattern;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.Picture;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Placeholder;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Preload;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Required;
@@ -556,6 +557,9 @@ public class AttributeRegistry {
                 OnTouchStart.class.getSimpleName());
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ROLE,
                 Role.class.getSimpleName());
+
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.PICTURE,
+                Picture.class.getSimpleName());
 
         attributeNames = new ArrayList<String>(initialCapacity);
         attributeNamesSet = new HashSet<String>(initialCapacity);
