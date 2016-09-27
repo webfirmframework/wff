@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
@@ -116,6 +117,27 @@ public enum BrowserPageContext {
      */
     public BrowserPage getBrowserPage(final String instanceId) {
         return instanceIdBrowserPage.get(instanceId);
+    }
+
+    /**
+     * Gets all browser pages associated with this session.
+     *
+     * @param httpSessionId
+     * @since 2.0.2
+     * @author WFF
+     * @return an unmodifiable map of BrowserPages associated with this session
+     *         where key as instanceId and value as BrowserPage.
+     */
+    public Map<String, BrowserPage> getBrowserPages(
+            final String httpSessionId) {
+
+        final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages
+                .get(httpSessionId);
+
+        if (browserPages == null) {
+            return null;
+        }
+        return Collections.unmodifiableMap(browserPages);
     }
 
     /**
