@@ -339,6 +339,8 @@ public class AttributeNameConstants {
 
     public static final String ROLE = "role";
 
+    public static final String SRCSET = "srcset";
+
     /**
      *
      * @author WFF
