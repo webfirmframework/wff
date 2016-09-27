@@ -99,6 +99,7 @@ import com.webfirmframework.wffweb.tag.html.html5.formsandinputs.Output;
 import com.webfirmframework.wffweb.tag.html.html5.images.Canvas;
 import com.webfirmframework.wffweb.tag.html.html5.images.FigCaption;
 import com.webfirmframework.wffweb.tag.html.html5.images.Figure;
+import com.webfirmframework.wffweb.tag.html.html5.images.Picture;
 import com.webfirmframework.wffweb.tag.html.html5.links.Nav;
 import com.webfirmframework.wffweb.tag.html.html5.lists.Menu;
 import com.webfirmframework.wffweb.tag.html.html5.lists.MenuItem;
@@ -393,6 +394,8 @@ public class TagRegistry {
                 Wbr.class.getSimpleName());
         TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.H6,
                 H6.class.getSimpleName());
+        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.PICTURE,
+                Picture.class.getSimpleName());
 
         tagNames = new ArrayList<String>(initialCapacity);
         tagNamesSet = new HashSet<String>(initialCapacity);

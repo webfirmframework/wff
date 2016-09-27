@@ -558,9 +558,6 @@ public class AttributeRegistry {
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ROLE,
                 Role.class.getSimpleName());
 
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.PICTURE,
-                Picture.class.getSimpleName());
-
         attributeNames = new ArrayList<String>(initialCapacity);
         attributeNamesSet = new HashSet<String>(initialCapacity);
 

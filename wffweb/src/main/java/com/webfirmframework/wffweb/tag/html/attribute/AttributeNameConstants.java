@@ -339,8 +339,6 @@ public class AttributeNameConstants {
 
     public static final String ROLE = "role";
 
-    public static final String PICTURE = "picture";
-
     /**
      *
      * @author WFF

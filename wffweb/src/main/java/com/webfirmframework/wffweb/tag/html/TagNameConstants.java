@@ -255,6 +255,8 @@ public class TagNameConstants {
 
     public static final String H6 = "h6";
 
+    public static final String PICTURE = "picture";
+
     /**
      *
      * @author WFF
