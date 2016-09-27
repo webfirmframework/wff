@@ -117,6 +117,10 @@ public abstract class BrowserPage implements Serializable {
 
                 final NameValue[] nameValues = wffBMBytesQueue.poll();
 
+                if (nameValues == null) {
+                    break;
+                }
+
                 final byte[] wffBinaryMessageBytes = WffBinaryMessageUtil.VERSION_1
                         .getWffBinaryMessageBytes(nameValues);
 
