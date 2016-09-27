@@ -26,13 +26,13 @@ import com.webfirmframework.wffweb.tag.html.identifier.ImgAttributable;
  * @author WFF
  * @since 2.0.0
  */
-public class SrcSet extends AbstractAttribute
+public class Sizes extends AbstractAttribute
         implements ImgAttributable, SourceAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
     {
-        super.setAttributeName(AttributeNameConstants.SRCSET);
+        super.setAttributeName(AttributeNameConstants.SIZES);
         init();
     }
 
@@ -42,7 +42,7 @@ public class SrcSet extends AbstractAttribute
      *            the value for the attribute
      * @since 2.0.0
      */
-    public SrcSet(final String value) {
+    public Sizes(final String value) {
         setAttributeValue(value);
     }
 

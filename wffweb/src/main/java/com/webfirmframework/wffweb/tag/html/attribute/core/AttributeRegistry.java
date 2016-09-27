@@ -173,6 +173,7 @@ import com.webfirmframework.wffweb.tag.html.html5.attribute.Pattern;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Placeholder;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Preload;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Required;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.Sizes;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.SrcSet;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Step;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.ContentEditable;
@@ -559,6 +560,8 @@ public class AttributeRegistry {
                 Role.class.getSimpleName());
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.SRCSET,
                 SrcSet.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.SIZES,
+                Sizes.class.getSimpleName());
 
         attributeNames = new ArrayList<String>(initialCapacity);
         attributeNamesSet = new HashSet<String>(initialCapacity);

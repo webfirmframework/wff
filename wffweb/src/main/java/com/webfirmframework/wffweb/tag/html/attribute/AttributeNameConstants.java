@@ -341,6 +341,8 @@ public class AttributeNameConstants {
 
     public static final String SRCSET = "srcset";
 
+    public static final String SIZES = "sizes";
+
     /**
      *
      * @author WFF
