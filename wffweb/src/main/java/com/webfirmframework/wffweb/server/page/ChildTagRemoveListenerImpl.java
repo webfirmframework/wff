@@ -27,7 +27,6 @@ import java.util.logging.Logger;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.tag.html.listener.ChildTagRemoveListener;
-import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 import com.webfirmframework.wffweb.util.data.NameValue;
 
 class ChildTagRemoveListenerImpl implements ChildTagRemoveListener {
@@ -90,10 +89,9 @@ class ChildTagRemoveListenerImpl implements ChildTagRemoveListener {
     }
 
     private void removeChildren(final AbstractHtml[] removedChildrenTags) {
+
         try {
-            // should always be taken from browserPage as it could be changed
-            final WebSocketPushListener wsListener = browserPage
-                    .getWsListener();
+
             //@formatter:off
             // removed child task format :-
             // { "name": task_byte, "values" : [REMOVED_TAGS_byte_from_Task_enum]}, { "name": data-wff-id, "values" : [ parent_tag_name, html_string ]}
@@ -132,10 +130,8 @@ class ChildTagRemoveListenerImpl implements ChildTagRemoveListener {
 
             }
 
-            final byte[] wffBMBytes = WffBinaryMessageUtil.VERSION_1
-                    .getWffBinaryMessageBytes(nameValues);
-
-            wsListener.push(wffBMBytes);
+            browserPage
+                    .push(nameValues.toArray(new NameValue[nameValues.size()]));
 
             for (final AbstractHtml removedChildTag : removedChildrenTags) {
                 removeFromTagByWffIdMap(removedChildTag);
@@ -154,9 +150,6 @@ class ChildTagRemoveListenerImpl implements ChildTagRemoveListener {
 
     @Override
     public void allChildrenRemoved(final Event event) {
-
-        // should always be taken from browserPage as it could be changed
-        final WebSocketPushListener wsListener = browserPage.getWsListener();
 
         final AbstractHtml parentTag = event.getParentTag();
 
@@ -187,10 +180,7 @@ class ChildTagRemoveListenerImpl implements ChildTagRemoveListener {
 
                 nameValue.setValues(parentTagName);
 
-                final byte[] wffBMBytes = WffBinaryMessageUtil.VERSION_1
-                        .getWffBinaryMessageBytes(task, nameValue);
-
-                wsListener.push(wffBMBytes);
+                browserPage.push(task, nameValue);
 
                 final Set<AbstractHtml> children = parentTag
                         .getChildren(accessObject);

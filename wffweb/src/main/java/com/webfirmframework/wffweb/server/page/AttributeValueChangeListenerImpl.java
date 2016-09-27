@@ -24,7 +24,6 @@ import java.util.logging.Logger;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attribute.listener.AttributeValueChangeListener;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
-import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 import com.webfirmframework.wffweb.util.data.NameValue;
 
 class AttributeValueChangeListenerImpl implements AttributeValueChangeListener {
@@ -51,91 +50,77 @@ class AttributeValueChangeListenerImpl implements AttributeValueChangeListener {
 
     @Override
     public void valueChanged(final Event event) {
-        // should always be taken from browserPage as it could be changed
-        final WebSocketPushListener wsListener = browserPage.getWsListener();
 
         // in this listener, pushing value change of attribute to the
         // client
         try {
-            if (wsListener != null) {
+            //@formatter:off
+            // update attribute task format :-
+            // { "name": task_byte, "values" : [update_attribute_byte_from_Task_enum]}, { "name": attribute_name, "values" : [ data-wff-id, data-wff-id ]}
+            // { "name": 2, "values" : [[1]]}, { "name":"style=color:green", "values" : ["C55", "S555"]}
+            //@formatter:on
 
-                //@formatter:off
-                // update attribute task format :-
-                // { "name": task_byte, "values" : [update_attribute_byte_from_Task_enum]}, { "name": attribute_name, "values" : [ data-wff-id, data-wff-id ]}
-                // { "name": 2, "values" : [[1]]}, { "name":"style=color:green", "values" : ["C55", "S555"]}
-                //@formatter:on
+            final NameValue task = Task.ATTRIBUTE_UPDATED.getTaskNameValue();
+            final NameValue nameValue = new NameValue();
 
-                final NameValue task = Task.ATTRIBUTE_UPDATED
-                        .getTaskNameValue();
-                final NameValue nameValue = new NameValue();
+            // should be name=somevalue
+            String attrNameValue = event.getSourceAttribute()
+                    .toHtmlString("UTF-8").replaceFirst("[=][\"]", "=");
 
-                // should be name=somevalue
-                String attrNameValue = event.getSourceAttribute()
-                        .toHtmlString("UTF-8").replaceFirst("[=][\"]", "=");
-
-                if (attrNameValue.charAt(attrNameValue.length() - 1) == '"') {
-                    attrNameValue = attrNameValue.substring(0,
-                            attrNameValue.length() - 1);
-                }
-
-                nameValue.setName(attrNameValue.getBytes("UTF-8"));
-
-                final Set<AbstractHtml> ownerTags = new HashSet<AbstractHtml>(
-                        event.getOwnerTags());
-
-                // to remove ownerTags which don't exist in ui
-                ownerTags.retainAll(tagByWffId.values());
-
-                // for (AbstractHtml ownerTag : event.getOwnerTags()) {
-                // AbstractAttribute dataWffIdAttr = ownerTag
-                // .getAttributeByName("data-wff-id");
-                //
-                // if (dataWffIdAttr == null || !tagByWffId
-                // .containsKey(dataWffIdAttr.getAttributeValue())) {
-                // ownerTags.remove(ownerTag);
-                // }
-                // }
-
-                final byte[][] dataWffIds = new byte[ownerTags.size()][0];
-
-                int count = 0;
-
-                for (final AbstractHtml owner : ownerTags) {
-
-                    final DataWffId dataWffId = owner.getDataWffId();
-
-                    if (dataWffId != null) {
-
-                        final byte[] dataWffIdBytes = DataWffIdUtil
-                                .getDataWffIdBytes(dataWffId.getValue());
-
-                        dataWffIds[count] = dataWffIdBytes;
-                        count++;
-
-                    } else {
-                        LOGGER.severe(
-                                "Could not find data-wff-id from owner tag");
-                    }
-                }
-
-                byte[][] values = dataWffIds;
-
-                if (ownerTags.size() > count) {
-                    values = new byte[count][0];
-                    System.arraycopy(dataWffIds, 0, values, 0, values.length);
-                }
-
-                nameValue.setValues(values);
-
-                final byte[] wffBinaryMessageBytes = WffBinaryMessageUtil.VERSION_1
-                        .getWffBinaryMessageBytes(task, nameValue);
-
-                wsListener.push(wffBinaryMessageBytes);
-
-            } else {
-                LOGGER.severe(
-                        "setWebSocketPushListener must be set to sent server changes to client");
+            if (attrNameValue.charAt(attrNameValue.length() - 1) == '"') {
+                attrNameValue = attrNameValue.substring(0,
+                        attrNameValue.length() - 1);
             }
+
+            nameValue.setName(attrNameValue.getBytes("UTF-8"));
+
+            final Set<AbstractHtml> ownerTags = new HashSet<AbstractHtml>(
+                    event.getOwnerTags());
+
+            // to remove ownerTags which don't exist in ui
+            ownerTags.retainAll(tagByWffId.values());
+
+            // for (AbstractHtml ownerTag : event.getOwnerTags()) {
+            // AbstractAttribute dataWffIdAttr = ownerTag
+            // .getAttributeByName("data-wff-id");
+            //
+            // if (dataWffIdAttr == null || !tagByWffId
+            // .containsKey(dataWffIdAttr.getAttributeValue())) {
+            // ownerTags.remove(ownerTag);
+            // }
+            // }
+
+            final byte[][] dataWffIds = new byte[ownerTags.size()][0];
+
+            int count = 0;
+
+            for (final AbstractHtml owner : ownerTags) {
+
+                final DataWffId dataWffId = owner.getDataWffId();
+
+                if (dataWffId != null) {
+
+                    final byte[] dataWffIdBytes = DataWffIdUtil
+                            .getDataWffIdBytes(dataWffId.getValue());
+
+                    dataWffIds[count] = dataWffIdBytes;
+                    count++;
+
+                } else {
+                    LOGGER.severe("Could not find data-wff-id from owner tag");
+                }
+            }
+
+            byte[][] values = dataWffIds;
+
+            if (ownerTags.size() > count) {
+                values = new byte[count][0];
+                System.arraycopy(dataWffIds, 0, values, 0, values.length);
+            }
+
+            nameValue.setValues(values);
+
+            browserPage.push(task, nameValue);
         } catch (final UnsupportedEncodingException e) {
             LOGGER.severe(e.toString());
         }

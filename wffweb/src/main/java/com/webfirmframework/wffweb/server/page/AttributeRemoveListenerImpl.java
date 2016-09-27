@@ -20,7 +20,6 @@ import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.listener.AttributeRemoveListener;
-import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 import com.webfirmframework.wffweb.util.data.NameValue;
 
 public class AttributeRemoveListenerImpl implements AttributeRemoveListener {
@@ -48,63 +47,51 @@ public class AttributeRemoveListenerImpl implements AttributeRemoveListener {
     @Override
     public void removedAttributes(final RemovedEvent event) {
 
-        // should always be taken from browserPage as it could be changed
-        final WebSocketPushListener wsListener = browserPage.getWsListener();
-
         try {
 
-            if (wsListener != null) {
+            final AbstractHtml removedFromTag = event.getRemovedFromTag();
 
-                final AbstractHtml removedFromTag = event.getRemovedFromTag();
-
-                if (removedFromTag.getDataWffId() == null
-                        || !tagByWffId.containsKey(
-                                removedFromTag.getDataWffId().getValue())) {
-                    return;
-                }
-
-                //@formatter:off
-                // removed attribute task format :-
-                // { "name": task_byte, "values" : [ADDED_ATTRIBUTES_byte_from_Task_enum]}, { "name": MANY_TO_ONE_byte, "values" : [ tagName, its_data-wff-id, attribute_name1, attribute_name2 ]}
-                // { "name": 2, "values" : [[1]]}, { "name":[2], "values" : ["div", "C55", "style", "name"]}
-                //@formatter:on
-
-                final NameValue task = Task.REMOVED_ATTRIBUTES
-                        .getTaskNameValue();
-
-                final NameValue nameValue = new NameValue();
-                // many attributes to one tag
-                nameValue.setName(Task.MANY_TO_ONE.getValueByte());
-
-                final byte[][] tagNameAndWffId = DataWffIdUtil
-                        .getTagNameAndWffId(removedFromTag);
-
-                final String[] removedAttributes = event
-                        .getRemovedAttributeNames();
-
-                final int totalValues = removedAttributes.length + 2;
-
-                final byte[][] values = new byte[totalValues][0];
-
-                values[0] = tagNameAndWffId[0];
-                values[1] = tagNameAndWffId[1];
-
-                for (int i = 2; i < totalValues; i++) {
-                    // should be just name
-                    final byte[] attrNameBytes = removedAttributes[i - 2]
-                            .getBytes("UTF-8");
-
-                    values[i] = attrNameBytes;
-                }
-
-                nameValue.setValues(values);
-
-                final byte[] wffBinaryMessageBytes = WffBinaryMessageUtil.VERSION_1
-                        .getWffBinaryMessageBytes(task, nameValue);
-
-                wsListener.push(wffBinaryMessageBytes);
-
+            if (removedFromTag.getDataWffId() == null || !tagByWffId
+                    .containsKey(removedFromTag.getDataWffId().getValue())) {
+                return;
             }
+
+            //@formatter:off
+            // removed attribute task format :-
+            // { "name": task_byte, "values" : [ADDED_ATTRIBUTES_byte_from_Task_enum]}, { "name": MANY_TO_ONE_byte, "values" : [ tagName, its_data-wff-id, attribute_name1, attribute_name2 ]}
+            // { "name": 2, "values" : [[1]]}, { "name":[2], "values" : ["div", "C55", "style", "name"]}
+            //@formatter:on
+
+            final NameValue task = Task.REMOVED_ATTRIBUTES.getTaskNameValue();
+
+            final NameValue nameValue = new NameValue();
+            // many attributes to one tag
+            nameValue.setName(Task.MANY_TO_ONE.getValueByte());
+
+            final byte[][] tagNameAndWffId = DataWffIdUtil
+                    .getTagNameAndWffId(removedFromTag);
+
+            final String[] removedAttributes = event.getRemovedAttributeNames();
+
+            final int totalValues = removedAttributes.length + 2;
+
+            final byte[][] values = new byte[totalValues][0];
+
+            values[0] = tagNameAndWffId[0];
+            values[1] = tagNameAndWffId[1];
+
+            for (int i = 2; i < totalValues; i++) {
+                // should be just name
+                final byte[] attrNameBytes = removedAttributes[i - 2]
+                        .getBytes("UTF-8");
+
+                values[i] = attrNameBytes;
+            }
+
+            nameValue.setValues(values);
+
+            browserPage.push(task, nameValue);
+
         } catch (final Exception e) {
             e.printStackTrace();
 

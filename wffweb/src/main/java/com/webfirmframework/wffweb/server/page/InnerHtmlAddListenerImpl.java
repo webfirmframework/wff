@@ -27,7 +27,6 @@ import java.util.logging.Logger;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.tag.html.listener.InnerHtmlAddListener;
-import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 import com.webfirmframework.wffweb.util.data.NameValue;
 
 class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
@@ -93,9 +92,6 @@ class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
     @Override
     public void innerHtmlAdded(final Event event) {
 
-        // should always be taken from browserPage as it could be changed
-        final WebSocketPushListener wsListener = browserPage.getWsListener();
-
         final AbstractHtml parentTag = event.getParentTag();
         final AbstractHtml innerHtmlTag = event.getInnerHtmlTag();
 
@@ -129,10 +125,7 @@ class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
                 nameValue.setValues(parentTagName,
                         innerHtmlTag.toWffBMBytes("UTF-8"));
 
-                final byte[] wffBMBytes = WffBinaryMessageUtil.VERSION_1
-                        .getWffBinaryMessageBytes(task, nameValue);
-
-                wsListener.push(wffBMBytes);
+                browserPage.push(task, nameValue);
 
                 addInWffIdMap(innerHtmlTag);
             } else {

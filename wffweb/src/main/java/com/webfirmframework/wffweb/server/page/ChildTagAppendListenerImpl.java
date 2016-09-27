@@ -30,7 +30,6 @@ import java.util.logging.Logger;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.tag.html.listener.ChildTagAppendListener;
-import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 import com.webfirmframework.wffweb.util.data.NameValue;
 
 class ChildTagAppendListenerImpl implements ChildTagAppendListener {
@@ -63,10 +62,6 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
     public void childAppended(final Event event) {
 
         try {
-
-            // should always be taken from browserPage as it could be changed
-            final WebSocketPushListener wsListener = browserPage
-                    .getWsListener();
 
             final AbstractHtml parentTag = event.getParentTag();
             final AbstractHtml appendedChildTag = event.getAppendedChildTag();
@@ -124,10 +119,7 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
             nameValue.setValues(parentTagName,
                     appendedChildTag.toWffBMBytes("UTF-8"));
 
-            final byte[] wffBMBytes = WffBinaryMessageUtil.VERSION_1
-                    .getWffBinaryMessageBytes(task, nameValue);
-
-            wsListener.push(wffBMBytes);
+            browserPage.push(task, nameValue);
 
         } catch (final UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -140,9 +132,6 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
     public void childrenAppended(final Event event) {
 
         try {
-            // should always be taken from browserPage as it could be changed
-            final WebSocketPushListener wsListener = browserPage
-                    .getWsListener();
 
             final AbstractHtml parentTag = event.getParentTag();
             final Collection<? extends AbstractHtml> appendedChildTags = event
@@ -210,10 +199,8 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
                 nameValues.add(nameValue);
             }
 
-            final byte[] wffBMBytes = WffBinaryMessageUtil.VERSION_1
-                    .getWffBinaryMessageBytes(nameValues);
-
-            wsListener.push(wffBMBytes);
+            browserPage
+                    .push(nameValues.toArray(new NameValue[nameValues.size()]));
 
         } catch (final UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -257,8 +244,6 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
 
     @Override
     public void childMoved(final ChildMovedEvent event) {
-        // should always be taken from browserPage as it could be changed
-        final WebSocketPushListener wsListener = browserPage.getWsListener();
 
         //@formatter:off
         // moved children tags from some parents to another task format (in this method moving only one child) :-
@@ -299,10 +284,7 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
                 nameValue.setValues(currentTagName, movedChildWffIdBytes,
                         movedChildTagName);
 
-                final byte[] wffBMBytes = WffBinaryMessageUtil.VERSION_1
-                        .getWffBinaryMessageBytes(task, nameValue);
-
-                wsListener.push(wffBMBytes);
+                browserPage.push(task, nameValue);
 
                 addInWffIdMap(movedChildTag);
 
@@ -318,9 +300,6 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
 
     @Override
     public void childrendAppendedOrMoved(final List<ChildMovedEvent> events) {
-
-        // should always be taken from browserPage as it could be changed
-        final WebSocketPushListener wsListener = browserPage.getWsListener();
 
         //@formatter:off
         // moved children tags from some parents to another task format (in this method moving only one child) :-
@@ -391,10 +370,8 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
 
             }
 
-            final byte[] wffBMBytes = WffBinaryMessageUtil.VERSION_1
-                    .getWffBinaryMessageBytes(nameValues);
-
-            wsListener.push(wffBMBytes);
+            browserPage
+                    .push(nameValues.toArray(new NameValue[nameValues.size()]));
 
         } catch (final UnsupportedEncodingException e) {
             e.printStackTrace();

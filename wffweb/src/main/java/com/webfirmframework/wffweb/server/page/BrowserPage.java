@@ -25,11 +25,13 @@ import java.util.Deque;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.NullValueException;
+import com.webfirmframework.wffweb.PushFailedException;
 import com.webfirmframework.wffweb.server.page.js.WffJsFile;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
@@ -61,7 +63,7 @@ public abstract class BrowserPage implements Serializable {
 
     private static final boolean PRODUCTION_MODE = true;
 
-    private String instanceId;
+    private final String instanceId = UUID.randomUUID().toString();
 
     private AttributeValueChangeListener valueChangeListener;
 
@@ -73,7 +75,12 @@ public abstract class BrowserPage implements Serializable {
 
     private DataWffId wffScriptTagId;
 
-    private static final Security ACCESS_OBJECT;
+    private final Queue<NameValue[]> wffBMBytesQueue = new ArrayDeque<NameValue[]>();
+
+    private static final Security ACCESS_OBJECT = new Security();
+
+    // by default the push queue should be enabled
+    private boolean pushQueueEnabled = true;
 
     // for security purpose, the class name should not be modified
     private static final class Security implements Serializable {
@@ -82,14 +89,6 @@ public abstract class BrowserPage implements Serializable {
 
         private Security() {
         }
-    }
-
-    static {
-        ACCESS_OBJECT = new Security();
-    }
-
-    {
-        instanceId = UUID.randomUUID().toString();
     }
 
     public abstract String webSocketUrl();
@@ -106,6 +105,37 @@ public abstract class BrowserPage implements Serializable {
 
     public WebSocketPushListener getWsListener() {
         return wsListener;
+    }
+
+    void push(final NameValue... wffBM) {
+
+        if (wsListener != null) {
+
+            wffBMBytesQueue.add(wffBM);
+
+            while (wffBMBytesQueue.size() > 0) {
+
+                final NameValue[] nameValues = wffBMBytesQueue.poll();
+
+                final byte[] wffBinaryMessageBytes = WffBinaryMessageUtil.VERSION_1
+                        .getWffBinaryMessageBytes(nameValues);
+
+                try {
+                    wsListener.push(wffBinaryMessageBytes);
+                } catch (final PushFailedException e) {
+                    if (pushQueueEnabled) {
+                        wffBMBytesQueue.add(nameValues);
+                    }
+                    break;
+                }
+
+            }
+
+        } else {
+            LOGGER.warning(
+                    "There is no websocket listener set, set it with BrowserPage#setWebSocketPushListener method.");
+        }
+
     }
 
     DataWffId getNewDataWffId() {
@@ -216,9 +246,7 @@ public abstract class BrowserPage implements Serializable {
                                             returnedObject.build(true) });
                                 }
 
-                                wsListener.push(WffBinaryMessageUtil.VERSION_1
-                                        .getWffBinaryMessageBytes(
-                                                invokePostFunTask, nameValue));
+                                push(invokePostFunTask, nameValue);
                             }
 
                         } else {
@@ -440,7 +468,9 @@ public abstract class BrowserPage implements Serializable {
     }
 
     private void initAbstractHtml() {
+
         if (abstractHtml == null) {
+
             abstractHtml = render();
 
             if (abstractHtml == null) {
@@ -460,6 +490,9 @@ public abstract class BrowserPage implements Serializable {
             addAttributeAddListener(abstractHtml);
             addAttributeRemoveListener(abstractHtml);
             addInnerHtmlAddListener(abstractHtml);
+
+        } else {
+            wffBMBytesQueue.clear();
         }
 
         final String webSocketUrl = webSocketUrl();
@@ -482,6 +515,29 @@ public abstract class BrowserPage implements Serializable {
      */
     public String getInstanceId() {
         return instanceId;
+    }
+
+    /**
+     * By default, it is set as true.
+     *
+     * @return the pushQueueEnabled
+     * @since 2.0.2
+     */
+    public boolean isPushQueueEnabled() {
+        return pushQueueEnabled;
+    }
+
+    /**
+     * If the server could not push any server updates it will be put in the
+     * queue and when it tries to push in the next time it will first push
+     * updates from this queue. By default, it is set as true.
+     *
+     * @param enabledPushQueue
+     *            the enabledPushQueue to set
+     * @since 2.0.2
+     */
+    public void setPushQueueEnabled(final boolean enabledPushQueue) {
+        pushQueueEnabled = enabledPushQueue;
     }
 
 }

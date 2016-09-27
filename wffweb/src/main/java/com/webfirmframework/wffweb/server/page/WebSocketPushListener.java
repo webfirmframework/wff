@@ -15,7 +15,9 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
+import com.webfirmframework.wffweb.PushFailedException;
+
 public interface WebSocketPushListener {
 
-    public abstract void push(byte[] message);
+    public abstract void push(final byte[] message) throws PushFailedException;
 }
