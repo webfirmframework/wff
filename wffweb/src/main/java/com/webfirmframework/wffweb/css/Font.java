@@ -700,7 +700,7 @@ public class Font extends AbstractCssProperty<Font>
 
         if (lineHeight != null) {
             if (fontSize != null) {
-                cssValueBuilder.append("/");
+                cssValueBuilder.append('/');
             }
             final String lineHeightCssValue = lineHeight.getCssValue();
             cssValueBuilder.append(lineHeightCssValue);

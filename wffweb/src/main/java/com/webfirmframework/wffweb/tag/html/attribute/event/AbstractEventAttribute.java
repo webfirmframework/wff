@@ -168,7 +168,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
         if (functionBody.charAt(functionBody.length() - 1) != ';') {
             builder.append(';');
         }
-        builder.append("}");
+        builder.append('}');
 
         return builder.toString();
     }
@@ -237,9 +237,9 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
                                 + getAttributeName() + "',");
 
                 builder.append(getPreparedJsFunctionBody(jsPreFunctionBody));
-                builder.append(",");
+                builder.append(',');
                 builder.append(getPreparedJsFunctionBody(jsFilterFunctionBody));
-                builder.append(")");
+                builder.append(')');
 
                 this.jsPostFunctionBody = jsPostFunctionBody;
 
