@@ -544,7 +544,7 @@ public class Font extends AbstractCssProperty<Font>
 
         if (lineHeight != null) {
             if (fontSize != null) {
-                cssValueBuilder.append("/");
+                cssValueBuilder.append('/');
             }
             cssValueBuilder.append(lineHeight.getCssValue());
             cssValueBuilder.append(' ');
@@ -594,7 +594,7 @@ public class Font extends AbstractCssProperty<Font>
 
         if (lineHeight != null) {
             if (fontSize != null) {
-                cssValueBuilder.append("/");
+                cssValueBuilder.append('/');
             }
             cssValueBuilder.append(lineHeight.getCssValue());
             cssValueBuilder.append(' ');
@@ -644,7 +644,7 @@ public class Font extends AbstractCssProperty<Font>
 
         if (lineHeight != null) {
             if (fontSize != null) {
-                cssValueBuilder.append("/");
+                cssValueBuilder.append('/');
             }
             cssValueBuilder.append(lineHeight.getCssValue());
             cssValueBuilder.append(' ');
@@ -777,7 +777,7 @@ public class Font extends AbstractCssProperty<Font>
                         "fontSize cannot have initial/inherit as its cssValue");
             }
             if (fontSize != null) {
-                cssValueBuilder.append("/");
+                cssValueBuilder.append('/');
             }
             cssValueBuilder.append(lineHeightCssValue);
             cssValueBuilder.append(' ');
@@ -848,7 +848,7 @@ public class Font extends AbstractCssProperty<Font>
         if (lineHeight != null) {
             final String lineHeightCssValue = lineHeight.getCssValue();
             if (fontSize != null) {
-                cssValueBuilder.append("/");
+                cssValueBuilder.append('/');
             }
             cssValueBuilder.append(lineHeightCssValue);
             cssValueBuilder.append(' ');

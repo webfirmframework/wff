@@ -276,7 +276,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
                 builder.append(',');
                 builder.append(getPreparedJsFunctionBody(jsFilterFunctionBody));
 
-                builder.append(")");
+                builder.append(')');
                 this.serverAsyncMethod = serverAsyncMethod;
                 super.setAttributeValue(builder.toString());
 
@@ -290,7 +290,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
                                 + getAttributeName() + "',");
 
                 builder.append(getPreparedJsFunctionBody(jsFilterFunctionBody));
-                builder.append(")");
+                builder.append(')');
 
                 this.jsPostFunctionBody = jsPostFunctionBody;
 
@@ -307,7 +307,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
 
                 builder.append(getPreparedJsFunctionBody(jsPreFunctionBody));
 
-                builder.append(")");
+                builder.append(')');
                 this.serverAsyncMethod = serverAsyncMethod;
                 super.setAttributeValue(builder.toString());
 
@@ -319,7 +319,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
                                 + getAttributeName() + "',");
 
                 builder.append(getPreparedJsFunctionBody(jsFilterFunctionBody));
-                builder.append(")");
+                builder.append(')');
 
                 this.jsPostFunctionBody = jsPostFunctionBody;
 
