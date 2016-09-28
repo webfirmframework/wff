@@ -57,13 +57,18 @@ public class Output extends AbstractHtml {
             final AbstractAttribute... attributes) {
         super(TagNameConstants.OUTPUT, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
-            for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null
-                        && (abstractAttribute instanceof OutputAttributable
-                                || abstractAttribute instanceof GlobalAttributable))) {
-                    LOGGER.warning(abstractAttribute
-                            + " is not an instance of OutputAttribute");
-                }
+            warnForUnsupportedAttributes(attributes);
+        }
+    }
+
+    private void warnForUnsupportedAttributes(
+            final AbstractAttribute... attributes) {
+        for (final AbstractAttribute abstractAttribute : attributes) {
+            if (!(abstractAttribute != null
+                    && (abstractAttribute instanceof OutputAttributable
+                            || abstractAttribute instanceof GlobalAttributable))) {
+                LOGGER.warning(abstractAttribute
+                        + " is not an instance of OutputAttribute");
             }
         }
     }

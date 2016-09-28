@@ -39,13 +39,18 @@ public class Em extends AbstractHtml {
     public Em(final AbstractHtml base, final AbstractAttribute... attributes) {
         super(TagNameConstants.EM, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
-            for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null
-                        && (abstractAttribute instanceof EmAttributable
-                                || abstractAttribute instanceof GlobalAttributable))) {
-                    LOGGER.warning(abstractAttribute
-                            + " is not an instance of EmAttribute");
-                }
+            warnForUnsupportedAttributes(attributes);
+        }
+    }
+
+    private void warnForUnsupportedAttributes(
+            final AbstractAttribute... attributes) {
+        for (final AbstractAttribute abstractAttribute : attributes) {
+            if (!(abstractAttribute != null
+                    && (abstractAttribute instanceof EmAttributable
+                            || abstractAttribute instanceof GlobalAttributable))) {
+                LOGGER.warning(abstractAttribute
+                        + " is not an instance of EmAttribute");
             }
         }
     }

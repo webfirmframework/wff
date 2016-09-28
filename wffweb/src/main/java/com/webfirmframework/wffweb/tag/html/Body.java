@@ -2,6 +2,7 @@ package com.webfirmframework.wffweb.tag.html;
 
 import java.util.logging.Logger;
 
+import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.BrAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
@@ -36,6 +37,13 @@ public class Body extends AbstractHtml {
     public Body(final AbstractHtml base,
             final AbstractAttribute... attributes) {
         super(TagNameConstants.BODY, base, attributes);
+        if (WffConfiguration.isDirectionWarningOn()) {
+            warnForUnsupportedAttributes(attributes);
+        }
+    }
+
+    private void warnForUnsupportedAttributes(
+            final AbstractAttribute... attributes) {
         for (final AbstractAttribute abstractAttribute : attributes) {
             if (!(abstractAttribute != null
                     && (abstractAttribute instanceof BrAttributable

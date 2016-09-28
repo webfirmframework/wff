@@ -39,13 +39,18 @@ public class Pre extends AbstractHtml {
     public Pre(final AbstractHtml base, final AbstractAttribute... attributes) {
         super(TagNameConstants.PRE, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
-            for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null
-                        && (abstractAttribute instanceof PreAttributable
-                                || abstractAttribute instanceof GlobalAttributable))) {
-                    LOGGER.warning(abstractAttribute
-                            + " is not an instance of PreAttribute");
-                }
+            warnForUnsupportedAttributes(attributes);
+        }
+    }
+
+    private void warnForUnsupportedAttributes(
+            final AbstractAttribute... attributes) {
+        for (final AbstractAttribute abstractAttribute : attributes) {
+            if (!(abstractAttribute != null
+                    && (abstractAttribute instanceof PreAttributable
+                            || abstractAttribute instanceof GlobalAttributable))) {
+                LOGGER.warning(abstractAttribute
+                        + " is not an instance of PreAttribute");
             }
         }
     }

@@ -41,13 +41,18 @@ public class Select extends AbstractHtml {
             final AbstractAttribute... attributes) {
         super(TagNameConstants.SELECT, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
-            for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null
-                        && (abstractAttribute instanceof SelectAttributable
-                                || abstractAttribute instanceof GlobalAttributable))) {
-                    LOGGER.warning(abstractAttribute
-                            + " is not an instance of SelectAttribute");
-                }
+            warnForUnsupportedAttributes(attributes);
+        }
+    }
+
+    private void warnForUnsupportedAttributes(
+            final AbstractAttribute... attributes) {
+        for (final AbstractAttribute abstractAttribute : attributes) {
+            if (!(abstractAttribute != null
+                    && (abstractAttribute instanceof SelectAttributable
+                            || abstractAttribute instanceof GlobalAttributable))) {
+                LOGGER.warning(abstractAttribute
+                        + " is not an instance of SelectAttribute");
             }
         }
     }

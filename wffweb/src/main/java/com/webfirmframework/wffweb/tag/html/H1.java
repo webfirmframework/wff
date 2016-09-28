@@ -35,13 +35,18 @@ public class H1 extends AbstractHtml {
     public H1(final AbstractHtml base, final AbstractAttribute... attributes) {
         super(TagNameConstants.H1, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
-            for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null
-                        && (abstractAttribute instanceof H1Attributable
-                                || abstractAttribute instanceof GlobalAttributable))) {
-                    LOGGER.warning(abstractAttribute
-                            + " is not an instance of H1Attribute");
-                }
+            warnForUnsupportedAttributes(attributes);
+        }
+    }
+
+    private void warnForUnsupportedAttributes(
+            final AbstractAttribute... attributes) {
+        for (final AbstractAttribute abstractAttribute : attributes) {
+            if (!(abstractAttribute != null
+                    && (abstractAttribute instanceof H1Attributable
+                            || abstractAttribute instanceof GlobalAttributable))) {
+                LOGGER.warning(abstractAttribute
+                        + " is not an instance of H1Attribute");
             }
         }
     }
