@@ -330,7 +330,7 @@ public class Icon extends AbstractCssProperty<Icon>
                                 + ") as it is already used by another object");
                     }
                 } catch (final CloneNotSupportedException e) {
-                    e.printStackTrace();
+                    LOGGER.severe(e.toString());
                 }
             }
             cssValueBuilder.append(urlCss3Value.getValue());

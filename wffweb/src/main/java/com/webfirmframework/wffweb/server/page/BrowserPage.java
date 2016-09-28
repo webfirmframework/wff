@@ -156,7 +156,7 @@ public abstract class BrowserPage implements Serializable {
         try {
             executeWffBMTask(message);
         } catch (final Exception e) {
-            e.printStackTrace();
+            LOGGER.severe(e.toString());
         }
     }
 

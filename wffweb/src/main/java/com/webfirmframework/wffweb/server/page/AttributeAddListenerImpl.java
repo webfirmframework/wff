@@ -15,6 +15,8 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
+import java.util.logging.Logger;
+
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.listener.AttributeAddListener;
@@ -23,6 +25,9 @@ import com.webfirmframework.wffweb.util.data.NameValue;
 public class AttributeAddListenerImpl implements AttributeAddListener {
 
     private static final long serialVersionUID = 1L;
+
+    private static final Logger LOGGER = Logger
+            .getLogger(AttributeAddListenerImpl.class.getName());
 
     private BrowserPage browserPage;
 
@@ -84,8 +89,7 @@ public class AttributeAddListenerImpl implements AttributeAddListener {
             browserPage.push(task, nameValue);
 
         } catch (final Exception e) {
-            e.printStackTrace();
-
+            LOGGER.severe(e.toString());
         }
 
     }

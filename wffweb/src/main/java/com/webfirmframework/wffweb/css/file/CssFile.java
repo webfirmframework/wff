@@ -27,6 +27,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.css.core.CssProperty;
 
@@ -38,6 +39,9 @@ import com.webfirmframework.wffweb.css.core.CssProperty;
 public abstract class CssFile implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 1_0_0L;
+
+    private static final Logger LOGGER = Logger
+            .getLogger(CssFile.class.getName());
 
     private final Map<String, Set<AbstractCssFileBlock>> selectorCssFileBlocks = new LinkedHashMap<String, Set<AbstractCssFileBlock>>();
 
@@ -212,11 +216,11 @@ public abstract class CssFile implements Serializable, Cloneable {
                 }
             }
         } catch (final SecurityException e) {
-            e.printStackTrace();
+            LOGGER.severe(e.toString());
         } catch (final IllegalArgumentException e) {
-            e.printStackTrace();
+            LOGGER.severe(e.toString());
         } catch (final IllegalAccessException e) {
-            e.printStackTrace();
+            LOGGER.severe(e.toString());
         }
     }
 

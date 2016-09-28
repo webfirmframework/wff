@@ -138,7 +138,6 @@ class ChildTagRemoveListenerImpl implements ChildTagRemoveListener {
             }
 
         } catch (final UnsupportedEncodingException e) {
-            e.printStackTrace();
             LOGGER.severe(e.toString());
         }
     }
@@ -193,7 +192,7 @@ class ChildTagRemoveListenerImpl implements ChildTagRemoveListener {
                 LOGGER.severe("Could not find data-wff-id from owner tag");
             }
         } catch (final UnsupportedEncodingException e) {
-            e.printStackTrace();
+            LOGGER.severe(e.toString());
         }
 
     }

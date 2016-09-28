@@ -132,7 +132,7 @@ class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
                 LOGGER.severe("Could not find data-wff-id from owner tag");
             }
         } catch (final UnsupportedEncodingException e) {
-            e.printStackTrace();
+            LOGGER.severe(e.toString());
         }
 
     }

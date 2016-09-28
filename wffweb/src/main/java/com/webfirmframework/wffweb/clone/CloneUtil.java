@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  * A utility class for clone operations.
@@ -34,6 +35,10 @@ import java.util.Set;
  * @since 1.0.0
  */
 public class CloneUtil {
+
+    private static final Logger LOGGER = Logger
+            .getLogger(CloneUtil.class.getName());
+
     private CloneUtil() {
         throw new AssertionError();
     }
@@ -258,7 +263,7 @@ public class CloneUtil {
                     ois.close();
                 }
             } catch (final IOException e) {
-                e.printStackTrace();
+                LOGGER.severe(e.toString());
             }
         }
     }

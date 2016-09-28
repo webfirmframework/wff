@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.tag.html.BaseFont;
 import com.webfirmframework.wffweb.tag.html.Body;
@@ -146,6 +147,9 @@ import com.webfirmframework.wffweb.tag.html.tables.Th;
 import com.webfirmframework.wffweb.tag.html.tables.Tr;
 
 public class TagRegistry {
+
+    private static final Logger LOGGER = Logger
+            .getLogger(TagRegistry.class.getName());
 
     private static List<String> tagNames;
 
@@ -408,7 +412,7 @@ public class TagRegistry {
                 final String tagName = field.get(null).toString();
                 tagNamesSet.add(tagName);
             } catch (final Exception e) {
-                e.printStackTrace();
+                LOGGER.severe(e.toString());
             }
         }
 

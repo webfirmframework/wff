@@ -159,7 +159,7 @@ public enum WffJsFile {
 
             optimizedFileContent = builder.toString().trim();
         } catch (final Exception e) {
-            e.printStackTrace();
+            LOGGER.severe(e.toString());
         }
     }
 
@@ -197,7 +197,7 @@ public enum WffJsFile {
                     .replace("\"${TASK_VALUES}\"", Task.getJsObjectString())
                     + allOptimizedContent;
         } catch (final Exception e) {
-            e.printStackTrace();
+            LOGGER.severe(e.toString());
         }
         return "";
     }

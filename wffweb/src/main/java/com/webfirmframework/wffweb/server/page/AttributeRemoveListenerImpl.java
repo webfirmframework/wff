@@ -93,8 +93,7 @@ public class AttributeRemoveListenerImpl implements AttributeRemoveListener {
             browserPage.push(task, nameValue);
 
         } catch (final Exception e) {
-            e.printStackTrace();
-
+            LOGGER.severe(e.toString());
         }
 
     }

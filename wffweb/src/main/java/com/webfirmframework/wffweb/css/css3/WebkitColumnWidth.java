@@ -244,7 +244,6 @@ public class WebkitColumnWidth extends AbstractCssProperty<WebkitColumnWidth> {
                 getStateChangeInformer().stateChanged(this);
             }
         } catch (final NumberFormatException e) {
-            e.printStackTrace();
             throw new InvalidValueException(
                     cssValue + " is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit.",
                     e);

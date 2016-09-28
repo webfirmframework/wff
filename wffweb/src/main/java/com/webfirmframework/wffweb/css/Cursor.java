@@ -472,7 +472,7 @@ public class Cursor extends AbstractCssProperty<Cursor>
                                 + ") as it is already used by another object");
                     }
                 } catch (final CloneNotSupportedException e) {
-                    e.printStackTrace();
+                    LOGGER.severe(e.toString());
                 }
             }
             cssValueBuilder.append(urlCss3Value.getValue());

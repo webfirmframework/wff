@@ -1052,7 +1052,7 @@ public class Style extends AbstractAttribute
                             + "(hashcode: " + cssProperty.hashCode()
                             + ") as it is already used in another tag");
                 } catch (final CloneNotSupportedException e) {
-                    e.printStackTrace();
+                    LOGGER.severe(e.toString());
                 }
             }
         }

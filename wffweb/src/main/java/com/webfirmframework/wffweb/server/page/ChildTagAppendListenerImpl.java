@@ -122,7 +122,6 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
             browserPage.push(task, nameValue);
 
         } catch (final UnsupportedEncodingException e) {
-            e.printStackTrace();
             LOGGER.severe(e.toString());
         }
 
@@ -203,7 +202,6 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
                     .push(nameValues.toArray(new NameValue[nameValues.size()]));
 
         } catch (final UnsupportedEncodingException e) {
-            e.printStackTrace();
             LOGGER.severe(e.toString());
         }
 
@@ -293,7 +291,7 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
                         "Could not find data-wff-id from previousParentTag");
             }
         } catch (final UnsupportedEncodingException e) {
-            e.printStackTrace();
+            LOGGER.severe(e.toString());
         }
 
     }
@@ -374,7 +372,7 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
                     .push(nameValues.toArray(new NameValue[nameValues.size()]));
 
         } catch (final UnsupportedEncodingException e) {
-            e.printStackTrace();
+            LOGGER.severe(e.toString());
         }
 
     }
