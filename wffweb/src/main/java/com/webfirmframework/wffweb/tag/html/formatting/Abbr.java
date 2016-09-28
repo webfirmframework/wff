@@ -45,7 +45,7 @@ public class Abbr extends AbstractHtml implements AbbrAttributable {
         }
     }
 
-    private void warnForUnsupportedAttributes(
+    private static void warnForUnsupportedAttributes(
             final AbstractAttribute... attributes) {
         for (final AbstractAttribute abstractAttribute : attributes) {
             if (!(abstractAttribute != null

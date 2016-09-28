@@ -60,7 +60,7 @@ public class Picture extends AbstractHtml {
         }
     }
 
-    private void warnForUnsupportedAttributes(
+    private static void warnForUnsupportedAttributes(
             final AbstractAttribute... attributes) {
         for (final AbstractAttribute abstractAttribute : attributes) {
             if (!(abstractAttribute != null

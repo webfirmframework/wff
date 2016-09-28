@@ -58,7 +58,7 @@ public class Html extends DocType {
         }
     }
 
-    private void warnForUnsupportedAttributes(
+    private static void warnForUnsupportedAttributes(
             final AbstractAttribute... attributes) {
         for (final AbstractAttribute abstractAttribute : attributes) {
             if (!(abstractAttribute != null
