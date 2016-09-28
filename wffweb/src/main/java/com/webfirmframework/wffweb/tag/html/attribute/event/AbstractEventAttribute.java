@@ -329,10 +329,9 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
 
                 final StringBuilder builder = new StringBuilder();
 
-                builder.append("wffServerMethods.invokeAsync(event, this,'"
-                        + getAttributeName() + "'");
-
-                builder.append(")");
+                builder.append("wffServerMethods.invokeAsync(event, this,'");
+                builder.append(getAttributeName());
+                builder.append("')");
 
                 this.jsPostFunctionBody = jsPostFunctionBody;
 
