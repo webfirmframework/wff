@@ -166,36 +166,32 @@ public class AnimationIterationCount
      */
     @Override
     public AnimationIterationCount setCssValue(final String cssValue) {
-        try {
-            if (cssValue == null) {
-                throw new NullValueException(
-                        "null is an invalid value. The value format should be as for example 0.5, initial/inherit.");
+        if (cssValue == null) {
+            throw new NullValueException(
+                    "null is an invalid value. The value format should be as for example 0.5, initial/inherit.");
+        } else {
+
+            final String trimmedCssValue = TagStringUtil
+                    .toLowerCase(cssValue.trim());
+
+            if (INITIAL.equals(trimmedCssValue)
+                    || INHERIT.equals(trimmedCssValue)
+                    || INFINITE.equals(trimmedCssValue)) {
+                this.cssValue = trimmedCssValue;
+                value = null;
             } else {
-
-                final String trimmedCssValue = TagStringUtil
-                        .toLowerCase(cssValue.trim());
-
-                if (INITIAL.equals(trimmedCssValue)
-                        || INHERIT.equals(trimmedCssValue)
-                        || INFINITE.equals(trimmedCssValue)) {
-                    this.cssValue = trimmedCssValue;
-                    value = null;
-                } else {
-                    try {
-                        value = Integer.valueOf(trimmedCssValue);
-                        this.cssValue = value.toString();
-                    } catch (final NumberFormatException e) {
-                        throw new InvalidValueException(cssValue
-                                + " is an invalid value. The value format should be as for example 0.5, initial, inherit etc..");
-                    }
+                try {
+                    value = Integer.valueOf(trimmedCssValue);
+                    this.cssValue = value.toString();
+                } catch (final NumberFormatException e) {
+                    throw new InvalidValueException(cssValue
+                            + " is an invalid value. The value format should be as for example 0.5, initial, inherit etc..");
                 }
+            }
 
-            }
-            if (getStateChangeInformer() != null) {
-                getStateChangeInformer().stateChanged(this);
-            }
-        } catch (final InvalidValueException e) {
-            throw e;
+        }
+        if (getStateChangeInformer() != null) {
+            getStateChangeInformer().stateChanged(this);
         }
         return this;
 
