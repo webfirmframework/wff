@@ -17,7 +17,7 @@ package com.webfirmframework.wffweb.wffbm.data;
 
 /**
  * BM Object/Array value type
- * 
+ *
  * @author WFF
  *
  */

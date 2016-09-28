@@ -26,7 +26,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
  * interaction. In particular, the click event will not be dispatched on
  * disabled controls. Also, a disabled control's value isn't submitted with the
  * form.
- * 
+ *
  * Firefox will, unlike other browsers, by default, persist the dynamic disabled
  * state of an {@code <input>} across page loads. Use the autocomplete attribute
  * to control this feature.
@@ -47,11 +47,11 @@ public class Disabled extends AbstractAttribute implements InputAttributable {
         setAttributeValue(null);
     }
 
-    public Disabled(String value) {
+    public Disabled(final String value) {
         setAttributeValue(value);
     }
 
-    public void setValue(String value) {
+    public void setValue(final String value) {
         setAttributeValue(value);
     }
 

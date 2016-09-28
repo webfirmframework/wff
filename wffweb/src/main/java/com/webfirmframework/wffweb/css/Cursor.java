@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.InvalidValueException;
@@ -472,7 +473,9 @@ public class Cursor extends AbstractCssProperty<Cursor>
                                 + ") as it is already used by another object");
                     }
                 } catch (final CloneNotSupportedException e) {
-                    LOGGER.severe(e.toString());
+                    if (LOGGER.isLoggable(Level.SEVERE)) {
+                        LOGGER.severe(e.toString());
+                    }
                 }
             }
             cssValueBuilder.append(urlCss3Value.getValue());

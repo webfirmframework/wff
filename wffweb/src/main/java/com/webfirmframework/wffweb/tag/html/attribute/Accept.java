@@ -22,16 +22,16 @@ import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 /**
  *
  * <code>accept</code> attribute for the element.
- * 
+ *
  * <pre>
- * 
+ *
  * If the value of the type attribute is file, this attribute indicates the types of files that the server accepts; otherwise it is ignored. The value must be a comma-separated list of unique content type specifiers:
  * A file extension starting with the STOP character (U+002E). (E.g.: ".jpg,.png,.doc")
  * A valid MIME type with no extensions
  * audio/* representing sound files <i>(HTML5)</i>
  * video/* representing video files <i>(HTML5)</i>
  * image/* representing image files <i>(HTML5)</i>
- * 
+ *
  * </pre>
  *
  * @author WFF

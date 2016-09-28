@@ -23,8 +23,8 @@ import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
 
 /**
  *
- * <code>onclick</code> attribute for the element. This attribute is supported by
- * multiple tags.
+ * <code>onclick</code> attribute for the element. This attribute is supported
+ * by multiple tags.
  *
  * @since 2.0.0
  * @author WFF

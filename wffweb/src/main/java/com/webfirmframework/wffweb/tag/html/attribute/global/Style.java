@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.InvalidValueException;
@@ -718,8 +719,7 @@ public class Style extends AbstractAttribute
                 BorderImageSource.class);
         CSSPROPERTY_CLASSES.put(CssNameConstants.UNICODE_RANGE,
                 UnicodeRange.class);
-        CSSPROPERTY_CLASSES.put(CssNameConstants.SRC,
-                Src.class);
+        CSSPROPERTY_CLASSES.put(CssNameConstants.SRC, Src.class);
     }
 
     {
@@ -1052,7 +1052,9 @@ public class Style extends AbstractAttribute
                             + "(hashcode: " + cssProperty.hashCode()
                             + ") as it is already used in another tag");
                 } catch (final CloneNotSupportedException e) {
-                    LOGGER.severe(e.toString());
+                    if (LOGGER.isLoggable(Level.SEVERE)) {
+                        LOGGER.severe(e.toString());
+                    }
                 }
             }
         }

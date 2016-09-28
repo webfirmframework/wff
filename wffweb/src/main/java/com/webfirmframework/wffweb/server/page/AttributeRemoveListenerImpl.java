@@ -16,6 +16,7 @@
 package com.webfirmframework.wffweb.server.page;
 
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
@@ -93,7 +94,9 @@ public class AttributeRemoveListenerImpl implements AttributeRemoveListener {
             browserPage.push(task, nameValue);
 
         } catch (final Exception e) {
-            LOGGER.severe(e.toString());
+            if (LOGGER.isLoggable(Level.SEVERE)) {
+                LOGGER.severe(e.toString());
+            }
         }
 
     }
@@ -169,7 +172,7 @@ public class AttributeRemoveListenerImpl implements AttributeRemoveListener {
     // "setWebSocketPushListener must be set to sent server changes to client");
     // }
     // } catch (final UnsupportedEncodingException e) {
-    // LOGGER.severe(e.toString());
+    // if (LOGGER.isLoggable(Level.SEVERE)) { LOGGER.severe(e.toString()); }
     // }
     // }
 }

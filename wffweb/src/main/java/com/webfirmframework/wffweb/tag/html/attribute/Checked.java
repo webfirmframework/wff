@@ -46,11 +46,11 @@ public class Checked extends AbstractAttribute implements InputAttributable {
         setAttributeValue(null);
     }
 
-    public Checked(String value) {
+    public Checked(final String value) {
         setAttributeValue(value);
     }
 
-    public void setValue(String value) {
+    public void setValue(final String value) {
         setAttributeValue(value);
     }
 

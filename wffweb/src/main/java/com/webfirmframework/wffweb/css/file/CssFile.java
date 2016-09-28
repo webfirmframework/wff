@@ -27,6 +27,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.css.core.CssProperty;
@@ -216,11 +217,17 @@ public abstract class CssFile implements Serializable, Cloneable {
                 }
             }
         } catch (final SecurityException e) {
-            LOGGER.severe(e.toString());
+            if (LOGGER.isLoggable(Level.SEVERE)) {
+                LOGGER.severe(e.toString());
+            }
         } catch (final IllegalArgumentException e) {
-            LOGGER.severe(e.toString());
+            if (LOGGER.isLoggable(Level.SEVERE)) {
+                LOGGER.severe(e.toString());
+            }
         } catch (final IllegalAccessException e) {
-            LOGGER.severe(e.toString());
+            if (LOGGER.isLoggable(Level.SEVERE)) {
+                LOGGER.severe(e.toString());
+            }
         }
     }
 

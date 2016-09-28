@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.server.page.Task;
@@ -159,7 +160,9 @@ public enum WffJsFile {
 
             optimizedFileContent = builder.toString().trim();
         } catch (final Exception e) {
-            LOGGER.severe(e.toString());
+            if (LOGGER.isLoggable(Level.SEVERE)) {
+                LOGGER.severe(e.toString());
+            }
         }
     }
 
@@ -197,7 +200,9 @@ public enum WffJsFile {
                     .replace("\"${TASK_VALUES}\"", Task.getJsObjectString())
                     + allOptimizedContent;
         } catch (final Exception e) {
-            LOGGER.severe(e.toString());
+            if (LOGGER.isLoggable(Level.SEVERE)) {
+                LOGGER.severe(e.toString());
+            }
         }
         return "";
     }

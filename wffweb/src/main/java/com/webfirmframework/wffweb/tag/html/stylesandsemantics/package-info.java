@@ -1,9 +1,9 @@
 /**
- * 
+ *
  */
 /**
  * This package contains classes for Styles and Semantics.
- * 
+ *
  * @author WFF
  *
  */

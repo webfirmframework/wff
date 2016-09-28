@@ -25,6 +25,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
@@ -122,7 +123,9 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
             browserPage.push(task, nameValue);
 
         } catch (final UnsupportedEncodingException e) {
-            LOGGER.severe(e.toString());
+            if (LOGGER.isLoggable(Level.SEVERE)) {
+                LOGGER.severe(e.toString());
+            }
         }
 
     }
@@ -202,7 +205,9 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
                     .push(nameValues.toArray(new NameValue[nameValues.size()]));
 
         } catch (final UnsupportedEncodingException e) {
-            LOGGER.severe(e.toString());
+            if (LOGGER.isLoggable(Level.SEVERE)) {
+                LOGGER.severe(e.toString());
+            }
         }
 
     }
@@ -291,7 +296,9 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
                         "Could not find data-wff-id from previousParentTag");
             }
         } catch (final UnsupportedEncodingException e) {
-            LOGGER.severe(e.toString());
+            if (LOGGER.isLoggable(Level.SEVERE)) {
+                LOGGER.severe(e.toString());
+            }
         }
 
     }
@@ -372,7 +379,9 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
                     .push(nameValues.toArray(new NameValue[nameValues.size()]));
 
         } catch (final UnsupportedEncodingException e) {
-            LOGGER.severe(e.toString());
+            if (LOGGER.isLoggable(Level.SEVERE)) {
+                LOGGER.severe(e.toString());
+            }
         }
 
     }

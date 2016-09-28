@@ -22,6 +22,7 @@ import java.util.Deque;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
@@ -138,7 +139,9 @@ class ChildTagRemoveListenerImpl implements ChildTagRemoveListener {
             }
 
         } catch (final UnsupportedEncodingException e) {
-            LOGGER.severe(e.toString());
+            if (LOGGER.isLoggable(Level.SEVERE)) {
+                LOGGER.severe(e.toString());
+            }
         }
     }
 
@@ -192,7 +195,9 @@ class ChildTagRemoveListenerImpl implements ChildTagRemoveListener {
                 LOGGER.severe("Could not find data-wff-id from owner tag");
             }
         } catch (final UnsupportedEncodingException e) {
-            LOGGER.severe(e.toString());
+            if (LOGGER.isLoggable(Level.SEVERE)) {
+                LOGGER.severe(e.toString());
+            }
         }
 
     }

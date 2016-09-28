@@ -27,7 +27,8 @@ import com.webfirmframework.wffweb.tag.html.identifier.ThAttributable;
  * @author WFF
  *
  */
-public class Headers extends AbstractAttribute implements ThAttributable, TdAttributable {
+public class Headers extends AbstractAttribute
+        implements ThAttributable, TdAttributable {
 
     /**
      *

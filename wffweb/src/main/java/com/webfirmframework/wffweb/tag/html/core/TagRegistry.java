@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.tag.html.BaseFont;
@@ -412,7 +413,9 @@ public class TagRegistry {
                 final String tagName = field.get(null).toString();
                 tagNamesSet.add(tagName);
             } catch (final Exception e) {
-                LOGGER.severe(e.toString());
+                if (LOGGER.isLoggable(Level.SEVERE)) {
+                    LOGGER.severe(e.toString());
+                }
             }
         }
 

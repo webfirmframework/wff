@@ -19,6 +19,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
@@ -122,7 +123,9 @@ class AttributeValueChangeListenerImpl implements AttributeValueChangeListener {
 
             browserPage.push(task, nameValue);
         } catch (final UnsupportedEncodingException e) {
-            LOGGER.severe(e.toString());
+            if (LOGGER.isLoggable(Level.SEVERE)) {
+                LOGGER.severe(e.toString());
+            }
         }
     }
 

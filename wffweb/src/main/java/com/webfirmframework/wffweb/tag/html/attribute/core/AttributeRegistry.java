@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.css.Border;
@@ -187,8 +188,9 @@ import com.webfirmframework.wffweb.tag.html.html5.attribute.global.SpellCheck;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.Translate;
 
 public class AttributeRegistry {
-    
-    private static final Logger LOGGER = Logger.getLogger(AttributeRegistry.class.getName());
+
+    private static final Logger LOGGER = Logger
+            .getLogger(AttributeRegistry.class.getName());
 
     private static List<String> attributeNames;
 
@@ -577,7 +579,9 @@ public class AttributeRegistry {
                 final String tagName = field.get(null).toString();
                 attributeNamesSet.add(tagName);
             } catch (final Exception e) {
-                LOGGER.severe(e.toString());
+                if (LOGGER.isLoggable(Level.SEVERE)) {
+                    LOGGER.severe(e.toString());
+                }
             }
         }
 

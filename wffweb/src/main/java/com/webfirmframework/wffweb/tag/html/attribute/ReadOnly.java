@@ -16,7 +16,6 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute;
 
-import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.html5.identifier.AudioAttributable;
 
@@ -44,11 +43,11 @@ public class ReadOnly extends AbstractAttribute implements AudioAttributable {
         setAttributeValue(null);
     }
 
-    public ReadOnly(String value) {
+    public ReadOnly(final String value) {
         setAttributeValue(value);
     }
 
-    public void setValue(String value) {
+    public void setValue(final String value) {
         setAttributeValue(value);
     }
 

@@ -1,9 +1,9 @@
 /**
- * 
+ *
  */
 /**
  * This package contains programming tags
- * 
+ *
  * @author WFF
  *
  */

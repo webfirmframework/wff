@@ -1,6 +1,6 @@
 /**
  * This package contains event attribute classes, eg:- OnClick.
- * 
+ *
  * @author WFF
  *
  */

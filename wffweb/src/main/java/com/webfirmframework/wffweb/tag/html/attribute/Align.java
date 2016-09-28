@@ -22,7 +22,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 /**
  *
  * <code>align</code> attribute for the element.
- * 
+ *
  * <pre>
  * left
  * right

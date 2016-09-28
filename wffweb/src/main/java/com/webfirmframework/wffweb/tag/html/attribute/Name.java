@@ -25,7 +25,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.MapTagAttributable;
  *
  * <code>name</code> attribute for the element. This attribute is supported by
  * multiple tags.
- * 
+ *
  * @since 1.0.0
  * @author WFF
  *

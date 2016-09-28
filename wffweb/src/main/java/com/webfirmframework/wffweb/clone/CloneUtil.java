@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -263,7 +264,9 @@ public class CloneUtil {
                     ois.close();
                 }
             } catch (final IOException e) {
-                LOGGER.severe(e.toString());
+                if (LOGGER.isLoggable(Level.SEVERE)) {
+                    LOGGER.severe(e.toString());
+                }
             }
         }
     }
