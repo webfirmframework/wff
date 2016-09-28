@@ -136,7 +136,7 @@ public class PerspectiveOrigin extends AbstractCssProperty<PerspectiveOrigin> {
             final StringBuilder sb = new StringBuilder();
             sb.append(xAxis);
             sb.append(xAxisCssLengthUnit);
-            sb.append(" ");
+            sb.append(' ');
             sb.append(yAxis);
             sb.append(yAxisCssLengthUnit);
             cssValue = sb.toString();
@@ -170,7 +170,7 @@ public class PerspectiveOrigin extends AbstractCssProperty<PerspectiveOrigin> {
             final StringBuilder sb = new StringBuilder();
             sb.append(xAxis);
             sb.append(xAxisCssLengthUnit);
-            sb.append(" ");
+            sb.append(' ');
             sb.append(yAxis);
             sb.append(yAxisCssLengthUnit);
             cssValue = sb.toString();

@@ -133,7 +133,7 @@ public class MozBackgroundSize extends AbstractCssProperty<MozBackgroundSize> {
             final StringBuilder sb = new StringBuilder();
             sb.append(width);
             sb.append(widthCssLengthUnit);
-            sb.append(" ");
+            sb.append(' ');
             sb.append(height);
             sb.append(heightCssLengthUnit);
             cssValue = sb.toString();
@@ -167,7 +167,7 @@ public class MozBackgroundSize extends AbstractCssProperty<MozBackgroundSize> {
             final StringBuilder sb = new StringBuilder();
             sb.append(width);
             sb.append(widthCssLengthUnit);
-            sb.append(" ");
+            sb.append(' ');
             sb.append(height);
             sb.append(heightCssLengthUnit);
             cssValue = sb.toString();

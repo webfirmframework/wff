@@ -224,19 +224,19 @@ public class BorderRight extends AbstractCssProperty<BorderRight>
         boolean invalid = true;
         if (borderRightWidth != null) {
             cssValueBuilder.append(borderRightWidth.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
             invalid = false;
         } else if (this.borderRightWidth != null) {
             this.borderRightWidth.setAlreadyInUse(false);
         }
         if (borderRightStyle != null) {
             cssValueBuilder.append(borderRightStyle.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
             invalid = false;
         }
         if (borderRightColor != null) {
             cssValueBuilder.append(borderRightColor.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
             invalid = false;
         } else if (this.borderRightColor != null) {
             this.borderRightColor.setAlreadyInUse(false);
@@ -352,17 +352,17 @@ public class BorderRight extends AbstractCssProperty<BorderRight>
             }
 
             cssValueBuilder.append(borderRightWidth.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
         }
 
         if (borderRightStyle != null) {
             cssValueBuilder.append(borderRightStyle.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
         }
 
         if (borderRightColor != null) {
             cssValueBuilder.append(borderRightColor.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
         }
 
         final String trimmedCssValue = cssValueBuilder.toString().trim();
@@ -401,17 +401,17 @@ public class BorderRight extends AbstractCssProperty<BorderRight>
 
         if (borderRightWidth != null) {
             cssValueBuilder.append(borderRightWidth.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
         }
 
         if (borderRightStyle != null) {
             cssValueBuilder.append(borderRightStyle.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
         }
 
         if (borderRightColor != null) {
             cssValueBuilder.append(borderRightColor.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
         }
 
         final String trimmedCssValue = cssValueBuilder.toString().trim();
@@ -432,12 +432,12 @@ public class BorderRight extends AbstractCssProperty<BorderRight>
 
         if (borderRightWidth != null) {
             cssValueBuilder.append(borderRightWidth.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
         }
 
         if (borderRightStyle != null) {
             cssValueBuilder.append(borderRightStyle.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
         }
 
         if (borderRightColor != null) {

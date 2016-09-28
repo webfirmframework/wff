@@ -597,7 +597,7 @@ public class Padding extends AbstractCssProperty<Padding>
 
             final StringBuilder cssValueBuilder = new StringBuilder(
                     paddingTopCssValue);
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
             cssValueBuilder.append(paddingRightCssValue);
 
             cssValue = cssValueBuilder.toString();
@@ -610,9 +610,9 @@ public class Padding extends AbstractCssProperty<Padding>
         } else if (paddingRightCssValue.equals(paddingLeftCssValue)) {
             final StringBuilder cssValueBuilder = new StringBuilder(
                     paddingTopCssValue);
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
             cssValueBuilder.append(paddingRightCssValue);
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
             cssValueBuilder.append(paddingBottomCssValue);
 
             cssValue = cssValueBuilder.toString();
@@ -624,11 +624,11 @@ public class Padding extends AbstractCssProperty<Padding>
         } else {
             final StringBuilder cssValueBuilder = new StringBuilder(
                     paddingTopCssValue);
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
             cssValueBuilder.append(paddingRightCssValue);
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
             cssValueBuilder.append(paddingBottomCssValue);
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
             cssValueBuilder.append(paddingLeftCssValue);
 
             cssValue = cssValueBuilder.toString();

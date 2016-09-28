@@ -607,7 +607,7 @@ public class Margin extends AbstractCssProperty<Margin>
 
             final StringBuilder cssValueBuilder = new StringBuilder(
                     marginTopCssValue);
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
             cssValueBuilder.append(marginRightCssValue);
 
             cssValue = cssValueBuilder.toString();
@@ -620,9 +620,9 @@ public class Margin extends AbstractCssProperty<Margin>
         } else if (marginRightCssValue.equals(marginLeftCssValue)) {
             final StringBuilder cssValueBuilder = new StringBuilder(
                     marginTopCssValue);
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
             cssValueBuilder.append(marginRightCssValue);
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
             cssValueBuilder.append(marginBottomCssValue);
 
             cssValue = cssValueBuilder.toString();
@@ -634,11 +634,11 @@ public class Margin extends AbstractCssProperty<Margin>
         } else {
             final StringBuilder cssValueBuilder = new StringBuilder(
                     marginTopCssValue);
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
             cssValueBuilder.append(marginRightCssValue);
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
             cssValueBuilder.append(marginBottomCssValue);
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
             cssValueBuilder.append(marginLeftCssValue);
 
             cssValue = cssValueBuilder.toString();

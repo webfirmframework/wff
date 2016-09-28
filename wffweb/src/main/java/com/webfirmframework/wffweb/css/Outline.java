@@ -227,7 +227,7 @@ public class Outline extends AbstractCssProperty<Outline>
 
         if (outlineColor != null) {
             cssValueBuilder.append(outlineColor.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
             invalid = false;
         } else if (this.outlineColor != null) {
             this.outlineColor.setAlreadyInUse(false);
@@ -235,13 +235,13 @@ public class Outline extends AbstractCssProperty<Outline>
 
         if (outlineStyle != null) {
             cssValueBuilder.append(outlineStyle.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
             invalid = false;
         }
 
         if (outlineWidth != null) {
             cssValueBuilder.append(outlineWidth.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
             invalid = false;
         } else if (this.outlineWidth != null) {
             this.outlineWidth.setAlreadyInUse(false);
@@ -344,12 +344,12 @@ public class Outline extends AbstractCssProperty<Outline>
 
         if (outlineColor != null) {
             cssValueBuilder.append(outlineColor.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
         }
 
         if (outlineStyle != null) {
             cssValueBuilder.append(outlineStyle.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
         }
 
         if (outlineWidth != null) {
@@ -399,12 +399,12 @@ public class Outline extends AbstractCssProperty<Outline>
 
         if (outlineColor != null) {
             cssValueBuilder.append(outlineColor.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
         }
 
         if (outlineStyle != null) {
             cssValueBuilder.append(outlineStyle.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
         }
 
         if (outlineWidth != null) {
@@ -434,12 +434,12 @@ public class Outline extends AbstractCssProperty<Outline>
                         "outlineColor cannot have initial/inherit as its cssValue");
             }
             cssValueBuilder.append(outlineColorCssValue);
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
         }
 
         if (outlineStyle != null) {
             cssValueBuilder.append(outlineStyle.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
         }
         if (outlineWidth != null) {
             cssValueBuilder.append(outlineWidth.getCssValue());

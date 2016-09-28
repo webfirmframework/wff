@@ -133,7 +133,7 @@ public class BackgroundSize extends AbstractCssProperty<BackgroundSize> {
             final StringBuilder sb = new StringBuilder();
             sb.append(width);
             sb.append(widthLengthUnit);
-            sb.append(" ");
+            sb.append(' ');
             sb.append(height);
             sb.append(heightLengthUnit);
             cssValue = sb.toString();
@@ -167,7 +167,7 @@ public class BackgroundSize extends AbstractCssProperty<BackgroundSize> {
             final StringBuilder sb = new StringBuilder();
             sb.append(width);
             sb.append(widthLengthUnit);
-            sb.append(" ");
+            sb.append(' ');
             sb.append(height);
             sb.append(heightLengthUnit);
             cssValue = sb.toString();

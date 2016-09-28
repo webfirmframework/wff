@@ -201,17 +201,17 @@ public class Border extends AbstractCssProperty<Border>
         boolean invalid = true;
         if (borderWidthValue != null) {
             cssValueBuilder.append(borderWidthValue);
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
             invalid = false;
         }
         if (borderStyle != null) {
             cssValueBuilder.append(borderStyle.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
             invalid = false;
         }
         if (borderColorCssValues != null) {
             cssValueBuilder.append(borderColorCssValues.getValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
             invalid = false;
         }
         if (invalid) {
@@ -340,16 +340,16 @@ public class Border extends AbstractCssProperty<Border>
                         + "' is not valid, please try with a valid value like medium/thin/thick or 75px");
             }
             cssValueBuilder.append(borderWidthValue);
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
         }
         if (borderStyle != null) {
             cssValueBuilder.append(borderStyle.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
         }
 
         if (borderColorCssValues != null) {
             cssValueBuilder.append(borderColorCssValues.getValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
         }
 
         final String trimmedCssValue = cssValueBuilder.toString().trim();
@@ -383,17 +383,17 @@ public class Border extends AbstractCssProperty<Border>
 
         if (borderWidthValue != null) {
             cssValueBuilder.append(borderWidthValue);
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
         }
 
         if (borderStyle != null) {
             cssValueBuilder.append(borderStyle.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
         }
 
         if (borderColorCssValues != null) {
             cssValueBuilder.append(borderColorCssValues.getValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
         }
 
         final String trimmedCssValue = cssValueBuilder.toString().trim();
@@ -421,12 +421,12 @@ public class Border extends AbstractCssProperty<Border>
 
         if (borderWidthValue != null) {
             cssValueBuilder.append(borderWidthValue);
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
         }
 
         if (borderStyle != null) {
             cssValueBuilder.append(borderStyle.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
         }
 
         if (borderColorCssValues != null) {

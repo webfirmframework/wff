@@ -758,7 +758,7 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
                 }
             }
 
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
 
             if (right != null) {
                 cssValueBuilder.append(right);
@@ -768,7 +768,7 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
             }
 
             if (middle != null) {
-                cssValueBuilder.append(" ");
+                cssValueBuilder.append(' ');
                 cssValueBuilder.append(middle);
             }
 
@@ -783,7 +783,7 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
                 }
             }
 
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
 
             if (right != null) {
                 cssValueBuilder.append(right);
@@ -792,7 +792,7 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
                 }
             }
 
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
 
             if (bottom != null) {
                 cssValueBuilder.append(bottom);
@@ -802,7 +802,7 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
             }
 
             if (middle != null) {
-                cssValueBuilder.append(" ");
+                cssValueBuilder.append(' ');
                 cssValueBuilder.append(middle);
             }
 
@@ -817,7 +817,7 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
                 }
             }
 
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
 
             if (right != null) {
                 cssValueBuilder.append(right);
@@ -826,7 +826,7 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
                 }
             }
 
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
 
             if (bottom != null) {
                 cssValueBuilder.append(bottom);
@@ -835,7 +835,7 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
                 }
             }
 
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
 
             if (left != null) {
                 cssValueBuilder.append(left);
@@ -845,7 +845,7 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
             }
 
             if (middle != null) {
-                cssValueBuilder.append(" ");
+                cssValueBuilder.append(' ');
                 cssValueBuilder.append(middle);
             }
 

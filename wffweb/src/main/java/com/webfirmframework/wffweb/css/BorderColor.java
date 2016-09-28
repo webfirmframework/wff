@@ -595,7 +595,7 @@ public class BorderColor extends AbstractCssProperty<BorderColor>
 
             final StringBuilder cssValueBuilder = new StringBuilder(
                     borderTopColorCssValue);
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
             cssValueBuilder.append(borderRightColorCssValue);
 
             cssValue = cssValueBuilder.toString();
@@ -608,9 +608,9 @@ public class BorderColor extends AbstractCssProperty<BorderColor>
         } else if (borderRightColorCssValue.equals(borderLeftColorCssValue)) {
             final StringBuilder cssValueBuilder = new StringBuilder(
                     borderTopColorCssValue);
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
             cssValueBuilder.append(borderRightColorCssValue);
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
             cssValueBuilder.append(borderBottomColorCssValue);
 
             cssValue = cssValueBuilder.toString();
@@ -622,11 +622,11 @@ public class BorderColor extends AbstractCssProperty<BorderColor>
         } else {
             final StringBuilder cssValueBuilder = new StringBuilder(
                     borderTopColorCssValue);
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
             cssValueBuilder.append(borderRightColorCssValue);
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
             cssValueBuilder.append(borderBottomColorCssValue);
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
             cssValueBuilder.append(borderLeftColorCssValue);
 
             cssValue = cssValueBuilder.toString();

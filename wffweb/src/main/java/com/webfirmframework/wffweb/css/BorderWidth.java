@@ -655,7 +655,7 @@ public class BorderWidth extends AbstractCssProperty<BorderWidth>
 
             final StringBuilder cssValueBuilder = new StringBuilder(
                     borderTopWidthCssValue);
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
             cssValueBuilder.append(borderRightWidthCssValue);
 
             cssValue = cssValueBuilder.toString();
@@ -668,9 +668,9 @@ public class BorderWidth extends AbstractCssProperty<BorderWidth>
         } else if (borderRightWidthCssValue.equals(borderLeftWidthCssValue)) {
             final StringBuilder cssValueBuilder = new StringBuilder(
                     borderTopWidthCssValue);
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
             cssValueBuilder.append(borderRightWidthCssValue);
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
             cssValueBuilder.append(borderBottomWidthCssValue);
 
             cssValue = cssValueBuilder.toString();
@@ -682,11 +682,11 @@ public class BorderWidth extends AbstractCssProperty<BorderWidth>
         } else {
             final StringBuilder cssValueBuilder = new StringBuilder(
                     borderTopWidthCssValue);
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
             cssValueBuilder.append(borderRightWidthCssValue);
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
             cssValueBuilder.append(borderBottomWidthCssValue);
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
             cssValueBuilder.append(borderLeftWidthCssValue);
 
             cssValue = cssValueBuilder.toString();

@@ -95,7 +95,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         if (rebuild || isRebuild() || isModified()) {
             beforePrintStructure();
             tagBuilder.delete(0, tagBuilder.length());
-            // tagBuildzer.append(" ");
+            // tagBuildzer.append(' ');
             tagBuilder.append(attributeName);
             if (attributeValue != null) {
                 tagBuilder.append(new char[] { '=', '"' });
@@ -235,7 +235,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         if (rebuild || isRebuild() || isModified()) {
 
             beforePrintStructureCompressedByIndex();
-            // tagBuildzer.append(" ");
+            // tagBuildzer.append(' ');
 
             final int attributeNameIndex = AttributeRegistry.getAttributeNames()
                     .indexOf(attributeName);

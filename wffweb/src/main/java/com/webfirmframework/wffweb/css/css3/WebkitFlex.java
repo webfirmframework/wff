@@ -247,7 +247,7 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
         }
 
         cssValueBuilder.append(webkitFlexGrow.getCssValue());
-        cssValueBuilder.append(" ");
+        cssValueBuilder.append(' ');
 
         if (webkitFlexShrink == null) {
             if (this.webkitFlexShrink == null) {
@@ -263,7 +263,7 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
         }
 
         cssValueBuilder.append(webkitFlexShrink.getCssValue());
-        cssValueBuilder.append(" ");
+        cssValueBuilder.append(' ');
 
         if (webkitFlexBasis == null) {
             if (cssValueParts.length == 3) {
@@ -431,7 +431,7 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
         }
 
         cssValueBuilder.append(webkitFlexGrow.getCssValue());
-        cssValueBuilder.append(" ");
+        cssValueBuilder.append(' ');
 
         if (webkitFlexShrink == null) {
             webkitFlexShrink = new WebkitFlexShrink(1);
@@ -440,7 +440,7 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
         }
 
         cssValueBuilder.append(webkitFlexShrink.getCssValue());
-        cssValueBuilder.append(" ");
+        cssValueBuilder.append(' ');
 
         if (webkitFlexBasis == null) {
             webkitFlexBasis = new WebkitFlexBasis(0);
@@ -477,7 +477,7 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
         }
 
         cssValueBuilder.append(webkitFlexGrow.getCssValue());
-        cssValueBuilder.append(" ");
+        cssValueBuilder.append(' ');
 
         if (this.webkitFlexShrink != null) {
             this.webkitFlexShrink.setCssValue(webkitFlexShrink.getCssValue());
@@ -502,7 +502,7 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
         }
 
         cssValueBuilder.append(webkitFlexShrink.getCssValue());
-        cssValueBuilder.append(" ");
+        cssValueBuilder.append(' ');
 
         if (webkitFlexBasis == null) {
             webkitFlexBasis = new WebkitFlexBasis(0);
@@ -539,7 +539,7 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
         }
 
         cssValueBuilder.append(webkitFlexGrow.getCssValue());
-        cssValueBuilder.append(" ");
+        cssValueBuilder.append(' ');
 
         if (webkitFlexShrink == null) {
             webkitFlexShrink = new WebkitFlexShrink(1);
@@ -548,7 +548,7 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
         }
 
         cssValueBuilder.append(webkitFlexShrink.getCssValue());
-        cssValueBuilder.append(" ");
+        cssValueBuilder.append(' ');
 
         if (this.webkitFlexBasis != null) {
             this.webkitFlexBasis.setCssValue(webkitFlexBasis.getCssValue());
@@ -597,9 +597,9 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
             }
             final StringBuilder sb = new StringBuilder(
                     webkitFlexGrow.getCssValue());
-            sb.append(" ");
+            sb.append(' ');
             sb.append(webkitFlexShrink.getCssValue());
-            sb.append(" ");
+            sb.append(' ');
             sb.append(webkitFlexBasis.getCssValue());
             this.cssValue = sb.toString();
         } else if (stateChangedObject instanceof WebkitFlexShrink) {
@@ -615,9 +615,9 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
             }
             final StringBuilder sb = new StringBuilder(
                     webkitFlexGrow.getCssValue());
-            sb.append(" ");
+            sb.append(' ');
             sb.append(webkitFlexShrink.getCssValue());
-            sb.append(" ");
+            sb.append(' ');
             sb.append(webkitFlexBasis.getCssValue());
             this.cssValue = sb.toString();
 
@@ -635,9 +635,9 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
 
             final StringBuilder sb = new StringBuilder(
                     webkitFlexGrow.getCssValue());
-            sb.append(" ");
+            sb.append(' ');
             sb.append(webkitFlexShrink.getCssValue());
-            sb.append(" ");
+            sb.append(' ');
             sb.append(webkitFlexBasis.getCssValue());
             this.cssValue = sb.toString();
         }

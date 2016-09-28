@@ -130,7 +130,7 @@ public class BorderSpacing extends AbstractCssProperty<BorderSpacing> {
             final StringBuilder sb = new StringBuilder();
             sb.append(horizontalValue);
             sb.append(horizontalCssLengthUnit);
-            sb.append(" ");
+            sb.append(' ');
             sb.append(verticalValue);
             sb.append(verticalCssLengthUnit);
             cssValue = sb.toString();
@@ -165,7 +165,7 @@ public class BorderSpacing extends AbstractCssProperty<BorderSpacing> {
             final StringBuilder sb = new StringBuilder();
             sb.append(horizontalValue);
             sb.append(horizontalCssLengthUnit);
-            sb.append(" ");
+            sb.append(' ');
             sb.append(verticalValue);
             sb.append(verticalCssLengthUnit);
             cssValue = sb.toString();

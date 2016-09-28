@@ -245,7 +245,7 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
         }
 
         cssValueBuilder.append(flexGrow.getCssValue());
-        cssValueBuilder.append(" ");
+        cssValueBuilder.append(' ');
 
         if (flexShrink == null) {
             if (this.flexShrink == null) {
@@ -261,7 +261,7 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
         }
 
         cssValueBuilder.append(flexShrink.getCssValue());
-        cssValueBuilder.append(" ");
+        cssValueBuilder.append(' ');
 
         if (flexBasis == null) {
             if (cssValueParts.length == 3) {
@@ -426,7 +426,7 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
         }
 
         cssValueBuilder.append(flexGrow.getCssValue());
-        cssValueBuilder.append(" ");
+        cssValueBuilder.append(' ');
 
         if (flexShrink == null) {
             flexShrink = new FlexShrink(1);
@@ -435,7 +435,7 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
         }
 
         cssValueBuilder.append(flexShrink.getCssValue());
-        cssValueBuilder.append(" ");
+        cssValueBuilder.append(' ');
 
         if (flexBasis == null) {
             flexBasis = new FlexBasis(0);
@@ -471,7 +471,7 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
         }
 
         cssValueBuilder.append(flexGrow.getCssValue());
-        cssValueBuilder.append(" ");
+        cssValueBuilder.append(' ');
 
         if (this.flexShrink != null) {
             this.flexShrink.setCssValue(flexShrink.getCssValue());
@@ -496,7 +496,7 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
         }
 
         cssValueBuilder.append(flexShrink.getCssValue());
-        cssValueBuilder.append(" ");
+        cssValueBuilder.append(' ');
 
         if (flexBasis == null) {
             flexBasis = new FlexBasis(0);
@@ -532,7 +532,7 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
         }
 
         cssValueBuilder.append(flexGrow.getCssValue());
-        cssValueBuilder.append(" ");
+        cssValueBuilder.append(' ');
 
         if (flexShrink == null) {
             flexShrink = new FlexShrink(1);
@@ -541,7 +541,7 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
         }
 
         cssValueBuilder.append(flexShrink.getCssValue());
-        cssValueBuilder.append(" ");
+        cssValueBuilder.append(' ');
 
         if (this.flexBasis != null) {
             this.flexBasis.setCssValue(flexBasis.getCssValue());
@@ -589,9 +589,9 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
                         "initial/inherit cannot be set as flexGrow cssValue");
             }
             final StringBuilder sb = new StringBuilder(flexGrow.getCssValue());
-            sb.append(" ");
+            sb.append(' ');
             sb.append(flexShrink.getCssValue());
-            sb.append(" ");
+            sb.append(' ');
             sb.append(flexBasis.getCssValue());
             this.cssValue = sb.toString();
         } else if (stateChangedObject instanceof FlexShrink) {
@@ -606,9 +606,9 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
                         "initial/inherit cannot be set as flexShrink cssValue");
             }
             final StringBuilder sb = new StringBuilder(flexGrow.getCssValue());
-            sb.append(" ");
+            sb.append(' ');
             sb.append(flexShrink.getCssValue());
-            sb.append(" ");
+            sb.append(' ');
             sb.append(flexBasis.getCssValue());
             this.cssValue = sb.toString();
 
@@ -625,9 +625,9 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
             }
 
             final StringBuilder sb = new StringBuilder(flexGrow.getCssValue());
-            sb.append(" ");
+            sb.append(' ');
             sb.append(flexShrink.getCssValue());
-            sb.append(" ");
+            sb.append(' ');
             sb.append(flexBasis.getCssValue());
             this.cssValue = sb.toString();
         }

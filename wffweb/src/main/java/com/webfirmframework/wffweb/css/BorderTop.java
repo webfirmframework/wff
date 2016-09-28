@@ -223,19 +223,19 @@ public class BorderTop extends AbstractCssProperty<BorderTop>
         boolean invalid = true;
         if (borderTopWidth != null) {
             cssValueBuilder.append(borderTopWidth.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
             invalid = false;
         } else if (this.borderTopWidth != null) {
             this.borderTopWidth.setAlreadyInUse(false);
         }
         if (borderTopStyle != null) {
             cssValueBuilder.append(borderTopStyle.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
             invalid = false;
         }
         if (borderTopColor != null) {
             cssValueBuilder.append(borderTopColor.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
             invalid = false;
         } else if (this.borderTopColor != null) {
             this.borderTopColor.setAlreadyInUse(false);
@@ -347,17 +347,17 @@ public class BorderTop extends AbstractCssProperty<BorderTop>
             }
 
             cssValueBuilder.append(borderTopWidth.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
         }
 
         if (borderTopStyle != null) {
             cssValueBuilder.append(borderTopStyle.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
         }
 
         if (borderTopColor != null) {
             cssValueBuilder.append(borderTopColor.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
         }
 
         final String trimmedCssValue = cssValueBuilder.toString().trim();
@@ -395,17 +395,17 @@ public class BorderTop extends AbstractCssProperty<BorderTop>
 
         if (borderTopWidth != null) {
             cssValueBuilder.append(borderTopWidth.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
         }
 
         if (borderTopStyle != null) {
             cssValueBuilder.append(borderTopStyle.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
         }
 
         if (borderTopColor != null) {
             cssValueBuilder.append(borderTopColor.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
         }
 
         final String trimmedCssValue = cssValueBuilder.toString().trim();
@@ -425,12 +425,12 @@ public class BorderTop extends AbstractCssProperty<BorderTop>
 
         if (borderTopWidth != null) {
             cssValueBuilder.append(borderTopWidth.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
         }
 
         if (borderTopStyle != null) {
             cssValueBuilder.append(borderTopStyle.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
         }
 
         if (borderTopColor != null) {

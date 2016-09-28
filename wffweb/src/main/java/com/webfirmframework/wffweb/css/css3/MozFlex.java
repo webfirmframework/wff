@@ -249,7 +249,7 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
         }
 
         cssValueBuilder.append(mozFlexGrow.getCssValue());
-        cssValueBuilder.append(" ");
+        cssValueBuilder.append(' ');
 
         if (mozFlexShrink == null) {
             if (this.mozFlexShrink == null) {
@@ -265,7 +265,7 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
         }
 
         cssValueBuilder.append(mozFlexShrink.getCssValue());
-        cssValueBuilder.append(" ");
+        cssValueBuilder.append(' ');
 
         if (mozFlexBasis == null) {
             if (cssValueParts.length == 3) {
@@ -432,7 +432,7 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
         }
 
         cssValueBuilder.append(mozFlexGrow.getCssValue());
-        cssValueBuilder.append(" ");
+        cssValueBuilder.append(' ');
 
         if (mozFlexShrink == null) {
             mozFlexShrink = new MozFlexShrink(1);
@@ -441,7 +441,7 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
         }
 
         cssValueBuilder.append(mozFlexShrink.getCssValue());
-        cssValueBuilder.append(" ");
+        cssValueBuilder.append(' ');
 
         if (mozFlexBasis == null) {
             mozFlexBasis = new MozFlexBasis(0);
@@ -477,7 +477,7 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
         }
 
         cssValueBuilder.append(mozFlexGrow.getCssValue());
-        cssValueBuilder.append(" ");
+        cssValueBuilder.append(' ');
 
         if (this.mozFlexShrink != null) {
             this.mozFlexShrink.setCssValue(mozFlexShrink.getCssValue());
@@ -502,7 +502,7 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
         }
 
         cssValueBuilder.append(mozFlexShrink.getCssValue());
-        cssValueBuilder.append(" ");
+        cssValueBuilder.append(' ');
 
         if (mozFlexBasis == null) {
             mozFlexBasis = new MozFlexBasis(0);
@@ -538,7 +538,7 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
         }
 
         cssValueBuilder.append(mozFlexGrow.getCssValue());
-        cssValueBuilder.append(" ");
+        cssValueBuilder.append(' ');
 
         if (mozFlexShrink == null) {
             mozFlexShrink = new MozFlexShrink(1);
@@ -547,7 +547,7 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
         }
 
         cssValueBuilder.append(mozFlexShrink.getCssValue());
-        cssValueBuilder.append(" ");
+        cssValueBuilder.append(' ');
 
         if (this.mozFlexBasis != null) {
             this.mozFlexBasis.setCssValue(mozFlexBasis.getCssValue());
@@ -596,9 +596,9 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
             }
             final StringBuilder sb = new StringBuilder(
                     mozFlexGrow.getCssValue());
-            sb.append(" ");
+            sb.append(' ');
             sb.append(mozFlexShrink.getCssValue());
-            sb.append(" ");
+            sb.append(' ');
             sb.append(mozFlexBasis.getCssValue());
             this.cssValue = sb.toString();
         } else if (stateChangedObject instanceof MozFlexShrink) {
@@ -614,9 +614,9 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
             }
             final StringBuilder sb = new StringBuilder(
                     mozFlexGrow.getCssValue());
-            sb.append(" ");
+            sb.append(' ');
             sb.append(mozFlexShrink.getCssValue());
-            sb.append(" ");
+            sb.append(' ');
             sb.append(mozFlexBasis.getCssValue());
             this.cssValue = sb.toString();
 
@@ -634,9 +634,9 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
 
             final StringBuilder sb = new StringBuilder(
                     mozFlexGrow.getCssValue());
-            sb.append(" ");
+            sb.append(' ');
             sb.append(mozFlexShrink.getCssValue());
-            sb.append(" ");
+            sb.append(' ');
             sb.append(mozFlexBasis.getCssValue());
             this.cssValue = sb.toString();
         }

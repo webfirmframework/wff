@@ -670,7 +670,7 @@ public class BorderImageOutset extends AbstractCssProperty<BorderImageOutset> {
                 }
             }
 
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
 
             if (right != null) {
                 cssValueBuilder.append(right);
@@ -691,7 +691,7 @@ public class BorderImageOutset extends AbstractCssProperty<BorderImageOutset> {
                 }
             }
 
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
 
             if (right != null) {
                 cssValueBuilder.append(right);
@@ -700,7 +700,7 @@ public class BorderImageOutset extends AbstractCssProperty<BorderImageOutset> {
                 }
             }
 
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
 
             if (bottom != null) {
                 cssValueBuilder.append(bottom);
@@ -720,7 +720,7 @@ public class BorderImageOutset extends AbstractCssProperty<BorderImageOutset> {
                 }
             }
 
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
 
             if (right != null) {
                 cssValueBuilder.append(right);
@@ -729,7 +729,7 @@ public class BorderImageOutset extends AbstractCssProperty<BorderImageOutset> {
                 }
             }
 
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
 
             if (bottom != null) {
                 cssValueBuilder.append(bottom);
@@ -738,7 +738,7 @@ public class BorderImageOutset extends AbstractCssProperty<BorderImageOutset> {
                 }
             }
 
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
 
             if (left != null) {
                 cssValueBuilder.append(left);

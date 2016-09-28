@@ -683,7 +683,7 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
                 cssValueBuilder.append(AUTO);
             }
 
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
 
             if (right != null) {
                 cssValueBuilder.append(right);
@@ -708,7 +708,7 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
                 cssValueBuilder.append(AUTO);
             }
 
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
 
             if (right != null) {
                 cssValueBuilder.append(right);
@@ -719,7 +719,7 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
                 cssValueBuilder.append(AUTO);
             }
 
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
 
             if (bottom != null) {
                 cssValueBuilder.append(bottom);
@@ -743,7 +743,7 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
                 cssValueBuilder.append(AUTO);
             }
 
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
 
             if (right != null) {
                 cssValueBuilder.append(right);
@@ -754,7 +754,7 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
                 cssValueBuilder.append(AUTO);
             }
 
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
 
             if (bottom != null) {
                 cssValueBuilder.append(bottom);
@@ -765,7 +765,7 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
                 cssValueBuilder.append(AUTO);
             }
 
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
 
             if (left != null) {
                 cssValueBuilder.append(left);

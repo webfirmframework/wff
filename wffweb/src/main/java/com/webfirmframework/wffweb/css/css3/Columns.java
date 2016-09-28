@@ -211,12 +211,12 @@ public class Columns extends AbstractCssProperty<Columns>
         boolean invalid = true;
         if (columnWidth != null) {
             cssValueBuilder.append(columnWidth.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
             invalid = false;
         }
         if (columnCount != null) {
             cssValueBuilder.append(columnCount.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
             invalid = false;
         }
         if (invalid) {
@@ -315,7 +315,7 @@ public class Columns extends AbstractCssProperty<Columns>
                         "columnWidth cannot have initial/inherit as its cssValue");
             }
             cssValueBuilder.append(columnWidthCssValue);
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
         }
 
         if (columnCount != null) {
@@ -360,7 +360,7 @@ public class Columns extends AbstractCssProperty<Columns>
         if (columnWidth != null) {
             final String columnWidthCssValue = columnWidth.getCssValue();
             cssValueBuilder.append(columnWidthCssValue);
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
         }
 
         if (columnCount != null) {

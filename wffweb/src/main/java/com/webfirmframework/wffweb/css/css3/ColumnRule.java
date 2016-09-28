@@ -197,19 +197,19 @@ public class ColumnRule extends AbstractCssProperty<ColumnRule>
             boolean invalid = true;
             if (columnRuleWidth != null) {
                 cssValueBuilder.append(columnRuleWidth.getCssValue());
-                cssValueBuilder.append(" ");
+                cssValueBuilder.append(' ');
                 invalid = false;
             } else if (this.columnRuleWidth != null) {
                 this.columnRuleWidth.setAlreadyInUse(false);
             }
             if (columnRuleStyle != null) {
                 cssValueBuilder.append(columnRuleStyle.getCssValue());
-                cssValueBuilder.append(" ");
+                cssValueBuilder.append(' ');
                 invalid = false;
             }
             if (columnRuleColor != null) {
                 cssValueBuilder.append(columnRuleColor.getCssValue());
-                cssValueBuilder.append(" ");
+                cssValueBuilder.append(' ');
                 invalid = false;
             } else if (this.columnRuleColor != null) {
                 this.columnRuleColor.setAlreadyInUse(false);
@@ -282,12 +282,12 @@ public class ColumnRule extends AbstractCssProperty<ColumnRule>
 
         if (columnRuleWidth != null) {
             cssValueBuilder.append(columnRuleWidth.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
         }
 
         if (columnRuleStyle != null) {
             cssValueBuilder.append(columnRuleStyle.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
         }
 
         if (columnRuleColor != null) {
@@ -338,12 +338,12 @@ public class ColumnRule extends AbstractCssProperty<ColumnRule>
 
         if (columnRuleWidth != null) {
             cssValueBuilder.append(columnRuleWidth.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
         }
 
         if (columnRuleStyle != null) {
             cssValueBuilder.append(columnRuleStyle.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
         }
 
         if (columnRuleColor != null) {
@@ -385,12 +385,12 @@ public class ColumnRule extends AbstractCssProperty<ColumnRule>
 
         if (columnRuleWidth != null) {
             cssValueBuilder.append(columnRuleWidth.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
         }
 
         if (columnRuleStyle != null) {
             cssValueBuilder.append(columnRuleStyle.getCssValue());
-            cssValueBuilder.append(" ");
+            cssValueBuilder.append(' ');
         }
 
         if (columnRuleColor != null) {

@@ -214,7 +214,7 @@ public class BackgroundImage extends AbstractCssProperty<BackgroundImage>
                     if (i < cssValueParts.length - 1) {
                         cssValueBuilder.append(", ");
                     } else {
-                        cssValueBuilder.append(" ");
+                        cssValueBuilder.append(' ');
                     }
                 }
             } else {
@@ -241,7 +241,7 @@ public class BackgroundImage extends AbstractCssProperty<BackgroundImage>
                     if (i < cssValueParts.length - 1) {
                         cssValueBuilder.append(", ");
                     } else {
-                        cssValueBuilder.append(" ");
+                        cssValueBuilder.append(' ');
                     }
 
                 }
@@ -293,7 +293,7 @@ public class BackgroundImage extends AbstractCssProperty<BackgroundImage>
             if (i < imageUrls.length - 1) {
                 sb.append(", ");
             } else {
-                sb.append(" ");
+                sb.append(' ');
             }
         }
         setCssValue(StringBuilderUtil.getTrimmedString(sb));
@@ -344,7 +344,7 @@ public class BackgroundImage extends AbstractCssProperty<BackgroundImage>
             if (i < urlCss3ValuesLength - 1) {
                 cssValueBuilder.append(", ");
             } else {
-                cssValueBuilder.append(" ");
+                cssValueBuilder.append(' ');
             }
             urlCss3Value.setAlreadyInUse(true);
             urlCss3Value.setStateChangeInformer(this);
