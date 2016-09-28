@@ -2,6 +2,7 @@ package com.webfirmframework.wffweb.tag.html.stylesandsemantics;
 
 import java.util.logging.Logger;
 
+import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
@@ -37,6 +38,13 @@ public class Div extends AbstractHtml {
      */
     public Div(final AbstractHtml base, final AbstractAttribute... attributes) {
         super(TagNameConstants.DIV, base, attributes);
+        if (WffConfiguration.isDirectionWarningOn()) {
+            warnForUnsupportedAttributes(attributes);
+        }
+    }
+
+    private void warnForUnsupportedAttributes(
+            final AbstractAttribute... attributes) {
         for (final AbstractAttribute abstractAttribute : attributes) {
             if (!(abstractAttribute != null
                     && (abstractAttribute instanceof DivAttributable
