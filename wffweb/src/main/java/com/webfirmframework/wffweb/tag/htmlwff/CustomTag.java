@@ -55,11 +55,11 @@ public class CustomTag extends AbstractHtml {
 
     private static void warnForUnsupportedAttributes(
             final AbstractAttribute... attributes) {
-        for (final AbstractAttribute abstractAttribute : attributes) {
-            if (!(abstractAttribute != null
-                    && (abstractAttribute instanceof BaseAttributable
-                            || abstractAttribute instanceof GlobalAttributable))) {
-                if (LOGGER.isLoggable(Level.WARNING)) {
+        if (LOGGER.isLoggable(Level.WARNING)) {
+            for (final AbstractAttribute abstractAttribute : attributes) {
+                if (!(abstractAttribute != null
+                        && (abstractAttribute instanceof BaseAttributable
+                                || abstractAttribute instanceof GlobalAttributable))) {
                     LOGGER.warning(abstractAttribute
                             + " is not an instance of BaseAttribute");
                 }
