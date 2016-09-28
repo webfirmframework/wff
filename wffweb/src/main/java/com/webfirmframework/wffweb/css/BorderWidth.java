@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.css;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.InvalidValueException;
@@ -477,12 +478,16 @@ public class BorderWidth extends AbstractCssProperty<BorderWidth>
                     if (this.borderTopWidth != null) {
                         borderTopWidthTemp = this.borderTopWidth
                                 .setCssValue(borderTopWidth.getCssValue());
-                        LOGGER.warning(
-                                "the given borderTopWidth is already used by another object so the existing object is used");
+                        if (LOGGER.isLoggable(Level.WARNING)) {
+                            LOGGER.warning(
+                                    "the given borderTopWidth is already used by another object so the existing object is used");
+                        }
                     } else {
                         borderTopWidthTemp = borderTopWidth.clone();
-                        LOGGER.warning(
-                                "the given borderTopWidth is already used by another object so its clone is assigned");
+                        if (LOGGER.isLoggable(Level.WARNING)) {
+                            LOGGER.warning(
+                                    "the given borderTopWidth is already used by another object so its clone is assigned");
+                        }
                     }
                 } else {
                     borderTopWidthTemp = borderTopWidth;
@@ -493,12 +498,16 @@ public class BorderWidth extends AbstractCssProperty<BorderWidth>
                     if (this.borderRightWidth != null) {
                         borderRightWidthTemp = this.borderRightWidth
                                 .setCssValue(borderTopWidth.getCssValue());
-                        LOGGER.warning(
-                                "the given borderRightWidth is already used by another object so the existing object is used");
+                        if (LOGGER.isLoggable(Level.WARNING)) {
+                            LOGGER.warning(
+                                    "the given borderRightWidth is already used by another object so the existing object is used");
+                        }
                     } else {
                         borderRightWidthTemp = borderRightWidth.clone();
-                        LOGGER.warning(
-                                "the given borderRightWidth is already used by another object so its clone is assigned");
+                        if (LOGGER.isLoggable(Level.WARNING)) {
+                            LOGGER.warning(
+                                    "the given borderRightWidth is already used by another object so its clone is assigned");
+                        }
                     }
 
                 } else {
@@ -510,12 +519,16 @@ public class BorderWidth extends AbstractCssProperty<BorderWidth>
                     if (this.borderBottomWidth != null) {
                         borderBottomWidthTemp = this.borderBottomWidth
                                 .setCssValue(borderTopWidth.getCssValue());
-                        LOGGER.warning(
-                                "the given borderBottomWidth is already used by another object so the existing object is used");
+                        if (LOGGER.isLoggable(Level.WARNING)) {
+                            LOGGER.warning(
+                                    "the given borderBottomWidth is already used by another object so the existing object is used");
+                        }
                     } else {
                         borderBottomWidthTemp = borderBottomWidth.clone();
-                        LOGGER.warning(
-                                "the given borderBottomWidth is already used by another object so its clone is assigned");
+                        if (LOGGER.isLoggable(Level.WARNING)) {
+                            LOGGER.warning(
+                                    "the given borderBottomWidth is already used by another object so its clone is assigned");
+                        }
                     }
 
                 } else {
@@ -527,12 +540,16 @@ public class BorderWidth extends AbstractCssProperty<BorderWidth>
                     if (this.borderLeftWidth != null) {
                         borderLeftWidthTemp = this.borderLeftWidth
                                 .setCssValue(borderTopWidth.getCssValue());
-                        LOGGER.warning(
-                                "the given borderLeftWidth is already used by another object so the existing object is used");
+                        if (LOGGER.isLoggable(Level.WARNING)) {
+                            LOGGER.warning(
+                                    "the given borderLeftWidth is already used by another object so the existing object is used");
+                        }
                     } else {
                         borderLeftWidthTemp = borderLeftWidth.clone();
-                        LOGGER.warning(
-                                "the given borderLeftWidth is already used by another object so its clone is assigned");
+                        if (LOGGER.isLoggable(Level.WARNING)) {
+                            LOGGER.warning(
+                                    "the given borderLeftWidth is already used by another object so its clone is assigned");
+                        }
                     }
 
                 } else {

@@ -17,6 +17,7 @@ package com.webfirmframework.wffweb.css;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.InvalidValueException;
@@ -440,12 +441,16 @@ public class Margin extends AbstractCssProperty<Margin>
                     if (this.marginTop != null) {
                         marginTopTemp = this.marginTop
                                 .setCssValue(marginTop.getCssValue());
-                        LOGGER.warning(
-                                "the given marginTop is already used by another object so the existing object is used");
+                        if (LOGGER.isLoggable(Level.WARNING)) {
+                            LOGGER.warning(
+                                    "the given marginTop is already used by another object so the existing object is used");
+                        }
                     } else {
                         marginTopTemp = marginTop.clone();
-                        LOGGER.warning(
-                                "the given marginTop is already used by another object so its clone is assigned");
+                        if (LOGGER.isLoggable(Level.WARNING)) {
+                            LOGGER.warning(
+                                    "the given marginTop is already used by another object so its clone is assigned");
+                        }
                     }
                 } else {
                     marginTopTemp = marginTop;
@@ -456,12 +461,16 @@ public class Margin extends AbstractCssProperty<Margin>
                     if (this.marginRight != null) {
                         marginRightTemp = this.marginRight
                                 .setCssValue(marginTop.getCssValue());
-                        LOGGER.warning(
-                                "the given marginRight is already used by another object so the existing object is used");
+                        if (LOGGER.isLoggable(Level.WARNING)) {
+                            LOGGER.warning(
+                                    "the given marginRight is already used by another object so the existing object is used");
+                        }
                     } else {
                         marginRightTemp = marginRight.clone();
-                        LOGGER.warning(
-                                "the given marginRight is already used by another object so its clone is assigned");
+                        if (LOGGER.isLoggable(Level.WARNING)) {
+                            LOGGER.warning(
+                                    "the given marginRight is already used by another object so its clone is assigned");
+                        }
                     }
 
                 } else {
@@ -473,12 +482,16 @@ public class Margin extends AbstractCssProperty<Margin>
                     if (this.marginBottom != null) {
                         marginBottomTemp = this.marginBottom
                                 .setCssValue(marginTop.getCssValue());
-                        LOGGER.warning(
-                                "the given marginBottom is already used by another object so the existing object is used");
+                        if (LOGGER.isLoggable(Level.WARNING)) {
+                            LOGGER.warning(
+                                    "the given marginBottom is already used by another object so the existing object is used");
+                        }
                     } else {
                         marginBottomTemp = marginBottom.clone();
-                        LOGGER.warning(
-                                "the given marginBottom is already used by another object so its clone is assigned");
+                        if (LOGGER.isLoggable(Level.WARNING)) {
+                            LOGGER.warning(
+                                    "the given marginBottom is already used by another object so its clone is assigned");
+                        }
                     }
 
                 } else {
@@ -490,12 +503,16 @@ public class Margin extends AbstractCssProperty<Margin>
                     if (this.marginLeft != null) {
                         marginLeftTemp = this.marginLeft
                                 .setCssValue(marginTop.getCssValue());
-                        LOGGER.warning(
-                                "the given marginLeft is already used by another object so the existing object is used");
+                        if (LOGGER.isLoggable(Level.WARNING)) {
+                            LOGGER.warning(
+                                    "the given marginLeft is already used by another object so the existing object is used");
+                        }
                     } else {
                         marginLeftTemp = marginLeft.clone();
-                        LOGGER.warning(
-                                "the given marginLeft is already used by another object so its clone is assigned");
+                        if (LOGGER.isLoggable(Level.WARNING)) {
+                            LOGGER.warning(
+                                    "the given marginLeft is already used by another object so its clone is assigned");
+                        }
                     }
 
                 } else {

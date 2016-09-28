@@ -19,6 +19,7 @@ package com.webfirmframework.wffweb.css;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.InvalidValueException;
@@ -399,9 +400,11 @@ public class BorderLeftColor extends AbstractCssProperty<BorderLeftColor>
                             .deepClone(rgbCssValue);
                     this.rgbCssValue.setAlreadyInUse(false);
                     this.rgbCssValue = rgbCssValueClone;
-                    LOGGER.warning("cloned rgbCssValue " + rgbCssValue
-                            + "(hashcode: " + rgbCssValue.hashCode()
-                            + ") as it is already used by another object");
+                    if (LOGGER.isLoggable(Level.WARNING)) {
+                        LOGGER.warning("cloned rgbCssValue " + rgbCssValue
+                                + "(hashcode: " + rgbCssValue.hashCode()
+                                + ") as it is already used by another object");
+                    }
                 } catch (final CloneNotSupportedException e) {
                     throw new InvalidValueException(e.toString());
                 }
@@ -413,9 +416,11 @@ public class BorderLeftColor extends AbstractCssProperty<BorderLeftColor>
             if (rgbCssValue.isAlreadyInUse()) {
                 try {
                     this.rgbCssValue = CloneUtil.deepClone(rgbCssValue);
-                    LOGGER.warning("cloned rgbCssValue " + rgbCssValue
-                            + "(hashcode: " + rgbCssValue.hashCode()
-                            + ") as it is already used by another object");
+                    if (LOGGER.isLoggable(Level.WARNING)) {
+                        LOGGER.warning("cloned rgbCssValue " + rgbCssValue
+                                + "(hashcode: " + rgbCssValue.hashCode()
+                                + ") as it is already used by another object");
+                    }
                 } catch (final CloneNotSupportedException e) {
                     throw new InvalidValueException(e.toString());
                 }
@@ -450,9 +455,11 @@ public class BorderLeftColor extends AbstractCssProperty<BorderLeftColor>
                             .deepClone(rgbaCssValue);
                     this.rgbaCssValue.setAlreadyInUse(false);
                     this.rgbaCssValue = rgbaCssValueClone;
-                    LOGGER.warning("cloned rgbaCssValue " + rgbaCssValue
-                            + "(hashcode: " + rgbaCssValue.hashCode()
-                            + ") as it is already used by another object");
+                    if (LOGGER.isLoggable(Level.WARNING)) {
+                        LOGGER.warning("cloned rgbaCssValue " + rgbaCssValue
+                                + "(hashcode: " + rgbaCssValue.hashCode()
+                                + ") as it is already used by another object");
+                    }
                 } catch (final CloneNotSupportedException e) {
                     throw new InvalidValueException(e.toString());
                 }
@@ -464,9 +471,11 @@ public class BorderLeftColor extends AbstractCssProperty<BorderLeftColor>
             if (rgbaCssValue.isAlreadyInUse()) {
                 try {
                     this.rgbaCssValue = CloneUtil.deepClone(rgbaCssValue);
-                    LOGGER.warning("cloned rgbaCssValue " + rgbaCssValue
-                            + "(hashcode: " + rgbaCssValue.hashCode()
-                            + ") as it is already used by another object");
+                    if (LOGGER.isLoggable(Level.WARNING)) {
+                        LOGGER.warning("cloned rgbaCssValue " + rgbaCssValue
+                                + "(hashcode: " + rgbaCssValue.hashCode()
+                                + ") as it is already used by another object");
+                    }
                 } catch (final CloneNotSupportedException e) {
                     throw new InvalidValueException(e.toString());
                 }
@@ -501,9 +510,11 @@ public class BorderLeftColor extends AbstractCssProperty<BorderLeftColor>
                             .deepClone(hslCssValue);
                     this.hslCssValue.setAlreadyInUse(false);
                     this.hslCssValue = hslCssValueClone;
-                    LOGGER.warning("cloned hslCssValue " + hslCssValue
-                            + "(hashcode: " + hslCssValue.hashCode()
-                            + ") as it is already used by another object");
+                    if (LOGGER.isLoggable(Level.WARNING)) {
+                        LOGGER.warning("cloned hslCssValue " + hslCssValue
+                                + "(hashcode: " + hslCssValue.hashCode()
+                                + ") as it is already used by another object");
+                    }
                 } catch (final CloneNotSupportedException e) {
                     throw new InvalidValueException(e.toString());
                 }
@@ -515,9 +526,11 @@ public class BorderLeftColor extends AbstractCssProperty<BorderLeftColor>
             if (hslCssValue.isAlreadyInUse()) {
                 try {
                     this.hslCssValue = CloneUtil.deepClone(hslCssValue);
-                    LOGGER.warning("cloned hslCssValue " + hslCssValue
-                            + "(hashcode: " + hslCssValue.hashCode()
-                            + ") as it is already used by another object");
+                    if (LOGGER.isLoggable(Level.WARNING)) {
+                        LOGGER.warning("cloned hslCssValue " + hslCssValue
+                                + "(hashcode: " + hslCssValue.hashCode()
+                                + ") as it is already used by another object");
+                    }
                 } catch (final CloneNotSupportedException e) {
                     throw new InvalidValueException(e.toString());
                 }
@@ -552,9 +565,11 @@ public class BorderLeftColor extends AbstractCssProperty<BorderLeftColor>
                             .deepClone(hslaCssValue);
                     this.hslaCssValue.setAlreadyInUse(false);
                     this.hslaCssValue = hslaCssValueClone;
-                    LOGGER.warning("cloned hslaCssValue " + hslaCssValue
-                            + "(hashcode: " + hslaCssValue.hashCode()
-                            + ") as it is already used by another object");
+                    if (LOGGER.isLoggable(Level.WARNING)) {
+                        LOGGER.warning("cloned hslaCssValue " + hslaCssValue
+                                + "(hashcode: " + hslaCssValue.hashCode()
+                                + ") as it is already used by another object");
+                    }
                 } catch (final CloneNotSupportedException e) {
                     throw new InvalidValueException(e.toString());
                 }
@@ -566,9 +581,11 @@ public class BorderLeftColor extends AbstractCssProperty<BorderLeftColor>
             if (hslaCssValue.isAlreadyInUse()) {
                 try {
                     this.hslaCssValue = CloneUtil.deepClone(hslaCssValue);
-                    LOGGER.warning("cloned hslaCssValue " + hslaCssValue
-                            + "(hashcode: " + hslaCssValue.hashCode()
-                            + ") as it is already used by another object");
+                    if (LOGGER.isLoggable(Level.WARNING)) {
+                        LOGGER.warning("cloned hslaCssValue " + hslaCssValue
+                                + "(hashcode: " + hslaCssValue.hashCode()
+                                + ") as it is already used by another object");
+                    }
                 } catch (final CloneNotSupportedException e) {
                     throw new InvalidValueException(e.toString());
                 }

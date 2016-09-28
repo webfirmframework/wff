@@ -19,6 +19,7 @@ package com.webfirmframework.wffweb.css.css3;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.InvalidValueException;
@@ -409,15 +410,19 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
 
         if (this.webkitFlexGrow != null) {
             this.webkitFlexGrow.setCssValue(webkitFlexGrow.getCssValue());
-            LOGGER.warning(
-                    "copied the cssValue from the given webkitFlexGrow to the existing webkitFlexGrow object.");
+            if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.warning(
+                        "copied the cssValue from the given webkitFlexGrow to the existing webkitFlexGrow object.");
+            }
         } else {
             if (webkitFlexGrow.isAlreadyInUse()) {
                 this.webkitFlexGrow = new WebkitFlexGrow(webkitFlexGrow);
                 this.webkitFlexGrow.setAlreadyInUse(true);
                 this.webkitFlexGrow.setStateChangeInformer(this);
-                LOGGER.warning(
-                        "created a new object of WebkitFlexGrow as the given webkitFlexGrow object is already used by another object");
+                if (LOGGER.isLoggable(Level.WARNING)) {
+                    LOGGER.warning(
+                            "created a new object of WebkitFlexGrow as the given webkitFlexGrow object is already used by another object");
+                }
             } else {
                 this.webkitFlexGrow = webkitFlexGrow;
                 this.webkitFlexGrow.setAlreadyInUse(true);
@@ -476,15 +481,19 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
 
         if (this.webkitFlexShrink != null) {
             this.webkitFlexShrink.setCssValue(webkitFlexShrink.getCssValue());
-            LOGGER.warning(
-                    "copied the cssValue from the given webkitFlexShrink to the existing webkitFlexShrink object.");
+            if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.warning(
+                        "copied the cssValue from the given webkitFlexShrink to the existing webkitFlexShrink object.");
+            }
         } else {
             if (webkitFlexShrink.isAlreadyInUse()) {
                 this.webkitFlexShrink = new WebkitFlexShrink(webkitFlexShrink);
                 this.webkitFlexShrink.setAlreadyInUse(true);
                 this.webkitFlexShrink.setStateChangeInformer(this);
-                LOGGER.warning(
-                        "created a new object of WebkitFlexShrink as the given webkitFlexShrink object is already used by another object");
+                if (LOGGER.isLoggable(Level.WARNING)) {
+                    LOGGER.warning(
+                            "created a new object of WebkitFlexShrink as the given webkitFlexShrink object is already used by another object");
+                }
             } else {
                 this.webkitFlexShrink = webkitFlexShrink;
                 this.webkitFlexShrink.setAlreadyInUse(true);
@@ -543,15 +552,19 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
 
         if (this.webkitFlexBasis != null) {
             this.webkitFlexBasis.setCssValue(webkitFlexBasis.getCssValue());
-            LOGGER.warning(
-                    "copied the cssValue from the given webkitFlexBasis to the existing webkitFlexBasis object.");
+            if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.warning(
+                        "copied the cssValue from the given webkitFlexBasis to the existing webkitFlexBasis object.");
+            }
         } else {
             if (webkitFlexBasis.isAlreadyInUse()) {
                 this.webkitFlexBasis = new WebkitFlexBasis(webkitFlexBasis);
                 this.webkitFlexBasis.setAlreadyInUse(true);
                 this.webkitFlexBasis.setStateChangeInformer(this);
-                LOGGER.warning(
-                        "created a new object of WebkitFlexBasis as the given webkitFlexBasis object is already used by another object");
+                if (LOGGER.isLoggable(Level.WARNING)) {
+                    LOGGER.warning(
+                            "created a new object of WebkitFlexBasis as the given webkitFlexBasis object is already used by another object");
+                }
             } else {
                 this.webkitFlexBasis = webkitFlexBasis;
                 this.webkitFlexBasis.setAlreadyInUse(true);

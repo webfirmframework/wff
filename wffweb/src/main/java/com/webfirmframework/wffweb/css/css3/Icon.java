@@ -326,9 +326,11 @@ public class Icon extends AbstractCssProperty<Icon>
                                     urlCss3Value, this.urlCss3Values);
                     if (!Objects.equals(clonedUrlCss3Value, urlCss3Value)) {
                         urlCss3Value = clonedUrlCss3Value;
-                        LOGGER.warning("cloned urlCss3Value " + urlCss3Value
-                                + "(hashcode: " + urlCss3Value.hashCode()
-                                + ") as it is already used by another object");
+                        if (LOGGER.isLoggable(Level.WARNING)) {
+                            LOGGER.warning("cloned urlCss3Value " + urlCss3Value
+                                    + "(hashcode: " + urlCss3Value.hashCode()
+                                    + ") as it is already used by another object");
+                        }
                     }
                 } catch (final CloneNotSupportedException e) {
                     if (LOGGER.isLoggable(Level.SEVERE)) {

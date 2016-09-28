@@ -19,6 +19,7 @@ package com.webfirmframework.wffweb.css;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.InvalidValueException;
@@ -369,8 +370,10 @@ public class BorderBottom extends AbstractCssProperty<BorderBottom>
 
         if (borderBottomWidth != null && borderBottomWidth.isAlreadyInUse()
                 && !Objects.equals(this.borderBottomWidth, borderBottomWidth)) {
-            LOGGER.warning(
-                    "the given borderBottomWidth is already used by another object so a new object or the previous object (if it exists) of BorderBottomWidth will be used");
+            if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.warning(
+                        "the given borderBottomWidth is already used by another object so a new object or the previous object (if it exists) of BorderBottomWidth will be used");
+            }
             return setCssValue(cssValue);
         }
 
@@ -454,8 +457,10 @@ public class BorderBottom extends AbstractCssProperty<BorderBottom>
 
         if (borderBottomColor != null && borderBottomColor.isAlreadyInUse()
                 && !Objects.equals(this.borderBottomColor, borderBottomColor)) {
-            LOGGER.warning(
-                    "the given borderBottomColor is already used by another object so a new object or the previous object (if it exists) of BorderBottomColor will be used");
+            if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.warning(
+                        "the given borderBottomColor is already used by another object so a new object or the previous object (if it exists) of BorderBottomColor will be used");
+            }
             return setCssValue(cssValue);
         }
 

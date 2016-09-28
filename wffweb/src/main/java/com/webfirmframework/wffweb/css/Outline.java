@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.css;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.InvalidValueException;
@@ -368,8 +369,10 @@ public class Outline extends AbstractCssProperty<Outline>
 
         if (outlineWidth != null && outlineWidth.isAlreadyInUse()
                 && this.outlineWidth != outlineWidth) {
-            LOGGER.warning(
-                    "the given outlineWidth is already used by another object so a new object or the previous object (if it exists) of OutlineWidth will be used");
+            if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.warning(
+                        "the given outlineWidth is already used by another object so a new object or the previous object (if it exists) of OutlineWidth will be used");
+            }
             return setCssValue(cssValue);
         }
 
@@ -447,8 +450,10 @@ public class Outline extends AbstractCssProperty<Outline>
 
         if (outlineColor != null && outlineColor.isAlreadyInUse()
                 && this.outlineColor != outlineColor) {
-            LOGGER.warning(
-                    "the given outlineColor is already used by another object so a new object or the previous object (if it exists) of OutlineColor will be used");
+            if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.warning(
+                        "the given outlineColor is already used by another object so a new object or the previous object (if it exists) of OutlineColor will be used");
+            }
             return setCssValue(cssValue);
         }
 

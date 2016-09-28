@@ -19,6 +19,7 @@ package com.webfirmframework.wffweb.css.css3;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.InvalidValueException;
@@ -410,15 +411,19 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
 
         if (this.mozFlexGrow != null) {
             this.mozFlexGrow.setCssValue(mozFlexGrow.getCssValue());
-            LOGGER.warning(
-                    "copied the cssValue from the given mozFlexGrow to the existing mozFlexGrow object.");
+            if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.warning(
+                        "copied the cssValue from the given mozFlexGrow to the existing mozFlexGrow object.");
+            }
         } else {
             if (mozFlexGrow.isAlreadyInUse()) {
                 this.mozFlexGrow = new MozFlexGrow(mozFlexGrow);
                 this.mozFlexGrow.setAlreadyInUse(true);
                 this.mozFlexGrow.setStateChangeInformer(this);
-                LOGGER.warning(
-                        "created a new object of MozFlexGrow as the given mozFlexGrow object is already used by another object");
+                if (LOGGER.isLoggable(Level.WARNING)) {
+                    LOGGER.warning(
+                            "created a new object of MozFlexGrow as the given mozFlexGrow object is already used by another object");
+                }
             } else {
                 this.mozFlexGrow = mozFlexGrow;
                 this.mozFlexGrow.setAlreadyInUse(true);
@@ -476,15 +481,19 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
 
         if (this.mozFlexShrink != null) {
             this.mozFlexShrink.setCssValue(mozFlexShrink.getCssValue());
-            LOGGER.warning(
-                    "copied the cssValue from the given mozFlexShrink to the existing mozFlexShrink object.");
+            if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.warning(
+                        "copied the cssValue from the given mozFlexShrink to the existing mozFlexShrink object.");
+            }
         } else {
             if (mozFlexShrink.isAlreadyInUse()) {
                 this.mozFlexShrink = new MozFlexShrink(mozFlexShrink);
                 this.mozFlexShrink.setAlreadyInUse(true);
                 this.mozFlexShrink.setStateChangeInformer(this);
-                LOGGER.warning(
-                        "created a new object of MozFlexShrink as the given mozFlexShrink object is already used by another object");
+                if (LOGGER.isLoggable(Level.WARNING)) {
+                    LOGGER.warning(
+                            "created a new object of MozFlexShrink as the given mozFlexShrink object is already used by another object");
+                }
             } else {
                 this.mozFlexShrink = mozFlexShrink;
                 this.mozFlexShrink.setAlreadyInUse(true);
@@ -542,15 +551,19 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
 
         if (this.mozFlexBasis != null) {
             this.mozFlexBasis.setCssValue(mozFlexBasis.getCssValue());
-            LOGGER.warning(
-                    "copied the cssValue from the given mozFlexBasis to the existing mozFlexBasis object.");
+            if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.warning(
+                        "copied the cssValue from the given mozFlexBasis to the existing mozFlexBasis object.");
+            }
         } else {
             if (mozFlexBasis.isAlreadyInUse()) {
                 this.mozFlexBasis = new MozFlexBasis(mozFlexBasis);
                 this.mozFlexBasis.setAlreadyInUse(true);
                 this.mozFlexBasis.setStateChangeInformer(this);
-                LOGGER.warning(
-                        "created a new object of MozFlexBasis as the given mozFlexBasis object is already used by another object");
+                if (LOGGER.isLoggable(Level.WARNING)) {
+                    LOGGER.warning(
+                            "created a new object of MozFlexBasis as the given mozFlexBasis object is already used by another object");
+                }
             } else {
                 this.mozFlexBasis = mozFlexBasis;
                 this.mozFlexBasis.setAlreadyInUse(true);

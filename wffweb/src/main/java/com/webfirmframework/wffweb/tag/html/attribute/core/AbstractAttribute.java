@@ -15,6 +15,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.WeakHashMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.tag.core.AbstractTagBase;
@@ -246,8 +247,10 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 compressedByIndexBytes
                         .write(attributeName.concat("=").getBytes(charset));
 
-                LOGGER.warning(attributeName
-                        + " is not indexed, please register it with AttributeRegistrar");
+                if (LOGGER.isLoggable(Level.WARNING)) {
+                    LOGGER.warning(attributeName
+                            + " is not indexed, please register it with AttributeRegistrar");
+                }
             } else {
 
                 final byte[] optimizedBytesFromInt = WffBinaryMessageUtil

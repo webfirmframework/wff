@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.css;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.InvalidValueException;
@@ -717,8 +718,10 @@ public class Font extends AbstractCssProperty<Font>
 
         if (fontSize != null && fontSize.isAlreadyInUse()
                 && this.fontSize != fontSize) {
-            LOGGER.warning(
-                    "the given fontSize is already used by another object so a new object or the previous object (if it exists) of FontSize will be used");
+            if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.warning(
+                        "the given fontSize is already used by another object so a new object or the previous object (if it exists) of FontSize will be used");
+            }
             return setCssValue(cssValue);
         }
 
@@ -791,8 +794,10 @@ public class Font extends AbstractCssProperty<Font>
 
         if (lineHeight != null && lineHeight.isAlreadyInUse()
                 && this.lineHeight != lineHeight) {
-            LOGGER.warning(
-                    "the given lineHeight is already used by another object so a new object or the previous object (if it exists) of FontSize will be used");
+            if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.warning(
+                        "the given lineHeight is already used by another object so a new object or the previous object (if it exists) of FontSize will be used");
+            }
             return setCssValue(cssValue);
         }
 
@@ -865,8 +870,10 @@ public class Font extends AbstractCssProperty<Font>
 
         if (fontFamily != null && fontFamily.isAlreadyInUse()
                 && this.fontFamily != fontFamily) {
-            LOGGER.warning(
-                    "the given fontFamily is already used by another object so a new object or the previous object (if it exists) of FontSize will be used");
+            if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.warning(
+                        "the given fontFamily is already used by another object so a new object or the previous object (if it exists) of FontSize will be used");
+            }
             return setCssValue(cssValue);
         }
 

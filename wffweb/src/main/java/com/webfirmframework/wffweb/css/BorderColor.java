@@ -17,6 +17,7 @@ package com.webfirmframework.wffweb.css;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.InvalidValueException;
@@ -465,32 +466,40 @@ public class BorderColor extends AbstractCssProperty<BorderColor>
                 } else {
                     if (borderTopColor.isAlreadyInUse()) {
                         borderTopColorTemp = borderTopColor.clone();
-                        LOGGER.warning(
-                                "the given borderTopColor is already used by another object so its clone is assigned");
+                        if (LOGGER.isLoggable(Level.WARNING)) {
+                            LOGGER.warning(
+                                    "the given borderTopColor is already used by another object so its clone is assigned");
+                        }
                     } else {
                         borderTopColorTemp = borderTopColor;
                     }
 
                     if (borderRightColor.isAlreadyInUse()) {
                         borderRightColorTemp = borderRightColor.clone();
-                        LOGGER.warning(
-                                "the given borderRightColor is already used by another object so its clone is assigned");
+                        if (LOGGER.isLoggable(Level.WARNING)) {
+                            LOGGER.warning(
+                                    "the given borderRightColor is already used by another object so its clone is assigned");
+                        }
                     } else {
                         borderRightColorTemp = borderRightColor;
                     }
 
                     if (borderBottomColor.isAlreadyInUse()) {
                         borderBottomColorTemp = borderBottomColor.clone();
-                        LOGGER.warning(
-                                "the given borderBottomColor is already used by another object so its clone is assigned");
+                        if (LOGGER.isLoggable(Level.WARNING)) {
+                            LOGGER.warning(
+                                    "the given borderBottomColor is already used by another object so its clone is assigned");
+                        }
                     } else {
                         borderBottomColorTemp = borderBottomColor;
                     }
 
                     if (borderLeftColor.isAlreadyInUse()) {
                         borderLeftColorTemp = borderLeftColor.clone();
-                        LOGGER.warning(
-                                "the given borderLeftColor is already used by another object so its clone is assigned");
+                        if (LOGGER.isLoggable(Level.WARNING)) {
+                            LOGGER.warning(
+                                    "the given borderLeftColor is already used by another object so its clone is assigned");
+                        }
                     } else {
                         borderLeftColorTemp = borderLeftColor;
                     }

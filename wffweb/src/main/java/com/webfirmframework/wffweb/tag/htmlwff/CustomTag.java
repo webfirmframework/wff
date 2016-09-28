@@ -1,5 +1,6 @@
 package com.webfirmframework.wffweb.tag.htmlwff;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.settings.WffConfiguration;
@@ -58,8 +59,10 @@ public class CustomTag extends AbstractHtml {
             if (!(abstractAttribute != null
                     && (abstractAttribute instanceof BaseAttributable
                             || abstractAttribute instanceof GlobalAttributable))) {
-                LOGGER.warning(abstractAttribute
-                        + " is not an instance of BaseAttribute");
+                if (LOGGER.isLoggable(Level.WARNING)) {
+                    LOGGER.warning(abstractAttribute
+                            + " is not an instance of BaseAttribute");
+                }
             }
         }
     }

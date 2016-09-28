@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.css;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.InvalidValueException;
@@ -366,8 +367,10 @@ public class BorderLeft extends AbstractCssProperty<BorderLeft>
 
         if (borderLeftWidth != null && borderLeftWidth.isAlreadyInUse()
                 && this.borderLeftWidth != borderLeftWidth) {
-            LOGGER.warning(
-                    "the given borderLeftWidth is already used by another object so a new object or the previous object (if it exists) of BorderLeftWidth will be used");
+            if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.warning(
+                        "the given borderLeftWidth is already used by another object so a new object or the previous object (if it exists) of BorderLeftWidth will be used");
+            }
             return setCssValue(cssValue);
         }
 
@@ -451,8 +454,10 @@ public class BorderLeft extends AbstractCssProperty<BorderLeft>
 
         if (borderLeftColor != null && borderLeftColor.isAlreadyInUse()
                 && this.borderLeftColor != borderLeftColor) {
-            LOGGER.warning(
-                    "the given borderLeftColor is already used by another object so a new object or the previous object (if it exists) of BorderLeftColor will be used");
+            if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.warning(
+                        "the given borderLeftColor is already used by another object so a new object or the previous object (if it exists) of BorderLeftColor will be used");
+            }
             return setCssValue(cssValue);
         }
 

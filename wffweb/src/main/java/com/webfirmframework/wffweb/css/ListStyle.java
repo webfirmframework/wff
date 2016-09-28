@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.css;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.InvalidValueException;
@@ -400,8 +401,10 @@ public class ListStyle extends AbstractCssProperty<ListStyle>
 
         if (listStyleImage != null && listStyleImage.isAlreadyInUse()
                 && this.listStyleImage != listStyleImage) {
-            LOGGER.warning(
-                    "the given listStyleImage is already used by another object so a new object or the previous object (if it exists) of ListStyleImage will be used");
+            if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.warning(
+                        "the given listStyleImage is already used by another object so a new object or the previous object (if it exists) of ListStyleImage will be used");
+            }
             return setCssValue(cssValue);
         }
 

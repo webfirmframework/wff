@@ -137,8 +137,10 @@ public abstract class BrowserPage implements Serializable {
             }
 
         } else {
-            LOGGER.warning(
-                    "There is no websocket listener set, set it with BrowserPage#setWebSocketPushListener method.");
+            if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.warning(
+                        "There is no websocket listener set, set it with BrowserPage#setWebSocketPushListener method.");
+            }
         }
 
     }

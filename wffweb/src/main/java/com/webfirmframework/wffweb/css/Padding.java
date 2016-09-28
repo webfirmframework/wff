@@ -17,6 +17,7 @@ package com.webfirmframework.wffweb.css;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.InvalidValueException;
@@ -430,12 +431,16 @@ public class Padding extends AbstractCssProperty<Padding>
                     if (this.paddingTop != null) {
                         paddingTopTemp = this.paddingTop
                                 .setCssValue(paddingTop.getCssValue());
-                        LOGGER.warning(
-                                "the given paddingTop is already used by another object so the existing object is used");
+                        if (LOGGER.isLoggable(Level.WARNING)) {
+                            LOGGER.warning(
+                                    "the given paddingTop is already used by another object so the existing object is used");
+                        }
                     } else {
                         paddingTopTemp = paddingTop.clone();
-                        LOGGER.warning(
-                                "the given paddingTop is already used by another object so its clone is assigned");
+                        if (LOGGER.isLoggable(Level.WARNING)) {
+                            LOGGER.warning(
+                                    "the given paddingTop is already used by another object so its clone is assigned");
+                        }
                     }
                 } else {
                     paddingTopTemp = paddingTop;
@@ -446,12 +451,16 @@ public class Padding extends AbstractCssProperty<Padding>
                     if (this.paddingRight != null) {
                         paddingRightTemp = this.paddingRight
                                 .setCssValue(paddingTop.getCssValue());
-                        LOGGER.warning(
-                                "the given paddingRight is already used by another object so the existing object is used");
+                        if (LOGGER.isLoggable(Level.WARNING)) {
+                            LOGGER.warning(
+                                    "the given paddingRight is already used by another object so the existing object is used");
+                        }
                     } else {
                         paddingRightTemp = paddingRight.clone();
-                        LOGGER.warning(
-                                "the given paddingRight is already used by another object so its clone is assigned");
+                        if (LOGGER.isLoggable(Level.WARNING)) {
+                            LOGGER.warning(
+                                    "the given paddingRight is already used by another object so its clone is assigned");
+                        }
                     }
 
                 } else {
@@ -463,12 +472,16 @@ public class Padding extends AbstractCssProperty<Padding>
                     if (this.paddingBottom != null) {
                         paddingBottomTemp = this.paddingBottom
                                 .setCssValue(paddingTop.getCssValue());
-                        LOGGER.warning(
-                                "the given paddingBottom is already used by another object so the existing object is used");
+                        if (LOGGER.isLoggable(Level.WARNING)) {
+                            LOGGER.warning(
+                                    "the given paddingBottom is already used by another object so the existing object is used");
+                        }
                     } else {
                         paddingBottomTemp = paddingBottom.clone();
-                        LOGGER.warning(
-                                "the given paddingBottom is already used by another object so its clone is assigned");
+                        if (LOGGER.isLoggable(Level.WARNING)) {
+                            LOGGER.warning(
+                                    "the given paddingBottom is already used by another object so its clone is assigned");
+                        }
                     }
 
                 } else {
@@ -480,12 +493,16 @@ public class Padding extends AbstractCssProperty<Padding>
                     if (this.paddingLeft != null) {
                         paddingLeftTemp = this.paddingLeft
                                 .setCssValue(paddingTop.getCssValue());
-                        LOGGER.warning(
-                                "the given paddingLeft is already used by another object so the existing object is used");
+                        if (LOGGER.isLoggable(Level.WARNING)) {
+                            LOGGER.warning(
+                                    "the given paddingLeft is already used by another object so the existing object is used");
+                        }
                     } else {
                         paddingLeftTemp = paddingLeft.clone();
-                        LOGGER.warning(
-                                "the given paddingLeft is already used by another object so its clone is assigned");
+                        if (LOGGER.isLoggable(Level.WARNING)) {
+                            LOGGER.warning(
+                                    "the given paddingLeft is already used by another object so its clone is assigned");
+                        }
                     }
 
                 } else {

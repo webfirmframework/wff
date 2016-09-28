@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.css.css3;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.InvalidValueException;
@@ -328,8 +329,10 @@ public class Columns extends AbstractCssProperty<Columns>
 
         if (columnWidth != null && columnWidth.isAlreadyInUse()
                 && this.columnWidth != columnWidth) {
-            LOGGER.warning(
-                    "the given columnWidth is already used by another object so a new object or the previous object (if it exists) of ColumnWidth will be used");
+            if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.warning(
+                        "the given columnWidth is already used by another object so a new object or the previous object (if it exists) of ColumnWidth will be used");
+            }
             return setCssValue(cssValue);
         }
 
@@ -376,8 +379,10 @@ public class Columns extends AbstractCssProperty<Columns>
 
         if (columnCount != null && columnCount.isAlreadyInUse()
                 && this.columnCount != columnCount) {
-            LOGGER.warning(
-                    "the given columnCount is already used by another object so a new object or the previous object (if it exists) of ColumnWidth will be used");
+            if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.warning(
+                        "the given columnCount is already used by another object so a new object or the previous object (if it exists) of ColumnWidth will be used");
+            }
             return setCssValue(cssValue);
         }
 

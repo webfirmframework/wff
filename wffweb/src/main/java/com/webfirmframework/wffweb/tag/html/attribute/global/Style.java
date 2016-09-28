@@ -1046,11 +1046,13 @@ public class Style extends AbstractAttribute
                             .get(cssProperty.getCssName()) != cssProperty) {
                 try {
                     sameOrCloneCssProperty = abstractCssProperty.clone();
-                    // hashcode should be replaced with getUuid after its
-                    // implementation.
-                    LOGGER.warning("cloned cssProperty " + cssProperty
-                            + "(hashcode: " + cssProperty.hashCode()
-                            + ") as it is already used in another tag");
+                    if (LOGGER.isLoggable(Level.WARNING)) {
+                        // hashcode should be replaced with getUuid after its
+                        // implementation.
+                        LOGGER.warning("cloned cssProperty " + cssProperty
+                                + "(hashcode: " + cssProperty.hashCode()
+                                + ") as it is already used in another tag");
+                    }
                 } catch (final CloneNotSupportedException e) {
                     if (LOGGER.isLoggable(Level.SEVERE)) {
                         LOGGER.severe(e.toString());

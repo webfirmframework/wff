@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.server.page;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.WffRuntimeException;
@@ -189,8 +190,10 @@ public enum BrowserPageContext {
                 }
             }
         } else {
-            LOGGER.warning(
-                    "The associatd HttpSession is alread closed for this instance id or browserPage is not added in BrowserPageContext");
+            if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.warning(
+                        "The associatd HttpSession is alread closed for this instance id or browserPage is not added in BrowserPageContext");
+            }
         }
 
     }
@@ -232,8 +235,10 @@ public enum BrowserPageContext {
 
             }
         } else {
-            LOGGER.warning(
-                    "The associatd HttpSession is alread closed for this instance id");
+            if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.warning(
+                        "The associatd HttpSession is alread closed for this instance id");
+            }
         }
 
     }

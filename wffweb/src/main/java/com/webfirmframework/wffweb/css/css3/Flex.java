@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.css.css3;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.InvalidValueException;
@@ -402,15 +403,19 @@ public class Flex extends AbstractCssProperty<Flex>
 
         if (this.flexGrow != null) {
             this.flexGrow.setCssValue(flexGrow.getCssValue());
-            LOGGER.warning(
-                    "copied the cssValue from the given flexGrow to the existing flexGrow object.");
+            if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.warning(
+                        "copied the cssValue from the given flexGrow to the existing flexGrow object.");
+            }
         } else {
             if (flexGrow.isAlreadyInUse()) {
                 this.flexGrow = new FlexGrow(flexGrow);
                 this.flexGrow.setAlreadyInUse(true);
                 this.flexGrow.setStateChangeInformer(this);
-                LOGGER.warning(
-                        "created a new object of FlexGrow as the given flexGrow object is already used by another object");
+                if (LOGGER.isLoggable(Level.WARNING)) {
+                    LOGGER.warning(
+                            "created a new object of FlexGrow as the given flexGrow object is already used by another object");
+                }
             } else {
                 this.flexGrow = flexGrow;
                 this.flexGrow.setAlreadyInUse(true);
@@ -468,15 +473,19 @@ public class Flex extends AbstractCssProperty<Flex>
 
         if (this.flexShrink != null) {
             this.flexShrink.setCssValue(flexShrink.getCssValue());
-            LOGGER.warning(
-                    "copied the cssValue from the given flexShrink to the existing flexShrink object.");
+            if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.warning(
+                        "copied the cssValue from the given flexShrink to the existing flexShrink object.");
+            }
         } else {
             if (flexShrink.isAlreadyInUse()) {
                 this.flexShrink = new FlexShrink(flexShrink);
                 this.flexShrink.setAlreadyInUse(true);
                 this.flexShrink.setStateChangeInformer(this);
-                LOGGER.warning(
-                        "created a new object of FlexShrink as the given flexShrink object is already used by another object");
+                if (LOGGER.isLoggable(Level.WARNING)) {
+                    LOGGER.warning(
+                            "created a new object of FlexShrink as the given flexShrink object is already used by another object");
+                }
             } else {
                 this.flexShrink = flexShrink;
                 this.flexShrink.setAlreadyInUse(true);
@@ -534,15 +543,19 @@ public class Flex extends AbstractCssProperty<Flex>
 
         if (this.flexBasis != null) {
             this.flexBasis.setCssValue(flexBasis.getCssValue());
-            LOGGER.warning(
-                    "copied the cssValue from the given flexBasis to the existing flexBasis object.");
+            if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.warning(
+                        "copied the cssValue from the given flexBasis to the existing flexBasis object.");
+            }
         } else {
             if (flexBasis.isAlreadyInUse()) {
                 this.flexBasis = new FlexBasis(flexBasis);
                 this.flexBasis.setAlreadyInUse(true);
                 this.flexBasis.setStateChangeInformer(this);
-                LOGGER.warning(
-                        "created a new object of FlexBasis as the given flexBasis object is already used by another object");
+                if (LOGGER.isLoggable(Level.WARNING)) {
+                    LOGGER.warning(
+                            "created a new object of FlexBasis as the given flexBasis object is already used by another object");
+                }
             } else {
                 this.flexBasis = flexBasis;
                 this.flexBasis.setAlreadyInUse(true);
