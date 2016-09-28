@@ -295,7 +295,7 @@ public class Font extends AbstractCssProperty<Font>
 
         if (lineHeight != null) {
             if (fontSize != null) {
-                cssValueBuilder.append("/");
+                cssValueBuilder.append('/');
             }
             cssValueBuilder.append(lineHeight.getCssValue());
             cssValueBuilder.append(' ');
