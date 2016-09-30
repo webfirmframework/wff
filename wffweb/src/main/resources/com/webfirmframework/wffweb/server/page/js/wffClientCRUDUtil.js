@@ -125,19 +125,20 @@ var wffClientCRUDUtil = new function() {
 				var parent = wffTagUtil.getTagByTagNameAndWffId(tagName, wffId);
 
 				for (var j = 1; j < values.length; j++) {
-//					var htmlString = getStringFromBytes(values[j]);
+					// var htmlString = getStringFromBytes(values[j]);
 
-//					var div = document.createElement('div');
-//					div.innerHTML = htmlString;
-//					var htmlNodes = div.firstChild;
+					// var div = document.createElement('div');
+					// div.innerHTML = htmlString;
+					// var htmlNodes = div.firstChild;
 
 					if (parent == undefined) {
 						console.log('parent == undefined', 'tagName', tagName,
 								'wffId', wffId);
 					}
-					
-					var htmlNodes = wffTagUtil.createTagFromWffBMBytes(values[j]);
-					
+
+					var htmlNodes = wffTagUtil
+							.createTagFromWffBMBytes(values[j]);
+
 					parent.appendChild(htmlNodes);
 				}
 			}
@@ -265,7 +266,7 @@ var wffClientCRUDUtil = new function() {
 
 			}
 
-		}  else if (taskValue == wffGlobal.taskValues.ADDED_INNER_HTML) {
+		} else if (taskValue == wffGlobal.taskValues.ADDED_INNER_HTML) {
 
 			console.log('wffGlobal.taskValues.ADDED_INNER_HTML');
 
@@ -274,48 +275,56 @@ var wffClientCRUDUtil = new function() {
 						.getWffIdFromWffIdBytes(nameValues[i].name);
 				var values = nameValues[i].values;
 				var tagName = getStringFromBytes(values[0]);
-//				var innerHtml = getStringFromBytes(values[1]);
-				
-//				console.log('innerHtml', innerHtml);
+				// var innerHtml = getStringFromBytes(values[1]);
+
+				// console.log('innerHtml', innerHtml);
 
 				var parentTag = wffTagUtil.getTagByTagNameAndWffId(tagName,
 						wffId);
-				//it should be case sensitive node.innerHTML
-//				parentTag.innerHTML = innerHtml;
-				
+				// it should be case sensitive node.innerHTML
+				// parentTag.innerHTML = innerHtml;
+
 				while (parentTag.firstChild) {
 					parentTag.removeChild(parentTag.firstChild);
 				}
-				
+
 				var htmlNodes = wffTagUtil.createTagFromWffBMBytes(values[1]);
 				parentTag.appendChild(htmlNodes);
 			}
 
-		} 
+		} else if (taskValue == wffGlobal.taskValues.RELOAD_BROWSER) {
+			location.reload(true);
+		} else if (taskValue == wffGlobal.taskValues.RELOAD_BROWSER_FROM_CACHE) {
+			location.reload();
+		} else {
+			return false;
+		}
+		
+		return true;
 
-//		else if (taskValue == 'DA') {
-//
-//			for (var i = 1; i < nameValues.length; i++) {
-//
-//				var tagId = wffBMUtil
-//						.getIntFromOptimizedBytes(nameValues[i].name);
-//				var attrNames = nameValues[i].values;
-//
-//				var tagName = getStringFromBytes(attrNames[0]);
-//
-//				for (var j = 1; j < attrNames.length; j++) {
-//
-//					var attrName = getStringFromBytes(attrNames[j]);
-//
-//					var applicableTag = wffTagUtil.getTagByTagNameAndWffId(
-//							tagName, tagId);
-//
-//					applicableTag.removeAttribute(attrName);
-//					console.log('attr removed');
-//				}
-//
-//			}
-//		}
+		// else if (taskValue == 'DA') {
+		//
+		// for (var i = 1; i < nameValues.length; i++) {
+		//
+		// var tagId = wffBMUtil
+		// .getIntFromOptimizedBytes(nameValues[i].name);
+		// var attrNames = nameValues[i].values;
+		//
+		// var tagName = getStringFromBytes(attrNames[0]);
+		//
+		// for (var j = 1; j < attrNames.length; j++) {
+		//
+		// var attrName = getStringFromBytes(attrNames[j]);
+		//
+		// var applicableTag = wffTagUtil.getTagByTagNameAndWffId(
+		// tagName, tagId);
+		//
+		// applicableTag.removeAttribute(attrName);
+		// console.log('attr removed');
+		// }
+		//
+		// }
+		// }
 
 	};
 

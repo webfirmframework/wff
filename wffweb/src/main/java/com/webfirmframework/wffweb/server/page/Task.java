@@ -15,8 +15,6 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
-import java.io.UnsupportedEncodingException;
-
 import com.webfirmframework.wffweb.util.data.NameValue;
 
 /**
@@ -55,7 +53,13 @@ public enum Task {
 
     ADDED_INNER_HTML,
 
-    INVOKE_POST_FUNCTION;
+    INVOKE_POST_FUNCTION,
+
+    EXECURE_JS,
+
+    RELOAD_BROWSER,
+
+    RELOAD_BROWSER_FROM_CACHE;
 
     private byte valueByte;
 
@@ -75,7 +79,7 @@ public enum Task {
         return valueByte;
     }
 
-    public NameValue getTaskNameValue() throws UnsupportedEncodingException {
+    public NameValue getTaskNameValue() {
         final NameValue task = new NameValue();
         task.setName(Task.TASK.getValueByte());
         task.setValues(new byte[][] { new byte[] { getValueByte() } });

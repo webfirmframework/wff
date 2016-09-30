@@ -13,7 +13,8 @@ var wffWS = new function() {
 
 		// Ensures only one connection is open at a time
 		if (webSocket !== undefined
-				&& webSocket.readyState !== WebSocket.CLOSED) {
+				&& webSocket.readyState !== WebSocket.CLOSED 
+				&& webSocket.readyState !== WebSocket.CLOSING) {
 			console.log("WebSocket is already opened.");
 			return;
 		}
