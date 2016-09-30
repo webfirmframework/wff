@@ -568,11 +568,14 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected boolean removeFromAttributeValueMap(final String key) {
         boolean result = false;
-        if (getAttributeValueMap().containsKey(key)) {
+        String previous = getAttributeValueMap().remove(key);
+
+        if (previous != null) {
             setModified(true);
             result = true;
-            getAttributeValueMap().remove(key);
+            invokeValueChangeListeners();
         }
+
         return result;
     }
 
