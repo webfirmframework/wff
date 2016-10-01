@@ -758,6 +758,14 @@ public class Style extends AbstractAttribute
                 throw new IllegalArgumentException(
                         "add needful code to make the replaced abstractCssProperty objects to set setAlreadyInUse(false) and added objects to set setAlreadyInUse(false)");
             }
+
+            @Override
+            public void clear() {
+                for (final AbstractCssProperty<?> cssProperty : values()) {
+                    cssProperty.setAlreadyInUse(false);
+                }
+                super.clear();
+            }
         };
         init();
     }
@@ -1260,8 +1268,9 @@ public class Style extends AbstractAttribute
                         && !styleNameValue[1].trim().isEmpty()) {
                     addToAttributeValueMap(styleNameValue[0],
                             styleNameValue[1]);
-                    getCssProperty(styleNameValue[0]);// to save the corresponding object to
-                                         // abstractCssPropertyClassObjects
+                    getCssProperty(styleNameValue[0]);// to save the
+                                                      // corresponding object to
+                    // abstractCssPropertyClassObjects
                 } else {
                     LOGGER.warning("\"" + styles
                             + "\" contains invalid value or no value for any style name in it.");
@@ -1369,19 +1378,18 @@ public class Style extends AbstractAttribute
             value = value.toLowerCase().replace(IMPORTANT, "");
 
             try {
-                AbstractCssProperty<?> abstractCssProperty = null;
-                // given priority for optimization rather than coding standard.
-                if ((abstractCssProperty = abstractCssPropertyClassObjects
-                        .get(cssName)) != null) {
-                    abstractCssProperty = abstractCssPropertyClassObjects
-                            .get(cssName);
-                } else {
-                    abstractCssProperty = (AbstractCssProperty<?>) classClass
-                            .newInstance();
-                    abstractCssProperty.setStateChangeInformer(this);
-                    abstractCssPropertyClassObjects.put(cssName,
-                            abstractCssProperty);
+                AbstractCssProperty<?> abstractCssProperty = abstractCssPropertyClassObjects
+                        .get(cssName);
+                if (abstractCssProperty != null) {
+                    return abstractCssProperty;
                 }
+
+                abstractCssProperty = (AbstractCssProperty<?>) classClass
+                        .newInstance();
+                abstractCssProperty.setStateChangeInformer(this);
+                abstractCssPropertyClassObjects.put(cssName,
+                        abstractCssProperty);
+
                 abstractCssProperty.setCssValue(value);
                 fromAddCssProperty = true;
                 cssProperties.add(abstractCssProperty);
@@ -1392,6 +1400,13 @@ public class Style extends AbstractAttribute
             }
         } else if ((value = getAttributeValueMap().get(cssName)) != null) {
             value = value.toLowerCase().replace(IMPORTANT, "");
+
+            final AbstractCssProperty<?> abstractCssProperty = abstractCssPropertyClassObjects
+                    .get(cssName);
+            if (abstractCssProperty != null) {
+                return abstractCssProperty;
+            }
+
             final CustomCssProperty customCssProperty = new CustomCssProperty(
                     cssName, value);
             customCssProperty.setAlreadyInUse(true);
@@ -1438,9 +1453,8 @@ public class Style extends AbstractAttribute
         public void clear() {
             synchronized (this) {
                 if (!clearOnlyInCssProperties) {
-                    for (final CssProperty cssProperty : this) {
-                        removeCssProperty(cssProperty);
-                    }
+                    abstractCssPropertyClassObjects.clear();
+                    removeAllFromAttributeValueMap();
                 }
                 super.clear();
             }
