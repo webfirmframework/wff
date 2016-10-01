@@ -325,7 +325,7 @@ public abstract class BrowserPage implements Serializable {
     private void embedWffScriptIfRequired(final AbstractHtml abstractHtml,
             final String wsUrlWithInstanceId) {
 
-        if (wffScriptTagId != null && tagByWffId.containsKey(wffScriptTagId)) {
+        if (wffScriptTagId != null && tagByWffId.containsKey(wffScriptTagId.getValue())) {
             // no need to add script tag if it exists in the ui
             return;
         }
