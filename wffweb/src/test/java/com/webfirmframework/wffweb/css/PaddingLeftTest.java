@@ -186,14 +186,14 @@ public class PaddingLeftTest {
         }
         {
             final boolean valid = PaddingLeft.isValid("-1px");
-           assertFalse(valid);
+           assertTrue(valid);
         }
     }
 
     @Test(expected =  InvalidValueException.class)
     public void testInvalidValueForSetCssValue() throws Exception {
         PaddingLeft padding = new PaddingLeft();
-        padding.setCssValue("-1px");
+        padding.setCssValue("dfdfpx");
     }
 
 }

@@ -186,7 +186,7 @@ public class BottomTest {
             assertTrue(valid);
         }
         {
-            final boolean valid = Bottom.isValid("-1px");
+            final boolean valid = Bottom.isValid("--1px");
            assertFalse(valid);
         }
     }
@@ -194,7 +194,7 @@ public class BottomTest {
     @Test(expected =  InvalidValueException.class)
     public void testInvalidValueForSetCssValue() throws Exception {
         Bottom padding = new Bottom();
-        padding.setCssValue("-1px");
+        padding.setCssValue("--1px");
     }
 
 }

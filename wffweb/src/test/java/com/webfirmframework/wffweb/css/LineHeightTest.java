@@ -196,7 +196,7 @@ public class LineHeightTest {
             assertTrue(valid);
         }
         {
-            final boolean valid = LineHeight.isValid("-1px");
+            final boolean valid = LineHeight.isValid("--1px");
             assertFalse(valid);
         }
     }
@@ -204,7 +204,7 @@ public class LineHeightTest {
     @Test(expected =  InvalidValueException.class)
     public void testInvalidValueForSetCssValue() throws Exception {
         LineHeight padding = new LineHeight();
-        padding.setCssValue("-1px");
+        padding.setCssValue("--1px");
     }
 
 }

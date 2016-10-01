@@ -186,7 +186,7 @@ public class RightTest {
             assertTrue(valid);
         }
         {
-            final boolean valid = Right.isValid("-1px");
+            final boolean valid = Right.isValid("--1px");
            assertFalse(valid);
         }
     }
@@ -194,7 +194,7 @@ public class RightTest {
     @Test(expected =  InvalidValueException.class)
     public void testInvalidValueForSetCssValue() throws Exception {
         Right padding = new Right();
-        padding.setCssValue("-1px");
+        padding.setCssValue("--1px");
     }
 
 }

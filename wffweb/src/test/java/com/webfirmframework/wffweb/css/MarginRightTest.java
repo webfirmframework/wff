@@ -195,7 +195,7 @@ public class MarginRightTest {
             assertTrue(valid);
         }
         {
-            final boolean valid = MarginRight.isValid("-1px");
+            final boolean valid = MarginRight.isValid("--1px");
            assertFalse(valid);
         }
     }
@@ -203,7 +203,7 @@ public class MarginRightTest {
     @Test(expected =  InvalidValueException.class)
     public void testInvalidValueForSetCssValue() throws Exception {
         MarginRight margin = new MarginRight();
-        margin.setCssValue("-1px");
+        margin.setCssValue("--1px");
     }
 
 }

@@ -181,7 +181,7 @@ public class TopTest {
             assertTrue(valid);
         }
         {
-            final boolean valid = Top.isValid("-1px");
+            final boolean valid = Top.isValid("--1px");
            assertFalse(valid);
         }
     }
@@ -189,7 +189,7 @@ public class TopTest {
     @Test(expected =  InvalidValueException.class)
     public void testInvalidValueForSetCssValue() throws Exception {
         Top padding = new Top();
-        padding.setCssValue("-1px");
+        padding.setCssValue("--1px");
     }
 
 }

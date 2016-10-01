@@ -391,28 +391,28 @@ public class MarginTest {
             assertTrue(valid);
         }
         {
-            final boolean valid = Margin.isValid("-1px");
+            final boolean valid = Margin.isValid("--1px");
            assertFalse(valid);
         }
         {
             final boolean valid = Margin.isValid("25px 23px 17px -1px");
-           assertFalse(valid);
+           assertTrue(valid);
         }
         {
             final boolean valid = Margin.isValid("-25px 23px 17px 1px");
-           assertFalse(valid);
+           assertTrue(valid);
         }
         {
             final boolean valid = Margin.isValid("25px -23px 17px 1px");
-           assertFalse(valid);
+           assertTrue(valid);
         }
         {
             final boolean valid = Margin.isValid("25px 23px -17px 1px");
-           assertFalse(valid);
+           assertTrue(valid);
         }
         {
             final boolean valid = Margin.isValid("25px 23px 17px -1px");
-           assertFalse(valid);
+           assertTrue(valid);
         }
         {
             final boolean valid = Margin.isValid("25px 23px 17px initial");

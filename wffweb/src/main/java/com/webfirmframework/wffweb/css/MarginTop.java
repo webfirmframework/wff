@@ -253,6 +253,9 @@ public class MarginTop extends AbstractCssProperty<MarginTop> {
             throw new InvalidValueException(
                     cssValue + " is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit.",
                     e);
+        } catch (InvalidValueException e) {
+            this.cssValue = previousCssValue;
+            throw e;
         }
         return this;
 

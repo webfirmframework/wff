@@ -186,7 +186,7 @@ public class LeftTest {
             assertTrue(valid);
         }
         {
-            final boolean valid = Left.isValid("-1px");
+            final boolean valid = Left.isValid("--1px");
            assertFalse(valid);
         }
     }
@@ -194,7 +194,7 @@ public class LeftTest {
     @Test(expected =  InvalidValueException.class)
     public void testInvalidValueForSetCssValue() throws Exception {
         Left padding = new Left();
-        padding.setCssValue("-1px");
+        padding.setCssValue("--1px");
     }
 
 }

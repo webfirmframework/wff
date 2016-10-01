@@ -249,11 +249,14 @@ public class Left extends AbstractCssProperty<Left> {
             if (getStateChangeInformer() != null) {
                 getStateChangeInformer().stateChanged(this);
             }
-        } catch (final NumberFormatException | InvalidValueException e) {
+        } catch (final NumberFormatException e) {
             this.cssValue = previousCssValue;
             throw new InvalidValueException(
                     cssValue + " is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit.",
                     e);
+        } catch (final InvalidValueException e) {
+            this.cssValue = previousCssValue;
+            throw e;
         }
         return this;
 

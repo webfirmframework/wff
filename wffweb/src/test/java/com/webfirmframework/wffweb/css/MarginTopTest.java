@@ -195,7 +195,7 @@ public class MarginTopTest {
             assertTrue(valid);
         }
         {
-            final boolean valid = MarginTop.isValid("-1px");
+            final boolean valid = MarginTop.isValid("--1px");
            assertFalse(valid);
         }
     }
@@ -203,7 +203,7 @@ public class MarginTopTest {
     @Test(expected =  InvalidValueException.class)
     public void testInvalidValueForSetCssValue() throws Exception {
         MarginTop margin = new MarginTop();
-        margin.setCssValue("-1px");
+        margin.setCssValue("dfdpx");
     }
 
 }

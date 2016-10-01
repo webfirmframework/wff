@@ -186,7 +186,7 @@ public class LetterSpacingTest {
             assertTrue(valid);
         }
         {
-            final boolean valid = LetterSpacing.isValid("-1px");
+            final boolean valid = LetterSpacing.isValid("--1px");
            assertFalse(valid);
         }
     }
@@ -194,7 +194,7 @@ public class LetterSpacingTest {
     @Test(expected =  InvalidValueException.class)
     public void testInvalidValueForSetCssValue() throws Exception {
         LetterSpacing padding = new LetterSpacing();
-        padding.setCssValue("-1px");
+        padding.setCssValue("--1px");
     }
 
 }

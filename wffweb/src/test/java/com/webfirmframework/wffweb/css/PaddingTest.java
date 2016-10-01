@@ -392,27 +392,27 @@ public class PaddingTest {
         }
         {
             final boolean valid = Padding.isValid("-1px");
-           assertFalse(valid);
+           assertTrue(valid);
         }
         {
             final boolean valid = Padding.isValid("25px 23px 17px -1px");
-           assertFalse(valid);
+           assertTrue(valid);
         }
         {
             final boolean valid = Padding.isValid("-25px 23px 17px 1px");
-           assertFalse(valid);
+           assertTrue(valid);
         }
         {
             final boolean valid = Padding.isValid("25px -23px 17px 1px");
-           assertFalse(valid);
+           assertTrue(valid);
         }
         {
             final boolean valid = Padding.isValid("25px 23px -17px 1px");
-           assertFalse(valid);
+           assertTrue(valid);
         }
         {
             final boolean valid = Padding.isValid("25px 23px 17px -1px");
-           assertFalse(valid);
+           assertTrue(valid);
         }
         {
             final boolean valid = Padding.isValid("25px 23px 17px initial");

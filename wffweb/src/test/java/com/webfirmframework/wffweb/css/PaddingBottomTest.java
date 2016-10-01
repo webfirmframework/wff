@@ -187,14 +187,14 @@ public class PaddingBottomTest {
         }
         {
             final boolean valid = PaddingBottom.isValid("-1px");
-           assertFalse(valid);
+           assertTrue(valid);
         }
     }
     
     @Test(expected =  InvalidValueException.class)
     public void testInvalidValueForSetCssValue() throws Exception {
         PaddingBottom padding = new PaddingBottom();
-        padding.setCssValue("-1px");
+        padding.setCssValue("dfdpx");
     }
 
 }
