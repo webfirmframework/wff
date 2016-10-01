@@ -217,10 +217,11 @@ public class MarginLeft extends AbstractCssProperty<MarginLeft> {
                                 .replaceFirst(unit, "");
                         try {
                             value = Float.parseFloat(valueOnly);
-                            if (value < 0) {
-                                throw new InvalidValueException(
-                                        "marginLeft cannot be a negative value");
-                            }
+                            // it could be -ve when it comes as sub
+                            // if (value < 0) {
+                            // throw new InvalidValueException(
+                            // "marginLeft cannot be a negative value");
+                            // }
                         } catch (final NumberFormatException e) {
                             break;
                         }
@@ -246,7 +247,7 @@ public class MarginLeft extends AbstractCssProperty<MarginLeft> {
             if (getStateChangeInformer() != null) {
                 getStateChangeInformer().stateChanged(this);
             }
-        } catch (final NumberFormatException | InvalidValueException e) {
+        } catch (final NumberFormatException e) {
             this.cssValue = previousCssValue;
             throw new InvalidValueException(
                     cssValue + " is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit.",
@@ -308,9 +309,8 @@ public class MarginLeft extends AbstractCssProperty<MarginLeft> {
             if (trimmedCssValue.endsWith(unit)) {
                 final String valueOnly = trimmedCssValue.replaceFirst(unit, "");
                 try {
-                    if (Float.parseFloat(valueOnly) < 0) {
-                        return false;
-                    }
+                    // it could be -ve when it comes as sub
+                    Float.parseFloat(valueOnly);
                 } catch (final NumberFormatException e) {
                     break;
                 }

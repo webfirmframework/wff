@@ -240,10 +240,11 @@ public class LineHeight extends AbstractCssProperty<LineHeight> {
 
                 try {
                     value = Float.parseFloat(trimmedCssValue);
-                    if (value < 0) {
-                        throw new InvalidValueException(
-                                "lineHeight cannot be a negative value");
-                    }
+                    // it could be -ve when it comes as sub
+                    // if (value < 0) {
+                    // throw new InvalidValueException(
+                    // "lineHeight cannot be a negative value");
+                    // }
                     cssLengthUnit = null;
                     this.cssValue = trimmedCssValue;
 
@@ -264,10 +265,11 @@ public class LineHeight extends AbstractCssProperty<LineHeight> {
                                 .replaceFirst(unit, "");
                         try {
                             value = Float.parseFloat(valueOnly);
-                            if (value < 0) {
-                                throw new InvalidValueException(
-                                        "lineHeight cannot be a negative value");
-                            }
+                            // it could be -ve when it comes as sub
+                            // if (value < 0) {
+                            // throw new InvalidValueException(
+                            // "lineHeight cannot be a negative value");
+                            // }
                         } catch (final NumberFormatException e) {
                             break;
                         }
@@ -288,7 +290,7 @@ public class LineHeight extends AbstractCssProperty<LineHeight> {
                 }
             }
 
-        } catch (final NumberFormatException | InvalidValueException e) {
+        } catch (final NumberFormatException e) {
             this.cssValue = previousCssValue;
             throw new InvalidValueException(
                     cssValue + " is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit.",
@@ -347,10 +349,7 @@ public class LineHeight extends AbstractCssProperty<LineHeight> {
         }
 
         try {
-            if ((Float.parseFloat(trimmedCssValue) < 0)) {
-                return false;
-            }
-
+            Float.parseFloat(trimmedCssValue);
             return true;
         } catch (final NumberFormatException e) {
             // NOP
@@ -361,9 +360,8 @@ public class LineHeight extends AbstractCssProperty<LineHeight> {
             if (trimmedCssValue.endsWith(unit)) {
                 final String valueOnly = trimmedCssValue.replaceFirst(unit, "");
                 try {
-                    if (Float.parseFloat(valueOnly) < 0) {
-                        return false;
-                    }
+                    // it could be -ve when it comes as sub
+                    Float.parseFloat(valueOnly);
                 } catch (final NumberFormatException e) {
                     break;
                 }

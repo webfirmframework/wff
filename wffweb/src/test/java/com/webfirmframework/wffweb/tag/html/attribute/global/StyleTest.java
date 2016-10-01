@@ -37,6 +37,7 @@ import com.webfirmframework.wffweb.css.core.CssProperty;
 import com.webfirmframework.wffweb.css.css3.AlignContent;
 import com.webfirmframework.wffweb.css.css3.BackfaceVisibility;
 import com.webfirmframework.wffweb.csswff.CustomCssProperty;
+import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 
 /**
  * 
@@ -433,6 +434,26 @@ public class StyleTest {
         assertNotNull(cssPropertyCustomAlignSelf);
         assertFalse(cssPropertyCustomAlignSelf instanceof CustomAlignSelf);
         System.out.println("testRemoveSupportOfCssClass success");
+    }
+    
+    @Test
+    public void testRemoveAllProperties() {
+        Style style = new Style("background:green");
+
+        assertEquals(1, style.getCssProperties().size());
+
+        style.removeCssProperty("background");
+
+        assertEquals(0, style.getCssProperties().size());
+
+        style.addCssProperty("background", "green");
+
+        assertEquals(1, style.getCssProperties().size());
+
+        style.getCssProperties().clear();
+
+        assertEquals(0, style.getCssProperties().size());
+
     }
 
 }

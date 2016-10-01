@@ -192,7 +192,7 @@ public class PaddingTopTest {
         }
         {
             final boolean valid = PaddingTop.isValid("-1px");
-           assertFalse(valid);
+           assertTrue(valid);
         }
     }
 
@@ -200,9 +200,10 @@ public class PaddingTopTest {
     public void testInvalidValueForSetCssValue() throws Exception {
         exception.expect(InvalidValueException.class);
         exception.expectMessage(
-                "-1px is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit.");
+                "dfdfd1 is an invalid value. The value format should be as for example 75px, 85%, initial, inherit etc..");
         final PaddingTop padding = new PaddingTop();
-        padding.setCssValue("-1px");
+        padding.setCssValue("dfdfd1");
+
     }
 
 }

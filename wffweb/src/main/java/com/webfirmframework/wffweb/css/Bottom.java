@@ -222,10 +222,11 @@ public class Bottom extends AbstractCssProperty<Bottom> {
                                 .replaceFirst(unit, "");
                         try {
                             value = Float.parseFloat(valueOnly);
-                            if (value < 0) {
-                                throw new InvalidValueException(
-                                        "bottom cannot be a negative value");
-                            }
+                            // it could be -ve when it comes as sub
+                            // if (value < 0) {
+                            // throw new InvalidValueException(
+                            // "bottom cannot be a negative value");
+                            // }
                         } catch (final NumberFormatException e) {
                             break;
                         }
@@ -312,9 +313,8 @@ public class Bottom extends AbstractCssProperty<Bottom> {
             if (trimmedCssValue.endsWith(unit)) {
                 final String valueOnly = trimmedCssValue.replaceFirst(unit, "");
                 try {
-                    if (Float.parseFloat(valueOnly) < 0) {
-                        return false;
-                    }
+                    // it could be negative
+                    Float.parseFloat(valueOnly);
                 } catch (final NumberFormatException e) {
                     break;
                 }
