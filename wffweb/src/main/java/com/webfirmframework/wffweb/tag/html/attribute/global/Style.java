@@ -1260,7 +1260,7 @@ public class Style extends AbstractAttribute
                         && !styleNameValue[1].trim().isEmpty()) {
                     addToAttributeValueMap(styleNameValue[0],
                             styleNameValue[1]);
-                    getCssProperty(each);// to save the corresponding object to
+                    getCssProperty(styleNameValue[0]);// to save the corresponding object to
                                          // abstractCssPropertyClassObjects
                 } else {
                     LOGGER.warning("\"" + styles
