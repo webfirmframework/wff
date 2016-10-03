@@ -94,7 +94,10 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         String result = "";
         if (rebuild || isRebuild() || isModified()) {
             beforePrintStructure();
-            tagBuilder.delete(0, tagBuilder.length());
+            
+            if (tagBuilder.length() > 0) {
+                tagBuilder.delete(0, tagBuilder.length());
+            }
             // tagBuildzer.append(' ');
             tagBuilder.append(attributeName);
             if (attributeValue != null) {
