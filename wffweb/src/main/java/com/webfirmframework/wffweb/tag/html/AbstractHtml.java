@@ -1006,9 +1006,11 @@ public abstract class AbstractHtml extends AbstractTagBase {
     protected String getPrintStructure(final boolean rebuild) {
         if (rebuild || isRebuild() || isModified()) {
             beforePrintStructure();
-            tagBuilder.delete(0, tagBuilder.length());
-            recurChildren(new LinkedHashSet<AbstractHtml>(Arrays.asList(this)),
-                    true);
+            if (tagBuilder.length() > 0) {
+                tagBuilder.delete(0, tagBuilder.length());
+            }
+            recurChildren(tagBuilder,
+                    new LinkedHashSet<AbstractHtml>(Arrays.asList(this)), true);
             setRebuild(false);
         }
         tagBuilder.trimToSize();
@@ -1054,8 +1056,8 @@ public abstract class AbstractHtml extends AbstractTagBase {
      * @since 1.0.0
      * @author WFF
      */
-    private void recurChildren(final Set<AbstractHtml> children,
-            final boolean rebuild) {
+    private static void recurChildren(final StringBuilder tagBuilder,
+            final Set<AbstractHtml> children, final boolean rebuild) {
         if (children != null && children.size() > 0) {
             for (final AbstractHtml child : children) {
                 child.setRebuild(rebuild);
@@ -1063,7 +1065,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
 
                 final Set<AbstractHtml> childrenOfChildren = child.children;
 
-                recurChildren(childrenOfChildren, rebuild);
+                recurChildren(tagBuilder, childrenOfChildren, rebuild);
 
                 tagBuilder.append(child.closingTag);
             }
@@ -1455,7 +1457,9 @@ public abstract class AbstractHtml extends AbstractTagBase {
     private void buildOpeningTag(final boolean rebuild) {
         final String attributeHtmlString = AttributeUtil
                 .getAttributeHtmlString(rebuild, charset, attributes);
-        htmlStartSB.delete(0, htmlStartSB.length());
+        if (htmlStartSB.length() > 0) {
+            htmlStartSB.delete(0, htmlStartSB.length());
+        }
         if (tagName != null) {
             htmlStartSB.append('<');
             htmlStartSB.append(tagName);
@@ -1483,7 +1487,9 @@ public abstract class AbstractHtml extends AbstractTagBase {
      * @author WFF
      */
     private void buildClosingTag() {
-        htmlEndSB.delete(0, htmlEndSB.length());
+        if (htmlEndSB.length() > 0) {
+            htmlEndSB.delete(0, htmlEndSB.length());
+        }
         if (tagName != null) {
             htmlEndSB.append(new char[] { '<', '/' });
             htmlEndSB.append(tagName);
