@@ -1025,7 +1025,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
             final boolean rebuild) throws IOException {
         beforeWritePrintStructureToOutputStream();
         recurChildrenToOutputStream(os,
-                new LinkedHashSet<AbstractHtml>(Arrays.asList(this)), true);
+                new LinkedHashSet<AbstractHtml>(Arrays.asList(this)), rebuild);
     }
 
     // for future development
