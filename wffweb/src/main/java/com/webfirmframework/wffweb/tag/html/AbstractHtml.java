@@ -1024,7 +1024,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
     protected void writePrintStructureToOutputStream(final OutputStream os,
             final boolean rebuild) throws IOException {
         beforeWritePrintStructureToOutputStream();
-        recurChildrenToOutputStream(os,
+        recurChildrenToOutputStream(charset, os,
                 new LinkedHashSet<AbstractHtml>(Arrays.asList(this)), rebuild);
     }
 
@@ -1077,9 +1077,9 @@ public abstract class AbstractHtml extends AbstractTagBase {
      * @author WFF
      * @throws IOException
      */
-    private void recurChildrenToOutputStream(final OutputStream os,
-            final Set<AbstractHtml> children, final boolean rebuild)
-                    throws IOException {
+    private static void recurChildrenToOutputStream(final Charset charset,
+            final OutputStream os, final Set<AbstractHtml> children,
+            final boolean rebuild) throws IOException {
 
         if (children != null && children.size() > 0) {
             for (final AbstractHtml child : children) {
@@ -1088,7 +1088,8 @@ public abstract class AbstractHtml extends AbstractTagBase {
 
                 final Set<AbstractHtml> childrenOfChildren = child.children;
 
-                recurChildrenToOutputStream(os, childrenOfChildren, rebuild);
+                recurChildrenToOutputStream(charset, os, childrenOfChildren,
+                        rebuild);
                 os.write(child.closingTag.getBytes(charset));
             }
         }
