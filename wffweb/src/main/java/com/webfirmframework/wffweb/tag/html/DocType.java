@@ -206,11 +206,15 @@ public abstract class DocType extends AbstractHtml {
      * OutputStream)
      */
     @Override
-    public void toOutputStream(final OutputStream os) throws IOException {
+    public int toOutputStream(final OutputStream os) throws IOException {
+        int docTypeTagLength = 0;
         if (prependDocType) {
-            os.write((docTypeTag + "\n").getBytes(getCharset()));
+            final byte[] docTypeTagBytes = (docTypeTag + "\n")
+                    .getBytes(getCharset());
+            os.write(docTypeTagBytes);
+            docTypeTagLength = docTypeTagBytes.length;
         }
-        super.toOutputStream(os);
+        return docTypeTagLength + super.toOutputStream(os);
     }
 
     /*
@@ -221,12 +225,16 @@ public abstract class DocType extends AbstractHtml {
      * OutputStream, boolean)
      */
     @Override
-    public void toOutputStream(final OutputStream os, final boolean rebuild)
+    public int toOutputStream(final OutputStream os, final boolean rebuild)
             throws IOException {
+        int docTypeTagLength = 0;
         if (prependDocType) {
-            os.write((docTypeTag + "\n").getBytes(getCharset()));
+            final byte[] docTypeTagBytes = (docTypeTag + "\n")
+                    .getBytes(getCharset());
+            os.write(docTypeTagBytes);
+            docTypeTagLength = docTypeTagBytes.length;
         }
-        super.toOutputStream(os, rebuild);
+        return docTypeTagLength + super.toOutputStream(os, rebuild);
     }
 
     /**
@@ -234,17 +242,24 @@ public abstract class DocType extends AbstractHtml {
      *            object of OutputStream to which the bytes to be written
      * @param charset
      *            the charset to encode for the bytes
+     *
+     * @return the total number of bytes written
      * @throws IOException
+     *
      * @since 1.0.0
      * @author WFF
      */
     @Override
-    public void toOutputStream(final OutputStream os, final Charset charset)
+    public int toOutputStream(final OutputStream os, final Charset charset)
             throws IOException {
+        int docTypeTagLength = 0;
         if (prependDocType) {
-            os.write((docTypeTag + "\n").getBytes(charset));
+            final byte[] docTypeTagBytes = (docTypeTag + "\n")
+                    .getBytes(charset);
+            os.write(docTypeTagBytes);
+            docTypeTagLength = docTypeTagBytes.length;
         }
-        super.toOutputStream(os, charset);
+        return docTypeTagLength + super.toOutputStream(os, charset);
     }
 
     /**
@@ -252,18 +267,22 @@ public abstract class DocType extends AbstractHtml {
      *            object of OutputStream to which the bytes to be written
      * @param charset
      *            the charset to encode for the bytes
+     * @return the total number of bytes written
      * @throws IOException
      * @since 1.0.0
      * @author WFF
      */
     @Override
-    public void toOutputStream(final OutputStream os, final String charset)
+    public int toOutputStream(final OutputStream os, final String charset)
             throws IOException {
+        int docTypeTagLength = 0;
         final Charset cs = Charset.forName(charset);
         if (prependDocType) {
-            os.write((docTypeTag + "\n").getBytes(cs));
+            final byte[] docTypeTagBytes = (docTypeTag + "\n").getBytes(cs);
+            os.write(docTypeTagBytes);
+            docTypeTagLength = docTypeTagBytes.length;
         }
-        super.toOutputStream(os, cs);
+        return docTypeTagLength + super.toOutputStream(os, cs);
     }
 
     /**
@@ -273,17 +292,23 @@ public abstract class DocType extends AbstractHtml {
      *            true to rebuild the tags
      * @param charset
      *            the charset to encode for the bytes
+     * @return the total number of bytes written
      * @throws IOException
      * @since 1.0.0
      * @author WFF
+     * @return the total number of bytes written
      */
     @Override
-    public void toOutputStream(final OutputStream os, final boolean rebuild,
+    public int toOutputStream(final OutputStream os, final boolean rebuild,
             final Charset charset) throws IOException {
+        int docTypeTagLength = 0;
         if (prependDocType) {
-            os.write((docTypeTag + "\n").getBytes(charset));
+            final byte[] docTypeTagBytes = (docTypeTag + "\n")
+                    .getBytes(charset);
+            os.write(docTypeTagBytes);
+            docTypeTagLength = docTypeTagBytes.length;
         }
-        super.toOutputStream(os, rebuild, charset);
+        return docTypeTagLength + super.toOutputStream(os, rebuild, charset);
     }
 
     /**
@@ -293,18 +318,23 @@ public abstract class DocType extends AbstractHtml {
      *            true to rebuild the tags
      * @param charset
      *            the charset to encode for the bytes
+     * @return the total number of bytes written
      * @throws IOException
      * @since 1.0.0
      * @author WFF
+     * @return the total number of bytes written
      */
     @Override
-    public void toOutputStream(final OutputStream os, final boolean rebuild,
+    public int toOutputStream(final OutputStream os, final boolean rebuild,
             final String charset) throws IOException {
+        int docTypeTagLength = 0;
         final Charset cs = Charset.forName(charset);
         if (prependDocType) {
-            os.write((docTypeTag + "\n").getBytes(cs));
+            final byte[] docTypeTagBytes = (docTypeTag + "\n").getBytes(cs);
+            os.write(docTypeTagBytes);
+            docTypeTagLength = docTypeTagBytes.length;
         }
-        super.toOutputStream(os, rebuild, cs);
+        return docTypeTagLength + super.toOutputStream(os, rebuild, cs);
     }
 
     /*

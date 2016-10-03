@@ -1019,13 +1019,16 @@ public abstract class AbstractHtml extends AbstractTagBase {
      * @param rebuild
      * @since 1.0.0
      * @author WFF
+     * @return the total number of bytes written
      * @throws IOException
      */
-    protected void writePrintStructureToOutputStream(final Charset charset,
+    protected int writePrintStructureToOutputStream(final Charset charset,
             final OutputStream os, final boolean rebuild) throws IOException {
         beforeWritePrintStructureToOutputStream();
-        recurChildrenToOutputStream(charset, os,
+        final int[] totalWritten = { 0 };
+        recurChildrenToOutputStream(totalWritten, charset, os,
                 new LinkedHashSet<AbstractHtml>(Arrays.asList(this)), rebuild);
+        return totalWritten[0];
     }
 
     // for future development
@@ -1077,20 +1080,28 @@ public abstract class AbstractHtml extends AbstractTagBase {
      * @author WFF
      * @throws IOException
      */
-    private static void recurChildrenToOutputStream(final Charset charset,
-            final OutputStream os, final Set<AbstractHtml> children,
-            final boolean rebuild) throws IOException {
+    private static void recurChildrenToOutputStream(final int[] totalWritten,
+            final Charset charset, final OutputStream os,
+            final Set<AbstractHtml> children, final boolean rebuild)
+                    throws IOException {
 
         if (children != null && children.size() > 0) {
             for (final AbstractHtml child : children) {
                 child.setRebuild(rebuild);
-                os.write(child.getOpeningTag().getBytes(charset));
+                final byte[] openingTagBytes = child.getOpeningTag()
+                        .getBytes(charset);
+                os.write(openingTagBytes);
+                totalWritten[0] += openingTagBytes.length;
 
                 final Set<AbstractHtml> childrenOfChildren = child.children;
 
-                recurChildrenToOutputStream(charset, os, childrenOfChildren,
-                        rebuild);
-                os.write(child.closingTag.getBytes(charset));
+                recurChildrenToOutputStream(totalWritten, charset, os,
+                        childrenOfChildren, rebuild);
+                final byte[] closingTagBytes = child.closingTag
+                        .getBytes(charset);
+                os.write(closingTagBytes);
+
+                totalWritten[0] += closingTagBytes.length;
             }
         }
     }
@@ -1314,10 +1325,11 @@ public abstract class AbstractHtml extends AbstractTagBase {
     /**
      * @param os
      *            the object of {@code OutputStream} to write to.
+     * @return the total number of bytes written
      * @throws IOException
      */
-    public void toOutputStream(final OutputStream os) throws IOException {
-        writePrintStructureToOutputStream(charset, os, true);
+    public int toOutputStream(final OutputStream os) throws IOException {
+        return writePrintStructureToOutputStream(charset, os, true);
     }
 
     /**
@@ -1325,17 +1337,12 @@ public abstract class AbstractHtml extends AbstractTagBase {
      *            the object of {@code OutputStream} to write to.
      * @param charset
      *            the charset
+     * @return
      * @throws IOException
      */
-    public void toOutputStream(final OutputStream os, final Charset charset)
+    public int toOutputStream(final OutputStream os, final Charset charset)
             throws IOException {
-        final Charset previousCharset = this.charset;
-        try {
-            this.charset = charset;
-            writePrintStructureToOutputStream(charset, os, true);
-        } finally {
-            this.charset = previousCharset;
-        }
+        return writePrintStructureToOutputStream(charset, os, true);
     }
 
     /**
@@ -1343,17 +1350,17 @@ public abstract class AbstractHtml extends AbstractTagBase {
      *            the object of {@code OutputStream} to write to.
      * @param charset
      *            the charset
+     * @return the total number of bytes written
      * @throws IOException
      */
-    public void toOutputStream(final OutputStream os, final String charset)
+    public int toOutputStream(final OutputStream os, final String charset)
             throws IOException {
 
         if (charset == null) {
-            writePrintStructureToOutputStream(Charset.forName(charset), os,
-                    true);
-        } else {
-            writePrintStructureToOutputStream(this.charset, os, true);
+            return writePrintStructureToOutputStream(Charset.forName(charset),
+                    os, true);
         }
+        return writePrintStructureToOutputStream(this.charset, os, true);
     }
 
     /**
@@ -1361,12 +1368,13 @@ public abstract class AbstractHtml extends AbstractTagBase {
      *            the object of {@code OutputStream} to write to.
      * @param rebuild
      *            true to rebuild & false to write previously built bytes.
+     * @return the total number of bytes written
      *
      * @throws IOException
      */
-    public void toOutputStream(final OutputStream os, final boolean rebuild)
+    public int toOutputStream(final OutputStream os, final boolean rebuild)
             throws IOException {
-        writePrintStructureToOutputStream(charset, os, rebuild);
+        return writePrintStructureToOutputStream(charset, os, rebuild);
     }
 
     /**
@@ -1376,15 +1384,15 @@ public abstract class AbstractHtml extends AbstractTagBase {
      *            true to rebuild & false to write previously built bytes.
      * @param charset
      *            the charset
+     * @return the total number of bytes written
      * @throws IOException
      */
-    public void toOutputStream(final OutputStream os, final boolean rebuild,
+    public int toOutputStream(final OutputStream os, final boolean rebuild,
             final Charset charset) throws IOException {
         if (charset == null) {
-            writePrintStructureToOutputStream(this.charset, os, rebuild);
-        } else {
-            writePrintStructureToOutputStream(charset, os, rebuild);
+            return writePrintStructureToOutputStream(this.charset, os, rebuild);
         }
+        return writePrintStructureToOutputStream(charset, os, rebuild);
     }
 
     /**
@@ -1394,17 +1402,17 @@ public abstract class AbstractHtml extends AbstractTagBase {
      *            true to rebuild & false to write previously built bytes.
      * @param charset
      *            the charset
+     * @return the total number of bytes written
      * @throws IOException
      */
-    public void toOutputStream(final OutputStream os, final boolean rebuild,
+    public int toOutputStream(final OutputStream os, final boolean rebuild,
             final String charset) throws IOException {
 
         if (charset == null) {
-            writePrintStructureToOutputStream(this.charset, os, rebuild);
-        } else {
-            writePrintStructureToOutputStream(Charset.forName(charset), os,
-                    rebuild);
+            return writePrintStructureToOutputStream(this.charset, os, rebuild);
         }
+        return writePrintStructureToOutputStream(Charset.forName(charset), os,
+                rebuild);
     }
 
     /*

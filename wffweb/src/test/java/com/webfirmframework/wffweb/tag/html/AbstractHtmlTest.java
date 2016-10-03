@@ -26,6 +26,7 @@ import org.junit.Test;
 
 import com.webfirmframework.wffweb.tag.html.attribute.Name;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
+import com.webfirmframework.wffweb.tag.html.attribute.global.Style;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Span;
@@ -79,8 +80,10 @@ public class AbstractHtmlTest {
                 Div div2 = new Div(this);
                 div2.addAttributes(name);
 
-                Assert.assertTrue(Arrays.asList(name.getOwnerTags()).contains(div1));
-                Assert.assertTrue(Arrays.asList(name.getOwnerTags()).contains(div2));
+                Assert.assertTrue(
+                        Arrays.asList(name.getOwnerTags()).contains(div1));
+                Assert.assertTrue(
+                        Arrays.asList(name.getOwnerTags()).contains(div2));
             }
         };
 
@@ -187,13 +190,13 @@ public class AbstractHtmlTest {
 
             long after = System.currentTimeMillis();
 
-            System.out.println("testPerformance "+htmlString.length()
+            System.out.println("testPerformance " + htmlString.length()
                     + " tag bytes generation took " + (after - before) + " ms");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    
+
     @Test
     public void testPerformanceByArrayDeque() {
 
@@ -210,17 +213,19 @@ public class AbstractHtmlTest {
             };
 
             byte[] wffBytes = div.toWffBMBytes();
-            
-//            AbstractHtml.getTagFromWffBMBytes(wffBytes);
+
+            // AbstractHtml.getTagFromWffBMBytes(wffBytes);
 
             long after = System.currentTimeMillis();
-            
-            String htmlString = div.toHtmlString();
-            
-            System.out.println("htmlString.length() : "+htmlString.length()+ " wffBytes.length "+wffBytes.length);
-            System.out.println("htmlString.length() - wffBytes.length : "+(htmlString.length() - wffBytes.length));
 
-            System.out.println("testPerformanceByArrayDeque "+wffBytes.length
+            String htmlString = div.toHtmlString();
+
+            System.out.println("htmlString.length() : " + htmlString.length()
+                    + " wffBytes.length " + wffBytes.length);
+            System.out.println("htmlString.length() - wffBytes.length : "
+                    + (htmlString.length() - wffBytes.length));
+
+            System.out.println("testPerformanceByArrayDeque " + wffBytes.length
                     + " tag bytes generation took " + (after - before) + " ms");
         } catch (Exception e) {
             e.printStackTrace();
@@ -256,13 +261,30 @@ public class AbstractHtmlTest {
             AbstractHtml abstractHtml = AbstractHtml
                     .getTagFromWffBMBytes(wffBMBytes);
 
-
             assertEquals(div.toHtmlString(), abstractHtml.toHtmlString());
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+    }
+
+    @Test
+    public void testToOutputStreamReturnedLength() throws Exception {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        Div div = new Div(null, new Style("background:green")) {
+            {
+                for (int i = 0; i < 100000; i++) {
+                    new Div(this);
+                }
+
+            }
+        };
+
+        int totalWritten = div.toOutputStream(baos);
+        byte[] divBytes = baos.toByteArray();
+        assertEquals(totalWritten, divBytes.length);
     }
 
 }
