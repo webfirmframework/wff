@@ -1021,8 +1021,8 @@ public abstract class AbstractHtml extends AbstractTagBase {
      * @author WFF
      * @throws IOException
      */
-    protected void writePrintStructureToOutputStream(final OutputStream os,
-            final boolean rebuild) throws IOException {
+    protected void writePrintStructureToOutputStream(final Charset charset,
+            final OutputStream os, final boolean rebuild) throws IOException {
         beforeWritePrintStructureToOutputStream();
         recurChildrenToOutputStream(charset, os,
                 new LinkedHashSet<AbstractHtml>(Arrays.asList(this)), rebuild);
@@ -1317,7 +1317,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
      * @throws IOException
      */
     public void toOutputStream(final OutputStream os) throws IOException {
-        writePrintStructureToOutputStream(os, true);
+        writePrintStructureToOutputStream(charset, os, true);
     }
 
     /**
@@ -1332,7 +1332,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
         final Charset previousCharset = this.charset;
         try {
             this.charset = charset;
-            writePrintStructureToOutputStream(os, true);
+            writePrintStructureToOutputStream(charset, os, true);
         } finally {
             this.charset = previousCharset;
         }
@@ -1347,12 +1347,12 @@ public abstract class AbstractHtml extends AbstractTagBase {
      */
     public void toOutputStream(final OutputStream os, final String charset)
             throws IOException {
-        final Charset previousCharset = this.charset;
-        try {
-            this.charset = Charset.forName(charset);
-            writePrintStructureToOutputStream(os, true);
-        } finally {
-            this.charset = previousCharset;
+
+        if (charset == null) {
+            writePrintStructureToOutputStream(Charset.forName(charset), os,
+                    true);
+        } else {
+            writePrintStructureToOutputStream(this.charset, os, true);
         }
     }
 
@@ -1366,10 +1366,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
      */
     public void toOutputStream(final OutputStream os, final boolean rebuild)
             throws IOException {
-        try {
-            writePrintStructureToOutputStream(os, rebuild);
-        } finally {
-        }
+        writePrintStructureToOutputStream(charset, os, rebuild);
     }
 
     /**
@@ -1383,12 +1380,10 @@ public abstract class AbstractHtml extends AbstractTagBase {
      */
     public void toOutputStream(final OutputStream os, final boolean rebuild,
             final Charset charset) throws IOException {
-        final Charset previousCharset = this.charset;
-        try {
-            this.charset = charset;
-            writePrintStructureToOutputStream(os, rebuild);
-        } finally {
-            this.charset = previousCharset;
+        if (charset == null) {
+            writePrintStructureToOutputStream(this.charset, os, rebuild);
+        } else {
+            writePrintStructureToOutputStream(charset, os, rebuild);
         }
     }
 
@@ -1403,12 +1398,12 @@ public abstract class AbstractHtml extends AbstractTagBase {
      */
     public void toOutputStream(final OutputStream os, final boolean rebuild,
             final String charset) throws IOException {
-        final Charset previousCharset = this.charset;
-        try {
-            this.charset = Charset.forName(charset);
-            writePrintStructureToOutputStream(os, rebuild);
-        } finally {
-            this.charset = previousCharset;
+
+        if (charset == null) {
+            writePrintStructureToOutputStream(this.charset, os, rebuild);
+        } else {
+            writePrintStructureToOutputStream(Charset.forName(charset), os,
+                    rebuild);
         }
     }
 
