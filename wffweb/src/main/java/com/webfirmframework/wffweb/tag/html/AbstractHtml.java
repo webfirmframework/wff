@@ -97,8 +97,6 @@ public abstract class AbstractHtml extends AbstractTagBase {
 
     private boolean htmlStartSBAsFirst;
 
-    private OutputStream outputStream;
-
     // for future development
     private WffBinaryMessageOutputStreamer wffBinaryMessageOutputStreamer;
 
@@ -1023,10 +1021,10 @@ public abstract class AbstractHtml extends AbstractTagBase {
      * @author WFF
      * @throws IOException
      */
-    protected void writePrintStructureToOutputStream(final boolean rebuild)
-            throws IOException {
+    protected void writePrintStructureToOutputStream(final OutputStream os,
+            final boolean rebuild) throws IOException {
         beforeWritePrintStructureToOutputStream();
-        recurChildrenToOutputStream(
+        recurChildrenToOutputStream(os,
                 new LinkedHashSet<AbstractHtml>(Arrays.asList(this)), true);
     }
 
@@ -1079,18 +1077,19 @@ public abstract class AbstractHtml extends AbstractTagBase {
      * @author WFF
      * @throws IOException
      */
-    private void recurChildrenToOutputStream(final Set<AbstractHtml> children,
-            final boolean rebuild) throws IOException {
+    private void recurChildrenToOutputStream(final OutputStream os,
+            final Set<AbstractHtml> children, final boolean rebuild)
+                    throws IOException {
 
         if (children != null && children.size() > 0) {
             for (final AbstractHtml child : children) {
                 child.setRebuild(rebuild);
-                outputStream.write(child.getOpeningTag().getBytes(charset));
+                os.write(child.getOpeningTag().getBytes(charset));
 
                 final Set<AbstractHtml> childrenOfChildren = child.children;
 
-                recurChildrenToOutputStream(childrenOfChildren, rebuild);
-                outputStream.write(child.closingTag.getBytes(charset));
+                recurChildrenToOutputStream(os, childrenOfChildren, rebuild);
+                os.write(child.closingTag.getBytes(charset));
             }
         }
     }
@@ -1317,12 +1316,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
      * @throws IOException
      */
     public void toOutputStream(final OutputStream os) throws IOException {
-        try {
-            outputStream = os;
-            writePrintStructureToOutputStream(true);
-        } finally {
-            outputStream = null;
-        }
+        writePrintStructureToOutputStream(os, true);
     }
 
     /**
@@ -1337,10 +1331,8 @@ public abstract class AbstractHtml extends AbstractTagBase {
         final Charset previousCharset = this.charset;
         try {
             this.charset = charset;
-            outputStream = os;
-            writePrintStructureToOutputStream(true);
+            writePrintStructureToOutputStream(os, true);
         } finally {
-            outputStream = null;
             this.charset = previousCharset;
         }
     }
@@ -1357,10 +1349,8 @@ public abstract class AbstractHtml extends AbstractTagBase {
         final Charset previousCharset = this.charset;
         try {
             this.charset = Charset.forName(charset);
-            outputStream = os;
-            writePrintStructureToOutputStream(true);
+            writePrintStructureToOutputStream(os, true);
         } finally {
-            outputStream = null;
             this.charset = previousCharset;
         }
     }
@@ -1376,10 +1366,8 @@ public abstract class AbstractHtml extends AbstractTagBase {
     public void toOutputStream(final OutputStream os, final boolean rebuild)
             throws IOException {
         try {
-            outputStream = os;
-            writePrintStructureToOutputStream(rebuild);
+            writePrintStructureToOutputStream(os, rebuild);
         } finally {
-            outputStream = null;
         }
     }
 
@@ -1397,10 +1385,8 @@ public abstract class AbstractHtml extends AbstractTagBase {
         final Charset previousCharset = this.charset;
         try {
             this.charset = charset;
-            outputStream = os;
-            writePrintStructureToOutputStream(rebuild);
+            writePrintStructureToOutputStream(os, rebuild);
         } finally {
-            outputStream = null;
             this.charset = previousCharset;
         }
     }
@@ -1419,10 +1405,8 @@ public abstract class AbstractHtml extends AbstractTagBase {
         final Charset previousCharset = this.charset;
         try {
             this.charset = Charset.forName(charset);
-            outputStream = os;
-            writePrintStructureToOutputStream(rebuild);
+            writePrintStructureToOutputStream(os, rebuild);
         } finally {
-            outputStream = null;
             this.charset = previousCharset;
         }
     }
