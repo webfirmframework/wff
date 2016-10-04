@@ -1,6 +1,6 @@
 var wffClientMethods = new function() {
 
-	getStringFromBytes = function(utf8Bytes) {
+	var getStringFromBytes = function(utf8Bytes) {
 		return wffGlobal.decoder.decode(new Uint8Array(utf8Bytes));
 	};
 
