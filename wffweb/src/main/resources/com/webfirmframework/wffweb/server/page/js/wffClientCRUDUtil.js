@@ -7,7 +7,7 @@ var wffClientCRUDUtil = new function() {
 	var encoder = wffGlobal.encoder;
 	var decoder = wffGlobal.decoder;
 
-	getStringFromBytes = function(utf8Bytes) {
+	var getStringFromBytes = function(utf8Bytes) {
 		return decoder.decode(new Uint8Array(utf8Bytes));
 	};
 
@@ -296,6 +296,16 @@ var wffClientCRUDUtil = new function() {
 			location.reload(true);
 		} else if (taskValue == wffGlobal.taskValues.RELOAD_BROWSER_FROM_CACHE) {
 			location.reload();
+		}  else if (taskValue == wffGlobal.taskValues.EXECURE_JS) {
+			
+			var js = getStringFromBytes(taskNameValue.values[1]);
+			
+			if (window.execScript) {
+				window.execScript(js);
+			} else {
+				eval(js);
+			}
+			
 		} else {
 			return false;
 		}

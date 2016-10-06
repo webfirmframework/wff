@@ -75,12 +75,56 @@ public enum BrowserPageAction {
     }
 
     /**
-     * @return the {@codeByteBuffer} for the browser action
+     * @return the action {@codeByteBuffer} for the browser action
      * @since 2.0.3
      * @author WFF
      */
     public ByteBuffer getActionByteBuffer() {
         return actionByteBuffer;
+    }
+
+    /**
+     * Gets the action {@code ByteBuffer} for executing the given JavaScript
+     *
+     * @param js
+     *            JavaScript to execute in the browser
+     * @return the action {@code ByteBuffer} for executing the given JavaScript
+     *         in the browser.
+     * @throws UnsupportedEncodingException
+     * @since 2.1.0
+     * @author WFF
+     */
+    public static ByteBuffer getActionByteBufferForExecuteJS(final String js)
+            throws UnsupportedEncodingException {
+        return ByteBuffer.wrap(getActionBytesForExecuteJS(js));
+    }
+
+    /**
+     * Gets the action bytes for executing the given JavaScript in the browser.
+     *
+     * @param js
+     *            JavaScript to execute in the browser
+     * @return the action bytes for executing the given JavaScript in the
+     *         browser.
+     * @throws UnsupportedEncodingException
+     * @since 2.1.0
+     * @author WFF
+     */
+    public static byte[] getActionBytesForExecuteJS(final String js)
+            throws UnsupportedEncodingException {
+
+        final NameValue taskNameValue = Task.EXECURE_JS.getTaskNameValue();
+        final byte[][] taskValue = taskNameValue.getValues();
+        final byte[][] values = new byte[taskValue.length + 1][0];
+
+        System.arraycopy(taskValue, 0, values, 0, taskValue.length);
+
+        values[taskValue.length] = js.getBytes("UTF-8");
+
+        taskNameValue.setValues(values);
+
+        return WffBinaryMessageUtil.VERSION_1
+                .getWffBinaryMessageBytes(taskNameValue);
     }
 
 }
