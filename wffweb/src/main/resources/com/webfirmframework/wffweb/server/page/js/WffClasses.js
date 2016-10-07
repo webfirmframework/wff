@@ -1,4 +1,4 @@
-getValueTypeByte = function(valueType) {
+var getValueTypeByte = function(valueType) {
 
 	if (valueType == '[object String]') {
 		return 0;
