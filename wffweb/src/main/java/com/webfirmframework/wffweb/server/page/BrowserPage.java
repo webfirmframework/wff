@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
@@ -77,7 +78,7 @@ public abstract class BrowserPage implements Serializable {
 
     private DataWffId wffScriptTagId;
 
-    private final Queue<NameValue[]> wffBMBytesQueue = new ArrayDeque<NameValue[]>();
+    private final Queue<ByteBuffer> wffBMBytesQueue = new ArrayDeque<ByteBuffer>();
 
     private static final Security ACCESS_OBJECT = new Security();
 
@@ -111,28 +112,31 @@ public abstract class BrowserPage implements Serializable {
         return wsListener;
     }
 
-    void push(final NameValue... wffBM) {
+    void push(final NameValue... nameValues) {
+        final byte[] wffBinaryMessageBytes = WffBinaryMessageUtil.VERSION_1
+                .getWffBinaryMessageBytes(nameValues);
+        push(ByteBuffer.wrap(wffBinaryMessageBytes));
+    }
+
+    private void push(final ByteBuffer wffBM) {
+
+        wffBMBytesQueue.add(wffBM);
 
         if (wsListener != null) {
 
-            wffBMBytesQueue.add(wffBM);
-
             while (wffBMBytesQueue.size() > 0) {
 
-                final NameValue[] nameValues = wffBMBytesQueue.poll();
+                final ByteBuffer byteBuffer = wffBMBytesQueue.poll();
 
-                if (nameValues == null) {
+                if (byteBuffer == null) {
                     break;
                 }
 
-                final byte[] wffBinaryMessageBytes = WffBinaryMessageUtil.VERSION_1
-                        .getWffBinaryMessageBytes(nameValues);
-
                 try {
-                    wsListener.push(wffBinaryMessageBytes);
+                    wsListener.push(byteBuffer.array());
                 } catch (final PushFailedException e) {
                     if (pushQueueEnabled) {
-                        wffBMBytesQueue.add(nameValues);
+                        wffBMBytesQueue.add(byteBuffer);
                     }
                     break;
                 }
@@ -644,6 +648,19 @@ public abstract class BrowserPage implements Serializable {
      */
     public void removeServerMethod(final String methodName) {
         serverMethods.remove(methodName);
+    }
+
+    /**
+     * performs action provided by {@code BrowserPageAction}.
+     *
+     * @param actionByteBuffer
+     *            The ByteBuffer object taken from {@code BrowserPageAction}
+     *            .Eg:- {@code BrowserPageAction.RELOAD.getActionByteBuffer();}
+     * @since 2.1.0
+     * @author WFF
+     */
+    public void performBrowserPageAction(final ByteBuffer actionByteBuffer) {
+        push(actionByteBuffer);
     }
 
 }
