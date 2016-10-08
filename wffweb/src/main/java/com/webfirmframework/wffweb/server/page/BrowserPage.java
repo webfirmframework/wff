@@ -133,7 +133,7 @@ public abstract class BrowserPage implements Serializable {
                 }
 
                 try {
-                    wsListener.push(byteBuffer.array());
+                    wsListener.push(byteBuffer);
                 } catch (final PushFailedException e) {
                     if (pushQueueEnabled) {
                         wffBMBytesQueue.add(byteBuffer);

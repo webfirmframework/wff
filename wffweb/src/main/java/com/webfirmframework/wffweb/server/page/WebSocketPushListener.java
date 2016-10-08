@@ -15,9 +15,12 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
+import java.nio.ByteBuffer;
+
 import com.webfirmframework.wffweb.PushFailedException;
 
 public interface WebSocketPushListener {
 
-    public abstract void push(final byte[] message) throws PushFailedException;
+    public abstract void push(final ByteBuffer data) throws PushFailedException;
+
 }
