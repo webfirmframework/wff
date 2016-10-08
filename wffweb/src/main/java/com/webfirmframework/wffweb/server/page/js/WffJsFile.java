@@ -50,7 +50,9 @@ public enum WffJsFile {
 
     WFF_CLIENT_METHODS("wffClientMethods.js"),
 
-    WFF_CLASSES("WffClasses.js");
+    WFF_CLASSES("WffClasses.js"),
+
+    WFF_ASYNC("wffAsync.js");
 
     public static final Logger LOGGER = Logger
             .getLogger(WffJsFile.class.getName());

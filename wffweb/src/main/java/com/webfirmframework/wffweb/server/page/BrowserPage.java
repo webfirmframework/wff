@@ -22,6 +22,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -82,6 +83,8 @@ public abstract class BrowserPage implements Serializable {
 
     // by default the push queue should be enabled
     private boolean pushQueueEnabled = true;
+
+    private final Map<String, ServerAsyncMethod> serverMethods = new HashMap<String, ServerAsyncMethod>();
 
     // for security purpose, the class name should not be modified
     private static final class Security implements Serializable {
@@ -167,6 +170,156 @@ public abstract class BrowserPage implements Serializable {
 
     public abstract AbstractHtml render();
 
+    private void invokeAsychMethod(final List<NameValue> nameValues)
+            throws UnsupportedEncodingException {
+        //@formatter:off
+        // invoke method task format :-
+        // { "name": task_byte, "values" : [invoke_method_byte_from_Task_enum]}, { "name": data-wff-id, "values" : [ event_attribute_name ]}
+        // { "name": 2, "values" : [[0]]}, { "name":"C55", "values" : ["onclick"]}
+        //@formatter:on
+
+        final NameValue wffTagIdAndAttrName = nameValues.get(1);
+        final byte[] intBytes = new byte[wffTagIdAndAttrName.getName().length
+                - 1];
+        System.arraycopy(wffTagIdAndAttrName.getName(), 1, intBytes, 0,
+                intBytes.length);
+
+        final String wffTagId = new String(wffTagIdAndAttrName.getName(), 0, 1,
+                "UTF-8")
+                + WffBinaryMessageUtil.getIntFromOptimizedBytes(intBytes);
+
+        final byte[][] values = wffTagIdAndAttrName.getValues();
+        final String eventAttrName = new String(values[0], "UTF-8");
+
+        WffBMObject wffBMObject = null;
+        if (values.length > 1) {
+            final byte[] wffBMObjectBytes = values[1];
+            wffBMObject = new WffBMObject(wffBMObjectBytes, true);
+
+        }
+
+        final AbstractHtml methodTag = tagByWffId.get(wffTagId);
+        if (methodTag != null) {
+
+            final AbstractAttribute dataWffIdAttr = methodTag
+                    .getAttributeByName(eventAttrName);
+
+            if (dataWffIdAttr != null) {
+
+                if (dataWffIdAttr instanceof EventAttribute) {
+
+                    final EventAttribute eventAttr = (EventAttribute) dataWffIdAttr;
+
+                    final ServerAsyncMethod serverAsyncMethod = eventAttr
+                            .getServerAsyncMethod();
+
+                    final ServerAsyncMethod.Event event = new ServerAsyncMethod.Event(
+                            methodTag);
+
+                    final WffBMObject returnedObject = serverAsyncMethod
+                            .asyncMethod(wffBMObject, event);
+
+                    final String jsPostFunctionBody = eventAttr
+                            .getJsPostFunctionBody();
+
+                    if (jsPostFunctionBody != null) {
+
+                        final NameValue invokePostFunTask = Task.INVOKE_POST_FUNCTION
+                                .getTaskNameValue();
+                        final NameValue nameValue = new NameValue();
+                        // name as function body string and value at
+                        // zeroth index as
+                        // wffBMObject bytes
+                        nameValue.setName(jsPostFunctionBody.getBytes("UTF-8"));
+
+                        if (returnedObject != null) {
+                            nameValue.setValues(new byte[][] {
+                                    returnedObject.build(true) });
+                        }
+
+                        push(invokePostFunTask, nameValue);
+                    }
+
+                } else {
+                    LOGGER.severe(dataWffIdAttr
+                            + " is NOT instanceof EventAttribute");
+                }
+
+            } else {
+                LOGGER.severe("no event attribute found for " + dataWffIdAttr);
+            }
+
+        } else {
+            if (!PRODUCTION_MODE) {
+                LOGGER.severe("No tag found for wffTagId " + wffTagId);
+            }
+        }
+    }
+
+    private void invokeCustomServerMethod(final List<NameValue> nameValues)
+            throws UnsupportedEncodingException {
+        //@formatter:off
+        // invoke custom server method task format :-
+        // { "name": task_byte, "values" : [invoke_custom_server_method_byte_from_Task_enum]},
+        // { "name": server method name bytes, "values" : [ wffBMObject bytes ]}
+        // { "name": callback function id bytes, "values" : [ ]}
+        //@formatter:on
+
+        final NameValue methodNameAndArg = nameValues.get(1);
+        final String methodName = new String(methodNameAndArg.getName(),
+                "UTF-8");
+
+        final ServerAsyncMethod serverAsyncMethod = serverMethods
+                .get(methodName);
+
+        if (serverAsyncMethod != null) {
+
+            final byte[][] values = methodNameAndArg.getValues();
+
+            WffBMObject wffBMObject = null;
+
+            if (values.length > 0) {
+                wffBMObject = new WffBMObject(values[0], true);
+            }
+
+            final ServerAsyncMethod.Event event = new ServerAsyncMethod.Event(
+                    methodName);
+
+            final WffBMObject returnedObject = serverAsyncMethod
+                    .asyncMethod(wffBMObject, event);
+
+            String callbackFunId = null;
+
+            if (nameValues.size() > 2) {
+                final NameValue callbackFunNameValue = nameValues.get(2);
+                callbackFunId = new String(callbackFunNameValue.getName(),
+                        "UTF-8");
+            }
+
+            if (callbackFunId != null) {
+                final NameValue invokeCallbackFuncTask = Task.INVOKE_CALLBACK_FUNCTION
+                        .getTaskNameValue();
+
+                final NameValue nameValue = new NameValue();
+                nameValue.setName(callbackFunId.getBytes("UTF-8"));
+
+                if (returnedObject != null) {
+                    nameValue.setValues(
+                            new byte[][] { returnedObject.build(true) });
+                }
+
+                push(invokeCallbackFuncTask, nameValue);
+
+            }
+
+        } else {
+            LOGGER.warning(methodName
+                    + " doesn't exist, please add it as browserPage.addServerMethod(\""
+                    + methodName + "\", serverAsyncMethod)");
+        }
+
+    }
+
     /**
      * executes the task in the given wff binary message
      *
@@ -188,91 +341,12 @@ public abstract class BrowserPage implements Serializable {
             // IM stands for Invoke Method
             if (taskValue == Task.INVOKE_ASYNC_METHOD.getValueByte()) {
 
-                //@formatter:off
-                // invoke method task format :-
-                // { "name": task_byte, "values" : [invoke_method_byte_from_Task_enum]}, { "name": data-wff-id, "values" : [ event_attribute_name ]}
-                // { "name": 2, "values" : [[0]]}, { "name":"C55", "values" : ["onclick"]}
-                //@formatter:on
+                invokeAsychMethod(nameValues);
 
-                final NameValue wffTagIdAndAttrName = nameValues.get(1);
-                final byte[] intBytes = new byte[wffTagIdAndAttrName
-                        .getName().length - 1];
-                System.arraycopy(wffTagIdAndAttrName.getName(), 1, intBytes, 0,
-                        intBytes.length);
+            } else if (taskValue == Task.INVOKE_CUSTOM_SERVER_METHOD
+                    .getValueByte()) {
 
-                final String wffTagId = new String(
-                        wffTagIdAndAttrName.getName(), 0, 1, "UTF-8")
-                        + WffBinaryMessageUtil
-                                .getIntFromOptimizedBytes(intBytes);
-
-                final byte[][] values = wffTagIdAndAttrName.getValues();
-                final String eventAttrName = new String(values[0], "UTF-8");
-
-                WffBMObject wffBMObject = null;
-                if (values.length > 1) {
-                    final byte[] wffBMObjectBytes = values[1];
-                    wffBMObject = new WffBMObject(wffBMObjectBytes, true);
-
-                }
-
-                final AbstractHtml methodTag = tagByWffId.get(wffTagId);
-                if (methodTag != null) {
-
-                    final AbstractAttribute dataWffIdAttr = methodTag
-                            .getAttributeByName(eventAttrName);
-
-                    if (dataWffIdAttr != null) {
-
-                        if (dataWffIdAttr instanceof EventAttribute) {
-
-                            final EventAttribute eventAttr = (EventAttribute) dataWffIdAttr;
-
-                            final ServerAsyncMethod serverAsyncMethod = eventAttr
-                                    .getServerAsyncMethod();
-
-                            final ServerAsyncMethod.Event event = new ServerAsyncMethod.Event(
-                                    methodTag);
-
-                            final WffBMObject returnedObject = serverAsyncMethod
-                                    .asyncMethod(wffBMObject, event);
-
-                            final String jsPostFunctionBody = eventAttr
-                                    .getJsPostFunctionBody();
-
-                            if (jsPostFunctionBody != null) {
-
-                                final NameValue invokePostFunTask = Task.INVOKE_POST_FUNCTION
-                                        .getTaskNameValue();
-                                final NameValue nameValue = new NameValue();
-                                // name as function body string and value at
-                                // zeroth index as
-                                // wffBMObject bytes
-                                nameValue.setName(
-                                        jsPostFunctionBody.getBytes("UTF-8"));
-
-                                if (returnedObject != null) {
-                                    nameValue.setValues(new byte[][] {
-                                            returnedObject.build(true) });
-                                }
-
-                                push(invokePostFunTask, nameValue);
-                            }
-
-                        } else {
-                            LOGGER.severe(dataWffIdAttr
-                                    + " is NOT instanceof EventAttribute");
-                        }
-
-                    } else {
-                        LOGGER.severe("no event attribute found for "
-                                + dataWffIdAttr);
-                    }
-
-                } else {
-                    if (!PRODUCTION_MODE) {
-                        LOGGER.severe("No tag found for wffTagId " + wffTagId);
-                    }
-                }
+                invokeCustomServerMethod(nameValues);
 
             }
 
@@ -325,7 +399,8 @@ public abstract class BrowserPage implements Serializable {
     private void embedWffScriptIfRequired(final AbstractHtml abstractHtml,
             final String wsUrlWithInstanceId) {
 
-        if (wffScriptTagId != null && tagByWffId.containsKey(wffScriptTagId.getValue())) {
+        if (wffScriptTagId != null
+                && tagByWffId.containsKey(wffScriptTagId.getValue())) {
             // no need to add script tag if it exists in the ui
             return;
         }
@@ -547,6 +622,28 @@ public abstract class BrowserPage implements Serializable {
      */
     public void setPushQueueEnabled(final boolean enabledPushQueue) {
         pushQueueEnabled = enabledPushQueue;
+    }
+
+    /**
+     * @param methodName
+     * @param serverAsyncMethod
+     * @since 2.1.0
+     * @author WFF
+     */
+    public void addServerMethod(final String methodName,
+            final ServerAsyncMethod serverAsyncMethod) {
+        serverMethods.put(methodName, serverAsyncMethod);
+    }
+
+    /**
+     * removes the method from
+     *
+     * @param methodName
+     * @since 2.1.0
+     * @author WFF
+     */
+    public void removeServerMethod(final String methodName) {
+        serverMethods.remove(methodName);
     }
 
 }

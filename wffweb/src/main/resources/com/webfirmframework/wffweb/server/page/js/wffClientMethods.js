@@ -42,9 +42,31 @@ var wffClientMethods = new function() {
 			}
 			func(jsObject);
 
-			return true;
+		} else if (taskValue == wffGlobal.taskValues.INVOKE_CALLBACK_FUNCTION) {
+			console.log('taskValues.INVOKE_CALLBACK_FUNCTION');
+
+			var funKey = getStringFromBytes(nameValues[1].name);
+			var cbFun = wffAsync.callbackFunctions[funKey];
+
+			var values = nameValues[1].values;
+			var jsObject = null;
+
+			if (values.length > 0) {
+				var value = values[0];
+				if (value.length > 0) {
+					var bmObjBytes = nameValues[1].values[0];
+					jsObject = new JsObjectFromBMBytes(bmObjBytes, true);
+				}
+			}
+
+			cbFun(jsObject);
+
+			delete wffAsync.callbackFunctions[funKey];
+
+		} else {
+			return false;
 		}
 
-		return false;
+		return true;
 	};
 };

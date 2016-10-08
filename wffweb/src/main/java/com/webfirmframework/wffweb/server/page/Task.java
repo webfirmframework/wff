@@ -59,7 +59,11 @@ public enum Task {
 
     RELOAD_BROWSER,
 
-    RELOAD_BROWSER_FROM_CACHE;
+    RELOAD_BROWSER_FROM_CACHE,
+
+    INVOKE_CALLBACK_FUNCTION,
+
+    INVOKE_CUSTOM_SERVER_METHOD;
 
     private byte valueByte;
 

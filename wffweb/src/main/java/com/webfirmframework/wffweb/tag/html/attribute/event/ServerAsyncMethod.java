@@ -26,6 +26,12 @@ public interface ServerAsyncMethod extends Serializable {
 
         private AbstractHtml sourceTag;
 
+        private String serverMethodName;
+
+        public Event(final String serverMethodName) {
+            this.serverMethodName = serverMethodName;
+        }
+
         public Event(final AbstractHtml sourceTag) {
             super();
             this.sourceTag = sourceTag;
@@ -45,6 +51,15 @@ public interface ServerAsyncMethod extends Serializable {
         public void setSourceTag(final AbstractHtml sourceTag) {
             this.sourceTag = sourceTag;
         }
+
+        public String getServerMethodName() {
+            return serverMethodName;
+        }
+
+        public void setServerMethodName(final String serverMethodName) {
+            this.serverMethodName = serverMethodName;
+        }
+
     }
 
     public abstract WffBMObject asyncMethod(WffBMObject wffBMObject,
