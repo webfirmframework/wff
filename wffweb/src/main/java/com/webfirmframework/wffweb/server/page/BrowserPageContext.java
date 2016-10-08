@@ -21,8 +21,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.webfirmframework.wffweb.WffRuntimeException;
-
 /**
  * @author WFF
  * @since 2.0.0
@@ -174,8 +172,11 @@ public enum BrowserPageContext {
      *            parameter in websocket connection
      * @since 2.0.0
      * @author WFF
+     * @return the {@code BrowserPage} object associated with this instance id,
+     *         if the instanceId is associated with a closed http session it
+     *         will return null.
      */
-    public void webSocketOpened(final String wffInstanceId) {
+    public BrowserPage webSocketOpened(final String wffInstanceId) {
 
         final String httpSessionId = instanceIdHttpSessionId.get(wffInstanceId);
 
@@ -183,19 +184,11 @@ public enum BrowserPageContext {
             final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages
                     .get(httpSessionId);
             if (browserPages != null) {
-                final BrowserPage browserPage = browserPages.get(wffInstanceId);
-                if (browserPage == null) {
-                    throw new WffRuntimeException(
-                            "The browserPage is not added in BrowserPageContext");
-                }
-            }
-        } else {
-            if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.warning(
-                        "The associatd HttpSession is alread closed for this instance id or browserPage is not added in BrowserPageContext");
+                return browserPages.get(wffInstanceId);
             }
         }
 
+        return null;
     }
 
     /**
@@ -206,8 +199,24 @@ public enum BrowserPageContext {
      *            parameter in websocket connection
      * @since 2.0.0
      * @author WFF
+     * @deprecated
      */
+    @Deprecated
     public void webSocketClosed(final String wffInstanceId) {
+        // NOP for future development
+    }
+
+    /**
+     * this method should be called when the websocket is closed
+     *
+     * @param wffInstanceId
+     *            the wffInstanceId which can be retried from the request
+     *            parameter in websocket connection
+     * @since 2.1.0
+     * @author WFF
+     */
+    public void webSocketClosed(final String wffInstanceId,
+            final String webSocketId) {
         // NOP for future development
     }
 
@@ -244,15 +253,32 @@ public enum BrowserPageContext {
     }
 
     /**
-     * this method should be called when the websocket is closed
+     * This method is will be removed in the next version. Use
+     * {@code webSocketMessaged} method instead of this method.
      *
      * @param wffInstanceId
      *            the wffInstanceId which can be retried from the request
      *            parameter in websocket connection.
      * @since 2.0.0
      * @author WFF
+     * @deprecated use webSocketMessaged which does the same job.
      */
+    @Deprecated
     public BrowserPage websocketMessaged(final String wffInstanceId,
+            final byte[] message) {
+        return webSocketMessaged(wffInstanceId, message);
+    }
+
+    /**
+     * this method should be called when the websocket is closed
+     *
+     * @param wffInstanceId
+     *            the wffInstanceId which can be retried from the request
+     *            parameter in websocket connection.
+     * @since 2.1.0
+     * @author WFF
+     */
+    public BrowserPage webSocketMessaged(final String wffInstanceId,
             final byte[] message) {
 
         final BrowserPage browserPage = instanceIdBrowserPage
