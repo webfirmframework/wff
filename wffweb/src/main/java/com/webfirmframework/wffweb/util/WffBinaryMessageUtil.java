@@ -302,43 +302,44 @@ public enum WffBinaryMessageUtil {
             return extractEachValueBytes;
         }
 
-        private byte[][] extractEachValueBytes(final byte[] valueLengthBytes,
-                final int valueLengthBytesLength, final byte[] valueBytes,
-                final int[] valueBytesIndex, final int[] eachValueBytesCount,
-                final byte[][][] finalValues, final int[] finalValuesIndex) {
-
-            for (; valueBytesIndex[0] < valueBytes.length; valueBytesIndex[0]++) {
-                System.arraycopy(valueBytes, valueBytesIndex[0],
-                        valueLengthBytes, 0, valueLengthBytesLength);
-                valueBytesIndex[0] += valueLengthBytesLength;
-                final int eachValueBytesLength = getIntFromOptimizedBytes(
-                        valueLengthBytes);
-                final byte[] eachValueBytes = new byte[eachValueBytesLength];
-
-                System.arraycopy(valueBytes, valueBytesIndex[0], eachValueBytes,
-                        0, eachValueBytes.length);
-                eachValueBytesCount[0]++;
-
-                valueBytesIndex[0] += eachValueBytesLength - 1;
-
-                valueBytesIndex[0]++;
-                extractEachValueBytes(valueLengthBytes, valueLengthBytesLength,
-                        valueBytes, valueBytesIndex, eachValueBytesCount,
-                        finalValues, finalValuesIndex);
-                if (finalValues[0].length == 0) {
-                    finalValuesIndex[0] = eachValueBytesCount[0] - 1;
-                    finalValues[0] = new byte[eachValueBytesCount[0]][1];
-                }
-
-                finalValues[0][finalValuesIndex[0]] = eachValueBytes;
-                finalValuesIndex[0] = finalValuesIndex[0] - 1;
-            }
-
-            return finalValues[0];
-        }
     };
 
     private WffBinaryMessageUtil() {
+    }
+
+    private static byte[][] extractEachValueBytes(final byte[] valueLengthBytes,
+            final int valueLengthBytesLength, final byte[] valueBytes,
+            final int[] valueBytesIndex, final int[] eachValueBytesCount,
+            final byte[][][] finalValues, final int[] finalValuesIndex) {
+
+        for (; valueBytesIndex[0] < valueBytes.length; valueBytesIndex[0]++) {
+            System.arraycopy(valueBytes, valueBytesIndex[0], valueLengthBytes,
+                    0, valueLengthBytesLength);
+            valueBytesIndex[0] += valueLengthBytesLength;
+            final int eachValueBytesLength = getIntFromOptimizedBytes(
+                    valueLengthBytes);
+            final byte[] eachValueBytes = new byte[eachValueBytesLength];
+
+            System.arraycopy(valueBytes, valueBytesIndex[0], eachValueBytes, 0,
+                    eachValueBytes.length);
+            eachValueBytesCount[0]++;
+
+            valueBytesIndex[0] += eachValueBytesLength - 1;
+
+            valueBytesIndex[0]++;
+            extractEachValueBytes(valueLengthBytes, valueLengthBytesLength,
+                    valueBytes, valueBytesIndex, eachValueBytesCount,
+                    finalValues, finalValuesIndex);
+            if (finalValues[0].length == 0) {
+                finalValuesIndex[0] = eachValueBytesCount[0] - 1;
+                finalValues[0] = new byte[eachValueBytesCount[0]][1];
+            }
+
+            finalValues[0][finalValuesIndex[0]] = eachValueBytes;
+            finalValuesIndex[0] = finalValuesIndex[0] - 1;
+        }
+
+        return finalValues[0];
     }
 
     /**
