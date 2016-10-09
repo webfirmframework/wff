@@ -57,26 +57,8 @@ var wffBMCRUIDUtil = new function() {
 
 		return wffBMUtil.getWffBinaryMessageBytes(nameValues);
 	};
-
-	this.getTagCreatedWffBMBytes = function(tag, parentDocIndex) {
-		var nameValues = [];
-
-		var tUtf8Bytes = encoder.encode("T");
-		var cUtf8Bytes = encoder.encode("C");
-		var taskNameValue = {
-			'name' : tUtf8Bytes,
-			'values' : [ cUtf8Bytes ]
-		};
-		nameValues.push(taskNameValue);
-
-		var parentIndex = 0;
-		recurChild(nameValues, tag, parentIndex);
-		// the parent index in the docuement.
-		nameValues[1].name = wffBMUtil.getOptimizedBytesFromInt(parentDocIndex);
-		return wffBMUtil.getWffBinaryMessageBytes(nameValues);
-	};
-
-	recurChild = function(nameValues, tag, parentIndex) {
+	
+	var recurChild = function(nameValues, tag, parentIndex) {
 
 		var indexInWffBinaryMessage = parentIndex + 1;
 
@@ -132,5 +114,25 @@ var wffBMCRUIDUtil = new function() {
 		}
 
 	};
+
+	this.getTagCreatedWffBMBytes = function(tag, parentDocIndex) {
+		var nameValues = [];
+
+		var tUtf8Bytes = encoder.encode("T");
+		var cUtf8Bytes = encoder.encode("C");
+		var taskNameValue = {
+			'name' : tUtf8Bytes,
+			'values' : [ cUtf8Bytes ]
+		};
+		nameValues.push(taskNameValue);
+
+		var parentIndex = 0;
+		recurChild(nameValues, tag, parentIndex);
+		// the parent index in the docuement.
+		nameValues[1].name = wffBMUtil.getOptimizedBytesFromInt(parentDocIndex);
+		return wffBMUtil.getWffBinaryMessageBytes(nameValues);
+	};
+
+	
 
 };

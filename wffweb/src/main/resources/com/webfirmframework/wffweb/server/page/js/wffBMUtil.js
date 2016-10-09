@@ -159,7 +159,7 @@ var wffBMUtil = new function() {
 	 * @param valueBytes
 	 * @returns {Array} of {Array}
 	 */
-	extractValuesFromValueBytes = function(valueLengthBytesLength, valueBytes) {
+	var extractValuesFromValueBytes = function(valueLengthBytesLength, valueBytes) {
 
 		var values = [];
 
@@ -187,7 +187,7 @@ var wffBMUtil = new function() {
 	 * var array1 = [1]; var array2 = [2]; array1.concat(array2); will not work,
 	 * console.log(array1) will print [1]
 	 */
-	concatArrayValues = function(appendToArray, valuesToAppend) {
+	var concatArrayValues = function(appendToArray, valuesToAppend) {
 		for (var a = 0; a < valuesToAppend.length; a++) {
 			appendToArray.push(valuesToAppend[a]);
 		}
@@ -205,7 +205,7 @@ var wffBMUtil = new function() {
 	 * @param length
 	 *            upto the given length the values will be appended
 	 */
-	concatArrayValuesFromPosition = function(appendToArray, valuesFrom,
+	var concatArrayValuesFromPosition = function(appendToArray, valuesFrom,
 			position, length) {
 		var uptoIndex = position + length;
 		for (var a = position; a < uptoIndex; a++) {
@@ -218,7 +218,7 @@ var wffBMUtil = new function() {
 	 *            the bytes to convert to integer value
 	 * @returns the integer value from the given bytes
 	 */
-	getIntFromBytes = function(bytes) {
+	var getIntFromBytes = function(bytes) {
 		return bytes[0] << 24 | (bytes[1] & 0xFF) << 16
 				| (bytes[2] & 0xFF) << 8 | (bytes[3] & 0xFF);
 	};
@@ -227,7 +227,7 @@ var wffBMUtil = new function() {
 	 * @param value
 	 * @returns {Array} the bytes for the given integer value
 	 */
-	getBytesFromInt = function(value) {
+	var getBytesFromInt = function(value) {
 		var bytes = [ (value >> 24), (value >> 16), (value >> 8), value ];
 		return bytes;
 	};
@@ -238,7 +238,7 @@ var wffBMUtil = new function() {
 	 *            obtained
 	 * @return the integer value from the given bytes
 	 */
-	getIntFromOptimizedBytes = function(bytes) {
+	var getIntFromOptimizedBytes = function(bytes) {
 		if (bytes.length == 4) {
 			return bytes[0] << 24 | (bytes[1] & 0xFF) << 16
 					| (bytes[2] & 0xFF) << 8 | (bytes[3] & 0xFF);
@@ -263,7 +263,7 @@ var wffBMUtil = new function() {
 	 *            the given integer value.
 	 * @return the bytes for the corresponding integer given.
 	 */
-	getOptimizedBytesFromInt = function(value) {
+	var getOptimizedBytesFromInt = function(value) {
 
 		var zerothIndex = (value >> 24);
 		var firstIndex = (value >> 16);
@@ -299,7 +299,7 @@ var wffBMUtil = new function() {
 	 *         given.
 	 * 
 	 */
-	getLengthOfOptimizedBytesFromInt = function(value) {
+	var getLengthOfOptimizedBytesFromInt = function(value) {
 
 		var zerothIndex = (value >> 24);
 		var firstIndex = (value >> 16);
@@ -329,7 +329,7 @@ var wffBMUtil = new function() {
 	 *            3 or 4.
 	 * @return the bytes for the corresponding integer given.
 	 */
-	getLastBytesFromInt = function(value, lastNoOfBytes) {
+	var getLastBytesFromInt = function(value, lastNoOfBytes) {
 
 		var zerothIndex = (value >> 24);
 		var firstIndex = (value >> 16);
@@ -354,7 +354,7 @@ var wffBMUtil = new function() {
 	 *            Floating Point.
 	 * @returns {Uint8Array}
 	 */
-	getBytesFromDouble = function(doubleValue) {
+	var getBytesFromDouble = function(doubleValue) {
 		var arrayBuff = new ArrayBuffer(8);
 		var float64 = new Float64Array(arrayBuff);
 		float64[0] = doubleValue;
@@ -371,7 +371,7 @@ var wffBMUtil = new function() {
 	 *            standard value.
 	 * @returns the number
 	 */
-	getDoubleFromOptimizedBytes = function(bytes) {
+	var getDoubleFromOptimizedBytes = function(bytes) {
 		var buffer = new ArrayBuffer(8);
 		var uInt8Array = new Uint8Array(buffer);
 

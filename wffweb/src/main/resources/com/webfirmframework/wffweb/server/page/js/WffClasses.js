@@ -33,7 +33,7 @@ var WffBMArray = function(jsArray, outer) {
 	this.jsArray = jsArray;
 	this.outer = outer;
 
-	getWffBMArray = function(jsArray, outer) {
+	var getWffBMArray = function(jsArray, outer) {
 
 		var nameValues = [];
 

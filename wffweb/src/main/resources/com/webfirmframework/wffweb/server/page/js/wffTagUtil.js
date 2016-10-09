@@ -84,7 +84,7 @@ var wffTagUtil = new function() {
 		return wffIdBytes;
 	};
 
-	splitAttrNameValue = function(attrNameValue) {
+	var splitAttrNameValue = function(attrNameValue) {
 		// attrNameValue will contain string like name=attr-name
 		var attrName;
 		var attrValue;
