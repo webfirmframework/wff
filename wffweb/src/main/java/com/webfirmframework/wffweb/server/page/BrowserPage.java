@@ -74,6 +74,10 @@ public abstract class BrowserPage implements Serializable {
 
     private AbstractHtml abstractHtml;
 
+    private final Map<String, WebSocketPushListener> sessionIdWsListeners = new HashMap<String, WebSocketPushListener>();
+
+    private final Deque<WebSocketPushListener> wsListeners = new ArrayDeque<WebSocketPushListener>();
+
     private WebSocketPushListener wsListener;
 
     private DataWffId wffScriptTagId;
@@ -106,6 +110,42 @@ public abstract class BrowserPage implements Serializable {
     public void setWebSocketPushListener(
             final WebSocketPushListener wsListener) {
         this.wsListener = wsListener;
+    }
+
+    /**
+     * adds the websocket listener for the given websocket session
+     *
+     * @param sessionId
+     *            the unique id of websocket session
+     * @param wsListener
+     * @since 2.1.0
+     * @author WFF
+     */
+    public void addWebSocketPushListener(final String sessionId,
+            final WebSocketPushListener wsListener) {
+
+        sessionIdWsListeners.put(sessionId, wsListener);
+        wsListeners.push(wsListener);
+
+        this.wsListener = wsListener;
+
+    }
+
+    /**
+     * removes the websocket listener added for this websocket session
+     *
+     * @param sessionId
+     *            the unique id of websocket session
+     * @since 2.1.0
+     * @author WFF
+     */
+    public void removeWebSocketPushListener(final String sessionId) {
+
+        final WebSocketPushListener removed = sessionIdWsListeners
+                .remove(sessionId);
+        wsListeners.remove(removed);
+
+        wsListener = wsListeners.peek();
     }
 
     public WebSocketPushListener getWsListener() {

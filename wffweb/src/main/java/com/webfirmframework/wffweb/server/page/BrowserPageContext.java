@@ -207,17 +207,25 @@ public enum BrowserPageContext {
     }
 
     /**
-     * this method should be called when the websocket is closed
+     * this method should be called when the websocket is closed.
      *
      * @param wffInstanceId
      *            the wffInstanceId which can be retried from the request
      *            parameter in websocket connection
+     * @param sessionId
+     *            the websocket session id, i.e. the unique id of the websocket
+     *            session which is given in
+     *            {@code BrowserPage#addWebSocketPushListener} method.
      * @since 2.1.0
      * @author WFF
      */
     public void webSocketClosed(final String wffInstanceId,
-            final String webSocketId) {
-        // NOP for future development
+            final String sessionId) {
+        final BrowserPage browserPage = instanceIdBrowserPage
+                .get(wffInstanceId);
+        if (browserPage != null) {
+            browserPage.removeWebSocketPushListener(sessionId);
+        }
     }
 
     /**
