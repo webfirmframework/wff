@@ -218,14 +218,16 @@ public enum BrowserPageContext {
      *            {@code BrowserPage#addWebSocketPushListener} method.
      * @since 2.1.0
      * @author WFF
+     * @return browserPage instance associated with this wffInstanceId
      */
-    public void webSocketClosed(final String wffInstanceId,
+    public BrowserPage webSocketClosed(final String wffInstanceId,
             final String sessionId) {
         final BrowserPage browserPage = instanceIdBrowserPage
                 .get(wffInstanceId);
         if (browserPage != null) {
             browserPage.removeWebSocketPushListener(sessionId);
         }
+        return browserPage;
     }
 
     /**
