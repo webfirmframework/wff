@@ -1,24 +1,25 @@
 var getValueTypeByte = function(valueType) {
 
-	if (valueType == '[object String]') {
+	if (valueType === '[object String]') {
 		return 0;
-	} else if (valueType == '[object Number]') {
+	} else if (valueType === '[object Number]') {
 		return 1;
-	} else if (valueType == '[object Undefined]') {
+	} else if (valueType === '[object Undefined]') {
 		return 2;
-	} else if (valueType == '[object Null]') {
+	} else if (valueType === '[object Null]') {
 		return 3;
-	} else if (valueType == '[object Boolean]') {
+	} else if (valueType === '[object Boolean]') {
 		return 4;
-	} else if (valueType == '[object Object]') {
+	} else if (valueType === '[object Object]') {
 		return 5;
-	} else if (valueType == '[object Array]') {
+	} else if (valueType === '[object Array]') {
 		return 6;
-	} else if (valueType == '[object RegExp]') {
+	} else if (valueType === '[object RegExp]') {
 		return 7;
-	} else if (valueType == '[object Function]') {
+	} else if (valueType === '[object Function]') {
 		return 8;
-	} else if (valueType == '[object Int8Array]') {
+	} else if (valueType === '[object Int8Array]' 
+		|| valueType == "[object Uint8Array]") {
 		return 9;
 	}
 
@@ -186,7 +187,7 @@ var WffBMByteArray = function(uInt8Array, outer) {
 
 		nameValue.values = [ uInt8Array ];
 
-		console.log('values', values);
+		console.log('WffBMByteArray nameValue.values', nameValue.values);
 
 		return wffBMUtil.getWffBinaryMessageBytes(nameValues);
 	};
