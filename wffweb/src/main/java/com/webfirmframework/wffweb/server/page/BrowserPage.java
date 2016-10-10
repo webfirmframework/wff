@@ -204,7 +204,7 @@ public abstract class BrowserPage implements Serializable {
     public void websocketMessaged(final byte[] message) {
         webSocketMessaged(message);
     }
-    
+
     /**
      * @param message
      *            the bytes the received in onmessage
