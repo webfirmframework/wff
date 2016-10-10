@@ -33,8 +33,6 @@ public enum BrowserPageAction {
 
     private byte[] actionBytes;
 
-    private ByteBuffer actionByteBuffer;
-
     private BrowserPageAction(final Task task, final String js) {
         init(task, js);
     }
@@ -52,12 +50,10 @@ public enum BrowserPageAction {
                         .getWffBinaryMessageBytes(
                                 Task.RELOAD_BROWSER.getTaskNameValue(),
                                 nameValue);
-                actionByteBuffer = ByteBuffer.wrap(actionBytes);
             } else {
                 actionBytes = WffBinaryMessageUtil.VERSION_1
                         .getWffBinaryMessageBytes(
                                 Task.RELOAD_BROWSER.getTaskNameValue());
-                actionByteBuffer = ByteBuffer.wrap(actionBytes);
             }
 
         } catch (final UnsupportedEncodingException e) {
@@ -80,7 +76,7 @@ public enum BrowserPageAction {
      * @author WFF
      */
     public ByteBuffer getActionByteBuffer() {
-        return actionByteBuffer;
+        return ByteBuffer.wrap(actionBytes);
     }
 
     /**
