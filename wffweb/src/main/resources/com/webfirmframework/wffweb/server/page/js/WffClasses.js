@@ -344,7 +344,7 @@ var JsObjectFromBMBytes = function(wffBMBytes, outer) {
 			this[name] = new JsObjectFromBMBytes(values[1], false);
 		} else if (values[0] == 6) {
 			// 6 for array data type
-			this[name] = JsArrayFromBMBytes(values[1], false);
+			this[name] = new JsArrayFromBMBytes(values[1], false);
 
 		} else if (values[0] == 7) {
 			// 7 for regex data type
