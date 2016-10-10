@@ -46,7 +46,7 @@ public class WffBMArray extends LinkedList<Object> implements WffData {
 
     public WffBMArray(final byte[] bmArrayBytes) {
         try {
-            initWffBMObject(bmArrayBytes, true);
+            valueType = initWffBMObject(bmArrayBytes, true);
         } catch (final UnsupportedEncodingException e) {
             throw new WffRuntimeException("Invalid Wff BM Array bytes", e);
         }
@@ -54,14 +54,14 @@ public class WffBMArray extends LinkedList<Object> implements WffData {
 
     public WffBMArray(final byte[] bmArrayBytes, final boolean outer) {
         try {
-            initWffBMObject(bmArrayBytes, outer);
+            valueType = initWffBMObject(bmArrayBytes, outer);
         } catch (final UnsupportedEncodingException e) {
             throw new WffRuntimeException("Invalid Wff BM Array bytes", e);
         }
     }
 
-    private void initWffBMObject(final byte[] bmArrayBytes, final boolean outer)
-            throws UnsupportedEncodingException {
+    private BMValueType initWffBMObject(final byte[] bmArrayBytes,
+            final boolean outer) throws UnsupportedEncodingException {
 
         final List<NameValue> bmObject = WffBinaryMessageUtil.VERSION_1
                 .parse(bmArrayBytes);
@@ -144,9 +144,11 @@ public class WffBMArray extends LinkedList<Object> implements WffData {
                     }
                 }
 
+                return BMValueType.getInstanceByType(valueType);
             }
         }
 
+        return null;
     }
 
     public boolean isOuter() {
@@ -269,5 +271,17 @@ public class WffBMArray extends LinkedList<Object> implements WffData {
 
         return WffBinaryMessageUtil.VERSION_1
                 .getWffBinaryMessageBytes(nameValues);
+    }
+
+    /**
+     * gets value type of this array only if it contains any value otherwise
+     * returns <code>null</code>.
+     *
+     * @return the value type of this array
+     * @since 2.1.0
+     * @author WFF
+     */
+    public BMValueType getValueType() {
+        return valueType;
     }
 }
