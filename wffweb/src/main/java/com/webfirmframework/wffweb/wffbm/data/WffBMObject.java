@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.wffbm.data;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.util.ArrayDeque;
@@ -166,6 +167,13 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
                 final byte[] valueBytes = value.build();
                 nameValue.setValues(new byte[] { valueType }, valueBytes);
 
+            } else if (valueType == BMValueType.BM_BYTE_ARRAY.getType()) {
+
+                final WffBMByteArray value = (WffBMByteArray) valueValueType
+                        .getValue();
+                final byte[] valueBytes = value.build();
+                nameValue.setValues(new byte[] { valueType }, valueBytes);
+
             } else if (valueType == BMValueType.REG_EXP.getType()) {
                 final String value = (String) valueValueType.getValue();
                 nameValue.setValues(new byte[] { valueType },
@@ -185,6 +193,7 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
                 .getWffBinaryMessageBytes(nameValues);
     }
 
+    @SuppressWarnings("resource")
     private void initWffBMObject(final byte[] bmObjectBytes,
             final boolean outer) throws UnsupportedEncodingException {
 
@@ -246,6 +255,17 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
                 } else if (valueType == BMValueType.BM_ARRAY.getType()) {
                     final ValueValueType valueValueType = new ValueValueType(
                             name, valueType, new WffBMArray(value, false));
+                    wffBMObject.put(name, valueValueType);
+                } else if (valueType == BMValueType.BM_BYTE_ARRAY.getType()) {
+                    final WffBMByteArray byteArray = new WffBMByteArray(false);
+                    try {
+                        byteArray.write(value);
+                    } catch (final IOException e) {
+                        throw new InvalidValueException(
+                                "invalid value for BM_BYTE_ARRAY type");
+                    }
+                    final ValueValueType valueValueType = new ValueValueType(
+                            name, valueType, byteArray);
                     wffBMObject.put(name, valueValueType);
                 } else if (valueType == BMValueType.REG_EXP.getType()) {
                     final ValueValueType valueValueType = new ValueValueType(
