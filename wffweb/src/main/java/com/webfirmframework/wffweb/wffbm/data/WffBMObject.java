@@ -24,6 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.WffRuntimeException;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 import com.webfirmframework.wffweb.util.data.NameValue;
@@ -62,8 +63,27 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
         }
     }
 
+    @Override
+    public ValueValueType put(final String key, final ValueValueType value) {
+        // should be == here
+        // as the cloned object returns true
+        // with its equals method
+        if (this == value.getValue()) {
+            throw new InvalidValueException(
+                    "The same instance cannot be passed as value in ValueValueType");
+        }
+        return super.put(key, value);
+    }
+
     public void put(final String key, final BMValueType valueType,
             final Object value) {
+        // should be == here
+        // as the cloned object returns true
+        // with its equals method
+        if (this == value) {
+            throw new InvalidValueException(
+                    "The same instance cannot be passed as value");
+        }
         super.put(key, new ValueValueType(key, valueType.getType(), value));
     }
 

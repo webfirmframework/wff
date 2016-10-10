@@ -155,7 +155,7 @@ var WffBMByteArray = function(uInt8Array, outer) {
 	this.jsArray = uInt8Array;
 	this.outer = outer;
 
-	getWffBMByteArray = function(uInt8Array, outer) {
+	var getWffBMByteArray = function(uInt8Array, outer) {
 
 		var nameValues = [];
 
@@ -205,7 +205,7 @@ var WffBMObject = function(jsObject, outer) {
 	this.jsObject = jsObject;
 	this.outer = outer;
 
-	getWffBMObject = function(jsObj, outer) {
+	var getWffBMObject = function(jsObj, outer) {
 
 		console.log('object outer ', outer);
 
@@ -306,7 +306,7 @@ var JsObjectFromBMBytes = function(wffBMBytes, outer) {
 	var encoder = wffGlobal.encoder;
 	var decoder = wffGlobal.decoder;
 
-	getStringFromBytes = function(utf8Bytes) {
+	var getStringFromBytes = function(utf8Bytes) {
 		return wffGlobal.decoder.decode(new Uint8Array(utf8Bytes));
 	};
 
@@ -341,7 +341,7 @@ var JsObjectFromBMBytes = function(wffBMBytes, outer) {
 			this[name] = values[1] == 1 ? true : false;
 		} else if (values[0] == 5) {
 			// 5 for object data type
-			this[name] = JsObjectFromBMBytes(values[1], false);
+			this[name] = new JsObjectFromBMBytes(values[1], false);
 		} else if (values[0] == 6) {
 			// 6 for array data type
 			this[name] = JsArrayFromBMBytes(values[1], false);
@@ -372,7 +372,7 @@ var JsArrayFromBMBytes = function(wffBMBytes, outer) {
 	var encoder = wffGlobal.encoder;
 	var decoder = wffGlobal.decoder;
 
-	getStringFromBytes = function(utf8Bytes) {
+	var getStringFromBytes = function(utf8Bytes) {
 		return decoder.decode(new Uint8Array(utf8Bytes));
 	};
 
@@ -422,7 +422,7 @@ var JsArrayFromBMBytes = function(wffBMBytes, outer) {
 	} else if (dataType == 5) {
 		// 5 for object data type
 		for (var j = 0; j < values.length; j++) {
-			jsArray.push(JsObjectFromBMBytes(values[j], false));
+			jsArray.push(new JsObjectFromBMBytes(values[j], false));
 		}
 	} else if (dataType == 6) {
 		for (var j = 0; j < values.length; j++) {
