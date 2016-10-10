@@ -196,11 +196,17 @@ public abstract class BrowserPage implements Serializable {
     }
 
     /**
+     * This method will be remove later. Use {@code webSocketMessaged}.
+     * 
      * @param message
      *            the bytes the received in onmessage
      * @since 2.0.0
      * @author WFF
+     * @deprecated alternative method webSocketMessaged is available for the
+     *             same job.
+     *
      */
+    @Deprecated
     public void websocketMessaged(final byte[] message) {
         webSocketMessaged(message);
     }
@@ -208,7 +214,7 @@ public abstract class BrowserPage implements Serializable {
     /**
      * @param message
      *            the bytes the received in onmessage
-     * @since 2.0.0
+     * @since 2.1.0
      * @author WFF
      */
     public void webSocketMessaged(final byte[] message) {
