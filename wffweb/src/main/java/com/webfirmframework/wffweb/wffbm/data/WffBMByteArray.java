@@ -30,7 +30,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
 /**
  * This a byte array to hold utf-8 bytes. use WffBMByteArray.write to add bytes
  * into this array.
- * 
+ *
  * @author WFF
  *
  */
@@ -113,6 +113,7 @@ public class WffBMByteArray extends ByteArrayOutputStream
                         // the first value will contain all the bytes, but still
                         // kept a loop here.
                         this.write(value);
+
                     }
                 } else {
                     throw new WffRuntimeException(
