@@ -27,6 +27,13 @@ import com.webfirmframework.wffweb.WffRuntimeException;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 import com.webfirmframework.wffweb.util.data.NameValue;
 
+/**
+ * This a byte array to hold utf-8 bytes. use WffBMByteArray.write to add bytes
+ * into this array.
+ * 
+ * @author WFF
+ *
+ */
 public class WffBMByteArray extends ByteArrayOutputStream
         implements Serializable {
 
