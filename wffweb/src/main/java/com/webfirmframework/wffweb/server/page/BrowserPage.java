@@ -153,9 +153,8 @@ public abstract class BrowserPage implements Serializable {
     }
 
     void push(final NameValue... nameValues) {
-        final byte[] wffBinaryMessageBytes = WffBinaryMessageUtil.VERSION_1
-                .getWffBinaryMessageBytes(nameValues);
-        push(ByteBuffer.wrap(wffBinaryMessageBytes));
+        push(ByteBuffer.wrap(WffBinaryMessageUtil.VERSION_1
+                .getWffBinaryMessageBytes(nameValues)));
     }
 
     private void push(final ByteBuffer wffBM) {
