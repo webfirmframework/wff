@@ -270,6 +270,8 @@ public enum BrowserPageContext {
      *            the wffInstanceId which can be retried from the request
      *            parameter in websocket connection.
      * @since 2.0.0
+     * @param message
+     *            the message received from websocket
      * @author WFF
      * @deprecated use webSocketMessaged which does the same job.
      */
@@ -280,11 +282,13 @@ public enum BrowserPageContext {
     }
 
     /**
-     * this method should be called when the websocket is closed
+     * this method should be called when the websocket is messagedS
      *
      * @param wffInstanceId
      *            the wffInstanceId which can be retried from the request
      *            parameter in websocket connection.
+     * @param message
+     *            the message received from websocket
      * @since 2.1.0
      * @author WFF
      */
@@ -295,7 +299,7 @@ public enum BrowserPageContext {
                 .get(wffInstanceId);
 
         if (browserPage != null) {
-            browserPage.websocketMessaged(message);
+            browserPage.webSocketMessaged(message);
         }
 
         return browserPage;
