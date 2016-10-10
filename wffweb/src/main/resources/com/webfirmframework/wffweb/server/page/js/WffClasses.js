@@ -91,6 +91,13 @@ var WffBMArray = function(jsArray, outer) {
 						values.push([]);
 					}
 				}
+			}  else if (arrayValType == 2 
+					|| arrayValType == 3) {
+
+				for (var i = 0; i < jsArray.length; i++) {
+					values.push([]);
+				}
+				
 			} else if (arrayValType == 4) {
 				for (var i = 0; i < jsArray.length; i++) {
 					if (arrayValType != 2 && arrayValType != 3) {
