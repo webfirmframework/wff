@@ -202,9 +202,22 @@ public abstract class BrowserPage implements Serializable {
      * @author WFF
      */
     public void websocketMessaged(final byte[] message) {
+        webSocketMessaged(message);
+    }
+    
+    /**
+     * @param message
+     *            the bytes the received in onmessage
+     * @since 2.0.0
+     * @author WFF
+     */
+    public void webSocketMessaged(final byte[] message) {
         try {
             executeWffBMTask(message);
         } catch (final Exception e) {
+            if (!PRODUCTION_MODE) {
+                e.printStackTrace();
+            }
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.severe(e.toString());
             }
