@@ -359,7 +359,9 @@ var wffBMUtil = new function() {
 		var float64 = new Float64Array(arrayBuff);
 		float64[0] = doubleValue;
 		var uin = new Int8Array(arrayBuff);
-		return uin.reverse();
+		
+		//uin.reverse is not supported in IE
+		return Array.from(uin).reverse();
 	};
 
 	this.getBytesFromDouble = getBytesFromDouble;
@@ -376,10 +378,10 @@ var wffBMUtil = new function() {
 		var int8Array = new Int8Array(buffer);
 
 		for (var i = 0; i < bytes.length; i++) {
-			int8Array[i] = bytes[i];
+			// int8Array.reverse(); is not supported in IE so initialized in reverse order
+			int8Array[i] = bytes[bytes.length - 1 - i];
 		}
 
-		int8Array.reverse();
 
 		return new Float64Array(buffer)[0];
 	};
