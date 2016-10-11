@@ -32,6 +32,8 @@ import com.webfirmframework.wffweb.server.page.Task;
 public enum WffJsFile {
 
     // should be kept in the same order
+    JS_WORK_AROUND("jsWorkAround.js"),
+
     WFF_GLOBAL("wffGlobal.js"),
 
     WFF_BM_UTIL("wffBMUtil.js"),
@@ -184,8 +186,11 @@ public enum WffJsFile {
     public static String getAllOptimizedContent(final String wsUrl) {
 
         if (allOptimizedContent != null) {
-            return WFF_GLOBAL.optimizedFileContent.replace("${WS_URL}", wsUrl)
-                    .replace("\"${TASK_VALUES}\"", Task.getJsObjectString())
+            return JS_WORK_AROUND.optimizedFileContent
+                    + WFF_GLOBAL.optimizedFileContent
+                            .replace("${WS_URL}", wsUrl)
+                            .replace("\"${TASK_VALUES}\"",
+                                    Task.getJsObjectString())
                     + allOptimizedContent;
         }
 
@@ -199,7 +204,7 @@ public enum WffJsFile {
             final StringBuilder builder = new StringBuilder(totalContentLength);
 
             final WffJsFile[] wffJsFiles = WffJsFile.values();
-            for (int i = 1; i < wffJsFiles.length; i++) {
+            for (int i = 2; i < wffJsFiles.length; i++) {
                 builder.append('\n');
                 builder.append(wffJsFiles[i].optimizedFileContent);
             }
@@ -211,8 +216,11 @@ public enum WffJsFile {
                         "f" + (++functionId));
             }
 
-            return WFF_GLOBAL.optimizedFileContent.replace("${WS_URL}", wsUrl)
-                    .replace("\"${TASK_VALUES}\"", Task.getJsObjectString())
+            return JS_WORK_AROUND.optimizedFileContent
+                    + WFF_GLOBAL.optimizedFileContent
+                            .replace("${WS_URL}", wsUrl)
+                            .replace("\"${TASK_VALUES}\"",
+                                    Task.getJsObjectString())
                     + allOptimizedContent;
         } catch (final Exception e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
