@@ -50,6 +50,20 @@ html.setPrependDocType(true);
 System.out.println(html.toHtmlString()); 
 ~~~
 
+or the same in few lines
+
+~~~
+Html html = new Html(null);
+new Head(html);
+Body body = new Body(html);
+new NoTag(body, "Hello World");
+
+
+// prepends the doc type <!DOCTYPE html>
+html.setPrependDocType(true);
+System.out.println(html.toHtmlString()); 
+~~~
+
 prints the following output
 ~~~
 <!DOCTYPE html>
