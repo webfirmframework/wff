@@ -33,7 +33,7 @@ var wffWS = new function() {
 				return;
 			}
 
-			var binary = new Uint8Array(event.data);
+			var binary = new Int8Array(event.data);
 			wffClientCRUDUtil.applyUpdates(binary);
 
 		};
@@ -44,7 +44,7 @@ var wffWS = new function() {
 			// console.log("onmessage");
 			// console.dir(event);
 
-			var binary = new Uint8Array(event.data);
+			var binary = new Int8Array(event.data);
 			console.log(binary);
 
 			// for (var i = 0; i < binary.length; i++) {
@@ -105,7 +105,7 @@ var wffWS = new function() {
 	 * Sends the bytes to the server
 	 */
 	this.send = function(bytes) {
-		webSocket.send(new Uint8Array(bytes));
+		webSocket.send(new Int8Array(bytes));
 	};
 
 	this.closeSocket = function() {

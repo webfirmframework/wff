@@ -463,7 +463,7 @@ var JsArrayFromBMBytes = function(wffBMBytes, outer) {
 	} else if (dataType == 9) {
 		// 9 for Uint8Array data type
 		for (var j = 0; j < values.length; j++) {
-			jsArray.push(new Uint8Array(values[j]));
+			jsArray.push(new Int8Array(values[j]));
 		}
 	} else {
 		values.push([]);

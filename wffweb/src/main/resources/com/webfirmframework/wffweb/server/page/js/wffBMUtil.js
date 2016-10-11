@@ -352,14 +352,15 @@ var wffBMUtil = new function() {
 	 * @param doubleValue
 	 *            number type value. JavaScript Numbers are Always 64-bit
 	 *            Floating Point.
-	 * @returns {Uint8Array}
+	 * @returns {Int8Array}
 	 */
 	var getBytesFromDouble = function(doubleValue) {
 		var arrayBuff = new ArrayBuffer(8);
 		var float64 = new Float64Array(arrayBuff);
 		float64[0] = doubleValue;
-		var uin = new Uint8Array(arrayBuff);
+		var uin = new Int8Array(arrayBuff);
 		return uin.reverse();
+		return uin;
 	};
 
 	this.getBytesFromDouble = getBytesFromDouble;
@@ -373,13 +374,13 @@ var wffBMUtil = new function() {
 	 */
 	var getDoubleFromOptimizedBytes = function(bytes) {
 		var buffer = new ArrayBuffer(8);
-		var uInt8Array = new Uint8Array(buffer);
+		var int8Array = new Int8Array(buffer);
 
 		for (var i = 0; i < bytes.length; i++) {
-			uInt8Array[i] = bytes[i];
+			int8Array[i] = bytes[i];
 		}
 
-		uInt8Array.reverse();
+		int8Array.reverse();
 
 		return new Float64Array(buffer)[0];
 	};
