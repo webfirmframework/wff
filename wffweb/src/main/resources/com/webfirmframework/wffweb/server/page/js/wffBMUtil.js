@@ -360,7 +360,6 @@ var wffBMUtil = new function() {
 		float64[0] = doubleValue;
 		var uin = new Int8Array(arrayBuff);
 		return uin.reverse();
-		return uin;
 	};
 
 	this.getBytesFromDouble = getBytesFromDouble;
