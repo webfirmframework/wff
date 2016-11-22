@@ -89,6 +89,9 @@ public abstract class BrowserPage implements Serializable {
     // by default the push queue should be enabled
     private boolean pushQueueEnabled = true;
 
+    // by default the pushQueueOnNewWebSocketListener should be enabled
+    private boolean pushQueueOnNewWebSocketListener = true;
+
     private final Map<String, ServerAsyncMethod> serverMethods = new HashMap<String, ServerAsyncMethod>();
 
     // for security purpose, the class name should not be modified
@@ -110,6 +113,9 @@ public abstract class BrowserPage implements Serializable {
     public void setWebSocketPushListener(
             final WebSocketPushListener wsListener) {
         this.wsListener = wsListener;
+        if (pushQueueOnNewWebSocketListener) {
+            pushWffBMBytesQueue();
+        }
     }
 
     /**
@@ -128,6 +134,10 @@ public abstract class BrowserPage implements Serializable {
         wsListeners.push(wsListener);
 
         this.wsListener = wsListener;
+
+        if (pushQueueOnNewWebSocketListener) {
+            pushWffBMBytesQueue();
+        }
 
     }
 
@@ -161,6 +171,11 @@ public abstract class BrowserPage implements Serializable {
 
         wffBMBytesQueue.add(wffBM);
 
+        pushWffBMBytesQueue();
+
+    }
+
+    private void pushWffBMBytesQueue() {
         if (wsListener != null) {
 
             while (wffBMBytesQueue.size() > 0) {
@@ -188,7 +203,6 @@ public abstract class BrowserPage implements Serializable {
                         "There is no websocket listener set, set it with BrowserPage#setWebSocketPushListener method.");
             }
         }
-
     }
 
     DataWffId getNewDataWffId() {
@@ -197,7 +211,7 @@ public abstract class BrowserPage implements Serializable {
 
     /**
      * This method will be remove later. Use {@code webSocketMessaged}.
-     * 
+     *
      * @param message
      *            the bytes the received in onmessage
      * @since 2.0.0
@@ -719,6 +733,29 @@ public abstract class BrowserPage implements Serializable {
      */
     public void performBrowserPageAction(final ByteBuffer actionByteBuffer) {
         push(actionByteBuffer);
+    }
+
+    /**
+     * @return the pushQueueOnNewWebSocketListener true if it's enabled
+     *         otherwise false. By default it's set as true.
+     * @since 2.1.1
+     */
+    public boolean isPushQueueOnNewWebSocketListener() {
+        return pushQueueOnNewWebSocketListener;
+    }
+
+    /**
+     * By default it's set as true. If it's enabled then the wffbmBytesQueue
+     * will be pushed when new webSocket listener is added/set.
+     *
+     * @param pushQueueOnNewWebSocketListener
+     *            the pushQueueOnNewWebSocketListener to set. Pass true to
+     *            enable this option and false to disable this option.
+     * @since 2.1.1
+     */
+    public void setPushQueueOnNewWebSocketListener(
+            final boolean pushQueueOnNewWebSocketListener) {
+        this.pushQueueOnNewWebSocketListener = pushQueueOnNewWebSocketListener;
     }
 
 }
