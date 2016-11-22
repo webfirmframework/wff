@@ -37,6 +37,7 @@ public class AbstractHtmlTest {
 
     // for future development
     // @Test
+    @SuppressWarnings("deprecation")
     public void testToOutputStreamBooleanOutputStream() {
 
         Html html = new Html(null, new Id("id1")) {
@@ -172,7 +173,7 @@ public class AbstractHtmlTest {
     }
 
     @Test
-    public void testPerformance() {
+    public void testPerformanceAsInnerClassFormat() {
 
         try {
             long before = System.currentTimeMillis();
@@ -190,7 +191,31 @@ public class AbstractHtmlTest {
 
             long after = System.currentTimeMillis();
 
-            System.out.println("testPerformance " + htmlString.length()
+            System.out.println("testPerformanceAsInnerClassFormat " + htmlString.length()
+                    + " tag bytes generation took " + (after - before) + " ms");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    @Test
+    public void testPerformanceAsNonInnerClassFormat() {
+
+        try {
+            long before = System.currentTimeMillis();
+
+            Div div = new Div(null);
+            
+            for (int i = 0; i < 100000; i++) {
+                new Div(div);
+            }
+
+
+            String htmlString = div.toHtmlString();
+
+            long after = System.currentTimeMillis();
+
+            System.out.println("testPerformanceAsNonInnerClassFormat " + htmlString.length()
                     + " tag bytes generation took " + (after - before) + " ms");
         } catch (Exception e) {
             e.printStackTrace();
