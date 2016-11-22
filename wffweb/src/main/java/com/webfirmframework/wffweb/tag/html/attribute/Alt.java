@@ -44,6 +44,16 @@ public class Alt extends AbstractAttribute
     }
 
     /**
+     * Initializes with empty value
+     *
+     * @since 2.1.1
+     * @author WFF
+     */
+    public Alt() {
+        setAttributeValue("");
+    }
+
+    /**
      *
      * @param value
      *            the coordinates value for the attribute
