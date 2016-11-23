@@ -49,11 +49,9 @@ public class JsUtil {
         for (final Entry<String, Object> entry : jsKeyAndElementId.entrySet()) {
 
             builder.append(entry.getKey());
-            builder.append(':');
-            builder.append("document.getElementById(\"");
+            builder.append(":document.getElementById(\"");
             builder.append(entry.getValue().toString());
-            builder.append("\").value");
-            builder.append(',');
+            builder.append("\").value,");
 
         }
 
