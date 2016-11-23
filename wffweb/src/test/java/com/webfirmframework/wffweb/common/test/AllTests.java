@@ -122,6 +122,7 @@ import com.webfirmframework.wffweb.css.css3.WebkitFlexGrowTest;
 import com.webfirmframework.wffweb.css.css3.WebkitFlexShrinkTest;
 import com.webfirmframework.wffweb.css.css3.WebkitFlexTest;
 import com.webfirmframework.wffweb.css.file.CssFileTest;
+import com.webfirmframework.wffweb.js.JsUtilTest;
 import com.webfirmframework.wffweb.streamer.WffBinaryMessageOutputStreamerTest;
 import com.webfirmframework.wffweb.tag.html.AbstractHtmlTest;
 import com.webfirmframework.wffweb.tag.html.HrTest;
@@ -195,7 +196,7 @@ import com.webfirmframework.wffweb.util.WffBinaryMessageUtilTest;
         CssFileTest.class, WffBinaryMessageOutputStreamerTest.class,
         NoTagTest.class, BlankTest.class, TagRegistryTest.class,
         AttributeRegistryTest.class, AttributeUtilTest.class,
-        AbstractHtmlTest.class, AbstractAttributeTest.class })
+        AbstractHtmlTest.class, AbstractAttributeTest.class, JsUtilTest.class })
 public class AllTests {
 
 }
