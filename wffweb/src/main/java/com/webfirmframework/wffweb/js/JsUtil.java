@@ -17,6 +17,7 @@ package com.webfirmframework.wffweb.js;
 
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Utility methods to generate JavaScript code.
@@ -51,6 +52,37 @@ public class JsUtil {
             builder.append(entry.getKey());
             builder.append(":document.getElementById(\"");
             builder.append(entry.getValue().toString());
+            builder.append("\").value,");
+
+        }
+
+        builder.replace(builder.length() - 1, builder.length(), "}");
+
+        return builder.toString();
+    }
+
+    /**
+     * @param ids
+     *            The set containing element ids. The id will be used as the key
+     *            in the generated js object. The value in the set should be the
+     *            id of the field. The id in the set should be a valid
+     *            JavaScript object key.
+     * @return the JavaScript object for the fields value. Sample :
+     *         <code>{uId:document.getElementById("uId")}</code>
+     * @since 2.1.1
+     * @author WFF
+     */
+    public static String getJsObjectForFieldsValue(final Set<Object> ids) {
+
+        final StringBuilder builder = new StringBuilder();
+
+        builder.append('{');
+
+        for (final Object id : ids) {
+
+            builder.append(id.toString());
+            builder.append(":document.getElementById(\"");
+            builder.append(id.toString());
             builder.append("\").value,");
 
         }

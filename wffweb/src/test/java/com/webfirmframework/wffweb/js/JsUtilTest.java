@@ -18,7 +18,9 @@ package com.webfirmframework.wffweb.js;
 import static org.junit.Assert.assertEquals;
 
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.junit.Test;
@@ -35,6 +37,19 @@ public class JsUtilTest {
 
         assertEquals(
                 "{username:document.getElementById(\"uId\").value,email:document.getElementById(\"b2593ccc-2ab9-4cf8-818d-1f317a27a691\").value,password:document.getElementById(\"555\").value}",
+                JsUtil.getJsObjectForFieldsValue(jsKeyFieldIds));
+    }
+
+    @Test
+    public void testGetJsObjectForFieldsValueByElementIds() {
+        final Set<Object> jsKeyFieldIds = new LinkedHashSet<Object>();
+        jsKeyFieldIds.add("uId");
+        jsKeyFieldIds
+                .add(UUID.fromString("b2593ccc-2ab9-4cf8-818d-1f317a27a691"));
+        jsKeyFieldIds.add(555);
+
+        assertEquals(
+                "{uId:document.getElementById(\"uId\").value,b2593ccc-2ab9-4cf8-818d-1f317a27a691:document.getElementById(\"b2593ccc-2ab9-4cf8-818d-1f317a27a691\").value,555:document.getElementById(\"555\").value}",
                 JsUtil.getJsObjectForFieldsValue(jsKeyFieldIds));
     }
 
