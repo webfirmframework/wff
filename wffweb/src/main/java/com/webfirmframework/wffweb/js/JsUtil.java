@@ -1,0 +1,65 @@
+/*
+ * Copyright 2014-2016 Web Firm Framework
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.webfirmframework.wffweb.js;
+
+import java.util.Map;
+import java.util.Map.Entry;
+
+/**
+ * Utility methods to generate JavaScript code.
+ *
+ * @author WFF
+ * @since 2.1.1
+ */
+public class JsUtil {
+
+    private JsUtil() {
+    }
+
+    /**
+     * @param jsKeyAndElementId
+     *            The map containing key values. The key in the map will be used
+     *            as the key in the generated js object. The value in the map
+     *            should be the id of the field.
+     * @return the JavaScript object for the fields value. Sample :
+     *         <code>{username:document.getElementById("uId")}</code>
+     * @since 2.1.1
+     * @author WFF
+     */
+    public static String getJsObjectForFieldsValue(
+            final Map<String, Object> jsKeyAndElementId) {
+
+        final StringBuilder builder = new StringBuilder();
+
+        builder.append("{");
+
+        for (final Entry<String, Object> entry : jsKeyAndElementId.entrySet()) {
+
+            builder.append(entry.getKey());
+            builder.append(":");
+            builder.append("document.getElementById(\"");
+            builder.append(entry.getValue().toString());
+            builder.append("\").value");
+            builder.append(",");
+
+        }
+
+        builder.replace(builder.length() - 1, builder.length(), "}");
+
+        return builder.toString();
+    }
+
+}
