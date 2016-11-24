@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.webfirmframework.wffweb.MethodNotImplementedException;
+import com.webfirmframework.wffweb.NoParentException;
 import com.webfirmframework.wffweb.WffRuntimeException;
 import com.webfirmframework.wffweb.WffSecurityException;
 import com.webfirmframework.wffweb.clone.CloneUtil;
@@ -53,6 +54,7 @@ import com.webfirmframework.wffweb.tag.html.listener.ChildTagAppendListener;
 import com.webfirmframework.wffweb.tag.html.listener.ChildTagAppendListener.ChildMovedEvent;
 import com.webfirmframework.wffweb.tag.html.listener.ChildTagRemoveListener;
 import com.webfirmframework.wffweb.tag.html.listener.InnerHtmlAddListener;
+import com.webfirmframework.wffweb.tag.html.listener.InsertBeforeListener;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 import com.webfirmframework.wffweb.tag.htmlwff.CustomTag;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
@@ -261,11 +263,18 @@ public abstract class AbstractHtml extends AbstractTagBase {
         final InnerHtmlAddListener listener = sharedObject
                 .getInnerHtmlAddListener(ACCESS_OBJECT);
 
+        AbstractHtml previousParentTag = null;
+
+        if (innerHtml.parent != null
+                && innerHtml.parent.sharedObject == sharedObject) {
+            previousParentTag = innerHtml.parent;
+        }
+
         addChild(innerHtml, false);
 
         if (listener != null) {
             listener.innerHtmlAdded(new InnerHtmlAddListener.Event(
-                    AbstractHtml.this, innerHtml));
+                    AbstractHtml.this, innerHtml, previousParentTag));
         }
     }
 
@@ -369,6 +378,14 @@ public abstract class AbstractHtml extends AbstractTagBase {
     }
 
     private void initParentAndSharedObject(final AbstractHtml child) {
+
+        initSharedObject(child);
+
+        child.parent = this;
+    }
+
+    private void initSharedObject(final AbstractHtml child) {
+
         final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<Set<AbstractHtml>>();
         childrenStack.push(new HashSet<AbstractHtml>(Arrays.asList(child)));
 
@@ -401,8 +418,6 @@ public abstract class AbstractHtml extends AbstractTagBase {
 
             }
         }
-
-        child.parent = this;
     }
 
     public void appendChildren(final Collection<AbstractHtml> children) {
@@ -2031,6 +2046,90 @@ public abstract class AbstractHtml extends AbstractTagBase {
         } else {
             throw new WffRuntimeException("dataWffId already exists");
         }
+    }
+
+    /**
+     * Inserts the given tags before this tag. There must be a parent for this
+     * method tag.
+     *
+     * @param abstractHtmls
+     *            to insert before this tag
+     * @return
+     * @since 2.1.1
+     * @author WFF
+     */
+    public boolean insertBefore(final AbstractHtml... abstractHtmls) {
+
+        if (parent == null) {
+            throw new NoParentException("There must be a parent for this tag.");
+        }
+
+        final InsertBeforeListener insertBeforeListener = sharedObject
+                .getInsertBeforeListener(ACCESS_OBJECT);
+
+        final int parentChildrenSize = parent.children.size();
+
+        if (parentChildrenSize > 0) {
+
+            final AbstractHtml[] removedParentChildren = parent.children
+                    .toArray(new AbstractHtml[parentChildrenSize]);
+
+            parent.children.clear();
+
+            final InsertBeforeListener.Event[] events = new InsertBeforeListener.Event[abstractHtmls.length];
+
+            int count = 0;
+
+            for (final AbstractHtml parentChild : removedParentChildren) {
+
+                if (equals(parentChild)) {
+
+                    for (final AbstractHtml abstractHtmlToInsert : abstractHtmls) {
+
+                        final boolean alreadyHasParent = abstractHtmlToInsert.parent != null;
+
+                        if (insertBeforeListener != null) {
+                            AbstractHtml previousParent = null;
+                            if (abstractHtmlToInsert.parent != null
+                                    && abstractHtmlToInsert.parent.sharedObject == sharedObject) {
+                                previousParent = abstractHtmlToInsert.parent;
+                            }
+                            final InsertBeforeListener.Event event = new InsertBeforeListener.Event(
+                                    parent, abstractHtmlToInsert, this,
+                                    previousParent);
+                            events[count] = event;
+                            count++;
+                        }
+
+                        // if alreadyHasParent = true then it means the child is
+                        // moving from one tag to another.
+
+                        if (alreadyHasParent) {
+                            abstractHtmlToInsert.parent.children
+                                    .remove(abstractHtmlToInsert);
+                        }
+
+                        initSharedObject(abstractHtmlToInsert);
+
+                        abstractHtmlToInsert.parent = parent;
+
+                        parent.children.add(abstractHtmlToInsert);
+                    }
+
+                }
+
+                parent.children.add(parentChild);
+            }
+
+            if (insertBeforeListener != null) {
+                insertBeforeListener.insertedBefore(events);
+            }
+
+            return true;
+
+        }
+
+        return false;
     }
 
 }

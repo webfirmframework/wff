@@ -252,7 +252,7 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
 
         //@formatter:off
         // moved children tags from some parents to another task format (in this method moving only one child) :-
-        // { "name": task_byte, "values" : [REMOVED_TAGS_byte_from_Task_enum]}, { "name": new_parent_data-wff-id, "values" : [ new_parent_tag_name, child_data-wff-id, child_tag_name ]}
+        // { "name": task_byte, "values" : [MOVED_CHILDREN_TAGS_byte_from_Task_enum]}, { "name": new_parent_data-wff-id, "values" : [ new_parent_tag_name, child_data-wff-id, child_tag_name ]}
         // { "name": 2, "values" : [[3]]}, { "name":"C55", "values" : ["div", "S255", "span"]}
         //@formatter:on
 
@@ -310,7 +310,7 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
 
         //@formatter:off
         // moved children tags from some parents to another task format (in this method moving only one child) :-
-        // { "name": task_byte, "values" : [REMOVED_TAGS_byte_from_Task_enum]}, { "name": new_parent_data-wff-id, "values" : [ new_parent_tag_name, child_data-wff-id, child_tag_name ]}
+        // { "name": task_byte, "values" : [MOVED_CHILDREN_TAGS_byte_from_Task_enum]}, { "name": new_parent_data-wff-id, "values" : [ new_parent_tag_name, child_data-wff-id, child_tag_name ]}
         // { "name": 2, "values" : [[3]]}, { "name":"C55", "values" : ["div", "S255", "span"]}
         //@formatter:on
 

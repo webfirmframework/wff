@@ -24,6 +24,7 @@ var wffTagUtil = new function() {
 		var elements = document.querySelectorAll(tagName + '[data-wff-id="'
 				+ wffId + '"]');
 		if (elements.length > 1) {
+			console.log('getTagByTagNameAndWffId multiple tags with same wff id');
 			alert('multiple tags with same wff id');
 		}
 		return elements[0];

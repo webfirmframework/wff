@@ -24,6 +24,7 @@ import java.util.Arrays;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.webfirmframework.wffweb.NoParentException;
 import com.webfirmframework.wffweb.tag.html.attribute.Name;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Style;
@@ -191,13 +192,14 @@ public class AbstractHtmlTest {
 
             long after = System.currentTimeMillis();
 
-            System.out.println("testPerformanceAsInnerClassFormat " + htmlString.length()
-                    + " tag bytes generation took " + (after - before) + " ms");
+            System.out.println("testPerformanceAsInnerClassFormat "
+                    + htmlString.length() + " tag bytes generation took "
+                    + (after - before) + " ms");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    
+
     @Test
     public void testPerformanceAsNonInnerClassFormat() {
 
@@ -205,18 +207,18 @@ public class AbstractHtmlTest {
             long before = System.currentTimeMillis();
 
             Div div = new Div(null);
-            
+
             for (int i = 0; i < 100000; i++) {
                 new Div(div);
             }
-
 
             String htmlString = div.toHtmlString();
 
             long after = System.currentTimeMillis();
 
-            System.out.println("testPerformanceAsNonInnerClassFormat " + htmlString.length()
-                    + " tag bytes generation took " + (after - before) + " ms");
+            System.out.println("testPerformanceAsNonInnerClassFormat "
+                    + htmlString.length() + " tag bytes generation took "
+                    + (after - before) + " ms");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -310,6 +312,26 @@ public class AbstractHtmlTest {
         int totalWritten = div.toOutputStream(baos);
         byte[] divBytes = baos.toByteArray();
         assertEquals(totalWritten, divBytes.length);
+    }
+
+    @Test(expected = NoParentException.class)
+    public void testInsertBeforeWithNoParentException() {
+        Div div = new Div(null);
+        div.insertBefore(new Div(null, new Id("innerDivId")));
+
+    }
+
+    @Test
+    public void testInsertBefore() {
+        Div parentDiv = new Div(null, new Id("parentDivId"));
+        Div childDiv = new Div(parentDiv, new Id("child1"));
+        childDiv.insertBefore(new Div(null, new Id("inserted1BeforeChild1")),
+                new Div(null, new Id("inserted2BeforeChild1")));
+        assertEquals(
+                "<div id=\"parentDivId\"><div id=\"inserted1BeforeChild1\"></div><div id=\"inserted2BeforeChild1\"></div><div id=\"child1\"></div></div>",
+                parentDiv.toHtmlString());
+        System.out.println(parentDiv.toHtmlString());
+
     }
 
 }
