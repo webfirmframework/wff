@@ -212,9 +212,7 @@ var wffClientCRUDUtil = new function() {
 
 			}
 
-		}
-
-		if (taskValue == wffGlobal.taskValues.ADDED_ATTRIBUTES) {
+		} else if (taskValue == wffGlobal.taskValues.ADDED_ATTRIBUTES) {
 			console.log('taskValue == "ADDED_ATTRIBUTES"');
 
 			for (var i = 1; i < nameValues.length; i++) {
