@@ -239,7 +239,8 @@ public abstract class BrowserPage implements Serializable {
                 e.printStackTrace();
             }
             if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.severe(e.toString());
+                LOGGER.log(Level.SEVERE,
+                        "Could not process this data received from client.", e);
             }
         }
     }
@@ -577,6 +578,12 @@ public abstract class BrowserPage implements Serializable {
                 ACCESS_OBJECT);
     }
 
+    private void addInsertBeforeListener(final AbstractHtml abstractHtml) {
+        abstractHtml.getSharedObject().setInsertBeforeListener(
+                new InsertBeforeListenerImpl(this, ACCESS_OBJECT, tagByWffId),
+                ACCESS_OBJECT);
+    }
+
     /**
      * @return {@code String} equalent to the html string of the tag including
      *         the child tags.
@@ -650,6 +657,7 @@ public abstract class BrowserPage implements Serializable {
             addAttributeAddListener(abstractHtml);
             addAttributeRemoveListener(abstractHtml);
             addInnerHtmlAddListener(abstractHtml);
+            addInsertBeforeListener(abstractHtml);
 
         } else {
             wffBMBytesQueue.clear();

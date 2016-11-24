@@ -212,9 +212,7 @@ var wffClientCRUDUtil = new function() {
 
 			}
 
-		}
-
-		if (taskValue == wffGlobal.taskValues.ADDED_ATTRIBUTES) {
+		} else if (taskValue == wffGlobal.taskValues.ADDED_ATTRIBUTES) {
 			console.log('taskValue == "ADDED_ATTRIBUTES"');
 
 			for (var i = 1; i < nameValues.length; i++) {
@@ -289,7 +287,58 @@ var wffClientCRUDUtil = new function() {
 				}
 
 				var htmlNodes = wffTagUtil.createTagFromWffBMBytes(values[1]);
+				
+				//if length is 3 then there is an existing tag with this id
+				if (values.length == 3) {
+					console.log('values.length == 3');
+					var existingTag = wffTagUtil.getTagByTagNameAndWffId(
+							htmlNodes.nodeName, htmlNodes
+									.getAttribute("data-wff-id"));
+					var parentOfExistingTag = existingTag.parentNode;
+					parentOfExistingTag.removeChild(existingTag);
+					
+				}
+				
 				parentTag.appendChild(htmlNodes);
+			}
+
+		} else if (taskValue == wffGlobal.taskValues.INSERTED_BEFORE_TAG) {
+
+			console.log('wffGlobal.taskValues.INSERTED_BEFORE_TAG');
+
+			for (var i = 1; i < nameValues.length; i++) {
+				var wffId = wffTagUtil
+						.getWffIdFromWffIdBytes(nameValues[i].name);
+				var values = nameValues[i].values;
+				var tagName = getStringFromBytes(values[0]);
+				// var innerHtml = getStringFromBytes(values[1]);
+
+				// console.log('innerHtml', innerHtml);
+
+				var parentTag = wffTagUtil.getTagByTagNameAndWffId(tagName,
+						wffId);
+				
+				var beforeTagName = getStringFromBytes(values[2]);
+				var beforeTagWffId = wffTagUtil.getWffIdFromWffIdBytes(values[3]);
+				
+				var beforeTag = wffTagUtil.getTagByTagNameAndWffId(beforeTagName,
+						beforeTagWffId);
+				
+				
+				var htmlNodes = wffTagUtil.createTagFromWffBMBytes(values[1]);
+				
+				//if length is 3 then there is an existing tag with this id
+				if (values.length == 5) {
+					console.log('values.length == 5');
+					var existingTag = wffTagUtil.getTagByTagNameAndWffId(
+							htmlNodes.nodeName, htmlNodes
+									.getAttribute("data-wff-id"));
+					var parentOfExistingTag = existingTag.parentNode;
+					parentOfExistingTag.removeChild(existingTag);
+					
+				}
+				
+				parentTag.insertBefore(htmlNodes, beforeTag);
 			}
 
 		} else if (taskValue == wffGlobal.taskValues.RELOAD_BROWSER) {

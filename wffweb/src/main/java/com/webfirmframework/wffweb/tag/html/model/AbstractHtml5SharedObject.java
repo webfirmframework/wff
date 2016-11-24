@@ -33,6 +33,7 @@ import com.webfirmframework.wffweb.tag.html.listener.AttributeRemoveListener;
 import com.webfirmframework.wffweb.tag.html.listener.ChildTagAppendListener;
 import com.webfirmframework.wffweb.tag.html.listener.ChildTagRemoveListener;
 import com.webfirmframework.wffweb.tag.html.listener.InnerHtmlAddListener;
+import com.webfirmframework.wffweb.tag.html.listener.InsertBeforeListener;
 
 /**
  *
@@ -60,6 +61,8 @@ public class AbstractHtml5SharedObject implements Serializable {
     private Map<String, AbstractHtml> tagByWffId;
 
     private AttributeValueChangeListener valueChangeListener;
+
+    private InsertBeforeListener insertBeforeListener;
 
     private volatile int dataWffId = -1;
 
@@ -354,6 +357,45 @@ public class AbstractHtml5SharedObject implements Serializable {
                     "Not allowed to consume this method. Instead, use addValueChangeListener and getValueChangeListeners methods.");
         }
         this.valueChangeListener = valueChangeListener;
+    }
+
+    /**
+     * NB:- This method is for only for internal use
+     *
+     * @return the insertBeforeListener
+     *
+     * @since 2.1.1
+     */
+    public InsertBeforeListener getInsertBeforeListener(
+            final Object accessObject) {
+
+        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML
+                .equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException(
+                    "Not allowed to consume this method. This method is for internal use.");
+        }
+
+        return insertBeforeListener;
+    }
+
+    /**
+     * NB:- This method is for only for internal use
+     *
+     * @param insertBeforeListener
+     *            the insertBeforeListener to set
+     * @since 2.1.1
+     */
+    public void setInsertBeforeListener(
+            final InsertBeforeListener insertBeforeListener,
+            final Object accessObject) {
+
+        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE
+                .equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException(
+                    "Not allowed to consume this method. This method is for internal use.");
+        }
+
+        this.insertBeforeListener = insertBeforeListener;
     }
 
 }

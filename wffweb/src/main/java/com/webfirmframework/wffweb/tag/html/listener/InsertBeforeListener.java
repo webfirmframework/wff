@@ -19,17 +19,16 @@ import java.io.Serializable;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 
-public interface InnerHtmlAddListener extends Serializable {
+public interface InsertBeforeListener extends Serializable {
 
     public static class Event {
 
-        private AbstractHtml innerHtmlTag;
-
         private AbstractHtml parentTag;
 
-        /**
-         * previous parent tag of inner html
-         */
+        private AbstractHtml beforeTag;
+
+        private AbstractHtml insertedTag;
+
         private AbstractHtml previousParentTag;
 
         @SuppressWarnings("unused")
@@ -38,20 +37,12 @@ public interface InnerHtmlAddListener extends Serializable {
         }
 
         public Event(final AbstractHtml parentTag,
-                final AbstractHtml innerHtmlTag,
-                AbstractHtml previousParentTag) {
-            super();
+                final AbstractHtml insertedTag, final AbstractHtml beforeTag,
+                final AbstractHtml previousParentTag) {
             this.parentTag = parentTag;
-            this.innerHtmlTag = innerHtmlTag;
+            this.insertedTag = insertedTag;
+            this.beforeTag = beforeTag;
             this.previousParentTag = previousParentTag;
-        }
-
-        public AbstractHtml getInnerHtmlTag() {
-            return innerHtmlTag;
-        }
-
-        public void setInnerHtmlTag(final AbstractHtml innerHtmlTag) {
-            this.innerHtmlTag = innerHtmlTag;
         }
 
         public AbstractHtml getParentTag() {
@@ -60,6 +51,22 @@ public interface InnerHtmlAddListener extends Serializable {
 
         public void setParentTag(final AbstractHtml parentTag) {
             this.parentTag = parentTag;
+        }
+
+        public AbstractHtml getBeforeTag() {
+            return beforeTag;
+        }
+
+        public void setBeforeTag(final AbstractHtml beforeTag) {
+            this.beforeTag = beforeTag;
+        }
+
+        public AbstractHtml getInsertedTag() {
+            return insertedTag;
+        }
+
+        public void setInsertedTag(final AbstractHtml insertedTag) {
+            this.insertedTag = insertedTag;
         }
 
         /**
@@ -73,12 +80,19 @@ public interface InnerHtmlAddListener extends Serializable {
          * @param previousParentTag
          *            the previousParentTag to set
          */
-        public void setPreviousParentTag(AbstractHtml previousParentTag) {
+        public void setPreviousParentTag(final AbstractHtml previousParentTag) {
             this.previousParentTag = previousParentTag;
         }
 
     }
 
-    public void innerHtmlAdded(Event event);
+    /**
+     * Tags insertedTags inserted before tag beforeTag having parent parentTag.
+     *
+     * @param event
+     * @since 2.1.1
+     * @author WFF
+     */
+    public void insertedBefore(Event... events);
 
 }
