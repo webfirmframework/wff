@@ -239,7 +239,8 @@ public abstract class BrowserPage implements Serializable {
                 e.printStackTrace();
             }
             if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.severe(e.toString());
+                LOGGER.log(Level.SEVERE,
+                        "Could not process this data received from client.", e);
             }
         }
     }
