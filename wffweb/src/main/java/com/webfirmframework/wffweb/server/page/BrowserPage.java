@@ -278,20 +278,20 @@ public abstract class BrowserPage implements Serializable {
         final AbstractHtml methodTag = tagByWffId.get(wffTagId);
         if (methodTag != null) {
 
-            final AbstractAttribute dataWffIdAttr = methodTag
+            final AbstractAttribute attributeByName = methodTag
                     .getAttributeByName(eventAttrName);
 
-            if (dataWffIdAttr != null) {
+            if (attributeByName != null) {
 
-                if (dataWffIdAttr instanceof EventAttribute) {
+                if (attributeByName instanceof EventAttribute) {
 
-                    final EventAttribute eventAttr = (EventAttribute) dataWffIdAttr;
+                    final EventAttribute eventAttr = (EventAttribute) attributeByName;
 
                     final ServerAsyncMethod serverAsyncMethod = eventAttr
                             .getServerAsyncMethod();
 
                     final ServerAsyncMethod.Event event = new ServerAsyncMethod.Event(
-                            methodTag);
+                            methodTag, attributeByName);
 
                     final WffBMObject returnedObject = serverAsyncMethod
                             .asyncMethod(wffBMObject, event);
@@ -318,12 +318,13 @@ public abstract class BrowserPage implements Serializable {
                     }
 
                 } else {
-                    LOGGER.severe(dataWffIdAttr
+                    LOGGER.severe(attributeByName
                             + " is NOT instanceof EventAttribute");
                 }
 
             } else {
-                LOGGER.severe("no event attribute found for " + dataWffIdAttr);
+                LOGGER.severe(
+                        "no event attribute found for " + attributeByName);
             }
 
         } else {

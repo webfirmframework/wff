@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.tag.html.attribute.event;
 import java.io.Serializable;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
 
 public interface ServerAsyncMethod extends Serializable {
@@ -28,13 +29,17 @@ public interface ServerAsyncMethod extends Serializable {
 
         private String serverMethodName;
 
+        private AbstractAttribute sourceAttribute;
+
         public Event(final String serverMethodName) {
             this.serverMethodName = serverMethodName;
         }
 
-        public Event(final AbstractHtml sourceTag) {
+        public Event(final AbstractHtml sourceTag,
+                final AbstractAttribute sourceAttribute) {
             super();
             this.sourceTag = sourceTag;
+            this.sourceAttribute = sourceAttribute;
         }
 
         /**
@@ -47,7 +52,10 @@ public interface ServerAsyncMethod extends Serializable {
         /**
          * @param sourceTag
          *            the sourceTag to set
+         * @deprecated The use of this method is not encouraged. Use constructor
+         *             initialization instead.
          */
+        @Deprecated
         public void setSourceTag(final AbstractHtml sourceTag) {
             this.sourceTag = sourceTag;
         }
@@ -56,8 +64,25 @@ public interface ServerAsyncMethod extends Serializable {
             return serverMethodName;
         }
 
+        /**
+         * @param serverMethodName
+         * @author WFF
+         * @deprecated The use of this method is not encouraged. Use constructor
+         *             initialization instead.
+         */
+        @Deprecated
         public void setServerMethodName(final String serverMethodName) {
             this.serverMethodName = serverMethodName;
+        }
+
+        /**
+         * the source attribute from which the event is generated.
+         *
+         * @return the sourceAttribute
+         * @since 2.1.2
+         */
+        public AbstractAttribute getSourceAttribute() {
+            return sourceAttribute;
         }
 
     }
