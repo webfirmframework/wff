@@ -476,7 +476,7 @@ public class Cursor extends AbstractCssProperty<Cursor>
                     }
                 } catch (final CloneNotSupportedException e) {
                     if (LOGGER.isLoggable(Level.SEVERE)) {
-                        LOGGER.severe(e.toString());
+                        LOGGER.log(Level.SEVERE, e.getMessage(), e);
                     }
                 }
             }

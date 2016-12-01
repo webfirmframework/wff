@@ -265,7 +265,7 @@ public class CloneUtil {
                 }
             } catch (final IOException e) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.severe(e.toString());
+                    LOGGER.log(Level.SEVERE, e.getMessage(), e);
                 }
             }
         }

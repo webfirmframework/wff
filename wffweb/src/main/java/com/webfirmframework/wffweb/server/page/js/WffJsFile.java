@@ -178,7 +178,7 @@ public enum WffJsFile {
             optimizedFileContent = builder.toString().trim();
         } catch (final Exception e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.severe(e.toString());
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         }
     }
@@ -224,7 +224,7 @@ public enum WffJsFile {
                     + allOptimizedContent;
         } catch (final Exception e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.severe(e.toString());
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         }
         return "";

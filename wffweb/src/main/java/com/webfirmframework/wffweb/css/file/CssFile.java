@@ -218,15 +218,15 @@ public abstract class CssFile implements Serializable, Cloneable {
             }
         } catch (final SecurityException e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.severe(e.toString());
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         } catch (final IllegalArgumentException e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.severe(e.toString());
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         } catch (final IllegalAccessException e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.severe(e.toString());
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         }
     }

@@ -126,7 +126,7 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
 
         } catch (final UnsupportedEncodingException e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.severe(e.toString());
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         }
 
@@ -208,7 +208,7 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
 
         } catch (final UnsupportedEncodingException e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.severe(e.toString());
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         }
 
@@ -299,7 +299,7 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
             }
         } catch (final UnsupportedEncodingException e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.severe(e.toString());
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         }
 
@@ -382,7 +382,7 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
 
         } catch (final UnsupportedEncodingException e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.severe(e.toString());
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         }
 
