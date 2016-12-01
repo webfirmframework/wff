@@ -163,7 +163,7 @@ class InsertBeforeListenerImpl implements InsertBeforeListener {
 
         } catch (final UnsupportedEncodingException e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.severe(e.toString());
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         }
 

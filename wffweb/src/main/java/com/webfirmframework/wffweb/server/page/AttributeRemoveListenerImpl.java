@@ -95,7 +95,7 @@ public class AttributeRemoveListenerImpl implements AttributeRemoveListener {
 
         } catch (final Exception e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.severe(e.toString());
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         }
 
@@ -172,7 +172,7 @@ public class AttributeRemoveListenerImpl implements AttributeRemoveListener {
     // "setWebSocketPushListener must be set to sent server changes to client");
     // }
     // } catch (final UnsupportedEncodingException e) {
-    // if (LOGGER.isLoggable(Level.SEVERE)) { LOGGER.severe(e.toString()); }
+    // if (LOGGER.isLoggable(Level.SEVERE)) { LOGGER.log(Level.SEVERE, e.getMessage(), e); }
     // }
     // }
 }

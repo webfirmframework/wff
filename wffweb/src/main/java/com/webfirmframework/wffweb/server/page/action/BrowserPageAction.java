@@ -17,6 +17,7 @@ package com.webfirmframework.wffweb.server.page.action;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.server.page.Task;
@@ -57,7 +58,7 @@ public enum BrowserPageAction {
             }
 
         } catch (final UnsupportedEncodingException e) {
-            LOGGER.severe(e.toString());
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
     }
 

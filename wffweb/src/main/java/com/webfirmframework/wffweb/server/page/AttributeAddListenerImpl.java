@@ -91,7 +91,7 @@ public class AttributeAddListenerImpl implements AttributeAddListener {
 
         } catch (final Exception e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.severe(e.toString());
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         }
 
