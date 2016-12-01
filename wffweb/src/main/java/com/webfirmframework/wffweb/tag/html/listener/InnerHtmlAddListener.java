@@ -39,7 +39,7 @@ public interface InnerHtmlAddListener extends Serializable {
 
         public Event(final AbstractHtml parentTag,
                 final AbstractHtml innerHtmlTag,
-                AbstractHtml previousParentTag) {
+                final AbstractHtml previousParentTag) {
             super();
             this.parentTag = parentTag;
             this.innerHtmlTag = innerHtmlTag;
@@ -73,7 +73,7 @@ public interface InnerHtmlAddListener extends Serializable {
          * @param previousParentTag
          *            the previousParentTag to set
          */
-        public void setPreviousParentTag(AbstractHtml previousParentTag) {
+        public void setPreviousParentTag(final AbstractHtml previousParentTag) {
             this.previousParentTag = previousParentTag;
         }
 

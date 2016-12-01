@@ -58,7 +58,9 @@ public enum BrowserPageAction {
             }
 
         } catch (final UnsupportedEncodingException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            if (LOGGER.isLoggable(Level.SEVERE)) {
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            }
         }
     }
 

@@ -94,7 +94,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         String result = "";
         if (rebuild || isRebuild() || isModified()) {
             beforePrintStructure();
-            
+
             if (tagBuilder.length() > 0) {
                 tagBuilder.delete(0, tagBuilder.length());
             }
@@ -571,7 +571,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected boolean removeFromAttributeValueMap(final String key) {
         boolean result = false;
-        String previous = getAttributeValueMap().remove(key);
+        final String previous = getAttributeValueMap().remove(key);
 
         if (previous != null) {
             setModified(true);

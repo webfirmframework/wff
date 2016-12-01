@@ -172,7 +172,8 @@ public class AttributeRemoveListenerImpl implements AttributeRemoveListener {
     // "setWebSocketPushListener must be set to sent server changes to client");
     // }
     // } catch (final UnsupportedEncodingException e) {
-    // if (LOGGER.isLoggable(Level.SEVERE)) { LOGGER.log(Level.SEVERE, e.getMessage(), e); }
+    // if (LOGGER.isLoggable(Level.SEVERE)) { LOGGER.log(Level.SEVERE,
+    // e.getMessage(), e); }
     // }
     // }
 }
