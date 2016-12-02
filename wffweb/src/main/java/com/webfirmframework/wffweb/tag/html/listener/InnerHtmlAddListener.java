@@ -81,4 +81,6 @@ public interface InnerHtmlAddListener extends Serializable {
 
     public void innerHtmlAdded(Event event);
 
+    public void innerHtmlsAdded(AbstractHtml parentTag, Event... events);
+
 }

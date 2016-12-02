@@ -267,35 +267,39 @@ var wffClientCRUDUtil = new function() {
 		} else if (taskValue == wffGlobal.taskValues.ADDED_INNER_HTML) {
 
 			console.log('wffGlobal.taskValues.ADDED_INNER_HTML');
+			
+			var tagName = getStringFromBytes(nameValues[1].name);
+			
+			var wffId = wffTagUtil
+					.getWffIdFromWffIdBytes(nameValues[1].values[0]);
+			
+			var parentTag = wffTagUtil.getTagByTagNameAndWffId(tagName,
+					wffId);
+			
+			// it should be case sensitive node.innerHTML
+			// parentTag.innerHTML = innerHtml;
+			// inner html will not work with table
 
-			for (var i = 1; i < nameValues.length; i++) {
-				var wffId = wffTagUtil
-						.getWffIdFromWffIdBytes(nameValues[i].name);
-				var values = nameValues[i].values;
-				var tagName = getStringFromBytes(values[0]);
-				// var innerHtml = getStringFromBytes(values[1]);
+			while (parentTag.firstChild) {
+				parentTag.removeChild(parentTag.firstChild);
+			}
 
-				// console.log('innerHtml', innerHtml);
-
-				var parentTag = wffTagUtil.getTagByTagNameAndWffId(tagName,
-						wffId);
-				// it should be case sensitive node.innerHTML
-				// parentTag.innerHTML = innerHtml;
-
-				while (parentTag.firstChild) {
-					parentTag.removeChild(parentTag.firstChild);
-				}
-
-				var htmlNodes = wffTagUtil.createTagFromWffBMBytes(values[1]);
+			for (var i = 2; i < nameValues.length; i++) {
 				
-				//if length is 3 then there is an existing tag with this id
-				if (values.length == 3) {
+				var values = nameValues[i].values;
+
+				var htmlNodes = wffTagUtil.createTagFromWffBMBytes(nameValues[i].name);
+				
+				//if length is 1 then there is an existing tag with this id
+				if (values.length == 1 && values[0].length == 1) {
 					console.log('values.length == 3');
 					var existingTag = wffTagUtil.getTagByTagNameAndWffId(
 							htmlNodes.nodeName, htmlNodes
 									.getAttribute("data-wff-id"));
-					var parentOfExistingTag = existingTag.parentNode;
-					parentOfExistingTag.removeChild(existingTag);
+					if (existingTag) {
+						var parentOfExistingTag = existingTag.parentNode;
+						parentOfExistingTag.removeChild(existingTag);
+					}
 					
 				}
 				
