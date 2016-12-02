@@ -20,6 +20,8 @@ import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -91,57 +93,78 @@ class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
     }
 
     @Override
-    public void innerHtmlAdded(final Event event) {
-
-        final AbstractHtml parentTag = event.getParentTag();
-        final AbstractHtml innerHtmlTag = event.getInnerHtmlTag();
-        final AbstractHtml previousParentTag = event.getPreviousParentTag();
+    public void innerHtmlsAdded(final AbstractHtml parentTag,
+            final Event... events) {
 
         //@formatter:off
         // removed all children tags task format :-
-        // { "name": task_byte, "values" : [ADDED_INNER_HTML_byte_from_Task_enum]}, { "name": data-wff-id, "values" : [ parent_tag_name, html_string, 1_if_there_was_a_previous_parent ]}
+        // { "name": task_byte, "values" : [ADDED_INNER_HTML_byte_from_Task_enum]}, { "name": parent_tag_name, "values" : [ data-wff-id ] }, { "name": html_string, "values" : [ 1_if_there_was_a_previous_parent ]}
         // { "name": 2, "values" : [[3]]}, { "name":"C55", "values" : ["div", "<span></span>", 1]}
         //@formatter:on
 
+        final List<NameValue> nameValues = new LinkedList<NameValue>();
+
+        final NameValue task = Task.ADDED_INNER_HTML.getTaskNameValue();
+        nameValues.add(task);
+
         try {
-            final NameValue task = Task.ADDED_INNER_HTML.getTaskNameValue();
 
             final DataWffId dataWffId = parentTag.getDataWffId();
 
-            if (dataWffId != null) {
+            if (dataWffId == null) {
+
+                LOGGER.severe("Could not find data-wff-id from owner tag");
+                return;
+            }
+
+            final byte[][] tagNameAndWffId = DataWffIdUtil
+                    .getTagNameAndWffId(parentTag);
+
+            final byte[] parentTagName = tagNameAndWffId[0];
+
+            final byte[] parentWffIdBytes = tagNameAndWffId[1];
+
+            final NameValue parentTagNameValue = new NameValue(parentTagName,
+                    new byte[][] { parentWffIdBytes });
+
+            nameValues.add(parentTagNameValue);
+
+            for (final Event event : events) {
+
+                final AbstractHtml innerHtmlTag = event.getInnerHtmlTag();
+                final AbstractHtml previousParentTag = event
+                        .getPreviousParentTag();
 
                 final NameValue nameValue = new NameValue();
 
-                final byte[][] tagNameAndWffId = DataWffIdUtil
-                        .getTagNameAndWffId(parentTag);
-
-                final byte[] parentWffIdBytes = tagNameAndWffId[1];
-
-                nameValue.setName(parentWffIdBytes);
-
-                final byte[] parentTagName = tagNameAndWffId[0];
+                nameValue.setName(innerHtmlTag.toWffBMBytes("UTF-8"));
 
                 if (previousParentTag != null) {
-                    nameValue.setValues(parentTagName,
-                            innerHtmlTag.toWffBMBytes("UTF-8"),
-                            new byte[] { 1 });
+                    nameValue.setValues(new byte[] { 1 });
                 } else {
-                    nameValue.setValues(parentTagName,
-                            innerHtmlTag.toWffBMBytes("UTF-8"));
+                    nameValue.setValues(new byte[0][0]);
                 }
 
-                browserPage.push(task, nameValue);
-
                 addInWffIdMap(innerHtmlTag);
-            } else {
-                LOGGER.severe("Could not find data-wff-id from owner tag");
+
+                nameValues.add(nameValue);
+
             }
+
+            browserPage
+                    .push(nameValues.toArray(new NameValue[nameValues.size()]));
+
         } catch (final UnsupportedEncodingException e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         }
 
+    }
+
+    @Override
+    public void innerHtmlAdded(final Event event) {
+        innerHtmlsAdded(event.getParentTag(), event);
     }
 
 }

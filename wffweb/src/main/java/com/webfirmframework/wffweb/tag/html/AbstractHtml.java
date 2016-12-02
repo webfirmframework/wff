@@ -250,7 +250,26 @@ public abstract class AbstractHtml extends AbstractTagBase {
         }
     }
 
+    /**
+     * removes all children and adds the given tag
+     *
+     * @param innerHtml
+     *            the inner html tag to add
+     * @author WFF
+     */
     public void addInnerHtml(final AbstractHtml innerHtml) {
+        addInnerHtmls(innerHtml);
+    }
+
+    /**
+     * Removes all children and adds the given tags as children.
+     *
+     * @param innerHtmls
+     *            the inner html tags to add
+     * @since 2.1.3
+     * @author WFF
+     */
+    public void addInnerHtmls(final AbstractHtml... innerHtmls) {
 
         final AbstractHtml[] removedAbstractHtmls = children
                 .toArray(new AbstractHtml[children.size()]);
@@ -263,18 +282,31 @@ public abstract class AbstractHtml extends AbstractTagBase {
         final InnerHtmlAddListener listener = sharedObject
                 .getInnerHtmlAddListener(ACCESS_OBJECT);
 
-        AbstractHtml previousParentTag = null;
+        final InnerHtmlAddListener.Event[] events = new InnerHtmlAddListener.Event[innerHtmls.length];
 
-        if (innerHtml.parent != null
-                && innerHtml.parent.sharedObject == sharedObject) {
-            previousParentTag = innerHtml.parent;
+        int index = 0;
+
+        for (final AbstractHtml innerHtml : innerHtmls) {
+
+            AbstractHtml previousParentTag = null;
+
+            if (innerHtml.parent != null
+                    && innerHtml.parent.sharedObject == sharedObject) {
+                previousParentTag = innerHtml.parent;
+            }
+
+            addChild(innerHtml, false);
+
+            if (listener != null) {
+                events[index] = new InnerHtmlAddListener.Event(
+                        AbstractHtml.this, innerHtml, previousParentTag);
+                index++;
+            }
+
         }
 
-        addChild(innerHtml, false);
-
         if (listener != null) {
-            listener.innerHtmlAdded(new InnerHtmlAddListener.Event(
-                    AbstractHtml.this, innerHtml, previousParentTag));
+            listener.innerHtmlsAdded(AbstractHtml.this, events);
         }
     }
 
