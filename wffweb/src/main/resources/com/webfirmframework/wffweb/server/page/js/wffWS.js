@@ -34,7 +34,7 @@ var wffWS = new function() {
 			}
 
 			var binary = new Int8Array(event.data);
-			wffClientCRUDUtil.applyUpdates(binary);
+			wffClientCRUDUtil.invokeTasks(binary);
 
 		};
 
@@ -54,7 +54,7 @@ var wffWS = new function() {
 			var executed = wffClientMethods.exePostFun(binary);
 
 			if (!executed) {
-				wffClientCRUDUtil.applyUpdates(binary);
+				wffClientCRUDUtil.invokeTasks(binary);
 			}
 
 			// var wffMessage = wffBMUtil.parseWffBinaryMessageBytes(binary);

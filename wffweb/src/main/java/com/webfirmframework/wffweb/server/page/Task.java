@@ -65,7 +65,9 @@ public enum Task {
 
     INVOKE_CALLBACK_FUNCTION,
 
-    INVOKE_CUSTOM_SERVER_METHOD;
+    INVOKE_CUSTOM_SERVER_METHOD,
+
+    TASK_OF_TASKS;
 
     private byte valueByte;
 
@@ -85,10 +87,28 @@ public enum Task {
         return valueByte;
     }
 
+    /**
+     * @return nameValue with name as TASK byte value and values as the the
+     *         current task/object byte value.
+     * @since 2.0.0
+     * @author WFF
+     */
     public NameValue getTaskNameValue() {
         final NameValue task = new NameValue();
         task.setName(Task.TASK.getValueByte());
         task.setValues(new byte[][] { new byte[] { getValueByte() } });
+        return task;
+    }
+
+    /**
+     * @return nameValue with name as TASK_OF_TASKS byte value and values as
+     *         null
+     * @since 2.1.3
+     * @author WFF
+     */
+    public static NameValue getTaskOfTasksNameValue() {
+        final NameValue task = new NameValue();
+        task.setName(Task.TASK_OF_TASKS.getValueByte());
         return task;
     }
 
