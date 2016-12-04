@@ -69,6 +69,8 @@ public class AbstractHtml5SharedObject implements Serializable {
 
     private volatile int dataWffId = -1;
 
+    private volatile boolean dataWffIdSecondCycle;
+
     /**
      * @return unique data-wff-id attribute
      * @since 2.0.0
@@ -84,9 +86,11 @@ public class AbstractHtml5SharedObject implements Serializable {
                     "Not allowed to consume this method. This method is for internal use.");
         }
 
-        if ((++dataWffId) < -1) {
+        if ((++dataWffId) < -1 || dataWffIdSecondCycle) {
 
-            int newDataWffId = 0;
+            int newDataWffId = dataWffIdSecondCycle ? dataWffId : 0;
+
+            dataWffIdSecondCycle = true;
 
             String id = "S" + (newDataWffId);
 
