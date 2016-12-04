@@ -58,6 +58,9 @@ public class AbstractHtml5SharedObject implements Serializable {
 
     private InnerHtmlAddListener innerHtmlAddListener;
 
+    /**
+     * key : "S" + dataWffId and value : abstractHtml tag
+     */
     private Map<String, AbstractHtml> tagByWffId;
 
     private AttributeValueChangeListener valueChangeListener;
@@ -81,8 +84,21 @@ public class AbstractHtml5SharedObject implements Serializable {
                     "Not allowed to consume this method. This method is for internal use.");
         }
 
-        final String id = "S" + (++dataWffId);
-        return new DataWffId(id);
+        if ((++dataWffId) < -1) {
+
+            int newDataWffId = 0;
+
+            String id = "S" + (newDataWffId);
+
+            while (tagByWffId.containsKey(id)) {
+                newDataWffId++;
+                id = "S" + newDataWffId;
+            }
+
+            dataWffId = newDataWffId;
+        }
+
+        return new DataWffId("S" + dataWffId);
     }
 
     public int getLastDataWffId(final Object accessObject) {
