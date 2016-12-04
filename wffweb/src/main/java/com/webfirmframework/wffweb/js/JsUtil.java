@@ -92,4 +92,35 @@ public class JsUtil {
         return builder.toString();
     }
 
+    /**
+     * @param ids
+     *            The string array containing element ids. The id will be used
+     *            as the key in the generated js object. The value in the array
+     *            should be the id of the field. The id in the array should be a
+     *            valid JavaScript object key.
+     * @return the JavaScript object for the fields value. Sample :
+     *         <code>{uId:document.getElementById("uId")}</code>
+     * @since 2.1.3
+     * @author WFF
+     */
+    public static String getJsObjectForFieldsValue(final String... ids) {
+
+        final StringBuilder builder = new StringBuilder();
+
+        builder.append('{');
+
+        for (final Object id : ids) {
+
+            builder.append(id.toString());
+            builder.append(":document.getElementById(\"");
+            builder.append(id.toString());
+            builder.append("\").value,");
+
+        }
+
+        builder.replace(builder.length() - 1, builder.length(), "}");
+
+        return builder.toString();
+    }
+
 }

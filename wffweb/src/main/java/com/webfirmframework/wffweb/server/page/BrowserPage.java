@@ -84,6 +84,8 @@ public abstract class BrowserPage implements Serializable {
 
     private final Queue<ByteBuffer> wffBMBytesQueue = new ArrayDeque<ByteBuffer>();
 
+    private final Queue<ByteBuffer> wffBMBytesHoldPushQueue = new ArrayDeque<ByteBuffer>();
+
     private static final Security ACCESS_OBJECT = new Security();
 
     // by default the push queue should be enabled
@@ -91,6 +93,8 @@ public abstract class BrowserPage implements Serializable {
 
     // by default the pushQueueOnNewWebSocketListener should be enabled
     private boolean pushQueueOnNewWebSocketListener = true;
+
+    private volatile boolean holdPush;
 
     private final Map<String, ServerAsyncMethod> serverMethods = new HashMap<String, ServerAsyncMethod>();
 
@@ -169,10 +173,12 @@ public abstract class BrowserPage implements Serializable {
 
     private void push(final ByteBuffer wffBM) {
 
-        wffBMBytesQueue.add(wffBM);
-
-        pushWffBMBytesQueue();
-
+        if (holdPush) {
+            wffBMBytesHoldPushQueue.add(wffBM);
+        } else {
+            wffBMBytesQueue.add(wffBM);
+            pushWffBMBytesQueue();
+        }
     }
 
     private void pushWffBMBytesQueue() {
@@ -765,6 +771,89 @@ public abstract class BrowserPage implements Serializable {
     public void setPushQueueOnNewWebSocketListener(
             final boolean pushQueueOnNewWebSocketListener) {
         this.pushQueueOnNewWebSocketListener = pushQueueOnNewWebSocketListener;
+    }
+
+    /**
+     *
+     * @return the holdPush true if the push is on hold
+     * @since 2.1.3
+     */
+    public boolean isHoldPush() {
+        return holdPush;
+    }
+
+    /**
+     * holds push if not already on hold until unholdPush is called Usage :-
+     *
+     * <pre>
+     * try {
+     *     browserPage.holdPush();
+     *
+     *     for (AbstractHtml tag : tags) {
+     *         tag.removeAttributes("style");
+     *     }
+     *     // other tag manipulations
+     * } finally {
+     *     browserPage.unholdPush();
+     * }
+     * </pre>
+     *
+     * @since 2.1.3
+     * @author WFF
+     */
+    public void holdPush() {
+        holdPush = true;
+    }
+
+    /**
+     * unholds push if not already unheld. Usage :-
+     *
+     * <pre>
+     * try {
+     *     browserPage.holdPush();
+     *
+     *     for (AbstractHtml tag : tags) {
+     *         tag.removeAttributes("style");
+     *     }
+     *     // other tag manipulations
+     * } finally {
+     *     browserPage.unholdPush();
+     * }
+     * </pre>
+     *
+     * @since 2.1.3
+     * @author WFF
+     */
+    public void unholdPush() {
+
+        if (holdPush) {
+            holdPush = false;
+
+            if (wffBMBytesHoldPushQueue.size() > 0) {
+
+                final NameValue invokeMultipleTasks = Task
+                        .getTaskOfTasksNameValue();
+
+                final byte[][] values = new byte[wffBMBytesHoldPushQueue
+                        .size()][0];
+                invokeMultipleTasks.setValues(values);
+
+                int index = 0;
+
+                while (wffBMBytesHoldPushQueue.size() > 0) {
+                    final ByteBuffer wffBM = wffBMBytesHoldPushQueue.poll();
+                    values[index] = wffBM.array();
+                    index++;
+                }
+
+                wffBMBytesQueue.add(ByteBuffer.wrap(
+                        WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(
+                                invokeMultipleTasks)));
+
+                pushWffBMBytesQueue();
+            }
+        }
+
     }
 
 }

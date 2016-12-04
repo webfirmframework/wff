@@ -11,19 +11,13 @@ var wffClientCRUDUtil = new function() {
 		return decoder.decode(new Uint8Array(utf8Bytes));
 	};
 
-	this.applyUpdates = function(wffBMBytes) {
-		console.log('applying updates', document.getElementsByTagName('*'));
-
-		var nameValues = wffBMUtil.parseWffBinaryMessageBytes(wffBMBytes);
-
+	var invokeTask = function(nameValues) {
+		
 		var taskNameValue = nameValues[0];
 		// var taskName = getStringFromBytes(taskNameValue.name);
 		var taskValue = taskNameValue.values[0][0];
 		console.log('taskNameValue.name', taskNameValue.name);
-
-		if (taskNameValue.name[0] != wffGlobal.taskValues.TASK) {
-			return;
-		}
+		
 		if (taskValue == wffGlobal.taskValues.ATTRIBUTE_UPDATED) {
 			console.log('taskValue == "ATTRIBUTE_UPDATED"');
 
@@ -359,8 +353,6 @@ var wffClientCRUDUtil = new function() {
 				eval(js);
 			}
 			
-		} else {
-			return false;
 		}
 		
 		return true;
@@ -389,6 +381,35 @@ var wffClientCRUDUtil = new function() {
 		// }
 		// }
 
+	};
+	
+	this.invokeTasks = function(wffBMBytes) {
+		
+		var nameValues = wffBMUtil.parseWffBinaryMessageBytes(wffBMBytes);
+		var taskNameValue = nameValues[0];
+		
+		
+		if (taskNameValue.name[0] == wffGlobal.taskValues.TASK) {
+			
+			console.log('TASK');
+			
+			invokeTask(nameValues);
+			
+		} else if (taskNameValue.name[0] == wffGlobal.taskValues.TASK_OF_TASKS) {
+			
+			console.log('TASK_OF_TASKS');
+			
+			var tasksBM = taskNameValue.values;
+			
+			for (var i = 0; i < tasksBM.length; i++) {
+				var taskNameValues = wffBMUtil.parseWffBinaryMessageBytes(tasksBM[i]);
+				invokeTask(taskNameValues);
+			}
+			
+		} else {
+			return false;
+		}
+		return true;
 	};
 
 	this.getAttributeUpdates = function(wffBMBytes) {
