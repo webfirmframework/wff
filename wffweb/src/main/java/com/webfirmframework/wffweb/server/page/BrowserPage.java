@@ -603,6 +603,23 @@ public abstract class BrowserPage implements Serializable {
     }
 
     /**
+     * rebuilds the html string of the tag including the child tags/values if
+     * parameter is true, otherwise returns the html string prebuilt and kept in
+     * the cache.
+     *
+     * @param rebuild
+     *            true to rebuild & false to return previously built string.
+     * @return {@code String} equalent to the html string of the tag including
+     *         the child tags.
+     * @since 2.1.4
+     * @author WFF
+     */
+    public final String toHtmlString(final boolean rebuild) {
+        initAbstractHtml();
+        return abstractHtml.toHtmlString(rebuild);
+    }
+
+    /**
      * @param charset
      *            the charset
      * @return {@code String} equalent to the html string of the tag including
@@ -612,6 +629,28 @@ public abstract class BrowserPage implements Serializable {
     public final String toHtmlString(final String charset) {
         initAbstractHtml();
         return abstractHtml.toHtmlString(true, charset);
+    }
+
+    /**
+     * rebuilds the html string of the tag including the child tags/values if
+     * parameter is true, otherwise returns the html string prebuilt and kept in
+     * the cache.
+     *
+     * @param rebuild
+     *            true to rebuild & false to return previously built string.
+     * @param the
+     *            charset to set for the returning value, eg:
+     *            {@code StandardCharsets.UTF_8.name()}
+     * @return {@code String} equalent to the html string of the tag including
+     *         the child tags.
+     *
+     * @since 2.1.4
+     * @author WFF
+     */
+    public final String toHtmlString(final boolean rebuild,
+            final String charset) {
+        initAbstractHtml();
+        return abstractHtml.toHtmlString(rebuild, charset);
     }
 
     /**
@@ -630,6 +669,22 @@ public abstract class BrowserPage implements Serializable {
      *            the object of {@code OutputStream} to write to.
      * @param rebuild
      *            true to rebuild & false to write previously built bytes.
+     * @return the total number of bytes written
+     *
+     * @throws IOException
+     * @since 2.1.4
+     */
+    public final void toOutputStream(final OutputStream os,
+            final boolean rebuild) throws IOException {
+        initAbstractHtml();
+        abstractHtml.toOutputStream(os, rebuild);
+    }
+
+    /**
+     * @param os
+     *            the object of {@code OutputStream} to write to.
+     * @param rebuild
+     *            true to rebuild & false to write previously built bytes.
      * @param charset
      *            the charset
      * @throws IOException
@@ -639,6 +694,25 @@ public abstract class BrowserPage implements Serializable {
         initAbstractHtml();
 
         abstractHtml.toOutputStream(os, true, charset);
+    }
+
+    /**
+     * @param os
+     *            the object of {@code OutputStream} to write to.
+     * @param rebuild
+     *            true to rebuild & false to write previously built bytes.
+     * @param charset
+     *            the charset
+     * @return the total number of bytes written
+     * @throws IOException
+     * @since 2.1.4
+     *
+     */
+    public final void toOutputStream(final OutputStream os,
+            final boolean rebuild, final String charset) throws IOException {
+        initAbstractHtml();
+
+        abstractHtml.toOutputStream(os, rebuild, charset);
     }
 
     private void initAbstractHtml() {
@@ -854,6 +928,23 @@ public abstract class BrowserPage implements Serializable {
             }
         }
 
+    }
+
+    /**
+     * Gets the size of internal push queue.
+     *
+     * Use case :- Suppose there is a thread in the server which makes real time
+     * ui changes. But if the end user lost connection and the webSocket is not
+     * closed connection, in such case the developer can decide whether to make
+     * any more ui updates from server when the pushQueueSize exceeds a
+     * particular limit.
+     *
+     * @return the size of internal push queue.
+     * @since 2.1.4
+     * @author WFF
+     */
+    public int getPushQueueSize() {
+        return wffBMBytesQueue.size();
     }
 
 }
