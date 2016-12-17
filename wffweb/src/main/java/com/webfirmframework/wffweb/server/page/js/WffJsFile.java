@@ -73,8 +73,47 @@ public enum WffJsFile {
     private static volatile int functionId = 0;
 
     static {
+
         if (PRODUCTION_MODE) {
+
             FUNCTION_NAMES.add("getWffBinaryMessageBytes");
+            FUNCTION_NAMES.add("getTagByTagNameAndWffId");
+            FUNCTION_NAMES.add("getTagByWffId");
+            FUNCTION_NAMES.add("getWffIdFromWffIdBytes");
+            FUNCTION_NAMES.add("getWffIdBytesFromTag");
+            FUNCTION_NAMES.add("splitAttrNameValue");
+            FUNCTION_NAMES.add("createTagFromWffBMBytes");
+            FUNCTION_NAMES.add("getTagDeletedWffBMBytes");
+            FUNCTION_NAMES.add("getAttrUpdatedWffBMBytes");
+            FUNCTION_NAMES.add("recurChild");
+            FUNCTION_NAMES.add("getTagCreatedWffBMBytes");
+            FUNCTION_NAMES.add("getWffBinaryMessageBytes");
+            FUNCTION_NAMES.add("parseWffBinaryMessageBytes");
+            FUNCTION_NAMES.add("extractValuesFromValueBytes");
+            FUNCTION_NAMES.add("concatArrayValues");
+            FUNCTION_NAMES.add("concatArrayValuesFromPosition");
+            FUNCTION_NAMES.add("getIntFromBytes");
+            FUNCTION_NAMES.add("getBytesFromInt");
+            FUNCTION_NAMES.add("getIntFromOptimizedBytes");
+            FUNCTION_NAMES.add("getOptimizedBytesFromInt");
+            FUNCTION_NAMES.add("getLengthOfOptimizedBytesFromInt");
+            FUNCTION_NAMES.add("getLastBytesFromInt");
+            FUNCTION_NAMES.add("getBytesFromDouble");
+            FUNCTION_NAMES.add("getDoubleFromOptimizedBytes");
+            FUNCTION_NAMES.add("getValueTypeByte");
+            FUNCTION_NAMES.add("invokeTask");
+            FUNCTION_NAMES.add("invokeTasks");
+            FUNCTION_NAMES.add("getAttributeUpdates");
+            FUNCTION_NAMES.add("getStringFromBytes");
+            FUNCTION_NAMES.add("getTaskNameValue");
+            FUNCTION_NAMES.add("getStringFromBytes");
+            FUNCTION_NAMES.add("getTagByTagNameAndWffId");
+            FUNCTION_NAMES.add("getTagByWffId");
+            FUNCTION_NAMES.add("getWffIdFromWffIdBytes");
+            FUNCTION_NAMES.add("getWffIdBytesFromTag");
+            FUNCTION_NAMES.add("splitAttrNameValue");
+            FUNCTION_NAMES.add("createTagFromWffBMBytes");
+
         }
     }
 
