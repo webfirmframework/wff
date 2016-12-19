@@ -133,6 +133,7 @@ public enum WffJsFile {
             VARIABLE_NAMES.add("attrNameAndValueBytes");
             VARIABLE_NAMES.add("nameLengthBytesLength");
             VARIABLE_NAMES.add("extractEachValueBytes");
+            VARIABLE_NAMES.add("nameValueCallbackFun");
             VARIABLE_NAMES.add("superParentNameValue");
             VARIABLE_NAMES.add("currentParentTagName");
             VARIABLE_NAMES.add("maxValuesBytesLength");
@@ -141,6 +142,7 @@ public enum WffJsFile {
             VARIABLE_NAMES.add("attrNameValueBytes");
             VARIABLE_NAMES.add("currentParentWffId");
             VARIABLE_NAMES.add("maxNoOfValuesBytes");
+            VARIABLE_NAMES.add("callbackFunctions");
             VARIABLE_NAMES.add("attrNameValueArry");
             VARIABLE_NAMES.add("superParentValues");
             VARIABLE_NAMES.add("indexOfSeparator");
@@ -155,6 +157,7 @@ public enum WffJsFile {
             VARIABLE_NAMES.add("beforeTagWffId");
             VARIABLE_NAMES.add("nameLegthBytes");
             VARIABLE_NAMES.add("nodeValueBytes");
+            VARIABLE_NAMES.add("callbackFunId");
             VARIABLE_NAMES.add("fromByteArray");
             VARIABLE_NAMES.add("applicableTag");
             VARIABLE_NAMES.add("beforeTagName");
@@ -197,13 +200,15 @@ public enum WffJsFile {
             VARIABLE_NAMES.add("nameByte");
             VARIABLE_NAMES.add("argBytes");
             VARIABLE_NAMES.add("allTags");
-            // should not replace, because there is onmessage funtion
-            // VARIABLE_NAMES.add("message");
             VARIABLE_NAMES.add("allTags");
             VARIABLE_NAMES.add("wffIds");
             VARIABLE_NAMES.add("wffId");
             VARIABLE_NAMES.add("intId");
             VARIABLE_NAMES.add("sOrC");
+
+            // should not replace, because there is webSocket's onmessage
+            // function
+            // VARIABLE_NAMES.add("message");
 
         }
     }
