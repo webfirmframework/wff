@@ -125,6 +125,7 @@ public enum WffJsFile {
 
             VARIABLE_NAMES.add("maxBytesLengthFromTotalBytes");
             VARIABLE_NAMES.add("maxBytesLengthForAllValues");
+            VARIABLE_NAMES.add("totalNoOfBytesForAllValues");
             VARIABLE_NAMES.add("indexInWffBinaryMessage");
             VARIABLE_NAMES.add("valueLengthBytesLength");
             VARIABLE_NAMES.add("wffBinaryMessageBytes");
@@ -134,7 +135,9 @@ public enum WffJsFile {
             VARIABLE_NAMES.add("extractEachValueBytes");
             VARIABLE_NAMES.add("superParentNameValue");
             VARIABLE_NAMES.add("currentParentTagName");
+            VARIABLE_NAMES.add("maxValuesBytesLength");
             VARIABLE_NAMES.add("maxNoNameLengthBytes");
+            VARIABLE_NAMES.add("parentOfExistingTag");
             VARIABLE_NAMES.add("attrNameValueBytes");
             VARIABLE_NAMES.add("currentParentWffId");
             VARIABLE_NAMES.add("maxNoOfValuesBytes");
@@ -145,22 +148,30 @@ public enum WffJsFile {
             VARIABLE_NAMES.add("currentParentTag");
             VARIABLE_NAMES.add("maxNoOfNameBytes");
             VARIABLE_NAMES.add("valueLengthBytes");
+            VARIABLE_NAMES.add("methodNameBytes");
             VARIABLE_NAMES.add("valueLegthBytes");
             VARIABLE_NAMES.add("valuesToAppend");
+            VARIABLE_NAMES.add("parentDocIndex");
             VARIABLE_NAMES.add("beforeTagWffId");
+            VARIABLE_NAMES.add("nameLegthBytes");
             VARIABLE_NAMES.add("nodeValueBytes");
             VARIABLE_NAMES.add("fromByteArray");
             VARIABLE_NAMES.add("applicableTag");
             VARIABLE_NAMES.add("beforeTagName");
             VARIABLE_NAMES.add("sOrCUtf8Bytes");
             VARIABLE_NAMES.add("appendToArray");
+            VARIABLE_NAMES.add("lastNoOfBytes");
             VARIABLE_NAMES.add("parentTagName");
             VARIABLE_NAMES.add("nodeNameBytes");
             VARIABLE_NAMES.add("attrNameValue");
+            VARIABLE_NAMES.add("messageIndex");
             VARIABLE_NAMES.add("childTagName");
             VARIABLE_NAMES.add("parentIndex");
+            VARIABLE_NAMES.add("doubleValue");
             VARIABLE_NAMES.add("tagToRemove");
+            VARIABLE_NAMES.add("tagDocIndex");
             VARIABLE_NAMES.add("zerothIndex");
+            VARIABLE_NAMES.add("valueLength");
             VARIABLE_NAMES.add("secondIndex");
             VARIABLE_NAMES.add("thirdIndex");
             VARIABLE_NAMES.add("valueLegth");
@@ -170,17 +181,24 @@ public enum WffJsFile {
             VARIABLE_NAMES.add("nameValues");
             VARIABLE_NAMES.add("valueBytes");
             VARIABLE_NAMES.add("valuesFrom");
+            VARIABLE_NAMES.add("wffBMBytes");
             VARIABLE_NAMES.add("firstIndex");
+            VARIABLE_NAMES.add("methodName");
             VARIABLE_NAMES.add("nameValue");
             VARIABLE_NAMES.add("nameBytes");
             VARIABLE_NAMES.add("beforeTag");
             VARIABLE_NAMES.add("attrValue");
             VARIABLE_NAMES.add("attrValue");
+            VARIABLE_NAMES.add("attrBytes");
             VARIABLE_NAMES.add("htmlNodes");
             VARIABLE_NAMES.add("wffTagId");
             VARIABLE_NAMES.add("attrName");
             VARIABLE_NAMES.add("childTag");
+            VARIABLE_NAMES.add("nameByte");
+            VARIABLE_NAMES.add("argBytes");
             VARIABLE_NAMES.add("allTags");
+            // should not replace, because there is onmessage funtion
+            // VARIABLE_NAMES.add("message");
             VARIABLE_NAMES.add("allTags");
             VARIABLE_NAMES.add("wffIds");
             VARIABLE_NAMES.add("wffId");
@@ -323,7 +341,8 @@ public enum WffJsFile {
 
             allOptimizedContent = builder.toString().trim();
 
-            if (PRODUCTION_MODE) {
+            if (PRODUCTION_MODE && FUNCTION_NAMES != null
+                    && VARIABLE_NAMES != null) {
                 for (final String name : FUNCTION_NAMES) {
                     allOptimizedContent = allOptimizedContent.replace(name,
                             "f" + (++functionId));
