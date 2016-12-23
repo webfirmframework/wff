@@ -1,5 +1,6 @@
 package com.webfirmframework.wffweb.tag.html.formsandinputs;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.settings.WffConfiguration;
@@ -8,6 +9,7 @@ import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.TextAreaAttributable;
+import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 
 /**
  * @author WFF
@@ -65,6 +67,40 @@ public class TextArea extends AbstractHtml {
      */
     protected void init() {
         // to override and use this method
+    }
+
+    /**
+     * sets the child text for this tag.
+     *
+     * @param text
+     *            String which needs to be shown as a child of this tag.
+     * @since 2.1.4
+     */
+    public void setChildText(final String text) {
+        if (text == null || text.isEmpty()) {
+            removeAllChildren();
+        } else {
+            addInnerHtml(new NoTag(null, text));
+        }
+    }
+
+    /**
+     * gets the child text set for this tag.
+     *
+     * @return the child text set for this tag in string format. If there is no
+     *         children/child text then will return empty string.
+     * @since 2.1.4
+     */
+    public String getChildText() {
+        final List<AbstractHtml> children = getChildren();
+        if (children.size() > 0) {
+            final StringBuilder builder = new StringBuilder();
+            for (final AbstractHtml child : children) {
+                builder.append(child.toHtmlString());
+            }
+            return builder.toString();
+        }
+        return "";
     }
 
 }
