@@ -20,6 +20,8 @@ import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.AreaAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
+import com.webfirmframework.wffweb.tag.html.identifier.ScriptAttributable;
+import com.webfirmframework.wffweb.tag.html.identifier.StyleAttributable;
 
 /**
  *
@@ -86,7 +88,8 @@ import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
  *
  */
 public class Type extends AbstractAttribute
-        implements AAttributable, AreaAttributable, InputAttributable {
+        implements AAttributable, AreaAttributable, InputAttributable,
+        ScriptAttributable, StyleAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -137,6 +140,14 @@ public class Type extends AbstractAttribute
     public static final String WEEK = "week";
 
     public static final String TEXT_JAVASCRIPT = "text/javascript";
+
+    public static final String TEXT_ECMASCRIPT = "text/ecmascript";
+
+    public static final String APPLICATION_ECMASCRIPT = "application/ecmascript";
+
+    public static final String APPLICATION_JAVASCRIPT = "application/javascript";
+
+    public static final String TEXT_CSS = "text/css";
 
     {
         super.setAttributeName(AttributeNameConstants.TYPE);

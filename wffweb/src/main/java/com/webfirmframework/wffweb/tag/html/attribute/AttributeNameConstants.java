@@ -343,6 +343,12 @@ public class AttributeNameConstants {
 
     public static final String SIZES = "sizes";
 
+    public static final String COLS = "cols";
+
+    public static final String ROWS = "rows";
+
+    public static final String FOR = "for";
+
     /**
      *
      * @author WFF

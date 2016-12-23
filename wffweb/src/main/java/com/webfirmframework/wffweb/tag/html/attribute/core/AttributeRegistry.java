@@ -41,9 +41,11 @@ import com.webfirmframework.wffweb.tag.html.attribute.Charset;
 import com.webfirmframework.wffweb.tag.html.attribute.Checked;
 import com.webfirmframework.wffweb.tag.html.attribute.CoOrds;
 import com.webfirmframework.wffweb.tag.html.attribute.ColSpan;
+import com.webfirmframework.wffweb.tag.html.attribute.Cols;
 import com.webfirmframework.wffweb.tag.html.attribute.Disabled;
 import com.webfirmframework.wffweb.tag.html.attribute.EncType;
 import com.webfirmframework.wffweb.tag.html.attribute.Face;
+import com.webfirmframework.wffweb.tag.html.attribute.For;
 import com.webfirmframework.wffweb.tag.html.attribute.Headers;
 import com.webfirmframework.wffweb.tag.html.attribute.Height;
 import com.webfirmframework.wffweb.tag.html.attribute.Href;
@@ -59,6 +61,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.Rel;
 import com.webfirmframework.wffweb.tag.html.attribute.Rev;
 import com.webfirmframework.wffweb.tag.html.attribute.Role;
 import com.webfirmframework.wffweb.tag.html.attribute.RowSpan;
+import com.webfirmframework.wffweb.tag.html.attribute.Rows;
 import com.webfirmframework.wffweb.tag.html.attribute.Scope;
 import com.webfirmframework.wffweb.tag.html.attribute.Shape;
 import com.webfirmframework.wffweb.tag.html.attribute.Size;
@@ -567,6 +570,13 @@ public class AttributeRegistry {
                 SrcSet.class.getSimpleName());
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.SIZES,
                 Sizes.class.getSimpleName());
+
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.COLS,
+                Cols.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ROWS,
+                Rows.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.FOR,
+                For.class.getSimpleName());
 
         attributeNames = new ArrayList<String>(initialCapacity);
         attributeNamesSet = new HashSet<String>(initialCapacity);

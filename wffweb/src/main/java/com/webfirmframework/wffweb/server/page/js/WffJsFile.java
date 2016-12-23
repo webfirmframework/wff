@@ -18,7 +18,7 @@ package com.webfirmframework.wffweb.server.page.js;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -68,13 +68,148 @@ public enum WffJsFile {
 
     private String optimizedFileContent;
 
-    private static final Set<String> FUNCTION_NAMES = new HashSet<String>();
+    private static Set<String> functionNames;
+
+    private static Set<String> variableNames;
 
     private static volatile int functionId = 0;
 
+    private static volatile int variableId = 0;
+
     static {
+
         if (PRODUCTION_MODE) {
-            FUNCTION_NAMES.add("getWffBinaryMessageBytes");
+
+            functionNames = new LinkedHashSet<String>();
+            variableNames = new LinkedHashSet<String>();
+
+            // should be in descending order of the value length
+
+            functionNames.add("getLengthOfOptimizedBytesFromInt");
+            functionNames.add("concatArrayValuesFromPosition");
+            functionNames.add("extractValuesFromValueBytes");
+            functionNames.add("getDoubleFromOptimizedBytes");
+            functionNames.add("parseWffBinaryMessageBytes");
+            functionNames.add("getAttrUpdatedWffBMBytes");
+            functionNames.add("getWffBinaryMessageBytes");
+            functionNames.add("getWffBinaryMessageBytes");
+            functionNames.add("getIntFromOptimizedBytes");
+            functionNames.add("getOptimizedBytesFromInt");
+            functionNames.add("getTagByTagNameAndWffId");
+            functionNames.add("getTagDeletedWffBMBytes");
+            functionNames.add("createTagFromWffBMBytes");
+            functionNames.add("getTagCreatedWffBMBytes");
+            functionNames.add("getTagByTagNameAndWffId");
+            functionNames.add("createTagFromWffBMBytes");
+            functionNames.add("getWffIdFromWffIdBytes");
+            functionNames.add("getWffIdFromWffIdBytes");
+            functionNames.add("getWffIdBytesFromTag");
+            functionNames.add("getWffIdBytesFromTag");
+            functionNames.add("getLastBytesFromInt");
+            functionNames.add("getAttributeUpdates");
+            functionNames.add("getStringFromBytes");
+            functionNames.add("splitAttrNameValue");
+            functionNames.add("getBytesFromDouble");
+            functionNames.add("getStringFromBytes");
+            functionNames.add("splitAttrNameValue");
+            functionNames.add("concatArrayValues");
+            functionNames.add("getTaskNameValue");
+            functionNames.add("getValueTypeByte");
+            functionNames.add("getIntFromBytes");
+            functionNames.add("getBytesFromInt");
+            functionNames.add("getTagByWffId");
+            functionNames.add("getTagByWffId");
+            functionNames.add("invokeTasks");
+            functionNames.add("recurChild");
+            functionNames.add("invokeTask");
+
+            variableNames.add("maxBytesLengthFromTotalBytes");
+            variableNames.add("maxBytesLengthForAllValues");
+            variableNames.add("totalNoOfBytesForAllValues");
+            variableNames.add("indexInWffBinaryMessage");
+            variableNames.add("valueLengthBytesLength");
+            variableNames.add("wffBinaryMessageBytes");
+            variableNames.add("maxNoValueLengthBytes");
+            variableNames.add("attrNameAndValueBytes");
+            variableNames.add("nameLengthBytesLength");
+            variableNames.add("extractEachValueBytes");
+            variableNames.add("nameValueCallbackFun");
+            variableNames.add("superParentNameValue");
+            variableNames.add("currentParentTagName");
+            variableNames.add("maxValuesBytesLength");
+            variableNames.add("maxNoNameLengthBytes");
+            variableNames.add("parentOfExistingTag");
+            variableNames.add("attrNameValueBytes");
+            variableNames.add("currentParentWffId");
+            variableNames.add("maxNoOfValuesBytes");
+            variableNames.add("callbackFunctions");
+            variableNames.add("attrNameValueArry");
+            variableNames.add("superParentValues");
+            variableNames.add("indexOfSeparator");
+            variableNames.add("argumentBMObject");
+            variableNames.add("currentParentTag");
+            variableNames.add("maxNoOfNameBytes");
+            variableNames.add("valueLengthBytes");
+            variableNames.add("methodNameBytes");
+            variableNames.add("valueLegthBytes");
+            variableNames.add("valuesToAppend");
+            variableNames.add("parentDocIndex");
+            variableNames.add("beforeTagWffId");
+            variableNames.add("nameLegthBytes");
+            variableNames.add("nodeValueBytes");
+            variableNames.add("callbackFunId");
+            variableNames.add("fromByteArray");
+            variableNames.add("applicableTag");
+            variableNames.add("beforeTagName");
+            variableNames.add("sOrCUtf8Bytes");
+            variableNames.add("appendToArray");
+            variableNames.add("lastNoOfBytes");
+            variableNames.add("parentTagName");
+            variableNames.add("nodeNameBytes");
+            variableNames.add("attrNameValue");
+            variableNames.add("messageIndex");
+            variableNames.add("childTagName");
+            variableNames.add("parentIndex");
+            variableNames.add("doubleValue");
+            variableNames.add("tagToRemove");
+            variableNames.add("tagDocIndex");
+            variableNames.add("zerothIndex");
+            variableNames.add("valueLength");
+            variableNames.add("secondIndex");
+            variableNames.add("thirdIndex");
+            variableNames.add("valueLegth");
+            variableNames.add("childWffId");
+            variableNames.add("intIdBytes");
+            variableNames.add("wffIdBytes");
+            variableNames.add("nameValues");
+            variableNames.add("valueBytes");
+            variableNames.add("valuesFrom");
+            variableNames.add("wffBMBytes");
+            variableNames.add("firstIndex");
+            variableNames.add("methodName");
+            variableNames.add("nameValue");
+            variableNames.add("nameBytes");
+            variableNames.add("beforeTag");
+            variableNames.add("attrValue");
+            variableNames.add("attrValue");
+            variableNames.add("attrBytes");
+            variableNames.add("htmlNodes");
+            variableNames.add("wffTagId");
+            variableNames.add("attrName");
+            variableNames.add("childTag");
+            variableNames.add("nameByte");
+            variableNames.add("argBytes");
+            variableNames.add("allTags");
+            variableNames.add("allTags");
+            variableNames.add("wffIds");
+            variableNames.add("wffId");
+            variableNames.add("intId");
+            variableNames.add("sOrC");
+
+            // should not replace, because there is webSocket's onmessage
+            // function
+            // VARIABLE_NAMES.add("message");
+
         }
     }
 
@@ -211,9 +346,22 @@ public enum WffJsFile {
 
             allOptimizedContent = builder.toString().trim();
 
-            for (final String name : FUNCTION_NAMES) {
-                allOptimizedContent = allOptimizedContent.replace(name,
-                        "f" + (++functionId));
+            if (PRODUCTION_MODE && functionNames != null
+                    && variableNames != null) {
+
+                for (final String name : functionNames) {
+                    allOptimizedContent = allOptimizedContent.replace(name,
+                            "f" + (++functionId));
+                }
+
+                for (final String name : variableNames) {
+                    allOptimizedContent = allOptimizedContent.replace(name,
+                            "v" + (++variableId));
+                }
+
+                functionNames = null;
+                variableNames = null;
+
             }
 
             return JS_WORK_AROUND.optimizedFileContent

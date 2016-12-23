@@ -26,8 +26,12 @@ public abstract class AbstractTagBase implements TagBase {
      *
      */
     private static final long serialVersionUID = 1_0_0L;
+
     private boolean rebuild = true;
+
     private boolean modified;
+
+    private Object data;
 
     /**
      * @return the rebuild
@@ -79,5 +83,30 @@ public abstract class AbstractTagBase implements TagBase {
      */
     public void setModified(final boolean modified) {
         this.modified = modified;
+    }
+
+    /**
+     * Gets the given data set by {@code setData}. This is merely a
+     * getter-setter methods of data property. The developer can set and get any
+     * data using these methods.
+     *
+     * @return the data set by {@code setCode} method.
+     * @since 2.1.4
+     * @author WFF
+     */
+    public Object getData() {
+        return data;
+    }
+
+    /**
+     * Sets the given data. This is merely a getter-setter methods of data
+     * property. The developer can set and get any data using these methods.
+     *
+     * @param data
+     * @since 2.1.4
+     * @author WFF
+     */
+    public void setData(final Object data) {
+        this.data = data;
     }
 }
