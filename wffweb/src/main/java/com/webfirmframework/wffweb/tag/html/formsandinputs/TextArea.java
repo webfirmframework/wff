@@ -19,7 +19,7 @@ import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
  */
 public class TextArea extends AbstractHtml {
 
-    private static final long serialVersionUID = 1_0_0L;
+    private static final long serialVersionUID = 1_0_1L;
 
     public static final Logger LOGGER = Logger
             .getLogger(TextArea.class.getName());
