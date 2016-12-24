@@ -1020,4 +1020,16 @@ public abstract class BrowserPage implements Serializable {
         }
     }
 
+    /**
+     * Invokes when this browser page instance is removed from browser page
+     * context. Override and use this method to stop long running tasks /
+     * threads.
+     *
+     * @since 2.1.4
+     * @author WFF
+     */
+    public void removedFromContext() {
+
+    }
+
 }

@@ -157,6 +157,9 @@ public enum BrowserPageContext {
                     .values()) {
                 instanceIdHttpSessionId.remove(browserPage.getInstanceId());
                 instanceIdBrowserPage.remove(browserPage.getInstanceId());
+                if (browserPage != null) {
+                    browserPage.removedFromContext();
+                }
             }
 
             httpSessionIdBrowserPage.clear();
@@ -247,7 +250,11 @@ public enum BrowserPageContext {
 
                 for (final String instanceId : browserPages.keySet()) {
                     instanceIdHttpSessionId.remove(instanceId);
-                    instanceIdBrowserPage.remove(instanceId);
+                    final BrowserPage removedBrowserPage = instanceIdBrowserPage
+                            .remove(instanceId);
+                    if (removedBrowserPage != null) {
+                        removedBrowserPage.removedFromContext();
+                    }
                 }
 
                 httpSessionIdBrowserPages.remove(httpSessionId);
@@ -335,7 +342,13 @@ public enum BrowserPageContext {
             final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages
                     .get(httpSessionId);
             if (browserPages != null) {
-                browserPages.remove(instanceId);
+                final BrowserPage removedBrowserPage = browserPages
+                        .remove(instanceId);
+
+                if (removedBrowserPage != null) {
+                    removedBrowserPage.removedFromContext();
+                }
+
             }
 
             instanceIdBrowserPage.remove(instanceId);
