@@ -1,13 +1,47 @@
-/**
- * 
- */
 
 // onload is not good as it will wait for the complete images be downloaded
 // this event will be triggered as soon as the dom tree creation is finished
 document.addEventListener("DOMContentLoaded",
 		function(event) {
 			console.log('DOMContentLoaded');
+			
 			wffWS.openSocket(wffGlobal.WS_URL);
+			
+			window.wffOnWindowClosed = false;
+			
+			var onWffWindowClose = function() {
+				
+				if (!window.wffOnWindowClosed) {
+					
+					wffBMClientEvents.wffRemoveBPInstance(sessionStorage.getItem('WFF_INSTANCE_ID'));
+					
+					//alert will now execute here
+					console.log("onWffWindowClose!");
+					
+				}
+				window.wffOnWindowClosed = true;
+			};
+			
+			var isWffWindowEventSupported = function (eventName) {
+				var el = window;
+				eventName = 'on' + eventName;
+				var isSupported = (eventName in el);
+				if (!isSupported && typeof InstallTrigger !== 'undefined') {
+					el.setAttribute(eventName, 'return;');
+					isSupported = typeof el[eventName] == 'function';
+				}
+				el = null;
+				return isSupported;
+			};
+			
+			if (isWffWindowEventSupported('beforeunload')) {
+				window.addEventListener("beforeunload", onWffWindowClose, false);
+			}
+
+			if (isWffWindowEventSupported('unload')) {
+				window.addEventListener("unload", onWffWindowClose, false);
+			}
+			
 			MutationObserver = window.MutationObserver
 					|| window.WebKitMutationObserver;
 

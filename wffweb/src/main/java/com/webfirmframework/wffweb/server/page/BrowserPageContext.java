@@ -306,4 +306,48 @@ public enum BrowserPageContext {
 
     }
 
+    /**
+     * removes browser page by the given instance id. This method is for
+     * internal usage.
+     *
+     * @param callerInstanceId
+     *            instance id of the caller browserPage instance.
+     * @param instanceId
+     *            the instance id of the browser page which is indented to be
+     *            removed.
+     * @since 2.1.4
+     */
+    void removeBrowserPage(final String callerInstanceId,
+            final String instanceId) {
+
+        final String callerHttpSessionId = instanceIdHttpSessionId
+                .get(callerInstanceId);
+
+        final String httpSessionId = instanceIdHttpSessionId.get(instanceId);
+
+        // this is a security checking
+        // the caller session id must be
+        // same as the session id of the instanceId
+        // otherwise it's considered as a hacking.
+        if (httpSessionId != null
+                && httpSessionId.equals(callerHttpSessionId)) {
+
+            final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages
+                    .get(httpSessionId);
+            if (browserPages != null) {
+                browserPages.remove(instanceId);
+            }
+
+            instanceIdBrowserPage.remove(instanceId);
+
+        } else {
+            if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.warning("The callerInstanceId " + callerInstanceId
+                        + " tried to remove instanceId " + instanceId
+                        + " BrowserPageContext");
+            }
+        }
+
+    }
+
 }

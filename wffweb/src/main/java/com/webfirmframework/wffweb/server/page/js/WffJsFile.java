@@ -44,17 +44,19 @@ public enum WffJsFile {
 
     WFF_CLIENT_CRUD_UTIL("wffClientCRUDUtil.js"),
 
-    WFF_WS("wffWS.js"),
-
-    WFF_CLIENT_EVENTS("wffClientEvents.js"),
-
     WFF_SERVER_METHODS("wffServerMethods.js"),
 
     WFF_CLIENT_METHODS("wffClientMethods.js"),
 
     WFF_CLASSES("WffClasses.js"),
 
-    WFF_ASYNC("wffAsync.js");
+    WFF_ASYNC("wffAsync.js"),
+
+    WFF_BM_CLIENT_EVENTS("wffBMClientEvents.js"),
+
+    WFF_WS("wffWS.js"),
+
+    WFF_CLIENT_EVENTS("wffClientEvents.js");
 
     public static final Logger LOGGER = Logger
             .getLogger(WffJsFile.class.getName());
@@ -95,16 +97,19 @@ public enum WffJsFile {
             functionNames.add("getWffBinaryMessageBytes");
             functionNames.add("getIntFromOptimizedBytes");
             functionNames.add("getOptimizedBytesFromInt");
+            functionNames.add("isWffWindowEventSupported");
             functionNames.add("getTagByTagNameAndWffId");
             functionNames.add("getTagDeletedWffBMBytes");
             functionNames.add("createTagFromWffBMBytes");
             functionNames.add("getTagCreatedWffBMBytes");
             functionNames.add("getTagByTagNameAndWffId");
             functionNames.add("createTagFromWffBMBytes");
+            functionNames.add("wffRemovePrevBPInstance");
             functionNames.add("getWffIdFromWffIdBytes");
             functionNames.add("getWffIdFromWffIdBytes");
             functionNames.add("getWffIdBytesFromTag");
             functionNames.add("getWffIdBytesFromTag");
+            functionNames.add("wffRemoveBPInstance");
             functionNames.add("getLastBytesFromInt");
             functionNames.add("getAttributeUpdates");
             functionNames.add("getStringFromBytes");
@@ -115,6 +120,7 @@ public enum WffJsFile {
             functionNames.add("concatArrayValues");
             functionNames.add("getTaskNameValue");
             functionNames.add("getValueTypeByte");
+            functionNames.add("onWffWindowClose");
             functionNames.add("getIntFromBytes");
             functionNames.add("getBytesFromInt");
             functionNames.add("getTagByWffId");
@@ -123,6 +129,7 @@ public enum WffJsFile {
             functionNames.add("recurChild");
             functionNames.add("invokeTask");
 
+            variableNames.add("wffRemovePrevBPInstanceInvoked");
             variableNames.add("maxBytesLengthFromTotalBytes");
             variableNames.add("maxBytesLengthForAllValues");
             variableNames.add("totalNoOfBytesForAllValues");
@@ -139,12 +146,14 @@ public enum WffJsFile {
             variableNames.add("maxValuesBytesLength");
             variableNames.add("maxNoNameLengthBytes");
             variableNames.add("parentOfExistingTag");
+            variableNames.add("wffInstanceIdBytes");
             variableNames.add("attrNameValueBytes");
             variableNames.add("currentParentWffId");
             variableNames.add("maxNoOfValuesBytes");
             variableNames.add("callbackFunctions");
             variableNames.add("attrNameValueArry");
             variableNames.add("superParentValues");
+            variableNames.add("wffOnWindowClosed");
             variableNames.add("indexOfSeparator");
             variableNames.add("argumentBMObject");
             variableNames.add("currentParentTag");
@@ -318,12 +327,19 @@ public enum WffJsFile {
         }
     }
 
-    public static String getAllOptimizedContent(final String wsUrl) {
+    public static String getAllOptimizedContent(final String wsUrl,
+            final String instanceId, final boolean removePrevBPOnInitTab,
+            final boolean removePrevBPOnClosetTab) {
 
         if (allOptimizedContent != null) {
             return JS_WORK_AROUND.optimizedFileContent
                     + WFF_GLOBAL.optimizedFileContent
                             .replace("${WS_URL}", wsUrl)
+                            .replace("${INSTANCE_ID}", instanceId)
+                            .replace("\"${REMOVE_PREV_BP_ON_TABCLOSE}\"",
+                                    String.valueOf(removePrevBPOnClosetTab))
+                            .replace("\"${REMOVE_PREV_BP_ON_INITTAB}\"",
+                                    String.valueOf(removePrevBPOnInitTab))
                             .replace("\"${TASK_VALUES}\"",
                                     Task.getJsObjectString())
                     + allOptimizedContent;
@@ -367,6 +383,11 @@ public enum WffJsFile {
             return JS_WORK_AROUND.optimizedFileContent
                     + WFF_GLOBAL.optimizedFileContent
                             .replace("${WS_URL}", wsUrl)
+                            .replace("${INSTANCE_ID}", instanceId)
+                            .replace("\"${REMOVE_PREV_BP_ON_TABCLOSE}\"",
+                                    String.valueOf(removePrevBPOnClosetTab))
+                            .replace("\"${REMOVE_PREV_BP_ON_INITTAB}\"",
+                                    String.valueOf(removePrevBPOnInitTab))
                             .replace("\"${TASK_VALUES}\"",
                                     Task.getJsObjectString())
                     + allOptimizedContent;

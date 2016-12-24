@@ -98,6 +98,10 @@ public abstract class BrowserPage implements Serializable {
 
     private final Map<String, ServerAsyncMethod> serverMethods = new HashMap<String, ServerAsyncMethod>();
 
+    private boolean removeFromBrowserContextOnTabClose = true;
+
+    private boolean removePrevFromBrowserContextOnTabInit = true;
+
     // for security purpose, the class name should not be modified
     private static final class Security implements Serializable {
 
@@ -105,6 +109,28 @@ public abstract class BrowserPage implements Serializable {
 
         private Security() {
         }
+    }
+
+    /**
+     * To specify (by removeFromContext method) when to remove
+     * {@code BrowserPage} instance from {@code BrowserPageContext}.
+     *
+     * @author WFF
+     * @since 2.1.4
+     */
+    public static enum On {
+
+        /**
+         * to remove the current {@code BrowserPage} instance from
+         * {@code BrowserPageContext} when the tab/window is closed.
+         */
+        TAB_CLOSE,
+
+        /**
+         * To remove the previous {@code BrowserPage} instance opened in the
+         * same tab when new {@code BrowserPage} is requested by the tab.
+         */
+        INIT_REMOVE_PREVIOUS;
     }
 
     public abstract String webSocketUrl();
@@ -340,6 +366,23 @@ public abstract class BrowserPage implements Serializable {
         }
     }
 
+    private void removeBrowserPageFromContext(final List<NameValue> nameValues)
+            throws UnsupportedEncodingException {
+        //@formatter:off
+        // invoke custom server method task format :-
+        // { "name": task_byte, "values" : [remove_browser_page_byte_from_Task_enum]},
+        // { "name": wff-instance-id-bytes, "values" : []}
+        //@formatter:on
+
+        final NameValue instanceIdNameValue = nameValues.get(1);
+
+        final String instanceIdToRemove = new String(
+                instanceIdNameValue.getName(), "UTF-8");
+
+        BrowserPageContext.INSTANCE.removeBrowserPage(getInstanceId(),
+                instanceIdToRemove);
+    }
+
     private void invokeCustomServerMethod(final List<NameValue> nameValues)
             throws UnsupportedEncodingException {
         //@formatter:off
@@ -432,6 +475,10 @@ public abstract class BrowserPage implements Serializable {
 
                 invokeCustomServerMethod(nameValues);
 
+            } else if (taskValue == Task.REMOVE_BROWSER_PAGE.getValueByte()) {
+
+                removeBrowserPageFromContext(nameValues);
+
             }
 
         }
@@ -512,8 +559,11 @@ public abstract class BrowserPage implements Serializable {
 
                     script.setDataWffId(wffScriptTagId);
 
-                    new NoTag(script, WffJsFile
-                            .getAllOptimizedContent(wsUrlWithInstanceId));
+                    new NoTag(script,
+                            WffJsFile.getAllOptimizedContent(
+                                    wsUrlWithInstanceId, getInstanceId(),
+                                    removePrevFromBrowserContextOnTabInit,
+                                    removeFromBrowserContextOnTabClose));
 
                     // to avoid invoking listener
                     child.addChild(ACCESS_OBJECT, script, false);
@@ -542,7 +592,10 @@ public abstract class BrowserPage implements Serializable {
             script.setDataWffId(wffScriptTagId);
 
             new NoTag(script,
-                    WffJsFile.getAllOptimizedContent(wsUrlWithInstanceId));
+                    WffJsFile.getAllOptimizedContent(wsUrlWithInstanceId,
+                            getInstanceId(),
+                            removePrevFromBrowserContextOnTabInit,
+                            removeFromBrowserContextOnTabClose));
 
             // to avoid invoking listener
             abstractHtml.addChild(ACCESS_OBJECT, script, false);
@@ -945,6 +998,26 @@ public abstract class BrowserPage implements Serializable {
      */
     public int getPushQueueSize() {
         return wffBMBytesQueue.size();
+    }
+
+    /**
+     * By default On.TAB_CLOSE and On.INIT_REMOVE_PREVIOUS are enabled.
+     *
+     * @param enable
+     * @param ons
+     *            the instance of On to represent on which browser event the
+     *            browser page needs to be removed.
+     * @since 2.1.4
+     * @author WFF
+     */
+    public void removeFromContext(final boolean enable, final On... ons) {
+        for (final On on : ons) {
+            if (On.TAB_CLOSE.equals(on)) {
+                removeFromBrowserContextOnTabClose = enable;
+            } else if (On.INIT_REMOVE_PREVIOUS.equals(on)) {
+                removePrevFromBrowserContextOnTabInit = enable;
+            }
+        }
     }
 
 }

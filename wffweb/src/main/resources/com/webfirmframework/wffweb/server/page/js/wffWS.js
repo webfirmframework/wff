@@ -27,6 +27,8 @@ var wffWS = new function() {
 
 		webSocket.onopen = function(event) {
 			console.log("onopen", event);
+			
+			wffBMClientEvents.wffRemovePrevBPInstance();
 
 			if (event.data === undefined) {
 				console.log("event.data === undefined");

@@ -67,7 +67,12 @@ public enum Task {
 
     INVOKE_CUSTOM_SERVER_METHOD,
 
-    TASK_OF_TASKS;
+    TASK_OF_TASKS,
+    
+    /**
+     * to remove BrowserPage instance from BrowserPageContext
+     */
+    REMOVE_BROWSER_PAGE;
 
     private byte valueByte;
 
