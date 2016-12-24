@@ -1029,7 +1029,8 @@ public abstract class BrowserPage implements Serializable {
      * @author WFF
      */
     public void removedFromContext() {
-
+        // NOP
+        // To override and use this method
     }
 
 }
