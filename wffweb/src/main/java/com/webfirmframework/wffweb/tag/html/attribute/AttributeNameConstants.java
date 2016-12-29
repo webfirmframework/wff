@@ -349,6 +349,8 @@ public class AttributeNameConstants {
 
     public static final String FOR = "for";
 
+    public static final String SELECTED = "selected";
+
     /**
      *
      * @author WFF
