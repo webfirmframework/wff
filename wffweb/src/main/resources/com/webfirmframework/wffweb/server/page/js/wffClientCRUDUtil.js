@@ -60,8 +60,14 @@ var wffClientCRUDUtil = new function() {
 					var applicableTag = wffTagUtil.getTagByWffId(wffId);
 
 					if (indexOfSeparator != -1) {
+						//value attribute doesn't work with setAttribute method
+						//should be called before setAttribute method
+						applicableTag[attrName] = attrValue;
 						applicableTag.setAttribute(attrName, attrValue);
 					} else {
+						//value attribute doesn't work with setAttribute method
+						//should be called before setAttribute method
+						applicableTag[attrName] = "";
 						applicableTag.setAttribute(attrName, "");
 					}
 				}
@@ -228,6 +234,9 @@ var wffClientCRUDUtil = new function() {
 								.splitAttrNameValue(attrNameValue);
 						var attrName = attrNameValueArry[0];
 						var attrValue = attrNameValueArry[1];
+						//value attribute doesn't work with setAttribute method
+						//should be called before setAttribute method
+						applicableTag[attrName] = attrValue;
 						applicableTag.setAttribute(attrName, attrValue);
 					}
 				}
