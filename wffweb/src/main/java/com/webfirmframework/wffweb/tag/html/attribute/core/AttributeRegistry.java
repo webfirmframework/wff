@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 Web Firm Framework
+ * Copyright 2014-2017 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,6 +63,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.Role;
 import com.webfirmframework.wffweb.tag.html.attribute.RowSpan;
 import com.webfirmframework.wffweb.tag.html.attribute.Rows;
 import com.webfirmframework.wffweb.tag.html.attribute.Scope;
+import com.webfirmframework.wffweb.tag.html.attribute.Selected;
 import com.webfirmframework.wffweb.tag.html.attribute.Shape;
 import com.webfirmframework.wffweb.tag.html.attribute.Size;
 import com.webfirmframework.wffweb.tag.html.attribute.Sorted;
@@ -577,6 +578,8 @@ public class AttributeRegistry {
                 Rows.class.getSimpleName());
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.FOR,
                 For.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.SELECTED,
+                Selected.class.getSimpleName());
 
         attributeNames = new ArrayList<String>(initialCapacity);
         attributeNamesSet = new HashSet<String>(initialCapacity);

@@ -130,6 +130,9 @@ var wffTagUtil = new function() {
 
 			for (var i = 1; i < superParentValues.length; i++) {
 				var attrNameValue = splitAttrNameValue(getStringFromBytes(superParentValues[i]));
+				//value attribute doesn't work with setAttribute method
+				//should be called before setAttribute method
+				parent[attrNameValue[0]] = attrNameValue[1];
 				parent.setAttribute(attrNameValue[0], attrNameValue[1]);
 			}
 		}
@@ -153,6 +156,9 @@ var wffTagUtil = new function() {
 
 				for (var j = 1; j < values.length; j++) {
 					var attrNameValue = splitAttrNameValue(getStringFromBytes(values[j]));
+					//value attribute doesn't work with setAttribute method
+					//should be called before setAttribute method
+					child[attrNameValue[0]] = attrNameValue[1];
 					child.setAttribute(attrNameValue[0], attrNameValue[1]);
 				}
 			}

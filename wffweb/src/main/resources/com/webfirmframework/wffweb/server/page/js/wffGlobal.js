@@ -11,6 +11,9 @@ window.wffGlobal = new function() {
 
 	this.taskValues = "${TASK_VALUES}";
 	this.WS_URL = "${WS_URL}";
+	this.INSTANCE_ID = "${INSTANCE_ID}";
+	this.REMOVE_PREV_BP_ON_INITTAB = "${REMOVE_PREV_BP_ON_INITTAB}";
+	this.REMOVE_PREV_BP_ON_TABCLOSE = "${REMOVE_PREV_BP_ON_TABCLOSE}";
 
 	if ((typeof TextEncoder) === "undefined") {
 

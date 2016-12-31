@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 Web Firm Framework
+ * Copyright 2014-2017 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -157,6 +157,9 @@ public enum BrowserPageContext {
                     .values()) {
                 instanceIdHttpSessionId.remove(browserPage.getInstanceId());
                 instanceIdBrowserPage.remove(browserPage.getInstanceId());
+                if (browserPage != null) {
+                    browserPage.removedFromContext();
+                }
             }
 
             httpSessionIdBrowserPage.clear();
@@ -247,7 +250,11 @@ public enum BrowserPageContext {
 
                 for (final String instanceId : browserPages.keySet()) {
                     instanceIdHttpSessionId.remove(instanceId);
-                    instanceIdBrowserPage.remove(instanceId);
+                    final BrowserPage removedBrowserPage = instanceIdBrowserPage
+                            .remove(instanceId);
+                    if (removedBrowserPage != null) {
+                        removedBrowserPage.removedFromContext();
+                    }
                 }
 
                 httpSessionIdBrowserPages.remove(httpSessionId);
@@ -303,6 +310,56 @@ public enum BrowserPageContext {
         }
 
         return browserPage;
+
+    }
+
+    /**
+     * removes browser page by the given instance id. This method is for
+     * internal usage.
+     *
+     * @param callerInstanceId
+     *            instance id of the caller browserPage instance.
+     * @param instanceId
+     *            the instance id of the browser page which is indented to be
+     *            removed.
+     * @since 2.1.4
+     */
+    void removeBrowserPage(final String callerInstanceId,
+            final String instanceId) {
+
+        final String callerHttpSessionId = instanceIdHttpSessionId
+                .get(callerInstanceId);
+
+        final String httpSessionId = instanceIdHttpSessionId.get(instanceId);
+
+        // this is a security checking
+        // the caller session id must be
+        // same as the session id of the instanceId
+        // otherwise it's considered as a hacking.
+        if (httpSessionId != null
+                && httpSessionId.equals(callerHttpSessionId)) {
+
+            final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages
+                    .get(httpSessionId);
+            if (browserPages != null) {
+                final BrowserPage removedBrowserPage = browserPages
+                        .remove(instanceId);
+
+                if (removedBrowserPage != null) {
+                    removedBrowserPage.removedFromContext();
+                }
+
+            }
+
+            instanceIdBrowserPage.remove(instanceId);
+
+        } else {
+            if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.warning("The callerInstanceId " + callerInstanceId
+                        + " tried to remove instanceId " + instanceId
+                        + " BrowserPageContext");
+            }
+        }
 
     }
 

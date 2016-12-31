@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 Web Firm Framework
+ * Copyright 2014-2017 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,7 +67,14 @@ public enum Task {
 
     INVOKE_CUSTOM_SERVER_METHOD,
 
-    TASK_OF_TASKS;
+    TASK_OF_TASKS,
+
+    COPY_INNER_TEXT_TO_VALUE,
+
+    /**
+     * to remove BrowserPage instance from BrowserPageContext
+     */
+    REMOVE_BROWSER_PAGE;
 
     private byte valueByte;
 

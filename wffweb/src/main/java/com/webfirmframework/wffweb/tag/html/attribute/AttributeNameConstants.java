@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 Web Firm Framework
+ * Copyright 2014-2017 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -348,6 +348,8 @@ public class AttributeNameConstants {
     public static final String ROWS = "rows";
 
     public static final String FOR = "for";
+
+    public static final String SELECTED = "selected";
 
     /**
      *
