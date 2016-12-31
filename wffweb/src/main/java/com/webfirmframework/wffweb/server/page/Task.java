@@ -68,7 +68,9 @@ public enum Task {
     INVOKE_CUSTOM_SERVER_METHOD,
 
     TASK_OF_TASKS,
-    
+
+    COPY_INNER_TEXT_TO_VALUE,
+
     /**
      * to remove BrowserPage instance from BrowserPageContext
      */

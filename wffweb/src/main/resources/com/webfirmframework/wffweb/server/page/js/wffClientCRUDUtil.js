@@ -352,7 +352,7 @@ var wffClientCRUDUtil = new function() {
 			location.reload(true);
 		} else if (taskValue == wffGlobal.taskValues.RELOAD_BROWSER_FROM_CACHE) {
 			location.reload();
-		}  else if (taskValue == wffGlobal.taskValues.EXECURE_JS) {
+		} else if (taskValue == wffGlobal.taskValues.EXECURE_JS) {
 			
 			var js = getStringFromBytes(taskNameValue.values[1]);
 			
@@ -362,6 +362,21 @@ var wffClientCRUDUtil = new function() {
 				eval(js);
 			}
 			
+		} else if (taskValue == wffGlobal.taskValues.COPY_INNER_TEXT_TO_VALUE) {
+			
+			console.log('wffGlobal.taskValues.COPY_INNER_TEXT_TO_VALUE');
+			
+			var tagName = getStringFromBytes(nameValues[1].name);
+			
+			var wffId = wffTagUtil
+					.getWffIdFromWffIdBytes(nameValues[1].values[0]);
+			
+			var parentTag = wffTagUtil.getTagByTagNameAndWffId(tagName,
+					wffId);
+			
+			var d = document.createElement('div');
+			d.innerHTML = parentTag.outerHTML;
+			parentTag.value = d.childNodes[0].innerText;
 		}
 		
 		return true;

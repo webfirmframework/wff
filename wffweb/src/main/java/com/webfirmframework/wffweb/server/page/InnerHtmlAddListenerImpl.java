@@ -28,6 +28,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.tag.html.listener.InnerHtmlAddListener;
 import com.webfirmframework.wffweb.util.data.NameValue;
@@ -153,6 +154,19 @@ class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
 
             browserPage
                     .push(nameValues.toArray(new NameValue[nameValues.size()]));
+
+            final String parentTagNameString = new String(parentTagName,
+                    "UTF-8");
+            if (TagNameConstants.TEXTAREA.equals(parentTagNameString)) {
+                //@formatter:off
+                // removed all children tags task format :-
+                // { "name": task_byte, "values" : [COPY_INNER_TEXT_TO_VALUE_byte_from_Task_enum]}, { "name": parent_tag_name, "values" : [ data-wff-id ] }
+                //@formatter:on
+                final NameValue copyInnerTexToValueTask = Task.COPY_INNER_TEXT_TO_VALUE
+                        .getTaskNameValue();
+
+                browserPage.push(copyInnerTexToValueTask, parentTagNameValue);
+            }
 
         } catch (final UnsupportedEncodingException e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
