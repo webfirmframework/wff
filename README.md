@@ -1,11 +1,11 @@
 [![Build Status](https://api.travis-ci.org/webfirmframework/wff.svg?branch=master)](https://travis-ci.org/webfirmframework/wff)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/410601e16dc54b0a973c03845ad790c2)](https://www.codacy.com/app/webfirm-framework/wff?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=webfirmframework/wff&amp;utm_campaign=Badge_Grade)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.webfirmframework/wffweb/badge.svg)](http://search.maven.org/#artifactdetails%7Ccom.webfirmframework%7Cwffweb%7C2.1.3%7Cjar)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.webfirmframework/wffweb/badge.svg)](http://search.maven.org/#artifactdetails%7Ccom.webfirmframework%7Cwffweb%7C2.1.4%7Cjar)
 [![javadoc](https://img.shields.io/:wffweb-javadoc-blue.svg)](https://webfirmframework.github.io/wffweb/wffweb-javadoc)
 
 
 # wffweb
-wffweb is one of the modules of webfirmframework. It's an open source java framework for realtime application development which can generate html5 and css3 from java code, [read more...](https://webfirmframework.github.io/)
+wffweb is one of the modules of webfirmframework. It's an open source java framework for real time application development which can generate html5 and css3 from java code, [read more...](https://webfirmframework.github.io/)
 
 
 #### [check out wffweb-2.x.x main features](https://www.youtube.com/watch?v=UWoNliHOy6A)
@@ -13,6 +13,10 @@ wffweb is one of the modules of webfirmframework. It's an open source java frame
 
 
 ##### check out this demo app deployed at [https://wffweb.herokuapp.com](https://wffweb.herokuapp.com)
+
+
+##### Happy new year! wffweb-2.1.4 is a new year release!
+(For the survival of this framework, some adds are shown in [webfirmframework.github.io](https://webfirmframework.github.io) and [webfirmframework.com](http://webfirmframework.com)) web sites. These are temporary adds and will be remove soon. We are really sorry if it causes any inconvenience to your surfing.)   
 
 Here are some sample codes
 
