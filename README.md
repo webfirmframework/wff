@@ -16,7 +16,7 @@ wffweb is one of the modules of webfirmframework. It's an open source java frame
 
 
 ##### Happy new year! wffweb-2.1.4 is a new year release!
-(For the survival of this framework, some adds are shown in [webfirmframework.github.io](https://webfirmframework.github.io) and [webfirmframework.com](http://webfirmframework.com)) web sites. These are temporary adds and will be remove soon. We are really sorry if it causes any inconvenience to your surfing.)   
+(For the survival of this framework, some adds are shown in [webfirmframework.github.io](https://webfirmframework.github.io) and [webfirmframework.com](http://webfirmframework.com) web sites. These are temporary adds and will be remove soon. We are really sorry if it causes any inconvenience to your surfing.)   
 
 Here are some sample codes
 
