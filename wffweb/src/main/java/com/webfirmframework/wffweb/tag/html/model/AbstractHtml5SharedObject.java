@@ -90,9 +90,11 @@ public class AbstractHtml5SharedObject implements Serializable {
                     "Not allowed to consume this method. This method is for internal use.");
         }
 
-        if ((dataWffId.incrementAndGet()) < -1 || dataWffIdSecondCycle) {
+        final int incrementedDataWffId = dataWffId.incrementAndGet();
 
-            int newDataWffId = dataWffIdSecondCycle ? dataWffId.get() : 0;
+        if (incrementedDataWffId < -1 || dataWffIdSecondCycle) {
+
+            int newDataWffId = dataWffIdSecondCycle ? incrementedDataWffId : 0;
 
             dataWffIdSecondCycle = true;
 
@@ -104,9 +106,10 @@ public class AbstractHtml5SharedObject implements Serializable {
             }
 
             dataWffId.set(newDataWffId);
+            return new DataWffId("S" + newDataWffId);
         }
 
-        return new DataWffId("S" + dataWffId);
+        return new DataWffId("S" + incrementedDataWffId);
     }
 
     public int getLastDataWffId(final Object accessObject) {

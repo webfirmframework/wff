@@ -332,7 +332,8 @@ public enum WffJsFile {
             final boolean removePrevBPOnClosetTab) {
 
         if (allOptimizedContent != null) {
-            return JS_WORK_AROUND.optimizedFileContent
+            return "var wffLog = console.log;"
+                    + JS_WORK_AROUND.optimizedFileContent
                     + WFF_GLOBAL.optimizedFileContent
                             .replace("${WS_URL}", wsUrl)
                             .replace("${INSTANCE_ID}", instanceId)
@@ -342,7 +343,7 @@ public enum WffJsFile {
                                     String.valueOf(removePrevBPOnInitTab))
                             .replace("\"${TASK_VALUES}\"",
                                     Task.getJsObjectString())
-                    + allOptimizedContent;
+                    + allOptimizedContent + " var wffLog = console.log;";
         }
 
         try {
@@ -380,7 +381,8 @@ public enum WffJsFile {
 
             }
 
-            return JS_WORK_AROUND.optimizedFileContent
+            return "var wffLog = console.log;"
+                    + JS_WORK_AROUND.optimizedFileContent
                     + WFF_GLOBAL.optimizedFileContent
                             .replace("${WS_URL}", wsUrl)
                             .replace("${INSTANCE_ID}", instanceId)

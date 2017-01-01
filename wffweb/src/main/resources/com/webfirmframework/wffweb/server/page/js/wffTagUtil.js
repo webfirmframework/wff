@@ -25,7 +25,7 @@ var wffTagUtil = new function() {
 				+ wffId + '"]');
 		if (elements.length > 1) {
 			console.log('getTagByTagNameAndWffId multiple tags with same wff id');
-			alert('multiple tags with same wff id');
+			wffLog('multiple tags with same wff id', 'tagName', 'wffId', wffId);
 		}
 		return elements[0];
 	};
@@ -35,7 +35,7 @@ var wffTagUtil = new function() {
 		var elements = document.querySelectorAll('[data-wff-id="' + wffId
 				+ '"]');
 		if (elements.length > 1) {
-			alert('multiple tags with same wff id');
+			wffLog('multiple tags with same wff id', 'wffId', wffId);
 		}
 		return elements[0];
 	};
