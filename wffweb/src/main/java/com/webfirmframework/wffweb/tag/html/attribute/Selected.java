@@ -41,7 +41,7 @@ public class Selected extends AbstractAttribute implements OptionAttributable {
     }
 
     public Selected() {
-        setAttributeValue(null);
+        setAttributeValue(AttributeNameConstants.SELECTED);
     }
 
     public Selected(final String value) {
