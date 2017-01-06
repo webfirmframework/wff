@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.webfirmframework.wffweb.WffSecurityException;
 import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
@@ -67,7 +68,10 @@ public class AbstractHtml5SharedObject implements Serializable {
 
     private InsertBeforeListener insertBeforeListener;
 
-    private volatile int dataWffId = -1;
+    /**
+     * no need to make it volatile
+     */
+    private final AtomicInteger dataWffId = new AtomicInteger(-1);
 
     private volatile boolean dataWffIdSecondCycle;
 
@@ -86,9 +90,11 @@ public class AbstractHtml5SharedObject implements Serializable {
                     "Not allowed to consume this method. This method is for internal use.");
         }
 
-        if ((++dataWffId) < -1 || dataWffIdSecondCycle) {
+        final int incrementedDataWffId = dataWffId.incrementAndGet();
 
-            int newDataWffId = dataWffIdSecondCycle ? dataWffId : 0;
+        if (incrementedDataWffId < -1 || dataWffIdSecondCycle) {
+
+            int newDataWffId = dataWffIdSecondCycle ? incrementedDataWffId : 0;
 
             dataWffIdSecondCycle = true;
 
@@ -99,10 +105,11 @@ public class AbstractHtml5SharedObject implements Serializable {
                 id = "S" + newDataWffId;
             }
 
-            dataWffId = newDataWffId;
+            dataWffId.set(newDataWffId);
+            return new DataWffId("S" + newDataWffId);
         }
 
-        return new DataWffId("S" + dataWffId);
+        return new DataWffId("S" + incrementedDataWffId);
     }
 
     public int getLastDataWffId(final Object accessObject) {
@@ -112,7 +119,7 @@ public class AbstractHtml5SharedObject implements Serializable {
             throw new WffSecurityException(
                     "Not allowed to consume this method. This method is for internal use.");
         }
-        return dataWffId;
+        return dataWffId.get();
     }
 
     /**

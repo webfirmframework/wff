@@ -40,8 +40,14 @@ public class Selected extends AbstractAttribute implements OptionAttributable {
         init();
     }
 
+    /**
+     * sets the default value as <code>selected</code> (since 2.1.5).
+     *
+     * @since 2.1.4
+     * @author WFF
+     */
     public Selected() {
-        setAttributeValue(null);
+        setAttributeValue(AttributeNameConstants.SELECTED);
     }
 
     public Selected(final String value) {
