@@ -67,7 +67,7 @@ public class Hidden extends AbstractAttribute
      * @since 1.1.4
      */
     public Hidden(final String value) {
-        if ("hidden".equals(value)) {
+        if ("hidden".equals(value) || value == null) {
             hidden = true;
         } else if ("true".equals(value) || "false".equals(value)) {
             hidden = Boolean.parseBoolean(value);
@@ -78,13 +78,8 @@ public class Hidden extends AbstractAttribute
         setAttributeValue(value);
     }
 
-    public Hidden(final Boolean hidden) {
-        if (hidden == null) {
-            setAttributeValue(null);
-        } else {
-            setAttributeValue(
-                    hidden.booleanValue() ? "hidden" : String.valueOf(hidden));
-        }
+    public Hidden(final boolean hidden) {
+        setAttributeValue(hidden ? "hidden" : String.valueOf(hidden));
         this.hidden = hidden;
     }
 
@@ -102,7 +97,10 @@ public class Hidden extends AbstractAttribute
      * @return the hidden
      * @author WFF
      * @since 1.0.0
+     * @deprecated as there is no affect of boolean values for this attribute
+     *             this method will be removed later.
      */
+    @Deprecated
     public boolean isHidden() {
         return hidden == null || hidden.booleanValue() ? true : false;
     }
@@ -112,7 +110,10 @@ public class Hidden extends AbstractAttribute
      *            the hidden to set. {@code null} will remove the value.
      * @author WFF
      * @since 1.0.0
+     * @deprecated as there is no affect of boolean values for this attribute
+     *             this method will be removed later.
      */
+    @Deprecated
     public void setHidden(final Boolean hidden) {
         if (hidden == null) {
             setAttributeValue(null);
