@@ -42,8 +42,17 @@ public class Checked extends AbstractAttribute implements InputAttributable {
         init();
     }
 
+    /**
+     * sets the default value as <code>checked</code> (since 2.1.5). If value is
+     * not required then use <code>new Selected(null)</code>. Note : There might
+     * be some issue in dynamically changing state of tag if there is no default
+     * value.
+     * 
+     * @since 1.0.0
+     * @author WFF
+     */
     public Checked() {
-        setAttributeValue(null);
+        setAttributeValue(AttributeNameConstants.CHECKED);
     }
 
     public Checked(final String value) {

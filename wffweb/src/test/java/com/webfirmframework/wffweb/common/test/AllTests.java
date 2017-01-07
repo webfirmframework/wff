@@ -126,6 +126,7 @@ import com.webfirmframework.wffweb.js.JsUtilTest;
 import com.webfirmframework.wffweb.streamer.WffBinaryMessageOutputStreamerTest;
 import com.webfirmframework.wffweb.tag.html.AbstractHtmlTest;
 import com.webfirmframework.wffweb.tag.html.HrTest;
+import com.webfirmframework.wffweb.tag.html.attribute.CheckedTest;
 import com.webfirmframework.wffweb.tag.html.attribute.SelectedTest;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttributeTest;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeRegistryTest;
@@ -199,7 +200,7 @@ import com.webfirmframework.wffweb.util.WffBinaryMessageUtilTest;
         NoTagTest.class, BlankTest.class, TagRegistryTest.class,
         AttributeRegistryTest.class, AttributeUtilTest.class,
         AbstractHtmlTest.class, AbstractAttributeTest.class, JsUtilTest.class,
-        TextAreaTest.class, SelectedTest.class })
+        TextAreaTest.class, SelectedTest.class, CheckedTest.class })
 public class AllTests {
 
 }
