@@ -19,6 +19,7 @@ package com.webfirmframework.wffweb.tag.html.html5.attribute.global;
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.identifier.BooleanAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
 /**
@@ -37,7 +38,8 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
  * @author WFF
  *
  */
-public class Hidden extends AbstractAttribute implements GlobalAttributable {
+public class Hidden extends AbstractAttribute
+        implements GlobalAttributable, BooleanAttribute {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -48,8 +50,12 @@ public class Hidden extends AbstractAttribute implements GlobalAttributable {
         init();
     }
 
+    /**
+     * sets the default value as <code>hidden</code> (since 2.1.5). If value is
+     * not required then use <code>new Hidden(null)</code>.
+     */
     public Hidden() {
-        setAttributeValue(null);
+        setAttributeValue(AttributeNameConstants.HIDDEN);
     }
 
     /**
