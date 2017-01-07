@@ -17,6 +17,7 @@
 package com.webfirmframework.wffweb.tag.html.attribute;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.identifier.BooleanAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.OptionAttributable;
 
 /**
@@ -31,7 +32,8 @@ import com.webfirmframework.wffweb.tag.html.identifier.OptionAttributable;
  * @author WFF
  * @since 2.1.4
  */
-public class Selected extends AbstractAttribute implements OptionAttributable {
+public class Selected extends AbstractAttribute
+        implements OptionAttributable, BooleanAttribute {
 
     private static final long serialVersionUID = 1_0_0L;
 
