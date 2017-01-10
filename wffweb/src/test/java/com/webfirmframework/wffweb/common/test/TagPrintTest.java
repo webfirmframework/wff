@@ -201,7 +201,7 @@ public class TagPrintTest implements Serializable {
     @Test
     public void testMultipleAttributesToHtmlString() throws Exception {
         
-        final Html html = new Html(null, new Hidden(), new Id("htmlId"),
+        final Html html = new Html(null, new Hidden(null), new Id("htmlId"),
                 new Style("color:red;width:15px"));
         
         final String expectedString = "<html id=\"htmlId\" style=\"color:red;width:15px;\" hidden></html>";
@@ -421,7 +421,7 @@ public class TagPrintTest implements Serializable {
 
     @Test
     public void testToHtmlString() throws Exception {
-        final Html html = new Html(null, new Hidden(), new Id("htmlId"),
+        final Html html = new Html(null, new Hidden(null), new Id("htmlId"),
                 new Style("color:red;width:15px"));
         html.setPrependDocType(true);
         final String expectedString = "<!DOCTYPE html>\n<html id=\"htmlId\" style=\"color:red;width:15px;\" hidden></html>";
@@ -445,7 +445,7 @@ public class TagPrintTest implements Serializable {
 
     @Test
     public void testToHtmlStringWithCharset1() throws Exception {
-        final Html html = new Html(null, new Hidden(), new Id("htmlId"),
+        final Html html = new Html(null, new Hidden(null), new Id("htmlId"),
                 new Style("color:red;width:15px"));
         html.setPrependDocType(true);
         final String expectedString = "<!DOCTYPE html>\n<html id=\"htmlId\" style=\"color:red;width:15px;\" hidden></html>";
@@ -469,7 +469,7 @@ public class TagPrintTest implements Serializable {
 
     @Test
     public void testToHtmlStringWithCharset2() throws Exception {
-        final Html html = new Html(null, new Hidden(), new Id("htmlId"),
+        final Html html = new Html(null, new Hidden(null), new Id("htmlId"),
                 new Style("color:red;width:15px"));
         html.setPrependDocType(true);
         final String expectedString = "<!DOCTYPE html>\n<html id=\"htmlId\" style=\"color:red;width:15px;\" hidden></html>";
@@ -493,7 +493,7 @@ public class TagPrintTest implements Serializable {
 
     @Test
     public void testToHtmlStringWithCharset3() throws Exception {
-        final Html html = new Html(null, new Hidden(), new Id("htmlId"),
+        final Html html = new Html(null, new Hidden(null), new Id("htmlId"),
                 new Style("color:red;width:15px"));
         html.setPrependDocType(true);
         final String expectedString = "<!DOCTYPE html>\n<html id=\"htmlId\" style=\"color:red;width:15px;\" hidden></html>";
@@ -517,7 +517,7 @@ public class TagPrintTest implements Serializable {
 
     @Test
     public void testToHtmlStringWithCharset4() throws Exception {
-        final Html html = new Html(null, new Hidden(), new Id("htmlId"),
+        final Html html = new Html(null, new Hidden(null), new Id("htmlId"),
                 new Style("color:red;width:15px"));
         html.setPrependDocType(true);
         final String expectedString = "<!DOCTYPE html>\n<html id=\"htmlId\" style=\"color:red;width:15px;\" hidden></html>";

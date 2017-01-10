@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.tag.html.attribute;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.html5.identifier.AudioAttributable;
+import com.webfirmframework.wffweb.tag.html.identifier.BooleanAttribute;
 
 /**
  * <code>readonly</code> attribute for the element.<br/>
@@ -30,7 +31,8 @@ import com.webfirmframework.wffweb.tag.html.html5.identifier.AudioAttributable;
  * @author WFF
  * @since 1.0.0
  */
-public class ReadOnly extends AbstractAttribute implements AudioAttributable {
+public class ReadOnly extends AbstractAttribute
+        implements AudioAttributable, BooleanAttribute {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -39,8 +41,15 @@ public class ReadOnly extends AbstractAttribute implements AudioAttributable {
         init();
     }
 
+    /**
+     * sets the default value as <code>readonly</code> (since 2.1.5). If value
+     * is not required then use <code>new ReadOnly(null)</code>.
+     *
+     * @since 1.0.0
+     * @author WFF
+     */
     public ReadOnly() {
-        setAttributeValue(null);
+        setAttributeValue(AttributeNameConstants.READONLY);
     }
 
     public ReadOnly(final String value) {
