@@ -1025,6 +1025,8 @@ public abstract class BrowserPage implements Serializable {
      * @author WFF
      */
     public int getPushQueueSize() {
+        // wffBMBytesQueue.size() is not reliable as
+        // it's ConcurrentLinkedDeque
         return pushQueueSize.get();
     }
 
