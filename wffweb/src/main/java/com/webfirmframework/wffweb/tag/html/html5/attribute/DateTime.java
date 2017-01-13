@@ -22,7 +22,7 @@ import com.webfirmframework.wffweb.tag.html.html5.identifier.TimeAttributable;
 
 /**
  *
- * <code>datetime</code> attribute for the time.<br/>
+ * <code>datetime</code> attribute for time tag.<br/>
  *
  * The content of the meta information.
  *
