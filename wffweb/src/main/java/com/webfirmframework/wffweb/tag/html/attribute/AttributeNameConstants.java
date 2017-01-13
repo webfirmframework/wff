@@ -351,6 +351,8 @@ public class AttributeNameConstants {
 
     public static final String SELECTED = "selected";
 
+    public static final String ACCEPT_CHARSET = "accept-charset";
+
     /**
      *
      * @author WFF

@@ -31,6 +31,7 @@ import java.util.logging.Logger;
 import com.webfirmframework.wffweb.css.Border;
 import com.webfirmframework.wffweb.css.Color;
 import com.webfirmframework.wffweb.tag.html.attribute.Accept;
+import com.webfirmframework.wffweb.tag.html.attribute.AcceptCharset;
 import com.webfirmframework.wffweb.tag.html.attribute.Action;
 import com.webfirmframework.wffweb.tag.html.attribute.Align;
 import com.webfirmframework.wffweb.tag.html.attribute.Alt;
@@ -580,6 +581,8 @@ public class AttributeRegistry {
                 For.class.getSimpleName());
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.SELECTED,
                 Selected.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ACCEPT_CHARSET,
+                AcceptCharset.class.getSimpleName());
 
         attributeNames = new ArrayList<String>(initialCapacity);
         attributeNamesSet = new HashSet<String>(initialCapacity);
