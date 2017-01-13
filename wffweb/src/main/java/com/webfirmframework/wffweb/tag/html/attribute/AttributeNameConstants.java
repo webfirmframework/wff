@@ -353,6 +353,8 @@ public class AttributeNameConstants {
 
     public static final String ACCEPT_CHARSET = "accept-charset";
 
+    public static final String ASYNC = "async";
+
     /**
      *
      * @author WFF
