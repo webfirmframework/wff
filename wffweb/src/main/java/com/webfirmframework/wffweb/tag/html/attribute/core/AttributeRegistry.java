@@ -166,6 +166,7 @@ import com.webfirmframework.wffweb.tag.html.html5.attribute.AutoFocus;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.AutoPlay;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Content;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Controls;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.DateTime;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Download;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.FormAction;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.FormEncType;
@@ -587,6 +588,8 @@ public class AttributeRegistry {
                 AcceptCharset.class.getSimpleName());
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ASYNC,
                 Async.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.DATETIME,
+                DateTime.class.getSimpleName());
 
         attributeNames = new ArrayList<String>(initialCapacity);
         attributeNamesSet = new HashSet<String>(initialCapacity);

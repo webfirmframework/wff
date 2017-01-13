@@ -355,6 +355,8 @@ public class AttributeNameConstants {
 
     public static final String ASYNC = "async";
 
+    public static final String DATETIME = "datetime";
+
     /**
      *
      * @author WFF
