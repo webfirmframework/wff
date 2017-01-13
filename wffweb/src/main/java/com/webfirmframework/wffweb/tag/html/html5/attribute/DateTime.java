@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.tag.html.html5.attribute;
 
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.html5.identifier.TimeAttributable;
 
 /**
  *
@@ -28,7 +29,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
  * @author WFF
  * @since 2.1.5
  */
-public class DateTime extends AbstractAttribute {
+public class DateTime extends AbstractAttribute implements TimeAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
