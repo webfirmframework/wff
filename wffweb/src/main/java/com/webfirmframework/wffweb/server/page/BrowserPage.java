@@ -30,6 +30,8 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -82,9 +84,9 @@ public abstract class BrowserPage implements Serializable {
 
     private DataWffId wffScriptTagId;
 
-    private final Queue<ByteBuffer> wffBMBytesQueue = new ArrayDeque<ByteBuffer>();
+    private final Queue<ByteBuffer> wffBMBytesQueue = new ConcurrentLinkedDeque<ByteBuffer>();
 
-    private final Queue<ByteBuffer> wffBMBytesHoldPushQueue = new ArrayDeque<ByteBuffer>();
+    private final Queue<ByteBuffer> wffBMBytesHoldPushQueue = new ConcurrentLinkedDeque<ByteBuffer>();
 
     private static final Security ACCESS_OBJECT = new Security();
 
@@ -101,6 +103,8 @@ public abstract class BrowserPage implements Serializable {
     private boolean removeFromBrowserContextOnTabClose = true;
 
     private boolean removePrevFromBrowserContextOnTabInit = true;
+
+    private final AtomicInteger pushQueueSize = new AtomicInteger(0);
 
     // for security purpose, the class name should not be modified
     private static final class Security implements Serializable {
@@ -203,6 +207,7 @@ public abstract class BrowserPage implements Serializable {
             wffBMBytesHoldPushQueue.add(wffBM);
         } else {
             wffBMBytesQueue.add(wffBM);
+            pushQueueSize.incrementAndGet();
             pushWffBMBytesQueue();
         }
     }
@@ -210,23 +215,25 @@ public abstract class BrowserPage implements Serializable {
     private void pushWffBMBytesQueue() {
         if (wsListener != null) {
 
-            while (wffBMBytesQueue.size() > 0) {
+            ByteBuffer byteBuffer = wffBMBytesQueue.poll();
 
-                final ByteBuffer byteBuffer = wffBMBytesQueue.poll();
+            if (byteBuffer != null) {
 
-                if (byteBuffer == null) {
-                    break;
-                }
+                do {
+                    pushQueueSize.decrementAndGet();
 
-                try {
-                    wsListener.push(byteBuffer);
-                } catch (final PushFailedException e) {
-                    if (pushQueueEnabled) {
-                        wffBMBytesQueue.add(byteBuffer);
+                    try {
+                        wsListener.push(byteBuffer);
+                    } catch (final PushFailedException e) {
+                        if (pushQueueEnabled) {
+                            wffBMBytesQueue.add(byteBuffer);
+                            pushQueueSize.incrementAndGet();
+                        }
+                        break;
                     }
-                    break;
-                }
 
+                    byteBuffer = wffBMBytesQueue.poll();
+                } while (byteBuffer != null);
             }
 
         } else {
@@ -794,7 +801,10 @@ public abstract class BrowserPage implements Serializable {
             addInsertBeforeListener(abstractHtml);
 
         } else {
-            wffBMBytesQueue.clear();
+            synchronized (wffBMBytesQueue) {
+                wffBMBytesQueue.clear();
+                pushQueueSize.set(0);
+            }
         }
 
         final String webSocketUrl = webSocketUrl();
@@ -954,37 +964,55 @@ public abstract class BrowserPage implements Serializable {
     public void unholdPush() {
 
         if (holdPush) {
-            holdPush = false;
 
-            if (wffBMBytesHoldPushQueue.size() > 0) {
+            synchronized (wffBMBytesQueue) {
 
-                final NameValue invokeMultipleTasks = Task
-                        .getTaskOfTasksNameValue();
+                holdPush = false;
 
-                final byte[][] values = new byte[wffBMBytesHoldPushQueue
-                        .size()][0];
-                invokeMultipleTasks.setValues(values);
+                ByteBuffer wffBM = wffBMBytesHoldPushQueue.poll();
 
-                int index = 0;
+                if (wffBM != null) {
 
-                while (wffBMBytesHoldPushQueue.size() > 0) {
-                    final ByteBuffer wffBM = wffBMBytesHoldPushQueue.poll();
-                    values[index] = wffBM.array();
-                    index++;
+                    final NameValue invokeMultipleTasks = Task
+                            .getTaskOfTasksNameValue();
+
+                    final Deque<ByteBuffer> wffBMs = new ArrayDeque<ByteBuffer>(
+                            wffBMBytesHoldPushQueue.size());
+
+                    do {
+
+                        wffBMs.add(wffBM);
+
+                        wffBM = wffBMBytesHoldPushQueue.poll();
+                    } while (wffBM != null);
+
+                    final byte[][] values = new byte[wffBMs.size()][0];
+
+                    int index = 0;
+                    for (final ByteBuffer eachWffBM : wffBMs) {
+                        values[index] = eachWffBM.array();
+                        index++;
+                    }
+
+                    invokeMultipleTasks.setValues(values);
+
+                    wffBMBytesQueue
+                            .add(ByteBuffer.wrap(WffBinaryMessageUtil.VERSION_1
+                                    .getWffBinaryMessageBytes(
+                                            invokeMultipleTasks)));
+                    pushQueueSize.incrementAndGet();
+
+                    pushWffBMBytesQueue();
                 }
 
-                wffBMBytesQueue.add(ByteBuffer.wrap(
-                        WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(
-                                invokeMultipleTasks)));
-
-                pushWffBMBytesQueue();
             }
         }
 
     }
 
     /**
-     * Gets the size of internal push queue.
+     * Gets the size of internal push queue. This size might not be accurate in
+     * multi-threading environment.
      *
      * Use case :- Suppose there is a thread in the server which makes real time
      * ui changes. But if the end user lost connection and the webSocket is not
@@ -997,7 +1025,9 @@ public abstract class BrowserPage implements Serializable {
      * @author WFF
      */
     public int getPushQueueSize() {
-        return wffBMBytesQueue.size();
+        // wffBMBytesQueue.size() is not reliable as
+        // it's ConcurrentLinkedDeque
+        return pushQueueSize.get();
     }
 
     /**
