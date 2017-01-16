@@ -38,9 +38,25 @@ public class Step extends AbstractAttribute implements InputAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
+    /**
+     * The value <code>any</code> allows to accept any floating point numbers as
+     * value in the relevant tag.
+     */
+    public static final String ANY = "any";
+
     {
         super.setAttributeName(AttributeNameConstants.STEP);
         init();
+    }
+
+    /**
+     * initializes attribute with initial value as <code>1</code>
+     *
+     * @since 2.1.5
+     * @author WFF
+     */
+    public Step() {
+        setAttributeValue("1");
     }
 
     /**

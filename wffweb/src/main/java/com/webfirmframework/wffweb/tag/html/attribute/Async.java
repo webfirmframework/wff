@@ -41,7 +41,9 @@ public class Async extends AbstractAttribute
 
     /**
      * It's a boolean attribute. It sets the default value as <code>async</code>
-     * .
+     * . If value is not required then use <code>new Async(null)</code>. Note :
+     * There might be some issue in dynamically changing state of tag if there
+     * is no default value.
      *
      * @since 1.1.5
      * @author WFF
