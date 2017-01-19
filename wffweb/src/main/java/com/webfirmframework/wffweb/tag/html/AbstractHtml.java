@@ -78,19 +78,25 @@ public abstract class AbstractHtml extends AbstractTagBase {
 
     protected static int tagNameIndex;
 
-    private AbstractHtml parent;
+    private volatile AbstractHtml parent;
+
     private Set<AbstractHtml> children;
+
     private String openingTag;
 
     // should be initialized with empty string
     private String closingTag = "";
+
     private StringBuilder htmlStartSB;
-    private StringBuilder htmlMiddleSB;
+
+    private volatile StringBuilder htmlMiddleSB;
+
     private StringBuilder htmlEndSB;
 
     private String tagName;
 
     private StringBuilder tagBuilder;
+
     private AbstractAttribute[] attributes;
 
     private Map<String, AbstractAttribute> attributesMap;
@@ -105,7 +111,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
     // only for toWffBMBytes method
     private int wffSlotIndex = -1;
 
-    private DataWffId dataWffId;
+    private volatile DataWffId dataWffId;
 
     private transient Charset charset = Charset.defaultCharset();
 
@@ -524,7 +530,12 @@ public abstract class AbstractHtml extends AbstractTagBase {
             final AbstractAttribute... attributes) {
 
         if (attributesMap == null) {
-            attributesMap = new HashMap<String, AbstractAttribute>();
+            synchronized (this) {
+                if (attributesMap == null) {
+                    attributesMap = Collections.synchronizedMap(
+                            new HashMap<String, AbstractAttribute>());
+                }
+            }
         }
 
         if (this.attributes != null) {
@@ -1571,7 +1582,11 @@ public abstract class AbstractHtml extends AbstractTagBase {
      */
     protected StringBuilder getHtmlMiddleSB() {
         if (htmlMiddleSB == null) {
-            htmlMiddleSB = new StringBuilder();
+            synchronized (this) {
+                if (htmlMiddleSB == null) {
+                    htmlMiddleSB = new StringBuilder();
+                }
+            }
         }
         return htmlMiddleSB;
     }
@@ -2078,8 +2093,12 @@ public abstract class AbstractHtml extends AbstractTagBase {
      */
     public void setDataWffId(final DataWffId dataWffId) {
         if (this.dataWffId == null) {
-            addAttributes(false, dataWffId);
-            this.dataWffId = dataWffId;
+            synchronized (this) {
+                if (this.dataWffId == null) {
+                    addAttributes(false, dataWffId);
+                    this.dataWffId = dataWffId;
+                }
+            }
         } else {
             throw new WffRuntimeException("dataWffId already exists");
         }

@@ -47,7 +47,7 @@ public class AbstractHtml5SharedObject implements Serializable {
 
     private boolean childModified;
 
-    private Set<AbstractTagBase> rebuiltTags;
+    private volatile Set<AbstractTagBase> rebuiltTags;
 
     private ChildTagAppendListener childTagAppendListener;
 
