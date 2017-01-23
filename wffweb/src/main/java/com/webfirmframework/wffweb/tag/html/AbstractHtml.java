@@ -2110,7 +2110,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
      *
      * @param abstractHtmls
      *            to insert before this tag
-     * @return
+     * @return true if inserted otherwise false.
      * @since 2.1.1
      * @author WFF
      */
