@@ -47,7 +47,7 @@ public class AbstractHtml5SharedObject implements Serializable {
 
     private boolean childModified;
 
-    private Set<AbstractTagBase> rebuiltTags;
+    private volatile Set<AbstractTagBase> rebuiltTags;
 
     private ChildTagAppendListener childTagAppendListener;
 
@@ -153,7 +153,11 @@ public class AbstractHtml5SharedObject implements Serializable {
      */
     public Set<AbstractTagBase> getRebuiltTags() {
         if (rebuiltTags == null) {
-            rebuiltTags = new HashSet<AbstractTagBase>();
+            synchronized (this) {
+                if (rebuiltTags == null) {
+                    rebuiltTags = new HashSet<AbstractTagBase>();
+                }
+            }
         }
         return rebuiltTags;
     }

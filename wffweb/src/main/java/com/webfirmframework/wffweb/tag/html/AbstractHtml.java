@@ -78,19 +78,25 @@ public abstract class AbstractHtml extends AbstractTagBase {
 
     protected static int tagNameIndex;
 
-    private AbstractHtml parent;
+    private volatile AbstractHtml parent;
+
     private Set<AbstractHtml> children;
+
     private String openingTag;
 
     // should be initialized with empty string
     private String closingTag = "";
+
     private StringBuilder htmlStartSB;
-    private StringBuilder htmlMiddleSB;
+
+    private volatile StringBuilder htmlMiddleSB;
+
     private StringBuilder htmlEndSB;
 
     private String tagName;
 
     private StringBuilder tagBuilder;
+
     private AbstractAttribute[] attributes;
 
     private Map<String, AbstractAttribute> attributesMap;
@@ -105,7 +111,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
     // only for toWffBMBytes method
     private int wffSlotIndex = -1;
 
-    private DataWffId dataWffId;
+    private volatile DataWffId dataWffId;
 
     private transient Charset charset = Charset.defaultCharset();
 
@@ -524,7 +530,12 @@ public abstract class AbstractHtml extends AbstractTagBase {
             final AbstractAttribute... attributes) {
 
         if (attributesMap == null) {
-            attributesMap = new HashMap<String, AbstractAttribute>();
+            synchronized (this) {
+                if (attributesMap == null) {
+                    attributesMap = Collections.synchronizedMap(
+                            new HashMap<String, AbstractAttribute>());
+                }
+            }
         }
 
         if (this.attributes != null) {
@@ -818,135 +829,140 @@ public abstract class AbstractHtml extends AbstractTagBase {
     }
 
     private void init() {
-        children = new LinkedHashSet<AbstractHtml>() {
 
-            private static final long serialVersionUID = 1L;
+        children = Collections
+                .synchronizedSet(new LinkedHashSet<AbstractHtml>() {
 
-            @Override
-            public boolean remove(final Object child) {
+                    private static final long serialVersionUID = 1L;
 
-                final boolean removed = super.remove(child);
-                // this method is getting called when removeAll method
-                // is called.
-                //
+                    @Override
+                    public boolean remove(final Object child) {
 
-                return removed;
-            }
+                        final boolean removed = super.remove(child);
+                        // this method is getting called when removeAll method
+                        // is called.
+                        //
 
-            @Override
-            public boolean removeAll(final Collection<?> children) {
-
-                final AbstractHtml[] removedAbstractHtmls = children
-                        .toArray(new AbstractHtml[children.size()]);
-
-                final boolean removedAll = super.removeAll(children);
-                if (removedAll) {
-
-                    initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(
-                            removedAbstractHtmls);
-
-                    final ChildTagRemoveListener listener = sharedObject
-                            .getChildTagRemoveListener(ACCESS_OBJECT);
-
-                    if (listener != null) {
-                        listener.childrenRemoved(
-                                new ChildTagRemoveListener.Event(
-                                        AbstractHtml.this,
-                                        removedAbstractHtmls));
+                        return removed;
                     }
 
-                }
-                return removedAll;
-            }
+                    @Override
+                    public boolean removeAll(final Collection<?> children) {
 
-            @Override
-            public boolean retainAll(final Collection<?> c) {
-                throw new MethodNotImplementedException(
-                        "This method is not implemented yet, may be implemented in future");
-            }
+                        final AbstractHtml[] removedAbstractHtmls = children
+                                .toArray(new AbstractHtml[children.size()]);
 
-            @Override
-            public void clear() {
-                super.clear();
-            }
+                        final boolean removedAll = super.removeAll(children);
+                        if (removedAll) {
 
-            // @Override
-            // public boolean add(AbstractHtml child) {
-            // boolean added = super.add(child);
-            // if (added) {
-            // if (child.parent != null) {
-            //
-            // final Stack<Set<AbstractHtml>> childrenStack = new
-            // Stack<Set<AbstractHtml>>();
-            // childrenStack.push(new HashSet<AbstractHtml>(
-            // Arrays.asList(child)));
-            //
-            // while (childrenStack.size() > 0) {
-            //
-            // final Set<AbstractHtml> children = childrenStack
-            // .pop();
-            //
-            // for (final AbstractHtml eachChild : children) {
-            //
-            // eachChild.sharedObject = AbstractHtml.this.sharedObject;
-            //
-            // final Set<AbstractHtml> subChildren = eachChild
-            // .getChildren();
-            //
-            // if (subChildren != null
-            // && subChildren.size() > 0) {
-            // childrenStack.push(subChildren);
-            // }
-            //
-            // }
-            // }
-            //
-            // } else {
-            // child.sharedObject = AbstractHtml.this.sharedObject;
-            // }
-            //
-            // child.parent = AbstractHtml.this;
-            // final ChildTagAppendListener listener = child.sharedObject
-            // .getChildTagAppendListener(ACCESS_OBJECT);
-            // if (listener != null) {
-            // final ChildTagAppendListener.Event event = new
-            // ChildTagAppendListener.Event(
-            // AbstractHtml.this, child);
-            // listener.childAppended(event);
-            // }
-            //
-            // }
-            // return added;
-            // }
+                            initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(
+                                    removedAbstractHtmls);
 
-            @Override
-            public boolean addAll(
-                    final Collection<? extends AbstractHtml> children) {
-                throw new MethodNotImplementedException(
-                        "This method is not implemented");
-                // No need to implement as it will call add method
-                // boolean addedAll = super.addAll(children);
-                // if (addedAll) {
-                //
-                // for (AbstractHtml child : children) {
-                // child.parent = AbstractHtml.this;
-                // child.sharedObject = AbstractHtml.this.sharedObject;
-                // final ChildTagAppendListener listener = child.sharedObject
-                // .getChildTagAppendListener(ACCESS_OBJECT);
-                // if (listener != null) {
-                // final ChildTagAppendListener.Event event = new
-                // ChildTagAppendListener.Event(
-                // AbstractHtml.this, children);
-                // listener.childAppended(event);
-                // }
-                // }
-                //
-                //
-                // }
-                // return super.addAll(children);
-            }
+                            final ChildTagRemoveListener listener = sharedObject
+                                    .getChildTagRemoveListener(ACCESS_OBJECT);
 
-        };
+                            if (listener != null) {
+                                listener.childrenRemoved(
+                                        new ChildTagRemoveListener.Event(
+                                                AbstractHtml.this,
+                                                removedAbstractHtmls));
+                            }
+
+                        }
+                        return removedAll;
+                    }
+
+                    @Override
+                    public boolean retainAll(final Collection<?> c) {
+                        throw new MethodNotImplementedException(
+                                "This method is not implemented yet, may be implemented in future");
+                    }
+
+                    @Override
+                    public void clear() {
+                        super.clear();
+                    }
+
+                    // @Override
+                    // public boolean add(AbstractHtml child) {
+                    // boolean added = super.add(child);
+                    // if (added) {
+                    // if (child.parent != null) {
+                    //
+                    // final Stack<Set<AbstractHtml>> childrenStack = new
+                    // Stack<Set<AbstractHtml>>();
+                    // childrenStack.push(new HashSet<AbstractHtml>(
+                    // Arrays.asList(child)));
+                    //
+                    // while (childrenStack.size() > 0) {
+                    //
+                    // final Set<AbstractHtml> children = childrenStack
+                    // .pop();
+                    //
+                    // for (final AbstractHtml eachChild : children) {
+                    //
+                    // eachChild.sharedObject = AbstractHtml.this.sharedObject;
+                    //
+                    // final Set<AbstractHtml> subChildren = eachChild
+                    // .getChildren();
+                    //
+                    // if (subChildren != null
+                    // && subChildren.size() > 0) {
+                    // childrenStack.push(subChildren);
+                    // }
+                    //
+                    // }
+                    // }
+                    //
+                    // } else {
+                    // child.sharedObject = AbstractHtml.this.sharedObject;
+                    // }
+                    //
+                    // child.parent = AbstractHtml.this;
+                    // final ChildTagAppendListener listener =
+                    // child.sharedObject
+                    // .getChildTagAppendListener(ACCESS_OBJECT);
+                    // if (listener != null) {
+                    // final ChildTagAppendListener.Event event = new
+                    // ChildTagAppendListener.Event(
+                    // AbstractHtml.this, child);
+                    // listener.childAppended(event);
+                    // }
+                    //
+                    // }
+                    // return added;
+                    // }
+
+                    @Override
+                    public boolean addAll(
+                            final Collection<? extends AbstractHtml> children) {
+                        throw new MethodNotImplementedException(
+                                "This method is not implemented");
+                        // No need to implement as it will call add method
+                        // boolean addedAll = super.addAll(children);
+                        // if (addedAll) {
+                        //
+                        // for (AbstractHtml child : children) {
+                        // child.parent = AbstractHtml.this;
+                        // child.sharedObject = AbstractHtml.this.sharedObject;
+                        // final ChildTagAppendListener listener =
+                        // child.sharedObject
+                        // .getChildTagAppendListener(ACCESS_OBJECT);
+                        // if (listener != null) {
+                        // final ChildTagAppendListener.Event event = new
+                        // ChildTagAppendListener.Event(
+                        // AbstractHtml.this, children);
+                        // listener.childAppended(event);
+                        // }
+                        // }
+                        //
+                        //
+                        // }
+                        // return super.addAll(children);
+                    }
+
+                });
+
         tagBuilder = new StringBuilder();
         setRebuild(true);
     }
@@ -1566,7 +1582,11 @@ public abstract class AbstractHtml extends AbstractTagBase {
      */
     protected StringBuilder getHtmlMiddleSB() {
         if (htmlMiddleSB == null) {
-            htmlMiddleSB = new StringBuilder();
+            synchronized (this) {
+                if (htmlMiddleSB == null) {
+                    htmlMiddleSB = new StringBuilder();
+                }
+            }
         }
         return htmlMiddleSB;
     }
@@ -2073,8 +2093,12 @@ public abstract class AbstractHtml extends AbstractTagBase {
      */
     public void setDataWffId(final DataWffId dataWffId) {
         if (this.dataWffId == null) {
-            addAttributes(false, dataWffId);
-            this.dataWffId = dataWffId;
+            synchronized (this) {
+                if (this.dataWffId == null) {
+                    addAttributes(false, dataWffId);
+                    this.dataWffId = dataWffId;
+                }
+            }
         } else {
             throw new WffRuntimeException("dataWffId already exists");
         }
@@ -2086,7 +2110,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
      *
      * @param abstractHtmls
      *            to insert before this tag
-     * @return
+     * @return true if inserted otherwise false.
      * @since 2.1.1
      * @author WFF
      */
@@ -2096,69 +2120,73 @@ public abstract class AbstractHtml extends AbstractTagBase {
             throw new NoParentException("There must be a parent for this tag.");
         }
 
-        final InsertBeforeListener insertBeforeListener = sharedObject
-                .getInsertBeforeListener(ACCESS_OBJECT);
+        synchronized (parent.children) {
 
-        final int parentChildrenSize = parent.children.size();
+            final int parentChildrenSize = parent.children.size();
 
-        if (parentChildrenSize > 0) {
+            if (parentChildrenSize > 0) {
 
-            final AbstractHtml[] removedParentChildren = parent.children
-                    .toArray(new AbstractHtml[parentChildrenSize]);
+                final InsertBeforeListener insertBeforeListener = sharedObject
+                        .getInsertBeforeListener(ACCESS_OBJECT);
 
-            parent.children.clear();
+                final AbstractHtml[] removedParentChildren = parent.children
+                        .toArray(new AbstractHtml[parentChildrenSize]);
 
-            final InsertBeforeListener.Event[] events = new InsertBeforeListener.Event[abstractHtmls.length];
+                parent.children.clear();
 
-            int count = 0;
+                final InsertBeforeListener.Event[] events = new InsertBeforeListener.Event[abstractHtmls.length];
 
-            for (final AbstractHtml parentChild : removedParentChildren) {
+                int count = 0;
 
-                if (equals(parentChild)) {
+                for (final AbstractHtml parentChild : removedParentChildren) {
 
-                    for (final AbstractHtml abstractHtmlToInsert : abstractHtmls) {
+                    if (equals(parentChild)) {
 
-                        final boolean alreadyHasParent = abstractHtmlToInsert.parent != null;
+                        for (final AbstractHtml abstractHtmlToInsert : abstractHtmls) {
 
-                        if (insertBeforeListener != null) {
-                            AbstractHtml previousParent = null;
-                            if (abstractHtmlToInsert.parent != null
-                                    && abstractHtmlToInsert.parent.sharedObject == sharedObject) {
-                                previousParent = abstractHtmlToInsert.parent;
+                            final boolean alreadyHasParent = abstractHtmlToInsert.parent != null;
+
+                            if (insertBeforeListener != null) {
+                                AbstractHtml previousParent = null;
+                                if (abstractHtmlToInsert.parent != null
+                                        && abstractHtmlToInsert.parent.sharedObject == sharedObject) {
+                                    previousParent = abstractHtmlToInsert.parent;
+                                }
+                                final InsertBeforeListener.Event event = new InsertBeforeListener.Event(
+                                        parent, abstractHtmlToInsert, this,
+                                        previousParent);
+                                events[count] = event;
+                                count++;
                             }
-                            final InsertBeforeListener.Event event = new InsertBeforeListener.Event(
-                                    parent, abstractHtmlToInsert, this,
-                                    previousParent);
-                            events[count] = event;
-                            count++;
+
+                            // if alreadyHasParent = true then it means the
+                            // child is
+                            // moving from one tag to another.
+
+                            if (alreadyHasParent) {
+                                abstractHtmlToInsert.parent.children
+                                        .remove(abstractHtmlToInsert);
+                            }
+
+                            initSharedObject(abstractHtmlToInsert);
+
+                            abstractHtmlToInsert.parent = parent;
+
+                            parent.children.add(abstractHtmlToInsert);
                         }
 
-                        // if alreadyHasParent = true then it means the child is
-                        // moving from one tag to another.
-
-                        if (alreadyHasParent) {
-                            abstractHtmlToInsert.parent.children
-                                    .remove(abstractHtmlToInsert);
-                        }
-
-                        initSharedObject(abstractHtmlToInsert);
-
-                        abstractHtmlToInsert.parent = parent;
-
-                        parent.children.add(abstractHtmlToInsert);
                     }
 
+                    parent.children.add(parentChild);
                 }
 
-                parent.children.add(parentChild);
+                if (insertBeforeListener != null) {
+                    insertBeforeListener.insertedBefore(events);
+                }
+
+                return true;
+
             }
-
-            if (insertBeforeListener != null) {
-                insertBeforeListener.insertedBefore(events);
-            }
-
-            return true;
-
         }
 
         return false;
