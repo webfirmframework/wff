@@ -2120,69 +2120,73 @@ public abstract class AbstractHtml extends AbstractTagBase {
             throw new NoParentException("There must be a parent for this tag.");
         }
 
-        final InsertBeforeListener insertBeforeListener = sharedObject
-                .getInsertBeforeListener(ACCESS_OBJECT);
+        synchronized (parent.children) {
 
-        final int parentChildrenSize = parent.children.size();
+            final int parentChildrenSize = parent.children.size();
 
-        if (parentChildrenSize > 0) {
+            if (parentChildrenSize > 0) {
 
-            final AbstractHtml[] removedParentChildren = parent.children
-                    .toArray(new AbstractHtml[parentChildrenSize]);
+                final InsertBeforeListener insertBeforeListener = sharedObject
+                        .getInsertBeforeListener(ACCESS_OBJECT);
 
-            parent.children.clear();
+                final AbstractHtml[] removedParentChildren = parent.children
+                        .toArray(new AbstractHtml[parentChildrenSize]);
 
-            final InsertBeforeListener.Event[] events = new InsertBeforeListener.Event[abstractHtmls.length];
+                parent.children.clear();
 
-            int count = 0;
+                final InsertBeforeListener.Event[] events = new InsertBeforeListener.Event[abstractHtmls.length];
 
-            for (final AbstractHtml parentChild : removedParentChildren) {
+                int count = 0;
 
-                if (equals(parentChild)) {
+                for (final AbstractHtml parentChild : removedParentChildren) {
 
-                    for (final AbstractHtml abstractHtmlToInsert : abstractHtmls) {
+                    if (equals(parentChild)) {
 
-                        final boolean alreadyHasParent = abstractHtmlToInsert.parent != null;
+                        for (final AbstractHtml abstractHtmlToInsert : abstractHtmls) {
 
-                        if (insertBeforeListener != null) {
-                            AbstractHtml previousParent = null;
-                            if (abstractHtmlToInsert.parent != null
-                                    && abstractHtmlToInsert.parent.sharedObject == sharedObject) {
-                                previousParent = abstractHtmlToInsert.parent;
+                            final boolean alreadyHasParent = abstractHtmlToInsert.parent != null;
+
+                            if (insertBeforeListener != null) {
+                                AbstractHtml previousParent = null;
+                                if (abstractHtmlToInsert.parent != null
+                                        && abstractHtmlToInsert.parent.sharedObject == sharedObject) {
+                                    previousParent = abstractHtmlToInsert.parent;
+                                }
+                                final InsertBeforeListener.Event event = new InsertBeforeListener.Event(
+                                        parent, abstractHtmlToInsert, this,
+                                        previousParent);
+                                events[count] = event;
+                                count++;
                             }
-                            final InsertBeforeListener.Event event = new InsertBeforeListener.Event(
-                                    parent, abstractHtmlToInsert, this,
-                                    previousParent);
-                            events[count] = event;
-                            count++;
+
+                            // if alreadyHasParent = true then it means the
+                            // child is
+                            // moving from one tag to another.
+
+                            if (alreadyHasParent) {
+                                abstractHtmlToInsert.parent.children
+                                        .remove(abstractHtmlToInsert);
+                            }
+
+                            initSharedObject(abstractHtmlToInsert);
+
+                            abstractHtmlToInsert.parent = parent;
+
+                            parent.children.add(abstractHtmlToInsert);
                         }
 
-                        // if alreadyHasParent = true then it means the child is
-                        // moving from one tag to another.
-
-                        if (alreadyHasParent) {
-                            abstractHtmlToInsert.parent.children
-                                    .remove(abstractHtmlToInsert);
-                        }
-
-                        initSharedObject(abstractHtmlToInsert);
-
-                        abstractHtmlToInsert.parent = parent;
-
-                        parent.children.add(abstractHtmlToInsert);
                     }
 
+                    parent.children.add(parentChild);
                 }
 
-                parent.children.add(parentChild);
+                if (insertBeforeListener != null) {
+                    insertBeforeListener.insertedBefore(events);
+                }
+
+                return true;
+
             }
-
-            if (insertBeforeListener != null) {
-                insertBeforeListener.insertedBefore(events);
-            }
-
-            return true;
-
         }
 
         return false;
