@@ -42,9 +42,9 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
 
     private String selectors;
 
-    private boolean modified;
+    private volatile boolean modified;
 
-    private boolean loadedOnce;
+    private volatile boolean loadedOnce;
 
     private boolean excludeCssBlock;
 
@@ -134,14 +134,20 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
             @Override
             public String toString() {
                 if (modified) {
-                    toStringBuilder.delete(0, toStringBuilder.length());
-                    for (final CssProperty cssProperty : this) {
-                        toStringBuilder.append(cssProperty.getCssName());
-                        toStringBuilder.append(":");
-                        toStringBuilder.append(cssProperty.getCssValue());
-                        toStringBuilder.append(";");
+                    synchronized (toStringBuilder) {
+                        if (modified) {
+                            toStringBuilder.delete(0, toStringBuilder.length());
+                            for (final CssProperty cssProperty : this) {
+                                toStringBuilder
+                                        .append(cssProperty.getCssName());
+                                toStringBuilder.append(":");
+                                toStringBuilder
+                                        .append(cssProperty.getCssValue());
+                                toStringBuilder.append(";");
+                            }
+                            setModified(false);
+                        }
                     }
-                    setModified(false);
                 }
                 return toStringBuilder.toString();
             }
@@ -171,10 +177,14 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
      */
     public String toCssString() {
         if (!loadedOnce) {
-            cssProperties.clear();
-            load(cssProperties);
-            loadedOnce = true;
-            setModified(true);
+            synchronized (cssProperties) {
+                if (!loadedOnce) {
+                    cssProperties.clear();
+                    load(cssProperties);
+                    loadedOnce = true;
+                    setModified(true);
+                }
+            }
         }
         return selectors + "{" + cssProperties.toString() + "}";
     }
@@ -187,10 +197,14 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
      */
     public String toCssString(final boolean rebuild) {
         if (rebuild || !loadedOnce) {
-            cssProperties.clear();
-            load(cssProperties);
-            loadedOnce = true;
-            setModified(true);
+            synchronized (cssProperties) {
+                if (rebuild || !loadedOnce) {
+                    cssProperties.clear();
+                    load(cssProperties);
+                    loadedOnce = true;
+                    setModified(true);
+                }
+            }
         }
         return selectors + "{" + cssProperties.toString() + "}";
     }
@@ -207,10 +221,14 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
      */
     public Set<CssProperty> getCssProperties() {
         if (!loadedOnce) {
-            cssProperties.clear();
-            load(cssProperties);
-            loadedOnce = true;
-            setModified(true);
+            synchronized (cssProperties) {
+                if (!loadedOnce) {
+                    cssProperties.clear();
+                    load(cssProperties);
+                    loadedOnce = true;
+                    setModified(true);
+                }
+            }
         }
         return cssProperties;
     }
@@ -249,10 +267,14 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
      */
     Map<String, CssProperty> getCssPropertiesAsMap(final boolean rebuild) {
         if (rebuild || !loadedOnce) {
-            cssProperties.clear();
-            load(cssProperties);
-            loadedOnce = true;
-            setModified(true);
+            synchronized (cssProperties) {
+                if (rebuild || !loadedOnce) {
+                    cssProperties.clear();
+                    load(cssProperties);
+                    loadedOnce = true;
+                    setModified(true);
+                }
+            }
         }
         return cssPropertiesAsMap;
     }
