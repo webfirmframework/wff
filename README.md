@@ -1,6 +1,6 @@
 [![Build Status](https://api.travis-ci.org/webfirmframework/wff.svg?branch=master)](https://travis-ci.org/webfirmframework/wff)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/410601e16dc54b0a973c03845ad790c2)](https://www.codacy.com/app/webfirm-framework/wff?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=webfirmframework/wff&amp;utm_campaign=Badge_Grade)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.webfirmframework/wffweb/badge.svg)](http://search.maven.org/#artifactdetails%7Ccom.webfirmframework%7Cwffweb%7C2.1.4%7Cjar)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.webfirmframework/wffweb/badge.svg)](http://search.maven.org/#artifactdetails%7Ccom.webfirmframework%7Cwffweb%7C2.1.5%7Cjar)
 [![javadoc](https://img.shields.io/:wffweb-javadoc-blue.svg)](https://webfirmframework.github.io/wffweb/wffweb-javadoc)
 
 
@@ -15,7 +15,6 @@ wffweb is one of the modules of webfirmframework. It's an open source java frame
 ##### check out this demo app deployed at [https://wffweb.herokuapp.com](https://wffweb.herokuapp.com)
 
 
-##### Happy new year! wffweb-2.1.4 is a new year release!
 (For the survival of this framework, some adds are shown in [webfirmframework.github.io](https://webfirmframework.github.io) and [webfirmframework.com](http://webfirmframework.com) web sites. These are temporary adds and will be removed soon. We are really sorry if it causes any inconvenience to your surfing.)   
 
 Here are some sample codes
@@ -40,17 +39,13 @@ System.out.println(html.toHtmlString());
 
 or the same in another coding style
 ~~~
-Html html = new Html(null) {
-       {	 
-              new Head(this);
+Html html = new Html(null) {{	  
+    new Head(this);
        
-              new Body(this) {
-                     { 
-                            new NoTag(this, "Hello World");
-                     }
-              };
-       } 
-};
+    new Body(this) {{ 
+        new NoTag(this, "Hello World");
+    }};
+}};
 // prepends the doc type <!DOCTYPE html>
 html.setPrependDocType(true);
 System.out.println(html.toHtmlString()); 
