@@ -35,7 +35,7 @@ public enum BMValueType {
     NUMBER,
 
     /**
-     * to assign unudentified in JavaScript value, the value can be null for
+     * to assign unidentified in JavaScript value, the value can be null for
      * this data type.
      */
     UNDEFINED,
