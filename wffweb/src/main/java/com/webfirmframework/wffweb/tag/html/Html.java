@@ -71,18 +71,6 @@ public class Html extends DocType {
     }
 
     /**
-     * constructor for testing
-     *
-     * @since 1.0.0
-     */
-    // TODO should be removed later
-    public Html(final int id, final AbstractHtml base,
-            final AbstractAttribute... attributes) {
-        super(Html.class.getSimpleName().toLowerCase() + String.valueOf(id),
-                base, attributes);
-    }
-
-    /**
      * invokes only once per object
      *
      * @author WFF
