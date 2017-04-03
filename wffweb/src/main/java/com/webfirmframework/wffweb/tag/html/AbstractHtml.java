@@ -458,7 +458,46 @@ public abstract class AbstractHtml extends AbstractTagBase {
         }
     }
 
+    /**
+     * adds the given children to the last position of the current children of
+     * this object.
+     *
+     * @param children
+     *            children to append in this object's existing children.
+     * @author WFF
+     */
     public void appendChildren(final Collection<AbstractHtml> children) {
+
+        final List<ChildMovedEvent> movedOrAppended = new LinkedList<ChildMovedEvent>();
+
+        for (final AbstractHtml child : children) {
+            final AbstractHtml previousParent = child.parent;
+
+            addChild(child, false);
+
+            final ChildMovedEvent event = new ChildMovedEvent(previousParent,
+                    AbstractHtml.this, child);
+            movedOrAppended.add(event);
+
+        }
+
+        final ChildTagAppendListener listener = sharedObject
+                .getChildTagAppendListener(ACCESS_OBJECT);
+        if (listener != null) {
+            listener.childrendAppendedOrMoved(movedOrAppended);
+        }
+    }
+
+    /**
+     * adds the given children to the last position of the current children of
+     * this object.
+     *
+     * @param children
+     *            children to append in this object's existing children.
+     * @author WFF
+     * @since 2.1.6
+     */
+    public void appendChildren(final AbstractHtml... children) {
 
         final List<ChildMovedEvent> movedOrAppended = new LinkedList<ChildMovedEvent>();
 
@@ -1148,7 +1187,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
     private static void recurChildrenToOutputStream(final int[] totalWritten,
             final Charset charset, final OutputStream os,
             final Set<AbstractHtml> children, final boolean rebuild)
-                    throws IOException {
+            throws IOException {
 
         if (children != null && children.size() > 0) {
             for (final AbstractHtml child : children) {
@@ -1184,7 +1223,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
      */
     private void recurChildrenToWffBinaryMessageOutputStream(
             final Set<AbstractHtml> children, final boolean rebuild)
-                    throws IOException {
+            throws IOException {
         if (children != null && children.size() > 0) {
             for (final AbstractHtml child : children) {
                 child.setRebuild(rebuild);
@@ -2187,6 +2226,52 @@ public abstract class AbstractHtml extends AbstractTagBase {
                 return true;
 
             }
+        }
+
+        return false;
+    }
+
+    /**
+     * Inserts the given tags after this tag. There must be a parent for this
+     * method tag. <br>
+     * Note : This {@code insertAfter} method is bit slower than
+     * {@code insertBefore} method as it internally uses {@code insertBefore}
+     * method. This will be improved in the future version.
+     *
+     * @param abstractHtmls
+     *            to insert after this tag
+     * @return true if inserted otherwise false.
+     * @since 2.1.6
+     * @author WFF
+     */
+    public boolean insertAfter(final AbstractHtml... abstractHtmls) {
+
+        if (parent == null) {
+            throw new NoParentException("There must be a parent for this tag.");
+        }
+
+        synchronized (parent.children) {
+
+            final AbstractHtml[] childrenOfParent = parent.children
+                    .toArray(new AbstractHtml[parent.children.size()]);
+
+            for (int i = 0; i < childrenOfParent.length; i++) {
+
+                if (equals(childrenOfParent[i])) {
+
+                    if (i < childrenOfParent.length - 1) {
+
+                        childrenOfParent[i + 1].insertBefore(abstractHtmls);
+
+                    } else {
+                        parent.appendChildren(abstractHtmls);
+                    }
+
+                    return true;
+                }
+
+            }
+
         }
 
         return false;

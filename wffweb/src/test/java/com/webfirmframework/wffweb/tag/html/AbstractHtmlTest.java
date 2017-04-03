@@ -333,5 +333,40 @@ public class AbstractHtmlTest {
         System.out.println(parentDiv.toHtmlString());
 
     }
+    
+    @Test(expected = NoParentException.class)
+    public void testInsertAfterWithNoParentException() {
+        Div div = new Div(null);
+        div.insertAfter(new Div(null, new Id("innerDivId")));
+
+    }
+    
+    @Test
+    public void testInsertAfter() {
+        Div parentDiv = new Div(null, new Id("parentDivId"));
+        Div childDiv = new Div(parentDiv, new Id("child1"));
+        childDiv.insertAfter(new Div(null, new Id("inserted1BeforeChild1")),
+                new Div(null, new Id("inserted2BeforeChild1")));
+        assertEquals(
+                "<div id=\"parentDivId\"><div id=\"child1\"></div><div id=\"inserted1BeforeChild1\"></div><div id=\"inserted2BeforeChild1\"></div></div>",
+                parentDiv.toHtmlString());
+        System.out.println(parentDiv.toHtmlString());
+
+    }
+    
+    @Test
+    @SuppressWarnings("unused")
+    public void testInsertAfter2() {
+        Div parentDiv = new Div(null, new Id("parentDivId"));
+        Div childDiv = new Div(parentDiv, new Id("child1"));
+        Div childDiv2 = new Div(parentDiv, new Id("child2"));
+        childDiv.insertAfter(new Div(null, new Id("inserted1BeforeChild1")),
+                new Div(null, new Id("inserted2BeforeChild1")));
+        assertEquals(
+                "<div id=\"parentDivId\"><div id=\"child1\"></div><div id=\"inserted1BeforeChild1\"></div><div id=\"inserted2BeforeChild1\"></div><div id=\"child2\"></div></div>",
+                parentDiv.toHtmlString());
+        System.out.println(parentDiv.toHtmlString());
+        
+    }
 
 }
