@@ -144,6 +144,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.event.mouse.OnMouseEnter;
 import com.webfirmframework.wffweb.tag.html.attribute.event.mouse.OnMouseLeave;
 import com.webfirmframework.wffweb.tag.html.attribute.event.mouse.OnMouseMove;
 import com.webfirmframework.wffweb.tag.html.attribute.event.mouse.OnMouseOut;
+import com.webfirmframework.wffweb.tag.html.attribute.event.mouse.OnMouseOver;
 import com.webfirmframework.wffweb.tag.html.attribute.event.mouse.OnMouseUp;
 import com.webfirmframework.wffweb.tag.html.attribute.event.print.OnAfterPrint;
 import com.webfirmframework.wffweb.tag.html.attribute.event.print.OnBeforePrint;
@@ -590,6 +591,8 @@ public class AttributeRegistry {
                 Async.class.getSimpleName());
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.DATETIME,
                 DateTime.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONMOUSEOVER,
+                OnMouseOver.class.getSimpleName());
 
         attributeNames = new ArrayList<String>(initialCapacity);
         attributeNamesSet = new HashSet<String>(initialCapacity);

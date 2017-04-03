@@ -357,6 +357,8 @@ public class AttributeNameConstants {
 
     public static final String DATETIME = "datetime";
 
+    public static final String ONMOUSEOVER = "onmouseover";
+
     /**
      *
      * @author WFF
