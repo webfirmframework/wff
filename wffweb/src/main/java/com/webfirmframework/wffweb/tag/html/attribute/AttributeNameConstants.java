@@ -359,6 +359,8 @@ public class AttributeNameConstants {
 
     public static final String ONMOUSEOVER = "onmouseover";
 
+    public static final String ONRESIZE = "onresize";
+
     /**
      *
      * @author WFF
