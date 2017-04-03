@@ -2161,71 +2161,90 @@ public abstract class AbstractHtml extends AbstractTagBase {
 
         synchronized (parent.children) {
 
-            final int parentChildrenSize = parent.children.size();
+            final AbstractHtml[] removedParentChildren = parent.children
+                    .toArray(new AbstractHtml[parent.children.size()]);
 
-            if (parentChildrenSize > 0) {
+            return insertBefore(removedParentChildren, abstractHtmls);
+        }
 
-                final InsertBeforeListener insertBeforeListener = sharedObject
-                        .getInsertBeforeListener(ACCESS_OBJECT);
+    }
 
-                final AbstractHtml[] removedParentChildren = parent.children
-                        .toArray(new AbstractHtml[parentChildrenSize]);
+    /**
+     * should be used inside a synchronized block. NB:- It's removing
+     * removedParentChildren by parent.children.clear(); in this method.
+     *
+     * @param removedParentChildren
+     *            just pass the parent children, no need to remove it from
+     *            parent. It's removing by parent.children.clear();
+     * @param abstractHtmls
+     * @return true if inserted otherwise false.
+     * @since 2.1.6
+     * @author WFF
+     */
+    private boolean insertBefore(final AbstractHtml[] removedParentChildren,
+            final AbstractHtml[] abstractHtmls) {
 
-                parent.children.clear();
+        final int parentChildrenSize = parent.children.size();
 
-                final InsertBeforeListener.Event[] events = new InsertBeforeListener.Event[abstractHtmls.length];
+        if (parentChildrenSize > 0) {
 
-                int count = 0;
+            final InsertBeforeListener insertBeforeListener = sharedObject
+                    .getInsertBeforeListener(ACCESS_OBJECT);
 
-                for (final AbstractHtml parentChild : removedParentChildren) {
+            parent.children.clear();
 
-                    if (equals(parentChild)) {
+            final InsertBeforeListener.Event[] events = new InsertBeforeListener.Event[abstractHtmls.length];
 
-                        for (final AbstractHtml abstractHtmlToInsert : abstractHtmls) {
+            int count = 0;
 
-                            final boolean alreadyHasParent = abstractHtmlToInsert.parent != null;
+            for (final AbstractHtml parentChild : removedParentChildren) {
 
-                            if (insertBeforeListener != null) {
-                                AbstractHtml previousParent = null;
-                                if (abstractHtmlToInsert.parent != null
-                                        && abstractHtmlToInsert.parent.sharedObject == sharedObject) {
-                                    previousParent = abstractHtmlToInsert.parent;
-                                }
-                                final InsertBeforeListener.Event event = new InsertBeforeListener.Event(
-                                        parent, abstractHtmlToInsert, this,
-                                        previousParent);
-                                events[count] = event;
-                                count++;
+                if (equals(parentChild)) {
+
+                    for (final AbstractHtml abstractHtmlToInsert : abstractHtmls) {
+
+                        final boolean alreadyHasParent = abstractHtmlToInsert.parent != null;
+
+                        if (insertBeforeListener != null) {
+                            AbstractHtml previousParent = null;
+                            if (abstractHtmlToInsert.parent != null
+                                    && abstractHtmlToInsert.parent.sharedObject == sharedObject) {
+                                previousParent = abstractHtmlToInsert.parent;
                             }
-
-                            // if alreadyHasParent = true then it means the
-                            // child is
-                            // moving from one tag to another.
-
-                            if (alreadyHasParent) {
-                                abstractHtmlToInsert.parent.children
-                                        .remove(abstractHtmlToInsert);
-                            }
-
-                            initSharedObject(abstractHtmlToInsert);
-
-                            abstractHtmlToInsert.parent = parent;
-
-                            parent.children.add(abstractHtmlToInsert);
+                            final InsertBeforeListener.Event event = new InsertBeforeListener.Event(
+                                    parent, abstractHtmlToInsert, this,
+                                    previousParent);
+                            events[count] = event;
+                            count++;
                         }
 
+                        // if alreadyHasParent = true then it means the
+                        // child is
+                        // moving from one tag to another.
+
+                        if (alreadyHasParent) {
+                            abstractHtmlToInsert.parent.children
+                                    .remove(abstractHtmlToInsert);
+                        }
+
+                        initSharedObject(abstractHtmlToInsert);
+
+                        abstractHtmlToInsert.parent = parent;
+
+                        parent.children.add(abstractHtmlToInsert);
                     }
 
-                    parent.children.add(parentChild);
                 }
 
-                if (insertBeforeListener != null) {
-                    insertBeforeListener.insertedBefore(events);
-                }
-
-                return true;
-
+                parent.children.add(parentChild);
             }
+
+            if (insertBeforeListener != null) {
+                insertBeforeListener.insertedBefore(events);
+            }
+
+            return true;
+
         }
 
         return false;
@@ -2234,9 +2253,9 @@ public abstract class AbstractHtml extends AbstractTagBase {
     /**
      * Inserts the given tags after this tag. There must be a parent for this
      * method tag. <br>
-     * Note : This {@code insertAfter} method is bit slower than
-     * {@code insertBefore} method as it internally uses {@code insertBefore}
-     * method. This will be improved in the future version.
+     * Note : This {@code insertAfter} method might be bit slower (in terms of
+     * nano optimization) than {@code insertBefore} method as it internally uses
+     * {@code insertBefore} method. This will be improved in the future version.
      *
      * @param abstractHtmls
      *            to insert after this tag
@@ -2259,9 +2278,10 @@ public abstract class AbstractHtml extends AbstractTagBase {
 
                 if (equals(childrenOfParent[i])) {
 
-                    if (i < childrenOfParent.length - 1) {
+                    if (i < (childrenOfParent.length - 1)) {
 
-                        childrenOfParent[i + 1].insertBefore(abstractHtmls);
+                        return childrenOfParent[i + 1]
+                                .insertBefore(childrenOfParent, abstractHtmls);
 
                     } else {
                         parent.appendChildren(abstractHtmls);
