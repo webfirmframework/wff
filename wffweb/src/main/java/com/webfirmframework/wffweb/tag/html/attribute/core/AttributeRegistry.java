@@ -104,6 +104,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.event.frame.or.object.OnHa
 import com.webfirmframework.wffweb.tag.html.attribute.event.frame.or.object.OnLoad;
 import com.webfirmframework.wffweb.tag.html.attribute.event.frame.or.object.OnPageHide;
 import com.webfirmframework.wffweb.tag.html.attribute.event.frame.or.object.OnPageShow;
+import com.webfirmframework.wffweb.tag.html.attribute.event.frame.or.object.OnResize;
 import com.webfirmframework.wffweb.tag.html.attribute.event.frame.or.object.OnScroll;
 import com.webfirmframework.wffweb.tag.html.attribute.event.frame.or.object.OnUnload;
 import com.webfirmframework.wffweb.tag.html.attribute.event.keyboard.OnKeyDown;
@@ -144,6 +145,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.event.mouse.OnMouseEnter;
 import com.webfirmframework.wffweb.tag.html.attribute.event.mouse.OnMouseLeave;
 import com.webfirmframework.wffweb.tag.html.attribute.event.mouse.OnMouseMove;
 import com.webfirmframework.wffweb.tag.html.attribute.event.mouse.OnMouseOut;
+import com.webfirmframework.wffweb.tag.html.attribute.event.mouse.OnMouseOver;
 import com.webfirmframework.wffweb.tag.html.attribute.event.mouse.OnMouseUp;
 import com.webfirmframework.wffweb.tag.html.attribute.event.print.OnAfterPrint;
 import com.webfirmframework.wffweb.tag.html.attribute.event.print.OnBeforePrint;
@@ -210,7 +212,7 @@ public class AttributeRegistry {
         final Field[] fields = AttributeNameConstants.class.getFields();
         final int initialCapacity = fields.length;
 
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME = new HashMap<String, String>(
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME = new HashMap<>(
                 initialCapacity);
 
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ACCEPT,
@@ -590,9 +592,14 @@ public class AttributeRegistry {
                 Async.class.getSimpleName());
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.DATETIME,
                 DateTime.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
+                AttributeNameConstants.ONMOUSEOVER,
+                OnMouseOver.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONRESIZE,
+                OnResize.class.getSimpleName());
 
-        attributeNames = new ArrayList<String>(initialCapacity);
-        attributeNamesSet = new HashSet<String>(initialCapacity);
+        attributeNames = new ArrayList<>(initialCapacity);
+        attributeNamesSet = new HashSet<>(initialCapacity);
 
         attributeNamesSet.addAll(ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.keySet());
         attributeNames.addAll(attributeNamesSet);
@@ -631,7 +638,7 @@ public class AttributeRegistry {
      */
     public static void register(final String... attrNames) {
 
-        final HashSet<String> tagNamesWithoutDuplicates = new HashSet<String>(
+        final HashSet<String> tagNamesWithoutDuplicates = new HashSet<>(
                 Arrays.asList(attrNames));
 
         attributeNamesSet.addAll(tagNamesWithoutDuplicates);

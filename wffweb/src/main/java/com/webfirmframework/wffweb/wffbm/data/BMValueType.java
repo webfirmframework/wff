@@ -24,7 +24,57 @@ package com.webfirmframework.wffweb.wffbm.data;
 public enum BMValueType {
 
     // this order should not be changed
-    STRING, NUMBER, UNDEFINED, NULL, BOOLEAN, BM_OBJECT, BM_ARRAY, REG_EXP, FUNCTION, BM_BYTE_ARRAY;
+    /**
+     * to initialize String value
+     */
+    STRING,
+
+    /**
+     * It can be int, float, long, double or any 64 bit floating point number
+     */
+    NUMBER,
+
+    /**
+     * to assign unidentified in JavaScript value, the value can be null for
+     * this data type.
+     */
+    UNDEFINED,
+
+    /**
+     * to initialize null value
+     */
+    NULL,
+
+    /**
+     * to initialize boolean value
+     */
+    BOOLEAN,
+
+    /**
+     * to initialize another {@code WffBMObject}
+     */
+    BM_OBJECT,
+
+    /**
+     * to initialize another {@code WffBMArray}
+     */
+    BM_ARRAY,
+
+    /**
+     * to initialize reg expression
+     */
+    REG_EXP,
+
+    /**
+     * to initialize function body
+     */
+    FUNCTION,
+
+    /**
+     * to initialize binary data. In java it's byte data type and in JavaScript
+     * it's Uint8Array.
+     */
+    BM_BYTE_ARRAY;
 
     private byte type;
 

@@ -74,8 +74,12 @@ public class Html extends DocType {
      * constructor for testing
      *
      * @since 1.0.0
+     * @deprecated this constructor is used for testing purpose, it should not
+     *             be used/consumed for development because it may be removed
+     *             later.
      */
     // TODO should be removed later
+    @Deprecated
     public Html(final int id, final AbstractHtml base,
             final AbstractAttribute... attributes) {
         super(Html.class.getSimpleName().toLowerCase() + String.valueOf(id),
