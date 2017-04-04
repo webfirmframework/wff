@@ -237,6 +237,11 @@ public abstract class AbstractHtml extends AbstractTagBase {
         return addChild(child);
     }
 
+    /**
+     * Removes all children from this tag.
+     *
+     * @author WFF
+     */
     public void removeAllChildren() {
 
         final AbstractHtml[] removedAbstractHtmls = children
