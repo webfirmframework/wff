@@ -29,6 +29,25 @@ import com.webfirmframework.wffweb.WffRuntimeException;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 import com.webfirmframework.wffweb.util.data.NameValue;
 
+/**
+ * The java object representation for JavaScript object. <br>
+ * Sample code :- <br>
+ * 
+ * <pre>
+ * WffBMObject bmObject = new WffBMObject();
+ * bmObject.put("serverKey", BMValueType.STRING, "value from server");
+ * bmObject.put("string", BMValueType.STRING, "sample string");
+ * bmObject.put("nul", BMValueType.NULL, null);
+ * bmObject.put("number", BMValueType.NUMBER, 555);
+ * bmObject.put("undef", BMValueType.UNDEFINED, null);
+ * bmObject.put("reg", BMValueType.REG_EXP, "[w]");
+ * bmObject.put("bool", BMValueType.BOOLEAN, true);
+ * bmObject.put("testFun", BMValueType.FUNCTION, "function(arg) {alert(arg);}");
+ * </pre>
+ *
+ * @author WFF
+ *
+ */
 public class WffBMObject extends LinkedHashMap<String, ValueValueType>
         implements WffData {
 
