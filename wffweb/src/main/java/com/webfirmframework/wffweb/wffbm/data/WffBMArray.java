@@ -104,7 +104,8 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  * </pre>
  *
  * @author WFF
- *
+ * @see WffBMByteArray
+ * @see WffBMObject
  */
 public class WffBMArray extends LinkedList<Object> implements WffData {
 
