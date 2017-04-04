@@ -1072,8 +1072,8 @@ public abstract class AbstractHtml extends AbstractTagBase {
     }
 
     /**
-     * For internal purpose.
-     * 
+     * For internal purpose. Not recommended for external purpose.
+     *
      * @return the opening tag of this object
      * @author WFF
      */
@@ -1084,6 +1084,12 @@ public abstract class AbstractHtml extends AbstractTagBase {
         return openingTag;
     }
 
+    /**
+     * For internal purpose.
+     *
+     * @return the closing tag of this object
+     * @author WFF
+     */
     public String getClosingTag() {
         return closingTag;
     }
