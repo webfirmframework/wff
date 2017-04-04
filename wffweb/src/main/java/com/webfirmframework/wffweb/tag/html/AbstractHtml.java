@@ -233,6 +233,14 @@ public abstract class AbstractHtml extends AbstractTagBase {
         // childAppended(parent, this);
     }
 
+    /**
+     * Appends the given child tag to its children.
+     *
+     * @param child
+     *            the tag to append to its children.
+     * @return true if the given child tag is appended as child of this tag.
+     * @author WFF
+     */
     public boolean appendChild(final AbstractHtml child) {
         return addChild(child);
     }
