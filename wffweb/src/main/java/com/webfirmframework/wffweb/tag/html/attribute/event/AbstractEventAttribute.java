@@ -353,6 +353,13 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
         return jsPostFunctionBody;
     }
 
+    /**
+     * Sets the post function body JavaScript.
+     *
+     * @param jsPostFunctionBody
+     *            the post function body JavaScript.
+     * @author WFF
+     */
     public void setJsPostFunctionBody(final String jsPostFunctionBody) {
         setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod,
                 jsFilterFunctionBody, jsPostFunctionBody);
