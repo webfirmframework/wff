@@ -27,6 +27,85 @@ import com.webfirmframework.wffweb.WffRuntimeException;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 import com.webfirmframework.wffweb.util.data.NameValue;
 
+/**
+ * The java array object representation for JavaScript array. <br>
+ * Sample code :- <br>
+ *
+ * <pre>
+ * WffBMObject bmObject = new WffBMObject();
+ *
+ * WffBMArray stringArray = new WffBMArray(BMValueType.STRING);
+ * stringArray.add("array value 1");
+ * stringArray.add("array value 2");
+ *
+ * bmObject.put("stringArray", BMValueType.BM_ARRAY, stringArray);
+ *
+ * WffBMArray numberArray = new WffBMArray(BMValueType.NUMBER);
+ * numberArray.add(555);
+ * numberArray.add(5);
+ * numberArray.add(55);
+ *
+ * bmObject.put("numberArray", BMValueType.BM_ARRAY, numberArray);
+ *
+ * <code>// to store bytes in an array use WffBMByteArray</code>
+ * WffBMByteArray byteArray = new WffBMByteArray();
+ * byteArray.write("こんにちは WFFWEB".getBytes("UTF-8"));
+ *
+ * bmObject.put("byteArray", BMValueType.BM_BYTE_ARRAY, byteArray);
+ *
+ * WffBMArray booleanArray = new WffBMArray(BMValueType.BOOLEAN);
+ * booleanArray.add(true);
+ * booleanArray.add(false);
+ * booleanArray.add(true);
+ *
+ * bmObject.put("booleanArray", BMValueType.BM_ARRAY, booleanArray);
+ *
+ * WffBMArray regexArray = new WffBMArray(BMValueType.REG_EXP);
+ * regexArray.add("[w]");
+ * regexArray.add("[f]");
+ * regexArray.add("[f]");
+ *
+ * bmObject.put("regexArray", BMValueType.BM_ARRAY, regexArray);
+ *
+ * WffBMArray funcArray = new WffBMArray(BMValueType.FUNCTION);
+ * funcArray.add("function(arg) {console.log(arg);}");
+ * funcArray.add("function(arg1) {console.log(arg1);}");
+ * funcArray.add("function(arg2) {console.log(arg2);}");
+ *
+ * bmObject.put("funcArray", BMValueType.BM_ARRAY, funcArray);
+ *
+ * WffBMArray nullArray = new WffBMArray(BMValueType.NULL);
+ * nullArray.add(null);
+ * nullArray.add(null);
+ * nullArray.add(null);
+ *
+ * bmObject.put("nullArray", BMValueType.BM_ARRAY, nullArray);
+ *
+ * WffBMArray undefinedArray = new WffBMArray(BMValueType.UNDEFINED);
+ * undefinedArray.add(null);
+ * undefinedArray.add(null);
+ * undefinedArray.add(null);
+ *
+ * bmObject.put("undefinedArray", BMValueType.BM_ARRAY, undefinedArray);
+ *
+ * WffBMArray arrayArray = new WffBMArray(BMValueType.BM_ARRAY);
+ * arrayArray.add(funcArray);
+ * arrayArray.add(funcArray);
+ * arrayArray.add(funcArray);
+ *
+ * bmObject.put("arrayArray", BMValueType.BM_ARRAY, arrayArray);
+ *
+ * WffBMArray objectArray = new WffBMArray(BMValueType.BM_OBJECT);
+ * objectArray.add(bmObject.clone());
+ * objectArray.add(bmObject.clone());
+ * objectArray.add(bmObject.clone());
+ *
+ * bmObject.put("objectArray", BMValueType.BM_ARRAY, objectArray);
+ * </pre>
+ *
+ * @author WFF
+ *
+ */
 public class WffBMArray extends LinkedList<Object> implements WffData {
 
     private static final long serialVersionUID = 1L;
