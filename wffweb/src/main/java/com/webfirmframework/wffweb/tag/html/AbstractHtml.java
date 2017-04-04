@@ -316,6 +316,14 @@ public abstract class AbstractHtml extends AbstractTagBase {
         }
     }
 
+    /**
+     * Removes the given tags from its children tags.
+     *
+     * @param children
+     *            the tags to remove from its children.
+     * @return true given given children tags have been removed.
+     * @author WFF
+     */
     public boolean removeChildren(final Collection<AbstractHtml> children) {
         return this.children.removeAll(children);
     }
