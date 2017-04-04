@@ -320,6 +320,15 @@ public abstract class AbstractHtml extends AbstractTagBase {
         return this.children.removeAll(children);
     }
 
+    /**
+     * Removes the given tag from its children only if the given tag is a child
+     * of this tag.
+     *
+     * @param child
+     *            the tag to remove from its children
+     * @return true if removed
+     * @author WFF
+     */
     public boolean removeChild(final AbstractHtml child) {
 
         final boolean removed = children.remove(child);
