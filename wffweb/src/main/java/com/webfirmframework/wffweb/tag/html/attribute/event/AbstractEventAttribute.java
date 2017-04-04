@@ -16,6 +16,8 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute.event;
 
+import java.util.logging.Logger;
+
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 
 /**
@@ -31,6 +33,9 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
         implements EventAttribute {
 
     private static final long serialVersionUID = 1_0_0L;
+
+    public static final Logger LOGGER = Logger
+            .getLogger(AbstractEventAttribute.class.getName());
 
     private ServerAsyncMethod serverAsyncMethod;
 
@@ -340,6 +345,9 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
             this.jsFilterFunctionBody = jsFilterFunctionBody;
             this.jsPostFunctionBody = jsPostFunctionBody;
             this.serverAsyncMethod = serverAsyncMethod;
+        } else {
+            LOGGER.warning(
+                    "serverAsyncMethod is null so jsPreFunctionBody, jsFilterFunctionBody and jsPostFunctionBody are not also set.They are valid only if serverAsyncMethod is NOT null.");
         }
     }
 
