@@ -1071,6 +1071,12 @@ public abstract class AbstractHtml extends AbstractTagBase {
         this.children = children;
     }
 
+    /**
+     * For internal purpose.
+     * 
+     * @return the opening tag of this object
+     * @author WFF
+     */
     public String getOpeningTag() {
         if (isRebuild() || isModified()) {
             buildOpeningTag(true);
