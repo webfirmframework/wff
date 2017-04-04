@@ -49,6 +49,8 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  * Check out {@code WffBMArray} and {@code WffBMByteArray} respectively.
  *
  * @author WFF
+ * @see WffBMArray
+ * @see WffBMByteArray
  *
  */
 public class WffBMObject extends LinkedHashMap<String, ValueValueType>
