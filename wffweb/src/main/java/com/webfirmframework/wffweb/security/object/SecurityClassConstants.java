@@ -15,6 +15,12 @@
  */
 package com.webfirmframework.wffweb.security.object;
 
+/**
+ * Only for internal purpose.
+ *
+ * @author WFF
+ *
+ */
 public class SecurityClassConstants {
 
     public static final String ABSTRACT_HTML = "com.webfirmframework.wffweb.tag.html.AbstractHtml$Security";
