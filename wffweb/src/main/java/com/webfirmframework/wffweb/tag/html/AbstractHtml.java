@@ -146,6 +146,13 @@ public abstract class AbstractHtml extends AbstractTagBase {
         throw new AssertionError();
     }
 
+    /**
+     * @param base
+     *            the parent tag of this object
+     * @param children
+     *            the tags which will be added as a children tag of this object.
+     * @author WFF
+     */
     public AbstractHtml(final AbstractHtml base,
             final Collection<? extends AbstractHtml> children) {
 
