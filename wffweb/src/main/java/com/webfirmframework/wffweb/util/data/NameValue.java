@@ -17,6 +17,14 @@ package com.webfirmframework.wffweb.util.data;
 
 import java.io.Serializable;
 
+/**
+ * A data class which can hold name-values pair. The {@code name} property is an
+ * array of bytes where as the {@code values} property is an array of byte
+ * array.
+ * 
+ * @author WFF
+ *
+ */
 public class NameValue implements Serializable {
 
     private static final long serialVersionUID = 1_1_0L;
@@ -28,6 +36,11 @@ public class NameValue implements Serializable {
     public NameValue() {
     }
 
+    /**
+     * @param name
+     * @param values
+     * @author WFF
+     */
     public NameValue(final byte[] name, final byte[][] values) {
         super();
         this.name = name;
