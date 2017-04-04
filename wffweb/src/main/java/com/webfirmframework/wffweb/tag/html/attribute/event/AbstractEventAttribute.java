@@ -34,6 +34,10 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
 
     private ServerAsyncMethod serverAsyncMethod;
 
+    private String jsFilterFunctionBody;
+
+    private String jsPreFunctionBody;
+
     private String jsPostFunctionBody;
 
     {
@@ -148,12 +152,17 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
         return super.getAttributeValue();
     }
 
+    /**
+     * @param serverAsyncMethod
+     *            the {@code ServerAsyncMethod} object to set.
+     * @author WFF
+     */
     public void setServerAsyncMethod(
             final ServerAsyncMethod serverAsyncMethod) {
         if (serverAsyncMethod != null) {
-            this.serverAsyncMethod = serverAsyncMethod;
-            super.setAttributeValue("wffServerMethods.invokeAsync(event, this,'"
-                    + getAttributeName() + "')");
+
+            setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod,
+                    jsFilterFunctionBody, jsPostFunctionBody);
         }
     }
 
@@ -241,9 +250,6 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
                 builder.append(getPreparedJsFunctionBody(jsFilterFunctionBody));
                 builder.append(')');
 
-                this.jsPostFunctionBody = jsPostFunctionBody;
-
-                this.serverAsyncMethod = serverAsyncMethod;
                 super.setAttributeValue(builder.toString());
 
             } else if (jsPreFunctionBody != null
@@ -258,9 +264,6 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
                 builder.append(getPreparedJsFunctionBody(jsPreFunctionBody));
                 builder.append(')');
 
-                this.jsPostFunctionBody = jsPostFunctionBody;
-
-                this.serverAsyncMethod = serverAsyncMethod;
                 super.setAttributeValue(builder.toString());
 
             } else if (jsPreFunctionBody != null
@@ -277,7 +280,6 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
                 builder.append(getPreparedJsFunctionBody(jsFilterFunctionBody));
 
                 builder.append(')');
-                this.serverAsyncMethod = serverAsyncMethod;
                 super.setAttributeValue(builder.toString());
 
             } else if (jsPostFunctionBody != null
@@ -292,9 +294,6 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
                 builder.append(getPreparedJsFunctionBody(jsFilterFunctionBody));
                 builder.append(')');
 
-                this.jsPostFunctionBody = jsPostFunctionBody;
-
-                this.serverAsyncMethod = serverAsyncMethod;
                 super.setAttributeValue(builder.toString());
 
             } else if (jsPreFunctionBody != null) {
@@ -308,7 +307,6 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
                 builder.append(getPreparedJsFunctionBody(jsPreFunctionBody));
 
                 builder.append(')');
-                this.serverAsyncMethod = serverAsyncMethod;
                 super.setAttributeValue(builder.toString());
 
             } else if (jsFilterFunctionBody != null) {
@@ -321,9 +319,6 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
                 builder.append(getPreparedJsFunctionBody(jsFilterFunctionBody));
                 builder.append(')');
 
-                this.jsPostFunctionBody = jsPostFunctionBody;
-
-                this.serverAsyncMethod = serverAsyncMethod;
                 super.setAttributeValue(builder.toString());
             } else if (jsPostFunctionBody != null) {
 
@@ -333,17 +328,18 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
                 builder.append(getAttributeName());
                 builder.append("')");
 
-                this.jsPostFunctionBody = jsPostFunctionBody;
-
-                this.serverAsyncMethod = serverAsyncMethod;
                 super.setAttributeValue(builder.toString());
             } else {
-                this.serverAsyncMethod = serverAsyncMethod;
+
                 super.setAttributeValue(
                         "wffServerMethods.invokeAsync(event, this,'"
                                 + getAttributeName() + "')");
             }
 
+            this.jsPreFunctionBody = jsPreFunctionBody;
+            this.jsFilterFunctionBody = jsFilterFunctionBody;
+            this.jsPostFunctionBody = jsPostFunctionBody;
+            this.serverAsyncMethod = serverAsyncMethod;
         }
     }
 
@@ -358,6 +354,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
     }
 
     public void setJsPostFunctionBody(final String jsPostFunctionBody) {
-        this.jsPostFunctionBody = jsPostFunctionBody;
+        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod,
+                jsFilterFunctionBody, jsPostFunctionBody);
     }
 }
