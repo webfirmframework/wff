@@ -30,6 +30,17 @@ import com.webfirmframework.wffweb.util.data.NameValue;
 /**
  * This a byte array to hold utf-8 bytes. use WffBMByteArray.write to add bytes
  * into this array.
+ * <br>
+ * Sample :-
+ * <br>
+ * <pre>
+ * WffBMObject bmObject = new WffBMObject();
+ * 
+ * WffBMByteArray byteArray = new WffBMByteArray();
+ * byteArray.write("こんにちは WFFWEB".getBytes("UTF-8"));
+ * 
+ * bmObject.put("byteArray", BMValueType.BM_BYTE_ARRAY, byteArray);
+ * <pre>
  *
  * @author WFF
  *
