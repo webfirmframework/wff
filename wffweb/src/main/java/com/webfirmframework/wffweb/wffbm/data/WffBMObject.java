@@ -32,7 +32,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
 /**
  * The java object representation for JavaScript object. <br>
  * Sample code :- <br>
- * 
+ *
  * <pre>
  * WffBMObject bmObject = new WffBMObject();
  * bmObject.put("serverKey", BMValueType.STRING, "value from server");
@@ -44,6 +44,9 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  * bmObject.put("bool", BMValueType.BOOLEAN, true);
  * bmObject.put("testFun", BMValueType.FUNCTION, "function(arg) {alert(arg);}");
  * </pre>
+ *
+ * The {@code WffBMObject} can also hold array and binary data (as byte array).
+ * Check out {@code WffBMArray} and {@code WffBMByteArray} respectively.
  *
  * @author WFF
  *
