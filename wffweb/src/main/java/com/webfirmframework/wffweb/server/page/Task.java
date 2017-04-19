@@ -19,7 +19,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
 
 /**
  * Only for internal purpose.
- * 
+ *
  * @author WFF
  * @since 2.0.0
  */

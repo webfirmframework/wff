@@ -212,8 +212,7 @@ public class AttributeRegistry {
         final Field[] fields = AttributeNameConstants.class.getFields();
         final int initialCapacity = fields.length;
 
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME = new HashMap<>(
-                initialCapacity);
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME = new HashMap<>(initialCapacity);
 
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ACCEPT,
                 Accept.class.getSimpleName());

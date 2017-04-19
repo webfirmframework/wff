@@ -43,7 +43,7 @@ public class Rows extends AbstractAttribute implements TextAreaAttributable {
 
     /**
      * will be initialized with default value as 2.
-     * 
+     *
      * @since 2.1.4
      * @author WFF
      */

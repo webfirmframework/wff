@@ -21,7 +21,7 @@ import java.io.Serializable;
  * A data class which can hold name-values pair. The {@code name} property is an
  * array of bytes where as the {@code values} property is an array of byte
  * array.
- * 
+ *
  * @author WFF
  *
  */

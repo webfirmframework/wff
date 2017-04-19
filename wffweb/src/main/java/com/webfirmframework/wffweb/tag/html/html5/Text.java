@@ -22,7 +22,6 @@ import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.html5.identifier.RectAttributable;
 import com.webfirmframework.wffweb.tag.html.html5.identifier.TextAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
