@@ -156,15 +156,15 @@ var WffBMArray = function(jsArray, outer) {
 	return this;
 };
 
-var WffBMByteArray = function(uInt8Array, outer) {
+var WffBMByteArray = function(int8Array, outer) {
 
 	var encoder = wffGlobal.encoder;
 	var decoder = wffGlobal.decoder;
 
-	this.jsArray = uInt8Array;
+	this.jsArray = int8Array;
 	this.outer = outer;
 
-	var getWffBMByteArray = function(uInt8Array, outer) {
+	var getWffBMByteArray = function(int8Array, outer) {
 
 		var nameValues = [];
 
@@ -181,8 +181,8 @@ var WffBMByteArray = function(uInt8Array, outer) {
 			nameValues.push(typeNameValue);
 		}
 
-		// even if it is a byte array, each value is a number
-		var arrayValType = 1;
+		// 10 represents BMValueType.INTERNAL_BYTE type
+		var arrayValType = 10;
 
 		console.log('arrayValType', arrayValType);
 
@@ -192,7 +192,7 @@ var WffBMByteArray = function(uInt8Array, outer) {
 
 		nameValues.push(nameValue);
 
-		nameValue.values = [ uInt8Array ];
+		nameValue.values = [ int8Array ];
 
 		console.log('WffBMByteArray nameValue.values', nameValue.values);
 
@@ -371,9 +371,12 @@ var JsObjectFromBMBytes = function(wffBMBytes, outer) {
 			}
 		} else if (values[0] == 9) {
 			// 9 for byte array
-			this[name] = new Uint8Array(values[1]);
-		} else {
-			values.push([]);
+			console.log('values[0] == 9 values[1]', values[1]);
+			//this[name] = new Int8Array(values[1]);
+			this[name] = new JsArrayFromBMBytes(values[1], false);
+		} else if (values[0] == 10) {
+			// 10 for Int8Array data type, i.e. row byte
+			this[name] = new Int8Array(values[1]);
 		}
 
 	}
@@ -407,9 +410,10 @@ var JsArrayFromBMBytes = function(wffBMBytes, outer) {
 	var jsArray = [];
 
 	if (dataType == 0) {
-		// 1 for string data type
+		// 0 for string data type
 
 		for (var j = 0; j < values.length; j++) {
+			console.log('values[j]'+j, values[j]);
 			jsArray.push(getStringFromBytes(values[j]));
 		}
 
@@ -461,12 +465,26 @@ var JsArrayFromBMBytes = function(wffBMBytes, outer) {
 			jsArray.push(ary[0]);
 		}
 	} else if (dataType == 9) {
-		// 9 for Uint8Array data type
-		for (var j = 0; j < values.length; j++) {
-			jsArray.push(new Int8Array(values[j]));
+		// 9 for Int8Array data type
+		if (values.length == 1) {
+			jsArray = new JsArrayFromBMBytes(values[0], false);
+		} else {
+			//it will not invoke, only for future extension
+			for (var j = 0; j < values.length; j++) {
+//				jsArray.push(new Int8Array(values[j]));
+				jsArray.push(new JsArrayFromBMBytes(values[j], false));
+			}
 		}
-	} else {
-		values.push([]);
+	}  else if (dataType == 10) {
+		// 10 for Int8Array data type, i.e. row bytes
+		if (values.length == 1) {
+			jsArray = new Int8Array(values[0]);
+		} else {
+			//it will not invoke, only for future extension
+			for (var j = 0; j < values.length; j++) {
+				jsArray.push(new Int8Array(values[j]));
+			}
+		}
 	}
 
 	return jsArray;

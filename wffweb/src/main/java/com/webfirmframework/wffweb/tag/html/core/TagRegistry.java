@@ -77,12 +77,20 @@ import com.webfirmframework.wffweb.tag.html.formsandinputs.Option;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.Select;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.TextArea;
 import com.webfirmframework.wffweb.tag.html.frames.IFrame;
+import com.webfirmframework.wffweb.tag.html.html5.Circle;
 import com.webfirmframework.wffweb.tag.html.html5.Data;
+import com.webfirmframework.wffweb.tag.html.html5.Ellipse;
 import com.webfirmframework.wffweb.tag.html.html5.HGroup;
+import com.webfirmframework.wffweb.tag.html.html5.Line;
 import com.webfirmframework.wffweb.tag.html.html5.MathTag;
+import com.webfirmframework.wffweb.tag.html.html5.Path;
+import com.webfirmframework.wffweb.tag.html.html5.Polygon;
+import com.webfirmframework.wffweb.tag.html.html5.Polyline;
+import com.webfirmframework.wffweb.tag.html.html5.Rect;
 import com.webfirmframework.wffweb.tag.html.html5.Source;
 import com.webfirmframework.wffweb.tag.html.html5.Svg;
 import com.webfirmframework.wffweb.tag.html.html5.Template;
+import com.webfirmframework.wffweb.tag.html.html5.Text;
 import com.webfirmframework.wffweb.tag.html.html5.Track;
 import com.webfirmframework.wffweb.tag.html.html5.Video;
 import com.webfirmframework.wffweb.tag.html.html5.audiovideo.Audio;
@@ -401,6 +409,22 @@ public class TagRegistry {
                 H6.class.getSimpleName());
         TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.PICTURE,
                 Picture.class.getSimpleName());
+        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.RECT,
+                Rect.class.getSimpleName());
+        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.CIRCLE,
+                Circle.class.getSimpleName());
+        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.ELLIPSE,
+                Ellipse.class.getSimpleName());
+        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.LINE,
+                Line.class.getSimpleName());
+        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.POLYGON,
+                Polygon.class.getSimpleName());
+        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.POLYLINE,
+                Polyline.class.getSimpleName());
+        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.PATH,
+                Path.class.getSimpleName());
+        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.TEXT,
+                Text.class.getSimpleName());
 
         tagNames = new ArrayList<String>(initialCapacity);
         tagNamesSet = new HashSet<String>(initialCapacity);

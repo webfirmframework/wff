@@ -22,20 +22,21 @@ import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.html5.identifier.SvgAttributable;
+import com.webfirmframework.wffweb.tag.html.html5.identifier.RectAttributable;
+import com.webfirmframework.wffweb.tag.html.html5.identifier.TextAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
 /**
  * @author WFF
- * @since 1.0.0
+ * @since 2.1.7
  * @version 1.0.0
  *
  */
-public class Svg extends AbstractHtml {
+public class Text extends AbstractHtml {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final Logger LOGGER = Logger.getLogger(Svg.class.getName());
+    public static final Logger LOGGER = Logger.getLogger(Text.class.getName());
 
     {
         init();
@@ -49,8 +50,9 @@ public class Svg extends AbstractHtml {
      *            An array of {@code AbstractAttribute}
      *
      */
-    public Svg(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(TagNameConstants.SVG, base, attributes);
+    public Text(final AbstractHtml base,
+            final AbstractAttribute... attributes) {
+        super(TagNameConstants.TEXT, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }
@@ -60,10 +62,10 @@ public class Svg extends AbstractHtml {
             final AbstractAttribute... attributes) {
         for (final AbstractAttribute abstractAttribute : attributes) {
             if (!(abstractAttribute != null
-                    && (abstractAttribute instanceof SvgAttributable
+                    && (abstractAttribute instanceof TextAttributable
                             || abstractAttribute instanceof GlobalAttributable))) {
                 LOGGER.warning(abstractAttribute
-                        + " is not an instance of SvgAttributable");
+                        + " is not an instance of RectAttributable");
             }
         }
     }

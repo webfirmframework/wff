@@ -222,6 +222,9 @@ public class WffBMArray extends LinkedList<Object> implements WffData {
                     for (final byte[] value : values) {
                         this.add(new WffBMByteArray(value, false));
                     }
+                } else if (valueType == BMValueType.INTERNAL_BYTE.getType()) {
+                    throw new WffRuntimeException(
+                            "BMValueType.BYTE is only for internal use, use WffBMByteArray for row bytes.");
                 }
 
                 return BMValueType.getInstanceByType(valueType);
@@ -347,6 +350,9 @@ public class WffBMArray extends LinkedList<Object> implements WffData {
                 values[count] = value.build(false);
                 count++;
             }
+        } else if (valueType == BMValueType.INTERNAL_BYTE.getType()) {
+            throw new WffRuntimeException(
+                    "BMValueType.BYTE is only for internal use, use WffBMByteArray for row bytes.");
         }
 
         return WffBinaryMessageUtil.VERSION_1
