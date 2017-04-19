@@ -263,6 +263,8 @@ public class TagNameConstants {
 
     public static final String ELLIPSE = "ellipse";
 
+    public static final String LINE = "line";
+
     /**
      *
      * @author WFF

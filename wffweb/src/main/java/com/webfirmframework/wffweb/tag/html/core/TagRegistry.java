@@ -81,6 +81,7 @@ import com.webfirmframework.wffweb.tag.html.html5.Circle;
 import com.webfirmframework.wffweb.tag.html.html5.Data;
 import com.webfirmframework.wffweb.tag.html.html5.Ellipse;
 import com.webfirmframework.wffweb.tag.html.html5.HGroup;
+import com.webfirmframework.wffweb.tag.html.html5.Line;
 import com.webfirmframework.wffweb.tag.html.html5.MathTag;
 import com.webfirmframework.wffweb.tag.html.html5.Rect;
 import com.webfirmframework.wffweb.tag.html.html5.Source;
@@ -410,6 +411,8 @@ public class TagRegistry {
                 Circle.class.getSimpleName());
         TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.ELLIPSE,
                 Ellipse.class.getSimpleName());
+        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.LINE,
+                Line.class.getSimpleName());
 
         tagNames = new ArrayList<String>(initialCapacity);
         tagNamesSet = new HashSet<String>(initialCapacity);
