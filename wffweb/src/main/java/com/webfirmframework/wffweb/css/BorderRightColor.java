@@ -443,8 +443,8 @@ public class BorderRightColor extends AbstractCssProperty<BorderRightColor>
         if (this.rgbaCssValue != null) {
             if (rgbaCssValue.isAlreadyInUse() &&
 
-            !Objects.equals(this.rgbaCssValue.getStateChangeInformer(),
-                    rgbaCssValue.getStateChangeInformer())) {
+                    !Objects.equals(this.rgbaCssValue.getStateChangeInformer(),
+                            rgbaCssValue.getStateChangeInformer())) {
                 try {
                     final RgbaCssValue rgbaCssValueClone = CloneUtil
                             .deepClone(rgbaCssValue);

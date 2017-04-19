@@ -15,7 +15,8 @@ import com.webfirmframework.wffweb.util.CssLengthUtil;
  * @since 1.0.0
  *
  */
-public class Width extends AbstractAttribute implements InputAttributable, RectAttributable {
+public class Width extends AbstractAttribute
+        implements InputAttributable, RectAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 

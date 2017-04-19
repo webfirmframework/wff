@@ -120,7 +120,7 @@ public class AttributeUtil {
      */
     public static final byte[][] getWffAttributeBytes(final String charset,
             final AbstractAttribute... attributes)
-                    throws UnsupportedEncodingException {
+            throws UnsupportedEncodingException {
 
         if (attributes != null) {
             final byte[][] attributesArray = new byte[attributes.length][0];

@@ -539,8 +539,8 @@ public class BackgroundColor extends AbstractCssProperty<BackgroundColor>
         if (this.hslaCssValue != null) {
             if (hslaCssValue.isAlreadyInUse() &&
 
-            !Objects.equals(this.hslaCssValue.getStateChangeInformer(),
-                    hslaCssValue.getStateChangeInformer())) {
+                    !Objects.equals(this.hslaCssValue.getStateChangeInformer(),
+                            hslaCssValue.getStateChangeInformer())) {
                 try {
                     final HslaCssValue hslaCssValueClone = CloneUtil
                             .deepClone(hslaCssValue);
