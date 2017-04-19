@@ -267,6 +267,10 @@ public class TagNameConstants {
 
     public static final String POLYGON = "polygon";
 
+    public static final String POLYLINE = "polyline";
+
+    public static final String PATH = "path";
+
     /**
      *
      * @author WFF
