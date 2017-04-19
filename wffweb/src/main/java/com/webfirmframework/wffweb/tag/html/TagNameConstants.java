@@ -261,6 +261,8 @@ public class TagNameConstants {
 
     public static final String CIRCLE = "circle";
 
+    public static final String ELLIPSE = "ellipse";
+
     /**
      *
      * @author WFF
