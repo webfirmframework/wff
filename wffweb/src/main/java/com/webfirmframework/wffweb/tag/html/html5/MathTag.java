@@ -46,15 +46,12 @@ public class MathTag extends AbstractHtml {
     }
 
     /**
-     * Represents the root of an HTML or XHTML document. All other elements must
-     * be descendants of this element.
      *
      * @param base
      *            i.e. parent tag of this tag
      * @param attributes
      *            An array of {@code AbstractAttribute}
      *
-     * @since 1.0.0
      */
     public MathTag(final AbstractHtml base,
             final AbstractAttribute... attributes) {

@@ -4,6 +4,7 @@ import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.css.CssLengthUnit;
 import com.webfirmframework.wffweb.css.core.LengthUnit;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.html5.identifier.RectAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 import com.webfirmframework.wffweb.util.CssLengthUtil;
 
@@ -14,7 +15,7 @@ import com.webfirmframework.wffweb.util.CssLengthUtil;
  * @since 1.0.0
  *
  */
-public class Height extends AbstractAttribute implements InputAttributable {
+public class Height extends AbstractAttribute implements InputAttributable, RectAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
