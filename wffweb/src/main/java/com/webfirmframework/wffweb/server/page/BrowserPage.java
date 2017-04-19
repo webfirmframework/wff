@@ -1063,4 +1063,25 @@ public abstract class BrowserPage implements Serializable {
         // To override and use this method
     }
 
+    /**
+     * To check if the given tag exists in the UI.
+     *
+     * @param tag
+     * @return true if the given tag contains in the BrowserPage i.e. UI. false
+     *         if the given tag was removed or was not already added in the UI.
+     * @since 2.1.7
+     * @author WFF
+     */
+    public boolean contains(final AbstractHtml tag) {
+        if (tagByWffId != null && tag != null) {
+            final DataWffId dataWffId = tag.getDataWffId();
+            if (dataWffId == null) {
+                return false;
+            }
+            tagByWffId.get(dataWffId.getValue());
+            return tag.equals(tagByWffId.get(dataWffId.getValue()));
+        }
+        return false;
+    }
+
 }
