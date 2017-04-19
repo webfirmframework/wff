@@ -90,6 +90,7 @@ import com.webfirmframework.wffweb.tag.html.html5.Rect;
 import com.webfirmframework.wffweb.tag.html.html5.Source;
 import com.webfirmframework.wffweb.tag.html.html5.Svg;
 import com.webfirmframework.wffweb.tag.html.html5.Template;
+import com.webfirmframework.wffweb.tag.html.html5.Text;
 import com.webfirmframework.wffweb.tag.html.html5.Track;
 import com.webfirmframework.wffweb.tag.html.html5.Video;
 import com.webfirmframework.wffweb.tag.html.html5.audiovideo.Audio;
@@ -422,6 +423,8 @@ public class TagRegistry {
                 Polyline.class.getSimpleName());
         TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.PATH,
                 Path.class.getSimpleName());
+        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.TEXT,
+                Text.class.getSimpleName());
 
         tagNames = new ArrayList<String>(initialCapacity);
         tagNamesSet = new HashSet<String>(initialCapacity);

@@ -271,6 +271,8 @@ public class TagNameConstants {
 
     public static final String PATH = "path";
 
+    public static final String TEXT = "text";
+
     /**
      *
      * @author WFF
