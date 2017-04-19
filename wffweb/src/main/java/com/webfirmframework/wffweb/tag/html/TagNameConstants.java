@@ -257,6 +257,10 @@ public class TagNameConstants {
 
     public static final String PICTURE = "picture";
 
+    public static final String RECT = "rect";
+
+    public static final String CIRCLE = "circle";
+
     /**
      *
      * @author WFF

@@ -77,9 +77,11 @@ import com.webfirmframework.wffweb.tag.html.formsandinputs.Option;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.Select;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.TextArea;
 import com.webfirmframework.wffweb.tag.html.frames.IFrame;
+import com.webfirmframework.wffweb.tag.html.html5.Circle;
 import com.webfirmframework.wffweb.tag.html.html5.Data;
 import com.webfirmframework.wffweb.tag.html.html5.HGroup;
 import com.webfirmframework.wffweb.tag.html.html5.MathTag;
+import com.webfirmframework.wffweb.tag.html.html5.Rect;
 import com.webfirmframework.wffweb.tag.html.html5.Source;
 import com.webfirmframework.wffweb.tag.html.html5.Svg;
 import com.webfirmframework.wffweb.tag.html.html5.Template;
@@ -401,6 +403,10 @@ public class TagRegistry {
                 H6.class.getSimpleName());
         TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.PICTURE,
                 Picture.class.getSimpleName());
+        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.RECT,
+                Rect.class.getSimpleName());
+        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.CIRCLE,
+                Circle.class.getSimpleName());
 
         tagNames = new ArrayList<String>(initialCapacity);
         tagNamesSet = new HashSet<String>(initialCapacity);
