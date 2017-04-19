@@ -35,6 +35,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.webfirmframework.wffweb.NotRenderedException;
 import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.PushFailedException;
 import com.webfirmframework.wffweb.server.page.js.WffJsFile;
@@ -1064,24 +1065,38 @@ public abstract class BrowserPage implements Serializable {
     }
 
     /**
-     * To check if the given tag exists in the UI.
+     * To check if the given tag exists in the UI. <br>
+     * NB:- This method is valid only if {@code browserPage#toHtmlString} or
+     * {@code browserPage#toOutputStream} is called at least once in the life
+     * time.
      *
      * @param tag
      * @return true if the given tag contains in the BrowserPage i.e. UI. false
      *         if the given tag was removed or was not already added in the UI.
+     * @throws NullValueException
+     *             throws this exception if the given tag is null.
+     * @throws NotRenderedException
+     *             if the {@code BrowserPage} object is not rendered. i.e. if
+     *             {@code browserPage#toHtmlString} or
+     *             {@code browserPage#toOutputStream} was NOT called at least
+     *             once in the life time.
      * @since 2.1.7
      * @author WFF
      */
-    public boolean contains(final AbstractHtml tag) {
+    public boolean contains(final AbstractHtml tag)
+            throws NullValueException, NotRenderedException {
         if (tagByWffId != null && tag != null) {
             final DataWffId dataWffId = tag.getDataWffId();
             if (dataWffId == null) {
                 return false;
             }
-            tagByWffId.get(dataWffId.getValue());
             return tag.equals(tagByWffId.get(dataWffId.getValue()));
+        } else if (tagByWffId == null) {
+            throw new NotRenderedException(
+                    "Could not check its existance. Make sure that you have called browserPage#toHtmlString method atleast once in the life time.");
         }
-        return false;
+        throw new NullValueException(
+                "tag object in browserPage.contains(AbstractHtml tag) method cannot be null");
     }
 
 }

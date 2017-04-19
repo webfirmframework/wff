@@ -18,10 +18,13 @@ package com.webfirmframework.wffweb.server.page;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.webfirmframework.wffweb.NotRenderedException;
+import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.Body;
 import com.webfirmframework.wffweb.tag.html.Html;
 import com.webfirmframework.wffweb.tag.html.metainfo.Head;
+import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 
 @SuppressWarnings("serial")
 public class BrowserPageTest {
@@ -59,5 +62,93 @@ public class BrowserPageTest {
         
 //        fail("Not yet implemented");
     }
+    
+    @Test
+    public void testContains() {
+        
+        final Div div = new Div(null);
+        final Div div2 = new Div(null);
+        
+        BrowserPage browserPage = new BrowserPage() {
+            
+            @Override
+            public String webSocketUrl() {
+                return "wss://webfirmframework.com/ws-con";
+            }
+            
+            @Override
+            public AbstractHtml render() {
+                Html html = new Html(null) {
+                    {
+                        new Head(this);
+                        new Body(this).appendChild(div);
+                    }
+                };
+                html.setPrependDocType(true);
+                return html;
+            }
+        };
+        
+        @SuppressWarnings("unused")
+        String toHtmlString = browserPage.toHtmlString();
+        Assert.assertTrue(browserPage.contains(div));
+        div.appendChild(div2);
+        Assert.assertTrue(browserPage.contains(div2));
+    }
+    
+    @Test(expected = NotRenderedException.class)
+    public void testContainsWithNotRenderedException() {
+        
+        final Div div = new Div(null);
+        
+        BrowserPage browserPage = new BrowserPage() {
+            
+            @Override
+            public String webSocketUrl() {
+                return "wss://webfirmframework.com/ws-con";
+            }
+            
+            @Override
+            public AbstractHtml render() {
+                Html html = new Html(null) {
+                    {
+                        new Head(this);
+                        new Body(this).appendChild(div);
+                    }
+                };
+                html.setPrependDocType(true);
+                return html;
+            }
+        };
+        Assert.assertFalse(browserPage.contains(div));
+    }
+    
+    @Test(expected = NullValueException.class)
+    public void testContainsWithNullValueException() {
+        
+        BrowserPage browserPage = new BrowserPage() {
+            
+            @Override
+            public String webSocketUrl() {
+                return "wss://webfirmframework.com/ws-con";
+            }
+            
+            @Override
+            public AbstractHtml render() {
+                Html html = new Html(null) {
+                    {
+                        new Head(this);
+                        new Body(this);
+                    }
+                };
+                html.setPrependDocType(true);
+                return html;
+            }
+        };
+        @SuppressWarnings("unused")
+        String toHtmlString = browserPage.toHtmlString();
+        Assert.assertFalse(browserPage.contains(null));
+    }
+        
 
 }
