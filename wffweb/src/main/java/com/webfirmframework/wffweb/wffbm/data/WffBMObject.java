@@ -187,14 +187,14 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
             } else if (valueType == BMValueType.BM_ARRAY.getType()) {
 
                 final WffBMArray value = (WffBMArray) valueValueType.getValue();
-                final byte[] valueBytes = value.build();
+                final byte[] valueBytes = value.build(false);
                 nameValue.setValues(new byte[] { valueType }, valueBytes);
 
             } else if (valueType == BMValueType.BM_BYTE_ARRAY.getType()) {
 
                 final WffBMByteArray value = (WffBMByteArray) valueValueType
                         .getValue();
-                final byte[] valueBytes = value.build();
+                final byte[] valueBytes = value.build(false);
                 nameValue.setValues(new byte[] { valueType }, valueBytes);
 
             } else if (valueType == BMValueType.REG_EXP.getType()) {
@@ -208,6 +208,9 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
                 nameValue.setValues(new byte[] { valueType },
                         value.getBytes("UTF-8"));
 
+            } else if (valueType == BMValueType.INTERNAL_BYTE.getType()) {
+                throw new WffRuntimeException(
+                        "BMValueType.BYTE is only for internal use, use WffBMByteArray for row bytes.");
             }
 
         }
@@ -292,6 +295,9 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
                     final ValueValueType valueValueType = new ValueValueType(
                             name, valueType, new String(value, "UTF-8"));
                     wffBMObject.put(name, valueValueType);
+                } else if (valueType == BMValueType.INTERNAL_BYTE.getType()) {
+                    throw new WffRuntimeException(
+                            "BMValueType.BYTE is only for internal use, use WffBMByteArray for row bytes.");
                 }
 
             }

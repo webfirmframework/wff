@@ -56,17 +56,17 @@ public class WffBMByteArray extends ByteArrayOutputStream
     private final BMValueType valueType;
 
     public WffBMByteArray() {
-        valueType = BMValueType.NUMBER;
+        valueType = BMValueType.INTERNAL_BYTE;
     }
 
     public WffBMByteArray(final boolean outer) {
         this.outer = outer;
-        valueType = BMValueType.NUMBER;
+        valueType = BMValueType.INTERNAL_BYTE;
     }
 
     public WffBMByteArray(final byte[] bmArrayBytes) {
         super(bmArrayBytes.length);
-        valueType = BMValueType.NUMBER;
+        valueType = BMValueType.INTERNAL_BYTE;
         try {
             initWffBMObject(bmArrayBytes, outer);
         } catch (final IOException e) {
@@ -76,7 +76,7 @@ public class WffBMByteArray extends ByteArrayOutputStream
 
     public WffBMByteArray(final byte[] bmArrayBytes, final boolean outer) {
         super(bmArrayBytes.length);
-        valueType = BMValueType.NUMBER;
+        valueType = BMValueType.INTERNAL_BYTE;
         try {
             initWffBMObject(bmArrayBytes, outer);
         } catch (final IOException e) {
@@ -120,7 +120,7 @@ public class WffBMByteArray extends ByteArrayOutputStream
                 final byte valueType = nameValue.getName()[0];
                 final byte[][] values = nameValue.getValues();
 
-                if (valueType == BMValueType.NUMBER.getType()) {
+                if (valueType == BMValueType.INTERNAL_BYTE.getType()) {
                     for (final byte[] value : values) {
                         // the first value will contain all the bytes, but still
                         // kept a loop here.

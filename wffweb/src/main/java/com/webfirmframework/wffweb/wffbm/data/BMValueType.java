@@ -72,9 +72,14 @@ public enum BMValueType {
 
     /**
      * to initialize binary data. In java it's byte data type and in JavaScript
-     * it's Uint8Array.
+     * it's Int8Array.
      */
-    BM_BYTE_ARRAY;
+    BM_BYTE_ARRAY,
+
+    /**
+     * Only for internal use not for development purpose. If value is a byte.
+     */
+    INTERNAL_BYTE;
 
     private byte type;
 
