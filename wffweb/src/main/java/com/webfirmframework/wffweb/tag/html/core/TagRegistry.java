@@ -83,6 +83,7 @@ import com.webfirmframework.wffweb.tag.html.html5.Ellipse;
 import com.webfirmframework.wffweb.tag.html.html5.HGroup;
 import com.webfirmframework.wffweb.tag.html.html5.Line;
 import com.webfirmframework.wffweb.tag.html.html5.MathTag;
+import com.webfirmframework.wffweb.tag.html.html5.Polygon;
 import com.webfirmframework.wffweb.tag.html.html5.Rect;
 import com.webfirmframework.wffweb.tag.html.html5.Source;
 import com.webfirmframework.wffweb.tag.html.html5.Svg;
@@ -413,6 +414,8 @@ public class TagRegistry {
                 Ellipse.class.getSimpleName());
         TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.LINE,
                 Line.class.getSimpleName());
+        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.POLYGON,
+                Polygon.class.getSimpleName());
 
         tagNames = new ArrayList<String>(initialCapacity);
         tagNamesSet = new HashSet<String>(initialCapacity);

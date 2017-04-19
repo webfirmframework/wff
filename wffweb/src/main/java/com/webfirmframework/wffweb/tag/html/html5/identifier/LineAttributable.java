@@ -14,7 +14,7 @@
  * limitations under the License.
  * @author WFF
  */
-package com.webfirmframework.wffweb.tag.html.identifier;
+package com.webfirmframework.wffweb.tag.html.html5.identifier;
 
 import com.webfirmframework.wffweb.tag.core.TagBase;
 

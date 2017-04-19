@@ -265,6 +265,8 @@ public class TagNameConstants {
 
     public static final String LINE = "line";
 
+    public static final String POLYGON = "polygon";
+
     /**
      *
      * @author WFF

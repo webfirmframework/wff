@@ -22,7 +22,7 @@ import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.html5.identifier.LineAttributable;
+import com.webfirmframework.wffweb.tag.html.html5.identifier.PolygonAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
 /**
@@ -31,12 +31,12 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
  * @version 1.0.0
  *
  */
-public class Line extends AbstractHtml {
+public class Polygon extends AbstractHtml {
 
     private static final long serialVersionUID = 1_0_0L;
 
     public static final Logger LOGGER = Logger
-            .getLogger(Line.class.getName());
+            .getLogger(Polygon.class.getName());
 
     {
         init();
@@ -50,9 +50,9 @@ public class Line extends AbstractHtml {
      *            An array of {@code AbstractAttribute}
      *
      */
-    public Line(final AbstractHtml base,
+    public Polygon(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.LINE, base, attributes);
+        super(TagNameConstants.POLYGON, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }
@@ -62,7 +62,7 @@ public class Line extends AbstractHtml {
             final AbstractAttribute... attributes) {
         for (final AbstractAttribute abstractAttribute : attributes) {
             if (!(abstractAttribute != null
-                    && (abstractAttribute instanceof LineAttributable
+                    && (abstractAttribute instanceof PolygonAttributable
                             || abstractAttribute instanceof GlobalAttributable))) {
                 LOGGER.warning(abstractAttribute
                         + " is not an instance of EllipseAttributable");
