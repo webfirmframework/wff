@@ -1071,6 +1071,7 @@ public abstract class BrowserPage implements Serializable {
      * time.
      *
      * @param tag
+     *            the tag object to be checked.
      * @return true if the given tag contains in the BrowserPage i.e. UI. false
      *         if the given tag was removed or was not already added in the UI.
      * @throws NullValueException
@@ -1085,18 +1086,22 @@ public abstract class BrowserPage implements Serializable {
      */
     public boolean contains(final AbstractHtml tag)
             throws NullValueException, NotRenderedException {
-        if (tagByWffId != null && tag != null) {
-            final DataWffId dataWffId = tag.getDataWffId();
-            if (dataWffId == null) {
-                return false;
-            }
-            return tag.equals(tagByWffId.get(dataWffId.getValue()));
-        } else if (tagByWffId == null) {
+
+        if (tag == null) {
+            throw new NullValueException(
+                    "tag object in browserPage.contains(AbstractHtml tag) method cannot be null");
+        }
+
+        if (tagByWffId == null) {
             throw new NotRenderedException(
                     "Could not check its existance. Make sure that you have called browserPage#toHtmlString method atleast once in the life time.");
         }
-        throw new NullValueException(
-                "tag object in browserPage.contains(AbstractHtml tag) method cannot be null");
+
+        final DataWffId dataWffId = tag.getDataWffId();
+        if (dataWffId == null) {
+            return false;
+        }
+        return tag.equals(tagByWffId.get(dataWffId.getValue()));
     }
 
 }
