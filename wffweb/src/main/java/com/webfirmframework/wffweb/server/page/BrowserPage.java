@@ -1133,7 +1133,7 @@ public abstract class BrowserPage implements Serializable {
      * {@code BrowserPage#render()} method return. This method can be called
      * inside {@code BrowserPage#render()} method to override the default global
      * heartbeat interval set by
-     * {@code BrowserPage#setWebSocketDefultHeatbeatInterval(int)} method.
+     * {@code BrowserPage#setWebSocketDefultHeartbeatInterval(int)} method.
      *
      * @param milliseconds
      *            the heartbeat ping interval of webSocket client in
@@ -1141,17 +1141,17 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.8
      * @author WFF
      */
-    protected void setWebSocketHeatbeatInterval(final int milliseconds) {
+    protected void setWebSocketHeartbeatInterval(final int milliseconds) {
         wsHeartbeatInterval = milliseconds;
     }
 
     /**
      * @return the interval value set by
-     *         {@code BrowserPage#setWebSocketHeatbeatInterval(int)} method.
+     *         {@code BrowserPage#setWebSocketHeartbeatInterval(int)} method.
      * @since 2.1.8
      * @author WFF
      */
-    public int getWebSocketHeatbeatInterval() {
+    public int getWebSocketHeartbeatInterval() {
         return wsHeartbeatInterval;
     }
 
@@ -1169,18 +1169,18 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.8
      * @author WFF
      */
-    public static void setWebSocketDefultHeatbeatInterval(
+    public static void setWebSocketDefultHeartbeatInterval(
             final int milliseconds) {
         wsDefaultHeartbeatInterval = milliseconds;
     }
 
     /**
      * @return the interval value set by
-     *         {@code setWebSocketDefultHeatbeatInterval} method.
+     *         {@code setWebSocketDefultHeartbeatInterval} method.
      * @since 2.1.8
      * @author WFF
      */
-    public static int getWebSocketDefultHeatbeatInterval() {
+    public static int getWebSocketDefultHeartbeatInterval() {
         return wsDefaultHeartbeatInterval;
     }
 

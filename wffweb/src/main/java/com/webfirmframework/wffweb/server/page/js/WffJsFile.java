@@ -331,12 +331,12 @@ public enum WffJsFile {
 
     /**
      * NB :- This method is only for internal use.
-     * 
+     *
      * @param wsUrl
      * @param instanceId
      * @param removePrevBPOnInitTab
      * @param removePrevBPOnClosetTab
-     * @param heartBeatInterval
+     * @param heartbeatInterval
      *            in milliseconds
      * @return the js string for the client
      * @author WFF
@@ -344,14 +344,14 @@ public enum WffJsFile {
     public static String getAllOptimizedContent(final String wsUrl,
             final String instanceId, final boolean removePrevBPOnInitTab,
             final boolean removePrevBPOnClosetTab,
-            final int heartBeatInterval) {
+            final int heartbeatInterval) {
 
         if (allOptimizedContent != null) {
 
-            if (heartBeatInterval > 0) {
+            if (heartbeatInterval > 0) {
                 return buildJsContentWithHeartbeat(wsUrl, instanceId,
                         removePrevBPOnInitTab, removePrevBPOnClosetTab,
-                        heartBeatInterval);
+                        heartbeatInterval);
             }
 
             return buildJsContentWithoutHeartbeat(wsUrl, instanceId,
@@ -393,10 +393,10 @@ public enum WffJsFile {
 
             }
 
-            if (heartBeatInterval > 0) {
+            if (heartbeatInterval > 0) {
                 return buildJsContentWithHeartbeat(wsUrl, instanceId,
                         removePrevBPOnInitTab, removePrevBPOnClosetTab,
-                        heartBeatInterval);
+                        heartbeatInterval);
             }
 
             return buildJsContentWithoutHeartbeat(wsUrl, instanceId,
@@ -412,11 +412,11 @@ public enum WffJsFile {
     private static String buildJsContentWithHeartbeat(final String wsUrl,
             final String instanceId, final boolean removePrevBPOnInitTab,
             final boolean removePrevBPOnClosetTab,
-            final int heartBeatInterval) {
+            final int heartbeatInterval) {
         return buildJsContentWithoutHeartbeat(wsUrl, instanceId,
                 removePrevBPOnInitTab, removePrevBPOnClosetTab).append(
                         HEART_BEAT_JS.replace("\"${HEART_BEAT_INTERVAL}\"",
-                                Integer.toString(heartBeatInterval)))
+                                Integer.toString(heartbeatInterval)))
                         .toString();
     }
 
