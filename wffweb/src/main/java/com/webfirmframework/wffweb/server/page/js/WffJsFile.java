@@ -78,6 +78,8 @@ public enum WffJsFile {
 
     private static volatile int variableId = 0;
 
+    private static final String HEART_BEAT_JS = "setInterval(function(){try{wffWS.send([]);}catch(e){}},\"${HEART_BEAT_INTERVAL}\");";
+
     static {
 
         if (PRODUCTION_MODE) {
@@ -327,23 +329,33 @@ public enum WffJsFile {
         }
     }
 
+    /**
+     * NB :- This method is only for internal use.
+     * 
+     * @param wsUrl
+     * @param instanceId
+     * @param removePrevBPOnInitTab
+     * @param removePrevBPOnClosetTab
+     * @param heartBeatInterval
+     *            in milliseconds
+     * @return the js string for the client
+     * @author WFF
+     */
     public static String getAllOptimizedContent(final String wsUrl,
             final String instanceId, final boolean removePrevBPOnInitTab,
-            final boolean removePrevBPOnClosetTab) {
+            final boolean removePrevBPOnClosetTab,
+            final int heartBeatInterval) {
 
         if (allOptimizedContent != null) {
-            return "var wffLog = console.log;"
-                    + JS_WORK_AROUND.optimizedFileContent
-                    + WFF_GLOBAL.optimizedFileContent
-                            .replace("${WS_URL}", wsUrl)
-                            .replace("${INSTANCE_ID}", instanceId)
-                            .replace("\"${REMOVE_PREV_BP_ON_TABCLOSE}\"",
-                                    String.valueOf(removePrevBPOnClosetTab))
-                            .replace("\"${REMOVE_PREV_BP_ON_INITTAB}\"",
-                                    String.valueOf(removePrevBPOnInitTab))
-                            .replace("\"${TASK_VALUES}\"",
-                                    Task.getJsObjectString())
-                    + allOptimizedContent + " var wffLog = console.log;";
+
+            if (heartBeatInterval > 0) {
+                return buildJsContentWithHeartbeat(wsUrl, instanceId,
+                        removePrevBPOnInitTab, removePrevBPOnClosetTab,
+                        heartBeatInterval);
+            }
+
+            return buildJsContentWithoutHeartbeat(wsUrl, instanceId,
+                    removePrevBPOnInitTab, removePrevBPOnClosetTab).toString();
         }
 
         try {
@@ -381,23 +393,48 @@ public enum WffJsFile {
 
             }
 
-            return "var wffLog = console.log;"
-                    + JS_WORK_AROUND.optimizedFileContent
-                    + WFF_GLOBAL.optimizedFileContent
-                            .replace("${WS_URL}", wsUrl)
-                            .replace("${INSTANCE_ID}", instanceId)
-                            .replace("\"${REMOVE_PREV_BP_ON_TABCLOSE}\"",
-                                    String.valueOf(removePrevBPOnClosetTab))
-                            .replace("\"${REMOVE_PREV_BP_ON_INITTAB}\"",
-                                    String.valueOf(removePrevBPOnInitTab))
-                            .replace("\"${TASK_VALUES}\"",
-                                    Task.getJsObjectString())
-                    + allOptimizedContent;
+            if (heartBeatInterval > 0) {
+                return buildJsContentWithHeartbeat(wsUrl, instanceId,
+                        removePrevBPOnInitTab, removePrevBPOnClosetTab,
+                        heartBeatInterval);
+            }
+
+            return buildJsContentWithoutHeartbeat(wsUrl, instanceId,
+                    removePrevBPOnInitTab, removePrevBPOnClosetTab).toString();
         } catch (final Exception e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         }
         return "";
+    }
+
+    private static String buildJsContentWithHeartbeat(final String wsUrl,
+            final String instanceId, final boolean removePrevBPOnInitTab,
+            final boolean removePrevBPOnClosetTab,
+            final int heartBeatInterval) {
+        return buildJsContentWithoutHeartbeat(wsUrl, instanceId,
+                removePrevBPOnInitTab, removePrevBPOnClosetTab).append(
+                        HEART_BEAT_JS.replace("\"${HEART_BEAT_INTERVAL}\"",
+                                Integer.toString(heartBeatInterval)))
+                        .toString();
+    }
+
+    private static StringBuilder buildJsContentWithoutHeartbeat(
+            final String wsUrl, final String instanceId,
+            final boolean removePrevBPOnInitTab,
+            final boolean removePrevBPOnClosetTab) {
+        return new StringBuilder("var wffLog = console.log;")
+                .append(JS_WORK_AROUND.optimizedFileContent)
+                .append(WFF_GLOBAL.optimizedFileContent
+                        .replace("${WS_URL}", wsUrl)
+                        .replace("${INSTANCE_ID}", instanceId)
+                        .replace("\"${REMOVE_PREV_BP_ON_TABCLOSE}\"",
+                                String.valueOf(removePrevBPOnClosetTab))
+                        .replace("\"${REMOVE_PREV_BP_ON_INITTAB}\"",
+                                String.valueOf(removePrevBPOnInitTab))
+                        .replace("\"${TASK_VALUES}\"",
+                                Task.getJsObjectString()))
+                .append(allOptimizedContent);
     }
 }

@@ -105,6 +105,10 @@ public abstract class BrowserPage implements Serializable {
 
     private boolean removePrevFromBrowserContextOnTabInit = true;
 
+    private int wsHeartbeatInterval = -1;
+
+    private static int wsDefaultHeartbeatInterval = -1;
+
     private final AtomicInteger pushQueueSize = new AtomicInteger(0);
 
     // for security purpose, the class name should not be modified
@@ -582,7 +586,10 @@ public abstract class BrowserPage implements Serializable {
                             WffJsFile.getAllOptimizedContent(
                                     wsUrlWithInstanceId, getInstanceId(),
                                     removePrevFromBrowserContextOnTabInit,
-                                    removeFromBrowserContextOnTabClose));
+                                    removeFromBrowserContextOnTabClose,
+                                    (wsHeartbeatInterval > 0
+                                            ? wsHeartbeatInterval
+                                            : wsDefaultHeartbeatInterval)));
 
                     // to avoid invoking listener
                     child.addChild(ACCESS_OBJECT, script, false);
@@ -614,7 +621,9 @@ public abstract class BrowserPage implements Serializable {
                     WffJsFile.getAllOptimizedContent(wsUrlWithInstanceId,
                             getInstanceId(),
                             removePrevFromBrowserContextOnTabInit,
-                            removeFromBrowserContextOnTabClose));
+                            removeFromBrowserContextOnTabClose,
+                            (wsHeartbeatInterval > 0 ? wsHeartbeatInterval
+                                    : wsDefaultHeartbeatInterval)));
 
             // to avoid invoking listener
             abstractHtml.addChild(ACCESS_OBJECT, script, false);
@@ -1113,6 +1122,44 @@ public abstract class BrowserPage implements Serializable {
             return false;
         }
         return tag.equals(tagByWffId.get(dataWffId.getValue()));
+    }
+
+    /**
+     * Sets the heartbeat ping interval of webSocket client in milliseconds.
+     * Give -1 to disable it. It affects only for the corresponding
+     * {@code BrowserPage} instance from which it is called. <br>
+     * NB:- This method has effect only if it is called before
+     * {@code BrowserPage#render()} method return. This method can be called
+     * inside {@code BrowserPage#render()} method to override the default global
+     * heartbeat interval set by
+     * {@code BrowserPage#setWebSocketDefultHeatbeatInterval(int)} method.
+     *
+     * @param milliseconds
+     *            the heartbeat ping interval of webSocket client in
+     *            milliseconds. Give -1 to disable it.
+     * @since 2.1.8
+     * @author WFF
+     */
+    protected void setWebSocketHeatbeatInterval(final int milliseconds) {
+        wsHeartbeatInterval = milliseconds;
+    }
+
+    /**
+     * Sets the default heartbeat ping interval of webSocket client in
+     * milliseconds. Give -1 to disable it. It affects globally.<br>
+     * NB:- This method has effect only if it is called before
+     * {@code BrowserPage#render()} invocation.
+     *
+     *
+     * @param milliseconds
+     *            the heartbeat ping interval of webSocket client in
+     *            milliseconds. Give -1 to disable it
+     * @since 2.1.8
+     * @author WFF
+     */
+    public static void setWebSocketDefultHeatbeatInterval(
+            final int milliseconds) {
+        wsDefaultHeartbeatInterval = milliseconds;
     }
 
 }
