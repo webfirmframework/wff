@@ -273,6 +273,14 @@ public abstract class BrowserPage implements Serializable {
      */
     public void webSocketMessaged(final byte[] message) {
         try {
+
+            if (message.length == 0) {
+                // should not proceed if the message.length is zero because
+                // to avoid exception if the client sends an empty message just
+                // for ping
+                return;
+            }
+
             executeWffBMTask(message);
         } catch (final Exception e) {
             if (!PRODUCTION_MODE) {
@@ -456,7 +464,10 @@ public abstract class BrowserPage implements Serializable {
     }
 
     /**
-     * executes the task in the given wff binary message
+     * executes the task in the given wff binary message. <br>
+     * For WFF authors :- Make sure that the passing {@code message} is not
+     * empty while consuming this method, just as made conditional checking in
+     * {@code BrowserPage#webSocketMessaged(byte[])} method.
      *
      * @since 2.0.0
      * @author WFF
