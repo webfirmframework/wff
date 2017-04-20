@@ -78,7 +78,7 @@ public enum WffJsFile {
 
     private static volatile int variableId = 0;
 
-    private static final String HEART_BEAT_JS = "setInterval(function(){try{wffWS.send([]);}catch(e){}},\"${HEART_BEAT_INTERVAL}\");";
+    private static final String HEART_BEAT_JS = "setInterval(function(){try{wffWS.send([]);}catch(e){}},\"${HEARTBEAT_INTERVAL}\");";
 
     static {
 
@@ -415,7 +415,7 @@ public enum WffJsFile {
             final int heartbeatInterval) {
         return buildJsContentWithoutHeartbeat(wsUrl, instanceId,
                 removePrevBPOnInitTab, removePrevBPOnClosetTab).append(
-                        HEART_BEAT_JS.replace("\"${HEART_BEAT_INTERVAL}\"",
+                        HEART_BEAT_JS.replace("\"${HEARTBEAT_INTERVAL}\"",
                                 Integer.toString(heartbeatInterval)))
                         .toString();
     }
