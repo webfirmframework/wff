@@ -32,7 +32,8 @@ var wffWS = new function() {
 
 			var binary = new Int8Array(event.data);
 			
-			if (binary.length == 0) {
+			if (binary.length < 4) {
+				//invalid wff bm message so not to process
 				return;
 			}
 			
@@ -45,7 +46,8 @@ var wffWS = new function() {
 			var binary = new Int8Array(event.data);
 			console.log(binary);
 			
-			if (binary.length == 0) {
+			if (binary.length < 4) {
+				//invalid wff bm message so not to process
 				return;
 			}
 
