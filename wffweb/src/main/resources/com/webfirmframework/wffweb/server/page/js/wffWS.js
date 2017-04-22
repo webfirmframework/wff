@@ -1,6 +1,3 @@
-/**
- * 
- */
 
 var wffWS = new function() {
 
@@ -26,28 +23,31 @@ var wffWS = new function() {
 		webSocket.binaryType = 'arraybuffer';
 
 		webSocket.onopen = function(event) {
-			console.log("onopen", event);
 			
 			wffBMClientEvents.wffRemovePrevBPInstance();
 
 			if (event.data === undefined) {
-				console.log("event.data === undefined");
 				return;
 			}
 
 			var binary = new Int8Array(event.data);
+			
+			if (binary.length == 0) {
+				return;
+			}
+			
 			wffClientCRUDUtil.invokeTasks(binary);
 
 		};
 
 		webSocket.onmessage = function(event) {
-			console.log("onmessage", event);
-
-			// console.log("onmessage");
-			// console.dir(event);
 
 			var binary = new Int8Array(event.data);
 			console.log(binary);
+			
+			if (binary.length == 0) {
+				return;
+			}
 
 			// for (var i = 0; i < binary.length; i++) {
 			// console.log(i, binary[i]);
