@@ -254,15 +254,24 @@ public class FontFamily extends AbstractCssProperty<FontFamily> {
         for (final String each : parts) {
             final String trimmed = each.trim();
 
-            final boolean startsWith = trimmed.startsWith("\"")
-                    || trimmed.startsWith("'");
+            final char firstChar;
+            final char lastChar;
+
+            if (trimmed.length() > 0) {
+                firstChar = trimmed.charAt(0);
+                lastChar = trimmed.charAt(trimmed.length() - 1);
+            } else {
+                firstChar = 0;
+                lastChar = 0;
+            }
+
+            final boolean startsWith = firstChar == '"' || firstChar == '\'';
             int begin = 0;
             if (startsWith) {
                 begin = 1;
             }
 
-            final boolean endsWith = trimmed.endsWith("\"")
-                    || trimmed.endsWith("'");
+            final boolean endsWith = lastChar == '"' || lastChar == '\'';
             int end = trimmed.length();
             if (endsWith) {
                 end = end - 1;

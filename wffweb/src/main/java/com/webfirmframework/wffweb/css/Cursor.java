@@ -258,12 +258,15 @@ public class Cursor extends AbstractCssProperty<Cursor>
         if (cssValue == null) {
             throw new NullValueException("the value can not be null");
         }
-        if (cssValue.trim().startsWith(":") || cssValue.trim().endsWith(";")) {
+        final String trimmedCssValue = cssValue.trim();
+        final int cssValueLength = trimmedCssValue.length();
+        if (cssValueLength > 0 && (trimmedCssValue.charAt(0) == ':'
+                || trimmedCssValue.charAt(cssValueLength - 1) == ';')) {
             throw new InvalidValueException(
                     "cssValue can not start with : (colon) or end with ; (semicolon)");
         }
 
-        final String[] cssValueParts = cssValue.split(",");
+        final String[] cssValueParts = trimmedCssValue.split(",");
         final String cursorType = cssValueParts[cssValueParts.length - 1].trim()
                 .toLowerCase();
         if (!ALL_CURSORTYPES.contains(cursorType.trim())) {
@@ -324,7 +327,7 @@ public class Cursor extends AbstractCssProperty<Cursor>
             this.cssValue = cssValueBuilder.toString();
             this.cursorType = cursorType;
         } else {
-            this.cssValue = cssValue;
+            this.cssValue = trimmedCssValue;
             this.cursorType = cursorType;
         }
         if (getStateChangeInformer() != null) {
