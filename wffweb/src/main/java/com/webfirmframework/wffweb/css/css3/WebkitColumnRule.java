@@ -199,20 +199,20 @@ public class WebkitColumnRule extends AbstractCssProperty<WebkitColumnRule>
                 final StringBuilder cssValueBuilder = new StringBuilder();
                 boolean invalid = true;
                 if (webkitColumnRuleWidth != null) {
-                    cssValueBuilder.append(webkitColumnRuleWidth.getCssValue());
-                    cssValueBuilder.append(' ');
+                    cssValueBuilder.append(webkitColumnRuleWidth.getCssValue())
+                            .append(' ');
                     invalid = false;
                 } else if (this.webkitColumnRuleWidth != null) {
                     this.webkitColumnRuleWidth.setAlreadyInUse(false);
                 }
                 if (webkitColumnRuleStyle != null) {
-                    cssValueBuilder.append(webkitColumnRuleStyle.getCssValue());
-                    cssValueBuilder.append(' ');
+                    cssValueBuilder.append(webkitColumnRuleStyle.getCssValue())
+                            .append(' ');
                     invalid = false;
                 }
                 if (webkitColumnRuleColor != null) {
-                    cssValueBuilder.append(webkitColumnRuleColor.getCssValue());
-                    cssValueBuilder.append(' ');
+                    cssValueBuilder.append(webkitColumnRuleColor.getCssValue())
+                            .append(' ');
                     invalid = false;
                 } else if (this.webkitColumnRuleColor != null) {
                     this.webkitColumnRuleColor.setAlreadyInUse(false);
@@ -286,13 +286,13 @@ public class WebkitColumnRule extends AbstractCssProperty<WebkitColumnRule>
         final StringBuilder cssValueBuilder = new StringBuilder();
 
         if (webkitColumnRuleWidth != null) {
-            cssValueBuilder.append(webkitColumnRuleWidth.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(webkitColumnRuleWidth.getCssValue())
+                    .append(' ');
         }
 
         if (webkitColumnRuleStyle != null) {
-            cssValueBuilder.append(webkitColumnRuleStyle.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(webkitColumnRuleStyle.getCssValue())
+                    .append(' ');
         }
 
         if (webkitColumnRuleColor != null) {
@@ -342,13 +342,13 @@ public class WebkitColumnRule extends AbstractCssProperty<WebkitColumnRule>
         final StringBuilder cssValueBuilder = new StringBuilder();
 
         if (webkitColumnRuleWidth != null) {
-            cssValueBuilder.append(webkitColumnRuleWidth.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(webkitColumnRuleWidth.getCssValue())
+                    .append(' ');
         }
 
         if (webkitColunmRuleStyle != null) {
-            cssValueBuilder.append(webkitColunmRuleStyle.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(webkitColunmRuleStyle.getCssValue())
+                    .append(' ');
         }
 
         if (webkitColumnRuleColor != null) {
@@ -389,13 +389,13 @@ public class WebkitColumnRule extends AbstractCssProperty<WebkitColumnRule>
         final StringBuilder cssValueBuilder = new StringBuilder();
 
         if (webkitColumnRuleWidth != null) {
-            cssValueBuilder.append(webkitColumnRuleWidth.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(webkitColumnRuleWidth.getCssValue())
+                    .append(' ');
         }
 
         if (webkitColumnRuleStyle != null) {
-            cssValueBuilder.append(webkitColumnRuleStyle.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(webkitColumnRuleStyle.getCssValue())
+                    .append(' ');
         }
 
         if (webkitColumnRuleColor != null) {

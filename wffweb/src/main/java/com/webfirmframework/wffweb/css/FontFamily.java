@@ -144,9 +144,7 @@ public class FontFamily extends AbstractCssProperty<FontFamily> {
         int count = 1;
         for (final String fontFamilyName : fontFamilyNames) {
             if (fontFamilyName.contains(" ")) {
-                cssValueSB.append('\"');
-                cssValueSB.append(fontFamilyName);
-                cssValueSB.append('\"');
+                cssValueSB.append('\"').append(fontFamilyName).append('\"');
             } else {
                 cssValueSB.append(fontFamilyName);
             }

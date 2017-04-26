@@ -246,8 +246,7 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
             invalid = false;
         }
 
-        cssValueBuilder.append(webkitFlexGrow.getCssValue());
-        cssValueBuilder.append(' ');
+        cssValueBuilder.append(webkitFlexGrow.getCssValue()).append(' ');
 
         if (webkitFlexShrink == null) {
             if (this.webkitFlexShrink == null) {
@@ -262,8 +261,7 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
             invalid = false;
         }
 
-        cssValueBuilder.append(webkitFlexShrink.getCssValue());
-        cssValueBuilder.append(' ');
+        cssValueBuilder.append(webkitFlexShrink.getCssValue()).append(' ');
 
         if (webkitFlexBasis == null) {
             if (cssValueParts.length == 3) {
@@ -430,8 +428,7 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
             }
         }
 
-        cssValueBuilder.append(webkitFlexGrow.getCssValue());
-        cssValueBuilder.append(' ');
+        cssValueBuilder.append(webkitFlexGrow.getCssValue()).append(' ');
 
         if (webkitFlexShrink == null) {
             webkitFlexShrink = new WebkitFlexShrink(1);
@@ -439,8 +436,7 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
             webkitFlexShrink.setAlreadyInUse(true);
         }
 
-        cssValueBuilder.append(webkitFlexShrink.getCssValue());
-        cssValueBuilder.append(' ');
+        cssValueBuilder.append(webkitFlexShrink.getCssValue()).append(' ');
 
         if (webkitFlexBasis == null) {
             webkitFlexBasis = new WebkitFlexBasis(0);
@@ -476,8 +472,7 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
             webkitFlexGrow.setAlreadyInUse(true);
         }
 
-        cssValueBuilder.append(webkitFlexGrow.getCssValue());
-        cssValueBuilder.append(' ');
+        cssValueBuilder.append(webkitFlexGrow.getCssValue()).append(' ');
 
         if (this.webkitFlexShrink != null) {
             this.webkitFlexShrink.setCssValue(webkitFlexShrink.getCssValue());
@@ -501,8 +496,7 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
             }
         }
 
-        cssValueBuilder.append(webkitFlexShrink.getCssValue());
-        cssValueBuilder.append(' ');
+        cssValueBuilder.append(webkitFlexShrink.getCssValue()).append(' ');
 
         if (webkitFlexBasis == null) {
             webkitFlexBasis = new WebkitFlexBasis(0);
@@ -538,8 +532,7 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
             webkitFlexGrow.setAlreadyInUse(true);
         }
 
-        cssValueBuilder.append(webkitFlexGrow.getCssValue());
-        cssValueBuilder.append(' ');
+        cssValueBuilder.append(webkitFlexGrow.getCssValue()).append(' ');
 
         if (webkitFlexShrink == null) {
             webkitFlexShrink = new WebkitFlexShrink(1);
@@ -547,8 +540,7 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
             webkitFlexShrink.setAlreadyInUse(true);
         }
 
-        cssValueBuilder.append(webkitFlexShrink.getCssValue());
-        cssValueBuilder.append(' ');
+        cssValueBuilder.append(webkitFlexShrink.getCssValue()).append(' ');
 
         if (this.webkitFlexBasis != null) {
             this.webkitFlexBasis.setCssValue(webkitFlexBasis.getCssValue());
@@ -595,13 +587,10 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
                 throw new InvalidValueException(
                         "initial/inherit cannot be set as webkitFlexGrow cssValue");
             }
-            final StringBuilder sb = new StringBuilder(
-                    webkitFlexGrow.getCssValue());
-            sb.append(' ');
-            sb.append(webkitFlexShrink.getCssValue());
-            sb.append(' ');
-            sb.append(webkitFlexBasis.getCssValue());
-            this.cssValue = sb.toString();
+            this.cssValue = new StringBuilder(webkitFlexGrow.getCssValue())
+                    .append(' ').append(webkitFlexShrink.getCssValue())
+                    .append(' ').append(webkitFlexBasis.getCssValue())
+                    .toString();
         } else if (stateChangedObject instanceof WebkitFlexShrink) {
 
             final WebkitFlexShrink webkitFlexShrink = (WebkitFlexShrink) stateChangedObject;
@@ -613,13 +602,10 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
                 throw new InvalidValueException(
                         "initial/inherit cannot be set as webkitFlexShrink cssValue");
             }
-            final StringBuilder sb = new StringBuilder(
-                    webkitFlexGrow.getCssValue());
-            sb.append(' ');
-            sb.append(webkitFlexShrink.getCssValue());
-            sb.append(' ');
-            sb.append(webkitFlexBasis.getCssValue());
-            this.cssValue = sb.toString();
+            this.cssValue = new StringBuilder(webkitFlexGrow.getCssValue())
+                    .append(' ').append(webkitFlexShrink.getCssValue())
+                    .append(' ').append(webkitFlexBasis.getCssValue())
+                    .toString();
 
         } else if (stateChangedObject instanceof WebkitFlexBasis) {
 
@@ -633,13 +619,10 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
                         "initial/inherit cannot be set as webkitFlexBasis cssValue");
             }
 
-            final StringBuilder sb = new StringBuilder(
-                    webkitFlexGrow.getCssValue());
-            sb.append(' ');
-            sb.append(webkitFlexShrink.getCssValue());
-            sb.append(' ');
-            sb.append(webkitFlexBasis.getCssValue());
-            this.cssValue = sb.toString();
+            this.cssValue = new StringBuilder(webkitFlexGrow.getCssValue())
+                    .append(' ').append(webkitFlexShrink.getCssValue())
+                    .append(' ').append(webkitFlexBasis.getCssValue())
+                    .toString();
         }
     }
 

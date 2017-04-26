@@ -248,8 +248,7 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
             invalid = false;
         }
 
-        cssValueBuilder.append(mozFlexGrow.getCssValue());
-        cssValueBuilder.append(' ');
+        cssValueBuilder.append(mozFlexGrow.getCssValue()).append(' ');
 
         if (mozFlexShrink == null) {
             if (this.mozFlexShrink == null) {
@@ -264,8 +263,7 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
             invalid = false;
         }
 
-        cssValueBuilder.append(mozFlexShrink.getCssValue());
-        cssValueBuilder.append(' ');
+        cssValueBuilder.append(mozFlexShrink.getCssValue()).append(' ');
 
         if (mozFlexBasis == null) {
             if (cssValueParts.length == 3) {
@@ -431,8 +429,7 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
             }
         }
 
-        cssValueBuilder.append(mozFlexGrow.getCssValue());
-        cssValueBuilder.append(' ');
+        cssValueBuilder.append(mozFlexGrow.getCssValue()).append(' ');
 
         if (mozFlexShrink == null) {
             mozFlexShrink = new MozFlexShrink(1);
@@ -440,8 +437,7 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
             mozFlexShrink.setAlreadyInUse(true);
         }
 
-        cssValueBuilder.append(mozFlexShrink.getCssValue());
-        cssValueBuilder.append(' ');
+        cssValueBuilder.append(mozFlexShrink.getCssValue()).append(' ');
 
         if (mozFlexBasis == null) {
             mozFlexBasis = new MozFlexBasis(0);
@@ -476,8 +472,7 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
             mozFlexGrow.setAlreadyInUse(true);
         }
 
-        cssValueBuilder.append(mozFlexGrow.getCssValue());
-        cssValueBuilder.append(' ');
+        cssValueBuilder.append(mozFlexGrow.getCssValue()).append(' ');
 
         if (this.mozFlexShrink != null) {
             this.mozFlexShrink.setCssValue(mozFlexShrink.getCssValue());
@@ -501,8 +496,7 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
             }
         }
 
-        cssValueBuilder.append(mozFlexShrink.getCssValue());
-        cssValueBuilder.append(' ');
+        cssValueBuilder.append(mozFlexShrink.getCssValue()).append(' ');
 
         if (mozFlexBasis == null) {
             mozFlexBasis = new MozFlexBasis(0);
@@ -537,8 +531,7 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
             mozFlexGrow.setAlreadyInUse(true);
         }
 
-        cssValueBuilder.append(mozFlexGrow.getCssValue());
-        cssValueBuilder.append(' ');
+        cssValueBuilder.append(mozFlexGrow.getCssValue()).append(' ');
 
         if (mozFlexShrink == null) {
             mozFlexShrink = new MozFlexShrink(1);
@@ -546,8 +539,7 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
             mozFlexShrink.setAlreadyInUse(true);
         }
 
-        cssValueBuilder.append(mozFlexShrink.getCssValue());
-        cssValueBuilder.append(' ');
+        cssValueBuilder.append(mozFlexShrink.getCssValue()).append(' ');
 
         if (this.mozFlexBasis != null) {
             this.mozFlexBasis.setCssValue(mozFlexBasis.getCssValue());
@@ -594,13 +586,9 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
                 throw new InvalidValueException(
                         "initial/inherit cannot be set as mozFlexGrow cssValue");
             }
-            final StringBuilder sb = new StringBuilder(
-                    mozFlexGrow.getCssValue());
-            sb.append(' ');
-            sb.append(mozFlexShrink.getCssValue());
-            sb.append(' ');
-            sb.append(mozFlexBasis.getCssValue());
-            this.cssValue = sb.toString();
+            this.cssValue = new StringBuilder(mozFlexGrow.getCssValue())
+                    .append(' ').append(mozFlexShrink.getCssValue()).append(' ')
+                    .append(mozFlexBasis.getCssValue()).toString();
         } else if (stateChangedObject instanceof MozFlexShrink) {
 
             final MozFlexShrink mozFlexShrink = (MozFlexShrink) stateChangedObject;
@@ -612,13 +600,9 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
                 throw new InvalidValueException(
                         "initial/inherit cannot be set as mozFlexShrink cssValue");
             }
-            final StringBuilder sb = new StringBuilder(
-                    mozFlexGrow.getCssValue());
-            sb.append(' ');
-            sb.append(mozFlexShrink.getCssValue());
-            sb.append(' ');
-            sb.append(mozFlexBasis.getCssValue());
-            this.cssValue = sb.toString();
+            this.cssValue = new StringBuilder(mozFlexGrow.getCssValue())
+                    .append(' ').append(mozFlexShrink.getCssValue()).append(' ')
+                    .append(mozFlexBasis.getCssValue()).toString();
 
         } else if (stateChangedObject instanceof MozFlexBasis) {
 
@@ -632,13 +616,9 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
                         "initial/inherit cannot be set as mozFlexBasis cssValue");
             }
 
-            final StringBuilder sb = new StringBuilder(
-                    mozFlexGrow.getCssValue());
-            sb.append(' ');
-            sb.append(mozFlexShrink.getCssValue());
-            sb.append(' ');
-            sb.append(mozFlexBasis.getCssValue());
-            this.cssValue = sb.toString();
+            this.cssValue = new StringBuilder(mozFlexGrow.getCssValue())
+                    .append(' ').append(mozFlexShrink.getCssValue()).append(' ')
+                    .append(mozFlexBasis.getCssValue()).toString();
         }
     }
 

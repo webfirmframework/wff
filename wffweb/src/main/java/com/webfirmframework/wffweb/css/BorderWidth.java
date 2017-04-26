@@ -655,8 +655,7 @@ public class BorderWidth extends AbstractCssProperty<BorderWidth>
 
             final StringBuilder cssValueBuilder = new StringBuilder(
                     borderTopWidthCssValue);
-            cssValueBuilder.append(' ');
-            cssValueBuilder.append(borderRightWidthCssValue);
+            cssValueBuilder.append(' ').append(borderRightWidthCssValue);
 
             cssValue = cssValueBuilder.toString();
 
@@ -666,30 +665,20 @@ public class BorderWidth extends AbstractCssProperty<BorderWidth>
             }
 
         } else if (borderRightWidthCssValue.equals(borderLeftWidthCssValue)) {
-            final StringBuilder cssValueBuilder = new StringBuilder(
-                    borderTopWidthCssValue);
-            cssValueBuilder.append(' ');
-            cssValueBuilder.append(borderRightWidthCssValue);
-            cssValueBuilder.append(' ');
-            cssValueBuilder.append(borderBottomWidthCssValue);
-
-            cssValue = cssValueBuilder.toString();
+            cssValue = new StringBuilder(borderTopWidthCssValue).append(' ')
+                    .append(borderRightWidthCssValue).append(' ')
+                    .append(borderBottomWidthCssValue).toString();
 
             final StateChangeInformer<CssProperty> stateChangeInformer = getStateChangeInformer();
             if (stateChangeInformer != null) {
                 stateChangeInformer.stateChanged(this);
             }
         } else {
-            final StringBuilder cssValueBuilder = new StringBuilder(
-                    borderTopWidthCssValue);
-            cssValueBuilder.append(' ');
-            cssValueBuilder.append(borderRightWidthCssValue);
-            cssValueBuilder.append(' ');
-            cssValueBuilder.append(borderBottomWidthCssValue);
-            cssValueBuilder.append(' ');
-            cssValueBuilder.append(borderLeftWidthCssValue);
 
-            cssValue = cssValueBuilder.toString();
+            cssValue = new StringBuilder(borderTopWidthCssValue).append(' ')
+                    .append(borderRightWidthCssValue).append(' ')
+                    .append(borderBottomWidthCssValue).append(' ')
+                    .append(borderLeftWidthCssValue).toString();
 
             final StateChangeInformer<CssProperty> stateChangeInformer = getStateChangeInformer();
             if (stateChangeInformer != null) {

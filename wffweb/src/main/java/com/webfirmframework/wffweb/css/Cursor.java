@@ -284,8 +284,8 @@ public class Cursor extends AbstractCssProperty<Cursor>
                     urlCss3Value.setStateChangeInformer(this);
                     urlCss3Values[i] = urlCss3Value;
 
-                    cssValueBuilder.append(urlCss3Value.getValue());
-                    cssValueBuilder.append(", ");
+                    cssValueBuilder.append(urlCss3Value.getValue())
+                            .append(", ");
                 }
             } else {
 
@@ -308,8 +308,8 @@ public class Cursor extends AbstractCssProperty<Cursor>
                     urlCss3Value.setAlreadyInUse(true);
                     urlCss3Value.setStateChangeInformer(this);
                     urlCss3ValuesTemp[i] = urlCss3Value;
-                    cssValueBuilder.append(urlCss3Value.getValue());
-                    cssValueBuilder.append(", ");
+                    cssValueBuilder.append(urlCss3Value.getValue())
+                            .append(", ");
                 }
 
                 for (int i = cssValueParts.length
@@ -483,8 +483,7 @@ public class Cursor extends AbstractCssProperty<Cursor>
                     }
                 }
             }
-            cssValueBuilder.append(urlCss3Value.getValue());
-            cssValueBuilder.append(", ");
+            cssValueBuilder.append(urlCss3Value.getValue()).append(", ");
             urlCss3Value.setAlreadyInUse(true);
             urlCss3Value.setStateChangeInformer(this);
         }

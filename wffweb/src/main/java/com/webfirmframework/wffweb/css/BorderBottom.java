@@ -223,20 +223,17 @@ public class BorderBottom extends AbstractCssProperty<BorderBottom>
         final StringBuilder cssValueBuilder = new StringBuilder();
         boolean invalid = true;
         if (borderBottomWidth != null) {
-            cssValueBuilder.append(borderBottomWidth.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(borderBottomWidth.getCssValue()).append(' ');
             invalid = false;
         } else if (this.borderBottomWidth != null) {
             this.borderBottomWidth.setAlreadyInUse(false);
         }
         if (borderBottomStyle != null) {
-            cssValueBuilder.append(borderBottomStyle.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(borderBottomStyle.getCssValue()).append(' ');
             invalid = false;
         }
         if (borderBottomColor != null) {
-            cssValueBuilder.append(borderBottomColor.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(borderBottomColor.getCssValue()).append(' ');
             invalid = false;
         } else if (this.borderBottomColor != null) {
             this.borderBottomColor.setAlreadyInUse(false);
@@ -351,18 +348,15 @@ public class BorderBottom extends AbstractCssProperty<BorderBottom>
                         "borderBottomWidth cannot have initial/inherit as its cssValue");
             }
 
-            cssValueBuilder.append(borderBottomWidth.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(borderBottomWidth.getCssValue()).append(' ');
         }
 
         if (borderBottomStyle != null) {
-            cssValueBuilder.append(borderBottomStyle.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(borderBottomStyle.getCssValue()).append(' ');
         }
 
         if (borderBottomColor != null) {
-            cssValueBuilder.append(borderBottomColor.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(borderBottomColor.getCssValue()).append(' ');
         }
 
         final String trimmedCssValue = cssValueBuilder.toString().trim();
@@ -400,18 +394,15 @@ public class BorderBottom extends AbstractCssProperty<BorderBottom>
         final StringBuilder cssValueBuilder = new StringBuilder();
 
         if (borderBottomWidth != null) {
-            cssValueBuilder.append(borderBottomWidth.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(borderBottomWidth.getCssValue()).append(' ');
         }
 
         if (borderBottomStyle != null) {
-            cssValueBuilder.append(borderBottomStyle.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(borderBottomStyle.getCssValue()).append(' ');
         }
 
         if (borderBottomColor != null) {
-            cssValueBuilder.append(borderBottomColor.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(borderBottomColor.getCssValue()).append(' ');
         }
 
         final String trimmedCssValue = cssValueBuilder.toString().trim();
@@ -431,13 +422,11 @@ public class BorderBottom extends AbstractCssProperty<BorderBottom>
         final StringBuilder cssValueBuilder = new StringBuilder();
 
         if (borderBottomWidth != null) {
-            cssValueBuilder.append(borderBottomWidth.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(borderBottomWidth.getCssValue()).append(' ');
         }
 
         if (borderBottomStyle != null) {
-            cssValueBuilder.append(borderBottomStyle.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(borderBottomStyle.getCssValue()).append(' ');
         }
 
         if (borderBottomColor != null) {

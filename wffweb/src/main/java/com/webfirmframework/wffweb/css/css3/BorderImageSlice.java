@@ -768,8 +768,7 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
             }
 
             if (middle != null) {
-                cssValueBuilder.append(' ');
-                cssValueBuilder.append(middle);
+                cssValueBuilder.append(' ').append(middle);
             }
 
             return cssValueBuilder.toString();
@@ -802,8 +801,7 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
             }
 
             if (middle != null) {
-                cssValueBuilder.append(' ');
-                cssValueBuilder.append(middle);
+                cssValueBuilder.append(' ').append(middle);
             }
 
             return cssValueBuilder.toString();
@@ -845,8 +843,7 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
             }
 
             if (middle != null) {
-                cssValueBuilder.append(' ');
-                cssValueBuilder.append(middle);
+                cssValueBuilder.append(' ').append(middle);
             }
 
             return cssValueBuilder.toString();

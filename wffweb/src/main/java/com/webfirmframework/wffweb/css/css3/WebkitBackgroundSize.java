@@ -131,14 +131,9 @@ public class WebkitBackgroundSize
                 && Objects.equals(widthCssLengthUnit, heightCssLengthUnit)) {
             cssValue = String.valueOf(width) + widthCssLengthUnit;
         } else {
-            final StringBuilder sb = new StringBuilder();
-            sb.append(width);
-            sb.append(widthCssLengthUnit);
-            sb.append(' ');
-            sb.append(height);
-            sb.append(heightCssLengthUnit);
-            cssValue = sb.toString();
-
+            cssValue = new StringBuilder().append(width)
+                    .append(widthCssLengthUnit).append(' ').append(height)
+                    .append(heightCssLengthUnit).toString();
         }
     }
 
@@ -165,14 +160,9 @@ public class WebkitBackgroundSize
                 && Objects.equals(widthCssLengthUnit, heightCssLengthUnit)) {
             cssValue = String.valueOf(width) + widthCssLengthUnit;
         } else {
-            final StringBuilder sb = new StringBuilder();
-            sb.append(width);
-            sb.append(widthCssLengthUnit);
-            sb.append(' ');
-            sb.append(height);
-            sb.append(heightCssLengthUnit);
-            cssValue = sb.toString();
-
+            cssValue = new StringBuilder().append(width)
+                    .append(widthCssLengthUnit).append(' ').append(height)
+                    .append(heightCssLengthUnit).toString();
         }
 
         if (getStateChangeInformer() != null) {

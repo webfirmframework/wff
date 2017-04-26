@@ -268,20 +268,17 @@ public class Font extends AbstractCssProperty<Font>
         final StringBuilder cssValueBuilder = new StringBuilder();
         boolean invalid = true;
         if (fontStyle != null) {
-            cssValueBuilder.append(fontStyle.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(fontStyle.getCssValue()).append(' ');
             invalid = false;
         }
 
         if (fontVariant != null) {
-            cssValueBuilder.append(fontVariant.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(fontVariant.getCssValue()).append(' ');
             invalid = false;
         }
 
         if (fontWeight != null) {
-            cssValueBuilder.append(fontWeight.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(fontWeight.getCssValue()).append(' ');
             invalid = false;
         }
 
@@ -297,14 +294,12 @@ public class Font extends AbstractCssProperty<Font>
             if (fontSize != null) {
                 cssValueBuilder.append('/');
             }
-            cssValueBuilder.append(lineHeight.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(lineHeight.getCssValue()).append(' ');
             invalid = false;
         }
 
         if (fontFamily != null) {
-            cssValueBuilder.append(fontFamily.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(fontFamily.getCssValue()).append(' ');
             invalid = false;
         }
         if (invalid) {
@@ -522,17 +517,14 @@ public class Font extends AbstractCssProperty<Font>
         final StringBuilder cssValueBuilder = new StringBuilder();
 
         if (fontStyle != null) {
-            cssValueBuilder.append(fontStyle.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(fontStyle.getCssValue()).append(' ');
         }
         if (fontVariant != null) {
-            cssValueBuilder.append(fontVariant.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(fontVariant.getCssValue()).append(' ');
         }
 
         if (fontWeight != null) {
-            cssValueBuilder.append(fontWeight.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(fontWeight.getCssValue()).append(' ');
         }
 
         if (fontSize != null) {
@@ -546,13 +538,11 @@ public class Font extends AbstractCssProperty<Font>
             if (fontSize != null) {
                 cssValueBuilder.append('/');
             }
-            cssValueBuilder.append(lineHeight.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(lineHeight.getCssValue()).append(' ');
         }
 
         if (fontFamily != null) {
-            cssValueBuilder.append(fontFamily.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(fontFamily.getCssValue()).append(' ');
         }
 
         final String trimmedCssValue = cssValueBuilder.toString().trim();
@@ -571,18 +561,15 @@ public class Font extends AbstractCssProperty<Font>
         final StringBuilder cssValueBuilder = new StringBuilder();
 
         if (fontStyle != null) {
-            cssValueBuilder.append(fontStyle.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(fontStyle.getCssValue()).append(' ');
         }
 
         if (fontVariant != null) {
-            cssValueBuilder.append(fontVariant.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(fontVariant.getCssValue()).append(' ');
         }
 
         if (fontWeight != null) {
-            cssValueBuilder.append(fontWeight.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(fontWeight.getCssValue()).append(' ');
         }
 
         if (fontSize != null) {
@@ -596,13 +583,11 @@ public class Font extends AbstractCssProperty<Font>
             if (fontSize != null) {
                 cssValueBuilder.append('/');
             }
-            cssValueBuilder.append(lineHeight.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(lineHeight.getCssValue()).append(' ');
         }
 
         if (fontFamily != null) {
-            cssValueBuilder.append(fontFamily.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(fontFamily.getCssValue()).append(' ');
         }
 
         final String trimmedCssValue = cssValueBuilder.toString().trim();
@@ -621,18 +606,15 @@ public class Font extends AbstractCssProperty<Font>
         final StringBuilder cssValueBuilder = new StringBuilder();
 
         if (fontStyle != null) {
-            cssValueBuilder.append(fontStyle.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(fontStyle.getCssValue()).append(' ');
         }
 
         if (fontVariant != null) {
-            cssValueBuilder.append(fontVariant.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(fontVariant.getCssValue()).append(' ');
         }
 
         if (fontWeight != null) {
-            cssValueBuilder.append(fontWeight.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(fontWeight.getCssValue()).append(' ');
         }
 
         if (fontSize != null) {
@@ -646,13 +628,11 @@ public class Font extends AbstractCssProperty<Font>
             if (fontSize != null) {
                 cssValueBuilder.append('/');
             }
-            cssValueBuilder.append(lineHeight.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(lineHeight.getCssValue()).append(' ');
         }
 
         if (fontFamily != null) {
-            cssValueBuilder.append(fontFamily.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(fontFamily.getCssValue()).append(' ');
         }
 
         final String trimmedCssValue = cssValueBuilder.toString().trim();
@@ -671,18 +651,15 @@ public class Font extends AbstractCssProperty<Font>
         final StringBuilder cssValueBuilder = new StringBuilder();
 
         if (fontStyle != null) {
-            cssValueBuilder.append(fontStyle.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(fontStyle.getCssValue()).append(' ');
         }
 
         if (fontVariant != null) {
-            cssValueBuilder.append(fontVariant.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(fontVariant.getCssValue()).append(' ');
         }
 
         if (fontWeight != null) {
-            cssValueBuilder.append(fontWeight.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(fontWeight.getCssValue()).append(' ');
         }
 
         if (fontSize != null) {
@@ -703,14 +680,12 @@ public class Font extends AbstractCssProperty<Font>
                 cssValueBuilder.append('/');
             }
             final String lineHeightCssValue = lineHeight.getCssValue();
-            cssValueBuilder.append(lineHeightCssValue);
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(lineHeightCssValue).append(' ');
         }
 
         if (fontFamily != null) {
             final String fontFamilyCssValue = fontFamily.getCssValue();
-            cssValueBuilder.append(fontFamilyCssValue);
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(fontFamilyCssValue).append(' ');
         }
 
         final String trimmedCssValue = cssValueBuilder.toString().trim();
@@ -747,18 +722,15 @@ public class Font extends AbstractCssProperty<Font>
         final StringBuilder cssValueBuilder = new StringBuilder();
 
         if (fontStyle != null) {
-            cssValueBuilder.append(fontStyle.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(fontStyle.getCssValue()).append(' ');
         }
 
         if (fontVariant != null) {
-            cssValueBuilder.append(fontVariant.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(fontVariant.getCssValue()).append(' ');
         }
 
         if (fontWeight != null) {
-            cssValueBuilder.append(fontWeight.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(fontWeight.getCssValue()).append(' ');
         }
 
         if (fontSize != null) {
@@ -779,14 +751,12 @@ public class Font extends AbstractCssProperty<Font>
             if (fontSize != null) {
                 cssValueBuilder.append('/');
             }
-            cssValueBuilder.append(lineHeightCssValue);
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(lineHeightCssValue).append(' ');
         }
 
         if (fontFamily != null) {
             final String fontFamilyCssValue = fontFamily.getCssValue();
-            cssValueBuilder.append(fontFamilyCssValue);
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(fontFamilyCssValue).append(' ');
         }
 
         final String trimmedCssValue = cssValueBuilder.toString().trim();
@@ -823,18 +793,15 @@ public class Font extends AbstractCssProperty<Font>
         final StringBuilder cssValueBuilder = new StringBuilder();
 
         if (fontStyle != null) {
-            cssValueBuilder.append(fontStyle.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(fontStyle.getCssValue()).append(' ');
         }
 
         if (fontVariant != null) {
-            cssValueBuilder.append(fontVariant.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(fontVariant.getCssValue()).append(' ');
         }
 
         if (fontWeight != null) {
-            cssValueBuilder.append(fontWeight.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(fontWeight.getCssValue()).append(' ');
         }
 
         if (fontSize != null) {
@@ -850,8 +817,7 @@ public class Font extends AbstractCssProperty<Font>
             if (fontSize != null) {
                 cssValueBuilder.append('/');
             }
-            cssValueBuilder.append(lineHeightCssValue);
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(lineHeightCssValue).append(' ');
         }
 
         if (fontFamily != null) {
@@ -861,8 +827,7 @@ public class Font extends AbstractCssProperty<Font>
                 throw new InvalidValueException(
                         "fontFamily cannot have initial/inherit as its cssValue");
             }
-            cssValueBuilder.append(fontFamilyCssValue);
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(fontFamilyCssValue).append(' ');
         }
 
         final String trimmedCssValue = cssValueBuilder.toString().trim();

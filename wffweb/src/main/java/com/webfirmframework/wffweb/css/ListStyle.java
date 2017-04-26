@@ -203,18 +203,15 @@ public class ListStyle extends AbstractCssProperty<ListStyle>
         final StringBuilder cssValueBuilder = new StringBuilder();
         boolean invalid = true;
         if (listStyleType != null) {
-            cssValueBuilder.append(listStyleType.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(listStyleType.getCssValue()).append(' ');
             invalid = false;
         }
         if (listStylePosition != null) {
-            cssValueBuilder.append(listStylePosition.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(listStylePosition.getCssValue()).append(' ');
             invalid = false;
         }
         if (listStyleImage != null) {
-            cssValueBuilder.append(listStyleImage.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(listStyleImage.getCssValue()).append(' ');
             invalid = false;
         }
         if (invalid) {
@@ -314,17 +311,14 @@ public class ListStyle extends AbstractCssProperty<ListStyle>
         final StringBuilder cssValueBuilder = new StringBuilder();
 
         if (listStyleType != null) {
-            cssValueBuilder.append(listStyleType.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(listStyleType.getCssValue()).append(' ');
         }
         if (listStylePosition != null) {
-            cssValueBuilder.append(listStylePosition.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(listStylePosition.getCssValue()).append(' ');
         }
 
         if (listStyleImage != null) {
-            cssValueBuilder.append(listStyleImage.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(listStyleImage.getCssValue()).append(' ');
         }
 
         final String trimmedCssValue = StringBuilderUtil
@@ -345,18 +339,15 @@ public class ListStyle extends AbstractCssProperty<ListStyle>
         final StringBuilder cssValueBuilder = new StringBuilder();
 
         if (listStyleType != null) {
-            cssValueBuilder.append(listStyleType.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(listStyleType.getCssValue()).append(' ');
         }
 
         if (listStylePosition != null) {
-            cssValueBuilder.append(listStylePosition.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(listStylePosition.getCssValue()).append(' ');
         }
 
         if (listStyleImage != null) {
-            cssValueBuilder.append(listStyleImage.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(listStyleImage.getCssValue()).append(' ');
         }
 
         final String trimmedCssValue = StringBuilderUtil
@@ -376,13 +367,11 @@ public class ListStyle extends AbstractCssProperty<ListStyle>
         final StringBuilder cssValueBuilder = new StringBuilder();
 
         if (listStyleType != null) {
-            cssValueBuilder.append(listStyleType.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(listStyleType.getCssValue()).append(' ');
         }
 
         if (listStylePosition != null) {
-            cssValueBuilder.append(listStylePosition.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(listStylePosition.getCssValue()).append(' ');
         }
 
         if (listStyleImage != null) {

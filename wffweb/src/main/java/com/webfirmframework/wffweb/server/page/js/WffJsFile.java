@@ -369,8 +369,7 @@ public enum WffJsFile {
 
             final WffJsFile[] wffJsFiles = WffJsFile.values();
             for (int i = 2; i < wffJsFiles.length; i++) {
-                builder.append('\n');
-                builder.append(wffJsFiles[i].optimizedFileContent);
+                builder.append('\n').append(wffJsFiles[i].optimizedFileContent);
             }
 
             allOptimizedContent = builder.toString().trim();

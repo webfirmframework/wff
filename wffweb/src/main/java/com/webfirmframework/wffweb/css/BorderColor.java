@@ -593,12 +593,8 @@ public class BorderColor extends AbstractCssProperty<BorderColor>
         } else if (borderTopColorCssValue.equals(borderBottomColorCssValue)
                 && borderRightColorCssValue.equals(borderLeftColorCssValue)) {
 
-            final StringBuilder cssValueBuilder = new StringBuilder(
-                    borderTopColorCssValue);
-            cssValueBuilder.append(' ');
-            cssValueBuilder.append(borderRightColorCssValue);
-
-            cssValue = cssValueBuilder.toString();
+            cssValue = new StringBuilder(borderTopColorCssValue).append(' ')
+                    .append(borderRightColorCssValue).toString();
 
             final StateChangeInformer<CssProperty> stateChangeInformer = getStateChangeInformer();
             if (stateChangeInformer != null) {
@@ -606,30 +602,20 @@ public class BorderColor extends AbstractCssProperty<BorderColor>
             }
 
         } else if (borderRightColorCssValue.equals(borderLeftColorCssValue)) {
-            final StringBuilder cssValueBuilder = new StringBuilder(
-                    borderTopColorCssValue);
-            cssValueBuilder.append(' ');
-            cssValueBuilder.append(borderRightColorCssValue);
-            cssValueBuilder.append(' ');
-            cssValueBuilder.append(borderBottomColorCssValue);
 
-            cssValue = cssValueBuilder.toString();
+            cssValue = new StringBuilder(borderTopColorCssValue).append(' ')
+                    .append(borderRightColorCssValue).append(' ')
+                    .append(borderBottomColorCssValue).toString();
 
             final StateChangeInformer<CssProperty> stateChangeInformer = getStateChangeInformer();
             if (stateChangeInformer != null) {
                 stateChangeInformer.stateChanged(this);
             }
         } else {
-            final StringBuilder cssValueBuilder = new StringBuilder(
-                    borderTopColorCssValue);
-            cssValueBuilder.append(' ');
-            cssValueBuilder.append(borderRightColorCssValue);
-            cssValueBuilder.append(' ');
-            cssValueBuilder.append(borderBottomColorCssValue);
-            cssValueBuilder.append(' ');
-            cssValueBuilder.append(borderLeftColorCssValue);
-
-            cssValue = cssValueBuilder.toString();
+            cssValue = new StringBuilder(borderTopColorCssValue).append(' ')
+                    .append(borderRightColorCssValue).append(' ')
+                    .append(borderBottomColorCssValue).append(' ')
+                    .append(borderLeftColorCssValue).toString();
 
             final StateChangeInformer<CssProperty> stateChangeInformer = getStateChangeInformer();
             if (stateChangeInformer != null) {

@@ -291,9 +291,7 @@ public class BorderImageSource extends AbstractCssProperty<BorderImageSource>
         }
         final StringBuilder sb = new StringBuilder();
         for (int i = 0; i < imageUrls.length; i++) {
-            sb.append("url(\"");
-            sb.append(imageUrls[i]);
-            sb.append("\")");
+            sb.append("url(\"").append(imageUrls[i]).append("\")");
             if (i < imageUrls.length - 1) {
                 sb.append(", ");
             } else {

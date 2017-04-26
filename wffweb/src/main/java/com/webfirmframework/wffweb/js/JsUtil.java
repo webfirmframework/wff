@@ -49,10 +49,8 @@ public class JsUtil {
 
         for (final Entry<String, Object> entry : jsKeyAndElementId.entrySet()) {
 
-            builder.append(entry.getKey());
-            builder.append(":document.getElementById(\"");
-            builder.append(entry.getValue().toString());
-            builder.append("\").value,");
+            builder.append(entry.getKey()).append(":document.getElementById(\"")
+                    .append(entry.getValue().toString()).append("\").value,");
 
         }
 
@@ -80,10 +78,8 @@ public class JsUtil {
 
         for (final Object id : ids) {
 
-            builder.append(id.toString());
-            builder.append(":document.getElementById(\"");
-            builder.append(id.toString());
-            builder.append("\").value,");
+            builder.append(id.toString()).append(":document.getElementById(\"")
+                    .append(id.toString()).append("\").value,");
 
         }
 
@@ -111,10 +107,8 @@ public class JsUtil {
 
         for (final Object id : ids) {
 
-            builder.append(id.toString());
-            builder.append(":document.getElementById(\"");
-            builder.append(id.toString());
-            builder.append("\").value,");
+            builder.append(id.toString()).append(":document.getElementById(\"")
+                    .append(id.toString()).append("\").value,");
 
         }
 

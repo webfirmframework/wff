@@ -147,8 +147,7 @@ public enum Task {
         final StringBuilder builder = new StringBuilder(totalLength);
         builder.append('{');
         for (final Task task : Task.values()) {
-            builder.append(task.jsNameValue);
-            builder.append(',');
+            builder.append(task.jsNameValue).append(',');
         }
 
         builder.replace(builder.length() - 1, builder.length(), "}");

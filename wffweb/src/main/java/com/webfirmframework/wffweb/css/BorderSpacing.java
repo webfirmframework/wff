@@ -128,14 +128,10 @@ public class BorderSpacing extends AbstractCssProperty<BorderSpacing> {
             cssValue = String.valueOf(horizontalValue)
                     + horizontalCssLengthUnit;
         } else {
-            final StringBuilder sb = new StringBuilder();
-            sb.append(horizontalValue);
-            sb.append(horizontalCssLengthUnit);
-            sb.append(' ');
-            sb.append(verticalValue);
-            sb.append(verticalCssLengthUnit);
-            cssValue = sb.toString();
-
+            cssValue = new StringBuilder().append(horizontalValue)
+                    .append(horizontalCssLengthUnit).append(' ')
+                    .append(verticalValue).append(verticalCssLengthUnit)
+                    .toString();
         }
     }
 
@@ -164,14 +160,10 @@ public class BorderSpacing extends AbstractCssProperty<BorderSpacing> {
             cssValue = String.valueOf(horizontalValue)
                     + horizontalCssLengthUnit;
         } else {
-            final StringBuilder sb = new StringBuilder();
-            sb.append(horizontalValue);
-            sb.append(horizontalCssLengthUnit);
-            sb.append(' ');
-            sb.append(verticalValue);
-            sb.append(verticalCssLengthUnit);
-            cssValue = sb.toString();
-
+            cssValue = new StringBuilder().append(horizontalValue)
+                    .append(horizontalCssLengthUnit).append(' ')
+                    .append(verticalValue).append(verticalCssLengthUnit)
+                    .toString();
         }
 
         if (getStateChangeInformer() != null) {

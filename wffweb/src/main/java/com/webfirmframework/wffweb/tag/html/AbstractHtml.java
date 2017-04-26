@@ -1612,9 +1612,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
             htmlStartSB.delete(0, htmlStartSB.length());
         }
         if (tagName != null) {
-            htmlStartSB.append('<');
-            htmlStartSB.append(tagName);
-            htmlStartSB.append(attributeHtmlString);
+            htmlStartSB.append('<').append(tagName).append(attributeHtmlString);
             if (tagType == TagType.OPENING_CLOSING) {
                 htmlStartSB.append('>');
             } else if (tagType == TagType.SELF_CLOSING) {
@@ -1642,9 +1640,8 @@ public abstract class AbstractHtml extends AbstractTagBase {
             htmlEndSB.delete(0, htmlEndSB.length());
         }
         if (tagName != null) {
-            htmlEndSB.append(new char[] { '<', '/' });
-            htmlEndSB.append(tagName);
-            htmlEndSB.append('>');
+            htmlEndSB.append(new char[] { '<', '/' }).append(tagName)
+                    .append('>');
         } else {
             if (htmlStartSB != null) {
                 htmlEndSB.append(getHtmlMiddleSB());

@@ -607,8 +607,7 @@ public class Margin extends AbstractCssProperty<Margin>
 
             final StringBuilder cssValueBuilder = new StringBuilder(
                     marginTopCssValue);
-            cssValueBuilder.append(' ');
-            cssValueBuilder.append(marginRightCssValue);
+            cssValueBuilder.append(' ').append(marginRightCssValue);
 
             cssValue = cssValueBuilder.toString();
 
@@ -620,10 +619,8 @@ public class Margin extends AbstractCssProperty<Margin>
         } else if (marginRightCssValue.equals(marginLeftCssValue)) {
             final StringBuilder cssValueBuilder = new StringBuilder(
                     marginTopCssValue);
-            cssValueBuilder.append(' ');
-            cssValueBuilder.append(marginRightCssValue);
-            cssValueBuilder.append(' ');
-            cssValueBuilder.append(marginBottomCssValue);
+            cssValueBuilder.append(' ').append(marginRightCssValue).append(' ')
+                    .append(marginBottomCssValue);
 
             cssValue = cssValueBuilder.toString();
 
@@ -632,16 +629,10 @@ public class Margin extends AbstractCssProperty<Margin>
                 stateChangeInformer.stateChanged(this);
             }
         } else {
-            final StringBuilder cssValueBuilder = new StringBuilder(
-                    marginTopCssValue);
-            cssValueBuilder.append(' ');
-            cssValueBuilder.append(marginRightCssValue);
-            cssValueBuilder.append(' ');
-            cssValueBuilder.append(marginBottomCssValue);
-            cssValueBuilder.append(' ');
-            cssValueBuilder.append(marginLeftCssValue);
-
-            cssValue = cssValueBuilder.toString();
+            cssValue = new StringBuilder(marginTopCssValue).append(' ')
+                    .append(marginRightCssValue).append(' ')
+                    .append(marginBottomCssValue).append(' ')
+                    .append(marginLeftCssValue).toString();
 
             final StateChangeInformer<CssProperty> stateChangeInformer = getStateChangeInformer();
             if (stateChangeInformer != null) {
