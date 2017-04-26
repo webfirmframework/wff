@@ -72,8 +72,9 @@ public class UrlCss3Value extends AbstractBean<UrlCss3Value> {
             String extractedUrl = urlStringParts[0]
                     .substring(urlStringParts[0].indexOf('('));
             extractedUrl = extractedUrl.replace("(", "").trim();
-            extractedUrl = extractedUrl.startsWith("\"")
-                    ? extractedUrl.substring(1) : extractedUrl;
+            extractedUrl = extractedUrl.length() > 0
+                    && extractedUrl.charAt(0) == '"' ? extractedUrl.substring(1)
+                            : extractedUrl;
             extractedUrl = extractedUrl.endsWith("\"")
                     ? extractedUrl.substring(0, extractedUrl.length() - 1)
                     : extractedUrl;
