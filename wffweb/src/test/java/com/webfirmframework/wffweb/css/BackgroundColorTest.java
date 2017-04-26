@@ -42,6 +42,7 @@ public class BackgroundColorTest {
     @Test
     public void testBackgroundColorStartingAndEndingWithSpace() {
         BackgroundColor backgroundColor = new BackgroundColor("   #0000ff  ");
+        assertEquals("#0000ff", backgroundColor.getValue());
     }
 
     @Test
