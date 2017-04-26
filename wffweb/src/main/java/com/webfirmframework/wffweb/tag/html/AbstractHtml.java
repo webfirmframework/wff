@@ -271,8 +271,8 @@ public abstract class AbstractHtml extends AbstractTagBase {
                 .getChildTagRemoveListener(ACCESS_OBJECT);
 
         if (listener != null) {
-            listener.allChildrenRemoved(new ChildTagRemoveListener.Event(
-                    AbstractHtml.this, removedAbstractHtmls));
+            listener.allChildrenRemoved(new ChildTagRemoveListener.Event(this,
+                    removedAbstractHtmls));
         }
     }
 
@@ -324,15 +324,15 @@ public abstract class AbstractHtml extends AbstractTagBase {
             addChild(innerHtml, false);
 
             if (listener != null) {
-                events[index] = new InnerHtmlAddListener.Event(
-                        AbstractHtml.this, innerHtml, previousParentTag);
+                events[index] = new InnerHtmlAddListener.Event(this, innerHtml,
+                        previousParentTag);
                 index++;
             }
 
         }
 
         if (listener != null) {
-            listener.innerHtmlsAdded(AbstractHtml.this, events);
+            listener.innerHtmlsAdded(this, events);
         }
     }
 
@@ -370,8 +370,8 @@ public abstract class AbstractHtml extends AbstractTagBase {
                     .getChildTagRemoveListener(ACCESS_OBJECT);
 
             if (listener != null) {
-                listener.childRemoved(new ChildTagRemoveListener.Event(
-                        AbstractHtml.this, child));
+                listener.childRemoved(
+                        new ChildTagRemoveListener.Event(this, child));
             }
 
         }
@@ -431,8 +431,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
                     if (listener != null) {
                         listener.childMoved(
                                 new ChildTagAppendListener.ChildMovedEvent(
-                                        previousParent, AbstractHtml.this,
-                                        child));
+                                        previousParent, this, child));
                     }
 
                 } else {
@@ -441,7 +440,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
                             .getChildTagAppendListener(ACCESS_OBJECT);
                     if (listener != null) {
                         final ChildTagAppendListener.Event event = new ChildTagAppendListener.Event(
-                                AbstractHtml.this, child);
+                                this, child);
                         listener.childAppended(event);
                     }
                 }
@@ -513,7 +512,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
             addChild(child, false);
 
             final ChildMovedEvent event = new ChildMovedEvent(previousParent,
-                    AbstractHtml.this, child);
+                    this, child);
             movedOrAppended.add(event);
 
         }
@@ -544,7 +543,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
             addChild(child, false);
 
             final ChildMovedEvent event = new ChildMovedEvent(previousParent,
-                    AbstractHtml.this, child);
+                    this, child);
             movedOrAppended.add(event);
 
         }
@@ -639,7 +638,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
                     .getAttributeAddListener(ACCESS_OBJECT);
             if (attributeAddListener != null) {
                 final AttributeAddListener.AddEvent event = new AttributeAddListener.AddEvent();
-                event.setAddedToTag(AbstractHtml.this);
+                event.setAddedToTag(this);
                 event.setAddedAttributes(attributes);
                 attributeAddListener.addedAttributes(event);
             }
@@ -752,7 +751,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
                         .getAttributeRemoveListener(ACCESS_OBJECT);
                 if (listener != null) {
                     final AttributeRemoveListener.RemovedEvent event = new AttributeRemoveListener.RemovedEvent(
-                            AbstractHtml.this, removedAttributeNames.toArray(
+                            this, removedAttributeNames.toArray(
                                     new String[removedAttributeNames.size()]));
 
                     listener.removedAttributes(event);
@@ -840,7 +839,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
                         .getAttributeRemoveListener(ACCESS_OBJECT);
                 if (listener != null) {
                     final AttributeRemoveListener.RemovedEvent event = new AttributeRemoveListener.RemovedEvent(
-                            AbstractHtml.this, attributeNames);
+                            this, attributeNames);
 
                     listener.removedAttributes(event);
                 }

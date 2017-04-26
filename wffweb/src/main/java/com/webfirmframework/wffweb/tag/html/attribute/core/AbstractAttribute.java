@@ -525,8 +525,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         if (valueChangeListeners != null) {
             for (final AttributeValueChangeListener listener : valueChangeListeners) {
                 final AttributeValueChangeListener.Event event = new AttributeValueChangeListener.Event(
-                        AbstractAttribute.this,
-                        Collections.unmodifiableSet(ownerTags));
+                        this, Collections.unmodifiableSet(ownerTags));
                 listener.valueChanged(event);
             }
         }
