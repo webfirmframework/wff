@@ -491,7 +491,11 @@ public class BackgroundColor extends AbstractCssProperty<BackgroundColor>
                             .deepClone(hslCssValue);
                     this.hslCssValue.setAlreadyInUse(false);
                     this.hslCssValue = hslCssValueClone;
-                    loghslCssValueAlreadyInUse(hslCssValue);
+                    if (LOGGER.isLoggable(Level.WARNING)) {
+                        LOGGER.warning("cloned hslCssValue " + hslCssValue
+                                + "(hashcode: " + hslCssValue.hashCode()
+                                + ") as it is already used by another object");
+                    }
                 } catch (final CloneNotSupportedException e) {
                     throw new InvalidValueException(e.toString());
                 }
@@ -503,7 +507,11 @@ public class BackgroundColor extends AbstractCssProperty<BackgroundColor>
             if (hslCssValue.isAlreadyInUse()) {
                 try {
                     this.hslCssValue = CloneUtil.deepClone(hslCssValue);
-                    loghslCssValueAlreadyInUse(hslCssValue);
+                    if (LOGGER.isLoggable(Level.WARNING)) {
+                        LOGGER.warning("cloned hslCssValue " + hslCssValue
+                                + "(hashcode: " + hslCssValue.hashCode()
+                                + ") as it is already used by another object");
+                    }
                 } catch (final CloneNotSupportedException e) {
                     throw new InvalidValueException(e.toString());
                 }
@@ -517,14 +525,6 @@ public class BackgroundColor extends AbstractCssProperty<BackgroundColor>
         makeRgbCssValueNull();
         makeRgbaCssValueNull();
         makeHslaCssValueNull();
-    }
-
-    private void loghslCssValueAlreadyInUse(final HslCssValue hslCssValue) {
-        if (LOGGER.isLoggable(Level.WARNING)) {
-            LOGGER.warning("cloned hslCssValue " + hslCssValue + "(hashcode: "
-                    + hslCssValue.hashCode()
-                    + ") as it is already used by another object");
-        }
     }
 
     /**
