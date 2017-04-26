@@ -90,7 +90,7 @@ public class MarginBottom extends AbstractCssProperty<MarginBottom> {
     public MarginBottom(final float percent) {
         cssLengthUnit = CssLengthUnit.PER;
         value = percent;
-        cssValue = String.valueOf(percent) + cssLengthUnit;
+        cssValue = String.valueOf(percent).concat(cssLengthUnit.toString());
     }
 
     /**
@@ -100,7 +100,7 @@ public class MarginBottom extends AbstractCssProperty<MarginBottom> {
     public MarginBottom(final float value, final CssLengthUnit cssLengthUnit) {
         this.value = value;
         this.cssLengthUnit = cssLengthUnit;
-        cssValue = String.valueOf(value) + cssLengthUnit;
+        cssValue = String.valueOf(value).concat(cssLengthUnit.toString());
     }
 
     /**
