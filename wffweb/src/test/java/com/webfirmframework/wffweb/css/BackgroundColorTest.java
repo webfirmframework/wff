@@ -38,6 +38,11 @@ public class BackgroundColorTest {
         BackgroundColor backgroundColor = new BackgroundColor();
         assertEquals(BackgroundColor.TRANSPARENT, backgroundColor.getCssValue());
     }
+    
+    @Test
+    public void testBackgroundColorStartingAndEndingWithSpace() {
+        BackgroundColor backgroundColor = new BackgroundColor("   #0000ff  ");
+    }
 
     @Test
     public void testBackgroundColorString() {
