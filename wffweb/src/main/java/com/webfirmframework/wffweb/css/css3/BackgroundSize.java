@@ -130,13 +130,9 @@ public class BackgroundSize extends AbstractCssProperty<BackgroundSize> {
                 && Objects.equals(widthLengthUnit, heightLengthUnit)) {
             cssValue = String.valueOf(width) + widthLengthUnit;
         } else {
-            final StringBuilder sb = new StringBuilder();
-            sb.append(width);
-            sb.append(widthLengthUnit);
-            sb.append(' ');
-            sb.append(height);
-            sb.append(heightLengthUnit);
-            cssValue = sb.toString();
+            cssValue = new StringBuilder().append(width).append(widthLengthUnit)
+                    .append(' ').append(height).append(heightLengthUnit)
+                    .toString();
 
         }
     }
