@@ -104,7 +104,7 @@ public class OBackgroundSize extends AbstractCssProperty<OBackgroundSize> {
         width = height = Float.valueOf(horizontalHeight);
         widthCssLengthUnit = heightCssLengthUnit = cssLengthUnit;
 
-        cssValue = horizontalHeight + "" + cssLengthUnit;
+        cssValue = String.valueOf(horizontalHeight) + cssLengthUnit;
     }
 
     /**
@@ -128,7 +128,7 @@ public class OBackgroundSize extends AbstractCssProperty<OBackgroundSize> {
 
         if (width == height
                 && Objects.equals(widthCssLengthUnit, heightCssLengthUnit)) {
-            cssValue = width + "" + widthCssLengthUnit;
+            cssValue = String.valueOf(width) + widthCssLengthUnit;
         } else {
             final StringBuilder sb = new StringBuilder();
             sb.append(width);
@@ -162,7 +162,7 @@ public class OBackgroundSize extends AbstractCssProperty<OBackgroundSize> {
 
         if (width == height
                 && Objects.equals(widthCssLengthUnit, heightCssLengthUnit)) {
-            cssValue = width + "" + widthCssLengthUnit;
+            cssValue = String.valueOf(width) + widthCssLengthUnit;
         } else {
             final StringBuilder sb = new StringBuilder();
             sb.append(width);
@@ -193,7 +193,7 @@ public class OBackgroundSize extends AbstractCssProperty<OBackgroundSize> {
         width = height = Float.valueOf(widthHeight);
         widthCssLengthUnit = heightCssLengthUnit = cssLengthUnit;
 
-        cssValue = widthHeight + "" + cssLengthUnit;
+        cssValue = String.valueOf(widthHeight) + cssLengthUnit;
 
         if (getStateChangeInformer() != null) {
             getStateChangeInformer().stateChanged(this);
@@ -343,7 +343,8 @@ public class OBackgroundSize extends AbstractCssProperty<OBackgroundSize> {
                                 .floatToIntBits(width.floatValue())
                                 && Objects.equals(widthCssLengthUnit,
                                         heightCssLengthUnit)) {
-                            this.cssValue = width + "" + heightCssLengthUnit;
+                            this.cssValue = String.valueOf(width)
+                                    + heightCssLengthUnit;
                         } else {
                             this.cssValue = trimmedCssValue;
                         }

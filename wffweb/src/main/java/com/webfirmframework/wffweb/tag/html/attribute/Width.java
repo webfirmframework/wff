@@ -37,7 +37,7 @@ public class Width extends AbstractAttribute
     public Width() {
         value = 100;
         cssLengthUnit = CssLengthUnit.PER;
-        htmlString = (int) value + "" + CssLengthUnit.PER.getUnit();
+        htmlString = String.valueOf((int) value) + CssLengthUnit.PER.getUnit();
         setAttributeValue(htmlString);
     }
 
@@ -58,7 +58,7 @@ public class Width extends AbstractAttribute
     public Width(final float value, final CssLengthUnit cssLengthUnit) {
         this.value = value;
         this.cssLengthUnit = cssLengthUnit;
-        htmlString = value + "" + cssLengthUnit.getUnit();
+        htmlString = String.valueOf(value) + cssLengthUnit.getUnit();
         setAttributeValue(htmlString);
     }
 
@@ -70,7 +70,7 @@ public class Width extends AbstractAttribute
     public Width(final int percent) {
         value = percent;
         cssLengthUnit = CssLengthUnit.PER;
-        htmlString = percent + "" + CssLengthUnit.PER.getUnit();
+        htmlString = String.valueOf(percent) + CssLengthUnit.PER.getUnit();
         setAttributeValue(htmlString);
     }
 
@@ -82,7 +82,7 @@ public class Width extends AbstractAttribute
     public Width(final float percent) {
         value = percent;
         cssLengthUnit = CssLengthUnit.PER;
-        htmlString = percent + "" + CssLengthUnit.PER.getUnit();
+        htmlString = String.valueOf(percent) + CssLengthUnit.PER.getUnit();
         setAttributeValue(htmlString);
     }
 
@@ -96,7 +96,7 @@ public class Width extends AbstractAttribute
     public Width(final int value, final CssLengthUnit cssLengthUnit) {
         this.value = value;
         this.cssLengthUnit = cssLengthUnit;
-        htmlString = value + "" + cssLengthUnit.getUnit();
+        htmlString = String.valueOf(value) + cssLengthUnit.getUnit();
         setAttributeValue(htmlString);
     }
 
@@ -111,7 +111,7 @@ public class Width extends AbstractAttribute
     public Width(final int value, final LengthUnit lengthUnit) {
         this.value = value;
         cssLengthUnit = lengthUnit;
-        htmlString = value + "" + lengthUnit.getUnit();
+        htmlString = String.valueOf(value) + lengthUnit.getUnit();
         setAttributeValue(htmlString);
     }
 
@@ -127,7 +127,7 @@ public class Width extends AbstractAttribute
     public void setPercent(final float percent) {
         value = percent;
         cssLengthUnit = CssLengthUnit.PER;
-        setAttributeValue(percent + "" + cssLengthUnit.getUnit());
+        setAttributeValue(String.valueOf(percent) + cssLengthUnit.getUnit());
     }
 
     /**
@@ -141,7 +141,7 @@ public class Width extends AbstractAttribute
     public Width setValue(final int value, final CssLengthUnit cssLengthUnit) {
         this.value = value;
         this.cssLengthUnit = cssLengthUnit;
-        htmlString = value + "" + cssLengthUnit.getUnit();
+        htmlString = String.valueOf(value) + cssLengthUnit.getUnit();
         setAttributeValue(htmlString);
         return this;
     }
@@ -158,7 +158,7 @@ public class Width extends AbstractAttribute
     public Width setValue(final int value, final LengthUnit lengthUnit) {
         this.value = value;
         cssLengthUnit = lengthUnit;
-        htmlString = value + "" + lengthUnit.getUnit();
+        htmlString = String.valueOf(value) + lengthUnit.getUnit();
         setAttributeValue(htmlString);
         return this;
     }
@@ -175,7 +175,7 @@ public class Width extends AbstractAttribute
             final CssLengthUnit cssLengthUnit) {
         this.value = value;
         this.cssLengthUnit = cssLengthUnit;
-        htmlString = value + "" + cssLengthUnit.getUnit();
+        htmlString = String.valueOf(value) + cssLengthUnit.getUnit();
         setAttributeValue(htmlString);
         return this;
     }
@@ -191,7 +191,7 @@ public class Width extends AbstractAttribute
     public Width setValue(final float value, final LengthUnit lengthUnit) {
         this.value = value;
         cssLengthUnit = lengthUnit;
-        htmlString = value + "" + lengthUnit.getUnit();
+        htmlString = String.valueOf(value) + lengthUnit.getUnit();
         setAttributeValue(htmlString);
         return this;
     }
