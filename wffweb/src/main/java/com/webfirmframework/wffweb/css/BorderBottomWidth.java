@@ -107,7 +107,7 @@ public class BorderBottomWidth extends AbstractCssProperty<BorderBottomWidth> {
             final CssLengthUnit cssLengthUnit) {
         this.value = Float.valueOf(value);
         this.cssLengthUnit = cssLengthUnit;
-        cssValue = String.valueOf(value) + cssLengthUnit;
+        cssValue = String.valueOf(value).concat(cssLengthUnit.toString());
     }
 
     /**
@@ -121,7 +121,7 @@ public class BorderBottomWidth extends AbstractCssProperty<BorderBottomWidth> {
             final CssLengthUnit cssLengthUnit) {
         this.value = Float.valueOf(value);
         this.cssLengthUnit = cssLengthUnit;
-        cssValue = String.valueOf(value) + cssLengthUnit;
+        cssValue = String.valueOf(value).concat(cssLengthUnit.toString());
         if (getStateChangeInformer() != null) {
             getStateChangeInformer().stateChanged(this);
         }

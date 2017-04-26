@@ -131,7 +131,7 @@ public class PerspectiveOrigin extends AbstractCssProperty<PerspectiveOrigin> {
 
         if (xAxis == yAxis
                 && Objects.equals(xAxisCssLengthUnit, yAxisCssLengthUnit)) {
-            cssValue = String.valueOf(xAxis) + xAxisCssLengthUnit;
+            cssValue = String.valueOf(xAxis).concat(xAxisCssLengthUnit.toString());
         } else {
             final StringBuilder sb = new StringBuilder();
             sb.append(xAxis);
@@ -165,7 +165,7 @@ public class PerspectiveOrigin extends AbstractCssProperty<PerspectiveOrigin> {
 
         if (xAxis == yAxis
                 && Objects.equals(xAxisCssLengthUnit, yAxisCssLengthUnit)) {
-            cssValue = String.valueOf(xAxis) + xAxisCssLengthUnit;
+            cssValue = String.valueOf(xAxis).concat(xAxisCssLengthUnit.toString());
         } else {
             final StringBuilder sb = new StringBuilder();
             sb.append(xAxis);
