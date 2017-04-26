@@ -72,7 +72,7 @@ public class JsUtil {
      */
     public static String getJsObjectForFieldsValue(final Set<Object> ids) {
 
-        final StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder(75);
 
         builder.append('{');
 
