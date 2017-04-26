@@ -100,7 +100,7 @@ public class BorderSpacing extends AbstractCssProperty<BorderSpacing> {
                 .valueOf(horizontalVerticalValue);
         horizontalCssLengthUnit = verticalCssLengthUnit = cssLengthUnit;
 
-        cssValue = horizontalVerticalValue + "" + cssLengthUnit;
+        cssValue = String.valueOf(horizontalVerticalValue) + cssLengthUnit;
     }
 
     /**
@@ -125,7 +125,8 @@ public class BorderSpacing extends AbstractCssProperty<BorderSpacing> {
 
         if (horizontalValue == verticalValue && Objects
                 .equals(horizontalCssLengthUnit, verticalCssLengthUnit)) {
-            cssValue = horizontalValue + "" + horizontalCssLengthUnit;
+            cssValue = String.valueOf(horizontalValue)
+                    + horizontalCssLengthUnit;
         } else {
             final StringBuilder sb = new StringBuilder();
             sb.append(horizontalValue);
@@ -160,7 +161,8 @@ public class BorderSpacing extends AbstractCssProperty<BorderSpacing> {
 
         if (horizontalValue == verticalValue && Objects
                 .equals(horizontalCssLengthUnit, verticalCssLengthUnit)) {
-            cssValue = horizontalValue + "" + horizontalCssLengthUnit;
+            cssValue = String.valueOf(horizontalValue)
+                    + horizontalCssLengthUnit;
         } else {
             final StringBuilder sb = new StringBuilder();
             sb.append(horizontalValue);
@@ -192,7 +194,7 @@ public class BorderSpacing extends AbstractCssProperty<BorderSpacing> {
                 .valueOf(horizontalVerticalValue);
         horizontalCssLengthUnit = verticalCssLengthUnit = cssLengthUnit;
 
-        cssValue = horizontalVerticalValue + "" + cssLengthUnit;
+        cssValue = String.valueOf(horizontalVerticalValue) + cssLengthUnit;
 
         if (getStateChangeInformer() != null) {
             getStateChangeInformer().stateChanged(this);
@@ -346,7 +348,7 @@ public class BorderSpacing extends AbstractCssProperty<BorderSpacing> {
                                         verticalCssLengthUnit)
 
                         ) {
-                            this.cssValue = horizontalValue + ""
+                            this.cssValue = String.valueOf(horizontalValue)
                                     + verticalCssLengthUnit;
                         } else {
                             this.cssValue = trimmedCssValue;
