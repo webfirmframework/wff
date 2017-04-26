@@ -43,7 +43,7 @@ public class JsUtil {
     public static String getJsObjectForFieldsValue(
             final Map<String, Object> jsKeyAndElementId) {
 
-        final StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder(38);
 
         builder.append('{');
 

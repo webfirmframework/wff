@@ -422,12 +422,13 @@ public class Cursor extends AbstractCssProperty<Cursor>
         }
         final StringBuilder sb = new StringBuilder();
         for (final String cursorUrl : cursorUrls) {
-            final String urlString = "url(\"" + cursorUrl + "\"), ";
+            final String urlString = "url(\"".concat(cursorUrl).concat("\"), ");
             sb.append(urlString);
         }
         String cssValue = sb.toString();
 
-        cssValue = cssValue.endsWith(", ") ? cssValue + cursorType : cursorType;
+        cssValue = cssValue.endsWith(", ") ? cssValue.concat(cursorType)
+                : cursorType;
 
         setCssValue(cssValue);
         this.cursorType = cursorType;

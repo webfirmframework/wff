@@ -175,7 +175,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
             final String jsfunctionBody) {
 
         final String functionBody = jsfunctionBody.trim();
-        final StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder(26);
 
         builder.append("function(event, source){").append(functionBody);
         if (functionBody.charAt(functionBody.length() - 1) != ';') {

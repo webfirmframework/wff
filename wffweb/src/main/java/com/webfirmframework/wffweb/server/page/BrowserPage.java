@@ -515,8 +515,8 @@ public abstract class BrowserPage implements Serializable {
     private void addAttrValueChangeListener(final AbstractHtml abstractHtml) {
 
         if (valueChangeListener == null) {
-            valueChangeListener = new AttributeValueChangeListenerImpl(
-                    BrowserPage.this, tagByWffId);
+            valueChangeListener = new AttributeValueChangeListenerImpl(this,
+                    tagByWffId);
         }
 
         abstractHtml.getSharedObject()
@@ -838,7 +838,7 @@ public abstract class BrowserPage implements Serializable {
                     "webSocketUrl must return valid websocket url");
         }
 
-        final String wsUrlWithInstanceId = webSocketUrl.indexOf("?") == -1
+        final String wsUrlWithInstanceId = webSocketUrl.indexOf('?') == -1
                 ? webSocketUrl + "?wffInstanceId=" + getInstanceId()
                 : webSocketUrl + "&wffInstanceId=" + getInstanceId();
 
