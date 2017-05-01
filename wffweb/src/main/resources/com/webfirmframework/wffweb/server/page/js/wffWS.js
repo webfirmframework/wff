@@ -101,7 +101,7 @@ var wffWS = new function() {
 					console.log("2 seconds loop");
 					wffWS.openSocket(wffGlobal.WS_URL);
 				}
-			}, 2000);
+			}, wffGlobal.WS_RECON);
 		};
 	};
 

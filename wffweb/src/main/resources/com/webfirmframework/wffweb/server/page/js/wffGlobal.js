@@ -14,6 +14,8 @@ window.wffGlobal = new function() {
 	this.INSTANCE_ID = "${INSTANCE_ID}";
 	this.REMOVE_PREV_BP_ON_INITTAB = "${REMOVE_PREV_BP_ON_INITTAB}";
 	this.REMOVE_PREV_BP_ON_TABCLOSE = "${REMOVE_PREV_BP_ON_TABCLOSE}";
+	//reconnect time interval for WebSocket
+	this.WS_RECON = "${WS_RECON}";
 
 	if ((typeof TextEncoder) === "undefined") {
 

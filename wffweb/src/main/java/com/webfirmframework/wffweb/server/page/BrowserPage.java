@@ -35,6 +35,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.NotRenderedException;
 import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.PushFailedException;
@@ -107,7 +108,11 @@ public abstract class BrowserPage implements Serializable {
 
     private int wsHeartbeatInterval = -1;
 
+    private int wsReconnectInterval = -1;
+
     private static int wsDefaultHeartbeatInterval = -1;
+
+    private static int wsDefaultReconnectInterval = 2000;
 
     private final AtomicInteger pushQueueSize = new AtomicInteger(0);
 
@@ -586,14 +591,14 @@ public abstract class BrowserPage implements Serializable {
 
                     script.setDataWffId(wffScriptTagId);
 
-                    new NoTag(script,
-                            WffJsFile.getAllOptimizedContent(
-                                    wsUrlWithInstanceId, getInstanceId(),
-                                    removePrevFromBrowserContextOnTabInit,
-                                    removeFromBrowserContextOnTabClose,
-                                    (wsHeartbeatInterval > 0
-                                            ? wsHeartbeatInterval
-                                            : wsDefaultHeartbeatInterval)));
+                    new NoTag(script, WffJsFile.getAllOptimizedContent(
+                            wsUrlWithInstanceId, getInstanceId(),
+                            removePrevFromBrowserContextOnTabInit,
+                            removeFromBrowserContextOnTabClose,
+                            (wsHeartbeatInterval > 0 ? wsHeartbeatInterval
+                                    : wsDefaultHeartbeatInterval),
+                            (wsReconnectInterval > 0 ? wsReconnectInterval
+                                    : wsDefaultReconnectInterval)));
 
                     // to avoid invoking listener
                     child.addChild(ACCESS_OBJECT, script, false);
@@ -627,7 +632,9 @@ public abstract class BrowserPage implements Serializable {
                             removePrevFromBrowserContextOnTabInit,
                             removeFromBrowserContextOnTabClose,
                             (wsHeartbeatInterval > 0 ? wsHeartbeatInterval
-                                    : wsDefaultHeartbeatInterval)));
+                                    : wsDefaultHeartbeatInterval),
+                            (wsReconnectInterval > 0 ? wsReconnectInterval
+                                    : wsDefaultReconnectInterval)));
 
             // to avoid invoking listener
             abstractHtml.addChild(ACCESS_OBJECT, script, false);
@@ -1186,6 +1193,67 @@ public abstract class BrowserPage implements Serializable {
      */
     public static int getWebSocketDefultHeartbeatInterval() {
         return wsDefaultHeartbeatInterval;
+    }
+
+    /**
+     * Sets the default reconnect interval of webSocket client in milliseconds.
+     * It affects globally. By default it's set with 2000 ms.<br>
+     * NB:- This method has effect only if it is called before
+     * {@code BrowserPage#render()} invocation.
+     *
+     *
+     * @param milliseconds
+     *            the reconnect interval of webSocket client in milliseconds. It
+     *            must be greater than 0.
+     * @since 2.1.8
+     * @author WFF
+     */
+    public static void setWebSocketDefultReconnectInterval(
+            final int milliseconds) {
+        if (milliseconds < 1) {
+            throw new InvalidValueException("The value must be greater than 0");
+        }
+        wsDefaultReconnectInterval = milliseconds;
+    }
+
+    /**
+     * @return the interval value set by
+     *         {@code setWebSocketDefultReconnectInterval} method.
+     * @since 2.1.8
+     * @author WFF
+     */
+    public static int getWebSocketDefultReconnectInterval() {
+        return wsDefaultReconnectInterval;
+    }
+
+    /**
+     * Sets the reconnect interval of webSocket client in milliseconds. Give -1
+     * to disable it. By default it's set with -1. It affects only for the
+     * corresponding {@code BrowserPage} instance from which it is called. <br>
+     * NB:- This method has effect only if it is called before
+     * {@code BrowserPage#render()} method return. This method can be called
+     * inside {@code BrowserPage#render()} method to override the default global
+     * websocket reconnect interval set by
+     * {@code BrowserPage#setWebSocketDefultReconnectInterval(int)} method.
+     *
+     * @param milliseconds
+     *            the reconnect interval of webSocket client in milliseconds.
+     *            Give -1 to disable it.
+     * @since 2.1.8
+     * @author WFF
+     */
+    protected void setWebSocketReconnectInterval(final int milliseconds) {
+        wsReconnectInterval = milliseconds;
+    }
+
+    /**
+     * @return the interval value set by
+     *         {@code BrowserPage#setWebSocketReconnectInterval(int)} method.
+     * @since 2.1.8
+     * @author WFF
+     */
+    public int getWebSocketReconnectInterval() {
+        return wsReconnectInterval;
     }
 
 }

@@ -343,19 +343,20 @@ public enum WffJsFile {
      */
     public static String getAllOptimizedContent(final String wsUrl,
             final String instanceId, final boolean removePrevBPOnInitTab,
-            final boolean removePrevBPOnClosetTab,
-            final int heartbeatInterval) {
+            final boolean removePrevBPOnClosetTab, final int heartbeatInterval,
+            final int wsReconnectInterval) {
 
         if (allOptimizedContent != null) {
 
             if (heartbeatInterval > 0) {
                 return buildJsContentWithHeartbeat(wsUrl, instanceId,
                         removePrevBPOnInitTab, removePrevBPOnClosetTab,
-                        heartbeatInterval);
+                        heartbeatInterval, wsReconnectInterval);
             }
 
             return buildJsContentWithoutHeartbeat(wsUrl, instanceId,
-                    removePrevBPOnInitTab, removePrevBPOnClosetTab).toString();
+                    removePrevBPOnInitTab, removePrevBPOnClosetTab,
+                    wsReconnectInterval).toString();
         }
 
         try {
@@ -395,11 +396,12 @@ public enum WffJsFile {
             if (heartbeatInterval > 0) {
                 return buildJsContentWithHeartbeat(wsUrl, instanceId,
                         removePrevBPOnInitTab, removePrevBPOnClosetTab,
-                        heartbeatInterval);
+                        heartbeatInterval, wsReconnectInterval);
             }
 
             return buildJsContentWithoutHeartbeat(wsUrl, instanceId,
-                    removePrevBPOnInitTab, removePrevBPOnClosetTab).toString();
+                    removePrevBPOnInitTab, removePrevBPOnClosetTab,
+                    wsReconnectInterval).toString();
         } catch (final Exception e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
@@ -410,10 +412,11 @@ public enum WffJsFile {
 
     private static String buildJsContentWithHeartbeat(final String wsUrl,
             final String instanceId, final boolean removePrevBPOnInitTab,
-            final boolean removePrevBPOnClosetTab,
-            final int heartbeatInterval) {
+            final boolean removePrevBPOnClosetTab, final int heartbeatInterval,
+            final int wsReconnectInterval) {
         return buildJsContentWithoutHeartbeat(wsUrl, instanceId,
-                removePrevBPOnInitTab, removePrevBPOnClosetTab).append(
+                removePrevBPOnInitTab, removePrevBPOnClosetTab,
+                wsReconnectInterval).append(
                         HEART_BEAT_JS.replace("\"${HEARTBEAT_INTERVAL}\"",
                                 Integer.toString(heartbeatInterval)))
                         .toString();
@@ -422,7 +425,8 @@ public enum WffJsFile {
     private static StringBuilder buildJsContentWithoutHeartbeat(
             final String wsUrl, final String instanceId,
             final boolean removePrevBPOnInitTab,
-            final boolean removePrevBPOnClosetTab) {
+            final boolean removePrevBPOnClosetTab,
+            final int wsReconnectInterval) {
         return new StringBuilder("var wffLog = console.log;")
                 .append(JS_WORK_AROUND.optimizedFileContent)
                 .append(WFF_GLOBAL.optimizedFileContent
@@ -432,8 +436,10 @@ public enum WffJsFile {
                                 String.valueOf(removePrevBPOnClosetTab))
                         .replace("\"${REMOVE_PREV_BP_ON_INITTAB}\"",
                                 String.valueOf(removePrevBPOnInitTab))
-                        .replace("\"${TASK_VALUES}\"",
-                                Task.getJsObjectString()))
-                .append(allOptimizedContent);
+                        .replace("\"${TASK_VALUES}\"", Task.getJsObjectString())
+                        .replace("\"${WS_RECON}\"",
+                                String.valueOf(wsReconnectInterval))
+
+                ).append(allOptimizedContent);
     }
 }
