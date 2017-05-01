@@ -41,6 +41,7 @@ import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.PushFailedException;
 import com.webfirmframework.wffweb.server.page.js.WffJsFile;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.Html;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.Type;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
@@ -163,10 +164,10 @@ public abstract class BrowserPage implements Serializable {
     }
 
     /**
-     * adds the websocket listener for the given websocket session
+     * adds the WebSocket listener for the given WebSocket session
      *
      * @param sessionId
-     *            the unique id of websocket session
+     *            the unique id of WebSocket session
      * @param wsListener
      * @since 2.1.0
      * @author WFF
@@ -186,10 +187,10 @@ public abstract class BrowserPage implements Serializable {
     }
 
     /**
-     * removes the websocket listener added for this websocket session
+     * removes the WebSocket listener added for this WebSocket session
      *
      * @param sessionId
-     *            the unique id of websocket session
+     *            the unique id of WebSocket session
      * @since 2.1.0
      * @author WFF
      */
@@ -249,7 +250,7 @@ public abstract class BrowserPage implements Serializable {
         } else {
             if (LOGGER.isLoggable(Level.WARNING)) {
                 LOGGER.warning(
-                        "There is no websocket listener set, set it with BrowserPage#setWebSocketPushListener method.");
+                        "There is no WebSocket listener set, set it with BrowserPage#setWebSocketPushListener method.");
             }
         }
     }
@@ -306,6 +307,14 @@ public abstract class BrowserPage implements Serializable {
         }
     }
 
+    /**
+     * Override and use this method to render html content to the client browser
+     * page.
+     *
+     * @return the object of {@link Html} class which needs to be displayed in
+     *         the client browser page.
+     * @author WFF
+     */
     public abstract AbstractHtml render();
 
     private void invokeAsychMethod(final List<NameValue> nameValues)
@@ -689,7 +698,7 @@ public abstract class BrowserPage implements Serializable {
      *
      * @author WFF
      */
-    public final String toHtmlString() {
+    public String toHtmlString() {
         initAbstractHtml();
         return abstractHtml.toHtmlString(true);
     }
@@ -706,7 +715,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.4
      * @author WFF
      */
-    public final String toHtmlString(final boolean rebuild) {
+    public String toHtmlString(final boolean rebuild) {
         initAbstractHtml();
         return abstractHtml.toHtmlString(rebuild);
     }
@@ -718,7 +727,7 @@ public abstract class BrowserPage implements Serializable {
      *         the child tags.
      * @author WFF
      */
-    public final String toHtmlString(final String charset) {
+    public String toHtmlString(final String charset) {
         initAbstractHtml();
         return abstractHtml.toHtmlString(true, charset);
     }
@@ -739,8 +748,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.4
      * @author WFF
      */
-    public final String toHtmlString(final boolean rebuild,
-            final String charset) {
+    public String toHtmlString(final boolean rebuild, final String charset) {
         initAbstractHtml();
         return abstractHtml.toHtmlString(rebuild, charset);
     }
@@ -748,12 +756,14 @@ public abstract class BrowserPage implements Serializable {
     /**
      * @param os
      *            the object of {@code OutputStream} to write to.
-     *
+     * @return the total number of bytes written
+     * @since 2.1.4 void toOutputStream
+     * @since 2.1.8 int toOutputStream
      * @throws IOException
      */
-    public final void toOutputStream(final OutputStream os) throws IOException {
+    public int toOutputStream(final OutputStream os) throws IOException {
         initAbstractHtml();
-        abstractHtml.toOutputStream(os, true);
+        return abstractHtml.toOutputStream(os, true);
     }
 
     /**
@@ -764,12 +774,14 @@ public abstract class BrowserPage implements Serializable {
      * @return the total number of bytes written
      *
      * @throws IOException
-     * @since 2.1.4
+     * @since 2.1.4 void toOutputStream
+     * @since 2.1.8 int toOutputStream
+     *
      */
-    public final void toOutputStream(final OutputStream os,
-            final boolean rebuild) throws IOException {
+    public int toOutputStream(final OutputStream os, final boolean rebuild)
+            throws IOException {
         initAbstractHtml();
-        abstractHtml.toOutputStream(os, rebuild);
+        return abstractHtml.toOutputStream(os, rebuild);
     }
 
     /**
@@ -779,39 +791,61 @@ public abstract class BrowserPage implements Serializable {
      *            true to rebuild & false to write previously built bytes.
      * @param charset
      *            the charset
+     * @return the total number of bytes written
      * @throws IOException
+     * @since 2.1.4 void toOutputStream
+     * @since 2.1.8 int toOutputStream
      */
-    public final void toOutputStream(final OutputStream os,
+    public int toOutputStream(final OutputStream os, final String charset)
+            throws IOException {
+        initAbstractHtml();
+
+        return abstractHtml.toOutputStream(os, true, charset);
+    }
+
+    /**
+     * @param os
+     *            the object of {@code OutputStream} to write to.
+     * @param rebuild
+     *            true to rebuild & false to write previously built bytes.
+     * @param charset
+     *            the charset
+     * @return the total number of bytes written
+     * @throws IOException
+     * @since 2.1.4 void toOutputStream
+     * @since 2.1.8 int toOutputStream
+     *
+     */
+    public int toOutputStream(final OutputStream os, final boolean rebuild,
             final String charset) throws IOException {
         initAbstractHtml();
 
-        abstractHtml.toOutputStream(os, true, charset);
-    }
-
-    /**
-     * @param os
-     *            the object of {@code OutputStream} to write to.
-     * @param rebuild
-     *            true to rebuild & false to write previously built bytes.
-     * @param charset
-     *            the charset
-     * @return the total number of bytes written
-     * @throws IOException
-     * @since 2.1.4
-     *
-     */
-    public final void toOutputStream(final OutputStream os,
-            final boolean rebuild, final String charset) throws IOException {
-        initAbstractHtml();
-
-        abstractHtml.toOutputStream(os, rebuild, charset);
+        return abstractHtml.toOutputStream(os, rebuild, charset);
     }
 
     private void initAbstractHtml() {
 
         if (abstractHtml == null) {
 
+            try {
+                beforeRender();
+            } catch (final Throwable e) {
+                if (LOGGER.isLoggable(Level.WARNING)) {
+                    LOGGER.log(Level.WARNING,
+                            "beforeRender threw some exeption", e);
+                }
+            }
+
             abstractHtml = render();
+
+            try {
+                afterRender(abstractHtml);
+            } catch (final Throwable e) {
+                if (LOGGER.isLoggable(Level.WARNING)) {
+                    LOGGER.log(Level.WARNING, "afterRender threw some exeption",
+                            e);
+                }
+            }
 
             if (abstractHtml == null) {
                 throw new NullValueException(
@@ -842,7 +876,7 @@ public abstract class BrowserPage implements Serializable {
         final String webSocketUrl = webSocketUrl();
         if (webSocketUrl == null) {
             throw new NullValueException(
-                    "webSocketUrl must return valid websocket url");
+                    "webSocketUrl must return valid WebSocket url");
         }
 
         final String wsUrlWithInstanceId = webSocketUrl.indexOf('?') == -1
@@ -1233,7 +1267,7 @@ public abstract class BrowserPage implements Serializable {
      * NB:- This method has effect only if it is called before
      * {@code BrowserPage#render()} method return. This method can be called
      * inside {@code BrowserPage#render()} method to override the default global
-     * websocket reconnect interval set by
+     * WebSocket reconnect interval set by
      * {@code BrowserPage#setWebSocketDefultReconnectInterval(int)} method.
      *
      * @param milliseconds
@@ -1254,6 +1288,29 @@ public abstract class BrowserPage implements Serializable {
      */
     public int getWebSocketReconnectInterval() {
         return wsReconnectInterval;
+    }
+
+    /**
+     * Invokes just before the {@link BrowserPage#render()} method.
+     *
+     * @since 2.1.8
+     * @author WFF
+     */
+    protected void beforeRender() {
+        // NOP override and use
+    }
+
+    /**
+     *
+     * Invokes just after the {@link BrowserPage#render()} method.
+     *
+     * @param returnedByRender
+     *            the object returned by {@link BrowserPage#render()} method.
+     * @since 2.1.8
+     * @author WFF
+     */
+    protected void afterRender(final AbstractHtml returnedByRender) {
+        // NOP override and use
     }
 
 }
