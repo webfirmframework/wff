@@ -827,25 +827,7 @@ public abstract class BrowserPage implements Serializable {
 
         if (abstractHtml == null) {
 
-            try {
-                beforeRender();
-            } catch (final Throwable e) {
-                if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.log(Level.WARNING,
-                            "beforeRender threw some exeption", e);
-                }
-            }
-
             abstractHtml = render();
-
-            try {
-                afterRender(abstractHtml);
-            } catch (final Throwable e) {
-                if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.log(Level.WARNING, "afterRender threw some exeption",
-                            e);
-                }
-            }
 
             if (abstractHtml == null) {
                 throw new NullValueException(
@@ -1288,29 +1270,6 @@ public abstract class BrowserPage implements Serializable {
      */
     public int getWebSocketReconnectInterval() {
         return wsReconnectInterval;
-    }
-
-    /**
-     * Invokes just before the {@link BrowserPage#render()} method.
-     *
-     * @since 2.1.8
-     * @author WFF
-     */
-    protected void beforeRender() {
-        // NOP override and use
-    }
-
-    /**
-     *
-     * Invokes just after the {@link BrowserPage#render()} method.
-     *
-     * @param returnedByRender
-     *            the object returned by {@link BrowserPage#render()} method.
-     * @since 2.1.8
-     * @author WFF
-     */
-    protected void afterRender(final AbstractHtml returnedByRender) {
-        // NOP override and use
     }
 
 }
