@@ -33,8 +33,10 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
+import com.webfirmframework.wffweb.InvalidTagException;
 import com.webfirmframework.wffweb.MethodNotImplementedException;
 import com.webfirmframework.wffweb.NoParentException;
 import com.webfirmframework.wffweb.WffRuntimeException;
@@ -1960,6 +1962,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
      * @return the Wff Binary Message bytes of this tag
      * @since 2.0.0
      * @author WFF
+     * @throws InvalidTagException
      */
     public byte[] toWffBMBytes(final String charset) {
 
@@ -2042,6 +2045,8 @@ public abstract class AbstractHtml extends AbstractTagBase {
 
             return WffBinaryMessageUtil.VERSION_1
                     .getWffBinaryMessageBytes(nameValues);
+        } catch (final NoSuchElementException e) {
+            throw new InvalidTagException("Not possible to build wff bm bytes on this tag.\nDon't use an empty new NoTag(null, \"\") or new Blank(null, \"\")", e);
         } catch (final UnsupportedEncodingException e) {
             throw new WffRuntimeException(e.getMessage(), e);
         }
