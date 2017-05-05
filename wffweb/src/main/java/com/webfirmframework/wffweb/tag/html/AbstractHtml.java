@@ -2046,7 +2046,9 @@ public abstract class AbstractHtml extends AbstractTagBase {
             return WffBinaryMessageUtil.VERSION_1
                     .getWffBinaryMessageBytes(nameValues);
         } catch (final NoSuchElementException e) {
-            throw new InvalidTagException("Not possible to build wff bm bytes on this tag.\nDon't use an empty new NoTag(null, \"\") or new Blank(null, \"\")", e);
+            throw new InvalidTagException(
+                    "Not possible to build wff bm bytes on this tag.\nDon't use an empty new NoTag(null, \"\") or new Blank(null, \"\")",
+                    e);
         } catch (final UnsupportedEncodingException e) {
             throw new WffRuntimeException(e.getMessage(), e);
         }
@@ -2347,4 +2349,44 @@ public abstract class AbstractHtml extends AbstractTagBase {
         return false;
     }
 
+    /**
+     * Loops through all nested children including the given tag passed as
+     * argument. The looping is in the order in which the children are kept (not
+     * uniformly), NOT in the reverser order.
+     *
+     * @param abstractHtml
+     *            the tag from which to loop through including it.
+     * @param nestedChild
+     *            the object of NestedChild from which the
+     *            eachChild(AbstractHtml) to be invoked.
+     * @since 2.1.8
+     * @author WFF
+     */
+    protected static void loopThroughAllNestedChildren(
+            final AbstractHtml abstractHtml, final NestedChild nestedChild) {
+
+        final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<Set<AbstractHtml>>();
+        childrenStack
+                .push(new HashSet<AbstractHtml>(Arrays.asList(abstractHtml)));
+
+        while (childrenStack.size() > 0) {
+
+            final Set<AbstractHtml> children = childrenStack.pop();
+
+            synchronized (children) {
+
+                for (final AbstractHtml eachChild : children) {
+
+                    nestedChild.eachChild(eachChild);
+
+                    final Set<AbstractHtml> subChildren = new LinkedHashSet<>(
+                            eachChild.children);
+
+                    if (subChildren != null && subChildren.size() > 0) {
+                        childrenStack.push(subChildren);
+                    }
+                }
+            }
+        }
+    }
 }

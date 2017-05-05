@@ -1,10 +1,15 @@
 package com.webfirmframework.wffweb.tag.html.formsandinputs;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.NestedChild;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
+import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
+import com.webfirmframework.wffweb.tag.html.attribute.Name;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.FormAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
@@ -64,6 +69,85 @@ public class Form extends AbstractHtml {
      */
     protected void init() {
         // to override and use this method
+    }
+
+    /**
+     * prepares and gets the js object for the given tag names under this form
+     * tag. This js object may be used to return in onsubmit attribute.
+     *
+     * @param onlyForTagNames
+     *
+     *            TagNameConstants.INPUT, TagNameConstants.TEXTAREA and
+     *            TagNameConstants.SELECT
+     *
+     * @return the js object string for the given tag names. The returned js
+     *         string will be as {name1.name1.value} where name1 is the value of
+     *         name attribute of the field.
+     * @since 2.1.8
+     * @author WFF
+     */
+    public String getNameBasedJsObject(final Set<String> onlyForTagNames) {
+
+        // "{" should not be changed to '{'
+        final StringBuilder jsObjectBuilder = new StringBuilder("{");
+        final Set<String> appendedValues = new HashSet<String>();
+
+        loopThroughAllNestedChildren(this, new NestedChild() {
+
+            @Override
+            public void eachChild(final AbstractHtml child) {
+
+                final String tagName = child.getTagName();
+
+                if (onlyForTagNames.contains(tagName)) {
+
+                    final Name nameAttr = (Name) child
+                            .getAttributeByName(AttributeNameConstants.NAME);
+
+                    if (nameAttr != null) {
+                        final String value = nameAttr.getValue();
+                        if (!appendedValues.contains(value)) {
+
+                            jsObjectBuilder.append(value).append(':')
+                                    .append(value).append(".value,");
+                            appendedValues.add(value);
+                        }
+                    }
+
+                }
+
+            }
+        });
+
+        jsObjectBuilder.replace(jsObjectBuilder.length() - 1,
+                jsObjectBuilder.length(), "}");
+        return jsObjectBuilder.toString();
+    }
+
+    /**
+     *
+     * prepares and gets the js object for the input tag names
+     * (TagNameConstants.INPUT, TagNameConstants.TEXTAREA and
+     * TagNameConstants.SELECT) under this form tag. <br>
+     * NB:- If there are any missing input tag types, please inform
+     * webfirmframework to update this method. <br>
+     * This js object may be used to return in onsubmit attribute.
+     *
+     * @return the js object string for field names of TagNameConstants.INPUT,
+     *         TagNameConstants.TEXTAREA and TagNameConstants.SELECT. The
+     *         returned js string will be as {name1.name1.value} where name1 is
+     *         the value of name attribute of the field.
+     * @since 2.1.8
+     * @author WFF
+     */
+    public String getNameBasedJsObject() {
+
+        final Set<String> tagNames = new HashSet<String>();
+        tagNames.add(TagNameConstants.INPUT);
+        tagNames.add(TagNameConstants.TEXTAREA);
+        tagNames.add(TagNameConstants.SELECT);
+
+        return getNameBasedJsObject(tagNames);
     }
 
 }
