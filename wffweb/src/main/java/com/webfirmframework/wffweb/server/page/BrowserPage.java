@@ -51,6 +51,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.listener.AttributeValueCha
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.tag.html.programming.Script;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
+import com.webfirmframework.wffweb.tag.repository.TagRepository;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 import com.webfirmframework.wffweb.util.data.NameValue;
 import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
@@ -77,7 +78,7 @@ public abstract class BrowserPage implements Serializable {
 
     private Map<String, AbstractHtml> tagByWffId;
 
-    private AbstractHtml abstractHtml;
+    private volatile AbstractHtml rootTag;
 
     private final Map<String, WebSocketPushListener> sessionIdWsListeners = new HashMap<String, WebSocketPushListener>();
 
@@ -116,6 +117,8 @@ public abstract class BrowserPage implements Serializable {
     private static int wsDefaultReconnectInterval = 2000;
 
     private final AtomicInteger pushQueueSize = new AtomicInteger(0);
+
+    private volatile TagRepository tagRepository;
 
     // for security purpose, the class name should not be modified
     private static final class Security implements Serializable {
@@ -256,7 +259,7 @@ public abstract class BrowserPage implements Serializable {
     }
 
     DataWffId getNewDataWffId() {
-        return abstractHtml.getSharedObject().getNewDataWffId(ACCESS_OBJECT);
+        return rootTag.getSharedObject().getNewDataWffId(ACCESS_OBJECT);
     }
 
     /**
@@ -700,7 +703,7 @@ public abstract class BrowserPage implements Serializable {
      */
     public String toHtmlString() {
         initAbstractHtml();
-        return abstractHtml.toHtmlString(true);
+        return rootTag.toHtmlString(true);
     }
 
     /**
@@ -717,7 +720,7 @@ public abstract class BrowserPage implements Serializable {
      */
     public String toHtmlString(final boolean rebuild) {
         initAbstractHtml();
-        return abstractHtml.toHtmlString(rebuild);
+        return rootTag.toHtmlString(rebuild);
     }
 
     /**
@@ -729,7 +732,7 @@ public abstract class BrowserPage implements Serializable {
      */
     public String toHtmlString(final String charset) {
         initAbstractHtml();
-        return abstractHtml.toHtmlString(true, charset);
+        return rootTag.toHtmlString(true, charset);
     }
 
     /**
@@ -750,7 +753,7 @@ public abstract class BrowserPage implements Serializable {
      */
     public String toHtmlString(final boolean rebuild, final String charset) {
         initAbstractHtml();
-        return abstractHtml.toHtmlString(rebuild, charset);
+        return rootTag.toHtmlString(rebuild, charset);
     }
 
     /**
@@ -763,7 +766,7 @@ public abstract class BrowserPage implements Serializable {
      */
     public int toOutputStream(final OutputStream os) throws IOException {
         initAbstractHtml();
-        return abstractHtml.toOutputStream(os, true);
+        return rootTag.toOutputStream(os, true);
     }
 
     /**
@@ -781,7 +784,7 @@ public abstract class BrowserPage implements Serializable {
     public int toOutputStream(final OutputStream os, final boolean rebuild)
             throws IOException {
         initAbstractHtml();
-        return abstractHtml.toOutputStream(os, rebuild);
+        return rootTag.toOutputStream(os, rebuild);
     }
 
     /**
@@ -800,7 +803,7 @@ public abstract class BrowserPage implements Serializable {
             throws IOException {
         initAbstractHtml();
 
-        return abstractHtml.toOutputStream(os, true, charset);
+        return rootTag.toOutputStream(os, true, charset);
     }
 
     /**
@@ -820,33 +823,41 @@ public abstract class BrowserPage implements Serializable {
             final String charset) throws IOException {
         initAbstractHtml();
 
-        return abstractHtml.toOutputStream(os, rebuild, charset);
+        return rootTag.toOutputStream(os, rebuild, charset);
     }
 
     private void initAbstractHtml() {
 
-        if (abstractHtml == null) {
+        if (rootTag == null) {
 
-            abstractHtml = render();
+            synchronized (this) {
+                if (rootTag == null) {
+                    rootTag = render();
+                    if (rootTag == null) {
+                        throw new NullValueException(
+                                "render must return an instance of AbstractHtml, eg:- new Html(null);");
+                    }
 
-            if (abstractHtml == null) {
-                throw new NullValueException(
-                        "render must return an instance of AbstractHtml, eg:- new Html(null);");
+                    tagByWffId = rootTag.getSharedObject()
+                            .initTagByWffId(ACCESS_OBJECT);
+
+                    addDataWffIdAttribute(rootTag);
+                    // attribute value change listener
+                    // should be added only after adding data-wff-id attribute
+                    addAttrValueChangeListener(rootTag);
+                    addChildTagAppendListener(rootTag);
+                    addChildTagRemoveListener(rootTag);
+                    addAttributeAddListener(rootTag);
+                    addAttributeRemoveListener(rootTag);
+                    addInnerHtmlAddListener(rootTag);
+                    addInsertBeforeListener(rootTag);
+                } else {
+                    synchronized (wffBMBytesQueue) {
+                        wffBMBytesQueue.clear();
+                        pushQueueSize.set(0);
+                    }
+                }
             }
-
-            tagByWffId = abstractHtml.getSharedObject()
-                    .initTagByWffId(ACCESS_OBJECT);
-
-            addDataWffIdAttribute(abstractHtml);
-            // attribute value change listener
-            // should be added only after adding data-wff-id attribute
-            addAttrValueChangeListener(abstractHtml);
-            addChildTagAppendListener(abstractHtml);
-            addChildTagRemoveListener(abstractHtml);
-            addAttributeAddListener(abstractHtml);
-            addAttributeRemoveListener(abstractHtml);
-            addInnerHtmlAddListener(abstractHtml);
-            addInsertBeforeListener(abstractHtml);
 
         } else {
             synchronized (wffBMBytesQueue) {
@@ -865,7 +876,7 @@ public abstract class BrowserPage implements Serializable {
                 ? webSocketUrl + "?wffInstanceId=" + getInstanceId()
                 : webSocketUrl + "&wffInstanceId=" + getInstanceId();
 
-        embedWffScriptIfRequired(abstractHtml, wsUrlWithInstanceId);
+        embedWffScriptIfRequired(rootTag, wsUrlWithInstanceId);
     }
 
     /**
@@ -1270,6 +1281,19 @@ public abstract class BrowserPage implements Serializable {
      */
     public int getWebSocketReconnectInterval() {
         return wsReconnectInterval;
+    }
+
+    public TagRepository getTagRepository() {
+
+        if (tagRepository == null) {
+            synchronized (this) {
+                if (tagRepository == null) {
+                    tagRepository = new TagRepository(rootTag);
+                }
+            }
+        }
+
+        return tagRepository;
     }
 
 }

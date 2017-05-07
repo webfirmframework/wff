@@ -16,20 +16,16 @@
 package com.webfirmframework.wffweb.tag.html;
 
 /**
- * Interface looping nested children. Eg:-
- * {@code AbstractHtml#loopThroughAllNestedChildren}
- *
  * @author WFF
  * @since 2.1.8
  */
-public interface NestedChild {
+public abstract class AbstractHtmlRepository {
 
-    /**
-     * @param child
-     * @return true to continue looping and false to break;
-     * @since 2.1.8
-     * @author WFF
-     */
-    public boolean eachChild(AbstractHtml child);
+    protected static void loopThroughAllNestedChildren(
+            final NestedChild nestedChild, final boolean includeParents,
+            final AbstractHtml... parents) {
+        AbstractHtml.loopThroughAllNestedChildren(nestedChild, includeParents,
+                parents);
+    }
 
 }

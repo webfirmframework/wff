@@ -95,7 +95,7 @@ public class Form extends AbstractHtml {
         loopThroughAllNestedChildren(new NestedChild() {
 
             @Override
-            public void eachChild(final AbstractHtml child) {
+            public boolean eachChild(final AbstractHtml child) {
 
                 final String tagName = child.getTagName();
 
@@ -115,7 +115,7 @@ public class Form extends AbstractHtml {
                     }
 
                 }
-
+                return true;
             }
         }, false, this);
 

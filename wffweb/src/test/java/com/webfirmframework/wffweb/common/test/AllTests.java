@@ -140,6 +140,7 @@ import com.webfirmframework.wffweb.tag.html.formsandinputs.TextAreaTest;
 import com.webfirmframework.wffweb.tag.html.images.ImgTest;
 import com.webfirmframework.wffweb.tag.htmlwff.BlankTest;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTagTest;
+import com.webfirmframework.wffweb.tag.repository.TagRepositoryTest;
 import com.webfirmframework.wffweb.util.CssLengthUtilTest;
 import com.webfirmframework.wffweb.util.CssValueUtilTest;
 import com.webfirmframework.wffweb.util.ObjectUtilTest;
@@ -202,7 +203,7 @@ import com.webfirmframework.wffweb.util.WffBinaryMessageUtilTest;
         AttributeRegistryTest.class, AttributeUtilTest.class,
         AbstractHtmlTest.class, AbstractAttributeTest.class, JsUtilTest.class,
         TextAreaTest.class, SelectedTest.class, CheckedTest.class,
-        FormTest.class })
+        FormTest.class, TagRepositoryTest.class })
 public class AllTests {
 
 }

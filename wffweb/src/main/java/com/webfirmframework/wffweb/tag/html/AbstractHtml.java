@@ -2380,7 +2380,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
             }
         }
 
-        while (childrenStack.size() > 0) {
+        exit: while (childrenStack.size() > 0) {
 
             final Set<AbstractHtml> children = childrenStack.pop();
 
@@ -2388,7 +2388,9 @@ public abstract class AbstractHtml extends AbstractTagBase {
 
                 for (final AbstractHtml eachChild : children) {
 
-                    nestedChild.eachChild(eachChild);
+                    if (!nestedChild.eachChild(eachChild)) {
+                        break exit;
+                    }
 
                     final Set<AbstractHtml> subChildren = eachChild.children;
 
