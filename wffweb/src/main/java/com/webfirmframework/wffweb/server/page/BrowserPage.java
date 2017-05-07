@@ -1284,7 +1284,8 @@ public abstract class BrowserPage implements Serializable {
     }
 
     /**
-     * Gets the TagRepository to do different tag operations.
+     * Gets the TagRepository to do different tag operations. This tag
+     * repository is specific to this BrowserPage instance.
      *
      * @return the TagRepository object to do different tag operations.
      * @since 2.1.8
