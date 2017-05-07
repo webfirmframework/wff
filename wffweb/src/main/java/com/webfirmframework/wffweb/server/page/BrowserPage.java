@@ -1287,13 +1287,15 @@ public abstract class BrowserPage implements Serializable {
      * Gets the TagRepository to do different tag operations. This tag
      * repository is specific to this BrowserPage instance.
      *
-     * @return the TagRepository object to do different tag operations.
+     * @return the TagRepository object to do different tag operations. Or null
+     *         if any one of the BrowserPage#toString or
+     *         BrowserPage#toOutputStream methods is not called.
      * @since 2.1.8
      * @author WFF
      */
     public TagRepository getTagRepository() {
 
-        if (tagRepository == null) {
+        if (tagRepository == null && rootTag != null) {
             synchronized (this) {
                 if (tagRepository == null) {
                     tagRepository = new TagRepository(rootTag);
