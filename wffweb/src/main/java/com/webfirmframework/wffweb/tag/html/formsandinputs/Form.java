@@ -92,7 +92,7 @@ public class Form extends AbstractHtml {
         final StringBuilder jsObjectBuilder = new StringBuilder("{");
         final Set<String> appendedValues = new HashSet<String>();
 
-        loopThroughAllNestedChildren(this, new NestedChild() {
+        loopThroughAllNestedChildren(new NestedChild() {
 
             @Override
             public void eachChild(final AbstractHtml child) {
@@ -117,7 +117,7 @@ public class Form extends AbstractHtml {
                 }
 
             }
-        });
+        }, false, this);
 
         jsObjectBuilder.replace(jsObjectBuilder.length() - 1,
                 jsObjectBuilder.length(), "}");

@@ -2350,24 +2350,35 @@ public abstract class AbstractHtml extends AbstractTagBase {
     }
 
     /**
-     * Loops through all nested children including the given tag passed as
-     * argument. The looping is in the order in which the children are kept (not
-     * uniformly), NOT in the reverser order.
+     * Loops through all nested children tags (excluding the given tag) of the
+     * given tag. The looping is in a random order to gain maximum performance
+     * and minimum memory footprint.
      *
-     * @param abstractHtml
-     *            the tag from which to loop through including it.
      * @param nestedChild
      *            the object of NestedChild from which the
      *            eachChild(AbstractHtml) to be invoked.
+     * @param includeParents
+     *            true to include the given parent tags in the loop
+     * @param parents
+     *            the tags from which to loop through.
+     *
      * @since 2.1.8
      * @author WFF
      */
     protected static void loopThroughAllNestedChildren(
-            final AbstractHtml abstractHtml, final NestedChild nestedChild) {
+            final NestedChild nestedChild, final boolean includeParents,
+            final AbstractHtml... parents) {
 
         final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<Set<AbstractHtml>>();
-        childrenStack
-                .push(new HashSet<AbstractHtml>(Arrays.asList(abstractHtml)));
+
+        if (includeParents) {
+            childrenStack
+                    .push(new HashSet<AbstractHtml>(Arrays.asList(parents)));
+        } else {
+            for (final AbstractHtml parent : parents) {
+                childrenStack.push(parent.children);
+            }
+        }
 
         while (childrenStack.size() > 0) {
 
@@ -2379,8 +2390,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
 
                     nestedChild.eachChild(eachChild);
 
-                    final Set<AbstractHtml> subChildren = new LinkedHashSet<>(
-                            eachChild.children);
+                    final Set<AbstractHtml> subChildren = eachChild.children;
 
                     if (subChildren != null && subChildren.size() > 0) {
                         childrenStack.push(subChildren);
