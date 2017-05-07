@@ -21,6 +21,22 @@ package com.webfirmframework.wffweb.tag.html;
  */
 public abstract class AbstractHtmlRepository {
 
+    /**
+     * Loops through all nested children tags (excluding the given tag) of the
+     * given tag. The looping is in a random order to gain maximum performance
+     * and minimum memory footprint.
+     *
+     * @param nestedChild
+     *            the object of NestedChild from which the
+     *            eachChild(AbstractHtml) to be invoked.
+     * @param includeParents
+     *            true to include the given parent tags in the loop
+     * @param parents
+     *            the tags from which to loop through.
+     *
+     * @since 2.1.8
+     * @author WFF
+     */
     protected static void loopThroughAllNestedChildren(
             final NestedChild nestedChild, final boolean includeParents,
             final AbstractHtml... parents) {
