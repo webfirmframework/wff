@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.webfirmframework.wffweb.NullValueException;
+import com.webfirmframework.wffweb.server.page.BrowserPage;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.AbstractHtmlRepository;
 import com.webfirmframework.wffweb.tag.html.NestedChild;
@@ -26,6 +27,9 @@ import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 
 /**
+ * The object of {@code TagRepository} class may be got by
+ * {@link BrowserPage#getTagRepository()} method.
+ *
  * @author WFF
  * @since 2.1.8
  */
