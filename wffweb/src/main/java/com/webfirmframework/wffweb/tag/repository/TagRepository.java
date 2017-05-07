@@ -31,10 +31,10 @@ import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
  */
 public class TagRepository extends AbstractHtmlRepository {
 
-    private final AbstractHtml root;
+    private final AbstractHtml[] rootTags;
 
-    public TagRepository(final AbstractHtml root) {
-        this.root = root;
+    public TagRepository(final AbstractHtml... rootTags) {
+        this.rootTags = rootTags;
     }
 
     /**
@@ -92,7 +92,7 @@ public class TagRepository extends AbstractHtmlRepository {
      * @author WFF
      */
     public AbstractHtml findTagById(final String id) {
-        return findTagById(id, root);
+        return findTagById(id, rootTags);
     }
 
     /**
@@ -308,7 +308,7 @@ public class TagRepository extends AbstractHtmlRepository {
      */
     public Set<AbstractHtml> findTagsByAttributeName(
             final String attributeName) {
-        return findTagsByAttributeName(attributeName, root);
+        return findTagsByAttributeName(attributeName, rootTags);
     }
 
     /**
@@ -325,7 +325,7 @@ public class TagRepository extends AbstractHtmlRepository {
      */
     public Set<AbstractHtml> findTagsByAttribute(final String attributeName,
             final String attributeValue) {
-        return findTagsByAttribute(attributeName, attributeValue, root);
+        return findTagsByAttribute(attributeName, attributeValue, rootTags);
     }
 
     /**
@@ -342,7 +342,7 @@ public class TagRepository extends AbstractHtmlRepository {
      */
     public AbstractHtml findOneTagByAttribute(final String attributeName,
             final String attributeValue) {
-        return findOneTagByAttribute(attributeName, attributeValue, root);
+        return findOneTagByAttribute(attributeName, attributeValue, rootTags);
     }
 
     /**
@@ -356,7 +356,7 @@ public class TagRepository extends AbstractHtmlRepository {
      * @author WFF
      */
     public AbstractHtml findOneTagByAttributeName(final String attributeName) {
-        return findOneTagByAttributeName(attributeName, root);
+        return findOneTagByAttributeName(attributeName, rootTags);
     }
 
 }
