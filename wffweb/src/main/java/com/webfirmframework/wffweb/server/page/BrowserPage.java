@@ -1283,6 +1283,13 @@ public abstract class BrowserPage implements Serializable {
         return wsReconnectInterval;
     }
 
+    /**
+     * Gets the TagRepository to do different tag operations.
+     *
+     * @return the TagRepository object to do different tag operations.
+     * @since 2.1.8
+     * @author WFF
+     */
     public TagRepository getTagRepository() {
 
         if (tagRepository == null) {
