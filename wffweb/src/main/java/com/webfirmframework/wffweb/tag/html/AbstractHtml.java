@@ -2431,10 +2431,14 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * Gets the map of wffObjects which are upserted by
      * {@link TagRepository#upsert(AbstractHtml, String, WffBMObject)} or
-     * {@link TagRepository#upsert(AbstractHtml, String, WffBMArray)}
+     * {@link TagRepository#upsert(AbstractHtml, String, WffBMArray)}.
+     * {@code null} checking is required while consuming this map.
      *
      * @return the map of wffObjects. The value may either be an instance of
-     *         {@link WffBMObject} or {@link WffBMArray}.
+     *         {@link WffBMObject} or {@link WffBMArray}. This map may be null
+     *         if there is no {@code TagRepository#upsert} operation has been
+     *         done at least once in the whole life cycle. Otherwise it may also
+     *         be empty.
      * @since 2.1.8
      * @author WFF
      */
