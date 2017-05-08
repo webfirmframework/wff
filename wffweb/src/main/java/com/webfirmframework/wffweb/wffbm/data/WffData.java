@@ -16,7 +16,24 @@
 package com.webfirmframework.wffweb.wffbm.data;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 
 public interface WffData extends Serializable {
+
+    /**
+     * @return the BMType
+     * @since 2.1.8
+     * @author WFF
+     */
+    public abstract BMType getBMType();
+
+    /**
+     * @param outer
+     * @return
+     * @since 2.1.8
+     * @author WFF
+     */
+    public abstract byte[] build(boolean outer)
+            throws UnsupportedEncodingException;
 
 }

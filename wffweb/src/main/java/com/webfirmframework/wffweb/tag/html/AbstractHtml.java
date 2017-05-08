@@ -44,7 +44,7 @@ import com.webfirmframework.wffweb.WffSecurityException;
 import com.webfirmframework.wffweb.clone.CloneUtil;
 import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
 import com.webfirmframework.wffweb.streamer.WffBinaryMessageOutputStreamer;
-import com.webfirmframework.wffweb.tag.core.AbstractTagBase;
+import com.webfirmframework.wffweb.tag.core.AbstractJsObject;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeUtil;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
@@ -62,6 +62,7 @@ import com.webfirmframework.wffweb.tag.htmlwff.CustomTag;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 import com.webfirmframework.wffweb.util.data.NameValue;
+import com.webfirmframework.wffweb.wffbm.data.WffData;
 
 /**
  * @author WFF
@@ -69,7 +70,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  * @version 1.2.0
  *
  */
-public abstract class AbstractHtml extends AbstractTagBase {
+public abstract class AbstractHtml extends AbstractJsObject {
 
     // if this class' is refactored then SecurityClassConstants should be
     // updated.
@@ -1657,6 +1658,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
      * @since 1.0.0
      * @author WFF
      */
+    @Override
     public AbstractHtml5SharedObject getSharedObject() {
         return sharedObject;
     }
@@ -2400,5 +2402,26 @@ public abstract class AbstractHtml extends AbstractTagBase {
                 }
             }
         }
+    }
+
+    /**
+     * @param key
+     * @param wffData
+     * @return
+     * @since 2.1.8
+     * @author WFF
+     */
+    protected WffData addWffData(final String key, final WffData wffData) {
+        return AbstractJsObject.addWffData(this, key, wffData);
+    }
+
+    /**
+     * @param key
+     * @return
+     * @since 2.1.8
+     * @author WFF
+     */
+    protected WffData removeWffData(final String key) {
+        return AbstractJsObject.removeWffData(this, key);
     }
 }

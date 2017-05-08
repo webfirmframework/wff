@@ -35,6 +35,8 @@ import com.webfirmframework.wffweb.tag.html.listener.ChildTagAppendListener;
 import com.webfirmframework.wffweb.tag.html.listener.ChildTagRemoveListener;
 import com.webfirmframework.wffweb.tag.html.listener.InnerHtmlAddListener;
 import com.webfirmframework.wffweb.tag.html.listener.InsertBeforeListener;
+import com.webfirmframework.wffweb.tag.html.listener.WffDataDeleteListener;
+import com.webfirmframework.wffweb.tag.html.listener.WffDataUpdateListener;
 
 /**
  *
@@ -67,6 +69,10 @@ public class AbstractHtml5SharedObject implements Serializable {
     private AttributeValueChangeListener valueChangeListener;
 
     private InsertBeforeListener insertBeforeListener;
+
+    private WffDataDeleteListener wffDataDeleteListener;
+
+    private WffDataUpdateListener wffDataUpdateListener;
 
     /**
      * no need to make it volatile
@@ -427,6 +433,80 @@ public class AbstractHtml5SharedObject implements Serializable {
         }
 
         this.insertBeforeListener = insertBeforeListener;
+    }
+
+    /**
+     * NB:- This method is for only for internal use
+     *
+     * @param wffDataDeleteListener
+     *            the wffDataDeleteListener to set
+     * @since 2.1.8
+     */
+    public void setWffDataDeleteListener(
+            final WffDataDeleteListener wffDataDeleteListener,
+            final Object accessObject) {
+        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE
+                .equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException(
+                    "Not allowed to consume this method. This method is for internal use.");
+        }
+        this.wffDataDeleteListener = wffDataDeleteListener;
+    }
+
+    /**
+     * NB:- This method is for only for internal use
+     *
+     * @param wffDataUpdateListener
+     *            the wffDataUpdateListener to set
+     * @since 2.1.8
+     */
+    public void setWffDataUpdateListener(
+            final WffDataUpdateListener wffDataUpdateListener,
+            final Object accessObject) {
+        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE
+                .equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException(
+                    "Not allowed to consume this method. This method is for internal use.");
+        }
+        this.wffDataUpdateListener = wffDataUpdateListener;
+    }
+
+    /**
+     * NB:- This method is for only for internal use
+     *
+     * @return the insertBeforeListener
+     *
+     * @since 2.1.8
+     */
+    public WffDataDeleteListener getWffDataDeleteListener(
+            final Object accessObject) {
+
+        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_JS_OBJECT
+                .equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException(
+                    "Not allowed to consume this method. This method is for internal use.");
+        }
+
+        return wffDataDeleteListener;
+    }
+
+    /**
+     * NB:- This method is for only for internal use
+     *
+     * @return the insertBeforeListener
+     *
+     * @since 2.1.8
+     */
+    public WffDataUpdateListener getWffDataUpdateListener(
+            final Object accessObject) {
+
+        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_JS_OBJECT
+                .equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException(
+                    "Not allowed to consume this method. This method is for internal use.");
+        }
+
+        return wffDataUpdateListener;
     }
 
 }

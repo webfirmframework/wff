@@ -128,6 +128,7 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
      * @since 1.1.5
      * @author WFF
      */
+    @Override
     public byte[] build(final boolean outer)
             throws UnsupportedEncodingException {
 
@@ -346,6 +347,11 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
             return null;
         }
         return valueValueType.getValueType();
+    }
+
+    @Override
+    public BMType getBMType() {
+        return BMType.OBJECT;
     }
 
 }

@@ -76,7 +76,24 @@ public enum Task {
     /**
      * to remove BrowserPage instance from BrowserPageContext
      */
-    REMOVE_BROWSER_PAGE;
+    REMOVE_BROWSER_PAGE,
+
+    /**
+     * to set WffBMObject on tag
+     */
+    SET_BM_OBJ_ON_TAG,
+
+    /**
+     * to set WffBMArray on tag
+     */
+    SET_BM_ARR_ON_TAG,
+
+    /**
+     * to delete WffBMObject or WffBMArray from tag
+     */
+    DEL_BM_OBJ_OR_ARR_FROM_TAG,
+
+    ;
 
     private byte valueByte;
 

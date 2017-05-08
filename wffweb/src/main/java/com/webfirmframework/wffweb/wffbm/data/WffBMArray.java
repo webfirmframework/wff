@@ -251,6 +251,7 @@ public class WffBMArray extends LinkedList<Object> implements WffData {
         }
     }
 
+    @Override
     public byte[] build(final boolean outer)
             throws UnsupportedEncodingException {
 
@@ -369,5 +370,10 @@ public class WffBMArray extends LinkedList<Object> implements WffData {
      */
     public BMValueType getValueType() {
         return valueType;
+    }
+
+    @Override
+    public BMType getBMType() {
+        return BMType.ARRAY;
     }
 }

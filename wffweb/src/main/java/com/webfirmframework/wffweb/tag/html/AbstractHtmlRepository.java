@@ -15,6 +15,8 @@
  */
 package com.webfirmframework.wffweb.tag.html;
 
+import com.webfirmframework.wffweb.wffbm.data.WffData;
+
 /**
  * @author WFF
  * @since 2.1.8
@@ -42,6 +44,31 @@ public abstract class AbstractHtmlRepository {
             final AbstractHtml... parents) {
         AbstractHtml.loopThroughAllNestedChildren(nestedChild, includeParents,
                 parents);
+    }
+
+    /**
+     * @param abstractHtml
+     * @param key
+     * @param wffData
+     * @return
+     * @since 2.1.8
+     * @author WFF
+     */
+    protected static WffData addWffData(final AbstractHtml abstractHtml,
+            final String key, final WffData wffData) {
+        return abstractHtml.addWffData(key, wffData);
+    }
+
+    /**
+     * @param abstractHtml
+     * @param key
+     * @return
+     * @since 2.1.8
+     * @author WFF
+     */
+    protected static WffData removeWffData(final AbstractHtml abstractHtml,
+            final String key) {
+        return abstractHtml.removeWffData(key);
     }
 
 }

@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.tag.repository;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.webfirmframework.wffweb.InvalidTagException;
 import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.server.page.BrowserPage;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
@@ -25,6 +26,10 @@ import com.webfirmframework.wffweb.tag.html.AbstractHtmlRepository;
 import com.webfirmframework.wffweb.tag.html.NestedChild;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.htmlwff.Blank;
+import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
+import com.webfirmframework.wffweb.wffbm.data.WffBMArray;
+import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
 
 /**
  * The object of {@code TagRepository} class may be got by
@@ -361,6 +366,26 @@ public class TagRepository extends AbstractHtmlRepository {
      */
     public AbstractHtml findOneTagByAttributeName(final String attributeName) {
         return findOneTagByAttributeName(attributeName, rootTags);
+    }
+
+    public void upsert(final AbstractHtml tag, final String key,
+            final WffBMObject bmObject) {
+        AbstractHtmlRepository.addWffData(tag, key, bmObject);
+    }
+
+    public void upsert(final AbstractHtml tag, final String key,
+            final WffBMArray bmArray) {
+        AbstractHtmlRepository.addWffData(tag, key, bmArray);
+    }
+
+    public void delete(final AbstractHtml tag, final String key) {
+
+        if (tag instanceof NoTag || tag instanceof Blank) {
+            throw new InvalidTagException(
+                    "NoTag and Blank tag are not allowed to use");
+        }
+
+        AbstractHtmlRepository.removeWffData(tag, key);
     }
 
 }
