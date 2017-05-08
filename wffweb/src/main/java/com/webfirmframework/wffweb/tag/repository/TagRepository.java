@@ -368,16 +368,44 @@ public class TagRepository extends AbstractHtmlRepository {
         return findOneTagByAttributeName(attributeName, rootTags);
     }
 
+    /**
+     * inserts or replaces (if already exists) the key bmObject pair in the
+     * wffObject property of tag.
+     *
+     * @param tag
+     * @param key
+     * @param bmObject
+     * @since 2.1.8
+     * @author WFF
+     */
     public void upsert(final AbstractHtml tag, final String key,
             final WffBMObject bmObject) {
         AbstractHtmlRepository.addWffData(tag, key, bmObject);
     }
 
+    /**
+     * inserts or replaces (if already exists) the key bmArray pair in the
+     * wffObject property of tag.
+     *
+     * @param tag
+     * @param key
+     * @param bmArray
+     * @since 2.1.8
+     * @author WFF
+     */
     public void upsert(final AbstractHtml tag, final String key,
             final WffBMArray bmArray) {
         AbstractHtmlRepository.addWffData(tag, key, bmArray);
     }
 
+    /**
+     * deletes the key bmArray pair in the wffObject property of tag.
+     *
+     * @param tag
+     * @param key
+     * @since 2.1.8
+     * @author WFF
+     */
     public void delete(final AbstractHtml tag, final String key) {
 
         if (tag instanceof NoTag || tag instanceof Blank) {

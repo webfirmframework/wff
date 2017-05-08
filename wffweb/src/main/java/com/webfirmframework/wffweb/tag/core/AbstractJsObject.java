@@ -25,6 +25,10 @@ import com.webfirmframework.wffweb.tag.html.listener.WffDataUpdateListener;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 import com.webfirmframework.wffweb.wffbm.data.WffData;
 
+/**
+ * @author WFF
+ * @since 2.1.8
+ */
 public abstract class AbstractJsObject extends AbstractTagBase {
 
     private static final long serialVersionUID = 1L;
@@ -51,6 +55,11 @@ public abstract class AbstractJsObject extends AbstractTagBase {
 
     public abstract AbstractHtml5SharedObject getSharedObject();
 
+    /**
+     * @return
+     * @since 2.1.8
+     * @author WFF
+     */
     private Map<String, WffData> getWffDatas() {
         if (wffDatas == null) {
             initWffDatas();
@@ -58,12 +67,25 @@ public abstract class AbstractJsObject extends AbstractTagBase {
         return wffDatas;
     }
 
+    /**
+     *
+     * @since 2.1.8
+     * @author WFF
+     */
     private synchronized void initWffDatas() {
         if (wffDatas == null) {
             wffDatas = new HashMap<String, WffData>();
         }
     }
 
+    /**
+     * @param abstractHtml
+     * @param key
+     * @param wffData
+     * @return
+     * @since 2.1.8
+     * @author WFF
+     */
     protected static WffData addWffData(final AbstractHtml abstractHtml,
             final String key, final WffData wffData) {
 
@@ -80,6 +102,13 @@ public abstract class AbstractJsObject extends AbstractTagBase {
         return previous;
     }
 
+    /**
+     * @param abstractHtml
+     * @param key
+     * @return
+     * @since 2.1.8
+     * @author WFF
+     */
     protected static WffData removeWffData(final AbstractHtml abstractHtml,
             final String key) {
 

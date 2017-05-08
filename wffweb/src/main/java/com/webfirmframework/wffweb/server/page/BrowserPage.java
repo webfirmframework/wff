@@ -697,14 +697,12 @@ public abstract class BrowserPage implements Serializable {
 
     private void addWffDataUpdateListener(final AbstractHtml abstractHtml) {
         abstractHtml.getSharedObject().setWffDataUpdateListener(
-                new WffDataUpdateListenerImpl(this, ACCESS_OBJECT, tagByWffId),
-                ACCESS_OBJECT);
+                new WffDataUpdateListenerImpl(this), ACCESS_OBJECT);
     }
 
     private void addWffDataDeleteListener(final AbstractHtml abstractHtml) {
         abstractHtml.getSharedObject().setWffDataDeleteListener(
-                new WffDataDeleteListenerImpl(this, ACCESS_OBJECT, tagByWffId),
-                ACCESS_OBJECT);
+                new WffDataDeleteListenerImpl(this), ACCESS_OBJECT);
     }
 
     /**
