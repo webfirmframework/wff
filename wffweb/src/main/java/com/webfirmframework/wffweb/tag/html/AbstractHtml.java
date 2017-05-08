@@ -60,8 +60,11 @@ import com.webfirmframework.wffweb.tag.html.listener.InsertBeforeListener;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 import com.webfirmframework.wffweb.tag.htmlwff.CustomTag;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
+import com.webfirmframework.wffweb.tag.repository.TagRepository;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 import com.webfirmframework.wffweb.util.data.NameValue;
+import com.webfirmframework.wffweb.wffbm.data.WffBMArray;
+import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
 import com.webfirmframework.wffweb.wffbm.data.WffData;
 
 /**
@@ -2423,5 +2426,19 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     protected WffData removeWffData(final String key) {
         return AbstractJsObject.removeWffData(this, key);
+    }
+
+    /**
+     * Gets the map of wffObjects which are upserted by
+     * {@link TagRepository#upsert(AbstractHtml, String, WffBMObject)} or
+     * {@link TagRepository#upsert(AbstractHtml, String, WffBMArray)}
+     *
+     * @return the map of wffObjects. The value may either be an instance of
+     *         {@link WffBMObject} or {@link WffBMArray}.
+     * @since 2.1.8
+     * @author WFF
+     */
+    public Map<String, WffData> getWffObjects() {
+        return wffDatas;
     }
 }

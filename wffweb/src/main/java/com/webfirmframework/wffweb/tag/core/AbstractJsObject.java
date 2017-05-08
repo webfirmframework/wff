@@ -36,9 +36,11 @@ public abstract class AbstractJsObject extends AbstractTagBase {
     private static final Security ACCESS_OBJECT;
 
     /**
-     * should not be directly consumed, instead use getWffDatas method
+     * should not be directly consumed as it may not have been initialized,
+     * instead use getWffDatas method. But, its direct usage is valid only for
+     * {@code AbstractHtml#getWffObjects()}
      */
-    private volatile Map<String, WffData> wffDatas;
+    protected volatile Map<String, WffData> wffDatas;
 
     // for security purpose, the class name should not be modified
     private static final class Security implements Serializable {
