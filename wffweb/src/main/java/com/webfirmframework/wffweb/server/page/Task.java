@@ -109,8 +109,7 @@ public enum Task {
         shortName = "T".concat(String.valueOf(ordinal()));
         jsNameValue = WffJsFile.PRODUCTION_MODE
                 ? shortName.concat(":").concat(String.valueOf(ordinal()))
-                : name().concat(":").concat(String.valueOf(ordinal())) + ":"
-                        + ordinal();
+                : name().concat(":").concat(String.valueOf(ordinal()));
     }
 
     /**
