@@ -379,14 +379,26 @@ public class TagRepository extends AbstractHtmlRepository {
      * @param bmObject
      * @throws InvalidTagException
      *             if the given instance is of NoTag / Blank
+     * @throws NullValueException
+     *             if tag, key or bmObject is null
      * @since 2.1.8
      * @author WFF
      */
     public void upsert(final AbstractHtml tag, final String key,
-            final WffBMObject bmObject) throws InvalidTagException {
+            final WffBMObject bmObject)
+            throws InvalidTagException, NullValueException {
+        if (tag == null) {
+            throw new NullValueException("tag cannot be null");
+        }
         if (tag instanceof NoTag || tag instanceof Blank) {
             throw new InvalidTagException(
                     "NoTag and Blank tag are not allowed to use");
+        }
+        if (key == null) {
+            throw new NullValueException("key cannot be null");
+        }
+        if (bmObject == null) {
+            throw new NullValueException("bmObject cannot be null");
         }
         AbstractHtmlRepository.addWffData(tag, key, bmObject);
     }
@@ -402,14 +414,27 @@ public class TagRepository extends AbstractHtmlRepository {
      * @param bmArray
      * @throws InvalidTagException
      *             if the given instance is of NoTag / Blank
+     * @throws NullValueException
+     *             if tag, key or bmArray is null
      * @since 2.1.8
      * @author WFF
      */
     public void upsert(final AbstractHtml tag, final String key,
-            final WffBMArray bmArray) throws InvalidTagException {
+            final WffBMArray bmArray)
+            throws InvalidTagException, NullValueException {
+
+        if (tag == null) {
+            throw new NullValueException("tag cannot be null");
+        }
         if (tag instanceof NoTag || tag instanceof Blank) {
             throw new InvalidTagException(
                     "NoTag and Blank tag are not allowed to use");
+        }
+        if (key == null) {
+            throw new NullValueException("key cannot be null");
+        }
+        if (bmArray == null) {
+            throw new NullValueException("bmArray cannot be null");
         }
         AbstractHtmlRepository.addWffData(tag, key, bmArray);
     }
@@ -422,15 +447,23 @@ public class TagRepository extends AbstractHtmlRepository {
      * @param key
      * @throws InvalidTagException
      *             if the given instance is of NoTag / Blank
+     * @throws NullValueException
+     *             if tag or key is null
      * @since 2.1.8
      * @author WFF
      */
     public void delete(final AbstractHtml tag, final String key)
-            throws InvalidTagException {
+            throws InvalidTagException, NullValueException {
 
+        if (tag == null) {
+            throw new NullValueException("tag cannot be null");
+        }
         if (tag instanceof NoTag || tag instanceof Blank) {
             throw new InvalidTagException(
                     "NoTag and Blank tag are not allowed to use");
+        }
+        if (key == null) {
+            throw new NullValueException("key cannot be null");
         }
 
         AbstractHtmlRepository.removeWffData(tag, key);
