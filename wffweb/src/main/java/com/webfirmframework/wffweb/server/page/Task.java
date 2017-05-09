@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
+import com.webfirmframework.wffweb.server.page.js.WffJsFile;
 import com.webfirmframework.wffweb.util.data.NameValue;
 
 /**
@@ -106,7 +107,10 @@ public enum Task {
     private Task() {
         valueByte = (byte) ordinal();
         shortName = "T".concat(String.valueOf(ordinal()));
-        jsNameValue = shortName + ":" + ordinal();
+        jsNameValue = WffJsFile.PRODUCTION_MODE
+                ? shortName.concat(":").concat(String.valueOf(ordinal()))
+                : name().concat(":").concat(String.valueOf(ordinal())) + ":"
+                        + ordinal();
     }
 
     /**
