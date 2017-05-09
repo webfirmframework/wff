@@ -17,6 +17,10 @@ package com.webfirmframework.wffweb.wffbm.data;
 
 import java.io.UnsupportedEncodingException;
 
+/**
+ * @author WFF
+ * @since 2.1.8
+ */
 public interface WffBMData extends WffData {
 
     /**
