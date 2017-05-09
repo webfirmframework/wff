@@ -47,7 +47,7 @@ public class TagRepository extends AbstractHtmlRepository {
     }
 
     /**
-     * finds and returns the first tag matching with the given id.
+     * Finds and returns the first tag matching with the given id.
      *
      * @param id
      *            the value of id attribute.
@@ -92,7 +92,7 @@ public class TagRepository extends AbstractHtmlRepository {
     }
 
     /**
-     * finds and returns the first tag matching with the given id.
+     * Finds and returns the first tag matching with the given id.
      *
      * @param id
      *            the value of id attribute.
@@ -105,7 +105,7 @@ public class TagRepository extends AbstractHtmlRepository {
     }
 
     /**
-     * finds and returns the set of tags (including the nested tags) matching
+     * Finds and returns the set of tags (including the nested tags) matching
      * with the given attribute name and value.
      *
      * @param attributeName
@@ -159,7 +159,7 @@ public class TagRepository extends AbstractHtmlRepository {
     }
 
     /**
-     * finds and returns the first (including the nested tags) matching with the
+     * Finds and returns the first (including the nested tags) matching with the
      * given attribute name and value.
      *
      * @param attributeName
@@ -213,7 +213,7 @@ public class TagRepository extends AbstractHtmlRepository {
     }
 
     /**
-     * finds and returns the first (including the nested tags) matching with the
+     * Finds and returns the first (including the nested tags) matching with the
      * given attribute name.
      *
      * @param attributeName
@@ -260,7 +260,7 @@ public class TagRepository extends AbstractHtmlRepository {
     }
 
     /**
-     * finds and returns the set of tags (including the nested tags) matching
+     * Finds and returns the set of tags (including the nested tags) matching
      * with the given attribute name.
      *
      * @param attributeName
@@ -306,7 +306,7 @@ public class TagRepository extends AbstractHtmlRepository {
     }
 
     /**
-     * finds and returns the set of tags (including the nested tags) matching
+     * Finds and returns the set of tags (including the nested tags) matching
      * with the given attribute name.
      *
      * @param attributeName
@@ -321,7 +321,7 @@ public class TagRepository extends AbstractHtmlRepository {
     }
 
     /**
-     * finds and returns the set of tags (including the nested tags) matching
+     * Finds and returns the set of tags (including the nested tags) matching
      * with the given attribute name and value.
      *
      * @param attributeName
@@ -338,7 +338,7 @@ public class TagRepository extends AbstractHtmlRepository {
     }
 
     /**
-     * finds and returns the first (including the nested tags) matching with the
+     * Finds and returns the first (including the nested tags) matching with the
      * given attribute name and value.
      *
      * @param attributeName
@@ -355,7 +355,7 @@ public class TagRepository extends AbstractHtmlRepository {
     }
 
     /**
-     * finds and returns the first (including the nested tags) matching with the
+     * Finds and returns the first (including the nested tags) matching with the
      * given attribute name.
      *
      * @param attributeName
@@ -370,43 +370,63 @@ public class TagRepository extends AbstractHtmlRepository {
 
     /**
      * inserts or replaces (if already exists) the key bmObject pair in the
-     * wffObject property of tag.
+     * wffObjects property of tag. The conventional JavaScript object of
+     * {@code WffBMObject} will be set to the {@code wffObjects} property of the
+     * given tag at client side.
      *
      * @param tag
      * @param key
      * @param bmObject
+     * @throws InvalidTagException
+     *             if the given instance is of NoTag / Blank
      * @since 2.1.8
      * @author WFF
      */
     public void upsert(final AbstractHtml tag, final String key,
-            final WffBMObject bmObject) {
+            final WffBMObject bmObject) throws InvalidTagException {
+        if (tag instanceof NoTag || tag instanceof Blank) {
+            throw new InvalidTagException(
+                    "NoTag and Blank tag are not allowed to use");
+        }
         AbstractHtmlRepository.addWffData(tag, key, bmObject);
     }
 
     /**
-     * inserts or replaces (if already exists) the key bmArray pair in the
-     * wffObject property of tag.
+     * Inserts or replaces (if already exists) the key bmArray pair in the
+     * wffObjects property of tag. The conventional JavaScript array of
+     * {@code WffBMArray} will be set to the {@code wffObjects} property of the
+     * given tag at client side.
      *
      * @param tag
      * @param key
      * @param bmArray
+     * @throws InvalidTagException
+     *             if the given instance is of NoTag / Blank
      * @since 2.1.8
      * @author WFF
      */
     public void upsert(final AbstractHtml tag, final String key,
-            final WffBMArray bmArray) {
+            final WffBMArray bmArray) throws InvalidTagException {
+        if (tag instanceof NoTag || tag instanceof Blank) {
+            throw new InvalidTagException(
+                    "NoTag and Blank tag are not allowed to use");
+        }
         AbstractHtmlRepository.addWffData(tag, key, bmArray);
     }
 
     /**
-     * deletes the key bmArray pair in the wffObject property of tag.
+     * Deletes the key-WffBMObject/WffBMArray pair from the {@code wffObjects}
+     * property of tag.
      *
      * @param tag
      * @param key
+     * @throws InvalidTagException
+     *             if the given instance is of NoTag / Blank
      * @since 2.1.8
      * @author WFF
      */
-    public void delete(final AbstractHtml tag, final String key) {
+    public void delete(final AbstractHtml tag, final String key)
+            throws InvalidTagException {
 
         if (tag instanceof NoTag || tag instanceof Blank) {
             throw new InvalidTagException(
