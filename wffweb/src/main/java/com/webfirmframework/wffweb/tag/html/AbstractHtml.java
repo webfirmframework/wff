@@ -64,8 +64,8 @@ import com.webfirmframework.wffweb.tag.repository.TagRepository;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 import com.webfirmframework.wffweb.util.data.NameValue;
 import com.webfirmframework.wffweb.wffbm.data.WffBMArray;
+import com.webfirmframework.wffweb.wffbm.data.WffBMData;
 import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
-import com.webfirmframework.wffweb.wffbm.data.WffData;
 
 /**
  * @author WFF
@@ -2409,13 +2409,14 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     /**
      * @param key
-     * @param wffData
+     * @param wffBMData
      * @return
      * @since 2.1.8
      * @author WFF
      */
-    protected WffData addWffData(final String key, final WffData wffData) {
-        return AbstractJsObject.addWffData(this, key, wffData);
+    protected WffBMData addWffData(final String key,
+            final WffBMData wffBMData) {
+        return AbstractJsObject.addWffData(this, key, wffBMData);
     }
 
     /**
@@ -2424,7 +2425,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @since 2.1.8
      * @author WFF
      */
-    protected WffData removeWffData(final String key) {
+    protected WffBMData removeWffData(final String key) {
         return AbstractJsObject.removeWffData(this, key);
     }
 
@@ -2442,7 +2443,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @since 2.1.8
      * @author WFF
      */
-    public Map<String, WffData> getWffObjects() {
-        return wffDatas;
+    public Map<String, WffBMData> getWffObjects() {
+        return wffBMDatas;
     }
 }

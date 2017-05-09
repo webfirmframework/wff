@@ -107,7 +107,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  * @see WffBMByteArray
  * @see WffBMObject
  */
-public class WffBMArray extends LinkedList<Object> implements WffData {
+public class WffBMArray extends LinkedList<Object> implements WffBMData {
 
     private static final long serialVersionUID = 1L;
 

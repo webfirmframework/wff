@@ -54,7 +54,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  *
  */
 public class WffBMObject extends LinkedHashMap<String, ValueValueType>
-        implements WffData {
+        implements WffBMData {
 
     private static final long serialVersionUID = 1L;
 

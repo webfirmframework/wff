@@ -35,8 +35,8 @@ import com.webfirmframework.wffweb.tag.html.listener.ChildTagAppendListener;
 import com.webfirmframework.wffweb.tag.html.listener.ChildTagRemoveListener;
 import com.webfirmframework.wffweb.tag.html.listener.InnerHtmlAddListener;
 import com.webfirmframework.wffweb.tag.html.listener.InsertBeforeListener;
-import com.webfirmframework.wffweb.tag.html.listener.WffDataDeleteListener;
-import com.webfirmframework.wffweb.tag.html.listener.WffDataUpdateListener;
+import com.webfirmframework.wffweb.tag.html.listener.WffBMDataDeleteListener;
+import com.webfirmframework.wffweb.tag.html.listener.WffBMDataUpdateListener;
 
 /**
  *
@@ -70,9 +70,9 @@ public class AbstractHtml5SharedObject implements Serializable {
 
     private InsertBeforeListener insertBeforeListener;
 
-    private WffDataDeleteListener wffDataDeleteListener;
+    private WffBMDataDeleteListener wffBMDataDeleteListener;
 
-    private WffDataUpdateListener wffDataUpdateListener;
+    private WffBMDataUpdateListener wffBMDataUpdateListener;
 
     /**
      * no need to make it volatile
@@ -438,37 +438,37 @@ public class AbstractHtml5SharedObject implements Serializable {
     /**
      * NB:- This method is for only for internal use
      *
-     * @param wffDataDeleteListener
+     * @param wffBMDataDeleteListener
      *            the wffDataDeleteListener to set
      * @since 2.1.8
      */
-    public void setWffDataDeleteListener(
-            final WffDataDeleteListener wffDataDeleteListener,
+    public void setWffBMDataDeleteListener(
+            final WffBMDataDeleteListener wffBMDataDeleteListener,
             final Object accessObject) {
         if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE
                 .equals(accessObject.getClass().getName()))) {
             throw new WffSecurityException(
                     "Not allowed to consume this method. This method is for internal use.");
         }
-        this.wffDataDeleteListener = wffDataDeleteListener;
+        this.wffBMDataDeleteListener = wffBMDataDeleteListener;
     }
 
     /**
      * NB:- This method is for only for internal use
      *
-     * @param wffDataUpdateListener
+     * @param wffBMDataUpdateListener
      *            the wffDataUpdateListener to set
      * @since 2.1.8
      */
-    public void setWffDataUpdateListener(
-            final WffDataUpdateListener wffDataUpdateListener,
+    public void setWffBMDataUpdateListener(
+            final WffBMDataUpdateListener wffBMDataUpdateListener,
             final Object accessObject) {
         if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE
                 .equals(accessObject.getClass().getName()))) {
             throw new WffSecurityException(
                     "Not allowed to consume this method. This method is for internal use.");
         }
-        this.wffDataUpdateListener = wffDataUpdateListener;
+        this.wffBMDataUpdateListener = wffBMDataUpdateListener;
     }
 
     /**
@@ -478,7 +478,7 @@ public class AbstractHtml5SharedObject implements Serializable {
      *
      * @since 2.1.8
      */
-    public WffDataDeleteListener getWffDataDeleteListener(
+    public WffBMDataDeleteListener getWffBMDataDeleteListener(
             final Object accessObject) {
 
         if (accessObject == null || !(SecurityClassConstants.ABSTRACT_JS_OBJECT
@@ -487,7 +487,7 @@ public class AbstractHtml5SharedObject implements Serializable {
                     "Not allowed to consume this method. This method is for internal use.");
         }
 
-        return wffDataDeleteListener;
+        return wffBMDataDeleteListener;
     }
 
     /**
@@ -497,7 +497,7 @@ public class AbstractHtml5SharedObject implements Serializable {
      *
      * @since 2.1.8
      */
-    public WffDataUpdateListener getWffDataUpdateListener(
+    public WffBMDataUpdateListener getWffBMDataUpdateListener(
             final Object accessObject) {
 
         if (accessObject == null || !(SecurityClassConstants.ABSTRACT_JS_OBJECT
@@ -506,7 +506,7 @@ public class AbstractHtml5SharedObject implements Serializable {
                     "Not allowed to consume this method. This method is for internal use.");
         }
 
-        return wffDataUpdateListener;
+        return wffBMDataUpdateListener;
     }
 
 }

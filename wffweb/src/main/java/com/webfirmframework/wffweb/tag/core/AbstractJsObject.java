@@ -20,10 +20,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
-import com.webfirmframework.wffweb.tag.html.listener.WffDataDeleteListener;
-import com.webfirmframework.wffweb.tag.html.listener.WffDataUpdateListener;
+import com.webfirmframework.wffweb.tag.html.listener.WffBMDataDeleteListener;
+import com.webfirmframework.wffweb.tag.html.listener.WffBMDataUpdateListener;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
-import com.webfirmframework.wffweb.wffbm.data.WffData;
+import com.webfirmframework.wffweb.wffbm.data.WffBMData;
 
 /**
  * @author WFF
@@ -40,7 +40,7 @@ public abstract class AbstractJsObject extends AbstractTagBase {
      * instead use getWffDatas method. But, its direct usage is valid only for
      * {@code AbstractHtml#getWffObjects()}
      */
-    protected volatile Map<String, WffData> wffDatas;
+    protected volatile Map<String, WffBMData> wffBMDatas;
 
     // for security purpose, the class name should not be modified
     private static final class Security implements Serializable {
@@ -62,11 +62,11 @@ public abstract class AbstractJsObject extends AbstractTagBase {
      * @since 2.1.8
      * @author WFF
      */
-    private Map<String, WffData> getWffDatas() {
-        if (wffDatas == null) {
+    private Map<String, WffBMData> getWffDatas() {
+        if (wffBMDatas == null) {
             initWffDatas();
         }
-        return wffDatas;
+        return wffBMDatas;
     }
 
     /**
@@ -75,31 +75,31 @@ public abstract class AbstractJsObject extends AbstractTagBase {
      * @author WFF
      */
     private synchronized void initWffDatas() {
-        if (wffDatas == null) {
-            wffDatas = new HashMap<String, WffData>();
+        if (wffBMDatas == null) {
+            wffBMDatas = new HashMap<String, WffBMData>();
         }
     }
 
     /**
      * @param abstractHtml
      * @param key
-     * @param wffData
+     * @param wffBMData
      * @return
      * @since 2.1.8
      * @author WFF
      */
-    protected static WffData addWffData(final AbstractHtml abstractHtml,
-            final String key, final WffData wffData) {
+    protected static WffBMData addWffData(final AbstractHtml abstractHtml,
+            final String key, final WffBMData wffBMData) {
 
         final AbstractJsObject abstractJsObject = abstractHtml;
 
-        final WffData previous = abstractJsObject.getWffDatas().put(key,
-                wffData);
-        final WffDataUpdateListener listener = abstractJsObject
-                .getSharedObject().getWffDataUpdateListener(ACCESS_OBJECT);
+        final WffBMData previous = abstractJsObject.getWffDatas().put(key,
+                wffBMData);
+        final WffBMDataUpdateListener listener = abstractJsObject
+                .getSharedObject().getWffBMDataUpdateListener(ACCESS_OBJECT);
         if (listener != null) {
-            listener.updatedWffData(new WffDataUpdateListener.UpdateEvent(
-                    abstractHtml, key, wffData));
+            listener.updatedWffData(new WffBMDataUpdateListener.UpdateEvent(
+                    abstractHtml, key, wffBMData));
         }
         return previous;
     }
@@ -111,18 +111,18 @@ public abstract class AbstractJsObject extends AbstractTagBase {
      * @since 2.1.8
      * @author WFF
      */
-    protected static WffData removeWffData(final AbstractHtml abstractHtml,
+    protected static WffBMData removeWffData(final AbstractHtml abstractHtml,
             final String key) {
 
         final AbstractJsObject abstractJsObject = abstractHtml;
 
-        final WffData previous = abstractJsObject.getWffDatas().remove(key);
+        final WffBMData previous = abstractJsObject.getWffDatas().remove(key);
 
-        final WffDataDeleteListener listener = abstractJsObject
-                .getSharedObject().getWffDataDeleteListener(ACCESS_OBJECT);
+        final WffBMDataDeleteListener listener = abstractJsObject
+                .getSharedObject().getWffBMDataDeleteListener(ACCESS_OBJECT);
         if (listener != null) {
             listener.deletedWffData(
-                    new WffDataDeleteListener.DeleteEvent(abstractHtml, key));
+                    new WffBMDataDeleteListener.DeleteEvent(abstractHtml, key));
         }
 
         return previous;

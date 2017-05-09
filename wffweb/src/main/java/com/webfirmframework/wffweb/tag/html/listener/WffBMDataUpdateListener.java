@@ -18,23 +18,32 @@ package com.webfirmframework.wffweb.tag.html.listener;
 import java.io.Serializable;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.wffbm.data.WffBMData;
 
-public interface WffDataDeleteListener extends Serializable {
+public interface WffBMDataUpdateListener extends Serializable {
 
-    public static final class DeleteEvent {
+    public static final class UpdateEvent {
 
         private final String key;
 
+        private final WffBMData wffBMData;
+
         private final AbstractHtml tag;
 
-        public DeleteEvent(final AbstractHtml tag, final String key) {
+        public UpdateEvent(final AbstractHtml tag, final String key,
+                final WffBMData wffBMData) {
             super();
             this.tag = tag;
             this.key = key;
+            this.wffBMData = wffBMData;
         }
 
         public String getKey() {
             return key;
+        }
+
+        public WffBMData getWffData() {
+            return wffBMData;
         }
 
         public AbstractHtml getTag() {
@@ -43,6 +52,6 @@ public interface WffDataDeleteListener extends Serializable {
 
     }
 
-    public void deletedWffData(DeleteEvent event);
+    public void updatedWffData(UpdateEvent event);
 
 }

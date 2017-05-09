@@ -19,45 +19,55 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
-import com.webfirmframework.wffweb.tag.html.listener.WffDataDeleteListener;
+import com.webfirmframework.wffweb.tag.html.listener.WffBMDataUpdateListener;
 import com.webfirmframework.wffweb.util.data.NameValue;
+import com.webfirmframework.wffweb.wffbm.data.BMType;
+import com.webfirmframework.wffweb.wffbm.data.WffBMData;
 
 /**
  * @author WFF
  * @since 2.1.8
  */
-class WffDataDeleteListenerImpl implements WffDataDeleteListener {
+class WffBMDataUpdateListenerImpl implements WffBMDataUpdateListener {
 
     private static final long serialVersionUID = 1L;
 
     public static final Logger LOGGER = Logger
-            .getLogger(WffDataDeleteListenerImpl.class.getName());
+            .getLogger(WffBMDataUpdateListenerImpl.class.getName());
 
     private BrowserPage browserPage;
 
     @SuppressWarnings("unused")
-    private WffDataDeleteListenerImpl() {
+    private WffBMDataUpdateListenerImpl() {
         throw new AssertionError();
     }
 
-    WffDataDeleteListenerImpl(final BrowserPage browserPage) {
+    WffBMDataUpdateListenerImpl(final BrowserPage browserPage) {
         this.browserPage = browserPage;
-
     }
 
     @Override
-    public void deletedWffData(final DeleteEvent event) {
+    public void updatedWffData(final UpdateEvent event) {
+
         try {
 
             //@formatter:off
             // SET_BM_OBJ_ON_TAG/SET_BM_ARR_ON_TAG task format :-
             // { "name": task_byte, "values" : [SET_BM_OBJ_ON_TAG/SET_BM_ARR_ON_TAG_byte_from_Task_enum]},
-            // { "name": [tag name bytes], "values" : [[wff id bytes], [key bytes] }
+            // { "name": [tag name bytes], "values" : [[wff id bytes], [key bytes], [bm bytes] }
             //@formatter:on
 
             final AbstractHtml tag = event.getTag();
-            final NameValue task = Task.DEL_BM_OBJ_OR_ARR_FROM_TAG
-                    .getTaskNameValue();
+            final WffBMData wffBMData = event.getWffData();
+            final NameValue task;
+
+            if (BMType.OBJECT.equals(wffBMData.getBMType())) {
+                task = Task.SET_BM_OBJ_ON_TAG.getTaskNameValue();
+            } else if (BMType.ARRAY.equals(wffBMData.getBMType())) {
+                task = Task.SET_BM_ARR_ON_TAG.getTaskNameValue();
+            } else {
+                return;
+            }
 
             final NameValue nameValue = new NameValue();
 
@@ -69,7 +79,7 @@ class WffDataDeleteListenerImpl implements WffDataDeleteListener {
                     .getDataWffIdBytes(tag.getDataWffId().getValue());
 
             nameValue.setValues(new byte[][] { dataWffIdBytes,
-                    event.getKey().getBytes("UTF-8") });
+                    event.getKey().getBytes("UTF-8"), wffBMData.build(true) });
 
             browserPage.push(nameValues);
 
