@@ -388,6 +388,11 @@ public enum WffJsFile {
                             "v" + (++variableId));
                 }
 
+                for (final Task task : Task.values()) {
+                    allOptimizedContent = allOptimizedContent
+                            .replace(task.name(), task.getShortName());
+                }
+
                 functionNames = null;
                 variableNames = null;
 
