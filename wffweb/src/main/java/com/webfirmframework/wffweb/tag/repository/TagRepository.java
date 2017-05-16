@@ -385,6 +385,11 @@ public class TagRepository extends AbstractHtmlRepository {
             throw new NullValueException("attribute cannot be null");
         }
 
+        return findTagsByAttribute(attribute, rootTags);
+    }
+
+    private Collection<AbstractHtml> findTagsByAttribute(
+            final AbstractAttribute attribute, final AbstractHtml[] fromTags) {
         final Collection<AbstractHtml> allTags = new HashSet<AbstractHtml>();
 
         loopThroughAllNestedChildren(new NestedChild() {
@@ -401,7 +406,7 @@ public class TagRepository extends AbstractHtmlRepository {
 
                 return true;
             }
-        }, true, rootTags);
+        }, true, fromTags);
 
         return allTags;
     }
@@ -421,6 +426,12 @@ public class TagRepository extends AbstractHtmlRepository {
             throw new NullValueException("attribute cannot be null");
         }
 
+        return findOneTagByAttribute(attribute, rootTags);
+    }
+
+    private AbstractHtml findOneTagByAttribute(
+            final AbstractAttribute attribute, final AbstractHtml[] fromTags) {
+
         final AbstractHtml[] matchingTag = new AbstractHtml[1];
 
         loopThroughAllNestedChildren(new NestedChild() {
@@ -438,7 +449,7 @@ public class TagRepository extends AbstractHtmlRepository {
 
                 return true;
             }
-        }, true, rootTags);
+        }, true, fromTags);
 
         return matchingTag[0];
     }
@@ -552,7 +563,11 @@ public class TagRepository extends AbstractHtmlRepository {
      * @author WFF
      */
     public Collection<AbstractHtml> findAllTags() {
+        return findAllTagss(rootTags);
+    }
 
+    private Collection<AbstractHtml> findAllTagss(
+            final AbstractHtml[] fromTags) {
         final Collection<AbstractHtml> allTags = new HashSet<AbstractHtml>();
 
         loopThroughAllNestedChildren(new NestedChild() {
@@ -562,7 +577,7 @@ public class TagRepository extends AbstractHtmlRepository {
                 allTags.add(child);
                 return true;
             }
-        }, true, rootTags);
+        }, true, fromTags);
 
         return allTags;
     }
@@ -575,7 +590,11 @@ public class TagRepository extends AbstractHtmlRepository {
      * @author WFF
      */
     public Collection<AbstractAttribute> findAllAttributes() {
+        return findAllAttributes(rootTags);
+    }
 
+    private Collection<AbstractAttribute> findAllAttributes(
+            final AbstractHtml[] fromTags) {
         final Collection<AbstractAttribute> allAttributes = new HashSet<AbstractAttribute>();
 
         loopThroughAllNestedChildren(new NestedChild() {
@@ -590,7 +609,7 @@ public class TagRepository extends AbstractHtmlRepository {
                 }
                 return true;
             }
-        }, true, rootTags);
+        }, true, fromTags);
 
         return allAttributes;
     }
@@ -610,6 +629,12 @@ public class TagRepository extends AbstractHtmlRepository {
             throw new NullValueException("tag cannot be null");
         }
 
+        return exists(tag, rootTags);
+    }
+
+    private boolean exists(final AbstractHtml tag,
+            final AbstractHtml[] fromTags) {
+
         final boolean[] exists = new boolean[1];
 
         loopThroughAllNestedChildren(new NestedChild() {
@@ -623,7 +648,7 @@ public class TagRepository extends AbstractHtmlRepository {
 
                 return true;
             }
-        }, true, rootTags);
+        }, true, fromTags);
 
         return exists[0];
     }
@@ -643,6 +668,12 @@ public class TagRepository extends AbstractHtmlRepository {
             throw new NullValueException("attribute cannot be null");
         }
 
+        return exists(attribute, rootTags);
+    }
+
+    private boolean exists(final AbstractAttribute attribute,
+            final AbstractHtml[] fromTags) {
+
         final boolean[] exists = new boolean[1];
 
         loopThroughAllNestedChildren(new NestedChild() {
@@ -661,7 +692,7 @@ public class TagRepository extends AbstractHtmlRepository {
 
                 return true;
             }
-        }, true, rootTags);
+        }, true, fromTags);
 
         return exists[0];
     }
