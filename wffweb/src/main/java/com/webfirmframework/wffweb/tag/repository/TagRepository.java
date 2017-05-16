@@ -15,8 +15,8 @@
  */
 package com.webfirmframework.wffweb.tag.repository;
 
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 
 import com.webfirmframework.wffweb.InvalidTagException;
 import com.webfirmframework.wffweb.NullValueException;
@@ -105,8 +105,8 @@ public class TagRepository extends AbstractHtmlRepository {
     }
 
     /**
-     * Finds and returns the set of tags (including the nested tags) matching
-     * with the given attribute name and value.
+     * Finds and returns the collection of tags (including the nested tags)
+     * matching with the given attribute name and value.
      *
      * @param attributeName
      *            the name of the attribute.
@@ -114,11 +114,12 @@ public class TagRepository extends AbstractHtmlRepository {
      *            the value of the attribute
      * @param fromTags
      *            from which the findings to be done.
-     * @return the set of tags matching with the given attribute name and value.
+     * @return the collection of tags matching with the given attribute name and
+     *         value.
      * @since 2.1.8
      * @author WFF
      */
-    public static Set<AbstractHtml> findTagsByAttribute(
+    public static Collection<AbstractHtml> findTagsByAttribute(
             final String attributeName, final String attributeValue,
             final AbstractHtml... fromTags) {
 
@@ -135,7 +136,7 @@ public class TagRepository extends AbstractHtmlRepository {
             throw new NullValueException("The fromTags should not be null");
         }
 
-        final Set<AbstractHtml> matchingTags = new HashSet<AbstractHtml>();
+        final Collection<AbstractHtml> matchingTags = new HashSet<AbstractHtml>();
 
         loopThroughAllNestedChildren(new NestedChild() {
 
@@ -260,18 +261,18 @@ public class TagRepository extends AbstractHtmlRepository {
     }
 
     /**
-     * Finds and returns the set of tags (including the nested tags) matching
-     * with the given attribute name.
+     * Finds and returns the collection of tags (including the nested tags)
+     * matching with the given attribute name.
      *
      * @param attributeName
      *            the name of the attribute.
      * @param fromTags
      *            from which the findings to be done.
-     * @return the set of tags matching with the given attribute.
+     * @return the collection of tags matching with the given attribute.
      * @since 2.1.8
      * @author WFF
      */
-    public static Set<AbstractHtml> findTagsByAttributeName(
+    public static Collection<AbstractHtml> findTagsByAttributeName(
             final String attributeName, final AbstractHtml... fromTags) {
 
         if (attributeName == null) {
@@ -283,7 +284,7 @@ public class TagRepository extends AbstractHtmlRepository {
             throw new NullValueException("The fromTags should not be null");
         }
 
-        final Set<AbstractHtml> matchingTags = new HashSet<AbstractHtml>();
+        final Collection<AbstractHtml> matchingTags = new HashSet<AbstractHtml>();
 
         loopThroughAllNestedChildren(new NestedChild() {
 
@@ -306,34 +307,35 @@ public class TagRepository extends AbstractHtmlRepository {
     }
 
     /**
-     * Finds and returns the set of tags (including the nested tags) matching
-     * with the given attribute name.
+     * Finds and returns the collection of tags (including the nested tags)
+     * matching with the given attribute name.
      *
      * @param attributeName
      *            the name of the attribute.
-     * @return the set of tags matching with the given attribute.
+     * @return the collection of tags matching with the given attribute.
      * @since 2.1.8
      * @author WFF
      */
-    public Set<AbstractHtml> findTagsByAttributeName(
+    public Collection<AbstractHtml> findTagsByAttributeName(
             final String attributeName) {
         return findTagsByAttributeName(attributeName, rootTags);
     }
 
     /**
-     * Finds and returns the set of tags (including the nested tags) matching
-     * with the given attribute name and value.
+     * Finds and returns the collection of tags (including the nested tags)
+     * matching with the given attribute name and value.
      *
      * @param attributeName
      *            the name of the attribute.
      * @param attributeValue
      *            the value of the attribute
-     * @return the set of tags matching with the given attribute name and value.
+     * @return the collection of tags matching with the given attribute name and
+     *         value.
      * @since 2.1.8
      * @author WFF
      */
-    public Set<AbstractHtml> findTagsByAttribute(final String attributeName,
-            final String attributeValue) {
+    public Collection<AbstractHtml> findTagsByAttribute(
+            final String attributeName, final String attributeValue) {
         return findTagsByAttribute(attributeName, attributeValue, rootTags);
     }
 
@@ -366,6 +368,79 @@ public class TagRepository extends AbstractHtmlRepository {
      */
     public AbstractHtml findOneTagByAttributeName(final String attributeName) {
         return findOneTagByAttributeName(attributeName, rootTags);
+    }
+
+    /**
+     * Finds tags by attribute instance.
+     *
+     * @param attribute
+     * @return all tags having the given attribute instance.
+     * @since 2.1.8
+     * @author WFF
+     */
+    public Collection<AbstractHtml> findTagsByAttribute(
+            final AbstractAttribute attribute) {
+
+        if (attribute == null) {
+            throw new NullValueException("attribute cannot be null");
+        }
+
+        final Collection<AbstractHtml> allTags = new HashSet<AbstractHtml>();
+
+        loopThroughAllNestedChildren(new NestedChild() {
+
+            @Override
+            public boolean eachChild(final AbstractHtml child) {
+
+                final AbstractAttribute attributeByName = child
+                        .getAttributeByName(attribute.getAttributeName());
+
+                if (attribute.equals(attributeByName)) {
+                    allTags.add(child);
+                }
+
+                return true;
+            }
+        }, true, rootTags);
+
+        return allTags;
+    }
+
+    /**
+     * Finds once tag by attribute instance.
+     *
+     * @param attribute
+     * @return the first matching tag having the given attribute instance.
+     * @since 2.1.8
+     * @author WFF
+     */
+    public AbstractHtml findOneTagByAttribute(
+            final AbstractAttribute attribute) {
+
+        if (attribute == null) {
+            throw new NullValueException("attribute cannot be null");
+        }
+
+        final AbstractHtml[] matchingTag = new AbstractHtml[1];
+
+        loopThroughAllNestedChildren(new NestedChild() {
+
+            @Override
+            public boolean eachChild(final AbstractHtml child) {
+
+                final AbstractAttribute attributeByName = child
+                        .getAttributeByName(attribute.getAttributeName());
+
+                if (attribute.equals(attributeByName)) {
+                    matchingTag[0] = child;
+                    return false;
+                }
+
+                return true;
+            }
+        }, true, rootTags);
+
+        return matchingTag[0];
     }
 
     /**
@@ -467,6 +542,128 @@ public class TagRepository extends AbstractHtmlRepository {
         }
 
         AbstractHtmlRepository.removeWffData(tag, key);
+    }
+
+    /**
+     * Finds all tags.
+     *
+     * @return the collection of all tags
+     * @since 2.1.8
+     * @author WFF
+     */
+    public Collection<AbstractHtml> findAllTags() {
+
+        final Collection<AbstractHtml> allTags = new HashSet<AbstractHtml>();
+
+        loopThroughAllNestedChildren(new NestedChild() {
+
+            @Override
+            public boolean eachChild(final AbstractHtml child) {
+                allTags.add(child);
+                return true;
+            }
+        }, true, rootTags);
+
+        return allTags;
+    }
+
+    /**
+     * Finds all attributes.
+     *
+     * @return the collection of all attributes
+     * @since 2.1.8
+     * @author WFF
+     */
+    public Collection<AbstractAttribute> findAllAttributes() {
+
+        final Collection<AbstractAttribute> allAttributes = new HashSet<AbstractAttribute>();
+
+        loopThroughAllNestedChildren(new NestedChild() {
+
+            @Override
+            public boolean eachChild(final AbstractHtml child) {
+
+                final Collection<AbstractAttribute> attributes = child
+                        .getAttributes();
+                if (attributes != null) {
+                    allAttributes.addAll(attributes);
+                }
+                return true;
+            }
+        }, true, rootTags);
+
+        return allAttributes;
+    }
+
+    /**
+     * Checks the existence of a tag instance.
+     *
+     * @param tag
+     * @return true if the given tag instance exists anywhere in the browser
+     *         page.
+     * @since 2.1.8
+     * @author WFF
+     */
+    public boolean exists(final AbstractHtml tag) {
+
+        if (tag == null) {
+            throw new NullValueException("tag cannot be null");
+        }
+
+        final boolean[] exists = new boolean[1];
+
+        loopThroughAllNestedChildren(new NestedChild() {
+
+            @Override
+            public boolean eachChild(final AbstractHtml child) {
+                if (tag.equals(child)) {
+                    exists[0] = true;
+                    return false;
+                }
+
+                return true;
+            }
+        }, true, rootTags);
+
+        return exists[0];
+    }
+
+    /**
+     * Checks the existence of an attribute instance.
+     *
+     * @param attribute
+     * @return true if the given attribute instance exists anywhere in the
+     *         browser page.
+     * @since 2.1.8
+     * @author WFF
+     */
+    public boolean exists(final AbstractAttribute attribute) {
+
+        if (attribute == null) {
+            throw new NullValueException("attribute cannot be null");
+        }
+
+        final boolean[] exists = new boolean[1];
+
+        loopThroughAllNestedChildren(new NestedChild() {
+
+            @Override
+            public boolean eachChild(final AbstractHtml child) {
+
+                final AbstractAttribute attributeByName = child
+                        .getAttributeByName(attribute.getAttributeName());
+
+                if (attribute.equals(attributeByName)) {
+                    exists[0] = true;
+                    return false;
+
+                }
+
+                return true;
+            }
+        }, true, rootTags);
+
+        return exists[0];
     }
 
 }
