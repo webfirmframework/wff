@@ -99,7 +99,8 @@ public class LineHeight extends AbstractCssProperty<LineHeight> {
     public LineHeight(final float value, final CssLengthUnit cssLengthUnit) {
         this.value = value;
         this.cssLengthUnit = cssLengthUnit;
-        cssValue = value + "" + (cssLengthUnit == null ? "" : cssLengthUnit);
+        cssValue = String.valueOf(value)
+                + (cssLengthUnit == null ? "" : cssLengthUnit);
     }
 
     /**
@@ -130,7 +131,8 @@ public class LineHeight extends AbstractCssProperty<LineHeight> {
             final CssLengthUnit cssLengthUnit) {
         this.value = value;
         this.cssLengthUnit = cssLengthUnit;
-        cssValue = value + "" + (cssLengthUnit == null ? "" : cssLengthUnit);
+        cssValue = String.valueOf(value)
+                + (cssLengthUnit == null ? "" : cssLengthUnit);
         if (getStateChangeInformer() != null) {
             getStateChangeInformer().stateChanged(this);
         }
@@ -146,7 +148,7 @@ public class LineHeight extends AbstractCssProperty<LineHeight> {
     public void setPercent(final float percent) {
         value = percent;
         cssLengthUnit = CssLengthUnit.PER;
-        cssValue = percent + "" + cssLengthUnit;
+        cssValue = String.valueOf(percent) + cssLengthUnit;
         if (getStateChangeInformer() != null) {
             getStateChangeInformer().stateChanged(this);
         }

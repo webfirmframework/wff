@@ -92,7 +92,7 @@ public class WebkitColumnGap extends AbstractCssProperty<WebkitColumnGap> {
     public WebkitColumnGap(final float percent) {
         cssLengthUnit = CssLengthUnit.PER;
         value = percent;
-        cssValue = percent + "" + cssLengthUnit;
+        cssValue = String.valueOf(percent) + cssLengthUnit;
     }
 
     /**
@@ -103,7 +103,7 @@ public class WebkitColumnGap extends AbstractCssProperty<WebkitColumnGap> {
             final CssLengthUnit cssLengthUnit) {
         this.value = value;
         this.cssLengthUnit = cssLengthUnit;
-        cssValue = value + "" + cssLengthUnit;
+        cssValue = String.valueOf(value) + cssLengthUnit;
     }
 
     /**
@@ -117,7 +117,7 @@ public class WebkitColumnGap extends AbstractCssProperty<WebkitColumnGap> {
             final CssLengthUnit cssLengthUnit) {
         this.value = value;
         this.cssLengthUnit = cssLengthUnit;
-        cssValue = value + "" + cssLengthUnit;
+        cssValue = String.valueOf(value) + cssLengthUnit;
         if (getStateChangeInformer() != null) {
             getStateChangeInformer().stateChanged(this);
         }
@@ -133,7 +133,7 @@ public class WebkitColumnGap extends AbstractCssProperty<WebkitColumnGap> {
     public void setPercent(final float percent) {
         value = percent;
         cssLengthUnit = CssLengthUnit.PER;
-        cssValue = percent + "" + cssLengthUnit;
+        cssValue = String.valueOf(percent) + cssLengthUnit;
         if (getStateChangeInformer() != null) {
             getStateChangeInformer().stateChanged(this);
         }

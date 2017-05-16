@@ -370,11 +370,11 @@ public class BorderColorCssValues extends AbstractBean<BorderColorCssValues>
         }
 
         try {
-            if (!trimmedCssValue.startsWith("#")) {
+            if (trimmedCssValue.length() == 0
+                    || trimmedCssValue.charAt(0) != '#') {
                 return false;
             }
-            final long value = Long.parseLong(cssValue.replaceFirst("[#]", ""),
-                    16);
+            final long value = Long.parseLong(trimmedCssValue.substring(1), 16);
             // Long.parseLong("FFFFFF", 16) gives 16777215L;
             final long maxCssValue = 16777215L;
 

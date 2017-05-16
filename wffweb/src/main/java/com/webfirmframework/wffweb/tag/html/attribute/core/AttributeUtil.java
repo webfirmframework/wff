@@ -50,8 +50,7 @@ public class AttributeUtil {
             final StringBuilder attributeSB = new StringBuilder(
                     attributes.length * 16);
             for (final AbstractAttribute attribute : attributes) {
-                attributeSB.append(' ');
-                attributeSB.append(attribute.toHtmlString(rebuild));
+                attributeSB.append(' ').append(attribute.toHtmlString(rebuild));
             }
             return attributeSB.toString();
         }
@@ -73,8 +72,8 @@ public class AttributeUtil {
             final StringBuilder attributeSB = new StringBuilder(
                     attributes.length * 16);
             for (final AbstractAttribute attribute : attributes) {
-                attributeSB.append(' ');
-                attributeSB.append(attribute.toHtmlString(rebuild, charset));
+                attributeSB.append(' ')
+                        .append(attribute.toHtmlString(rebuild, charset));
             }
             return attributeSB.toString();
         }

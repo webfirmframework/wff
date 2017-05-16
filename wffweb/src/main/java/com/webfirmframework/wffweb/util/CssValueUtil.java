@@ -162,8 +162,9 @@ public class CssValueUtil {
                         final String trimmedCssValuePart2 = cssValuePart2
                                 .trim();
 
-                        if (cssValuePart2.startsWith(" ")
-                                && cssValuePart2.endsWith(" ")) {
+                        if (StringUtil.startsWithWhitespace(cssValuePart2)
+                                && StringUtil
+                                        .endsWithWhitespace(cssValuePart2)) {
                             if (!trimmedCssValuePart2.isEmpty()) {
                                 for (final String each : trimmedCssValuePart2
                                         .split(" ")) {
@@ -237,7 +238,7 @@ public class CssValueUtil {
 
                     final String trimmedCssValuePart2 = cssValuePart2.trim();
 
-                    if (cssValuePart2.startsWith(" ")) {
+                    if (StringUtil.startsWithWhitespace(cssValuePart2)) {
                         for (final String each : trimmedCssValuePart2
                                 .split(" ")) {
                             if (!each.isEmpty()) {

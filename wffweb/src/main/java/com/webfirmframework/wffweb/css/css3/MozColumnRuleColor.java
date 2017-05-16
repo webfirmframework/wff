@@ -214,11 +214,11 @@ public class MozColumnRuleColor
         }
 
         try {
-            if (!trimmedCssValue.startsWith("#")) {
+            if (trimmedCssValue.length() == 0
+                    || trimmedCssValue.charAt(0) != '#') {
                 return false;
             }
-            final long value = Long.parseLong(cssValue.replaceFirst("[#]", ""),
-                    16);
+            final long value = Long.parseLong(trimmedCssValue.substring(1), 16);
 
             return !(value > CommonConstants.FFFFFF_HEX_VALUE || value < 0);
         } catch (final NumberFormatException ex) {

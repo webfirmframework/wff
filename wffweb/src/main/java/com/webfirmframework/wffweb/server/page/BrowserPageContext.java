@@ -158,7 +158,15 @@ public enum BrowserPageContext {
                 instanceIdHttpSessionId.remove(browserPage.getInstanceId());
                 instanceIdBrowserPage.remove(browserPage.getInstanceId());
                 if (browserPage != null) {
-                    browserPage.removedFromContext();
+                    try {
+                        browserPage.removedFromContext();
+                    } catch (final Throwable e) {
+                        if (LOGGER.isLoggable(Level.WARNING)) {
+                            LOGGER.log(Level.WARNING,
+                                    "The overridden method BrowserPage#removedFromContext threw an exception.",
+                                    e);
+                        }
+                    }
                 }
             }
 
@@ -253,7 +261,15 @@ public enum BrowserPageContext {
                     final BrowserPage removedBrowserPage = instanceIdBrowserPage
                             .remove(instanceId);
                     if (removedBrowserPage != null) {
-                        removedBrowserPage.removedFromContext();
+                        try {
+                            removedBrowserPage.removedFromContext();
+                        } catch (final Throwable e) {
+                            if (LOGGER.isLoggable(Level.WARNING)) {
+                                LOGGER.log(Level.WARNING,
+                                        "The overridden method BrowserPage#removedFromContext threw an exception.",
+                                        e);
+                            }
+                        }
                     }
                 }
 
@@ -346,7 +362,15 @@ public enum BrowserPageContext {
                         .remove(instanceId);
 
                 if (removedBrowserPage != null) {
-                    removedBrowserPage.removedFromContext();
+                    try {
+                        removedBrowserPage.removedFromContext();
+                    } catch (final Throwable e) {
+                        if (LOGGER.isLoggable(Level.WARNING)) {
+                            LOGGER.log(Level.WARNING,
+                                    "The overridden method BrowserPage#removedFromContext threw an exception.",
+                                    e);
+                        }
+                    }
                 }
 
             }

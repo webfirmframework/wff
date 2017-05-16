@@ -89,7 +89,7 @@ public class PaddingLeft extends AbstractCssProperty<PaddingLeft> {
     public PaddingLeft(final float percent) {
         cssLengthUnit = CssLengthUnit.PER;
         value = percent;
-        cssValue = percent + "" + cssLengthUnit;
+        cssValue = String.valueOf(percent) + cssLengthUnit;
     }
 
     /**
@@ -99,7 +99,7 @@ public class PaddingLeft extends AbstractCssProperty<PaddingLeft> {
     public PaddingLeft(final float value, final CssLengthUnit cssLengthUnit) {
         this.value = value;
         this.cssLengthUnit = cssLengthUnit;
-        cssValue = value + "" + cssLengthUnit;
+        cssValue = String.valueOf(value) + cssLengthUnit;
     }
 
     /**
@@ -113,7 +113,7 @@ public class PaddingLeft extends AbstractCssProperty<PaddingLeft> {
             final CssLengthUnit cssLengthUnit) {
         this.value = value;
         this.cssLengthUnit = cssLengthUnit;
-        cssValue = value + "" + cssLengthUnit;
+        cssValue = String.valueOf(value) + cssLengthUnit;
         if (getStateChangeInformer() != null) {
             getStateChangeInformer().stateChanged(this);
         }
@@ -129,7 +129,7 @@ public class PaddingLeft extends AbstractCssProperty<PaddingLeft> {
     public void setPercent(final float percent) {
         value = percent;
         cssLengthUnit = CssLengthUnit.PER;
-        cssValue = percent + "" + cssLengthUnit;
+        cssValue = String.valueOf(percent) + cssLengthUnit;
         if (getStateChangeInformer() != null) {
             getStateChangeInformer().stateChanged(this);
         }

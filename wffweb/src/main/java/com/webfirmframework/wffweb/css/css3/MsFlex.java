@@ -244,8 +244,7 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
             invalid = false;
         }
 
-        cssValueBuilder.append(flexGrow.getCssValue());
-        cssValueBuilder.append(' ');
+        cssValueBuilder.append(flexGrow.getCssValue()).append(' ');
 
         if (flexShrink == null) {
             if (this.flexShrink == null) {
@@ -260,8 +259,7 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
             invalid = false;
         }
 
-        cssValueBuilder.append(flexShrink.getCssValue());
-        cssValueBuilder.append(' ');
+        cssValueBuilder.append(flexShrink.getCssValue()).append(' ');
 
         if (flexBasis == null) {
             if (cssValueParts.length == 3) {
@@ -425,8 +423,7 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
             }
         }
 
-        cssValueBuilder.append(flexGrow.getCssValue());
-        cssValueBuilder.append(' ');
+        cssValueBuilder.append(flexGrow.getCssValue()).append(' ');
 
         if (flexShrink == null) {
             flexShrink = new FlexShrink(1);
@@ -434,8 +431,7 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
             flexShrink.setAlreadyInUse(true);
         }
 
-        cssValueBuilder.append(flexShrink.getCssValue());
-        cssValueBuilder.append(' ');
+        cssValueBuilder.append(flexShrink.getCssValue()).append(' ');
 
         if (flexBasis == null) {
             flexBasis = new FlexBasis(0);
@@ -470,8 +466,7 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
             flexGrow.setAlreadyInUse(true);
         }
 
-        cssValueBuilder.append(flexGrow.getCssValue());
-        cssValueBuilder.append(' ');
+        cssValueBuilder.append(flexGrow.getCssValue()).append(' ');
 
         if (this.flexShrink != null) {
             this.flexShrink.setCssValue(flexShrink.getCssValue());
@@ -495,8 +490,7 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
             }
         }
 
-        cssValueBuilder.append(flexShrink.getCssValue());
-        cssValueBuilder.append(' ');
+        cssValueBuilder.append(flexShrink.getCssValue()).append(' ');
 
         if (flexBasis == null) {
             flexBasis = new FlexBasis(0);
@@ -531,8 +525,7 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
             flexGrow.setAlreadyInUse(true);
         }
 
-        cssValueBuilder.append(flexGrow.getCssValue());
-        cssValueBuilder.append(' ');
+        cssValueBuilder.append(flexGrow.getCssValue()).append(' ');
 
         if (flexShrink == null) {
             flexShrink = new FlexShrink(1);
@@ -540,8 +533,7 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
             flexShrink.setAlreadyInUse(true);
         }
 
-        cssValueBuilder.append(flexShrink.getCssValue());
-        cssValueBuilder.append(' ');
+        cssValueBuilder.append(flexShrink.getCssValue()).append(' ');
 
         if (this.flexBasis != null) {
             this.flexBasis.setCssValue(flexBasis.getCssValue());
@@ -565,9 +557,7 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
             }
         }
 
-        cssValueBuilder.append(flexBasis.getCssValue());
-
-        cssValue = cssValueBuilder.toString();
+        cssValue = cssValueBuilder.append(flexBasis.getCssValue()).toString();
 
         if (getStateChangeInformer() != null) {
             getStateChangeInformer().stateChanged(this);
@@ -588,12 +578,9 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
                 throw new InvalidValueException(
                         "initial/inherit cannot be set as flexGrow cssValue");
             }
-            final StringBuilder sb = new StringBuilder(flexGrow.getCssValue());
-            sb.append(' ');
-            sb.append(flexShrink.getCssValue());
-            sb.append(' ');
-            sb.append(flexBasis.getCssValue());
-            this.cssValue = sb.toString();
+            this.cssValue = new StringBuilder(flexGrow.getCssValue())
+                    .append(' ').append(flexShrink.getCssValue()).append(' ')
+                    .append(flexBasis.getCssValue()).toString();
         } else if (stateChangedObject instanceof FlexShrink) {
 
             final FlexShrink flexShrink = (FlexShrink) stateChangedObject;
@@ -605,12 +592,9 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
                 throw new InvalidValueException(
                         "initial/inherit cannot be set as flexShrink cssValue");
             }
-            final StringBuilder sb = new StringBuilder(flexGrow.getCssValue());
-            sb.append(' ');
-            sb.append(flexShrink.getCssValue());
-            sb.append(' ');
-            sb.append(flexBasis.getCssValue());
-            this.cssValue = sb.toString();
+            this.cssValue = new StringBuilder(flexGrow.getCssValue())
+                    .append(' ').append(flexShrink.getCssValue()).append(' ')
+                    .append(flexBasis.getCssValue()).toString();
 
         } else if (stateChangedObject instanceof FlexBasis) {
 
@@ -624,12 +608,9 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
                         "initial/inherit cannot be set as flexBasis cssValue");
             }
 
-            final StringBuilder sb = new StringBuilder(flexGrow.getCssValue());
-            sb.append(' ');
-            sb.append(flexShrink.getCssValue());
-            sb.append(' ');
-            sb.append(flexBasis.getCssValue());
-            this.cssValue = sb.toString();
+            this.cssValue = new StringBuilder(flexGrow.getCssValue())
+                    .append(' ').append(flexShrink.getCssValue()).append(' ')
+                    .append(flexBasis.getCssValue()).toString();
         }
     }
 

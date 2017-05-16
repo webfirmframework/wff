@@ -90,7 +90,7 @@ public class MarginBottom extends AbstractCssProperty<MarginBottom> {
     public MarginBottom(final float percent) {
         cssLengthUnit = CssLengthUnit.PER;
         value = percent;
-        cssValue = percent + "" + cssLengthUnit;
+        cssValue = String.valueOf(percent).concat(cssLengthUnit.toString());
     }
 
     /**
@@ -100,7 +100,7 @@ public class MarginBottom extends AbstractCssProperty<MarginBottom> {
     public MarginBottom(final float value, final CssLengthUnit cssLengthUnit) {
         this.value = value;
         this.cssLengthUnit = cssLengthUnit;
-        cssValue = value + "" + cssLengthUnit;
+        cssValue = String.valueOf(value).concat(cssLengthUnit.toString());
     }
 
     /**
@@ -114,7 +114,7 @@ public class MarginBottom extends AbstractCssProperty<MarginBottom> {
             final CssLengthUnit cssLengthUnit) {
         this.value = value;
         this.cssLengthUnit = cssLengthUnit;
-        cssValue = value + "" + cssLengthUnit;
+        cssValue = String.valueOf(value) + cssLengthUnit;
         if (getStateChangeInformer() != null) {
             getStateChangeInformer().stateChanged(this);
         }
@@ -130,7 +130,7 @@ public class MarginBottom extends AbstractCssProperty<MarginBottom> {
     public void setPercent(final float percent) {
         value = percent;
         cssLengthUnit = CssLengthUnit.PER;
-        cssValue = percent + "" + cssLengthUnit;
+        cssValue = String.valueOf(percent) + cssLengthUnit;
         if (getStateChangeInformer() != null) {
             getStateChangeInformer().stateChanged(this);
         }

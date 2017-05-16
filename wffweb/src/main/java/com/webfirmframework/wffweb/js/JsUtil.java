@@ -43,16 +43,14 @@ public class JsUtil {
     public static String getJsObjectForFieldsValue(
             final Map<String, Object> jsKeyAndElementId) {
 
-        final StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder(38);
 
         builder.append('{');
 
         for (final Entry<String, Object> entry : jsKeyAndElementId.entrySet()) {
 
-            builder.append(entry.getKey());
-            builder.append(":document.getElementById(\"");
-            builder.append(entry.getValue().toString());
-            builder.append("\").value,");
+            builder.append(entry.getKey()).append(":document.getElementById(\"")
+                    .append(entry.getValue().toString()).append("\").value,");
 
         }
 
@@ -74,16 +72,14 @@ public class JsUtil {
      */
     public static String getJsObjectForFieldsValue(final Set<Object> ids) {
 
-        final StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder(75);
 
         builder.append('{');
 
         for (final Object id : ids) {
 
-            builder.append(id.toString());
-            builder.append(":document.getElementById(\"");
-            builder.append(id.toString());
-            builder.append("\").value,");
+            builder.append(id.toString()).append(":document.getElementById(\"")
+                    .append(id.toString()).append("\").value,");
 
         }
 
@@ -105,16 +101,14 @@ public class JsUtil {
      */
     public static String getJsObjectForFieldsValue(final String... ids) {
 
-        final StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder(38);
 
         builder.append('{');
 
         for (final Object id : ids) {
 
-            builder.append(id.toString());
-            builder.append(":document.getElementById(\"");
-            builder.append(id.toString());
-            builder.append("\").value,");
+            builder.append(id.toString()).append(":document.getElementById(\"")
+                    .append(id.toString()).append("\").value,");
 
         }
 

@@ -135,7 +135,7 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
      * @author WFF
      */
     public BorderImageWidth(final float percent) {
-        setCssValue(percent + "" + CssLengthUnit.PER);
+        setCssValue(String.valueOf(percent) + CssLengthUnit.PER);
     }
 
     /**
@@ -144,7 +144,7 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
      */
     public BorderImageWidth(final float value,
             final CssLengthUnit cssLengthUnit) {
-        setCssValue(value + "" + cssLengthUnit);
+        setCssValue(String.valueOf(value) + cssLengthUnit);
     }
 
     /**
@@ -154,7 +154,7 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
      * @author WFF
      */
     public void setPercent(final float percent) {
-        setCssValue(percent + "" + CssLengthUnit.PER);
+        setCssValue(String.valueOf(percent) + CssLengthUnit.PER);
     }
 
     /*

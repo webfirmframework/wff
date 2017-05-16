@@ -107,7 +107,7 @@ public class PerspectiveOrigin extends AbstractCssProperty<PerspectiveOrigin> {
         xAxis = yAxis = Float.valueOf(xyAxis);
         xAxisCssLengthUnit = yAxisCssLengthUnit = cssLengthUnit;
 
-        cssValue = xyAxis + "" + cssLengthUnit;
+        cssValue = String.valueOf(xyAxis) + cssLengthUnit;
     }
 
     /**
@@ -131,15 +131,12 @@ public class PerspectiveOrigin extends AbstractCssProperty<PerspectiveOrigin> {
 
         if (xAxis == yAxis
                 && Objects.equals(xAxisCssLengthUnit, yAxisCssLengthUnit)) {
-            cssValue = xAxis + "" + xAxisCssLengthUnit;
+            cssValue = String.valueOf(xAxis)
+                    .concat(xAxisCssLengthUnit.toString());
         } else {
-            final StringBuilder sb = new StringBuilder();
-            sb.append(xAxis);
-            sb.append(xAxisCssLengthUnit);
-            sb.append(' ');
-            sb.append(yAxis);
-            sb.append(yAxisCssLengthUnit);
-            cssValue = sb.toString();
+            cssValue = new StringBuilder().append(xAxis)
+                    .append(xAxisCssLengthUnit).append(' ').append(yAxis)
+                    .append(yAxisCssLengthUnit).toString();
 
         }
     }
@@ -165,16 +162,12 @@ public class PerspectiveOrigin extends AbstractCssProperty<PerspectiveOrigin> {
 
         if (xAxis == yAxis
                 && Objects.equals(xAxisCssLengthUnit, yAxisCssLengthUnit)) {
-            cssValue = xAxis + "" + xAxisCssLengthUnit;
+            cssValue = String.valueOf(xAxis)
+                    .concat(xAxisCssLengthUnit.toString());
         } else {
-            final StringBuilder sb = new StringBuilder();
-            sb.append(xAxis);
-            sb.append(xAxisCssLengthUnit);
-            sb.append(' ');
-            sb.append(yAxis);
-            sb.append(yAxisCssLengthUnit);
-            cssValue = sb.toString();
-
+            cssValue = new StringBuilder().append(xAxis)
+                    .append(xAxisCssLengthUnit).append(' ').append(yAxis)
+                    .append(yAxisCssLengthUnit).toString();
         }
 
         if (getStateChangeInformer() != null) {
@@ -196,7 +189,7 @@ public class PerspectiveOrigin extends AbstractCssProperty<PerspectiveOrigin> {
         xAxis = yAxis = Float.valueOf(xyAxis);
         xAxisCssLengthUnit = yAxisCssLengthUnit = cssLengthUnit;
 
-        cssValue = xyAxis + "" + cssLengthUnit;
+        cssValue = String.valueOf(xyAxis) + cssLengthUnit;
 
         if (getStateChangeInformer() != null) {
             getStateChangeInformer().stateChanged(this);
@@ -346,7 +339,8 @@ public class PerspectiveOrigin extends AbstractCssProperty<PerspectiveOrigin> {
                                 .floatToIntBits(xAxis.floatValue())
                                 && Objects.equals(xAxisCssLengthUnit,
                                         yAxisCssLengthUnit)) {
-                            this.cssValue = xAxis + "" + yAxisCssLengthUnit;
+                            this.cssValue = String.valueOf(xAxis)
+                                    + yAxisCssLengthUnit;
                         } else {
                             this.cssValue = trimmedCssValue;
                         }

@@ -570,4 +570,30 @@ public class StringUtil {
         return ObjectUtil.isEqual(string1, string2);
     }
 
+    /**
+     * @param value
+     * @return true if the given value is starting with a white space
+     * @since 2.1.8
+     * @author WFF
+     */
+    public static boolean startsWithWhitespace(final String value) {
+        if (value.length() == 0) {
+            return false;
+        }
+        return Character.isWhitespace(value.charAt(0));
+    }
+
+    /**
+     * @param value
+     * @return true if the given value is ending with a white space
+     * @since 2.1.8
+     * @author WFF
+     */
+    public static boolean endsWithWhitespace(final String value) {
+        if (value.length() == 0) {
+            return false;
+        }
+        return Character.isWhitespace(value.charAt(value.length() - 1));
+    }
+
 }

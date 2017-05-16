@@ -25,6 +25,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.webfirmframework.wffweb.InvalidTagException;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.tag.html.listener.InsertBeforeListener;
@@ -138,16 +139,26 @@ class InsertBeforeListenerImpl implements InsertBeforeListener {
                     final byte[][] beforeTagNameAndWffId = DataWffIdUtil
                             .getTagNameAndWffId(beforeTag);
 
-                    if (previousParentTag != null) {
-                        nameValue.setValues(parentTagName,
-                                insertedTag.toWffBMBytes("UTF-8"),
-                                beforeTagNameAndWffId[0],
-                                beforeTagNameAndWffId[1], new byte[] { 1 });
-                    } else {
-                        nameValue.setValues(parentTagName,
-                                insertedTag.toWffBMBytes("UTF-8"),
-                                beforeTagNameAndWffId[0],
-                                beforeTagNameAndWffId[1]);
+                    try {
+                        if (previousParentTag != null) {
+                            nameValue.setValues(parentTagName,
+                                    insertedTag.toWffBMBytes("UTF-8"),
+                                    beforeTagNameAndWffId[0],
+                                    beforeTagNameAndWffId[1], new byte[] { 1 });
+                        } else {
+                            nameValue.setValues(parentTagName,
+                                    insertedTag.toWffBMBytes("UTF-8"),
+                                    beforeTagNameAndWffId[0],
+                                    beforeTagNameAndWffId[1]);
+                        }
+                    } catch (final InvalidTagException e) {
+                        if (LOGGER.isLoggable(Level.WARNING)) {
+                            LOGGER.log(Level.WARNING,
+                                    "Do not append/add an empty NoTag as child tag, eg: new NoTag(null, \"\").\n"
+                                            .concat("To make a tag's children as empty then invoke removeAllChildren() method in it."),
+                                    e);
+                        }
+                        continue;
                     }
 
                     addInWffIdMap(insertedTag);

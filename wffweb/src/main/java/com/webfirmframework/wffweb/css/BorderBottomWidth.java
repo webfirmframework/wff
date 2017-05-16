@@ -96,7 +96,7 @@ public class BorderBottomWidth extends AbstractCssProperty<BorderBottomWidth> {
     public BorderBottomWidth(final float percent) {
         cssLengthUnit = CssLengthUnit.PER;
         value = Float.valueOf(percent);
-        cssValue = percent + "" + cssLengthUnit;
+        cssValue = String.valueOf(percent) + cssLengthUnit;
     }
 
     /**
@@ -107,7 +107,7 @@ public class BorderBottomWidth extends AbstractCssProperty<BorderBottomWidth> {
             final CssLengthUnit cssLengthUnit) {
         this.value = Float.valueOf(value);
         this.cssLengthUnit = cssLengthUnit;
-        cssValue = value + "" + cssLengthUnit;
+        cssValue = String.valueOf(value).concat(cssLengthUnit.toString());
     }
 
     /**
@@ -121,7 +121,7 @@ public class BorderBottomWidth extends AbstractCssProperty<BorderBottomWidth> {
             final CssLengthUnit cssLengthUnit) {
         this.value = Float.valueOf(value);
         this.cssLengthUnit = cssLengthUnit;
-        cssValue = value + "" + cssLengthUnit;
+        cssValue = String.valueOf(value).concat(cssLengthUnit.toString());
         if (getStateChangeInformer() != null) {
             getStateChangeInformer().stateChanged(this);
         }
@@ -137,7 +137,7 @@ public class BorderBottomWidth extends AbstractCssProperty<BorderBottomWidth> {
     public void setPercent(final float percent) {
         value = Float.valueOf(percent);
         cssLengthUnit = CssLengthUnit.PER;
-        cssValue = percent + "" + cssLengthUnit;
+        cssValue = String.valueOf(percent) + cssLengthUnit;
         if (getStateChangeInformer() != null) {
             getStateChangeInformer().stateChanged(this);
         }

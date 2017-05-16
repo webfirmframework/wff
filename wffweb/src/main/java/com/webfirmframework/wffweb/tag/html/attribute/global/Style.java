@@ -934,7 +934,10 @@ public class Style extends AbstractAttribute
         if (cssValue == null) {
             throw new NullValueException("cssValue cannot be null");
         }
-        if (cssValue.trim().startsWith(":") || cssValue.trim().endsWith(";")) {
+        final String trimmedCssValue = cssValue.trim();
+        if (trimmedCssValue.length() > 0
+                && (trimmedCssValue.charAt(0) == ':' || trimmedCssValue
+                        .charAt(trimmedCssValue.length() - 1) == ';')) {
             throw new InvalidValueException(
                     "value can not start with : (colon) or end with ; (semicolon)");
         }

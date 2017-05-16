@@ -24,10 +24,12 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.webfirmframework.wffweb.InvalidTagException;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.tag.html.listener.ChildTagAppendListener;
@@ -124,6 +126,13 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
 
             browserPage.push(task, nameValue);
 
+        } catch (final InvalidTagException e) {
+            if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.log(Level.WARNING,
+                        "Do not append/add an empty NoTag as child tag, eg: new NoTag(null, \"\").\n"
+                                .concat("To make a tag's children as empty then invoke removeAllChildren() method in it."),
+                        e);
+            }
         } catch (final UnsupportedEncodingException e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
@@ -197,8 +206,18 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
 
                 final byte[] parentTagName = tagNameAndWffId[0];
 
-                nameValue.setValues(parentTagName,
-                        appendedChildTag.toWffBMBytes("UTF-8"));
+                try {
+                    nameValue.setValues(parentTagName,
+                            appendedChildTag.toWffBMBytes("UTF-8"));
+                } catch (final InvalidTagException e) {
+                    if (LOGGER.isLoggable(Level.WARNING)) {
+                        LOGGER.log(Level.WARNING,
+                                "Do not append/add an empty NoTag as child tag, eg: new NoTag(null, \"\").\n"
+                                        .concat("To make a tag's children as empty then invoke removeAllChildren() method in it."),
+                                e);
+                    }
+                    continue;
+                }
 
                 nameValues.add(nameValue);
             }
@@ -356,11 +375,22 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
                     final byte[] movedChildTagName = movedChildTagNameAndWffId[0];
 
                     if (previousParentTag == null) {
-                        // if the previousParentTag is null it means it's a new
-                        // tag
-                        nameValue.setValues(currentTagName,
-                                movedChildWffIdBytes, movedChildTagName,
-                                movedChildTag.toWffBMBytes("UTF-8"));
+                        try {
+                            // if the previousParentTag is null it means it's a
+                            // new
+                            // tag
+                            nameValue.setValues(currentTagName,
+                                    movedChildWffIdBytes, movedChildTagName,
+                                    movedChildTag.toWffBMBytes("UTF-8"));
+                        } catch (final InvalidTagException e) {
+                            if (LOGGER.isLoggable(Level.WARNING)) {
+                                LOGGER.log(Level.WARNING,
+                                        "Do not append/add an empty NoTag as child tag, eg: new NoTag(null, \"\").\n"
+                                                .concat("To make a tag's children as empty then invoke removeAllChildren() method in it."),
+                                        e);
+                            }
+                            continue;
+                        }
                     } else {
                         nameValue.setValues(currentTagName,
                                 movedChildWffIdBytes, movedChildTagName);
@@ -380,6 +410,13 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
             browserPage
                     .push(nameValues.toArray(new NameValue[nameValues.size()]));
 
+        } catch (final NoSuchElementException e) {
+            if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.log(Level.WARNING,
+                        "Do not append/add an empty NoTag as child tag, eg: new NoTag(null, \"\").\n"
+                                .concat("To make a tag's children as empty then invoke removeAllChildren() method in it."),
+                        e);
+            }
         } catch (final UnsupportedEncodingException e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);

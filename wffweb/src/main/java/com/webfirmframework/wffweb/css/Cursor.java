@@ -258,12 +258,15 @@ public class Cursor extends AbstractCssProperty<Cursor>
         if (cssValue == null) {
             throw new NullValueException("the value can not be null");
         }
-        if (cssValue.trim().startsWith(":") || cssValue.trim().endsWith(";")) {
+        final String trimmedCssValue = cssValue.trim();
+        final int cssValueLength = trimmedCssValue.length();
+        if (cssValueLength > 0 && (trimmedCssValue.charAt(0) == ':'
+                || trimmedCssValue.charAt(cssValueLength - 1) == ';')) {
             throw new InvalidValueException(
                     "cssValue can not start with : (colon) or end with ; (semicolon)");
         }
 
-        final String[] cssValueParts = cssValue.split(",");
+        final String[] cssValueParts = trimmedCssValue.split(",");
         final String cursorType = cssValueParts[cssValueParts.length - 1].trim()
                 .toLowerCase();
         if (!ALL_CURSORTYPES.contains(cursorType.trim())) {
@@ -281,8 +284,8 @@ public class Cursor extends AbstractCssProperty<Cursor>
                     urlCss3Value.setStateChangeInformer(this);
                     urlCss3Values[i] = urlCss3Value;
 
-                    cssValueBuilder.append(urlCss3Value.getValue());
-                    cssValueBuilder.append(", ");
+                    cssValueBuilder.append(urlCss3Value.getValue())
+                            .append(", ");
                 }
             } else {
 
@@ -305,8 +308,8 @@ public class Cursor extends AbstractCssProperty<Cursor>
                     urlCss3Value.setAlreadyInUse(true);
                     urlCss3Value.setStateChangeInformer(this);
                     urlCss3ValuesTemp[i] = urlCss3Value;
-                    cssValueBuilder.append(urlCss3Value.getValue());
-                    cssValueBuilder.append(", ");
+                    cssValueBuilder.append(urlCss3Value.getValue())
+                            .append(", ");
                 }
 
                 for (int i = cssValueParts.length
@@ -324,7 +327,7 @@ public class Cursor extends AbstractCssProperty<Cursor>
             this.cssValue = cssValueBuilder.toString();
             this.cursorType = cursorType;
         } else {
-            this.cssValue = cssValue;
+            this.cssValue = trimmedCssValue;
             this.cursorType = cursorType;
         }
         if (getStateChangeInformer() != null) {
@@ -419,12 +422,13 @@ public class Cursor extends AbstractCssProperty<Cursor>
         }
         final StringBuilder sb = new StringBuilder();
         for (final String cursorUrl : cursorUrls) {
-            final String urlString = "url(\"" + cursorUrl + "\"), ";
+            final String urlString = "url(\"".concat(cursorUrl).concat("\"), ");
             sb.append(urlString);
         }
         String cssValue = sb.toString();
 
-        cssValue = cssValue.endsWith(", ") ? cssValue + cursorType : cursorType;
+        cssValue = cssValue.endsWith(", ") ? cssValue.concat(cursorType)
+                : cursorType;
 
         setCssValue(cssValue);
         this.cursorType = cursorType;
@@ -480,8 +484,7 @@ public class Cursor extends AbstractCssProperty<Cursor>
                     }
                 }
             }
-            cssValueBuilder.append(urlCss3Value.getValue());
-            cssValueBuilder.append(", ");
+            cssValueBuilder.append(urlCss3Value.getValue()).append(", ");
             urlCss3Value.setAlreadyInUse(true);
             urlCss3Value.setStateChangeInformer(this);
         }

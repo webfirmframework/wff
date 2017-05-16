@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
+import com.webfirmframework.wffweb.server.page.js.WffJsFile;
 import com.webfirmframework.wffweb.util.data.NameValue;
 
 /**
@@ -76,17 +77,39 @@ public enum Task {
     /**
      * to remove BrowserPage instance from BrowserPageContext
      */
-    REMOVE_BROWSER_PAGE;
+    REMOVE_BROWSER_PAGE,
 
-    private byte valueByte;
+    /**
+     * to set WffBMObject on tag
+     */
+    SET_BM_OBJ_ON_TAG,
 
-    private String jsNameValue;
+    /**
+     * to set WffBMArray on tag
+     */
+    SET_BM_ARR_ON_TAG,
+
+    /**
+     * to delete WffBMObject or WffBMArray from tag
+     */
+    DEL_BM_OBJ_OR_ARR_FROM_TAG,
+
+    ;
+
+    private final String shortName;
+
+    private final byte valueByte;
+
+    private final String jsNameValue;
 
     private static String jsObjectString;
 
     private Task() {
         valueByte = (byte) ordinal();
-        jsNameValue = name() + ":" + ordinal();
+        shortName = "T".concat(String.valueOf(ordinal()));
+        jsNameValue = WffJsFile.PRODUCTION_MODE
+                ? shortName.concat(":").concat(String.valueOf(ordinal()))
+                : name().concat(":").concat(String.valueOf(ordinal()));
     }
 
     /**
@@ -122,10 +145,12 @@ public enum Task {
     }
 
     /**
-     * @return the javascript object string, Eg:-
-     *         <code>{ INVOKE_ASYNC_METHOD : 0,
+     * @return the javascript object string, Eg:- in the optimized form
+     *         <code>{ T0 : 0,
+     *         T1 : 1}</code> of <code>{ INVOKE_ASYNC_METHOD : 0,
      *         ATTRIBUTE_UPDATED : 1}</code>
      * @since 1.1.5
+     * @since 2.1.8 optimized with shortName
      * @author WFF
      */
     public static String getJsObjectString() {
@@ -147,14 +172,22 @@ public enum Task {
         final StringBuilder builder = new StringBuilder(totalLength);
         builder.append('{');
         for (final Task task : Task.values()) {
-            builder.append(task.jsNameValue);
-            builder.append(',');
+            builder.append(task.jsNameValue).append(',');
         }
 
         builder.replace(builder.length() - 1, builder.length(), "}");
 
         jsObjectString = builder.toString();
         return jsObjectString;
+    }
+
+    /**
+     * @return unique short name for the task
+     * @since 2.1.8
+     * @author WFF
+     */
+    public String getShortName() {
+        return shortName;
     }
 
 }

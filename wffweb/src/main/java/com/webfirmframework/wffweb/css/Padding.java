@@ -597,8 +597,7 @@ public class Padding extends AbstractCssProperty<Padding>
 
             final StringBuilder cssValueBuilder = new StringBuilder(
                     paddingTopCssValue);
-            cssValueBuilder.append(' ');
-            cssValueBuilder.append(paddingRightCssValue);
+            cssValueBuilder.append(' ').append(paddingRightCssValue);
 
             cssValue = cssValueBuilder.toString();
 
@@ -608,30 +607,20 @@ public class Padding extends AbstractCssProperty<Padding>
             }
 
         } else if (paddingRightCssValue.equals(paddingLeftCssValue)) {
-            final StringBuilder cssValueBuilder = new StringBuilder(
-                    paddingTopCssValue);
-            cssValueBuilder.append(' ');
-            cssValueBuilder.append(paddingRightCssValue);
-            cssValueBuilder.append(' ');
-            cssValueBuilder.append(paddingBottomCssValue);
-
-            cssValue = cssValueBuilder.toString();
+            cssValue = new StringBuilder(paddingTopCssValue).append(' ')
+                    .append(paddingRightCssValue).append(' ')
+                    .append(paddingBottomCssValue).toString();
 
             final StateChangeInformer<CssProperty> stateChangeInformer = getStateChangeInformer();
             if (stateChangeInformer != null) {
                 stateChangeInformer.stateChanged(this);
             }
         } else {
-            final StringBuilder cssValueBuilder = new StringBuilder(
-                    paddingTopCssValue);
-            cssValueBuilder.append(' ');
-            cssValueBuilder.append(paddingRightCssValue);
-            cssValueBuilder.append(' ');
-            cssValueBuilder.append(paddingBottomCssValue);
-            cssValueBuilder.append(' ');
-            cssValueBuilder.append(paddingLeftCssValue);
 
-            cssValue = cssValueBuilder.toString();
+            cssValue = new StringBuilder(paddingTopCssValue).append(' ')
+                    .append(paddingRightCssValue).append(' ')
+                    .append(paddingBottomCssValue).append(' ')
+                    .append(paddingLeftCssValue).toString();
 
             final StateChangeInformer<CssProperty> stateChangeInformer = getStateChangeInformer();
             if (stateChangeInformer != null) {

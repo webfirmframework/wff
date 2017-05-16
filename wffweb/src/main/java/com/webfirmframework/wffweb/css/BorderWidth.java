@@ -121,7 +121,7 @@ public class BorderWidth extends AbstractCssProperty<BorderWidth>
      * @author WFF
      */
     public BorderWidth(final float percent) {
-        setCssValue(percent + "" + CssLengthUnit.PER);
+        setCssValue(String.valueOf(percent) + CssLengthUnit.PER);
     }
 
     /**
@@ -129,7 +129,7 @@ public class BorderWidth extends AbstractCssProperty<BorderWidth>
      * @param cssLengthUnit
      */
     public BorderWidth(final float value, final CssLengthUnit cssLengthUnit) {
-        setCssValue(value + "" + cssLengthUnit);
+        setCssValue(String.valueOf(value) + cssLengthUnit);
     }
 
     /**
@@ -141,7 +141,7 @@ public class BorderWidth extends AbstractCssProperty<BorderWidth>
      */
     public BorderWidth setValue(final float value,
             final CssLengthUnit cssLengthUnit) {
-        setCssValue(value + "" + cssLengthUnit);
+        setCssValue(String.valueOf(value) + cssLengthUnit);
         return this;
     }
 
@@ -152,7 +152,7 @@ public class BorderWidth extends AbstractCssProperty<BorderWidth>
      * @author WFF
      */
     public void setPercent(final float percent) {
-        setCssValue(percent + "" + CssLengthUnit.PER);
+        setCssValue(String.valueOf(percent) + CssLengthUnit.PER);
     }
 
     /*
@@ -655,8 +655,7 @@ public class BorderWidth extends AbstractCssProperty<BorderWidth>
 
             final StringBuilder cssValueBuilder = new StringBuilder(
                     borderTopWidthCssValue);
-            cssValueBuilder.append(' ');
-            cssValueBuilder.append(borderRightWidthCssValue);
+            cssValueBuilder.append(' ').append(borderRightWidthCssValue);
 
             cssValue = cssValueBuilder.toString();
 
@@ -666,30 +665,20 @@ public class BorderWidth extends AbstractCssProperty<BorderWidth>
             }
 
         } else if (borderRightWidthCssValue.equals(borderLeftWidthCssValue)) {
-            final StringBuilder cssValueBuilder = new StringBuilder(
-                    borderTopWidthCssValue);
-            cssValueBuilder.append(' ');
-            cssValueBuilder.append(borderRightWidthCssValue);
-            cssValueBuilder.append(' ');
-            cssValueBuilder.append(borderBottomWidthCssValue);
-
-            cssValue = cssValueBuilder.toString();
+            cssValue = new StringBuilder(borderTopWidthCssValue).append(' ')
+                    .append(borderRightWidthCssValue).append(' ')
+                    .append(borderBottomWidthCssValue).toString();
 
             final StateChangeInformer<CssProperty> stateChangeInformer = getStateChangeInformer();
             if (stateChangeInformer != null) {
                 stateChangeInformer.stateChanged(this);
             }
         } else {
-            final StringBuilder cssValueBuilder = new StringBuilder(
-                    borderTopWidthCssValue);
-            cssValueBuilder.append(' ');
-            cssValueBuilder.append(borderRightWidthCssValue);
-            cssValueBuilder.append(' ');
-            cssValueBuilder.append(borderBottomWidthCssValue);
-            cssValueBuilder.append(' ');
-            cssValueBuilder.append(borderLeftWidthCssValue);
 
-            cssValue = cssValueBuilder.toString();
+            cssValue = new StringBuilder(borderTopWidthCssValue).append(' ')
+                    .append(borderRightWidthCssValue).append(' ')
+                    .append(borderBottomWidthCssValue).append(' ')
+                    .append(borderLeftWidthCssValue).toString();
 
             final StateChangeInformer<CssProperty> stateChangeInformer = getStateChangeInformer();
             if (stateChangeInformer != null) {

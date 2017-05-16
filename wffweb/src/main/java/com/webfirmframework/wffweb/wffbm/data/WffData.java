@@ -17,6 +17,10 @@ package com.webfirmframework.wffweb.wffbm.data;
 
 import java.io.Serializable;
 
+/**
+ * @author WFF
+ * @since 2.x.x
+ */
 public interface WffData extends Serializable {
 
 }

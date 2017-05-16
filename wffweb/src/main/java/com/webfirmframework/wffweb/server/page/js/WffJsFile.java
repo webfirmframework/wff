@@ -78,6 +78,8 @@ public enum WffJsFile {
 
     private static volatile int variableId = 0;
 
+    private static final String HEART_BEAT_JS = "setInterval(function(){try{wffWS.send([]);}catch(e){}},\"${HEARTBEAT_INTERVAL}\");";
+
     static {
 
         if (PRODUCTION_MODE) {
@@ -327,23 +329,34 @@ public enum WffJsFile {
         }
     }
 
+    /**
+     * NB :- This method is only for internal use.
+     *
+     * @param wsUrl
+     * @param instanceId
+     * @param removePrevBPOnInitTab
+     * @param removePrevBPOnClosetTab
+     * @param heartbeatInterval
+     *            in milliseconds
+     * @return the js string for the client
+     * @author WFF
+     */
     public static String getAllOptimizedContent(final String wsUrl,
             final String instanceId, final boolean removePrevBPOnInitTab,
-            final boolean removePrevBPOnClosetTab) {
+            final boolean removePrevBPOnClosetTab, final int heartbeatInterval,
+            final int wsReconnectInterval) {
 
         if (allOptimizedContent != null) {
-            return "var wffLog = console.log;"
-                    + JS_WORK_AROUND.optimizedFileContent
-                    + WFF_GLOBAL.optimizedFileContent
-                            .replace("${WS_URL}", wsUrl)
-                            .replace("${INSTANCE_ID}", instanceId)
-                            .replace("\"${REMOVE_PREV_BP_ON_TABCLOSE}\"",
-                                    String.valueOf(removePrevBPOnClosetTab))
-                            .replace("\"${REMOVE_PREV_BP_ON_INITTAB}\"",
-                                    String.valueOf(removePrevBPOnInitTab))
-                            .replace("\"${TASK_VALUES}\"",
-                                    Task.getJsObjectString())
-                    + allOptimizedContent + " var wffLog = console.log;";
+
+            if (heartbeatInterval > 0) {
+                return buildJsContentWithHeartbeat(wsUrl, instanceId,
+                        removePrevBPOnInitTab, removePrevBPOnClosetTab,
+                        heartbeatInterval, wsReconnectInterval);
+            }
+
+            return buildJsContentWithoutHeartbeat(wsUrl, instanceId,
+                    removePrevBPOnInitTab, removePrevBPOnClosetTab,
+                    wsReconnectInterval).toString();
         }
 
         try {
@@ -357,8 +370,7 @@ public enum WffJsFile {
 
             final WffJsFile[] wffJsFiles = WffJsFile.values();
             for (int i = 2; i < wffJsFiles.length; i++) {
-                builder.append('\n');
-                builder.append(wffJsFiles[i].optimizedFileContent);
+                builder.append('\n').append(wffJsFiles[i].optimizedFileContent);
             }
 
             allOptimizedContent = builder.toString().trim();
@@ -376,28 +388,63 @@ public enum WffJsFile {
                             "v" + (++variableId));
                 }
 
+                for (final Task task : Task.values()) {
+                    allOptimizedContent = allOptimizedContent
+                            .replace(task.name(), task.getShortName());
+                }
+
                 functionNames = null;
                 variableNames = null;
 
             }
 
-            return "var wffLog = console.log;"
-                    + JS_WORK_AROUND.optimizedFileContent
-                    + WFF_GLOBAL.optimizedFileContent
-                            .replace("${WS_URL}", wsUrl)
-                            .replace("${INSTANCE_ID}", instanceId)
-                            .replace("\"${REMOVE_PREV_BP_ON_TABCLOSE}\"",
-                                    String.valueOf(removePrevBPOnClosetTab))
-                            .replace("\"${REMOVE_PREV_BP_ON_INITTAB}\"",
-                                    String.valueOf(removePrevBPOnInitTab))
-                            .replace("\"${TASK_VALUES}\"",
-                                    Task.getJsObjectString())
-                    + allOptimizedContent;
+            if (heartbeatInterval > 0) {
+                return buildJsContentWithHeartbeat(wsUrl, instanceId,
+                        removePrevBPOnInitTab, removePrevBPOnClosetTab,
+                        heartbeatInterval, wsReconnectInterval);
+            }
+
+            return buildJsContentWithoutHeartbeat(wsUrl, instanceId,
+                    removePrevBPOnInitTab, removePrevBPOnClosetTab,
+                    wsReconnectInterval).toString();
         } catch (final Exception e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         }
         return "";
+    }
+
+    private static String buildJsContentWithHeartbeat(final String wsUrl,
+            final String instanceId, final boolean removePrevBPOnInitTab,
+            final boolean removePrevBPOnClosetTab, final int heartbeatInterval,
+            final int wsReconnectInterval) {
+        return buildJsContentWithoutHeartbeat(wsUrl, instanceId,
+                removePrevBPOnInitTab, removePrevBPOnClosetTab,
+                wsReconnectInterval).append(
+                        HEART_BEAT_JS.replace("\"${HEARTBEAT_INTERVAL}\"",
+                                Integer.toString(heartbeatInterval)))
+                        .toString();
+    }
+
+    private static StringBuilder buildJsContentWithoutHeartbeat(
+            final String wsUrl, final String instanceId,
+            final boolean removePrevBPOnInitTab,
+            final boolean removePrevBPOnClosetTab,
+            final int wsReconnectInterval) {
+        return new StringBuilder("var wffLog = console.log;")
+                .append(JS_WORK_AROUND.optimizedFileContent)
+                .append(WFF_GLOBAL.optimizedFileContent
+                        .replace("${WS_URL}", wsUrl)
+                        .replace("${INSTANCE_ID}", instanceId)
+                        .replace("\"${REMOVE_PREV_BP_ON_TABCLOSE}\"",
+                                String.valueOf(removePrevBPOnClosetTab))
+                        .replace("\"${REMOVE_PREV_BP_ON_INITTAB}\"",
+                                String.valueOf(removePrevBPOnInitTab))
+                        .replace("\"${TASK_VALUES}\"", Task.getJsObjectString())
+                        .replace("\"${WS_RECON}\"",
+                                String.valueOf(wsReconnectInterval))
+
+                ).append(allOptimizedContent);
     }
 }

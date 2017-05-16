@@ -141,10 +141,12 @@ public class ListStyleImage extends AbstractCssProperty<ListStyleImage> {
                 url = trimmedCssValue.substring(
                         trimmedCssValue.toLowerCase().indexOf("url(") + 4,
                         trimmedCssValue.indexOf(')'));
-                if (url.startsWith("\"") && url.endsWith("\"")) {
+                if (url.length() > 0 && url.charAt(0) == '"'
+                        && url.charAt(url.length() - 1) == '"') {
                     url = url.substring(url.indexOf('\"') + 1,
                             url.lastIndexOf('\"'));
                 }
+
                 this.cssValue = "url(\"" + url + "\")";
             } else {
                 throw new InvalidValueException(cssValue

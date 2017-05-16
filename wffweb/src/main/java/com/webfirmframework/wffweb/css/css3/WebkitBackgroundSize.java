@@ -105,7 +105,7 @@ public class WebkitBackgroundSize
         width = height = Float.valueOf(horizontalHeight);
         widthCssLengthUnit = heightCssLengthUnit = cssLengthUnit;
 
-        cssValue = horizontalHeight + "" + cssLengthUnit;
+        cssValue = String.valueOf(horizontalHeight) + cssLengthUnit;
     }
 
     /**
@@ -129,16 +129,11 @@ public class WebkitBackgroundSize
 
         if (width == height
                 && Objects.equals(widthCssLengthUnit, heightCssLengthUnit)) {
-            cssValue = width + "" + widthCssLengthUnit;
+            cssValue = String.valueOf(width) + widthCssLengthUnit;
         } else {
-            final StringBuilder sb = new StringBuilder();
-            sb.append(width);
-            sb.append(widthCssLengthUnit);
-            sb.append(' ');
-            sb.append(height);
-            sb.append(heightCssLengthUnit);
-            cssValue = sb.toString();
-
+            cssValue = new StringBuilder().append(width)
+                    .append(widthCssLengthUnit).append(' ').append(height)
+                    .append(heightCssLengthUnit).toString();
         }
     }
 
@@ -163,16 +158,11 @@ public class WebkitBackgroundSize
 
         if (width == height
                 && Objects.equals(widthCssLengthUnit, heightCssLengthUnit)) {
-            cssValue = width + "" + widthCssLengthUnit;
+            cssValue = String.valueOf(width) + widthCssLengthUnit;
         } else {
-            final StringBuilder sb = new StringBuilder();
-            sb.append(width);
-            sb.append(widthCssLengthUnit);
-            sb.append(' ');
-            sb.append(height);
-            sb.append(heightCssLengthUnit);
-            cssValue = sb.toString();
-
+            cssValue = new StringBuilder().append(width)
+                    .append(widthCssLengthUnit).append(' ').append(height)
+                    .append(heightCssLengthUnit).toString();
         }
 
         if (getStateChangeInformer() != null) {
@@ -194,7 +184,7 @@ public class WebkitBackgroundSize
         width = height = Float.valueOf(widthHeight);
         widthCssLengthUnit = heightCssLengthUnit = cssLengthUnit;
 
-        cssValue = widthHeight + "" + cssLengthUnit;
+        cssValue = String.valueOf(widthHeight) + cssLengthUnit;
 
         if (getStateChangeInformer() != null) {
             getStateChangeInformer().stateChanged(this);
@@ -344,7 +334,8 @@ public class WebkitBackgroundSize
                                 .floatToIntBits(width.floatValue())
                                 && Objects.equals(widthCssLengthUnit,
                                         heightCssLengthUnit)) {
-                            this.cssValue = width + "" + heightCssLengthUnit;
+                            this.cssValue = String.valueOf(width)
+                                    + heightCssLengthUnit;
                         } else {
                             this.cssValue = trimmedCssValue;
                         }

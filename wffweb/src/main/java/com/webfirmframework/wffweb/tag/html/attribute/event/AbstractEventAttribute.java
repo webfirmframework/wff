@@ -175,10 +175,9 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
             final String jsfunctionBody) {
 
         final String functionBody = jsfunctionBody.trim();
-        final StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder(26);
 
-        builder.append("function(event, source){");
-        builder.append(functionBody);
+        builder.append("function(event, source){").append(functionBody);
         if (functionBody.charAt(functionBody.length() - 1) != ';') {
             builder.append(';');
         }
@@ -248,12 +247,11 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
 
                 builder.append(
                         "wffServerMethods.invokeAsyncWithPreFilterFun(event, this,'"
-                                + getAttributeName() + "',");
-
-                builder.append(getPreparedJsFunctionBody(jsPreFunctionBody));
-                builder.append(',');
-                builder.append(getPreparedJsFunctionBody(jsFilterFunctionBody));
-                builder.append(')');
+                                + getAttributeName() + "',")
+                        .append(getPreparedJsFunctionBody(jsPreFunctionBody))
+                        .append(',')
+                        .append(getPreparedJsFunctionBody(jsFilterFunctionBody))
+                        .append(')');
 
                 super.setAttributeValue(builder.toString());
 
@@ -264,10 +262,9 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
 
                 builder.append(
                         "wffServerMethods.invokeAsyncWithPreFun(event, this,'"
-                                + getAttributeName() + "',");
-
-                builder.append(getPreparedJsFunctionBody(jsPreFunctionBody));
-                builder.append(')');
+                                + getAttributeName() + "',")
+                        .append(getPreparedJsFunctionBody(jsPreFunctionBody))
+                        .append(')');
 
                 super.setAttributeValue(builder.toString());
 
@@ -278,13 +275,11 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
 
                 builder.append(
                         "wffServerMethods.invokeAsyncWithPreFilterFun(event, this,'"
-                                + getAttributeName() + "',");
-
-                builder.append(getPreparedJsFunctionBody(jsPreFunctionBody));
-                builder.append(',');
-                builder.append(getPreparedJsFunctionBody(jsFilterFunctionBody));
-
-                builder.append(')');
+                                + getAttributeName() + "',")
+                        .append(getPreparedJsFunctionBody(jsPreFunctionBody))
+                        .append(',')
+                        .append(getPreparedJsFunctionBody(jsFilterFunctionBody))
+                        .append(')');
                 super.setAttributeValue(builder.toString());
 
             } else if (jsPostFunctionBody != null
@@ -294,10 +289,9 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
 
                 builder.append(
                         "wffServerMethods.invokeAsyncWithFilterFun(event, this,'"
-                                + getAttributeName() + "',");
-
-                builder.append(getPreparedJsFunctionBody(jsFilterFunctionBody));
-                builder.append(')');
+                                + getAttributeName() + "',")
+                        .append(getPreparedJsFunctionBody(jsFilterFunctionBody))
+                        .append(')');
 
                 super.setAttributeValue(builder.toString());
 
@@ -307,11 +301,9 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
 
                 builder.append(
                         "wffServerMethods.invokeAsyncWithPreFun(event, this,'"
-                                + getAttributeName() + "',");
-
-                builder.append(getPreparedJsFunctionBody(jsPreFunctionBody));
-
-                builder.append(')');
+                                + getAttributeName() + "',")
+                        .append(getPreparedJsFunctionBody(jsPreFunctionBody))
+                        .append(')');
                 super.setAttributeValue(builder.toString());
 
             } else if (jsFilterFunctionBody != null) {
@@ -319,21 +311,15 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
 
                 builder.append(
                         "wffServerMethods.invokeAsyncWithFilterFun(event, this,'"
-                                + getAttributeName() + "',");
-
-                builder.append(getPreparedJsFunctionBody(jsFilterFunctionBody));
-                builder.append(')');
+                                + getAttributeName() + "',")
+                        .append(getPreparedJsFunctionBody(jsFilterFunctionBody))
+                        .append(')');
 
                 super.setAttributeValue(builder.toString());
             } else if (jsPostFunctionBody != null) {
-
-                final StringBuilder builder = new StringBuilder();
-
-                builder.append("wffServerMethods.invokeAsync(event, this,'");
-                builder.append(getAttributeName());
-                builder.append("')");
-
-                super.setAttributeValue(builder.toString());
+                super.setAttributeValue(new StringBuilder()
+                        .append("wffServerMethods.invokeAsync(event, this,'")
+                        .append(getAttributeName()).append("')").toString());
             } else {
 
                 super.setAttributeValue(

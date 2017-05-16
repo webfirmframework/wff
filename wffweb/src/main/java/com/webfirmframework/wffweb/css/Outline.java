@@ -226,22 +226,19 @@ public class Outline extends AbstractCssProperty<Outline>
         boolean invalid = true;
 
         if (outlineColor != null) {
-            cssValueBuilder.append(outlineColor.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(outlineColor.getCssValue()).append(' ');
             invalid = false;
         } else if (this.outlineColor != null) {
             this.outlineColor.setAlreadyInUse(false);
         }
 
         if (outlineStyle != null) {
-            cssValueBuilder.append(outlineStyle.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(outlineStyle.getCssValue()).append(' ');
             invalid = false;
         }
 
         if (outlineWidth != null) {
-            cssValueBuilder.append(outlineWidth.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(outlineWidth.getCssValue()).append(' ');
             invalid = false;
         } else if (this.outlineWidth != null) {
             this.outlineWidth.setAlreadyInUse(false);
@@ -343,13 +340,11 @@ public class Outline extends AbstractCssProperty<Outline>
         final StringBuilder cssValueBuilder = new StringBuilder();
 
         if (outlineColor != null) {
-            cssValueBuilder.append(outlineColor.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(outlineColor.getCssValue()).append(' ');
         }
 
         if (outlineStyle != null) {
-            cssValueBuilder.append(outlineStyle.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(outlineStyle.getCssValue()).append(' ');
         }
 
         if (outlineWidth != null) {
@@ -398,13 +393,11 @@ public class Outline extends AbstractCssProperty<Outline>
         final StringBuilder cssValueBuilder = new StringBuilder();
 
         if (outlineColor != null) {
-            cssValueBuilder.append(outlineColor.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(outlineColor.getCssValue()).append(' ');
         }
 
         if (outlineStyle != null) {
-            cssValueBuilder.append(outlineStyle.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(outlineStyle.getCssValue()).append(' ');
         }
 
         if (outlineWidth != null) {
@@ -433,13 +426,11 @@ public class Outline extends AbstractCssProperty<Outline>
                 throw new InvalidValueException(
                         "outlineColor cannot have initial/inherit as its cssValue");
             }
-            cssValueBuilder.append(outlineColorCssValue);
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(outlineColorCssValue).append(' ');
         }
 
         if (outlineStyle != null) {
-            cssValueBuilder.append(outlineStyle.getCssValue());
-            cssValueBuilder.append(' ');
+            cssValueBuilder.append(outlineStyle.getCssValue()).append(' ');
         }
         if (outlineWidth != null) {
             cssValueBuilder.append(outlineWidth.getCssValue());

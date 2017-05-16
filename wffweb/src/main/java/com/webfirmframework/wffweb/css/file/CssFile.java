@@ -148,17 +148,14 @@ public abstract class CssFile implements Serializable, Cloneable {
                                 continue;
                             }
 
-                            toStringBuilder.append(entry.getKey());
-                            toStringBuilder.append('{');
+                            toStringBuilder.append(entry.getKey()).append('{');
 
                             for (final CssProperty cssProperty : cssProperties
                                     .values()) {
-                                toStringBuilder
-                                        .append(cssProperty.getCssName());
-                                toStringBuilder.append(':');
-                                toStringBuilder
-                                        .append(cssProperty.getCssValue());
-                                toStringBuilder.append(';');
+                                toStringBuilder.append(cssProperty.getCssName())
+                                        .append(':')
+                                        .append(cssProperty.getCssValue())
+                                        .append(';');
                             }
                             toStringBuilder.append('}');
                         }

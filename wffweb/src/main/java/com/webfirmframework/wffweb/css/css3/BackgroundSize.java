@@ -104,7 +104,7 @@ public class BackgroundSize extends AbstractCssProperty<BackgroundSize> {
         width = height = Float.valueOf(widthHeight);
         widthLengthUnit = heightLengthUnit = cssLengthUnit;
 
-        cssValue = widthHeight + "" + cssLengthUnit;
+        cssValue = String.valueOf(widthHeight) + cssLengthUnit;
     }
 
     /**
@@ -128,15 +128,11 @@ public class BackgroundSize extends AbstractCssProperty<BackgroundSize> {
 
         if (width == height
                 && Objects.equals(widthLengthUnit, heightLengthUnit)) {
-            cssValue = width + "" + widthLengthUnit;
+            cssValue = String.valueOf(width) + widthLengthUnit;
         } else {
-            final StringBuilder sb = new StringBuilder();
-            sb.append(width);
-            sb.append(widthLengthUnit);
-            sb.append(' ');
-            sb.append(height);
-            sb.append(heightLengthUnit);
-            cssValue = sb.toString();
+            cssValue = new StringBuilder().append(width).append(widthLengthUnit)
+                    .append(' ').append(height).append(heightLengthUnit)
+                    .toString();
 
         }
     }
@@ -162,15 +158,11 @@ public class BackgroundSize extends AbstractCssProperty<BackgroundSize> {
 
         if (width == height
                 && Objects.equals(widthLengthUnit, heightLengthUnit)) {
-            cssValue = width + "" + widthLengthUnit;
+            cssValue = String.valueOf(width) + widthLengthUnit;
         } else {
-            final StringBuilder sb = new StringBuilder();
-            sb.append(width);
-            sb.append(widthLengthUnit);
-            sb.append(' ');
-            sb.append(height);
-            sb.append(heightLengthUnit);
-            cssValue = sb.toString();
+            cssValue = new StringBuilder().append(width).append(widthLengthUnit)
+                    .append(' ').append(height).append(heightLengthUnit)
+                    .toString();
 
         }
 
@@ -193,7 +185,7 @@ public class BackgroundSize extends AbstractCssProperty<BackgroundSize> {
         width = height = Float.valueOf(widthHeight);
         widthLengthUnit = heightLengthUnit = cssLengthUnit;
 
-        cssValue = widthHeight + "" + cssLengthUnit;
+        cssValue = String.valueOf(widthHeight) + cssLengthUnit;
 
         if (getStateChangeInformer() != null) {
             getStateChangeInformer().stateChanged(this);
@@ -343,7 +335,8 @@ public class BackgroundSize extends AbstractCssProperty<BackgroundSize> {
                                 .floatToIntBits(width.floatValue())
                                 && Objects.equals(widthLengthUnit,
                                         heightLengthUnit)) {
-                            this.cssValue = width + "" + heightLengthUnit;
+                            this.cssValue = String.valueOf(width)
+                                    + heightLengthUnit;
                         } else {
                             this.cssValue = trimmedCssValue;
                         }

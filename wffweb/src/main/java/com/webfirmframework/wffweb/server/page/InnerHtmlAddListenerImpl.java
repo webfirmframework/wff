@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.webfirmframework.wffweb.InvalidTagException;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
@@ -138,7 +139,17 @@ class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
 
                 final NameValue nameValue = new NameValue();
 
-                nameValue.setName(innerHtmlTag.toWffBMBytes("UTF-8"));
+                try {
+                    nameValue.setName(innerHtmlTag.toWffBMBytes("UTF-8"));
+                } catch (final InvalidTagException e) {
+                    if (LOGGER.isLoggable(Level.WARNING)) {
+                        LOGGER.log(Level.WARNING,
+                                "Do not append/add an empty NoTag as child tag, eg: new NoTag(null, \"\").\n"
+                                        .concat("To make a tag's children as empty then invoke removeAllChildren() method in it."),
+                                e);
+                    }
+                    continue;
+                }
 
                 if (previousParentTag != null) {
                     nameValue.setValues(new byte[] { 1 });

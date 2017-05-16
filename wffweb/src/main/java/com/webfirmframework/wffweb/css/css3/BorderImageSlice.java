@@ -140,7 +140,7 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
      * @author WFF
      */
     public BorderImageSlice(final float percent) {
-        setCssValue(percent + "" + CssLengthUnit.PER);
+        setCssValue(String.valueOf(percent) + CssLengthUnit.PER);
     }
 
     /**
@@ -149,7 +149,7 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
      */
     public BorderImageSlice(final float value,
             final CssLengthUnit cssLengthUnit) {
-        setCssValue(value + "" + cssLengthUnit);
+        setCssValue(String.valueOf(value) + cssLengthUnit);
     }
 
     /**
@@ -159,7 +159,7 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
      * @author WFF
      */
     public void setPercent(final float percent) {
-        setCssValue(percent + "" + CssLengthUnit.PER);
+        setCssValue(String.valueOf(percent) + CssLengthUnit.PER);
     }
 
     /*
@@ -768,8 +768,7 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
             }
 
             if (middle != null) {
-                cssValueBuilder.append(' ');
-                cssValueBuilder.append(middle);
+                cssValueBuilder.append(' ').append(middle);
             }
 
             return cssValueBuilder.toString();
@@ -802,8 +801,7 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
             }
 
             if (middle != null) {
-                cssValueBuilder.append(' ');
-                cssValueBuilder.append(middle);
+                cssValueBuilder.append(' ').append(middle);
             }
 
             return cssValueBuilder.toString();
@@ -845,8 +843,7 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
             }
 
             if (middle != null) {
-                cssValueBuilder.append(' ');
-                cssValueBuilder.append(middle);
+                cssValueBuilder.append(' ').append(middle);
             }
 
             return cssValueBuilder.toString();

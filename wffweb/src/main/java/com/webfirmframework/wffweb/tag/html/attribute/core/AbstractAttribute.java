@@ -101,8 +101,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             // tagBuildzer.append(' ');
             tagBuilder.append(attributeName);
             if (attributeValue != null) {
-                tagBuilder.append(new char[] { '=', '"' });
-                tagBuilder.append(attributeValue);
+                tagBuilder.append(new char[] { '=', '"' })
+                        .append(attributeValue);
                 result = StringBuilderUtil.getTrimmedString(tagBuilder) + '"';
                 tagBuilder.append('"');
             } else if (attributeValueMap != null
@@ -111,10 +111,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 final Set<Entry<String, String>> entrySet = getAttributeValueMap()
                         .entrySet();
                 for (final Entry<String, String> entry : entrySet) {
-                    tagBuilder.append(entry.getKey());
-                    tagBuilder.append(':');
-                    tagBuilder.append(entry.getValue());
-                    tagBuilder.append(';');
+                    tagBuilder.append(entry.getKey()).append(':')
+                            .append(entry.getValue()).append(';');
                 }
 
                 result = StringBuilderUtil.getTrimmedString(tagBuilder) + '"';
@@ -123,8 +121,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                     && attributeValueSet.size() > 0) {
                 tagBuilder.append(new char[] { '=', '"' });
                 for (final String each : getAttributeValueSet()) {
-                    tagBuilder.append(each);
-                    tagBuilder.append(' ');
+                    tagBuilder.append(each).append(' ');
                 }
                 result = StringBuilderUtil.getTrimmedString(tagBuilder) + '"';
                 tagBuilder.append('"');
@@ -165,26 +162,22 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
         attrBuilder.append(attributeName);
         if (attributeValue != null) {
-            attrBuilder.append(new char[] { '=' });
-            attrBuilder.append(attributeValue);
+            attrBuilder.append(new char[] { '=' }).append(attributeValue);
             result = StringBuilderUtil.getTrimmedString(attrBuilder);
         } else if (attributeValueMap != null && attributeValueMap.size() > 0) {
             attrBuilder.append(new char[] { '=' });
             final Set<Entry<String, String>> entrySet = getAttributeValueMap()
                     .entrySet();
             for (final Entry<String, String> entry : entrySet) {
-                attrBuilder.append(entry.getKey());
-                attrBuilder.append(':');
-                attrBuilder.append(entry.getValue());
-                attrBuilder.append(';');
+                attrBuilder.append(entry.getKey()).append(':')
+                        .append(entry.getValue()).append(';');
             }
 
             result = StringBuilderUtil.getTrimmedString(attrBuilder);
         } else if (attributeValueSet != null && attributeValueSet.size() > 0) {
             attrBuilder.append(new char[] { '=' });
             for (final String each : getAttributeValueSet()) {
-                attrBuilder.append(each);
-                attrBuilder.append(' ');
+                attrBuilder.append(each).append(' ');
             }
             result = StringBuilderUtil.getTrimmedString(attrBuilder);
         } else {
@@ -532,8 +525,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         if (valueChangeListeners != null) {
             for (final AttributeValueChangeListener listener : valueChangeListeners) {
                 final AttributeValueChangeListener.Event event = new AttributeValueChangeListener.Event(
-                        AbstractAttribute.this,
-                        Collections.unmodifiableSet(ownerTags));
+                        this, Collections.unmodifiableSet(ownerTags));
                 listener.valueChanged(event);
             }
         }

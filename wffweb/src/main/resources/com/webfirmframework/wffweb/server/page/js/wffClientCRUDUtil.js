@@ -377,7 +377,52 @@ var wffClientCRUDUtil = new function() {
 			var d = document.createElement('div');
 			d.innerHTML = parentTag.outerHTML;
 			parentTag.value = d.childNodes[0].innerText;
-		}
+		} else if (taskValue == wffGlobal.taskValues.SET_BM_OBJ_ON_TAG
+				|| taskValue == wffGlobal.taskValues.SET_BM_ARR_ON_TAG) {
+			
+			var tagName = getStringFromBytes(nameValues[1].name);
+			
+			var wffId = wffTagUtil
+							.getWffIdFromWffIdBytes(nameValues[1].values[0]);
+			
+			var tag = wffTagUtil.getTagByTagNameAndWffId(tagName, wffId);
+			
+			var ky = getStringFromBytes(nameValues[1].values[1]);
+			
+			var bmObjOrArrBytes = nameValues[1].values[2];
+			
+			var jsObjOrArr;
+			
+			if (taskValue == wffGlobal.taskValues.SET_BM_OBJ_ON_TAG) {
+				jsObjOrArr = new JsObjectFromBMBytes(bmObjOrArrBytes, true);
+			} else {
+				jsObjOrArr = new JsArrayFromBMBytes(bmObjOrArrBytes, true);
+			}
+			
+			var wffObjects = tag['wffObjects'];
+			
+			if(typeof wffObjects === 'undefined') {
+				wffObjects = {};
+				tag['wffObjects'] = wffObjects;
+			}
+			
+			wffObjects[ky] = jsObjOrArr;
+			
+		} else if (taskValue == wffGlobal.taskValues.DEL_BM_OBJ_OR_ARR_FROM_TAG) {
+			var tagName = getStringFromBytes(nameValues[1].name);
+			var wffId = wffTagUtil
+					.getWffIdFromWffIdBytes(nameValues[1].values[0]);
+			
+			var tag = wffTagUtil.getTagByTagNameAndWffId(tagName, wffId);
+			
+			var ky = getStringFromBytes(nameValues[1].values[1]);
+			
+			var wffObjects = tag['wffObjects'];
+			
+			if(typeof wffObjects !== 'undefined') {
+				delete wffObjects[ky];
+			}
+		} 
 		
 		return true;
 

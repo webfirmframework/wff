@@ -33,8 +33,10 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
+import com.webfirmframework.wffweb.InvalidTagException;
 import com.webfirmframework.wffweb.MethodNotImplementedException;
 import com.webfirmframework.wffweb.NoParentException;
 import com.webfirmframework.wffweb.WffRuntimeException;
@@ -42,7 +44,7 @@ import com.webfirmframework.wffweb.WffSecurityException;
 import com.webfirmframework.wffweb.clone.CloneUtil;
 import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
 import com.webfirmframework.wffweb.streamer.WffBinaryMessageOutputStreamer;
-import com.webfirmframework.wffweb.tag.core.AbstractTagBase;
+import com.webfirmframework.wffweb.tag.core.AbstractJsObject;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeUtil;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
@@ -58,8 +60,12 @@ import com.webfirmframework.wffweb.tag.html.listener.InsertBeforeListener;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 import com.webfirmframework.wffweb.tag.htmlwff.CustomTag;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
+import com.webfirmframework.wffweb.tag.repository.TagRepository;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 import com.webfirmframework.wffweb.util.data.NameValue;
+import com.webfirmframework.wffweb.wffbm.data.WffBMArray;
+import com.webfirmframework.wffweb.wffbm.data.WffBMData;
+import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
 
 /**
  * @author WFF
@@ -67,7 +73,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  * @version 1.2.0
  *
  */
-public abstract class AbstractHtml extends AbstractTagBase {
+public abstract class AbstractHtml extends AbstractJsObject {
 
     // if this class' is refactored then SecurityClassConstants should be
     // updated.
@@ -271,8 +277,8 @@ public abstract class AbstractHtml extends AbstractTagBase {
                 .getChildTagRemoveListener(ACCESS_OBJECT);
 
         if (listener != null) {
-            listener.allChildrenRemoved(new ChildTagRemoveListener.Event(
-                    AbstractHtml.this, removedAbstractHtmls));
+            listener.allChildrenRemoved(new ChildTagRemoveListener.Event(this,
+                    removedAbstractHtmls));
         }
     }
 
@@ -324,15 +330,15 @@ public abstract class AbstractHtml extends AbstractTagBase {
             addChild(innerHtml, false);
 
             if (listener != null) {
-                events[index] = new InnerHtmlAddListener.Event(
-                        AbstractHtml.this, innerHtml, previousParentTag);
+                events[index] = new InnerHtmlAddListener.Event(this, innerHtml,
+                        previousParentTag);
                 index++;
             }
 
         }
 
         if (listener != null) {
-            listener.innerHtmlsAdded(AbstractHtml.this, events);
+            listener.innerHtmlsAdded(this, events);
         }
     }
 
@@ -370,8 +376,8 @@ public abstract class AbstractHtml extends AbstractTagBase {
                     .getChildTagRemoveListener(ACCESS_OBJECT);
 
             if (listener != null) {
-                listener.childRemoved(new ChildTagRemoveListener.Event(
-                        AbstractHtml.this, child));
+                listener.childRemoved(
+                        new ChildTagRemoveListener.Event(this, child));
             }
 
         }
@@ -431,8 +437,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
                     if (listener != null) {
                         listener.childMoved(
                                 new ChildTagAppendListener.ChildMovedEvent(
-                                        previousParent, AbstractHtml.this,
-                                        child));
+                                        previousParent, this, child));
                     }
 
                 } else {
@@ -441,7 +446,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
                             .getChildTagAppendListener(ACCESS_OBJECT);
                     if (listener != null) {
                         final ChildTagAppendListener.Event event = new ChildTagAppendListener.Event(
-                                AbstractHtml.this, child);
+                                this, child);
                         listener.childAppended(event);
                     }
                 }
@@ -513,7 +518,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
             addChild(child, false);
 
             final ChildMovedEvent event = new ChildMovedEvent(previousParent,
-                    AbstractHtml.this, child);
+                    this, child);
             movedOrAppended.add(event);
 
         }
@@ -544,7 +549,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
             addChild(child, false);
 
             final ChildMovedEvent event = new ChildMovedEvent(previousParent,
-                    AbstractHtml.this, child);
+                    this, child);
             movedOrAppended.add(event);
 
         }
@@ -639,7 +644,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
                     .getAttributeAddListener(ACCESS_OBJECT);
             if (attributeAddListener != null) {
                 final AttributeAddListener.AddEvent event = new AttributeAddListener.AddEvent();
-                event.setAddedToTag(AbstractHtml.this);
+                event.setAddedToTag(this);
                 event.setAddedAttributes(attributes);
                 attributeAddListener.addedAttributes(event);
             }
@@ -752,7 +757,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
                         .getAttributeRemoveListener(ACCESS_OBJECT);
                 if (listener != null) {
                     final AttributeRemoveListener.RemovedEvent event = new AttributeRemoveListener.RemovedEvent(
-                            AbstractHtml.this, removedAttributeNames.toArray(
+                            this, removedAttributeNames.toArray(
                                     new String[removedAttributeNames.size()]));
 
                     listener.removedAttributes(event);
@@ -840,7 +845,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
                         .getAttributeRemoveListener(ACCESS_OBJECT);
                 if (listener != null) {
                     final AttributeRemoveListener.RemovedEvent event = new AttributeRemoveListener.RemovedEvent(
-                            AbstractHtml.this, attributeNames);
+                            this, attributeNames);
 
                     listener.removedAttributes(event);
                 }
@@ -1612,9 +1617,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
             htmlStartSB.delete(0, htmlStartSB.length());
         }
         if (tagName != null) {
-            htmlStartSB.append('<');
-            htmlStartSB.append(tagName);
-            htmlStartSB.append(attributeHtmlString);
+            htmlStartSB.append('<').append(tagName).append(attributeHtmlString);
             if (tagType == TagType.OPENING_CLOSING) {
                 htmlStartSB.append('>');
             } else if (tagType == TagType.SELF_CLOSING) {
@@ -1642,9 +1645,8 @@ public abstract class AbstractHtml extends AbstractTagBase {
             htmlEndSB.delete(0, htmlEndSB.length());
         }
         if (tagName != null) {
-            htmlEndSB.append(new char[] { '<', '/' });
-            htmlEndSB.append(tagName);
-            htmlEndSB.append('>');
+            htmlEndSB.append(new char[] { '<', '/' }).append(tagName)
+                    .append('>');
         } else {
             if (htmlStartSB != null) {
                 htmlEndSB.append(getHtmlMiddleSB());
@@ -1659,6 +1661,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
      * @since 1.0.0
      * @author WFF
      */
+    @Override
     public AbstractHtml5SharedObject getSharedObject() {
         return sharedObject;
     }
@@ -1964,6 +1967,7 @@ public abstract class AbstractHtml extends AbstractTagBase {
      * @return the Wff Binary Message bytes of this tag
      * @since 2.0.0
      * @author WFF
+     * @throws InvalidTagException
      */
     public byte[] toWffBMBytes(final String charset) {
 
@@ -2046,6 +2050,10 @@ public abstract class AbstractHtml extends AbstractTagBase {
 
             return WffBinaryMessageUtil.VERSION_1
                     .getWffBinaryMessageBytes(nameValues);
+        } catch (final NoSuchElementException e) {
+            throw new InvalidTagException(
+                    "Not possible to build wff bm bytes on this tag.\nDon't use an empty new NoTag(null, \"\") or new Blank(null, \"\")",
+                    e);
         } catch (final UnsupportedEncodingException e) {
             throw new WffRuntimeException(e.getMessage(), e);
         }
@@ -2346,4 +2354,96 @@ public abstract class AbstractHtml extends AbstractTagBase {
         return false;
     }
 
+    /**
+     * Loops through all nested children tags (excluding the given tag) of the
+     * given tag. The looping is in a random order to gain maximum performance
+     * and minimum memory footprint.
+     *
+     * @param nestedChild
+     *            the object of NestedChild from which the
+     *            eachChild(AbstractHtml) to be invoked.
+     * @param includeParents
+     *            true to include the given parent tags in the loop
+     * @param parents
+     *            the tags from which to loop through.
+     *
+     * @since 2.1.8
+     * @author WFF
+     */
+    protected static void loopThroughAllNestedChildren(
+            final NestedChild nestedChild, final boolean includeParents,
+            final AbstractHtml... parents) {
+
+        final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<Set<AbstractHtml>>();
+
+        if (includeParents) {
+            childrenStack
+                    .push(new HashSet<AbstractHtml>(Arrays.asList(parents)));
+        } else {
+            for (final AbstractHtml parent : parents) {
+                childrenStack.push(parent.children);
+            }
+        }
+
+        exit: while (childrenStack.size() > 0) {
+
+            final Set<AbstractHtml> children = childrenStack.pop();
+
+            synchronized (children) {
+
+                for (final AbstractHtml eachChild : children) {
+
+                    if (!nestedChild.eachChild(eachChild)) {
+                        break exit;
+                    }
+
+                    final Set<AbstractHtml> subChildren = eachChild.children;
+
+                    if (subChildren != null && subChildren.size() > 0) {
+                        childrenStack.push(subChildren);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * @param key
+     * @param wffBMData
+     * @return
+     * @since 2.1.8
+     * @author WFF
+     */
+    protected WffBMData addWffData(final String key,
+            final WffBMData wffBMData) {
+        return AbstractJsObject.addWffData(this, key, wffBMData);
+    }
+
+    /**
+     * @param key
+     * @return
+     * @since 2.1.8
+     * @author WFF
+     */
+    protected WffBMData removeWffData(final String key) {
+        return AbstractJsObject.removeWffData(this, key);
+    }
+
+    /**
+     * Gets the unmodifiable map of wffObjects which are upserted by
+     * {@link TagRepository#upsert(AbstractHtml, String, WffBMObject)} or
+     * {@link TagRepository#upsert(AbstractHtml, String, WffBMArray)}.
+     * {@code null} checking is required while consuming this map.
+     *
+     * @return the unmodifiable map of wffObjects. The value may either be an
+     *         instance of {@link WffBMObject} or {@link WffBMArray}. This map
+     *         may be null if there is no {@code TagRepository#upsert} operation
+     *         has been done at least once in the whole life cycle. Otherwise it
+     *         may also be empty.
+     * @since 2.1.8
+     * @author WFF
+     */
+    public Map<String, WffBMData> getWffObjects() {
+        return Collections.unmodifiableMap(wffBMDatas);
+    }
 }

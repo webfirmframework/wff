@@ -121,7 +121,10 @@ public class CustomCssProperty extends AbstractCssProperty<CustomCssProperty> {
         if (cssValue == null) {
             throw new NullValueException("the value can not be null");
         }
-        if (cssValue.trim().startsWith(":") || cssValue.trim().endsWith(";")) {
+        final String trimmedCssValue = cssValue.trim();
+        if (trimmedCssValue.length() > 0
+                && (trimmedCssValue.charAt(0) == ':' || trimmedCssValue
+                        .charAt(trimmedCssValue.length() - 1) == ';')) {
             throw new InvalidValueException(
                     "cssValue can not start with : (colon) or end with ; (semicolon)");
         }
