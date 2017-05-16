@@ -24,6 +24,7 @@ import java.util.Arrays;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.webfirmframework.wffweb.InvalidTagException;
 import com.webfirmframework.wffweb.NoParentException;
 import com.webfirmframework.wffweb.tag.html.attribute.Name;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
@@ -294,6 +295,19 @@ public class AbstractHtmlTest {
             e.printStackTrace();
         }
 
+    }
+    
+    @SuppressWarnings("unused")
+    @Test(expected = InvalidTagException.class)
+    public void testToWffBMBytesNoTagWithParentInvalidTagException() {
+        Div superDiv = new Div(null);
+        byte[] wffBMBytes = new NoTag(superDiv, "").toWffBMBytes("UTF-8");
+    }
+    
+    @SuppressWarnings("unused")
+    @Test(expected = InvalidTagException.class)
+    public void testToWffBMBytesNoTagWithoutParentInvalidTagException() {
+        byte[] wffBMBytes = new NoTag(null, "").toWffBMBytes("UTF-8");
     }
 
     @Test
