@@ -89,14 +89,14 @@ public class ColSpan extends AbstractAttribute
     }
 
     /**
-     * @param index
+     * @param value
      *            the the number of columns to span
      * @author WFF
      * @since 1.1.3
      */
-    public void setValue(final int index) {
-        setAttributeValue(String.valueOf(index));
-        value = index;
+    public void setValue(final int value) {
+        setAttributeValue(String.valueOf(value));
+        this.value = value;
     }
 
 }
