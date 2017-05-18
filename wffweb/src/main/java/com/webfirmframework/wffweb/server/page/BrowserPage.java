@@ -1305,7 +1305,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.8
      * @author WFF
      */
-    public TagRepository getTagRepository() {
+    public final TagRepository getTagRepository() {
 
         if (tagRepository == null && rootTag != null) {
             synchronized (this) {
