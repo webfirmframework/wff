@@ -444,35 +444,20 @@ public class TagRepository extends AbstractHtmlRepository
      */
     public Collection<AbstractHtml> findTagsByAttribute(
             final AbstractAttribute attribute) throws NullValueException {
-        return findTagsByAttribute(attribute, rootTags);
-    }
-
-    private Collection<AbstractHtml> findTagsByAttribute(
-            final AbstractAttribute attribute, final AbstractHtml[] fromTags) {
 
         if (attribute == null) {
             throw new NullValueException("attribute cannot be null");
         }
 
-        final Collection<AbstractHtml> allTags = new HashSet<AbstractHtml>();
+        final Collection<AbstractHtml> tags = new HashSet<AbstractHtml>();
 
-        loopThroughAllNestedChildren(new NestedChild() {
-
-            @Override
-            public boolean eachChild(final AbstractHtml child) {
-
-                final AbstractAttribute attributeByName = child
-                        .getAttributeByName(attribute.getAttributeName());
-
-                if (attribute.equals(attributeByName)) {
-                    allTags.add(child);
-                }
-
-                return true;
+        for (final AbstractHtml ownerTag : attribute.getOwnerTags()) {
+            if (browserPage.contains(ownerTag)) {
+                tags.add(ownerTag);
             }
-        }, true, fromTags);
+        }
 
-        return allTags;
+        return tags;
     }
 
     /**
