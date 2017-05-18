@@ -55,11 +55,13 @@ public class TagRepository extends AbstractHtmlRepository {
      *            from the given tags and its nested children the finding to be
      *            done.
      * @return the first found tag with the given id
+     * @throws NullValueException
+     *             if the {@code id} or {@code fromTags} is null
      * @since 2.1.8
      * @author WFF
      */
     public static AbstractHtml findTagById(final String id,
-            final AbstractHtml... fromTags) {
+            final AbstractHtml... fromTags) throws NullValueException {
 
         if (id == null) {
             throw new NullValueException("The id should not be null");
@@ -97,10 +99,13 @@ public class TagRepository extends AbstractHtmlRepository {
      * @param id
      *            the value of id attribute.
      * @return the first found tag with the given id
+     *
+     * @throws NullValueException
+     *             if the {@code id} is null
      * @since 2.1.8
      * @author WFF
      */
-    public AbstractHtml findTagById(final String id) {
+    public AbstractHtml findTagById(final String id) throws NullValueException {
         return findTagById(id, rootTags);
     }
 
@@ -116,12 +121,15 @@ public class TagRepository extends AbstractHtmlRepository {
      *            from which the findings to be done.
      * @return the collection of tags matching with the given attribute name and
      *         value.
+     * @throws NullValueException
+     *             if the {@code attributeName}, {@code attributeValue} or
+     *             {@code fromTags} is null
      * @since 2.1.8
      * @author WFF
      */
     public static Collection<AbstractHtml> findTagsByAttribute(
             final String attributeName, final String attributeValue,
-            final AbstractHtml... fromTags) {
+            final AbstractHtml... fromTags) throws NullValueException {
 
         if (attributeName == null) {
             throw new NullValueException(
@@ -170,11 +178,15 @@ public class TagRepository extends AbstractHtmlRepository {
      * @param fromTags
      *            from which the findings to be done.
      * @return the first matching tag with the given attribute name and value.
+     * @throws NullValueException
+     *             if the {@code attributeName}, {@code attributeValue} or
+     *             {@code fromTags} is null
      * @since 2.1.8
      * @author WFF
      */
     public static AbstractHtml findOneTagByAttribute(final String attributeName,
-            final String attributeValue, final AbstractHtml... fromTags) {
+            final String attributeValue, final AbstractHtml... fromTags)
+            throws NullValueException {
 
         if (attributeName == null) {
             throw new NullValueException(
@@ -222,11 +234,14 @@ public class TagRepository extends AbstractHtmlRepository {
      * @param fromTags
      *            from which the findings to be done.
      * @return the first matching tag with the given attribute name and value.
+     * @throws NullValueException
+     *             if the {@code attributeName} or {@code fromTags} is null
      * @since 2.1.8
      * @author WFF
      */
     public static AbstractHtml findOneTagByAttributeName(
-            final String attributeName, final AbstractHtml... fromTags) {
+            final String attributeName, final AbstractHtml... fromTags)
+            throws NullValueException {
 
         if (attributeName == null) {
             throw new NullValueException(
@@ -269,11 +284,14 @@ public class TagRepository extends AbstractHtmlRepository {
      * @param fromTags
      *            from which the findings to be done.
      * @return the collection of tags matching with the given attribute.
+     * @throws NullValueException
+     *             if the {@code attributeName} or {@code fromTags} is null
      * @since 2.1.8
      * @author WFF
      */
     public static Collection<AbstractHtml> findTagsByAttributeName(
-            final String attributeName, final AbstractHtml... fromTags) {
+            final String attributeName, final AbstractHtml... fromTags)
+            throws NullValueException {
 
         if (attributeName == null) {
             throw new NullValueException(
@@ -313,11 +331,13 @@ public class TagRepository extends AbstractHtmlRepository {
      * @param attributeName
      *            the name of the attribute.
      * @return the collection of tags matching with the given attribute.
+     * @throws NullValueException
+     *             if the {@code attributeName} is null
      * @since 2.1.8
      * @author WFF
      */
     public Collection<AbstractHtml> findTagsByAttributeName(
-            final String attributeName) {
+            final String attributeName) throws NullValueException {
         return findTagsByAttributeName(attributeName, rootTags);
     }
 
@@ -331,11 +351,15 @@ public class TagRepository extends AbstractHtmlRepository {
      *            the value of the attribute
      * @return the collection of tags matching with the given attribute name and
      *         value.
+     * @throws NullValueException
+     *             if the {@code attributeName} or {@code attributeValue} is
+     *             null
      * @since 2.1.8
      * @author WFF
      */
     public Collection<AbstractHtml> findTagsByAttribute(
-            final String attributeName, final String attributeValue) {
+            final String attributeName, final String attributeValue)
+            throws NullValueException {
         return findTagsByAttribute(attributeName, attributeValue, rootTags);
     }
 
@@ -348,11 +372,14 @@ public class TagRepository extends AbstractHtmlRepository {
      * @param attributeValue
      *            the value of the attribute
      * @return the first matching tag with the given attribute name and value.
+     * @throws NullValueException
+     *             if the {@code attributeName} or {@code attributeValue} is
+     *             null
      * @since 2.1.8
      * @author WFF
      */
     public AbstractHtml findOneTagByAttribute(final String attributeName,
-            final String attributeValue) {
+            final String attributeValue) throws NullValueException {
         return findOneTagByAttribute(attributeName, attributeValue, rootTags);
     }
 
@@ -363,10 +390,13 @@ public class TagRepository extends AbstractHtmlRepository {
      * @param attributeName
      *            the name of the attribute.
      * @return the first matching tag with the given attribute name and value.
+     * @throws NullValueException
+     *             if the {@code attributeName} is null
      * @since 2.1.8
      * @author WFF
      */
-    public AbstractHtml findOneTagByAttributeName(final String attributeName) {
+    public AbstractHtml findOneTagByAttributeName(final String attributeName)
+            throws NullValueException {
         return findOneTagByAttributeName(attributeName, rootTags);
     }
 
@@ -375,21 +405,23 @@ public class TagRepository extends AbstractHtmlRepository {
      *
      * @param attribute
      * @return all tags having the given attribute instance.
+     * @throws NullValueException
+     *             if the {@code attribute} is null
      * @since 2.1.8
      * @author WFF
      */
     public Collection<AbstractHtml> findTagsByAttribute(
-            final AbstractAttribute attribute) {
-
-        if (attribute == null) {
-            throw new NullValueException("attribute cannot be null");
-        }
-
+            final AbstractAttribute attribute) throws NullValueException {
         return findTagsByAttribute(attribute, rootTags);
     }
 
     private Collection<AbstractHtml> findTagsByAttribute(
             final AbstractAttribute attribute, final AbstractHtml[] fromTags) {
+
+        if (attribute == null) {
+            throw new NullValueException("attribute cannot be null");
+        }
+
         final Collection<AbstractHtml> allTags = new HashSet<AbstractHtml>();
 
         loopThroughAllNestedChildren(new NestedChild() {
@@ -416,21 +448,22 @@ public class TagRepository extends AbstractHtmlRepository {
      *
      * @param attribute
      * @return the first matching tag having the given attribute instance.
+     * @throws NullValueException
+     *             if the {@code attribute } is null
      * @since 2.1.8
      * @author WFF
      */
     public AbstractHtml findOneTagByAttribute(
             final AbstractAttribute attribute) {
-
-        if (attribute == null) {
-            throw new NullValueException("attribute cannot be null");
-        }
-
         return findOneTagByAttribute(attribute, rootTags);
     }
 
     private AbstractHtml findOneTagByAttribute(
             final AbstractAttribute attribute, final AbstractHtml[] fromTags) {
+
+        if (attribute == null) {
+            throw new NullValueException("attribute cannot be null");
+        }
 
         final AbstractHtml[] matchingTag = new AbstractHtml[1];
 
@@ -620,20 +653,21 @@ public class TagRepository extends AbstractHtmlRepository {
      * @param tag
      * @return true if the given tag instance exists anywhere in the browser
      *         page.
+     * @throws NullValueException
+     *             if the tag is null
      * @since 2.1.8
      * @author WFF
      */
-    public boolean exists(final AbstractHtml tag) {
-
-        if (tag == null) {
-            throw new NullValueException("tag cannot be null");
-        }
-
+    public boolean exists(final AbstractHtml tag) throws NullValueException {
         return exists(tag, rootTags);
     }
 
     private boolean exists(final AbstractHtml tag,
             final AbstractHtml[] fromTags) {
+
+        if (tag == null) {
+            throw new NullValueException("tag cannot be null");
+        }
 
         final boolean[] exists = new boolean[1];
 
@@ -659,20 +693,22 @@ public class TagRepository extends AbstractHtmlRepository {
      * @param attribute
      * @return true if the given attribute instance exists anywhere in the
      *         browser page.
+     * @throws NullValueException
+     *             if the {@code attribute} is null
      * @since 2.1.8
      * @author WFF
      */
-    public boolean exists(final AbstractAttribute attribute) {
-
-        if (attribute == null) {
-            throw new NullValueException("attribute cannot be null");
-        }
-
+    public boolean exists(final AbstractAttribute attribute)
+            throws NullValueException {
         return exists(attribute, rootTags);
     }
 
     private boolean exists(final AbstractAttribute attribute,
             final AbstractHtml[] fromTags) {
+
+        if (attribute == null) {
+            throw new NullValueException("attribute cannot be null");
+        }
 
         final boolean[] exists = new boolean[1];
 
