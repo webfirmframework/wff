@@ -1154,7 +1154,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.7
      * @author WFF
      */
-    public boolean contains(final AbstractHtml tag)
+    public final boolean contains(final AbstractHtml tag)
             throws NullValueException, NotRenderedException {
 
         if (tag == null) {
@@ -1310,7 +1310,8 @@ public abstract class BrowserPage implements Serializable {
         if (tagRepository == null && rootTag != null) {
             synchronized (this) {
                 if (tagRepository == null) {
-                    tagRepository = new TagRepository(rootTag);
+                    tagRepository = new TagRepository(ACCESS_OBJECT, this,
+                            rootTag);
                 }
             }
         }

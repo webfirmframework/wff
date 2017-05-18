@@ -15,11 +15,14 @@
  */
 package com.webfirmframework.wffweb.tag.repository;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 
 import com.webfirmframework.wffweb.InvalidTagException;
 import com.webfirmframework.wffweb.NullValueException;
+import com.webfirmframework.wffweb.WffSecurityException;
+import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
 import com.webfirmframework.wffweb.server.page.BrowserPage;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.AbstractHtmlRepository;
@@ -32,17 +35,46 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMArray;
 import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
 
 /**
- * The object of {@code TagRepository} class may be got by
+ * {@code TagRepository} class for tag operations like finding tags/attributes
+ * with certain criteria, userting/deleting wffObjects from tag etc... The
+ * object of {@code TagRepository} class may be got by
  * {@link BrowserPage#getTagRepository()} method.
  *
  * @author WFF
  * @since 2.1.8
  */
-public class TagRepository extends AbstractHtmlRepository {
+public class TagRepository extends AbstractHtmlRepository
+        implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    private final BrowserPage browserPage;
 
     private final AbstractHtml[] rootTags;
 
-    public TagRepository(final AbstractHtml... rootTags) {
+    /**
+     * This constructor is only for internal use. To get an object of
+     * {@code TagRepository} use {@code BrowserPage#getTagRepository()} method.
+     *
+     * @param browserPage
+     *            the instance of {@code BrowserPage}
+     * @param rootTags
+     *            the rootTags in the browserPage instance.
+     * @since 2.1.8
+     * @author WFF
+     */
+    public TagRepository(final Object accessObject,
+            final BrowserPage browserPage, final AbstractHtml... rootTags) {
+
+        if (accessObject == null || !((SecurityClassConstants.ABSTRACT_HTML
+                .equals(accessObject.getClass().getName()))
+                || (SecurityClassConstants.BROWSER_PAGE
+                        .equals(accessObject.getClass().getName())))) {
+            throw new WffSecurityException(
+                    "Not allowed to consume this constructor. This method is for internal use.");
+        }
+
+        this.browserPage = browserPage;
         this.rootTags = rootTags;
     }
 
@@ -488,13 +520,15 @@ public class TagRepository extends AbstractHtmlRepository {
     }
 
     /**
-     * inserts or replaces (if already exists) the key bmObject pair in the
+     * Inserts or replaces (if already exists) the key bmObject pair in the
      * wffObjects property of tag. The conventional JavaScript object of
      * {@code WffBMObject} will be set to the {@code wffObjects} property of the
      * given tag at client side.
      *
      * @param tag
+     *            the tag object on which the given bmObject to be set.
      * @param key
+     *            key to set in wffObjects property of the tag.
      * @param bmObject
      * @throws InvalidTagException
      *             if the given instance is of NoTag / Blank
@@ -519,6 +553,12 @@ public class TagRepository extends AbstractHtmlRepository {
         if (bmObject == null) {
             throw new NullValueException("bmObject cannot be null");
         }
+
+        if (!browserPage.contains(tag)) {
+            throw new InvalidTagException(
+                    "The given tag is not available in the corresponding browserPage instance.");
+        }
+
         AbstractHtmlRepository.addWffData(tag, key, bmObject);
     }
 
@@ -529,7 +569,9 @@ public class TagRepository extends AbstractHtmlRepository {
      * given tag at client side.
      *
      * @param tag
+     *            the tag object on which the given bmArray to be set.
      * @param key
+     *            key to set in wffObjects property of the tag.
      * @param bmArray
      * @throws InvalidTagException
      *             if the given instance is of NoTag / Blank
@@ -554,6 +596,10 @@ public class TagRepository extends AbstractHtmlRepository {
         }
         if (bmArray == null) {
             throw new NullValueException("bmArray cannot be null");
+        }
+        if (!browserPage.contains(tag)) {
+            throw new InvalidTagException(
+                    "The given tag is not available in the corresponding browserPage instance.");
         }
         AbstractHtmlRepository.addWffData(tag, key, bmArray);
     }
@@ -584,7 +630,10 @@ public class TagRepository extends AbstractHtmlRepository {
         if (key == null) {
             throw new NullValueException("key cannot be null");
         }
-
+        if (!browserPage.contains(tag)) {
+            throw new InvalidTagException(
+                    "The given tag is not available in the corresponding browserPage instance.");
+        }
         AbstractHtmlRepository.removeWffData(tag, key);
     }
 
