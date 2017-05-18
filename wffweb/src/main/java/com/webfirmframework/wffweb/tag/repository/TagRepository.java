@@ -708,32 +708,10 @@ public class TagRepository extends AbstractHtmlRepository
      * @author WFF
      */
     public boolean exists(final AbstractHtml tag) throws NullValueException {
-        return exists(tag, rootTags);
-    }
-
-    private boolean exists(final AbstractHtml tag,
-            final AbstractHtml[] fromTags) {
-
         if (tag == null) {
             throw new NullValueException("tag cannot be null");
         }
-
-        final boolean[] exists = new boolean[1];
-
-        loopThroughAllNestedChildren(new NestedChild() {
-
-            @Override
-            public boolean eachChild(final AbstractHtml child) {
-                if (tag.equals(child)) {
-                    exists[0] = true;
-                    return false;
-                }
-
-                return true;
-            }
-        }, true, fromTags);
-
-        return exists[0];
+        return browserPage.contains(tag);
     }
 
     /**
@@ -749,37 +727,18 @@ public class TagRepository extends AbstractHtmlRepository
      */
     public boolean exists(final AbstractAttribute attribute)
             throws NullValueException {
-        return exists(attribute, rootTags);
-    }
-
-    private boolean exists(final AbstractAttribute attribute,
-            final AbstractHtml[] fromTags) {
 
         if (attribute == null) {
             throw new NullValueException("attribute cannot be null");
         }
 
-        final boolean[] exists = new boolean[1];
-
-        loopThroughAllNestedChildren(new NestedChild() {
-
-            @Override
-            public boolean eachChild(final AbstractHtml child) {
-
-                final AbstractAttribute attributeByName = child
-                        .getAttributeByName(attribute.getAttributeName());
-
-                if (attribute.equals(attributeByName)) {
-                    exists[0] = true;
-                    return false;
-
-                }
-
+        for (final AbstractHtml ownerTag : attribute.getOwnerTags()) {
+            if (browserPage.contains(ownerTag)) {
                 return true;
             }
-        }, true, fromTags);
+        }
 
-        return exists[0];
+        return false;
     }
 
 }
