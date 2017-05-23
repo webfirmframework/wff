@@ -461,7 +461,7 @@ public class TagRepository extends AbstractHtmlRepository
     }
 
     /**
-     * Finds once tag by attribute instance.
+     * Finds one tag by attribute instance.
      *
      * @param attribute
      * @return the first matching tag having the given attribute instance.
