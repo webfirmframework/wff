@@ -630,11 +630,27 @@ public class TagRepository extends AbstractHtmlRepository
      * @author WFF
      */
     public Collection<AbstractHtml> findAllTags() {
-        return findAllTagss(rootTags);
+        return findAllTags(rootTags);
     }
 
-    private Collection<AbstractHtml> findAllTagss(
-            final AbstractHtml[] fromTags) {
+    /**
+     * Finds all tags including the nested tags from the given tags.
+     *
+     * @param fromTags
+     *            to find all tags from these tags
+     * @return all tags including the nested tags from the given tags.
+     * @throws NullValueException
+     *             if {@code fromTags} is null
+     * @since 2.1.9
+     * @author WFF
+     */
+    public static Collection<AbstractHtml> findAllTags(
+            final AbstractHtml... fromTags) throws NullValueException {
+
+        if (fromTags == null) {
+            throw new NullValueException("fromTags cannot be null");
+        }
+
         final Collection<AbstractHtml> allTags = new HashSet<AbstractHtml>();
 
         loopThroughAllNestedChildren(new NestedChild() {
@@ -660,8 +676,24 @@ public class TagRepository extends AbstractHtmlRepository
         return findAllAttributes(rootTags);
     }
 
-    private Collection<AbstractAttribute> findAllAttributes(
-            final AbstractHtml[] fromTags) {
+    /**
+     * Finds all attributes from the given tags
+     *
+     * @param fromTags
+     *            the tags to find the attributes from.
+     * @return the all attributes from the given tags including the nested tags.
+     * @throws NullValueException
+     *             if {@code fromTags} is null
+     * @since 2.1.9
+     * @author WFF
+     */
+    public static Collection<AbstractAttribute> findAllAttributes(
+            final AbstractHtml... fromTags) throws NullValueException {
+
+        if (fromTags == null) {
+            throw new NullValueException("fromTags cannot be null");
+        }
+
         final Collection<AbstractAttribute> allAttributes = new HashSet<AbstractAttribute>();
 
         loopThroughAllNestedChildren(new NestedChild() {
