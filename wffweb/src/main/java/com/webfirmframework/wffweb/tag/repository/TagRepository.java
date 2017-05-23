@@ -36,7 +36,7 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
 
 /**
  * {@code TagRepository} class for tag operations like finding tags/attributes
- * with certain criteria, userting/deleting wffObjects from tag etc... The
+ * with certain criteria, upserting/deleting wffObjects from tag etc... The
  * object of {@code TagRepository} class may be got by
  * {@link BrowserPage#getTagRepository()} method.
  *
