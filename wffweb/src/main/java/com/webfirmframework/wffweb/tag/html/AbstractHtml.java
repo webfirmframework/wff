@@ -1611,13 +1611,12 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @author WFF
      */
     private void buildOpeningTag(final boolean rebuild) {
-        final String attributeHtmlString = AttributeUtil
-                .getAttributeHtmlString(rebuild, charset, attributes);
         if (htmlStartSB.length() > 0) {
             htmlStartSB.delete(0, htmlStartSB.length());
         }
         if (tagName != null) {
-            htmlStartSB.append('<').append(tagName).append(attributeHtmlString);
+            htmlStartSB.append('<').append(tagName).append(AttributeUtil
+                    .getAttributeHtmlString(rebuild, charset, attributes));
             if (tagType == TagType.OPENING_CLOSING) {
                 htmlStartSB.append('>');
             } else if (tagType == TagType.SELF_CLOSING) {
