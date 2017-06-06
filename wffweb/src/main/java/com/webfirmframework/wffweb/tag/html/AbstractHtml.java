@@ -1935,9 +1935,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                 final DataWffId dataWffId = stackChild.getDataWffId();
                 if (dataWffId != null) {
-                    final String attributeValue = dataWffId.getValue();
                     sharedObject.getTagByWffId(ACCESS_OBJECT)
-                            .remove(attributeValue);
+                            .remove(dataWffId.getValue());
                 }
 
                 stackChild.sharedObject = abstractHtml.sharedObject;
