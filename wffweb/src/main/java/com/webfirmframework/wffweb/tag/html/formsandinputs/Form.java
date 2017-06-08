@@ -10,6 +10,7 @@ import com.webfirmframework.wffweb.tag.html.NestedChild;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.Name;
+import com.webfirmframework.wffweb.tag.html.attribute.Type;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.FormAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
@@ -103,14 +104,26 @@ public class Form extends AbstractHtml {
 
                     final Name nameAttr = (Name) child
                             .getAttributeByName(AttributeNameConstants.NAME);
+                    final Type typeAttr = (Type) child
+                            .getAttributeByName(AttributeNameConstants.TYPE);
 
                     if (nameAttr != null) {
                         final String value = nameAttr.getValue();
                         if (!appendedValues.contains(value)) {
 
-                            jsObjectBuilder.append(value).append(':')
-                                    .append(value).append(".value,");
-                            appendedValues.add(value);
+                            if (typeAttr != null && Type.CHECKBOX
+                                    .equals(typeAttr.getValue())) {
+                                jsObjectBuilder.append(value).append(':')
+                                        .append(value).append(".checked,");
+                                appendedValues.add(value);
+
+                            } else {
+                                jsObjectBuilder.append(value).append(':')
+                                        .append(value).append(".value,");
+                                appendedValues.add(value);
+
+                            }
+
                         }
                     }
 
@@ -136,7 +149,9 @@ public class Form extends AbstractHtml {
      * @return the js object string for field names of TagNameConstants.INPUT,
      *         TagNameConstants.TEXTAREA and TagNameConstants.SELECT. The
      *         returned js string will be as {name1.name1.value} where name1 is
-     *         the value of name attribute of the field.
+     *         the value of name attribute of the field. If the input type is
+     *         checkbox then checked property will be included instead of value
+     *         property.
      * @since 2.1.8
      * @author WFF
      */
