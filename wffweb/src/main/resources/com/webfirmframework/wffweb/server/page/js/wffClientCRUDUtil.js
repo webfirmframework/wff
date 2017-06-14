@@ -123,11 +123,6 @@ var wffClientCRUDUtil = new function() {
 					// div.innerHTML = htmlString;
 					// var htmlNodes = div.firstChild;
 
-					if (parent == undefined) {
-						console.log('parent == undefined', 'tagName', tagName,
-								'wffId', wffId);
-					}
-
 					var htmlNodes = wffTagUtil
 							.createTagFromWffBMBytes(values[j]);
 
@@ -174,8 +169,7 @@ var wffClientCRUDUtil = new function() {
 
 		} else if (taskValue == wffGlobal.taskValues.MOVED_CHILDREN_TAGS) {
 
-			console
-					.log('wffGlobal.taskValues.MOVED_CHILDREN_TAGS nameValues.length '
+			console.log('wffGlobal.taskValues.MOVED_CHILDREN_TAGS nameValues.length '
 							+ nameValues.length);
 
 			for (var i = 1; i < nameValues.length; i++) {
