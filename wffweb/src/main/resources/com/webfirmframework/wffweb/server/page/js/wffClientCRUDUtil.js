@@ -108,14 +108,6 @@ var wffClientCRUDUtil = new function() {
 		} else if (taskValue == wffGlobal.taskValues.APPENDED_CHILD_TAG
 				|| taskValue == wffGlobal.taskValues.APPENDED_CHILDREN_TAGS) {
 
-			// TODO comment this later
-			if (taskValue == wffGlobal.taskValues.APPENDED_CHILD_TAG) {
-				console.log('APPENDED_CHILD_TAG');
-			} else if (taskValue == wffGlobal.taskValues.APPENDED_CHILDREN_TAGS) {
-				console.log('APPENDED_CHILDREN_TAGS');
-			}
-			// end
-
 			for (var i = 1; i < nameValues.length; i++) {
 				var wffId = wffTagUtil
 						.getWffIdFromWffIdBytes(nameValues[i].name);
