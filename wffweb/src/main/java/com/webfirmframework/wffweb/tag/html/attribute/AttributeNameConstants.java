@@ -363,6 +363,8 @@ public class AttributeNameConstants {
 
     public static final String OPEN = "open";
 
+    public static final String OPTIMUM = "optimum";
+
     /**
      *
      * @author WFF
