@@ -180,6 +180,7 @@ import com.webfirmframework.wffweb.tag.html.html5.attribute.Media;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Min;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Multiple;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Muted;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.Open;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Pattern;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Placeholder;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Preload;
@@ -596,6 +597,8 @@ public class AttributeRegistry {
                 OnMouseOver.class.getSimpleName());
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONRESIZE,
                 OnResize.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.OPEN,
+                Open.class.getSimpleName());
 
         attributeNames = new ArrayList<>(initialCapacity);
         attributeNamesSet = new HashSet<>(initialCapacity);

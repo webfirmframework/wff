@@ -361,6 +361,8 @@ public class AttributeNameConstants {
 
     public static final String ONRESIZE = "onresize";
 
+    public static final String OPEN = "open";
+
     /**
      *
      * @author WFF
