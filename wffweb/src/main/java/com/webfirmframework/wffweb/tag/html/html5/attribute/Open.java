@@ -19,22 +19,24 @@ package com.webfirmframework.wffweb.tag.html.html5.attribute;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.html5.identifier.DetailsAttributable;
+import com.webfirmframework.wffweb.tag.html.html5.identifier.DialogAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.BooleanAttribute;
 
 /**
  * {@code <element open> }
  *
  * <br>
- * <code>open</code> is a boolean attribute which can be used in
- * <code>details</code> tag to show the details to the user. The presence of
- * <code>open</code> attribute in details indicates that the details to be
- * visible in the browser.
+ * <i><code>open</code></i> is a boolean attribute which can be used in
+ * <i><code>details</code></i> tag to show the details to the user. The presence
+ * of <i><code>open</code></i> attribute in details indicates that the details
+ * to be visible in the browser. This attribute can also be used on other tags
+ * like <i><code>dialog</code></i>.
  *
  * @author WFF
  * @since 2.1.9
  */
 public class Open extends AbstractAttribute
-        implements BooleanAttribute, DetailsAttributable {
+        implements BooleanAttribute, DetailsAttributable, DialogAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
