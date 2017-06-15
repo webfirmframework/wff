@@ -9,7 +9,6 @@ import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.NestedChild;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
-import com.webfirmframework.wffweb.tag.html.attribute.Name;
 import com.webfirmframework.wffweb.tag.html.attribute.Type;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.FormAttributable;
@@ -102,17 +101,17 @@ public class Form extends AbstractHtml {
 
                 if (onlyForTagNames.contains(tagName)) {
 
-                    final Name nameAttr = (Name) child
+                    final AbstractAttribute nameAttr = child
                             .getAttributeByName(AttributeNameConstants.NAME);
-                    final Type typeAttr = (Type) child
+                    final AbstractAttribute typeAttr = child
                             .getAttributeByName(AttributeNameConstants.TYPE);
 
                     if (nameAttr != null) {
-                        final String value = nameAttr.getValue();
+                        final String value = nameAttr.getAttributeValue();
                         if (!appendedValues.contains(value)) {
 
                             if (typeAttr != null && Type.CHECKBOX
-                                    .equals(typeAttr.getValue())) {
+                                    .equals(typeAttr.getAttributeValue())) {
                                 jsObjectBuilder.append(value).append(':')
                                         .append(value).append(".checked,");
                                 appendedValues.add(value);
