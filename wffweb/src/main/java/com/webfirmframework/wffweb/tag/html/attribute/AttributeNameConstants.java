@@ -371,6 +371,10 @@ public class AttributeNameConstants {
 
     public static final String DIRNAME = "dirname";
 
+    public static final String HIGH = "high";
+
+    public static final String LOW = "low";
+
     /**
      *
      * @author WFF

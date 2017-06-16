@@ -177,7 +177,9 @@ import com.webfirmframework.wffweb.tag.html.html5.attribute.FormAction;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.FormEncType;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.FormMethod;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.FormNoValidate;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.High;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Loop;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.Low;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Max;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Media;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Min;
@@ -611,6 +613,10 @@ public class AttributeRegistry {
                 Default.class.getSimpleName());
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.DIRNAME,
                 DirName.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.HIGH,
+                High.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.LOW,
+                Low.class.getSimpleName());
 
         attributeNames = new ArrayList<>(initialCapacity);
         attributeNamesSet = new HashSet<>(initialCapacity);
