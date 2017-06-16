@@ -45,6 +45,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.CoOrds;
 import com.webfirmframework.wffweb.tag.html.attribute.ColSpan;
 import com.webfirmframework.wffweb.tag.html.attribute.Cols;
 import com.webfirmframework.wffweb.tag.html.attribute.Defer;
+import com.webfirmframework.wffweb.tag.html.attribute.DirName;
 import com.webfirmframework.wffweb.tag.html.attribute.Disabled;
 import com.webfirmframework.wffweb.tag.html.attribute.EncType;
 import com.webfirmframework.wffweb.tag.html.attribute.Face;
@@ -608,6 +609,8 @@ public class AttributeRegistry {
                 Defer.class.getSimpleName());
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.DEFAULT,
                 Default.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.DIRNAME,
+                DirName.class.getSimpleName());
 
         attributeNames = new ArrayList<>(initialCapacity);
         attributeNamesSet = new HashSet<>(initialCapacity);

@@ -369,6 +369,8 @@ public class AttributeNameConstants {
 
     public static final String DEFAULT = "default";
 
+    public static final String DIRNAME = "dirname";
+
     /**
      *
      * @author WFF
