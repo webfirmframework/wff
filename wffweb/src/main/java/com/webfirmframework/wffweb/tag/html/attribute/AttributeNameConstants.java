@@ -365,6 +365,8 @@ public class AttributeNameConstants {
 
     public static final String OPTIMUM = "optimum";
 
+    public static final String DEFER = "defer";
+
     /**
      *
      * @author WFF
