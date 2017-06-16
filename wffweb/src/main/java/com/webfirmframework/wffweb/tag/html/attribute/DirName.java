@@ -23,7 +23,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.TextAreaAttributable;
 /**
  *
  * <code>dirname</code> attribute for the <code>input</code> and
- * <code>textarea</code> tags. *
+ * <code>textarea</code> tags.
  *
  * @since 2.1.9
  * @author WFF
