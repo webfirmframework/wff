@@ -367,6 +367,8 @@ public class AttributeNameConstants {
 
     public static final String DEFER = "defer";
 
+    public static final String DEFAULT = "default";
+
     /**
      *
      * @author WFF

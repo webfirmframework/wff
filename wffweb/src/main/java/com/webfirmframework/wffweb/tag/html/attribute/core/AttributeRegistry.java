@@ -170,6 +170,7 @@ import com.webfirmframework.wffweb.tag.html.html5.attribute.AutoPlay;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Content;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Controls;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.DateTime;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.Default;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Download;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.FormAction;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.FormEncType;
@@ -605,6 +606,8 @@ public class AttributeRegistry {
                 Optimum.class.getSimpleName());
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.DEFER,
                 Defer.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.DEFAULT,
+                Default.class.getSimpleName());
 
         attributeNames = new ArrayList<>(initialCapacity);
         attributeNamesSet = new HashSet<>(initialCapacity);
