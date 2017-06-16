@@ -375,6 +375,8 @@ public class AttributeNameConstants {
 
     public static final String LOW = "low";
 
+    public static final String REVERSED = "reversed";
+
     /**
      *
      * @author WFF
