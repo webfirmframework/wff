@@ -18,51 +18,53 @@ package com.webfirmframework.wffweb.tag.html.html5.attribute;
 
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.BooleanAttribute;
-import com.webfirmframework.wffweb.tag.html.identifier.OlAttributable;
+import com.webfirmframework.wffweb.tag.html.html5.identifier.VideoAttributable;
 
 /**
- * {@code <element open> }
- *
- * <br>
- * <i><code>Reversed</code></i> is a boolean attribute which can be used in
- * <i><code>Ol</code></i> tag. The presence of <i><code>Reversed</code></i>
- * attribute in <i><code>Ol</code></i> tag shows the items in reverse order.
+ * <i><code>Poster</code></i> is used in <i><code>Video</code></i> tag to
+ * specify the image to be shown while the video is loading.
  *
  * @author WFF
  * @since 2.1.9
  */
-public class Reversed extends AbstractAttribute
-        implements BooleanAttribute, OlAttributable {
+public class Poster extends AbstractAttribute implements VideoAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
     {
-        super.setAttributeName(AttributeNameConstants.REVERSED);
+        super.setAttributeName(AttributeNameConstants.POSTER);
         init();
     }
 
     /**
-     * sets the default value as <code>reversed</code> . If value is not
-     * required then use <code>new Reversed(null)</code>.
      *
+     * @param value
+     *            the value for the attribute
      * @since 2.1.9
-     * @author WFF
      */
-    public Reversed() {
-        setAttributeValue(AttributeNameConstants.REVERSED);
-    }
-
-    public Reversed(final String value) {
+    public Poster(final String value) {
         setAttributeValue(value);
     }
 
+    /**
+     * sets the value for this attribute
+     *
+     * @param value
+     *            the value for the attribute.
+     * @since 2.1.9
+     */
     public void setValue(final String value) {
-        setAttributeValue(value);
+        super.setAttributeValue(value);
     }
 
+    /**
+     * gets the value of this attribute
+     *
+     * @return the value of the attribute
+     * @since 2.1.9
+     */
     public String getValue() {
-        return getAttributeValue();
+        return super.getAttributeValue();
     }
 
     /**

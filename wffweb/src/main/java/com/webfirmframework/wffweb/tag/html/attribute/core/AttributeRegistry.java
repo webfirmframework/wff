@@ -189,6 +189,7 @@ import com.webfirmframework.wffweb.tag.html.html5.attribute.Open;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Optimum;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Pattern;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Placeholder;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.Poster;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Preload;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Required;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Reversed;
@@ -620,6 +621,8 @@ public class AttributeRegistry {
                 Low.class.getSimpleName());
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.REVERSED,
                 Reversed.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.POSTER,
+                Poster.class.getSimpleName());
 
         attributeNames = new ArrayList<>(initialCapacity);
         attributeNamesSet = new HashSet<>(initialCapacity);
