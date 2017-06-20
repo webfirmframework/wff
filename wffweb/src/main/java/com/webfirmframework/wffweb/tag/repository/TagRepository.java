@@ -183,12 +183,11 @@ public class TagRepository extends AbstractHtmlRepository
             @Override
             public boolean eachChild(final AbstractHtml child) {
 
-                final AbstractAttribute idAttr = child
-                        .getAttributeByName(AttributeNameConstants.ID);
+                final AbstractAttribute attribute = child
+                        .getAttributeByName(attributeName);
 
-                if (idAttr != null
-                        && attributeName.equals(idAttr.getAttributeName())
-                        && attributeValue.equals(idAttr.getAttributeValue())) {
+                if (attribute != null && attributeValue
+                        .equals(attribute.getAttributeValue())) {
                     matchingTags.add(child);
                 }
 
@@ -240,12 +239,11 @@ public class TagRepository extends AbstractHtmlRepository
             @Override
             public boolean eachChild(final AbstractHtml child) {
 
-                final AbstractAttribute idAttr = child
-                        .getAttributeByName(AttributeNameConstants.ID);
+                final AbstractAttribute attribute = child
+                        .getAttributeByName(attributeName);
 
-                if (idAttr != null
-                        && attributeName.equals(idAttr.getAttributeName())
-                        && attributeValue.equals(idAttr.getAttributeValue())) {
+                if (attribute != null && attributeValue
+                        .equals(attribute.getAttributeValue())) {
                     matchingTag[0] = child;
                     return false;
                 }
@@ -291,11 +289,10 @@ public class TagRepository extends AbstractHtmlRepository
             @Override
             public boolean eachChild(final AbstractHtml child) {
 
-                final AbstractAttribute idAttr = child
-                        .getAttributeByName(AttributeNameConstants.ID);
+                final AbstractAttribute attribute = child
+                        .getAttributeByName(attributeName);
 
-                if (idAttr != null
-                        && attributeName.equals(idAttr.getAttributeName())) {
+                if (attribute != null) {
                     matchingTag[0] = child;
                     return false;
                 }
@@ -341,11 +338,10 @@ public class TagRepository extends AbstractHtmlRepository
             @Override
             public boolean eachChild(final AbstractHtml child) {
 
-                final AbstractAttribute idAttr = child
-                        .getAttributeByName(AttributeNameConstants.ID);
+                final AbstractAttribute attribute = child
+                        .getAttributeByName(attributeName);
 
-                if (idAttr != null
-                        && attributeName.equals(idAttr.getAttributeName())) {
+                if (attribute != null) {
                     matchingTags.add(child);
                 }
 
