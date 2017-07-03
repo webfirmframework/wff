@@ -27,6 +27,7 @@ import static org.junit.Assert.fail;
 import java.util.Collection;
 import java.util.Objects;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.css.CssNameConstants;
@@ -454,6 +455,11 @@ public class StyleTest {
 
         assertEquals(0, style.getCssProperties().size());
 
+    }
+    
+    @Test
+    public void testGetAttributeValue() {
+        Assert.assertEquals("color:green;background:yellow;", new Style("color:green;background:yellow").getAttributeValue());
     }
 
 }

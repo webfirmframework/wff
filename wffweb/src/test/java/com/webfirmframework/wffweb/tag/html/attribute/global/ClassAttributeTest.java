@@ -17,6 +17,7 @@ package com.webfirmframework.wffweb.tag.html.attribute.global;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 public class ClassAttributeTest {
@@ -69,6 +70,13 @@ public class ClassAttributeTest {
     @Test
     public void testRemoveClassName() {
         // fail("Not yet implemented");
+    }
+    
+    @Test
+    public void testGetAttributeValue() {
+        Assert.assertNotNull(new ClassAttribute("one two").getAttributeValue());
+        Assert.assertEquals("one two three four five six", new ClassAttribute("one two three four five six").getAttributeValue());
+        
     }
 
 }

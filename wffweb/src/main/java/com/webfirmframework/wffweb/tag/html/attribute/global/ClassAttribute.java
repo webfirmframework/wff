@@ -18,10 +18,13 @@ package com.webfirmframework.wffweb.tag.html.attribute.global;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
+import com.webfirmframework.wffweb.util.StringBuilderUtil;
 
 /**
  * @author WFF
@@ -155,5 +158,34 @@ public class ClassAttribute extends AbstractAttribute
      */
     public void removeClassName(final String className) {
         removeFromAttributeValueSet(className);
+    }
+
+    /**
+     * @return the value string of class names
+     * @since 2.1.9
+     * @author WFF
+     */
+    @Override
+    public String getAttributeValue() {
+
+        final StringBuilder builder = new StringBuilder();
+        for (final String className : getAttributeValueSet()) {
+            builder.append(className).append(' ');
+        }
+
+        return StringBuilderUtil.getTrimmedString(builder);
+    }
+
+    /**
+     * NB:- every time it returns a <code>new LinkedHashSet</code> object and
+     * changes to this set object will not have any affect on this
+     * <code>ClassAttribute</code> object.
+     *
+     * @return the set of class names it contained.
+     * @since 2.1.9
+     * @author WFF
+     */
+    public Set<String> getClassNames() {
+        return new LinkedHashSet<String>(getAttributeValueSet());
     }
 }

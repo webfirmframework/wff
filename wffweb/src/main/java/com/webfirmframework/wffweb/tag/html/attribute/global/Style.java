@@ -1526,4 +1526,16 @@ public class Style extends AbstractAttribute
     public static Map<String, Class<?>> getSupportedCsspropertyClasses() {
         return CSSPROPERTY_CLASSES;
     }
+
+    /**
+     * @return the value string of css properties
+     * @since 2.1.9
+     * @author WFF
+     */
+    @Override
+    public String getAttributeValue() {
+        final String htmlString = this.toHtmlString();
+        return htmlString.substring(AttributeNameConstants.STYLE.length() + 2,
+                htmlString.length() - 1);
+    }
 }

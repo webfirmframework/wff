@@ -616,6 +616,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @author WFF
      */
     public String getAttributeValue() {
+        // NB:- Do not call this method for internal operations
+        // use attributeValue variable instead of it
+        // because it may be overridden by tags, for eg: ClassAttribute
         return attributeValue;
     }
 
