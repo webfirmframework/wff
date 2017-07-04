@@ -107,21 +107,33 @@ public class Form extends AbstractHtml {
                             .getAttributeByName(AttributeNameConstants.TYPE);
 
                     if (nameAttr != null) {
-                        final String value = nameAttr.getAttributeValue();
-                        if (!appendedValues.contains(value)) {
+                        final String nameAttrValue = nameAttr
+                                .getAttributeValue();
 
-                            if (typeAttr != null && (Type.CHECKBOX
-                                    .equals(typeAttr.getAttributeValue())
-                                    || Type.RADIO.equals(
-                                            typeAttr.getAttributeValue()))) {
-                                jsObjectBuilder.append(value).append(':')
-                                        .append(value).append(".checked,");
-                                appendedValues.add(value);
+                        if (!appendedValues.contains(nameAttrValue)) {
 
+                            if (typeAttr != null) {
+                                final String typeAttrValue = typeAttr
+                                        .getAttributeValue();
+                                if (Type.CHECKBOX.equals(typeAttrValue)
+                                        || Type.RADIO.equals(typeAttrValue)) {
+                                    jsObjectBuilder.append(nameAttrValue)
+                                            .append(':').append(nameAttrValue)
+                                            .append(".checked,");
+                                    appendedValues.add(nameAttrValue);
+
+                                } else {
+                                    jsObjectBuilder.append(nameAttrValue)
+                                            .append(':').append(nameAttrValue)
+                                            .append(".value,");
+                                    appendedValues.add(nameAttrValue);
+
+                                }
                             } else {
-                                jsObjectBuilder.append(value).append(':')
-                                        .append(value).append(".value,");
-                                appendedValues.add(value);
+                                jsObjectBuilder.append(nameAttrValue)
+                                        .append(':').append(nameAttrValue)
+                                        .append(".value,");
+                                appendedValues.add(nameAttrValue);
 
                             }
 
