@@ -110,8 +110,10 @@ public class Form extends AbstractHtml {
                         final String value = nameAttr.getAttributeValue();
                         if (!appendedValues.contains(value)) {
 
-                            if (typeAttr != null && Type.CHECKBOX
-                                    .equals(typeAttr.getAttributeValue())) {
+                            if (typeAttr != null && (Type.CHECKBOX
+                                    .equals(typeAttr.getAttributeValue())
+                                    || Type.RADIO.equals(
+                                            typeAttr.getAttributeValue()))) {
                                 jsObjectBuilder.append(value).append(':')
                                         .append(value).append(".checked,");
                                 appendedValues.add(value);
@@ -149,8 +151,8 @@ public class Form extends AbstractHtml {
      *         TagNameConstants.TEXTAREA and TagNameConstants.SELECT. The
      *         returned js string will be as {name1.name1.value} where name1 is
      *         the value of name attribute of the field. If the input type is
-     *         checkbox then checked property will be included instead of value
-     *         property.
+     *         checkbox/radio then checked property will be included instead of
+     *         value property.
      * @since 2.1.8
      * @author WFF
      */
