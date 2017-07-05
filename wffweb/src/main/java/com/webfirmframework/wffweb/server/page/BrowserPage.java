@@ -112,9 +112,9 @@ public abstract class BrowserPage implements Serializable {
 
     private int wsReconnectInterval = -1;
 
-    private static int wsDefaultHeartbeatInterval = -1;
+    private static int wsDefaultHeartbeatInterval = 25_000;
 
-    private static int wsDefaultReconnectInterval = 2000;
+    private static int wsDefaultReconnectInterval = 2_000;
 
     private final AtomicInteger pushQueueSize = new AtomicInteger(0);
 
@@ -1208,7 +1208,8 @@ public abstract class BrowserPage implements Serializable {
     /**
      * Sets the default heartbeat ping interval of webSocket client in
      * milliseconds. Give -1 to disable it. It affects globally. By default it's
-     * set with -1.<br>
+     * set with -1 till wffweb-2.1.8 and Since wffweb-2.1.9 it's 25000ms i.e. 25
+     * seconds.<br>
      * NB:- This method has effect only if it is called before
      * {@code BrowserPage#render()} invocation.
      *
@@ -1217,6 +1218,7 @@ public abstract class BrowserPage implements Serializable {
      *            the heartbeat ping interval of webSocket client in
      *            milliseconds. Give -1 to disable it
      * @since 2.1.8
+     * @since 2.1.9 the default value is 25000ms i.e. 25 seconds.
      * @author WFF
      */
     public static void setWebSocketDefultHeartbeatInterval(
