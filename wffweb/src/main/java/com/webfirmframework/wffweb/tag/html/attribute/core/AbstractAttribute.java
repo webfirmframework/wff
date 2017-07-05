@@ -457,12 +457,10 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             final Map<String, String> attributeValueMap) {
 
         if (!Objects.equals(attributeValueMap, this.attributeValueMap)) {
-            // this.attributeValueMap = attributeValueMap must be
-            // before setModified
-            this.attributeValueMap = attributeValueMap;
             setModified(true);
         }
 
+        this.attributeValueMap = attributeValueMap;
     }
 
     /**
@@ -637,7 +635,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     protected void setAttributeValue(final String attributeValue) {
         if (!Objects.equals(this.attributeValue, attributeValue)) {
             // this.attributeValue = attributeValue must be
-            // before setModified invokeValueChangeListeners
+            // before invokeValueChangeListeners
             this.attributeValue = attributeValue;
             setModified(true);
             invokeValueChangeListeners();
@@ -734,11 +732,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected void setAttributeValueSet(final Set<String> attributeValueSet) {
         if (!Objects.equals(this.attributeValueSet, attributeValueSet)) {
-            // this.attributeValueSet = attributeValueSet must be
-            // before setModified
-            this.attributeValueSet = attributeValueSet;
             setModified(true);
         }
+        this.attributeValueSet = attributeValueSet;
     }
 
     /**
