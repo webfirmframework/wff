@@ -1611,13 +1611,19 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @author WFF
      */
     private void buildOpeningTag(final boolean rebuild) {
-        final String attributeHtmlString = AttributeUtil
-                .getAttributeHtmlString(rebuild, charset, attributes);
+
+        // final String attributeHtmlString = AttributeUtil
+        // .getAttributeHtmlString(rebuild, charset, attributes);
+
         if (htmlStartSB.length() > 0) {
             htmlStartSB.delete(0, htmlStartSB.length());
         }
+
         if (tagName != null) {
-            htmlStartSB.append('<').append(tagName).append(attributeHtmlString);
+            // previously attributeHtmlString was used in append method
+            // as argument.
+            htmlStartSB.append('<').append(tagName).append(AttributeUtil
+                    .getAttributeHtmlString(rebuild, charset, attributes));
             if (tagType == TagType.OPENING_CLOSING) {
                 htmlStartSB.append('>');
             } else if (tagType == TagType.SELF_CLOSING) {
@@ -1935,9 +1941,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                 final DataWffId dataWffId = stackChild.getDataWffId();
                 if (dataWffId != null) {
-                    final String attributeValue = dataWffId.getValue();
                     sharedObject.getTagByWffId(ACCESS_OBJECT)
-                            .remove(attributeValue);
+                            .remove(dataWffId.getValue());
                 }
 
                 stackChild.sharedObject = abstractHtml.sharedObject;

@@ -499,6 +499,10 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         return false;
     }
 
+    /**
+     * this method should be called after changing of attribute value not before
+     * changing value
+     */
     private void invokeValueChangeListeners() {
         final Set<AbstractHtml5SharedObject> sharedObjects = new HashSet<AbstractHtml5SharedObject>(
                 ownerTags.size());
@@ -616,6 +620,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @author WFF
      */
     public String getAttributeValue() {
+        // NB:- Do not call this method for internal operations
+        // use attributeValue variable instead of it
+        // because it may be overridden by tags, for eg: ClassAttribute
         return attributeValue;
     }
 
@@ -627,12 +634,12 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected void setAttributeValue(final String attributeValue) {
         if (!Objects.equals(this.attributeValue, attributeValue)) {
+            // this.attributeValue = attributeValue must be
+            // before invokeValueChangeListeners
+            this.attributeValue = attributeValue;
             setModified(true);
-
             invokeValueChangeListeners();
-
         }
-        this.attributeValue = attributeValue;
     }
 
     /**

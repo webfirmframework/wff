@@ -9,7 +9,7 @@ import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.NestedChild;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
-import com.webfirmframework.wffweb.tag.html.attribute.Name;
+import com.webfirmframework.wffweb.tag.html.attribute.Type;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.FormAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
@@ -101,16 +101,42 @@ public class Form extends AbstractHtml {
 
                 if (onlyForTagNames.contains(tagName)) {
 
-                    final Name nameAttr = (Name) child
+                    final AbstractAttribute nameAttr = child
                             .getAttributeByName(AttributeNameConstants.NAME);
+                    final AbstractAttribute typeAttr = child
+                            .getAttributeByName(AttributeNameConstants.TYPE);
 
                     if (nameAttr != null) {
-                        final String value = nameAttr.getValue();
-                        if (!appendedValues.contains(value)) {
+                        final String nameAttrValue = nameAttr
+                                .getAttributeValue();
 
-                            jsObjectBuilder.append(value).append(':')
-                                    .append(value).append(".value,");
-                            appendedValues.add(value);
+                        if (!appendedValues.contains(nameAttrValue)) {
+
+                            if (typeAttr != null) {
+                                final String typeAttrValue = typeAttr
+                                        .getAttributeValue();
+                                if (Type.CHECKBOX.equals(typeAttrValue)
+                                        || Type.RADIO.equals(typeAttrValue)) {
+                                    jsObjectBuilder.append(nameAttrValue)
+                                            .append(':').append(nameAttrValue)
+                                            .append(".checked,");
+                                    appendedValues.add(nameAttrValue);
+
+                                } else {
+                                    jsObjectBuilder.append(nameAttrValue)
+                                            .append(':').append(nameAttrValue)
+                                            .append(".value,");
+                                    appendedValues.add(nameAttrValue);
+
+                                }
+                            } else {
+                                jsObjectBuilder.append(nameAttrValue)
+                                        .append(':').append(nameAttrValue)
+                                        .append(".value,");
+                                appendedValues.add(nameAttrValue);
+
+                            }
+
                         }
                     }
 
@@ -136,7 +162,9 @@ public class Form extends AbstractHtml {
      * @return the js object string for field names of TagNameConstants.INPUT,
      *         TagNameConstants.TEXTAREA and TagNameConstants.SELECT. The
      *         returned js string will be as {name1.name1.value} where name1 is
-     *         the value of name attribute of the field.
+     *         the value of name attribute of the field. If the input type is
+     *         checkbox/radio then checked property will be included instead of
+     *         value property.
      * @since 2.1.8
      * @author WFF
      */

@@ -348,6 +348,24 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
     }
 
     /**
+     * @return
+     * @since 2.1.9
+     * @author WFF
+     */
+    public String getJsFilterFunctionBody() {
+        return jsFilterFunctionBody;
+    }
+
+    /**
+     * @return
+     * @since 2.1.9
+     * @author WFF
+     */
+    public String getJsPreFunctionBody() {
+        return jsPreFunctionBody;
+    }
+
+    /**
      * Sets the post function body JavaScript.
      *
      * @param jsPostFunctionBody
@@ -355,6 +373,30 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      * @author WFF
      */
     public void setJsPostFunctionBody(final String jsPostFunctionBody) {
+        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod,
+                jsFilterFunctionBody, jsPostFunctionBody);
+    }
+
+    /**
+     * Sets the pre function body JavaScript.
+     *
+     * @param jsPreFunctionBody
+     * @since 2.1.9
+     * @author WFF
+     */
+    public void setJsPreFunctionBody(final String jsPreFunctionBody) {
+        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod,
+                jsFilterFunctionBody, jsPostFunctionBody);
+    }
+
+    /**
+     * Sets the filter function body JavaScript.
+     *
+     * @param jsFilterFunctionBody
+     * @since 2.1.9
+     * @author WFF
+     */
+    public void setJsFilterFunctionBody(final String jsFilterFunctionBody) {
         setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod,
                 jsFilterFunctionBody, jsPostFunctionBody);
     }

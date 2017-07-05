@@ -44,6 +44,8 @@ import com.webfirmframework.wffweb.tag.html.attribute.Checked;
 import com.webfirmframework.wffweb.tag.html.attribute.CoOrds;
 import com.webfirmframework.wffweb.tag.html.attribute.ColSpan;
 import com.webfirmframework.wffweb.tag.html.attribute.Cols;
+import com.webfirmframework.wffweb.tag.html.attribute.Defer;
+import com.webfirmframework.wffweb.tag.html.attribute.DirName;
 import com.webfirmframework.wffweb.tag.html.attribute.Disabled;
 import com.webfirmframework.wffweb.tag.html.attribute.EncType;
 import com.webfirmframework.wffweb.tag.html.attribute.Face;
@@ -169,21 +171,28 @@ import com.webfirmframework.wffweb.tag.html.html5.attribute.AutoPlay;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Content;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Controls;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.DateTime;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.Default;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Download;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.FormAction;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.FormEncType;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.FormMethod;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.FormNoValidate;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.High;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Loop;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.Low;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Max;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Media;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Min;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Multiple;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Muted;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.Open;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.Optimum;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Pattern;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Placeholder;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.Poster;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Preload;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Required;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.Reversed;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Sizes;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.SrcSet;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Step;
@@ -596,6 +605,24 @@ public class AttributeRegistry {
                 OnMouseOver.class.getSimpleName());
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONRESIZE,
                 OnResize.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.OPEN,
+                Open.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.OPTIMUM,
+                Optimum.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.DEFER,
+                Defer.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.DEFAULT,
+                Default.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.DIRNAME,
+                DirName.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.HIGH,
+                High.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.LOW,
+                Low.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.REVERSED,
+                Reversed.class.getSimpleName());
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.POSTER,
+                Poster.class.getSimpleName());
 
         attributeNames = new ArrayList<>(initialCapacity);
         attributeNamesSet = new HashSet<>(initialCapacity);

@@ -361,6 +361,24 @@ public class AttributeNameConstants {
 
     public static final String ONRESIZE = "onresize";
 
+    public static final String OPEN = "open";
+
+    public static final String OPTIMUM = "optimum";
+
+    public static final String DEFER = "defer";
+
+    public static final String DEFAULT = "default";
+
+    public static final String DIRNAME = "dirname";
+
+    public static final String HIGH = "high";
+
+    public static final String LOW = "low";
+
+    public static final String REVERSED = "reversed";
+
+    public static final String POSTER = "poster";
+
     /**
      *
      * @author WFF

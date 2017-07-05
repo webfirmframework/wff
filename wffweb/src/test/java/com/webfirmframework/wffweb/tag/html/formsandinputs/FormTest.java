@@ -22,6 +22,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.tag.html.attribute.Name;
+import com.webfirmframework.wffweb.tag.html.attribute.Type;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 
 @SuppressWarnings("serial")
@@ -99,13 +100,16 @@ public class FormTest {
                 new Div(this){{new Input(this, new Name("name4"));}};
                 new Div(this){{new Input(this, new Name("name4"));}};
                 new Div(this){{new Input(this, new Name("name4"));}};
+                new Div(this){{new Input(this, new Name("name5"), new Type(Type.TEXT));}};
+                new Div(this){{new Input(this, new Name("name6"), new Type(Type.CHECKBOX));}};
+                new Div(this){{new Input(this, new Name("name7"), new Type(Type.RADIO));}};
                 new TextArea(this, new Name("included"));
             }
         };
         
         final String jsObjectForNames = form.getNameBasedJsObject();
         
-        Assert.assertEquals("{name1:name1.value,name3:name3.value,included:included.value,name4:name4.value,name2:name2.value}", jsObjectForNames);
+        Assert.assertEquals("{name1:name1.value,name3:name3.value,included:included.value,name7:name7.checked,name6:name6.checked,name5:name5.value,name4:name4.value,name2:name2.value}", jsObjectForNames);
         
     }
 

@@ -225,9 +225,9 @@ public class WffBinaryMessageUtilTest {
         
         final long totalMillisTakenForWffBinaryMessage = afterMillis - beforeMillis;
         
-        if (totalMillisTakenForWffBinaryMessage > 100) {
+        if (totalMillisTakenForWffBinaryMessage > 125) {
            fail(testName.getMethodName() + " took "
-                    + totalMillisTakenForWffBinaryMessage + " ms, maximum 100mx is allowed");
+                    + totalMillisTakenForWffBinaryMessage + " ms, maximum 125mx is allowed");
         } else {
             System.out.println(testName.getMethodName() + " took just "
                     + totalMillisTakenForWffBinaryMessage + " ms for building and parsing "
