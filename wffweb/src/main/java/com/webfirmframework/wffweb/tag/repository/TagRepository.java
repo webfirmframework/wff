@@ -432,7 +432,9 @@ public class TagRepository extends AbstractHtmlRepository
      * Finds tags by attribute instance.
      *
      * @param attribute
-     * @return all tags having the given attribute instance.
+     * @return all tags which are consuming the given attribute instance. It
+     *         returns the only tags consuming the given attribute object which
+     *         are available in browserPage.
      * @throws NullValueException
      *             if the {@code attribute} is null
      * @since 2.1.8
@@ -460,7 +462,9 @@ public class TagRepository extends AbstractHtmlRepository
      * Finds one tag by attribute instance.
      *
      * @param attribute
-     * @return the first matching tag having the given attribute instance.
+     * @return the first matching tag consuming the given attribute instance.
+     *         There must be a consuming tag which is available in the
+     *         browserPage instance otherwise returns null.
      * @throws NullValueException
      *             if the {@code attribute } is null
      * @since 2.1.8
@@ -468,36 +472,18 @@ public class TagRepository extends AbstractHtmlRepository
      */
     public AbstractHtml findOneTagByAttribute(
             final AbstractAttribute attribute) {
-        return findOneTagByAttribute(attribute, rootTags);
-    }
-
-    private AbstractHtml findOneTagByAttribute(
-            final AbstractAttribute attribute, final AbstractHtml[] fromTags) {
 
         if (attribute == null) {
             throw new NullValueException("attribute cannot be null");
         }
 
-        final AbstractHtml[] matchingTag = new AbstractHtml[1];
-
-        loopThroughAllNestedChildren(new NestedChild() {
-
-            @Override
-            public boolean eachChild(final AbstractHtml child) {
-
-                final AbstractAttribute attributeByName = child
-                        .getAttributeByName(attribute.getAttributeName());
-
-                if (attribute.equals(attributeByName)) {
-                    matchingTag[0] = child;
-                    return false;
-                }
-
-                return true;
+        for (final AbstractHtml ownerTag : attribute.getOwnerTags()) {
+            if (browserPage.contains(ownerTag)) {
+                return ownerTag;
             }
-        }, true, fromTags);
+        }
 
-        return matchingTag[0];
+        return null;
     }
 
     /**

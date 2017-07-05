@@ -347,10 +347,20 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
         return jsPostFunctionBody;
     }
 
+    /**
+     * @return
+     * @since 2.1.9
+     * @author WFF
+     */
     public String getJsFilterFunctionBody() {
         return jsFilterFunctionBody;
     }
 
+    /**
+     * @return
+     * @since 2.1.9
+     * @author WFF
+     */
     public String getJsPreFunctionBody() {
         return jsPreFunctionBody;
     }
