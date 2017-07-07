@@ -40,7 +40,7 @@ var WffBMArray = function(jsArray, outer) {
 
 		console.log('outer yes', outer);
 
-		if (outer === undefined || outer) {
+		if (typeof outer === 'undefined' || outer) {
 			console.log('added outer ');
 
 			// nameValue for representing object or array
@@ -130,7 +130,7 @@ var WffBMArray = function(jsArray, outer) {
 				}
 			} else if (arrayValType == 9) {
 				for (var i = 0; i < jsArray.length; i++) {
-					if (jsArray[i] === undefined || jsArray[i] == null) {
+					if (typeof jsArray[i] === 'undefined' || jsArray[i] == null) {
 						values.push([]);
 					} else {
 						values.push(new WffBMByteArray(jsArray[i], false)
@@ -170,7 +170,7 @@ var WffBMByteArray = function(int8Array, outer) {
 
 		console.log('outer yes', outer);
 
-		if (outer === undefined || outer) {
+		if (typeof outer === 'undefined' || outer) {
 			console.log('added outer ');
 
 			// nameValue for representing object or array
@@ -223,7 +223,7 @@ var WffBMObject = function(jsObject, outer) {
 
 		var nameValues = [];
 
-		if (outer === undefined || outer) {
+		if (typeof outer === 'undefined' || outer) {
 			// nameValue for representing object or array
 			var typeNameValue = {
 				name : [ 0 ],
@@ -324,7 +324,7 @@ var JsObjectFromBMBytes = function(wffBMBytes, outer) {
 	var nameValues = wffBMUtil.parseWffBinaryMessageBytes(wffBMBytes);
 
 	var i = 0;
-	if (outer === undefined || outer) {
+	if (typeof outer === 'undefined' || outer) {
 		i = 1;
 	}
 
@@ -396,7 +396,7 @@ var JsArrayFromBMBytes = function(wffBMBytes, outer) {
 	var nameValues = wffBMUtil.parseWffBinaryMessageBytes(wffBMBytes);
 
 	var i = 0;
-	if (outer === undefined || outer) {
+	if (typeof outer === 'undefined' || outer) {
 		i = 1;
 	}
 
