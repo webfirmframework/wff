@@ -139,9 +139,9 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
                             toStringBuilder.delete(0, toStringBuilder.length());
                             for (final CssProperty cssProperty : this) {
                                 toStringBuilder.append(cssProperty.getCssName())
-                                        .append(":")
+                                        .append(':')
                                         .append(cssProperty.getCssValue())
-                                        .append(";");
+                                        .append(';');
                             }
                             setModified(false);
                         }
