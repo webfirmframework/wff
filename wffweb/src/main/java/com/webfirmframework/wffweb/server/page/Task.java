@@ -15,7 +15,10 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
-import com.webfirmframework.wffweb.server.page.js.WffJsFile;
+import java.util.Comparator;
+import java.util.Set;
+import java.util.TreeSet;
+
 import com.webfirmframework.wffweb.util.data.NameValue;
 
 /**
@@ -104,10 +107,13 @@ public enum Task {
 
     private static String jsObjectString;
 
+    // WffJsFile.PRODUCTION_MODE, there is bug while enabling this
+    private static final boolean SHORT_NAME_ENABLED = false;
+
     private Task() {
         valueByte = (byte) ordinal();
         shortName = "T".concat(String.valueOf(ordinal()));
-        jsNameValue = WffJsFile.PRODUCTION_MODE
+        jsNameValue = SHORT_NAME_ENABLED
                 ? shortName.concat(":").concat(String.valueOf(ordinal()))
                 : name().concat(":").concat(String.valueOf(ordinal()));
     }
@@ -188,6 +194,42 @@ public enum Task {
      */
     public String getShortName() {
         return shortName;
+    }
+
+    /**
+     * @return the sorted set of tasks in the descending order of the name of
+     *         task length.
+     * @since 2.1.10
+     * @author WFF
+     */
+    public static Set<Task> getSortedTasks() {
+
+        final Set<Task> sortedTaskNames = new TreeSet<Task>(
+                new Comparator<Task>() {
+
+                    @Override
+                    public int compare(final Task o1, final Task o2) {
+                        // to sort the tasks in descending order of the length
+                        // of the
+                        // names
+                        if (o1.name().length() > o2.name().length()) {
+                            return -1;
+                        }
+                        if (o1.name().length() < o2.name().length()) {
+                            return 1;
+                        }
+                        if (o1.name().length() == o2.name().length()) {
+                            return 0;
+                        }
+                        return 0;
+                    }
+                });
+
+        for (final Task task : Task.values()) {
+            sortedTaskNames.add(task);
+        }
+
+        return sortedTaskNames;
     }
 
 }
