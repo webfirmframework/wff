@@ -96,10 +96,7 @@ public enum WffJsFile {
                     if (o1.length() < o2.length()) {
                         return 1;
                     }
-                    if (o1.length() == o2.length()) {
-                        return 0;
-                    }
-                    return 0;
+                    return -1;
                 }
             };
 
@@ -125,6 +122,7 @@ public enum WffJsFile {
             functionNames.add("wffRemovePrevBPInstance");
             functionNames.add("getWffIdFromWffIdBytes");
             functionNames.add("getWffIdFromWffIdBytes");
+            functionNames.add("extractEachValueBytes");
             functionNames.add("getWffIdBytesFromTag");
             functionNames.add("getWffIdBytesFromTag");
             functionNames.add("wffRemoveBPInstance");
@@ -134,11 +132,11 @@ public enum WffJsFile {
             functionNames.add("splitAttrNameValue");
             functionNames.add("getBytesFromDouble");
             functionNames.add("getStringFromBytes");
-            functionNames.add("splitAttrNameValue");
             functionNames.add("concatArrayValues");
             functionNames.add("getTaskNameValue");
             functionNames.add("getValueTypeByte");
             functionNames.add("onWffWindowClose");
+            functionNames.add("getValueTypeByte");
             functionNames.add("getIntFromBytes");
             functionNames.add("getBytesFromInt");
             functionNames.add("getTagByWffId");
@@ -149,25 +147,29 @@ public enum WffJsFile {
 
             variableNames.add("wffRemovePrevBPInstanceInvoked");
             variableNames.add("maxBytesLengthFromTotalBytes");
+            variableNames.add("totalNoOfBytesForAllValues");
             variableNames.add("maxBytesLengthForAllValues");
             variableNames.add("totalNoOfBytesForAllValues");
             variableNames.add("indexInWffBinaryMessage");
             variableNames.add("valueLengthBytesLength");
+            variableNames.add("nameLengthBytesLength");
             variableNames.add("wffBinaryMessageBytes");
             variableNames.add("maxNoValueLengthBytes");
             variableNames.add("attrNameAndValueBytes");
             variableNames.add("nameLengthBytesLength");
             variableNames.add("extractEachValueBytes");
+            variableNames.add("nameLengthBytesLength");
+            variableNames.add("maxNoNameLengthBytes");
             variableNames.add("nameValueCallbackFun");
             variableNames.add("superParentNameValue");
             variableNames.add("currentParentTagName");
             variableNames.add("maxValuesBytesLength");
             variableNames.add("maxNoNameLengthBytes");
             variableNames.add("parentOfExistingTag");
+            variableNames.add("maxNoOfValuesBytes");
             variableNames.add("wffInstanceIdBytes");
             variableNames.add("attrNameValueBytes");
             variableNames.add("currentParentWffId");
-            variableNames.add("maxNoOfValuesBytes");
             variableNames.add("callbackFunctions");
             variableNames.add("attrNameValueArry");
             variableNames.add("superParentValues");
@@ -179,11 +181,14 @@ public enum WffJsFile {
             variableNames.add("valueLengthBytes");
             variableNames.add("methodNameBytes");
             variableNames.add("valueLegthBytes");
+            variableNames.add("bmObjOrArrBytes");
+            variableNames.add("nameLengthBytes");
             variableNames.add("valuesToAppend");
             variableNames.add("parentDocIndex");
             variableNames.add("beforeTagWffId");
             variableNames.add("nameLegthBytes");
             variableNames.add("nodeValueBytes");
+            variableNames.add("nameLegthBytes");
             variableNames.add("callbackFunId");
             variableNames.add("fromByteArray");
             variableNames.add("applicableTag");
@@ -217,7 +222,6 @@ public enum WffJsFile {
             variableNames.add("nameValue");
             variableNames.add("nameBytes");
             variableNames.add("beforeTag");
-            variableNames.add("attrValue");
             variableNames.add("attrValue");
             variableNames.add("attrBytes");
             variableNames.add("htmlNodes");

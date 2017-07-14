@@ -218,10 +218,7 @@ public enum Task {
                         if (o1.name().length() < o2.name().length()) {
                             return 1;
                         }
-                        if (o1.name().length() == o2.name().length()) {
-                            return 0;
-                        }
-                        return 0;
+                        return -1;
                     }
                 });
 
