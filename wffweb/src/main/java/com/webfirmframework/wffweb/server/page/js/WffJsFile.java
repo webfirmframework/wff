@@ -296,6 +296,8 @@ public enum WffJsFile {
                 if (!line.isEmpty()) {
                     if (line.charAt(line.length() - 1) != ';') {
                         builder.append('\n');
+                    } else if (!PRODUCTION_MODE) {
+                        builder.append('\n');
                     }
                 }
             }
