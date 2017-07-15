@@ -113,7 +113,13 @@ var wffWS = new function() {
 	};
 
 	this.closeSocket = function() {
-		webSocket.close();
+		try {
+			if (typeof webSocket !== 'undefined' 
+				&& webSocket.readyState !== WebSocket.CONNECTING
+				&& webSocket.readyState !== WebSocket.CLOSED) {
+				webSocket.close();
+			}
+		} catch(e){}
 	};
 
 };

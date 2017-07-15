@@ -79,7 +79,7 @@ public enum WffJsFile {
 
     private static volatile int variableId = 0;
 
-    private static final String HEART_BEAT_JS = "setInterval(function(){try{wffWS.send([]);}catch(e){}},\"${HEARTBEAT_INTERVAL}\");";
+    private static final String HEART_BEAT_JS = "setInterval(function(){try{wffWS.send([]);}catch(e){wffWS.closeSocket();}},\"${HEARTBEAT_INTERVAL}\");";
 
     static {
 
