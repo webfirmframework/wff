@@ -18,8 +18,9 @@ package com.webfirmframework.wffweb.server.page.js;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.LinkedHashSet;
+import java.util.Comparator;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -78,14 +79,29 @@ public enum WffJsFile {
 
     private static volatile int variableId = 0;
 
-    private static final String HEART_BEAT_JS = "setInterval(function(){try{wffWS.send([]);}catch(e){}},\"${HEARTBEAT_INTERVAL}\");";
+    private static final String HEART_BEAT_JS = "setInterval(function(){try{wffWS.send([]);}catch(e){wffWS.closeSocket();}},\"${HEARTBEAT_INTERVAL}\");";
 
     static {
 
         if (PRODUCTION_MODE) {
 
-            functionNames = new LinkedHashSet<String>();
-            variableNames = new LinkedHashSet<String>();
+            final Comparator<String> descendingLehgth = new Comparator<String>() {
+
+                @Override
+                public int compare(final String o1, final String o2) {
+                    // to sort in descending order of the length of the names
+                    if (o1.length() > o2.length()) {
+                        return -1;
+                    }
+                    if (o1.length() < o2.length()) {
+                        return 1;
+                    }
+                    return -1;
+                }
+            };
+
+            functionNames = new TreeSet<String>(descendingLehgth);
+            variableNames = new TreeSet<String>(descendingLehgth);
 
             // should be in descending order of the value length
 
@@ -96,7 +112,6 @@ public enum WffJsFile {
             functionNames.add("parseWffBinaryMessageBytes");
             functionNames.add("getAttrUpdatedWffBMBytes");
             functionNames.add("getWffBinaryMessageBytes");
-            functionNames.add("getWffBinaryMessageBytes");
             functionNames.add("getIntFromOptimizedBytes");
             functionNames.add("getOptimizedBytesFromInt");
             functionNames.add("isWffWindowEventSupported");
@@ -104,11 +119,10 @@ public enum WffJsFile {
             functionNames.add("getTagDeletedWffBMBytes");
             functionNames.add("createTagFromWffBMBytes");
             functionNames.add("getTagCreatedWffBMBytes");
-            functionNames.add("getTagByTagNameAndWffId");
-            functionNames.add("createTagFromWffBMBytes");
             functionNames.add("wffRemovePrevBPInstance");
             functionNames.add("getWffIdFromWffIdBytes");
             functionNames.add("getWffIdFromWffIdBytes");
+            functionNames.add("extractEachValueBytes");
             functionNames.add("getWffIdBytesFromTag");
             functionNames.add("getWffIdBytesFromTag");
             functionNames.add("wffRemoveBPInstance");
@@ -118,11 +132,11 @@ public enum WffJsFile {
             functionNames.add("splitAttrNameValue");
             functionNames.add("getBytesFromDouble");
             functionNames.add("getStringFromBytes");
-            functionNames.add("splitAttrNameValue");
             functionNames.add("concatArrayValues");
             functionNames.add("getTaskNameValue");
             functionNames.add("getValueTypeByte");
             functionNames.add("onWffWindowClose");
+            functionNames.add("getValueTypeByte");
             functionNames.add("getIntFromBytes");
             functionNames.add("getBytesFromInt");
             functionNames.add("getTagByWffId");
@@ -133,25 +147,29 @@ public enum WffJsFile {
 
             variableNames.add("wffRemovePrevBPInstanceInvoked");
             variableNames.add("maxBytesLengthFromTotalBytes");
+            variableNames.add("totalNoOfBytesForAllValues");
             variableNames.add("maxBytesLengthForAllValues");
             variableNames.add("totalNoOfBytesForAllValues");
             variableNames.add("indexInWffBinaryMessage");
             variableNames.add("valueLengthBytesLength");
+            variableNames.add("nameLengthBytesLength");
             variableNames.add("wffBinaryMessageBytes");
             variableNames.add("maxNoValueLengthBytes");
             variableNames.add("attrNameAndValueBytes");
             variableNames.add("nameLengthBytesLength");
             variableNames.add("extractEachValueBytes");
+            variableNames.add("nameLengthBytesLength");
+            variableNames.add("maxNoNameLengthBytes");
             variableNames.add("nameValueCallbackFun");
             variableNames.add("superParentNameValue");
             variableNames.add("currentParentTagName");
             variableNames.add("maxValuesBytesLength");
             variableNames.add("maxNoNameLengthBytes");
             variableNames.add("parentOfExistingTag");
+            variableNames.add("maxNoOfValuesBytes");
             variableNames.add("wffInstanceIdBytes");
             variableNames.add("attrNameValueBytes");
             variableNames.add("currentParentWffId");
-            variableNames.add("maxNoOfValuesBytes");
             variableNames.add("callbackFunctions");
             variableNames.add("attrNameValueArry");
             variableNames.add("superParentValues");
@@ -163,11 +181,14 @@ public enum WffJsFile {
             variableNames.add("valueLengthBytes");
             variableNames.add("methodNameBytes");
             variableNames.add("valueLegthBytes");
+            variableNames.add("bmObjOrArrBytes");
+            variableNames.add("nameLengthBytes");
             variableNames.add("valuesToAppend");
             variableNames.add("parentDocIndex");
             variableNames.add("beforeTagWffId");
             variableNames.add("nameLegthBytes");
             variableNames.add("nodeValueBytes");
+            variableNames.add("nameLegthBytes");
             variableNames.add("callbackFunId");
             variableNames.add("fromByteArray");
             variableNames.add("applicableTag");
@@ -201,7 +222,6 @@ public enum WffJsFile {
             variableNames.add("nameValue");
             variableNames.add("nameBytes");
             variableNames.add("beforeTag");
-            variableNames.add("attrValue");
             variableNames.add("attrValue");
             variableNames.add("attrBytes");
             variableNames.add("htmlNodes");
@@ -274,7 +294,9 @@ public enum WffJsFile {
                 builder.append(line);
 
                 if (!line.isEmpty()) {
-                    if (!PRODUCTION_MODE) {
+                    if (line.charAt(line.length() - 1) != ';') {
+                        builder.append('\n');
+                    } else if (!PRODUCTION_MODE) {
                         builder.append('\n');
                     }
                 }
@@ -388,10 +410,11 @@ public enum WffJsFile {
                             "v" + (++variableId));
                 }
 
-                for (final Task task : Task.values()) {
-                    allOptimizedContent = allOptimizedContent
-                            .replace(task.name(), task.getShortName());
-                }
+                // there is bug while enabling this, also enable in Task
+                // for (final Task task : Task.getSortedTasks()) {
+                // allOptimizedContent = allOptimizedContent
+                // .replace(task.name(), task.getShortName());
+                // }
 
                 functionNames = null;
                 variableNames = null;
@@ -447,4 +470,5 @@ public enum WffJsFile {
 
                 ).append(allOptimizedContent);
     }
+
 }

@@ -186,7 +186,7 @@ var wffClientCRUDUtil = new function() {
 				var childTag = wffTagUtil.getTagByTagNameAndWffId(childTagName,
 						childWffId);
 
-				if (childTag !== undefined) {
+				if (typeof childTag !== 'undefined') {
 					var previousParent = childTag.parentNode;
 					console.log('childTag !== undefined', childTag);
 					previousParent.removeChild(childTag);

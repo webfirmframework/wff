@@ -185,7 +185,7 @@ var wffBMUtil = new function() {
 
 	/**
 	 * var array1 = [1]; var array2 = [2]; array1.concat(array2); will not work,
-	 * console.log(array1) will print [1]
+	 * console.log(array1); will print [1]
 	 */
 	var concatArrayValues = function(appendToArray, valuesToAppend) {
 		for (var a = 0; a < valuesToAppend.length; a++) {

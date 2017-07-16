@@ -9,7 +9,7 @@ var wffWS = new function() {
 	this.openSocket = function(wsUtl) {
 
 		// Ensures only one connection is open at a time
-		if (webSocket !== undefined
+		if (typeof webSocket !== 'undefined'
 				&& webSocket.readyState !== WebSocket.CLOSED 
 				&& webSocket.readyState !== WebSocket.CLOSING) {
 			console.log("WebSocket is already opened.");
@@ -26,7 +26,7 @@ var wffWS = new function() {
 			
 			wffBMClientEvents.wffRemovePrevBPInstance();
 
-			if (event.data === undefined) {
+			if (typeof event.data === 'undefined') {
 				return;
 			}
 
@@ -113,7 +113,13 @@ var wffWS = new function() {
 	};
 
 	this.closeSocket = function() {
-		webSocket.close();
+		try {
+			if (typeof webSocket !== 'undefined' 
+				&& webSocket.readyState !== WebSocket.CONNECTING
+				&& webSocket.readyState !== WebSocket.CLOSED) {
+				webSocket.close();
+			}
+		} catch(e){}
 	};
 
 };

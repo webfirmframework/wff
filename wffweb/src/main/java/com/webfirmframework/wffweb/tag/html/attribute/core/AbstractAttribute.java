@@ -35,9 +35,12 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     private static final Security ACCESS_OBJECT;
 
     private String attributeName;
+
     private String attributeValue;
-    private Map<String, String> attributeValueMap;
-    private Set<String> attributeValueSet;
+
+    private volatile Map<String, String> attributeValueMap;
+
+    private volatile Set<String> attributeValueSet;
 
     private transient Set<AbstractHtml> ownerTags;
 
@@ -45,7 +48,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
     // private AttributeValueChangeListener valueChangeListener;
 
-    private Set<AttributeValueChangeListener> valueChangeListeners;
+    private volatile Set<AttributeValueChangeListener> valueChangeListeners;
 
     private transient Charset charset = Charset.defaultCharset();
 
@@ -442,7 +445,11 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected Map<String, String> getAttributeValueMap() {
         if (attributeValueMap == null) {
-            setAttributeValueMap(new LinkedHashMap<String, String>());
+            synchronized (this) {
+                if (attributeValueMap == null) {
+                    setAttributeValueMap(new LinkedHashMap<String, String>());
+                }
+            }
         }
         return attributeValueMap;
     }
@@ -457,10 +464,10 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             final Map<String, String> attributeValueMap) {
 
         if (!Objects.equals(attributeValueMap, this.attributeValueMap)) {
+            this.attributeValueMap = attributeValueMap;
             setModified(true);
         }
 
-        this.attributeValueMap = attributeValueMap;
     }
 
     /**
@@ -719,7 +726,11 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected Set<String> getAttributeValueSet() {
         if (attributeValueSet == null) {
-            attributeValueSet = new LinkedHashSet<String>();
+            synchronized (this) {
+                if (attributeValueSet == null) {
+                    attributeValueSet = new LinkedHashSet<String>();
+                }
+            }
         }
         return attributeValueSet;
     }
@@ -732,9 +743,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected void setAttributeValueSet(final Set<String> attributeValueSet) {
         if (!Objects.equals(this.attributeValueSet, attributeValueSet)) {
+            this.attributeValueSet = attributeValueSet;
             setModified(true);
         }
-        this.attributeValueSet = attributeValueSet;
     }
 
     /**
@@ -881,7 +892,11 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     public void addValueChangeListener(
             final AttributeValueChangeListener valueChangeListener) {
         if (valueChangeListeners == null) {
-            valueChangeListeners = new TreeSet<AttributeValueChangeListener>();
+            synchronized (valueChangeListener) {
+                if (valueChangeListeners == null) {
+                    valueChangeListeners = new TreeSet<AttributeValueChangeListener>();
+                }
+            }
         }
 
         valueChangeListeners.add(valueChangeListener);
