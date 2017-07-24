@@ -199,6 +199,51 @@ public class TagRepository extends AbstractHtmlRepository
     }
 
     /**
+     * Finds and returns the collection of tags (including the nested tags)
+     * matching with the give tag name and value.
+     *
+     * @param tagName
+     *            the name of the tag.
+     * @param fromTags
+     *            from which the findings to be done.
+     * @return the collection of tags matching with the given tag name and
+     *         value.
+     * @throws NullValueException
+     *             if the {@code tagName} or {@code fromTags} is null
+     * @since 2.1.11
+     * @author WFF
+     */
+    public static Collection<AbstractHtml> findTagsByTagName(
+            final String tagName, final AbstractHtml... fromTags)
+            throws NullValueException {
+
+        if (tagName == null) {
+            throw new NullValueException("The tagName should not be null");
+        }
+
+        if (fromTags == null) {
+            throw new NullValueException("The fromTags should not be null");
+        }
+
+        final Collection<AbstractHtml> matchingTags = new HashSet<AbstractHtml>();
+
+        loopThroughAllNestedChildren(new NestedChild() {
+
+            @Override
+            public boolean eachChild(final AbstractHtml child) {
+
+                if (tagName.equals(child.getTagName())) {
+                    matchingTags.add(child);
+                }
+
+                return true;
+            }
+        }, true, fromTags);
+
+        return matchingTags;
+    }
+
+    /**
      * Finds and returns the first (including the nested tags) matching with the
      * given attribute name and value.
      *
@@ -244,6 +289,50 @@ public class TagRepository extends AbstractHtmlRepository
 
                 if (attribute != null && attributeValue
                         .equals(attribute.getAttributeValue())) {
+                    matchingTag[0] = child;
+                    return false;
+                }
+
+                return true;
+            }
+        }, true, fromTags);
+
+        return matchingTag[0];
+    }
+
+    /**
+     * Finds and returns the first (including the nested tags) matching with the
+     * given tag name.
+     *
+     * @param tagName
+     *            the name of the tag.
+     * @param fromTags
+     *            from which the findings to be done.
+     * @return the first matching tag with the given tag name.
+     * @throws NullValueException
+     *             if the {@code tagName} or {@code fromTags} is null
+     * @since 2.1.11
+     * @author WFF
+     */
+    public static AbstractHtml findOneTagByTagName(final String tagName,
+            final AbstractHtml... fromTags) throws NullValueException {
+
+        if (tagName == null) {
+            throw new NullValueException("The tagName should not be null");
+        }
+
+        if (fromTags == null) {
+            throw new NullValueException("The fromTags should not be null");
+        }
+
+        final AbstractHtml[] matchingTag = new AbstractHtml[1];
+
+        loopThroughAllNestedChildren(new NestedChild() {
+
+            @Override
+            public boolean eachChild(final AbstractHtml child) {
+
+                if (tagName.equals(child.getTagName())) {
                     matchingTag[0] = child;
                     return false;
                 }
@@ -392,6 +481,24 @@ public class TagRepository extends AbstractHtmlRepository
     }
 
     /**
+     * Finds and returns the collection of tags (including the nested tags)
+     * matching with the give tag name and value.
+     *
+     * @param tagName
+     *            the name of the tag.
+     * @return the collection of tags matching with the given tag name and
+     *         value.
+     * @throws NullValueException
+     *             if the {@code tagName} or {@code fromTags} is null
+     * @since 2.1.11
+     * @author WFF
+     */
+    public Collection<AbstractHtml> findTagsByTagName(final String tagName)
+            throws NullValueException {
+        return findTagsByTagName(tagName, rootTags);
+    }
+
+    /**
      * Finds and returns the first (including the nested tags) matching with the
      * given attribute name and value.
      *
@@ -409,6 +516,23 @@ public class TagRepository extends AbstractHtmlRepository
     public AbstractHtml findOneTagByAttribute(final String attributeName,
             final String attributeValue) throws NullValueException {
         return findOneTagByAttribute(attributeName, attributeValue, rootTags);
+    }
+
+    /**
+     * Finds and returns the first (including the nested tags) matching with the
+     * given tag name.
+     *
+     * @param tagName
+     *            the name of the tag.
+     * @return the first matching tag with the given tag name.
+     * @throws NullValueException
+     *             if the {@code tagName is null
+     * @since 2.1.11
+     * @author WFF
+     */
+    public AbstractHtml findOneTagByTagName(final String tagName)
+            throws NullValueException {
+        return findOneTagByTagName(tagName, rootTags);
     }
 
     /**

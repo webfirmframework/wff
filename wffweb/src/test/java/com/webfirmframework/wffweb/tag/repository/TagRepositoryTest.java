@@ -15,16 +15,25 @@
  */
 package com.webfirmframework.wffweb.tag.repository;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.Assert;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.Body;
+import com.webfirmframework.wffweb.tag.html.Html;
+import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.Name;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.Form;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.Input;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.TextArea;
+import com.webfirmframework.wffweb.tag.html.metainfo.Head;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
+import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 
 @SuppressWarnings("serial")
 public class TagRepositoryTest {
@@ -67,6 +76,58 @@ public class TagRepositoryTest {
         Assert.assertEquals(input44, found2);
         Assert.assertEquals("id44", ((Id) found2.getAttributeByName("id")).getValue());
         
+        
+    }
+    
+    @Test
+    public void testFindTagsByTagName() {
+        final Set<Div> divs = new HashSet<Div>();
+        
+        final Form form = new Form(null) {
+            {
+                new Input(this, new Name("name1"));
+                Div d1 = new Div(this, new Name("excluded")){{
+                    new Input(this, new Name("name2"));
+                    }};
+                    divs.add(d1);
+                new Input(this, new Name("name3"));
+                Div d2 = new Div(this){{new Input(this, new Name("name4"));}};
+                divs.add(d2);
+                Div d3 = new Div(this){{new Input(this, new Id("id4"));}};
+                divs.add(d3);
+                Div d4 = new Div(this){{new Input(this, new Name("name4"));}};
+                divs.add(d4);
+                new TextArea(this, new Name("included"));
+            }
+        };
+        
+        
+        Assert.assertEquals(form, TagRepository.findOneTagByTagName(TagNameConstants.FORM, form));
+        Assert.assertEquals("div", TagRepository.findOneTagByTagName(TagNameConstants.DIV, form).getTagName());
+        
+        final Collection<AbstractHtml> tagsByTagName = TagRepository.findTagsByTagName(TagNameConstants.DIV, form);
+        Assert.assertTrue(tagsByTagName.size() == divs.size());
+        
+        for (Div div : divs) {
+            Assert.assertTrue(tagsByTagName.contains(div));
+        }
+        
+        
+        final AbstractHtml[] tags = new AbstractHtml[1];
+        
+        Html html = new Html(null) {{
+            new Head(this);
+            new Body(this) {{
+                tags[0] = this;
+                    new Div(this) {{
+                            new NoTag(this, "\nsamplediv ");
+                            new Div(this);
+                    }};
+            }};
+        }};
+        
+        Assert.assertEquals(tags[0], TagRepository.findOneTagByTagName(TagNameConstants.BODY, html));
+        Assert.assertEquals("div", TagRepository.findOneTagByTagName(TagNameConstants.DIV, html).getTagName());
         
     }
 
