@@ -200,14 +200,13 @@ public class TagRepository extends AbstractHtmlRepository
 
     /**
      * Finds and returns the collection of tags (including the nested tags)
-     * matching with the give tag name and value.
+     * matching with the give tag name.
      *
      * @param tagName
      *            the name of the tag.
      * @param fromTags
      *            from which the findings to be done.
-     * @return the collection of tags matching with the given tag name and
-     *         value.
+     * @return the collection of tags matching with the given tag name .
      * @throws NullValueException
      *             if the {@code tagName} or {@code fromTags} is null
      * @since 2.1.11
@@ -241,6 +240,55 @@ public class TagRepository extends AbstractHtmlRepository
         }, true, fromTags);
 
         return matchingTags;
+    }
+
+    /**
+     * Finds and returns the collection of attributes (including from nested
+     * tags) of the tags matching with the give tag name.
+     *
+     * @param tagName
+     *            the name of the tag.
+     * @param fromTags
+     *            from which the findings to be done.
+     * @return the collection of attributes of the tags matching with the given
+     *         tag name.
+     * @throws NullValueException
+     *             if the {@code tagName} or {@code fromTags} is null
+     * @since 2.1.11
+     * @author WFF
+     */
+    public static Collection<AbstractAttribute> findAttributesByTagName(
+            final String tagName, final AbstractHtml... fromTags)
+            throws NullValueException {
+
+        if (tagName == null) {
+            throw new NullValueException("The tagName should not be null");
+        }
+
+        if (fromTags == null) {
+            throw new NullValueException("The fromTags should not be null");
+        }
+
+        final Collection<AbstractAttribute> matchingAttributes = new HashSet<AbstractAttribute>();
+
+        loopThroughAllNestedChildren(new NestedChild() {
+
+            @Override
+            public boolean eachChild(final AbstractHtml child) {
+
+                if (tagName.equals(child.getTagName())) {
+                    final Collection<AbstractAttribute> attributes = child
+                            .getAttributes();
+                    if (attributes != null) {
+                        matchingAttributes.addAll(attributes);
+                    }
+                }
+
+                return true;
+            }
+        }, true, fromTags);
+
+        return matchingAttributes;
     }
 
     /**
@@ -496,6 +544,24 @@ public class TagRepository extends AbstractHtmlRepository
     public Collection<AbstractHtml> findTagsByTagName(final String tagName)
             throws NullValueException {
         return findTagsByTagName(tagName, rootTags);
+    }
+
+    /**
+     * Finds and returns the collection of attributes (including from nested
+     * tags) of the tags matching with the give tag name.
+     *
+     * @param tagName
+     *            the name of the tag.
+     * @return the collection of attributes of the tags matching with the given
+     *         tag name.
+     * @throws NullValueException
+     *             if the {@code tagName} or {@code fromTags} is null
+     * @since 2.1.11
+     * @author WFF
+     */
+    public Collection<AbstractAttribute> findAttributesByTagName(
+            final String tagName) throws NullValueException {
+        return findAttributesByTagName(tagName, rootTags);
     }
 
     /**

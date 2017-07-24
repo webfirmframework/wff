@@ -27,6 +27,7 @@ import com.webfirmframework.wffweb.tag.html.Body;
 import com.webfirmframework.wffweb.tag.html.Html;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.Name;
+import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.Form;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.Input;
@@ -128,6 +129,38 @@ public class TagRepositoryTest {
         
         Assert.assertEquals(tags[0], TagRepository.findOneTagByTagName(TagNameConstants.BODY, html));
         Assert.assertEquals("div", TagRepository.findOneTagByTagName(TagNameConstants.DIV, html).getTagName());
+        
+    }
+    
+    @Test
+    public void testFindAttributesByTagName() {
+        
+        
+        final Set<AbstractAttribute> attributes = new HashSet<AbstractAttribute>();
+        
+        final Id idTwo = new Id("two");
+        final Name name = new Name("name");
+        
+        attributes.add(idTwo);
+        attributes.add(name);
+        
+        
+        Html html = new Html(null) {{
+            new Head(this);
+            new Body(this, new Id("one")) {{
+                new Div(this, idTwo, name) {{
+                    new NoTag(this, "\nsamplediv ");
+                    new Div(this);
+                }};
+            }};
+        }};
+        
+        final Collection<AbstractAttribute> attributesByTagName = TagRepository.findAttributesByTagName(TagNameConstants.DIV, html);
+        Assert.assertTrue(attributesByTagName.size() == attributes.size());
+        
+        for (AbstractAttribute attr : attributes) {
+            Assert.assertTrue(attributesByTagName.contains(attr));
+        }
         
     }
 
