@@ -382,5 +382,49 @@ public class AbstractHtmlTest {
         System.out.println(parentDiv.toHtmlString());
         
     }
+    
+    @Test
+    public void testGetRootTag() {
+
+        Div div1 = new Div(null);
+        Div div2 = new Div(div1);
+        Div div3 = new Div(div2);
+        Div div4 = new Div(div3);
+        Div div5 = new Div(null);
+        Div div6 = new Div(null);
+        Div div7 = new Div(null);
+        Div div8 = new Div(null);
+        Div div9 = new Div(null);
+        Div div10 = new Div(null);
+        
+        div5.appendChild(div6);
+        
+        div4.appendChild(div5);
+        
+        div7.addInnerHtmls(div8, div9, div10);
+        
+        div6.addInnerHtml(div7);
+
+        assertEquals(div1, div4.getRootTag());
+
+        assertEquals(div1, div3.getRootTag());
+
+        assertEquals(div1, div2.getRootTag());
+
+        assertEquals(div1, div1.getRootTag());
+        
+        assertEquals(div1, div5.getRootTag());
+        
+        assertEquals(div1, div6.getRootTag());
+        
+        assertEquals(div1, div7.getRootTag());
+        
+        assertEquals(div1, div8.getRootTag());
+        
+        assertEquals(div1, div9.getRootTag());
+        
+        assertEquals(div1, div10.getRootTag());
+
+    }
 
 }

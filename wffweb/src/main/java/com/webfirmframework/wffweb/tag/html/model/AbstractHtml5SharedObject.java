@@ -81,6 +81,12 @@ public class AbstractHtml5SharedObject implements Serializable {
 
     private volatile boolean dataWffIdSecondCycle;
 
+    private final AbstractHtml rootTag;
+
+    public AbstractHtml5SharedObject(final AbstractHtml rootTag) {
+        this.rootTag = rootTag;
+    }
+
     /**
      * @return unique data-wff-id attribute
      * @since 2.0.0
@@ -507,6 +513,15 @@ public class AbstractHtml5SharedObject implements Serializable {
         }
 
         return wffBMDataUpdateListener;
+    }
+
+    /**
+     * @return the rootTag set through the constructor.
+     * @since 2.1.11
+     * @author WFF
+     */
+    public AbstractHtml getRootTag() {
+        return rootTag;
     }
 
 }

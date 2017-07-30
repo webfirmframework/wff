@@ -174,7 +174,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             // parent = base;
             // sharedObject = base.sharedObject;
         } else {
-            sharedObject = new AbstractHtml5SharedObject();
+            sharedObject = new AbstractHtml5SharedObject(this);
         }
         // this.children.addAll(children);
         for (final AbstractHtml child : children) {
@@ -204,7 +204,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             // parent = base;
             // sharedObject = base.sharedObject;
         } else {
-            sharedObject = new AbstractHtml5SharedObject();
+            sharedObject = new AbstractHtml5SharedObject(this);
         }
         setRebuild(true);
 
@@ -240,7 +240,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             // parent = base;
             // sharedObject = base.sharedObject;
         } else {
-            sharedObject = new AbstractHtml5SharedObject();
+            sharedObject = new AbstractHtml5SharedObject(this);
         }
 
         // childAppended(parent, this);
@@ -889,7 +889,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             // parent = base;
             // sharedObject = base.sharedObject;
         } else {
-            sharedObject = new AbstractHtml5SharedObject();
+            sharedObject = new AbstractHtml5SharedObject(this);
         }
     }
 
@@ -1927,7 +1927,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             final AbstractHtml abstractHtml) {
 
         abstractHtml.parent = null;
-        abstractHtml.sharedObject = new AbstractHtml5SharedObject();
+        abstractHtml.sharedObject = new AbstractHtml5SharedObject(abstractHtml);
 
         final Deque<Set<AbstractHtml>> removedTagsStack = new ArrayDeque<Set<AbstractHtml>>();
         removedTagsStack
@@ -2450,5 +2450,17 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     public Map<String, WffBMData> getWffObjects() {
         return Collections.unmodifiableMap(wffBMDatas);
+    }
+
+    /**
+     * Gets the root level tag of this tag.
+     *
+     * @return the root parent tag or the current tag if there is no parent for
+     *         the given tag
+     * @since 2.1.11
+     * @author WFF
+     */
+    public AbstractHtml getRootTag() {
+        return sharedObject.getRootTag();
     }
 }
