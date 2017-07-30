@@ -424,6 +424,14 @@ public class AbstractHtmlTest {
         assertEquals(div1, div9.getRootTag());
         
         assertEquals(div1, div10.getRootTag());
+        
+        div6.removeAllChildren();
+
+        assertEquals(div7, div7.getRootTag());
+        
+        div6.getParent().removeChild(div6);
+        
+        assertEquals(div6, div6.getRootTag());
 
     }
 
