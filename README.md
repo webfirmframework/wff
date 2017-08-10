@@ -10,7 +10,7 @@
 wffweb is one of the modules of webfirmframework. It's an open source java framework for real time application development which can generate html5 and css3 from java code, [read more...](https://webfirmframework.github.io/)
 
 
-To support us please dontate anything to the author of this framework!
+To support us please donate anything you wish to the author of this framework!
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](http://webfirmframework.com/donate)
 
