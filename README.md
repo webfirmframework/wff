@@ -4,8 +4,16 @@
 [![javadoc](https://img.shields.io/:wffweb-javadoc-blue.svg)](https://webfirmframework.github.io/wffweb/wffweb-javadoc)
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](http://www.apache.org/licenses/LICENSE-2.0)
 
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](http://webfirmframework.com/donate)
+
 # wffweb
 wffweb is one of the modules of webfirmframework. It's an open source java framework for real time application development which can generate html5 and css3 from java code, [read more...](https://webfirmframework.github.io/)
+
+
+To support us please dontate anything to the author of this framework!
+
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](http://webfirmframework.com/donate)
+
 
 #### [Register in wff hub for template reference and more!](http://hub.webfirmframework.com). It's built by wffweb-2.x.x
 #### [check out wffweb-2.x.x main features](https://www.youtube.com/watch?v=UWoNliHOy6A)
