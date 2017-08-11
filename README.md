@@ -3,7 +3,7 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.webfirmframework/wffweb/badge.svg)](http://search.maven.org/#artifactdetails%7Ccom.webfirmframework%7Cwffweb%7C2.1.10%7Cjar)
 [![javadoc](https://img.shields.io/:wffweb-javadoc-blue.svg)](https://webfirmframework.github.io/wffweb/wffweb-javadoc)
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](http://www.apache.org/licenses/LICENSE-2.0)
-[![twitter](https://img.shields.io/badge/twitter-@wffweb-blue.svg)](https://twitter.com/wffweb)
+[![twitter](https://img.shields.io/badge/twitter-@wffweb-blue.svg)](http://webfirmframework.com/twitter)
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](http://webfirmframework.com/donate)
 
