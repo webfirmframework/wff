@@ -149,22 +149,20 @@ Html html = new Html(null, new CustomAttribute("some", "val"), new Id("htmlId"),
 
 		int paragraphCount = 0;
 
-		Div contentDiv = new Div(this) {
-			{
+		Div contentDiv = new Div(this) {{
 
-				new H1(this) {
-					NoTag headerContent = new NoTag(this, "Web Firm Framework");
-				};
+			new H1(this) {{
+				new NoTag(this, "Web Firm Framework");
+			}};
 
-				for (paragraphCount = 1; paragraphCount < 4; paragraphCount++) {
-					new P(this, paragraphStyle) {
-						Blank paragraphContent = new Blank(this,
-								"Web Firm Framework Paragraph " + paragraphCount);
-					};
-				}
-
+			for (paragraphCount = 1; paragraphCount < 4; paragraphCount++) {
+				new P(this, paragraphStyle) {{
+					new NoTag(this,
+							"Web Firm Framework Paragraph " + paragraphCount);
+				}};
 			}
-		};
+
+		}};
 	};
 
 	new Div(this, new Hidden());
