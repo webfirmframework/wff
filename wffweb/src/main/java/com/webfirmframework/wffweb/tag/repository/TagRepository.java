@@ -402,7 +402,7 @@ public class TagRepository extends AbstractHtmlRepository
      * Html html = new Html(null) {{
      *      new Head(this) {{
      *          new TitleTag(this){{
-     *              new NoTag(null, "some title");
+     *              new NoTag(this, "some title");
      *          }};
      *      }};
      *      new Body(this, new Id("one")) {{
@@ -413,10 +413,12 @@ public class TagRepository extends AbstractHtmlRepository
      *  TitleTag titleTag = TagRepository.findOneTagAssignableToTagClass(TitleTag.class, html);
      *
      *  System.out.println(titleTag.getTagName());
+     *  System.out.println(titleTag.toHtmlString());
      *
      *  //prints
      *
      *  title
+     *  <title>some title</title>
      *
      * </code>
      * </pre>
@@ -682,7 +684,7 @@ public class TagRepository extends AbstractHtmlRepository
      * Html html = new Html(null) {{
      *      new Head(this) {{
      *          new TitleTag(this){{
-     *              new NoTag(null, "some title");
+     *              new NoTag(this, "some title");
      *          }};
      *      }};
      *      new Body(this, new Id("one")) {{
@@ -693,10 +695,12 @@ public class TagRepository extends AbstractHtmlRepository
      *  TitleTag titleTag = TagRepository.findOneTagAssignableToTagClass(TitleTag.class, html);
      *
      *  System.out.println(titleTag.getTagName());
+     *  System.out.println(titleTag.toHtmlString());
      *
      *  //prints
      *
      *  title
+     *  <title>some title</title>
      *
      * </code>
      * </pre>

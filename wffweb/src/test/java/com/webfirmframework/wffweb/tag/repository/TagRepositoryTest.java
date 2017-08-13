@@ -171,7 +171,7 @@ public class TagRepositoryTest {
         Html html = new Html(null) {{
             new Head(this) {{
                 new TitleTag(this){{
-                    new NoTag(null, "some title");
+                    new NoTag(this, "some title");
                 }};
             }};
             new Body(this, new Id("one")) {{
@@ -188,6 +188,8 @@ public class TagRepositoryTest {
         
         TitleTag titleTag = TagRepository.findOneTagAssignableToTag(TitleTag.class, html);
         Assert.assertNotNull(titleTag);
+        
+        Assert.assertEquals("<title>some title</title>", titleTag.toHtmlString());
         
         Body body = TagRepository.findOneTagAssignableToTag(Body.class, html);
         Assert.assertNotNull(body);
