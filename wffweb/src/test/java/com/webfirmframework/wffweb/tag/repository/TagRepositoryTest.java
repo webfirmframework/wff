@@ -26,6 +26,7 @@ import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.Body;
 import com.webfirmframework.wffweb.tag.html.Html;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
+import com.webfirmframework.wffweb.tag.html.TitleTag;
 import com.webfirmframework.wffweb.tag.html.attribute.Name;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
@@ -34,6 +35,7 @@ import com.webfirmframework.wffweb.tag.html.formsandinputs.Input;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.TextArea;
 import com.webfirmframework.wffweb.tag.html.metainfo.Head;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
+import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Span;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 
 @SuppressWarnings("serial")
@@ -161,6 +163,40 @@ public class TagRepositoryTest {
         for (AbstractAttribute attr : attributes) {
             Assert.assertTrue(attributesByTagName.contains(attr));
         }
+        
+    }
+    
+    @Test
+    public void testFindOneTagAssignableToTag() {
+        Html html = new Html(null) {{
+            new Head(this) {{
+                new TitleTag(this){{
+                    new NoTag(null, "some title");
+                }};
+            }};
+            new Body(this, new Id("one")) {{
+                new Div(this);
+            }};
+        }}; 
+        html.appendChild(new Div(null));
+        
+        AbstractHtml abstractHtml = TagRepository.findOneTagAssignableToTag(AbstractHtml.class, html);
+        Assert.assertNotNull(abstractHtml);
+        
+        Head head = TagRepository.findOneTagAssignableToTag(Head.class, html);
+        Assert.assertNotNull(head);
+        
+        TitleTag titleTag = TagRepository.findOneTagAssignableToTag(TitleTag.class, html);
+        Assert.assertNotNull(titleTag);
+        
+        Body body = TagRepository.findOneTagAssignableToTag(Body.class, html);
+        Assert.assertNotNull(body);
+        
+        Div div = TagRepository.findOneTagAssignableToTag(Div.class, html);
+        Assert.assertNotNull(div);
+        
+        Span span = TagRepository.findOneTagAssignableToTag(Span.class, html);
+        Assert.assertNull(span);
         
     }
 

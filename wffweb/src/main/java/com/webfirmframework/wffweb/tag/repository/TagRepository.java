@@ -393,6 +393,77 @@ public class TagRepository extends AbstractHtmlRepository
     }
 
     /**
+     * Finds and returns the first matching (including from nested tags) tag
+     * (which is assignable to the given tag class). <br>
+     * <br>
+     *
+     * <pre>
+     * <code>
+     * Html html = new Html(null) {{
+     *      new Head(this) {{
+     *          new TitleTag(this){{
+     *              new NoTag(null, "some title");
+     *          }};
+     *      }};
+     *      new Body(this, new Id("one")) {{
+     *          new Div(this);
+     *      }};
+     *  }};
+     *
+     *  TitleTag titleTag = TagRepository.findOneTagAssignableToTagClass(TitleTag.class, html);
+     *
+     *  System.out.println(titleTag.getTagName());
+     *
+     *  //prints
+     *
+     *  title
+     *
+     * </code>
+     * </pre>
+     *
+     * @param tagClass
+     *            the class of the tag.
+     * @param fromTags
+     *            from which the findings to be done.
+     * @return the first matching tag which is assignable to the given tag
+     *         class.
+     * @throws NullValueException
+     *             if the {@code tagClass} or {@code fromTags} is null
+     * @since 2.1.11
+     * @author WFF
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T findOneTagAssignableToTag(final Class<T> tagClass,
+            final AbstractHtml... fromTags) throws NullValueException {
+
+        if (tagClass == null) {
+            throw new NullValueException("The tagClass should not be null");
+        }
+
+        if (fromTags == null) {
+            throw new NullValueException("The fromTags should not be null");
+        }
+
+        final AbstractHtml[] matchingTag = new AbstractHtml[1];
+
+        loopThroughAllNestedChildren(new NestedChild() {
+
+            @Override
+            public boolean eachChild(final AbstractHtml child) {
+
+                if (tagClass.isAssignableFrom(child.getClass())) {
+                    matchingTag[0] = child;
+                    return false;
+                }
+
+                return true;
+            }
+        }, true, fromTags);
+
+        return (T) matchingTag[0];
+    }
+
+    /**
      * Finds and returns the first (including the nested tags) matching with the
      * given attribute name.
      *
@@ -599,6 +670,49 @@ public class TagRepository extends AbstractHtmlRepository
     public AbstractHtml findOneTagByTagName(final String tagName)
             throws NullValueException {
         return findOneTagByTagName(tagName, rootTags);
+    }
+
+    /**
+     * Finds and returns the first matching (including from nested tags) tag
+     * (which is assignable to the given tag class). <br>
+     * <br>
+     *
+     * <pre>
+     * <code>
+     * Html html = new Html(null) {{
+     *      new Head(this) {{
+     *          new TitleTag(this){{
+     *              new NoTag(null, "some title");
+     *          }};
+     *      }};
+     *      new Body(this, new Id("one")) {{
+     *          new Div(this);
+     *      }};
+     *  }};
+     *
+     *  TitleTag titleTag = TagRepository.findOneTagAssignableToTagClass(TitleTag.class, html);
+     *
+     *  System.out.println(titleTag.getTagName());
+     *
+     *  //prints
+     *
+     *  title
+     *
+     * </code>
+     * </pre>
+     *
+     * @param tagClass
+     *            the class of the tag.
+     * @return the first matching tag which is assignable to the given tag
+     *         class.
+     * @throws NullValueException
+     *             if the {@code tagClass} or {@code fromTags} is null
+     * @since 2.1.11
+     * @author WFF
+     */
+    public <T> T findOneTagAssignableToTag(final Class<T> tagClass)
+            throws NullValueException {
+        return findOneTagAssignableToTag(tagClass, rootTags);
     }
 
     /**
