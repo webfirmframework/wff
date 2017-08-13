@@ -23,6 +23,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.InvalidTagException;
+import com.webfirmframework.wffweb.WffSecurityException;
+import com.webfirmframework.wffweb.server.page.BrowserPage;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.Body;
 import com.webfirmframework.wffweb.tag.html.Html;
@@ -39,6 +41,9 @@ import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Span;
 import com.webfirmframework.wffweb.tag.htmlwff.Blank;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
+import com.webfirmframework.wffweb.wffbm.data.BMValueType;
+import com.webfirmframework.wffweb.wffbm.data.WffBMArray;
+import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
 
 @SuppressWarnings({ "serial", "deprecation" })
 public class TagRepositoryTest {
@@ -166,6 +171,185 @@ public class TagRepositoryTest {
             Assert.assertTrue(attributesByTagName.contains(attr));
         }
         
+    }
+    
+    @Test (expected = WffSecurityException.class)
+    public void testWffSecurityException() {
+        new TagRepository(null, null, new AbstractHtml[0]);
+    }
+    
+    @Test (expected = InvalidTagException.class)
+    public void testUpsertWffBMObjectInvalidTagException() {
+        BrowserPage browserPage = new BrowserPage() {
+            
+            @Override
+            public String webSocketUrl() {
+                return "wss://socketurl";
+            }
+            
+            @Override
+            public AbstractHtml render() {
+                Html html = new Html(null) {{
+                    new Head(this) {{
+                        new TitleTag(this){{
+                            new NoTag(this, "some title");
+                        }};
+                    }};
+                    new Body(this, new Id("one")) {{
+                        new Div(this);
+                    }};
+                }}; 
+                return html;
+            }
+        };
+        browserPage.toHtmlString();
+        TagRepository tagRepository = browserPage.getTagRepository();
+        tagRepository.upsert(new NoTag(null, "test"), "somekey", new WffBMObject());
+    }
+    
+    @Test (expected = InvalidTagException.class)
+    public void testUpsertWffBMArrayInvalidTagException() {
+        BrowserPage browserPage = new BrowserPage() {
+            
+            @Override
+            public String webSocketUrl() {
+                return "wss://socketurl";
+            }
+            
+            @Override
+            public AbstractHtml render() {
+                Html html = new Html(null) {{
+                    new Head(this) {{
+                        new TitleTag(this){{
+                            new NoTag(this, "some title");
+                        }};
+                    }};
+                    new Body(this, new Id("one")) {{
+                        new Div(this);
+                    }};
+                }}; 
+                return html;
+            }
+        };
+        browserPage.toHtmlString();
+        TagRepository tagRepository = browserPage.getTagRepository();
+        tagRepository.upsert(new NoTag(null, "test"), "somekey", new WffBMArray(BMValueType.STRING));
+    }
+    
+    @Test (expected = InvalidTagException.class)
+    public void testDeleteWffBMObjectOrArrayInvalidTagException() {
+        BrowserPage browserPage = new BrowserPage() {
+            
+            @Override
+            public String webSocketUrl() {
+                return "wss://socketurl";
+            }
+            
+            @Override
+            public AbstractHtml render() {
+                Html html = new Html(null) {{
+                    new Head(this) {{
+                        new TitleTag(this){{
+                            new NoTag(this, "some title");
+                        }};
+                    }};
+                    new Body(this, new Id("one")) {{
+                        new Div(this);
+                    }};
+                }}; 
+                return html;
+            }
+        };
+        browserPage.toHtmlString();
+        TagRepository tagRepository = browserPage.getTagRepository();
+        tagRepository.delete(new NoTag(null, "test"), "somekey");
+    }
+    
+    @Test (expected = InvalidTagException.class)
+    public void testUpsertWffBMObjectInvalidTagException1() {
+        BrowserPage browserPage = new BrowserPage() {
+            
+            @Override
+            public String webSocketUrl() {
+                return "wss://socketurl";
+            }
+            
+            @Override
+            public AbstractHtml render() {
+                Html html = new Html(null) {{
+                    new Head(this) {{
+                        new TitleTag(this){{
+                            new NoTag(this, "some title");
+                        }};
+                    }};
+                    new Body(this, new Id("one")) {{
+                        new Div(this);
+                    }};
+                }}; 
+                return html;
+            }
+        };
+        browserPage.toHtmlString();
+        TagRepository tagRepository = browserPage.getTagRepository();
+        tagRepository.upsert(new Blank(null, "test"), "somekey", new WffBMObject());
+    }
+    
+    @Test (expected = InvalidTagException.class)
+    public void testUpsertWffBMArrayInvalidTagException1() {
+        BrowserPage browserPage = new BrowserPage() {
+            
+            @Override
+            public String webSocketUrl() {
+                return "wss://socketurl";
+            }
+            
+            @Override
+            public AbstractHtml render() {
+                Html html = new Html(null) {{
+                    new Head(this) {{
+                        new TitleTag(this){{
+                            new NoTag(this, "some title");
+                        }};
+                    }};
+                    new Body(this, new Id("one")) {{
+                        new Div(this);
+                    }};
+                }}; 
+                return html;
+            }
+        };
+        browserPage.toHtmlString();
+        TagRepository tagRepository = browserPage.getTagRepository();
+        tagRepository.upsert(new Blank(null, "test"), "somekey", new WffBMArray(BMValueType.STRING));
+    }
+    
+    @Test (expected = InvalidTagException.class)
+    public void testDeleteWffBMObjectOrArrayInvalidTagException1() {
+        BrowserPage browserPage = new BrowserPage() {
+            
+            @Override
+            public String webSocketUrl() {
+                return "wss://socketurl";
+            }
+            
+            @Override
+            public AbstractHtml render() {
+                Html html = new Html(null) {{
+                    new Head(this) {{
+                        new TitleTag(this){{
+                            new NoTag(this, "some title");
+                        }};
+                    }};
+                    new Body(this, new Id("one")) {{
+                        new Div(this);
+                    }};
+                }}; 
+                return html;
+            }
+        };
+        browserPage.toHtmlString();
+        TagRepository tagRepository = browserPage.getTagRepository();
+        tagRepository.delete(new Blank(null, "test"), "somekey");
     }
     
     @Test
