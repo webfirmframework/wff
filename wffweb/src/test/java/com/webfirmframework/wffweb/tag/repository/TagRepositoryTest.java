@@ -37,9 +37,10 @@ import com.webfirmframework.wffweb.tag.html.formsandinputs.TextArea;
 import com.webfirmframework.wffweb.tag.html.metainfo.Head;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Span;
+import com.webfirmframework.wffweb.tag.htmlwff.Blank;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({ "serial", "deprecation" })
 public class TagRepositoryTest {
 
     @Test
@@ -220,6 +221,23 @@ public class TagRepositoryTest {
         TagRepository.findOneTagAssignableToTag(NoTag.class, html);
     }
     
+    @Test (expected = InvalidTagException.class)
+    public void testFindOneTagAssignableToTagThrowsInvalidTagException2() {
+        Html html = new Html(null) {{
+            new Head(this) {{
+                new TitleTag(this){{
+                    new NoTag(this, "some title");
+                }};
+            }};
+            new Body(this, new Id("one")) {{
+                new Div(this);
+            }};
+        }}; 
+        html.appendChild(new Div(null));
+        
+        TagRepository.findOneTagAssignableToTag(Blank.class, html);
+    }
+    
     @Test
     public void testFindTagsAssignableToTag() {
         Html html = new Html(null) {{
@@ -267,6 +285,22 @@ public class TagRepositoryTest {
         }};
         
         TagRepository.findTagsAssignableToTag(NoTag.class, html);
+    }
+    
+    @Test (expected = InvalidTagException.class)
+    public void testFindTagsAssignableToTagThrowsInvalidTagException2() {
+        Html html = new Html(null) {{
+            new Head(this) {{
+                new TitleTag(this){{
+                    new NoTag(this, "some title");
+                }};
+            }};
+            new Body(this, new Id("one")) {{
+                new Div(this);
+            }};
+        }};
+        
+        TagRepository.findTagsAssignableToTag(Blank.class, html);
     }
 
 }

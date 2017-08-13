@@ -444,9 +444,9 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The tagClass should not be null");
         }
 
-        if (tagClass == NoTag.class) {
+        if (NoTag.class.isAssignableFrom(tagClass)) {
             throw new InvalidTagException(
-                    "NoTag.class cannot be used to find tags as it's not a logical tag in behaviour.");
+                    "classes like NoTag.class cannot be used to find tags as it's not a logical tag in behaviour.");
         }
 
         if (fromTags == null) {
@@ -532,9 +532,9 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The tagClass should not be null");
         }
 
-        if (tagClass == NoTag.class) {
+        if (NoTag.class.isAssignableFrom(tagClass)) {
             throw new InvalidTagException(
-                    "NoTag.class cannot be used to find tags as it's not a logical tag in behaviour.");
+                    "classes like NoTag.class cannot be used to find tags as it's not a logical tag in behaviour.");
         }
 
         if (fromTags == null) {
