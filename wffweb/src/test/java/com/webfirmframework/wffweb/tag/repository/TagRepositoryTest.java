@@ -22,6 +22,7 @@ import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.webfirmframework.wffweb.InvalidTagException;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.Body;
 import com.webfirmframework.wffweb.tag.html.Html;
@@ -200,6 +201,72 @@ public class TagRepositoryTest {
         Span span = TagRepository.findOneTagAssignableToTag(Span.class, html);
         Assert.assertNull(span);
         
+    }
+    
+    @Test (expected = InvalidTagException.class)
+    public void testFindOneTagAssignableToTagThrowsIllegalArgumentException() {
+        Html html = new Html(null) {{
+            new Head(this) {{
+                new TitleTag(this){{
+                    new NoTag(this, "some title");
+                }};
+            }};
+            new Body(this, new Id("one")) {{
+                new Div(this);
+            }};
+        }}; 
+        html.appendChild(new Div(null));
+        
+        TagRepository.findOneTagAssignableToTag(NoTag.class, html);
+    }
+    
+    @Test
+    public void testFindTagsAssignableToTag() {
+        Html html = new Html(null) {{
+            new Head(this) {{
+                new TitleTag(this){{
+                    new NoTag(this, "some title");
+                }};
+            }};
+            new Body(this, new Id("one")) {{
+                new Div(this);
+                new Div(this) {{
+                    new Div(this) {{
+                        new Div(this);
+                    }};
+                }};
+                new Div(this);
+            }};
+        }}; 
+        
+        Collection<AbstractHtml> abstractHtmls = TagRepository.findTagsAssignableToTag(AbstractHtml.class, html);
+        Assert.assertNotNull(abstractHtmls);
+        Assert.assertEquals(9, abstractHtmls.size());
+        
+        Collection<Head> heads = TagRepository.findTagsAssignableToTag(Head.class, html);
+        Assert.assertNotNull(heads);
+        Assert.assertEquals(1, heads.size());
+        
+        Collection<Div> divs = TagRepository.findTagsAssignableToTag(Div.class, html);
+        Assert.assertNotNull(divs);
+        Assert.assertEquals(5, divs.size());
+        
+    }
+    
+    @Test (expected = InvalidTagException.class)
+    public void testFindTagsAssignableToTagThrowsIllegalArgumentException() {
+        Html html = new Html(null) {{
+            new Head(this) {{
+                new TitleTag(this){{
+                    new NoTag(this, "some title");
+                }};
+            }};
+            new Body(this, new Id("one")) {{
+                new Div(this);
+            }};
+        }};
+        
+        TagRepository.findTagsAssignableToTag(NoTag.class, html);
     }
 
 }

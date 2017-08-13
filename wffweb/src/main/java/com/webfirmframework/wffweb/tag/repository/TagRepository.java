@@ -29,7 +29,6 @@ import com.webfirmframework.wffweb.tag.html.AbstractHtmlRepository;
 import com.webfirmframework.wffweb.tag.html.NestedChild;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.htmlwff.Blank;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 import com.webfirmframework.wffweb.wffbm.data.WffBMArray;
 import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
@@ -431,15 +430,23 @@ public class TagRepository extends AbstractHtmlRepository
      *         class.
      * @throws NullValueException
      *             if the {@code tagClass} or {@code fromTags} is null
+     * @throws InvalidTagException
+     *             if the given tag class is NoTag.class
      * @since 2.1.11
      * @author WFF
      */
     @SuppressWarnings("unchecked")
     public static <T> T findOneTagAssignableToTag(final Class<T> tagClass,
-            final AbstractHtml... fromTags) throws NullValueException {
+            final AbstractHtml... fromTags)
+            throws NullValueException, InvalidTagException {
 
         if (tagClass == null) {
             throw new NullValueException("The tagClass should not be null");
+        }
+
+        if (tagClass == NoTag.class) {
+            throw new InvalidTagException(
+                    "NoTag.class cannot be used to find tags as it's not a logical tag in behaviour.");
         }
 
         if (fromTags == null) {
@@ -453,7 +460,8 @@ public class TagRepository extends AbstractHtmlRepository
             @Override
             public boolean eachChild(final AbstractHtml child) {
 
-                if (tagClass.isAssignableFrom(child.getClass())) {
+                if (tagClass.isAssignableFrom(child.getClass())
+                        && !NoTag.class.isAssignableFrom(child.getClass())) {
                     matchingTag[0] = child;
                     return false;
                 }
@@ -463,6 +471,93 @@ public class TagRepository extends AbstractHtmlRepository
         }, true, fromTags);
 
         return (T) matchingTag[0];
+    }
+
+    /**
+     * Finds and returns the all matching (including from nested tags) tags
+     * (which is assignable to the given tag class). <br>
+     * <br>
+     *
+     * <pre>
+     * <code>
+     * Html html = new Html(null) {{
+     *      new Head(this) {{
+     *          new TitleTag(this){{
+     *              new NoTag(this, "some title");
+     *          }};
+     *      }};
+     *      new Body(this, new Id("one")) {{
+     *          new Div(this);
+     *          new Div(this) {{
+     *              new Div(this) {{
+     *                  new Div(this);
+     *              }};
+     *          }};
+     *          new Div(this);
+     *      }};
+     *  }};
+     *
+     *  Collection<Head> heads = TagRepository.findTagsAssignableToTag(Head.class, html);
+     *  Collection<Div> divs = TagRepository.findTagsAssignableToTag(Div.class, html);
+     *
+     *  System.out.println(heads.size());
+     *  System.out.println(divs.size());
+     *
+     *  //prints
+     *
+     *  1
+     *  5
+     *
+     * </code>
+     * </pre>
+     *
+     * @param tagClass
+     *            the class of the tag.
+     * @param fromTags
+     *            from which the findings to be done.
+     * @return the all matching tags which is assignable to the given tag class.
+     * @throws NullValueException
+     *             if the {@code tagClass} or {@code fromTags} is null
+     * @throws InvalidTagException
+     *             if the given tag class is NoTag.class
+     * @since 2.1.11
+     * @author WFF
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> Collection<T> findTagsAssignableToTag(
+            final Class<T> tagClass, final AbstractHtml... fromTags)
+            throws NullValueException, InvalidTagException {
+
+        if (tagClass == null) {
+            throw new NullValueException("The tagClass should not be null");
+        }
+
+        if (tagClass == NoTag.class) {
+            throw new InvalidTagException(
+                    "NoTag.class cannot be used to find tags as it's not a logical tag in behaviour.");
+        }
+
+        if (fromTags == null) {
+            throw new NullValueException("The fromTags should not be null");
+        }
+
+        final Collection<AbstractHtml> matchingTags = new HashSet<AbstractHtml>();
+
+        loopThroughAllNestedChildren(new NestedChild() {
+
+            @Override
+            public boolean eachChild(final AbstractHtml child) {
+
+                if (tagClass.isAssignableFrom(child.getClass())
+                        && !NoTag.class.isAssignableFrom(child.getClass())) {
+                    matchingTags.add(child);
+                }
+
+                return true;
+            }
+        }, true, fromTags);
+
+        return (Collection<T>) matchingTags;
     }
 
     /**
@@ -720,6 +815,60 @@ public class TagRepository extends AbstractHtmlRepository
     }
 
     /**
+     * Finds and returns the all matching (including from nested tags) tags
+     * (which is assignable to the given tag class). <br>
+     * <br>
+     *
+     * <pre>
+     * <code>
+     * Html html = new Html(null) {{
+     *      new Head(this) {{
+     *          new TitleTag(this){{
+     *              new NoTag(this, "some title");
+     *          }};
+     *      }};
+     *      new Body(this, new Id("one")) {{
+     *          new Div(this);
+     *          new Div(this) {{
+     *              new Div(this) {{
+     *                  new Div(this);
+     *              }};
+     *          }};
+     *          new Div(this);
+     *      }};
+     *  }};
+     *
+     *  Collection<Head> heads = TagRepository.findTagsAssignableToTag(Head.class, html);
+     *  Collection<Div> divs = TagRepository.findTagsAssignableToTag(Div.class, html);
+     *
+     *  System.out.println(heads.size());
+     *  System.out.println(divs.size());
+     *
+     *  //prints
+     *
+     *  1
+     *  5
+     *
+     * </code>
+     * </pre>
+     *
+     * @param tagClass
+     *            the class of the tag.
+     * @return the all matching tags which is assignable to the given tag class.
+     * @throws NullValueException
+     *             if the {@code tagClass} or {@code fromTags} is null
+     * @throws InvalidTagException
+     *             if the given tag class is NoTag.class
+     * @since 2.1.11
+     * @author WFF
+     */
+    public <T> Collection<T> findTagsAssignableToTag(final Class<T> tagClass)
+            throws NullValueException, InvalidTagException {
+
+        return findTagsAssignableToTag(tagClass, rootTags);
+    }
+
+    /**
      * Finds and returns the first (including the nested tags) matching with the
      * given attribute name.
      *
@@ -818,7 +967,7 @@ public class TagRepository extends AbstractHtmlRepository
         if (tag == null) {
             throw new NullValueException("tag cannot be null");
         }
-        if (tag instanceof NoTag || tag instanceof Blank) {
+        if (tag instanceof NoTag) {
             throw new InvalidTagException(
                     "NoTag and Blank tag are not allowed to use");
         }
@@ -862,7 +1011,7 @@ public class TagRepository extends AbstractHtmlRepository
         if (tag == null) {
             throw new NullValueException("tag cannot be null");
         }
-        if (tag instanceof NoTag || tag instanceof Blank) {
+        if (tag instanceof NoTag) {
             throw new InvalidTagException(
                     "NoTag and Blank tag are not allowed to use");
         }
@@ -898,7 +1047,7 @@ public class TagRepository extends AbstractHtmlRepository
         if (tag == null) {
             throw new NullValueException("tag cannot be null");
         }
-        if (tag instanceof NoTag || tag instanceof Blank) {
+        if (tag instanceof NoTag) {
             throw new InvalidTagException(
                     "NoTag and Blank tag are not allowed to use");
         }
