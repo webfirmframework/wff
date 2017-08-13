@@ -864,7 +864,6 @@ public class TagRepository extends AbstractHtmlRepository
      */
     public <T> Collection<T> findTagsAssignableToTag(final Class<T> tagClass)
             throws NullValueException, InvalidTagException {
-
         return findTagsAssignableToTag(tagClass, rootTags);
     }
 

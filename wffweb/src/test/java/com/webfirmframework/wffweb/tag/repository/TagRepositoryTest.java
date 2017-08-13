@@ -204,7 +204,7 @@ public class TagRepositoryTest {
     }
     
     @Test (expected = InvalidTagException.class)
-    public void testFindOneTagAssignableToTagThrowsIllegalArgumentException() {
+    public void testFindOneTagAssignableToTagThrowsInvalidTagException() {
         Html html = new Html(null) {{
             new Head(this) {{
                 new TitleTag(this){{
@@ -254,7 +254,7 @@ public class TagRepositoryTest {
     }
     
     @Test (expected = InvalidTagException.class)
-    public void testFindTagsAssignableToTagThrowsIllegalArgumentException() {
+    public void testFindTagsAssignableToTagThrowsInvalidTagException() {
         Html html = new Html(null) {{
             new Head(this) {{
                 new TitleTag(this){{
