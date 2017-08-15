@@ -21,7 +21,8 @@ package com.webfirmframework.wffweb.css;
  * src: <i>URL</i>;
  * </pre>
  *
- * Required. Defines the URL(s) where the font should be downloaded from.
+ * Defines the URL(s) where the font needs to be downloaded from. This css
+ * property is applicable inside {@code @font-face} css selector.
  *
  * This {@code SrcCssProperty} is using {@link Src} css property. This class is
  * introduced to avoid conflicts with
@@ -33,10 +34,6 @@ package com.webfirmframework.wffweb.css;
 public class SrcCssProperty extends Src {
 
     private static final long serialVersionUID = 1_0_0L;
-
-    public SrcCssProperty() {
-        super();
-    }
 
     public SrcCssProperty(final String cssValue) {
         super(cssValue);
