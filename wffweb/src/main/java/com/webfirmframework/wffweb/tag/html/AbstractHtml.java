@@ -1668,7 +1668,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @author WFF
      */
     @Override
-    public AbstractHtml5SharedObject getSharedObject() {
+    public final AbstractHtml5SharedObject getSharedObject() {
         return sharedObject;
     }
 
