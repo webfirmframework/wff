@@ -436,8 +436,8 @@ public class TagRepository extends AbstractHtmlRepository
      * @author WFF
      */
     @SuppressWarnings("unchecked")
-    public static <T> T findOneTagAssignableToTag(final Class<T> tagClass,
-            final AbstractHtml... fromTags)
+    public static <T extends AbstractHtml> T findOneTagAssignableToTag(
+            final Class<T> tagClass, final AbstractHtml... fromTags)
             throws NullValueException, InvalidTagException {
 
         if (tagClass == null) {
@@ -524,7 +524,7 @@ public class TagRepository extends AbstractHtmlRepository
      * @author WFF
      */
     @SuppressWarnings("unchecked")
-    public static <T> Collection<T> findTagsAssignableToTag(
+    public static <T extends AbstractHtml> Collection<T> findTagsAssignableToTag(
             final Class<T> tagClass, final AbstractHtml... fromTags)
             throws NullValueException, InvalidTagException {
 
@@ -809,8 +809,8 @@ public class TagRepository extends AbstractHtmlRepository
      * @since 2.1.11
      * @author WFF
      */
-    public <T> T findOneTagAssignableToTag(final Class<T> tagClass)
-            throws NullValueException {
+    public <T extends AbstractHtml> T findOneTagAssignableToTag(
+            final Class<T> tagClass) throws NullValueException {
         return findOneTagAssignableToTag(tagClass, rootTags);
     }
 
@@ -862,7 +862,8 @@ public class TagRepository extends AbstractHtmlRepository
      * @since 2.1.11
      * @author WFF
      */
-    public <T> Collection<T> findTagsAssignableToTag(final Class<T> tagClass)
+    public <T extends AbstractHtml> Collection<T> findTagsAssignableToTag(
+            final Class<T> tagClass)
             throws NullValueException, InvalidTagException {
         return findTagsAssignableToTag(tagClass, rootTags);
     }

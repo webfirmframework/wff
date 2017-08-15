@@ -368,20 +368,25 @@ public class TagRepositoryTest {
         
         AbstractHtml abstractHtml = TagRepository.findOneTagAssignableToTag(AbstractHtml.class, html);
         Assert.assertNotNull(abstractHtml);
+        Assert.assertNotNull(abstractHtml.toHtmlString());
         
         Head head = TagRepository.findOneTagAssignableToTag(Head.class, html);
         Assert.assertNotNull(head);
+        Assert.assertNotNull(head.toHtmlString());
         
         TitleTag titleTag = TagRepository.findOneTagAssignableToTag(TitleTag.class, html);
         Assert.assertNotNull(titleTag);
+        Assert.assertNotNull(titleTag.toHtmlString());
         
         Assert.assertEquals("<title>some title</title>", titleTag.toHtmlString());
         
         Body body = TagRepository.findOneTagAssignableToTag(Body.class, html);
         Assert.assertNotNull(body);
+        Assert.assertNotNull(body.toHtmlString());
         
         Div div = TagRepository.findOneTagAssignableToTag(Div.class, html);
         Assert.assertNotNull(div);
+        Assert.assertNotNull(div.toHtmlString());
         
         Span span = TagRepository.findOneTagAssignableToTag(Span.class, html);
         Assert.assertNull(span);
@@ -444,14 +449,23 @@ public class TagRepositoryTest {
         Collection<AbstractHtml> abstractHtmls = TagRepository.findTagsAssignableToTag(AbstractHtml.class, html);
         Assert.assertNotNull(abstractHtmls);
         Assert.assertEquals(9, abstractHtmls.size());
+        for (AbstractHtml abstractHtml : abstractHtmls) {
+            Assert.assertNotNull(abstractHtml.toHtmlString());
+        }
         
         Collection<Head> heads = TagRepository.findTagsAssignableToTag(Head.class, html);
         Assert.assertNotNull(heads);
         Assert.assertEquals(1, heads.size());
+        for (Head each : heads) {
+            Assert.assertNotNull(each.toHtmlString());
+        }
         
         Collection<Div> divs = TagRepository.findTagsAssignableToTag(Div.class, html);
         Assert.assertNotNull(divs);
         Assert.assertEquals(5, divs.size());
+        for (Div each : divs) {
+            Assert.assertNotNull(each.toHtmlString());
+        }
         
     }
     
