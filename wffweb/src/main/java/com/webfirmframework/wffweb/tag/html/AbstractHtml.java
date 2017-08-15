@@ -2463,4 +2463,107 @@ public abstract class AbstractHtml extends AbstractJsObject {
     public AbstractHtml getRootTag() {
         return sharedObject.getRootTag();
     }
+
+    /**
+     * Gets the object which is accessible in all of this tag hierarchy. <br>
+     * <br>
+     * <br>
+     * Eg:-
+     *
+     * <pre>
+     * <code>
+     * Html html = new Html(null) {{
+     *      new Head(this) {{
+     *          new TitleTag(this){{
+     *              new NoTag(this, "some title");
+     *          }};
+     *      }};
+     *      new Body(this, new Id("one")) {{
+     *          new Div(this);
+     *      }};
+     *  }};
+     *
+     *  Div div = TagRepository.findOneTagAssignableToTag(Div.class, html);
+     *  Head head = TagRepository.findOneTagAssignableToTag(Head.class, html);
+     *
+     *  Object sharedData = "some object";
+     *
+     *  div.setSharedData(sharedData);
+     *
+     *  System.out.println(sharedData == head.getSharedData());
+     *
+     *  System.out.println(div.getSharedData() == head.getSharedData());
+     *
+     *  System.out.println(div.getSharedData().equals(head.getSharedData()));
+     *
+     *  //prints
+     *
+     *  true
+     *  true
+     *  true
+     *
+     * </code>
+     * </pre>
+     *
+     * @return the sharedData object set by setSharedData method. This object is
+     *         same across all of this tag hierarchy.
+     * @since 2.1.11
+     * @author WFF
+     */
+    public Object getSharedData() {
+        return sharedObject.getSharedData();
+    }
+
+    /**
+     * Sets the object which will be accessible by getSharedData method in all
+     * of this tag hierarchy. {@code setData} sets an object for the specific
+     * tag but {@code setSharedData} sets an object for all of the tag
+     * hierarchy. <br>
+     * <br>
+     * <br>
+     * Eg:-
+     *
+     * <pre>
+     * <code>
+     * Html html = new Html(null) {{
+     *      new Head(this) {{
+     *          new TitleTag(this){{
+     *              new NoTag(this, "some title");
+     *          }};
+     *      }};
+     *      new Body(this, new Id("one")) {{
+     *          new Div(this);
+     *      }};
+     *  }};
+     *
+     *  Div div = TagRepository.findOneTagAssignableToTag(Div.class, html);
+     *  Head head = TagRepository.findOneTagAssignableToTag(Head.class, html);
+     *
+     *  Object sharedData = "some object";
+     *
+     *  div.setSharedData(sharedData);
+     *
+     *  System.out.println(sharedData == head.getSharedData());
+     *
+     *  System.out.println(div.getSharedData() == head.getSharedData());
+     *
+     *  System.out.println(div.getSharedData().equals(head.getSharedData()));
+     *
+     *  //prints
+     *
+     *  true
+     *  true
+     *  true
+     *
+     * </code>
+     * </pre>
+     *
+     * @param sharedData
+     *            the object to access through all of this tag hierarchy.
+     * @since 2.1.11
+     * @author WFF
+     */
+    public void setSharedData(final Object sharedData) {
+        sharedObject.setSharedData(sharedData);
+    }
 }

@@ -83,6 +83,8 @@ public class AbstractHtml5SharedObject implements Serializable {
 
     private final AbstractHtml rootTag;
 
+    private Object sharedData;
+
     public AbstractHtml5SharedObject(final AbstractHtml rootTag) {
         this.rootTag = rootTag;
     }
@@ -522,6 +524,33 @@ public class AbstractHtml5SharedObject implements Serializable {
      */
     public AbstractHtml getRootTag() {
         return rootTag;
+    }
+
+    /**
+     * Gets the object which is accessible in all of this tag hierarchy.
+     *
+     * @return the sharedData object set by setSharedData method. This object is
+     *         same across all of this tag hierarchy.
+     * @since 2.1.11
+     * @author WFF
+     */
+    public Object getSharedData() {
+        return sharedData;
+    }
+
+    /**
+     * Sets the object which will be accessible by getSharedData method in all
+     * of this tag hierarchy. {@code setData} sets an object for the specific
+     * tag but {@code setSharedData} sets an object for all of the tag
+     * hierarchy.
+     *
+     * @param sharedData
+     *            the object to access through all of this tag hierarchy.
+     * @since 2.1.11
+     * @author WFF
+     */
+    public void setSharedData(final Object sharedData) {
+        this.sharedData = sharedData;
     }
 
 }

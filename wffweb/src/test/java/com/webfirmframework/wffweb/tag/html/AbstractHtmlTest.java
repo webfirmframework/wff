@@ -15,7 +15,7 @@
  */
 package com.webfirmframework.wffweb.tag.html;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -30,9 +30,11 @@ import com.webfirmframework.wffweb.tag.html.attribute.Name;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Style;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
+import com.webfirmframework.wffweb.tag.html.metainfo.Head;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Span;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
+import com.webfirmframework.wffweb.tag.repository.TagRepository;
 
 @SuppressWarnings("serial")
 public class AbstractHtmlTest {
@@ -433,6 +435,45 @@ public class AbstractHtmlTest {
         
         assertEquals(div6, div6.getRootTag());
 
+    }
+    
+    @Test
+    public void testSetGetSharedData() {
+        
+        Html html = new Html(null) {{
+            new Head(this) {{
+                new TitleTag(this){{
+                    new NoTag(this, "some title");
+                }};
+            }};
+            new Body(this, new Id("one")) {{
+                new Div(this);
+            }};
+        }};
+        
+        Div div = TagRepository.findOneTagAssignableToTag(Div.class, html);
+        Head head = TagRepository.findOneTagAssignableToTag(Head.class, html);
+        
+        assertEquals(div.getSharedObject(), head.getSharedObject());
+        
+        assertTrue(div.getSharedObject() == head.getSharedObject());
+        
+        assertTrue(div.getSharedObject().equals(head.getSharedObject()));
+        
+        Object sharedData = "some object";
+        
+        div.setSharedData(sharedData);
+        
+        assertEquals(sharedData, head.getSharedData());
+        
+        assertEquals(div.getSharedData(), head.getSharedData());
+        
+        assertTrue(sharedData == head.getSharedData());
+        
+        assertTrue(div.getSharedData() == head.getSharedData());
+        
+        assertTrue(div.getSharedData().equals(head.getSharedData()));
+        
     }
 
 }
