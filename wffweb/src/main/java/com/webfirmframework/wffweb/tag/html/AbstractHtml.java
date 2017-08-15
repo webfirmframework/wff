@@ -1351,13 +1351,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
     @Override
     public String toHtmlString() {
         final String printStructure = getPrintStructure(
-                getSharedObject().isChildModified()
-                        && !getSharedObject().getRebuiltTags().contains(this));
+                getSharedObject().isChildModified() && !getSharedObject()
+                        .getRebuiltTags(ACCESS_OBJECT).contains(this));
 
         if (parent == null) {
             getSharedObject().setChildModified(false);
         } else {
-            getSharedObject().getRebuiltTags().add(this);
+            getSharedObject().getRebuiltTags(ACCESS_OBJECT).add(this);
         }
         return printStructure;
     }

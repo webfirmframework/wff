@@ -165,7 +165,14 @@ public class AbstractHtml5SharedObject implements Serializable {
      * @since 1.0.0
      * @author WFF
      */
-    public Set<AbstractTagBase> getRebuiltTags() {
+    public Set<AbstractTagBase> getRebuiltTags(final Object accessObject) {
+
+        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML
+                .equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException(
+                    "Not allowed to consume this method. This method is for internal use.");
+        }
+
         if (rebuiltTags == null) {
             synchronized (this) {
                 if (rebuiltTags == null) {
