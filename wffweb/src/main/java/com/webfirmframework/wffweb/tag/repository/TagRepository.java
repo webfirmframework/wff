@@ -16,6 +16,7 @@
 package com.webfirmframework.wffweb.tag.repository;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -24,6 +25,7 @@ import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.WffSecurityException;
 import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
 import com.webfirmframework.wffweb.server.page.BrowserPage;
+import com.webfirmframework.wffweb.server.page.action.BrowserPageAction;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.AbstractHtmlRepository;
 import com.webfirmframework.wffweb.tag.html.NestedChild;
@@ -1195,6 +1197,70 @@ public class TagRepository extends AbstractHtmlRepository
         }
 
         return false;
+    }
+
+    /**
+     * Executes the JavaScript at the client browser page. This method is
+     * equalent to calling <br>
+     *
+     * <pre>
+     * <code>
+     *
+     * try {
+     *      browserPage.performBrowserPageAction(
+     *              BrowserPageAction.getActionByteBufferForExecuteJS(js));
+     *      return true;
+     *  } catch (final UnsupportedEncodingException e) {
+     *      e.printStackTrace();
+     *  }
+     *
+     * </code>
+     * </pre>
+     *
+     * <br>
+     * <br>
+     * Eg:- <br>
+     *
+     * <pre>
+     * <code>
+     * tagRepository.executeJs("alert('This is an alert');");
+     * </code>
+     * </pre>
+     *
+     * This shows an alert in the browser: <b><i>This is an alert</i></b>.
+     *
+     * @param js
+     *            the JavaScript to be executed at the client browser page.
+     * @return true if the given js string is in a supported encoding otherwise
+     *         false. Returning true DOESN'T mean the given js string is valid ,
+     *         successfully sent to the client browser to execute or executed
+     *         successfully.
+     * @since 2.1.11
+     * @author WFF
+     */
+    public boolean executeJs(final String js) {
+        try {
+            browserPage.performBrowserPageAction(
+                    BrowserPageAction.getActionByteBufferForExecuteJS(js));
+            return true;
+        } catch (final UnsupportedEncodingException e) {
+            // NOP
+        }
+        return false;
+    }
+
+    /**
+     * Performs the given {@code BrowserPageAction}. This method is equalent to
+     * calling
+     * <code>browserPage.performBrowserPageAction(pageAction.getActionByteBuffer());</code>
+     *
+     * @param pageAction
+     *            to perform the given {@code BrowserPageAction}
+     * @since 2.1.11
+     * @author WFF
+     */
+    public void execute(final BrowserPageAction pageAction) {
+        browserPage.performBrowserPageAction(pageAction.getActionByteBuffer());
     }
 
 }
