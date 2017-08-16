@@ -1248,7 +1248,16 @@ public class TagRepository extends AbstractHtmlRepository
     /**
      * Performs the given {@code BrowserPageAction}. This method is equalent to
      * calling
-     * <code>browserPage.performBrowserPageAction(pageAction.getActionByteBuffer());</code>
+     * <code>browserPage.performBrowserPageAction(pageAction.getActionByteBuffer());</code>.
+     * <br>
+     * <br>
+     * Eg, the below code reloads the client browser page.:-
+     *
+     * <pre>
+     * <code>
+     * tagRepository.execute(BrowserPageAction.RELOAD);
+     * </code>
+     * </pre>
      *
      * @param pageAction
      *            to perform the given {@code BrowserPageAction}
