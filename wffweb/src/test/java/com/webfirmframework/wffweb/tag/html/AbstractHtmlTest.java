@@ -15,7 +15,7 @@
  */
 package com.webfirmframework.wffweb.tag.html;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -30,9 +30,11 @@ import com.webfirmframework.wffweb.tag.html.attribute.Name;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Style;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
+import com.webfirmframework.wffweb.tag.html.metainfo.Head;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Span;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
+import com.webfirmframework.wffweb.tag.repository.TagRepository;
 
 @SuppressWarnings("serial")
 public class AbstractHtmlTest {
@@ -380,6 +382,97 @@ public class AbstractHtmlTest {
                 "<div id=\"parentDivId\"><div id=\"child1\"></div><div id=\"inserted1BeforeChild1\"></div><div id=\"inserted2BeforeChild1\"></div><div id=\"child2\"></div></div>",
                 parentDiv.toHtmlString());
         System.out.println(parentDiv.toHtmlString());
+        
+    }
+    
+    @Test
+    public void testGetRootTag() {
+
+        Div div1 = new Div(null);
+        Div div2 = new Div(div1);
+        Div div3 = new Div(div2);
+        Div div4 = new Div(div3);
+        Div div5 = new Div(null);
+        Div div6 = new Div(null);
+        Div div7 = new Div(null);
+        Div div8 = new Div(null);
+        Div div9 = new Div(null);
+        Div div10 = new Div(null);
+        
+        div5.appendChild(div6);
+        
+        div4.appendChild(div5);
+        
+        div7.addInnerHtmls(div8, div9, div10);
+        
+        div6.addInnerHtml(div7);
+
+        assertEquals(div1, div4.getRootTag());
+
+        assertEquals(div1, div3.getRootTag());
+
+        assertEquals(div1, div2.getRootTag());
+
+        assertEquals(div1, div1.getRootTag());
+        
+        assertEquals(div1, div5.getRootTag());
+        
+        assertEquals(div1, div6.getRootTag());
+        
+        assertEquals(div1, div7.getRootTag());
+        
+        assertEquals(div1, div8.getRootTag());
+        
+        assertEquals(div1, div9.getRootTag());
+        
+        assertEquals(div1, div10.getRootTag());
+        
+        div6.removeAllChildren();
+
+        assertEquals(div7, div7.getRootTag());
+        
+        div6.getParent().removeChild(div6);
+        
+        assertEquals(div6, div6.getRootTag());
+
+    }
+    
+    @Test
+    public void testSetGetSharedData() {
+        
+        Html html = new Html(null) {{
+            new Head(this) {{
+                new TitleTag(this){{
+                    new NoTag(this, "some title");
+                }};
+            }};
+            new Body(this, new Id("one")) {{
+                new Div(this);
+            }};
+        }};
+        
+        Div div = TagRepository.findOneTagAssignableToTag(Div.class, html);
+        Head head = TagRepository.findOneTagAssignableToTag(Head.class, html);
+        
+        assertEquals(div.getSharedObject(), head.getSharedObject());
+        
+        assertTrue(div.getSharedObject() == head.getSharedObject());
+        
+        assertTrue(div.getSharedObject().equals(head.getSharedObject()));
+        
+        Object sharedData = "some object";
+        
+        div.setSharedData(sharedData);
+        
+        assertEquals(sharedData, head.getSharedData());
+        
+        assertEquals(div.getSharedData(), head.getSharedData());
+        
+        assertTrue(sharedData == head.getSharedData());
+        
+        assertTrue(div.getSharedData() == head.getSharedData());
+        
+        assertTrue(div.getSharedData().equals(head.getSharedData()));
         
     }
 

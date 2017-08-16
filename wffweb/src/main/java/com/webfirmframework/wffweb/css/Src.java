@@ -26,7 +26,8 @@ import com.webfirmframework.wffweb.css.core.AbstractCssProperty;
  * src: <i>URL</i>;
  * </pre>
  *
- * Required. Defines the URL(s) where the font should be downloaded from.
+ * Defines the URL(s) where the font needs to be downloaded from. This css
+ * property is applicable inside {@code @font-face} css selector.
  *
  * @author WFF
  * @version 1.1.2
@@ -39,10 +40,6 @@ public class Src extends AbstractCssProperty<Src> {
     public static final Logger LOGGER = Logger.getLogger(Src.class.getName());
 
     private String cssValue;
-
-    public Src() {
-        setCssValue("");
-    }
 
     /**
      *

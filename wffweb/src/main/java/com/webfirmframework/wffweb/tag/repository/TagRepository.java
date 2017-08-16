@@ -16,6 +16,7 @@
 package com.webfirmframework.wffweb.tag.repository;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -24,12 +25,12 @@ import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.WffSecurityException;
 import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
 import com.webfirmframework.wffweb.server.page.BrowserPage;
+import com.webfirmframework.wffweb.server.page.action.BrowserPageAction;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.AbstractHtmlRepository;
 import com.webfirmframework.wffweb.tag.html.NestedChild;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.htmlwff.Blank;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 import com.webfirmframework.wffweb.wffbm.data.WffBMArray;
 import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
@@ -199,6 +200,99 @@ public class TagRepository extends AbstractHtmlRepository
     }
 
     /**
+     * Finds and returns the collection of tags (including the nested tags)
+     * matching with the give tag name.
+     *
+     * @param tagName
+     *            the name of the tag.
+     * @param fromTags
+     *            from which the findings to be done.
+     * @return the collection of tags matching with the given tag name .
+     * @throws NullValueException
+     *             if the {@code tagName} or {@code fromTags} is null
+     * @since 2.1.11
+     * @author WFF
+     */
+    public static Collection<AbstractHtml> findTagsByTagName(
+            final String tagName, final AbstractHtml... fromTags)
+            throws NullValueException {
+
+        if (tagName == null) {
+            throw new NullValueException("The tagName should not be null");
+        }
+
+        if (fromTags == null) {
+            throw new NullValueException("The fromTags should not be null");
+        }
+
+        final Collection<AbstractHtml> matchingTags = new HashSet<AbstractHtml>();
+
+        loopThroughAllNestedChildren(new NestedChild() {
+
+            @Override
+            public boolean eachChild(final AbstractHtml child) {
+
+                if (tagName.equals(child.getTagName())) {
+                    matchingTags.add(child);
+                }
+
+                return true;
+            }
+        }, true, fromTags);
+
+        return matchingTags;
+    }
+
+    /**
+     * Finds and returns the collection of attributes (including from nested
+     * tags) of the tags matching with the give tag name.
+     *
+     * @param tagName
+     *            the name of the tag.
+     * @param fromTags
+     *            from which the findings to be done.
+     * @return the collection of attributes of the tags matching with the given
+     *         tag name.
+     * @throws NullValueException
+     *             if the {@code tagName} or {@code fromTags} is null
+     * @since 2.1.11
+     * @author WFF
+     */
+    public static Collection<AbstractAttribute> findAttributesByTagName(
+            final String tagName, final AbstractHtml... fromTags)
+            throws NullValueException {
+
+        if (tagName == null) {
+            throw new NullValueException("The tagName should not be null");
+        }
+
+        if (fromTags == null) {
+            throw new NullValueException("The fromTags should not be null");
+        }
+
+        final Collection<AbstractAttribute> matchingAttributes = new HashSet<AbstractAttribute>();
+
+        loopThroughAllNestedChildren(new NestedChild() {
+
+            @Override
+            public boolean eachChild(final AbstractHtml child) {
+
+                if (tagName.equals(child.getTagName())) {
+                    final Collection<AbstractAttribute> attributes = child
+                            .getAttributes();
+                    if (attributes != null) {
+                        matchingAttributes.addAll(attributes);
+                    }
+                }
+
+                return true;
+            }
+        }, true, fromTags);
+
+        return matchingAttributes;
+    }
+
+    /**
      * Finds and returns the first (including the nested tags) matching with the
      * given attribute name and value.
      *
@@ -253,6 +347,219 @@ public class TagRepository extends AbstractHtmlRepository
         }, true, fromTags);
 
         return matchingTag[0];
+    }
+
+    /**
+     * Finds and returns the first (including the nested tags) matching with the
+     * given tag name.
+     *
+     * @param tagName
+     *            the name of the tag.
+     * @param fromTags
+     *            from which the findings to be done.
+     * @return the first matching tag with the given tag name.
+     * @throws NullValueException
+     *             if the {@code tagName} or {@code fromTags} is null
+     * @since 2.1.11
+     * @author WFF
+     */
+    public static AbstractHtml findOneTagByTagName(final String tagName,
+            final AbstractHtml... fromTags) throws NullValueException {
+
+        if (tagName == null) {
+            throw new NullValueException("The tagName should not be null");
+        }
+
+        if (fromTags == null) {
+            throw new NullValueException("The fromTags should not be null");
+        }
+
+        final AbstractHtml[] matchingTag = new AbstractHtml[1];
+
+        loopThroughAllNestedChildren(new NestedChild() {
+
+            @Override
+            public boolean eachChild(final AbstractHtml child) {
+
+                if (tagName.equals(child.getTagName())) {
+                    matchingTag[0] = child;
+                    return false;
+                }
+
+                return true;
+            }
+        }, true, fromTags);
+
+        return matchingTag[0];
+    }
+
+    /**
+     * Finds and returns the first matching (including from nested tags) tag
+     * (which is assignable to the given tag class). <br>
+     * <br>
+     *
+     * <pre>
+     * <code>
+     * Html html = new Html(null) {{
+     *      new Head(this) {{
+     *          new TitleTag(this){{
+     *              new NoTag(this, "some title");
+     *          }};
+     *      }};
+     *      new Body(this, new Id("one")) {{
+     *          new Div(this);
+     *      }};
+     *  }};
+     *
+     *  TitleTag titleTag = TagRepository.findOneTagAssignableToTagClass(TitleTag.class, html);
+     *
+     *  System.out.println(titleTag.getTagName());
+     *  System.out.println(titleTag.toHtmlString());
+     *
+     *  //prints
+     *
+     *  title
+     *  <title>some title</title>
+     *
+     * </code>
+     * </pre>
+     *
+     * @param tagClass
+     *            the class of the tag.
+     * @param fromTags
+     *            from which the findings to be done.
+     * @return the first matching tag which is assignable to the given tag
+     *         class.
+     * @throws NullValueException
+     *             if the {@code tagClass} or {@code fromTags} is null
+     * @throws InvalidTagException
+     *             if the given tag class is NoTag.class
+     * @since 2.1.11
+     * @author WFF
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends AbstractHtml> T findOneTagAssignableToTag(
+            final Class<T> tagClass, final AbstractHtml... fromTags)
+            throws NullValueException, InvalidTagException {
+
+        if (tagClass == null) {
+            throw new NullValueException("The tagClass should not be null");
+        }
+
+        if (NoTag.class.isAssignableFrom(tagClass)) {
+            throw new InvalidTagException(
+                    "classes like NoTag.class cannot be used to find tags as it's not a logical tag in behaviour.");
+        }
+
+        if (fromTags == null) {
+            throw new NullValueException("The fromTags should not be null");
+        }
+
+        final AbstractHtml[] matchingTag = new AbstractHtml[1];
+
+        loopThroughAllNestedChildren(new NestedChild() {
+
+            @Override
+            public boolean eachChild(final AbstractHtml child) {
+
+                if (tagClass.isAssignableFrom(child.getClass())
+                        && !NoTag.class.isAssignableFrom(child.getClass())) {
+                    matchingTag[0] = child;
+                    return false;
+                }
+
+                return true;
+            }
+        }, true, fromTags);
+
+        return (T) matchingTag[0];
+    }
+
+    /**
+     * Finds and returns the all matching (including from nested tags) tags
+     * (which is assignable to the given tag class). <br>
+     * <br>
+     *
+     * <pre>
+     * <code>
+     * Html html = new Html(null) {{
+     *      new Head(this) {{
+     *          new TitleTag(this){{
+     *              new NoTag(this, "some title");
+     *          }};
+     *      }};
+     *      new Body(this, new Id("one")) {{
+     *          new Div(this);
+     *          new Div(this) {{
+     *              new Div(this) {{
+     *                  new Div(this);
+     *              }};
+     *          }};
+     *          new Div(this);
+     *      }};
+     *  }};
+     *
+     *  Collection<Head> heads = TagRepository.findTagsAssignableToTag(Head.class, html);
+     *  Collection<Div> divs = TagRepository.findTagsAssignableToTag(Div.class, html);
+     *
+     *  System.out.println(heads.size());
+     *  System.out.println(divs.size());
+     *
+     *  //prints
+     *
+     *  1
+     *  5
+     *
+     * </code>
+     * </pre>
+     *
+     * @param tagClass
+     *            the class of the tag.
+     * @param fromTags
+     *            from which the findings to be done.
+     * @return the all matching tags which is assignable to the given tag class.
+     * @throws NullValueException
+     *             if the {@code tagClass} or {@code fromTags} is null
+     * @throws InvalidTagException
+     *             if the given tag class is NoTag.class
+     * @since 2.1.11
+     * @author WFF
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends AbstractHtml> Collection<T> findTagsAssignableToTag(
+            final Class<T> tagClass, final AbstractHtml... fromTags)
+            throws NullValueException, InvalidTagException {
+
+        if (tagClass == null) {
+            throw new NullValueException("The tagClass should not be null");
+        }
+
+        if (NoTag.class.isAssignableFrom(tagClass)) {
+            throw new InvalidTagException(
+                    "classes like NoTag.class cannot be used to find tags as it's not a logical tag in behaviour.");
+        }
+
+        if (fromTags == null) {
+            throw new NullValueException("The fromTags should not be null");
+        }
+
+        final Collection<AbstractHtml> matchingTags = new HashSet<AbstractHtml>();
+
+        loopThroughAllNestedChildren(new NestedChild() {
+
+            @Override
+            public boolean eachChild(final AbstractHtml child) {
+
+                if (tagClass.isAssignableFrom(child.getClass())
+                        && !NoTag.class.isAssignableFrom(child.getClass())) {
+                    matchingTags.add(child);
+                }
+
+                return true;
+            }
+        }, true, fromTags);
+
+        return (Collection<T>) matchingTags;
     }
 
     /**
@@ -392,6 +699,42 @@ public class TagRepository extends AbstractHtmlRepository
     }
 
     /**
+     * Finds and returns the collection of tags (including the nested tags)
+     * matching with the give tag name and value.
+     *
+     * @param tagName
+     *            the name of the tag.
+     * @return the collection of tags matching with the given tag name and
+     *         value.
+     * @throws NullValueException
+     *             if the {@code tagName} or {@code fromTags} is null
+     * @since 2.1.11
+     * @author WFF
+     */
+    public Collection<AbstractHtml> findTagsByTagName(final String tagName)
+            throws NullValueException {
+        return findTagsByTagName(tagName, rootTags);
+    }
+
+    /**
+     * Finds and returns the collection of attributes (including from nested
+     * tags) of the tags matching with the give tag name.
+     *
+     * @param tagName
+     *            the name of the tag.
+     * @return the collection of attributes of the tags matching with the given
+     *         tag name.
+     * @throws NullValueException
+     *             if the {@code tagName} or {@code fromTags} is null
+     * @since 2.1.11
+     * @author WFF
+     */
+    public Collection<AbstractAttribute> findAttributesByTagName(
+            final String tagName) throws NullValueException {
+        return findAttributesByTagName(tagName, rootTags);
+    }
+
+    /**
      * Finds and returns the first (including the nested tags) matching with the
      * given attribute name and value.
      *
@@ -409,6 +752,122 @@ public class TagRepository extends AbstractHtmlRepository
     public AbstractHtml findOneTagByAttribute(final String attributeName,
             final String attributeValue) throws NullValueException {
         return findOneTagByAttribute(attributeName, attributeValue, rootTags);
+    }
+
+    /**
+     * Finds and returns the first (including the nested tags) matching with the
+     * given tag name.
+     *
+     * @param tagName
+     *            the name of the tag.
+     * @return the first matching tag with the given tag name.
+     * @throws NullValueException
+     *             if the {@code tagName is null
+     * @since 2.1.11
+     * @author WFF
+     */
+    public AbstractHtml findOneTagByTagName(final String tagName)
+            throws NullValueException {
+        return findOneTagByTagName(tagName, rootTags);
+    }
+
+    /**
+     * Finds and returns the first matching (including from nested tags) tag
+     * (which is assignable to the given tag class). <br>
+     * <br>
+     *
+     * <pre>
+     * <code>
+     * Html html = new Html(null) {{
+     *      new Head(this) {{
+     *          new TitleTag(this){{
+     *              new NoTag(this, "some title");
+     *          }};
+     *      }};
+     *      new Body(this, new Id("one")) {{
+     *          new Div(this);
+     *      }};
+     *  }};
+     *
+     *  TitleTag titleTag = TagRepository.findOneTagAssignableToTagClass(TitleTag.class, html);
+     *
+     *  System.out.println(titleTag.getTagName());
+     *  System.out.println(titleTag.toHtmlString());
+     *
+     *  //prints
+     *
+     *  title
+     *  <title>some title</title>
+     *
+     * </code>
+     * </pre>
+     *
+     * @param tagClass
+     *            the class of the tag.
+     * @return the first matching tag which is assignable to the given tag
+     *         class.
+     * @throws NullValueException
+     *             if the {@code tagClass} or {@code fromTags} is null
+     * @since 2.1.11
+     * @author WFF
+     */
+    public <T extends AbstractHtml> T findOneTagAssignableToTag(
+            final Class<T> tagClass) throws NullValueException {
+        return findOneTagAssignableToTag(tagClass, rootTags);
+    }
+
+    /**
+     * Finds and returns the all matching (including from nested tags) tags
+     * (which is assignable to the given tag class). <br>
+     * <br>
+     *
+     * <pre>
+     * <code>
+     * Html html = new Html(null) {{
+     *      new Head(this) {{
+     *          new TitleTag(this){{
+     *              new NoTag(this, "some title");
+     *          }};
+     *      }};
+     *      new Body(this, new Id("one")) {{
+     *          new Div(this);
+     *          new Div(this) {{
+     *              new Div(this) {{
+     *                  new Div(this);
+     *              }};
+     *          }};
+     *          new Div(this);
+     *      }};
+     *  }};
+     *
+     *  Collection<Head> heads = TagRepository.findTagsAssignableToTag(Head.class, html);
+     *  Collection<Div> divs = TagRepository.findTagsAssignableToTag(Div.class, html);
+     *
+     *  System.out.println(heads.size());
+     *  System.out.println(divs.size());
+     *
+     *  //prints
+     *
+     *  1
+     *  5
+     *
+     * </code>
+     * </pre>
+     *
+     * @param tagClass
+     *            the class of the tag.
+     * @return the all matching tags which is assignable to the given tag class.
+     * @throws NullValueException
+     *             if the {@code tagClass} or {@code fromTags} is null
+     * @throws InvalidTagException
+     *             if the given tag class is NoTag.class
+     * @since 2.1.11
+     * @author WFF
+     */
+    public <T extends AbstractHtml> Collection<T> findTagsAssignableToTag(
+            final Class<T> tagClass)
+            throws NullValueException, InvalidTagException {
+        return findTagsAssignableToTag(tagClass, rootTags);
     }
 
     /**
@@ -510,7 +969,7 @@ public class TagRepository extends AbstractHtmlRepository
         if (tag == null) {
             throw new NullValueException("tag cannot be null");
         }
-        if (tag instanceof NoTag || tag instanceof Blank) {
+        if (tag instanceof NoTag) {
             throw new InvalidTagException(
                     "NoTag and Blank tag are not allowed to use");
         }
@@ -554,7 +1013,7 @@ public class TagRepository extends AbstractHtmlRepository
         if (tag == null) {
             throw new NullValueException("tag cannot be null");
         }
-        if (tag instanceof NoTag || tag instanceof Blank) {
+        if (tag instanceof NoTag) {
             throw new InvalidTagException(
                     "NoTag and Blank tag are not allowed to use");
         }
@@ -590,7 +1049,7 @@ public class TagRepository extends AbstractHtmlRepository
         if (tag == null) {
             throw new NullValueException("tag cannot be null");
         }
-        if (tag instanceof NoTag || tag instanceof Blank) {
+        if (tag instanceof NoTag) {
             throw new InvalidTagException(
                     "NoTag and Blank tag are not allowed to use");
         }
@@ -738,6 +1197,75 @@ public class TagRepository extends AbstractHtmlRepository
         }
 
         return false;
+    }
+
+    /**
+     * Executes the JavaScript at the client browser page. This method is
+     * equalent to calling <br>
+     *
+     * <pre>
+     * <code>
+     * try {
+     *      browserPage.performBrowserPageAction(
+     *              BrowserPageAction.getActionByteBufferForExecuteJS(js));
+     *      return true;
+     *  } catch (final UnsupportedEncodingException e) {
+     *      e.printStackTrace();
+     *  }
+     * </code>
+     * </pre>
+     *
+     * Eg:-
+     *
+     * <pre>
+     * <code>
+     * tagRepository.executeJs("alert('This is an alert');");
+     * </code>
+     * </pre>
+     *
+     * This shows an alert in the browser: <b><i>This is an alert</i></b>.
+     *
+     * @param js
+     *            the JavaScript to be executed at the client browser page.
+     * @return true if the given js string is in a supported encoding otherwise
+     *         false. Returning true DOESN'T mean the given js string is valid ,
+     *         successfully sent to the client browser to execute or executed
+     *         successfully.
+     * @since 2.1.11
+     * @author WFF
+     */
+    public boolean executeJs(final String js) {
+        try {
+            browserPage.performBrowserPageAction(
+                    BrowserPageAction.getActionByteBufferForExecuteJS(js));
+            return true;
+        } catch (final UnsupportedEncodingException e) {
+            // NOP
+        }
+        return false;
+    }
+
+    /**
+     * Performs the given {@code BrowserPageAction}. This method is equalent to
+     * calling
+     * <code>browserPage.performBrowserPageAction(pageAction.getActionByteBuffer());</code>.
+     * <br>
+     * <br>
+     * Eg, the below code reloads the client browser page.:-
+     *
+     * <pre>
+     * <code>
+     * tagRepository.execute(BrowserPageAction.RELOAD);
+     * </code>
+     * </pre>
+     *
+     * @param pageAction
+     *            to perform the given {@code BrowserPageAction}
+     * @since 2.1.11
+     * @author WFF
+     */
+    public void execute(final BrowserPageAction pageAction) {
+        browserPage.performBrowserPageAction(pageAction.getActionByteBuffer());
     }
 
 }

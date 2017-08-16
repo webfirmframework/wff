@@ -174,7 +174,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             // parent = base;
             // sharedObject = base.sharedObject;
         } else {
-            sharedObject = new AbstractHtml5SharedObject();
+            sharedObject = new AbstractHtml5SharedObject(this);
         }
         // this.children.addAll(children);
         for (final AbstractHtml child : children) {
@@ -204,7 +204,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             // parent = base;
             // sharedObject = base.sharedObject;
         } else {
-            sharedObject = new AbstractHtml5SharedObject();
+            sharedObject = new AbstractHtml5SharedObject(this);
         }
         setRebuild(true);
 
@@ -240,7 +240,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             // parent = base;
             // sharedObject = base.sharedObject;
         } else {
-            sharedObject = new AbstractHtml5SharedObject();
+            sharedObject = new AbstractHtml5SharedObject(this);
         }
 
         // childAppended(parent, this);
@@ -889,7 +889,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             // parent = base;
             // sharedObject = base.sharedObject;
         } else {
-            sharedObject = new AbstractHtml5SharedObject();
+            sharedObject = new AbstractHtml5SharedObject(this);
         }
     }
 
@@ -1351,13 +1351,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
     @Override
     public String toHtmlString() {
         final String printStructure = getPrintStructure(
-                getSharedObject().isChildModified()
-                        && !getSharedObject().getRebuiltTags().contains(this));
+                getSharedObject().isChildModified() && !getSharedObject()
+                        .getRebuiltTags(ACCESS_OBJECT).contains(this));
 
         if (parent == null) {
             getSharedObject().setChildModified(false);
         } else {
-            getSharedObject().getRebuiltTags().add(this);
+            getSharedObject().getRebuiltTags(ACCESS_OBJECT).add(this);
         }
         return printStructure;
     }
@@ -1668,7 +1668,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @author WFF
      */
     @Override
-    public AbstractHtml5SharedObject getSharedObject() {
+    public final AbstractHtml5SharedObject getSharedObject() {
         return sharedObject;
     }
 
@@ -1927,7 +1927,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             final AbstractHtml abstractHtml) {
 
         abstractHtml.parent = null;
-        abstractHtml.sharedObject = new AbstractHtml5SharedObject();
+        abstractHtml.sharedObject = new AbstractHtml5SharedObject(abstractHtml);
 
         final Deque<Set<AbstractHtml>> removedTagsStack = new ArrayDeque<Set<AbstractHtml>>();
         removedTagsStack
@@ -2450,5 +2450,120 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     public Map<String, WffBMData> getWffObjects() {
         return Collections.unmodifiableMap(wffBMDatas);
+    }
+
+    /**
+     * Gets the root level tag of this tag.
+     *
+     * @return the root parent tag or the current tag if there is no parent for
+     *         the given tag
+     * @since 2.1.11
+     * @author WFF
+     */
+    public AbstractHtml getRootTag() {
+        return sharedObject.getRootTag();
+    }
+
+    /**
+     * Gets the object which is accessible in all of this tag hierarchy. <br>
+     * <br>
+     * <br>
+     * Eg:-
+     *
+     * <pre>
+     * <code>
+     * Html html = new Html(null) {{
+     *      new Head(this) {{
+     *          new TitleTag(this){{
+     *              new NoTag(this, "some title");
+     *          }};
+     *      }};
+     *      new Body(this, new Id("one")) {{
+     *          new Div(this);
+     *      }};
+     *  }};
+     *
+     *  Div div = TagRepository.findOneTagAssignableToTag(Div.class, html);
+     *  Head head = TagRepository.findOneTagAssignableToTag(Head.class, html);
+     *
+     *  Object sharedData = "some object";
+     *
+     *  div.setSharedData(sharedData);
+     *
+     *  System.out.println(sharedData == head.getSharedData());
+     *
+     *  System.out.println(div.getSharedData() == head.getSharedData());
+     *
+     *  System.out.println(div.getSharedData().equals(head.getSharedData()));
+     *
+     *  //prints
+     *
+     *  true
+     *  true
+     *  true
+     *
+     * </code>
+     * </pre>
+     *
+     * @return the sharedData object set by setSharedData method. This object is
+     *         same across all of this tag hierarchy.
+     * @since 2.1.11
+     * @author WFF
+     */
+    public Object getSharedData() {
+        return sharedObject.getSharedData();
+    }
+
+    /**
+     * Sets the object which will be accessible by getSharedData method in all
+     * of this tag hierarchy. {@code setData} sets an object for the specific
+     * tag but {@code setSharedData} sets an object for all of the tag
+     * hierarchy. <br>
+     * <br>
+     * <br>
+     * Eg:-
+     *
+     * <pre>
+     * <code>
+     * Html html = new Html(null) {{
+     *      new Head(this) {{
+     *          new TitleTag(this){{
+     *              new NoTag(this, "some title");
+     *          }};
+     *      }};
+     *      new Body(this, new Id("one")) {{
+     *          new Div(this);
+     *      }};
+     *  }};
+     *
+     *  Div div = TagRepository.findOneTagAssignableToTag(Div.class, html);
+     *  Head head = TagRepository.findOneTagAssignableToTag(Head.class, html);
+     *
+     *  Object sharedData = "some object";
+     *
+     *  div.setSharedData(sharedData);
+     *
+     *  System.out.println(sharedData == head.getSharedData());
+     *
+     *  System.out.println(div.getSharedData() == head.getSharedData());
+     *
+     *  System.out.println(div.getSharedData().equals(head.getSharedData()));
+     *
+     *  //prints
+     *
+     *  true
+     *  true
+     *  true
+     *
+     * </code>
+     * </pre>
+     *
+     * @param sharedData
+     *            the object to access through all of this tag hierarchy.
+     * @since 2.1.11
+     * @author WFF
+     */
+    public void setSharedData(final Object sharedData) {
+        sharedObject.setSharedData(sharedData);
     }
 }

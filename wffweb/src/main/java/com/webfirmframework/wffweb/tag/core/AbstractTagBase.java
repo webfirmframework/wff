@@ -22,9 +22,6 @@ package com.webfirmframework.wffweb.tag.core;
  */
 public abstract class AbstractTagBase implements TagBase {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1_0_0L;
 
     private boolean rebuild = true;
@@ -54,13 +51,11 @@ public abstract class AbstractTagBase implements TagBase {
 
     @Override
     public int hashCode() {
-        // TODO Auto-generated method stub
         return super.hashCode();
     }
 
     @Override
     public boolean equals(final Object obj) {
-        // TODO Auto-generated method stub
         return super.equals(obj);
     }
 
@@ -109,4 +104,5 @@ public abstract class AbstractTagBase implements TagBase {
     public void setData(final Object data) {
         this.data = data;
     }
+
 }

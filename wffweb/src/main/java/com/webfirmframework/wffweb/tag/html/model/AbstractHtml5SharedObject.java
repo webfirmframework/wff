@@ -81,6 +81,14 @@ public class AbstractHtml5SharedObject implements Serializable {
 
     private volatile boolean dataWffIdSecondCycle;
 
+    private final AbstractHtml rootTag;
+
+    private Object sharedData;
+
+    public AbstractHtml5SharedObject(final AbstractHtml rootTag) {
+        this.rootTag = rootTag;
+    }
+
     /**
      * @return unique data-wff-id attribute
      * @since 2.0.0
@@ -157,7 +165,14 @@ public class AbstractHtml5SharedObject implements Serializable {
      * @since 1.0.0
      * @author WFF
      */
-    public Set<AbstractTagBase> getRebuiltTags() {
+    public Set<AbstractTagBase> getRebuiltTags(final Object accessObject) {
+
+        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML
+                .equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException(
+                    "Not allowed to consume this method. This method is for internal use.");
+        }
+
         if (rebuiltTags == null) {
             synchronized (this) {
                 if (rebuiltTags == null) {
@@ -507,6 +522,42 @@ public class AbstractHtml5SharedObject implements Serializable {
         }
 
         return wffBMDataUpdateListener;
+    }
+
+    /**
+     * @return the rootTag set through the constructor.
+     * @since 2.1.11
+     * @author WFF
+     */
+    public AbstractHtml getRootTag() {
+        return rootTag;
+    }
+
+    /**
+     * Gets the object which is accessible in all of this tag hierarchy.
+     *
+     * @return the sharedData object set by setSharedData method. This object is
+     *         same across all of this tag hierarchy.
+     * @since 2.1.11
+     * @author WFF
+     */
+    public Object getSharedData() {
+        return sharedData;
+    }
+
+    /**
+     * Sets the object which will be accessible by getSharedData method in all
+     * of this tag hierarchy. {@code setData} sets an object for the specific
+     * tag but {@code setSharedData} sets an object for all of the tag
+     * hierarchy.
+     *
+     * @param sharedData
+     *            the object to access through all of this tag hierarchy.
+     * @since 2.1.11
+     * @author WFF
+     */
+    public void setSharedData(final Object sharedData) {
+        this.sharedData = sharedData;
     }
 
 }

@@ -69,6 +69,7 @@ import com.webfirmframework.wffweb.css.PaddingTopTest;
 import com.webfirmframework.wffweb.css.RgbCssValueTest;
 import com.webfirmframework.wffweb.css.RgbaCssValueTest;
 import com.webfirmframework.wffweb.css.RightTest;
+import com.webfirmframework.wffweb.css.SrcCssPropertyTest;
 import com.webfirmframework.wffweb.css.TopTest;
 import com.webfirmframework.wffweb.css.WidthCssTest;
 import com.webfirmframework.wffweb.css.WordSpacingTest;
@@ -203,7 +204,7 @@ import com.webfirmframework.wffweb.util.WffBinaryMessageUtilTest;
         AttributeRegistryTest.class, AttributeUtilTest.class,
         AbstractHtmlTest.class, AbstractAttributeTest.class, JsUtilTest.class,
         TextAreaTest.class, SelectedTest.class, CheckedTest.class,
-        FormTest.class, TagRepositoryTest.class })
+        FormTest.class, TagRepositoryTest.class, SrcCssPropertyTest.class })
 public class AllTests {
 
 }

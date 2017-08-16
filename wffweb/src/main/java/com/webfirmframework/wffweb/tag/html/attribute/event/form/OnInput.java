@@ -19,18 +19,29 @@ package com.webfirmframework.wffweb.tag.html.attribute.event.form;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.event.AbstractEventAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.event.ServerAsyncMethod;
-import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
+import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
+import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
+import com.webfirmframework.wffweb.tag.html.identifier.TextAreaAttributable;
 
 /**
  *
- * <code>oninput</code> attribute for the element. This attribute is supported
- * by multiple tags.
+ * <code>oninput</code> attribute for the elements like <code>input</code>,
+ * <code>textarea</code> and elements which are editable. <code>OnInput</code>
+ * may be used to catch the even when the content of the element is changed,
+ * <br>
+ * for eg: if a content of <code>input</code> or <code>textarea</code> is
+ * changed. If a <code>div</code> or any other elements contain
+ * <code>contenteditable</code> attribute then its content will be editable and
+ * <code>oninput</code> attribute can be used to catch its content change event
+ * (<code>onchange</code> attribute may not catch event). It's a kind of global
+ * attribute as <code>contenteditable<code> is a global attribute.
  *
  * @since 2.0.0
  * @author WFF
  *
  */
-public class OnInput extends AbstractEventAttribute implements AAttributable {
+public class OnInput extends AbstractEventAttribute
+        implements InputAttributable, TextAreaAttributable, GlobalAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
