@@ -1205,7 +1205,6 @@ public class TagRepository extends AbstractHtmlRepository
      *
      * <pre>
      * <code>
-     *
      * try {
      *      browserPage.performBrowserPageAction(
      *              BrowserPageAction.getActionByteBufferForExecuteJS(js));
@@ -1213,13 +1212,10 @@ public class TagRepository extends AbstractHtmlRepository
      *  } catch (final UnsupportedEncodingException e) {
      *      e.printStackTrace();
      *  }
-     *
      * </code>
      * </pre>
      *
-     * <br>
-     * <br>
-     * Eg:- <br>
+     * Eg:-
      *
      * <pre>
      * <code>
