@@ -3,9 +3,9 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.webfirmframework/wffweb/badge.svg)](https://search.maven.org/#artifactdetails%7Ccom.webfirmframework%7Cwffweb%7C2.1.11%7Cjar)
 [![javadoc](https://img.shields.io/:wffweb-javadoc-blue.svg)](https://webfirmframework.github.io/wffweb/wffweb-javadoc)
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
-[![twitter](https://img.shields.io/badge/twitter-@wffweb-blue.svg)](http://webfirmframework.com/twitter)
+[![twitter](https://img.shields.io/badge/twitter-@wffweb-blue.svg)](https://webfirmframework.com/twitter)
 
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](http://webfirmframework.com/donate)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://webfirmframework.com/donate)
 
 
 # wffweb
@@ -14,7 +14,7 @@ wffweb is one of the modules of webfirmframework. It's an open source java frame
 
 To support us please donate anything you wish to the author of this framework!
 
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](http://webfirmframework.com/donate)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://webfirmframework.com/donate)
 
 
 #### [Register in wff hub for template reference and more!](http://hub.webfirmframework.com). It's built by wffweb-2.x.x
@@ -25,7 +25,7 @@ To support us please donate anything you wish to the author of this framework!
 ##### check out this demo app deployed at [https://wffweb.herokuapp.com](https://wffweb.herokuapp.com)
 
 
-(For the survival of this framework, some ads are shown in [webfirmframework.github.io](https://webfirmframework.github.io) and [webfirmframework.com](http://webfirmframework.com) web sites. These are temporary ads and will be removed soon. We are really sorry if it causes any inconvenience to your surfing.)   
+(For the survival of this framework, some ads are shown in [webfirmframework.github.io](https://webfirmframework.github.io) and [webfirmframework.com](https://webfirmframework.com) web sites. These are temporary ads and will be removed soon. We are really sorry if it causes any inconvenience to your surfing.)   
 
 Here are some sample codes
 
