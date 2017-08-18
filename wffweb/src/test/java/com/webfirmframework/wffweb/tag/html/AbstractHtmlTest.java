@@ -535,5 +535,98 @@ public class AbstractHtmlTest {
         assertEquals("<div id=\"one\"><span id=\"5\">Title changed</span></div>", div.toHtmlString());
         
     }
+    
+    @Test
+    public void testToOutputStream1() throws Exception {
+        Html html = new Html(null) {{
+            new Head(this) {{
+                new TitleTag(this){{
+                    new NoTag(this, "some title");
+                }};
+            }};
+            new Body(this, new Id("one")) {{
+                
+                new Span(this);
+                new Br(this);
+                new Br(this);
+                new Span(this);
+                
+                new Div(this);
+                new Div(this) {{
+                    new Div(this) {{
+                        new Div(this);
+                    }};
+                }};
+                new Div(this);
+            }};
+        }};
+        
+        TitleTag titleTag = TagRepository.findOneTagAssignableToTag(TitleTag.class, html);
+        {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            titleTag.toOutputStream(outputStream);
+            assertEquals("<title>some title</title>", outputStream.toString());
+        }
+        {
+            titleTag.addInnerHtml(new NoTag(null, "Title changed"));
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            titleTag.toOutputStream(outputStream);
+            assertEquals("<title>Title changed</title>", outputStream.toString());
+        }
+        {
+            titleTag.appendChild(new Div(null));
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            titleTag.toOutputStream(outputStream);
+            assertEquals("<title>Title changed<div></div></title>", outputStream.toString());
+        }
+ 
+        {
+            titleTag.addInnerHtml(new Div(null));
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            titleTag.toOutputStream(outputStream);
+            assertEquals("<title><div></div></title>", outputStream.toString());
+        }
+    }
+    
+    @Test
+    public void testToOutputStream2() throws Exception {
+        Div div = new Div(null, new Id("one")) {{
+            new Span(this, new Id("five")) {{
+                new Div(this, new Id("three"));
+            }};
+        }};
+        {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            div.toOutputStream(outputStream);
+            assertEquals("<div id=\"one\"><span id=\"five\"><div id=\"three\"></div></span></div>", outputStream.toString());
+        }
+        Span span = TagRepository.findOneTagAssignableToTag(Span.class, div);
+        {
+            span.addInnerHtml(new NoTag(null, "Title changed"));
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            div.toOutputStream(outputStream);
+            assertEquals("<div id=\"one\"><span id=\"five\">Title changed</span></div>", outputStream.toString());
+        }
+        {
+            Id id = (Id) span.getAttributeByName(AttributeNameConstants.ID);
+            id.setValue(5);
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            div.toOutputStream(outputStream);
+            assertEquals("<div id=\"one\"><span id=\"5\">Title changed</span></div>", outputStream.toString());
+        }
+        {
+            span.addAttributes(new ClassAttribute("cls-five"));
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            div.toOutputStream(outputStream);
+            assertEquals("<div id=\"one\"><span id=\"5\" class=\"cls-five\">Title changed</span></div>", outputStream.toString());
+        }
+        {
+            span.removeAttributes(AttributeNameConstants.CLASS);
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            div.toOutputStream(outputStream);
+            assertEquals("<div id=\"one\"><span id=\"5\">Title changed</span></div>", outputStream.toString());
+        }
+        
+    }
 
 }
