@@ -924,7 +924,22 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         // is called.
                         //
 
+                        if (removed) {
+                            AbstractHtml.this.setModified(removed);
+                            sharedObject.setChildModified(removed);
+                        }
+
                         return removed;
+                    }
+
+                    @Override
+                    public boolean add(final AbstractHtml e) {
+                        final boolean added = super.add(e);
+                        if (added) {
+                            AbstractHtml.this.setModified(added);
+                            sharedObject.setChildModified(added);
+                        }
+                        return added;
                     }
 
                     @Override
@@ -950,6 +965,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
                             }
 
                         }
+                        if (removedAll) {
+                            AbstractHtml.this.setModified(removedAll);
+                            sharedObject.setChildModified(removedAll);
+                        }
                         return removedAll;
                     }
 
@@ -961,6 +980,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                     @Override
                     public void clear() {
+                        if (super.size() > 0) {
+                            AbstractHtml.this.setModified(true);
+                            sharedObject.setChildModified(true);
+                        }
                         super.clear();
                     }
 

@@ -26,7 +26,9 @@ import org.junit.Test;
 
 import com.webfirmframework.wffweb.InvalidTagException;
 import com.webfirmframework.wffweb.NoParentException;
+import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.Name;
+import com.webfirmframework.wffweb.tag.html.attribute.global.ClassAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Style;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
@@ -473,6 +475,64 @@ public class AbstractHtmlTest {
         assertTrue(div.getSharedData() == head.getSharedData());
         
         assertTrue(div.getSharedData().equals(head.getSharedData()));
+        
+    }
+    
+    @Test
+    public void testToString1() throws Exception {
+        Html html = new Html(null) {{
+            new Head(this) {{
+                new TitleTag(this){{
+                    new NoTag(this, "some title");
+                }};
+            }};
+            new Body(this, new Id("one")) {{
+                
+                new Span(this);
+                new Br(this);
+                new Br(this);
+                new Span(this);
+                
+                new Div(this);
+                new Div(this) {{
+                    new Div(this) {{
+                        new Div(this);
+                    }};
+                }};
+                new Div(this);
+            }};
+        }};
+        
+        TitleTag titleTag = TagRepository.findOneTagAssignableToTag(TitleTag.class, html);
+        assertEquals("<title>some title</title>", titleTag.toHtmlString());
+        titleTag.addInnerHtml(new NoTag(null, "Title changed"));
+        
+        assertEquals("<title>Title changed</title>", titleTag.toHtmlString());
+        titleTag.appendChild(new Div(null));
+        assertEquals("<title>Title changed<div></div></title>", titleTag.toHtmlString());
+        titleTag.addInnerHtml(new Div(null));
+        assertEquals("<title><div></div></title>", titleTag.toHtmlString());
+    }
+    
+    @Test
+    public void testToString2() throws Exception {
+        Div div = new Div(null, new Id("one")) {{
+            new Span(this, new Id("five")) {{
+                new Div(this, new Id("three"));
+            }};
+        }};
+        
+        assertEquals("<div id=\"one\"><span id=\"five\"><div id=\"three\"></div></span></div>", div.toHtmlString());
+        Span span = TagRepository.findOneTagAssignableToTag(Span.class, div);
+        span.addInnerHtml(new NoTag(null, "Title changed"));
+        assertEquals("<div id=\"one\"><span id=\"five\">Title changed</span></div>", div.toHtmlString());
+        Id id = (Id) span.getAttributeByName(AttributeNameConstants.ID);
+        id.setValue(5);
+        assertEquals("<div id=\"one\"><span id=\"5\">Title changed</span></div>", div.toHtmlString());
+        span.addAttributes(new ClassAttribute("cls-five"));
+        assertEquals("<div id=\"one\"><span id=\"5\" class=\"cls-five\">Title changed</span></div>", div.toHtmlString());
+        span.removeAttributes(AttributeNameConstants.CLASS);
+        assertEquals("<div id=\"one\"><span id=\"5\">Title changed</span></div>", div.toHtmlString());
         
     }
 
