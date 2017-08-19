@@ -160,14 +160,19 @@ public class AbstractHtml5SharedObject implements Serializable {
 
     /**
      * gets the set containing the objects which are rebuilt after modified by
-     * its {@code AbstractTagBase} method.
+     * its {@code AbstractTagBase} method. NB:- only for internal use. currently
+     * it's not used anywhere
      *
      * @return the rebuiltTags
      * @since 1.0.0
      * @author WFF
+     * @deprecated only for internal use currently it's not used anywhere. Needs
+     *             to remove this method later.
      */
+    @Deprecated
     public Set<AbstractTagBase> getRebuiltTags(final Object accessObject) {
 
+        // TODO remove this method later
         if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML
                 .equals(accessObject.getClass().getName()))) {
             throw new WffSecurityException(

@@ -637,6 +637,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
         this.attributes = new AbstractAttribute[attributesMap.size()];
         attributesMap.values().toArray(this.attributes);
         setModified(true);
+        sharedObject.setChildModified(true);
 
         // listener
         if (invokeListener) {
@@ -751,6 +752,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             this.attributes = new AbstractAttribute[attributesMap.size()];
             attributesMap.values().toArray(this.attributes);
             setModified(true);
+            sharedObject.setChildModified(true);
 
             if (invokeListener) {
                 final AttributeRemoveListener listener = sharedObject
@@ -839,6 +841,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             attributes = new AbstractAttribute[attributesMap.size()];
             attributesMap.values().toArray(attributes);
             setModified(true);
+            sharedObject.setChildModified(true);
 
             if (invokeListener) {
                 final AttributeRemoveListener listener = sharedObject
@@ -925,7 +928,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         //
 
                         if (removed) {
-                            AbstractHtml.this.setModified(removed);
                             sharedObject.setChildModified(removed);
                         }
 
@@ -936,7 +938,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
                     public boolean add(final AbstractHtml e) {
                         final boolean added = super.add(e);
                         if (added) {
-                            AbstractHtml.this.setModified(added);
                             sharedObject.setChildModified(added);
                         }
                         return added;
@@ -966,7 +967,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                         }
                         if (removedAll) {
-                            AbstractHtml.this.setModified(removedAll);
                             sharedObject.setChildModified(removedAll);
                         }
                         return removedAll;
@@ -981,7 +981,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
                     @Override
                     public void clear() {
                         if (super.size() > 0) {
-                            AbstractHtml.this.setModified(true);
                             sharedObject.setChildModified(true);
                         }
                         super.clear();
@@ -1374,14 +1373,12 @@ public abstract class AbstractHtml extends AbstractJsObject {
     @Override
     public String toHtmlString() {
         final String printStructure = getPrintStructure(
-                getSharedObject().isChildModified() && !getSharedObject()
-                        .getRebuiltTags(ACCESS_OBJECT).contains(this));
+                getSharedObject().isChildModified());
 
         if (parent == null) {
             getSharedObject().setChildModified(false);
-        } else {
-            getSharedObject().getRebuiltTags(ACCESS_OBJECT).add(this);
         }
+
         return printStructure;
     }
 
