@@ -147,7 +147,8 @@ public class AbstractHtml5SharedObject implements Serializable {
     }
 
     /**
-     * set true if any of the children has been modified
+     * set true if any of the children has been modified.<br>
+     * NB:- it's for internal use
      *
      * @param childModified
      *            the childModified to set
