@@ -537,32 +537,43 @@ public class AbstractHtmlTest {
         assertEquals("<div id=\"one\"><span id=\"5\">Title changed</span></div>", div.toHtmlString());
         
         {
+            Span span2 = new Span(null);
             Style style = new Style("color:green");
-            span.addAttributes(style);
-            assertEquals("<div id=\"one\"><span id=\"5\" style=\"color:green;\">Title changed</span></div>", div.toHtmlString());
+            span2.addAttributes(style);
+            span.appendChild(span2);
+            
+            
+            assertEquals("<div id=\"one\"><span id=\"5\">Title changed<span style=\"color:green;\"></span></span></div>", div.toHtmlString());
             
             style.addCssProperty("color", "blue");
-            assertEquals("<div id=\"one\"><span id=\"5\" style=\"color:blue;\">Title changed</span></div>", div.toHtmlString());
+            assertEquals("<div id=\"one\"><span id=\"5\">Title changed<span style=\"color:blue;\"></span></span></div>", div.toHtmlString());
             Color color = new Color("yellow");
             style.addCssProperties(color);
-            assertEquals("<div id=\"one\"><span id=\"5\" style=\"color:yellow;\">Title changed</span></div>", div.toHtmlString());
+            assertEquals("<div id=\"one\"><span id=\"5\">Title changed<span style=\"color:yellow;\"></span></span></div>", div.toHtmlString());
             color.setCssValue("orange");
-            assertEquals("<div id=\"one\"><span id=\"5\" style=\"color:orange;\">Title changed</span></div>", div.toHtmlString());
+            assertEquals("<div id=\"one\"><span id=\"5\">Title changed<span style=\"color:orange;\"></span></span></div>", div.toHtmlString());
         } 
         {
-            span.addAttributes(new ClassAttribute("cls-one"));
-            ClassAttribute cls = (ClassAttribute) span.getAttributeByName(AttributeNameConstants.CLASS);
+            Span span2 = new Span(null);
+            ClassAttribute cls = new ClassAttribute("cls-one");
+            span2.addAttributes(cls);
+            span.appendChild(span2);
+            assertEquals("<div id=\"one\"><span id=\"5\">Title changed<span style=\"color:orange;\"></span><span class=\"cls-one\"></span></span></div>", div.toHtmlString());
             cls.addClassNames("cls-two");
+            assertEquals("<div id=\"one\"><span id=\"5\">Title changed<span style=\"color:orange;\"></span><span class=\"cls-one cls-two\"></span></span></div>", div.toHtmlString());
             cls.addClassNames("abcd-cls");
-            assertEquals("<div id=\"one\"><span id=\"5\" style=\"color:orange;\" class=\"cls-one cls-two abcd-cls\">Title changed</span></div>", div.toHtmlString());
+            assertEquals("<div id=\"one\"><span id=\"5\">Title changed<span style=\"color:orange;\"></span><span class=\"cls-one cls-two abcd-cls\"></span></span></div>", div.toHtmlString());
         }
         {
+            Span span2 = new Span(null);
             Name name = new Name("webfirmframework");
-            span.addAttributes(name);
+            span2.addAttributes(name);
+            span.appendChild(span2);
+            assertEquals("<div id=\"one\"><span id=\"5\">Title changed<span style=\"color:orange;\"></span><span class=\"cls-one cls-two abcd-cls\"></span><span name=\"webfirmframework\"></span></span></div>", div.toHtmlString());
             name.setValue("wffweb");
-            assertEquals("<div id=\"one\"><span id=\"5\" style=\"color:orange;\" name=\"wffweb\" class=\"cls-one cls-two abcd-cls\">Title changed</span></div>", div.toHtmlString());
-            span.removeAttributes(name);
-            assertEquals("<div id=\"one\"><span id=\"5\" style=\"color:orange;\" class=\"cls-one cls-two abcd-cls\">Title changed</span></div>", div.toHtmlString());
+            assertEquals("<div id=\"one\"><span id=\"5\">Title changed<span style=\"color:orange;\"></span><span class=\"cls-one cls-two abcd-cls\"></span><span name=\"wffweb\"></span></span></div>", div.toHtmlString());
+            span2.removeAttributes(name);
+            assertEquals("<div id=\"one\"><span id=\"5\">Title changed<span style=\"color:orange;\"></span><span class=\"cls-one cls-two abcd-cls\"></span><span></span></span></div>", div.toHtmlString());
         }
         
     }
