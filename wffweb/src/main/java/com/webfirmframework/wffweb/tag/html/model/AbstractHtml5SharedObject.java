@@ -17,9 +17,10 @@
 package com.webfirmframework.wffweb.tag.html.model;
 
 import java.io.Serializable;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -49,7 +50,7 @@ public class AbstractHtml5SharedObject implements Serializable {
 
     private boolean childModified;
 
-    private volatile Set<AbstractTagBase> rebuiltTags;
+    private transient volatile Set<AbstractTagBase> rebuiltTags;
 
     private ChildTagAppendListener childTagAppendListener;
 
@@ -176,7 +177,8 @@ public class AbstractHtml5SharedObject implements Serializable {
         if (rebuiltTags == null) {
             synchronized (this) {
                 if (rebuiltTags == null) {
-                    rebuiltTags = new HashSet<AbstractTagBase>();
+                    rebuiltTags = Collections.newSetFromMap(
+                            new WeakHashMap<AbstractTagBase, Boolean>());
                 }
             }
         }
