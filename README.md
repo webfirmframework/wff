@@ -44,7 +44,7 @@ Html html = new Html(null) {
 };
 // prepends the doc type <!DOCTYPE html>
 html.setPrependDocType(true);
-System.out.println(html.toHtmlString()); 
+System.out.println(html.toHtmlString(true)); 
 ~~~
 
 or the same in another coding style
@@ -58,7 +58,7 @@ Html html = new Html(null) {{
 }};
 // prepends the doc type <!DOCTYPE html>
 html.setPrependDocType(true);
-System.out.println(html.toHtmlString()); 
+System.out.println(html.toHtmlString(true)); 
 ~~~
 
 or the same in few lines
@@ -72,7 +72,7 @@ new NoTag(body, "Hello World");
 
 // prepends the doc type <!DOCTYPE html>
 html.setPrependDocType(true);
-System.out.println(html.toHtmlString()); 
+System.out.println(html.toHtmlString(true)); 
 ~~~
 
 prints the following output
@@ -170,7 +170,7 @@ Html html = new Html(null, new CustomAttribute("some", "val"), new Id("htmlId"),
 
 paragraphStyle.addCssProperty(AlignContent.CENTER);
 
-System.out.println(html.toHtmlString());
+System.out.println(html.toHtmlString(true));
 ```
 prints
 
@@ -196,7 +196,7 @@ Color color = (Color) paragraphStyle
         
 color.setCssValue(CssColorName.BROWN.getColorName());
 
-System.out.println(html.toHtmlString());
+System.out.println(html.toHtmlString(true));
 
 ```
 It will add width 100% in aboutParagraph and will change color to brown, its generated html code will be as follows
