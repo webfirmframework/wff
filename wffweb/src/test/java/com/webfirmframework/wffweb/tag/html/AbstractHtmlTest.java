@@ -26,8 +26,10 @@ import org.junit.Test;
 
 import com.webfirmframework.wffweb.InvalidTagException;
 import com.webfirmframework.wffweb.NoParentException;
+import com.webfirmframework.wffweb.css.Color;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.Name;
+import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.global.ClassAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Style;
@@ -533,6 +535,35 @@ public class AbstractHtmlTest {
         assertEquals("<div id=\"one\"><span id=\"5\" class=\"cls-five\">Title changed</span></div>", div.toHtmlString());
         span.removeAttributes(AttributeNameConstants.CLASS);
         assertEquals("<div id=\"one\"><span id=\"5\">Title changed</span></div>", div.toHtmlString());
+        
+        {
+            Style style = new Style("color:green");
+            span.addAttributes(style);
+            assertEquals("<div id=\"one\"><span id=\"5\" style=\"color:green;\">Title changed</span></div>", div.toHtmlString());
+            
+            style.addCssProperty("color", "blue");
+            assertEquals("<div id=\"one\"><span id=\"5\" style=\"color:blue;\">Title changed</span></div>", div.toHtmlString());
+            Color color = new Color("yellow");
+            style.addCssProperties(color);
+            assertEquals("<div id=\"one\"><span id=\"5\" style=\"color:yellow;\">Title changed</span></div>", div.toHtmlString());
+            color.setCssValue("orange");
+            assertEquals("<div id=\"one\"><span id=\"5\" style=\"color:orange;\">Title changed</span></div>", div.toHtmlString());
+        } 
+        {
+            span.addAttributes(new ClassAttribute("cls-one"));
+            ClassAttribute cls = (ClassAttribute) span.getAttributeByName(AttributeNameConstants.CLASS);
+            cls.addClassNames("cls-two");
+            cls.addClassNames("abcd-cls");
+            assertEquals("<div id=\"one\"><span id=\"5\" style=\"color:orange;\" class=\"cls-one cls-two abcd-cls\">Title changed</span></div>", div.toHtmlString());
+        }
+        {
+            Name name = new Name("webfirmframework");
+            span.addAttributes(name);
+            name.setValue("wffweb");
+            assertEquals("<div id=\"one\"><span id=\"5\" style=\"color:orange;\" name=\"wffweb\" class=\"cls-one cls-two abcd-cls\">Title changed</span></div>", div.toHtmlString());
+            span.removeAttributes(name);
+            assertEquals("<div id=\"one\"><span id=\"5\" style=\"color:orange;\" class=\"cls-one cls-two abcd-cls\">Title changed</span></div>", div.toHtmlString());
+        }
         
     }
     
