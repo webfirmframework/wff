@@ -1376,7 +1376,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 getSharedObject().isChildModified());
 
         if (parent == null) {
-            getSharedObject().setChildModified(false);
+            sharedObject.setChildModified(false);
         }
 
         return printStructure;
