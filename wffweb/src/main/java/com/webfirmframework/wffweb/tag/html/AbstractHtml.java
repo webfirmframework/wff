@@ -1663,6 +1663,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 if (subChildren != null && subChildren.size() > 0) {
                     current = subChildren;
                 }
+                // only first child is required so needs a break here
                 break;
             }
 
@@ -1701,6 +1702,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 if (subChildren != null && subChildren.size() > 0) {
                     current = subChildren;
                 }
+                // only first child is required so needs a break here
                 break;
             }
 
