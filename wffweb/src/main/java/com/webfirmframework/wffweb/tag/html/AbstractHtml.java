@@ -1136,8 +1136,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * Unlike setter methods, it will not reuse the given set object but it will
      * copy all children from the given set object. <br>
      *
-     * Note:- This method can
-     *
      * @param children
      *            which will be set as the children tag after removing all
      *            current children. Empty set or null will remove all current
