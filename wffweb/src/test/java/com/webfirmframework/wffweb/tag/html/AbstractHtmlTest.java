@@ -822,6 +822,7 @@ public class AbstractHtmlTest {
     }
     
     
+    @SuppressWarnings("unused")
     @Test
     public void testToBigHtmlStringNoStackoverflowError() throws Exception {
         Html html = new Html(null) {{
@@ -844,15 +845,58 @@ public class AbstractHtmlTest {
         }};
         {
             long before = System.currentTimeMillis();
-            System.out.println(html.toHtmlString(true));
+            String htmlString = html.toHtmlString(true);
+//            System.out.println(htmlString);
             long after = System.currentTimeMillis();
             System.out.println("total time taken toHtmlString: " + (after - before));
         }
         {
             long before = System.currentTimeMillis();
-            System.out.println(html.toBigHtmlString(true));
+            String bigHtmlString = html.toBigHtmlString(true);
+//            System.out.println(bigHtmlString);
             long after = System.currentTimeMillis();
             System.out.println("total time taken for toBigHtmlString: " + (after - before));
+        }
+        
+    }
+    
+    @Test
+    public void testToBigOutputStreamNoStackoverflowError() throws Exception {
+        Html html = new Html(null) {{
+            new Head(this) {{
+                new TitleTag(this){{
+                    new NoTag(this, "some title");
+                }};
+            }};
+            new Body(this, new Id("one")) {{
+                new NoTag(this, "something here");
+                CustomTag previous = new CustomTag("ctag", this);
+                //increase 100 to higher value to get StackoverflowError for toHtmlString but not toBigHtmlString
+                for (int i = 0; i < 100; i++) {
+                    previous = new CustomTag("ctag" + i, previous);
+                    new Span(this);
+                }
+                new Span(previous).addAttributes(new Name("wffweb"));
+                
+            }};
+        }};
+        
+        {
+            long before = System.currentTimeMillis();
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            html.toOutputStream(os, true);
+//            System.out.println(os.toString());
+            long after = System.currentTimeMillis();
+            System.out.println("total time taken toOutputStream: " + (after - before));
+        }
+        
+        {
+            long before = System.currentTimeMillis();
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            html.toBigOutputStream(os, true);
+//            System.out.println(os.toString());
+            long after = System.currentTimeMillis();
+            System.out.println("total time taken for toBigOutputStream: " + (after - before));
         }
         
     }
