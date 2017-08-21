@@ -127,6 +127,7 @@ import com.webfirmframework.wffweb.js.JsUtilTest;
 import com.webfirmframework.wffweb.streamer.WffBinaryMessageOutputStreamerTest;
 import com.webfirmframework.wffweb.tag.html.AbstractHtmlTest;
 import com.webfirmframework.wffweb.tag.html.HrTest;
+import com.webfirmframework.wffweb.tag.html.HtmlTest;
 import com.webfirmframework.wffweb.tag.html.attribute.CheckedTest;
 import com.webfirmframework.wffweb.tag.html.attribute.SelectedTest;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttributeTest;
@@ -154,7 +155,7 @@ import com.webfirmframework.wffweb.util.WffBinaryMessageUtilTest;
  * @since 1.0.0
  */
 @RunWith(Suite.class)
-@SuiteClasses({ TagPrintTest.class, CssPropertyEnumTests.class,
+@SuiteClasses({ HtmlTest.class, TagPrintTest.class, CssPropertyEnumTests.class,
         AlignContentTest.class, StyleTest.class, CursorTest.class,
         ListStyleImageTest.class, WordSpacingTest.class,
         BorderBottomWidthTest.class, BorderLeftWidthTest.class,
