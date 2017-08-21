@@ -740,6 +740,87 @@ public class AbstractHtmlTest {
             
     }
     
+    @Test
+    public void testToBigOutputStream() throws Exception {
+        
+        CustomTag tag = new CustomTag("tag1", null) {{
+            new CustomTag("tag2", this) {{
+                new CustomTag("tag3", this) {{
+                    
+                }}; 
+            }};
+            new CustomTag("tag4", this) {{
+                new CustomTag("tag5", this) {{
+                    new CustomTag("tag6", this) {{
+                        
+                        new CustomTag("tag8", this);
+                        
+                        new CustomTag("tag7", this) {{
+                            new CustomTag("tag9", this) {{
+                                
+                            }};
+                            new CustomTag("tag10", this) {{
+                                
+                            }};
+                        }};
+                        
+                    }}; 
+                }}; 
+            }};
+            
+            new CustomTag("middle", this);
+            new CustomTag("middle2", this).addInnerHtml(new NoTag(null, "This is inner content"));
+            new CustomTag("middle3", this) {{
+                new NoTag(this, "line1");
+                new NoTag(this, "line2");
+                new NoTag(this, "line3");
+                new NoTag(this, "line4");
+                new NoTag(this, "line5");
+            }};
+            
+            new CustomTag("tag44", this) {{
+                new CustomTag("tag55", this) {{
+                    new CustomTag("tag66", this) {{
+                        
+                        new CustomTag("tag88", this);
+                        
+                        new CustomTag("tag77", this) {{
+                            new CustomTag("tag99", this) {{
+                                
+                            }};
+                            new CustomTag("tag100", this) {{
+                                
+                            }};
+                        }};
+                        
+                    }}; 
+                }}; 
+            }};
+        }};
+        
+        {
+
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            tag.toBigOutputStream(os, true);
+            assertEquals("<tag1><tag2><tag3></tag3></tag2><tag4><tag5><tag6><tag8></tag8><tag7><tag9></tag9><tag10></tag10></tag7></tag6></tag5></tag4><middle></middle><middle2>This is inner content</middle2><middle3>line1line2line3line4line5</middle3><tag44><tag55><tag66><tag88></tag88><tag77><tag99></tag99><tag100></tag100></tag77></tag66></tag55></tag44></tag1>", os.toString());
+        }
+        
+        CustomTag customTag = (CustomTag) TagRepository.findOneTagByTagName("tag4", tag);
+        {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            customTag.toBigOutputStream(os, true);            
+            assertEquals("<tag4><tag5><tag6><tag8></tag8><tag7><tag9></tag9><tag10></tag10></tag7></tag6></tag5></tag4>", os.toString());
+        }
+        
+        CustomTag middle3 = (CustomTag) TagRepository.findOneTagByTagName("middle3", tag);
+        {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            middle3.toBigOutputStream(os, true);      
+            assertEquals("<middle3>line1line2line3line4line5</middle3>", os.toString());
+        }
+        
+    }
+    
     
     @Test
     public void testToBigHtmlStringNoStackoverflowError() throws Exception {
@@ -752,6 +833,7 @@ public class AbstractHtmlTest {
             new Body(this, new Id("one")) {{
                 new NoTag(this, "something here");
                 CustomTag previous = new CustomTag("ctag", this);
+                //increase 100 to higher value to get StackoverflowError for toHtmlString but not toBigHtmlString
                 for (int i = 0; i < 100; i++) {
                     previous = new CustomTag("ctag" + i, previous);
                     new Span(this);
@@ -760,7 +842,6 @@ public class AbstractHtmlTest {
                 
             }};
         }};
-//        System.out.println(html.toHtmlString());
         {
             long before = System.currentTimeMillis();
             System.out.println(html.toHtmlString(true));

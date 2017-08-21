@@ -1313,6 +1313,171 @@ public abstract class AbstractHtml extends AbstractJsObject {
         return tagBuilder.toString();
     }
 
+    /**
+     * Use this method to produce HTML from very heavy and complicated tag
+     * hierarchy. For normal and simple HTML hierarchy use
+     * {@code toOutputStream} method which is faster than this method. The
+     * advantage of {@code toBigOutputStream} over {@code toOutputStream} is it
+     * will never throw {@code StackOverflowError} and the memory consumed at
+     * the time of writing could be available for GC (depends on JVM GC rules).
+     * <br>
+     * NB:- this method has not been undergone all testing process.
+     *
+     * @param os
+     *            the object of {@code OutputStream} to write to.
+     * @return the total number of bytes written
+     * @throws IOException
+     * @since 2.1.12
+     */
+    public int toBigOutputStream(final OutputStream os) throws IOException {
+        return writePrintStructureToOSWithoutRecursive(charset, os, true);
+    }
+
+    /**
+     * Use this method to produce HTML from very heavy and complicated tag
+     * hierarchy. For normal and simple HTML hierarchy use
+     * {@code toOutputStream} method which is faster than this method. The
+     * advantage of {@code toBigOutputStream} over {@code toOutputStream} is it
+     * will never throw {@code StackOverflowError} and the memory consumed at
+     * the time of writing could be available for GC (depends on JVM GC rules).
+     * <br>
+     * NB:- this method has not been undergone all testing process.
+     *
+     * @param os
+     *            the object of {@code OutputStream} to write to.
+     * @param charset
+     *            the charset
+     * @return
+     * @throws IOException
+     * @since 2.1.12
+     */
+    public int toBigOutputStream(final OutputStream os, final Charset charset)
+            throws IOException {
+        return writePrintStructureToOSWithoutRecursive(charset, os, true);
+    }
+
+    /**
+     * Use this method to produce HTML from very heavy and complicated tag
+     * hierarchy. For normal and simple HTML hierarchy use
+     * {@code toOutputStream} method which is faster than this method. The
+     * advantage of {@code toBigOutputStream} over {@code toOutputStream} is it
+     * will never throw {@code StackOverflowError} and the memory consumed at
+     * the time of writing could be available for GC (depends on JVM GC rules).
+     * <br>
+     * NB:- this method has not been undergone all testing process.
+     *
+     * @param os
+     *            the object of {@code OutputStream} to write to.
+     * @param charset
+     *            the charset
+     * @return the total number of bytes written
+     * @throws IOException
+     * @since 2.1.12
+     */
+    public int toBigOutputStream(final OutputStream os, final String charset)
+            throws IOException {
+
+        if (charset == null) {
+            return writePrintStructureToOSWithoutRecursive(
+                    Charset.forName(charset), os, true);
+        }
+        return writePrintStructureToOSWithoutRecursive(this.charset, os, true);
+    }
+
+    /**
+     * Use this method to produce HTML from very heavy and complicated tag
+     * hierarchy. For normal and simple HTML hierarchy use
+     * {@code toOutputStream} method which is faster than this method. The
+     * advantage of {@code toBigOutputStream} over {@code toOutputStream} is it
+     * will never throw {@code StackOverflowError} and the memory consumed at
+     * the time of writing could be available for GC (depends on JVM GC rules).
+     * <br>
+     * NB:- this method has not been undergone all testing process.
+     *
+     * @param os
+     *            the object of {@code OutputStream} to write to.
+     * @param rebuild
+     *            true to rebuild & false to write previously built bytes.
+     * @return the total number of bytes written
+     *
+     * @throws IOException
+     * @since 2.1.12
+     */
+    public int toBigOutputStream(final OutputStream os, final boolean rebuild)
+            throws IOException {
+        return writePrintStructureToOSWithoutRecursive(charset, os, rebuild);
+    }
+
+    /**
+     * Use this method to produce HTML from very heavy and complicated tag
+     * hierarchy. For normal and simple HTML hierarchy use
+     * {@code toOutputStream} method which is faster than this method. The
+     * advantage of {@code toBigOutputStream} over {@code toOutputStream} is it
+     * will never throw {@code StackOverflowError} and the memory consumed at
+     * the time of writing could be available for GC (depends on JVM GC rules).
+     * <br>
+     * NB:- this method has not been undergone all testing process.
+     *
+     * @param os
+     *            the object of {@code OutputStream} to write to.
+     * @param rebuild
+     *            true to rebuild & false to write previously built bytes.
+     * @param charset
+     *            the charset
+     * @return the total number of bytes written
+     * @throws IOException
+     * @since 2.1.12
+     */
+    public int toBigOutputStream(final OutputStream os, final boolean rebuild,
+            final Charset charset) throws IOException {
+        if (charset == null) {
+            return writePrintStructureToOSWithoutRecursive(this.charset, os,
+                    rebuild);
+        }
+        return writePrintStructureToOSWithoutRecursive(charset, os, rebuild);
+    }
+
+    /**
+     * Use this method to produce HTML from very heavy and complicated tag
+     * hierarchy. For normal and simple HTML hierarchy use
+     * {@code toOutputStream} method which is faster than this method. The
+     * advantage of {@code toBigOutputStream} over {@code toOutputStream} is it
+     * will never throw {@code StackOverflowError} and the memory consumed at
+     * the time of writing could be available for GC (depends on JVM GC rules).
+     * <br>
+     * NB:- this method has not been undergone all testing process.
+     *
+     * @param os
+     *            the object of {@code OutputStream} to write to.
+     * @param rebuild
+     *            true to rebuild & false to write previously built bytes.
+     * @param charset
+     *            the charset
+     * @return the total number of bytes written
+     * @throws IOException
+     * @since 2.1.12
+     */
+    public int toBigOutputStream(final OutputStream os, final boolean rebuild,
+            final String charset) throws IOException {
+
+        if (charset == null) {
+            return writePrintStructureToOSWithoutRecursive(this.charset, os,
+                    rebuild);
+        }
+        return writePrintStructureToOSWithoutRecursive(Charset.forName(charset),
+                os, rebuild);
+    }
+
+    private int writePrintStructureToOSWithoutRecursive(final Charset charset,
+            final OutputStream os, final boolean rebuild) throws IOException {
+
+        beforeWritePrintStructureToOutputStream();
+        final int[] totalWritten = { 0 };
+        writePrintStructureToOSWithoutRecursive(totalWritten, charset, os, this,
+                rebuild);
+        return totalWritten[0];
+    }
+
     private static void appendPrintStructureWithoutRecursive(
             final StringBuilder builder, final AbstractHtml topBase,
             final boolean rebuild) {
@@ -1379,6 +1544,101 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     }
 
+    /**
+     * @param totalWritten
+     * @param charset
+     * @param os
+     * @param topBase
+     * @param rebuild
+     * @throws IOException
+     * @since 2.1.12
+     * @author WFF
+     */
+    private static void writePrintStructureToOSWithoutRecursive(
+            final int[] totalWritten, final Charset charset,
+            final OutputStream os, final AbstractHtml topBase,
+            final boolean rebuild) throws IOException {
+
+        AbstractHtml current = topBase;
+
+        while (current != null) {
+
+            final AbstractHtml child = current;
+            current = null;
+
+            final AbstractHtml bottomChild = writeOpeningTagAndReturnBottomTag(
+                    totalWritten, charset, os, child, rebuild);
+
+            {
+                final byte[] closingTagBytes = bottomChild.closingTag
+                        .getBytes(charset);
+                os.write(closingTagBytes);
+
+                totalWritten[0] += closingTagBytes.length;
+
+                if (topBase.equals(bottomChild)) {
+                    break;
+                }
+            }
+
+            final List<AbstractHtml> childrenHoldingBottomChild = new LinkedList<AbstractHtml>(
+                    bottomChild.parent.children);
+
+            final int indexOfBottomChild = childrenHoldingBottomChild
+                    .indexOf(bottomChild);
+            final int indexOfNextToBottomChild = indexOfBottomChild + 1;
+
+            if (indexOfNextToBottomChild < childrenHoldingBottomChild.size()) {
+                final AbstractHtml nextToBottomChild = childrenHoldingBottomChild
+                        .get(indexOfNextToBottomChild);
+                current = nextToBottomChild;
+            } else {
+
+                {
+                    if (bottomChild.parent.parent == null) {
+
+                        final byte[] closingTagBytes = bottomChild.parent.closingTag
+                                .getBytes(charset);
+                        os.write(closingTagBytes);
+
+                        totalWritten[0] += closingTagBytes.length;
+                        break;
+                    }
+                }
+
+                final List<AbstractHtml> childrenHoldingParent = new LinkedList<AbstractHtml>(
+                        bottomChild.parent.parent.children);
+
+                final int indexOfBottomParent = childrenHoldingParent
+                        .indexOf(bottomChild.parent);
+                final int indexOfNextToBottomParent = indexOfBottomParent + 1;
+
+                if (indexOfNextToBottomParent < childrenHoldingParent.size()) {
+
+                    final byte[] closingTagBytes = bottomChild.parent.closingTag
+                            .getBytes(charset);
+                    os.write(closingTagBytes);
+
+                    totalWritten[0] += closingTagBytes.length;
+
+                    if (topBase.equals(bottomChild.parent)) {
+                        break;
+                    }
+
+                    final AbstractHtml nextToParent = childrenHoldingParent
+                            .get(indexOfNextToBottomParent);
+                    current = nextToParent;
+                } else {
+                    current = writeClosingTagUptoRootReturnFirstMiddleChild(
+                            totalWritten, charset, os, topBase, bottomChild);
+                }
+
+            }
+
+        }
+
+    }
+
     private static AbstractHtml appendOpeningTagAndReturnBottomTag(
             final StringBuilder builder, final AbstractHtml base,
             final boolean rebuild) {
@@ -1397,6 +1657,44 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                 child.setRebuild(rebuild);
                 builder.append(child.getOpeningTag());
+                bottomChild = child;
+
+                final Set<AbstractHtml> subChildren = child.children;
+                if (subChildren != null && subChildren.size() > 0) {
+                    current = subChildren;
+                }
+                break;
+            }
+
+        }
+
+        return bottomChild;
+    }
+
+    private static AbstractHtml writeOpeningTagAndReturnBottomTag(
+            final int[] totalWritten, final Charset charset,
+            final OutputStream os, final AbstractHtml base,
+            final boolean rebuild) throws IOException {
+
+        AbstractHtml bottomChild = base;
+
+        Set<AbstractHtml> current = new HashSet<AbstractHtml>(1);
+        current.add(base);
+
+        while (current != null) {
+
+            final Set<AbstractHtml> children = current;
+            current = null;
+
+            for (final AbstractHtml child : children) {
+
+                child.setRebuild(rebuild);
+
+                final byte[] openingTagBytes = child.getOpeningTag()
+                        .getBytes(charset);
+                os.write(openingTagBytes);
+                totalWritten[0] += openingTagBytes.length;
+
                 bottomChild = child;
 
                 final Set<AbstractHtml> subChildren = child.children;
@@ -1432,6 +1730,44 @@ public abstract class AbstractHtml extends AbstractJsObject {
                     return childrenHoldingChild.get(indexOfChild + 1);
                 } else {
                     builder.append(child.parent.closingTag);
+                    if (topBase.equals(child.parent)) {
+                        break;
+                    }
+                    current = child.parent;
+
+                }
+            }
+        }
+        return null;
+    }
+
+    private static AbstractHtml writeClosingTagUptoRootReturnFirstMiddleChild(
+            final int[] totalWritten, final Charset charset,
+            final OutputStream os, final AbstractHtml topBase,
+            final AbstractHtml bottomChild) throws IOException {
+
+        AbstractHtml current = bottomChild;
+
+        while (current != null) {
+            final AbstractHtml child = current;
+
+            current = null;
+
+            if (child.parent != null) {
+                final List<AbstractHtml> childrenHoldingChild = new LinkedList<AbstractHtml>(
+                        child.parent.children);
+                final int indexOfChild = childrenHoldingChild.indexOf(child);
+
+                if ((indexOfChild + 1) < childrenHoldingChild.size()) {
+
+                    return childrenHoldingChild.get(indexOfChild + 1);
+                } else {
+                    final byte[] closingTagBytes = child.parent.closingTag
+                            .getBytes(charset);
+                    os.write(closingTagBytes);
+
+                    totalWritten[0] += closingTagBytes.length;
+
                     if (topBase.equals(child.parent)) {
                         break;
                     }

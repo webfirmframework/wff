@@ -125,6 +125,209 @@ public class HtmlTest {
     }
     
     @Test
+    public void testHtmlToBigOutputStreamSetPrependDocType() throws IOException {
+        
+        Html html = new Html(null) {
+            {
+                new Div(this, new Id("id"));
+            }
+        };
+        
+        {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            html.toBigOutputStream(os);
+            Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                    os.toString());
+        }
+        
+        {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            html.toBigOutputStream(os, true);
+            Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                    os.toString());
+        }
+        {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            html.toBigOutputStream(os, true);
+            Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                    os.toString());
+        }
+        
+        {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            html.toBigOutputStream(os, StandardCharsets.UTF_8);
+            Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                    os.toString("UTF-8"));
+        }
+        
+
+        {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            html.toBigOutputStream(os, StandardCharsets.UTF_8.name());
+            Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                    os.toString("UTF-8"));
+        }
+        
+        {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            html.toBigOutputStream(os, true, StandardCharsets.UTF_8);
+            Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                    os.toString("UTF-8"));
+        }
+        
+        {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            html.toBigOutputStream(os, false, StandardCharsets.UTF_8);
+            Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                    os.toString("UTF-8"));
+        }
+        
+        {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            html.toBigOutputStream(os, true, StandardCharsets.UTF_8.name());
+            Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                    os.toString("UTF-8"));
+        }
+        {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            html.toBigOutputStream(os, false, StandardCharsets.UTF_8.name());
+            Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                    os.toString("UTF-8"));
+        }
+        html.setPrependDocType(true);
+        {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            html.toBigOutputStream(os, false);
+            Assert.assertEquals(
+                    "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
+                    os.toString());
+            
+        }
+        
+        {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            html.toBigOutputStream(os);
+            Assert.assertEquals(
+                    "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
+                    os.toString());
+        }
+        
+        {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            html.toBigOutputStream(os, true);
+            Assert.assertEquals(
+                    "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
+                    os.toString());
+        }
+
+        {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            html.toBigOutputStream(os, StandardCharsets.UTF_8);
+            Assert.assertEquals(
+                    "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
+                    os.toString("UTF-8"));
+        }
+
+        {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            html.toBigOutputStream(os, StandardCharsets.UTF_8.name());
+            Assert.assertEquals(
+                    "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
+                    os.toString("UTF-8"));
+        }
+
+        {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            html.toBigOutputStream(os, true, StandardCharsets.UTF_8);
+            Assert.assertEquals(
+                    "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
+                    os.toString("UTF-8"));
+        }
+        
+        {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            html.toBigOutputStream(os, false, StandardCharsets.UTF_8);
+            Assert.assertEquals(
+                    "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
+                    os.toString("UTF-8"));
+        }
+        
+        {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            html.toBigOutputStream(os, true, StandardCharsets.UTF_8.name());
+            Assert.assertEquals(
+                    "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
+                    os.toString("UTF-8"));
+        }
+        
+        {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            html.toBigOutputStream(os, false, StandardCharsets.UTF_8.name());
+            Assert.assertEquals(
+                    "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
+                    os.toString("UTF-8"));
+        }
+        
+        html.setPrependDocType(false);
+        
+        {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            html.toBigOutputStream(os, false);
+            Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                    os.toString());
+        }
+        {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            html.toBigOutputStream(os);
+            Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                    os.toString());
+        }
+        {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            html.toBigOutputStream(os, true);
+            Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                    os.toString());
+        }
+        {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            html.toBigOutputStream(os, StandardCharsets.UTF_8);
+            Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                    os.toString("UTF-8"));
+        }
+        {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            html.toBigOutputStream(os, StandardCharsets.UTF_8.name());
+            Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                    os.toString("UTF-8"));
+        }
+        {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            html.toBigOutputStream(os, true, StandardCharsets.UTF_8);
+            Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                    os.toString("UTF-8"));
+        }
+        {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            html.toBigOutputStream(os, false, StandardCharsets.UTF_8);
+            Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                    os.toString("UTF-8"));
+        }
+        {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            html.toBigOutputStream(os, true, StandardCharsets.UTF_8.name());
+            Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                    os.toString("UTF-8"));
+        }
+        {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            html.toBigOutputStream(os, false, StandardCharsets.UTF_8.name());
+            Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                    os.toString("UTF-8"));
+        }
+        
+    }
+    
+    @Test
     public void testBigHtmlToStringSetPrependDocType() throws IOException {
         
         Html html = new Html(null) {
