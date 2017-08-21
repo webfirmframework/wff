@@ -1131,8 +1131,27 @@ public abstract class AbstractHtml extends AbstractJsObject {
         return children;
     }
 
+    /**
+     * Removes all current children and adds the given children under this tag.
+     * Unlike setter methods, it will not reuse the given set object but it will
+     * copy all children from the given set object. <br>
+     *
+     * Note:- This method can
+     *
+     * @param children
+     *            which will be set as the children tag after removing all
+     *            current children. Empty set or null will remove all current
+     *            children from this tag.
+     * @since 2.1.12
+     *
+     * @author WFF
+     */
     public void setChildren(final Set<AbstractHtml> children) {
-        this.children = children;
+        if (children == null || children.size() == 0) {
+            removeAllChildren();
+        } else {
+            addInnerHtmls(children.toArray(new AbstractHtml[children.size()]));
+        }
     }
 
     /**
@@ -1141,7 +1160,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @return the opening tag of this object
      * @author WFF
      */
-    public String getOpeningTag() {
+    public final String getOpeningTag() {
         if (isRebuild() || isModified()) {
             buildOpeningTag(true);
         }
