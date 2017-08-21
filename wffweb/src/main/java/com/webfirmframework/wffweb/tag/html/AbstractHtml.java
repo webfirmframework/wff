@@ -1183,15 +1183,18 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     protected String getPrintStructure(final boolean rebuild) {
         if (rebuild || isRebuild() || isModified()) {
-            beforePrintStructure();
-            if (tagBuilder.length() > 0) {
-                tagBuilder.delete(0, tagBuilder.length());
+            synchronized (tagBuilder) {
+                beforePrintStructure();
+                if (tagBuilder.length() > 0) {
+                    tagBuilder.delete(0, tagBuilder.length());
+                }
+                recurChildren(tagBuilder,
+                        new LinkedHashSet<AbstractHtml>(Arrays.asList(this)),
+                        true);
+                setRebuild(false);
+                tagBuilder.trimToSize();
             }
-            recurChildren(tagBuilder,
-                    new LinkedHashSet<AbstractHtml>(Arrays.asList(this)), true);
-            setRebuild(false);
         }
-        tagBuilder.trimToSize();
         return tagBuilder.toString();
     }
 
@@ -1248,6 +1251,196 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 tagBuilder.append(child.closingTag);
             }
         }
+    }
+
+    /**
+     * Use this method to produce HTML from very heavy and complicated tag
+     * hierarchy. For normal and simple HTML hierarchy use {@code toHtmlString}
+     * method which is faster than this method. The advantage of
+     * {@code toBigHtmlString} over {@code toHtmlString} is it will never throw
+     * {@code StackOverflowError}. <br>
+     * NB:- this method has not been undergone all testing process.
+     *
+     * @return the HTML string similar to toHtmlString method.
+     * @since 2.1.12
+     * @author WFF
+     */
+    public String toBigHtmlString() {
+
+        final String printStructure = getPrintStructureWithoutRecursive(
+                getSharedObject().isChildModified());
+
+        if (parent == null) {
+            sharedObject.setChildModified(false);
+        }
+
+        return printStructure;
+    }
+
+    /**
+     * Use this method to produce HTML from very heavy and complicated tag
+     * hierarchy. For normal and simple HTML hierarchy use {@code toHtmlString}
+     * method which is faster than this method. The advantage of
+     * {@code toBigHtmlString} over {@code toHtmlString} is it will never throw
+     * {@code StackOverflowError}. <br>
+     * NB:- this method has not been undergone all testing process.
+     *
+     * @param rebuild
+     *            true to rebuild the tag hierarchy or false to return from
+     *            cache if available.
+     * @return the HTML string similar to toHtmlString method.
+     * @since 2.1.12
+     * @author WFF
+     */
+    public String toBigHtmlString(final boolean rebuild) {
+        return getPrintStructureWithoutRecursive(rebuild);
+    }
+
+    private String getPrintStructureWithoutRecursive(final boolean rebuild) {
+        if (rebuild || isRebuild() || isModified()) {
+            synchronized (tagBuilder) {
+                beforePrintStructure();
+                if (tagBuilder.length() > 0) {
+                    tagBuilder.delete(0, tagBuilder.length());
+                }
+
+                appendPrintStructureWithoutRecursive(tagBuilder, this, true);
+                setRebuild(false);
+                tagBuilder.trimToSize();
+            }
+        }
+
+        return tagBuilder.toString();
+    }
+
+    private static void appendPrintStructureWithoutRecursive(
+            final StringBuilder builder, final AbstractHtml topBase,
+            final boolean rebuild) {
+
+        AbstractHtml current = topBase;
+
+        while (current != null) {
+
+            final AbstractHtml child = current;
+            current = null;
+
+            final AbstractHtml bottomChild = appendOpeningTagAndReturnBottomTag(
+                    builder, child, rebuild);
+
+            builder.append(bottomChild.closingTag);
+
+            if (topBase.equals(bottomChild)) {
+                break;
+            }
+
+            final List<AbstractHtml> childrenHoldingBottomChild = new LinkedList<AbstractHtml>(
+                    bottomChild.parent.children);
+
+            final int indexOfBottomChild = childrenHoldingBottomChild
+                    .indexOf(bottomChild);
+            final int indexOfNextToBottomChild = indexOfBottomChild + 1;
+
+            if (indexOfNextToBottomChild < childrenHoldingBottomChild.size()) {
+                final AbstractHtml nextToBottomChild = childrenHoldingBottomChild
+                        .get(indexOfNextToBottomChild);
+                current = nextToBottomChild;
+            } else {
+
+                if (bottomChild.parent.parent == null) {
+                    builder.append(bottomChild.parent.closingTag);
+                    break;
+                }
+
+                final List<AbstractHtml> childrenHoldingParent = new LinkedList<AbstractHtml>(
+                        bottomChild.parent.parent.children);
+
+                final int indexOfBottomParent = childrenHoldingParent
+                        .indexOf(bottomChild.parent);
+                final int indexOfNextToBottomParent = indexOfBottomParent + 1;
+
+                if (indexOfNextToBottomParent < childrenHoldingParent.size()) {
+                    builder.append(bottomChild.parent.closingTag);
+
+                    if (topBase.equals(bottomChild.parent)) {
+                        break;
+                    }
+
+                    final AbstractHtml nextToParent = childrenHoldingParent
+                            .get(indexOfNextToBottomParent);
+                    current = nextToParent;
+                } else {
+                    current = appendClosingTagUptoRootReturnFirstMiddleChild(
+                            builder, topBase, bottomChild);
+                }
+
+            }
+
+        }
+
+    }
+
+    private static AbstractHtml appendOpeningTagAndReturnBottomTag(
+            final StringBuilder builder, final AbstractHtml base,
+            final boolean rebuild) {
+
+        AbstractHtml bottomChild = base;
+
+        Set<AbstractHtml> current = new HashSet<AbstractHtml>(1);
+        current.add(base);
+
+        while (current != null) {
+
+            final Set<AbstractHtml> children = current;
+            current = null;
+
+            for (final AbstractHtml child : children) {
+
+                child.setRebuild(rebuild);
+                builder.append(child.getOpeningTag());
+                bottomChild = child;
+
+                final Set<AbstractHtml> subChildren = child.children;
+                if (subChildren != null && subChildren.size() > 0) {
+                    current = subChildren;
+                }
+                break;
+            }
+
+        }
+
+        return bottomChild;
+    }
+
+    private static AbstractHtml appendClosingTagUptoRootReturnFirstMiddleChild(
+            final StringBuilder builder, final AbstractHtml topBase,
+            final AbstractHtml bottomChild) {
+
+        AbstractHtml current = bottomChild;
+
+        while (current != null) {
+            final AbstractHtml child = current;
+
+            current = null;
+
+            if (child.parent != null) {
+                final List<AbstractHtml> childrenHoldingChild = new LinkedList<AbstractHtml>(
+                        child.parent.children);
+                final int indexOfChild = childrenHoldingChild.indexOf(child);
+
+                if ((indexOfChild + 1) < childrenHoldingChild.size()) {
+
+                    return childrenHoldingChild.get(indexOfChild + 1);
+                } else {
+                    builder.append(child.parent.closingTag);
+                    if (topBase.equals(child.parent)) {
+                        break;
+                    }
+                    current = child.parent;
+
+                }
+            }
+        }
+        return null;
     }
 
     /**

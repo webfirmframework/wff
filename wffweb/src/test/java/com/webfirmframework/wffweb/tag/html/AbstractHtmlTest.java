@@ -29,7 +29,6 @@ import com.webfirmframework.wffweb.NoParentException;
 import com.webfirmframework.wffweb.css.Color;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.Name;
-import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.global.ClassAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Style;
@@ -37,6 +36,7 @@ import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
 import com.webfirmframework.wffweb.tag.html.metainfo.Head;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Span;
+import com.webfirmframework.wffweb.tag.htmlwff.CustomTag;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 import com.webfirmframework.wffweb.tag.repository.TagRepository;
 
@@ -670,5 +670,112 @@ public class AbstractHtmlTest {
         }
         
     }
+    
+    @Test
+    public void testToBigHtmlString() throws Exception {
+        
+            CustomTag tag = new CustomTag("tag1", null) {{
+                new CustomTag("tag2", this) {{
+                    new CustomTag("tag3", this) {{
+                        
+                    }}; 
+                }};
+                new CustomTag("tag4", this) {{
+                    new CustomTag("tag5", this) {{
+                        new CustomTag("tag6", this) {{
+                            
+                            new CustomTag("tag8", this);
+                            
+                            new CustomTag("tag7", this) {{
+                                new CustomTag("tag9", this) {{
+                                    
+                                }};
+                                new CustomTag("tag10", this) {{
+                                    
+                                }};
+                            }};
+                           
+                        }}; 
+                    }}; 
+                }};
+                
+                new CustomTag("middle", this);
+                new CustomTag("middle2", this).addInnerHtml(new NoTag(null, "This is inner content"));
+                new CustomTag("middle3", this) {{
+                    new NoTag(this, "line1");
+                    new NoTag(this, "line2");
+                    new NoTag(this, "line3");
+                    new NoTag(this, "line4");
+                    new NoTag(this, "line5");
+                }};
+                
+                new CustomTag("tag44", this) {{
+                    new CustomTag("tag55", this) {{
+                        new CustomTag("tag66", this) {{
+                            
+                            new CustomTag("tag88", this);
+                            
+                            new CustomTag("tag77", this) {{
+                                new CustomTag("tag99", this) {{
+                                    
+                                }};
+                                new CustomTag("tag100", this) {{
+                                    
+                                }};
+                            }};
+                           
+                        }}; 
+                    }}; 
+                }};
+            }};
+            
+            assertEquals("<tag1><tag2><tag3></tag3></tag2><tag4><tag5><tag6><tag8></tag8><tag7><tag9></tag9><tag10></tag10></tag7></tag6></tag5></tag4><middle></middle><middle2>This is inner content</middle2><middle3>line1line2line3line4line5</middle3><tag44><tag55><tag66><tag88></tag88><tag77><tag99></tag99><tag100></tag100></tag77></tag66></tag55></tag44></tag1>", tag.toBigHtmlString(true));
+            
+            CustomTag customTag = (CustomTag) TagRepository.findOneTagByTagName("tag4", tag);
+            
+            assertEquals("<tag4><tag5><tag6><tag8></tag8><tag7><tag9></tag9><tag10></tag10></tag7></tag6></tag5></tag4>", customTag.toBigHtmlString(true));
+            
+            CustomTag middle3 = (CustomTag) TagRepository.findOneTagByTagName("middle3", tag);
+            assertEquals("<middle3>line1line2line3line4line5</middle3>", middle3.toBigHtmlString(true));
+            
+    }
+    
+    
+    @Test
+    public void testToBigHtmlStringNoStackoverflowError() throws Exception {
+        Html html = new Html(null) {{
+            new Head(this) {{
+                new TitleTag(this){{
+                    new NoTag(this, "some title");
+                }};
+            }};
+            new Body(this, new Id("one")) {{
+                new NoTag(this, "something here");
+                CustomTag previous = new CustomTag("ctag", this);
+                for (int i = 0; i < 100; i++) {
+                    previous = new CustomTag("ctag" + i, previous);
+                    new Span(this);
+                }
+                new Span(previous).addAttributes(new Name("wffweb"));
+                
+            }};
+        }};
+//        System.out.println(html.toHtmlString());
+        {
+            long before = System.currentTimeMillis();
+            System.out.println(html.toHtmlString(true));
+            long after = System.currentTimeMillis();
+            System.out.println("total time taken toHtmlString: " + (after - before));
+        }
+        {
+            long before = System.currentTimeMillis();
+            System.out.println(html.toBigHtmlString(true));
+            long after = System.currentTimeMillis();
+            System.out.println("total time taken for toBigHtmlString: " + (after - before));
+        }
+        
+    }
+    
+    
 
 }

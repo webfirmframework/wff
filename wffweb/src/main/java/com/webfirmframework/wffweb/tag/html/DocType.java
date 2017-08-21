@@ -62,6 +62,37 @@ public abstract class DocType extends AbstractHtml {
 
     /*
      * (non-Javadoc)
+     * 
+     * @see com.webfirmframework.wffweb.tag.html.AbstractHtml#toBigHtmlString()
+     */
+    @Override
+    public String toBigHtmlString() {
+        if (prependDocType) {
+            return new String((docTypeTag + "\n" + super.toBigHtmlString())
+                    .getBytes(getCharset()), getCharset());
+        }
+        return super.toBigHtmlString();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.webfirmframework.wffweb.tag.html.AbstractHtml#toBigHtmlString(
+     * boolean)
+     */
+    @Override
+    public String toBigHtmlString(final boolean rebuild) {
+        if (prependDocType) {
+            return new String(
+                    (docTypeTag + "\n" + super.toBigHtmlString(rebuild))
+                            .getBytes(getCharset()),
+                    getCharset());
+        }
+        return super.toBigHtmlString(rebuild);
+    }
+
+    /*
+     * (non-Javadoc)
      *
      * @see
      * com.webfirmframework.wffweb.tag.html.AbstractHtml#toHtmlString(java.nio.

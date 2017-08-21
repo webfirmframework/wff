@@ -123,6 +123,102 @@ public class HtmlTest {
                 html.toHtmlString(false, StandardCharsets.UTF_8.name()));
 
     }
+    
+    @Test
+    public void testBigHtmlToStringSetPrependDocType() throws IOException {
+        
+        Html html = new Html(null) {
+            {
+                new Div(this, new Id("id"));
+            }
+        };
+        
+        Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                html.toHtmlString());
+        
+        Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                html.toHtmlString(true));
+        Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                html.toHtmlString(false));
+        
+        Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                html.toBigHtmlString(true));
+        
+        Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                html.toBigHtmlString());
+        
+        Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                html.toBigHtmlString(true));
+        Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                html.toBigHtmlString(false));
+        
+        Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                html.toBigHtmlString(true));
+        Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                html.toBigHtmlString(false));
+        
+        html.setPrependDocType(true);
+        
+        Assert.assertEquals(
+                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
+                html.toBigHtmlString(false));
+        
+        Assert.assertEquals(
+                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
+                html.toBigHtmlString());
+        
+        Assert.assertEquals(
+                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
+                html.toBigHtmlString(true));
+        
+        Assert.assertEquals(
+                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
+                html.toBigHtmlString());
+        
+        Assert.assertEquals(
+                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
+                html.toBigHtmlString());
+        
+        Assert.assertEquals(
+                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
+                html.toBigHtmlString(true));
+        Assert.assertEquals(
+                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
+                html.toBigHtmlString(false));
+        
+        Assert.assertEquals(
+                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
+                html.toBigHtmlString(true));
+        Assert.assertEquals(
+                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
+                html.toBigHtmlString(false));
+        
+        html.setPrependDocType(false);
+        
+        Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                html.toBigHtmlString(false));
+        Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                html.toBigHtmlString());
+        Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                html.toBigHtmlString(true));
+        
+        Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                html.toBigHtmlString());
+        
+        Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                html.toBigHtmlString());
+        
+        Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                html.toBigHtmlString(true));
+        Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                html.toBigHtmlString(false));
+        
+        Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                html.toBigHtmlString(true));
+        Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                html.toBigHtmlString(false));
+        
+    }
 
     @Test
     public void testHtmlToOutputStreamSetPrependDocType() throws IOException {
