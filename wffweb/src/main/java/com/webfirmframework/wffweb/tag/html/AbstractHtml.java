@@ -1142,8 +1142,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *            which will be set as the children tag after removing all
      *            current children. Empty set or null will remove all current
      *            children from this tag.
-     * @since 2.1.12
-     *
+     * @since 2.1.12 proper implementation is available since 2.1.12
      * @author WFF
      */
     public void setChildren(final Set<AbstractHtml> children) {
