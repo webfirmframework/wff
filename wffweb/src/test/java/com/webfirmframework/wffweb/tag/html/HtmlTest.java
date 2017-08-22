@@ -24,6 +24,7 @@ import org.junit.Test;
 
 import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
+import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Span;
 
 @SuppressWarnings("serial")
 public class HtmlTest {
@@ -123,7 +124,7 @@ public class HtmlTest {
                 html.toHtmlString(false, StandardCharsets.UTF_8.name()));
 
     }
-    
+
     @Test
     public void testHtmlToBigOutputStreamSetPrependDocType()
             throws IOException {
@@ -335,101 +336,116 @@ public class HtmlTest {
         }
 
     }
-    
+
     @Test
-    public void testBigHtmlToStringSetPrependDocType() throws IOException {
-        
+    public void testBigHtmlToStringSetPrependDocType() {
+
+        {
+            Html html = new Html(null);
+            Assert.assertEquals("<html></html>", html.toBigHtmlString(true));
+            html.setPrependDocType(true);
+            Assert.assertEquals("<!DOCTYPE html>\n<html></html>",
+                    html.toBigHtmlString(true));
+        }
+        {
+            Div div = new Div(null);
+            Assert.assertEquals("<div></div>", div.toBigHtmlString(true));
+            div.appendChild(new Span(null));
+            Assert.assertEquals("<div><span></span></div>",
+                    div.toBigHtmlString(true));
+        }
+
         Html html = new Html(null) {
             {
                 new Div(this, new Id("id"));
             }
         };
-        
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                html.toHtmlString());
-        
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                html.toHtmlString(true));
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                html.toHtmlString(false));
-        
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                html.toBigHtmlString(true));
-        
+
         Assert.assertEquals("<html><div id=\"id\"></div></html>",
                 html.toBigHtmlString());
-        
+
         Assert.assertEquals("<html><div id=\"id\"></div></html>",
                 html.toBigHtmlString(true));
         Assert.assertEquals("<html><div id=\"id\"></div></html>",
                 html.toBigHtmlString(false));
-        
+
+        Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                html.toBigHtmlString(true));
+
+        Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                html.toBigHtmlString());
+
         Assert.assertEquals("<html><div id=\"id\"></div></html>",
                 html.toBigHtmlString(true));
         Assert.assertEquals("<html><div id=\"id\"></div></html>",
                 html.toBigHtmlString(false));
-        
+
+        Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                html.toBigHtmlString(true));
+        Assert.assertEquals("<html><div id=\"id\"></div></html>",
+                html.toBigHtmlString(false));
+
         html.setPrependDocType(true);
-        
+
         Assert.assertEquals(
                 "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
                 html.toBigHtmlString(false));
-        
+
         Assert.assertEquals(
                 "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
                 html.toBigHtmlString());
-        
+
         Assert.assertEquals(
                 "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
                 html.toBigHtmlString(true));
-        
+
         Assert.assertEquals(
                 "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
                 html.toBigHtmlString());
-        
+
         Assert.assertEquals(
                 "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
                 html.toBigHtmlString());
-        
-        Assert.assertEquals(
-                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
-                html.toBigHtmlString(true));
-        Assert.assertEquals(
-                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
-                html.toBigHtmlString(false));
-        
+
         Assert.assertEquals(
                 "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
                 html.toBigHtmlString(true));
         Assert.assertEquals(
                 "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
                 html.toBigHtmlString(false));
-        
+
+        Assert.assertEquals(
+                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
+                html.toBigHtmlString(true));
+        Assert.assertEquals(
+                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
+                html.toBigHtmlString(false));
+
         html.setPrependDocType(false);
-        
+
         Assert.assertEquals("<html><div id=\"id\"></div></html>",
                 html.toBigHtmlString(false));
         Assert.assertEquals("<html><div id=\"id\"></div></html>",
                 html.toBigHtmlString());
         Assert.assertEquals("<html><div id=\"id\"></div></html>",
                 html.toBigHtmlString(true));
-        
+
         Assert.assertEquals("<html><div id=\"id\"></div></html>",
                 html.toBigHtmlString());
-        
+
         Assert.assertEquals("<html><div id=\"id\"></div></html>",
                 html.toBigHtmlString());
-        
+
         Assert.assertEquals("<html><div id=\"id\"></div></html>",
                 html.toBigHtmlString(true));
         Assert.assertEquals("<html><div id=\"id\"></div></html>",
                 html.toBigHtmlString(false));
-        
+
         Assert.assertEquals("<html><div id=\"id\"></div></html>",
                 html.toBigHtmlString(true));
         Assert.assertEquals("<html><div id=\"id\"></div></html>",
                 html.toBigHtmlString(false));
-        
+
     }
 
     @Test
