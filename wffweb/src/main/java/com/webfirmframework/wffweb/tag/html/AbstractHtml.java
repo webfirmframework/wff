@@ -1517,9 +1517,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
             final List<AbstractHtml> childrenHoldingBottomChild = new ArrayList<AbstractHtml>(
                     bottomChild.parent.children);
 
-            final int indexOfBottomChild = childrenHoldingBottomChild
-                    .indexOf(bottomChild);
-            final int indexOfNextToBottomChild = indexOfBottomChild + 1;
+            final int indexOfNextToBottomChild = childrenHoldingBottomChild
+                    .indexOf(bottomChild) + 1;
 
             if (indexOfNextToBottomChild < childrenHoldingBottomChild.size()) {
                 final AbstractHtml nextToBottomChild = childrenHoldingBottomChild
@@ -1535,9 +1534,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 final List<AbstractHtml> childrenHoldingParent = new ArrayList<AbstractHtml>(
                         bottomChild.parent.parent.children);
 
-                final int indexOfBottomParent = childrenHoldingParent
-                        .indexOf(bottomChild.parent);
-                final int indexOfNextToBottomParent = indexOfBottomParent + 1;
+                final int indexOfNextToBottomParent = childrenHoldingParent
+                        .indexOf(bottomChild.parent) + 1;
 
                 if (indexOfNextToBottomParent < childrenHoldingParent.size()) {
                     builder.append(bottomChild.parent.closingTag);
@@ -1600,9 +1598,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
             final List<AbstractHtml> childrenHoldingBottomChild = new ArrayList<AbstractHtml>(
                     bottomChild.parent.children);
 
-            final int indexOfBottomChild = childrenHoldingBottomChild
-                    .indexOf(bottomChild);
-            final int indexOfNextToBottomChild = indexOfBottomChild + 1;
+            final int indexOfNextToBottomChild = childrenHoldingBottomChild
+                    .indexOf(bottomChild) + 1;
 
             if (indexOfNextToBottomChild < childrenHoldingBottomChild.size()) {
                 final AbstractHtml nextToBottomChild = childrenHoldingBottomChild
@@ -1625,9 +1622,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 final List<AbstractHtml> childrenHoldingParent = new ArrayList<AbstractHtml>(
                         bottomChild.parent.parent.children);
 
-                final int indexOfBottomParent = childrenHoldingParent
-                        .indexOf(bottomChild.parent);
-                final int indexOfNextToBottomParent = indexOfBottomParent + 1;
+                final int indexOfNextToBottomParent = childrenHoldingParent
+                        .indexOf(bottomChild.parent) + 1;
 
                 if (indexOfNextToBottomParent < childrenHoldingParent.size()) {
 
