@@ -1741,11 +1741,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
             if (child.parent != null) {
                 final List<AbstractHtml> childrenHoldingChild = new LinkedList<AbstractHtml>(
                         child.parent.children);
-                final int indexOfChild = childrenHoldingChild.indexOf(child);
-
-                if ((indexOfChild + 1) < childrenHoldingChild.size()) {
-
-                    return childrenHoldingChild.get(indexOfChild + 1);
+                final int nextIndexOfChild = childrenHoldingChild.indexOf(child)
+                        + 1;
+                if (nextIndexOfChild < childrenHoldingChild.size()) {
+                    return childrenHoldingChild.get(nextIndexOfChild);
                 } else {
                     builder.append(child.parent.closingTag);
                     if (topBase.equals(child.parent)) {
@@ -1774,11 +1773,11 @@ public abstract class AbstractHtml extends AbstractJsObject {
             if (child.parent != null) {
                 final List<AbstractHtml> childrenHoldingChild = new LinkedList<AbstractHtml>(
                         child.parent.children);
-                final int indexOfChild = childrenHoldingChild.indexOf(child);
 
-                if ((indexOfChild + 1) < childrenHoldingChild.size()) {
-
-                    return childrenHoldingChild.get(indexOfChild + 1);
+                final int nextIndexOfChild = childrenHoldingChild.indexOf(child)
+                        + 1;
+                if (nextIndexOfChild < childrenHoldingChild.size()) {
+                    return childrenHoldingChild.get(nextIndexOfChild);
                 } else {
                     final byte[] closingTagBytes = child.parent.closingTag
                             .getBytes(charset);
