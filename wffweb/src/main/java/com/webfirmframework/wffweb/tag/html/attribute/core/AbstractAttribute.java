@@ -708,9 +708,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     @Override
     public void setModified(final boolean modified) {
         super.setModified(modified);
-
-        for (final AbstractHtml ownerTag : ownerTags) {
-            if (ownerTag.getSharedObject() != null) {
+        if (modified) {
+            for (final AbstractHtml ownerTag : ownerTags) {
+                ownerTag.setModified(modified);
                 ownerTag.getSharedObject().setChildModified(modified);
             }
         }

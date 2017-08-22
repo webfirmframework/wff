@@ -17,9 +17,10 @@
 package com.webfirmframework.wffweb.tag.html.model;
 
 import java.io.Serializable;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -49,7 +50,7 @@ public class AbstractHtml5SharedObject implements Serializable {
 
     private boolean childModified;
 
-    private volatile Set<AbstractTagBase> rebuiltTags;
+    private transient volatile Set<AbstractTagBase> rebuiltTags;
 
     private ChildTagAppendListener childTagAppendListener;
 
@@ -146,7 +147,8 @@ public class AbstractHtml5SharedObject implements Serializable {
     }
 
     /**
-     * set true if any of the children has been modified
+     * set true if any of the children has been modified.<br>
+     * NB:- it's for internal use
      *
      * @param childModified
      *            the childModified to set
@@ -159,14 +161,19 @@ public class AbstractHtml5SharedObject implements Serializable {
 
     /**
      * gets the set containing the objects which are rebuilt after modified by
-     * its {@code AbstractTagBase} method.
+     * its {@code AbstractTagBase} method. NB:- only for internal use. currently
+     * it's not used anywhere
      *
      * @return the rebuiltTags
      * @since 1.0.0
      * @author WFF
+     * @deprecated only for internal use currently it's not used anywhere. Needs
+     *             to remove this method later.
      */
+    @Deprecated
     public Set<AbstractTagBase> getRebuiltTags(final Object accessObject) {
 
+        // TODO remove this method later
         if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML
                 .equals(accessObject.getClass().getName()))) {
             throw new WffSecurityException(
@@ -176,7 +183,8 @@ public class AbstractHtml5SharedObject implements Serializable {
         if (rebuiltTags == null) {
             synchronized (this) {
                 if (rebuiltTags == null) {
-                    rebuiltTags = new HashSet<AbstractTagBase>();
+                    rebuiltTags = Collections.newSetFromMap(
+                            new WeakHashMap<AbstractTagBase, Boolean>());
                 }
             }
         }

@@ -63,6 +63,37 @@ public abstract class DocType extends AbstractHtml {
     /*
      * (non-Javadoc)
      *
+     * @see com.webfirmframework.wffweb.tag.html.AbstractHtml#toBigHtmlString()
+     */
+    @Override
+    public String toBigHtmlString() {
+        if (prependDocType) {
+            return new String((docTypeTag + "\n" + super.toBigHtmlString())
+                    .getBytes(getCharset()), getCharset());
+        }
+        return super.toBigHtmlString();
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.webfirmframework.wffweb.tag.html.AbstractHtml#toBigHtmlString(
+     * boolean)
+     */
+    @Override
+    public String toBigHtmlString(final boolean rebuild) {
+        if (prependDocType) {
+            return new String(
+                    (docTypeTag + "\n" + super.toBigHtmlString(rebuild))
+                            .getBytes(getCharset()),
+                    getCharset());
+        }
+        return super.toBigHtmlString(rebuild);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
      * @see
      * com.webfirmframework.wffweb.tag.html.AbstractHtml#toHtmlString(java.nio.
      * charset.Charset)
@@ -335,6 +366,125 @@ public abstract class DocType extends AbstractHtml {
             docTypeTagLength = docTypeTagBytes.length;
         }
         return docTypeTagLength + super.toOutputStream(os, rebuild, cs);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * com.webfirmframework.wffweb.tag.html.AbstractHtml#toBigOutputStream(java.
+     * io.OutputStream)
+     */
+    @Override
+    public int toBigOutputStream(final OutputStream os) throws IOException {
+        int docTypeTagLength = 0;
+        if (prependDocType) {
+            final byte[] docTypeTagBytes = (docTypeTag + "\n")
+                    .getBytes(getCharset());
+            os.write(docTypeTagBytes);
+            docTypeTagLength = docTypeTagBytes.length;
+        }
+        return docTypeTagLength + super.toBigOutputStream(os);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * com.webfirmframework.wffweb.tag.html.AbstractHtml#toBigOutputStream(java.
+     * io.OutputStream, boolean)
+     */
+    @Override
+    public int toBigOutputStream(final OutputStream os, final boolean rebuild)
+            throws IOException {
+        int docTypeTagLength = 0;
+        if (prependDocType) {
+            final byte[] docTypeTagBytes = (docTypeTag + "\n")
+                    .getBytes(getCharset());
+            os.write(docTypeTagBytes);
+            docTypeTagLength = docTypeTagBytes.length;
+        }
+        return docTypeTagLength + super.toBigOutputStream(os, rebuild);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * com.webfirmframework.wffweb.tag.html.AbstractHtml#toBigOutputStream(java.
+     * io.OutputStream, java.nio.charset.Charset)
+     */
+    @Override
+    public int toBigOutputStream(final OutputStream os, final Charset charset)
+            throws IOException {
+        int docTypeTagLength = 0;
+        if (prependDocType) {
+            final byte[] docTypeTagBytes = (docTypeTag + "\n")
+                    .getBytes(charset);
+            os.write(docTypeTagBytes);
+            docTypeTagLength = docTypeTagBytes.length;
+        }
+        return docTypeTagLength + super.toBigOutputStream(os, charset);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * com.webfirmframework.wffweb.tag.html.AbstractHtml#toBigOutputStream(java.
+     * io.OutputStream, java.lang.String)
+     */
+    @Override
+    public int toBigOutputStream(final OutputStream os, final String charset)
+            throws IOException {
+        int docTypeTagLength = 0;
+        final Charset cs = Charset.forName(charset);
+        if (prependDocType) {
+            final byte[] docTypeTagBytes = (docTypeTag + "\n").getBytes(cs);
+            os.write(docTypeTagBytes);
+            docTypeTagLength = docTypeTagBytes.length;
+        }
+        return docTypeTagLength + super.toBigOutputStream(os, cs);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * com.webfirmframework.wffweb.tag.html.AbstractHtml#toBigOutputStream(java.
+     * io.OutputStream, boolean, java.nio.charset.Charset)
+     */
+    @Override
+    public int toBigOutputStream(final OutputStream os, final boolean rebuild,
+            final Charset charset) throws IOException {
+        int docTypeTagLength = 0;
+        if (prependDocType) {
+            final byte[] docTypeTagBytes = (docTypeTag + "\n")
+                    .getBytes(charset);
+            os.write(docTypeTagBytes);
+            docTypeTagLength = docTypeTagBytes.length;
+        }
+        return docTypeTagLength + super.toBigOutputStream(os, rebuild, charset);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * com.webfirmframework.wffweb.tag.html.AbstractHtml#toBigOutputStream(java.
+     * io.OutputStream, boolean, java.lang.String)
+     */
+    @Override
+    public int toBigOutputStream(final OutputStream os, final boolean rebuild,
+            final String charset) throws IOException {
+        int docTypeTagLength = 0;
+        final Charset cs = Charset.forName(charset);
+        if (prependDocType) {
+            final byte[] docTypeTagBytes = (docTypeTag + "\n").getBytes(cs);
+            os.write(docTypeTagBytes);
+            docTypeTagLength = docTypeTagBytes.length;
+        }
+        return docTypeTagLength + super.toBigOutputStream(os, rebuild, cs);
     }
 
     /*

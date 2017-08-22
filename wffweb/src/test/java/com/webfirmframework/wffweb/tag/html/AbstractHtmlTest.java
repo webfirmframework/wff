@@ -26,13 +26,17 @@ import org.junit.Test;
 
 import com.webfirmframework.wffweb.InvalidTagException;
 import com.webfirmframework.wffweb.NoParentException;
+import com.webfirmframework.wffweb.css.Color;
+import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.Name;
+import com.webfirmframework.wffweb.tag.html.attribute.global.ClassAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Style;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
 import com.webfirmframework.wffweb.tag.html.metainfo.Head;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Span;
+import com.webfirmframework.wffweb.tag.htmlwff.CustomTag;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 import com.webfirmframework.wffweb.tag.repository.TagRepository;
 
@@ -475,5 +479,428 @@ public class AbstractHtmlTest {
         assertTrue(div.getSharedData().equals(head.getSharedData()));
         
     }
+    
+    @Test
+    public void testToString1() throws Exception {
+        Html html = new Html(null) {{
+            new Head(this) {{
+                new TitleTag(this){{
+                    new NoTag(this, "some title");
+                }};
+            }};
+            new Body(this, new Id("one")) {{
+                
+                new Span(this);
+                new Br(this);
+                new Br(this);
+                new Span(this);
+                
+                new Div(this);
+                new Div(this) {{
+                    new Div(this) {{
+                        new Div(this);
+                    }};
+                }};
+                new Div(this);
+            }};
+        }};
+        
+        TitleTag titleTag = TagRepository.findOneTagAssignableToTag(TitleTag.class, html);
+        assertEquals("<title>some title</title>", titleTag.toHtmlString());
+        titleTag.addInnerHtml(new NoTag(null, "Title changed"));
+        
+        assertEquals("<title>Title changed</title>", titleTag.toHtmlString());
+        titleTag.appendChild(new Div(null));
+        assertEquals("<title>Title changed<div></div></title>", titleTag.toHtmlString());
+        titleTag.addInnerHtml(new Div(null));
+        assertEquals("<title><div></div></title>", titleTag.toHtmlString());
+    }
+    
+    @Test
+    public void testToString2() throws Exception {
+        Div div = new Div(null, new Id("one")) {{
+            new Span(this, new Id("five")) {{
+                new Div(this, new Id("three"));
+            }};
+        }};
+        
+        assertEquals("<div id=\"one\"><span id=\"five\"><div id=\"three\"></div></span></div>", div.toHtmlString());
+        Span span = TagRepository.findOneTagAssignableToTag(Span.class, div);
+        span.addInnerHtml(new NoTag(null, "Title changed"));
+        assertEquals("<div id=\"one\"><span id=\"five\">Title changed</span></div>", div.toHtmlString());
+        Id id = (Id) span.getAttributeByName(AttributeNameConstants.ID);
+        id.setValue(5);
+        assertEquals("<div id=\"one\"><span id=\"5\">Title changed</span></div>", div.toHtmlString());
+        span.addAttributes(new ClassAttribute("cls-five"));
+        assertEquals("<div id=\"one\"><span id=\"5\" class=\"cls-five\">Title changed</span></div>", div.toHtmlString());
+        span.removeAttributes(AttributeNameConstants.CLASS);
+        assertEquals("<div id=\"one\"><span id=\"5\">Title changed</span></div>", div.toHtmlString());
+        
+        {
+            Span span2 = new Span(null);
+            Style style = new Style("color:green");
+            span2.addAttributes(style);
+            span.appendChild(span2);
+            
+            
+            assertEquals("<div id=\"one\"><span id=\"5\">Title changed<span style=\"color:green;\"></span></span></div>", div.toHtmlString());
+            
+            style.addCssProperty("color", "blue");
+            assertEquals("<div id=\"one\"><span id=\"5\">Title changed<span style=\"color:blue;\"></span></span></div>", div.toHtmlString());
+            Color color = new Color("yellow");
+            style.addCssProperties(color);
+            assertEquals("<div id=\"one\"><span id=\"5\">Title changed<span style=\"color:yellow;\"></span></span></div>", div.toHtmlString());
+            color.setCssValue("orange");
+            assertEquals("<div id=\"one\"><span id=\"5\">Title changed<span style=\"color:orange;\"></span></span></div>", div.toHtmlString());
+        } 
+        {
+            Span span2 = new Span(null);
+            ClassAttribute cls = new ClassAttribute("cls-one");
+            span2.addAttributes(cls);
+            span.appendChild(span2);
+            assertEquals("<div id=\"one\"><span id=\"5\">Title changed<span style=\"color:orange;\"></span><span class=\"cls-one\"></span></span></div>", div.toHtmlString());
+            cls.addClassNames("cls-two");
+            assertEquals("<div id=\"one\"><span id=\"5\">Title changed<span style=\"color:orange;\"></span><span class=\"cls-one cls-two\"></span></span></div>", div.toHtmlString());
+            cls.addClassNames("abcd-cls");
+            assertEquals("<div id=\"one\"><span id=\"5\">Title changed<span style=\"color:orange;\"></span><span class=\"cls-one cls-two abcd-cls\"></span></span></div>", div.toHtmlString());
+        }
+        {
+            Span span2 = new Span(null);
+            Name name = new Name("webfirmframework");
+            span2.addAttributes(name);
+            span.appendChild(span2);
+            assertEquals("<div id=\"one\"><span id=\"5\">Title changed<span style=\"color:orange;\"></span><span class=\"cls-one cls-two abcd-cls\"></span><span name=\"webfirmframework\"></span></span></div>", div.toHtmlString());
+            name.setValue("wffweb");
+            assertEquals("<div id=\"one\"><span id=\"5\">Title changed<span style=\"color:orange;\"></span><span class=\"cls-one cls-two abcd-cls\"></span><span name=\"wffweb\"></span></span></div>", div.toHtmlString());
+            span2.removeAttributes(name);
+            assertEquals("<div id=\"one\"><span id=\"5\">Title changed<span style=\"color:orange;\"></span><span class=\"cls-one cls-two abcd-cls\"></span><span></span></span></div>", div.toHtmlString());
+        }
+        
+    }
+    
+    @Test
+    public void testToOutputStream1() throws Exception {
+        Html html = new Html(null) {{
+            new Head(this) {{
+                new TitleTag(this){{
+                    new NoTag(this, "some title");
+                }};
+            }};
+            new Body(this, new Id("one")) {{
+                
+                new Span(this);
+                new Br(this);
+                new Br(this);
+                new Span(this);
+                
+                new Div(this);
+                new Div(this) {{
+                    new Div(this) {{
+                        new Div(this);
+                    }};
+                }};
+                new Div(this);
+            }};
+        }};
+        
+        TitleTag titleTag = TagRepository.findOneTagAssignableToTag(TitleTag.class, html);
+        {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            titleTag.toOutputStream(outputStream);
+            assertEquals("<title>some title</title>", outputStream.toString());
+        }
+        {
+            titleTag.addInnerHtml(new NoTag(null, "Title changed"));
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            titleTag.toOutputStream(outputStream);
+            assertEquals("<title>Title changed</title>", outputStream.toString());
+        }
+        {
+            titleTag.appendChild(new Div(null));
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            titleTag.toOutputStream(outputStream);
+            assertEquals("<title>Title changed<div></div></title>", outputStream.toString());
+        }
+ 
+        {
+            titleTag.addInnerHtml(new Div(null));
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            titleTag.toOutputStream(outputStream);
+            assertEquals("<title><div></div></title>", outputStream.toString());
+        }
+    }
+    
+    @Test
+    public void testToOutputStream2() throws Exception {
+        Div div = new Div(null, new Id("one")) {{
+            new Span(this, new Id("five")) {{
+                new Div(this, new Id("three"));
+            }};
+        }};
+        {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            div.toOutputStream(outputStream);
+            assertEquals("<div id=\"one\"><span id=\"five\"><div id=\"three\"></div></span></div>", outputStream.toString());
+        }
+        Span span = TagRepository.findOneTagAssignableToTag(Span.class, div);
+        {
+            span.addInnerHtml(new NoTag(null, "Title changed"));
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            div.toOutputStream(outputStream);
+            assertEquals("<div id=\"one\"><span id=\"five\">Title changed</span></div>", outputStream.toString());
+        }
+        {
+            Id id = (Id) span.getAttributeByName(AttributeNameConstants.ID);
+            id.setValue(5);
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            div.toOutputStream(outputStream);
+            assertEquals("<div id=\"one\"><span id=\"5\">Title changed</span></div>", outputStream.toString());
+        }
+        {
+            span.addAttributes(new ClassAttribute("cls-five"));
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            div.toOutputStream(outputStream);
+            assertEquals("<div id=\"one\"><span id=\"5\" class=\"cls-five\">Title changed</span></div>", outputStream.toString());
+        }
+        {
+            span.removeAttributes(AttributeNameConstants.CLASS);
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            div.toOutputStream(outputStream);
+            assertEquals("<div id=\"one\"><span id=\"5\">Title changed</span></div>", outputStream.toString());
+        }
+        
+    }
+    
+    @Test
+    public void testToBigHtmlString() throws Exception {
+        
+            CustomTag tag = new CustomTag("tag1", null) {{
+                new CustomTag("tag2", this) {{
+                    new CustomTag("tag3", this) {{
+                        
+                    }}; 
+                }};
+                new CustomTag("tag4", this) {{
+                    new CustomTag("tag5", this) {{
+                        new CustomTag("tag6", this) {{
+                            
+                            new CustomTag("tag8", this);
+                            
+                            new CustomTag("tag7", this) {{
+                                new CustomTag("tag9", this) {{
+                                    
+                                }};
+                                new CustomTag("tag10", this) {{
+                                    
+                                }};
+                            }};
+                           
+                        }}; 
+                    }}; 
+                }};
+                
+                new CustomTag("middle", this);
+                new CustomTag("middle2", this).addInnerHtml(new NoTag(null, "This is inner content"));
+                new CustomTag("middle3", this) {{
+                    new NoTag(this, "line1");
+                    new NoTag(this, "line2");
+                    new NoTag(this, "line3");
+                    new NoTag(this, "line4");
+                    new NoTag(this, "line5");
+                }};
+                
+                new CustomTag("tag44", this) {{
+                    new CustomTag("tag55", this) {{
+                        new CustomTag("tag66", this) {{
+                            
+                            new CustomTag("tag88", this);
+                            
+                            new CustomTag("tag77", this) {{
+                                new CustomTag("tag99", this) {{
+                                    
+                                }};
+                                new CustomTag("tag100", this) {{
+                                    
+                                }};
+                            }};
+                           
+                        }}; 
+                    }}; 
+                }};
+            }};
+            
+            assertEquals("<tag1><tag2><tag3></tag3></tag2><tag4><tag5><tag6><tag8></tag8><tag7><tag9></tag9><tag10></tag10></tag7></tag6></tag5></tag4><middle></middle><middle2>This is inner content</middle2><middle3>line1line2line3line4line5</middle3><tag44><tag55><tag66><tag88></tag88><tag77><tag99></tag99><tag100></tag100></tag77></tag66></tag55></tag44></tag1>", tag.toBigHtmlString(true));
+            
+            CustomTag customTag = (CustomTag) TagRepository.findOneTagByTagName("tag4", tag);
+            
+            assertEquals("<tag4><tag5><tag6><tag8></tag8><tag7><tag9></tag9><tag10></tag10></tag7></tag6></tag5></tag4>", customTag.toBigHtmlString(true));
+            
+            CustomTag middle3 = (CustomTag) TagRepository.findOneTagByTagName("middle3", tag);
+            assertEquals("<middle3>line1line2line3line4line5</middle3>", middle3.toBigHtmlString(true));
+            
+    }
+    
+    @Test
+    public void testToBigOutputStream() throws Exception {
+        
+        CustomTag tag = new CustomTag("tag1", null) {{
+            new CustomTag("tag2", this) {{
+                new CustomTag("tag3", this) {{
+                    
+                }}; 
+            }};
+            new CustomTag("tag4", this) {{
+                new CustomTag("tag5", this) {{
+                    new CustomTag("tag6", this) {{
+                        
+                        new CustomTag("tag8", this);
+                        
+                        new CustomTag("tag7", this) {{
+                            new CustomTag("tag9", this) {{
+                                
+                            }};
+                            new CustomTag("tag10", this) {{
+                                
+                            }};
+                        }};
+                        
+                    }}; 
+                }}; 
+            }};
+            
+            new CustomTag("middle", this);
+            new CustomTag("middle2", this).addInnerHtml(new NoTag(null, "This is inner content"));
+            new CustomTag("middle3", this) {{
+                new NoTag(this, "line1");
+                new NoTag(this, "line2");
+                new NoTag(this, "line3");
+                new NoTag(this, "line4");
+                new NoTag(this, "line5");
+            }};
+            
+            new CustomTag("tag44", this) {{
+                new CustomTag("tag55", this) {{
+                    new CustomTag("tag66", this) {{
+                        
+                        new CustomTag("tag88", this);
+                        
+                        new CustomTag("tag77", this) {{
+                            new CustomTag("tag99", this) {{
+                                
+                            }};
+                            new CustomTag("tag100", this) {{
+                                
+                            }};
+                        }};
+                        
+                    }}; 
+                }}; 
+            }};
+        }};
+        
+        {
+
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            tag.toBigOutputStream(os, true);
+            assertEquals("<tag1><tag2><tag3></tag3></tag2><tag4><tag5><tag6><tag8></tag8><tag7><tag9></tag9><tag10></tag10></tag7></tag6></tag5></tag4><middle></middle><middle2>This is inner content</middle2><middle3>line1line2line3line4line5</middle3><tag44><tag55><tag66><tag88></tag88><tag77><tag99></tag99><tag100></tag100></tag77></tag66></tag55></tag44></tag1>", os.toString());
+        }
+        
+        CustomTag customTag = (CustomTag) TagRepository.findOneTagByTagName("tag4", tag);
+        {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            customTag.toBigOutputStream(os, true);            
+            assertEquals("<tag4><tag5><tag6><tag8></tag8><tag7><tag9></tag9><tag10></tag10></tag7></tag6></tag5></tag4>", os.toString());
+        }
+        
+        CustomTag middle3 = (CustomTag) TagRepository.findOneTagByTagName("middle3", tag);
+        {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            middle3.toBigOutputStream(os, true);      
+            assertEquals("<middle3>line1line2line3line4line5</middle3>", os.toString());
+        }
+        
+    }
+    
+    
+    @SuppressWarnings("unused")
+    @Test
+    public void testToBigHtmlStringNoStackoverflowError() throws Exception {
+        Html html = new Html(null) {{
+            new Head(this) {{
+                new TitleTag(this){{
+                    new NoTag(this, "some title");
+                }};
+            }};
+            new Body(this, new Id("one")) {{
+                new NoTag(this, "something here");
+                CustomTag previous = new CustomTag("ctag", this);
+                //increase 100 to higher value to get StackoverflowError for toHtmlString but not toBigHtmlString
+                for (int i = 0; i < 100; i++) {
+                    previous = new CustomTag("ctag" + i, previous);
+                    new Span(this);
+                }
+                new Span(previous).addAttributes(new Name("wffweb"));
+                
+            }};
+        }};
+        {
+            long before = System.currentTimeMillis();
+            String htmlString = html.toHtmlString(true);
+//            System.out.println(htmlString);
+            long after = System.currentTimeMillis();
+            System.out.println("total time taken toHtmlString: " + (after - before));
+        }
+        {
+            long before = System.currentTimeMillis();
+            String bigHtmlString = html.toBigHtmlString(true);
+//            System.out.println(bigHtmlString);
+            long after = System.currentTimeMillis();
+            System.out.println("total time taken for toBigHtmlString: " + (after - before));
+        }
+        
+    }
+    
+    @Test
+    public void testToBigOutputStreamNoStackoverflowError() throws Exception {
+        Html html = new Html(null) {{
+            new Head(this) {{
+                new TitleTag(this){{
+                    new NoTag(this, "some title");
+                }};
+            }};
+            new Body(this, new Id("one")) {{
+                new NoTag(this, "something here");
+                CustomTag previous = new CustomTag("ctag", this);
+                //increase 100 to higher value to get StackoverflowError for toHtmlString but not toBigHtmlString
+                for (int i = 0; i < 100; i++) {
+                    previous = new CustomTag("ctag" + i, previous);
+                    new Span(this);
+                }
+                new Span(previous).addAttributes(new Name("wffweb"));
+                
+            }};
+        }};
+        
+        {
+            long before = System.currentTimeMillis();
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            html.toOutputStream(os, true);
+//            System.out.println(os.toString());
+            long after = System.currentTimeMillis();
+            System.out.println("total time taken toOutputStream: " + (after - before));
+        }
+        
+        {
+            long before = System.currentTimeMillis();
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            html.toBigOutputStream(os, true);
+//            System.out.println(os.toString());
+            long after = System.currentTimeMillis();
+            System.out.println("total time taken for toBigOutputStream: " + (after - before));
+        }
+        
+    }
+    
+    
 
 }
