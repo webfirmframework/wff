@@ -1109,7 +1109,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     public List<AbstractHtml> getChildren() {
         return Collections
-                .unmodifiableList(new ArrayList<AbstractHtml>(children));
+                .unmodifiableList(new LinkedList<AbstractHtml>(children));
     }
 
     /**
@@ -1514,7 +1514,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 break;
             }
 
-            final List<AbstractHtml> childrenHoldingBottomChild = new LinkedList<AbstractHtml>(
+            final List<AbstractHtml> childrenHoldingBottomChild = new ArrayList<AbstractHtml>(
                     bottomChild.parent.children);
 
             final int indexOfBottomChild = childrenHoldingBottomChild
@@ -1532,7 +1532,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                     break;
                 }
 
-                final List<AbstractHtml> childrenHoldingParent = new LinkedList<AbstractHtml>(
+                final List<AbstractHtml> childrenHoldingParent = new ArrayList<AbstractHtml>(
                         bottomChild.parent.parent.children);
 
                 final int indexOfBottomParent = childrenHoldingParent
@@ -1597,7 +1597,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 }
             }
 
-            final List<AbstractHtml> childrenHoldingBottomChild = new LinkedList<AbstractHtml>(
+            final List<AbstractHtml> childrenHoldingBottomChild = new ArrayList<AbstractHtml>(
                     bottomChild.parent.children);
 
             final int indexOfBottomChild = childrenHoldingBottomChild
@@ -1622,7 +1622,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                     }
                 }
 
-                final List<AbstractHtml> childrenHoldingParent = new LinkedList<AbstractHtml>(
+                final List<AbstractHtml> childrenHoldingParent = new ArrayList<AbstractHtml>(
                         bottomChild.parent.parent.children);
 
                 final int indexOfBottomParent = childrenHoldingParent
@@ -1739,7 +1739,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             current = null;
 
             if (child.parent != null) {
-                final List<AbstractHtml> childrenHoldingChild = new LinkedList<AbstractHtml>(
+                final List<AbstractHtml> childrenHoldingChild = new ArrayList<AbstractHtml>(
                         child.parent.children);
                 final int nextIndexOfChild = childrenHoldingChild.indexOf(child)
                         + 1;
@@ -1771,7 +1771,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             current = null;
 
             if (child.parent != null) {
-                final List<AbstractHtml> childrenHoldingChild = new LinkedList<AbstractHtml>(
+                final List<AbstractHtml> childrenHoldingChild = new ArrayList<AbstractHtml>(
                         child.parent.children);
 
                 final int nextIndexOfChild = childrenHoldingChild.indexOf(child)
