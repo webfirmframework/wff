@@ -1109,7 +1109,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     public List<AbstractHtml> getChildren() {
         return Collections
-                .unmodifiableList(new LinkedList<AbstractHtml>(children));
+                .unmodifiableList(new ArrayList<AbstractHtml>(children));
     }
 
     /**
