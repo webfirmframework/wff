@@ -97,7 +97,7 @@ var wffWS = new function() {
 		webSocket.onclose = function(event) {
 			console.log("onclose", event);
 			setTimeout(function() {
-				if (!webSocket || webSocket.readyState == 3) {
+				if (typeof webSocket === 'undefined' || webSocket.readyState == 3) {
 					console.log("2 seconds loop");
 					wffWS.openSocket(wffGlobal.WS_URL);
 				}
