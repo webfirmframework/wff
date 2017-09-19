@@ -22,7 +22,7 @@ import org.junit.Test;
 public class UrlCss3ValueTest {
 
     @Test
-    public void test() {
+    public void testUrlCss3ValueString() {
         {
             UrlCss3Value urlCss3Value = new UrlCss3Value("url(\"Test.png\")75 158");
             final String url = urlCss3Value.getUrl();
