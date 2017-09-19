@@ -65,13 +65,24 @@ public class UrlCss3Value extends AbstractBean<UrlCss3Value> {
 
         final String urlStringTrimmed = urlString.trim();
 
-        if (urlStringTrimmed.startsWith("url(")
-                && urlStringTrimmed.contains(")")) {
-            final String[] urlStringParts = urlStringTrimmed.split("[)]");
+        final int lastIndexOfClosingParentheses = urlStringTrimmed
+                .lastIndexOf(')');
 
-            String extractedUrl = urlStringParts[0]
-                    .substring(urlStringParts[0].indexOf('('));
-            extractedUrl = extractedUrl.replace("(", "").trim();
+        if (urlStringTrimmed.startsWith("url(")
+                && lastIndexOfClosingParentheses != -1) {
+
+            final String urlPart = urlStringTrimmed.substring(0,
+                    lastIndexOfClosingParentheses);
+
+            final int indexOfOpeningParantheses = urlPart.indexOf('(');
+
+            String extractedUrl = "";
+
+            if (indexOfOpeningParantheses + 1 < urlPart.length()) {
+                extractedUrl = urlPart.substring(indexOfOpeningParantheses + 1)
+                        .trim();
+            }
+
             extractedUrl = extractedUrl.length() > 0
                     && extractedUrl.charAt(0) == '"' ? extractedUrl.substring(1)
                             : extractedUrl;
@@ -81,11 +92,18 @@ public class UrlCss3Value extends AbstractBean<UrlCss3Value> {
 
             url = extractedUrl;
 
-            if (urlStringParts.length > 1) {
-                final String coordinatesString = urlStringParts[1].trim()
+            final int beginIndexCoordinatesPart = lastIndexOfClosingParentheses
+                    + 1;
+
+            if (beginIndexCoordinatesPart < urlStringTrimmed.length()) {
+
+                final String coordinatesPart = urlStringTrimmed
+                        .substring(beginIndexCoordinatesPart).trim()
                         .replaceAll("\\s+", " ");
-                final String[] coordinatesStringParts = coordinatesString
+
+                final String[] coordinatesStringParts = coordinatesPart
                         .split(" ");
+
                 if (coordinatesStringParts.length == 2) {
                     x = Integer.parseInt(coordinatesStringParts[0]);
                     y = Integer.parseInt(coordinatesStringParts[1]);
@@ -112,6 +130,10 @@ public class UrlCss3Value extends AbstractBean<UrlCss3Value> {
         this.y = y;
     }
 
+    /**
+     * @return the value of url(). i.e. it could be http: or data: string
+     * @author WFF
+     */
     public String getUrl() {
         return url;
     }
