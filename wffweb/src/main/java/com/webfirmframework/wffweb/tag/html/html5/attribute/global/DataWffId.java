@@ -16,10 +16,16 @@
 package com.webfirmframework.wffweb.tag.html.html5.attribute.global;
 
 import com.webfirmframework.wffweb.WffSecurityException;
+import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 
 public class DataWffId extends DataAttribute {
 
     private static final long serialVersionUID = 1_0_0L;
+
+    private static final String TAG_NAME_EXTENSION = "wff-id";
+
+    public static final String TAG_NAME = AttributeNameConstants.DATA
+            .concat(TAG_NAME_EXTENSION);
 
     /**
      * @param value
@@ -28,7 +34,7 @@ public class DataWffId extends DataAttribute {
      * @author WFF
      */
     public DataWffId(final String value) {
-        super("wff-id", value);
+        super(TAG_NAME_EXTENSION, value);
     }
 
     @Override
