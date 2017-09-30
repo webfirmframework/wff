@@ -904,7 +904,7 @@ public class AbstractHtmlTest {
     
     
     @Test(expected = InvalidTagException.class)
-    public void testResetInvalidTagException() {
+    public void testResetHierarchyInvalidTagException() {
         final Html html = new Html(null) {{
             new Div(this, new Id("one")) {{
                 new Span(this, new Id("two")) {{
@@ -932,11 +932,11 @@ public class AbstractHtmlTest {
         
         Div div = browserPage.getTagRepository().findOneTagAssignableToTag(Div.class);
         
-        div.reset();
+        div.resetHierarchy();
     }
     
     @Test
-    public void testReset() {
+    public void testResetHierarchy() {
         try {
             final Html html = new Html(null) {{
                 new Div(this, new Id("one")) {{
@@ -965,7 +965,7 @@ public class AbstractHtmlTest {
             
             Div div = browserPage.getTagRepository().findOneTagAssignableToTag(Div.class);
             div.getParent().removeChild(div);
-            div.reset();
+            div.resetHierarchy();
             
             Assert.assertEquals("<div id=\"one\"><span id=\"two\"><h1 id=\"three\"></h1><h2 id=\"three\"></h2>something</span><h3 name=\"name1\"></h3></div>", div.toHtmlString());
         } catch (Exception e) {

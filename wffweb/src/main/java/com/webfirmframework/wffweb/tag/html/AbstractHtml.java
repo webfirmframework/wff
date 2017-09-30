@@ -3147,7 +3147,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @since 2.1.13
      * @author WFF
      */
-    public void reset() throws InvalidTagException {
+    public final void resetHierarchy() throws InvalidTagException {
 
         if (parent == null) {
             synchronized (this) {
