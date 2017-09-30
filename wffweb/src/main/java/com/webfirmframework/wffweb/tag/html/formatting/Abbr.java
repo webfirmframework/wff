@@ -26,8 +26,6 @@ public class Abbr extends AbstractHtml implements AbbrAttributable {
     }
 
     /**
-     * Represents the root of an HTML or XHTML document. All other elements must
-     * be descendants of this element.
      *
      * @param base
      *            i.e. parent tag of this tag
