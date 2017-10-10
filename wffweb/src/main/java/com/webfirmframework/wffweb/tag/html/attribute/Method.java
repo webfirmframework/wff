@@ -51,6 +51,16 @@ public class Method extends AbstractAttribute implements FormAttributable {
     }
 
     /**
+     * Default value is GET
+     * 
+     * @since 1.1.13
+     * @author WFF
+     */
+    public Method() {
+        setAttributeValue(GET);
+    }
+
+    /**
      *
      * @param value
      *            the value for the attribute
