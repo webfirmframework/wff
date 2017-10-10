@@ -415,7 +415,7 @@ public enum WffJsFile {
 
                 for (final String[] each : minifiableParts) {
                     allOptimizedContent = allOptimizedContent.replace(each[0],
-                            each[0]);
+                            each[1]);
                 }
 
                 // there is bug while enabling this, also enable in Task
