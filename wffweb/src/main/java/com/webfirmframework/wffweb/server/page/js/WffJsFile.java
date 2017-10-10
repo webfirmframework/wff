@@ -79,6 +79,9 @@ public enum WffJsFile {
 
     private static volatile int variableId = 0;
 
+    private static String[][] minifiableParts = { { "else {", "else{" },
+            { "} else", "}else" }, { "if (", "if(" }, };
+
     private static final String HEART_BEAT_JS = "setInterval(function(){try{wffWS.send([]);}catch(e){wffWS.closeSocket();}},\"${HEARTBEAT_INTERVAL}\");";
 
     static {
@@ -398,7 +401,7 @@ public enum WffJsFile {
             allOptimizedContent = builder.toString().trim();
 
             if (PRODUCTION_MODE && functionNames != null
-                    && variableNames != null) {
+                    && variableNames != null && minifiableParts != null) {
 
                 for (final String name : functionNames) {
                     allOptimizedContent = allOptimizedContent.replace(name,
@@ -410,6 +413,11 @@ public enum WffJsFile {
                             "v" + (++variableId));
                 }
 
+                for (final String[] each : minifiableParts) {
+                    allOptimizedContent = allOptimizedContent.replace(each[0],
+                            each[0]);
+                }
+
                 // there is bug while enabling this, also enable in Task
                 // for (final Task task : Task.getSortedTasks()) {
                 // allOptimizedContent = allOptimizedContent
@@ -418,6 +426,7 @@ public enum WffJsFile {
 
                 functionNames = null;
                 variableNames = null;
+                minifiableParts = null;
 
             }
 
