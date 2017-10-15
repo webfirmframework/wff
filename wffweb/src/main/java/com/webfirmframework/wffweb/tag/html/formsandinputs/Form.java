@@ -186,8 +186,7 @@ public class Form extends AbstractHtml {
             docGetElementById = refactoredFunctionName;
             jsObjectBuilder.append("var ");
             jsObjectBuilder.append(refactoredFunctionName);
-            jsObjectBuilder.append("=document.getElementById;");
-            jsObjectBuilder.append("{");
+            jsObjectBuilder.append("=document.getElementById;var jsO={");
         } else {
             docGetElementById = "document.getElementById";
             jsObjectBuilder.append("{");
