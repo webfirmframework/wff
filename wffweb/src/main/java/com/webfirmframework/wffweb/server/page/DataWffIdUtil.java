@@ -83,4 +83,16 @@ class DataWffIdUtil {
 
         return null;
     }
+
+    /**
+     * @return
+     * @throws UnsupportedEncodingException
+     * @since 2.1.13
+     * @author WFF
+     */
+    static byte[][] getTagNameAndWffIdForNoTag()
+            throws UnsupportedEncodingException {
+        // there is no DataWffId attribute for NoTag
+        return new byte[2][0];
+    }
 }

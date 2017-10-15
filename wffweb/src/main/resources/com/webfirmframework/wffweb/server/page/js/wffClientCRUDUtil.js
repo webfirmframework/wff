@@ -173,29 +173,39 @@ var wffClientCRUDUtil = new function() {
 							+ nameValues.length);
 
 			for (var i = 1; i < nameValues.length; i++) {
+				
 				var currentParentWffId = wffTagUtil
 						.getWffIdFromWffIdBytes(nameValues[i].name);
-				var values = nameValues[i].values;
+				var values = nameValues[i].values;				
+				
 				var currentParentTagName = getStringFromBytes(values[0]);
 
 				var currentParentTag = wffTagUtil.getTagByTagNameAndWffId(
 						currentParentTagName, currentParentWffId);
-
-				var childWffId = wffTagUtil.getWffIdFromWffIdBytes(values[1]);
-				var childTagName = getStringFromBytes(values[2]);
-				var childTag = wffTagUtil.getTagByTagNameAndWffId(childTagName,
-						childWffId);
-
-				if (typeof childTag !== 'undefined') {
-					var previousParent = childTag.parentNode;
-					console.log('childTag !== undefined', childTag);
-					previousParent.removeChild(childTag);
-				} else {
-					console.log('childTag === undefined', childTag);
+				
+				var childTag = null;
+				//if NoTag then length will be zero
+				if (values[2].length == 0) {
 					childTag = wffTagUtil.createTagFromWffBMBytes(values[3]);
-				}
+				} else {
+					var childTagName = getStringFromBytes(values[2]);
+					var childWffId = wffTagUtil.getWffIdFromWffIdBytes(values[1]);
+					
+					childTag = wffTagUtil.getTagByTagNameAndWffId(childTagName,
+							childWffId);
+					if (typeof childTag !== 'undefined') {
+						console.log('childTag !== undefined', childTag);
+						var previousParent = childTag.parentNode;
+						console.log('childTag.parentNode', previousParent);
+						if (typeof previousParent !== 'undefined') {						
+							previousParent.removeChild(childTag);
+						}
+					} else {
+						console.log('childTag === undefined', childTag);
+						childTag = wffTagUtil.createTagFromWffBMBytes(values[3]);
+					}
+				}				
 				currentParentTag.appendChild(childTag);
-
 			}
 
 		} else if (taskValue == wffGlobal.taskValues.ADDED_ATTRIBUTES) {
