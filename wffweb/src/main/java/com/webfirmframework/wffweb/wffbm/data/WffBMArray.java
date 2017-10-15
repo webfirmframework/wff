@@ -143,6 +143,15 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
     private BMValueType initWffBMObject(final byte[] bmArrayBytes,
             final boolean outer) throws UnsupportedEncodingException {
 
+        if (bmArrayBytes.length == 0 && !outer) {
+            // if the inner WffBMArray is an empty array then the bmArrayBytes
+            // will be an empty array. Then we can say its type is null in the
+            // perceptive of Java it is BMValueType is null
+            // because there is no type for an empty array value in JavaSript
+            // for JavaScript null type there is BMValueType.NULL
+            return null;
+        }
+
         final List<NameValue> bmObject = WffBinaryMessageUtil.VERSION_1
                 .parse(bmArrayBytes);
 

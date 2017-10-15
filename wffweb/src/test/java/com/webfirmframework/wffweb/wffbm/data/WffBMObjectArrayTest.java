@@ -27,6 +27,9 @@ public class WffBMObjectArrayTest {
     public void testWffBMObject() {
 
         try {
+            {
+                WffBMObject outerBMObject = new WffBMObject();
+            }
             WffBMObject outerBMObject = new WffBMObject();
             WffBMArray bmArrayInOuterBMObject = new WffBMArray(
                     BMValueType.BM_OBJECT);
@@ -50,6 +53,35 @@ public class WffBMObjectArrayTest {
             fail("Exception " + e.getMessage());
         }
 
+    }
+    @Test
+    public void testEmptyArray() {
+        
+        try {            
+            
+            {                
+                //var vv = {'r' : []};
+                byte[] bm = {1, 1, 1, 0, 0, 1, 114, 3, 1, 6, 0};
+                WffBMObject outerBMObject = new WffBMObject(bm);
+                WffBMArray bmArray = (WffBMArray) outerBMObject.getValue("r");
+                assertEquals(0, bmArray.size());
+                assertEquals(null, bmArray.getValueType());
+            }
+            {                
+                //var vv = [] i.e [1, 1, 1, 1, 0];
+                byte[] bm = {1, 1, 1, 1, 0};
+                WffBMArray outerBMArray = new WffBMArray(bm);
+               
+                assertEquals(0, outerBMArray.size());
+                assertEquals(null, outerBMArray.getValueType());
+            }
+            
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("Exception " + e.getMessage());
+        }
+        
     }
 
 }
