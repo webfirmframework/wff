@@ -189,7 +189,7 @@ public class Form extends AbstractHtml {
             jsObjectBuilder.append("=document.getElementById;var jsO={");
         } else {
             docGetElementById = "document.getElementById";
-            jsObjectBuilder.append("{");
+            jsObjectBuilder.append('{');
         }
 
         loopThroughAllNestedChildren(new NestedChild() {
@@ -254,7 +254,7 @@ public class Form extends AbstractHtml {
                 jsObjectBuilder.length(), "}");
 
         if (refactoredFunctionName != null) {
-            jsObjectBuilder.append(";");
+            jsObjectBuilder.append(';');
         }
         return jsObjectBuilder.toString();
     }
