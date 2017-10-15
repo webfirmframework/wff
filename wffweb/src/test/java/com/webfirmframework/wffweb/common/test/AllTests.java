@@ -149,6 +149,7 @@ import com.webfirmframework.wffweb.util.CssValueUtilTest;
 import com.webfirmframework.wffweb.util.ObjectUtilTest;
 import com.webfirmframework.wffweb.util.StringUtilTest;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtilTest;
+import com.webfirmframework.wffweb.wffbm.data.WffBMObjectArrayTest;
 
 /**
  *
@@ -207,7 +208,7 @@ import com.webfirmframework.wffweb.util.WffBinaryMessageUtilTest;
         AbstractHtmlTest.class, AbstractAttributeTest.class, JsUtilTest.class,
         TextAreaTest.class, SelectedTest.class, CheckedTest.class,
         FormTest.class, TagRepositoryTest.class, SrcCssPropertyTest.class,
-        UrlCss3ValueTest.class })
+        UrlCss3ValueTest.class, WffBMObjectArrayTest.class })
 public class AllTests {
 
 }
