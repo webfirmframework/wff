@@ -252,6 +252,10 @@ public class Form extends AbstractHtml {
 
         jsObjectBuilder.replace(jsObjectBuilder.length() - 1,
                 jsObjectBuilder.length(), "}");
+
+        if (refactoredFunctionName != null) {
+            jsObjectBuilder.append(";");
+        }
         return jsObjectBuilder.toString();
     }
 
