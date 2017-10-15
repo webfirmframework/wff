@@ -157,22 +157,23 @@ public class Form extends AbstractHtml {
      * prepares and gets the js object for the given tag names under this form
      * tag. This js object may be used to return in onsubmit attribute.
      *
-     * @param refactoredFunctionName
-     *            any short name for document.getElementById so that it will be
-     *            declared as a new var as the given name
+     *
      * @param onlyForTagNames
      *
      *            TagNameConstants.INPUT, TagNameConstants.TEXTAREA and
      *            TagNameConstants.SELECT Pass object of {@code List},
      *            {@code HashSet} based on the number of elements in it.
+     * @param refactoredFunctionName
+     *            any short name for document.getElementById so that it will be
+     *            declared as a new var as the given name
      * @return the js object string for the given tag names. The returned js
      *         string will be as {name1.name1.value} where name1 is the value of
      *         name attribute of the field.
      * @since 2.1.13
      * @author WFF
      */
-    public String getIdBasedJsObject(final String refactoredFunctionName,
-            final Collection<String> onlyForTagNames) {
+    public String getIdBasedJsObject(final Collection<String> onlyForTagNames,
+            final String refactoredFunctionName) {
 
         // "{" should not be changed to '{' if passing arg in constructor of
         // StringBuilder
@@ -337,7 +338,7 @@ public class Form extends AbstractHtml {
         tagNames.add(TagNameConstants.TEXTAREA);
         tagNames.add(TagNameConstants.SELECT);
 
-        return getIdBasedJsObject(refactoredFunctionName, tagNames);
+        return getIdBasedJsObject(tagNames, refactoredFunctionName);
     }
 
     /**
@@ -349,14 +350,15 @@ public class Form extends AbstractHtml {
      * webfirmframework to update this method. <br>
      * This js object may be used to return in onsubmit attribute.
      *
-     * @param refactoredFunctionName
-     *            any short name for document.getElementById so that it will be
-     *            declared as a new var as the given name.
+     *
      * @param onlyForTagNames
      *
      *            TagNameConstants.INPUT, TagNameConstants.TEXTAREA and
      *            TagNameConstants.SELECT Pass object of {@code List},
      *            {@code HashSet} based on the number of elements in it.
+     * @param refactoredFunctionName
+     *            any short name for document.getElementById so that it will be
+     *            declared as a new var as the given name.
      * @return the js object string for field names of TagNameConstants.INPUT,
      *         TagNameConstants.TEXTAREA and TagNameConstants.SELECT. The
      *         returned js string will be as {name1.name1.value} where name1 is
@@ -366,8 +368,9 @@ public class Form extends AbstractHtml {
      * @since 2.1.13
      * @author WFF
      */
-    public String getIdBasedJsObjectPlus(final String refactoredFunctionName,
-            final Collection<String> additionalTagNames) {
+    public String getIdBasedJsObjectPlus(
+            final Collection<String> additionalTagNames,
+            final String refactoredFunctionName) {
 
         final Set<String> tagNames = new HashSet<String>();
         tagNames.addAll(additionalTagNames);
@@ -375,7 +378,7 @@ public class Form extends AbstractHtml {
         tagNames.add(TagNameConstants.TEXTAREA);
         tagNames.add(TagNameConstants.SELECT);
 
-        return getIdBasedJsObject(refactoredFunctionName, tagNames);
+        return getIdBasedJsObject(tagNames, refactoredFunctionName);
     }
 
     /**
@@ -402,7 +405,7 @@ public class Form extends AbstractHtml {
      * @author WFF
      */
     public String getIdBasedJsObject(final Collection<String> onlyForTagNames) {
-        return getIdBasedJsObject(null, onlyForTagNames);
+        return getIdBasedJsObject(onlyForTagNames, null);
     }
 
 }

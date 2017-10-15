@@ -174,7 +174,7 @@ public class FormTest {
             }
         };
         
-        final String jsObjectForNames = form.getIdBasedJsObjectPlus("fun", Arrays.asList(TagNameConstants.BUTTON));
+        final String jsObjectForNames = form.getIdBasedJsObjectPlus(Arrays.asList(TagNameConstants.BUTTON), "fun");
         Assert.assertEquals("var fun=document.getElementById;{name1:fun('name1').value,name3:fun('name3').value,included:fun('included').value,name7:fun('name7').checked,name6:fun('name6').checked,name5:fun('name5').value,name4:fun('name4').value,name2:fun('name2').value}", jsObjectForNames);
     }
 
