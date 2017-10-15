@@ -199,7 +199,7 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
                 } else if (valueType == BMValueType.BM_OBJECT.getType()) {
 
                     for (final byte[] value : values) {
-                        this.add(new WffBMObject(value));
+                        this.add(new WffBMObject(value, false));
                     }
 
                 } else if (valueType == BMValueType.BM_ARRAY.getType()) {
