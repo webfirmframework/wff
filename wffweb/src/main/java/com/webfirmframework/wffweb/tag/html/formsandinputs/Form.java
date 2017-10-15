@@ -1,5 +1,6 @@
 package com.webfirmframework.wffweb.tag.html.formsandinputs;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -76,15 +77,19 @@ public class Form extends AbstractHtml {
      * @param onlyForTagNames
      *
      *            TagNameConstants.INPUT, TagNameConstants.TEXTAREA and
-     *            TagNameConstants.SELECT
+     *            TagNameConstants.SELECT. Pass object of {@code List},
+     *            {@code HashSet} based on the number of elements in it.
      *
      * @return the js object string for the given tag names. The returned js
      *         string will be as {name1.name1.value} where name1 is the value of
      *         name attribute of the field.
      * @since 2.1.8
+     * @since 2.1.13 changed {@code Collection<Set> onlyForTagNames} to
+     *        {@code Collection<String> onlyForTagNames}.
      * @author WFF
      */
-    public String getNameBasedJsObject(final Set<String> onlyForTagNames) {
+    public String getNameBasedJsObject(
+            final Collection<String> onlyForTagNames) {
 
         // "{" should not be changed to '{'
         final StringBuilder jsObjectBuilder = new StringBuilder("{");
@@ -149,6 +154,108 @@ public class Form extends AbstractHtml {
     }
 
     /**
+     * prepares and gets the js object for the given tag names under this form
+     * tag. This js object may be used to return in onsubmit attribute.
+     *
+     * @param refactoredFunctionName
+     *            any short name for document.getElementById so that it will be
+     *            declared as a new var as the given name
+     * @param onlyForTagNames
+     *
+     *            TagNameConstants.INPUT, TagNameConstants.TEXTAREA and
+     *            TagNameConstants.SELECT Pass object of {@code List},
+     *            {@code HashSet} based on the number of elements in it.
+     * @return the js object string for the given tag names. The returned js
+     *         string will be as {name1.name1.value} where name1 is the value of
+     *         name attribute of the field.
+     * @since 2.1.13
+     * @author WFF
+     */
+    public String getIdBasedJsObject(final String refactoredFunctionName,
+            final Collection<String> onlyForTagNames) {
+
+        // "{" should not be changed to '{' if passing arg in constructor of
+        // StringBuilder
+        final StringBuilder jsObjectBuilder = new StringBuilder();
+        final Set<String> appendedValues = new HashSet<String>();
+
+        final String docGetElementById;
+
+        if (refactoredFunctionName != null) {
+            docGetElementById = refactoredFunctionName;
+            jsObjectBuilder.append("var ");
+            jsObjectBuilder.append(refactoredFunctionName);
+            jsObjectBuilder.append("=document.getElementById;");
+            jsObjectBuilder.append("{");
+        } else {
+            docGetElementById = "document.getElementById";
+            jsObjectBuilder.append("{");
+        }
+
+        loopThroughAllNestedChildren(new NestedChild() {
+
+            @Override
+            public boolean eachChild(final AbstractHtml child) {
+
+                final String tagName = child.getTagName();
+
+                if (onlyForTagNames.contains(tagName)) {
+
+                    final AbstractAttribute idAttr = child
+                            .getAttributeByName(AttributeNameConstants.ID);
+
+                    final AbstractAttribute typeAttr = child
+                            .getAttributeByName(AttributeNameConstants.TYPE);
+
+                    if (idAttr != null) {
+                        final String idAttrValue = idAttr.getAttributeValue();
+
+                        if (!appendedValues.contains(idAttrValue)) {
+
+                            final String docById = docGetElementById + "('"
+                                    + idAttrValue + "')";
+
+                            if (typeAttr != null) {
+
+                                final String typeAttrValue = typeAttr
+                                        .getAttributeValue();
+
+                                if (Type.CHECKBOX.equals(typeAttrValue)
+                                        || Type.RADIO.equals(typeAttrValue)) {
+
+                                    jsObjectBuilder.append(idAttrValue)
+                                            .append(':').append(docById)
+                                            .append(".checked,");
+                                    appendedValues.add(idAttrValue);
+
+                                } else {
+                                    jsObjectBuilder.append(idAttrValue)
+                                            .append(':').append(docById)
+                                            .append(".value,");
+                                    appendedValues.add(idAttrValue);
+
+                                }
+                            } else {
+                                jsObjectBuilder.append(idAttrValue).append(':')
+                                        .append(docById).append(".value,");
+                                appendedValues.add(idAttrValue);
+
+                            }
+
+                        }
+                    }
+
+                }
+                return true;
+            }
+        }, false, this);
+
+        jsObjectBuilder.replace(jsObjectBuilder.length() - 1,
+                jsObjectBuilder.length(), "}");
+        return jsObjectBuilder.toString();
+    }
+
+    /**
      *
      * prepares and gets the js object for the input tag names
      * (TagNameConstants.INPUT, TagNameConstants.TEXTAREA and
@@ -174,6 +281,128 @@ public class Form extends AbstractHtml {
         tagNames.add(TagNameConstants.SELECT);
 
         return getNameBasedJsObject(tagNames);
+    }
+
+    /**
+     *
+     * prepares and gets the js object for the input tag names
+     * (TagNameConstants.INPUT, TagNameConstants.TEXTAREA and
+     * TagNameConstants.SELECT) under this form tag. <br>
+     * NB:- If there are any missing input tag types, please inform
+     * webfirmframework to update this method. <br>
+     * This js object may be used to return in onsubmit attribute.
+     *
+     * @return the js object string for field names of TagNameConstants.INPUT,
+     *         TagNameConstants.TEXTAREA and TagNameConstants.SELECT. The
+     *         returned js string will be as {name1.name1.value} where name1 is
+     *         the value of name attribute of the field. If the input type is
+     *         checkbox/radio then checked property will be included instead of
+     *         value property.
+     * @since 2.1.13
+     * @author WFF
+     */
+    public String getIdBasedJsObject() {
+        final Set<String> tagNames = new HashSet<String>();
+        tagNames.add(TagNameConstants.INPUT);
+        tagNames.add(TagNameConstants.TEXTAREA);
+        tagNames.add(TagNameConstants.SELECT);
+        return getIdBasedJsObject(tagNames);
+    }
+
+    /**
+     *
+     * prepares and gets the js object for the input tag names
+     * (TagNameConstants.INPUT, TagNameConstants.TEXTAREA and
+     * TagNameConstants.SELECT) under this form tag. <br>
+     * NB:- If there are any missing input tag types, please inform
+     * webfirmframework to update this method. <br>
+     * This js object may be used to return in onsubmit attribute.
+     *
+     * @param refactoredFunctionName
+     *            any short name for document.getElementById so that it will be
+     *            declared as a new var as the given name
+     * @return the js object string for field names of TagNameConstants.INPUT,
+     *         TagNameConstants.TEXTAREA and TagNameConstants.SELECT. The
+     *         returned js string will be as {name1.name1.value} where name1 is
+     *         the value of name attribute of the field. If the input type is
+     *         checkbox/radio then checked property will be included instead of
+     *         value property.
+     * @since 2.1.13
+     * @author WFF
+     */
+    public String getIdBasedJsObject(final String refactoredFunctionName) {
+
+        final Set<String> tagNames = new HashSet<String>();
+        tagNames.add(TagNameConstants.INPUT);
+        tagNames.add(TagNameConstants.TEXTAREA);
+        tagNames.add(TagNameConstants.SELECT);
+
+        return getIdBasedJsObject(refactoredFunctionName, tagNames);
+    }
+
+    /**
+     *
+     * prepares and gets the js object for the input tag names
+     * (TagNameConstants.INPUT, TagNameConstants.TEXTAREA and
+     * TagNameConstants.SELECT) under this form tag. <br>
+     * NB:- If there are any missing input tag types, please inform
+     * webfirmframework to update this method. <br>
+     * This js object may be used to return in onsubmit attribute.
+     *
+     * @param refactoredFunctionName
+     *            any short name for document.getElementById so that it will be
+     *            declared as a new var as the given name.
+     * @param onlyForTagNames
+     *
+     *            TagNameConstants.INPUT, TagNameConstants.TEXTAREA and
+     *            TagNameConstants.SELECT Pass object of {@code List},
+     *            {@code HashSet} based on the number of elements in it.
+     * @return the js object string for field names of TagNameConstants.INPUT,
+     *         TagNameConstants.TEXTAREA and TagNameConstants.SELECT. The
+     *         returned js string will be as {name1.name1.value} where name1 is
+     *         the value of name attribute of the field. If the input type is
+     *         checkbox/radio then checked property will be included instead of
+     *         value property.
+     * @since 2.1.13
+     * @author WFF
+     */
+    public String getIdBasedJsObjectPlus(final String refactoredFunctionName,
+            final Collection<String> additionalTagNames) {
+
+        final Set<String> tagNames = new HashSet<String>();
+        tagNames.addAll(additionalTagNames);
+        tagNames.add(TagNameConstants.INPUT);
+        tagNames.add(TagNameConstants.TEXTAREA);
+        tagNames.add(TagNameConstants.SELECT);
+
+        return getIdBasedJsObject(refactoredFunctionName, tagNames);
+    }
+
+    /**
+     *
+     * prepares and gets the js object for the input tag names
+     * (TagNameConstants.INPUT, TagNameConstants.TEXTAREA and
+     * TagNameConstants.SELECT) under this form tag. <br>
+     * NB:- If there are any missing input tag types, please inform
+     * webfirmframework to update this method. <br>
+     * This js object may be used to return in onsubmit attribute.
+     *
+     * @param onlyForTagNames
+     *
+     *            TagNameConstants.INPUT, TagNameConstants.TEXTAREA and
+     *            TagNameConstants.SELECT Pass object of {@code List},
+     *            {@code HashSet} based on the number of elements in it.
+     * @return the js object string for field names of TagNameConstants.INPUT,
+     *         TagNameConstants.TEXTAREA and TagNameConstants.SELECT. The
+     *         returned js string will be as {name1.name1.value} where name1 is
+     *         the value of name attribute of the field. If the input type is
+     *         checkbox/radio then checked property will be included instead of
+     *         value property.
+     * @since 2.1.13
+     * @author WFF
+     */
+    public String getIdBasedJsObject(final Collection<String> onlyForTagNames) {
+        return getIdBasedJsObject(null, onlyForTagNames);
     }
 
 }
