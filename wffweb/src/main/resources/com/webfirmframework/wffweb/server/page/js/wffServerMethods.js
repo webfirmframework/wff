@@ -28,7 +28,9 @@ var wffServerMethods = new function () {
 		var nameValues = [taskNameValue, nameValue];
 		var wffBM = wffBMUtil.getWffBinaryMessageBytes(nameValues);
 		wffWS.send(wffBM);
-	};
+	};	
+	//never ever rename ia
+	this.ia = this.invokeAsync ;
 	
 	this.invokeAsyncWithPreFun = function(event, tag, attr, preFun) {
 		console.log('invokeAsync tag', tag);
@@ -46,6 +48,8 @@ var wffServerMethods = new function () {
 		}
 		
 	};
+	//never ever rename iawpf
+	this.iawpf = this.invokeAsyncWithPreFun;
 	
 	this.invokeAsyncWithPreFilterFun = function(event, tag, attr, preFun, filterFun) {
 		console.log('invokeAsyncWithPreFilterFun tag', tag);
@@ -69,7 +73,9 @@ var wffServerMethods = new function () {
 			wffWS.send(wffBM);
 		}
 		
-	};
+	};	
+	//never ever rename iawpff
+	this.iawpff = this.invokeAsyncWithPreFilterFun;
 	
 	this.invokeAsyncWithFilterFun = function(event, tag, attr, filterFun) {
 		console.log('invokeAsyncWithFilterFun tag', tag);
@@ -92,6 +98,8 @@ var wffServerMethods = new function () {
 		wffWS.send(wffBM);
 		
 	};
+	//never ever rename iawff
+	this.iawff = this.invokeAsyncWithFilterFun;
 	
 	//TODO
 //	this.invokeAsyncWithPreFilterPostFun = function(tag, attr, preFun, filterFun, postFun) {
@@ -120,4 +128,6 @@ var wffServerMethods = new function () {
 
 	
 };
+//never ever rename ia
+var wffSM = wffServerMethods;
 
