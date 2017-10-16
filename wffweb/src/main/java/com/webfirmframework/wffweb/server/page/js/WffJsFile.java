@@ -244,6 +244,20 @@ public enum WffJsFile {
             // function
             // VARIABLE_NAMES.add("message");
 
+            // these must be excluded
+            // should not be included even by mistake
+            variableNames.remove("wffSM");
+            variableNames.remove("iawpff");
+            variableNames.remove("iawpf");
+            variableNames.remove("iawff");
+            variableNames.remove("ia");
+
+            functionNames.remove("wffSM");
+            functionNames.remove("iawpff");
+            functionNames.remove("iawpf");
+            functionNames.remove("iawff");
+            functionNames.remove("ia");
+
         }
     }
 

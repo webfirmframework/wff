@@ -262,8 +262,8 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
                     && jsFilterFunctionBody != null) {
 
                 final StringBuilder builder = new StringBuilder();
-                builder.append(invokeAsyncWithPreFilterFun);
-                builder.append("(event, this,'" + getAttributeName() + "',")
+                builder.append(invokeAsyncWithPreFilterFun)
+                        .append("(event, this,'" + getAttributeName() + "',")
                         .append(getPreparedJsFunctionBody(jsPreFunctionBody))
                         .append(',')
                         .append(getPreparedJsFunctionBody(jsFilterFunctionBody))
@@ -275,8 +275,8 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
                     && jsPostFunctionBody != null) {
 
                 final StringBuilder builder = new StringBuilder();
-                builder.append(invokeAsyncWithPreFun);
-                builder.append("(event, this,'" + getAttributeName() + "',")
+                builder.append(invokeAsyncWithPreFun)
+                        .append("(event, this,'" + getAttributeName() + "',")
                         .append(getPreparedJsFunctionBody(jsPreFunctionBody))
                         .append(')');
 
@@ -287,8 +287,8 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
 
                 final StringBuilder builder = new StringBuilder();
 
-                builder.append(invokeAsyncWithPreFilterFun);
-                builder.append("(event, this,'" + getAttributeName() + "',")
+                builder.append(invokeAsyncWithPreFilterFun)
+                        .append("(event, this,'" + getAttributeName() + "',")
                         .append(getPreparedJsFunctionBody(jsPreFunctionBody))
                         .append(',')
                         .append(getPreparedJsFunctionBody(jsFilterFunctionBody))
@@ -311,8 +311,8 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
 
                 final StringBuilder builder = new StringBuilder();
 
-                builder.append(invokeAsyncWithPreFun);
-                builder.append("(event, this,'" + getAttributeName() + "',")
+                builder.append(invokeAsyncWithPreFun)
+                        .append("(event, this,'" + getAttributeName() + "',")
                         .append(getPreparedJsFunctionBody(jsPreFunctionBody))
                         .append(')');
                 super.setAttributeValue(builder.toString());
