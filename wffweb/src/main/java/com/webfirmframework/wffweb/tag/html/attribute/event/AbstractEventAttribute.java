@@ -199,9 +199,8 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
         if (functionBody.charAt(functionBody.length() - 1) != ';') {
             builder.append(';');
         }
-        builder.append('}');
 
-        return builder.toString();
+        return builder.append('}').toString();
     }
 
     /**
@@ -300,8 +299,8 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
 
                 final StringBuilder builder = new StringBuilder();
 
-                builder.append(invokeAsyncWithFilterFun);
-                builder.append("(event, this,'" + getAttributeName() + "',")
+                builder.append(invokeAsyncWithFilterFun)
+                        .append("(event, this,'" + getAttributeName() + "',")
                         .append(getPreparedJsFunctionBody(jsFilterFunctionBody))
                         .append(')');
 
@@ -319,8 +318,8 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
 
             } else if (jsFilterFunctionBody != null) {
                 final StringBuilder builder = new StringBuilder();
-                builder.append(invokeAsyncWithFilterFun);
-                builder.append("(event, this,'" + getAttributeName() + "',")
+                builder.append(invokeAsyncWithFilterFun)
+                        .append("(event, this,'" + getAttributeName() + "',")
                         .append(getPreparedJsFunctionBody(jsFilterFunctionBody))
                         .append(')');
 
