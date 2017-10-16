@@ -136,26 +136,7 @@ public class FormTest {
         Assert.assertEquals("{name1:document.getElementById('name1').value,name3:document.getElementById('name3').value,included:document.getElementById('included').value,name7:document.getElementById('name7').checked,name6:document.getElementById('name6').checked,name5:document.getElementById('name5').value,name4:document.getElementById('name4').value,name2:document.getElementById('name2').value}", jsObjectForNames);
     }
     
-    @Test
-    public void testGetIdBasedJsObjectRefactoredFunctioinName() {
-        final Form form = new Form(null) {
-            {
-                new Input(this, new Id("name1"));
-                new Div(this, new Id("excluded")){{new Input(this, new Id("name2"));}};
-                new Input(this, new Id("name3"));
-                new Div(this){{new Input(this, new Id("name4"));}};
-                new Div(this){{new Input(this, new Id("name4"));}};
-                new Div(this){{new Input(this, new Id("name4"));}};
-                new Div(this){{new Input(this, new Id("name5"), new Type(Type.TEXT));}};
-                new Div(this){{new Input(this, new Id("name6"), new Type(Type.CHECKBOX));}};
-                new Div(this){{new Input(this, new Id("name7"), new Type(Type.RADIO));}};
-                new TextArea(this, new Id("included"));
-            }
-        };
-        
-        final String jsObjectForNames = form.getIdBasedJsObject("fun");
-        Assert.assertEquals("var fun=document.getElementById;var jsO={name1:fun('name1').value,name3:fun('name3').value,included:fun('included').value,name7:fun('name7').checked,name6:fun('name6').checked,name5:fun('name5').value,name4:fun('name4').value,name2:fun('name2').value};", jsObjectForNames);
-    }
+    
     
     @Test
     public void testGetIdBasedJsObjectPlus() {
@@ -174,8 +155,8 @@ public class FormTest {
             }
         };
         
-        final String jsObjectForNames = form.getIdBasedJsObjectPlus(Arrays.asList(TagNameConstants.BUTTON), "fun");
-        Assert.assertEquals("var fun=document.getElementById;var jsO={name1:fun('name1').value,name3:fun('name3').value,included:fun('included').value,name7:fun('name7').checked,name6:fun('name6').checked,name5:fun('name5').value,name4:fun('name4').value,name2:fun('name2').value};", jsObjectForNames);
+        final String jsObjectForNames = form.getIdBasedJsObjectPlus(Arrays.asList(TagNameConstants.BUTTON));
+        Assert.assertEquals("{name1:document.getElementById('name1').value,name3:document.getElementById('name3').value,included:document.getElementById('included').value,name7:document.getElementById('name7').checked,name6:document.getElementById('name6').checked,name5:document.getElementById('name5').value,name4:document.getElementById('name4').value,name2:document.getElementById('name2').value}", jsObjectForNames);
     }
 
 }
