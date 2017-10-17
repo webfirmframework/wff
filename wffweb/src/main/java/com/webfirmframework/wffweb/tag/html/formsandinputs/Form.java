@@ -175,8 +175,6 @@ public class Form extends AbstractHtml {
         final StringBuilder jsObjectBuilder = new StringBuilder("{");
         final Set<String> appendedValues = new HashSet<String>();
 
-        final String docGetElementById = "document.getElementById";
-
         loopThroughAllNestedChildren(new NestedChild() {
 
             @Override
@@ -197,7 +195,7 @@ public class Form extends AbstractHtml {
 
                         if (!appendedValues.contains(idAttrValue)) {
 
-                            final String docById = docGetElementById + "('"
+                            final String docById = "document.getElementById('"
                                     + idAttrValue + "')";
 
                             if (typeAttr != null) {
