@@ -109,6 +109,9 @@ public class Rel extends AbstractAttribute
     public static final String TAG = "tag";
 
     {
+        // This class may to be re-implemented just like ClassAttribute because
+        // this class is also taking multiple values separated by space just as
+        // in ClassAttribute so many features can be reused from ClassAttribute.
         super.setAttributeName(AttributeNameConstants.REL);
         init();
     }

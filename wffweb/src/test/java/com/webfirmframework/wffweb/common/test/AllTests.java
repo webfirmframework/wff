@@ -130,6 +130,7 @@ import com.webfirmframework.wffweb.tag.html.AbstractHtmlTest;
 import com.webfirmframework.wffweb.tag.html.HrTest;
 import com.webfirmframework.wffweb.tag.html.HtmlTest;
 import com.webfirmframework.wffweb.tag.html.attribute.CheckedTest;
+import com.webfirmframework.wffweb.tag.html.attribute.RelTest;
 import com.webfirmframework.wffweb.tag.html.attribute.SelectedTest;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttributeTest;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeRegistryTest;
@@ -208,7 +209,7 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObjectArrayTest;
         AbstractHtmlTest.class, AbstractAttributeTest.class, JsUtilTest.class,
         TextAreaTest.class, SelectedTest.class, CheckedTest.class,
         FormTest.class, TagRepositoryTest.class, SrcCssPropertyTest.class,
-        UrlCss3ValueTest.class, WffBMObjectArrayTest.class })
+        UrlCss3ValueTest.class, WffBMObjectArrayTest.class, RelTest.class })
 public class AllTests {
 
 }
