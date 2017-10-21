@@ -108,6 +108,11 @@ public class Rel extends AbstractAttribute
      */
     public static final String TAG = "tag";
 
+    /**
+     * Specifies that the related tag is for style sheet.
+     */
+    public static final String STYLESHEET = "stylesheet";
+
     {
         // This class may to be re-implemented just like ClassAttribute because
         // this class is also taking multiple values separated by space just as
