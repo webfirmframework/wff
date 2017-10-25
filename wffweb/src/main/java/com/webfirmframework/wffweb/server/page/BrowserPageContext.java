@@ -21,6 +21,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.webfirmframework.wffweb.NullValueException;
+
 /**
  * @author WFF
  * @since 2.0.0
@@ -385,6 +387,25 @@ public enum BrowserPageContext {
             }
         }
 
+    }
+
+    /**
+     * Checks the existence of browserPage in this context.
+     *
+     * @param browserPage
+     * @return true if the given browserPage exists in the BrowserPageContext.
+     * @throws NullValueException
+     *             if the given browserPage instance is null
+     * @since 2.1.13
+     * @author WFF
+     */
+    public boolean exists(final BrowserPage browserPage)
+            throws NullValueException {
+        if (browserPage == null) {
+            throw new NullValueException("browserPage instance cannot be null");
+        }
+        return browserPage
+                .equals(instanceIdBrowserPage.get(browserPage.getInstanceId()));
     }
 
 }
