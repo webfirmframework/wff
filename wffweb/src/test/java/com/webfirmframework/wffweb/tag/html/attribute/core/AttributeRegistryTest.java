@@ -15,7 +15,7 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute.core;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.lang.reflect.Field;
 
@@ -36,6 +36,11 @@ public class AttributeRegistryTest {
 
             }
         }
+    }
+    
+    @Test
+    public void testLoadAllAttributeClasses() throws Exception {
+        AttributeRegistry.loadAllAttributeClasses();
     }
 
 }
