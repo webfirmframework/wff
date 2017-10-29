@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -157,274 +158,162 @@ import com.webfirmframework.wffweb.tag.html.tables.Tr;
 
 public class TagRegistry {
 
-    private static final Logger LOGGER = Logger
+    public static final Logger LOGGER = Logger
             .getLogger(TagRegistry.class.getName());
 
     private static List<String> tagNames;
 
     private static final Set<String> tagNamesSet;
 
+    // TAG_CLASS_NAME_BY_TAG_NAME
+
     private static final Map<String, String> TAG_CLASS_NAME_BY_TAG_NAME;
+
+    private static final Map<String, Class<?>> TAG_CLASS_BY_TAG_NAME;
 
     static {
 
         final Field[] fields = TagNameConstants.class.getFields();
         final int initialCapacity = fields.length;
 
+        TAG_CLASS_BY_TAG_NAME = new HashMap<String, Class<?>>(initialCapacity);
         TAG_CLASS_NAME_BY_TAG_NAME = new HashMap<String, String>(
                 initialCapacity);
 
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.A,
-                A.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.ABBR,
-                Abbr.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.ADDRESS,
-                Address.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.AREA,
-                Area.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.ARTICLE,
-                Article.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.ASIDE,
-                Aside.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.AUDIO,
-                Audio.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.B,
-                B.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.BASE,
-                Base.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.BASEFONT,
-                BaseFont.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.BDI,
-                Bdi.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.BDO,
-                Bdo.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.BLOCKQUOTE,
-                BlockQuote.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.BODY,
-                Body.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.BR,
-                Br.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.BUTTON,
-                Button.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.CANVAS,
-                Canvas.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.CAPTION,
-                Caption.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.CITE,
-                Cite.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.CODE,
-                Code.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.COL,
-                Col.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.COLGROUP,
-                ColGroup.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.DATA,
-                Data.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.DATALIST,
-                DataList.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.DD,
-                Dd.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.DEL,
-                Del.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.DETAILS,
-                Details.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.DFN,
-                Dfn.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.DIALOG,
-                Dialog.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.DIV,
-                Div.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.DL,
-                Dl.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.DT,
-                Dt.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.EM,
-                Em.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.EMBED,
-                Embed.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.FIELDSET,
-                FieldSet.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.FIGCAPTION,
-                FigCaption.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.FIGURE,
-                Figure.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.FOOTER,
-                Footer.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.FORM,
-                Form.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.H1,
-                H1.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.H2,
-                H2.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.H3,
-                H3.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.H4,
-                H4.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.H5,
-                H5.class.getSimpleName());
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.A, A.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.ABBR, Abbr.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.ADDRESS, Address.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.AREA, Area.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.ARTICLE, Article.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.ASIDE, Aside.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.AUDIO, Audio.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.B, B.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.BASE, Base.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.BASEFONT, BaseFont.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.BDI, Bdi.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.BDO, Bdo.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.BLOCKQUOTE,
+                BlockQuote.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.BODY, Body.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.BR, Br.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.BUTTON, Button.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.CANVAS, Canvas.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.CAPTION, Caption.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.CITE, Cite.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.CODE, Code.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.COL, Col.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.COLGROUP, ColGroup.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.DATA, Data.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.DATALIST, DataList.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.DD, Dd.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.DEL, Del.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.DETAILS, Details.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.DFN, Dfn.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.DIALOG, Dialog.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.DIV, Div.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.DL, Dl.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.DT, Dt.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.EM, Em.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.EMBED, Embed.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.FIELDSET, FieldSet.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.FIGCAPTION,
+                FigCaption.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.FIGURE, Figure.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.FOOTER, Footer.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.FORM, Form.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.H1, H1.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.H2, H2.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.H3, H3.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.H4, H4.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.H5, H5.class);
 
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.HEAD,
-                Head.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.HEADER,
-                Header.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.HGROUP,
-                HGroup.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.HR,
-                Hr.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.HTML,
-                Html.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.I,
-                I.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.IFRAME,
-                IFrame.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.IMG,
-                Img.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.INPUT,
-                Input.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.INS,
-                Ins.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.KBD,
-                Kbd.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.KEYGEN,
-                KeyGen.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.LABEL,
-                Label.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.LEGEND,
-                Legend.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.LI,
-                Li.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.LINK,
-                Link.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.MAIN,
-                Main.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.MAP,
-                MapTag.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.MARK,
-                Mark.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.MATH,
-                MathTag.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.MENU,
-                Menu.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.MENUITEM,
-                MenuItem.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.META,
-                Meta.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.METER,
-                Meter.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.NAV,
-                Nav.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.NOSCRIPT,
-                NoScript.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.OBJECT,
-                ObjectTag.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.OL,
-                Ol.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.OPTGROUP,
-                OptGroup.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.OPTION,
-                Option.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.OUTPUT,
-                Output.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.P,
-                P.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.PARAM,
-                Param.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.PRE,
-                Pre.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.PROGRESS,
-                Progress.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.Q,
-                Q.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.QFN,
-                Qfn.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.RP,
-                Rp.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.RT,
-                Rt.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.RUBY,
-                Ruby.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.S,
-                S.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.SAMP,
-                Samp.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.SCRIPT,
-                Script.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.SECTION,
-                Section.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.SELECT,
-                Select.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.SMALL,
-                Small.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.SOURCE,
-                Source.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.SPAN,
-                Span.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.STRONG,
-                Strong.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.STYLE,
-                StyleTag.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.SUB,
-                Sub.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.SUMMARY,
-                Summary.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.SUP,
-                Sup.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.SVG,
-                Svg.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.TABLE,
-                Table.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.TBODY,
-                TBody.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.TD,
-                Td.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.TEMPLATE,
-                Template.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.TEXTAREA,
-                TextArea.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.TFOOT,
-                TFoot.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.TH,
-                Th.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.THEAD,
-                THead.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.TIME,
-                Time.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.TITLE_TAG,
-                TitleTag.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.TR,
-                Tr.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.TRACK,
-                Track.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.U,
-                U.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.UL,
-                Ul.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.VAR,
-                Var.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.VIDEO,
-                Video.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.WBR,
-                Wbr.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.H6,
-                H6.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.PICTURE,
-                Picture.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.RECT,
-                Rect.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.CIRCLE,
-                Circle.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.ELLIPSE,
-                Ellipse.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.LINE,
-                Line.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.POLYGON,
-                Polygon.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.POLYLINE,
-                Polyline.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.PATH,
-                Path.class.getSimpleName());
-        TAG_CLASS_NAME_BY_TAG_NAME.put(TagNameConstants.TEXT,
-                Text.class.getSimpleName());
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.HEAD, Head.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.HEADER, Header.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.HGROUP, HGroup.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.HR, Hr.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.HTML, Html.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.I, I.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.IFRAME, IFrame.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.IMG, Img.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.INPUT, Input.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.INS, Ins.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.KBD, Kbd.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.KEYGEN, KeyGen.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.LABEL, Label.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.LEGEND, Legend.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.LI, Li.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.LINK, Link.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.MAIN, Main.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.MAP, MapTag.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.MARK, Mark.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.MATH, MathTag.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.MENU, Menu.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.MENUITEM, MenuItem.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.META, Meta.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.METER, Meter.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.NAV, Nav.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.NOSCRIPT, NoScript.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.OBJECT, ObjectTag.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.OL, Ol.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.OPTGROUP, OptGroup.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.OPTION, Option.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.OUTPUT, Output.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.P, P.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.PARAM, Param.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.PRE, Pre.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.PROGRESS, Progress.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.Q, Q.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.QFN, Qfn.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.RP, Rp.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.RT, Rt.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.RUBY, Ruby.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.S, S.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.SAMP, Samp.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.SCRIPT, Script.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.SECTION, Section.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.SELECT, Select.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.SMALL, Small.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.SOURCE, Source.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.SPAN, Span.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.STRONG, Strong.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.STYLE, StyleTag.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.SUB, Sub.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.SUMMARY, Summary.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.SUP, Sup.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.SVG, Svg.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.TABLE, Table.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.TBODY, TBody.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.TD, Td.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.TEMPLATE, Template.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.TEXTAREA, TextArea.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.TFOOT, TFoot.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.TH, Th.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.THEAD, THead.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.TIME, Time.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.TITLE_TAG, TitleTag.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.TR, Tr.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.TRACK, Track.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.U, U.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.UL, Ul.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.VAR, Var.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.VIDEO, Video.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.WBR, Wbr.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.H6, H6.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.PICTURE, Picture.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.RECT, Rect.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.CIRCLE, Circle.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.ELLIPSE, Ellipse.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.LINE, Line.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.POLYGON, Polygon.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.POLYLINE, Polyline.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.PATH, Path.class);
+        TAG_CLASS_BY_TAG_NAME.put(TagNameConstants.TEXT, Text.class);
+
+        for (final Entry<String, Class<?>> entry : TAG_CLASS_BY_TAG_NAME
+                .entrySet()) {
+            TAG_CLASS_NAME_BY_TAG_NAME.put(entry.getKey(),
+                    entry.getValue().getSimpleName());
+        }
 
         tagNames = new ArrayList<String>(initialCapacity);
         tagNamesSet = new HashSet<String>(initialCapacity);
@@ -507,6 +396,25 @@ public class TagRegistry {
      */
     public static Map<String, String> getTagClassNameByTagName() {
         return TAG_CLASS_NAME_BY_TAG_NAME;
+    }
+
+    /**
+     * Loads all tag classes.
+     *
+     * @since 2.1.13
+     * @author WFF
+     */
+    public static void loadAllTagClasses() {
+        for (final Class<?> cls : TAG_CLASS_BY_TAG_NAME.values()) {
+            try {
+                Class.forName(cls.getName());
+            } catch (final ClassNotFoundException e) {
+                if (LOGGER.isLoggable(Level.WARNING)) {
+                    LOGGER.warning("Could not load tag class " + cls.getName());
+                }
+
+            }
+        }
     }
 
 }
