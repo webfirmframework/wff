@@ -208,7 +208,7 @@ import com.webfirmframework.wffweb.tag.html.html5.attribute.global.Translate;
 
 public class AttributeRegistry {
 
-    private static final Logger LOGGER = Logger
+    public static final Logger LOGGER = Logger
             .getLogger(AttributeRegistry.class.getName());
 
     private static List<String> attributeNames;
