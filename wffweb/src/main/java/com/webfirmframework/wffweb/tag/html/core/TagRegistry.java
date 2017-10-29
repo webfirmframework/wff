@@ -165,8 +165,6 @@ public class TagRegistry {
 
     private static final Set<String> tagNamesSet;
 
-    // TAG_CLASS_NAME_BY_TAG_NAME
-
     private static final Map<String, String> TAG_CLASS_NAME_BY_TAG_NAME;
 
     private static Map<String, Class<?>> tagClassByTagName;

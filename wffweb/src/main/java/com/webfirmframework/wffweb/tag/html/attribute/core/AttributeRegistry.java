@@ -660,7 +660,7 @@ public class AttributeRegistry {
             } catch (final ClassNotFoundException e) {
                 unloadedClasses.put(entry.getKey(), entry.getValue());
                 if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.warning("Could not load tag class "
+                    LOGGER.warning("Could not load attribute class "
                             + entry.getValue().getName());
                 }
 
