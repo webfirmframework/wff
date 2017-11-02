@@ -80,7 +80,7 @@ public enum WffJsFile {
     private static volatile int variableId = 0;
 
     private static String[][] minifiableParts = { { "else {", "else{" },
-            { "} else", "}else" }, { "if (", "if(" }, };
+            { "} else", "}else" }, { "if (", "if(" }, { ") {", "){" } };
 
     private static final String HEART_BEAT_JS = "setInterval(function(){try{wffWS.send([]);}catch(e){wffWS.closeSocket();}},\"${HEARTBEAT_INTERVAL}\");";
 
