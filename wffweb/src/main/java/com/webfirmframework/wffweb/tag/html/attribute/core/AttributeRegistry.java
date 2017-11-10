@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -207,7 +208,7 @@ import com.webfirmframework.wffweb.tag.html.html5.attribute.global.Translate;
 
 public class AttributeRegistry {
 
-    private static final Logger LOGGER = Logger
+    public static final Logger LOGGER = Logger
             .getLogger(AttributeRegistry.class.getName());
 
     private static List<String> attributeNames;
@@ -216,413 +217,348 @@ public class AttributeRegistry {
 
     private static final Map<String, String> ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME;
 
+    private static Map<String, Class<?>> attributeClassByAttrName;
+
     static {
 
         final Field[] fields = AttributeNameConstants.class.getFields();
         final int initialCapacity = fields.length;
 
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME = new HashMap<>(initialCapacity);
+        attributeClassByAttrName = new HashMap<String, Class<?>>(
+                initialCapacity);
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME = new HashMap<String, String>(
+                initialCapacity);
 
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ACCEPT,
-                Accept.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ACCESSKEY,
-                AccessKey.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ALIGN,
-                Align.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ALT,
-                Alt.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
-                AttributeNameConstants.AUTOCOMPLETE,
-                AutoComplete.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.AUTOFOCUS,
-                AutoFocus.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.AUTOPLAY,
-                AutoPlay.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.CHARSET,
-                Charset.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.CHECKED,
-                Checked.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.CLASS,
-                ClassAttribute.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.COLOR,
-                Color.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.CONTENT,
-                Content.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
-                AttributeNameConstants.CONTENTEDITABLE,
-                ContentEditable.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
-                AttributeNameConstants.CONTEXTMENU,
-                ContextMenu.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.CONTROLS,
-                Controls.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.COORDS,
-                CoOrds.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.DATA,
-                DataAttribute.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.DIR,
-                Dir.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.DISABLED,
-                Disabled.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.DOWNLOAD,
-                Download.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.DRAGGABLE,
-                Draggable.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.DROPZONE,
-                Dropzone.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.FACE,
-                Face.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.FORM,
-                Form.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.FORMACTION,
-                FormAction.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
-                AttributeNameConstants.FORMENCTYPE,
-                FormEncType.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.FORMMETHOD,
-                FormMethod.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
-                AttributeNameConstants.FORMNOVALIDATE,
-                FormNoValidate.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.FORMTARGET,
-                Target.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.HEIGHT,
-                Height.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.HIDDEN,
-                Hidden.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.HREF,
-                Href.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.HREFLANG,
-                HrefLang.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.HTTP_EQUIV,
-                HttpEquiv.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ID,
-                Id.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.LANG,
-                Lang.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.LIST,
-                List.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.LOOP,
-                Loop.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.MAX,
-                Max.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.MAXLENGTH,
-                MaxLength.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.MEDIA,
-                Media.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.METHOD,
-                Method.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.MIN,
-                Min.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.MINLENGTH,
-                MinLength.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.MULTIPLE,
-                Multiple.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.MUTED,
-                Muted.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.NAME,
-                Name.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.NOHREF,
-                NoHref.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.PATTERN,
-                Pattern.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
-                AttributeNameConstants.PLACEHOLDER,
-                Placeholder.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.PRELOAD,
-                Preload.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.READONLY,
-                ReadOnly.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.REL,
-                Rel.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.REQUIRED,
-                Required.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.REV,
-                Rev.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.SHAPE,
-                Shape.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.SIZE,
-                Size.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.SPELLCHECK,
-                SpellCheck.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.SRC,
-                com.webfirmframework.wffweb.tag.html.attribute.Src.class
-                        .getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.STEP,
-                Step.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.STYLE,
-                Style.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.TABINDEX,
-                TabIndex.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.TARGET,
-                Target.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.TITLE,
-                Title.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.TRANSLATE,
-                Translate.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.TYPE,
-                Type.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.VALUE,
-                Value.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.WIDTH,
-                Width.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.COLSPAN,
-                ColSpan.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ROWSPAN,
-                RowSpan.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.HEADERS,
-                Headers.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.SCOPE,
-                Scope.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.SORTED,
-                Sorted.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ENCTYPE,
-                EncType.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ACTION,
-                Action.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.BORDER,
-                Border.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
-                AttributeNameConstants.CELLPADDING,
-                CellPadding.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
-                AttributeNameConstants.CELLSPACING,
-                CellSpacing.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONCLICK,
-                OnClick.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
-                AttributeNameConstants.ONCONTEXTMENU,
-                OnContextMenu.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONDBLCLICK,
-                OnDblClick.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
-                AttributeNameConstants.ONMOUSEDOWN,
-                OnMouseDown.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
-                AttributeNameConstants.ONMOUSEENTER,
-                OnMouseEnter.class.getSimpleName());
+        attributeClassByAttrName.put(AttributeNameConstants.ACCEPT,
+                Accept.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ACCESSKEY,
+                AccessKey.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ALIGN, Align.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ALT, Alt.class);
+        attributeClassByAttrName.put(AttributeNameConstants.AUTOCOMPLETE,
+                AutoComplete.class);
+        attributeClassByAttrName.put(AttributeNameConstants.AUTOFOCUS,
+                AutoFocus.class);
+        attributeClassByAttrName.put(AttributeNameConstants.AUTOPLAY,
+                AutoPlay.class);
+        attributeClassByAttrName.put(AttributeNameConstants.CHARSET,
+                Charset.class);
+        attributeClassByAttrName.put(AttributeNameConstants.CHECKED,
+                Checked.class);
+        attributeClassByAttrName.put(AttributeNameConstants.CLASS,
+                ClassAttribute.class);
+        attributeClassByAttrName.put(AttributeNameConstants.COLOR, Color.class);
+        attributeClassByAttrName.put(AttributeNameConstants.CONTENT,
+                Content.class);
+        attributeClassByAttrName.put(AttributeNameConstants.CONTENTEDITABLE,
+                ContentEditable.class);
+        attributeClassByAttrName.put(AttributeNameConstants.CONTEXTMENU,
+                ContextMenu.class);
+        attributeClassByAttrName.put(AttributeNameConstants.CONTROLS,
+                Controls.class);
+        attributeClassByAttrName.put(AttributeNameConstants.COORDS,
+                CoOrds.class);
+        attributeClassByAttrName.put(AttributeNameConstants.DATA,
+                DataAttribute.class);
+        attributeClassByAttrName.put(AttributeNameConstants.DIR, Dir.class);
+        attributeClassByAttrName.put(AttributeNameConstants.DISABLED,
+                Disabled.class);
+        attributeClassByAttrName.put(AttributeNameConstants.DOWNLOAD,
+                Download.class);
+        attributeClassByAttrName.put(AttributeNameConstants.DRAGGABLE,
+                Draggable.class);
+        attributeClassByAttrName.put(AttributeNameConstants.DROPZONE,
+                Dropzone.class);
+        attributeClassByAttrName.put(AttributeNameConstants.FACE, Face.class);
+        attributeClassByAttrName.put(AttributeNameConstants.FORM, Form.class);
+        attributeClassByAttrName.put(AttributeNameConstants.FORMACTION,
+                FormAction.class);
+        attributeClassByAttrName.put(AttributeNameConstants.FORMENCTYPE,
+                FormEncType.class);
+        attributeClassByAttrName.put(AttributeNameConstants.FORMMETHOD,
+                FormMethod.class);
+        attributeClassByAttrName.put(AttributeNameConstants.FORMNOVALIDATE,
+                FormNoValidate.class);
+        attributeClassByAttrName.put(AttributeNameConstants.FORMTARGET,
+                Target.class);
+        attributeClassByAttrName.put(AttributeNameConstants.HEIGHT,
+                Height.class);
+        attributeClassByAttrName.put(AttributeNameConstants.HIDDEN,
+                Hidden.class);
+        attributeClassByAttrName.put(AttributeNameConstants.HREF, Href.class);
+        attributeClassByAttrName.put(AttributeNameConstants.HREFLANG,
+                HrefLang.class);
+        attributeClassByAttrName.put(AttributeNameConstants.HTTP_EQUIV,
+                HttpEquiv.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ID, Id.class);
+        attributeClassByAttrName.put(AttributeNameConstants.LANG, Lang.class);
+        attributeClassByAttrName.put(AttributeNameConstants.LIST, List.class);
+        attributeClassByAttrName.put(AttributeNameConstants.LOOP, Loop.class);
+        attributeClassByAttrName.put(AttributeNameConstants.MAX, Max.class);
+        attributeClassByAttrName.put(AttributeNameConstants.MAXLENGTH,
+                MaxLength.class);
+        attributeClassByAttrName.put(AttributeNameConstants.MEDIA, Media.class);
+        attributeClassByAttrName.put(AttributeNameConstants.METHOD,
+                Method.class);
+        attributeClassByAttrName.put(AttributeNameConstants.MIN, Min.class);
+        attributeClassByAttrName.put(AttributeNameConstants.MINLENGTH,
+                MinLength.class);
+        attributeClassByAttrName.put(AttributeNameConstants.MULTIPLE,
+                Multiple.class);
+        attributeClassByAttrName.put(AttributeNameConstants.MUTED, Muted.class);
+        attributeClassByAttrName.put(AttributeNameConstants.NAME, Name.class);
+        attributeClassByAttrName.put(AttributeNameConstants.NOHREF,
+                NoHref.class);
+        attributeClassByAttrName.put(AttributeNameConstants.PATTERN,
+                Pattern.class);
+        attributeClassByAttrName.put(AttributeNameConstants.PLACEHOLDER,
+                Placeholder.class);
+        attributeClassByAttrName.put(AttributeNameConstants.PRELOAD,
+                Preload.class);
+        attributeClassByAttrName.put(AttributeNameConstants.READONLY,
+                ReadOnly.class);
+        attributeClassByAttrName.put(AttributeNameConstants.REL, Rel.class);
+        attributeClassByAttrName.put(AttributeNameConstants.REQUIRED,
+                Required.class);
+        attributeClassByAttrName.put(AttributeNameConstants.REV, Rev.class);
+        attributeClassByAttrName.put(AttributeNameConstants.SHAPE, Shape.class);
+        attributeClassByAttrName.put(AttributeNameConstants.SIZE, Size.class);
+        attributeClassByAttrName.put(AttributeNameConstants.SPELLCHECK,
+                SpellCheck.class);
+        attributeClassByAttrName.put(AttributeNameConstants.SRC,
+                com.webfirmframework.wffweb.tag.html.attribute.Src.class);
+        attributeClassByAttrName.put(AttributeNameConstants.STEP, Step.class);
+        attributeClassByAttrName.put(AttributeNameConstants.STYLE, Style.class);
+        attributeClassByAttrName.put(AttributeNameConstants.TABINDEX,
+                TabIndex.class);
+        attributeClassByAttrName.put(AttributeNameConstants.TARGET,
+                Target.class);
+        attributeClassByAttrName.put(AttributeNameConstants.TITLE, Title.class);
+        attributeClassByAttrName.put(AttributeNameConstants.TRANSLATE,
+                Translate.class);
+        attributeClassByAttrName.put(AttributeNameConstants.TYPE, Type.class);
+        attributeClassByAttrName.put(AttributeNameConstants.VALUE, Value.class);
+        attributeClassByAttrName.put(AttributeNameConstants.WIDTH, Width.class);
+        attributeClassByAttrName.put(AttributeNameConstants.COLSPAN,
+                ColSpan.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ROWSPAN,
+                RowSpan.class);
+        attributeClassByAttrName.put(AttributeNameConstants.HEADERS,
+                Headers.class);
+        attributeClassByAttrName.put(AttributeNameConstants.SCOPE, Scope.class);
+        attributeClassByAttrName.put(AttributeNameConstants.SORTED,
+                Sorted.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ENCTYPE,
+                EncType.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ACTION,
+                Action.class);
+        attributeClassByAttrName.put(AttributeNameConstants.BORDER,
+                Border.class);
+        attributeClassByAttrName.put(AttributeNameConstants.CELLPADDING,
+                CellPadding.class);
+        attributeClassByAttrName.put(AttributeNameConstants.CELLSPACING,
+                CellSpacing.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONCLICK,
+                OnClick.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONCONTEXTMENU,
+                OnContextMenu.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONDBLCLICK,
+                OnDblClick.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONMOUSEDOWN,
+                OnMouseDown.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONMOUSEENTER,
+                OnMouseEnter.class);
 
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
-                AttributeNameConstants.ONMOUSELEAVE,
-                OnMouseLeave.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
-                AttributeNameConstants.ONMOUSEMOVE,
-                OnMouseMove.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONMOUSEOUT,
-                OnMouseOut.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONMOUSEUP,
-                OnMouseUp.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONKEYDOWN,
-                OnKeyDown.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONKEYPRESS,
-                OnKeyPress.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONKEYUP,
-                OnKeyUp.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONABORT,
-                OnAbort.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
-                AttributeNameConstants.ONBEFOREUNLOAD,
-                OnBeforeUnload.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONERROR,
-                OnError.class.getSimpleName());
+        attributeClassByAttrName.put(AttributeNameConstants.ONMOUSELEAVE,
+                OnMouseLeave.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONMOUSEMOVE,
+                OnMouseMove.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONMOUSEOUT,
+                OnMouseOut.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONMOUSEUP,
+                OnMouseUp.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONKEYDOWN,
+                OnKeyDown.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONKEYPRESS,
+                OnKeyPress.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONKEYUP,
+                OnKeyUp.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONABORT,
+                OnAbort.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONBEFOREUNLOAD,
+                OnBeforeUnload.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONERROR,
+                OnError.class);
 
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
-                AttributeNameConstants.ONHASHCHANGE,
-                OnHashChange.class.getSimpleName());
+        attributeClassByAttrName.put(AttributeNameConstants.ONHASHCHANGE,
+                OnHashChange.class);
 
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONLOAD,
-                OnLoad.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONPAGESHOW,
-                OnPageShow.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONPAGEHIDE,
-                OnPageHide.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONSCROLL,
-                OnScroll.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONUNLOAD,
-                OnUnload.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONBLUR,
-                OnBlur.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONCHANGE,
-                OnChange.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONFOCUS,
-                OnFocus.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONFOCUSIN,
-                OnFocusIn.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONFOCUSOUT,
-                OnFocusOut.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONINPUT,
-                OnInput.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONINVALID,
-                OnInvalid.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONRESET,
-                OnReset.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONSEARCH,
-                OnSearch.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONSELECT,
-                OnSelect.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONSUBMIT,
-                OnSubmit.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONDRAG,
-                OnDrag.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONDRAGEND,
-                OnDragEnd.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
-                AttributeNameConstants.ONDRAGENTER,
-                OnDragEnter.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
-                AttributeNameConstants.ONDRAGLEAVE,
-                OnDragLeave.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONDRAGOVER,
-                OnDragOver.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
-                AttributeNameConstants.ONDRAGSTART,
-                OnDragStart.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONDROP,
-                OnDrop.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONCOPY,
-                OnCopy.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONCUT,
-                OnCut.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONPASTE,
-                OnPaste.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
-                AttributeNameConstants.ONAFTERPRINT,
-                OnAfterPrint.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
-                AttributeNameConstants.ONBEFOREPRINT,
-                OnBeforePrint.class.getSimpleName());
+        attributeClassByAttrName.put(AttributeNameConstants.ONLOAD,
+                OnLoad.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONPAGESHOW,
+                OnPageShow.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONPAGEHIDE,
+                OnPageHide.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONSCROLL,
+                OnScroll.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONUNLOAD,
+                OnUnload.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONBLUR,
+                OnBlur.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONCHANGE,
+                OnChange.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONFOCUS,
+                OnFocus.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONFOCUSIN,
+                OnFocusIn.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONFOCUSOUT,
+                OnFocusOut.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONINPUT,
+                OnInput.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONINVALID,
+                OnInvalid.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONRESET,
+                OnReset.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONSEARCH,
+                OnSearch.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONSELECT,
+                OnSelect.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONSUBMIT,
+                OnSubmit.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONDRAG,
+                OnDrag.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONDRAGEND,
+                OnDragEnd.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONDRAGENTER,
+                OnDragEnter.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONDRAGLEAVE,
+                OnDragLeave.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONDRAGOVER,
+                OnDragOver.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONDRAGSTART,
+                OnDragStart.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONDROP,
+                OnDrop.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONCOPY,
+                OnCopy.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONCUT, OnCut.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONPASTE,
+                OnPaste.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONAFTERPRINT,
+                OnAfterPrint.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONBEFOREPRINT,
+                OnBeforePrint.class);
 
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONCANPLAY,
-                OnCanPlay.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
-                AttributeNameConstants.ONCANPLAYTHROUGH,
-                OnCanPlayThrough.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
-                AttributeNameConstants.ONDURATIONCHANGE,
-                OnDurationChange.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONEMPTIED,
-                OnEmptied.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONENDED,
-                OnEnded.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
-                AttributeNameConstants.ONLOADEDDATA,
-                OnLoadedData.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
-                AttributeNameConstants.ONLOADEDMETADATA,
-                OnLoadedMetaData.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
-                AttributeNameConstants.ONLOADSTART,
-                OnLoadStart.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONPAUSE,
-                OnPause.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONPLAY,
-                OnPlay.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONPLAYING,
-                OnPlaying.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONPROGRESS,
-                OnProgress.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
-                AttributeNameConstants.ONRATECHANGE,
-                OnRateChange.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONSEEKED,
-                OnSeeked.class.getSimpleName());
+        attributeClassByAttrName.put(AttributeNameConstants.ONCANPLAY,
+                OnCanPlay.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONCANPLAYTHROUGH,
+                OnCanPlayThrough.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONDURATIONCHANGE,
+                OnDurationChange.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONEMPTIED,
+                OnEmptied.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONENDED,
+                OnEnded.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONLOADEDDATA,
+                OnLoadedData.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONLOADEDMETADATA,
+                OnLoadedMetaData.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONLOADSTART,
+                OnLoadStart.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONPAUSE,
+                OnPause.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONPLAY,
+                OnPlay.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONPLAYING,
+                OnPlaying.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONPROGRESS,
+                OnProgress.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONRATECHANGE,
+                OnRateChange.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONSEEKED,
+                OnSeeked.class);
 
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONSEEKING,
-                OnSeeking.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONSTALLED,
-                OnStalled.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONSUSPEND,
-                OnSuspend.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
-                AttributeNameConstants.ONTIMEUPDATE,
-                OnTimeUpdate.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
-                AttributeNameConstants.ONVOLUMECHANGE,
-                OnVolumeChange.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONWAITING,
-                OnWaiting.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
-                AttributeNameConstants.ANIMATIONEND,
-                AnimationEnd.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
-                AttributeNameConstants.ANIMATIONITERATION,
-                AnimationIteration.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
-                AttributeNameConstants.ANIMATIONSTART,
-                AnimationStart.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
-                AttributeNameConstants.TRANSITIONEND,
-                TransitionEnd.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONOFFLINE,
-                OnOffline.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONONLINE,
-                OnOnline.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONPOPSTATE,
-                OnPopState.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONSHOW,
-                OnShow.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONSTORAGE,
-                OnStorage.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONTOGGLE,
-                OnToggle.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONWHEEL,
-                OnWheel.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
-                AttributeNameConstants.ONTOUCHCANCEL,
-                OnTouchCancel.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONTOUCHEND,
-                OnTouchEnd.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
-                AttributeNameConstants.ONTOUCHMOVE,
-                OnTouchMove.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
-                AttributeNameConstants.ONTOUCHSTART,
-                OnTouchStart.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ROLE,
-                Role.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.SRCSET,
-                SrcSet.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.SIZES,
-                Sizes.class.getSimpleName());
+        attributeClassByAttrName.put(AttributeNameConstants.ONSEEKING,
+                OnSeeking.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONSTALLED,
+                OnStalled.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONSUSPEND,
+                OnSuspend.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONTIMEUPDATE,
+                OnTimeUpdate.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONVOLUMECHANGE,
+                OnVolumeChange.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONWAITING,
+                OnWaiting.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ANIMATIONEND,
+                AnimationEnd.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ANIMATIONITERATION,
+                AnimationIteration.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ANIMATIONSTART,
+                AnimationStart.class);
+        attributeClassByAttrName.put(AttributeNameConstants.TRANSITIONEND,
+                TransitionEnd.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONOFFLINE,
+                OnOffline.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONONLINE,
+                OnOnline.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONPOPSTATE,
+                OnPopState.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONSHOW,
+                OnShow.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONSTORAGE,
+                OnStorage.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONTOGGLE,
+                OnToggle.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONWHEEL,
+                OnWheel.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONTOUCHCANCEL,
+                OnTouchCancel.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONTOUCHEND,
+                OnTouchEnd.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONTOUCHMOVE,
+                OnTouchMove.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONTOUCHSTART,
+                OnTouchStart.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ROLE, Role.class);
+        attributeClassByAttrName.put(AttributeNameConstants.SRCSET,
+                SrcSet.class);
+        attributeClassByAttrName.put(AttributeNameConstants.SIZES, Sizes.class);
 
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.COLS,
-                Cols.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ROWS,
-                Rows.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.FOR,
-                For.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.SELECTED,
-                Selected.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
-                AttributeNameConstants.ACCEPT_CHARSET,
-                AcceptCharset.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ASYNC,
-                Async.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.DATETIME,
-                DateTime.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(
-                AttributeNameConstants.ONMOUSEOVER,
-                OnMouseOver.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.ONRESIZE,
-                OnResize.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.OPEN,
-                Open.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.OPTIMUM,
-                Optimum.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.DEFER,
-                Defer.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.DEFAULT,
-                Default.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.DIRNAME,
-                DirName.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.HIGH,
-                High.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.LOW,
-                Low.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.REVERSED,
-                Reversed.class.getSimpleName());
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(AttributeNameConstants.POSTER,
-                Poster.class.getSimpleName());
+        attributeClassByAttrName.put(AttributeNameConstants.COLS, Cols.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ROWS, Rows.class);
+        attributeClassByAttrName.put(AttributeNameConstants.FOR, For.class);
+        attributeClassByAttrName.put(AttributeNameConstants.SELECTED,
+                Selected.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ACCEPT_CHARSET,
+                AcceptCharset.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ASYNC, Async.class);
+        attributeClassByAttrName.put(AttributeNameConstants.DATETIME,
+                DateTime.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONMOUSEOVER,
+                OnMouseOver.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONRESIZE,
+                OnResize.class);
+        attributeClassByAttrName.put(AttributeNameConstants.OPEN, Open.class);
+        attributeClassByAttrName.put(AttributeNameConstants.OPTIMUM,
+                Optimum.class);
+        attributeClassByAttrName.put(AttributeNameConstants.DEFER, Defer.class);
+        attributeClassByAttrName.put(AttributeNameConstants.DEFAULT,
+                Default.class);
+        attributeClassByAttrName.put(AttributeNameConstants.DIRNAME,
+                DirName.class);
+        attributeClassByAttrName.put(AttributeNameConstants.HIGH, High.class);
+        attributeClassByAttrName.put(AttributeNameConstants.LOW, Low.class);
+        attributeClassByAttrName.put(AttributeNameConstants.REVERSED,
+                Reversed.class);
+        attributeClassByAttrName.put(AttributeNameConstants.POSTER,
+                Poster.class);
+
+        for (final Entry<String, Class<?>> entry : attributeClassByAttrName
+                .entrySet()) {
+            ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(entry.getKey(),
+                    entry.getValue().getSimpleName());
+        }
 
         attributeNames = new ArrayList<>(initialCapacity);
         attributeNamesSet = new HashSet<>(initialCapacity);
@@ -703,6 +639,39 @@ public class AttributeRegistry {
      */
     public static Map<String, String> getAttributeClassNameByAttributeName() {
         return ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME;
+    }
+
+    /**
+     * Loads all attribute classes.
+     *
+     * @since 2.1.13
+     * @author WFF
+     */
+    public static void loadAllAttributeClasses() {
+
+        final Map<String, Class<?>> unloadedClasses = new HashMap<String, Class<?>>();
+
+        for (final Entry<String, Class<?>> entry : attributeClassByAttrName
+                .entrySet()) {
+            try {
+
+                Class.forName(entry.getValue().getName());
+
+            } catch (final ClassNotFoundException e) {
+                unloadedClasses.put(entry.getKey(), entry.getValue());
+                if (LOGGER.isLoggable(Level.WARNING)) {
+                    LOGGER.warning("Could not load attribute class "
+                            + entry.getValue().getName());
+                }
+
+            }
+        }
+        attributeClassByAttrName.clear();
+        if (unloadedClasses.size() > 0) {
+            attributeClassByAttrName.putAll(unloadedClasses);
+        } else {
+            attributeClassByAttrName = null;
+        }
     }
 
 }

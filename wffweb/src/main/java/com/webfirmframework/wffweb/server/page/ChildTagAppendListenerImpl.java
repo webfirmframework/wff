@@ -367,8 +367,11 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
 
                     final byte[] currentTagName = currentParentTagNameAndWffId[0];
 
-                    final byte[][] movedChildTagNameAndWffId = DataWffIdUtil
-                            .getTagNameAndWffId(movedChildTag);
+                    final boolean noTag = movedChildTag.getTagName() == null;
+
+                    final byte[][] movedChildTagNameAndWffId = noTag
+                            ? DataWffIdUtil.getTagNameAndWffIdForNoTag()
+                            : DataWffIdUtil.getTagNameAndWffId(movedChildTag);
 
                     final byte[] movedChildWffIdBytes = movedChildTagNameAndWffId[1];
 

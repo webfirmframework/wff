@@ -99,6 +99,13 @@ public class WffBMByteArray extends ByteArrayOutputStream
     private void initWffBMObject(final byte[] bmArrayBytes, final boolean outer)
             throws IOException {
 
+        if (bmArrayBytes.length == 0 && !outer) {
+            // if the inner WffBMByteArray is an empty array then the
+            // bmArrayBytes
+            // will be an empty array.
+            return;
+        }
+
         final List<NameValue> bmObject = WffBinaryMessageUtil.VERSION_1
                 .parse(bmArrayBytes);
 

@@ -666,7 +666,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
     /**
      *
-     * @return the tags which are consuming this attribute as an array
+     * @return the tags which are consuming this attribute as an array. If there
+     *         is no owner tag then it will return an empty array instead of
+     *         null.
      * @since 2.0.0
      * @author WFF
      */

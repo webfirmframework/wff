@@ -39,8 +39,10 @@ public class Html extends DocType {
     }
 
     /**
-     * Represents the root of an HTML or XHTML document. All other elements must
-     * be descendants of this element.
+     * Represents the root of an HTML or XHTML document. All other tags must be
+     * descendants of this tag in case of building a complete HTML document. All
+     * tags can also be used independently i.e. without being a child of this
+     * tag.
      *
      * @param base
      *            i.e. parent tag of this tag

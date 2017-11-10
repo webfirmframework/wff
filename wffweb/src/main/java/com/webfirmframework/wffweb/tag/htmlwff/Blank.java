@@ -35,8 +35,6 @@ public class Blank extends NoTag {
     private static final long serialVersionUID = 1_0_0L;
 
     /**
-     * Represents the root of an HTML or XHTML document. All other elements must
-     * be descendants of this element.
      *
      * @param base
      *            i.e. parent tag of this tag
@@ -50,8 +48,6 @@ public class Blank extends NoTag {
     }
 
     /**
-     * Represents the root of an HTML or XHTML document. All other elements must
-     * be descendants of this element.
      *
      * @param base
      *            i.e. parent tag of this tag
@@ -66,8 +62,6 @@ public class Blank extends NoTag {
     }
 
     /**
-     * Represents the root of an HTML or XHTML document. All other elements must
-     * be descendants of this element.
      *
      * @param base
      *            i.e. parent tag of this tag

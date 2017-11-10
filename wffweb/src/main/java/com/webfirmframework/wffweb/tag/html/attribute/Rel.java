@@ -83,6 +83,12 @@ public class Rel extends AbstractAttribute
     public static final String NOREFERRER = "noreferrer";
 
     /**
+     * Specifies that the browsing context created by its related url must not
+     * have an opener browsing context.
+     */
+    public static final String NOOPENER = "noopener";
+
+    /**
      * Specifies that the target document should be cached
      */
     public static final String PREFETCH = "prefetch";
@@ -102,7 +108,15 @@ public class Rel extends AbstractAttribute
      */
     public static final String TAG = "tag";
 
+    /**
+     * Specifies that the related tag is for style sheet.
+     */
+    public static final String STYLESHEET = "stylesheet";
+
     {
+        // This class may to be re-implemented just like ClassAttribute because
+        // this class is also taking multiple values separated by space just as
+        // in ClassAttribute so many features can be reused from ClassAttribute.
         super.setAttributeName(AttributeNameConstants.REL);
         init();
     }
@@ -110,12 +124,29 @@ public class Rel extends AbstractAttribute
     /**
      *
      * @param value
-     *            the value for the attribute
+     *            the value for the attribute. If there are multiple values it
+     *            can be separated by space.
      * @since 1.0.0
      * @author WFF
      */
     public Rel(final String value) {
         setAttributeValue(value);
+    }
+
+    /**
+     *
+     * @param value
+     *            the value for the attribute. If there are multiple values it
+     *            can be separated by space.
+     * @since 1.0.0
+     * @author WFF
+     */
+    public Rel(final String... values) {
+        String finalValue = "";
+        for (final String value : values) {
+            finalValue = finalValue.concat(" ").concat(value.trim());
+        }
+        setAttributeValue(finalValue.trim());
     }
 
     /**

@@ -36,7 +36,7 @@ public class JsUtil {
      *            as the key in the generated js object. The value in the map
      *            should be the id of the field.
      * @return the JavaScript object for the fields value. Sample :
-     *         <code>{username:document.getElementById("uId")}</code>
+     *         <code>{username:document.getElementById('uId')}</code>
      * @since 2.1.1
      * @author WFF
      */
@@ -49,8 +49,8 @@ public class JsUtil {
 
         for (final Entry<String, Object> entry : jsKeyAndElementId.entrySet()) {
 
-            builder.append(entry.getKey()).append(":document.getElementById(\"")
-                    .append(entry.getValue().toString()).append("\").value,");
+            builder.append(entry.getKey()).append(":document.getElementById('")
+                    .append(entry.getValue().toString()).append("').value,");
 
         }
 
@@ -66,7 +66,7 @@ public class JsUtil {
      *            id of the field. The id in the set should be a valid
      *            JavaScript object key.
      * @return the JavaScript object for the fields value. Sample :
-     *         <code>{uId:document.getElementById("uId")}</code>
+     *         <code>{uId:document.getElementById('uId')}</code>
      * @since 2.1.1
      * @author WFF
      */
@@ -78,8 +78,8 @@ public class JsUtil {
 
         for (final Object id : ids) {
 
-            builder.append(id.toString()).append(":document.getElementById(\"")
-                    .append(id.toString()).append("\").value,");
+            builder.append(id.toString()).append(":document.getElementById('")
+                    .append(id.toString()).append("').value,");
 
         }
 
@@ -95,7 +95,7 @@ public class JsUtil {
      *            should be the id of the field. The id in the array should be a
      *            valid JavaScript object key.
      * @return the JavaScript object for the fields value. Sample :
-     *         <code>{uId:document.getElementById("uId")}</code>
+     *         <code>{uId:document.getElementById('uId')}</code>
      * @since 2.1.3
      * @author WFF
      */
@@ -107,8 +107,8 @@ public class JsUtil {
 
         for (final Object id : ids) {
 
-            builder.append(id.toString()).append(":document.getElementById(\"")
-                    .append(id.toString()).append("\").value,");
+            builder.append(id.toString()).append(":document.getElementById('")
+                    .append(id.toString()).append("').value,");
 
         }
 

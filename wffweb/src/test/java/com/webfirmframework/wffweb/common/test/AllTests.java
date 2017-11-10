@@ -71,6 +71,7 @@ import com.webfirmframework.wffweb.css.RgbaCssValueTest;
 import com.webfirmframework.wffweb.css.RightTest;
 import com.webfirmframework.wffweb.css.SrcCssPropertyTest;
 import com.webfirmframework.wffweb.css.TopTest;
+import com.webfirmframework.wffweb.css.UrlCss3ValueTest;
 import com.webfirmframework.wffweb.css.WidthCssTest;
 import com.webfirmframework.wffweb.css.WordSpacingTest;
 import com.webfirmframework.wffweb.css.css3.AlignContentTest;
@@ -129,6 +130,7 @@ import com.webfirmframework.wffweb.tag.html.AbstractHtmlTest;
 import com.webfirmframework.wffweb.tag.html.HrTest;
 import com.webfirmframework.wffweb.tag.html.HtmlTest;
 import com.webfirmframework.wffweb.tag.html.attribute.CheckedTest;
+import com.webfirmframework.wffweb.tag.html.attribute.RelTest;
 import com.webfirmframework.wffweb.tag.html.attribute.SelectedTest;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttributeTest;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeRegistryTest;
@@ -148,6 +150,7 @@ import com.webfirmframework.wffweb.util.CssValueUtilTest;
 import com.webfirmframework.wffweb.util.ObjectUtilTest;
 import com.webfirmframework.wffweb.util.StringUtilTest;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtilTest;
+import com.webfirmframework.wffweb.wffbm.data.WffBMObjectArrayTest;
 
 /**
  *
@@ -205,7 +208,8 @@ import com.webfirmframework.wffweb.util.WffBinaryMessageUtilTest;
         AttributeRegistryTest.class, AttributeUtilTest.class,
         AbstractHtmlTest.class, AbstractAttributeTest.class, JsUtilTest.class,
         TextAreaTest.class, SelectedTest.class, CheckedTest.class,
-        FormTest.class, TagRepositoryTest.class, SrcCssPropertyTest.class })
+        FormTest.class, TagRepositoryTest.class, SrcCssPropertyTest.class,
+        UrlCss3ValueTest.class, WffBMObjectArrayTest.class, RelTest.class })
 public class AllTests {
 
 }

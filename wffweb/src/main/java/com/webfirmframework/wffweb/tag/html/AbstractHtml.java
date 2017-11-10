@@ -3128,4 +3128,44 @@ public abstract class AbstractHtml extends AbstractJsObject {
     public void setSharedData(final Object sharedData) {
         sharedObject.setSharedData(sharedData);
     }
+
+    /**
+     * Resets the hierarchy of this tag so that it can be used in another
+     * instance of {@code BrowserPage}. If a tag is used under a
+     * {@code BrowserPage} instance and the same instance of tag needs to be
+     * used in another instance of {@code BrowserPage} then the tag needs to be
+     * reset before use otherwise there could be some strange behaviour in the
+     * UI. To avoid compromising performance such usage never throws any
+     * exception. <br>
+     *
+     * NB:- Child tag cannot be reset, i.e. this tag should not be a child of
+     * another tag.
+     *
+     * @throws InvalidTagException
+     *             if the tag is already used by another tag, i.e. if this tag
+     *             has a parent tag.
+     * @since 2.1.13
+     * @author WFF
+     */
+    public final void resetHierarchy() throws InvalidTagException {
+
+        if (parent == null) {
+            synchronized (this) {
+                if (parent == null) {
+
+                    loopThroughAllNestedChildren(new NestedChild() {
+
+                        @Override
+                        public boolean eachChild(final AbstractHtml child) {
+                            child.removeAttributes(false, DataWffId.TAG_NAME);
+                            return true;
+                        }
+                    }, true, this);
+
+                    return;
+                }
+            }
+        }
+        throw new InvalidTagException("Child tag cannot be reset");
+    }
 }

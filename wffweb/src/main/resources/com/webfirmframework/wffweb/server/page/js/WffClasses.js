@@ -57,7 +57,7 @@ var WffBMArray = function(jsArray, outer) {
 
 			for (var i = 0; i < jsArray.length; i++) {
 				arrayValType = getValueTypeByte(Object.prototype.toString
-						.call(jsArray[0]));
+						.call(jsArray[i]));
 				if (arrayValType != 2 && arrayValType != 3) {
 					break;
 				}

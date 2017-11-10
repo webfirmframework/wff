@@ -29,8 +29,6 @@ public class CustomTag extends AbstractHtml {
     }
 
     /**
-     * Represents the root of an HTML or XHTML document. All other elements must
-     * be descendants of this element.
      *
      * @param tagName
      *            the tag name
@@ -68,8 +66,6 @@ public class CustomTag extends AbstractHtml {
     }
 
     /**
-     * Represents the root of an HTML or XHTML document. All other elements must
-     * be descendants of this element.
      *
      * @param tagName
      *            the tag name

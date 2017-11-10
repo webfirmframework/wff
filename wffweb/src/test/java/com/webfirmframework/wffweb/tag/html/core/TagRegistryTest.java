@@ -19,6 +19,7 @@ import static org.junit.Assert.*;
 
 import java.lang.reflect.Field;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
@@ -34,6 +35,11 @@ public class TagRegistryTest {
                 
             }
         }
+    }
+    
+    @Test
+    public void testLoadAllTagClasses() throws Exception {        
+        TagRegistry.loadAllTagClasses();        
     }
 
 }

@@ -27,6 +27,7 @@ import org.junit.Test;
 import com.webfirmframework.wffweb.InvalidTagException;
 import com.webfirmframework.wffweb.NoParentException;
 import com.webfirmframework.wffweb.css.Color;
+import com.webfirmframework.wffweb.server.page.BrowserPage;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.Name;
 import com.webfirmframework.wffweb.tag.html.attribute.global.ClassAttribute;
@@ -899,6 +900,82 @@ public class AbstractHtmlTest {
             System.out.println("total time taken for toBigOutputStream: " + (after - before));
         }
         
+    }
+    
+    
+    @Test(expected = InvalidTagException.class)
+    public void testResetHierarchyInvalidTagException() {
+        final Html html = new Html(null) {{
+            new Div(this, new Id("one")) {{
+                new Span(this, new Id("two")) {{
+                    new H1(this, new Id("three"));
+                    new H2(this, new Id("three"));
+                    new NoTag(this, "something");
+                }};
+
+                new H3(this, new Name("name1"));
+            }};  
+        }};
+        BrowserPage browserPage = new BrowserPage() {
+            
+            @Override
+            public String webSocketUrl() {
+                return "wss://webfirmframework/websocket";
+            }
+            
+            @Override
+            public AbstractHtml render() {
+                return html;
+            }
+        };
+        browserPage.toHtmlString();
+        
+        Div div = browserPage.getTagRepository().findOneTagAssignableToTag(Div.class);
+        
+        div.resetHierarchy();
+    }
+    
+    @Test
+    public void testResetHierarchy() {
+        try {
+            final Html html = new Html(null) {{
+                new Div(this, new Id("one")) {{
+                    new Span(this, new Id("two")) {{
+                        new H1(this, new Id("three"));
+                        new H2(this, new Id("three"));
+                        new NoTag(this, "something");
+                    }};
+
+                    new H3(this, new Name("name1"));
+                }};  
+            }};
+            BrowserPage browserPage = new BrowserPage() {
+                
+                @Override
+                public String webSocketUrl() {
+                    return "wss://webfirmframework/websocket";
+                }
+                
+                @Override
+                public AbstractHtml render() {
+                    return html;
+                }
+            };
+            browserPage.toHtmlString();
+            
+            Div div = browserPage.getTagRepository().findOneTagAssignableToTag(Div.class);
+            div.getParent().removeChild(div);
+            div.resetHierarchy();
+            
+            Assert.assertEquals("<div id=\"one\"><span id=\"two\"><h1 id=\"three\"></h1><h2 id=\"three\"></h2>something</span><h3 name=\"name1\"></h3></div>", div.toHtmlString());
+        } catch (Exception e) {
+            Assert.fail(e.toString());
+        }
+    }
+    
+    @Test
+    public void testDiv() throws Exception {
+        final Div div = new Div(null, new Id("one"));
     }
     
     

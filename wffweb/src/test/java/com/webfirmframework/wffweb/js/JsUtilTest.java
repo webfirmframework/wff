@@ -36,7 +36,7 @@ public class JsUtilTest {
         jsKeyFieldIds.put("password", 555);
 
         assertEquals(
-                "{username:document.getElementById(\"uId\").value,email:document.getElementById(\"b2593ccc-2ab9-4cf8-818d-1f317a27a691\").value,password:document.getElementById(\"555\").value}",
+                "{username:document.getElementById('uId').value,email:document.getElementById('b2593ccc-2ab9-4cf8-818d-1f317a27a691').value,password:document.getElementById('555').value}",
                 JsUtil.getJsObjectForFieldsValue(jsKeyFieldIds));
     }
 
@@ -49,14 +49,14 @@ public class JsUtilTest {
         jsKeyFieldIds.add(555);
 
         assertEquals(
-                "{uId:document.getElementById(\"uId\").value,b2593ccc-2ab9-4cf8-818d-1f317a27a691:document.getElementById(\"b2593ccc-2ab9-4cf8-818d-1f317a27a691\").value,555:document.getElementById(\"555\").value}",
+                "{uId:document.getElementById('uId').value,b2593ccc-2ab9-4cf8-818d-1f317a27a691:document.getElementById('b2593ccc-2ab9-4cf8-818d-1f317a27a691').value,555:document.getElementById('555').value}",
                 JsUtil.getJsObjectForFieldsValue(jsKeyFieldIds));
     }
     
     @Test
     public void testGetJsObjectForFieldsValueByElementIdsStrings() {
         assertEquals(
-                "{uId:document.getElementById(\"uId\").value,b2593ccc-2ab9-4cf8-818d-1f317a27a691:document.getElementById(\"b2593ccc-2ab9-4cf8-818d-1f317a27a691\").value,555:document.getElementById(\"555\").value}",
+                "{uId:document.getElementById('uId').value,b2593ccc-2ab9-4cf8-818d-1f317a27a691:document.getElementById('b2593ccc-2ab9-4cf8-818d-1f317a27a691').value,555:document.getElementById('555').value}",
                 JsUtil.getJsObjectForFieldsValue("uId",
                         "b2593ccc-2ab9-4cf8-818d-1f317a27a691", "555"));
     }

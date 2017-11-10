@@ -21,8 +21,10 @@ import java.util.HashSet;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.Name;
 import com.webfirmframework.wffweb.tag.html.attribute.Type;
+import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 
 @SuppressWarnings("serial")
@@ -111,6 +113,50 @@ public class FormTest {
         
         Assert.assertEquals("{name1:name1.value,name3:name3.value,included:included.value,name7:name7.checked,name6:name6.checked,name5:name5.value,name4:name4.value,name2:name2.value}", jsObjectForNames);
         
+    }
+    
+    @Test
+    public void testGetIdBasedJsObject() {
+        final Form form = new Form(null) {
+            {
+                new Input(this, new Id("name1"));
+                new Div(this, new Id("excluded")){{new Input(this, new Id("name2"));}};
+                new Input(this, new Id("name3"));
+                new Div(this){{new Input(this, new Id("name4"));}};
+                new Div(this){{new Input(this, new Id("name4"));}};
+                new Div(this){{new Input(this, new Id("name4"));}};
+                new Div(this){{new Input(this, new Id("name5"), new Type(Type.TEXT));}};
+                new Div(this){{new Input(this, new Id("name6"), new Type(Type.CHECKBOX));}};
+                new Div(this){{new Input(this, new Id("name7"), new Type(Type.RADIO));}};
+                new TextArea(this, new Id("included"));
+            }
+        };
+        
+        final String jsObjectForNames = form.getIdBasedJsObject();
+        Assert.assertEquals("{name1:document.getElementById('name1').value,name3:document.getElementById('name3').value,included:document.getElementById('included').value,name7:document.getElementById('name7').checked,name6:document.getElementById('name6').checked,name5:document.getElementById('name5').value,name4:document.getElementById('name4').value,name2:document.getElementById('name2').value}", jsObjectForNames);
+    }
+    
+    
+    
+    @Test
+    public void testGetIdBasedJsObjectPlus() {
+        final Form form = new Form(null) {
+            {
+                new Button(this, new Id("name1"));
+                new Div(this, new Id("excluded")){{new Input(this, new Id("name2"));}};
+                new Input(this, new Id("name3"));
+                new Div(this){{new Input(this, new Id("name4"));}};
+                new Div(this){{new Input(this, new Id("name4"));}};
+                new Div(this){{new Input(this, new Id("name4"));}};
+                new Div(this){{new Input(this, new Id("name5"), new Type(Type.TEXT));}};
+                new Div(this){{new Input(this, new Id("name6"), new Type(Type.CHECKBOX));}};
+                new Div(this){{new Input(this, new Id("name7"), new Type(Type.RADIO));}};
+                new TextArea(this, new Id("included"));
+            }
+        };
+        
+        final String jsObjectForNames = form.getIdBasedJsObjectPlus(Arrays.asList(TagNameConstants.BUTTON));
+        Assert.assertEquals("{name1:document.getElementById('name1').value,name3:document.getElementById('name3').value,included:document.getElementById('included').value,name7:document.getElementById('name7').checked,name6:document.getElementById('name6').checked,name5:document.getElementById('name5').value,name4:document.getElementById('name4').value,name2:document.getElementById('name2').value}", jsObjectForNames);
     }
 
 }
