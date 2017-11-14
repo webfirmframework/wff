@@ -24,6 +24,7 @@ import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.webfirmframework.wffweb.DataWffIdOutOfRangeError;
 import com.webfirmframework.wffweb.WffSecurityException;
 import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
 import com.webfirmframework.wffweb.tag.core.AbstractTagBase;
@@ -105,26 +106,38 @@ public class AbstractHtml5SharedObject implements Serializable {
                     "Not allowed to consume this method. This method is for internal use.");
         }
 
-        final int incrementedDataWffId = dataWffId.incrementAndGet();
+        // needs further improvement for atomic operation
 
-        if (incrementedDataWffId < -1 || dataWffIdSecondCycle) {
+        while (tagByWffId.size() < Integer.MAX_VALUE) {
 
-            int newDataWffId = dataWffIdSecondCycle ? incrementedDataWffId : 0;
+            final int incrementedDataWffId = dataWffId.incrementAndGet();
 
-            dataWffIdSecondCycle = true;
+            if (incrementedDataWffId < 0 || dataWffIdSecondCycle) {
 
-            String id = "S" + (newDataWffId);
+                int newDataWffId = dataWffIdSecondCycle ? incrementedDataWffId
+                        : 0;
 
-            while (tagByWffId.containsKey(id)) {
-                newDataWffId++;
-                id = "S" + newDataWffId;
+                dataWffIdSecondCycle = true;
+
+                String id = "S" + (newDataWffId);
+
+                while (tagByWffId.containsKey(id)) {
+                    newDataWffId++;
+                    id = "S" + newDataWffId;
+                }
+
+                if (dataWffId.compareAndSet(incrementedDataWffId,
+                        newDataWffId)) {
+                    return new DataWffId("S" + newDataWffId);
+                }
+                continue;
             }
 
-            dataWffId.set(newDataWffId);
-            return new DataWffId("S" + newDataWffId);
+            return new DataWffId("S" + incrementedDataWffId);
         }
+        throw new DataWffIdOutOfRangeError(
+                "BrowserPage object has reached an impossible worst case! No enough DataWffId available to assign to a new tag.");
 
-        return new DataWffId("S" + incrementedDataWffId);
     }
 
     public int getLastDataWffId(final Object accessObject) {
