@@ -113,8 +113,9 @@ public class AbstractHtml5SharedObject implements Serializable {
 
             final int incrementedDataWffId = dataWffId.incrementAndGet();
 
-            if (incrementedDataWffId < 0
-                    || dataWffIdSecondCycle.getAndSet(true)) {
+            if (incrementedDataWffId < 0 || dataWffIdSecondCycle.get()) {
+
+                dataWffIdSecondCycle.set(true);
 
                 int newDataWffId = incrementedDataWffId < 0
                         ? ((incrementedDataWffId - Integer.MAX_VALUE) - 1)
