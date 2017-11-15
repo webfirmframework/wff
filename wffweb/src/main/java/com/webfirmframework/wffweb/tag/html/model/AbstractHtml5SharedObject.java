@@ -114,8 +114,9 @@ public class AbstractHtml5SharedObject implements Serializable {
 
             if (incrementedDataWffId < 0 || dataWffIdSecondCycle) {
 
-                int newDataWffId = dataWffIdSecondCycle ? incrementedDataWffId
-                        : 0;
+                int newDataWffId = incrementedDataWffId < 0
+                        ? ((incrementedDataWffId - Integer.MAX_VALUE) - 1)
+                        : incrementedDataWffId;
 
                 dataWffIdSecondCycle = true;
 
@@ -123,6 +124,10 @@ public class AbstractHtml5SharedObject implements Serializable {
 
                 while (tagByWffId.containsKey(id)) {
                     newDataWffId++;
+                    if (newDataWffId < 0) {
+                        newDataWffId = (incrementedDataWffId
+                                - Integer.MAX_VALUE) - 1;
+                    }
                     id = "S" + newDataWffId;
                 }
 
