@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.webfirmframework.wffweb.DataWffIdOutOfRangeError;
@@ -81,7 +82,7 @@ public class AbstractHtml5SharedObject implements Serializable {
      */
     private final AtomicInteger dataWffId = new AtomicInteger(-1);
 
-    private volatile boolean dataWffIdSecondCycle;
+    private final AtomicBoolean dataWffIdSecondCycle = new AtomicBoolean(false);
 
     private final AbstractHtml rootTag;
 
@@ -112,13 +113,12 @@ public class AbstractHtml5SharedObject implements Serializable {
 
             final int incrementedDataWffId = dataWffId.incrementAndGet();
 
-            if (incrementedDataWffId < 0 || dataWffIdSecondCycle) {
+            if (incrementedDataWffId < 0
+                    || dataWffIdSecondCycle.getAndSet(true)) {
 
                 int newDataWffId = incrementedDataWffId < 0
                         ? ((incrementedDataWffId - Integer.MAX_VALUE) - 1)
                         : incrementedDataWffId;
-
-                dataWffIdSecondCycle = true;
 
                 String id = "S" + (newDataWffId);
 
