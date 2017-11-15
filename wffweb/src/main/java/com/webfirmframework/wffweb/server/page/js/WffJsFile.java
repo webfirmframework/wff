@@ -71,13 +71,13 @@ public enum WffJsFile {
 
     private String optimizedFileContent;
 
-    private static Set<String> functionNames;
+    private static volatile Set<String> functionNames;
 
     private static Set<String> variableNames;
 
-    private static volatile int functionId = 0;
+    private static int functionId = 0;
 
-    private static volatile int variableId = 0;
+    private static int variableId = 0;
 
     private static String[][] minifiableParts = { { "else {", "else{" },
             { "} else", "}else" }, { "if (", "if(" }, { ") {", "){" } };
@@ -414,33 +414,40 @@ public enum WffJsFile {
 
             allOptimizedContent = builder.toString().trim();
 
-            if (PRODUCTION_MODE && functionNames != null
-                    && variableNames != null && minifiableParts != null) {
+            if (PRODUCTION_MODE && functionNames != null) {
 
-                for (final String name : functionNames) {
-                    allOptimizedContent = allOptimizedContent.replace(name,
-                            "f" + (++functionId));
+                synchronized (WffJsFile.class) {
+
+                    if (functionNames != null) {
+
+                        for (final String name : functionNames) {
+                            allOptimizedContent = allOptimizedContent
+                                    .replace(name, "f" + (++functionId));
+                        }
+
+                        for (final String name : variableNames) {
+                            allOptimizedContent = allOptimizedContent
+                                    .replace(name, "v" + (++variableId));
+                        }
+
+                        for (final String[] each : minifiableParts) {
+                            allOptimizedContent = allOptimizedContent
+                                    .replace(each[0], each[1]);
+                        }
+
+                        // there is bug while enabling this, also enable in Task
+                        // for (final Task task : Task.getSortedTasks()) {
+                        // allOptimizedContent = allOptimizedContent
+                        // .replace(task.name(), task.getShortName());
+                        // }
+
+                        functionNames = null;
+                        variableNames = null;
+                        minifiableParts = null;
+
+                    }
+
                 }
-
-                for (final String name : variableNames) {
-                    allOptimizedContent = allOptimizedContent.replace(name,
-                            "v" + (++variableId));
-                }
-
-                for (final String[] each : minifiableParts) {
-                    allOptimizedContent = allOptimizedContent.replace(each[0],
-                            each[1]);
-                }
-
-                // there is bug while enabling this, also enable in Task
-                // for (final Task task : Task.getSortedTasks()) {
-                // allOptimizedContent = allOptimizedContent
-                // .replace(task.name(), task.getShortName());
-                // }
-
-                functionNames = null;
-                variableNames = null;
-                minifiableParts = null;
 
             }
 
