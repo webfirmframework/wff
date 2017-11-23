@@ -23,6 +23,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import com.webfirmframework.wffweb.tag.html.attribute.global.Style;
+
 /**
  * 
  * @author WFF
@@ -45,6 +47,11 @@ public class WidthCssTest {
         {
             WidthCss widthCss = new WidthCss("50px");
             assertEquals("50px", widthCss.getCssValue());
+        }
+        {
+            Style style = new Style("height:max-content");            
+            new WidthCss("max-content");
+
         }
     }
 
