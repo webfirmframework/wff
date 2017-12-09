@@ -36,9 +36,17 @@ public class WidthCss extends AbstractCssProperty<WidthCss> {
     public static final String AUTO = "auto";
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
+    public static final String FIT_CONTENT = "fit-content";
+    public static final String AVAILABLE = "available";
+    public static final String MIN_CONTENT = "min-content";
+    public static final String MAX_CONTENT = "max-content";
+    public static final String FILL = "fill";
+    public static final String CONTENT_BOX = "content-box";
+    public static final String BORDER_BOX = "border-box";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays
-            .asList(INITIAL, INHERIT, AUTO);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(
+            INITIAL, INHERIT, AUTO, FIT_CONTENT, AVAILABLE, MIN_CONTENT,
+            MAX_CONTENT, FILL, CONTENT_BOX, BORDER_BOX);
 
     private String cssValue;
     private Float value;
@@ -217,9 +225,8 @@ public class WidthCss extends AbstractCssProperty<WidthCss> {
                         break;
                     }
                 }
-                if (trimmedCssValue.equalsIgnoreCase(INITIAL)
-                        || trimmedCssValue.equalsIgnoreCase(INHERIT)
-                        || trimmedCssValue.equalsIgnoreCase(AUTO)) {
+                if (PREDEFINED_CONSTANTS
+                        .contains(TagStringUtil.toLowerCase(trimmedCssValue))) {
                     this.cssValue = trimmedCssValue.toLowerCase();
                     cssLengthUnit = null;
                     value = null;
@@ -270,6 +277,66 @@ public class WidthCss extends AbstractCssProperty<WidthCss> {
      */
     public void setAsAuto() {
         setCssValue(AUTO);
+    }
+
+    /**
+     * sets as {@code available}.
+     *
+     * @since 2.1.14
+     * @author WFF
+     */
+    public void setAsAvailable() {
+        setCssValue(AVAILABLE);
+    }
+
+    /**
+     * sets as {@code min-content}.
+     *
+     * @since 2.1.14
+     * @author WFF
+     */
+    public void setAsMinContent() {
+        setCssValue(MIN_CONTENT);
+    }
+
+    /**
+     * sets as {@code max-content}.
+     *
+     * @since 2.1.14
+     * @author WFF
+     */
+    public void setAsMaxContent() {
+        setCssValue(MAX_CONTENT);
+    }
+
+    /**
+     * sets as {@code fill}.
+     *
+     * @since 2.1.14
+     * @author WFF
+     */
+    public void setAsFill() {
+        setCssValue(FILL);
+    }
+
+    /**
+     * sets as {@code content-box}.
+     *
+     * @since 2.1.14
+     * @author WFF
+     */
+    public void setAsContentBox() {
+        setCssValue(CONTENT_BOX);
+    }
+
+    /**
+     * sets as {@code border-box}.
+     *
+     * @since 2.1.14
+     * @author WFF
+     */
+    public void setAsBorderBox() {
+        setCssValue(BORDER_BOX);
     }
 
     /**

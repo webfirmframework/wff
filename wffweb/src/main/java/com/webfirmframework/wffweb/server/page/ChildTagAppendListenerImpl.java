@@ -95,11 +95,9 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
 
             final DataWffId dataWffId = parentTag.getDataWffId();
 
-            if (dataWffId == null) {
-                if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.warning(
-                            "Could not find data-wff-id from direct parent tag");
-                }
+            if (dataWffId == null && LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.warning(
+                        "Could not find data-wff-id from direct parent tag");
             }
 
             //@formatter:off

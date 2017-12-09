@@ -46,6 +46,7 @@ import com.webfirmframework.wffweb.css.CursorTest;
 import com.webfirmframework.wffweb.css.FontFamilyTest;
 import com.webfirmframework.wffweb.css.FontSizeTest;
 import com.webfirmframework.wffweb.css.FontTest;
+import com.webfirmframework.wffweb.css.HeightCssTest;
 import com.webfirmframework.wffweb.css.HslCssValueTest;
 import com.webfirmframework.wffweb.css.HslaCssValueTest;
 import com.webfirmframework.wffweb.css.LeftTest;
@@ -142,6 +143,7 @@ import com.webfirmframework.wffweb.tag.html.formsandinputs.FormTest;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.InputTest;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.TextAreaTest;
 import com.webfirmframework.wffweb.tag.html.images.ImgTest;
+import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObjectTest;
 import com.webfirmframework.wffweb.tag.htmlwff.BlankTest;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTagTest;
 import com.webfirmframework.wffweb.tag.repository.TagRepositoryTest;
@@ -209,7 +211,8 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObjectArrayTest;
         AbstractHtmlTest.class, AbstractAttributeTest.class, JsUtilTest.class,
         TextAreaTest.class, SelectedTest.class, CheckedTest.class,
         FormTest.class, TagRepositoryTest.class, SrcCssPropertyTest.class,
-        UrlCss3ValueTest.class, WffBMObjectArrayTest.class, RelTest.class })
+        UrlCss3ValueTest.class, WffBMObjectArrayTest.class, RelTest.class,
+        AbstractHtml5SharedObjectTest.class, HeightCssTest.class })
 public class AllTests {
 
 }

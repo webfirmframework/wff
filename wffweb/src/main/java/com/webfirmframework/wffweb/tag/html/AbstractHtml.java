@@ -485,8 +485,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         && eachChild.getTagName() != null
                         && !eachChild.getTagName().isEmpty()) {
 
-                    eachChild.setDataWffId(
-                            sharedObject.getNewDataWffId(ACCESS_OBJECT));
+                    eachChild.initDataWffId(sharedObject);
 
                 }
 
@@ -2736,6 +2735,21 @@ public abstract class AbstractHtml extends AbstractJsObject {
         } catch (final UnsupportedEncodingException e) {
             throw new WffRuntimeException(e.getMessage(), e);
 
+        }
+    }
+
+    private void initDataWffId(final AbstractHtml5SharedObject sharedObject) {
+        if (dataWffId == null) {
+            synchronized (this) {
+                if (dataWffId == null) {
+                    final DataWffId newDataWffId = sharedObject
+                            .getNewDataWffId(ACCESS_OBJECT);
+                    addAttributes(false, newDataWffId);
+                    dataWffId = newDataWffId;
+                }
+            }
+        } else {
+            throw new WffRuntimeException("dataWffId already exists");
         }
     }
 

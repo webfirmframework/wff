@@ -22,8 +22,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.webfirmframework.wffweb.DataWffIdOutOfRangeError;
 import com.webfirmframework.wffweb.WffSecurityException;
 import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
 import com.webfirmframework.wffweb.tag.core.AbstractTagBase;
@@ -80,7 +82,7 @@ public class AbstractHtml5SharedObject implements Serializable {
      */
     private final AtomicInteger dataWffId = new AtomicInteger(-1);
 
-    private volatile boolean dataWffIdSecondCycle;
+    private final AtomicBoolean dataWffIdSecondCycle = new AtomicBoolean(false);
 
     private final AbstractHtml rootTag;
 
@@ -105,26 +107,42 @@ public class AbstractHtml5SharedObject implements Serializable {
                     "Not allowed to consume this method. This method is for internal use.");
         }
 
-        final int incrementedDataWffId = dataWffId.incrementAndGet();
+        // needs further improvement for atomic operation
 
-        if (incrementedDataWffId < -1 || dataWffIdSecondCycle) {
+        while (tagByWffId.size() < Integer.MAX_VALUE) {
 
-            int newDataWffId = dataWffIdSecondCycle ? incrementedDataWffId : 0;
+            final int incrementedDataWffId = dataWffId.incrementAndGet();
 
-            dataWffIdSecondCycle = true;
+            if (incrementedDataWffId < 0 || dataWffIdSecondCycle.get()) {
 
-            String id = "S" + (newDataWffId);
+                dataWffIdSecondCycle.compareAndSet(false, true);
 
-            while (tagByWffId.containsKey(id)) {
-                newDataWffId++;
-                id = "S" + newDataWffId;
+                int newDataWffId = incrementedDataWffId < 0
+                        ? ((incrementedDataWffId - Integer.MAX_VALUE) - 1)
+                        : incrementedDataWffId;
+
+                String id = "S" + (newDataWffId);
+
+                while (tagByWffId.containsKey(id)) {
+                    newDataWffId++;
+                    if (newDataWffId < 0) {
+                        newDataWffId = (newDataWffId - Integer.MAX_VALUE) - 1;
+                    }
+                    id = "S" + newDataWffId;
+                }
+
+                if (dataWffId.compareAndSet(incrementedDataWffId,
+                        newDataWffId)) {
+                    return new DataWffId("S" + newDataWffId);
+                }
+                continue;
             }
 
-            dataWffId.set(newDataWffId);
-            return new DataWffId("S" + newDataWffId);
+            return new DataWffId("S" + incrementedDataWffId);
         }
+        throw new DataWffIdOutOfRangeError(
+                "BrowserPage object has reached an impossible worst case! No enough DataWffId available to assign to a new tag.");
 
-        return new DataWffId("S" + incrementedDataWffId);
     }
 
     public int getLastDataWffId(final Object accessObject) {
