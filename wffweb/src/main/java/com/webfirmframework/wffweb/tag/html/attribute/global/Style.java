@@ -1204,6 +1204,9 @@ public class Style extends AbstractAttribute
      *         object has been removed.
      * @since 1.0.0
      * @author WFF
+     * @deprecated After using this method, adding or removing any value in the
+     *             collection will not have any effect on {@code Style}, so this
+     *             method may be removed later.
      */
     @Deprecated
     public List<Boolean> removeCssProperties(
