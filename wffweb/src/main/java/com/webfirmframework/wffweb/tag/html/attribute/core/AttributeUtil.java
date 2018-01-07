@@ -44,7 +44,7 @@ public final class AttributeUtil {
      * @author WFF
      * @since 1.0.0
      */
-    public static final String getAttributeHtmlString(final boolean rebuild,
+    public static String getAttributeHtmlString(final boolean rebuild,
             final AbstractAttribute... attributes) {
         if (attributes != null) {
             final StringBuilder attributeSB = new StringBuilder(
@@ -66,7 +66,7 @@ public final class AttributeUtil {
      * @author WFF
      * @since 1.0.0
      */
-    public static final String getAttributeHtmlString(final boolean rebuild,
+    public static String getAttributeHtmlString(final boolean rebuild,
             final Charset charset, final AbstractAttribute... attributes) {
         if (attributes != null) {
             final StringBuilder attributeSB = new StringBuilder(
@@ -90,7 +90,7 @@ public final class AttributeUtil {
      * @throws IOException
      * @since 1.1.3
      */
-    public static final byte[][] getAttributeHtmlBytesCompressedByIndex(
+    public static byte[][] getAttributeHtmlBytesCompressedByIndex(
             final boolean rebuild, final Charset charset,
             final AbstractAttribute... attributes) throws IOException {
 
@@ -117,7 +117,7 @@ public final class AttributeUtil {
      * @throws UnsupportedEncodingException
      * @since 2.0.0
      */
-    public static final byte[][] getWffAttributeBytes(final String charset,
+    public static byte[][] getWffAttributeBytes(final String charset,
             final AbstractAttribute... attributes)
             throws UnsupportedEncodingException {
 

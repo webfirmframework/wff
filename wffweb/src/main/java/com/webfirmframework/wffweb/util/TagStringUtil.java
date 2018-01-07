@@ -44,7 +44,7 @@ public final class TagStringUtil {
      * @return The lower case string
      * @author WFF
      */
-    public static final String toLowerCase(final String value) {
+    public static String toLowerCase(final String value) {
         final char[] chars = value.toCharArray();
 
         for (int i = 0; i < chars.length; i++) {
@@ -65,7 +65,7 @@ public final class TagStringUtil {
      * @return The upper case string
      * @author WFF
      */
-    public static final String toUpperCase(final String value) {
+    public static String toUpperCase(final String value) {
         final char[] chars = value.toCharArray();
 
         for (int i = 0; i < chars.length; i++) {
