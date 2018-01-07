@@ -24,7 +24,7 @@ import java.util.Map;
  * @author WFF
  * @since 1.0.0
  */
-public class CharsetUtil {
+public final class CharsetUtil {
 
     private static final Map<Integer, char[]> CHACHED_UPPER_CASE_CHARSETS = new HashMap<Integer, char[]>();
 

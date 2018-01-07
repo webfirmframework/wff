@@ -21,7 +21,7 @@ package com.webfirmframework.wffweb.tag.html.attribute;
  * @version 1.0.0
  *
  */
-public class AttributeNameConstants {
+public final class AttributeNameConstants {
 
     public static final String ACCEPT = "accept";
 

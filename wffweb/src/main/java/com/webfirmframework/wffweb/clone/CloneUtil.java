@@ -35,7 +35,7 @@ import java.util.logging.Logger;
  * @author WFF
  * @since 1.0.0
  */
-public class CloneUtil {
+public final class CloneUtil {
 
     private static final Logger LOGGER = Logger
             .getLogger(CloneUtil.class.getName());

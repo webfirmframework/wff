@@ -21,7 +21,7 @@ package com.webfirmframework.wffweb.util;
  * @author WFF
  * @since 1.0.0
  */
-public class TagStringUtil {
+public final class TagStringUtil {
 
     private static final char[] UPPER_CASE_CHARS = CharsetUtil
             .getUpperCaseCharset(512);

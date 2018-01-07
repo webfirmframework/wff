@@ -25,7 +25,7 @@ import com.webfirmframework.wffweb.css.CssLengthUnit;
  * @version 1.0.0
  *
  */
-public class CssLengthUtil {
+public final class CssLengthUtil {
 
     /**
      *

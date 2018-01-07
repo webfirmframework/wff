@@ -25,7 +25,7 @@ import com.webfirmframework.wffweb.css.CssTimeUnit;
  * @version 1.0.0
  *
  */
-public class CssTimeUtil {
+public final class CssTimeUtil {
 
     /**
      *

@@ -21,7 +21,7 @@ package com.webfirmframework.wffweb.util;
  * @author WFF
  * @since 1.0.0
  */
-public class StringBuilderUtil {
+public final class StringBuilderUtil {
     private StringBuilderUtil() {
         throw new AssertionError();
     }

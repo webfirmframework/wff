@@ -20,7 +20,8 @@ package com.webfirmframework.wffweb.util;
  * @author WFF
  * @since 1.0.0
  */
-public class StringUtil {
+public final class StringUtil {
+
     private StringUtil() {
         throw new AssertionError();
     }

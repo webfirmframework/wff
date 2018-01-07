@@ -25,9 +25,10 @@ import java.util.Set;
  * @author WFF
  * @since 2.1.1
  */
-public class JsUtil {
+public final class JsUtil {
 
     private JsUtil() {
+        throw new AssertionError();
     }
 
     /**

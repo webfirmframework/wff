@@ -21,7 +21,7 @@ package com.webfirmframework.wffweb.tag.html;
  * @version 1.0.0
  *
  */
-public class TagNameConstants {
+public final class TagNameConstants {
 
     public static final String A = "a";
 

@@ -28,7 +28,7 @@ import java.nio.charset.Charset;
  * @author WFF
  * @since 1.0.0
  */
-public class AttributeUtil {
+public final class AttributeUtil {
 
     /**
      *

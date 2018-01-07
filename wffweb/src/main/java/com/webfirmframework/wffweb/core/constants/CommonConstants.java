@@ -21,7 +21,7 @@ package com.webfirmframework.wffweb.core.constants;
  * @version 1.0.0
  *
  */
-public class CommonConstants {
+public final class CommonConstants {
 
     public static final long FFFFFF_HEX_VALUE = Long.parseLong("FFFFFF", 16);
 
