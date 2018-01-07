@@ -21,7 +21,7 @@ package com.webfirmframework.wffweb.util;
  * @author WFF
  * @since 1.0.0
  */
-public class TagStringUtil {
+public final class TagStringUtil {
 
     private static final char[] UPPER_CASE_CHARS = CharsetUtil
             .getUpperCaseCharset(512);
@@ -44,7 +44,7 @@ public class TagStringUtil {
      * @return The lower case string
      * @author WFF
      */
-    public static final String toLowerCase(final String value) {
+    public static String toLowerCase(final String value) {
         final char[] chars = value.toCharArray();
 
         for (int i = 0; i < chars.length; i++) {
@@ -65,7 +65,7 @@ public class TagStringUtil {
      * @return The upper case string
      * @author WFF
      */
-    public static final String toUpperCase(final String value) {
+    public static String toUpperCase(final String value) {
         final char[] chars = value.toCharArray();
 
         for (int i = 0; i < chars.length; i++) {

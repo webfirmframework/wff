@@ -21,7 +21,7 @@ package com.webfirmframework.wffweb.css;
  * @author WFF
  * @since 1.0.0
  */
-public class CssConstants {
+public final class CssConstants {
 
     public static final String IMPORTANT_UPPERCASE = "!IMPORTANT";
     /**

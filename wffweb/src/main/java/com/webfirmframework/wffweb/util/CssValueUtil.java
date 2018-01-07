@@ -31,7 +31,7 @@ import com.webfirmframework.wffweb.NullValueException;
  * @author WFF
  * @since 1.0.0
  */
-public class CssValueUtil {
+public final class CssValueUtil {
 
     private static final Map<String, String> CSS_VALUE_PART_START_END_VALUES;
 

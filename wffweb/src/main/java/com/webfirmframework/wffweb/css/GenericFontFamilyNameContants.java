@@ -21,7 +21,7 @@ package com.webfirmframework.wffweb.css;
  * @version 1.0.0
  *
  */
-public class GenericFontFamilyNameContants {
+public final class GenericFontFamilyNameContants {
 
     public static final String SERIF = "serif";
     public static final String SANS_SERIF = "sans-serif";

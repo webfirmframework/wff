@@ -22,7 +22,7 @@ import java.util.Objects;
  * @author WFF
  * @since 1.0.0
  */
-public class ObjectUtil {
+public final class ObjectUtil {
     private ObjectUtil() {
         throw new AssertionError();
     }

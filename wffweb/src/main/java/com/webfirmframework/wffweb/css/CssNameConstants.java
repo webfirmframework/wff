@@ -21,7 +21,7 @@ package com.webfirmframework.wffweb.css;
  * @author WFF
  * @since 1.0.0
  */
-public class CssNameConstants {
+public final class CssNameConstants {
 
     public static final String ALIGN_CONTENT = "align-content";
     public static final String ALIGN_ITEMS = "align-items";

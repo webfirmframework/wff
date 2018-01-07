@@ -23,7 +23,7 @@ import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 
-class DataWffIdUtil {
+final class DataWffIdUtil {
 
     private DataWffIdUtil() {
         throw new AssertionError();

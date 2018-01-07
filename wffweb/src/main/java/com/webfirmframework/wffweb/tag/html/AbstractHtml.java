@@ -2022,7 +2022,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param os
      *            the object of {@code OutputStream} to write to.
      * @throws IOException
-     * @Deprecated this method is for future implementation so it should not be
+     * @deprecated this method is for future implementation so it should not be
      *             consumed
      */
     @Deprecated
