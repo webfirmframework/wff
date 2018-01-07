@@ -212,7 +212,7 @@ public enum BrowserPageContext {
      *            parameter in websocket connection
      * @since 2.0.0
      * @author WFF
-     * @deprecated
+     * @deprecated this method is for future development
      */
     @Deprecated
     public void webSocketClosed(final String wffInstanceId) {

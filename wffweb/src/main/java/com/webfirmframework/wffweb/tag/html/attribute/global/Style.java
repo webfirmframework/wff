@@ -1025,12 +1025,15 @@ public class Style extends AbstractAttribute
      * @author WFF
      * @return the added {@code CssProperty} objects as a
      *         {@code List<CssProperty>}.
+     * @deprecated After using this method, adding or removing any value in the
+     *             collection will not have any effect on {@code Style}, so this
+     *             method may be removed later.
      */
     @Deprecated
     public List<CssProperty> addCssProperties(
             final Collection<? extends CssProperty> cssProperties) {
         if (cssProperties == null) {
-            throw new NullValueException("");
+            throw new NullValueException("cssProperties cannot be null");
         }
         final List<CssProperty> addedCssPropertys = new ArrayList<>();
         for (final CssProperty cssProperty : cssProperties) {

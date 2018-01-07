@@ -26,7 +26,8 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class CssEnumUtil {
+public final class CssEnumUtil {
+
     private CssEnumUtil() {
         throw new AssertionError();
     }
