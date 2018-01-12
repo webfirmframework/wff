@@ -813,15 +813,18 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * removes the given attributes from this tag.
      *
-     * @param invokeListener
-     *            true to invoke listener
+     * @param updateClient
+     *            true to update client browser page if it is available. The
+     *            default value is true but the it will be ignored if there is
+     *            no client browser page.
      * @param attributeNames
      *            to remove the attributes having in the given names.
      * @return true if any of the attributes are removed.
-     * @since 2.0.0
+     * @since 2.0.0 initial implementation
+     * @since 2.0.15 changed to public scope
      * @author WFF
      */
-    private boolean removeAttributes(final boolean invokeListener,
+    public boolean removeAttributes(final boolean updateClient,
             final String... attributeNames) {
 
         if (attributesMap == null) {
@@ -849,7 +852,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
             setModified(true);
             sharedObject.setChildModified(true);
 
-            if (invokeListener) {
+            // invokeListener
+            if (updateClient) {
                 final AttributeRemoveListener listener = sharedObject
                         .getAttributeRemoveListener(ACCESS_OBJECT);
                 if (listener != null) {
