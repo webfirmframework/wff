@@ -98,6 +98,26 @@ public class TextArea extends AbstractHtml {
     }
 
     /**
+     * sets the child text for this tag.
+     *
+     * @param updateClient
+     *            true to update client browser page if it is available. The
+     *            default value is true but the it will be ignored if there is
+     *            no client browser page.
+     *
+     * @param text
+     *            String which needs to be shown as a child of this tag.
+     * @since 2.1.15
+     */
+    public void setChildText(final boolean updateClient, final String text) {
+        if (text == null || text.isEmpty()) {
+            removeAllChildren();
+        } else {
+            addInnerHtmls(updateClient, new NoTag(null, text));
+        }
+    }
+
+    /**
      * gets the child text set for this tag.
      *
      * @return the child text set for this tag in string format. If there is no

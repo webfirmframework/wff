@@ -302,6 +302,24 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @author WFF
      */
     public void addInnerHtmls(final AbstractHtml... innerHtmls) {
+        addInnerHtmls(true, innerHtmls);
+    }
+
+    /**
+     * Removes all children and adds the given tags as children.
+     *
+     * @param updateClient
+     *            true to update client browser page if it is available. The
+     *            default value is true but the it will be ignored if there is
+     *            no client browser page.
+     * @param innerHtmls
+     *            the inner html tags to add
+     *
+     * @since 2.1.15
+     * @author WFF
+     */
+    protected void addInnerHtmls(final boolean updateClient,
+            final AbstractHtml... innerHtmls) {
 
         final AbstractHtml[] removedAbstractHtmls = children
                 .toArray(new AbstractHtml[children.size()]);
@@ -314,31 +332,32 @@ public abstract class AbstractHtml extends AbstractJsObject {
         final InnerHtmlAddListener listener = sharedObject
                 .getInnerHtmlAddListener(ACCESS_OBJECT);
 
-        final InnerHtmlAddListener.Event[] events = new InnerHtmlAddListener.Event[innerHtmls.length];
+        if (listener != null && updateClient) {
 
-        int index = 0;
+            final InnerHtmlAddListener.Event[] events = new InnerHtmlAddListener.Event[innerHtmls.length];
 
-        for (final AbstractHtml innerHtml : innerHtmls) {
+            int index = 0;
 
-            AbstractHtml previousParentTag = null;
+            for (final AbstractHtml innerHtml : innerHtmls) {
 
-            if (innerHtml.parent != null
-                    && innerHtml.parent.sharedObject == sharedObject) {
-                previousParentTag = innerHtml.parent;
-            }
+                AbstractHtml previousParentTag = null;
 
-            addChild(innerHtml, false);
+                if (innerHtml.parent != null
+                        && innerHtml.parent.sharedObject == sharedObject) {
+                    previousParentTag = innerHtml.parent;
+                }
 
-            if (listener != null) {
+                addChild(innerHtml, false);
+
                 events[index] = new InnerHtmlAddListener.Event(this, innerHtml,
                         previousParentTag);
                 index++;
+
             }
-
-        }
-
-        if (listener != null) {
-            listener.innerHtmlsAdded(this, events);
+        } else {
+            for (final AbstractHtml innerHtml : innerHtmls) {
+                addChild(innerHtml, false);
+            }
         }
     }
 
