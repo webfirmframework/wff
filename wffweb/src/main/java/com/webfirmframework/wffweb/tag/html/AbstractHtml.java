@@ -354,6 +354,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 index++;
 
             }
+
+            listener.innerHtmlsAdded(this, events);
         } else {
             for (final AbstractHtml innerHtml : innerHtmls) {
                 addChild(innerHtml, false);
