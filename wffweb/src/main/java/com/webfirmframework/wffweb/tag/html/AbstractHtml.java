@@ -310,8 +310,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *
      * @param updateClient
      *            true to update client browser page if it is available. The
-     *            default value is true but the it will be ignored if there is
-     *            no client browser page.
+     *            default value is true but it will be ignored if there is no
+     *            client browser page.
      * @param innerHtmls
      *            the inner html tags to add
      *
@@ -622,8 +622,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *
      * @param updateClient
      *            true to update client browser page if it is available. The
-     *            default value is true but the it will be ignored if there is
-     *            no client browser page.
+     *            default value is true but it will be ignored if there is no
+     *            client browser page.
      * @param attributes
      *            attributes to add
      * @since 2.0.0 initial implementation
@@ -744,8 +744,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *
      * @param updateClient
      *            true to update client browser page if it is available. The
-     *            default value is true but the it will be ignored if there is
-     *            no client browser page.
+     *            default value is true but it will be ignored if there is no
+     *            client browser page.
      * @param attributes
      *            attributes to remove
      * @return true if any of the attributes are removed.
@@ -836,8 +836,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *
      * @param updateClient
      *            true to update client browser page if it is available. The
-     *            default value is true but the it will be ignored if there is
-     *            no client browser page.
+     *            default value is true but it will be ignored if there is no
+     *            client browser page.
      * @param attributeNames
      *            to remove the attributes having in the given names.
      * @return true if any of the attributes are removed.

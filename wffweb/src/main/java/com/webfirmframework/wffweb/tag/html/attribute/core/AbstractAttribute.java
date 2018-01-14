@@ -652,8 +652,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     /**
      * @param updateClient
      *            true to update client browser page if it is available. The
-     *            default value is true but the it will be ignored if there is
-     *            no client browser page.
+     *            default value is true but it will be ignored if there is no
+     *            client browser page.
      * @param attributeValue
      *            the attributeValue to set
      * @since 2.1.15

@@ -102,8 +102,8 @@ public class TextArea extends AbstractHtml {
      *
      * @param updateClient
      *            true to update client browser page if it is available. The
-     *            default value is true but the it will be ignored if there is
-     *            no client browser page.
+     *            default value is true but it will be ignored if there is no
+     *            client browser page.
      *
      * @param text
      *            String which needs to be shown as a child of this tag.

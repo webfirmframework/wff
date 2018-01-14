@@ -80,4 +80,18 @@ public class CustomAttribute extends AbstractAttribute
         setAttributeValue(value);
     }
 
+    /**
+     * @param updateClient
+     *            true to update client browser page if it is available. The
+     *            default value is true but it will be ignored if there is no
+     *            client browser page.
+     * @param value
+     *            the value to set
+     * @author WFF
+     * @since 2.1.15
+     */
+    public void setValue(final boolean updateClient, final String value) {
+        setAttributeValue(updateClient, value);
+    }
+
 }
