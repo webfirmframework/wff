@@ -79,7 +79,8 @@ class AttributeValueChangeListenerImpl implements AttributeValueChangeListener {
                     event.getOwnerTags());
 
             // to remove ownerTags which don't exist in ui
-            ownerTags.retainAll(tagByWffId.values());
+            // to improve performance HashSet object passed as an argument
+            ownerTags.retainAll(new HashSet<AbstractHtml>(tagByWffId.values()));
 
             // for (AbstractHtml ownerTag : event.getOwnerTags()) {
             // AbstractAttribute dataWffIdAttr = ownerTag
