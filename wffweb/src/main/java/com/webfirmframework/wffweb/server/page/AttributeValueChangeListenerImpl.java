@@ -16,6 +16,7 @@
 package com.webfirmframework.wffweb.server.page;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -78,9 +79,14 @@ class AttributeValueChangeListenerImpl implements AttributeValueChangeListener {
             final Set<AbstractHtml> ownerTags = new HashSet<AbstractHtml>(
                     event.getOwnerTags());
 
-            // to remove ownerTags which don't exist in ui
-            // to improve performance HashSet object passed as an argument
-            ownerTags.retainAll(new HashSet<AbstractHtml>(tagByWffId.values()));
+            final Collection<AbstractHtml> uiTags = tagByWffId.values();
+            if (uiTags.size() > 10) {
+                // to remove ownerTags which don't exist in ui
+                // to improve performance HashSet object passed as an argument
+                ownerTags.retainAll(new HashSet<AbstractHtml>(uiTags));
+            } else {
+                ownerTags.retainAll(uiTags);
+            }
 
             // for (AbstractHtml ownerTag : event.getOwnerTags()) {
             // AbstractAttribute dataWffIdAttr = ownerTag
