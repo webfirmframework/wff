@@ -1,13 +1,24 @@
 [![Build Status](https://api.travis-ci.org/webfirmframework/wff.svg?branch=master)](https://travis-ci.org/webfirmframework/wff)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/410601e16dc54b0a973c03845ad790c2)](https://www.codacy.com/app/webfirm-framework/wff?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=webfirmframework/wff&amp;utm_campaign=Badge_Grade)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.webfirmframework/wffweb/badge.svg)](http://search.maven.org/#artifactdetails%7Ccom.webfirmframework%7Cwffweb%7C2.1.5%7Cjar)
+[![Stackoverflow](https://img.shields.io/badge/stackoverflow-wffweb-orange.svg)](https://stackoverflow.com/questions/tagged/wffweb)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.webfirmframework/wffweb/badge.svg)](https://search.maven.org/#artifactdetails%7Ccom.webfirmframework%7Cwffweb%7C2.1.14%7Cjar)
 [![javadoc](https://img.shields.io/:wffweb-javadoc-blue.svg)](https://webfirmframework.github.io/wffweb/wffweb-javadoc)
+[![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
+[![twitter](https://img.shields.io/badge/twitter-@wffweb-blue.svg)](https://webfirmframework.com/twitter)
+
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://webfirmframework.com/donate)
 
 
 # wffweb
 wffweb is one of the modules of webfirmframework. It's an open source java framework for real time application development which can generate html5 and css3 from java code, [read more...](https://webfirmframework.github.io/)
 
 
+To support us please donate anything you wish to the author of this framework!
+
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://webfirmframework.com/donate)
+
+
+#### [Register in wff hub for template reference and more!](http://hub.webfirmframework.com). It's built by wffweb-2.x.x
 #### [check out wffweb-2.x.x main features](https://www.youtube.com/watch?v=UWoNliHOy6A)
 ##### [check out wffweb-2.x.x sample projects](https://github.com/webfirmframework/tomcat-8-wffweb-demo-apps)
 
@@ -15,7 +26,7 @@ wffweb is one of the modules of webfirmframework. It's an open source java frame
 ##### check out this demo app deployed at [https://wffweb.herokuapp.com](https://wffweb.herokuapp.com)
 
 
-(For the survival of this framework, some ads are shown in [webfirmframework.github.io](https://webfirmframework.github.io) and [webfirmframework.com](http://webfirmframework.com) web sites. These are temporary ads and will be removed soon. We are really sorry if it causes any inconvenience to your surfing.)   
+(For the survival of this framework, some ads are shown in [webfirmframework.github.io](https://webfirmframework.github.io) and [webfirmframework.com](https://webfirmframework.com) web sites. These are temporary ads and will be removed soon. We are really sorry if it causes any inconvenience to your surfing.)   
 
 Here are some sample codes
 
@@ -34,7 +45,7 @@ Html html = new Html(null) {
 };
 // prepends the doc type <!DOCTYPE html>
 html.setPrependDocType(true);
-System.out.println(html.toHtmlString()); 
+System.out.println(html.toHtmlString(true)); 
 ~~~
 
 or the same in another coding style
@@ -48,7 +59,7 @@ Html html = new Html(null) {{
 }};
 // prepends the doc type <!DOCTYPE html>
 html.setPrependDocType(true);
-System.out.println(html.toHtmlString()); 
+System.out.println(html.toHtmlString(true)); 
 ~~~
 
 or the same in few lines
@@ -62,7 +73,7 @@ new NoTag(body, "Hello World");
 
 // prepends the doc type <!DOCTYPE html>
 html.setPrependDocType(true);
-System.out.println(html.toHtmlString()); 
+System.out.println(html.toHtmlString(true)); 
 ~~~
 
 prints the following output
@@ -139,22 +150,20 @@ Html html = new Html(null, new CustomAttribute("some", "val"), new Id("htmlId"),
 
 		int paragraphCount = 0;
 
-		Div contentDiv = new Div(this) {
-			{
+		Div contentDiv = new Div(this) {{
 
-				new H1(this) {
-					NoTag headerContent = new NoTag(this, "Web Firm Framework");
-				};
+			new H1(this) {{
+				new NoTag(this, "Web Firm Framework");
+			}};
 
-				for (paragraphCount = 1; paragraphCount < 4; paragraphCount++) {
-					new P(this, paragraphStyle) {
-						Blank paragraphContent = new Blank(this,
-								"Web Firm Framework Paragraph " + paragraphCount);
-					};
-				}
-
+			for (paragraphCount = 1; paragraphCount < 4; paragraphCount++) {
+				new P(this, paragraphStyle) {{
+					new NoTag(this,
+							"Web Firm Framework Paragraph " + paragraphCount);
+				}};
 			}
-		};
+
+		}};
 	};
 
 	new Div(this, new Hidden());
@@ -162,7 +171,7 @@ Html html = new Html(null, new CustomAttribute("some", "val"), new Id("htmlId"),
 
 paragraphStyle.addCssProperty(AlignContent.CENTER);
 
-System.out.println(html.toHtmlString());
+System.out.println(html.toHtmlString(true));
 ```
 prints
 
@@ -188,7 +197,7 @@ Color color = (Color) paragraphStyle
         
 color.setCssValue(CssColorName.BROWN.getColorName());
 
-System.out.println(html.toHtmlString());
+System.out.println(html.toHtmlString(true));
 
 ```
 It will add width 100% in aboutParagraph and will change color to brown, its generated html code will be as follows
