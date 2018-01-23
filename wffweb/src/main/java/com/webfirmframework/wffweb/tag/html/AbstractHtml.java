@@ -302,6 +302,24 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @author WFF
      */
     public void addInnerHtmls(final AbstractHtml... innerHtmls) {
+        addInnerHtmls(true, innerHtmls);
+    }
+
+    /**
+     * Removes all children and adds the given tags as children.
+     *
+     * @param updateClient
+     *            true to update client browser page if it is available. The
+     *            default value is true but it will be ignored if there is no
+     *            client browser page.
+     * @param innerHtmls
+     *            the inner html tags to add
+     *
+     * @since 2.1.15
+     * @author WFF
+     */
+    protected void addInnerHtmls(final boolean updateClient,
+            final AbstractHtml... innerHtmls) {
 
         final AbstractHtml[] removedAbstractHtmls = children
                 .toArray(new AbstractHtml[children.size()]);
@@ -314,31 +332,34 @@ public abstract class AbstractHtml extends AbstractJsObject {
         final InnerHtmlAddListener listener = sharedObject
                 .getInnerHtmlAddListener(ACCESS_OBJECT);
 
-        final InnerHtmlAddListener.Event[] events = new InnerHtmlAddListener.Event[innerHtmls.length];
+        if (listener != null && updateClient) {
 
-        int index = 0;
+            final InnerHtmlAddListener.Event[] events = new InnerHtmlAddListener.Event[innerHtmls.length];
 
-        for (final AbstractHtml innerHtml : innerHtmls) {
+            int index = 0;
 
-            AbstractHtml previousParentTag = null;
+            for (final AbstractHtml innerHtml : innerHtmls) {
 
-            if (innerHtml.parent != null
-                    && innerHtml.parent.sharedObject == sharedObject) {
-                previousParentTag = innerHtml.parent;
-            }
+                AbstractHtml previousParentTag = null;
 
-            addChild(innerHtml, false);
+                if (innerHtml.parent != null
+                        && innerHtml.parent.sharedObject == sharedObject) {
+                    previousParentTag = innerHtml.parent;
+                }
 
-            if (listener != null) {
+                addChild(innerHtml, false);
+
                 events[index] = new InnerHtmlAddListener.Event(this, innerHtml,
                         previousParentTag);
                 index++;
+
             }
 
-        }
-
-        if (listener != null) {
             listener.innerHtmlsAdded(this, events);
+        } else {
+            for (final AbstractHtml innerHtml : innerHtmls) {
+                addChild(innerHtml, false);
+            }
         }
     }
 
@@ -599,14 +620,17 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * adds the given attributes to this tag.
      *
-     * @param invokeListener
-     *            true to invoke listen
+     * @param updateClient
+     *            true to update client browser page if it is available. The
+     *            default value is true but it will be ignored if there is no
+     *            client browser page.
      * @param attributes
      *            attributes to add
-     * @since 2.0.0
+     * @since 2.0.0 initial implementation
+     * @since 2.0.15 changed to public scope
      * @author WFF
      */
-    private void addAttributes(final boolean invokeListener,
+    public void addAttributes(final boolean updateClient,
             final AbstractAttribute... attributes) {
 
         if (attributesMap == null) {
@@ -638,8 +662,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
         setModified(true);
         sharedObject.setChildModified(true);
 
-        // listener
-        if (invokeListener) {
+        // invokeListener
+        if (updateClient) {
             final AttributeAddListener attributeAddListener = sharedObject
                     .getAttributeAddListener(ACCESS_OBJECT);
             if (attributeAddListener != null) {
@@ -718,15 +742,18 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * removes the given attributes from this tag.
      *
-     * @param invokeListener
-     *            true to invoke listener
+     * @param updateClient
+     *            true to update client browser page if it is available. The
+     *            default value is true but it will be ignored if there is no
+     *            client browser page.
      * @param attributes
      *            attributes to remove
      * @return true if any of the attributes are removed.
-     * @since 2.0.0
+     * @since 2.0.0 initial implementation
+     * @since 2.0.15 changed to public scope
      * @author WFF
      */
-    private boolean removeAttributes(final boolean invokeListener,
+    public boolean removeAttributes(final boolean updateClient,
             final AbstractAttribute... attributes) {
 
         if (attributesMap == null) {
@@ -753,7 +780,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
             setModified(true);
             sharedObject.setChildModified(true);
 
-            if (invokeListener) {
+            // invokeListener
+            if (updateClient) {
                 final AttributeRemoveListener listener = sharedObject
                         .getAttributeRemoveListener(ACCESS_OBJECT);
                 if (listener != null) {
@@ -806,15 +834,18 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * removes the given attributes from this tag.
      *
-     * @param invokeListener
-     *            true to invoke listener
+     * @param updateClient
+     *            true to update client browser page if it is available. The
+     *            default value is true but it will be ignored if there is no
+     *            client browser page.
      * @param attributeNames
      *            to remove the attributes having in the given names.
      * @return true if any of the attributes are removed.
-     * @since 2.0.0
+     * @since 2.0.0 initial implementation
+     * @since 2.0.15 changed to public scope
      * @author WFF
      */
-    private boolean removeAttributes(final boolean invokeListener,
+    public boolean removeAttributes(final boolean updateClient,
             final String... attributeNames) {
 
         if (attributesMap == null) {
@@ -842,7 +873,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
             setModified(true);
             sharedObject.setChildModified(true);
 
-            if (invokeListener) {
+            // invokeListener
+            if (updateClient) {
                 final AttributeRemoveListener listener = sharedObject
                         .getAttributeRemoveListener(ACCESS_OBJECT);
                 if (listener != null) {
