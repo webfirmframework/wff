@@ -444,6 +444,11 @@ public class AutoComplete extends AbstractAttribute
         return StringBuilderUtil.getTrimmedString(builder);
     }
 
+    /**
+     * @return a new copy of set of values
+     * @since 2.1.15
+     * @author WFF
+     */
     public Set<String> getValueSet() {
         return new LinkedHashSet<String>(getAttributeValueSet());
     }
