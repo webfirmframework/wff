@@ -54,20 +54,24 @@ public class ClassAttribute extends AbstractAttribute
      * @param classNames
      */
     public ClassAttribute(final String... classNames) {
-        if (classNames != null) {
-            /*
-             * should not call addClassNames(final String className) instead of
-             * the below duplicate code since the addClassNames method may be
-             * overridden by the extended class.
-             */
-            for (final String className : classNames) {
+        splitAndAdd(classNames);
+    }
+
+    private void splitAndAdd(final String... attrValues) {
+        if (attrValues != null) {
+
+            final List<String> allValues = new ArrayList<String>(
+                    attrValues.length);
+            for (final String className : attrValues) {
                 String trimmmedValue = null;
                 if (className != null
                         && !(trimmmedValue = className.trim()).isEmpty()) {
                     final String[] values = trimmmedValue.split(" ");
-                    addAllToAttributeValueSet(Arrays.asList(values));
+                    allValues.addAll(Arrays.asList(values));
                 }
             }
+
+            addAllToAttributeValueSet(allValues);
         }
     }
 
@@ -91,16 +95,7 @@ public class ClassAttribute extends AbstractAttribute
      * @author WFF
      */
     public void addClassNames(final String... classNames) {
-        if (classNames != null) {
-            for (final String className : classNames) {
-                String trimmmedValue = null;
-                if (className != null
-                        && !(trimmmedValue = className.trim()).isEmpty()) {
-                    final String[] values = trimmmedValue.split(" ");
-                    addAllToAttributeValueSet(Arrays.asList(values));
-                }
-            }
-        }
+        splitAndAdd(classNames);
     }
 
     /**
@@ -193,4 +188,60 @@ public class ClassAttribute extends AbstractAttribute
     public Set<String> getClassNames() {
         return new LinkedHashSet<String>(getAttributeValueSet());
     }
+
+    /**
+     * sets the value for this attribute
+     *
+     * @param updateClient
+     *            true to update client browser page if it is available. The
+     *            default value is true but it will be ignored if there is no
+     *            client browser page.
+     * @param value
+     *            the value for the attribute.
+     * @since 2.1.15
+     * @author WFF
+     */
+    public void setValue(final boolean updateClient, final String value) {
+        if (value != null) {
+            final String[] inputValues = value.split(" ");
+            final List<String> allValues = new ArrayList<String>(
+                    inputValues.length);
+            for (final String each : inputValues) {
+                String trimmmedValue = null;
+                if (each != null && !(trimmmedValue = each.trim()).isEmpty()) {
+                    final String[] values = trimmmedValue.split(" ");
+                    allValues.addAll(Arrays.asList(values));
+                }
+            }
+            removeAllFromAttributeValueSet();
+            addAllToAttributeValueSet(updateClient, allValues);
+        }
+    }
+
+    /**
+     * sets the value for this attribute
+     *
+     *
+     * @param value
+     *            the value for the attribute.
+     * @since 2.1.15
+     * @author WFF
+     */
+    public void setValue(final String value) {
+        if (value != null) {
+            final String[] inputValues = value.split(" ");
+            final List<String> allValues = new ArrayList<String>(
+                    inputValues.length);
+            for (final String each : inputValues) {
+                String trimmmedValue = null;
+                if (each != null && !(trimmmedValue = each.trim()).isEmpty()) {
+                    final String[] values = trimmmedValue.split(" ");
+                    allValues.addAll(Arrays.asList(values));
+                }
+            }
+            removeAllFromAttributeValueSet();
+            addAllToAttributeValueSet(allValues);
+        }
+    }
+
 }

@@ -326,14 +326,19 @@ public class AutoComplete extends AbstractAttribute
 
     private void splitAndAdd(final String... attrValues) {
         if (attrValues != null) {
+
+            final List<String> allValues = new ArrayList<String>(
+                    attrValues.length);
             for (final String className : attrValues) {
                 String trimmmedValue = null;
                 if (className != null
                         && !(trimmmedValue = className.trim()).isEmpty()) {
                     final String[] values = trimmmedValue.split(" ");
-                    addAllToAttributeValueSet(Arrays.asList(values));
+                    allValues.addAll(Arrays.asList(values));
                 }
             }
+
+            addAllToAttributeValueSet(allValues);
         }
     }
 
