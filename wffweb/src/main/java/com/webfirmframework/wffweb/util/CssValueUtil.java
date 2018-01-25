@@ -206,7 +206,7 @@ public final class CssValueUtil {
                         final String trimmedCssValuePart2 = cssValuePart2
                                 .trim();
 
-                        if (cssValuePart2.endsWith(" ")) {
+                        if (StringUtil.endsWithWhitespace(cssValuePart2)) {
                             for (final String each : StringUtil
                                     .splitBySpace(trimmedCssValuePart2)) {
                                 final String trimmed;
