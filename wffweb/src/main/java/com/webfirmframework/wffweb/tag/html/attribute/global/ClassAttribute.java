@@ -16,9 +16,11 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute.global;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
@@ -113,15 +115,18 @@ public class ClassAttribute extends AbstractAttribute
     public void addNewClassNames(final String... classNames) {
 
         if (classNames != null) {
+            final List<String> allValues = new ArrayList<String>(
+                    classNames.length);
             for (final String className : classNames) {
                 String trimmmedValue = null;
                 if (className != null
                         && !(trimmmedValue = className.trim()).isEmpty()) {
                     final String[] values = trimmmedValue.split(" ");
-                    removeAllFromAttributeValueSet();
-                    addAllToAttributeValueSet(Arrays.asList(values));
+                    allValues.addAll(Arrays.asList(values));
                 }
             }
+            removeAllFromAttributeValueSet();
+            addAllToAttributeValueSet(allValues);
         }
     }
 

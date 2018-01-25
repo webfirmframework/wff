@@ -142,6 +142,7 @@ import com.webfirmframework.wffweb.tag.html.core.TagRegistryTest;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.FormTest;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.InputTest;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.TextAreaTest;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.AutoCompleteTest;
 import com.webfirmframework.wffweb.tag.html.images.ImgTest;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObjectTest;
 import com.webfirmframework.wffweb.tag.htmlwff.BlankTest;
@@ -212,7 +213,8 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObjectArrayTest;
         TextAreaTest.class, SelectedTest.class, CheckedTest.class,
         FormTest.class, TagRepositoryTest.class, SrcCssPropertyTest.class,
         UrlCss3ValueTest.class, WffBMObjectArrayTest.class, RelTest.class,
-        AbstractHtml5SharedObjectTest.class, HeightCssTest.class })
+        AbstractHtml5SharedObjectTest.class, HeightCssTest.class,
+        AutoCompleteTest.class })
 public class AllTests {
 
 }
