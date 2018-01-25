@@ -194,6 +194,7 @@ public class StringUtilTest {
         assertTrue(StringUtil.isEqual("hi", "hi"));
     }
     
+    @SuppressWarnings("unused")
     @Test
     public void testSplitBySpace() {
         StringBuilder sb = new StringBuilder();
@@ -216,8 +217,8 @@ public class StringUtilTest {
             long after = System.nanoTime();
             withSplit = after - before;
         }
-        LOGGER.info("withSplit " + withSplit + " withSplitBySpace " + withSplitBySpace);
-        LOGGER.info("withSplitBySpace - withSplit = " +  (withSplitBySpace - withSplit));
+        LOGGER.info("ns of withSplit " + withSplit + ", withSplitBySpace " + withSplitBySpace);
+        LOGGER.info("withSplit - withSplitBySpace = " +  (withSplit - withSplitBySpace ) + " ns");
         
     }
 
