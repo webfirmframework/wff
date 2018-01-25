@@ -641,4 +641,28 @@ public final class StringUtil {
         return split(string, ',');
     }
 
+    /**
+     * Splits the given string by semicolon (;).
+     *
+     * @param string
+     * @return the array of strings
+     * @since 2.1.15
+     * @author WFF
+     */
+    public static String[] splitBySemicolon(final String string) {
+        return split(string, ';');
+    }
+
+    /**
+     * Splits the given string by colon (:).
+     *
+     * @param string
+     * @return the array of strings
+     * @since 2.1.15
+     * @author WFF
+     */
+    public static String[] splitByColon(final String string) {
+        return split(string, ';');
+    }
+
 }

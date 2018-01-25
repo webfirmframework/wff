@@ -212,6 +212,7 @@ import com.webfirmframework.wffweb.informer.StateChangeInformer;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
+import com.webfirmframework.wffweb.util.StringUtil;
 
 // @formatter:off
 /**
@@ -1268,10 +1269,10 @@ public class Style extends AbstractAttribute
         if (styles == null || styles.trim().isEmpty()) {
             return;
         }
-        final String[] stylesArray = styles.split(";");
+        final String[] stylesArray = StringUtil.splitBySemicolon(styles);
         for (final String each : stylesArray) {
             if (!each.trim().isEmpty()) {
-                final String[] styleNameValue = each.split(":");
+                final String[] styleNameValue = StringUtil.splitByColon(each);
                 if (styleNameValue.length == 2
                         && !styleNameValue[0].trim().isEmpty()
                         && !styleNameValue[1].trim().isEmpty()) {
