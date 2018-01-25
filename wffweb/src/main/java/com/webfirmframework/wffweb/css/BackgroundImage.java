@@ -31,6 +31,7 @@ import com.webfirmframework.wffweb.data.Bean;
 import com.webfirmframework.wffweb.informer.StateChangeInformer;
 import com.webfirmframework.wffweb.util.CssValueUtil;
 import com.webfirmframework.wffweb.util.StringBuilderUtil;
+import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
  * <pre>
@@ -198,7 +199,7 @@ public class BackgroundImage extends AbstractCssProperty<BackgroundImage>
             return this;
         }
 
-        final String[] cssValueParts = cssValue.split(",");
+        final String[] cssValueParts = StringUtil.splitByComma(cssValue);
         if (cssValueParts.length > 1) {
             final StringBuilder cssValueBuilder = new StringBuilder();
             if (urlCss3Values == null) {

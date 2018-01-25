@@ -606,7 +606,11 @@ public final class StringUtil {
      * @author WFF
      */
     public static String[] splitBySpace(final String string) {
-        final char delim = ' ';
+        return split(string, ' ');
+    }
+
+    private static String[] split(final String string, final char delim) {
+
         final CharSequence[] tmp = new CharSequence[(string.length() / 2) + 1];
         int subCount = 0;
         int i = 0;
@@ -622,8 +626,19 @@ public final class StringUtil {
 
         final String[] finalArray = new String[subCount];
         System.arraycopy(tmp, 0, finalArray, 0, subCount);
-
         return finalArray;
+    }
+
+    /**
+     * Splits the given string by comma (,).
+     *
+     * @param string
+     * @return the array of strings
+     * @since 2.1.15
+     * @author WFF
+     */
+    public static String[] splitByComma(final String string) {
+        return split(string, ',');
     }
 
 }

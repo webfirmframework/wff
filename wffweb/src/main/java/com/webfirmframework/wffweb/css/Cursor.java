@@ -30,6 +30,7 @@ import com.webfirmframework.wffweb.clone.CloneUtil;
 import com.webfirmframework.wffweb.css.core.AbstractCssProperty;
 import com.webfirmframework.wffweb.data.Bean;
 import com.webfirmframework.wffweb.informer.StateChangeInformer;
+import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
  * cursor : alias | all-scroll | auto | cell | context-menu | col-resize | copy
@@ -266,7 +267,7 @@ public class Cursor extends AbstractCssProperty<Cursor>
                     "cssValue can not start with : (colon) or end with ; (semicolon)");
         }
 
-        final String[] cssValueParts = trimmedCssValue.split(",");
+        final String[] cssValueParts = StringUtil.splitByComma(trimmedCssValue);
         final String cursorType = cssValueParts[cssValueParts.length - 1].trim()
                 .toLowerCase();
         if (!ALL_CURSORTYPES.contains(cursorType.trim())) {

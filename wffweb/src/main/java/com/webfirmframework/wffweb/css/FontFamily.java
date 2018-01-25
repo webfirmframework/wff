@@ -245,7 +245,7 @@ public class FontFamily extends AbstractCssProperty<FontFamily> {
      */
     protected static String[] getExtractedFamilyNames(final String familyNames,
             final boolean validate) {
-        final String[] parts = familyNames.split(",");
+        final String[] parts = StringUtil.splitByComma(familyNames);
 
         int count = 0;
 
