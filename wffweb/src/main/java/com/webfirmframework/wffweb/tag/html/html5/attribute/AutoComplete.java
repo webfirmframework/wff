@@ -321,10 +321,11 @@ public class AutoComplete extends AbstractAttribute
      * @since 1.0.0
      */
     public AutoComplete(final String value) {
-        splitAndAdd(value);
+        splitAndAdd(false, value);
     }
 
-    private void splitAndAdd(final String... attrValues) {
+    private void splitAndAdd(final boolean removeAll,
+            final String... attrValues) {
         if (attrValues != null) {
 
             final List<String> allValues = new ArrayList<String>(
@@ -336,6 +337,10 @@ public class AutoComplete extends AbstractAttribute
                     final String[] values = trimmmedValue.split(" ");
                     allValues.addAll(Arrays.asList(values));
                 }
+            }
+
+            if (removeAll) {
+                removeAllFromAttributeValueSet();
             }
 
             addAllToAttributeValueSet(allValues);
@@ -399,7 +404,7 @@ public class AutoComplete extends AbstractAttribute
      * @since 1.0.0
      */
     public void setValue(final String value) {
-        splitAndAdd(value);
+        splitAndAdd(true, value);
     }
 
     /**

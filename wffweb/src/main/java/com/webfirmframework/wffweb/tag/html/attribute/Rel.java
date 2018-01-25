@@ -16,9 +16,15 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.AreaAttributable;
+import com.webfirmframework.wffweb.util.StringBuilderUtil;
 
 /**
  * For anchors containing the href attribute, this attribute specifies the
@@ -130,7 +136,7 @@ public class Rel extends AbstractAttribute
      * @author WFF
      */
     public Rel(final String value) {
-        setAttributeValue(value);
+        splitAndAdd(false, value);
     }
 
     /**
@@ -142,11 +148,30 @@ public class Rel extends AbstractAttribute
      * @author WFF
      */
     public Rel(final String... values) {
-        String finalValue = "";
-        for (final String value : values) {
-            finalValue = finalValue.concat(" ").concat(value.trim());
+        splitAndAdd(false, values);
+    }
+
+    private void splitAndAdd(final boolean removeAll,
+            final String... attrValues) {
+        if (attrValues != null) {
+
+            final List<String> allValues = new ArrayList<String>(
+                    attrValues.length);
+            for (final String className : attrValues) {
+                String trimmmedValue = null;
+                if (className != null
+                        && !(trimmmedValue = className.trim()).isEmpty()) {
+                    final String[] values = trimmmedValue.split(" ");
+                    allValues.addAll(Arrays.asList(values));
+                }
+            }
+
+            if (removeAll) {
+                removeAllFromAttributeValueSet();
+            }
+
+            addAllToAttributeValueSet(allValues);
         }
-        setAttributeValue(finalValue.trim());
     }
 
     /**
@@ -158,7 +183,7 @@ public class Rel extends AbstractAttribute
      * @author WFF
      */
     public void setValue(final String value) {
-        super.setAttributeValue(value);
+        splitAndAdd(true, value);
     }
 
     /**
@@ -174,7 +199,20 @@ public class Rel extends AbstractAttribute
      * @author WFF
      */
     public void setValue(final boolean updateClient, final String value) {
-        super.setAttributeValue(updateClient, value);
+        if (value != null) {
+            final String[] inputValues = value.split(" ");
+            final List<String> allValues = new ArrayList<String>(
+                    inputValues.length);
+            for (final String each : inputValues) {
+                String trimmmedValue = null;
+                if (each != null && !(trimmmedValue = each.trim()).isEmpty()) {
+                    final String[] values = trimmmedValue.split(" ");
+                    allValues.addAll(Arrays.asList(values));
+                }
+            }
+            removeAllFromAttributeValueSet();
+            addAllToAttributeValueSet(updateClient, allValues);
+        }
     }
 
     /**
@@ -185,7 +223,65 @@ public class Rel extends AbstractAttribute
      * @author WFF
      */
     public String getValue() {
-        return super.getAttributeValue();
+        return buildValue();
+    }
+
+    private String buildValue() {
+        final StringBuilder builder = new StringBuilder();
+        for (final String className : getAttributeValueSet()) {
+            builder.append(className).append(' ');
+        }
+
+        return StringBuilderUtil.getTrimmedString(builder);
+    }
+
+    /**
+     * removes the value
+     *
+     * @param value
+     * @since 2.1.15
+     * @author WFF
+     */
+    public void removeValue(final String value) {
+        removeFromAttributeValueSet(value);
+    }
+
+    /**
+     * removes the values
+     *
+     * @param values
+     * @since 2.1.15
+     * @author WFF
+     */
+    public void removeValues(final Collection<String> values) {
+        removeAllFromAttributeValueSet(values);
+    }
+
+    /**
+     * adds the values to the last
+     *
+     * @param values
+     * @since 2.1.15
+     * @author WFF
+     */
+    public void addValues(final Collection<String> values) {
+        addAllToAttributeValueSet(values);
+    }
+
+    /**
+     * adds the value to the last
+     *
+     * @param value
+     * @since 2.1.15
+     * @author WFF
+     */
+    public void addValue(final String value) {
+        addToAttributeValueSet(value);
+    }
+
+    @Override
+    public String getAttributeValue() {
+        return buildValue();
     }
 
     /**

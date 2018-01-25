@@ -86,8 +86,8 @@ public class AutoCompleteTest {
     @Test
     public void testSetValueString() {
         AutoComplete autoComplete = new AutoComplete(AutoComplete.NAME);
-        autoComplete.setValue(AutoComplete.NAME + " " + AutoComplete.EMAIL + " " + AutoComplete.USERNAME);
-        assertEquals("autocomplete=\"name email username\"", autoComplete.toHtmlString());
+        autoComplete.setValue(AutoComplete.EMAIL + " " + AutoComplete.USERNAME);
+        assertEquals("autocomplete=\"email username\"", autoComplete.toHtmlString());
     }
 
     @Test
