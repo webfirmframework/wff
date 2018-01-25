@@ -602,15 +602,17 @@ public final class StringUtil {
         final CharSequence[] tmp = new CharSequence[(string.length() / 2) + 1];
         int subCount = 0;
         int i = 0;
-        int j = string.indexOf(delim, 0); // first substring
+        // first substring
+        int j = string.indexOf(delim, 0);
 
         while (j >= 0) {
             tmp[subCount++] = string.substring(i, j);
             i = j + 1;
-            j = string.indexOf(delim, i); // rest of substrings
+            // rest of substrings
+            j = string.indexOf(delim, i);
         }
-
-        tmp[subCount++] = string.substring(i); // last substring
+        // last substring
+        tmp[subCount++] = string.substring(i);
 
         final String[] finalArray = new String[subCount];
         System.arraycopy(tmp, 0, finalArray, 0, subCount);

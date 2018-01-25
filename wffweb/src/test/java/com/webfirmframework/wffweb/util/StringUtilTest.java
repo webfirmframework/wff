@@ -19,6 +19,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.logging.Logger;
+
 import org.junit.Test;
 
 /**
@@ -28,6 +30,8 @@ import org.junit.Test;
  *
  */
 public class StringUtilTest {
+    
+    private static final Logger LOGGER = Logger.getLogger(StringUtilTest.class.getName());
 
     /**
      * Test method for {@link com.webfirmframework.wffweb.util.StringUtil#convertToSingleSpace(java.lang.String)}.
@@ -188,6 +192,33 @@ public class StringUtilTest {
         String obj2 = "hi";
         assertTrue(StringUtil.isEqual(obj1, obj2));
         assertTrue(StringUtil.isEqual("hi", "hi"));
+    }
+    
+    @Test
+    public void testSplitBySpace() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 500; i++) {
+            sb.append("word");
+            sb.append(" ");
+        }
+        String string = sb.toString();
+        long withSplit = 0;
+        long withSplitBySpace = 0;
+        {
+            long before = System.nanoTime();
+            final String[] split = StringUtil.splitBySpace(string);
+            long after = System.nanoTime();
+            withSplitBySpace = after - before;
+        }
+        {
+            long before = System.nanoTime();
+            final String[] split = string.split(" ");
+            long after = System.nanoTime();
+            withSplit = after - before;
+        }
+        LOGGER.info("withSplit " + withSplit + " withSplitBySpace " + withSplitBySpace);
+        LOGGER.info("withSplitBySpace - withSplit = " +  (withSplitBySpace - withSplit));
+        
     }
 
 }
