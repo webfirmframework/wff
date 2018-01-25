@@ -597,18 +597,6 @@ public final class StringUtil {
         return Character.isWhitespace(value.charAt(value.length() - 1));
     }
 
-    /**
-     * Splits the given string by space.
-     *
-     * @param string
-     * @return the array of strings
-     * @since 2.1.15
-     * @author WFF
-     */
-    public static String[] splitBySpace(final String string) {
-        return split(string, ' ');
-    }
-
     private static String[] split(final String string, final char delim) {
 
         final CharSequence[] tmp = new CharSequence[(string.length() / 2) + 1];
@@ -627,6 +615,18 @@ public final class StringUtil {
         final String[] finalArray = new String[subCount];
         System.arraycopy(tmp, 0, finalArray, 0, subCount);
         return finalArray;
+    }
+
+    /**
+     * Splits the given string by space.
+     *
+     * @param string
+     * @return the array of strings
+     * @since 2.1.15
+     * @author WFF
+     */
+    public static String[] splitBySpace(final String string) {
+        return split(string, ' ');
     }
 
     /**
