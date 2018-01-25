@@ -662,7 +662,7 @@ public final class StringUtil {
      * @author WFF
      */
     public static String[] splitByColon(final String string) {
-        return split(string, ';');
+        return split(string, ':');
     }
 
 }
