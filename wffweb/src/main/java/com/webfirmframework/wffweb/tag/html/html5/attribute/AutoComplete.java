@@ -27,6 +27,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 import com.webfirmframework.wffweb.util.StringBuilderUtil;
+import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
  *
@@ -334,7 +335,8 @@ public class AutoComplete extends AbstractAttribute
                 String trimmmedValue = null;
                 if (className != null
                         && !(trimmmedValue = className.trim()).isEmpty()) {
-                    final String[] values = trimmmedValue.split(" ");
+                    final String[] values = StringUtil
+                            .splitBySpace(trimmmedValue);
                     allValues.addAll(Arrays.asList(values));
                 }
             }
@@ -421,13 +423,14 @@ public class AutoComplete extends AbstractAttribute
      */
     public void setValue(final boolean updateClient, final String value) {
         if (value != null) {
-            final String[] inputValues = value.split(" ");
+            final String[] inputValues = StringUtil.splitBySpace(value);
             final List<String> allValues = new ArrayList<String>(
                     inputValues.length);
             for (final String each : inputValues) {
                 String trimmmedValue = null;
                 if (each != null && !(trimmmedValue = each.trim()).isEmpty()) {
-                    final String[] values = trimmmedValue.split(" ");
+                    final String[] values = StringUtil
+                            .splitBySpace(trimmmedValue);
                     allValues.addAll(Arrays.asList(values));
                 }
             }

@@ -24,6 +24,7 @@ import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.css.core.AbstractCssProperty;
 import com.webfirmframework.wffweb.util.CssLengthUtil;
+import com.webfirmframework.wffweb.util.StringUtil;
 import com.webfirmframework.wffweb.util.TagStringUtil;
 
 /**
@@ -294,7 +295,8 @@ public class BorderSpacing extends AbstractCssProperty<BorderSpacing> {
                         .toLowerCase(cssValue.trim());
                 boolean invalidValue = true;
 
-                final String[] lengthValues = trimmedCssValue.split(" ");
+                final String[] lengthValues = StringUtil
+                        .splitBySpace(trimmedCssValue);
 
                 if (lengthValues.length == 1) {
                     if (trimmedCssValue.equalsIgnoreCase(INITIAL)
@@ -402,7 +404,7 @@ public class BorderSpacing extends AbstractCssProperty<BorderSpacing> {
         final String trimmedCssValue = TagStringUtil
                 .toLowerCase(cssValue.trim());
 
-        final String[] cssValueParts = trimmedCssValue.split(" ");
+        final String[] cssValueParts = StringUtil.splitBySpace(trimmedCssValue);
         if (cssValueParts.length > 2) {
             return false;
         }

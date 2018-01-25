@@ -28,6 +28,7 @@ import com.webfirmframework.wffweb.css.CssNameConstants;
 import com.webfirmframework.wffweb.css.core.AbstractCssProperty;
 import com.webfirmframework.wffweb.css.core.CssProperty;
 import com.webfirmframework.wffweb.informer.StateChangeInformer;
+import com.webfirmframework.wffweb.util.StringUtil;
 import com.webfirmframework.wffweb.util.TagStringUtil;
 
 /**
@@ -160,7 +161,7 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
                     + " is an invalid value. The value format should be as for example \"0 1 auto\" or initial/inherit.");
         }
 
-        final String[] cssValueParts = trimmedCssValue.split(" ");
+        final String[] cssValueParts = StringUtil.splitBySpace(trimmedCssValue);
 
         if (cssValueParts.length > 1) {
             if (trimmedCssValue.contains(WebkitFlexBasis.INITIAL)) {
@@ -323,7 +324,7 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
             return false;
         }
 
-        final String[] cssValueParts = cssValue.split(" ");
+        final String[] cssValueParts = StringUtil.splitBySpace(cssValue);
 
         WebkitFlexGrow webkitFlexGrow = null;
         WebkitFlexShrink webkitFlexShrink = null;

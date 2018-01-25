@@ -146,7 +146,8 @@ public class BorderImageRepeat extends AbstractCssProperty<BorderImageRepeat> {
                 final String trimmedCssValue = StringUtil.convertToSingleSpace(
                         TagStringUtil.toLowerCase(cssValue.trim()));
 
-                final String[] verticalHorzontal = trimmedCssValue.split(" ");
+                final String[] verticalHorzontal = StringUtil
+                        .splitBySpace(trimmedCssValue);
 
                 if (verticalHorzontal.length == 1) {
                     if (trimmedCssValue.equalsIgnoreCase(INITIAL)
@@ -296,7 +297,7 @@ public class BorderImageRepeat extends AbstractCssProperty<BorderImageRepeat> {
         final String trimmedCssValue = TagStringUtil
                 .toLowerCase(cssValue.trim());
 
-        final String[] cssValueParts = trimmedCssValue.split(" ");
+        final String[] cssValueParts = StringUtil.splitBySpace(trimmedCssValue);
         if (cssValueParts.length > 2) {
             return false;
         }

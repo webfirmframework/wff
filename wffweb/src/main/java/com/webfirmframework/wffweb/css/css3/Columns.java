@@ -28,6 +28,7 @@ import com.webfirmframework.wffweb.css.core.AbstractCssProperty;
 import com.webfirmframework.wffweb.css.core.CssProperty;
 import com.webfirmframework.wffweb.informer.StateChangeInformer;
 import com.webfirmframework.wffweb.util.StringBuilderUtil;
+import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
  * <pre>
@@ -148,7 +149,7 @@ public class Columns extends AbstractCssProperty<Columns>
                     + " is an invalid value. The value format should be as for example 17px 2. Or, initial/inherit.");
         }
 
-        final String[] cssValueParts = trimmedCssValue.split(" ");
+        final String[] cssValueParts = StringUtil.splitBySpace(trimmedCssValue);
 
         if (cssValueParts.length > 1) {
             if (trimmedCssValue.contains(ColumnWidth.INITIAL)) {
@@ -246,7 +247,7 @@ public class Columns extends AbstractCssProperty<Columns>
             return false;
         }
 
-        final String[] cssValueParts = cssValue.split(" ");
+        final String[] cssValueParts = StringUtil.splitBySpace(cssValue);
 
         ColumnWidth columnWidth = null;
         ColumnCount columnCount = null;

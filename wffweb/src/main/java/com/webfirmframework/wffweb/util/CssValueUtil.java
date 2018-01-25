@@ -126,8 +126,8 @@ public final class CssValueUtil {
             }
 
             if (startAndEndIndexes.size() == 0) {
-                return Arrays.asList(
-                        StringUtil.convertToSingleSpace(cssValue).split(" "));
+                return Arrays.asList(StringUtil.splitBySpace(
+                        StringUtil.convertToSingleSpace(cssValue)));
             }
 
             final List<String> cssValueParts = new ArrayList<String>();
@@ -166,8 +166,8 @@ public final class CssValueUtil {
                                 && StringUtil
                                         .endsWithWhitespace(cssValuePart2)) {
                             if (!trimmedCssValuePart2.isEmpty()) {
-                                for (final String each : trimmedCssValuePart2
-                                        .split(" ")) {
+                                for (final String each : StringUtil
+                                        .splitBySpace(trimmedCssValuePart2)) {
                                     final String trimmed;
                                     if (!(trimmed = each.trim()).isEmpty()) {
                                         cssValueParts.add(trimmed);
@@ -207,8 +207,8 @@ public final class CssValueUtil {
                                 .trim();
 
                         if (cssValuePart2.endsWith(" ")) {
-                            for (final String each : trimmedCssValuePart2
-                                    .split(" ")) {
+                            for (final String each : StringUtil
+                                    .splitBySpace(trimmedCssValuePart2)) {
                                 final String trimmed;
                                 if (!(trimmed = each.trim()).isEmpty()) {
                                     cssValueParts.add(trimmed);
@@ -239,8 +239,8 @@ public final class CssValueUtil {
                     final String trimmedCssValuePart2 = cssValuePart2.trim();
 
                     if (StringUtil.startsWithWhitespace(cssValuePart2)) {
-                        for (final String each : trimmedCssValuePart2
-                                .split(" ")) {
+                        for (final String each : StringUtil
+                                .splitBySpace(trimmedCssValuePart2)) {
                             if (!each.isEmpty()) {
                                 cssValueParts.add(each);
                             }

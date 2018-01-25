@@ -263,8 +263,8 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
 
                 if (!convertedToSingleSpace.trim().isEmpty()) {
 
-                    final String[] extractedSlices = convertedToSingleSpace
-                            .split(" ");
+                    final String[] extractedSlices = StringUtil
+                            .splitBySpace(convertedToSingleSpace);
 
                     if (extractedSlices.length == 1) {
                         final Object[] lengthValueAndUnitAll = CssLengthUtil
@@ -867,7 +867,7 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
             return true;
         }
 
-        final String[] cssValueParts = trimmedCssValue.split(" ");
+        final String[] cssValueParts = StringUtil.splitBySpace(trimmedCssValue);
         if (cssValueParts.length > 5) {
             return false;
         }

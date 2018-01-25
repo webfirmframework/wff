@@ -26,6 +26,7 @@ import com.webfirmframework.wffweb.css.CssLengthUnit;
 import com.webfirmframework.wffweb.css.CssNameConstants;
 import com.webfirmframework.wffweb.css.core.AbstractCssProperty;
 import com.webfirmframework.wffweb.util.CssLengthUtil;
+import com.webfirmframework.wffweb.util.StringUtil;
 import com.webfirmframework.wffweb.util.TagStringUtil;
 
 /**
@@ -297,7 +298,8 @@ public class PerspectiveOrigin extends AbstractCssProperty<PerspectiveOrigin> {
                         .toLowerCase(cssValue.trim());
                 boolean invalidValue = true;
 
-                final String[] lengthValues = trimmedCssValue.split(" ");
+                final String[] lengthValues = StringUtil
+                        .splitBySpace(trimmedCssValue);
 
                 if (lengthValues.length == 1) {
                     if (trimmedCssValue.equalsIgnoreCase(INITIAL)
@@ -401,7 +403,7 @@ public class PerspectiveOrigin extends AbstractCssProperty<PerspectiveOrigin> {
         final String trimmedCssValue = TagStringUtil
                 .toLowerCase(cssValue.trim());
 
-        final String[] cssValueParts = trimmedCssValue.split(" ");
+        final String[] cssValueParts = StringUtil.splitBySpace(trimmedCssValue);
         if (cssValueParts.length > 2) {
             return false;
         }

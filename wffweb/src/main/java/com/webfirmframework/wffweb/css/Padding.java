@@ -221,7 +221,8 @@ public class Padding extends AbstractCssProperty<Padding>
             final String paddingString = StringUtil
                     .convertToSingleSpace(trimmedCssValue);
 
-            final String[] extractedPaddings = paddingString.split(" ");
+            final String[] extractedPaddings = StringUtil
+                    .splitBySpace(paddingString);
 
             if (extractedPaddings.length == 1) {
                 if (paddingTop == null) {
@@ -702,7 +703,7 @@ public class Padding extends AbstractCssProperty<Padding>
             return true;
         }
 
-        final String[] cssValueParts = trimmedCssValue.split(" ");
+        final String[] cssValueParts = StringUtil.splitBySpace(trimmedCssValue);
 
         for (final String eachPart : cssValueParts) {
             final boolean valid = PaddingTop.isValid(eachPart);

@@ -22,6 +22,7 @@ import java.util.Collection;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.TdAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.ThAttributable;
+import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
  * @author WFF
@@ -59,7 +60,8 @@ public class Headers extends AbstractAttribute
                 String trimmmedValue = null;
                 if (headerId != null
                         && !(trimmmedValue = headerId.trim()).isEmpty()) {
-                    final String[] values = trimmmedValue.split(" ");
+                    final String[] values = StringUtil
+                            .splitBySpace(trimmmedValue);
                     addAllToAttributeValueSet(Arrays.asList(values));
                 }
             }
@@ -91,7 +93,8 @@ public class Headers extends AbstractAttribute
                 String trimmmedValue = null;
                 if (headerId != null
                         && !(trimmmedValue = headerId.trim()).isEmpty()) {
-                    final String[] values = trimmmedValue.split(" ");
+                    final String[] values = StringUtil
+                            .splitBySpace(trimmmedValue);
                     addAllToAttributeValueSet(Arrays.asList(values));
                 }
             }
@@ -114,7 +117,8 @@ public class Headers extends AbstractAttribute
                 String trimmmedValue = null;
                 if (headerId != null
                         && !(trimmmedValue = headerId.trim()).isEmpty()) {
-                    final String[] values = trimmmedValue.split(" ");
+                    final String[] values = StringUtil
+                            .splitBySpace(trimmmedValue);
                     removeAllFromAttributeValueSet();
                     addAllToAttributeValueSet(Arrays.asList(values));
                 }
