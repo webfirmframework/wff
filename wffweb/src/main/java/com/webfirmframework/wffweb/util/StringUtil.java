@@ -667,4 +667,42 @@ public final class StringUtil {
         return split(string, ':');
     }
 
+    private static boolean endsWith(final String string, final char c) {
+        if (string.length() == 0) {
+            return false;
+        }
+        return string.charAt(string.length() - 1) == c;
+    }
+
+    private static boolean startsWith(final String string, final char c) {
+        if (string.length() == 0) {
+            return false;
+        }
+        return string.charAt(0) == c;
+    }
+
+    /**
+     * Checks if the last char is a space char
+     *
+     * @param string
+     * @return true if the last character is a space char
+     * @since 2.1.15
+     * @author WFF
+     */
+    public static boolean endsWithSpace(final String string) {
+        return endsWith(string, ' ');
+    }
+
+    /**
+     * Checks if the first char is a space char
+     *
+     * @param string
+     * @return true if the first character is a space char
+     * @since 2.1.15
+     * @author WFF
+     */
+    public static boolean startsWithSpace(final String string) {
+        return startsWith(string, ' ');
+    }
+
 }

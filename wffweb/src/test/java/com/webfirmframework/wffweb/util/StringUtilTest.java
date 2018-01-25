@@ -221,5 +221,16 @@ public class StringUtilTest {
         LOGGER.info("withSplit - withSplitBySpace = " +  (withSplit - withSplitBySpace ) + " ns");
         
     }
+    
+    @Test
+    public void testEndsWithSpace() {
+        assertFalse(StringUtil.endsWithSpace("something"));
+        assertTrue(StringUtil.endsWithSpace("something "));
+    }
+    @Test
+    public void testStartsWithSpace() {
+        assertFalse(StringUtil.startsWithSpace("something"));
+        assertTrue(StringUtil.startsWithSpace(" something"));
+    }
 
 }
