@@ -316,7 +316,8 @@ public class AutoComplete extends AbstractAttribute
     /**
      *
      * @param value
-     *            the value for the attribute
+     *            the value for the attribute. The value string can contain
+     *            values separated by space.
      * @since 1.0.0
      */
     public AutoComplete(final String value) {
