@@ -35,8 +35,8 @@ public enum HangingPunctuation implements CssProperty {
 
     NONE, FIRST, LAST, ALLOW_END, FORCE_END, INITIAL, INHERIT;
 
-    private final String upperCaseSuperToString = super.toString().replace("_",
-            "-");
+    private final String upperCaseSuperToString = super.toString().replace('_',
+            '-');
 
     private final String superToString = TagStringUtil
             .toLowerCase(upperCaseSuperToString);

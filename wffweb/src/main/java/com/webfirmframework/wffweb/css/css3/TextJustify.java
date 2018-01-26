@@ -37,8 +37,8 @@ public enum TextJustify implements CssProperty {
 
     AUTO, INTER_WORD, INTER_IDEOGRAPH, INTER_CLUSTER, DISTRIBUTE, KASHIDA, TRIM, INITIAL, INHERIT;
 
-    private final String upperCaseSuperToString = super.toString().replace("_",
-            "-");
+    private final String upperCaseSuperToString = super.toString().replace('_',
+            '-');
 
     private final String superToString = TagStringUtil
             .toLowerCase(upperCaseSuperToString);

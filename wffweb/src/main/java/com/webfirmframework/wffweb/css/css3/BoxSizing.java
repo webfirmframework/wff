@@ -35,8 +35,8 @@ public enum BoxSizing implements CssProperty {
 
     CONTENT_BOX, BORDER_BOX, INITIAL, INHERIT;
 
-    private final String upperCaseSuperToString = super.toString().replace("_",
-            "-");
+    private final String upperCaseSuperToString = super.toString().replace('_',
+            '-');
 
     private final String superToString = TagStringUtil
             .toLowerCase(upperCaseSuperToString);

@@ -36,8 +36,8 @@ public enum JustifyContent implements CssProperty {
 
     FLEX_START, FLEX_END, CENTER, SPACE_BETWEEN, SPACE_AROUND, INITIAL, INHERIT;
 
-    private final String upperCaseSuperToString = super.toString().replace("_",
-            "-");
+    private final String upperCaseSuperToString = super.toString().replace('_',
+            '-');
 
     private final String superToString = TagStringUtil
             .toLowerCase(upperCaseSuperToString);

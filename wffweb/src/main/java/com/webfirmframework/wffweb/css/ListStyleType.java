@@ -38,8 +38,8 @@ public enum ListStyleType implements CssProperty {
 
     DISC, ARMENIAN, CIRCLE, CJK_IDEOGRAPHIC, DECIMAL, DECIMAL_LEADING_ZERO, GEORGIAN, HEBREW, HIRAGANA, HIRAGANA_IROHA, KATAKANA, KATAKANA_IROHA, LOWER_ALPHA, LOWER_GREEK, LOWER_LATIN, LOWER_ROMAN, NONE, SQUARE, UPPER_ALPHA, UPPER_LATIN, UPPER_ROMAN, INITIAL, INHERIT;
 
-    private final String upperCaseSuperToString = super.toString().replace("_",
-            "-");
+    private final String upperCaseSuperToString = super.toString().replace('_',
+            '-');
 
     private final String superToString = TagStringUtil
             .toLowerCase(upperCaseSuperToString);

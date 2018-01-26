@@ -35,8 +35,8 @@ public enum WebkitAnimationFillMode implements CssProperty {
 
     NONE, FORWARDS, BACKWARDS, BOTH, INITIAL, INHERIT;
 
-    private final String upperCaseSuperToString = super.toString().replace("_",
-            "-");
+    private final String upperCaseSuperToString = super.toString().replace('_',
+            '-');
 
     private final String superToString = TagStringUtil
             .toLowerCase(upperCaseSuperToString);

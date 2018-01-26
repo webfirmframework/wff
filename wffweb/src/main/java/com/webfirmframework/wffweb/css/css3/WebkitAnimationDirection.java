@@ -36,8 +36,8 @@ public enum WebkitAnimationDirection implements CssProperty {
 
     NORMAL, REVERSE, ALTERNATE, ALTERNATE_REVERSE, INITIAL, INHERIT;
 
-    private final String upperCaseSuperToString = super.toString().replace("_",
-            "-");
+    private final String upperCaseSuperToString = super.toString().replace('_',
+            '-');
 
     private final String superToString = TagStringUtil
             .toLowerCase(upperCaseSuperToString);

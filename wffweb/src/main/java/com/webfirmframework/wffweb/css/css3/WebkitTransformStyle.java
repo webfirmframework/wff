@@ -35,8 +35,8 @@ public enum WebkitTransformStyle implements CssProperty {
 
     FLAT, PRESERVE_3D, INITIAL, INHERIT;
 
-    private final String upperCaseSuperToString = super.toString().replace("_",
-            "-");
+    private final String upperCaseSuperToString = super.toString().replace('_',
+            '-');
 
     private final String superToString = TagStringUtil
             .toLowerCase(upperCaseSuperToString);

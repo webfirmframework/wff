@@ -34,8 +34,8 @@ public enum Position implements CssProperty {
 
     STATIC, ABSOLUTE, FIXED, RELATIVE, INITIAL, INHERIT;
 
-    private final String upperCaseSuperToString = super.toString().replace("_",
-            "-");
+    private final String upperCaseSuperToString = super.toString().replace('_',
+            '-');
 
     private final String superToString = TagStringUtil
             .toLowerCase(upperCaseSuperToString);
