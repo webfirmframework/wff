@@ -143,7 +143,7 @@ public class FontFamily extends AbstractCssProperty<FontFamily> {
         final StringBuilder cssValueSB = new StringBuilder();
         int count = 1;
         for (final String fontFamilyName : fontFamilyNames) {
-            if (fontFamilyName.contains(" ")) {
+            if (StringUtil.containsSpace(fontFamilyName)) {
                 cssValueSB.append('\"').append(fontFamilyName).append('\"');
             } else {
                 cssValueSB.append(fontFamilyName);
