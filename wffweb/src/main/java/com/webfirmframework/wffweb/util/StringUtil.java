@@ -705,4 +705,20 @@ public final class StringUtil {
         return startsWith(string, ' ');
     }
 
+    private static boolean contains(final String string, final char c) {
+        return string.indexOf(c) != -1;
+    }
+
+    /**
+     * Checks if the given string contains space.
+     *
+     * @param string
+     * @return true if the given string contains space char.
+     * @since 2.1.15
+     * @author WFF
+     */
+    public static boolean containsSpace(final String string) {
+        return contains(string, ' ');
+    }
+
 }

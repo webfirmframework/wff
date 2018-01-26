@@ -22,6 +22,7 @@ import java.util.List;
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.css.core.AbstractCssProperty;
+import com.webfirmframework.wffweb.util.StringUtil;
 import com.webfirmframework.wffweb.util.TagStringUtil;
 
 /**
@@ -352,7 +353,7 @@ public class WidthCss extends AbstractCssProperty<WidthCss> {
         final String trimmedCssValue = TagStringUtil
                 .toLowerCase(cssValue.trim());
 
-        if (trimmedCssValue.contains(" ")) {
+        if (StringUtil.containsSpace(trimmedCssValue)) {
             return false;
         }
 

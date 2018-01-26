@@ -24,6 +24,7 @@ import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.css.CssLengthUnit;
 import com.webfirmframework.wffweb.css.CssNameConstants;
 import com.webfirmframework.wffweb.css.core.AbstractCssProperty;
+import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
  * <pre>
@@ -295,7 +296,7 @@ public class WebkitColumnGap extends AbstractCssProperty<WebkitColumnGap> {
      */
     public static boolean isValid(final String cssValue) {
         final String trimmedCssValue = cssValue.trim().toLowerCase();
-        if (trimmedCssValue.contains(" ")) {
+        if (StringUtil.containsSpace(trimmedCssValue)) {
             return false;
         }
         for (final CssLengthUnit cssLengthUnit : CssLengthUnit.values()) {

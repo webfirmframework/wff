@@ -15,9 +15,7 @@
  */
 package com.webfirmframework.wffweb.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.logging.Logger;
 
@@ -231,6 +229,14 @@ public class StringUtilTest {
     public void testStartsWithSpace() {
         assertFalse(StringUtil.startsWithSpace("something"));
         assertTrue(StringUtil.startsWithSpace(" something"));
+    }
+    
+    @Test
+    public void testContainsSpace() throws Exception {
+        assertFalse(StringUtil.containsSpace(""));
+        assertTrue(StringUtil.containsSpace(" something"));
+        assertTrue(StringUtil.containsSpace("something "));
+        assertTrue(StringUtil.containsSpace("some thing"));
     }
 
 }

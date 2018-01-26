@@ -22,6 +22,7 @@ import java.util.List;
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.css.core.AbstractCssProperty;
+import com.webfirmframework.wffweb.util.StringUtil;
 import com.webfirmframework.wffweb.util.TagStringUtil;
 
 /**
@@ -322,7 +323,7 @@ public class BorderTopWidth extends AbstractCssProperty<BorderTopWidth> {
 
         final String trimmedCssValue = cssValue.trim().toLowerCase();
 
-        if (trimmedCssValue.contains(" ")) {
+        if (StringUtil.containsSpace(trimmedCssValue)) {
             return false;
         }
 
