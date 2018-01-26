@@ -19,6 +19,7 @@ package com.webfirmframework.wffweb.csswff;
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.css.core.AbstractCssProperty;
+import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
  *
@@ -47,7 +48,7 @@ public class CustomCssProperty extends AbstractCssProperty<CustomCssProperty> {
         if (cssName == null) {
             throw new NullValueException("cssName can not be null");
         }
-        if (cssName.trim().endsWith(":")) {
+        if (StringUtil.endsWithColon(cssName.trim())) {
             throw new InvalidValueException(
                     "cssName can not end with : (colon)");
         }
@@ -69,7 +70,7 @@ public class CustomCssProperty extends AbstractCssProperty<CustomCssProperty> {
             throw new NullValueException(
                     "customCss.getCssName() can not be null");
         }
-        if (customCssProperty.getCssName().trim().endsWith(":")) {
+        if (StringUtil.endsWithColon(customCssProperty.getCssName().trim())) {
             throw new InvalidValueException(
                     "customCss.getCssName() can not end with : (colon)");
         }

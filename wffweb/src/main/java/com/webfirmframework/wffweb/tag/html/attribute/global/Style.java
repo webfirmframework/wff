@@ -928,7 +928,7 @@ public class Style extends AbstractAttribute
         if (cssName == null) {
             throw new NullValueException("styleName cannot be null");
         }
-        if (cssName.trim().endsWith(":")) {
+        if (StringUtil.endsWithColon(cssName.trim())) {
             throw new InvalidValueException(
                     "cssName can not end with : (colon)");
         }

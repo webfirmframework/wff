@@ -694,6 +694,18 @@ public final class StringUtil {
     }
 
     /**
+     * Checks if the last char is a colon (:) char
+     *
+     * @param string
+     * @return true if the last character is a colon (:) char
+     * @since 2.1.15
+     * @author WFF
+     */
+    public static boolean endsWithColon(final String string) {
+        return endsWith(string, ':');
+    }
+
+    /**
      * Checks if the first char is a space char
      *
      * @param string

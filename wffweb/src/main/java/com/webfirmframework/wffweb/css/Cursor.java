@@ -169,7 +169,7 @@ public class Cursor extends AbstractCssProperty<Cursor>
             throw new NullValueException(
                     "customCss.getCssName() can not be null");
         }
-        if (cursor.getCssName().trim().endsWith(":")) {
+        if (StringUtil.endsWithColon(cursor.getCssName().trim())) {
             throw new InvalidValueException(
                     "customCss.getCssName() can not end with : (colon)");
         }

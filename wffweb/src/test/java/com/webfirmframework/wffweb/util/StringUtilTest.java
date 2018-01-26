@@ -254,5 +254,15 @@ public class StringUtilTest {
         assertTrue(StringUtil.containsPlus("something+"));
         assertTrue(StringUtil.containsPlus("some+thing"));
     }
+    
+    @Test
+    public void testEndsWithColon() throws Exception {
+        assertFalse(StringUtil.endsWithColon(""));
+        assertFalse(StringUtil.endsWithColon(":something"));
+        assertFalse(StringUtil.endsWithColon("sdfsf:something"));
+        assertTrue(StringUtil.endsWithColon("something:"));
+        assertTrue(StringUtil.endsWithColon("something :"));
+        assertTrue(StringUtil.endsWithColon("some+thing :"));
+    }
 
 }
