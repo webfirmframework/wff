@@ -721,4 +721,28 @@ public final class StringUtil {
         return contains(string, ' ');
     }
 
+    /**
+     * Checks if the given string contains minus (-).
+     *
+     * @param string
+     * @return true if the given string contains minus (-) char.
+     * @since 2.1.15
+     * @author WFF
+     */
+    public static boolean containsMinus(final String string) {
+        return contains(string, '-');
+    }
+
+    /**
+     * Checks if the given string contains plus (+) char.
+     *
+     * @param string
+     * @return true if the given string contains plus (+) char.
+     * @since 2.1.15
+     * @author WFF
+     */
+    public static boolean containsPlus(final String string) {
+        return contains(string, '+');
+    }
+
 }

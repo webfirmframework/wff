@@ -240,8 +240,10 @@ public class WebkitColumnCount extends AbstractCssProperty<WebkitColumnCount> {
         try {
             final int parsedValue = Integer.parseInt(trimmedCssValue);
 
-            return (parsedValue == 0 && (trimmedCssValue.contains("-")
-                    || trimmedCssValue.contains("+"))) ? false : true;
+            return (parsedValue == 0
+                    && (StringUtil.containsMinus(trimmedCssValue)
+                            || StringUtil.containsPlus(trimmedCssValue)))
+                                    ? false : true;
         } catch (final NumberFormatException e) {
         }
 

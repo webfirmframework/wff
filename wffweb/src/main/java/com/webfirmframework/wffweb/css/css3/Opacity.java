@@ -251,8 +251,9 @@ public class Opacity extends AbstractCssProperty<Opacity> {
                 return false;
             }
 
-            return !(parsedValue == 0 && (trimmedCssValue.contains("-")
-                    || trimmedCssValue.contains("+")));
+            return !(parsedValue == 0
+                    && (StringUtil.containsMinus(trimmedCssValue)
+                            || StringUtil.containsPlus(trimmedCssValue)));
         } catch (final NumberFormatException e) {
         }
 

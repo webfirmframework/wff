@@ -238,5 +238,21 @@ public class StringUtilTest {
         assertTrue(StringUtil.containsSpace("something "));
         assertTrue(StringUtil.containsSpace("some thing"));
     }
+    
+    @Test
+    public void testContainsMinus() throws Exception {
+        assertFalse(StringUtil.containsMinus(""));
+        assertTrue(StringUtil.containsMinus("-something"));
+        assertTrue(StringUtil.containsMinus("something-"));
+        assertTrue(StringUtil.containsMinus("some-thing"));
+    }
+    
+    @Test
+    public void testContainsPlus() throws Exception {
+        assertFalse(StringUtil.containsPlus(""));
+        assertTrue(StringUtil.containsPlus("+something"));
+        assertTrue(StringUtil.containsPlus("something+"));
+        assertTrue(StringUtil.containsPlus("some+thing"));
+    }
 
 }
