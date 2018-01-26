@@ -118,7 +118,7 @@ public enum UnicodeBidi implements CssProperty {
      */
     public static UnicodeBidi getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         UnicodeBidi correspondingObject = null;
         try {

@@ -119,7 +119,7 @@ public enum Resize implements CssProperty {
      */
     public static Resize getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         Resize correspondingObject = null;
         try {

@@ -127,7 +127,7 @@ public enum BorderCollapse implements CssProperty {
      */
     public static BorderCollapse getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         BorderCollapse correspondingObject = null;
         try {

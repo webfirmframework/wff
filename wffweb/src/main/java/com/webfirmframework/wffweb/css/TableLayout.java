@@ -118,7 +118,7 @@ public enum TableLayout implements CssProperty {
      */
     public static TableLayout getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         TableLayout correspondingObject = null;
         try {

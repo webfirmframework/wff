@@ -130,7 +130,7 @@ public enum AnimationFillMode implements CssProperty {
      */
     public static AnimationFillMode getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         AnimationFillMode correspondingObject = null;
         try {

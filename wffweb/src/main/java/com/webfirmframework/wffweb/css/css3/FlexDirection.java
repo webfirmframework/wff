@@ -119,7 +119,7 @@ public enum FlexDirection implements CssProperty {
      */
     public static FlexDirection getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         FlexDirection correspondingObject = null;
         try {

@@ -139,7 +139,7 @@ public enum AlignItems implements CssProperty {
      */
     public static AlignItems getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         AlignItems correspondingObject = null;
         try {

@@ -119,7 +119,7 @@ public enum WordWrap implements CssProperty {
      */
     public static WordWrap getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         WordWrap correspondingObject = null;
         try {

@@ -128,7 +128,7 @@ public enum TextDecorationLine implements CssProperty {
      */
     public static TextDecorationLine getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         TextDecorationLine correspondingObject = null;
         try {

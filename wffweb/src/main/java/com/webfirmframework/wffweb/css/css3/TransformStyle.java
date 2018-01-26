@@ -128,7 +128,7 @@ public enum TransformStyle implements CssProperty {
      */
     public static TransformStyle getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         TransformStyle correspondingObject = null;
         try {

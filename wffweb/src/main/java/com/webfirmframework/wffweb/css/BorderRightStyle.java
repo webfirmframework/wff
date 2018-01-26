@@ -129,7 +129,7 @@ public enum BorderRightStyle implements CssProperty {
      */
     public static BorderRightStyle getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         BorderRightStyle correspondingObject = null;
         try {

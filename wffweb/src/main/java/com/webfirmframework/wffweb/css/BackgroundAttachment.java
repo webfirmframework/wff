@@ -118,7 +118,7 @@ public enum BackgroundAttachment implements CssProperty {
      */
     public static BackgroundAttachment getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         BackgroundAttachment correspondingObject = null;
         try {

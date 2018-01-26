@@ -129,7 +129,7 @@ public enum OutlineStyle implements CssProperty {
      */
     public static OutlineStyle getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         OutlineStyle correspondingObject = null;
         try {

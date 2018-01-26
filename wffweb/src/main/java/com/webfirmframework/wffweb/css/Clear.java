@@ -118,7 +118,7 @@ public enum Clear implements CssProperty {
      */
     public static Clear getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         Clear correspondingObject = null;
         try {

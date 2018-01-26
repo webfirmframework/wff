@@ -118,7 +118,7 @@ public enum Position implements CssProperty {
      */
     public static Position getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         Position correspondingObject = null;
         try {

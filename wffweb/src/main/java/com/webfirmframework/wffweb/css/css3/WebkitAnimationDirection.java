@@ -120,7 +120,7 @@ public enum WebkitAnimationDirection implements CssProperty {
      */
     public static WebkitAnimationDirection getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         WebkitAnimationDirection correspondingObject = null;
         try {

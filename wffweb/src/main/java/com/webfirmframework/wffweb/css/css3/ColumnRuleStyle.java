@@ -131,7 +131,7 @@ public enum ColumnRuleStyle implements CssProperty {
      */
     public static ColumnRuleStyle getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         ColumnRuleStyle correspondingObject = null;
         try {

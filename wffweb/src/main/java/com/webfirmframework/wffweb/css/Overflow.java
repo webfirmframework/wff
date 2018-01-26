@@ -118,7 +118,7 @@ public enum Overflow implements CssProperty {
      */
     public static Overflow getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         Overflow correspondingObject = null;
         try {

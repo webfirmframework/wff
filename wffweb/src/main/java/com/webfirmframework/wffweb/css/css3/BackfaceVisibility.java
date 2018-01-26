@@ -129,7 +129,7 @@ public enum BackfaceVisibility implements CssProperty {
      */
     public static BackfaceVisibility getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         BackfaceVisibility correspondingObject = null;
         try {

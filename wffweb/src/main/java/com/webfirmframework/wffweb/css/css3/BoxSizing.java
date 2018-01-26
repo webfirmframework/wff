@@ -119,7 +119,7 @@ public enum BoxSizing implements CssProperty {
      */
     public static BoxSizing getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         BoxSizing correspondingObject = null;
         try {

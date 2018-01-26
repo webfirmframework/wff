@@ -121,7 +121,7 @@ public enum FontStretch implements CssProperty {
      */
     public static FontStretch getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         FontStretch correspondingObject = null;
         try {

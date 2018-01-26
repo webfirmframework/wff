@@ -129,7 +129,7 @@ public enum WebkitBackfaceVisibility implements CssProperty {
      */
     public static WebkitBackfaceVisibility getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         WebkitBackfaceVisibility correspondingObject = null;
         try {

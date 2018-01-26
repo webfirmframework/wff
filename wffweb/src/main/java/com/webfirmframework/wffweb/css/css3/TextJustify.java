@@ -121,7 +121,7 @@ public enum TextJustify implements CssProperty {
      */
     public static TextJustify getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         TextJustify correspondingObject = null;
         try {

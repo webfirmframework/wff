@@ -118,7 +118,7 @@ public enum WhiteSpace implements CssProperty {
      */
     public static WhiteSpace getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         WhiteSpace correspondingObject = null;
         try {

@@ -118,7 +118,7 @@ public enum ListStylePosition implements CssProperty {
      */
     public static ListStylePosition getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         ListStylePosition correspondingObject = null;
         try {

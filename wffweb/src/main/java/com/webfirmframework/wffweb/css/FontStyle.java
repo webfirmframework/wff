@@ -127,7 +127,7 @@ public enum FontStyle implements CssProperty {
      */
     public static FontStyle getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         FontStyle correspondingObject = null;
         try {

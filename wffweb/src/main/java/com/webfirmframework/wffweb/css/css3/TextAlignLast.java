@@ -119,7 +119,7 @@ public enum TextAlignLast implements CssProperty {
      */
     public static TextAlignLast getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         TextAlignLast correspondingObject = null;
         try {

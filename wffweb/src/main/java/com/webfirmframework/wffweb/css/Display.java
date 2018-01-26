@@ -121,7 +121,7 @@ public enum Display implements CssProperty {
      */
     public static Display getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         Display correspondingObject = null;
         try {

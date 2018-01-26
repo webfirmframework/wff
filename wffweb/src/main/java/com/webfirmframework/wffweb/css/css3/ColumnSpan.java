@@ -121,7 +121,7 @@ public enum ColumnSpan implements CssProperty {
      */
     public static ColumnSpan getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         ColumnSpan correspondingObject = null;
         try {

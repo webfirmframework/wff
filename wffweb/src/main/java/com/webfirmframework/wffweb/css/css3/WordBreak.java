@@ -119,7 +119,7 @@ public enum WordBreak implements CssProperty {
      */
     public static WordBreak getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         WordBreak correspondingObject = null;
         try {

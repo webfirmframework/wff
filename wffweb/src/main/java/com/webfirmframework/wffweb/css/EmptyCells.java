@@ -118,7 +118,7 @@ public enum EmptyCells implements CssProperty {
      */
     public static EmptyCells getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         EmptyCells correspondingObject = null;
         try {

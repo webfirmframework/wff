@@ -139,7 +139,7 @@ public enum AnimationPlayState implements CssProperty {
      */
     public static AnimationPlayState getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         AnimationPlayState correspondingObject = null;
         try {

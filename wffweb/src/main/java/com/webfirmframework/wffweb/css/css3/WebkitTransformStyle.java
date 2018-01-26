@@ -128,7 +128,7 @@ public enum WebkitTransformStyle implements CssProperty {
      */
     public static WebkitTransformStyle getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         WebkitTransformStyle correspondingObject = null;
         try {

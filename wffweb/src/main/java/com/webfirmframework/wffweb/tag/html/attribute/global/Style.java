@@ -1373,7 +1373,7 @@ public class Style extends AbstractAttribute
                 && (value = getAttributeValueMap().get(cssName)) != null) {
 
             value = value.toUpperCase().replace(IMPORTANT_UPPERCASE, "")
-                    .replace("-", "_").trim();
+                    .replace('-', '_').trim();
 
             final CssProperty cssProperty = (CssProperty) Enum
                     .valueOf(classClass, value);

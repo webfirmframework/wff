@@ -119,7 +119,7 @@ public enum MozFlexWrap implements CssProperty {
      */
     public static MozFlexWrap getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         MozFlexWrap correspondingObject = null;
         try {
