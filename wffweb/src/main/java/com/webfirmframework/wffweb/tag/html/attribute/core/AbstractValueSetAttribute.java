@@ -63,10 +63,10 @@ public abstract class AbstractValueSetAttribute extends AbstractAttribute {
         for (final String each : inputValues) {
             String trimmmedValue = null;
             if (each != null && !(trimmmedValue = each.trim()).isEmpty()) {
-                final String[] values = StringUtil.splitBySpace(trimmmedValue);
                 // As per Collections.addAll's doc it is faster than
                 // allValues.addAll(Arrays.asList(values));
-                Collections.addAll(allValues, values);
+                Collections.addAll(allValues,
+                        StringUtil.splitBySpace(trimmmedValue));
             }
         }
         return allValues;
@@ -141,11 +141,10 @@ public abstract class AbstractValueSetAttribute extends AbstractAttribute {
                 String trimmmedValue = null;
                 if (className != null
                         && !(trimmmedValue = className.trim()).isEmpty()) {
-                    final String[] values = StringUtil
-                            .splitBySpace(trimmmedValue);
                     // As per Collections.addAll's doc it is faster than
                     // allValues.addAll(Arrays.asList(values));
-                    Collections.addAll(allValues, values);
+                    Collections.addAll(allValues,
+                            StringUtil.splitBySpace(trimmmedValue));
                 }
             }
 
