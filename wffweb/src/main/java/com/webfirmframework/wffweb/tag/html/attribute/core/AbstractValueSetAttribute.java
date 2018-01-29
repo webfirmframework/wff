@@ -16,8 +16,8 @@
 package com.webfirmframework.wffweb.tag.html.attribute.core;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import com.webfirmframework.wffweb.util.StringBuilderUtil;
@@ -64,7 +64,9 @@ public abstract class AbstractValueSetAttribute extends AbstractAttribute {
             String trimmmedValue = null;
             if (each != null && !(trimmmedValue = each.trim()).isEmpty()) {
                 final String[] values = StringUtil.splitBySpace(trimmmedValue);
-                allValues.addAll(Arrays.asList(values));
+                // As per Collections.addAll's doc it is faster than
+                // allValues.addAll(Arrays.asList(values));
+                Collections.addAll(allValues, values);
             }
         }
         return allValues;
@@ -141,7 +143,9 @@ public abstract class AbstractValueSetAttribute extends AbstractAttribute {
                         && !(trimmmedValue = className.trim()).isEmpty()) {
                     final String[] values = StringUtil
                             .splitBySpace(trimmmedValue);
-                    allValues.addAll(Arrays.asList(values));
+                    // As per Collections.addAll's doc it is faster than
+                    // allValues.addAll(Arrays.asList(values));
+                    Collections.addAll(allValues, values);
                 }
             }
 
