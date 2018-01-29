@@ -17,8 +17,12 @@ package com.webfirmframework.wffweb.tag.html.attribute.global;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
+
 import org.junit.Assert;
 import org.junit.Test;
+
+import com.webfirmframework.wffweb.tag.html.html5.attribute.AutoComplete;
 
 public class ClassAttributeTest {
 
@@ -76,6 +80,38 @@ public class ClassAttributeTest {
     public void testGetAttributeValue() {
         Assert.assertNotNull(new ClassAttribute("one two").getAttributeValue());
         Assert.assertEquals("one two three four five six", new ClassAttribute("one two three four five six").getAttributeValue());
+        
+    }
+    
+    @Test
+    public void testContains() {
+        {
+            ClassAttribute classAttribute = new ClassAttribute(AutoComplete.NAME);
+            classAttribute.setValue(false, AutoComplete.NAME + " "
+                    + AutoComplete.EMAIL + " " + AutoComplete.USERNAME);
+            Assert.assertTrue(classAttribute.contains(AutoComplete.NAME));
+            Assert.assertTrue(classAttribute.contains(AutoComplete.USERNAME));
+            Assert.assertFalse(classAttribute.contains(AutoComplete.ADDRESS_LINE2));
+        }
+        {
+            ClassAttribute classAttribute = new ClassAttribute();
+            Assert.assertFalse(classAttribute.contains(AutoComplete.ADDRESS_LINE2));
+        }
+    }
+    
+    @Test
+    public void testContainsAll() {
+        {
+            ClassAttribute classAttribute = new ClassAttribute();
+            Assert.assertFalse(classAttribute.containsAll(Arrays.asList(AutoComplete.ADDRESS_LINE2)));
+        }
+        ClassAttribute classAttribute = new ClassAttribute(AutoComplete.NAME);
+        classAttribute.setValue(false, AutoComplete.NAME + " "
+                + AutoComplete.EMAIL + " " + AutoComplete.USERNAME);
+        Assert.assertTrue(classAttribute.containsAll(Arrays.asList(AutoComplete.NAME, AutoComplete.USERNAME, AutoComplete.EMAIL)));
+        Assert.assertTrue(classAttribute.containsAll(Arrays.asList(AutoComplete.USERNAME)));
+        Assert.assertFalse(classAttribute.containsAll(Arrays.asList(AutoComplete.ADDRESS_LINE2)));
+        Assert.assertFalse(classAttribute.containsAll(Arrays.asList(AutoComplete.NAME, AutoComplete.ADDRESS_LINE2)));
         
     }
 

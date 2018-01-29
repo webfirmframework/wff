@@ -16,18 +16,13 @@
  */
 package com.webfirmframework.wffweb.tag.html.html5.attribute;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
-import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractValueSetAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
-import com.webfirmframework.wffweb.util.StringBuilderUtil;
-import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
  *
@@ -103,7 +98,7 @@ import com.webfirmframework.wffweb.util.StringUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class AutoComplete extends AbstractAttribute
+public class AutoComplete extends AbstractValueSetAttribute
         implements InputAttributable {
 
     public static final String ON = "on";
@@ -316,37 +311,32 @@ public class AutoComplete extends AbstractAttribute
 
     /**
      *
+     * @since 2.1.15
+     * @author WFF
+     */
+    public AutoComplete() {
+    }
+
+    /**
+     *
      * @param value
      *            the value for the attribute. The value string can contain
      *            values separated by space.
      * @since 1.0.0
      */
     public AutoComplete(final String value) {
-        splitAndAdd(false, value);
+        super.addAllToAttributeValueSet(value);
     }
 
-    private void splitAndAdd(final boolean removeAll,
-            final String... attrValues) {
-        if (attrValues != null) {
-
-            final List<String> allValues = new ArrayList<String>(
-                    attrValues.length);
-            for (final String className : attrValues) {
-                String trimmmedValue = null;
-                if (className != null
-                        && !(trimmmedValue = className.trim()).isEmpty()) {
-                    final String[] values = StringUtil
-                            .splitBySpace(trimmmedValue);
-                    allValues.addAll(Arrays.asList(values));
-                }
-            }
-
-            if (removeAll) {
-                removeAllFromAttributeValueSet();
-            }
-
-            addAllToAttributeValueSet(allValues);
-        }
+    /**
+     *
+     * @param value
+     *            the value for the attribute. The value string can contain
+     *            values separated by space.
+     * @since 2.1.15
+     */
+    public AutoComplete(final String... values) {
+        super.addAllToAttributeValueSet(values);
     }
 
     /**
@@ -393,11 +383,6 @@ public class AutoComplete extends AbstractAttribute
         addToAttributeValueSet(value);
     }
 
-    @Override
-    public String getAttributeValue() {
-        return buildValue();
-    }
-
     /**
      * sets the value for this attribute
      *
@@ -406,7 +391,7 @@ public class AutoComplete extends AbstractAttribute
      * @since 1.0.0
      */
     public void setValue(final String value) {
-        splitAndAdd(true, value);
+        super.setAttributeValue(value);
     }
 
     /**
@@ -421,22 +406,9 @@ public class AutoComplete extends AbstractAttribute
      * @since 2.1.15
      * @author WFF
      */
-    public void setValue(final boolean updateClient, final String value) {
-        if (value != null) {
-            final String[] inputValues = StringUtil.splitBySpace(value);
-            final List<String> allValues = new ArrayList<String>(
-                    inputValues.length);
-            for (final String each : inputValues) {
-                String trimmmedValue = null;
-                if (each != null && !(trimmmedValue = each.trim()).isEmpty()) {
-                    final String[] values = StringUtil
-                            .splitBySpace(trimmmedValue);
-                    allValues.addAll(Arrays.asList(values));
-                }
-            }
-            removeAllFromAttributeValueSet();
-            addAllToAttributeValueSet(updateClient, allValues);
-        }
+    public void setValue(final boolean updateClient,
+            final String attributeValue) {
+        super.setAttributeValue(updateClient, attributeValue);
     }
 
     /**
@@ -446,16 +418,7 @@ public class AutoComplete extends AbstractAttribute
      * @since 1.0.0
      */
     public String getValue() {
-        return buildValue();
-    }
-
-    private String buildValue() {
-        final StringBuilder builder = new StringBuilder();
-        for (final String className : getAttributeValueSet()) {
-            builder.append(className).append(' ');
-        }
-
-        return StringBuilderUtil.getTrimmedString(builder);
+        return super.getAttributeValue();
     }
 
     /**

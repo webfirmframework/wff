@@ -16,16 +16,13 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
-import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractValueSetAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.AreaAttributable;
-import com.webfirmframework.wffweb.util.StringBuilderUtil;
-import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
  * For anchors containing the href attribute, this attribute specifies the
@@ -40,7 +37,7 @@ import com.webfirmframework.wffweb.util.StringUtil;
  * @since 1.0.0
  *
  */
-public class Rel extends AbstractAttribute
+public class Rel extends AbstractValueSetAttribute
         implements AAttributable, AreaAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
@@ -137,7 +134,7 @@ public class Rel extends AbstractAttribute
      * @author WFF
      */
     public Rel(final String value) {
-        splitAndAdd(false, value);
+        super.addAllToAttributeValueSet(value);
     }
 
     /**
@@ -149,31 +146,7 @@ public class Rel extends AbstractAttribute
      * @author WFF
      */
     public Rel(final String... values) {
-        splitAndAdd(false, values);
-    }
-
-    private void splitAndAdd(final boolean removeAll,
-            final String... attrValues) {
-        if (attrValues != null) {
-
-            final List<String> allValues = new ArrayList<String>(
-                    attrValues.length);
-            for (final String className : attrValues) {
-                String trimmmedValue = null;
-                if (className != null
-                        && !(trimmmedValue = className.trim()).isEmpty()) {
-                    final String[] values = StringUtil
-                            .splitBySpace(trimmmedValue);
-                    allValues.addAll(Arrays.asList(values));
-                }
-            }
-
-            if (removeAll) {
-                removeAllFromAttributeValueSet();
-            }
-
-            addAllToAttributeValueSet(allValues);
-        }
+        super.addAllToAttributeValueSet(values);
     }
 
     /**
@@ -185,37 +158,7 @@ public class Rel extends AbstractAttribute
      * @author WFF
      */
     public void setValue(final String value) {
-        splitAndAdd(true, value);
-    }
-
-    /**
-     * sets the value for this attribute
-     *
-     * @param updateClient
-     *            true to update client browser page if it is available. The
-     *            default value is true but it will be ignored if there is no
-     *            client browser page.
-     * @param value
-     *            the value for the attribute.
-     * @since 2.1.15
-     * @author WFF
-     */
-    public void setValue(final boolean updateClient, final String value) {
-        if (value != null) {
-            final String[] inputValues = StringUtil.splitBySpace(value);
-            final List<String> allValues = new ArrayList<String>(
-                    inputValues.length);
-            for (final String each : inputValues) {
-                String trimmmedValue = null;
-                if (each != null && !(trimmmedValue = each.trim()).isEmpty()) {
-                    final String[] values = StringUtil
-                            .splitBySpace(trimmmedValue);
-                    allValues.addAll(Arrays.asList(values));
-                }
-            }
-            removeAllFromAttributeValueSet();
-            addAllToAttributeValueSet(updateClient, allValues);
-        }
+        super.setAttributeValue(value);
     }
 
     /**
@@ -226,16 +169,16 @@ public class Rel extends AbstractAttribute
      * @author WFF
      */
     public String getValue() {
-        return buildValue();
+        return super.getAttributeValue();
     }
 
-    private String buildValue() {
-        final StringBuilder builder = new StringBuilder();
-        for (final String className : getAttributeValueSet()) {
-            builder.append(className).append(' ');
-        }
-
-        return StringBuilderUtil.getTrimmedString(builder);
+    /**
+     * @return a new copy of set of values
+     * @since 2.1.15
+     * @author WFF
+     */
+    public Set<String> getValueSet() {
+        return new LinkedHashSet<String>(getAttributeValueSet());
     }
 
     /**
@@ -282,11 +225,6 @@ public class Rel extends AbstractAttribute
         addToAttributeValueSet(value);
     }
 
-    @Override
-    public String getAttributeValue() {
-        return buildValue();
-    }
-
     /**
      * invokes only once per object
      *
@@ -295,6 +233,10 @@ public class Rel extends AbstractAttribute
      */
     protected void init() {
         // to override and use this method
+    }
+
+    public void setValue(final boolean updateClient, final String value) {
+        super.setAttributeValue(updateClient, value);
     }
 
 }

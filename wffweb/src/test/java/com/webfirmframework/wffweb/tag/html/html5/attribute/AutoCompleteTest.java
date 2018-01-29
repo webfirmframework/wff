@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 public class AutoCompleteTest {
@@ -102,6 +103,39 @@ public class AutoCompleteTest {
         AutoComplete autoComplete = new AutoComplete(AutoComplete.NAME);
         autoComplete.setValue(false, AutoComplete.NAME + " " + AutoComplete.EMAIL + " " + AutoComplete.USERNAME);
         assertEquals("name email username", autoComplete.getValue());
+    }
+    
+    @Test
+    public void testContains() {
+        {
+            AutoComplete autoComplete = new AutoComplete(AutoComplete.NAME);
+            autoComplete.setValue(false, AutoComplete.NAME + " "
+                    + AutoComplete.EMAIL + " " + AutoComplete.USERNAME);
+            Assert.assertTrue(autoComplete.contains(AutoComplete.NAME));
+            Assert.assertTrue(autoComplete.contains(AutoComplete.USERNAME));
+            Assert.assertFalse(autoComplete.contains(AutoComplete.ADDRESS_LINE2));
+        }
+        {
+            AutoComplete autoComplete = new AutoComplete();
+            
+            Assert.assertFalse(autoComplete.contains(AutoComplete.ADDRESS_LINE2));
+        }
+    }
+    
+    @Test
+    public void testContainsAll() {
+        {
+            AutoComplete autoComplete = new AutoComplete();
+            Assert.assertFalse(autoComplete.containsAll(Arrays.asList(AutoComplete.ADDRESS_LINE2)));
+        }
+        AutoComplete autoComplete = new AutoComplete(AutoComplete.NAME);
+        autoComplete.setValue(false, AutoComplete.NAME + " "
+                + AutoComplete.EMAIL + " " + AutoComplete.USERNAME);
+        Assert.assertTrue(autoComplete.containsAll(Arrays.asList(AutoComplete.NAME, AutoComplete.USERNAME, AutoComplete.EMAIL)));
+        Assert.assertTrue(autoComplete.containsAll(Arrays.asList(AutoComplete.USERNAME)));
+        Assert.assertFalse(autoComplete.containsAll(Arrays.asList(AutoComplete.ADDRESS_LINE2)));
+        Assert.assertFalse(autoComplete.containsAll(Arrays.asList(AutoComplete.NAME, AutoComplete.ADDRESS_LINE2)));
+        
     }
 
 }

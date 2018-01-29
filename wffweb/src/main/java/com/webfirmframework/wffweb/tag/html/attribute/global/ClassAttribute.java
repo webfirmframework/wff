@@ -24,16 +24,15 @@ import java.util.List;
 import java.util.Set;
 
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
-import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractValueSetAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
-import com.webfirmframework.wffweb.util.StringBuilderUtil;
 import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
  * @author WFF
  *
  */
-public class ClassAttribute extends AbstractAttribute
+public class ClassAttribute extends AbstractValueSetAttribute
         implements GlobalAttributable {
 
     /**
@@ -55,26 +54,7 @@ public class ClassAttribute extends AbstractAttribute
      * @param classNames
      */
     public ClassAttribute(final String... classNames) {
-        splitAndAdd(classNames);
-    }
-
-    private void splitAndAdd(final String... attrValues) {
-        if (attrValues != null) {
-
-            final List<String> allValues = new ArrayList<String>(
-                    attrValues.length);
-            for (final String className : attrValues) {
-                String trimmmedValue = null;
-                if (className != null
-                        && !(trimmmedValue = className.trim()).isEmpty()) {
-                    final String[] values = StringUtil
-                            .splitBySpace(trimmmedValue);
-                    allValues.addAll(Arrays.asList(values));
-                }
-            }
-
-            addAllToAttributeValueSet(allValues);
-        }
+        super.addAllToAttributeValueSet(classNames);
     }
 
     /**
@@ -97,7 +77,7 @@ public class ClassAttribute extends AbstractAttribute
      * @author WFF
      */
     public void addClassNames(final String... classNames) {
-        splitAndAdd(classNames);
+        super.addAllToAttributeValueSet(classNames);
     }
 
     /**
@@ -170,13 +150,7 @@ public class ClassAttribute extends AbstractAttribute
      */
     @Override
     public String getAttributeValue() {
-
-        final StringBuilder builder = new StringBuilder();
-        for (final String className : getAttributeValueSet()) {
-            builder.append(className).append(' ');
-        }
-
-        return StringBuilderUtil.getTrimmedString(builder);
+        return super.getAttributeValue();
     }
 
     /**
@@ -195,36 +169,6 @@ public class ClassAttribute extends AbstractAttribute
     /**
      * sets the value for this attribute
      *
-     * @param updateClient
-     *            true to update client browser page if it is available. The
-     *            default value is true but it will be ignored if there is no
-     *            client browser page.
-     * @param value
-     *            the value for the attribute.
-     * @since 2.1.15
-     * @author WFF
-     */
-    public void setValue(final boolean updateClient, final String value) {
-        if (value != null) {
-            final String[] inputValues = StringUtil.splitBySpace(value);
-            final List<String> allValues = new ArrayList<String>(
-                    inputValues.length);
-            for (final String each : inputValues) {
-                String trimmmedValue = null;
-                if (each != null && !(trimmmedValue = each.trim()).isEmpty()) {
-                    final String[] values = StringUtil
-                            .splitBySpace(trimmmedValue);
-                    allValues.addAll(Arrays.asList(values));
-                }
-            }
-            removeAllFromAttributeValueSet();
-            addAllToAttributeValueSet(updateClient, allValues);
-        }
-    }
-
-    /**
-     * sets the value for this attribute
-     *
      *
      * @param value
      *            the value for the attribute.
@@ -232,21 +176,11 @@ public class ClassAttribute extends AbstractAttribute
      * @author WFF
      */
     public void setValue(final String value) {
-        if (value != null) {
-            final String[] inputValues = StringUtil.splitBySpace(value);
-            final List<String> allValues = new ArrayList<String>(
-                    inputValues.length);
-            for (final String each : inputValues) {
-                String trimmmedValue = null;
-                if (each != null && !(trimmmedValue = each.trim()).isEmpty()) {
-                    final String[] values = StringUtil
-                            .splitBySpace(trimmmedValue);
-                    allValues.addAll(Arrays.asList(values));
-                }
-            }
-            removeAllFromAttributeValueSet();
-            addAllToAttributeValueSet(allValues);
-        }
+        super.setAttributeValue(value);
+    }
+
+    public void setValue(final boolean updateClient, final String value) {
+        super.setAttributeValue(updateClient, value);
     }
 
 }
