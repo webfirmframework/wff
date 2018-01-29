@@ -56,7 +56,7 @@ public abstract class AbstractValueSetAttribute extends AbstractAttribute {
     /*
      * splits by space
      */
-    private List<String> extractValues(final String value) {
+    private static List<String> extractValues(final String value) {
         final String[] inputValues = StringUtil.splitBySpace(value);
         final List<String> allValues = new ArrayList<String>(
                 inputValues.length);
