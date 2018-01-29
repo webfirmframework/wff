@@ -17,8 +17,8 @@
 package com.webfirmframework.wffweb.tag.html.attribute.global;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -98,9 +98,10 @@ public class ClassAttribute extends AbstractValueSetAttribute
                 String trimmmedValue = null;
                 if (className != null
                         && !(trimmmedValue = className.trim()).isEmpty()) {
-                    final String[] values = StringUtil
-                            .splitBySpace(trimmmedValue);
-                    allValues.addAll(Arrays.asList(values));
+                    // As per Collections.addAll's doc it is faster than
+                    // allValues.addAll(Arrays.asList(values));
+                    Collections.addAll(allValues,
+                            StringUtil.splitBySpace(trimmmedValue));
                 }
             }
             removeAllFromAttributeValueSet();

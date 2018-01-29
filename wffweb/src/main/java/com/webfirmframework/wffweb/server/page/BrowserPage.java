@@ -21,7 +21,6 @@ import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.util.ArrayDeque;
-import java.util.Arrays;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -543,8 +542,9 @@ public abstract class BrowserPage implements Serializable {
     private void addDataWffIdAttribute(final AbstractHtml abstractHtml) {
 
         final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<Set<AbstractHtml>>();
-        childrenStack.push(
-                new LinkedHashSet<AbstractHtml>(Arrays.asList(abstractHtml)));
+        final Set<AbstractHtml> initialSet = new LinkedHashSet<AbstractHtml>(1);
+        initialSet.add(abstractHtml);
+        childrenStack.push(initialSet);
 
         while (childrenStack.size() > 0) {
 
@@ -581,8 +581,9 @@ public abstract class BrowserPage implements Serializable {
         }
 
         final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<Set<AbstractHtml>>();
-        childrenStack.push(
-                new LinkedHashSet<AbstractHtml>(Arrays.asList(abstractHtml)));
+        final Set<AbstractHtml> initialSet = new LinkedHashSet<AbstractHtml>(1);
+        initialSet.add(abstractHtml);
+        childrenStack.push(initialSet);
 
         boolean bodyTagMissing = true;
 

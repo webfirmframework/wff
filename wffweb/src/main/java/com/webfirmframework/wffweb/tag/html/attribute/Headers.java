@@ -16,8 +16,10 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.TdAttributable;
@@ -62,7 +64,12 @@ public class Headers extends AbstractAttribute
                         && !(trimmmedValue = headerId.trim()).isEmpty()) {
                     final String[] values = StringUtil
                             .splitBySpace(trimmmedValue);
-                    addAllToAttributeValueSet(Arrays.asList(values));
+
+                    final List<String> allValues = new ArrayList<String>(
+                            values.length);
+                    Collections.addAll(allValues, values);
+
+                    addAllToAttributeValueSet(allValues);
                 }
             }
         }
@@ -95,7 +102,10 @@ public class Headers extends AbstractAttribute
                         && !(trimmmedValue = headerId.trim()).isEmpty()) {
                     final String[] values = StringUtil
                             .splitBySpace(trimmmedValue);
-                    addAllToAttributeValueSet(Arrays.asList(values));
+                    final List<String> allValues = new ArrayList<String>(
+                            values.length);
+                    Collections.addAll(allValues, values);
+                    addAllToAttributeValueSet(allValues);
                 }
             }
         }
@@ -119,8 +129,11 @@ public class Headers extends AbstractAttribute
                         && !(trimmmedValue = headerId.trim()).isEmpty()) {
                     final String[] values = StringUtil
                             .splitBySpace(trimmmedValue);
+                    final List<String> allValues = new ArrayList<String>(
+                            values.length);
+                    Collections.addAll(allValues, values);
                     removeAllFromAttributeValueSet();
-                    addAllToAttributeValueSet(Arrays.asList(values));
+                    addAllToAttributeValueSet(allValues);
                 }
             }
         }

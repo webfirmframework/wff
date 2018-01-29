@@ -17,7 +17,6 @@ package com.webfirmframework.wffweb.tag.html.core;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -363,7 +362,8 @@ public class TagRegistry {
     public static void register(final String... tagNamesToRegister) {
 
         final Set<String> tagNamesWithoutDuplicates = new HashSet<String>(
-                Arrays.asList(tagNamesToRegister));
+                tagNamesToRegister.length);
+        Collections.addAll(tagNamesWithoutDuplicates, tagNamesToRegister);
 
         tagNamesSet.addAll(tagNamesWithoutDuplicates);
 

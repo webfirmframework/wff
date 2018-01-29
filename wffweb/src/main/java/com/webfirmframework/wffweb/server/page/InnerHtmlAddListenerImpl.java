@@ -17,7 +17,6 @@ package com.webfirmframework.wffweb.server.page;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayDeque;
-import java.util.Arrays;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -71,7 +70,9 @@ class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
     private void addInWffIdMap(final AbstractHtml tag) {
 
         final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<Set<AbstractHtml>>();
-        childrenStack.push(new HashSet<AbstractHtml>(Arrays.asList(tag)));
+        final Set<AbstractHtml> initialSet = new HashSet<AbstractHtml>(1);
+        initialSet.add(tag);
+        childrenStack.push(initialSet);
 
         while (childrenStack.size() > 0) {
             final Set<AbstractHtml> children = childrenStack.pop();

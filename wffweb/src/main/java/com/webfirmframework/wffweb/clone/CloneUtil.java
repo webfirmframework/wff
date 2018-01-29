@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -67,7 +67,8 @@ public final class CloneUtil {
         if (objectToBeClonned == null || objects == null) {
             return objectToBeClonned;
         }
-        final Set<T> objectsSet = new HashSet<T>(Arrays.asList(objects));
+        final Set<T> objectsSet = new HashSet<T>(objects.length);
+        Collections.addAll(objectsSet, objects);
         return objectsSet.contains(objectToBeClonned)
                 ? deepClone(objectToBeClonned) : objectToBeClonned;
     }
@@ -153,7 +154,8 @@ public final class CloneUtil {
         if (objects == null) {
             return deepClone(objectToBeClonned);
         }
-        final Set<T> objectsSet = new HashSet<T>(Arrays.asList(objects));
+        final Set<T> objectsSet = new HashSet<T>(objects.length);
+        Collections.addAll(objectsSet, objects);
         return objectsSet.contains(objectToBeClonned) ? objectToBeClonned
                 : deepClone(objectToBeClonned);
     }
