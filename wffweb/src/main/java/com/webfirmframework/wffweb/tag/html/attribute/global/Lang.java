@@ -54,7 +54,7 @@ public class Lang extends AbstractAttribute implements GlobalAttributable {
     }
 
     public Lang() {
-        setAttributeValue("");
+        super.setAttributeValue("");
     }
 
     /**
@@ -63,7 +63,7 @@ public class Lang extends AbstractAttribute implements GlobalAttributable {
      * @author WFF
      */
     public Lang(final String lang) {
-        setAttributeValue(lang);
+        super.setAttributeValue(lang);
     }
 
     /**
@@ -72,7 +72,7 @@ public class Lang extends AbstractAttribute implements GlobalAttributable {
      * @author WFF
      */
     public Lang(final Locale locale) {
-        setAttributeValue(locale.getLanguage());
+        super.setAttributeValue(locale.getLanguage());
     }
 
     /**
@@ -92,7 +92,7 @@ public class Lang extends AbstractAttribute implements GlobalAttributable {
      * @author WFF
      */
     public void setValue(final String lang) {
-        setAttributeValue(lang);
+        super.setAttributeValue(lang);
     }
 
     /**
@@ -101,7 +101,7 @@ public class Lang extends AbstractAttribute implements GlobalAttributable {
      * @author WFF
      */
     public String getValue() {
-        return getAttributeValue();
+        return super.getAttributeValue();
     }
 
     /**
@@ -110,7 +110,7 @@ public class Lang extends AbstractAttribute implements GlobalAttributable {
      * @author WFF
      */
     public Locale getLocale() {
-        return new Locale(getAttributeValue());
+        return new Locale(super.getAttributeValue());
     }
 
 }

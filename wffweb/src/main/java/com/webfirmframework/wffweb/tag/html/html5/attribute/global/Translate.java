@@ -49,7 +49,7 @@ public class Translate extends AbstractAttribute implements GlobalAttributable {
      * @since 1.0.0
      */
     public Translate() {
-        setAttributeValue(translation ? "yes" : "no");
+        super.setAttributeValue(translation ? "yes" : "no");
     }
 
     /**
@@ -61,7 +61,7 @@ public class Translate extends AbstractAttribute implements GlobalAttributable {
      * @since 1.0.0
      */
     public Translate(final boolean translation) {
-        setAttributeValue(translation ? "yes" : "no");
+        super.setAttributeValue(translation ? "yes" : "no");
         this.translation = translation;
     }
 
@@ -76,10 +76,10 @@ public class Translate extends AbstractAttribute implements GlobalAttributable {
         final String trimmedValue = value.trim();
         if ("yes".equals(trimmedValue)) {
             translation = true;
-            setAttributeValue("yes");
+            super.setAttributeValue("yes");
         } else if ("no".equals(trimmedValue)) {
             translation = false;
-            setAttributeValue("no");
+            super.setAttributeValue("no");
         } else {
             throw new InvalidValueException("the value must be yes or no");
         }
@@ -113,7 +113,7 @@ public class Translate extends AbstractAttribute implements GlobalAttributable {
      * @since 1.0.0
      */
     public void setTranslation(final boolean translation) {
-        setAttributeValue(translation ? "yes" : "no");
+        super.setAttributeValue(translation ? "yes" : "no");
         this.translation = translation;
     }
 

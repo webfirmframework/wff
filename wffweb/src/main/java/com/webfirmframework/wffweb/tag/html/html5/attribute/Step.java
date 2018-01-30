@@ -56,7 +56,7 @@ public class Step extends AbstractAttribute implements InputAttributable {
      * @author WFF
      */
     public Step() {
-        setAttributeValue("1");
+        super.setAttributeValue("1");
     }
 
     /**
@@ -67,7 +67,7 @@ public class Step extends AbstractAttribute implements InputAttributable {
      * @author WFF
      */
     public Step(final String value) {
-        setAttributeValue(value);
+        super.setAttributeValue(value);
     }
 
     /**
@@ -78,7 +78,7 @@ public class Step extends AbstractAttribute implements InputAttributable {
      * @author WFF
      */
     public Step(final int value) {
-        setAttributeValue(String.valueOf(value));
+        super.setAttributeValue(String.valueOf(value));
     }
 
     /**

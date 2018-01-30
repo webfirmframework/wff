@@ -46,7 +46,7 @@ public class Action extends AbstractAttribute implements FormAttributable {
      * @author WFF
      */
     public Action() {
-        setAttributeValue("");
+        super.setAttributeValue("");
     }
 
     /**
@@ -57,7 +57,7 @@ public class Action extends AbstractAttribute implements FormAttributable {
      * @author WFF
      */
     public Action(final String value) {
-        setAttributeValue(value);
+        super.setAttributeValue(value);
     }
 
     /**

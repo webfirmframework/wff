@@ -50,7 +50,7 @@ public class Alt extends AbstractAttribute
      * @author WFF
      */
     public Alt() {
-        setAttributeValue("");
+        super.setAttributeValue("");
     }
 
     /**
@@ -61,7 +61,7 @@ public class Alt extends AbstractAttribute
      * @author WFF
      */
     public Alt(final String value) {
-        setAttributeValue(value);
+        super.setAttributeValue(value);
     }
 
     /**
