@@ -48,7 +48,7 @@ public class Title extends AbstractAttribute implements GlobalAttributable {
      * @since 1.0.0
      */
     public Title() {
-        setAttributeValue("");
+        super.setAttributeValue("");
     }
 
     /**
@@ -57,7 +57,7 @@ public class Title extends AbstractAttribute implements GlobalAttributable {
      * @since 1.0.0
      */
     public Title(final String title) {
-        setAttributeValue(title);
+        super.setAttributeValue(title);
     }
 
     /**
@@ -76,7 +76,7 @@ public class Title extends AbstractAttribute implements GlobalAttributable {
      * @since 1.0.0
      */
     public String getValue() {
-        return getAttributeValue();
+        return super.getAttributeValue();
     }
 
     /**
@@ -86,7 +86,7 @@ public class Title extends AbstractAttribute implements GlobalAttributable {
      * @since 1.0.0
      */
     public void setValue(final String value) {
-        setAttributeValue(value);
+        super.setAttributeValue(value);
     }
 
     /**

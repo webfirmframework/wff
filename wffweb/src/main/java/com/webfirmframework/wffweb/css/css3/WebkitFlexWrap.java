@@ -35,8 +35,8 @@ public enum WebkitFlexWrap implements CssProperty {
 
     NOWRAP, WRAP, WRAP_REVERSE, INITIAL, INHERIT;
 
-    private final String upperCaseSuperToString = super.toString().replace("_",
-            "-");
+    private final String upperCaseSuperToString = super.toString().replace('_',
+            '-');
 
     private final String superToString = TagStringUtil
             .toLowerCase(upperCaseSuperToString);
@@ -119,7 +119,7 @@ public enum WebkitFlexWrap implements CssProperty {
      */
     public static WebkitFlexWrap getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         WebkitFlexWrap correspondingObject = null;
         try {

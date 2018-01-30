@@ -16,12 +16,15 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.TdAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.ThAttributable;
+import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
  * @author WFF
@@ -59,8 +62,14 @@ public class Headers extends AbstractAttribute
                 String trimmmedValue = null;
                 if (headerId != null
                         && !(trimmmedValue = headerId.trim()).isEmpty()) {
-                    final String[] values = trimmmedValue.split(" ");
-                    addAllToAttributeValueSet(Arrays.asList(values));
+                    final String[] values = StringUtil
+                            .splitBySpace(trimmmedValue);
+
+                    final List<String> allValues = new ArrayList<String>(
+                            values.length);
+                    Collections.addAll(allValues, values);
+
+                    addAllToAttributeValueSet(allValues);
                 }
             }
         }
@@ -91,8 +100,12 @@ public class Headers extends AbstractAttribute
                 String trimmmedValue = null;
                 if (headerId != null
                         && !(trimmmedValue = headerId.trim()).isEmpty()) {
-                    final String[] values = trimmmedValue.split(" ");
-                    addAllToAttributeValueSet(Arrays.asList(values));
+                    final String[] values = StringUtil
+                            .splitBySpace(trimmmedValue);
+                    final List<String> allValues = new ArrayList<String>(
+                            values.length);
+                    Collections.addAll(allValues, values);
+                    addAllToAttributeValueSet(allValues);
                 }
             }
         }
@@ -114,9 +127,13 @@ public class Headers extends AbstractAttribute
                 String trimmmedValue = null;
                 if (headerId != null
                         && !(trimmmedValue = headerId.trim()).isEmpty()) {
-                    final String[] values = trimmmedValue.split(" ");
+                    final String[] values = StringUtil
+                            .splitBySpace(trimmmedValue);
+                    final List<String> allValues = new ArrayList<String>(
+                            values.length);
+                    Collections.addAll(allValues, values);
                     removeAllFromAttributeValueSet();
-                    addAllToAttributeValueSet(Arrays.asList(values));
+                    addAllToAttributeValueSet(allValues);
                 }
             }
         }

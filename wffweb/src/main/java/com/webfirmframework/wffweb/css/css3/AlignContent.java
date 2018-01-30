@@ -48,8 +48,8 @@ public enum AlignContent implements CssProperty {
 
     STRETCH, CENTER, FLEX_START, FLEX_END, SPACE_BETWEEN, SPACE_AROUND, INITIAL, INHERIT;
 
-    private final String upperCaseSuperToString = super.toString().replace("_",
-            "-");
+    private final String upperCaseSuperToString = super.toString().replace('_',
+            '-');
 
     private final String superToString = TagStringUtil
             .toLowerCase(upperCaseSuperToString);
@@ -132,7 +132,7 @@ public enum AlignContent implements CssProperty {
      */
     public static AlignContent getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         AlignContent correspondingObject = null;
         try {

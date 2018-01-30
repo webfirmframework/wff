@@ -17,7 +17,6 @@ package com.webfirmframework.wffweb.tag.html.attribute.core;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -600,8 +599,10 @@ public class AttributeRegistry {
      */
     public static void register(final String... attrNames) {
 
-        final HashSet<String> tagNamesWithoutDuplicates = new HashSet<>(
-                Arrays.asList(attrNames));
+        final Set<String> tagNamesWithoutDuplicates = new HashSet<>(
+                attrNames.length);
+
+        Collections.addAll(tagNamesWithoutDuplicates, attrNames);
 
         attributeNamesSet.addAll(tagNamesWithoutDuplicates);
 

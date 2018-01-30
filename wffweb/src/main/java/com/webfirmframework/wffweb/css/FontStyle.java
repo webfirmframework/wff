@@ -34,8 +34,8 @@ public enum FontStyle implements CssProperty {
 
     NORMAL, ITALIC, OBLIQUE, INITIAL, INHERIT;
 
-    private final String upperCaseSuperToString = super.toString().replace("_",
-            "-");
+    private final String upperCaseSuperToString = super.toString().replace('_',
+            '-');
 
     private final String superToString = TagStringUtil
             .toLowerCase(upperCaseSuperToString);
@@ -127,7 +127,7 @@ public enum FontStyle implements CssProperty {
      */
     public static FontStyle getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         FontStyle correspondingObject = null;
         try {

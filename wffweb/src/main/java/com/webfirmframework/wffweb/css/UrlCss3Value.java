@@ -19,6 +19,7 @@ package com.webfirmframework.wffweb.css;
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.WffRuntimeException;
 import com.webfirmframework.wffweb.data.AbstractBean;
+import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
  *
@@ -101,8 +102,8 @@ public class UrlCss3Value extends AbstractBean<UrlCss3Value> {
                         .substring(beginIndexCoordinatesPart).trim()
                         .replaceAll("\\s+", " ");
 
-                final String[] coordinatesStringParts = coordinatesPart
-                        .split(" ");
+                final String[] coordinatesStringParts = StringUtil
+                        .splitBySpace(coordinatesPart);
 
                 if (coordinatesStringParts.length == 2) {
                     x = Integer.parseInt(coordinatesStringParts[0]);

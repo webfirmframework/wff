@@ -28,6 +28,7 @@ import com.webfirmframework.wffweb.css.CssNameConstants;
 import com.webfirmframework.wffweb.css.core.AbstractCssProperty;
 import com.webfirmframework.wffweb.css.core.CssProperty;
 import com.webfirmframework.wffweb.informer.StateChangeInformer;
+import com.webfirmframework.wffweb.util.StringUtil;
 import com.webfirmframework.wffweb.util.TagStringUtil;
 
 /**
@@ -160,7 +161,7 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
                     + " is an invalid value. The value format should be as for example \"0 1 auto\" or initial/inherit.");
         }
 
-        final String[] cssValueParts = trimmedCssValue.split(" ");
+        final String[] cssValueParts = StringUtil.splitBySpace(trimmedCssValue);
 
         if (cssValueParts.length > 1) {
             if (trimmedCssValue.contains(FlexBasis.INITIAL)) {
@@ -321,7 +322,7 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
             return false;
         }
 
-        final String[] cssValueParts = cssValue.split(" ");
+        final String[] cssValueParts = StringUtil.splitBySpace(cssValue);
 
         FlexGrow flexGrow = null;
         FlexShrink flexShrink = null;

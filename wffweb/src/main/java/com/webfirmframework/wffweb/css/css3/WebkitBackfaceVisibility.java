@@ -36,8 +36,8 @@ public enum WebkitBackfaceVisibility implements CssProperty {
 
     VISIBLE, HIDDEN, INITIAL, INHERITS;
 
-    private final String upperCaseSuperToString = super.toString().replace("_",
-            "-");
+    private final String upperCaseSuperToString = super.toString().replace('_',
+            '-');
 
     private final String superToString = TagStringUtil
             .toLowerCase(upperCaseSuperToString);
@@ -129,7 +129,7 @@ public enum WebkitBackfaceVisibility implements CssProperty {
      */
     public static WebkitBackfaceVisibility getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         WebkitBackfaceVisibility correspondingObject = null;
         try {

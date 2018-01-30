@@ -597,4 +597,164 @@ public final class StringUtil {
         return Character.isWhitespace(value.charAt(value.length() - 1));
     }
 
+    private static String[] split(final String string, final char delim) {
+
+        final CharSequence[] tmp = new CharSequence[(string.length() / 2) + 1];
+        int subCount = 0;
+        int i = 0;
+        // first substring
+        int j = string.indexOf(delim, 0);
+
+        while (j >= 0) {
+            tmp[subCount++] = string.substring(i, j);
+            i = j + 1;
+            // rest of substrings
+            j = string.indexOf(delim, i);
+        }
+        // last substring
+        tmp[subCount++] = string.substring(i);
+
+        final String[] finalArray = new String[subCount];
+        System.arraycopy(tmp, 0, finalArray, 0, subCount);
+        return finalArray;
+    }
+
+    /**
+     * Splits the given string by space.
+     *
+     * @param string
+     * @return the array of strings
+     * @since 2.1.15
+     * @author WFF
+     */
+    public static String[] splitBySpace(final String string) {
+        return split(string, ' ');
+    }
+
+    /**
+     * Splits the given string by comma (,).
+     *
+     * @param string
+     * @return the array of strings
+     * @since 2.1.15
+     * @author WFF
+     */
+    public static String[] splitByComma(final String string) {
+        return split(string, ',');
+    }
+
+    /**
+     * Splits the given string by semicolon (;).
+     *
+     * @param string
+     * @return the array of strings
+     * @since 2.1.15
+     * @author WFF
+     */
+    public static String[] splitBySemicolon(final String string) {
+        return split(string, ';');
+    }
+
+    /**
+     * Splits the given string by colon (:).
+     *
+     * @param string
+     * @return the array of strings
+     * @since 2.1.15
+     * @author WFF
+     */
+    public static String[] splitByColon(final String string) {
+        return split(string, ':');
+    }
+
+    private static boolean endsWith(final String string, final char c) {
+        if (string.length() == 0) {
+            return false;
+        }
+        return string.charAt(string.length() - 1) == c;
+    }
+
+    private static boolean startsWith(final String string, final char c) {
+        if (string.length() == 0) {
+            return false;
+        }
+        return string.charAt(0) == c;
+    }
+
+    /**
+     * Checks if the last char is a space char
+     *
+     * @param string
+     * @return true if the last character is a space char
+     * @since 2.1.15
+     * @author WFF
+     */
+    public static boolean endsWithSpace(final String string) {
+        return endsWith(string, ' ');
+    }
+
+    /**
+     * Checks if the last char is a colon (:) char
+     *
+     * @param string
+     * @return true if the last character is a colon (:) char
+     * @since 2.1.15
+     * @author WFF
+     */
+    public static boolean endsWithColon(final String string) {
+        return endsWith(string, ':');
+    }
+
+    /**
+     * Checks if the first char is a space char
+     *
+     * @param string
+     * @return true if the first character is a space char
+     * @since 2.1.15
+     * @author WFF
+     */
+    public static boolean startsWithSpace(final String string) {
+        return startsWith(string, ' ');
+    }
+
+    private static boolean contains(final String string, final char c) {
+        return string.indexOf(c) != -1;
+    }
+
+    /**
+     * Checks if the given string contains space.
+     *
+     * @param string
+     * @return true if the given string contains space char.
+     * @since 2.1.15
+     * @author WFF
+     */
+    public static boolean containsSpace(final String string) {
+        return contains(string, ' ');
+    }
+
+    /**
+     * Checks if the given string contains minus (-).
+     *
+     * @param string
+     * @return true if the given string contains minus (-) char.
+     * @since 2.1.15
+     * @author WFF
+     */
+    public static boolean containsMinus(final String string) {
+        return contains(string, '-');
+    }
+
+    /**
+     * Checks if the given string contains plus (+) char.
+     *
+     * @param string
+     * @return true if the given string contains plus (+) char.
+     * @since 2.1.15
+     * @author WFF
+     */
+    public static boolean containsPlus(final String string) {
+        return contains(string, '+');
+    }
+
 }

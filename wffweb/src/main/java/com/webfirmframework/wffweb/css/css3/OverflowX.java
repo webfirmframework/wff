@@ -35,8 +35,8 @@ public enum OverflowX implements CssProperty {
 
     VISIBLE, HIDDEN, SCROLL, AUTO, INITIAL, INHERIT;
 
-    private final String upperCaseSuperToString = super.toString().replace("_",
-            "-");
+    private final String upperCaseSuperToString = super.toString().replace('_',
+            '-');
 
     private final String superToString = TagStringUtil
             .toLowerCase(upperCaseSuperToString);
@@ -119,7 +119,7 @@ public enum OverflowX implements CssProperty {
      */
     public static OverflowX getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         OverflowX correspondingObject = null;
         try {

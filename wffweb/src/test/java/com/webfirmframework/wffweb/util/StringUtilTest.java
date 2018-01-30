@@ -15,9 +15,9 @@
  */
 package com.webfirmframework.wffweb.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+
+import java.util.logging.Logger;
 
 import org.junit.Test;
 
@@ -28,6 +28,8 @@ import org.junit.Test;
  *
  */
 public class StringUtilTest {
+    
+    private static final Logger LOGGER = Logger.getLogger(StringUtilTest.class.getName());
 
     /**
      * Test method for {@link com.webfirmframework.wffweb.util.StringUtil#convertToSingleSpace(java.lang.String)}.
@@ -188,6 +190,79 @@ public class StringUtilTest {
         String obj2 = "hi";
         assertTrue(StringUtil.isEqual(obj1, obj2));
         assertTrue(StringUtil.isEqual("hi", "hi"));
+    }
+    
+    @SuppressWarnings("unused")
+    @Test
+    public void testSplitBySpace() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 500; i++) {
+            sb.append("word");
+            sb.append(" ");
+        }
+        String string = sb.toString();
+        long withSplit = 0;
+        long withSplitBySpace = 0;
+        {
+            long before = System.nanoTime();
+            final String[] split = StringUtil.splitBySpace(string);
+            long after = System.nanoTime();
+            withSplitBySpace = after - before;
+        }
+        {
+            long before = System.nanoTime();
+            final String[] split = string.split(" ");
+            long after = System.nanoTime();
+            withSplit = after - before;
+        }
+        LOGGER.info("ns of withSplit " + withSplit + ", withSplitBySpace " + withSplitBySpace);
+        LOGGER.info("withSplit - withSplitBySpace = " +  (withSplit - withSplitBySpace ) + " ns");
+        
+    }
+    
+    @Test
+    public void testEndsWithSpace() {
+        assertFalse(StringUtil.endsWithSpace("something"));
+        assertTrue(StringUtil.endsWithSpace("something "));
+    }
+    @Test
+    public void testStartsWithSpace() {
+        assertFalse(StringUtil.startsWithSpace("something"));
+        assertTrue(StringUtil.startsWithSpace(" something"));
+    }
+    
+    @Test
+    public void testContainsSpace() throws Exception {
+        assertFalse(StringUtil.containsSpace(""));
+        assertTrue(StringUtil.containsSpace(" something"));
+        assertTrue(StringUtil.containsSpace("something "));
+        assertTrue(StringUtil.containsSpace("some thing"));
+    }
+    
+    @Test
+    public void testContainsMinus() throws Exception {
+        assertFalse(StringUtil.containsMinus(""));
+        assertTrue(StringUtil.containsMinus("-something"));
+        assertTrue(StringUtil.containsMinus("something-"));
+        assertTrue(StringUtil.containsMinus("some-thing"));
+    }
+    
+    @Test
+    public void testContainsPlus() throws Exception {
+        assertFalse(StringUtil.containsPlus(""));
+        assertTrue(StringUtil.containsPlus("+something"));
+        assertTrue(StringUtil.containsPlus("something+"));
+        assertTrue(StringUtil.containsPlus("some+thing"));
+    }
+    
+    @Test
+    public void testEndsWithColon() throws Exception {
+        assertFalse(StringUtil.endsWithColon(""));
+        assertFalse(StringUtil.endsWithColon(":something"));
+        assertFalse(StringUtil.endsWithColon("sdfsf:something"));
+        assertTrue(StringUtil.endsWithColon("something:"));
+        assertTrue(StringUtil.endsWithColon("something :"));
+        assertTrue(StringUtil.endsWithColon("some+thing :"));
     }
 
 }

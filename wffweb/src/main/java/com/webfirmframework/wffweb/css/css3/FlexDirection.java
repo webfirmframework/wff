@@ -35,8 +35,8 @@ public enum FlexDirection implements CssProperty {
 
     ROW, ROW_REVERSE, COLUMN, COLUMN_REVERSE, INITIAL, INHERIT;
 
-    private final String upperCaseSuperToString = super.toString().replace("_",
-            "-");
+    private final String upperCaseSuperToString = super.toString().replace('_',
+            '-');
 
     private final String superToString = TagStringUtil
             .toLowerCase(upperCaseSuperToString);
@@ -119,7 +119,7 @@ public enum FlexDirection implements CssProperty {
      */
     public static FlexDirection getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         FlexDirection correspondingObject = null;
         try {

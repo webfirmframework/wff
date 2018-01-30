@@ -35,8 +35,8 @@ public enum OverflowY implements CssProperty {
 
     VISIBLE, HIDDEN, SCROLL, AUTO, INITIAL, INHERIT;
 
-    private final String upperCaseSuperToString = super.toString().replace("_",
-            "-");
+    private final String upperCaseSuperToString = super.toString().replace('_',
+            '-');
 
     private final String superToString = TagStringUtil
             .toLowerCase(upperCaseSuperToString);
@@ -119,7 +119,7 @@ public enum OverflowY implements CssProperty {
      */
     public static OverflowY getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         OverflowY correspondingObject = null;
         try {

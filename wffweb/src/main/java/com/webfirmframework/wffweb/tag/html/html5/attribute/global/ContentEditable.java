@@ -51,7 +51,7 @@ public class ContentEditable extends AbstractAttribute
      * @since 1.0.0
      */
     public ContentEditable() {
-        setAttributeValue("false");
+        super.setAttributeValue("false");
     }
 
     /**
@@ -69,7 +69,7 @@ public class ContentEditable extends AbstractAttribute
             throw new InvalidValueException(
                     "the value should be either true or false");
         }
-        setAttributeValue(value);
+        super.setAttributeValue(value);
     }
 
     /**
@@ -79,7 +79,7 @@ public class ContentEditable extends AbstractAttribute
      */
     public ContentEditable(final boolean editable) {
         this.editable = editable;
-        setAttributeValue(String.valueOf(editable));
+        super.setAttributeValue(String.valueOf(editable));
     }
 
     /**
@@ -109,6 +109,6 @@ public class ContentEditable extends AbstractAttribute
      */
     public void setEditable(final boolean editable) {
         this.editable = editable;
-        setAttributeValue(String.valueOf(editable));
+        super.setAttributeValue(String.valueOf(editable));
     }
 }

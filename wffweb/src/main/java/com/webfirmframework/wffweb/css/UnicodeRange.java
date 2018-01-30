@@ -163,7 +163,7 @@ public class UnicodeRange extends AbstractCssProperty<UnicodeRange> {
 
             final String trimmedCssValue = cssValue.trim();
 
-            unicodeChars = cssValue.split(",");
+            unicodeChars = StringUtil.splitByComma(cssValue);
             for (int i = 0; i < unicodeChars.length; i++) {
                 unicodeChars[i] = unicodeChars[i].trim();
             }

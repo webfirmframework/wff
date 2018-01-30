@@ -35,8 +35,8 @@ public enum BackgroundClip implements CssProperty {
 
     BORDER_BOX, PADDING_BOX, CONTENT_BOX, INITIAL, INHERIT;
 
-    private final String upperCaseSuperToString = super.toString().replace("_",
-            "-");
+    private final String upperCaseSuperToString = super.toString().replace('_',
+            '-');
 
     private final String superToString = TagStringUtil
             .toLowerCase(upperCaseSuperToString);
@@ -119,7 +119,7 @@ public enum BackgroundClip implements CssProperty {
      */
     public static BackgroundClip getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         BackgroundClip correspondingObject = null;
         try {

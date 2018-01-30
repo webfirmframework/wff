@@ -34,8 +34,8 @@ public enum Clear implements CssProperty {
 
     NONE, LEFT, RIGHT, BOTH, INITIAL, INHERIT;
 
-    private final String upperCaseSuperToString = super.toString().replace("_",
-            "-");
+    private final String upperCaseSuperToString = super.toString().replace('_',
+            '-');
 
     private final String superToString = TagStringUtil
             .toLowerCase(upperCaseSuperToString);
@@ -118,7 +118,7 @@ public enum Clear implements CssProperty {
      */
     public static Clear getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         Clear correspondingObject = null;
         try {

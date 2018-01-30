@@ -21,6 +21,7 @@ import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.css.CssLengthUnit;
 import com.webfirmframework.wffweb.css.CssNameConstants;
 import com.webfirmframework.wffweb.css.core.AbstractCssProperty;
+import com.webfirmframework.wffweb.util.StringUtil;
 import com.webfirmframework.wffweb.util.TagStringUtil;
 
 /**
@@ -274,7 +275,7 @@ public class Perspective extends AbstractCssProperty<Perspective> {
     public static boolean isValid(final String cssValue) {
         final String trimmedCssValue = TagStringUtil
                 .toLowerCase(cssValue.trim());
-        if (trimmedCssValue.contains(" ")) {
+        if (StringUtil.containsSpace(trimmedCssValue)) {
             return false;
         }
         if (NONE.equals(trimmedCssValue)) {

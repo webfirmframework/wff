@@ -23,6 +23,7 @@ import com.webfirmframework.wffweb.css.core.AbstractCssProperty;
 import com.webfirmframework.wffweb.css.core.CssProperty;
 import com.webfirmframework.wffweb.informer.StateChangeInformer;
 import com.webfirmframework.wffweb.util.StringBuilderUtil;
+import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
  * <pre>
@@ -166,7 +167,7 @@ public class ColumnRule extends AbstractCssProperty<ColumnRule>
                     + " is an invalid value. The value should be any color for example medium none #0000ff. Or, initial/inherit.");
         }
 
-        final String[] cssValueParts = trimmedCssValue.split(" ");
+        final String[] cssValueParts = StringUtil.splitBySpace(trimmedCssValue);
 
         if (cssValueParts.length > 1) {
             ColumnRuleWidth columnRuleWidth = null;

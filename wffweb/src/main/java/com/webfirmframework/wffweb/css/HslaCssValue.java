@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.css;
 
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.data.AbstractBean;
+import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
  *
@@ -82,10 +83,11 @@ public class HslaCssValue extends AbstractBean<HslaCssValue> {
                 && hslStringLowerCase.contains(")")) {
             final String hsl = hslStringLowerCase.replace(",", ", ");
 
-            final String[] hslStringParts = hslStringLowerCase
-                    .substring(hslStringLowerCase.indexOf('(') + 1,
-                            hslStringLowerCase.lastIndexOf(')'))
-                    .split("[,]");
+            final String[] hslStringParts = StringUtil
+                    .splitByComma(hslStringLowerCase.substring(
+                            hslStringLowerCase.indexOf('(')
+                                    + 1,
+                            hslStringLowerCase.lastIndexOf(')')));
 
             if (hslStringParts.length == 4) {
                 h = Integer.parseInt(hslStringParts[0]);
@@ -299,10 +301,10 @@ public class HslaCssValue extends AbstractBean<HslaCssValue> {
             if (hslStringLowerCase.startsWith("hsla(")
                     && hslStringLowerCase.contains(")")) {
 
-                final String[] hslStringParts = hslStringLowerCase
-                        .substring(hslStringLowerCase.indexOf('(') + 1,
-                                hslStringLowerCase.lastIndexOf(')'))
-                        .split("[,]");
+                final String[] hslStringParts = StringUtil
+                        .splitByComma(hslStringLowerCase.substring(
+                                hslStringLowerCase.indexOf('(') + 1,
+                                hslStringLowerCase.lastIndexOf(')')));
 
                 if (hslStringParts.length == 4) {
                     final int r = Integer.parseInt(hslStringParts[0]);

@@ -34,8 +34,8 @@ public enum WhiteSpace implements CssProperty {
 
     NORMAL, NOWRAP, PRE, PRE_LINE, PRE_WRAP, INITIAL, INHERIT;
 
-    private final String upperCaseSuperToString = super.toString().replace("_",
-            "-");
+    private final String upperCaseSuperToString = super.toString().replace('_',
+            '-');
 
     private final String superToString = TagStringUtil
             .toLowerCase(upperCaseSuperToString);
@@ -118,7 +118,7 @@ public enum WhiteSpace implements CssProperty {
      */
     public static WhiteSpace getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         WhiteSpace correspondingObject = null;
         try {

@@ -23,6 +23,7 @@ import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.css.CssNameConstants;
 import com.webfirmframework.wffweb.css.core.AbstractCssProperty;
+import com.webfirmframework.wffweb.util.StringUtil;
 import com.webfirmframework.wffweb.util.TagStringUtil;
 
 /**
@@ -233,14 +234,16 @@ public class WebkitColumnCount extends AbstractCssProperty<WebkitColumnCount> {
     public static boolean isValid(final String cssValue) {
         final String trimmedCssValue = TagStringUtil
                 .toLowerCase(cssValue.trim());
-        if (trimmedCssValue.contains(" ")) {
+        if (StringUtil.containsSpace(trimmedCssValue)) {
             return false;
         }
         try {
             final int parsedValue = Integer.parseInt(trimmedCssValue);
 
-            return (parsedValue == 0 && (trimmedCssValue.contains("-")
-                    || trimmedCssValue.contains("+"))) ? false : true;
+            return (parsedValue == 0
+                    && (StringUtil.containsMinus(trimmedCssValue)
+                            || StringUtil.containsPlus(trimmedCssValue)))
+                                    ? false : true;
         } catch (final NumberFormatException e) {
         }
 

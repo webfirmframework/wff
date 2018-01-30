@@ -212,6 +212,7 @@ import com.webfirmframework.wffweb.informer.StateChangeInformer;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
+import com.webfirmframework.wffweb.util.StringUtil;
 
 // @formatter:off
 /**
@@ -927,7 +928,7 @@ public class Style extends AbstractAttribute
         if (cssName == null) {
             throw new NullValueException("styleName cannot be null");
         }
-        if (cssName.trim().endsWith(":")) {
+        if (StringUtil.endsWithColon(cssName.trim())) {
             throw new InvalidValueException(
                     "cssName can not end with : (colon)");
         }
@@ -942,8 +943,8 @@ public class Style extends AbstractAttribute
                     "value can not start with : (colon) or end with ; (semicolon)");
         }
 
-        final boolean addToAttributeValueMap = addToAttributeValueMap(cssName,
-                cssValue);
+        final boolean addToAttributeValueMap = super.addToAttributeValueMap(
+                cssName, cssValue);
         if (addToAttributeValueMap) {
             getCssProperty(cssName);// to save the corresponding object to
                                     // abstractCssPropertyClassObjects
@@ -965,7 +966,7 @@ public class Style extends AbstractAttribute
         if (important) {
             for (final CssProperty styleValue : cssProperties) {
                 final CssProperty cssProperty = styleValue;
-                final boolean addToAttributeValueMap = addToAttributeValueMap(
+                final boolean addToAttributeValueMap = super.addToAttributeValueMap(
                         cssProperty.getCssName(),
                         styleValue.getCssValue() + " " + IMPORTANT);
 
@@ -981,7 +982,7 @@ public class Style extends AbstractAttribute
 
                 final CssProperty cssProperty = styleValue;
 
-                final boolean addToAttributeValueMap = addToAttributeValueMap(
+                final boolean addToAttributeValueMap = super.addToAttributeValueMap(
                         cssProperty.getCssName(), styleValue.getCssValue());
 
                 if (addToAttributeValueMap
@@ -1075,7 +1076,7 @@ public class Style extends AbstractAttribute
             }
         }
 
-        final boolean addToAttributeValueMap = addToAttributeValueMap(
+        final boolean addToAttributeValueMap = super.addToAttributeValueMap(
                 sameOrCloneCssProperty.getCssName(),
                 sameOrCloneCssProperty.getCssValue());
         if (addToAttributeValueMap
@@ -1117,7 +1118,7 @@ public class Style extends AbstractAttribute
             cssProperties.remove(getCssProperty(cssName));
             fromRemoveCssProperty = false;
         }
-        final boolean removeFromAttributeValueMap = removeFromAttributeValueMap(
+        final boolean removeFromAttributeValueMap = super.removeFromAttributeValueMap(
                 cssName);
         if (removeFromAttributeValueMap) {
             abstractCssPropertyClassObjects.remove(cssName);
@@ -1235,7 +1236,7 @@ public class Style extends AbstractAttribute
         final String trimmedStyleName = styleName.trim();
         final String value = getAttributeValueMap().get(trimmedStyleName);
         if (value != null && !value.isEmpty()) {
-            return addToAttributeValueMap(trimmedStyleName,
+            return super.addToAttributeValueMap(trimmedStyleName,
                     value + " " + IMPORTANT);
         }
         return false;
@@ -1258,7 +1259,7 @@ public class Style extends AbstractAttribute
         final String trimmedStyleName = styleName.trim();
         final String value = getAttributeValueMap().get(trimmedStyleName);
         if (value != null && !value.isEmpty()) {
-            return addToAttributeValueMap(trimmedStyleName,
+            return super.addToAttributeValueMap(trimmedStyleName,
                     value.replace(IMPORTANT, "").trim());
         }
         return false;
@@ -1268,14 +1269,14 @@ public class Style extends AbstractAttribute
         if (styles == null || styles.trim().isEmpty()) {
             return;
         }
-        final String[] stylesArray = styles.split(";");
+        final String[] stylesArray = StringUtil.splitBySemicolon(styles);
         for (final String each : stylesArray) {
             if (!each.trim().isEmpty()) {
-                final String[] styleNameValue = each.split(":");
+                final String[] styleNameValue = StringUtil.splitByColon(each);
                 if (styleNameValue.length == 2
                         && !styleNameValue[0].trim().isEmpty()
                         && !styleNameValue[1].trim().isEmpty()) {
-                    addToAttributeValueMap(styleNameValue[0],
+                    super.addToAttributeValueMap(styleNameValue[0],
                             styleNameValue[1]);
                     getCssProperty(styleNameValue[0]);// to save the
                                                       // corresponding object to
@@ -1372,7 +1373,7 @@ public class Style extends AbstractAttribute
                 && (value = getAttributeValueMap().get(cssName)) != null) {
 
             value = value.toUpperCase().replace(IMPORTANT_UPPERCASE, "")
-                    .replace("-", "_").trim();
+                    .replace('-', '_').trim();
 
             final CssProperty cssProperty = (CssProperty) Enum
                     .valueOf(classClass, value);
@@ -1463,7 +1464,7 @@ public class Style extends AbstractAttribute
             synchronized (this) {
                 if (!clearOnlyInCssProperties) {
                     abstractCssPropertyClassObjects.clear();
-                    removeAllFromAttributeValueMap();
+                    Style.super.removeAllFromAttributeValueMap();
                 }
                 super.clear();
             }
@@ -1515,7 +1516,7 @@ public class Style extends AbstractAttribute
 
     @Override
     public void stateChanged(final CssProperty stateChangedObject) {
-        addToAttributeValueMap(stateChangedObject.getCssName(),
+        super.addToAttributeValueMap(stateChangedObject.getCssName(),
                 stateChangedObject.getCssValue());
     }
 

@@ -35,8 +35,8 @@ public enum WordWrap implements CssProperty {
 
     NORMAL, BREAK_WORD, INITIAL, INHERIT;
 
-    private final String upperCaseSuperToString = super.toString().replace("_",
-            "-");
+    private final String upperCaseSuperToString = super.toString().replace('_',
+            '-');
 
     private final String superToString = TagStringUtil
             .toLowerCase(upperCaseSuperToString);
@@ -119,7 +119,7 @@ public enum WordWrap implements CssProperty {
      */
     public static WordWrap getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         WordWrap correspondingObject = null;
         try {

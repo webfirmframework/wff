@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.css;
 
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.data.AbstractBean;
+import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
  *
@@ -75,10 +76,11 @@ public class RgbCssValue extends AbstractBean<RgbCssValue> {
                 && rgbStringLowerCase.contains(")")) {
             final String rgb = rgbStringLowerCase.replace(",", ", ");
 
-            final String[] rgbStringParts = rgbStringLowerCase
-                    .substring(rgbStringLowerCase.indexOf('(') + 1,
-                            rgbStringLowerCase.lastIndexOf(')'))
-                    .split("[,]");
+            final String[] rgbStringParts = StringUtil
+                    .splitByComma(rgbStringLowerCase.substring(
+                            rgbStringLowerCase.indexOf('(')
+                                    + 1,
+                            rgbStringLowerCase.lastIndexOf(')')));
 
             if (rgbStringParts.length == 3) {
                 r = Integer.parseInt(rgbStringParts[0]);
@@ -204,10 +206,10 @@ public class RgbCssValue extends AbstractBean<RgbCssValue> {
             if (rgbStringLowerCase.startsWith("rgb(")
                     && rgbStringLowerCase.contains(")")) {
 
-                final String[] rgbStringParts = rgbStringLowerCase
-                        .substring(rgbStringLowerCase.indexOf('(') + 1,
-                                rgbStringLowerCase.lastIndexOf(')'))
-                        .split("[,]");
+                final String[] rgbStringParts = StringUtil
+                        .splitByComma(rgbStringLowerCase.substring(
+                                rgbStringLowerCase.indexOf('(') + 1,
+                                rgbStringLowerCase.lastIndexOf(')')));
 
                 if (rgbStringParts.length == 3) {
                     final int r = Integer.parseInt(rgbStringParts[0]);

@@ -16,7 +16,11 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute;
 
-import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractValueSetAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.AreaAttributable;
 
@@ -33,7 +37,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.AreaAttributable;
  * @since 1.0.0
  *
  */
-public class Rel extends AbstractAttribute
+public class Rel extends AbstractValueSetAttribute
         implements AAttributable, AreaAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
@@ -130,7 +134,7 @@ public class Rel extends AbstractAttribute
      * @author WFF
      */
     public Rel(final String value) {
-        setAttributeValue(value);
+        super.addAllToAttributeValueSet(value);
     }
 
     /**
@@ -142,11 +146,7 @@ public class Rel extends AbstractAttribute
      * @author WFF
      */
     public Rel(final String... values) {
-        String finalValue = "";
-        for (final String value : values) {
-            finalValue = finalValue.concat(" ").concat(value.trim());
-        }
-        setAttributeValue(finalValue.trim());
+        super.addAllToAttributeValueSet(values);
     }
 
     /**
@@ -162,22 +162,6 @@ public class Rel extends AbstractAttribute
     }
 
     /**
-     * sets the value for this attribute
-     *
-     * @param updateClient
-     *            true to update client browser page if it is available. The
-     *            default value is true but it will be ignored if there is no
-     *            client browser page.
-     * @param value
-     *            the value for the attribute.
-     * @since 2.1.15
-     * @author WFF
-     */
-    public void setValue(final boolean updateClient, final String value) {
-        super.setAttributeValue(updateClient, value);
-    }
-
-    /**
      * gets the value of this attribute
      *
      * @return the value of the attribute
@@ -189,6 +173,59 @@ public class Rel extends AbstractAttribute
     }
 
     /**
+     * @return a new copy of set of values
+     * @since 2.1.15
+     * @author WFF
+     */
+    public Set<String> getValueSet() {
+        return new LinkedHashSet<String>(super.getAttributeValueSet());
+    }
+
+    /**
+     * removes the value
+     *
+     * @param value
+     * @since 2.1.15
+     * @author WFF
+     */
+    public void removeValue(final String value) {
+        super.removeFromAttributeValueSet(value);
+    }
+
+    /**
+     * removes the values
+     *
+     * @param values
+     * @since 2.1.15
+     * @author WFF
+     */
+    public void removeValues(final Collection<String> values) {
+        super.removeAllFromAttributeValueSet(values);
+    }
+
+    /**
+     * adds the values to the last
+     *
+     * @param values
+     * @since 2.1.15
+     * @author WFF
+     */
+    public void addValues(final Collection<String> values) {
+        super.addAllToAttributeValueSet(values);
+    }
+
+    /**
+     * adds the value to the last
+     *
+     * @param value
+     * @since 2.1.15
+     * @author WFF
+     */
+    public void addValue(final String value) {
+        super.addToAttributeValueSet(value);
+    }
+
+    /**
      * invokes only once per object
      *
      * @author WFF
@@ -196,6 +233,10 @@ public class Rel extends AbstractAttribute
      */
     protected void init() {
         // to override and use this method
+    }
+
+    public void setValue(final boolean updateClient, final String value) {
+        super.setAttributeValue(updateClient, value);
     }
 
 }

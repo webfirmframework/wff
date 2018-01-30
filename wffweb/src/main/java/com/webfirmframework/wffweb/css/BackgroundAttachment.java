@@ -34,8 +34,8 @@ public enum BackgroundAttachment implements CssProperty {
 
     SCROLL, FIXED, LOCAL, INITIAL, INHERIT;
 
-    private final String upperCaseSuperToString = super.toString().replace("_",
-            "-");
+    private final String upperCaseSuperToString = super.toString().replace('_',
+            '-');
 
     private final String superToString = TagStringUtil
             .toLowerCase(upperCaseSuperToString);
@@ -118,7 +118,7 @@ public enum BackgroundAttachment implements CssProperty {
      */
     public static BackgroundAttachment getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         BackgroundAttachment correspondingObject = null;
         try {

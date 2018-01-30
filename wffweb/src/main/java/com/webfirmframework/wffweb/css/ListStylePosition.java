@@ -34,8 +34,8 @@ public enum ListStylePosition implements CssProperty {
 
     INSIDE, OUTSIDE, INITIAL, INHERIT;
 
-    private final String upperCaseSuperToString = super.toString().replace("_",
-            "-");
+    private final String upperCaseSuperToString = super.toString().replace('_',
+            '-');
 
     private final String superToString = TagStringUtil
             .toLowerCase(upperCaseSuperToString);
@@ -118,7 +118,7 @@ public enum ListStylePosition implements CssProperty {
      */
     public static ListStylePosition getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         ListStylePosition correspondingObject = null;
         try {

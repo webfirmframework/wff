@@ -235,7 +235,8 @@ public class BorderWidth extends AbstractCssProperty<BorderWidth>
             final String borderWidthString = StringUtil
                     .convertToSingleSpace(trimmedCssValue);
 
-            final String[] extractedWidths = borderWidthString.split(" ");
+            final String[] extractedWidths = StringUtil
+                    .splitBySpace(borderWidthString);
 
             if (extractedWidths.length == 1) {
                 if (borderTopWidth == null) {
@@ -748,7 +749,7 @@ public class BorderWidth extends AbstractCssProperty<BorderWidth>
      */
     public static boolean isValid(final String cssValue) {
         final String trimmedCssValue = cssValue.trim().toLowerCase();
-        final String[] cssValueParts = trimmedCssValue.split(" ");
+        final String[] cssValueParts = StringUtil.splitBySpace(trimmedCssValue);
         if (cssValueParts.length > 4) {
             return false;
         }

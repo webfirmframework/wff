@@ -44,7 +44,7 @@ public class Id extends AbstractAttribute implements GlobalAttributable {
      * @author WFF
      */
     public Id() {
-        setAttributeValue("");
+        super.setAttributeValue("");
     }
 
     /**
@@ -55,7 +55,7 @@ public class Id extends AbstractAttribute implements GlobalAttributable {
      * @author WFF
      */
     public Id(final String value) {
-        setAttributeValue(value);
+        super.setAttributeValue(value);
     }
 
     /**
@@ -67,7 +67,7 @@ public class Id extends AbstractAttribute implements GlobalAttributable {
      */
     public Id(final UUID uuid) {
         this.uuid = uuid;
-        setAttributeValue(uuid.toString());
+        super.setAttributeValue(uuid.toString());
     }
 
     /**
@@ -78,7 +78,7 @@ public class Id extends AbstractAttribute implements GlobalAttributable {
      * @author WFF
      */
     public Id(final int value) {
-        setAttributeValue(String.valueOf(value));
+        super.setAttributeValue(String.valueOf(value));
     }
 
     /**
@@ -89,7 +89,7 @@ public class Id extends AbstractAttribute implements GlobalAttributable {
      * @author WFF
      */
     public Id(final float value) {
-        setAttributeValue(String.valueOf(value));
+        super.setAttributeValue(String.valueOf(value));
     }
 
     /**
@@ -100,7 +100,7 @@ public class Id extends AbstractAttribute implements GlobalAttributable {
      * @author WFF
      */
     public Id(final long value) {
-        setAttributeValue(String.valueOf(value));
+        super.setAttributeValue(String.valueOf(value));
     }
 
     /**
@@ -111,7 +111,7 @@ public class Id extends AbstractAttribute implements GlobalAttributable {
      * @author WFF
      */
     public Id(final double value) {
-        setAttributeValue(String.valueOf(value));
+        super.setAttributeValue(String.valueOf(value));
     }
 
     /**
@@ -133,7 +133,7 @@ public class Id extends AbstractAttribute implements GlobalAttributable {
      */
     public void setValue(final String id) {
         if (id != null) {
-            setAttributeValue(id);
+            super.setAttributeValue(id);
             uuid = null;
         }
     }
@@ -146,7 +146,7 @@ public class Id extends AbstractAttribute implements GlobalAttributable {
      * @author WFF
      */
     public void setValue(final int id) {
-        setAttributeValue(String.valueOf(id));
+        super.setAttributeValue(String.valueOf(id));
         uuid = null;
     }
 
@@ -158,7 +158,7 @@ public class Id extends AbstractAttribute implements GlobalAttributable {
      * @author WFF
      */
     public void setValue(final long id) {
-        setAttributeValue(String.valueOf(id));
+        super.setAttributeValue(String.valueOf(id));
         uuid = null;
     }
 
@@ -170,7 +170,7 @@ public class Id extends AbstractAttribute implements GlobalAttributable {
      * @author WFF
      */
     public void setValue(final float id) {
-        setAttributeValue(String.valueOf(id));
+        super.setAttributeValue(String.valueOf(id));
         uuid = null;
     }
 
@@ -182,7 +182,7 @@ public class Id extends AbstractAttribute implements GlobalAttributable {
      * @author WFF
      */
     public void setValue(final double id) {
-        setAttributeValue(String.valueOf(id));
+        super.setAttributeValue(String.valueOf(id));
         uuid = null;
     }
 
@@ -195,7 +195,7 @@ public class Id extends AbstractAttribute implements GlobalAttributable {
      */
     public void setValue(final UUID uuid) {
         if (uuid != null) {
-            setAttributeValue(uuid.toString());
+            super.setAttributeValue(uuid.toString());
             this.uuid = uuid;
         }
     }
@@ -206,7 +206,7 @@ public class Id extends AbstractAttribute implements GlobalAttributable {
      * @author WFF
      */
     public String getValue() {
-        return getAttributeValue();
+        return super.getAttributeValue();
     }
 
     /**
@@ -228,7 +228,7 @@ public class Id extends AbstractAttribute implements GlobalAttributable {
      * @author WFF
      */
     public void setUuid(final UUID uuid) {
-        setAttributeValue(uuid.toString());
+        super.setAttributeValue(uuid.toString());
         this.uuid = uuid;
     }
 }

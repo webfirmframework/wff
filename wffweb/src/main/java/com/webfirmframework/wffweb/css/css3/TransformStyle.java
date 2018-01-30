@@ -35,8 +35,8 @@ public enum TransformStyle implements CssProperty {
 
     FLAT, PRESERVE_3D, INITIAL, INHERIT;
 
-    private final String upperCaseSuperToString = super.toString().replace("_",
-            "-");
+    private final String upperCaseSuperToString = super.toString().replace('_',
+            '-');
 
     private final String superToString = TagStringUtil
             .toLowerCase(upperCaseSuperToString);
@@ -128,7 +128,7 @@ public enum TransformStyle implements CssProperty {
      */
     public static TransformStyle getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         TransformStyle correspondingObject = null;
         try {

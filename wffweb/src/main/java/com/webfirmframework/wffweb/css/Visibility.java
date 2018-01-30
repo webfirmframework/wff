@@ -34,8 +34,8 @@ public enum Visibility implements CssProperty {
 
     VISIBLE, HIDDEN, COLLAPSE, INITIAL, INHERIT;
 
-    private final String upperCaseSuperToString = super.toString().replace("_",
-            "-");
+    private final String upperCaseSuperToString = super.toString().replace('_',
+            '-');
 
     private final String superToString = TagStringUtil
             .toLowerCase(upperCaseSuperToString);
@@ -118,7 +118,7 @@ public enum Visibility implements CssProperty {
      */
     public static Visibility getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         Visibility correspondingObject = null;
         try {

@@ -23,6 +23,7 @@ import com.webfirmframework.wffweb.css.core.AbstractCssProperty;
 import com.webfirmframework.wffweb.css.core.CssProperty;
 import com.webfirmframework.wffweb.informer.StateChangeInformer;
 import com.webfirmframework.wffweb.util.StringBuilderUtil;
+import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
  * <pre>
@@ -166,7 +167,8 @@ public class MozColumnRule extends AbstractCssProperty<MozColumnRule>
         } else {
 
             final String trimmedCssValue = cssValue.trim();
-            final String[] cssValueParts = trimmedCssValue.split(" ");
+            final String[] cssValueParts = StringUtil
+                    .splitBySpace(trimmedCssValue);
 
             if (cssValueParts.length > 1) {
                 MozColumnRuleWidth mozColumnRuleWidth = null;

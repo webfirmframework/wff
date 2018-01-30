@@ -34,8 +34,8 @@ public enum FloatCss implements CssProperty {
 
     NONE, LEFT, RIGHT, INITIAL, INHERIT;
 
-    private final String upperCaseSuperToString = super.toString().replace("_",
-            "-");
+    private final String upperCaseSuperToString = super.toString().replace('_',
+            '-');
 
     private final String superToString = TagStringUtil
             .toLowerCase(upperCaseSuperToString);
@@ -118,7 +118,7 @@ public enum FloatCss implements CssProperty {
      */
     public static FloatCss getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         FloatCss correspondingObject = null;
         try {

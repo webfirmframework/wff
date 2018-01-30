@@ -35,8 +35,8 @@ public enum ColumnFill implements CssProperty {
 
     BALANCE, AUTO, INITIAL, INHERIT;
 
-    private final String upperCaseSuperToString = super.toString().replace("_",
-            "-");
+    private final String upperCaseSuperToString = super.toString().replace('_',
+            '-');
 
     private final String superToString = TagStringUtil
             .toLowerCase(upperCaseSuperToString);
@@ -119,7 +119,7 @@ public enum ColumnFill implements CssProperty {
      */
     public static ColumnFill getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         ColumnFill correspondingObject = null;
         try {

@@ -37,11 +37,11 @@ public class AccessKey extends AbstractAttribute implements GlobalAttributable {
     }
 
     public AccessKey() {
-        setAttributeValue("");
+        super.setAttributeValue("");
     }
 
     public AccessKey(final String value) {
-        setAttributeValue(value);
+        super.setAttributeValue(value);
     }
 
     /**
@@ -60,7 +60,7 @@ public class AccessKey extends AbstractAttribute implements GlobalAttributable {
      * @author WFF
      */
     public String getAccessKey() {
-        return getAttributeValue();
+        return super.getAttributeValue();
     }
 
     /**
@@ -70,7 +70,7 @@ public class AccessKey extends AbstractAttribute implements GlobalAttributable {
      * @author WFF
      */
     public void setAccessKey(final String accessKey) {
-        setAttributeValue(accessKey);
+        super.setAttributeValue(accessKey);
     }
 
 }

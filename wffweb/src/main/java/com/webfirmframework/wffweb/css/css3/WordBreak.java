@@ -35,8 +35,8 @@ public enum WordBreak implements CssProperty {
 
     NORMAL, BREAK_ALL, KEEP_ALL, INITIAL, INHERIT;
 
-    private final String upperCaseSuperToString = super.toString().replace("_",
-            "-");
+    private final String upperCaseSuperToString = super.toString().replace('_',
+            '-');
 
     private final String superToString = TagStringUtil
             .toLowerCase(upperCaseSuperToString);
@@ -119,7 +119,7 @@ public enum WordBreak implements CssProperty {
      */
     public static WordBreak getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         WordBreak correspondingObject = null;
         try {

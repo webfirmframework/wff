@@ -38,8 +38,8 @@ public enum WebkitColumnRuleStyle implements CssProperty {
 
     NONE, HIDDEN, DOTTED, DASHED, SOLID, DOUBLE, GROOVE, RIDGE, INSET, OUTSET, INITIAL, INHERIT;
 
-    private final String upperCaseSuperToString = super.toString().replace("_",
-            "-");
+    private final String upperCaseSuperToString = super.toString().replace('_',
+            '-');
 
     private final String superToString = TagStringUtil
             .toLowerCase(upperCaseSuperToString);
@@ -131,7 +131,7 @@ public enum WebkitColumnRuleStyle implements CssProperty {
      */
     public static WebkitColumnRuleStyle getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         WebkitColumnRuleStyle correspondingObject = null;
         try {

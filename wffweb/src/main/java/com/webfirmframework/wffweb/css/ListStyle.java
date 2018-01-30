@@ -27,6 +27,7 @@ import com.webfirmframework.wffweb.css.core.AbstractCssProperty;
 import com.webfirmframework.wffweb.css.core.CssProperty;
 import com.webfirmframework.wffweb.informer.StateChangeInformer;
 import com.webfirmframework.wffweb.util.StringBuilderUtil;
+import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
  * list-style: list-style-type list-style-position
@@ -146,7 +147,7 @@ public class ListStyle extends AbstractCssProperty<ListStyle>
                     + " is an invalid value. The value format should be as for example cjk-ideographic inside url(\"Sqpurple.gif\"). Or, initial/inherit.");
         }
 
-        final String[] cssValueParts = trimmedCssValue.split(" ");
+        final String[] cssValueParts = StringUtil.splitBySpace(trimmedCssValue);
 
         if (cssValueParts.length > 1) {
             if (trimmedCssValue.contains(ListStyleImage.INITIAL)) {
@@ -245,7 +246,7 @@ public class ListStyle extends AbstractCssProperty<ListStyle>
             return false;
         }
 
-        final String[] cssValueParts = cssValue.split(" ");
+        final String[] cssValueParts = StringUtil.splitBySpace(cssValue);
 
         ListStyleType listStyleType = null;
         ListStylePosition listStylePosition = null;

@@ -35,8 +35,8 @@ public enum TextDecorationStyle implements CssProperty {
 
     SOLID, DOUBLE, DOTTED, DASHED, WAVY, INITIAL, INHERIT;
 
-    private final String upperCaseSuperToString = super.toString().replace("_",
-            "-");
+    private final String upperCaseSuperToString = super.toString().replace('_',
+            '-');
 
     private final String superToString = TagStringUtil
             .toLowerCase(upperCaseSuperToString);
@@ -128,7 +128,7 @@ public enum TextDecorationStyle implements CssProperty {
      */
     public static TextDecorationStyle getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         TextDecorationStyle correspondingObject = null;
         try {

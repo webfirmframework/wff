@@ -16,21 +16,23 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute.global;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
-import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractValueSetAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
-import com.webfirmframework.wffweb.util.StringBuilderUtil;
+import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
  * @author WFF
  *
  */
-public class ClassAttribute extends AbstractAttribute
+public class ClassAttribute extends AbstractValueSetAttribute
         implements GlobalAttributable {
 
     /**
@@ -52,21 +54,7 @@ public class ClassAttribute extends AbstractAttribute
      * @param classNames
      */
     public ClassAttribute(final String... classNames) {
-        if (classNames != null) {
-            /*
-             * should not call addClassNames(final String className) instead of
-             * the below duplicate code since the addClassNames method may be
-             * overridden by the extended class.
-             */
-            for (final String className : classNames) {
-                String trimmmedValue = null;
-                if (className != null
-                        && !(trimmmedValue = className.trim()).isEmpty()) {
-                    final String[] values = trimmmedValue.split(" ");
-                    addAllToAttributeValueSet(Arrays.asList(values));
-                }
-            }
-        }
+        super.addAllToAttributeValueSet(classNames);
     }
 
     /**
@@ -89,16 +77,7 @@ public class ClassAttribute extends AbstractAttribute
      * @author WFF
      */
     public void addClassNames(final String... classNames) {
-        if (classNames != null) {
-            for (final String className : classNames) {
-                String trimmmedValue = null;
-                if (className != null
-                        && !(trimmmedValue = className.trim()).isEmpty()) {
-                    final String[] values = trimmmedValue.split(" ");
-                    addAllToAttributeValueSet(Arrays.asList(values));
-                }
-            }
-        }
+        super.addAllToAttributeValueSet(classNames);
     }
 
     /**
@@ -113,15 +92,20 @@ public class ClassAttribute extends AbstractAttribute
     public void addNewClassNames(final String... classNames) {
 
         if (classNames != null) {
+            final List<String> allValues = new ArrayList<String>(
+                    classNames.length);
             for (final String className : classNames) {
                 String trimmmedValue = null;
                 if (className != null
                         && !(trimmmedValue = className.trim()).isEmpty()) {
-                    final String[] values = trimmmedValue.split(" ");
-                    removeAllFromAttributeValueSet();
-                    addAllToAttributeValueSet(Arrays.asList(values));
+                    // As per Collections.addAll's doc it is faster than
+                    // allValues.addAll(Arrays.asList(values));
+                    Collections.addAll(allValues,
+                            StringUtil.splitBySpace(trimmmedValue));
                 }
             }
+            super.removeAllFromAttributeValueSet();
+            super.addAllToAttributeValueSet(allValues);
         }
     }
 
@@ -133,7 +117,7 @@ public class ClassAttribute extends AbstractAttribute
      * @author WFF
      */
     public void addAllClassNames(final Collection<String> classNames) {
-        addAllToAttributeValueSet(classNames);
+        super.addAllToAttributeValueSet(classNames);
     }
 
     /**
@@ -145,7 +129,7 @@ public class ClassAttribute extends AbstractAttribute
      * @author WFF
      */
     public void removeAllClassNames(final Collection<String> classNames) {
-        removeAllFromAttributeValueSet(classNames);
+        super.removeAllFromAttributeValueSet(classNames);
     }
 
     /**
@@ -157,7 +141,7 @@ public class ClassAttribute extends AbstractAttribute
      * @author WFF
      */
     public void removeClassName(final String className) {
-        removeFromAttributeValueSet(className);
+        super.removeFromAttributeValueSet(className);
     }
 
     /**
@@ -167,13 +151,7 @@ public class ClassAttribute extends AbstractAttribute
      */
     @Override
     public String getAttributeValue() {
-
-        final StringBuilder builder = new StringBuilder();
-        for (final String className : getAttributeValueSet()) {
-            builder.append(className).append(' ');
-        }
-
-        return StringBuilderUtil.getTrimmedString(builder);
+        return super.getAttributeValue();
     }
 
     /**
@@ -186,6 +164,24 @@ public class ClassAttribute extends AbstractAttribute
      * @author WFF
      */
     public Set<String> getClassNames() {
-        return new LinkedHashSet<String>(getAttributeValueSet());
+        return new LinkedHashSet<String>(super.getAttributeValueSet());
     }
+
+    /**
+     * sets the value for this attribute
+     *
+     *
+     * @param value
+     *            the value for the attribute.
+     * @since 2.1.15
+     * @author WFF
+     */
+    public void setValue(final String value) {
+        super.setAttributeValue(value);
+    }
+
+    public void setValue(final boolean updateClient, final String value) {
+        super.setAttributeValue(updateClient, value);
+    }
+
 }

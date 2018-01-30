@@ -21,7 +21,7 @@ package com.webfirmframework.wffweb.security.object;
  * @author WFF
  *
  */
-public class SecurityClassConstants {
+public final class SecurityClassConstants {
 
     public static final String ABSTRACT_JS_OBJECT = "com.webfirmframework.wffweb.tag.core.AbstractJsObject$Security";
 

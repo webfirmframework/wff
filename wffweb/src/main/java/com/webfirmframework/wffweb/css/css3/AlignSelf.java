@@ -46,8 +46,8 @@ public enum AlignSelf implements CssProperty {
 
     AUTO, STRETCH, CENTER, FLEX_START, FLEX_END, BASELINE, INITIAL, INHERIT;
 
-    private final String upperCaseSuperToString = super.toString().replace("_",
-            "-");
+    private final String upperCaseSuperToString = super.toString().replace('_',
+            '-');
 
     private final String superToString = TagStringUtil
             .toLowerCase(upperCaseSuperToString);
@@ -139,7 +139,7 @@ public enum AlignSelf implements CssProperty {
      */
     public static AlignSelf getThis(final String cssValue) {
         final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace("-", "_");
+                .replace('-', '_');
 
         AlignSelf correspondingObject = null;
         try {

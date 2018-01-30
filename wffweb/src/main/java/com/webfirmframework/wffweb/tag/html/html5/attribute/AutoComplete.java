@@ -16,8 +16,12 @@
  */
 package com.webfirmframework.wffweb.tag.html.html5.attribute;
 
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
-import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractValueSetAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 
 /**
@@ -94,12 +98,209 @@ import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
  * @author WFF
  * @since 1.0.0
  */
-public class AutoComplete extends AbstractAttribute
+public class AutoComplete extends AbstractValueSetAttribute
         implements InputAttributable {
 
     public static final String ON = "on";
 
     public static final String OFF = "off";
+
+    /**
+     * Eg:- Full name
+     */
+    public static final String NAME = "name";
+
+    /**
+     * Prefix or title (e.g. "Mr.", "Ms.", "Dr.", "Mlle").
+     */
+    public static final String HONORIFIC_PREFIX = "honorific-prefix";
+
+    /**
+     * First name
+     */
+    public static final String GIVEN_NAME = "given-name";
+
+    /**
+     * Middle name
+     */
+    public static final String ADDITIONAL_NAME = "additional-name";
+
+    /**
+     * Last name
+     */
+    public static final String FAMILY_NAME = "family-name";
+
+    /**
+     * Suffix (e.g. "Jr.", "B.Sc.", "MBASW", "II").
+     */
+    public static final String HONORIFIC_SUFFIX = "honorific-suffix";
+
+    public static final String NICKNAME = "nickname";
+
+    public static final String EMAIL = "email";
+
+    public static final String USERNAME = "username";
+
+    /**
+     * A new password (e.g. when creating an account or changing a password).
+     */
+    public static final String NEW_PASSWORD = "new-password";
+
+    public static final String CURRENT_PASSWORD = "current-password";
+
+    /**
+     * Job title (e.g. "Software Engineer", "Senior Vice President", "Deputy
+     * Managing Director").
+     */
+    public static final String ORGANIZATION_TITLE = "organization-title";
+
+    public static final String ORGANIZATION = "organization";
+
+    public static final String STREET_ADDRESS = "street-address";
+
+    public static final String ADDRESS_LINE1 = "address-line1";
+
+    public static final String ADDRESS_LINE2 = "address-line2";
+
+    public static final String ADDRESS_LINE3 = "address-line3";
+
+    public static final String ADDRESS_LEVEL4 = "address-level4";
+
+    public static final String ADDRESS_LEVEL3 = "address-level3";
+
+    public static final String ADDRESS_LEVEL2 = "address-level2";
+
+    public static final String ADDRESS_LEVEL1 = "address-level1";
+
+    public static final String COUNTRY = "country";
+
+    public static final String COUNTRY_NAME = "country-name";
+
+    public static final String POSTAL_CODE = "postal-code";
+
+    /**
+     * Full name as given on the payment instrument.
+     */
+    public static final String CC_NAME = "cc-name";
+
+    public static final String CC_GIVEN_NAME = "cc-given-name";
+
+    public static final String CC_ADDITIONAL_NAME = "cc-additional-name";
+
+    public static final String CC_FAMILY_NAME = "cc-family-name";
+
+    /**
+     * Code identifying the payment instrument (e.g. the credit card number).
+     */
+    public static final String CC_NUMBER = "cc-number";
+
+    /**
+     * Expiration date of the payment instrument.
+     */
+    public static final String CC_EXP = "cc-exp";
+
+    public static final String CC_EXP_MONTH = "cc-exp-month";
+
+    public static final String CC_EXP_YEAR = "cc-exp-year";
+
+    /**
+     * Security code for the payment instrument.
+     */
+    public static final String CC_CSC = "cc-csc";
+
+    /**
+     * Type of payment instrument (e.g. Visa).
+     */
+    public static final String CC_TYPE = "cc-type";
+
+    public static final String TRANSACTION_CURRENCY = "transaction-currency";
+
+    public static final String TRANSACTION_AMOUNT = "transaction-amount";
+
+    /**
+     * Preferred language; a valid BCP 47 language tag.
+     */
+    public static final String LANGUAGE = "language";
+
+    /**
+     * birthday
+     */
+    public static final String BDAY = "bday";
+
+    public static final String BDAY_DAY = "bday-day";
+
+    public static final String BDAY_MONTH = "bday-month";
+
+    public static final String BDAY_YEAR = "bday-year";
+
+    /**
+     * Gender identity (e.g. Female, Fa'afafine), free-form text, no newlines.
+     */
+    public static final String SEX = "sex";
+
+    /**
+     * full telephone number, including country code
+     */
+    public static final String TEL = "tel";
+
+    public static final String TEL_COUNTRY_CODE = "tel-country-code";
+
+    public static final String TEL_NATIONAL = "tel-national";
+
+    public static final String TEL_AREA_CODE = "tel-area-code";
+
+    public static final String TEL_LOCAL = "tel-local";
+
+    public static final String TEL_LOCAL_PREFIX = "tel-local-prefix";
+
+    public static final String TEL_LOCAL_SUFFIX = "tel-local-suffix";
+
+    public static final String TEL_EXTENSION = "tel-extension";
+
+    /**
+     * Home page or other Web page corresponding to the company, person,
+     * address, or contact information in the other fields associated with this
+     * field.
+     */
+    public static final String URL = "url";
+
+    /**
+     * Photograph, icon, or other image corresponding to the company, person,
+     * address, or contact information in the other fields associated with this
+     * field.
+     */
+    public static final String PHOTO = "photo";
+
+    /**
+     * URL representing an instant messaging protocol endpoint (for example,
+     * "aim:goim?screenname=example" or "xmpp:fred@example.net")
+     */
+    public static final String IMPP = "impp";
+
+    /**
+     * the field is for contacting someone at their residence
+     */
+    public static final String HOME = "home";
+
+    /**
+     * the field is for contacting someone at their workplace
+     */
+    public static final String WORK = "work";
+
+    /**
+     * the field is for contacting someone regardless of location
+     */
+    public static final String MOBILE = "mobile";
+
+    /**
+     * the field describes a fax machine's contact details
+     */
+    public static final String FAX = "fax";
+
+    /**
+     * the field describes a pager's or beeper's contact details
+     */
+    public static final String PAGER = "pager";
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -110,12 +311,76 @@ public class AutoComplete extends AbstractAttribute
 
     /**
      *
+     * @since 2.1.15
+     * @author WFF
+     */
+    public AutoComplete() {
+    }
+
+    /**
+     *
      * @param value
-     *            the value for the attribute
+     *            the value for the attribute. The value string can contain
+     *            values separated by space.
      * @since 1.0.0
      */
     public AutoComplete(final String value) {
-        setAttributeValue(value);
+        super.addAllToAttributeValueSet(value);
+    }
+
+    /**
+     *
+     * @param value
+     *            the value for the attribute. The value string can contain
+     *            values separated by space.
+     * @since 2.1.15
+     */
+    public AutoComplete(final String... values) {
+        super.addAllToAttributeValueSet(values);
+    }
+
+    /**
+     * removes the value
+     *
+     * @param value
+     * @since 2.1.15
+     * @author WFF
+     */
+    public void removeValue(final String value) {
+        super.removeFromAttributeValueSet(value);
+    }
+
+    /**
+     * removes the values
+     *
+     * @param values
+     * @since 2.1.15
+     * @author WFF
+     */
+    public void removeValues(final Collection<String> values) {
+        super.removeAllFromAttributeValueSet(values);
+    }
+
+    /**
+     * adds the values to the last
+     *
+     * @param values
+     * @since 2.1.15
+     * @author WFF
+     */
+    public void addValues(final Collection<String> values) {
+        super.addAllToAttributeValueSet(values);
+    }
+
+    /**
+     * adds the value to the last
+     *
+     * @param value
+     * @since 2.1.15
+     * @author WFF
+     */
+    public void addValue(final String value) {
+        super.addToAttributeValueSet(value);
     }
 
     /**
@@ -141,8 +406,9 @@ public class AutoComplete extends AbstractAttribute
      * @since 2.1.15
      * @author WFF
      */
-    public void setValue(final boolean updateClient, final String value) {
-        super.setAttributeValue(updateClient, value);
+    public void setValue(final boolean updateClient,
+            final String attributeValue) {
+        super.setAttributeValue(updateClient, attributeValue);
     }
 
     /**
@@ -153,6 +419,15 @@ public class AutoComplete extends AbstractAttribute
      */
     public String getValue() {
         return super.getAttributeValue();
+    }
+
+    /**
+     * @return a new copy of set of values
+     * @since 2.1.15
+     * @author WFF
+     */
+    public Set<String> getValueSet() {
+        return new LinkedHashSet<String>(super.getAttributeValueSet());
     }
 
     /**

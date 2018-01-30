@@ -23,7 +23,6 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
@@ -488,7 +487,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
     private void initSharedObject(final AbstractHtml child) {
 
         final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<Set<AbstractHtml>>();
-        childrenStack.push(new HashSet<AbstractHtml>(Arrays.asList(child)));
+        final Set<AbstractHtml> initialSet = new HashSet<AbstractHtml>(1);
+        initialSet.add(child);
+        childrenStack.push(initialSet);
 
         while (childrenStack.size() > 0) {
 
@@ -1235,9 +1236,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 if (tagBuilder.length() > 0) {
                     tagBuilder.delete(0, tagBuilder.length());
                 }
-                recurChildren(tagBuilder,
-                        new LinkedHashSet<AbstractHtml>(Arrays.asList(this)),
-                        true);
+                final Set<AbstractHtml> localChildren = new LinkedHashSet<AbstractHtml>(
+                        1);
+                localChildren.add(this);
+                recurChildren(tagBuilder, localChildren, true);
                 setRebuild(false);
                 tagBuilder.trimToSize();
             }
@@ -1256,8 +1258,11 @@ public abstract class AbstractHtml extends AbstractJsObject {
             final OutputStream os, final boolean rebuild) throws IOException {
         beforeWritePrintStructureToOutputStream();
         final int[] totalWritten = { 0 };
-        recurChildrenToOutputStream(totalWritten, charset, os,
-                new LinkedHashSet<AbstractHtml>(Arrays.asList(this)), rebuild);
+        final Set<AbstractHtml> localChildren = new LinkedHashSet<AbstractHtml>(
+                1);
+        localChildren.add(this);
+        recurChildrenToOutputStream(totalWritten, charset, os, localChildren,
+                rebuild);
         return totalWritten[0];
     }
 
@@ -1271,8 +1276,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
     protected void writePrintStructureToWffBinaryMessageOutputStream(
             final boolean rebuild) throws IOException {
         beforeWritePrintStructureToWffBinaryMessageOutputStream();
-        recurChildrenToWffBinaryMessageOutputStream(
-                new LinkedHashSet<AbstractHtml>(Arrays.asList(this)), true);
+        final Set<AbstractHtml> localChildren = new LinkedHashSet<AbstractHtml>(
+                1);
+        localChildren.add(this);
+        recurChildrenToWffBinaryMessageOutputStream(localChildren, true);
     }
 
     /**
@@ -2471,8 +2478,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
         final AbstractHtml clonedObject = deepClone(this);
 
         final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<Set<AbstractHtml>>();
-        childrenStack.push(
-                new LinkedHashSet<AbstractHtml>(Arrays.asList(clonedObject)));
+        final Set<AbstractHtml> initialSet = new LinkedHashSet<AbstractHtml>(1);
+        initialSet.add(clonedObject);
+        childrenStack.push(initialSet);
 
         while (childrenStack.size() > 0) {
 
@@ -2523,8 +2531,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
         abstractHtml.sharedObject = new AbstractHtml5SharedObject(abstractHtml);
 
         final Deque<Set<AbstractHtml>> removedTagsStack = new ArrayDeque<Set<AbstractHtml>>();
-        removedTagsStack
-                .push(new HashSet<AbstractHtml>(Arrays.asList(abstractHtml)));
+        final HashSet<AbstractHtml> initialSet = new HashSet<AbstractHtml>(1);
+        initialSet.add(abstractHtml);
+        removedTagsStack.push(initialSet);
 
         while (removedTagsStack.size() > 0) {
 
@@ -2574,7 +2583,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
             // ArrayDeque give better performance than Stack, LinkedList
             final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<Set<AbstractHtml>>();
-            childrenStack.push(new HashSet<AbstractHtml>(Arrays.asList(this)));
+            final HashSet<AbstractHtml> initialSet = new HashSet<AbstractHtml>(
+                    1);
+            initialSet.add(this);
+            childrenStack.push(initialSet);
 
             while (childrenStack.size() > 0) {
 
@@ -2990,8 +3002,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
         final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<Set<AbstractHtml>>();
 
         if (includeParents) {
-            childrenStack
-                    .push(new HashSet<AbstractHtml>(Arrays.asList(parents)));
+            final Set<AbstractHtml> parentsSet = new HashSet<AbstractHtml>(
+                    parents.length);
+            Collections.addAll(parentsSet, parents);
+            childrenStack.push(parentsSet);
         } else {
             for (final AbstractHtml parent : parents) {
                 childrenStack.push(parent.children);

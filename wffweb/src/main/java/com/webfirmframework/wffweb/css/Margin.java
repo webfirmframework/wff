@@ -222,7 +222,8 @@ public class Margin extends AbstractCssProperty<Margin>
             final String marginString = StringUtil
                     .convertToSingleSpace(trimmedCssValue);
 
-            final String[] extractedMargins = marginString.split(" ");
+            final String[] extractedMargins = StringUtil
+                    .splitBySpace(marginString);
 
             if (extractedMargins.length == 1) {
                 if (marginTop == null) {
@@ -713,7 +714,7 @@ public class Margin extends AbstractCssProperty<Margin>
             return true;
         }
 
-        final String[] cssValueParts = trimmedCssValue.split(" ");
+        final String[] cssValueParts = StringUtil.splitBySpace(trimmedCssValue);
 
         for (final String eachPart : cssValueParts) {
             final boolean valid = MarginTop.isValid(eachPart);
