@@ -104,8 +104,8 @@ public class ClassAttribute extends AbstractValueSetAttribute
                             StringUtil.splitBySpace(trimmmedValue));
                 }
             }
-            removeAllFromAttributeValueSet();
-            addAllToAttributeValueSet(allValues);
+            super.removeAllFromAttributeValueSet();
+            super.addAllToAttributeValueSet(allValues);
         }
     }
 
@@ -117,7 +117,7 @@ public class ClassAttribute extends AbstractValueSetAttribute
      * @author WFF
      */
     public void addAllClassNames(final Collection<String> classNames) {
-        addAllToAttributeValueSet(classNames);
+        super.addAllToAttributeValueSet(classNames);
     }
 
     /**
@@ -129,7 +129,7 @@ public class ClassAttribute extends AbstractValueSetAttribute
      * @author WFF
      */
     public void removeAllClassNames(final Collection<String> classNames) {
-        removeAllFromAttributeValueSet(classNames);
+        super.removeAllFromAttributeValueSet(classNames);
     }
 
     /**
@@ -141,7 +141,7 @@ public class ClassAttribute extends AbstractValueSetAttribute
      * @author WFF
      */
     public void removeClassName(final String className) {
-        removeFromAttributeValueSet(className);
+        super.removeFromAttributeValueSet(className);
     }
 
     /**
@@ -164,7 +164,7 @@ public class ClassAttribute extends AbstractValueSetAttribute
      * @author WFF
      */
     public Set<String> getClassNames() {
-        return new LinkedHashSet<String>(getAttributeValueSet());
+        return new LinkedHashSet<String>(super.getAttributeValueSet());
     }
 
     /**

@@ -347,7 +347,7 @@ public class AutoComplete extends AbstractValueSetAttribute
      * @author WFF
      */
     public void removeValue(final String value) {
-        removeFromAttributeValueSet(value);
+        super.removeFromAttributeValueSet(value);
     }
 
     /**
@@ -358,7 +358,7 @@ public class AutoComplete extends AbstractValueSetAttribute
      * @author WFF
      */
     public void removeValues(final Collection<String> values) {
-        removeAllFromAttributeValueSet(values);
+        super.removeAllFromAttributeValueSet(values);
     }
 
     /**
@@ -369,7 +369,7 @@ public class AutoComplete extends AbstractValueSetAttribute
      * @author WFF
      */
     public void addValues(final Collection<String> values) {
-        addAllToAttributeValueSet(values);
+        super.addAllToAttributeValueSet(values);
     }
 
     /**
@@ -380,7 +380,7 @@ public class AutoComplete extends AbstractValueSetAttribute
      * @author WFF
      */
     public void addValue(final String value) {
-        addToAttributeValueSet(value);
+        super.addToAttributeValueSet(value);
     }
 
     /**
@@ -427,7 +427,7 @@ public class AutoComplete extends AbstractValueSetAttribute
      * @author WFF
      */
     public Set<String> getValueSet() {
-        return new LinkedHashSet<String>(getAttributeValueSet());
+        return new LinkedHashSet<String>(super.getAttributeValueSet());
     }
 
     /**
