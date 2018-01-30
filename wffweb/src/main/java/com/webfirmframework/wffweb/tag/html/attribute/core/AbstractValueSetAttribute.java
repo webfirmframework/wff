@@ -48,8 +48,8 @@ public abstract class AbstractValueSetAttribute extends AbstractAttribute {
             final String value) {
         if (value != null) {
             final List<String> allValues = extractValues(value);
-            removeAllFromAttributeValueSet();
-            addAllToAttributeValueSet(updateClient, allValues);
+            super.removeAllFromAttributeValueSet();
+            super.addAllToAttributeValueSet(updateClient, allValues);
         }
     }
 
@@ -85,8 +85,8 @@ public abstract class AbstractValueSetAttribute extends AbstractAttribute {
     protected void setAttributeValue(final String value) {
         if (value != null) {
             final List<String> allValues = extractValues(value);
-            removeAllFromAttributeValueSet();
-            addAllToAttributeValueSet(allValues);
+            super.removeAllFromAttributeValueSet();
+            super.addAllToAttributeValueSet(allValues);
         }
     }
 
@@ -148,7 +148,7 @@ public abstract class AbstractValueSetAttribute extends AbstractAttribute {
                 }
             }
 
-            addAllToAttributeValueSet(allValues);
+            super.addAllToAttributeValueSet(allValues);
         }
     }
 
