@@ -23,7 +23,7 @@ To support us please donate anything you wish to the author of this framework!
 ##### [check out wffweb-2.x.x sample projects](https://github.com/webfirmframework/tomcat-8-wffweb-demo-apps)
 
 
-##### check out this demo app deployed at [https://wffweb.herokuapp.com](https://wffweb.herokuapp.com)
+##### check out this demo app deployed at [https://webfirmframework.com/demo/](https://webfirmframework.com/demo/)
 
 
 (For the survival of this framework, some ads are shown in [webfirmframework.github.io](https://webfirmframework.github.io) and [webfirmframework.com](https://webfirmframework.com) web sites. These are temporary ads and will be removed soon. We are really sorry if it causes any inconvenience to your surfing.)   
