@@ -7,7 +7,7 @@ jdk:
   - oraclejdk8
   - openjdk7
 
-before_install: cd wffweb && export MAVEN_OPTS="-XX:+PrintCompilation"
+before_install: cd wffweb
 
 install: mvn -B install -U -DskipTests=true
 
