@@ -88,7 +88,7 @@ public interface ServerAsyncMethod extends Serializable {
 
     }
 
-    public abstract WffBMObject asyncMethod(WffBMObject wffBMObject,
+    public abstract WffBMObject asyncMethod(WffBMObject data,
             Event event);
 
 }
