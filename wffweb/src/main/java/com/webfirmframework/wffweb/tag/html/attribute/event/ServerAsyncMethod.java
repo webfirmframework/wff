@@ -21,6 +21,7 @@ import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
 
+@FunctionalInterface
 public interface ServerAsyncMethod extends Serializable {
 
     public static class Event {
