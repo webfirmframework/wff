@@ -408,7 +408,7 @@ public class BorderImageOutset extends AbstractCssProperty<BorderImageOutset> {
     }
 
     /**
-     * sets the top, right, bottom & left in {@code BorderImageWidth}.
+     * sets the top, right, bottom and left in {@code BorderImageWidth}.
      *
      * @param top
      *            the value for top. The value {@code auto} will be assigned for
@@ -424,7 +424,7 @@ public class BorderImageOutset extends AbstractCssProperty<BorderImageOutset> {
      *            for null value.
      * @param unit
      *            the {@code CssLengthUnit} for all of the given top, right,
-     *            bottom & left values.
+     *            bottom and left values.
      * @author WFF
      * @since 1.0.0
      */

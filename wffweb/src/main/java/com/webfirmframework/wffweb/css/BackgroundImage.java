@@ -88,8 +88,8 @@ public class BackgroundImage extends AbstractCssProperty<BackgroundImage>
 
     /**
      * @param cssValue
-     *            the cssValue to set. </br>
-     *            eg:- {@code url(images/BackgroundDesign.png)}
+     *            the cssValue to set. eg:-
+     *            {@code url(images/BackgroundDesign.png)}
      * @author WFF
      */
     public BackgroundImage(final String cssValue) {

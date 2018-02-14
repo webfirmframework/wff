@@ -92,7 +92,7 @@ public class BorderImageSource extends AbstractCssProperty<BorderImageSource>
 
     /**
      * @param cssValue
-     *            the cssValue to set. </br>
+     *            the cssValue to set. <br>
      *            eg:- {@code url(images/BackgroundDesign.png)}
      * @author WFF
      */

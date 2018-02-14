@@ -139,8 +139,8 @@ public class Rel extends AbstractValueSetAttribute
 
     /**
      *
-     * @param value
-     *            the value for the attribute. If there are multiple values it
+     * @param values
+     *            the values for the attribute. If there are multiple values it
      *            can be separated by space.
      * @since 1.0.0
      * @author WFF

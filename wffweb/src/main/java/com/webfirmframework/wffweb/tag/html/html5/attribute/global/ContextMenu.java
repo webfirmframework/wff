@@ -27,7 +27,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
  *
  * The contextmenu attribute specifies a context menu for an element. The context menu appears when a user right-clicks on the element.
  *
- * The value of the contextmenu attribute is the id of the <menu> element to open.
+ * The value of the contextmenu attribute is the id of the &lt;menu&gt; element to open.
  *
  * </pre>
  *

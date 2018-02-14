@@ -21,10 +21,10 @@ import com.webfirmframework.wffweb.tag.html.identifier.TableAttributable;
 
 /**
  * <pre>
- * <table cellpadding="pixels">
+ * &lt;table cellpadding=&quot;pixels&quot;&gt;
  * The cellpadding attribute specifies the space, in pixels, between the cell wall and the cell content.
  *
- * NB:- The cellpadding attribute of <table> is not supported in HTML5. Use CSS instead.
+ * NB:- The cellpadding attribute of &lt;table&gt; is not supported in HTML5. Use CSS instead.
  * </pre>
  *
  * @author WFF

@@ -122,7 +122,7 @@ public final class StringUtil {
 
     /**
      * gets all substrings as an array which starts and ends with the given
-     * values.</br>
+     * values.<br>
      * Note:- it will never return null instead it will return an empty array
      * (having length zero).
      *
@@ -358,9 +358,6 @@ public final class StringUtil {
      * @param endingWith
      *            the substring to check whether it comes in the given
      *            inputString after {@code startingWith} substring.
-     * @param searchFromIndex
-     *            the starting index from where the substring should be
-     *            searched.
      * @return an array containing the index of {@code startingWith} substring
      *         if the given {@code inputString} contains a substring starting
      *         with {@code startingWith} string and ending with
@@ -433,7 +430,7 @@ public final class StringUtil {
 
     /**
      * gets all start and end indexes as an array of array which start and end
-     * with the given values.</br>
+     * with the given values.<br>
      * Note:- it will never return null instead it will return an empty array
      * (having length zero).
      *

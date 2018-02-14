@@ -85,15 +85,15 @@ public class Border extends AbstractCssProperty<Border>
     }
 
     /**
-     * @param widthtCss
-     *            the {@code WidthCss} object from which the cssValue to
-     *            set.And, {@code null} will throw {@code NullValueException}
+     * @param border
+     *            the {@code border} object from which the cssValue to set.And,
+     *            {@code null} will throw {@code NullValueException}
      */
-    public Border(final Border widthCss) {
-        if (widthCss == null) {
-            throw new NullValueException("widthCss can not be null");
+    public Border(final Border border) {
+        if (border == null) {
+            throw new NullValueException("border can not be null");
         }
-        setCssValue(widthCss.getCssValue());
+        setCssValue(border.getCssValue());
     }
 
     /*

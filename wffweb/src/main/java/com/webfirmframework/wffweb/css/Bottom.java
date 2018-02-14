@@ -73,7 +73,7 @@ public class Bottom extends AbstractCssProperty<Bottom> {
     }
 
     /**
-     * @param widthtCss
+     * @param bottom
      *            the {@code Bottom} object from which the cssValue to set.And,
      *            {@code null} will throw {@code NullValueException}
      */

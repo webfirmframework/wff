@@ -22,9 +22,9 @@ import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 
 /**
  *
- * <code>pattern</code> attribute for the element.<br/>
+ * <code>pattern</code> attribute for the element.<br>
  *
- * <i>pattern</i> attribute for <i>input</i> element :- <br/>
+ * <i>pattern</i> attribute for <i>input</i> element :- <br>
  * A regular expression that the control's value is checked against. The pattern
  * must match the entire value, not just some subset. Use the title attribute to
  * describe the pattern to help the user. This attribute applies when the value

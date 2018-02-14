@@ -56,7 +56,7 @@ public final class TagStringUtil {
 
     /**
      * In html, the tag characters are supposed to use a limited number of
-     * characters like 'a'-'z', 'A'-'Z', '0'-'9', '.', ',', '-' etc...<br/>
+     * characters like 'a'-'z', 'A'-'Z', '0'-'9', '.', ',', '-' etc...<br>
      * This method gains performance than the native
      * {@code String.toUpperCase()} method.
      *

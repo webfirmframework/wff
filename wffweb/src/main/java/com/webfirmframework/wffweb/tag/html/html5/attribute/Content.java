@@ -22,7 +22,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.MetaAttributable;
 
 /**
  *
- * <code>content</code> attribute for the element.<br/>
+ * <code>content</code> attribute for the element.<br>
  *
  * The content of the meta information.
  *

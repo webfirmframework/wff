@@ -80,8 +80,8 @@ public class OBackgroundSize extends AbstractCssProperty<OBackgroundSize> {
     }
 
     /**
-     * @param widthtCss
-     *            the {@code WidthCss} object from which the cssValue to
+     * @param backgroundSize
+     *            the {@code backgroundSize} object from which the cssValue to
      *            set.And, {@code null} will throw {@code NullValueException}
      */
     public OBackgroundSize(final OBackgroundSize backgroundSize) {
@@ -94,8 +94,8 @@ public class OBackgroundSize extends AbstractCssProperty<OBackgroundSize> {
     /**
      * @param horizontalHeight
      *            the value to set.
-     * @param the
-     *            value unit to set.
+     * @param cssLengthUnit
+     *            the value unit to set.
      * @since 1.0.0
      * @author WFF
      */
@@ -113,7 +113,6 @@ public class OBackgroundSize extends AbstractCssProperty<OBackgroundSize> {
      * @param widthCssLengthUnit
      * @param height
      * @param heightCssLengthUnit
-     * @return
      * @author WFF
      * @since 1.0.0
      */

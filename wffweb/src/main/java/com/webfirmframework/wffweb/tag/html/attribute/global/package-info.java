@@ -16,14 +16,14 @@
  * @author WFF
  */
 /**
- * Global html attributes : </br>
- * accesskey </br>
- * class </br>
- * id </br>
- * lang </br>
- * style - http://www.w3schools.com/cssref/css3_pr_align-content.asp</br>
- * tabindex </br>
- * title </br>
+ * Global html attributes : <br>
+ * accesskey <br>
+ * class <br>
+ * id <br>
+ * lang <br>
+ * style - http://www.w3schools.com/cssref/css3_pr_align-content.asp<br>
+ * tabindex <br>
+ * title <br>
  * Html5 global attributes are available under
  * com.webfirmframework.wffweb.tag.html.html5.attribute.global package. visit
  * http://www.w3schools.com/tags/ref_standardattributes.asp or

@@ -147,8 +147,7 @@ public class Cursor extends AbstractCssProperty<Cursor>
 
     /**
      * @param cssValue
-     *            the cssValue to set. </br>
-     *            eg:- {@code Cursor.ALIAS}
+     *            the cssValue to set. eg:- {@code Cursor.ALIAS}
      * @author WFF
      */
     public Cursor(final String cssValue) {

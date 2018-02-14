@@ -37,8 +37,8 @@ public interface TagBase extends Serializable, Cloneable {
      * given charset. rebuilds the html string if the child tags/values or
      * attributes have been modified.
      *
-     * @param the
-     *            charset to set for the returning value, eg:
+     * @param charset
+     *            the charset to set for the returning value, eg:
      *            {@code StandardCharsets.UTF_8}
      * @return {@code String} equalent to the html string of the tag including
      *         the child tags.
@@ -52,8 +52,8 @@ public interface TagBase extends Serializable, Cloneable {
      * given charset. rebuilds the html string if the child tags/values or
      * attributes have been modified.
      *
-     * @param the
-     *            charset to set for the returning value, eg:
+     * @param charset
+     *            the charset to set for the returning value, eg:
      *            {@code StandardCharsets.UTF_8.name()}
      *
      * @return {@code String} equalent to the html string of the tag including
@@ -69,7 +69,7 @@ public interface TagBase extends Serializable, Cloneable {
      * the cache.
      *
      * @param rebuild
-     *            true to rebuild & false to return previously built string.
+     *            true to rebuild &amp; false to return previously built string.
      * @return {@code String} equalent to the html string of the tag including
      *         the child tags.
      * @since 1.0.0
@@ -83,9 +83,9 @@ public interface TagBase extends Serializable, Cloneable {
      * the cache.
      *
      * @param rebuild
-     *            true to rebuild & false to return previously built string.
-     * @param the
-     *            charset to set for the returning value, eg:
+     *            true to rebuild &amp; false to return previously built string.
+     * @param charset
+     *            the charset to set for the returning value, eg:
      *            {@code StandardCharsets.UTF_8}
      * @return {@code String} equalent to the html string of the tag including
      *         the child tags.
@@ -101,9 +101,9 @@ public interface TagBase extends Serializable, Cloneable {
      * the cache.
      *
      * @param rebuild
-     *            true to rebuild & false to return previously built string.
-     * @param the
-     *            charset to set for the returning value, eg:
+     *            true to rebuild &amp; false to return previously built string.
+     * @param charset
+     *            the charset to set for the returning value, eg:
      *            {@code StandardCharsets.UTF_8.name()}
      * @return {@code String} equalent to the html string of the tag including
      *         the child tags.

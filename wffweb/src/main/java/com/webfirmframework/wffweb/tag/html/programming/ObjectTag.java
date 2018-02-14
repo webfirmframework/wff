@@ -10,7 +10,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.ObjectTagAttributable;
 
 /**
- * This class represents the tag <object> in html
+ * This class represents the tag &lt;object&gt; in html
  *
  * @author WFF
  * @since 1.0.0

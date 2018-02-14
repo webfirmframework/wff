@@ -401,8 +401,8 @@ public class AbstractHtml5SharedObject implements Serializable {
      * consumed. Instead, use addValueChangeListener and getValueChangeListeners
      * methods.
      *
-     * @param caller
-     *            object of this method
+     * @param accessObject
+     *            access object of this method
      * @return the valueChangeListener
      */
     public AttributeValueChangeListener getValueChangeListener(
@@ -422,8 +422,8 @@ public class AbstractHtml5SharedObject implements Serializable {
      *
      * @param valueChangeListener
      *            the valueChangeListener to set
-     * @param caller
-     *            object of this method
+     * @param accessObject
+     *            access object of this method
      */
     public void setValueChangeListener(
             final AttributeValueChangeListener valueChangeListener,

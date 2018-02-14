@@ -75,8 +75,8 @@ public class BorderSpacing extends AbstractCssProperty<BorderSpacing> {
     }
 
     /**
-     * @param widthtCss
-     *            the {@code WidthCss} object from which the cssValue to
+     * @param borderSpacing
+     *            the {@code borderSpacing} object from which the cssValue to
      *            set.And, {@code null} will throw {@code NullValueException}
      */
     public BorderSpacing(final BorderSpacing borderSpacing) {
@@ -89,8 +89,8 @@ public class BorderSpacing extends AbstractCssProperty<BorderSpacing> {
     /**
      * @param horizontalVerticalValue
      *            the value to set.
-     * @param the
-     *            value unit to set.
+     * @param cssLengthUnit
+     *            the value unit to set.
      * @since 1.0.0
      * @author WFF
      */
@@ -109,7 +109,6 @@ public class BorderSpacing extends AbstractCssProperty<BorderSpacing> {
      * @param horizontalCssLengthUnit
      * @param verticalValue
      * @param verticalCssLengthUnit
-     * @return
      * @author WFF
      * @since 1.0.0
      */

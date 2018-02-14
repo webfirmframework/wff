@@ -76,8 +76,8 @@ public class WebkitFlexGrow extends AbstractCssProperty<WebkitFlexGrow> {
     }
 
     /**
-     * @param webkitFlexGrowtCss
-     *            the {@code WebkitFlexGrow} object from which the cssValue to
+     * @param webkitFlexGrow
+     *            the {@code webkitFlexGrow} object from which the cssValue to
      *            set.And, {@code null} will throw {@code NullValueException}
      */
     public WebkitFlexGrow(final WebkitFlexGrow webkitFlexGrow) {
@@ -89,7 +89,6 @@ public class WebkitFlexGrow extends AbstractCssProperty<WebkitFlexGrow> {
 
     /**
      * @param value
-     * @param cssLengthUnit
      */
     public WebkitFlexGrow(final float value) {
         this.value = value;

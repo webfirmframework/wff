@@ -49,8 +49,7 @@ public class ListStyleImage extends AbstractCssProperty<ListStyleImage> {
     /**
      * @param cssValue
      *            the css value to set.
-     * @param urlValue
-     *            images/TestImage.png
+     *
      */
     public ListStyleImage(final String cssValue) {
         setCssValue(cssValue);

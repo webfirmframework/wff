@@ -15,6 +15,8 @@
  */
 package com.webfirmframework.wffweb.tag.repository;
 
+import static org.junit.Assert.*;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,6 +29,9 @@ import com.webfirmframework.wffweb.WffSecurityException;
 import com.webfirmframework.wffweb.server.page.BrowserPage;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.Body;
+import com.webfirmframework.wffweb.tag.html.H1;
+import com.webfirmframework.wffweb.tag.html.H2;
+import com.webfirmframework.wffweb.tag.html.H3;
 import com.webfirmframework.wffweb.tag.html.Html;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.TitleTag;
@@ -47,6 +52,56 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
 
 @SuppressWarnings({ "serial", "deprecation" })
 public class TagRepositoryTest {
+    
+    
+    
+    @Test
+    public void testFindOneTagByAttribute() throws Exception {
+        final Html html = new Html(null) {{
+            new Div(this, new Id("one")) {{
+                new Span(this, new Id("two")) {{
+                    new H1(this, new Id("three"));
+                    new H2(this, new Id("three"));
+                    new NoTag(this, "something");
+                }};
+
+                new H3(this, new Name("name1"));
+            }};  
+        }};
+        BrowserPage browserPage = new BrowserPage() {
+            
+            @Override
+            public String webSocketUrl() {
+                return "wss://webfirmframework/websocket";
+            }
+            
+            @Override
+            public AbstractHtml render() {
+                return html;
+            }
+        };
+        browserPage.toHtmlString();
+        
+        {
+            final AbstractHtml tag = browserPage.getTagRepository().findOneTagByAttribute("name", "name1");
+            assertNotNull(tag);
+            assertTrue(tag instanceof H3);
+        }
+        
+        {
+            final AbstractHtml tag = browserPage.getTagRepository().findOneTagByAttribute("name", "name1222");
+            assertNull(tag);
+        }
+        {
+            final AbstractHtml tag = browserPage.getTagRepository().findOneTagByAttributeName("name");
+            assertNotNull(tag);
+            assertTrue(tag instanceof H3);
+        }
+        {
+            final AbstractHtml tag = browserPage.getTagRepository().findOneTagByAttributeName("style");
+            assertNull(tag);
+        }
+    }
 
     @Test
     public void testFindTagById() {

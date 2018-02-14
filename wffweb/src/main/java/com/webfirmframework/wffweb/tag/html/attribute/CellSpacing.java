@@ -21,10 +21,10 @@ import com.webfirmframework.wffweb.tag.html.identifier.TableAttributable;
 
 /**
  * <pre>
- * <table cellspacing="pixels">
+ * &lt;table cellspacing=&quot;pixels&quot;&gt;
  * The cellspacing attribute specifies the space, in pixels, between cells.
  *
- * NB:- The cellspacing attribute of <table> is not supported in HTML5. Use CSS instead.
+ * NB:- The cellspacing attribute of &lt;table&gt; is not supported in HTML5. Use CSS instead.
  * </pre>
  *
  * @author WFF

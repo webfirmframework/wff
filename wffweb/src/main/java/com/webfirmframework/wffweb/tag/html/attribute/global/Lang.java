@@ -23,14 +23,14 @@ import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
 /**
- * The lang attribute specifies the language of the element's content.</br>
- * <b>Sample html :-</b></br>
+ * The lang attribute specifies the language of the element's content.<br>
+ * <b>Sample html :-</b><br>
  * {@code
  *
 <p>
 This is a paragraph.
 </p>
- * }</br>
+ * }<br>
  * {@code
  *
 <p lang="fr">
@@ -67,8 +67,8 @@ public class Lang extends AbstractAttribute implements GlobalAttributable {
     }
 
     /**
-     * @param lang
-     *            eg: fr
+     * @param locale
+     *            eg: Locale.JAPAN
      * @author WFF
      */
     public Lang(final Locale locale) {

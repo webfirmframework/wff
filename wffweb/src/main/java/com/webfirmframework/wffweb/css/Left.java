@@ -73,7 +73,7 @@ public class Left extends AbstractCssProperty<Left> {
     }
 
     /**
-     * @param widthtCss
+     * @param left
      *            the {@code Left} object from which the cssValue to set.And,
      *            {@code null} will throw {@code NullValueException}
      */

@@ -107,8 +107,8 @@ public abstract class AbstractValueSetAttribute extends AbstractAttribute {
     /**
      * Checks if the values are part of this attribute value.
      *
-     * @param value
-     *            the value to be checked
+     * @param values
+     *            the values to be checked
      * @return true if the given values are contained in the value string of
      *         this attribute.
      * @since 2.1.15

@@ -21,9 +21,9 @@ import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 
 /**
- * <code>step</code> attribute for the element.<br/>
+ * <code>step</code> attribute for the element.<br>
  *
- * <i>step</i> attribute for <i>input</i> element :- <br/>
+ * <i>step</i> attribute for <i>input</i> element :- <br>
  *
  * Works with the min and max attributes to limit the increments at which a
  * numeric or date-time value can be set. It can be the string any or a positive

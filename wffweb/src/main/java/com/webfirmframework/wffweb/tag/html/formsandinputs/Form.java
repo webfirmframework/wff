@@ -316,7 +316,7 @@ public class Form extends AbstractHtml {
      * This js object may be used to return in onsubmit attribute.
      *
      *
-     * @param onlyForTagNames
+     * @param additionalTagNames
      *
      *            TagNameConstants.INPUT, TagNameConstants.TEXTAREA and
      *            TagNameConstants.SELECT Pass object of {@code List},

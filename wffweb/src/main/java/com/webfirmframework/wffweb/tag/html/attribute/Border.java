@@ -21,7 +21,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.TableAttributable;
 
 /**
  * <pre>
- * <table border="0 | 1 | 2 etc..">
+ * &lt;table border=&quot;0 | 1 | 2 etc..&quot;&gt;
  * The border attribute specifies if a border should be displayed around the table cells or not.
  *
  * The border attribute on the table element is obsolete. Use CSS instead

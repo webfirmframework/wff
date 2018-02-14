@@ -45,7 +45,7 @@ public class UrlCss3Value extends AbstractBean<UrlCss3Value> {
      * @param urlCssValue
      *            eg:- <code> url(\"Test.png\")75 158 </code> or
      *            <code> url(\"Test.png\")</code>
-     * @param cssValueString
+     * @param urlCssValue
      */
     public UrlCss3Value(final String urlCssValue) {
         super();

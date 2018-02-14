@@ -21,7 +21,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.TextAreaAttributable;
 
 /**
  * <pre>
- * <textarea rows="number">
+ * &lt;textarea rows=&quot;number&quot;&gt;
  * Specifies the height of the text area (in lines). Default value is 2.
  *
  * </pre>

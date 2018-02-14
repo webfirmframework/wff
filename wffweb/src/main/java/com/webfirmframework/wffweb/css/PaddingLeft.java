@@ -69,7 +69,7 @@ public class PaddingLeft extends AbstractCssProperty<PaddingLeft> {
     }
 
     /**
-     * @param widthtCss
+     * @param paddingLeft
      *            the {@code PaddingLeft} object from which the cssValue to
      *            set.And, {@code null} will throw {@code NullValueException}
      */

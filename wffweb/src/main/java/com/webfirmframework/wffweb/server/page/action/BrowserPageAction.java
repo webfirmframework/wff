@@ -74,7 +74,7 @@ public enum BrowserPageAction {
     }
 
     /**
-     * @return the action {@codeByteBuffer} for the browser action
+     * @return the action {@code ByteBuffer} for the browser action
      * @since 2.0.3
      * @author WFF
      */

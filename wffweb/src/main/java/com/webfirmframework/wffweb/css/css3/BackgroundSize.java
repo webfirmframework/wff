@@ -80,7 +80,7 @@ public class BackgroundSize extends AbstractCssProperty<BackgroundSize> {
     }
 
     /**
-     * @param widthtCss
+     * @param backgroundSize
      *            the {@code BackgroundSize} object from which the cssValue to
      *            set.And, {@code null} will throw {@code NullValueException}
      */
@@ -94,8 +94,8 @@ public class BackgroundSize extends AbstractCssProperty<BackgroundSize> {
     /**
      * @param widthHeight
      *            the value to set.
-     * @param the
-     *            value unit to set.
+     * @param cssLengthUnit
+     *            the value unit to set.
      * @since 1.0.0
      * @author WFF
      */
@@ -113,7 +113,6 @@ public class BackgroundSize extends AbstractCssProperty<BackgroundSize> {
      * @param widthLengthUnit
      * @param height
      * @param heightLengthUnit
-     * @return
      * @author WFF
      * @since 1.0.0
      */

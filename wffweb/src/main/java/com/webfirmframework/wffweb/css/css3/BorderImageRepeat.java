@@ -79,7 +79,7 @@ public class BorderImageRepeat extends AbstractCssProperty<BorderImageRepeat> {
     }
 
     /**
-     * @param widthtCss
+     * @param borderImageRepeat
      *            the {@code BorderImageRepeat} object from which the cssValue
      *            to set.And, {@code null} will throw {@code NullValueException}
      */

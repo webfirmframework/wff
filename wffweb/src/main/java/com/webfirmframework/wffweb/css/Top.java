@@ -73,7 +73,7 @@ public class Top extends AbstractCssProperty<Top> {
     }
 
     /**
-     * @param widthtCss
+     * @param top
      *            the {@code Top} object from which the cssValue to set.And,
      *            {@code null} will throw {@code NullValueException}
      */

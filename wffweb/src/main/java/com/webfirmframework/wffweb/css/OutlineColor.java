@@ -479,7 +479,7 @@ public class OutlineColor extends AbstractCssProperty<OutlineColor>
     }
 
     /**
-     * @param rgbCssValue
+     * @param hslCssValue
      *            the hslCssValue to set
      * @since 1.0.0
      * @author WFF
@@ -534,7 +534,7 @@ public class OutlineColor extends AbstractCssProperty<OutlineColor>
     }
 
     /**
-     * @param rgbCssValue
+     * @param hslaCssValue
      *            the hslaCssValue to set
      * @since 1.0.0
      * @author WFF

@@ -34,7 +34,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.TextAreaAttributable;
  * <code>contenteditable</code> attribute then its content will be editable and
  * <code>oninput</code> attribute can be used to catch its content change event
  * (<code>onchange</code> attribute may not catch event). It's a kind of global
- * attribute as <code>contenteditable<code> is a global attribute.
+ * attribute as <code>contenteditable</code> is a global attribute.
  *
  * @since 2.0.0
  * @author WFF

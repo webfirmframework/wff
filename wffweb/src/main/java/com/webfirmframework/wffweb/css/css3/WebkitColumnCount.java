@@ -74,9 +74,9 @@ public class WebkitColumnCount extends AbstractCssProperty<WebkitColumnCount> {
     }
 
     /**
-     * @param webkitColumnCounttCss
-     *            the {@code Opacity} object from which the cssValue to set.And,
-     *            {@code null} will throw {@code NullValueException}
+     * @param webkitColumnCount
+     *            the {@code webkitColumnCount} object from which the cssValue
+     *            to set.And, {@code null} will throw {@code NullValueException}
      */
     public WebkitColumnCount(final WebkitColumnCount webkitColumnCount) {
         if (webkitColumnCount == null) {
@@ -87,7 +87,6 @@ public class WebkitColumnCount extends AbstractCssProperty<WebkitColumnCount> {
 
     /**
      * @param value
-     * @param cssLengthUnit
      */
     public WebkitColumnCount(final int value) {
         this.value = value;

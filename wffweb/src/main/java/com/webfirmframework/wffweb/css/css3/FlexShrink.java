@@ -75,7 +75,7 @@ public class FlexShrink extends AbstractCssProperty<FlexShrink> {
     }
 
     /**
-     * @param flexShrinktCss
+     * @param flexShrink
      *            the {@code FlexShrink} object from which the cssValue to
      *            set.And, {@code null} will throw {@code NullValueException}
      */
@@ -88,7 +88,6 @@ public class FlexShrink extends AbstractCssProperty<FlexShrink> {
 
     /**
      * @param value
-     * @param cssLengthUnit
      */
     public FlexShrink(final float value) {
         this.value = value;

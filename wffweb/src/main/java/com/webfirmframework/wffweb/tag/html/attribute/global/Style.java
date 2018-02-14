@@ -216,189 +216,189 @@ import com.webfirmframework.wffweb.util.StringUtil;
 
 // @formatter:off
 /**
- * @author WFF</br>
+ * @author WFF
+ *
  * <pre>
- * {@link http://www.w3schools.com/cssref/css3_pr_align-content.asp}
- * </br>
- *CSS Properties :-</br>
- *align-content: stretch|center|flex-start|flex-end|space-between|space-around|initial|inherit;</br>
- *align-items: stretch|center|flex-start|flex-end|baseline|initial|inherit;</br>
- *align-self: auto|stretch|center|flex-start|flex-end|baseline|initial|inherit; </br>
- *animation: name duration timing-function delay iteration-count direction fill-mode play-state; </br>
- *animation-delay: time|initial|inherit;</br>
- *animation-direction: normal|reverse|alternate|alternate-reverse|initial|inherit; </br>
- *animation-duration: time|initial|inherit; </br>
- *animation-fill-mode: none|forwards|backwards|both|initial|inherit; </br>
- *animation-iteration-count: number|infinite|initial|inherit;</br>
- *animation-name: keyframename|none|initial|inherit; </br>
- *animation-play-state: paused|running|initial|inherit;</br>
- *animation-timing-function: linear|ease|ease-in|ease-out|cubic-bezier(n,n,n,n)|initial|inherit;</br>
- *backface-visibility: visible|hidden|initial|inherit; </br>
- *background: color position/size repeat origin clip attachment image|initial|inherit; </br>
- *background-attachment: scroll|fixed|local|initial|inherit;</br>
- *background-clip: border-box|padding-box|content-box|initial|inherit; </br>
- *background-color: color|transparent|initial|inherit; </br>
- *background-image: url|none|initial|inherit; </br>
- *background-origin: padding-box|border-box|content-box|initial|inherit; </br>
- *background-position: left top|left center|left bottom|right top|right center|right bottom|center top|center center|center bottom|x% y%|xpos ypos|initial|inherit; </br>
- *background-repeat: repeat|repeat-x|repeat-y|no-repeat|initial|inherit; </br>
- *background-size: auto|length|cover|contain|initial|inherit;</br>
- *border: border-width border-style border-color|initial|inherit; </br>
- *border-bottom: border-width border-style border-color|initial|inherit;</br>
- *border-bottom-color: color|transparent|initial|inherit;</br>
- *border-bottom-left-radius: length|% [length|%]|initial|inherit;</br>
- *border-bottom-right-radius: length|% [length|%]|initial|inherit;</br>
- *border-bottom-style:none|hidden|dotted|dashed|solid|double|groove|ridge|inset|outset|initial|inherit; </br>
- *border-bottom-width: medium|thin|thick|length|initial|inherit; </br>
- *border-collapse: separate|collapse|initial|inherit; </br>
- *border-color: color|transparent|initial|inherit; </br>
- *border-image: source slice width outset repeat|initial|inherit;</br>
- *border-image-outset: length|number|initial|inherit;</br>
- *border-image-repeat: stretch|repeat|round|initial|inherit; </br>
- *border-image-slice: number|%|fill|initial|inherit; </br>
- *border-image-source: none|image|initial|inherit; </br>
- *border-image-width: number|%|auto|initial|inherit;</br>
- *border-left: border-width border-style border-color|initial|inherit; </br>
- *border-left-color: color|transparent|initial|inherit;</br>
- *border-left-style:none|hidden|dotted|dashed|solid|double|groove|ridge|inset|outset|initial|inherit; </br>
- *border-left-width: medium|thin|thick|length|initial|inherit; </br>
- *border-radius  </br>
- *border-right </br>
- *border-right-color</br>
- *border-right-style </br>
- *border-right-width </br>
- *border-spacing </br>
- *border-style </br>
- *border-top </br>
- *border-top-color</br>
- *border-top-left-radius</br>
- *border-top-right-radius </br>
- *border-top-style </br>
- *border-top-width </br>
- *border-width </br>
- *bottom </br>
- *box-shadow</br>
- *box-sizing     </br>
- *caption-side </br>
- *clear </br>
- *clip </br>
- *color </br>
- *column-count</br>
- *column-fill </br>
- *column-gap </br>
- *column-rule </br>
- *column-rule-color</br>
- *column-rule-style </br>
- *column-rule-width </br>
- *column-span </br>
- *column-width </br>
- *columns </br>
- *content </br>
- *counter-increment</br>
- *counter-reset </br>
- *cursor </br>
- *direction </br>
- *display </br>
- *empty-cells </br>
- *flex </br>
- *flex-basis</br>
- *flex-direction </br>
- *flex-flow </br>
- *flex-grow </br>
- *flex-shrink </br>
- *flex-wrap </br>
- *float </br>
- *font </br>
- *@font-face : cannot be used directly</br>
- *font-family</br>
- *font-size</br>
- *font-size-adjust</br>
- *font-stretch</br>
- *font-style</br>
- *font-variant</br>
- *font-weight</br>
- *hanging-punctuation</br>
- *height</br>
- *icon</br>
- *justify-content</br>
- *@keyframes : cannot be used directly</br>
- *left</br>
- *letter-spacing</br>
- *line-height</br>
- *list-style</br>
- *list-style-image</br>
- *list-style-position</br>
- *list-style-type</br>
- *margin</br>
- *margin-bottom</br>
- *margin-left</br>
- *margin-right</br>
- *margin-top</br>
- *max-height</br>
- *max-width</br>
- *@media : cannot be used directly</br>
- *min-height</br>
- *min-width</br>
- *nav-down</br>
- *nav-index</br>
- *nav-left</br>
- *nav-right</br>
- *nav-up</br>
- *opacity</br>
- *order</br>
- *outline</br>
- *outline-color</br>
- *outline-offset</br>
- *outline-style</br>
- *outline-width</br>
- *overflow</br>
- *overflow-x</br>
- *overflow-y</br>
- *padding</br>
- *padding-bottom</br>
- *padding-left</br>
- *padding-right</br>
- *padding-top</br>
- *page-break-after</br>
- *page-break-before</br>
- *page-break-inside</br>
- *perspective</br>
- *perspective-origin</br>
- *position</br>
- *quotes</br>
- *resize</br>
- *right</br>
- *tab-size</br>
- *table-layout</br>
- *text-align</br>
- *text-align-last</br>
- *text-decoration</br>
- *text-decoration-color</br>
- *text-decoration-line</br>
- *text-decoration-style</br>
- *text-indent</br>
- *text-justify</br>
- *text-overflow</br>
- *text-shadow</br>
- *text-transform</br>
- *top</br>
- *transform</br>
- *transform-origin</br>
- *transform-style</br>
- *transition</br>
- *transition-delay</br>
- *transition-duration</br>
- *transition-property</br>
- *transition-timing-function</br>
- *unicode-bidi</br>
- *vertical-align</br>
- *visibility</br>
- *white-space</br>
- *width</br>
- *word-break</br>
- *word-spacing</br>
- *word-wrap</br>
- *z-index</br>
+ * <br>
+ *CSS Properties :-<br>
+ *align-content: stretch|center|flex-start|flex-end|space-between|space-around|initial|inherit;<br>
+ *align-items: stretch|center|flex-start|flex-end|baseline|initial|inherit;<br>
+ *align-self: auto|stretch|center|flex-start|flex-end|baseline|initial|inherit; <br>
+ *animation: name duration timing-function delay iteration-count direction fill-mode play-state; <br>
+ *animation-delay: time|initial|inherit;<br>
+ *animation-direction: normal|reverse|alternate|alternate-reverse|initial|inherit; <br>
+ *animation-duration: time|initial|inherit; <br>
+ *animation-fill-mode: none|forwards|backwards|both|initial|inherit; <br>
+ *animation-iteration-count: number|infinite|initial|inherit;<br>
+ *animation-name: keyframename|none|initial|inherit; <br>
+ *animation-play-state: paused|running|initial|inherit;<br>
+ *animation-timing-function: linear|ease|ease-in|ease-out|cubic-bezier(n,n,n,n)|initial|inherit;<br>
+ *backface-visibility: visible|hidden|initial|inherit; <br>
+ *background: color position/size repeat origin clip attachment image|initial|inherit; <br>
+ *background-attachment: scroll|fixed|local|initial|inherit;<br>
+ *background-clip: border-box|padding-box|content-box|initial|inherit; <br>
+ *background-color: color|transparent|initial|inherit; <br>
+ *background-image: url|none|initial|inherit; <br>
+ *background-origin: padding-box|border-box|content-box|initial|inherit; <br>
+ *background-position: left top|left center|left bottom|right top|right center|right bottom|center top|center center|center bottom|x% y%|xpos ypos|initial|inherit; <br>
+ *background-repeat: repeat|repeat-x|repeat-y|no-repeat|initial|inherit; <br>
+ *background-size: auto|length|cover|contain|initial|inherit;<br>
+ *border: border-width border-style border-color|initial|inherit; <br>
+ *border-bottom: border-width border-style border-color|initial|inherit;<br>
+ *border-bottom-color: color|transparent|initial|inherit;<br>
+ *border-bottom-left-radius: length|% [length|%]|initial|inherit;<br>
+ *border-bottom-right-radius: length|% [length|%]|initial|inherit;<br>
+ *border-bottom-style:none|hidden|dotted|dashed|solid|double|groove|ridge|inset|outset|initial|inherit; <br>
+ *border-bottom-width: medium|thin|thick|length|initial|inherit; <br>
+ *border-collapse: separate|collapse|initial|inherit; <br>
+ *border-color: color|transparent|initial|inherit; <br>
+ *border-image: source slice width outset repeat|initial|inherit;<br>
+ *border-image-outset: length|number|initial|inherit;<br>
+ *border-image-repeat: stretch|repeat|round|initial|inherit; <br>
+ *border-image-slice: number|%|fill|initial|inherit; <br>
+ *border-image-source: none|image|initial|inherit; <br>
+ *border-image-width: number|%|auto|initial|inherit;<br>
+ *border-left: border-width border-style border-color|initial|inherit; <br>
+ *border-left-color: color|transparent|initial|inherit;<br>
+ *border-left-style:none|hidden|dotted|dashed|solid|double|groove|ridge|inset|outset|initial|inherit; <br>
+ *border-left-width: medium|thin|thick|length|initial|inherit; <br>
+ *border-radius  <br>
+ *border-right <br>
+ *border-right-color<br>
+ *border-right-style <br>
+ *border-right-width <br>
+ *border-spacing <br>
+ *border-style <br>
+ *border-top <br>
+ *border-top-color<br>
+ *border-top-left-radius<br>
+ *border-top-right-radius <br>
+ *border-top-style <br>
+ *border-top-width <br>
+ *border-width <br>
+ *bottom <br>
+ *box-shadow<br>
+ *box-sizing     <br>
+ *caption-side <br>
+ *clear <br>
+ *clip <br>
+ *color <br>
+ *column-count<br>
+ *column-fill <br>
+ *column-gap <br>
+ *column-rule <br>
+ *column-rule-color<br>
+ *column-rule-style <br>
+ *column-rule-width <br>
+ *column-span <br>
+ *column-width <br>
+ *columns <br>
+ *content <br>
+ *counter-increment<br>
+ *counter-reset <br>
+ *cursor <br>
+ *direction <br>
+ *display <br>
+ *empty-cells <br>
+ *flex <br>
+ *flex-basis<br>
+ *flex-direction <br>
+ *flex-flow <br>
+ *flex-grow <br>
+ *flex-shrink <br>
+ *flex-wrap <br>
+ *float <br>
+ *font <br>
+ *<code>@</code>font-face : cannot be used directly<br>
+ *font-family<br>
+ *font-size<br>
+ *font-size-adjust<br>
+ *font-stretch<br>
+ *font-style<br>
+ *font-variant<br>
+ *font-weight<br>
+ *hanging-punctuation<br>
+ *height<br>
+ *icon<br>
+ *justify-content<br>
+ *<i>@keyframes</i> : cannot be used directly<br>
+ *left<br>
+ *letter-spacing<br>
+ *line-height<br>
+ *list-style<br>
+ *list-style-image<br>
+ *list-style-position<br>
+ *list-style-type<br>
+ *margin<br>
+ *margin-bottom<br>
+ *margin-left<br>
+ *margin-right<br>
+ *margin-top<br>
+ *max-height<br>
+ *max-width<br>
+ *<i>@media</i> : cannot be used directly<br>
+ *min-height<br>
+ *min-width<br>
+ *nav-down<br>
+ *nav-index<br>
+ *nav-left<br>
+ *nav-right<br>
+ *nav-up<br>
+ *opacity<br>
+ *order<br>
+ *outline<br>
+ *outline-color<br>
+ *outline-offset<br>
+ *outline-style<br>
+ *outline-width<br>
+ *overflow<br>
+ *overflow-x<br>
+ *overflow-y<br>
+ *padding<br>
+ *padding-bottom<br>
+ *padding-left<br>
+ *padding-right<br>
+ *padding-top<br>
+ *page-break-after<br>
+ *page-break-before<br>
+ *page-break-inside<br>
+ *perspective<br>
+ *perspective-origin<br>
+ *position<br>
+ *quotes<br>
+ *resize<br>
+ *right<br>
+ *tab-size<br>
+ *table-layout<br>
+ *text-align<br>
+ *text-align-last<br>
+ *text-decoration<br>
+ *text-decoration-color<br>
+ *text-decoration-line<br>
+ *text-decoration-style<br>
+ *text-indent<br>
+ *text-justify<br>
+ *text-overflow<br>
+ *text-shadow<br>
+ *text-transform<br>
+ *top<br>
+ *transform<br>
+ *transform-origin<br>
+ *transform-style<br>
+ *transition<br>
+ *transition-delay<br>
+ *transition-duration<br>
+ *transition-property<br>
+ *transition-timing-function<br>
+ *unicode-bidi<br>
+ *vertical-align<br>
+ *visibility<br>
+ *white-space<br>
+ *width<br>
+ *word-break<br>
+ *word-spacing<br>
+ *word-wrap<br>
+ *z-index<br>
  *</pre>
  **/
 // @formatter:on
@@ -776,7 +776,7 @@ public class Style extends AbstractAttribute
 
     /**
      * @param styles
-     *            styles separated by semicolon.</br>
+     *            styles separated by semicolon.<br>
      *            eg :- {@code color:blue;text-align:center }
      */
     public Style(final String styles) {
@@ -785,11 +785,11 @@ public class Style extends AbstractAttribute
 
     /**
      * @param styles
-     *            {@code Map} containing styles,</br>
-     *            eg : </br>
+     *            {@code Map} containing styles,<br>
+     *            eg : <br>
      *            {@code
      * Map<String, String> styles = new HashMap<String, String>();
-     * } </br>
+     * } <br>
      *            {@code
      * styles.put("color", "green");
      * }
@@ -863,7 +863,7 @@ public class Style extends AbstractAttribute
      * removes the support for the classes from {@code Style class} or its
      * extended class.
      *
-     * @param cssClass
+     * @param cssClasses
      * @since 1.0.0
      * @author WFF
      */
@@ -877,7 +877,7 @@ public class Style extends AbstractAttribute
 
     /**
      * @param cssProperties
-     *            styles separated by semicolon.</br>
+     *            styles separated by semicolon.<br>
      *            eg :- {@code color:blue;text-align:center }
      *
      * @since 1.0.0
@@ -889,11 +889,11 @@ public class Style extends AbstractAttribute
 
     /**
      * @param cssProperties
-     *            {@code Map} containing styles,</br>
-     *            eg : </br>
+     *            {@code Map} containing styles,<br>
+     *            eg : <br>
      *            {@code
      * Map<String, String> cssProperties = new HashMap<String, String>();
-     * } </br>
+     * } <br>
      *            {@code
      * cssProperties.put("color", "green");
      * }
@@ -1014,7 +1014,7 @@ public class Style extends AbstractAttribute
     }
 
     /**
-     * adds each cssProperty from the given collection. <br/>
+     * adds each cssProperty from the given collection. <br>
      * NB:- After using this method, adding or removing any value in the
      * collection will not have any effect on {@code Style}, so this method may
      * be removed later.
@@ -1131,7 +1131,7 @@ public class Style extends AbstractAttribute
      *
      * @param cssName
      *            eg: color
-     * @param value
+     * @param cssValue
      *            eg: green (for color styleName)
      * @since 1.0.0
      * @return true if the given syleName (as well as value contained
@@ -1349,14 +1349,14 @@ public class Style extends AbstractAttribute
      * @param cssName
      * @return the Enum object which implements {@code CssProperty} interface.
      *         This object be may type casted in to the corresponding enum,
-     *         eg:-</br>
+     *         eg:-<br>
      *         {@code CssProperty cssProperty = style.getCssProperty(CssConstants.ALIGN_CONTENT);}
-     *         </br>
+     *         <br>
      *         {@code if (cssProperty != null &&
-     *         CssConstants.ALIGN_CONTENT.equals(cssProperty.getName())) } </br>
+     *         CssConstants.ALIGN_CONTENT.equals(cssProperty.getName())) } <br>
      *         {@code      AlignContent alignContent = (AlignContent) cssProperty;}
-     *         </br>
-     *         {@code  } </br>
+     *         <br>
+     *         {@code  } <br>
      * @since 1.0.0
      * @author WFF
      */

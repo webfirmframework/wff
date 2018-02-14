@@ -225,7 +225,7 @@ public final class CloneUtil {
      * @param objectToBeClonned
      *            from which a new object will be cloned. {@code null} will be
      *            returned for null value.
-     * @return the newly cloned object or {@cod null} if
+     * @return the newly cloned object or {@code null} if
      *         {@code objectToBeClonned} is null.
      * @throws CloneNotSupportedException
      * @since 1.0.0

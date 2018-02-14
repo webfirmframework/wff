@@ -22,7 +22,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 
 /**
  *
- * <code>autofocus</code> attribute for the element. <br/>
+ * <code>autofocus</code> attribute for the element. <br>
  *
  * This Boolean attribute lets you specify that a form control should have input
  * focus when the page loads, unless the user overrides it, for example by

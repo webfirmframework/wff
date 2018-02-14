@@ -89,7 +89,7 @@ public class BorderLeft extends AbstractCssProperty<BorderLeft>
     }
 
     /**
-     * @param widthtCss
+     * @param borderLeft
      *            the {@code BorderLeft} object from which the cssValue to
      *            set.And, {@code null} will throw {@code NullValueException}
      */

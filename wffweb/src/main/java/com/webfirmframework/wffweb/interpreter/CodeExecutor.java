@@ -52,6 +52,8 @@ public abstract class CodeExecutor implements Serializable, Cloneable {
     /**
      * To execute any piece of code.
      *
+     * @param base
+     *            the base tag object
      * @since 1.0.0
      * @author WFF
      */

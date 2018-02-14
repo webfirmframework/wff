@@ -76,7 +76,7 @@ public class FlexGrow extends AbstractCssProperty<FlexGrow> {
     }
 
     /**
-     * @param flexGrowtCss
+     * @param flexGrow
      *            the {@code FlexGrow} object from which the cssValue to
      *            set.And, {@code null} will throw {@code NullValueException}
      */
@@ -89,7 +89,6 @@ public class FlexGrow extends AbstractCssProperty<FlexGrow> {
 
     /**
      * @param value
-     * @param cssLengthUnit
      */
     public FlexGrow(final float value) {
         this.value = value;

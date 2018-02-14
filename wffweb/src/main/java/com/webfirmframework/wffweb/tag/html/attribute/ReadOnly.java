@@ -21,9 +21,9 @@ import com.webfirmframework.wffweb.tag.html.html5.identifier.AudioAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.BooleanAttribute;
 
 /**
- * <code>readonly</code> attribute for the element.<br/>
+ * <code>readonly</code> attribute for the element.<br>
  *
- * <i>readonly</i> attribute for <i>input</i> element :- <br/>
+ * <i>readonly</i> attribute for <i>input</i> element :- <br>
  * This Boolean attribute indicates that the user cannot modify the value of the
  * control. It is ignored if the value of the type attribute is hidden, range,
  * color, checkbox, radio, file, or a button type (such as button or submit).

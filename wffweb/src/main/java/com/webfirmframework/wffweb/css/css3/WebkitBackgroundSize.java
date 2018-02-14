@@ -81,8 +81,8 @@ public class WebkitBackgroundSize
     }
 
     /**
-     * @param widthtCss
-     *            the {@code WidthCss} object from which the cssValue to
+     * @param backgroundSize
+     *            the {@code backgroundSize} object from which the cssValue to
      *            set.And, {@code null} will throw {@code NullValueException}
      */
     public WebkitBackgroundSize(final WebkitBackgroundSize backgroundSize) {
@@ -95,8 +95,8 @@ public class WebkitBackgroundSize
     /**
      * @param horizontalHeight
      *            the value to set.
-     * @param the
-     *            value unit to set.
+     * @param cssLengthUnit
+     *            the value unit to set.
      * @since 1.0.0
      * @author WFF
      */
@@ -114,7 +114,6 @@ public class WebkitBackgroundSize
      * @param widthCssLengthUnit
      * @param height
      * @param heightCssLengthUnit
-     * @return
      * @author WFF
      * @since 1.0.0
      */

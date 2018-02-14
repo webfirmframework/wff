@@ -461,26 +461,26 @@ public abstract class CssFile implements Serializable, Cloneable {
      * output for the following blocks in the {@code CssFile} extended class
      * will be
      * <code>.test4-class{list-style-position:outside;background-repeat:no-repeat;}</code>
-     * .<br/>
+     * . <br>
      * <code>private CssBlock cssBlock1 = new CssBlock(".test4-class") </code>{
-     * <br/>
-     * <code>         @Override</code><br/>
-     * <code>         protected void load(Set<CssProperty> cssProperties) {</code>
-     * <br/>
+     * <br>
+     * <code>         @Override</code><br>
+     * <code>         protected void load(Set&lt;CssProperty&gt; cssProperties) {</code>
+     * <br>
      * <code>                 cssProperties.add(ListStylePosition.INSIDE);</code>
-     * <br/>
-     * <code>         }</code><br/>
-     * <code> }; </code><br/>
+     * <br>
+     * <code>         }</code><br>
+     * <code> }; </code><br>
      * <code>private CssBlock cssBlock2 = new CssBlock(".test4-class") </code>{
-     * <br/>
-     * <code>         @Override</code><br/>
-     * <code>         protected void load(Set<CssProperty> cssProperties) {</code>
-     * <br/>
+     * <br>
+     * <code>         @Override</code><br>
+     * <code>         protected void load(Set&lt;CssProperty&gt; cssProperties) {</code>
+     * <br>
      * <code>                 cssProperties.add(BackgroundRepeat.NO_REPEAT);</code>
-     * <br/>
+     * <br>
      * <code>                 cssProperties.add(ListStylePosition.OUTSIDE);</code>
-     * <br/>
-     * <code>         }</code><br/>
+     * <br>
+     * <code>         }</code><br>
      * <code> }; </code>
      *
      * @param optimizeCssString

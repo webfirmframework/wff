@@ -97,8 +97,8 @@ public class PerspectiveOrigin extends AbstractCssProperty<PerspectiveOrigin> {
     /**
      * @param xyAxis
      *            the value to set.
-     * @param the
-     *            value unit to set.
+     * @param cssLengthUnit
+     *            the value unit to set.
      * @since 1.0.0
      * @author WFF
      */
@@ -116,7 +116,6 @@ public class PerspectiveOrigin extends AbstractCssProperty<PerspectiveOrigin> {
      * @param xAxisCssLengthUnit
      * @param yAxis
      * @param yAxisCssLengthUnit
-     * @return
      * @author WFF
      * @since 1.0.0
      */

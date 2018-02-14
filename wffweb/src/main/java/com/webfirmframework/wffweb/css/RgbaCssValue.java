@@ -163,7 +163,8 @@ public class RgbaCssValue extends AbstractBean<RgbaCssValue> {
     /**
      * to set the red value which is in between 0 to 255.
      *
-     * @param b
+     * @param r
+     *            represents red
      * @author WFF
      * @since 1.0.0
      */
@@ -191,7 +192,8 @@ public class RgbaCssValue extends AbstractBean<RgbaCssValue> {
     /**
      * to set the green value which is in between 0 to 255.
      *
-     * @param b
+     * @param g
+     *            represents green
      * @author WFF
      * @since 1.0.0
      */
@@ -279,7 +281,7 @@ public class RgbaCssValue extends AbstractBean<RgbaCssValue> {
     }
 
     /**
-     * @param rgbString
+     * @param rgbaString
      *            eg:- rgba(25, 155, 55, 0.2)
      * @return true if valid and false for invalid.
      * @since 1.0.0

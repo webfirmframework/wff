@@ -22,7 +22,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 
 /**
  *
- * <code>formmethod</code> attribute for the element. <br/>
+ * <code>formmethod</code> attribute for the element. <br>
  *
  * <pre>
  * If the input element is a submit button or image, this attribute specifies the HTTP method that the browser uses to submit the form.

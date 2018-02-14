@@ -22,11 +22,11 @@ import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 
 /**
  *
- * <code>max</code> attribute for the element.<br/>
- * <i>max</i> attribute for <i>input</i> element :- <br/>
+ * <code>max</code> attribute for the element.<br>
+ * <i>max</i> attribute for <i>input</i> element :- <br>
  * The maximum (numeric or date-time) value for this item, which must not be
- * less than its minimum (min attribute) value.<br/>
- * <br/>
+ * less than its minimum (min attribute) value.<br>
+ * <br>
  *
  * @author WFF
  * @since 1.0.0

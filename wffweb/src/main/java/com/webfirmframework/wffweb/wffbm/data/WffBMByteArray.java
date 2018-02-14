@@ -40,7 +40,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  *
  * bmObject.put("byteArray", BMValueType.BM_BYTE_ARRAY, byteArray);
  *
- * <pre>
+ * </pre>
  *
  * @author WFF
  * @see WffBMArray

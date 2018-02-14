@@ -22,7 +22,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 
 /**
  *
- * <code>formaction</code> attribute for the element. <br/>
+ * <code>formaction</code> attribute for the element. <br>
  *
  * The URI of a program that processes the information submitted by the input
  * element, if it is a submit button or image. If specified, it overrides the

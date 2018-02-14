@@ -70,7 +70,7 @@ public class MarginTop extends AbstractCssProperty<MarginTop> {
     }
 
     /**
-     * @param widthtCss
+     * @param marginTop
      *            the {@code MarginTop} object from which the cssValue to
      *            set.And, {@code null} will throw {@code NullValueException}
      */

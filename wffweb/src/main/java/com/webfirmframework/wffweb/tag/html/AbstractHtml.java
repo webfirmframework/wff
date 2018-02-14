@@ -1451,7 +1451,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param os
      *            the object of {@code OutputStream} to write to.
      * @param rebuild
-     *            true to rebuild & false to write previously built bytes.
+     *            true to rebuild &amp; false to write previously built bytes.
      * @return the total number of bytes written
      *
      * @throws IOException
@@ -1475,7 +1475,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param os
      *            the object of {@code OutputStream} to write to.
      * @param rebuild
-     *            true to rebuild & false to write previously built bytes.
+     *            true to rebuild &amp; false to write previously built bytes.
      * @param charset
      *            the charset
      * @return the total number of bytes written
@@ -1504,7 +1504,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param os
      *            the object of {@code OutputStream} to write to.
      * @param rebuild
-     *            true to rebuild & false to write previously built bytes.
+     *            true to rebuild &amp; false to write previously built bytes.
      * @param charset
      *            the charset
      * @return the total number of bytes written
@@ -2125,7 +2125,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param os
      *            the object of {@code OutputStream} to write to.
      * @param rebuild
-     *            true to rebuild & false to write previously built bytes.
+     *            true to rebuild &amp; false to write previously built bytes.
      * @return the total number of bytes written
      *
      * @throws IOException
@@ -2139,7 +2139,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param os
      *            the object of {@code OutputStream} to write to.
      * @param rebuild
-     *            true to rebuild & false to write previously built bytes.
+     *            true to rebuild &amp; false to write previously built bytes.
      * @param charset
      *            the charset
      * @return the total number of bytes written
@@ -2157,7 +2157,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param os
      *            the object of {@code OutputStream} to write to.
      * @param rebuild
-     *            true to rebuild & false to write previously built bytes.
+     *            true to rebuild &amp; false to write previously built bytes.
      * @param charset
      *            the charset
      * @return the total number of bytes written
@@ -2673,7 +2673,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param bmMessageBytes
      * @return the AbstractHtml instance from the given Wff BM bytes. It uses
      *         system default charset.
-     * @throws UnsupportedEncodingException
      * @since 2.0.0
      * @author WFF
      */
@@ -2688,7 +2687,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param charset
      *            of value bytes
      * @return the AbstractHtml instance from the given Wff BM bytes
-     * @throws UnsupportedEncodingException
      * @since 2.0.0
      * @author WFF
      */

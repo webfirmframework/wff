@@ -21,7 +21,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.TextAreaAttributable;
 
 /**
  * <pre>
- * <textarea cols="number">
+ * &lt;textarea cols=&quot;number&quot;&gt;
  * Specifies the width of the text area (in average character width). Default value is 20.
  *
  * </pre>
