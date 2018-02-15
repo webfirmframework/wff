@@ -28,7 +28,9 @@ public abstract class AbstractHtmlRepository {
 
     /**
      * @param parallel
-     * @param parent
+     *            true to use parallel stream.
+     * @param parents
+     *            the tags from which the nested children to be taken.
      * @return stream of all nested children including the given parent.
      * @since 3.0.0
      * @author WFF
