@@ -176,23 +176,20 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The fromTags should not be null");
         }
 
-        for (final AbstractHtml parent : fromTags) {
-            final Stream<AbstractHtml> stream = getAllNestedChildrenIncludingParent(
-                    parallel, parent);
+        final Stream<AbstractHtml> stream = getAllNestedChildrenIncludingParent(
+                parallel, fromTags);
 
-            final Optional<AbstractHtml> any = stream.filter((child) -> {
+        final Optional<AbstractHtml> any = stream.filter((child) -> {
 
-                final AbstractAttribute idAttr = child
-                        .getAttributeByName(AttributeNameConstants.ID);
+            final AbstractAttribute idAttr = child
+                    .getAttributeByName(AttributeNameConstants.ID);
 
-                return idAttr != null && id.equals(idAttr.getAttributeValue());
+            return idAttr != null && id.equals(idAttr.getAttributeValue());
 
-            }).findAny();
+        }).findAny();
 
-            if (any.isPresent()) {
-                return any.get();
-            }
-
+        if (any.isPresent()) {
+            return any.get();
         }
         return null;
     }
@@ -306,27 +303,15 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The fromTags should not be null");
         }
 
-        final Collection<AbstractHtml> matchingTags = new HashSet<AbstractHtml>();
+        return getAllNestedChildrenIncludingParent(parallel, fromTags)
+                .filter(child -> {
 
-        for (final AbstractHtml fromTag : fromTags) {
+                    final AbstractAttribute attribute = child
+                            .getAttributeByName(attributeName);
 
-            final Set<AbstractHtml> filteredTags = getAllNestedChildrenIncludingParent(
-                    parallel, fromTag).filter(child -> {
-
-                        final AbstractAttribute attribute = child
-                                .getAttributeByName(attributeName);
-
-                        return attribute != null && attributeValue
-                                .equals(attribute.getAttributeValue());
-                    }).collect(Collectors.toSet());
-
-            if (fromTags.length == 1) {
-                return filteredTags;
-            }
-            matchingTags.addAll(filteredTags);
-
-        }
-        return matchingTags;
+                    return attribute != null && attributeValue
+                            .equals(attribute.getAttributeValue());
+                }).collect(Collectors.toSet());
     }
 
     /**
@@ -383,22 +368,10 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The fromTags should not be null");
         }
 
-        final Collection<AbstractHtml> matchingTags = new HashSet<AbstractHtml>();
-
-        for (final AbstractHtml fromTag : fromTags) {
-
-            final Set<AbstractHtml> filteredTags = getAllNestedChildrenIncludingParent(
-                    parallel, fromTag).filter(child -> {
-                        return tagName.equals(child.getTagName());
-                    }).collect(Collectors.toSet());
-
-            if (fromTags.length == 1) {
-                return filteredTags;
-            }
-            matchingTags.addAll(filteredTags);
-
-        }
-        return matchingTags;
+        return getAllNestedChildrenIncludingParent(parallel, fromTags)
+                .filter(child -> {
+                    return tagName.equals(child.getTagName());
+                }).collect(Collectors.toSet());
     }
 
     /**
@@ -457,27 +430,15 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The fromTags should not be null");
         }
 
-        final Collection<AbstractAttribute> matchingAttributes = new HashSet<AbstractAttribute>();
-
-        for (final AbstractHtml fromTag : fromTags) {
-
-            final Set<AbstractAttribute> set = getAllNestedChildrenIncludingParent(
-                    parallel, fromTag).filter(child -> {
-                        return tagName.equals(child.getTagName())
-                                && child.getAttributes() != null;
-                    }).map(child -> {
-                        return child.getAttributes();
-                    }).flatMap(attributes -> parallel
-                            ? attributes.parallelStream() : attributes.stream())
-                            .collect(Collectors.toSet());
-
-            if (fromTags.length == 1) {
-                return set;
-            }
-            matchingAttributes.addAll(set);
-        }
-
-        return matchingAttributes;
+        return getAllNestedChildrenIncludingParent(parallel, fromTags)
+                .filter(child -> {
+                    return tagName.equals(child.getTagName())
+                            && child.getAttributes() != null;
+                }).map(child -> {
+                    return child.getAttributes();
+                }).flatMap(attributes -> parallel ? attributes.parallelStream()
+                        : attributes.stream())
+                .collect(Collectors.toSet());
     }
 
     /**
@@ -538,24 +499,21 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The fromTags should not be null");
         }
 
-        for (final AbstractHtml parent : fromTags) {
-            final Stream<AbstractHtml> stream = getAllNestedChildrenIncludingParent(
-                    parallel, parent);
+        final Stream<AbstractHtml> stream = getAllNestedChildrenIncludingParent(
+                parallel, fromTags);
 
-            final Optional<AbstractHtml> any = stream.filter((child) -> {
+        final Optional<AbstractHtml> any = stream.filter((child) -> {
 
-                final AbstractAttribute attr = child
-                        .getAttributeByName(attributeName);
+            final AbstractAttribute attr = child
+                    .getAttributeByName(attributeName);
 
-                return attr != null
-                        && attributeValue.equals(attr.getAttributeValue());
+            return attr != null
+                    && attributeValue.equals(attr.getAttributeValue());
 
-            }).findAny();
+        }).findAny();
 
-            if (any.isPresent()) {
-                return any.get();
-            }
-
+        if (any.isPresent()) {
+            return any.get();
         }
         return null;
     }
@@ -612,15 +570,13 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The fromTags should not be null");
         }
 
-        for (final AbstractHtml parent : fromTags) {
-            final Optional<AbstractHtml> any = getAllNestedChildrenIncludingParent(
-                    parallel, parent).filter((tag) -> {
-                        return tagName.equals(tag.getTagName());
-                    }).findAny();
+        final Optional<AbstractHtml> any = getAllNestedChildrenIncludingParent(
+                parallel, fromTags).filter((tag) -> {
+                    return tagName.equals(tag.getTagName());
+                }).findAny();
 
-            if (any.isPresent()) {
-                return any.get();
-            }
+        if (any.isPresent()) {
+            return any.get();
         }
 
         return null;
@@ -747,17 +703,15 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The fromTags should not be null");
         }
 
-        for (final AbstractHtml fromTag : fromTags) {
-            final Optional<AbstractHtml> any = getAllNestedChildrenIncludingParent(
-                    parallel,
-                    fromTag).filter(child -> tagClass
-                            .isAssignableFrom(child.getClass())
-                            && !NoTag.class.isAssignableFrom(child.getClass()))
-                            .findAny();
+        final Optional<AbstractHtml> any = getAllNestedChildrenIncludingParent(
+                parallel,
+                fromTags).filter(child -> tagClass
+                        .isAssignableFrom(child.getClass())
+                        && !NoTag.class.isAssignableFrom(child.getClass()))
+                        .findAny();
 
-            if (any.isPresent()) {
-                return (T) any.get();
-            }
+        if (any.isPresent()) {
+            return (T) any.get();
         }
 
         return null;
@@ -896,23 +850,11 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The fromTags should not be null");
         }
 
-        final Collection<AbstractHtml> matchingTags = new HashSet<AbstractHtml>();
-
-        for (final AbstractHtml parent : fromTags) {
-            final Collection<AbstractHtml> set = getAllNestedChildrenIncludingParent(
-                    parallel, parent).filter(tag -> {
-                        return tagClass.isAssignableFrom(tag.getClass())
-                                && !NoTag.class
-                                        .isAssignableFrom(tag.getClass());
-                    }).collect(Collectors.toSet());
-
-            if (fromTags.length == 1) {
-                return (Collection<T>) set;
-            }
-            matchingTags.addAll(set);
-        }
-
-        return (Collection<T>) matchingTags;
+        return (Collection<T>) getAllNestedChildrenIncludingParent(parallel,
+                fromTags).filter(tag -> {
+                    return tagClass.isAssignableFrom(tag.getClass())
+                            && !NoTag.class.isAssignableFrom(tag.getClass());
+                }).collect(Collectors.toSet());
     }
 
     /**
@@ -969,17 +911,14 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The fromTags should not be null");
         }
 
-        for (final AbstractHtml fromTag : fromTags) {
+        final Optional<AbstractHtml> any = getAllNestedChildrenIncludingParent(
+                parallel, fromTags).filter(child -> {
 
-            final Optional<AbstractHtml> any = getAllNestedChildrenIncludingParent(
-                    parallel, fromTag).filter(child -> {
+                    return child.getAttributeByName(attributeName) != null;
+                }).findAny();
 
-                        return child.getAttributeByName(attributeName) != null;
-                    }).findAny();
-
-            if (any.isPresent()) {
-                return any.get();
-            }
+        if (any.isPresent()) {
+            return any.get();
         }
 
         return null;
@@ -1040,24 +979,11 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The fromTags should not be null");
         }
 
-        final Collection<AbstractHtml> matchingTags = new HashSet<AbstractHtml>();
+        return getAllNestedChildrenIncludingParent(parallel, fromTags)
+                .filter(child -> {
 
-        for (final AbstractHtml fromTag : fromTags) {
-
-            final Set<AbstractHtml> filteredTags = getAllNestedChildrenIncludingParent(
-                    parallel, fromTag).filter(child -> {
-
-                        return child.getAttributeByName(attributeName) != null;
-                    }).collect(Collectors.toSet());
-
-            if (fromTags.length == 1) {
-                return filteredTags;
-            }
-            matchingTags.addAll(filteredTags);
-
-        }
-
-        return matchingTags;
+                    return child.getAttributeByName(attributeName) != null;
+                }).collect(Collectors.toSet());
     }
 
     /**
@@ -1982,20 +1908,8 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("fromTags cannot be null");
         }
 
-        final Collection<AbstractHtml> matchingTags = new HashSet<AbstractHtml>();
-
-        for (final AbstractHtml fromTag : fromTags) {
-
-            final Set<AbstractHtml> filteredTags = getAllNestedChildrenIncludingParent(
-                    parallel, fromTag).collect(Collectors.toSet());
-
-            if (fromTags.length == 1) {
-                return filteredTags;
-            }
-            matchingTags.addAll(filteredTags);
-
-        }
-        return matchingTags;
+        return getAllNestedChildrenIncludingParent(parallel, fromTags)
+                .collect(Collectors.toSet());
     }
 
     /**
@@ -2083,28 +1997,12 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("fromTags cannot be null");
         }
 
-        final Collection<AbstractAttribute> allAttributes = new HashSet<AbstractAttribute>();
-
-        for (final AbstractHtml parent : fromTags) {
-            final Set<AbstractAttribute> set = getAllNestedChildrenIncludingParent(
-                    parallel, parent).filter(tag -> tag.getAttributes() != null)
-                            .map((tag) -> {
-                                return tag.getAttributes();
-                            })
-                            .flatMap(attributes -> parallel
-                                    ? attributes.parallelStream()
-                                    : attributes.stream())
-                            .collect(Collectors.toSet());
-
-            if (fromTags.length == 1) {
-                return set;
-            }
-
-            allAttributes.addAll(set);
-
-        }
-
-        return allAttributes;
+        return getAllNestedChildrenIncludingParent(parallel, fromTags)
+                .filter(tag -> tag.getAttributes() != null).map((tag) -> {
+                    return tag.getAttributes();
+                }).flatMap(attributes -> parallel ? attributes.parallelStream()
+                        : attributes.stream())
+                .collect(Collectors.toSet());
     }
 
     /**
