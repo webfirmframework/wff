@@ -76,13 +76,24 @@ public class TagRepositoryTest {
             
         }};
         
-        final Collection<AbstractHtml> tags = TagRepository.findTagsByTagName(false, TagNameConstants.SPAN, html);
-        
-        for (AbstractHtml tag : tags) {
-            assertTrue((tag instanceof Span));
+        {
+            final Collection<AbstractHtml> tags = TagRepository.findTagsByTagName(false, TagNameConstants.SPAN, html);
             
+            for (AbstractHtml tag : tags) {
+                assertTrue((tag instanceof Span));
+                
+            }
+            assertEquals(2, tags.size());
         }
-        assertEquals(2, tags.size());
+        {
+            final Collection<AbstractHtml> tags = TagRepository.findTagsByTagName(false, TagNameConstants.HTML, html);
+            
+            for (AbstractHtml tag : tags) {
+                assertTrue((tag instanceof Html));
+                
+            }
+            assertEquals(1, tags.size());
+        }
     }
     
     @Test
