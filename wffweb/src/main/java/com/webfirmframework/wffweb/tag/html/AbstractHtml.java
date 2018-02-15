@@ -3229,6 +3229,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
+     * NB: it might lead to StackOverflowException if the tag hierarchy is deep.
+     *
      * @return stream of all nested children including this parent object.
      * @since 3.0.0
      * @author WFF
@@ -3239,6 +3241,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
+     * NB: it might lead to StackOverflowException if the tag hierarchy is deep.
+     *
      * @param parent
      *            the parent object from which the nested children stream to be
      *            built.
