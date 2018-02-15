@@ -1786,7 +1786,7 @@ public class TagRepository extends AbstractHtmlRepository
      * @author WFF
      */
     public Body findBodyTag(final boolean parallel) {
-        return (Body) findOneTagByTagName(false, TagNameConstants.BODY);
+        return (Body) findOneTagByTagName(parallel, TagNameConstants.BODY);
     }
 
     /**
@@ -1815,7 +1815,7 @@ public class TagRepository extends AbstractHtmlRepository
      * @author WFF
      */
     public Head findHeadTag(final boolean parallel) {
-        return (Head) findOneTagByTagName(false, TagNameConstants.HEAD);
+        return (Head) findOneTagByTagName(parallel, TagNameConstants.HEAD);
     }
 
     /**
@@ -1845,7 +1845,7 @@ public class TagRepository extends AbstractHtmlRepository
      * @author WFF
      */
     public TitleTag findTitleTag(final boolean parallel) {
-        return (TitleTag) findOneTagByTagName(false,
+        return (TitleTag) findOneTagByTagName(parallel,
                 TagNameConstants.TITLE_TAG);
     }
 
