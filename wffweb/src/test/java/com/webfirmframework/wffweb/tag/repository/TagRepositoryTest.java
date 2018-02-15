@@ -306,6 +306,24 @@ public class TagRepositoryTest {
             final AbstractHtml tag = browserPage.getTagRepository().findOneTagByAttributeName("style");
             assertNull(tag);
         }
+        {
+            final AbstractHtml tag = TagRepository.findOneTagByAttributeName(false, "name", html);
+            assertNotNull(tag);
+            assertTrue(tag instanceof H3);
+        }
+        {
+            final AbstractHtml tag = TagRepository.findOneTagByAttributeName(false, "style", html);
+            assertNull(tag);
+        }
+        {
+            final AbstractHtml tag = TagRepository.findOneTagByAttributeName(true, "name", html);
+            assertNotNull(tag);
+            assertTrue(tag instanceof H3);
+        }
+        {
+            final AbstractHtml tag = TagRepository.findOneTagByAttributeName(true, "style", html);
+            assertNull(tag);
+        }
     }
 
     @Test

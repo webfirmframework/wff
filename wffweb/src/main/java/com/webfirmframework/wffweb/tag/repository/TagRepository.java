@@ -712,6 +712,33 @@ public class TagRepository extends AbstractHtmlRepository
     public static AbstractHtml findOneTagByAttributeName(
             final String attributeName, final AbstractHtml... fromTags)
             throws NullValueException {
+        return findOneTagByAttributeName(false, attributeName, fromTags);
+    }
+
+    /**
+     * Finds and returns the first (including the nested tags) matching with the
+     * given attribute name.
+     *
+     * @param parallel
+     *            true to internally use parallel stream. If true it will split
+     *            the finding task to different batches and will execute the
+     *            batches in different threads in parallel consuming all CPUs.
+     *            It will perform faster in finding from extremely large number
+     *            of tags but at the same time it will less efficient in finding
+     *            from small number of tags.
+     * @param attributeName
+     *            the name of the attribute.
+     * @param fromTags
+     *            from which the findings to be done.
+     * @return the first matching tag with the given attribute name and value.
+     * @throws NullValueException
+     *             if the {@code attributeName} or {@code fromTags} is null
+     * @since 3.0.0
+     * @author WFF
+     */
+    public static AbstractHtml findOneTagByAttributeName(final boolean parallel,
+            final String attributeName, final AbstractHtml... fromTags)
+            throws NullValueException {
 
         if (attributeName == null) {
             throw new NullValueException(
@@ -722,26 +749,20 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The fromTags should not be null");
         }
 
-        final AbstractHtml[] matchingTag = new AbstractHtml[1];
+        for (final AbstractHtml fromTag : fromTags) {
 
-        loopThroughAllNestedChildren(new NestedChild() {
+            final Optional<AbstractHtml> any = getAllNestedChildrenIncludingParent(
+                    parallel, fromTag).filter(child -> {
 
-            @Override
-            public boolean eachChild(final AbstractHtml child) {
+                        return child.getAttributeByName(attributeName) != null;
+                    }).findAny();
 
-                final AbstractAttribute attribute = child
-                        .getAttributeByName(attributeName);
-
-                if (attribute != null) {
-                    matchingTag[0] = child;
-                    return false;
-                }
-
-                return true;
+            if (any.isPresent()) {
+                return any.get();
             }
-        }, true, fromTags);
+        }
 
-        return matchingTag[0];
+        return null;
     }
 
     /**
