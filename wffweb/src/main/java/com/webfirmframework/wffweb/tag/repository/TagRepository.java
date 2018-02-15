@@ -192,7 +192,12 @@ public class TagRepository extends AbstractHtmlRepository
      * Finds and returns the first tag matching with the given id.
      *
      * @param parallel
-     *            true to internally use parallel stream.
+     *            true to internally use parallel stream. If true it will split
+     *            the finding task to different batches and will execute the
+     *            batches in different threads in parallel consuming all CPUs.
+     *            It will perform faster in finding from extremely large number
+     *            of tags but at the same time it will less efficient in finding
+     *            from small number of tags.
      * @param id
      *            the value of id attribute.
      * @return the first found tag with the given id
@@ -746,7 +751,12 @@ public class TagRepository extends AbstractHtmlRepository
      * matching with the given attribute name.
      *
      * @param parallel
-     *            true to internally use parallel stream.
+     *            true to internally use parallel stream. If true it will split
+     *            the finding task to different batches and will execute the
+     *            batches in different threads in parallel consuming all CPUs.
+     *            It will perform faster in finding from extremely large number
+     *            of tags but at the same time it will less efficient in finding
+     *            from small number of tags.
      * @param attributeName
      *            the name of the attribute.
      * @return the collection of tags matching with the given attribute.
@@ -796,7 +806,12 @@ public class TagRepository extends AbstractHtmlRepository
      * matching with the given attribute name and value.
      *
      * @param parallel
-     *            true to internally use parallel stream.
+     *            true to internally use parallel stream. If true it will split
+     *            the finding task to different batches and will execute the
+     *            batches in different threads in parallel consuming all CPUs.
+     *            It will perform faster in finding from extremely large number
+     *            of tags but at the same time it will less efficient in finding
+     *            from small number of tags.
      * @param attributeName
      *            the name of the attribute.
      * @param attributeValue
@@ -856,7 +871,12 @@ public class TagRepository extends AbstractHtmlRepository
      * matching with the give tag name and value.
      *
      * @param parallel
-     *            true to internally use parallel stream.
+     *            true to internally use parallel stream. If true it will split
+     *            the finding task to different batches and will execute the
+     *            batches in different threads in parallel consuming all CPUs.
+     *            It will perform faster in finding from extremely large number
+     *            of tags but at the same time it will less efficient in finding
+     *            from small number of tags.
      * @param tagName
      *            the name of the tag.
      * @return the collection of tags matching with the given tag name and
@@ -901,7 +921,12 @@ public class TagRepository extends AbstractHtmlRepository
      * tags) of the tags matching with the give tag name.
      *
      * @param parallel
-     *            true to internally use parallel stream.
+     *            true to internally use parallel stream. If true it will split
+     *            the finding task to different batches and will execute the
+     *            batches in different threads in parallel consuming all CPUs.
+     *            It will perform faster in finding from extremely large number
+     *            of tags but at the same time it will less efficient in finding
+     *            from small number of tags.
      * @param tagName
      *            the name of the tag.
      * @return the collection of attributes of the tags matching with the given
@@ -958,7 +983,12 @@ public class TagRepository extends AbstractHtmlRepository
      * given attribute name and value.
      *
      * @param parallel
-     *            true to internally use parallel stream.
+     *            true to internally use parallel stream. If true it will split
+     *            the finding task to different batches and will execute the
+     *            batches in different threads in parallel consuming all CPUs.
+     *            It will perform faster in finding from extremely large number
+     *            of tags but at the same time it will less efficient in finding
+     *            from small number of tags.
      * @param attributeName
      *            the name of the attribute.
      * @param attributeValue
@@ -1012,7 +1042,12 @@ public class TagRepository extends AbstractHtmlRepository
      * given tag name.
      *
      * @param parallel
-     *            true to internally use parallel stream.
+     *            true to internally use parallel stream. If true it will split
+     *            the finding task to different batches and will execute the
+     *            batches in different threads in parallel consuming all CPUs.
+     *            It will perform faster in finding from extremely large number
+     *            of tags but at the same time it will less efficient in finding
+     *            from small number of tags.
      * @param tagName
      *            the name of the tag.
      * @return the first matching tag with the given tag name.
@@ -1117,7 +1152,12 @@ public class TagRepository extends AbstractHtmlRepository
      * </pre>
      *
      * @param parallel
-     *            true to internally use parallel stream.
+     *            true to internally use parallel stream. If true it will split
+     *            the finding task to different batches and will execute the
+     *            batches in different threads in parallel consuming all CPUs.
+     *            It will perform faster in finding from extremely large number
+     *            of tags but at the same time it will less efficient in finding
+     *            from small number of tags.
      * @param tagClass
      *            the class of the tag.
      * @return the first matching tag which is assignable to the given tag
@@ -1239,7 +1279,12 @@ public class TagRepository extends AbstractHtmlRepository
      * </pre>
      *
      * @param parallel
-     *            true to internally use parallel stream.
+     *            true to internally use parallel stream. If true it will split
+     *            the finding task to different batches and will execute the
+     *            batches in different threads in parallel consuming all CPUs.
+     *            It will perform faster in finding from extremely large number
+     *            of tags but at the same time it will less efficient in finding
+     *            from small number of tags.
      * @param tagClass
      *            the class of the tag.
      * @return the all matching tags which is assignable to the given tag class.
@@ -1295,7 +1340,12 @@ public class TagRepository extends AbstractHtmlRepository
      * given attribute name.
      *
      * @param parallel
-     *            true to internally use parallel stream.
+     *            true to internally use parallel stream. If true it will split
+     *            the finding task to different batches and will execute the
+     *            batches in different threads in parallel consuming all CPUs.
+     *            It will perform faster in finding from extremely large number
+     *            of tags but at the same time it will less efficient in finding
+     *            from small number of tags.
      * @param attributeName
      *            the name of the attribute.
      * @return the first matching tag with the given attribute name and value.
@@ -1516,7 +1566,12 @@ public class TagRepository extends AbstractHtmlRepository
      * Finds all tags excluding {@code NoTag}.
      *
      * @param parallel
-     *            true to internally use parallel stream.
+     *            true to internally use parallel stream. If true it will split
+     *            the finding task to different batches and will execute the
+     *            batches in different threads in parallel consuming all CPUs.
+     *            It will perform faster in finding from extremely large number
+     *            of tags but at the same time it will less efficient in finding
+     *            from small number of tags.
      * @return the collection of all tags
      * @since 3.0.0
      * @author WFF
@@ -1529,7 +1584,12 @@ public class TagRepository extends AbstractHtmlRepository
      * Finds all tags excluding {@code NoTag}.
      *
      * @param parallel
-     *            true to internally use parallel stream.
+     *            true to internally use parallel stream. If true it will split
+     *            the finding task to different batches and will execute the
+     *            batches in different threads in parallel consuming all CPUs.
+     *            It will perform faster in finding from extremely large number
+     *            of tags but at the same time it will less efficient in finding
+     *            from small number of tags.
      * @return the stream of all tags
      * @since 3.0.0
      * @author WFF
@@ -1586,7 +1646,12 @@ public class TagRepository extends AbstractHtmlRepository
      * Finds all attributes.
      *
      * @param parallel
-     *            true to internally use parallel stream.
+     *            true to internally use parallel stream. If true it will split
+     *            the finding task to different batches and will execute the
+     *            batches in different threads in parallel consuming all CPUs.
+     *            It will perform faster in finding from extremely large number
+     *            of tags but at the same time it will less efficient in finding
+     *            from small number of tags.
      * @return the collection of all attributes
      * @since 3.0.0
      * @author WFF
@@ -1777,7 +1842,12 @@ public class TagRepository extends AbstractHtmlRepository
      * Finds the {@code body} tag.
      *
      * @param parallel
-     *            true to internally use parallel stream.
+     *            true to internally use parallel stream. If true it will split
+     *            the finding task to different batches and will execute the
+     *            batches in different threads in parallel consuming all CPUs.
+     *            It will perform faster in finding from extremely large number
+     *            of tags but at the same time it will less efficient in finding
+     *            from small number of tags.
      *
      * @return the {@code body} tag. If there are multiple {@code body} tags
      *         available any one of them will be returned. If no {@code body}
@@ -1806,7 +1876,12 @@ public class TagRepository extends AbstractHtmlRepository
      * Finds the {@code head} tag.
      *
      * @param parallel
-     *            true to internally use parallel stream.
+     *            true to internally use parallel stream. If true it will split
+     *            the finding task to different batches and will execute the
+     *            batches in different threads in parallel consuming all CPUs.
+     *            It will perform faster in finding from extremely large number
+     *            of tags but at the same time it will less efficient in finding
+     *            from small number of tags.
      *
      * @return the {@code head} tag. If there are multiple {@code head} tags
      *         available any one of them will be returned. If no {@code head}
@@ -1836,7 +1911,12 @@ public class TagRepository extends AbstractHtmlRepository
      * Finds the {@code title} tag.
      *
      * @param parallel
-     *            true to internally use parallel stream.
+     *            true to internally use parallel stream. If true it will split
+     *            the finding task to different batches and will execute the
+     *            batches in different threads in parallel consuming all CPUs.
+     *            It will perform faster in finding from extremely large number
+     *            of tags but at the same time it will less efficient in finding
+     *            from small number of tags.
      *
      * @return the {@code title} tag. If there are multiple {@code title} tags
      *         available any one of them will be returned. If no {@code title}
