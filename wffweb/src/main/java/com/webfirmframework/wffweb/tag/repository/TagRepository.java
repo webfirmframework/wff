@@ -1992,6 +1992,30 @@ public class TagRepository extends AbstractHtmlRepository
      */
     public static Collection<AbstractAttribute> findAllAttributes(
             final AbstractHtml... fromTags) throws NullValueException {
+        return findAllAttributes(false, fromTags);
+    }
+
+    /**
+     * Finds all attributes from the given tags
+     *
+     * @param parallel
+     *            true to internally use parallel stream. If true it will split
+     *            the finding task to different batches and will execute the
+     *            batches in different threads in parallel consuming all CPUs.
+     *            It will perform faster in finding from extremely large number
+     *            of tags but at the same time it will less efficient in finding
+     *            from small number of tags.
+     * @param fromTags
+     *            the tags to find the attributes from.
+     * @return the all attributes from the given tags including the nested tags.
+     * @throws NullValueException
+     *             if {@code fromTags} is null
+     * @since 3.0.0
+     * @author WFF
+     */
+    public static Collection<AbstractAttribute> findAllAttributes(
+            final boolean parallel, final AbstractHtml... fromTags)
+            throws NullValueException {
 
         if (fromTags == null) {
             throw new NullValueException("fromTags cannot be null");
@@ -1999,19 +2023,24 @@ public class TagRepository extends AbstractHtmlRepository
 
         final Collection<AbstractAttribute> allAttributes = new HashSet<AbstractAttribute>();
 
-        loopThroughAllNestedChildren(new NestedChild() {
+        for (final AbstractHtml parent : fromTags) {
+            final Set<AbstractAttribute> set = getAllNestedChildrenIncludingParent(
+                    parallel, parent).filter(tag -> tag.getAttributes() != null)
+                            .map((tag) -> {
+                                return tag.getAttributes();
+                            })
+                            .flatMap(attributes -> parallel
+                                    ? attributes.parallelStream()
+                                    : attributes.stream())
+                            .collect(Collectors.toSet());
 
-            @Override
-            public boolean eachChild(final AbstractHtml child) {
-
-                final Collection<AbstractAttribute> attributes = child
-                        .getAttributes();
-                if (attributes != null) {
-                    allAttributes.addAll(attributes);
-                }
-                return true;
+            if (fromTags.length == 1) {
+                return set;
             }
-        }, true, fromTags);
+
+            allAttributes.addAll(set);
+
+        }
 
         return allAttributes;
     }
