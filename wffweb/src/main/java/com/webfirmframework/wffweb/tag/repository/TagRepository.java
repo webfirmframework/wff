@@ -814,9 +814,74 @@ public class TagRepository extends AbstractHtmlRepository
      * @since 2.1.11
      * @author WFF
      */
-    @SuppressWarnings("unchecked")
     public static <T extends AbstractHtml> Collection<T> findTagsAssignableToTag(
             final Class<T> tagClass, final AbstractHtml... fromTags)
+            throws NullValueException, InvalidTagException {
+        return findTagsAssignableToTag(false, tagClass, fromTags);
+    }
+
+    /**
+     * Finds and returns the all matching (including from nested tags) tags
+     * (which is assignable to the given tag class). <br>
+     * <br>
+     *
+     * <pre>
+     * <code>
+     * Html html = new Html(null) {{
+     *      new Head(this) {{
+     *          new TitleTag(this){{
+     *              new NoTag(this, "some title");
+     *          }};
+     *      }};
+     *      new Body(this, new Id("one")) {{
+     *          new Div(this);
+     *          new Div(this) {{
+     *              new Div(this) {{
+     *                  new Div(this);
+     *              }};
+     *          }};
+     *          new Div(this);
+     *      }};
+     *  }};
+     *
+     *  Collection&lt;Head&gt; heads = TagRepository.findTagsAssignableToTag(Head.class, html);
+     *  Collection&lt;Div&gt; divs = TagRepository.findTagsAssignableToTag(Div.class, html);
+     *
+     *  System.out.println(heads.size());
+     *  System.out.println(divs.size());
+     *
+     *  //prints
+     *
+     *  1
+     *  5
+     *
+     * </code>
+     * </pre>
+     *
+     * @param parallel
+     *            true to internally use parallel stream. If true it will split
+     *            the finding task to different batches and will execute the
+     *            batches in different threads in parallel consuming all CPUs.
+     *            It will perform faster in finding from extremely large number
+     *            of tags but at the same time it will less efficient in finding
+     *            from small number of tags.
+     *
+     * @param tagClass
+     *            the class of the tag.
+     * @param fromTags
+     *            from which the findings to be done.
+     * @return the all matching tags which is assignable to the given tag class.
+     * @throws NullValueException
+     *             if the {@code tagClass} or {@code fromTags} is null
+     * @throws InvalidTagException
+     *             if the given tag class is NoTag.class
+     * @since 3.0.0
+     * @author WFF
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends AbstractHtml> Collection<T> findTagsAssignableToTag(
+            final boolean parallel, final Class<T> tagClass,
+            final AbstractHtml... fromTags)
             throws NullValueException, InvalidTagException {
 
         if (tagClass == null) {
@@ -834,19 +899,19 @@ public class TagRepository extends AbstractHtmlRepository
 
         final Collection<AbstractHtml> matchingTags = new HashSet<AbstractHtml>();
 
-        loopThroughAllNestedChildren(new NestedChild() {
+        for (final AbstractHtml parent : fromTags) {
+            final Collection<AbstractHtml> set = getAllNestedChildrenIncludingParent(
+                    parallel, parent).filter(tag -> {
+                        return tagClass.isAssignableFrom(tag.getClass())
+                                && !NoTag.class
+                                        .isAssignableFrom(tag.getClass());
+                    }).collect(Collectors.toSet());
 
-            @Override
-            public boolean eachChild(final AbstractHtml child) {
-
-                if (tagClass.isAssignableFrom(child.getClass())
-                        && !NoTag.class.isAssignableFrom(child.getClass())) {
-                    matchingTags.add(child);
-                }
-
-                return true;
+            if (fromTags.length == 1) {
+                return (Collection<T>) set;
             }
-        }, true, fromTags);
+            matchingTags.addAll(set);
+        }
 
         return (Collection<T>) matchingTags;
     }
