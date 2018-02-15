@@ -20,6 +20,8 @@ import static org.junit.Assert.*;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -35,6 +37,7 @@ import com.webfirmframework.wffweb.tag.html.H3;
 import com.webfirmframework.wffweb.tag.html.Html;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.TitleTag;
+import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.Name;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
@@ -51,7 +54,36 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMArray;
 import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
 
 @SuppressWarnings({ "serial", "deprecation" })
-public class TagRepositoryTest {
+public class TagRepositoryTest {  
+    
+    @Test
+    public void testFindTagsByAttributeStringStringAbstractHtmls() throws Exception {
+        
+        final Html html = new Html(null) {{
+            new Body(this) {{
+                new Div(this, new Id("one"), new Name("name1")) {{
+                    new Span(this, new Id("two")) {{
+                        new H1(this, new Id("three"), new Name("name1"));
+                        new H2(this, new Id("four"));
+                        new NoTag(this, "something");
+                    }};
+
+                    new H3(this, new Name("name1"));
+                }};  
+            }};
+            
+        }};
+        
+        final Collection<AbstractHtml> tags = TagRepository.findTagsByAttribute(AttributeNameConstants.NAME, "name1", html);
+        
+        for (AbstractHtml tag : tags) {
+            System.out.println(tag.getTagName());
+            
+            assertTrue((tag instanceof Div) || (tag instanceof H1) || (tag instanceof H3));
+            
+        }
+        
+    }
     
     @Test
     public void testFindBodyTag() throws Exception {

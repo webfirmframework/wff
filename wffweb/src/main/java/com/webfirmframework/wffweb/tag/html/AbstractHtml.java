@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import com.webfirmframework.wffweb.InvalidTagException;
 import com.webfirmframework.wffweb.MethodNotImplementedException;
@@ -3225,5 +3226,28 @@ public abstract class AbstractHtml extends AbstractJsObject {
             }
         }
         throw new InvalidTagException("Child tag cannot be reset");
+    }
+
+    /**
+     * @return stream of all nested children including this parent object.
+     * @since 3.0.0
+     * @author WFF
+     */
+    private Stream<AbstractHtml> buildNestedChildrenIncludingParent() {
+        return Stream.concat(Stream.of(this), children.stream()
+                .flatMap(AbstractHtml::buildNestedChildrenIncludingParent));
+    }
+
+    /**
+     * @param parent
+     *            the parent object from which the nested children stream to be
+     *            built.
+     * @return stream of all nested children including the given parent object.
+     * @since 2.1.15
+     * @author WFF
+     */
+    protected static Stream<AbstractHtml> getAllNestedChildrenIncludingParent(
+            final AbstractHtml parent) {
+        return parent.buildNestedChildrenIncludingParent();
     }
 }

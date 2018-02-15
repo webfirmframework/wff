@@ -15,6 +15,8 @@
  */
 package com.webfirmframework.wffweb.tag.html;
 
+import java.util.stream.Stream;
+
 import com.webfirmframework.wffweb.wffbm.data.WffBMData;
 
 /**
@@ -22,6 +24,22 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMData;
  * @since 2.1.8
  */
 public abstract class AbstractHtmlRepository {
+
+    /**
+     * @param parallel
+     * @param parent
+     * @return stream of all nested children including the given parent.
+     * @since 3.0.0
+     * @author WFF
+     */
+    protected static Stream<AbstractHtml> getAllNestedChildrenIncludingParent(
+            final boolean parallel, final AbstractHtml parent) {
+        if (parallel) {
+            return AbstractHtml.getAllNestedChildrenIncludingParent(parent)
+                    .parallel();
+        }
+        return AbstractHtml.getAllNestedChildrenIncludingParent(parent);
+    }
 
     /**
      * Loops through all nested children tags (excluding the given tag) of the
