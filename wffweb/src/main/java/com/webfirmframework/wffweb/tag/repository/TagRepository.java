@@ -34,7 +34,6 @@ import com.webfirmframework.wffweb.server.page.action.BrowserPageAction;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.AbstractHtmlRepository;
 import com.webfirmframework.wffweb.tag.html.Body;
-import com.webfirmframework.wffweb.tag.html.NestedChild;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.TitleTag;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
@@ -1003,6 +1002,34 @@ public class TagRepository extends AbstractHtmlRepository
     public static Collection<AbstractHtml> findTagsByAttributeName(
             final String attributeName, final AbstractHtml... fromTags)
             throws NullValueException {
+        return findTagsByAttributeName(false, attributeName, fromTags);
+    }
+
+    /**
+     * Finds and returns the collection of tags (including the nested tags)
+     * matching with the given attribute name.
+     *
+     * @param parallel
+     *            true to internally use parallel stream. If true it will split
+     *            the finding task to different batches and will execute the
+     *            batches in different threads in parallel consuming all CPUs.
+     *            It will perform faster in finding from extremely large number
+     *            of tags but at the same time it will less efficient in finding
+     *            from small number of tags.
+     *
+     * @param attributeName
+     *            the name of the attribute.
+     * @param fromTags
+     *            from which the findings to be done.
+     * @return the collection of tags matching with the given attribute.
+     * @throws NullValueException
+     *             if the {@code attributeName} or {@code fromTags} is null
+     * @since 3.0.0
+     * @author WFF
+     */
+    public static Collection<AbstractHtml> findTagsByAttributeName(
+            final boolean parallel, final String attributeName,
+            final AbstractHtml... fromTags) throws NullValueException {
 
         if (attributeName == null) {
             throw new NullValueException(
@@ -1015,21 +1042,20 @@ public class TagRepository extends AbstractHtmlRepository
 
         final Collection<AbstractHtml> matchingTags = new HashSet<AbstractHtml>();
 
-        loopThroughAllNestedChildren(new NestedChild() {
+        for (final AbstractHtml fromTag : fromTags) {
 
-            @Override
-            public boolean eachChild(final AbstractHtml child) {
+            final Set<AbstractHtml> filteredTags = getAllNestedChildrenIncludingParent(
+                    parallel, fromTag).filter(child -> {
 
-                final AbstractAttribute attribute = child
-                        .getAttributeByName(attributeName);
+                        return child.getAttributeByName(attributeName) != null;
+                    }).collect(Collectors.toSet());
 
-                if (attribute != null) {
-                    matchingTags.add(child);
-                }
-
-                return true;
+            if (fromTags.length == 1) {
+                return filteredTags;
             }
-        }, true, fromTags);
+            matchingTags.addAll(filteredTags);
+
+        }
 
         return matchingTags;
     }
@@ -1905,7 +1931,8 @@ public class TagRepository extends AbstractHtmlRepository
     }
 
     /**
-     * Finds all tags including the nested tags from the given tags.
+     * Finds all tags including the nested tags (and including {@code NoTag})
+     * from the given tags.
      *
      * @param fromTags
      *            to find all tags from these tags
@@ -1917,23 +1944,50 @@ public class TagRepository extends AbstractHtmlRepository
      */
     public static Collection<AbstractHtml> findAllTags(
             final AbstractHtml... fromTags) throws NullValueException {
+        return findAllTags(false, fromTags);
+    }
+
+    /**
+     * Finds all tags including the nested tags (and including {@code NoTag})
+     * from the given tags.
+     *
+     * @param parallel
+     *            true to internally use parallel stream. If true it will split
+     *            the finding task to different batches and will execute the
+     *            batches in different threads in parallel consuming all CPUs.
+     *            It will perform faster in finding from extremely large number
+     *            of tags but at the same time it will less efficient in finding
+     *            from small number of tags.
+     *
+     * @param fromTags
+     *            to find all tags from these tags
+     * @return all tags including the nested tags from the given tags.
+     * @throws NullValueException
+     *             if {@code fromTags} is null
+     * @since 3.0.0
+     * @author WFF
+     */
+    public static Collection<AbstractHtml> findAllTags(final boolean parallel,
+            final AbstractHtml... fromTags) throws NullValueException {
 
         if (fromTags == null) {
             throw new NullValueException("fromTags cannot be null");
         }
 
-        final Collection<AbstractHtml> allTags = new HashSet<AbstractHtml>();
+        final Collection<AbstractHtml> matchingTags = new HashSet<AbstractHtml>();
 
-        loopThroughAllNestedChildren(new NestedChild() {
+        for (final AbstractHtml fromTag : fromTags) {
 
-            @Override
-            public boolean eachChild(final AbstractHtml child) {
-                allTags.add(child);
-                return true;
+            final Set<AbstractHtml> filteredTags = getAllNestedChildrenIncludingParent(
+                    parallel, fromTag).collect(Collectors.toSet());
+
+            if (fromTags.length == 1) {
+                return filteredTags;
             }
-        }, true, fromTags);
+            matchingTags.addAll(filteredTags);
 
-        return allTags;
+        }
+        return matchingTags;
     }
 
     /**

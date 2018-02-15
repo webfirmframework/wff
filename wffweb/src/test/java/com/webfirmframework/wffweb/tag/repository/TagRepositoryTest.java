@@ -30,6 +30,7 @@ import com.webfirmframework.wffweb.InvalidTagException;
 import com.webfirmframework.wffweb.WffSecurityException;
 import com.webfirmframework.wffweb.server.page.BrowserPage;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.AbstractHtmlRepository;
 import com.webfirmframework.wffweb.tag.html.Body;
 import com.webfirmframework.wffweb.tag.html.H1;
 import com.webfirmframework.wffweb.tag.html.H2;
@@ -55,6 +56,37 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
 
 @SuppressWarnings({ "serial", "deprecation" })
 public class TagRepositoryTest {  
+    
+    @Test
+    public void testFindAllTags() {
+        
+        
+        final Html html = new Html(null) {{
+            new Body(this) {{
+                new Div(this, new Id("one")) {{
+                    new Span(this, new Id("two")) {{
+                        new H1(this, new Id("three"));
+                        new H2(this, new Id("three"));
+                        new NoTag(this, "something");
+                    }};
+
+                    new H3(this, new Name("name1"));
+                }};  
+            }};
+            
+        }};
+        
+        {
+            final Collection<AbstractHtml> set = TagRepository.findAllTags(false, html);       
+            
+            assertEquals(8, set.size());
+        }
+        {
+            final Collection<AbstractHtml> set =TagRepository.findAllTags(true, html);       
+            
+            assertEquals(8, set.size());
+        }
+    }
     
     @Test
     public void testFindAllAttributes() throws Exception {
