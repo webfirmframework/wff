@@ -56,6 +56,32 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
 @SuppressWarnings({ "serial", "deprecation" })
 public class TagRepositoryTest {  
     
+    
+    @Test
+    public void testStaticFindTagsByTagNameBooleanStringAbstractHtmls() throws Exception {
+        final Html html = new Html(null) {{
+            new Body(this) {{
+                new Div(this, new Id("one"), new Name("name1")) {{
+                    new Span(this, new Id("two")) {{
+                        new H1(this, new Id("three"), new Name("name1"));
+                        new H2(this, new Id("four"));
+                        new NoTag(this, "something");
+                    }};
+
+                    new H3(this, new Name("name1"));
+                }};  
+            }};
+            
+        }};
+        
+        final Collection<AbstractHtml> tags = TagRepository.findTagsByTagName(false, TagNameConstants.SPAN, html);
+        
+        for (AbstractHtml tag : tags) {
+            assertTrue((tag instanceof Span));
+            
+        }
+    }
+    
     @Test
     public void testFindTagsByAttributeStringStringAbstractHtmls() throws Exception {
         
@@ -77,8 +103,6 @@ public class TagRepositoryTest {
         final Collection<AbstractHtml> tags = TagRepository.findTagsByAttribute(AttributeNameConstants.NAME, "name1", html);
         
         for (AbstractHtml tag : tags) {
-            System.out.println(tag.getTagName());
-            
             assertTrue((tag instanceof Div) || (tag instanceof H1) || (tag instanceof H3));
             
         }
