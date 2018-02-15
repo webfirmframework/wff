@@ -36,6 +36,7 @@ import com.webfirmframework.wffweb.tag.html.AbstractHtmlRepository;
 import com.webfirmframework.wffweb.tag.html.Body;
 import com.webfirmframework.wffweb.tag.html.NestedChild;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
+import com.webfirmframework.wffweb.tag.html.TitleTag;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.metainfo.Head;
@@ -1815,6 +1816,37 @@ public class TagRepository extends AbstractHtmlRepository
      */
     public Head findHeadTag(final boolean parallel) {
         return (Head) findOneTagByTagName(false, TagNameConstants.HEAD);
+    }
+
+    /**
+     * Finds the {@code title} tag.
+     *
+     * @return the {@code title} tag. If there are multiple {@code title} tags
+     *         available any one of them will be returned. If no {@code title}
+     *         tag found then null will be returned.
+     * @since 3.0.0
+     * @author WFF
+     */
+    public TitleTag findTitleTag() {
+        return (TitleTag) findOneTagByTagName(false,
+                TagNameConstants.TITLE_TAG);
+    }
+
+    /**
+     * Finds the {@code title} tag.
+     *
+     * @param parallel
+     *            true to internally use parallel stream.
+     *
+     * @return the {@code title} tag. If there are multiple {@code title} tags
+     *         available any one of them will be returned. If no {@code title}
+     *         tag found then null will be returned.
+     * @since 3.0.0
+     * @author WFF
+     */
+    public TitleTag findTitleTag(final boolean parallel) {
+        return (TitleTag) findOneTagByTagName(false,
+                TagNameConstants.TITLE_TAG);
     }
 
 }
