@@ -53,7 +53,101 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
 @SuppressWarnings({ "serial", "deprecation" })
 public class TagRepositoryTest {
     
-    
+    @Test
+    public void testFindBodyTag() throws Exception {
+        
+        final Html html = new Html(null) {{
+            new Body(this) {{
+                new Div(this, new Id("one")) {{
+                    new Span(this, new Id("two")) {{
+                        new H1(this, new Id("three"));
+                        new H2(this, new Id("three"));
+                        new NoTag(this, "something");
+                    }};
+
+                    new H3(this, new Name("name1"));
+                }};  
+            }};
+            
+        }};
+        BrowserPage browserPage = new BrowserPage() {
+            
+            @Override
+            public String webSocketUrl() {
+                return "wss://webfirmframework/websocket";
+            }
+            
+            @Override
+            public AbstractHtml render() {
+                return html;
+            }
+        };
+        browserPage.toHtmlString();
+        
+        {
+            final Body tag = browserPage.getTagRepository().findBodyTag();
+            assertNotNull(tag);
+            assertTrue(tag instanceof Body);
+        }
+        {
+            final Body tag = browserPage.getTagRepository().findBodyTag(false);
+            assertNotNull(tag);
+            assertTrue(tag instanceof Body);
+        }
+        {
+            final Body tag = browserPage.getTagRepository().findBodyTag(true);
+            assertNotNull(tag);
+            assertTrue(tag instanceof Body);
+        }
+    }
+    @Test
+    public void testFindHeadTag() throws Exception {
+        
+        final Html html = new Html(null) {{
+            new Head(this);
+            new Body(this) {{
+                new Div(this, new Id("one")) {{
+                    new Span(this, new Id("two")) {{
+                        new H1(this, new Id("three"));
+                        new H2(this, new Id("three"));
+                        new NoTag(this, "something");
+                    }};
+                    
+                    new H3(this, new Name("name1"));
+                }};  
+            }};
+            
+        }};
+        BrowserPage browserPage = new BrowserPage() {
+            
+            @Override
+            public String webSocketUrl() {
+                return "wss://webfirmframework/websocket";
+            }
+            
+            @Override
+            public AbstractHtml render() {
+                return html;
+            }
+        };
+        browserPage.toHtmlString();
+        
+        {
+            final Head tag = browserPage.getTagRepository().findHeadTag();
+            assertNotNull(tag);
+            assertTrue(tag instanceof Head);
+        }
+        {
+            final Head tag = browserPage.getTagRepository().findHeadTag(false);
+            assertNotNull(tag);
+            assertTrue(tag instanceof Head);
+        }
+        {
+            final Head tag = browserPage.getTagRepository().findHeadTag(true);
+            assertNotNull(tag);
+            assertTrue(tag instanceof Head);
+        }
+    }
     
     @Test
     public void testFindOneTagByAttribute() throws Exception {

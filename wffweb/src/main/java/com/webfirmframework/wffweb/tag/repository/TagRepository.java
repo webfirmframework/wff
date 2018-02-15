@@ -33,9 +33,12 @@ import com.webfirmframework.wffweb.server.page.BrowserPage;
 import com.webfirmframework.wffweb.server.page.action.BrowserPageAction;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.AbstractHtmlRepository;
+import com.webfirmframework.wffweb.tag.html.Body;
 import com.webfirmframework.wffweb.tag.html.NestedChild;
+import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.metainfo.Head;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 import com.webfirmframework.wffweb.wffbm.data.WffBMArray;
 import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
@@ -1754,6 +1757,64 @@ public class TagRepository extends AbstractHtmlRepository
      */
     public void execute(final BrowserPageAction pageAction) {
         browserPage.performBrowserPageAction(pageAction.getActionByteBuffer());
+    }
+
+    /**
+     * Finds the {@code body} tag.
+     *
+     * @return the {@code body} tag. If there are multiple {@code body} tags
+     *         available any one of them will be returned. If no {@code body}
+     *         tag found then null will be returned.
+     * @since 3.0.0
+     * @author WFF
+     */
+    public Body findBodyTag() {
+        return (Body) findOneTagByTagName(false, TagNameConstants.BODY);
+    }
+
+    /**
+     * Finds the {@code body} tag.
+     *
+     * @param parallel
+     *            true to internally use parallel stream.
+     *
+     * @return the {@code body} tag. If there are multiple {@code body} tags
+     *         available any one of them will be returned. If no {@code body}
+     *         tag found then null will be returned.
+     * @since 3.0.0
+     * @author WFF
+     */
+    public Body findBodyTag(final boolean parallel) {
+        return (Body) findOneTagByTagName(false, TagNameConstants.BODY);
+    }
+
+    /**
+     * Finds the {@code head} tag.
+     *
+     * @return the {@code head} tag. If there are multiple {@code head} tags
+     *         available any one of them will be returned. If no {@code head}
+     *         tag found then null will be returned.
+     * @since 3.0.0
+     * @author WFF
+     */
+    public Head findHeadTag() {
+        return (Head) findOneTagByTagName(false, TagNameConstants.HEAD);
+    }
+
+    /**
+     * Finds the {@code head} tag.
+     *
+     * @param parallel
+     *            true to internally use parallel stream.
+     *
+     * @return the {@code head} tag. If there are multiple {@code head} tags
+     *         available any one of them will be returned. If no {@code head}
+     *         tag found then null will be returned.
+     * @since 3.0.0
+     * @author WFF
+     */
+    public Head findHeadTag(final boolean parallel) {
+        return (Head) findOneTagByTagName(false, TagNameConstants.HEAD);
     }
 
 }
