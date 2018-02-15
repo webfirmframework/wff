@@ -16,6 +16,7 @@
 package com.webfirmframework.wffweb.tag.html;
 
 import java.util.stream.Stream;
+import java.util.stream.Stream.Builder;
 
 import com.webfirmframework.wffweb.wffbm.data.WffBMData;
 
@@ -38,7 +39,23 @@ public abstract class AbstractHtmlRepository {
             return AbstractHtml.getAllNestedChildrenIncludingParent(parent)
                     .parallel();
         }
-        return AbstractHtml.getAllNestedChildrenIncludingParent(parent);
+
+        final Builder<AbstractHtml> builder = Stream.builder();
+
+        AbstractHtml.loopThroughAllNestedChildren(child -> {
+
+            builder.add(child);
+
+            return true;
+        }, true, parent);
+
+        // this way makes StackOverflowException
+        // return AbstractHtml.getAllNestedChildrenIncludingParent(parent);
+
+        if (parallel) {
+            return builder.build().parallel();
+        }
+        return builder.build();
     }
 
     /**
