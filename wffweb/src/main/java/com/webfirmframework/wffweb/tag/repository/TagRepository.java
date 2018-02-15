@@ -501,6 +501,30 @@ public class TagRepository extends AbstractHtmlRepository
     public static AbstractHtml findOneTagByAttribute(final String attributeName,
             final String attributeValue, final AbstractHtml... fromTags)
             throws NullValueException {
+        return findOneTagByAttribute(false, attributeName, attributeValue,
+                fromTags);
+    }
+
+    /**
+     * Finds and returns the first (including the nested tags) matching with the
+     * given attribute name and value.
+     *
+     * @param attributeName
+     *            the name of the attribute.
+     * @param attributeValue
+     *            the value of the attribute
+     * @param fromTags
+     *            from which the findings to be done.
+     * @return the first matching tag with the given attribute name and value.
+     * @throws NullValueException
+     *             if the {@code attributeName}, {@code attributeValue} or
+     *             {@code fromTags} is null
+     * @since 3.0.0
+     * @author WFF
+     */
+    public static AbstractHtml findOneTagByAttribute(final boolean parallel,
+            final String attributeName, final String attributeValue,
+            final AbstractHtml... fromTags) throws NullValueException {
 
         if (attributeName == null) {
             throw new NullValueException(
@@ -515,27 +539,26 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The fromTags should not be null");
         }
 
-        final AbstractHtml[] matchingTag = new AbstractHtml[1];
+        for (final AbstractHtml parent : fromTags) {
+            final Stream<AbstractHtml> stream = getAllNestedChildrenIncludingParent(
+                    parallel, parent);
 
-        loopThroughAllNestedChildren(new NestedChild() {
+            final Optional<AbstractHtml> any = stream.filter((child) -> {
 
-            @Override
-            public boolean eachChild(final AbstractHtml child) {
-
-                final AbstractAttribute attribute = child
+                final AbstractAttribute attr = child
                         .getAttributeByName(attributeName);
 
-                if (attribute != null && attributeValue
-                        .equals(attribute.getAttributeValue())) {
-                    matchingTag[0] = child;
-                    return false;
-                }
+                return attr != null
+                        && attributeValue.equals(attr.getAttributeValue());
 
-                return true;
+            }).findAny();
+
+            if (any.isPresent()) {
+                return any.get();
             }
-        }, true, fromTags);
 
-        return matchingTag[0];
+        }
+        return null;
     }
 
     /**

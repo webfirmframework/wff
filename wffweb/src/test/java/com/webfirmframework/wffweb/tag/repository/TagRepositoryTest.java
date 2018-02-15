@@ -309,6 +309,20 @@ public class TagRepositoryTest {
             assertNull(tag);
         }
         {
+            final AbstractHtml tag = TagRepository.findOneTagByAttribute("name", "name1", html);
+            assertNotNull(tag);
+            assertTrue(tag instanceof H3);
+        }
+        
+        {
+            final AbstractHtml tag = TagRepository.findOneTagByAttribute(false, "name", "name1222", html);
+            assertNull(tag);
+        }
+        {
+            final AbstractHtml tag = TagRepository.findOneTagByAttribute(true, "name", "name1222", html);
+            assertNull(tag);
+        }
+        {
             final AbstractHtml tag = browserPage.getTagRepository().findOneTagByAttributeName("name");
             assertNotNull(tag);
             assertTrue(tag instanceof H3);
