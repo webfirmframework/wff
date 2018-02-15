@@ -34,11 +34,7 @@ public abstract class AbstractHtmlRepository {
      * @author WFF
      */
     protected static Stream<AbstractHtml> getAllNestedChildrenIncludingParent(
-            final boolean parallel, final AbstractHtml parent) {
-        if (parallel) {
-            return AbstractHtml.getAllNestedChildrenIncludingParent(parent)
-                    .parallel();
-        }
+            final boolean parallel, final AbstractHtml... parents) {
 
         final Builder<AbstractHtml> builder = Stream.builder();
 
@@ -47,10 +43,15 @@ public abstract class AbstractHtmlRepository {
             builder.add(child);
 
             return true;
-        }, true, parent);
+        }, true, parents);
 
         // this way makes StackOverflowException
         // return AbstractHtml.getAllNestedChildrenIncludingParent(parent);
+
+        // if (parallel) {
+        // return AbstractHtml.getAllNestedChildrenIncludingParent(parent)
+        // .parallel();
+        // }
 
         if (parallel) {
             return builder.build().parallel();
