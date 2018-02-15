@@ -671,9 +671,68 @@ public class TagRepository extends AbstractHtmlRepository
      * @since 2.1.11
      * @author WFF
      */
-    @SuppressWarnings("unchecked")
     public static <T extends AbstractHtml> T findOneTagAssignableToTag(
             final Class<T> tagClass, final AbstractHtml... fromTags)
+            throws NullValueException, InvalidTagException {
+        return findOneTagAssignableToTag(false, tagClass, fromTags);
+    }
+
+    /**
+     * Finds and returns the first matching (including from nested tags) tag
+     * (which is assignable to the given tag class). <br>
+     * <br>
+     *
+     * <pre>
+     * <code>
+     * Html html = new Html(null) {{
+     *      new Head(this) {{
+     *          new TitleTag(this){{
+     *              new NoTag(this, "some title");
+     *          }};
+     *      }};
+     *      new Body(this, new Id("one")) {{
+     *          new Div(this);
+     *      }};
+     *  }};
+     *
+     *  TitleTag titleTag = TagRepository.findOneTagAssignableToTagClass(TitleTag.class, html);
+     *
+     *  System.out.println(titleTag.getTagName());
+     *  System.out.println(titleTag.toHtmlString());
+     *
+     *  //prints
+     *
+     *  title
+     *  &lt;title&gt;some title&lt;/title&gt;
+     *
+     * </code>
+     * </pre>
+     *
+     * @param parallel
+     *            true to internally use parallel stream. If true it will split
+     *            the finding task to different batches and will execute the
+     *            batches in different threads in parallel consuming all CPUs.
+     *            It will perform faster in finding from extremely large number
+     *            of tags but at the same time it will less efficient in finding
+     *            from small number of tags.
+     *
+     * @param tagClass
+     *            the class of the tag.
+     * @param fromTags
+     *            from which the findings to be done.
+     * @return the first matching tag which is assignable to the given tag
+     *         class.
+     * @throws NullValueException
+     *             if the {@code tagClass} or {@code fromTags} is null
+     * @throws InvalidTagException
+     *             if the given tag class is NoTag.class
+     * @since 3.0.0
+     * @author WFF
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends AbstractHtml> T findOneTagAssignableToTag(
+            final boolean parallel, final Class<T> tagClass,
+            final AbstractHtml... fromTags)
             throws NullValueException, InvalidTagException {
 
         if (tagClass == null) {
@@ -689,24 +748,20 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The fromTags should not be null");
         }
 
-        final AbstractHtml[] matchingTag = new AbstractHtml[1];
+        for (final AbstractHtml fromTag : fromTags) {
+            final Optional<AbstractHtml> any = getAllNestedChildrenIncludingParent(
+                    parallel,
+                    fromTag).filter(child -> tagClass
+                            .isAssignableFrom(child.getClass())
+                            && !NoTag.class.isAssignableFrom(child.getClass()))
+                            .findAny();
 
-        loopThroughAllNestedChildren(new NestedChild() {
-
-            @Override
-            public boolean eachChild(final AbstractHtml child) {
-
-                if (tagClass.isAssignableFrom(child.getClass())
-                        && !NoTag.class.isAssignableFrom(child.getClass())) {
-                    matchingTag[0] = child;
-                    return false;
-                }
-
-                return true;
+            if (any.isPresent()) {
+                return (T) any.get();
             }
-        }, true, fromTags);
+        }
 
-        return (T) matchingTag[0];
+        return null;
     }
 
     /**
