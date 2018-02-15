@@ -577,6 +577,33 @@ public class TagRepository extends AbstractHtmlRepository
      */
     public static AbstractHtml findOneTagByTagName(final String tagName,
             final AbstractHtml... fromTags) throws NullValueException {
+        return findOneTagByTagName(false, tagName, fromTags);
+    }
+
+    /**
+     * Finds and returns the first (including the nested tags) matching with the
+     * given tag name.
+     *
+     * @param parallel
+     *            true to internally use parallel stream. If true it will split
+     *            the finding task to different batches and will execute the
+     *            batches in different threads in parallel consuming all CPUs.
+     *            It will perform faster in finding from extremely large number
+     *            of tags but at the same time it will less efficient in finding
+     *            from small number of tags.
+     * @param tagName
+     *            the name of the tag.
+     * @param fromTags
+     *            from which the findings to be done.
+     * @return the first matching tag with the given tag name.
+     * @throws NullValueException
+     *             if the {@code tagName} or {@code fromTags} is null
+     * @since 3.0.0
+     * @author WFF
+     */
+    public static AbstractHtml findOneTagByTagName(final boolean parallel,
+            final String tagName, final AbstractHtml... fromTags)
+            throws NullValueException {
 
         if (tagName == null) {
             throw new NullValueException("The tagName should not be null");
@@ -586,23 +613,18 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The fromTags should not be null");
         }
 
-        final AbstractHtml[] matchingTag = new AbstractHtml[1];
+        for (final AbstractHtml parent : fromTags) {
+            final Optional<AbstractHtml> any = getAllNestedChildrenIncludingParent(
+                    parallel, parent).filter((tag) -> {
+                        return tagName.equals(tag.getTagName());
+                    }).findAny();
 
-        loopThroughAllNestedChildren(new NestedChild() {
-
-            @Override
-            public boolean eachChild(final AbstractHtml child) {
-
-                if (tagName.equals(child.getTagName())) {
-                    matchingTag[0] = child;
-                    return false;
-                }
-
-                return true;
+            if (any.isPresent()) {
+                return any.get();
             }
-        }, true, fromTags);
+        }
 
-        return matchingTag[0];
+        return null;
     }
 
     /**
