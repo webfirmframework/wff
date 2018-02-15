@@ -420,6 +420,35 @@ public class TagRepository extends AbstractHtmlRepository
     public static Collection<AbstractAttribute> findAttributesByTagName(
             final String tagName, final AbstractHtml... fromTags)
             throws NullValueException {
+        return findAttributesByTagName(false, tagName, fromTags);
+    }
+
+    /**
+     * Finds and returns the collection of attributes (including from nested
+     * tags) of the tags matching with the give tag name.
+     *
+     * @param parallel
+     *            true to internally use parallel stream. If true it will split
+     *            the finding task to different batches and will execute the
+     *            batches in different threads in parallel consuming all CPUs.
+     *            It will perform faster in finding from extremely large number
+     *            of tags but at the same time it will less efficient in finding
+     *            from small number of tags.
+     *
+     * @param tagName
+     *            the name of the tag.
+     * @param fromTags
+     *            from which the findings to be done.
+     * @return the collection of attributes of the tags matching with the given
+     *         tag name.
+     * @throws NullValueException
+     *             if the {@code tagName} or {@code fromTags} is null
+     * @since 3.0.0
+     * @author WFF
+     */
+    public static Collection<AbstractAttribute> findAttributesByTagName(
+            final boolean parallel, final String tagName,
+            final AbstractHtml... fromTags) throws NullValueException {
 
         if (tagName == null) {
             throw new NullValueException("The tagName should not be null");
@@ -431,22 +460,23 @@ public class TagRepository extends AbstractHtmlRepository
 
         final Collection<AbstractAttribute> matchingAttributes = new HashSet<AbstractAttribute>();
 
-        loopThroughAllNestedChildren(new NestedChild() {
+        for (final AbstractHtml fromTag : fromTags) {
 
-            @Override
-            public boolean eachChild(final AbstractHtml child) {
+            final Set<AbstractAttribute> set = getAllNestedChildrenIncludingParent(
+                    parallel, fromTag).filter(child -> {
+                        return tagName.equals(child.getTagName())
+                                && child.getAttributes() != null;
+                    }).map(child -> {
+                        return child.getAttributes();
+                    }).flatMap(attributes -> parallel
+                            ? attributes.parallelStream() : attributes.stream())
+                            .collect(Collectors.toSet());
 
-                if (tagName.equals(child.getTagName())) {
-                    final Collection<AbstractAttribute> attributes = child
-                            .getAttributes();
-                    if (attributes != null) {
-                        matchingAttributes.addAll(attributes);
-                    }
-                }
-
-                return true;
+            if (fromTags.length == 1) {
+                return set;
             }
-        }, true, fromTags);
+            matchingAttributes.addAll(set);
+        }
 
         return matchingAttributes;
     }
