@@ -67,6 +67,8 @@ public class TagRepositoryTest {
                         new H2(this, new Id("four"));
                         new NoTag(this, "something");
                     }};
+                    
+                    new Span(this, new Id("spanthree"));
 
                     new H3(this, new Name("name1"));
                 }};  
@@ -80,6 +82,7 @@ public class TagRepositoryTest {
             assertTrue((tag instanceof Span));
             
         }
+        assertEquals(2, tags.size());
     }
     
     @Test
