@@ -1883,7 +1883,11 @@ public class TagRepository extends AbstractHtmlRepository
     }
 
     /**
-     * Finds all tags excluding {@code NoTag}.
+     * Finds all tags excluding {@code NoTag}. To get {@code NoTag} included
+     * collection use static method
+     * {@code TagRepository.findAllTags(AbstractHtml... fromTags)}.
+     *
+     * This method may perform better than the static method.
      *
      * @return the collection of all tags
      * @since 2.1.8
@@ -1894,7 +1898,11 @@ public class TagRepository extends AbstractHtmlRepository
     }
 
     /**
-     * Finds all tags excluding {@code NoTag}.
+     * Finds all tags excluding {@code NoTag}. To get {@code NoTag} included
+     * collection use static method
+     * {@code TagRepository.findAllTags(boolean parallel, AbstractHtml... fromTags)}.
+     *
+     * This method may perform better than the static method.
      *
      * @param parallel
      *            true to internally use parallel stream. If true it will split
