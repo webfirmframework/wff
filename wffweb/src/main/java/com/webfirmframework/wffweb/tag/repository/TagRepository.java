@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -397,6 +398,77 @@ public class TagRepository extends AbstractHtmlRepository
 
     /**
      * Finds and returns the collection of attributes (including from nested
+     * tags) of the tags by the given filter.
+     *
+     *
+     *
+     * @param filter
+     *            the filter lambda expression containing return true to include
+     *            and false to exclude.
+     * @param fromTags
+     *            from which the findings to be done.
+     * @return the collection of attributes of the tags by the given filter.
+     * @throws NullValueException
+     *             if the {@code filter} or {@code fromTags} is null
+     * @since 3.0.0
+     * @author WFF
+     */
+    public static Collection<AbstractAttribute> findAttributesByAttributeFilter(
+            final Predicate<? super AbstractAttribute> filter,
+            final AbstractHtml... fromTags) throws NullValueException {
+
+        return findAttributesByAttributeFilter(false, filter, fromTags);
+    }
+
+    /**
+     * Finds and returns the collection of attributes (including from nested
+     * tags) of the tags by the given filter.
+     *
+     * @param parallel
+     *            true to internally use parallel stream. If true it will split
+     *            the finding task to different batches and will execute the
+     *            batches in different threads in parallel consuming all CPUs.
+     *            It will perform faster in finding from extremely large number
+     *            of tags but at the same time it will less efficient in finding
+     *            from small number of tags.
+     *
+     * @param filter
+     *            the filter lambda expression containing return true to include
+     *            and false to exclude.
+     * @param fromTags
+     *            from which the findings to be done.
+     * @return the collection of attributes of the tags by the given filter.
+     * @throws NullValueException
+     *             if the {@code filter} or {@code fromTags} is null
+     * @since 3.0.0
+     * @author WFF
+     */
+    public static Collection<AbstractAttribute> findAttributesByAttributeFilter(
+            final boolean parallel,
+            final Predicate<? super AbstractAttribute> filter,
+            final AbstractHtml... fromTags) throws NullValueException {
+
+        if (filter == null) {
+            throw new NullValueException("The tagName should not be null");
+        }
+
+        if (fromTags == null) {
+            throw new NullValueException("The fromTags should not be null");
+        }
+
+        return getAllNestedChildrenIncludingParent(parallel, fromTags)
+                .filter(child -> {
+                    return child.getAttributes() != null;
+                }).map(child -> {
+                    return child.getAttributes();
+                })
+                .flatMap(attributes -> parallel ? attributes.parallelStream()
+                        : attributes.stream())
+                .filter(filter).collect(Collectors.toSet());
+    }
+
+    /**
+     * Finds and returns the collection of attributes (including from nested
      * tags) of the tags matching with the give tag name.
      *
      * @param parallel
@@ -435,6 +507,73 @@ public class TagRepository extends AbstractHtmlRepository
                     return tagName.equals(child.getTagName())
                             && child.getAttributes() != null;
                 }).map(child -> {
+                    return child.getAttributes();
+                }).flatMap(attributes -> parallel ? attributes.parallelStream()
+                        : attributes.stream())
+                .collect(Collectors.toSet());
+    }
+
+    /**
+     * Finds and returns the collection of attributes (including from nested
+     * tags) of the tags by the given filter
+     *
+     *
+     *
+     * @param filter
+     *            the filter lambda expression containing return true to include
+     *            and false to exclude.
+     *
+     * @return the collection of attributes of the tags by the given tag filter
+     * @throws NullValueException
+     *             if the {@code filter} or {@code fromTags} is null
+     * @since 3.0.0
+     * @author WFF
+     */
+    public static Collection<AbstractAttribute> findAttributesByTagFilter(
+            final Predicate<? super AbstractHtml> filter,
+            final AbstractHtml... fromTags) throws NullValueException {
+        return findAttributesByTagFilter(false, filter, fromTags);
+    }
+
+    /**
+     * Finds and returns the collection of attributes (including from nested
+     * tags) of the tags by the given filter
+     *
+     * @param parallel
+     *            true to internally use parallel stream. If true it will split
+     *            the finding task to different batches and will execute the
+     *            batches in different threads in parallel consuming all CPUs.
+     *            It will perform faster in finding from extremely large number
+     *            of tags but at the same time it will less efficient in finding
+     *            from small number of tags.
+     *
+     * @param filter
+     *            the filter lambda expression containing return true to include
+     *            and false to exclude.
+     *
+     * @return the collection of attributes of the tags by the given tag filter
+     * @throws NullValueException
+     *             if the {@code filter} or {@code fromTags} is null
+     * @since 3.0.0
+     * @author WFF
+     */
+    public static Collection<AbstractAttribute> findAttributesByTagFilter(
+            final boolean parallel,
+            final Predicate<? super AbstractHtml> filter,
+            final AbstractHtml... fromTags) throws NullValueException {
+
+        if (filter == null) {
+            throw new NullValueException("The filter should not be null");
+        }
+
+        if (fromTags == null) {
+            throw new NullValueException("The fromTags should not be null");
+        }
+
+        return getAllNestedChildrenIncludingParent(parallel, fromTags)
+                .filter(child -> {
+                    return child.getAttributes() != null;
+                }).filter(filter).map(child -> {
                     return child.getAttributes();
                 }).flatMap(attributes -> parallel ? attributes.parallelStream()
                         : attributes.stream())
@@ -1114,7 +1253,7 @@ public class TagRepository extends AbstractHtmlRepository
      * @return the collection of tags matching with the given tag name and
      *         value.
      * @throws NullValueException
-     *             if the {@code tagName} or {@code fromTags} is null
+     *             if the {@code tagName} is null
      * @since 2.1.11
      * @author WFF
      */
@@ -1139,7 +1278,7 @@ public class TagRepository extends AbstractHtmlRepository
      * @return the collection of tags matching with the given tag name and
      *         value.
      * @throws NullValueException
-     *             if the {@code tagName} or {@code fromTags} is null
+     *             if the {@code tagName} is null
      * @since 3.0.0
      * @author WFF
      */
@@ -1153,6 +1292,120 @@ public class TagRepository extends AbstractHtmlRepository
         return findAllTagsStream(parallel)
                 .filter(tag -> tagName.equals(tag.getTagName()))
                 .collect(Collectors.toSet());
+    }
+
+    /**
+     * Finds and returns the collection of tags (including the nested tags but
+     * excluding {@code NoTag} ) filtered by the given filter.
+     *
+     *
+     * @param filter
+     *            the filter lambda expression containing return true to include
+     *            and false to exclude.
+     * @return the collection of tags by the given filter.
+     * @throws NullValueException
+     *             if the {@code Predicate filter} is null
+     * @since 3.0.0
+     * @author WFF
+     */
+    public Collection<AbstractHtml> findTagsByTagFilter(
+            final Predicate<? super AbstractHtml> filter)
+            throws NullValueException {
+        return findTagsByTagFilter(false, filter);
+    }
+
+    /**
+     * Finds and returns the collection of tags (including the nested tags but
+     * excluding {@code NoTag} ) filtered by the given filter.
+     *
+     * @param parallel
+     *            true to internally use parallel stream. If true it will split
+     *            the finding task to different batches and will execute the
+     *            batches in different threads in parallel consuming all CPUs.
+     *            It will perform faster in finding from extremely large number
+     *            of tags but at the same time it will less efficient in finding
+     *            from small number of tags.
+     * @param filter
+     *            the filter lambda expression containing return true to include
+     *            and false to exclude.
+     * @return the collection of tags by the given filter.
+     * @throws NullValueException
+     *             if the {@code Predicate filter} is null
+     * @since 3.0.0
+     * @author WFF
+     */
+    public Collection<AbstractHtml> findTagsByTagFilter(final boolean parallel,
+            final Predicate<? super AbstractHtml> filter)
+            throws NullValueException {
+
+        if (filter == null) {
+            throw new NullValueException("The filter should not be null");
+        }
+
+        return findAllTagsStream(parallel).filter(filter)
+                .collect(Collectors.toSet());
+    }
+
+    /**
+     * Finds and returns the collection of tags (including the nested tags and
+     * {@code NoTag}) filtered by the given filter.
+     *
+     * @param parallel
+     *            true to internally use parallel stream. If true it will split
+     *            the finding task to different batches and will execute the
+     *            batches in different threads in parallel consuming all CPUs.
+     *            It will perform faster in finding from extremely large number
+     *            of tags but at the same time it will less efficient in finding
+     *            from small number of tags.
+     * @param filter
+     *            the filter lambda expression containing return true to include
+     *            and false to exclude.
+     * @return the collection of tags by the given filter.
+     * @throws NullValueException
+     *             if the {@code Predicate filter} or {@code fromTags} is null
+     * @since 3.0.0
+     * @author WFF
+     */
+    public static Collection<AbstractHtml> findTagsByTagFilter(
+            final boolean parallel,
+            final Predicate<? super AbstractHtml> filter,
+            final AbstractHtml... fromTags) throws NullValueException {
+
+        if (filter == null) {
+            throw new NullValueException("The filter should not be null");
+        }
+        if (fromTags == null) {
+            throw new NullValueException("The fromTags should not be null");
+        }
+
+        return getAllNestedChildrenIncludingParent(parallel, fromTags)
+                .filter(filter).collect(Collectors.toSet());
+    }
+
+    /**
+     * Finds and returns the collection of tags (including the nested tags and
+     * {@code NoTag}) filtered by the given filter.
+     *
+     *
+     * @param filter
+     *            the filter lambda expression containing return true to include
+     *            and false to exclude.
+     * @return the collection of tags matching with the given tag name and
+     *         value.
+     * @throws NullValueException
+     *             if the {@code tagName} or {@code fromTags} is null
+     * @since 3.0.0
+     * @author WFF
+     */
+    public static Collection<AbstractHtml> findTagsByTagFilter(
+            final Predicate<? super AbstractHtml> filter,
+            final AbstractHtml... fromTags) throws NullValueException {
+
+        if (filter == null) {
+            throw new NullValueException("The filter should not be null");
+        }
+
+        return findTagsByTagFilter(false, filter, fromTags);
     }
 
     /**
@@ -1189,7 +1442,7 @@ public class TagRepository extends AbstractHtmlRepository
      * @return the collection of attributes of the tags matching with the given
      *         tag name.
      * @throws NullValueException
-     *             if the {@code tagName} or {@code fromTags} is null
+     *             if the {@code tagName} is null
      * @since 3.0.0
      * @author WFF
      */
@@ -1213,6 +1466,68 @@ public class TagRepository extends AbstractHtmlRepository
                                 : attributes.stream());
 
         return attributesStream.collect(Collectors.toSet());
+    }
+
+    /**
+     * Finds and returns the collection of attributes (including from nested
+     * tags) of the tags filtered by the given filter
+     *
+     *
+     * @param filter
+     *            the filter lambda expression containing return true to include
+     *            and false to exclude.
+     * @return the collection of attributes by the given filter.
+     * @throws NullValueException
+     *             if the {@code tagName} is null
+     * @since 3.0.0
+     * @author WFF
+     */
+    public Collection<AbstractAttribute> findAttributesByAttributeFilter(
+            final Predicate<? super AbstractAttribute> filter)
+            throws NullValueException {
+
+        return findAttributesByAttributeFilter(false, filter);
+    }
+
+    /**
+     * Finds and returns the collection of attributes (including from nested
+     * tags) of the tags filtered by the given filter
+     *
+     * @param parallel
+     *            true to internally use parallel stream. If true it will split
+     *            the finding task to different batches and will execute the
+     *            batches in different threads in parallel consuming all CPUs.
+     *            It will perform faster in finding from extremely large number
+     *            of tags but at the same time it will less efficient in finding
+     *            from small number of tags.
+     * @param filter
+     *            the filter lambda expression containing return true to include
+     *            and false to exclude.
+     * @return the collection of attributes by the given filter.
+     * @throws NullValueException
+     *             if the {@code tagName} is null
+     * @since 3.0.0
+     * @author WFF
+     */
+    public Collection<AbstractAttribute> findAttributesByAttributeFilter(
+            final boolean parallel,
+            final Predicate<? super AbstractAttribute> filter)
+            throws NullValueException {
+
+        if (filter == null) {
+            throw new NullValueException("The filter should not be null");
+        }
+
+        final Stream<AbstractAttribute> attributesStream = findAllTagsStream(
+                parallel).filter(tag -> tag.getAttributes() != null)
+                        .map((tag) -> {
+                            return tag.getAttributes();
+                        })
+                        .flatMap(attributes -> parallel
+                                ? attributes.parallelStream()
+                                : attributes.stream());
+
+        return attributesStream.filter(filter).collect(Collectors.toSet());
     }
 
     /**
@@ -1368,7 +1683,7 @@ public class TagRepository extends AbstractHtmlRepository
      * @return the first matching tag which is assignable to the given tag
      *         class.
      * @throws NullValueException
-     *             if the {@code tagClass} or {@code fromTags} is null
+     *             if the {@code tagClass} is null
      * @since 2.1.11
      * @author WFF
      */
@@ -1420,7 +1735,7 @@ public class TagRepository extends AbstractHtmlRepository
      * @return the first matching tag which is assignable to the given tag
      *         class.
      * @throws NullValueException
-     *             if the {@code tagClass} or {@code fromTags} is null
+     *             if the {@code tagClass} is null
      * @since 3.0.0
      * @author WFF
      */
@@ -1485,7 +1800,7 @@ public class TagRepository extends AbstractHtmlRepository
      *            the class of the tag.
      * @return the all matching tags which is assignable to the given tag class.
      * @throws NullValueException
-     *             if the {@code tagClass} or {@code fromTags} is null
+     *             if the {@code tagClass} is null
      * @throws InvalidTagException
      *             if the given tag class is NoTag.class
      * @since 2.1.11
@@ -1546,7 +1861,7 @@ public class TagRepository extends AbstractHtmlRepository
      *            the class of the tag.
      * @return the all matching tags which is assignable to the given tag class.
      * @throws NullValueException
-     *             if the {@code tagClass} or {@code fromTags} is null
+     *             if the {@code tagClass} is null
      * @throws InvalidTagException
      *             if the given tag class is NoTag.class
      * @since 3.0.0
