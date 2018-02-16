@@ -80,6 +80,8 @@ public class TagRepositoryTest {
             final Collection<AbstractHtml> set = TagRepository.findAllTags(false, html);       
             
             assertEquals(8, set.size());
+            
+            assertTrue(set instanceof HashSet);
         }
         {
             final Collection<AbstractHtml> set =TagRepository.findAllTags(true, html);       
