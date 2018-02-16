@@ -3212,13 +3212,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
             synchronized (this) {
                 if (parent == null) {
 
-                    loopThroughAllNestedChildren(new NestedChild() {
-
-                        @Override
-                        public boolean eachChild(final AbstractHtml child) {
-                            child.removeAttributes(false, DataWffId.TAG_NAME);
-                            return true;
-                        }
+                    loopThroughAllNestedChildren((child) -> {
+                        child.removeAttributes(false, DataWffId.TAG_NAME);
+                        return true;
                     }, true, this);
 
                     return;
