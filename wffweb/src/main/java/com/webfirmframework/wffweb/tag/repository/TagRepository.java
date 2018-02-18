@@ -2342,12 +2342,19 @@ public class TagRepository extends AbstractHtmlRepository
      *         page.
      * @throws NullValueException
      *             if the tag is null
+     * @throws InvalidTagException
+     *             if the given tag is {@code NoTag}.
      * @since 2.1.8
      * @author WFF
      */
-    public boolean exists(final AbstractHtml tag) throws NullValueException {
+    public boolean exists(final AbstractHtml tag)
+            throws NullValueException, InvalidTagException {
         if (tag == null) {
             throw new NullValueException("tag cannot be null");
+        }
+        if (NoTag.class.isAssignableFrom(tag.getClass())) {
+            throw new InvalidTagException(
+                    "classes like NoTag.class cannot be used to find tags as it's not a logical tag in behaviour.");
         }
         return browserPage.contains(tag);
     }
