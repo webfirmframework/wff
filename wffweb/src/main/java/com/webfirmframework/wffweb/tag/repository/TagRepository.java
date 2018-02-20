@@ -1170,7 +1170,7 @@ public class TagRepository extends AbstractHtmlRepository
                     "The attributeName should not be null");
         }
 
-        return findAllTagsStream(parallel).filter(tag -> {
+        return buildAllTagsStream(parallel).filter(tag -> {
             return tag.getAttributeByName(attributeName) != null;
         }).collect(Collectors.toSet());
     }
@@ -1234,7 +1234,7 @@ public class TagRepository extends AbstractHtmlRepository
                     "The attributeValue should not be null");
         }
 
-        return findAllTagsStream(parallel).filter(tag -> {
+        return buildAllTagsStream(parallel).filter(tag -> {
 
             final AbstractAttribute attribute = tag
                     .getAttributeByName(attributeName);
@@ -1289,7 +1289,7 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The tagName should not be null");
         }
 
-        return findAllTagsStream(parallel)
+        return buildAllTagsStream(parallel)
                 .filter(tag -> tagName.equals(tag.getTagName()))
                 .collect(Collectors.toSet());
     }
@@ -1342,7 +1342,7 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The filter should not be null");
         }
 
-        return findAllTagsStream(parallel).filter(filter)
+        return buildAllTagsStream(parallel).filter(filter)
                 .collect(Collectors.toSet());
     }
 
@@ -1454,7 +1454,7 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The tagName should not be null");
         }
 
-        final Stream<AbstractAttribute> attributesStream = findAllTagsStream(
+        final Stream<AbstractAttribute> attributesStream = buildAllTagsStream(
                 parallel)
                         .filter(tag -> tagName.equals(tag.getTagName())
                                 && tag.getAttributes() != null)
@@ -1518,7 +1518,7 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The filter should not be null");
         }
 
-        final Stream<AbstractAttribute> attributesStream = findAllTagsStream(
+        final Stream<AbstractAttribute> attributesStream = buildAllTagsStream(
                 parallel).filter(tag -> tag.getAttributes() != null)
                         .map((tag) -> {
                             return tag.getAttributes();
@@ -1576,7 +1576,7 @@ public class TagRepository extends AbstractHtmlRepository
             final String attributeName, final String attributeValue)
             throws NullValueException {
 
-        final Stream<AbstractHtml> stream = findAllTagsStream(parallel);
+        final Stream<AbstractHtml> stream = buildAllTagsStream(parallel);
 
         final Optional<AbstractHtml> any = stream.filter((tag) -> {
             final AbstractAttribute attribute = tag
@@ -1635,7 +1635,7 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The tagName should not be null");
         }
 
-        final Optional<AbstractHtml> any = findAllTagsStream(parallel)
+        final Optional<AbstractHtml> any = buildAllTagsStream(parallel)
                 .filter((tag) -> {
                     return tagName.equals(tag.getTagName());
                 }).findAny();
@@ -1744,7 +1744,7 @@ public class TagRepository extends AbstractHtmlRepository
             final boolean parallel, final Class<T> tagClass)
             throws NullValueException {
 
-        final Stream<AbstractHtml> stream = findAllTagsStream(parallel);
+        final Stream<AbstractHtml> stream = buildAllTagsStream(parallel);
 
         final Optional<AbstractHtml> any = stream.filter((tag) -> {
             return tagClass.isAssignableFrom(tag.getClass())
@@ -1881,7 +1881,7 @@ public class TagRepository extends AbstractHtmlRepository
                     "classes like NoTag.class cannot be used to find tags as it's not a logical tag in behaviour.");
         }
 
-        final Set<AbstractHtml> set = findAllTagsStream(parallel)
+        final Set<AbstractHtml> set = buildAllTagsStream(parallel)
                 .filter(tag -> {
                     return tagClass.isAssignableFrom(tag.getClass())
                             && !NoTag.class.isAssignableFrom(tag.getClass());
@@ -1934,7 +1934,7 @@ public class TagRepository extends AbstractHtmlRepository
                     "The attributeName should not be null");
         }
 
-        final Stream<AbstractHtml> stream = findAllTagsStream(parallel);
+        final Stream<AbstractHtml> stream = buildAllTagsStream(parallel);
 
         final Optional<AbstractHtml> any = stream.filter((tag) -> {
             return tag.getAttributeByName(attributeName) != null;
@@ -2157,7 +2157,7 @@ public class TagRepository extends AbstractHtmlRepository
      * @author WFF
      */
     public Collection<AbstractHtml> findAllTags(final boolean parallel) {
-        return findAllTagsStream(parallel).collect(Collectors.toSet());
+        return buildAllTagsStream(parallel).collect(Collectors.toSet());
     }
 
     /**
@@ -2174,7 +2174,7 @@ public class TagRepository extends AbstractHtmlRepository
      * @since 3.0.0
      * @author WFF
      */
-    public Stream<AbstractHtml> findAllTagsStream(final boolean parallel) {
+    public Stream<AbstractHtml> buildAllTagsStream(final boolean parallel) {
         return parallel ? tagByWffId.values().parallelStream()
                 : tagByWffId.values().stream();
     }
@@ -2254,7 +2254,7 @@ public class TagRepository extends AbstractHtmlRepository
      */
     public Collection<AbstractAttribute> findAllAttributes(
             final boolean parallel) {
-        return findAllAttributesStream(parallel).collect(Collectors.toSet());
+        return buildAllAttributesStream(parallel).collect(Collectors.toSet());
     }
 
     /**
@@ -2271,9 +2271,9 @@ public class TagRepository extends AbstractHtmlRepository
      * @since 3.0.0
      * @author WFF
      */
-    public Stream<AbstractAttribute> findAllAttributesStream(
+    public Stream<AbstractAttribute> buildAllAttributesStream(
             final boolean parallel) {
-        final Stream<AbstractAttribute> attributesStream = findAllTagsStream(
+        final Stream<AbstractAttribute> attributesStream = buildAllTagsStream(
                 parallel).filter(tag -> tag.getAttributes() != null)
                         .map((tag) -> {
                             return tag.getAttributes();
@@ -2557,6 +2557,76 @@ public class TagRepository extends AbstractHtmlRepository
     public TitleTag findTitleTag(final boolean parallel) {
         return (TitleTag) findOneTagByTagName(parallel,
                 TagNameConstants.TITLE_TAG);
+    }
+
+    /**
+     * @param parallel
+     *            true to internally use parallel stream. If true it will split
+     *            the finding task to different batches and will execute the
+     *            batches in different threads in parallel consuming all CPUs.
+     *            It will perform faster in finding from extremely large number
+     *            of tags but at the same time it will less efficient in finding
+     *            from small number of tags.
+     * @param fromTags
+     *            the tags to to build stream of nested children from.
+     * @return {@code Stream<AbstractHtml> }
+     * @since 3.0.0
+     * @author WFF
+     */
+    public static Stream<AbstractHtml> buildAllTagsStream(
+            final boolean parallel, final AbstractHtml... fromTags) {
+        return getAllNestedChildrenIncludingParent(parallel, fromTags);
+    }
+
+    /**
+     * @param fromTags
+     *            the tags to build stream of nested children from.
+     * @return {@code Stream<AbstractHtml> }
+     * @since 3.0.0
+     * @author WFF
+     */
+    public static Stream<AbstractHtml> buildAllTagsStream(
+            final AbstractHtml... fromTags) {
+        return buildAllTagsStream(false, fromTags);
+    }
+
+    /**
+     * @param fromTags
+     *            the tags to build stream of nested children's attributes from.
+     * @return {@code Stream<AbstractAttribute>}
+     * @since 3.0.0
+     * @author WFF
+     */
+    public static Stream<AbstractAttribute> buildAllAttriburesStream(
+            final AbstractHtml... fromTags) {
+        return buildAllAttriburesStream(false, fromTags);
+    }
+
+    /**
+     * @param parallel
+     *            true to internally use parallel stream. If true it will split
+     *            the finding task to different batches and will execute the
+     *            batches in different threads in parallel consuming all CPUs.
+     *            It will perform faster in finding from extremely large number
+     *            of tags but at the same time it will less efficient in finding
+     *            from small number of tags.
+     * @param fromTags
+     *            the tags to build stream of nested children's attributes from.
+     * @return {@code Stream<AbstractAttribute>}
+     * @since 3.0.0
+     * @author WFF
+     */
+    public static Stream<AbstractAttribute> buildAllAttriburesStream(
+            final boolean parallel, final AbstractHtml... fromTags) {
+        final Stream<AbstractAttribute> attributesStream = getAllNestedChildrenIncludingParent(
+                parallel, fromTags).filter(tag -> tag.getAttributes() != null)
+                        .map((tag) -> {
+                            return tag.getAttributes();
+                        })
+                        .flatMap(attributes -> parallel
+                                ? attributes.parallelStream()
+                                : attributes.stream());
+        return attributesStream;
     }
 
 }
