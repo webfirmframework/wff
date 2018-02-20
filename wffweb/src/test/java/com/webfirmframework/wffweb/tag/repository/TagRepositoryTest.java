@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 Web Firm Framework
+ * Copyright 2014-2018 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,6 @@ import static org.junit.Assert.*;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -30,7 +28,6 @@ import com.webfirmframework.wffweb.InvalidTagException;
 import com.webfirmframework.wffweb.WffSecurityException;
 import com.webfirmframework.wffweb.server.page.BrowserPage;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
-import com.webfirmframework.wffweb.tag.html.AbstractHtmlRepository;
 import com.webfirmframework.wffweb.tag.html.Body;
 import com.webfirmframework.wffweb.tag.html.H1;
 import com.webfirmframework.wffweb.tag.html.H2;
