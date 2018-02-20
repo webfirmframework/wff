@@ -594,7 +594,16 @@ public final class StringUtil {
         return Character.isWhitespace(value.charAt(value.length() - 1));
     }
 
-    private static String[] split(final String string, final char delim) {
+    /**
+     * @param string
+     *            the string to split.
+     * @param delim
+     *            to by which the given string to be split.
+     * @return the array of strings split by the given char.
+     * @since 3.0.0 public
+     * @author WFF
+     */
+    public static String[] split(final String string, final char delim) {
 
         final CharSequence[] tmp = new CharSequence[(string.length() / 2) + 1];
         int subCount = 0;
