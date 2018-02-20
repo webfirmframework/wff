@@ -2589,9 +2589,9 @@ public class TagRepository extends AbstractHtmlRepository
      * @since 3.0.0
      * @author WFF
      */
-    public static Stream<AbstractAttribute> buildAllAttriburesStream(
+    public static Stream<AbstractAttribute> buildAllAttributesStream(
             final AbstractHtml... fromTags) {
-        return buildAllAttriburesStream(false, fromTags);
+        return buildAllAttributesStream(false, fromTags);
     }
 
     /**
@@ -2610,7 +2610,7 @@ public class TagRepository extends AbstractHtmlRepository
      * @since 3.0.0
      * @author WFF
      */
-    public static Stream<AbstractAttribute> buildAllAttriburesStream(
+    public static Stream<AbstractAttribute> buildAllAttributesStream(
             final boolean parallel, final AbstractHtml... fromTags) {
         final Stream<AbstractAttribute> attributesStream = getAllNestedChildrenIncludingParent(
                 parallel, fromTags).filter(tag -> tag.getAttributes() != null)
@@ -2623,36 +2623,12 @@ public class TagRepository extends AbstractHtmlRepository
     /**
      * Builds all attributes stream from all tags.
      *
-     * @param parallel
-     *            true to internally use parallel stream. If true it will split
-     *            the finding task to different batches and will execute the
-     *            batches in different threads in parallel consuming all CPUs.
-     *            It will perform faster in finding from extremely large number
-     *            of tags but at the same time it will less efficient in finding
-     *            from small number of tags.
      * @return {@code Stream<AbstractAttribute>}
      * @since 3.0.0
      * @author WFF
      */
-    public Stream<AbstractAttribute> buildAllAttriburesStream(
-            final boolean parallel) {
-        final Stream<AbstractAttribute> attributesStream = buildAllTagsStream(
-                parallel).filter(tag -> tag.getAttributes() != null)
-                        .map((tag) -> {
-                            return tag.getAttributes();
-                        }).flatMap(attributes -> attributes.stream());
-        return attributesStream;
-    }
-
-    /**
-     * Builds all attributes stream from all tags.
-     *
-     * @return {@code Stream<AbstractAttribute>}
-     * @since 3.0.0
-     * @author WFF
-     */
-    public Stream<AbstractAttribute> buildAllAttriburesStream() {
-        return buildAllAttriburesStream(false);
+    public Stream<AbstractAttribute> buildAllAttributesStream() {
+        return buildAllAttributesStream(false);
     }
 
 }
