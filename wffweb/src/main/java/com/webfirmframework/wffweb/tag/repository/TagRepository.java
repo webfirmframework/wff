@@ -461,10 +461,8 @@ public class TagRepository extends AbstractHtmlRepository
                     return child.getAttributes() != null;
                 }).map(child -> {
                     return child.getAttributes();
-                })
-                .flatMap(attributes -> parallel ? attributes.parallelStream()
-                        : attributes.stream())
-                .filter(filter).collect(Collectors.toSet());
+                }).flatMap(attributes -> attributes.stream()).filter(filter)
+                .collect(Collectors.toSet());
     }
 
     /**
@@ -508,8 +506,7 @@ public class TagRepository extends AbstractHtmlRepository
                             && child.getAttributes() != null;
                 }).map(child -> {
                     return child.getAttributes();
-                }).flatMap(attributes -> parallel ? attributes.parallelStream()
-                        : attributes.stream())
+                }).flatMap(attributes -> attributes.stream())
                 .collect(Collectors.toSet());
     }
 
@@ -575,8 +572,7 @@ public class TagRepository extends AbstractHtmlRepository
                     return child.getAttributes() != null;
                 }).filter(filter).map(child -> {
                     return child.getAttributes();
-                }).flatMap(attributes -> parallel ? attributes.parallelStream()
-                        : attributes.stream())
+                }).flatMap(attributes -> attributes.stream())
                 .collect(Collectors.toSet());
     }
 
@@ -1460,10 +1456,7 @@ public class TagRepository extends AbstractHtmlRepository
                                 && tag.getAttributes() != null)
                         .map((tag) -> {
                             return tag.getAttributes();
-                        })
-                        .flatMap(attributes -> parallel
-                                ? attributes.parallelStream()
-                                : attributes.stream());
+                        }).flatMap(attributes -> attributes.stream());
 
         return attributesStream.collect(Collectors.toSet());
     }
@@ -1522,10 +1515,7 @@ public class TagRepository extends AbstractHtmlRepository
                 parallel).filter(tag -> tag.getAttributes() != null)
                         .map((tag) -> {
                             return tag.getAttributes();
-                        })
-                        .flatMap(attributes -> parallel
-                                ? attributes.parallelStream()
-                                : attributes.stream());
+                        }).flatMap(attributes -> attributes.stream());
 
         return attributesStream.filter(filter).collect(Collectors.toSet());
     }
@@ -2277,10 +2267,7 @@ public class TagRepository extends AbstractHtmlRepository
                 parallel).filter(tag -> tag.getAttributes() != null)
                         .map((tag) -> {
                             return tag.getAttributes();
-                        })
-                        .flatMap(attributes -> parallel
-                                ? attributes.parallelStream()
-                                : attributes.stream());
+                        }).flatMap(attributes -> attributes.stream());
         return attributesStream;
     }
 
@@ -2329,8 +2316,7 @@ public class TagRepository extends AbstractHtmlRepository
         return getAllNestedChildrenIncludingParent(parallel, fromTags)
                 .filter(tag -> tag.getAttributes() != null).map((tag) -> {
                     return tag.getAttributes();
-                }).flatMap(attributes -> parallel ? attributes.parallelStream()
-                        : attributes.stream())
+                }).flatMap(attributes -> attributes.stream())
                 .collect(Collectors.toSet());
     }
 
@@ -2622,10 +2608,7 @@ public class TagRepository extends AbstractHtmlRepository
                 parallel, fromTags).filter(tag -> tag.getAttributes() != null)
                         .map((tag) -> {
                             return tag.getAttributes();
-                        })
-                        .flatMap(attributes -> parallel
-                                ? attributes.parallelStream()
-                                : attributes.stream());
+                        }).flatMap(attributes -> attributes.stream());
         return attributesStream;
     }
 
