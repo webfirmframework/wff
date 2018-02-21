@@ -21,7 +21,8 @@ import com.webfirmframework.wffweb.css.core.LengthUnit;
 /**
  * @author WFF
  * @since 1.0.0
- * @see {@link http://www.w3schools.com/cssref/css_units.asp}
+ * @see LengthUnit
+ *
  *
  */
 public enum CssLengthUnit implements LengthUnit {

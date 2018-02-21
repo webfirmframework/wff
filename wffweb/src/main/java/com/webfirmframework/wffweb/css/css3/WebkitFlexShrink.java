@@ -75,8 +75,8 @@ public class WebkitFlexShrink extends AbstractCssProperty<WebkitFlexShrink> {
     }
 
     /**
-     * @param webkitFlexShrinktCss
-     *            the {@code FlexShrink} object from which the cssValue to
+     * @param webkitFlexShrink
+     *            the {@code webkitFlexShrink} object from which the cssValue to
      *            set.And, {@code null} will throw {@code NullValueException}
      */
     public WebkitFlexShrink(final WebkitFlexShrink webkitFlexShrink) {
@@ -88,7 +88,6 @@ public class WebkitFlexShrink extends AbstractCssProperty<WebkitFlexShrink> {
 
     /**
      * @param value
-     * @param cssLengthUnit
      */
     public WebkitFlexShrink(final float value) {
         this.value = value;

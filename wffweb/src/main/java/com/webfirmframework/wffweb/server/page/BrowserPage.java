@@ -723,7 +723,7 @@ public abstract class BrowserPage implements Serializable {
      * the cache.
      *
      * @param rebuild
-     *            true to rebuild & false to return previously built string.
+     *            true to rebuild &amp; false to return previously built string.
      * @return {@code String} equalent to the html string of the tag including
      *         the child tags.
      * @since 2.1.4
@@ -752,9 +752,9 @@ public abstract class BrowserPage implements Serializable {
      * the cache.
      *
      * @param rebuild
-     *            true to rebuild & false to return previously built string.
-     * @param the
-     *            charset to set for the returning value, eg:
+     *            true to rebuild &amp; false to return previously built string.
+     * @param charset
+     *            the charset to set for the returning value, eg:
      *            {@code StandardCharsets.UTF_8.name()}
      * @return {@code String} equalent to the html string of the tag including
      *         the child tags.
@@ -784,7 +784,7 @@ public abstract class BrowserPage implements Serializable {
      * @param os
      *            the object of {@code OutputStream} to write to.
      * @param rebuild
-     *            true to rebuild & false to write previously built bytes.
+     *            true to rebuild &amp; false to write previously built bytes.
      * @return the total number of bytes written
      *
      * @throws IOException
@@ -801,8 +801,6 @@ public abstract class BrowserPage implements Serializable {
     /**
      * @param os
      *            the object of {@code OutputStream} to write to.
-     * @param rebuild
-     *            true to rebuild & false to write previously built bytes.
      * @param charset
      *            the charset
      * @return the total number of bytes written
@@ -821,7 +819,7 @@ public abstract class BrowserPage implements Serializable {
      * @param os
      *            the object of {@code OutputStream} to write to.
      * @param rebuild
-     *            true to rebuild & false to write previously built bytes.
+     *            true to rebuild &amp; false to write previously built bytes.
      * @param charset
      *            the charset
      * @return the total number of bytes written
@@ -1314,7 +1312,7 @@ public abstract class BrowserPage implements Serializable {
             synchronized (this) {
                 if (tagRepository == null) {
                     tagRepository = new TagRepository(ACCESS_OBJECT, this,
-                            rootTag);
+                            tagByWffId, rootTag);
                 }
             }
         }

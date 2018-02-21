@@ -22,9 +22,9 @@ import com.webfirmframework.wffweb.tag.html.html5.identifier.AudioAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 
 /**
- * <code>required</code> attribute for the element.<br/>
+ * <code>required</code> attribute for the element.<br>
  *
- * <i>required</i> attribute for <i>input</i> element :- <br/>
+ * <i>required</i> attribute for <i>input</i> element :- <br>
  * This attribute specifies that the user must fill in a value before submitting
  * a form. It cannot be used when the type attribute is hidden, image, or a
  * button type (submit, reset, or button). The :optional and :required CSS

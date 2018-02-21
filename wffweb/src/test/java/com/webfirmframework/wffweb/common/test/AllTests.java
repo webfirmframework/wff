@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 Web Firm Framework
+ * Copyright 2014-2018 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -127,6 +127,7 @@ import com.webfirmframework.wffweb.css.css3.WebkitFlexTest;
 import com.webfirmframework.wffweb.css.file.CssFileTest;
 import com.webfirmframework.wffweb.js.JsUtilTest;
 import com.webfirmframework.wffweb.streamer.WffBinaryMessageOutputStreamerTest;
+import com.webfirmframework.wffweb.tag.html.AbstractHtmlRepositoryTest;
 import com.webfirmframework.wffweb.tag.html.AbstractHtmlTest;
 import com.webfirmframework.wffweb.tag.html.HrTest;
 import com.webfirmframework.wffweb.tag.html.HtmlTest;
@@ -214,7 +215,7 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObjectArrayTest;
         FormTest.class, TagRepositoryTest.class, SrcCssPropertyTest.class,
         UrlCss3ValueTest.class, WffBMObjectArrayTest.class, RelTest.class,
         AbstractHtml5SharedObjectTest.class, HeightCssTest.class,
-        AutoCompleteTest.class })
+        AutoCompleteTest.class, AbstractHtmlRepositoryTest.class })
 public class AllTests {
 
 }

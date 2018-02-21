@@ -50,7 +50,7 @@ public class Id extends AbstractAttribute implements GlobalAttributable {
     /**
      * value for the id attribute.
      *
-     * @param id
+     * @param value
      * @since 1.0.0
      * @author WFF
      */
@@ -61,7 +61,7 @@ public class Id extends AbstractAttribute implements GlobalAttributable {
     /**
      * value for the id attribute.
      *
-     * @param id
+     * @param uuid
      * @since 1.0.0
      * @author WFF
      */
@@ -73,7 +73,7 @@ public class Id extends AbstractAttribute implements GlobalAttributable {
     /**
      * value for the id attribute.
      *
-     * @param id
+     * @param value
      * @since 1.0.0
      * @author WFF
      */
@@ -84,7 +84,7 @@ public class Id extends AbstractAttribute implements GlobalAttributable {
     /**
      * value for the id attribute.
      *
-     * @param id
+     * @param value
      * @since 1.0.0
      * @author WFF
      */
@@ -95,7 +95,7 @@ public class Id extends AbstractAttribute implements GlobalAttributable {
     /**
      * value for the id attribute.
      *
-     * @param id
+     * @param value
      * @since 1.0.0
      * @author WFF
      */
@@ -106,7 +106,7 @@ public class Id extends AbstractAttribute implements GlobalAttributable {
     /**
      * value for the id attribute.
      *
-     * @param id
+     * @param value
      * @since 1.0.0
      * @author WFF
      */
@@ -189,7 +189,7 @@ public class Id extends AbstractAttribute implements GlobalAttributable {
     /**
      * value for the id attribute.
      *
-     * @param id
+     * @param uuid
      * @since 1.0.0
      * @author WFF
      */

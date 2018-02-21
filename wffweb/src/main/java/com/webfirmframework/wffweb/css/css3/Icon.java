@@ -37,7 +37,7 @@ import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
  * <pre>
- * icon: auto|<i>URL<i>|initial|inherit;
+ * icon: {@code auto|<i>URL<i>|initial|inherit;}
  *
  * The icon property provides the author the ability to style an element with an iconic equivalent.
  *
@@ -87,7 +87,7 @@ public class Icon extends AbstractCssProperty<Icon>
 
     /**
      * @param cssValue
-     *            the cssValue to set. </br>
+     *            the cssValue to set. <br>
      *            eg:- {@code url(images/BackgroundDesign.png)}
      * @author WFF
      */

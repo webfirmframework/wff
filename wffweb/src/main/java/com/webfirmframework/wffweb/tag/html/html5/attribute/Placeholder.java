@@ -22,9 +22,9 @@ import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 
 /**
  *
- * <code>placeholder</code> attribute for the element.<br/>
+ * <code>placeholder</code> attribute for the element.<br>
  *
- * <i>placeholder</i> attribute for <i>input</i> element :- <br/>
+ * <i>placeholder</i> attribute for <i>input</i> element :- <br>
  * A hint to the user of what can be entered in the control . The placeholder
  * text must not contain carriage returns or line-feeds. This attribute applies
  * when the value of the type attribute is text, search, tel, url or email;

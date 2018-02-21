@@ -70,7 +70,7 @@ public class MarginBottom extends AbstractCssProperty<MarginBottom> {
     }
 
     /**
-     * @param widthtCss
+     * @param marginBottom
      *            the {@code MarginBottom} object from which the cssValue to
      *            set.And, {@code null} will throw {@code NullValueException}
      */

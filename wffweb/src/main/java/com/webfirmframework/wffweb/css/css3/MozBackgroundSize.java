@@ -80,8 +80,8 @@ public class MozBackgroundSize extends AbstractCssProperty<MozBackgroundSize> {
     }
 
     /**
-     * @param widthtCss
-     *            the {@code WidthCss} object from which the cssValue to
+     * @param backgroundSize
+     *            the {@code backgroundSize} object from which the cssValue to
      *            set.And, {@code null} will throw {@code NullValueException}
      */
     public MozBackgroundSize(final MozBackgroundSize backgroundSize) {
@@ -94,8 +94,8 @@ public class MozBackgroundSize extends AbstractCssProperty<MozBackgroundSize> {
     /**
      * @param horizontalHeight
      *            the value to set.
-     * @param the
-     *            value unit to set.
+     * @param cssLengthUnit
+     *            the value unit to set.
      * @since 1.0.0
      * @author WFF
      */
@@ -113,7 +113,6 @@ public class MozBackgroundSize extends AbstractCssProperty<MozBackgroundSize> {
      * @param widthCssLengthUnit
      * @param height
      * @param heightCssLengthUnit
-     * @return
      * @author WFF
      * @since 1.0.0
      */

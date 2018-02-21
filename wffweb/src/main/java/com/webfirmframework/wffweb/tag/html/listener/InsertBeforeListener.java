@@ -89,7 +89,7 @@ public interface InsertBeforeListener extends Serializable {
     /**
      * Tags insertedTags inserted before tag beforeTag having parent parentTag.
      *
-     * @param event
+     * @param events
      * @since 2.1.1
      * @author WFF
      */

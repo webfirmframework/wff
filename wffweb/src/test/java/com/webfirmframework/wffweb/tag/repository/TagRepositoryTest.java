@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 Web Firm Framework
+ * Copyright 2014-2018 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 package com.webfirmframework.wffweb.tag.repository;
 
+import static org.junit.Assert.*;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,9 +29,13 @@ import com.webfirmframework.wffweb.WffSecurityException;
 import com.webfirmframework.wffweb.server.page.BrowserPage;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.Body;
+import com.webfirmframework.wffweb.tag.html.H1;
+import com.webfirmframework.wffweb.tag.html.H2;
+import com.webfirmframework.wffweb.tag.html.H3;
 import com.webfirmframework.wffweb.tag.html.Html;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.TitleTag;
+import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.Name;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
@@ -46,7 +52,357 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMArray;
 import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
 
 @SuppressWarnings({ "serial", "deprecation" })
-public class TagRepositoryTest {
+public class TagRepositoryTest {  
+    
+    @Test
+    public void testFindAllTags() {
+        
+        
+        final Html html = new Html(null) {{
+            new Body(this) {{
+                new Div(this, new Id("one")) {{
+                    new Span(this, new Id("two")) {{
+                        new H1(this, new Id("three"));
+                        new H2(this, new Id("three"));
+                        new NoTag(this, "something");
+                    }};
+
+                    new H3(this, new Name("name1"));
+                }};  
+            }};
+            
+        }};
+        
+        {
+            final Collection<AbstractHtml> set = TagRepository.findAllTags(false, html);       
+            
+            assertEquals(8, set.size());
+            
+            assertTrue(set instanceof HashSet);
+        }
+        {
+            final Collection<AbstractHtml> set =TagRepository.findAllTags(true, html);       
+            
+            assertEquals(8, set.size());
+        }
+    }
+    
+    @Test
+    public void testFindAllAttributes() throws Exception {
+        final Html html = new Html(null, new Id("yesId")) {{
+            new Body(this) {{
+                new Div(this, new Id("one"), new Name("name1")) {{
+                    new Span(this, new Id("two")) {{
+                        new H1(this, new Id("three"), new Name("name1"));
+                        new H2(this, new Id("four"));
+                        new NoTag(this, "something");
+                    }};
+                    
+                    new Span(this, new Id("spanthree"));
+
+                    new H3(this, new Name("name1"));
+                }};  
+            }};
+            
+        }};
+        
+        final Collection<AbstractAttribute> allAttributes = TagRepository.findAllAttributes(false, html);
+        assertEquals(9, allAttributes.size());
+    }
+    
+    @Test
+    public void testStaticFindTagsByTagNameBooleanStringAbstractHtmls() throws Exception {
+        final Html html = new Html(null) {{
+            new Body(this) {{
+                new Div(this, new Id("one"), new Name("name1")) {{
+                    new Span(this, new Id("two")) {{
+                        new H1(this, new Id("three"), new Name("name1"));
+                        new H2(this, new Id("four"));
+                        new NoTag(this, "something");
+                    }};
+                    
+                    new Span(this, new Id("spanthree"));
+
+                    new H3(this, new Name("name1"));
+                }};  
+            }};
+            
+        }};
+        
+        {
+            final Collection<AbstractHtml> tags = TagRepository.findTagsByTagName(false, TagNameConstants.SPAN, html);
+            
+            for (AbstractHtml tag : tags) {
+                assertTrue((tag instanceof Span));
+                
+            }
+            assertEquals(2, tags.size());
+        }
+        {
+            final Collection<AbstractHtml> tags = TagRepository.findTagsByTagName(false, TagNameConstants.HTML, html);
+            
+            for (AbstractHtml tag : tags) {
+                assertTrue((tag instanceof Html));
+                
+            }
+            assertEquals(1, tags.size());
+        }
+    }
+    
+    @Test
+    public void testFindTagsByAttributeStringStringAbstractHtmls() throws Exception {
+        
+        final Html html = new Html(null) {{
+            new Body(this) {{
+                new Div(this, new Id("one"), new Name("name1")) {{
+                    new Span(this, new Id("two")) {{
+                        new H1(this, new Id("three"), new Name("name1"));
+                        new H2(this, new Id("four"));
+                        new NoTag(this, "something");
+                    }};
+
+                    new H3(this, new Name("name1"));
+                }};  
+            }};
+            
+        }};
+        
+        final Collection<AbstractHtml> tags = TagRepository.findTagsByAttribute(AttributeNameConstants.NAME, "name1", html);
+        
+        for (AbstractHtml tag : tags) {
+            assertTrue((tag instanceof Div) || (tag instanceof H1) || (tag instanceof H3));
+            
+        }
+        
+    }
+    
+    @Test
+    public void testFindBodyTag() throws Exception {
+        
+        final Html html = new Html(null) {{
+            new Body(this) {{
+                new Div(this, new Id("one")) {{
+                    new Span(this, new Id("two")) {{
+                        new H1(this, new Id("three"));
+                        new H2(this, new Id("three"));
+                        new NoTag(this, "something");
+                    }};
+
+                    new H3(this, new Name("name1"));
+                }};  
+            }};
+            
+        }};
+        BrowserPage browserPage = new BrowserPage() {
+            
+            @Override
+            public String webSocketUrl() {
+                return "wss://webfirmframework/websocket";
+            }
+            
+            @Override
+            public AbstractHtml render() {
+                return html;
+            }
+        };
+        browserPage.toHtmlString();
+        
+        {
+            final Body tag = browserPage.getTagRepository().findBodyTag();
+            assertNotNull(tag);
+            assertTrue(tag instanceof Body);
+        }
+        {
+            final Body tag = browserPage.getTagRepository().findBodyTag(false);
+            assertNotNull(tag);
+            assertTrue(tag instanceof Body);
+        }
+        {
+            final Body tag = browserPage.getTagRepository().findBodyTag(true);
+            assertNotNull(tag);
+            assertTrue(tag instanceof Body);
+        }
+    }
+    
+    @Test
+    public void testFindTitleTag() throws Exception {
+        
+        final Html html = new Html(null) {{
+            new TitleTag(this) {{
+              new NoTag(this);  
+            }};
+            new Body(this) {{
+                new Div(this, new Id("one")) {{
+                    new Span(this, new Id("two")) {{
+                        new H1(this, new Id("three"));
+                        new H2(this, new Id("three"));
+                        new NoTag(this, "something");
+                    }};
+                    
+                    new H3(this, new Name("name1"));
+                }};  
+            }};
+            
+        }};
+        BrowserPage browserPage = new BrowserPage() {
+            
+            @Override
+            public String webSocketUrl() {
+                return "wss://webfirmframework/websocket";
+            }
+            
+            @Override
+            public AbstractHtml render() {
+                return html;
+            }
+        };
+        browserPage.toHtmlString();
+        
+        {
+            final TitleTag tag = browserPage.getTagRepository().findTitleTag();
+            assertNotNull(tag);
+            assertTrue(tag instanceof TitleTag);
+        }
+        {
+            final TitleTag tag = browserPage.getTagRepository().findTitleTag(false);
+            assertNotNull(tag);
+            assertTrue(tag instanceof TitleTag);
+        }
+        {
+            final TitleTag tag = browserPage.getTagRepository().findTitleTag(true);
+            assertNotNull(tag);
+            assertTrue(tag instanceof TitleTag);
+        }
+    }
+    
+    @Test
+    public void testFindHeadTag() throws Exception {
+        
+        final Html html = new Html(null) {{
+            new Head(this);
+            new Body(this) {{
+                new Div(this, new Id("one")) {{
+                    new Span(this, new Id("two")) {{
+                        new H1(this, new Id("three"));
+                        new H2(this, new Id("three"));
+                        new NoTag(this, "something");
+                    }};
+                    
+                    new H3(this, new Name("name1"));
+                }};  
+            }};
+            
+        }};
+        BrowserPage browserPage = new BrowserPage() {
+            
+            @Override
+            public String webSocketUrl() {
+                return "wss://webfirmframework/websocket";
+            }
+            
+            @Override
+            public AbstractHtml render() {
+                return html;
+            }
+        };
+        browserPage.toHtmlString();
+        
+        {
+            final Head tag = browserPage.getTagRepository().findHeadTag();
+            assertNotNull(tag);
+            assertTrue(tag instanceof Head);
+        }
+        {
+            final Head tag = browserPage.getTagRepository().findHeadTag(false);
+            assertNotNull(tag);
+            assertTrue(tag instanceof Head);
+        }
+        {
+            final Head tag = browserPage.getTagRepository().findHeadTag(true);
+            assertNotNull(tag);
+            assertTrue(tag instanceof Head);
+        }
+    }
+    
+    @Test
+    public void testFindOneTagByAttribute() throws Exception {
+        final Html html = new Html(null) {{
+            new Div(this, new Id("one")) {{
+                new Span(this, new Id("two")) {{
+                    new H1(this, new Id("three"));
+                    new H2(this, new Id("three"));
+                    new NoTag(this, "something");
+                }};
+
+                new H3(this, new Name("name1"));
+            }};  
+        }};
+        BrowserPage browserPage = new BrowserPage() {
+            
+            @Override
+            public String webSocketUrl() {
+                return "wss://webfirmframework/websocket";
+            }
+            
+            @Override
+            public AbstractHtml render() {
+                return html;
+            }
+        };
+        browserPage.toHtmlString();
+        
+        {
+            final AbstractHtml tag = browserPage.getTagRepository().findOneTagByAttribute("name", "name1");
+            assertNotNull(tag);
+            assertTrue(tag instanceof H3);
+        }
+        
+        {
+            final AbstractHtml tag = browserPage.getTagRepository().findOneTagByAttribute("name", "name1222");
+            assertNull(tag);
+        }
+        {
+            final AbstractHtml tag = TagRepository.findOneTagByAttribute("name", "name1", html);
+            assertNotNull(tag);
+            assertTrue(tag instanceof H3);
+        }
+        
+        {
+            final AbstractHtml tag = TagRepository.findOneTagByAttribute(false, "name", "name1222", html);
+            assertNull(tag);
+        }
+        {
+            final AbstractHtml tag = TagRepository.findOneTagByAttribute(true, "name", "name1222", html);
+            assertNull(tag);
+        }
+        {
+            final AbstractHtml tag = browserPage.getTagRepository().findOneTagByAttributeName("name");
+            assertNotNull(tag);
+            assertTrue(tag instanceof H3);
+        }
+        {
+            final AbstractHtml tag = browserPage.getTagRepository().findOneTagByAttributeName("style");
+            assertNull(tag);
+        }
+        {
+            final AbstractHtml tag = TagRepository.findOneTagByAttributeName(false, "name", html);
+            assertNotNull(tag);
+            assertTrue(tag instanceof H3);
+        }
+        {
+            final AbstractHtml tag = TagRepository.findOneTagByAttributeName(false, "style", html);
+            assertNull(tag);
+        }
+        {
+            final AbstractHtml tag = TagRepository.findOneTagByAttributeName(true, "name", html);
+            assertNotNull(tag);
+            assertTrue(tag instanceof H3);
+        }
+        {
+            final AbstractHtml tag = TagRepository.findOneTagByAttributeName(true, "style", html);
+            assertNull(tag);
+        }
+    }
 
     @Test
     public void testFindTagById() {

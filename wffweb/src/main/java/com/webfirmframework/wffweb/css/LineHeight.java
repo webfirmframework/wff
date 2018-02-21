@@ -71,7 +71,7 @@ public class LineHeight extends AbstractCssProperty<LineHeight> {
     }
 
     /**
-     * @param widthtCss
+     * @param lineHeight
      *            the {@code LineHeight} object from which the cssValue to
      *            set.And, {@code null} will throw {@code NullValueException}
      */
@@ -106,7 +106,6 @@ public class LineHeight extends AbstractCssProperty<LineHeight> {
 
     /**
      * @param value
-     * @param cssLengthUnit
      * @return the current object
      * @since 1.0.0
      * @author WFF

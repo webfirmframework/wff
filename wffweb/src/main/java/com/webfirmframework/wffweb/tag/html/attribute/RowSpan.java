@@ -22,7 +22,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.ThAttributable;
 
 /**
  * <pre>
- * <td rowspan="number">
+ * &lt;td rowspan=&quot;number&quot;&gt;
  * The rowspan attribute specifies the number of rows a cell should span.
  *
  * </pre>

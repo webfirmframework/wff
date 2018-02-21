@@ -21,13 +21,13 @@ import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 
 /**
  *
- * <code>minlength</code> attribute for the element.<br/>
- * <i>minlength</i> attribute for <i>input</i> element :- <br/>
+ * <code>minlength</code> attribute for the element.<br>
+ * <i>minlength</i> attribute for <i>input</i> element :- <br>
  * If the value of the type attribute is text, email, search, password, tel, or
  * url, this attribute specifies the minimum number of characters (in Unicode
  * code points) that the user can enter; for other control types, it is ignored.
- * <br/>
- * <br/>
+ * <br>
+ * <br>
  *
  * @author WFF
  * @since 1.0.0

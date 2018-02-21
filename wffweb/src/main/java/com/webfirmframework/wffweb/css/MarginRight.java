@@ -70,7 +70,7 @@ public class MarginRight extends AbstractCssProperty<MarginRight> {
     }
 
     /**
-     * @param widthtCss
+     * @param marginRight
      *            the {@code MarginRight} object from which the cssValue to
      *            set.And, {@code null} will throw {@code NullValueException}
      */

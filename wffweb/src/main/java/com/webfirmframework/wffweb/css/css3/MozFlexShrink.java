@@ -75,8 +75,8 @@ public class MozFlexShrink extends AbstractCssProperty<MozFlexShrink> {
     }
 
     /**
-     * @param mozFlexShrinktCss
-     *            the {@code FlexShrink} object from which the cssValue to
+     * @param mozFlexShrink
+     *            the {@code mozFlexShrink} object from which the cssValue to
      *            set.And, {@code null} will throw {@code NullValueException}
      */
     public MozFlexShrink(final MozFlexShrink mozFlexShrink) {
@@ -88,7 +88,6 @@ public class MozFlexShrink extends AbstractCssProperty<MozFlexShrink> {
 
     /**
      * @param value
-     * @param cssLengthUnit
      */
     public MozFlexShrink(final float value) {
         this.value = value;

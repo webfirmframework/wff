@@ -76,7 +76,7 @@ public class AnimationIterationCount
     }
 
     /**
-     * @param animationIterationCounttCss
+     * @param animationIterationCount
      *            the {@code Opacity} object from which the cssValue to set.And,
      *            {@code null} will throw {@code NullValueException}
      */
@@ -91,7 +91,6 @@ public class AnimationIterationCount
 
     /**
      * @param value
-     * @param cssLengthUnit
      */
     public AnimationIterationCount(final int value) {
         this.value = value;

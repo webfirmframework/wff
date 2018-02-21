@@ -21,9 +21,9 @@ import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 
 /**
- * <code>multiple</code> attribute for the element.<br/>
+ * <code>multiple</code> attribute for the element.<br>
  *
- * <i>multiple</i> attribute for <i>input</i> element :- <br/>
+ * <i>multiple</i> attribute for <i>input</i> element :- <br>
  *
  * This Boolean attribute indicates whether the user can enter more than one
  * value. This attribute applies when the type attribute is set to email or

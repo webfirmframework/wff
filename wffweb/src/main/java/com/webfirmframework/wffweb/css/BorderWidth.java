@@ -422,7 +422,7 @@ public class BorderWidth extends AbstractCssProperty<BorderWidth>
     }
 
     /**
-     * sets the top, right, bottom & left width in {@code BorderWidth}. If the
+     * sets the top, right, bottom and left width in {@code BorderWidth}. If the
      * given argument is already used by another object, then the
      * existing/cloned object will be used. And throws
      * {@code NullValueException} if any of the given argument is null.

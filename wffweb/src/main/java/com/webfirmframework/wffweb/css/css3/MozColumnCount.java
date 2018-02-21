@@ -74,7 +74,7 @@ public class MozColumnCount extends AbstractCssProperty<MozColumnCount> {
     }
 
     /**
-     * @param mozColumnCounttCss
+     * @param mozColumnCount
      *            the {@code Opacity} object from which the cssValue to set.And,
      *            {@code null} will throw {@code NullValueException}
      */
@@ -87,7 +87,6 @@ public class MozColumnCount extends AbstractCssProperty<MozColumnCount> {
 
     /**
      * @param value
-     * @param cssLengthUnit
      */
     public MozColumnCount(final int value) {
         this.value = value;

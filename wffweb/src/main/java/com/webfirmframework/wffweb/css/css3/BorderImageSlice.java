@@ -486,7 +486,7 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
     }
 
     /**
-     * sets the top, right, bottom & left in {@code BorderImageSlice}.
+     * sets the top, right, bottom and left in {@code BorderImageSlice}.
      *
      * @param top
      *            the value for top. The value {@code fill} will be assigned for
@@ -502,7 +502,7 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
      *            for null value.
      * @param unit
      *            the {@code CssLengthUnit} for all of the given top, right,
-     *            bottom & left values.
+     *            bottom and left values.
      * @author WFF
      * @since 1.0.0
      */

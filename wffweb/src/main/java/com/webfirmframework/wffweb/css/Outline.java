@@ -96,7 +96,7 @@ public class Outline extends AbstractCssProperty<Outline>
     }
 
     /**
-     * @param widthtCss
+     * @param outline
      *            the {@code Outline} object from which the cssValue to set.And,
      *            {@code null} will throw {@code NullValueException}
      */

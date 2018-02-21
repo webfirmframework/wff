@@ -21,8 +21,8 @@ import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 
 /**
  *
- * <code>maxlength</code> attribute for the element.<br/>
- * <i>maxlength</i> attribute for <i>input</i> element :- <br/>
+ * <code>maxlength</code> attribute for the element.<br>
+ * <i>maxlength</i> attribute for <i>input</i> element :- <br>
  * If the value of the type attribute is text, email, search, password, tel, or
  * url, this attribute specifies the maximum number of characters (in Unicode
  * code points) that the user can enter; for other control types, it is ignored.
@@ -30,8 +30,8 @@ import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
  * user can enter an unlimited number of characters. Specifying a negative
  * number results in the default behavior; that is, the user can enter an
  * unlimited number of characters. The constraint is evaluated only when the
- * value of the attribute has been changed.<br/>
- * <br/>
+ * value of the attribute has been changed.<br>
+ * <br>
  *
  * @author WFF
  * @since 1.0.0

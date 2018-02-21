@@ -132,14 +132,14 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      * @author WFF
      */
     protected AbstractEventAttribute(final String attributeName,
-            final String preJsFunctionBody,
+            final String jsPreFunctionBody,
             final ServerAsyncMethod serverAsyncMethod,
             final String jsFilterFunctionBody,
-            final String postJsFunctionBody) {
+            final String jsPostFunctionBody) {
 
         setAttributeName(attributeName);
-        setServerAsyncMethod(preJsFunctionBody, serverAsyncMethod,
-                jsFilterFunctionBody, postJsFunctionBody);
+        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod,
+                jsFilterFunctionBody, jsPostFunctionBody);
     }
 
     /**

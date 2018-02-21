@@ -32,7 +32,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  * <pre>
  * font-family: <i>font</i>|initial|inherit;
  *
- * Value:       [[ <family-name> | <generic-family> ] [, <family-name>| <generic-family>]* ] | inherit
+ * Value:       {@code [[ <family-name> | <generic-family> ] [, <family-name>| <generic-family>]* ] | inherit}
  * Initial:        depends on user agent
  * Applies to:     all elements
  * Inherited:      yes

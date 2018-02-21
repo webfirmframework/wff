@@ -22,7 +22,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 
 /**
  *
- * <code>form</code> attribute for the element. <br/>
+ * <code>form</code> attribute for the element. <br>
  *
  * The form element that the input element is associated with (its form owner).
  * The value of the attribute must be an id of a {@code<form>} element in the

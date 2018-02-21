@@ -319,9 +319,8 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
     }
 
     /**
-     * @param name
+     * @param key
      *            the key name
-     * @return the value
      * @since 2.0.0
      * @author WFF
      */

@@ -22,6 +22,7 @@ package com.webfirmframework.wffweb.tag.html;
  * @author WFF
  * @since 2.1.8
  */
+@FunctionalInterface
 public interface NestedChild {
 
     /**

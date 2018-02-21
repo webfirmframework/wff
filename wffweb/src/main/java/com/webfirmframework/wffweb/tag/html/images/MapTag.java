@@ -10,7 +10,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.MapTagAttributable;
 
 /**
- * This class represents <map> tag in html
+ * This class represents &lt;map&gt; tag in html
  *
  * @author WFF
  * @since 1.0.0

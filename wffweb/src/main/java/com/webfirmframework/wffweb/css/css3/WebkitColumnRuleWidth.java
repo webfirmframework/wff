@@ -24,7 +24,7 @@ import com.webfirmframework.wffweb.css.core.AbstractCssProperty;
 import com.webfirmframework.wffweb.util.TagStringUtil;
 
 /**
- * This is for Chrome, Safari & Opera.
+ * This is for Chrome, Safari and Opera.
  *
  * <pre>
  * -webkit-column-rule-width: medium|thin|thick|length|initial|inherit;

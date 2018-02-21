@@ -76,7 +76,7 @@ public class Opacity extends AbstractCssProperty<Opacity> {
     }
 
     /**
-     * @param opacitytCss
+     * @param opacity
      *            the {@code Opacity} object from which the cssValue to set.And,
      *            {@code null} will throw {@code NullValueException}
      */
@@ -89,7 +89,6 @@ public class Opacity extends AbstractCssProperty<Opacity> {
 
     /**
      * @param value
-     * @param cssLengthUnit
      */
     public Opacity(final float value) {
         if (value > 1 || value < 0) {

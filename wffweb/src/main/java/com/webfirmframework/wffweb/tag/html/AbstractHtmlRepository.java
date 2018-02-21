@@ -15,6 +15,9 @@
  */
 package com.webfirmframework.wffweb.tag.html;
 
+import java.util.stream.Stream;
+import java.util.stream.Stream.Builder;
+
 import com.webfirmframework.wffweb.wffbm.data.WffBMData;
 
 /**
@@ -22,6 +25,41 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMData;
  * @since 2.1.8
  */
 public abstract class AbstractHtmlRepository {
+
+    /**
+     * @param parallel
+     *            true to use parallel stream.
+     * @param parents
+     *            the tags from which the nested children to be taken.
+     * @return stream of all nested children including the given parent.
+     * @since 3.0.0
+     * @author WFF
+     */
+    protected static Stream<AbstractHtml> getAllNestedChildrenIncludingParent(
+            final boolean parallel, final AbstractHtml... parents) {
+
+        final Builder<AbstractHtml> builder = Stream.builder();
+
+        AbstractHtml.loopThroughAllNestedChildren(child -> {
+
+            builder.add(child);
+
+            return true;
+        }, true, parents);
+
+        // this way makes StackOverflowException
+        // return AbstractHtml.getAllNestedChildrenIncludingParent(parent);
+
+        // if (parallel) {
+        // return AbstractHtml.getAllNestedChildrenIncludingParent(parent)
+        // .parallel();
+        // }
+
+        if (parallel) {
+            return builder.build().parallel();
+        }
+        return builder.build();
+    }
 
     /**
      * Loops through all nested children tags (excluding the given tag) of the

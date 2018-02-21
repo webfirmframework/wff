@@ -673,7 +673,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     }
 
     /**
-     * @returns one of the ownerTags
+     *
+     * @return one of the ownerTags
      * @since 1.0.0
      * @author WFF
      * @deprecated this method may be removed later as there could be multiple
@@ -796,7 +797,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     /**
      * adds all to the attribute value set.
      *
-     * @param value
+     * @param values
      * @since 1.0.0
      * @author WFF
      */
@@ -822,7 +823,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      *            true to update client browser page if it is available. The
      *            default value is true but it will be ignored if there is no
      *            client browser page.
-     * @param value
+     * @param values
      * @since 2.1.15
      * @author WFF
      */

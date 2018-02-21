@@ -394,10 +394,10 @@ public class Margin extends AbstractCssProperty<Margin>
     }
 
     /**
-     * sets the top, right, bottom & left width in {@code Margin}. If the given
-     * argument is already used by another object, then the existing/cloned
-     * object will be used. And throws {@code NullValueException} if any of the
-     * given argument is null.
+     * sets the top, right, bottom and left width in {@code Margin}. If the
+     * given argument is already used by another object, then the
+     * existing/cloned object will be used. And throws
+     * {@code NullValueException} if any of the given argument is null.
      *
      * @param marginTop
      * @param marginRight

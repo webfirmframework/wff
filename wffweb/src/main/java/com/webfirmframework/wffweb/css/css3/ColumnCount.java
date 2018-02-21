@@ -74,7 +74,7 @@ public class ColumnCount extends AbstractCssProperty<ColumnCount> {
     }
 
     /**
-     * @param columnCounttCss
+     * @param columnCount
      *            the {@code Opacity} object from which the cssValue to set.And,
      *            {@code null} will throw {@code NullValueException}
      */
@@ -87,7 +87,6 @@ public class ColumnCount extends AbstractCssProperty<ColumnCount> {
 
     /**
      * @param value
-     * @param cssLengthUnit
      */
     public ColumnCount(final int value) {
         this.value = value;

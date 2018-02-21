@@ -24,8 +24,8 @@ import com.webfirmframework.wffweb.tag.html.html5.identifier.AudioAttributable;
  * <code>src</code> attribute for the element.
  *
  * The URL of the audio to embed. This is subject to HTTP access controls. This
- * is optional; you may instead use the <source> element within the audio block
- * to specify the audio to embed.
+ * is optional; you may instead use the &lt;source&gt; element within the audio
+ * block to specify the audio to embed.
  *
  * @author WFF
  * @since 1.0.0

@@ -76,8 +76,8 @@ public class MozFlexGrow extends AbstractCssProperty<MozFlexGrow> {
     }
 
     /**
-     * @param mozFlexGrowtCss
-     *            the {@code MozFlexGrow} object from which the cssValue to
+     * @param mozFlexGrow
+     *            the {@code mozFlexGrow} object from which the cssValue to
      *            set.And, {@code null} will throw {@code NullValueException}
      */
     public MozFlexGrow(final MozFlexGrow mozFlexGrow) {
@@ -89,7 +89,6 @@ public class MozFlexGrow extends AbstractCssProperty<MozFlexGrow> {
 
     /**
      * @param value
-     * @param cssLengthUnit
      */
     public MozFlexGrow(final float value) {
         this.value = value;

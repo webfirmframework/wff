@@ -107,7 +107,7 @@ public class BorderColorCssValues extends AbstractBean<BorderColorCssValues>
     }
 
     /**
-     * @param hslCssValue
+     * @param hslaCssValue
      */
     public BorderColorCssValues(final HslaCssValue hslaCssValue) {
         super();
@@ -115,7 +115,7 @@ public class BorderColorCssValues extends AbstractBean<BorderColorCssValues>
     }
 
     /**
-     * @param rgbaCssValue2
+     * @param rgbaCssValue
      * @author WFF
      * @since 1.0.0
      */

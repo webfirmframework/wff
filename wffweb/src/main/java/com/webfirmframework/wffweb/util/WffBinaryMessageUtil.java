@@ -25,36 +25,33 @@ public enum WffBinaryMessageUtil {
 
     /**
      * A wff binary message is a collection of name-value pairs where both name
-     * and value can be a binary data. It can have duplicate names.<br/>
+     * and value can be a binary data. It can have duplicate names.<br>
      *
-     * The wff binary message is composed as follows :- <br/>
+     * The wff binary message is composed as follows :- <br>
      * The first byte represents the maximum number of bytes for name length
      * bytes. The second byte represents the maximum number of bytes for the
      * values length bytes. The remaining bytes represent the name-values pairs.
      *
-     * <pre>
-     * Name values pair :-
-     *
      * <table border="1">
+     * <caption>Name values pair</caption> <tbody>
      * <tr>
      * <td>name length bytes</td>
      * <td>name bytes</td>
      * <td>values length bytes</td>
      * <td>values bytes</td>
      * </tr>
+     * </tbody>
      * </table>
      *
-     * </pre>
      *
      * Here, the name length bytes is the length of name bytes and values length
-     * bytes is the length of values bytes.<br/>
+     * bytes is the length of values bytes.<br>
      *
      * The values in name-values pair is an array of value, the values is
      * composed as follows
      *
-     * <pre>
-     * Value as an array :-
      * <table border="1">
+     * <caption>Value as an array</caption> <tbody>
      * <tr>
      * <td>total values length bytes</td>
      * <td>value length bytes</td>
@@ -62,11 +59,10 @@ public enum WffBinaryMessageUtil {
      * <td>value length bytes</td>
      * <td>value bytes</td>
      * </tr>
+     * </tbody>
      * </table>
-     *
-     * Here, total values length bytes = sum of (value length bytes + value bytes + value length bytes + value bytes) no. of bytes.
-     *
-     * </pre>
+     * Here, total values length bytes = sum of (value length bytes + value
+     * bytes + value length bytes + value bytes) no. of bytes.
      *
      *
      *

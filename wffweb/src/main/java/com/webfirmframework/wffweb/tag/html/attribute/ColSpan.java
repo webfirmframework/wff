@@ -22,7 +22,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.ThAttributable;
 
 /**
  * <pre>
- * <td colspan="number">
+ * &lt;td colspan=&quot;number&quot;&gt;
  * The colspan attribute defines the number of columns a cell should span.
  *
  * </pre>

@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import com.webfirmframework.wffweb.InvalidTagException;
 import com.webfirmframework.wffweb.MethodNotImplementedException;
@@ -1451,7 +1452,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param os
      *            the object of {@code OutputStream} to write to.
      * @param rebuild
-     *            true to rebuild & false to write previously built bytes.
+     *            true to rebuild &amp; false to write previously built bytes.
      * @return the total number of bytes written
      *
      * @throws IOException
@@ -1475,7 +1476,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param os
      *            the object of {@code OutputStream} to write to.
      * @param rebuild
-     *            true to rebuild & false to write previously built bytes.
+     *            true to rebuild &amp; false to write previously built bytes.
      * @param charset
      *            the charset
      * @return the total number of bytes written
@@ -1504,7 +1505,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param os
      *            the object of {@code OutputStream} to write to.
      * @param rebuild
-     *            true to rebuild & false to write previously built bytes.
+     *            true to rebuild &amp; false to write previously built bytes.
      * @param charset
      *            the charset
      * @return the total number of bytes written
@@ -2125,7 +2126,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param os
      *            the object of {@code OutputStream} to write to.
      * @param rebuild
-     *            true to rebuild & false to write previously built bytes.
+     *            true to rebuild &amp; false to write previously built bytes.
      * @return the total number of bytes written
      *
      * @throws IOException
@@ -2139,7 +2140,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param os
      *            the object of {@code OutputStream} to write to.
      * @param rebuild
-     *            true to rebuild & false to write previously built bytes.
+     *            true to rebuild &amp; false to write previously built bytes.
      * @param charset
      *            the charset
      * @return the total number of bytes written
@@ -2157,7 +2158,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param os
      *            the object of {@code OutputStream} to write to.
      * @param rebuild
-     *            true to rebuild & false to write previously built bytes.
+     *            true to rebuild &amp; false to write previously built bytes.
      * @param charset
      *            the charset
      * @return the total number of bytes written
@@ -2673,7 +2674,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param bmMessageBytes
      * @return the AbstractHtml instance from the given Wff BM bytes. It uses
      *         system default charset.
-     * @throws UnsupportedEncodingException
      * @since 2.0.0
      * @author WFF
      */
@@ -2688,7 +2688,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param charset
      *            of value bytes
      * @return the AbstractHtml instance from the given Wff BM bytes
-     * @throws UnsupportedEncodingException
      * @since 2.0.0
      * @author WFF
      */
@@ -3213,13 +3212,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
             synchronized (this) {
                 if (parent == null) {
 
-                    loopThroughAllNestedChildren(new NestedChild() {
-
-                        @Override
-                        public boolean eachChild(final AbstractHtml child) {
-                            child.removeAttributes(false, DataWffId.TAG_NAME);
-                            return true;
-                        }
+                    loopThroughAllNestedChildren((child) -> {
+                        child.removeAttributes(false, DataWffId.TAG_NAME);
+                        return true;
                     }, true, this);
 
                     return;
@@ -3227,5 +3222,32 @@ public abstract class AbstractHtml extends AbstractJsObject {
             }
         }
         throw new InvalidTagException("Child tag cannot be reset");
+    }
+
+    /**
+     * NB: it might lead to StackOverflowException if the tag hierarchy is deep.
+     *
+     * @return stream of all nested children including this parent object.
+     * @since 3.0.0
+     * @author WFF
+     */
+    private Stream<AbstractHtml> buildNestedChildrenIncludingParent() {
+        return Stream.concat(Stream.of(this), children.stream()
+                .flatMap(AbstractHtml::buildNestedChildrenIncludingParent));
+    }
+
+    /**
+     * NB: it might lead to StackOverflowException if the tag hierarchy is deep.
+     *
+     * @param parent
+     *            the parent object from which the nested children stream to be
+     *            built.
+     * @return stream of all nested children including the given parent object.
+     * @since 2.1.15
+     * @author WFF
+     */
+    protected static Stream<AbstractHtml> getAllNestedChildrenIncludingParent(
+            final AbstractHtml parent) {
+        return parent.buildNestedChildrenIncludingParent();
     }
 }

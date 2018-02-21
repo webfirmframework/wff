@@ -26,7 +26,7 @@ import com.webfirmframework.wffweb.css.core.CssProperty;
 import com.webfirmframework.wffweb.util.TagStringUtil;
 
 /**
- * text-decoration: none|underline|overline|line-through|initial|inherit; <br/>
+ * text-decoration: none|underline|overline|line-through|initial|inherit; <br>
  * css version : CSS1, renewed in CSS3
  *
  * @author WFF

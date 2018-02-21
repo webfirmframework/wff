@@ -34,8 +34,8 @@ import com.webfirmframework.wffweb.util.StringUtil;
  * list-style-image|initial|inherit;
  *
  *
- * Formal syntax: <'list-style-type'> || <'list-style-position'> ||
- * <'list-style-image'>
+ * Formal syntax: {@code <'list-style-type'> || <'list-style-position'> ||
+ * <'list-style-image'>}
  *
  * @author WFF
  * @since 1.0.0

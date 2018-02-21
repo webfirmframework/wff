@@ -22,7 +22,6 @@ import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
-import com.webfirmframework.wffweb.tag.html.NestedChild;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.Type;
@@ -110,43 +109,32 @@ public class Form extends AbstractHtml {
         final StringBuilder jsObjectBuilder = new StringBuilder("{");
         final Set<String> appendedValues = new HashSet<String>();
 
-        loopThroughAllNestedChildren(new NestedChild() {
+        loopThroughAllNestedChildren((child) -> {
 
-            @Override
-            public boolean eachChild(final AbstractHtml child) {
+            final String tagName = child.getTagName();
 
-                final String tagName = child.getTagName();
+            if (onlyForTagNames.contains(tagName)) {
 
-                if (onlyForTagNames.contains(tagName)) {
+                final AbstractAttribute nameAttr = child
+                        .getAttributeByName(AttributeNameConstants.NAME);
+                final AbstractAttribute typeAttr = child
+                        .getAttributeByName(AttributeNameConstants.TYPE);
 
-                    final AbstractAttribute nameAttr = child
-                            .getAttributeByName(AttributeNameConstants.NAME);
-                    final AbstractAttribute typeAttr = child
-                            .getAttributeByName(AttributeNameConstants.TYPE);
+                if (nameAttr != null) {
+                    final String nameAttrValue = nameAttr.getAttributeValue();
 
-                    if (nameAttr != null) {
-                        final String nameAttrValue = nameAttr
-                                .getAttributeValue();
+                    if (!appendedValues.contains(nameAttrValue)) {
 
-                        if (!appendedValues.contains(nameAttrValue)) {
+                        if (typeAttr != null) {
+                            final String typeAttrValue = typeAttr
+                                    .getAttributeValue();
+                            if (Type.CHECKBOX.equals(typeAttrValue)
+                                    || Type.RADIO.equals(typeAttrValue)) {
+                                jsObjectBuilder.append(nameAttrValue)
+                                        .append(':').append(nameAttrValue)
+                                        .append(".checked,");
+                                appendedValues.add(nameAttrValue);
 
-                            if (typeAttr != null) {
-                                final String typeAttrValue = typeAttr
-                                        .getAttributeValue();
-                                if (Type.CHECKBOX.equals(typeAttrValue)
-                                        || Type.RADIO.equals(typeAttrValue)) {
-                                    jsObjectBuilder.append(nameAttrValue)
-                                            .append(':').append(nameAttrValue)
-                                            .append(".checked,");
-                                    appendedValues.add(nameAttrValue);
-
-                                } else {
-                                    jsObjectBuilder.append(nameAttrValue)
-                                            .append(':').append(nameAttrValue)
-                                            .append(".value,");
-                                    appendedValues.add(nameAttrValue);
-
-                                }
                             } else {
                                 jsObjectBuilder.append(nameAttrValue)
                                         .append(':').append(nameAttrValue)
@@ -154,13 +142,18 @@ public class Form extends AbstractHtml {
                                 appendedValues.add(nameAttrValue);
 
                             }
+                        } else {
+                            jsObjectBuilder.append(nameAttrValue).append(':')
+                                    .append(nameAttrValue).append(".value,");
+                            appendedValues.add(nameAttrValue);
 
                         }
-                    }
 
+                    }
                 }
-                return true;
+
             }
+            return true;
         }, false, this);
 
         return jsObjectBuilder.replace(jsObjectBuilder.length() - 1,
@@ -190,62 +183,56 @@ public class Form extends AbstractHtml {
         final StringBuilder jsObjectBuilder = new StringBuilder("{");
         final Set<String> appendedValues = new HashSet<String>();
 
-        loopThroughAllNestedChildren(new NestedChild() {
+        loopThroughAllNestedChildren((child) -> {
 
-            @Override
-            public boolean eachChild(final AbstractHtml child) {
+            final String tagName = child.getTagName();
 
-                final String tagName = child.getTagName();
+            if (onlyForTagNames.contains(tagName)) {
 
-                if (onlyForTagNames.contains(tagName)) {
+                final AbstractAttribute idAttr = child
+                        .getAttributeByName(AttributeNameConstants.ID);
 
-                    final AbstractAttribute idAttr = child
-                            .getAttributeByName(AttributeNameConstants.ID);
+                final AbstractAttribute typeAttr = child
+                        .getAttributeByName(AttributeNameConstants.TYPE);
 
-                    final AbstractAttribute typeAttr = child
-                            .getAttributeByName(AttributeNameConstants.TYPE);
+                if (idAttr != null) {
+                    final String idAttrValue = idAttr.getAttributeValue();
 
-                    if (idAttr != null) {
-                        final String idAttrValue = idAttr.getAttributeValue();
+                    if (!appendedValues.contains(idAttrValue)) {
 
-                        if (!appendedValues.contains(idAttrValue)) {
+                        final String docById = "document.getElementById('"
+                                + idAttrValue + "')";
 
-                            final String docById = "document.getElementById('"
-                                    + idAttrValue + "')";
+                        if (typeAttr != null) {
 
-                            if (typeAttr != null) {
+                            final String typeAttrValue = typeAttr
+                                    .getAttributeValue();
 
-                                final String typeAttrValue = typeAttr
-                                        .getAttributeValue();
+                            if (Type.CHECKBOX.equals(typeAttrValue)
+                                    || Type.RADIO.equals(typeAttrValue)) {
 
-                                if (Type.CHECKBOX.equals(typeAttrValue)
-                                        || Type.RADIO.equals(typeAttrValue)) {
+                                jsObjectBuilder.append(idAttrValue).append(':')
+                                        .append(docById).append(".checked,");
+                                appendedValues.add(idAttrValue);
 
-                                    jsObjectBuilder.append(idAttrValue)
-                                            .append(':').append(docById)
-                                            .append(".checked,");
-                                    appendedValues.add(idAttrValue);
-
-                                } else {
-                                    jsObjectBuilder.append(idAttrValue)
-                                            .append(':').append(docById)
-                                            .append(".value,");
-                                    appendedValues.add(idAttrValue);
-
-                                }
                             } else {
                                 jsObjectBuilder.append(idAttrValue).append(':')
                                         .append(docById).append(".value,");
                                 appendedValues.add(idAttrValue);
 
                             }
+                        } else {
+                            jsObjectBuilder.append(idAttrValue).append(':')
+                                    .append(docById).append(".value,");
+                            appendedValues.add(idAttrValue);
 
                         }
-                    }
 
+                    }
                 }
-                return true;
+
             }
+            return true;
         }, false, this);
 
         return jsObjectBuilder.replace(jsObjectBuilder.length() - 1,
@@ -316,7 +303,7 @@ public class Form extends AbstractHtml {
      * This js object may be used to return in onsubmit attribute.
      *
      *
-     * @param onlyForTagNames
+     * @param additionalTagNames
      *
      *            TagNameConstants.INPUT, TagNameConstants.TEXTAREA and
      *            TagNameConstants.SELECT Pass object of {@code List},

@@ -30,7 +30,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
  * The following can be spellchecked:
  *
  *     Text values in input elements (not password)
- *     Text in <textarea> elements
+ *     Text in &lt;textarea&gt; elements
  *     Text in editable elements
  *
  * </pre>

@@ -21,7 +21,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.LabelAttributable;
 
 /**
  * <pre>
- * <label for="element_id">
+ * &lt;label for=&quot;element_id&quot;&gt;
  * element_id :  The id of the element the label is bound to
  * </pre>
  *

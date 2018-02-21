@@ -80,7 +80,7 @@ public class FontSizeAdjust extends AbstractCssProperty<FontSizeAdjust> {
     }
 
     /**
-     * @param fontSizeAdjusttCss
+     * @param fontSizeAdjust
      *            the {@code FontSizeAdjust} object from which the cssValue to
      *            set.And, {@code null} will throw {@code NullValueException}
      */
@@ -93,7 +93,6 @@ public class FontSizeAdjust extends AbstractCssProperty<FontSizeAdjust> {
 
     /**
      * @param value
-     * @param cssLengthUnit
      */
     public FontSizeAdjust(final float value) {
         this.value = value;

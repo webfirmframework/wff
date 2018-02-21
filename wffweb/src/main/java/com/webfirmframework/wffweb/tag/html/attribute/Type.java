@@ -25,9 +25,9 @@ import com.webfirmframework.wffweb.tag.html.identifier.StyleAttributable;
 
 /**
  *
- * <code>type</code> attribute for the element.<br/>
+ * <code>type</code> attribute for the element.<br>
  *
- * <i>type</i> attribute for <i>a</i> element :- <br/>
+ * <i>type</i> attribute for <i>a</i> element :- <br>
  *
  * This attribute specifies the media type in the form of a MIME type for the
  * link target. Generally, this is provided strictly as advisory information;
@@ -35,21 +35,21 @@ import com.webfirmframework.wffweb.tag.html.identifier.StyleAttributable;
  * For example, a browser might add a small speaker icon when type is set to
  * audio/wav. For a complete list of recognized MIME types, see
  * http://www.w3.org/TR/html4/references.html#ref-MIMETYPES. Use this attribute
- * only if the href attribute is present. <br/>
- * <br/>
+ * only if the href attribute is present. <br>
+ * <br>
  *
  *
- * <i>type</i> attribute for <i>area</i> element :- <br/>
+ * <i>type</i> attribute for <i>area</i> element :- <br>
  * This attribute specifies the media type in the form of a MIME type for the
  * link target. Generally, this is provided strictly as advisory information;
  * however, in the future a browser might add a small icon for multimedia types.
  * For example, a browser might add a small speaker icon when type is set to
  * audio/wav. For a complete list of recognized MIME types, see
  * http://www.w3.org/TR/html4/references.html#ref-MIMETYPES. Use this attribute
- * only if the href attribute is present. <br/>
- * <br/>
+ * only if the href attribute is present. <br>
+ * <br>
  *
- * <i>type</i> attribute for <i>area</i> element :- <br/>
+ * <i>type</i> attribute for <i>area</i> element :- <br>
  *
  * <pre>
  * The type of control to display. The default type is text, if this attribute is not specified. Possible values are:

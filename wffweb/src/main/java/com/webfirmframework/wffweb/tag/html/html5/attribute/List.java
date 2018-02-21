@@ -22,8 +22,8 @@ import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 
 /**
  *
- * <code>list</code> attribute for the element.<br/>
- * list for input :- <br/>
+ * <code>list</code> attribute for the element.<br>
+ * list for input :- <br>
  * Identifies a list of pre-defined options to suggest to the user. The value
  * must be the id of a {@code <datalist>} element in the same document. The
  * browser displays only options that are valid values for this input element.

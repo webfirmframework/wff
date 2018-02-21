@@ -73,7 +73,7 @@ public class Perspective extends AbstractCssProperty<Perspective> {
     }
 
     /**
-     * @param widthtCss
+     * @param perspective
      *            the {@code Perspective} object from which the cssValue to
      *            set.And, {@code null} will throw {@code NullValueException}
      */

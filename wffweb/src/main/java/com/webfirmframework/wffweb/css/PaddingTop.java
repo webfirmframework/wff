@@ -69,7 +69,7 @@ public class PaddingTop extends AbstractCssProperty<PaddingTop> {
     }
 
     /**
-     * @param widthtCss
+     * @param paddingTop
      *            the {@code PaddingTop} object from which the cssValue to
      *            set.And, {@code null} will throw {@code NullValueException}
      */

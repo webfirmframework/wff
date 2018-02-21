@@ -41,7 +41,7 @@ public class OutputBuffer {
 
     /**
      *
-     * @param string
+     * @param base
      * @author WFF
      * @since 1.0.0
      */

@@ -330,7 +330,7 @@ public class AutoComplete extends AbstractValueSetAttribute
 
     /**
      *
-     * @param value
+     * @param values
      *            the value for the attribute. The value string can contain
      *            values separated by space.
      * @since 2.1.15
@@ -401,7 +401,7 @@ public class AutoComplete extends AbstractValueSetAttribute
      *            true to update client browser page if it is available. The
      *            default value is true but it will be ignored if there is no
      *            client browser page.
-     * @param value
+     * @param attributeValue
      *            the value for the attribute.
      * @since 2.1.15
      * @author WFF
