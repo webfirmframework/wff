@@ -167,7 +167,7 @@ public final class JsUtil {
 
         for (final Object id : ids) {
 
-            builder.append(id.toString()).append(":")
+            builder.append(id.toString()).append(':')
                     .append(alternativeFunction).append("('")
                     .append(id.toString()).append("').value,");
 
@@ -237,7 +237,7 @@ public final class JsUtil {
 
         for (final Object id : ids) {
 
-            builder.append(id.toString()).append(":")
+            builder.append(id.toString()).append(':')
                     .append(alternativeFunction).append("('")
                     .append(id.toString()).append("').value,");
 
@@ -312,7 +312,7 @@ public final class JsUtil {
 
         for (final Object id : inputIds) {
 
-            builder.append(id.toString()).append(":")
+            builder.append(id.toString()).append(':')
                     .append(alternativeFunction).append("('")
                     .append(id.toString()).append("').value,");
 
