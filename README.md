@@ -1,7 +1,7 @@
 [![Build Status](https://api.travis-ci.org/webfirmframework/wff.svg?branch=master)](https://travis-ci.org/webfirmframework/wff)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/410601e16dc54b0a973c03845ad790c2)](https://www.codacy.com/app/webfirm-framework/wff?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=webfirmframework/wff&amp;utm_campaign=Badge_Grade)
 [![Stackoverflow](https://img.shields.io/badge/stackoverflow-wffweb-orange.svg)](https://stackoverflow.com/questions/tagged/wffweb)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.webfirmframework/wffweb/badge.svg)](https://search.maven.org/#artifactdetails%7Ccom.webfirmframework%7Cwffweb%7C3.0.0%7Cjar)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.webfirmframework/wffweb/badge.svg)](https://search.maven.org/#artifactdetails%7Ccom.webfirmframework%7Cwffweb%7C3.0.1%7Cjar)
 [![javadoc](https://img.shields.io/:wffweb-javadoc-blue.svg)](https://webfirmframework.github.io/wffweb/wffweb-javadoc)
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
 [![twitter](https://img.shields.io/badge/twitter-@wffweb-blue.svg)](https://webfirmframework.com/twitter)
@@ -18,9 +18,9 @@ To support us please donate anything you wish to the author of this framework!
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://webfirmframework.com/donate)
 
 
-#### [Register in wff hub for template reference and more!](http://hub.webfirmframework.com). It's built by wffweb-2.x.x
-#### [check out wffweb-2.x.x main features](https://www.youtube.com/watch?v=UWoNliHOy6A)
-##### [check out wffweb-2.x.x sample projects](https://github.com/webfirmframework/tomcat-8-wffweb-demo-apps)
+#### [Register in wff hub for template reference and more!](http://hub.webfirmframework.com). It's built by wffweb-3.x.x
+#### [check out main features of wffweb](https://www.youtube.com/watch?v=UWoNliHOy6A)
+##### [check out wffweb-3.x.x sample projects](https://github.com/webfirmframework/minimal-production-ready-projects)
 
 
 ##### check out this demo app deployed at [https://webfirmframework.com/demo/](https://webfirmframework.com/demo/)
@@ -219,12 +219,12 @@ It will add width 100% in aboutParagraph and will change color to brown, its gen
 
 ##### Checkout 
 
-[Refer Developers Guide to get started](https://webfirmframework.github.io/developers-guide/get-started.html)
+[Refer Developers Guide to get started](https://webfirmframework.github.io/developers-guide-wffweb-3/get-started.html)
 
-[How to resolve wffweb dependency in build tools like maven, ivy, Scala SBT, Leiningen, Grape, Gradle Grails or Apache Buildr](https://webfirmframework.github.io/developers-guide/how-to-resolve-dependency-in-build-tools.html)
+[How to resolve wffweb dependency in build tools like maven, ivy, Scala SBT, Leiningen, Grape, Gradle Grails or Apache Buildr](https://webfirmframework.github.io/developers-guide-wffweb-3/how-to-resolve-dependency-in-build-tools.html)
 
-[wffweb released versions](https://webfirmframework.github.io/developers-guide/wffweb-released-versions.html)
+[wffweb released versions](https://webfirmframework.github.io/developers-guide-wffweb-3/wffweb-released-versions.html)
 
 [You can request features or report bugs here](https://github.com/webfirmframework/wff/issues)
 
-Feel free to write us @ admin@webfirmframework.com for any assistance.
+Feel free to write us @ tech-support@webfirmframework.com for any assistance.
