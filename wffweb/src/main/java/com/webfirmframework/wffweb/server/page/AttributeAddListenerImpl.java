@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -75,14 +76,15 @@ public class AttributeAddListenerImpl implements AttributeAddListener {
             for (int i = 2; i < totalValues; i++) {
                 // should be name=somevalue
                 String attrNameValue = addedAttributes[i - 2]
-                        .toHtmlString("UTF-8").replaceFirst("[=][\"]", "=");
+                        .toHtmlString(StandardCharsets.UTF_8)
+                        .replaceFirst("[=][\"]", "=");
 
                 if (attrNameValue.charAt(attrNameValue.length() - 1) == '"') {
                     attrNameValue = attrNameValue.substring(0,
                             attrNameValue.length() - 1);
                 }
 
-                values[i] = attrNameValue.getBytes("UTF-8");
+                values[i] = attrNameValue.getBytes(StandardCharsets.UTF_8);
             }
 
             nameValue.setValues(values);

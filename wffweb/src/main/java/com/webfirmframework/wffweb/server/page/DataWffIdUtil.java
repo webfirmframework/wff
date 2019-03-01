@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package com.webfirmframework.wffweb.server.page;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
@@ -29,12 +30,23 @@ final class DataWffIdUtil {
         throw new AssertionError();
     }
 
+    /**
+     * @param dataWffId
+     * @return bytes of data wff id
+     * @throws UnsupportedEncodingException
+     *                                          throwing this exception will be
+     *                                          removed in future version
+     *                                          because its internal
+     *                                          implementation will never make
+     *                                          this exception due to the code
+     *                                          changes since 3.0.1.
+     */
     static byte[] getDataWffIdBytes(final String dataWffId)
             throws UnsupportedEncodingException {
 
         // the first byte represents C for Client and S for Server and the
         // remaining string is an integer value
-        final byte sOrC = dataWffId.getBytes("UTF-8")[0];
+        final byte sOrC = dataWffId.getBytes(StandardCharsets.UTF_8)[0];
 
         final byte[] intBytes = WffBinaryMessageUtil.getOptimizedBytesFromInt(
                 Integer.parseInt(dataWffId.substring(1)));
@@ -51,18 +63,23 @@ final class DataWffIdUtil {
      * @return array containing tagName bytes and dataWffIdBytes of the given
      *         argument or its parent.
      * @throws UnsupportedEncodingException
+     *                                          throwing this exception will be
+     *                                          removed in future version
+     *                                          because its internal
+     *                                          implementation will never make
+     *                                          this exception due to the code
+     *                                          changes since 3.0.1.
      * @since 2.0.0
      * @author WFF
      */
     static byte[][] getTagNameAndWffId(final AbstractHtml abstractHtml)
             throws UnsupportedEncodingException {
 
-        final Deque<AbstractHtml> parentStack = new ArrayDeque<AbstractHtml>();
+        final Deque<AbstractHtml> parentStack = new ArrayDeque<>();
         parentStack.push(abstractHtml);
 
-        while (parentStack.size() > 0) {
-
-            final AbstractHtml parent = parentStack.pop();
+        AbstractHtml parent;
+        while ((parent = parentStack.poll()) != null) {
 
             if (parent.getTagName() != null && !parent.getTagName().isEmpty()) {
                 final DataWffId dataWffId = parent.getDataWffId();
@@ -70,7 +87,8 @@ final class DataWffIdUtil {
                 final byte[] dataWffIdBytes = DataWffIdUtil
                         .getDataWffIdBytes(dataWffId.getValue());
 
-                return new byte[][] { parent.getTagName().getBytes("UTF-8"),
+                return new byte[][] {
+                        parent.getTagName().getBytes(StandardCharsets.UTF_8),
                         dataWffIdBytes };
             }
 
@@ -87,6 +105,12 @@ final class DataWffIdUtil {
     /**
      * @return
      * @throws UnsupportedEncodingException
+     *                                          throwing this exception will be
+     *                                          removed in future version
+     *                                          because its internal
+     *                                          implementation will never make
+     *                                          this exception due to the code
+     *                                          changes since 3.0.1.
      * @since 2.1.13
      * @author WFF
      */

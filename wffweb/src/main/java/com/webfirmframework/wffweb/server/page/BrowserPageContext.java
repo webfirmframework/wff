@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,9 +52,9 @@ public enum BrowserPageContext {
     private final Map<String, String> instanceIdHttpSessionId;
 
     private BrowserPageContext() {
-        httpSessionIdBrowserPages = new ConcurrentHashMap<String, Map<String, BrowserPage>>();
-        instanceIdBrowserPage = new ConcurrentHashMap<String, BrowserPage>();
-        instanceIdHttpSessionId = new ConcurrentHashMap<String, String>();
+        httpSessionIdBrowserPages = new ConcurrentHashMap<>();
+        instanceIdBrowserPage = new ConcurrentHashMap<>();
+        instanceIdHttpSessionId = new ConcurrentHashMap<>();
     }
 
     /**
@@ -70,12 +70,14 @@ public enum BrowserPageContext {
         Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages
                 .get(httpSessionId);
 
-        synchronized (this) {
-            if (browserPages == null) {
-                synchronized (this) {
-                    browserPages = new ConcurrentHashMap<String, BrowserPage>();
-                }
-                httpSessionIdBrowserPages.put(httpSessionId, browserPages);
+        if (browserPages == null) {
+            // passed 2 instead of 1 because the load factor is 0.75f
+            browserPages = new ConcurrentHashMap<>(2);
+            final Map<String, BrowserPage> existingBrowserPages = httpSessionIdBrowserPages
+                    .putIfAbsent(httpSessionId, browserPages);
+
+            if (existingBrowserPages != null) {
+                browserPages = existingBrowserPages;
             }
         }
 
@@ -145,7 +147,7 @@ public enum BrowserPageContext {
      * This should be called when the http session is closed
      *
      * @param httpSessionId
-     *            the session id of http session
+     *                          the session id of http session
      * @since 2.0.0
      * @author WFF
      */
@@ -181,8 +183,8 @@ public enum BrowserPageContext {
      * this method should be called when the websocket is opened
      *
      * @param wffInstanceId
-     *            the wffInstanceId which can be retried from the request
-     *            parameter in websocket connection
+     *                          the wffInstanceId which can be retried from the
+     *                          request parameter in websocket connection
      * @since 2.0.0
      * @author WFF
      * @return the {@code BrowserPage} object associated with this instance id,
@@ -208,8 +210,8 @@ public enum BrowserPageContext {
      * this method should be called when the websocket is closed
      *
      * @param wffInstanceId
-     *            the wffInstanceId which can be retried from the request
-     *            parameter in websocket connection
+     *                          the wffInstanceId which can be retried from the
+     *                          request parameter in websocket connection
      * @since 2.0.0
      * @author WFF
      * @deprecated this method is for future development
@@ -223,12 +225,13 @@ public enum BrowserPageContext {
      * this method should be called when the websocket is closed.
      *
      * @param wffInstanceId
-     *            the wffInstanceId which can be retried from the request
-     *            parameter in websocket connection
+     *                          the wffInstanceId which can be retried from the
+     *                          request parameter in websocket connection
      * @param sessionId
-     *            the websocket session id, i.e. the unique id of the websocket
-     *            session which is given in
-     *            {@code BrowserPage#addWebSocketPushListener} method.
+     *                          the websocket session id, i.e. the unique id of
+     *                          the websocket session which is given in
+     *                          {@code BrowserPage#addWebSocketPushListener}
+     *                          method.
      * @since 2.1.0
      * @author WFF
      * @return browserPage instance associated with this wffInstanceId
@@ -292,11 +295,11 @@ public enum BrowserPageContext {
      * {@code webSocketMessaged} method instead of this method.
      *
      * @param wffInstanceId
-     *            the wffInstanceId which can be retried from the request
-     *            parameter in websocket connection.
+     *                          the wffInstanceId which can be retried from the
+     *                          request parameter in websocket connection.
      * @since 2.0.0
      * @param message
-     *            the message received from websocket
+     *                    the message received from websocket
      * @author WFF
      * @deprecated use webSocketMessaged which does the same job.
      */
@@ -310,10 +313,10 @@ public enum BrowserPageContext {
      * this method should be called when the websocket is messagedS
      *
      * @param wffInstanceId
-     *            the wffInstanceId which can be retried from the request
-     *            parameter in websocket connection.
+     *                          the wffInstanceId which can be retried from the
+     *                          request parameter in websocket connection.
      * @param message
-     *            the message received from websocket
+     *                          the message received from websocket
      * @since 2.1.0
      * @author WFF
      */
@@ -336,10 +339,11 @@ public enum BrowserPageContext {
      * internal usage.
      *
      * @param callerInstanceId
-     *            instance id of the caller browserPage instance.
+     *                             instance id of the caller browserPage
+     *                             instance.
      * @param instanceId
-     *            the instance id of the browser page which is indented to be
-     *            removed.
+     *                             the instance id of the browser page which is
+     *                             indented to be removed.
      * @since 2.1.4
      */
     void removeBrowserPage(final String callerInstanceId,
@@ -395,7 +399,7 @@ public enum BrowserPageContext {
      * @param browserPage
      * @return true if the given browserPage exists in the BrowserPageContext.
      * @throws NullValueException
-     *             if the given browserPage instance is null
+     *                                if the given browserPage instance is null
      * @since 2.1.13
      * @author WFF
      */

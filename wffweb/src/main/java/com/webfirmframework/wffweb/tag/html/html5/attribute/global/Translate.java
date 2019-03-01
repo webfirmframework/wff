@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
+import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
  * {@code <element translate="yes|no">  }
@@ -54,9 +55,9 @@ public class Translate extends AbstractAttribute implements GlobalAttributable {
 
     /**
      * @param translation
-     *            the translation to set. The argument {@code true } or
-     *            {@code false } will set {@code yes} or {@code no}
-     *            respectively.
+     *                        the translation to set. The argument {@code true }
+     *                        or {@code false } will set {@code yes} or
+     *                        {@code no} respectively.
      * @author WFF
      * @since 1.0.0
      */
@@ -67,13 +68,13 @@ public class Translate extends AbstractAttribute implements GlobalAttributable {
 
     /**
      * @param value
-     *            the translation to set. The argument should be {@code yes } or
-     *            {@code no }.
+     *                  the translation to set. The argument should be
+     *                  {@code yes } or {@code no }.
      * @author WFF
      * @since 1.1.4
      */
     public Translate(final String value) {
-        final String trimmedValue = value.trim();
+        final String trimmedValue = StringUtil.strip(value);
         if ("yes".equals(trimmedValue)) {
             translation = true;
             super.setAttributeValue("yes");
@@ -106,9 +107,9 @@ public class Translate extends AbstractAttribute implements GlobalAttributable {
 
     /**
      * @param translation
-     *            the translation to set. The argument {@code true } or
-     *            {@code false } will set {@code yes} or {@code no}
-     *            respectively.
+     *                        the translation to set. The argument {@code true }
+     *                        or {@code false } will set {@code yes} or
+     *                        {@code no} respectively.
      * @author WFF
      * @since 1.0.0
      */

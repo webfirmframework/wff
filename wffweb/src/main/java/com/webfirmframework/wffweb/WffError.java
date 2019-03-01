@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,14 +46,17 @@ public class WffError extends Error {
      * disabled.
      *
      * @param message
-     *            the detail message.
+     *                               the detail message.
      * @param cause
-     *            the cause. (A {@code null} value is permitted, and indicates
-     *            that the cause is nonexistent or unknown.)
+     *                               the cause. (A {@code null} value is
+     *                               permitted, and indicates that the cause is
+     *                               nonexistent or unknown.)
      * @param enableSuppression
-     *            whether or not suppression is enabled or disabled
+     *                               whether or not suppression is enabled or
+     *                               disabled
      * @param writableStackTrace
-     *            whether or not the stack trace should be writable
+     *                               whether or not the stack trace should be
+     *                               writable
      * @author WFF
      * @since 1.0.0
      */
@@ -69,13 +72,13 @@ public class WffError extends Error {
      * automatically incorporated in this exception's detail message.
      *
      * @param message
-     *            the detail message (which is saved for later retrieval by the
-     *            {@link #getMessage()} method).
+     *                    the detail message (which is saved for later retrieval
+     *                    by the {@link #getMessage()} method).
      * @param cause
-     *            the cause (which is saved for later retrieval by the
-     *            {@link #getCause()} method). (A <tt>null</tt> value is
-     *            permitted, and indicates that the cause is nonexistent or
-     *            unknown.)
+     *                    the cause (which is saved for later retrieval by the
+     *                    {@link #getCause()} method). (A <tt>null</tt> value is
+     *                    permitted, and indicates that the cause is nonexistent
+     *                    or unknown.)
      * @author WFF
      * @since 1.0.0
      */
@@ -89,8 +92,8 @@ public class WffError extends Error {
      * {@link #initCause}.
      *
      * @param message
-     *            the detail message. The detail message is saved for later
-     *            retrieval by the {@link #getMessage()} method.
+     *                    the detail message. The detail message is saved for
+     *                    later retrieval by the {@link #getMessage()} method.
      * @author WFF
      * @since 1.0.0
      */
@@ -107,10 +110,10 @@ public class WffError extends Error {
      * {@link java.security.PrivilegedActionException}).
      *
      * @param cause
-     *            the cause (which is saved for later retrieval by the
-     *            {@link #getCause()} method). (A <tt>null</tt> value is
-     *            permitted, and indicates that the cause is nonexistent or
-     *            unknown.)
+     *                  the cause (which is saved for later retrieval by the
+     *                  {@link #getCause()} method). (A <tt>null</tt> value is
+     *                  permitted, and indicates that the cause is nonexistent
+     *                  or unknown.)
      * @author WFF
      * @since 1.0.0
      */

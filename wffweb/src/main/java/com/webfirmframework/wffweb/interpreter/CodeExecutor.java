@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,8 +39,8 @@ public abstract class CodeExecutor implements Serializable, Cloneable {
 
     /**
      * @param base
-     *            the base tag object, usually it is <code>this</code> (i.e.
-     *            current object).
+     *                 the base tag object, usually it is <code>this</code>
+     *                 (i.e. current object).
      */
     public CodeExecutor(final AbstractHtml base) {
         if (base == null) {
@@ -53,7 +53,7 @@ public abstract class CodeExecutor implements Serializable, Cloneable {
      * To execute any piece of code.
      *
      * @param base
-     *            the base tag object
+     *                 the base tag object
      * @since 1.0.0
      * @author WFF
      */

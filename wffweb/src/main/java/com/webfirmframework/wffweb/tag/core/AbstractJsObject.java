@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,12 @@
 package com.webfirmframework.wffweb.tag.core;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+import com.webfirmframework.wffweb.InvalidTagException;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.listener.PushQueue;
 import com.webfirmframework.wffweb.tag.html.listener.WffBMDataDeleteListener;
 import com.webfirmframework.wffweb.tag.html.listener.WffBMDataUpdateListener;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
@@ -76,7 +78,7 @@ public abstract class AbstractJsObject extends AbstractTagBase {
      */
     private synchronized void initWffDatas() {
         if (wffBMDatas == null) {
-            wffBMDatas = new HashMap<String, WffBMData>();
+            wffBMDatas = new ConcurrentHashMap<>();
         }
     }
 
@@ -93,15 +95,38 @@ public abstract class AbstractJsObject extends AbstractTagBase {
 
         final AbstractJsObject abstractJsObject = abstractHtml;
 
-        final WffBMData previous = abstractJsObject.getWffDatas().put(key,
-                wffBMData);
         final WffBMDataUpdateListener listener = abstractJsObject
                 .getSharedObject().getWffBMDataUpdateListener(ACCESS_OBJECT);
         if (listener != null) {
+
+            final WffBMData previous = abstractJsObject.getWffDatas().put(key,
+                    wffBMData);
+
             listener.updatedWffData(new WffBMDataUpdateListener.UpdateEvent(
                     abstractHtml, key, wffBMData));
+            final PushQueue pushQueue = abstractHtml.getSharedObject()
+                    .getPushQueue(ACCESS_OBJECT);
+            if (pushQueue != null) {
+                pushQueue.push();
+            }
+            return previous;
         }
-        return previous;
+
+        throw new InvalidTagException(
+                "The given tag is not part of this browserPage instance. It's not available in the UI.");
+    }
+
+    /**
+     * @param abstractHtml
+     * @param key
+     * @return the existing WffBMData
+     * @since 3.0.1
+     * @author WFF
+     */
+    protected static WffBMData getWffData(final AbstractHtml abstractHtml,
+            final String key) {
+        final AbstractJsObject abstractJsObject = abstractHtml;
+        return abstractJsObject.getWffDatas().get(key);
     }
 
     /**
@@ -123,6 +148,11 @@ public abstract class AbstractJsObject extends AbstractTagBase {
         if (listener != null) {
             listener.deletedWffData(
                     new WffBMDataDeleteListener.DeleteEvent(abstractHtml, key));
+            final PushQueue pushQueue = abstractHtml.getSharedObject()
+                    .getPushQueue(ACCESS_OBJECT);
+            if (pushQueue != null) {
+                pushQueue.push();
+            }
         }
 
         return previous;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -90,7 +90,7 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
 
     /**
      * @param cssValue
-     *            the css value to set.
+     *                     the css value to set.
      */
     public MsFlex(final String cssValue) {
         setCssValue(cssValue);
@@ -98,8 +98,9 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
 
     /**
      * @param msFlex
-     *            the {@code Flex} object from which the cssValue to set.And,
-     *            {@code null} will throw {@code NullValueException}
+     *                   the {@code Flex} object from which the cssValue to
+     *                   set.And, {@code null} will throw
+     *                   {@code NullValueException}
      */
     public MsFlex(final MsFlex msFlex) {
         if (msFlex == null) {
@@ -143,9 +144,10 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
 
     /**
      * @param cssValue
-     *            the value should be in the format of <code>1 1 auto</code> or
-     *            <code>1 1 15px</code>. {@code null} is considered as an
-     *            invalid value and it will throw {@code NullValueException}.
+     *                     the value should be in the format of
+     *                     <code>1 1 auto</code> or <code>1 1 15px</code>.
+     *                     {@code null} is considered as an invalid value and it
+     *                     will throw {@code NullValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -156,7 +158,7 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
             throw new NullValueException(
                     "null is an invalid value. The value format should be as for example \"0 1 auto\" or initial/inherit.");
         } else if ((trimmedCssValue = TagStringUtil
-                .toLowerCase(cssValue.trim())).isEmpty()) {
+                .toLowerCase(StringUtil.strip(cssValue))).isEmpty()) {
             throw new NullValueException(cssValue
                     + " is an invalid value. The value format should be as for example \"0 1 auto\" or initial/inherit.");
         }
@@ -318,7 +320,7 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
      */
     public static boolean isValid(final String cssValue) {
         // TODO modify to make a strict validation
-        if (cssValue == null || cssValue.trim().isEmpty()) {
+        if (cssValue == null || StringUtil.isBlank(cssValue)) {
             return false;
         }
 

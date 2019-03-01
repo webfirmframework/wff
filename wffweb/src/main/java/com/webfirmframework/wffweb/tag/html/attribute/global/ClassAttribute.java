@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,13 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute.global;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractValueSetAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
-import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
  * @author WFF
@@ -71,8 +67,8 @@ public class ClassAttribute extends AbstractValueSetAttribute
      * adds the given class names.
      *
      * @param classNames
-     *            one or more class names separated by space or as an array of
-     *            class names.
+     *                       one or more class names separated by space or as an
+     *                       array of class names.
      * @since 1.0.0
      * @author WFF
      */
@@ -84,28 +80,15 @@ public class ClassAttribute extends AbstractValueSetAttribute
      * removed all current class names and adds the given class names.
      *
      * @param classNames
-     *            one or more class names separated by space or an array of
-     *            class names.
+     *                       one or more class names separated by space or an
+     *                       array of class names.
      * @since 1.0.0
      * @author WFF
      */
     public void addNewClassNames(final String... classNames) {
 
         if (classNames != null) {
-            final List<String> allValues = new ArrayList<String>(
-                    classNames.length);
-            for (final String className : classNames) {
-                String trimmmedValue = null;
-                if (className != null
-                        && !(trimmmedValue = className.trim()).isEmpty()) {
-                    // As per Collections.addAll's doc it is faster than
-                    // allValues.addAll(Arrays.asList(values));
-                    Collections.addAll(allValues,
-                            StringUtil.splitBySpace(trimmmedValue));
-                }
-            }
-            super.removeAllFromAttributeValueSet();
-            super.addAllToAttributeValueSet(allValues);
+            super.replaceAllInAttributeValueSet(classNames);
         }
     }
 
@@ -124,7 +107,7 @@ public class ClassAttribute extends AbstractValueSetAttribute
      * removes all class names from the class attribute
      *
      * @param classNames
-     *            the class names to remove
+     *                       the class names to remove
      * @since 1.0.0
      * @author WFF
      */
@@ -136,7 +119,7 @@ public class ClassAttribute extends AbstractValueSetAttribute
      * removes the given class name
      *
      * @param className
-     *            the class name to remove
+     *                      the class name to remove
      * @since 1.0.0
      * @author WFF
      */
@@ -164,7 +147,7 @@ public class ClassAttribute extends AbstractValueSetAttribute
      * @author WFF
      */
     public Set<String> getClassNames() {
-        return new LinkedHashSet<String>(super.getAttributeValueSet());
+        return new LinkedHashSet<>(super.getAttributeValueSet());
     }
 
     /**
@@ -172,7 +155,7 @@ public class ClassAttribute extends AbstractValueSetAttribute
      *
      *
      * @param value
-     *            the value for the attribute.
+     *                  the value for the attribute.
      * @since 2.1.15
      * @author WFF
      */

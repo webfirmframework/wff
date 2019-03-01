@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,8 +50,8 @@ public final class CssTimeUtil {
      * </pre>
      *
      * @param cssValue
-     *            the value from which the time value and unit required to be
-     *            parsed, Eg:- <code>555ms</code>.
+     *                     the value from which the time value and unit required
+     *                     to be parsed, Eg:- <code>555ms</code>.
      * @return an array containing time and unit. The time will be in the zeroth
      *         index as {@code float} (primitive type) type and its unit in the
      *         first index as an object of {@code CssTimeUnit}. If the given
@@ -92,8 +92,8 @@ public final class CssTimeUtil {
      * </pre>
      *
      * @param cssValue
-     *            the value from which the time value and unit required to be
-     *            parsed, Eg:- <code>555ms</code>.
+     *                     the value from which the time value and unit required
+     *                     to be parsed, Eg:- <code>555ms</code>.
      * @return an array containing time and unit. The time will be in the zeroth
      *         index as {@code Float} (wrapper type) type and its unit in the
      *         first index as an object of {@code CssTimeUnit}. If the given

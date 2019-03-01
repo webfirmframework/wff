@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -148,8 +148,10 @@ public abstract class AbstractHtmlView implements HtmlView {
      * {@code AbstractHtmlView#toHtmlString(boolean)}.
      *
      * @param preserveOutputBufferContent
-     *            <code>true</code> to preserve and <code>false</code> for not
-     *            to preserve. The default values is <code>false</code>.
+     *                                        <code>true</code> to preserve and
+     *                                        <code>false</code> for not to
+     *                                        preserve. The default values is
+     *                                        <code>false</code>.
      *
      *
      */

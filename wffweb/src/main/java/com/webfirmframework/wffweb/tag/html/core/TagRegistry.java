@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 package com.webfirmframework.wffweb.tag.html.core;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -28,6 +28,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.webfirmframework.wffweb.InvalidValueException;
+import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.BaseFont;
 import com.webfirmframework.wffweb.tag.html.Body;
 import com.webfirmframework.wffweb.tag.html.Br;
@@ -43,6 +45,7 @@ import com.webfirmframework.wffweb.tag.html.P;
 import com.webfirmframework.wffweb.tag.html.Qfn;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.TitleTag;
+import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.formatting.Abbr;
 import com.webfirmframework.wffweb.tag.html.formatting.Address;
 import com.webfirmframework.wffweb.tag.html.formatting.B;
@@ -173,9 +176,8 @@ public class TagRegistry {
         final Field[] fields = TagNameConstants.class.getFields();
         final int initialCapacity = fields.length;
 
-        tagClassByTagName = new HashMap<String, Class<?>>(initialCapacity);
-        TAG_CLASS_NAME_BY_TAG_NAME = new HashMap<String, String>(
-                initialCapacity);
+        tagClassByTagName = new HashMap<>(initialCapacity);
+        TAG_CLASS_NAME_BY_TAG_NAME = new HashMap<>(initialCapacity);
 
         tagClassByTagName.put(TagNameConstants.A, A.class);
         tagClassByTagName.put(TagNameConstants.ABBR, Abbr.class);
@@ -310,8 +312,8 @@ public class TagRegistry {
                     entry.getValue().getSimpleName());
         }
 
-        tagNames = new ArrayList<String>(initialCapacity);
-        tagNamesSet = new HashSet<String>(initialCapacity);
+        tagNames = new ArrayList<>(initialCapacity);
+        tagNamesSet = new HashSet<>(initialCapacity);
 
         tagNamesSet.addAll(TAG_CLASS_NAME_BY_TAG_NAME.keySet());
         tagNames.addAll(tagNamesSet);
@@ -329,16 +331,12 @@ public class TagRegistry {
 
         tagNames.addAll(tagNamesSet);
 
-        Collections.sort(tagNames, new Comparator<String>() {
+        Collections.sort(tagNames, (o1, o2) -> {
 
-            @Override
-            public int compare(final String o1, final String o2) {
+            final Integer length1 = o1.length();
+            final Integer length2 = o2.length();
 
-                final Integer length1 = o1.length();
-                final Integer length2 = o2.length();
-
-                return length1.compareTo(length2);
-            }
+            return length1.compareTo(length2);
         });
     }
 
@@ -354,14 +352,14 @@ public class TagRegistry {
     /**
      *
      * @param tagNamesToRegister
-     *            the tag names to register , eg:- register("new-tag1",
-     *            "new-tag2")
+     *                               the tag names to register , eg:-
+     *                               register("new-tag1", "new-tag2")
      * @since 1.1.3
      * @author WFF
      */
     public static void register(final String... tagNamesToRegister) {
 
-        final Set<String> tagNamesWithoutDuplicates = new HashSet<String>(
+        final Set<String> tagNamesWithoutDuplicates = new HashSet<>(
                 tagNamesToRegister.length);
         Collections.addAll(tagNamesWithoutDuplicates, tagNamesToRegister);
 
@@ -370,16 +368,12 @@ public class TagRegistry {
         tagNames.clear();
         tagNames.addAll(tagNamesSet);
 
-        Collections.sort(tagNames, new Comparator<String>() {
+        Collections.sort(tagNames, (o1, o2) -> {
 
-            @Override
-            public int compare(final String o1, final String o2) {
+            final Integer length1 = o1.length();
+            final Integer length2 = o2.length();
 
-                final Integer length1 = o1.length();
-                final Integer length2 = o2.length();
-
-                return length1.compareTo(length2);
-            }
+            return length1.compareTo(length2);
         });
 
     }
@@ -402,7 +396,7 @@ public class TagRegistry {
      */
     public static void loadAllTagClasses() {
 
-        final Map<String, Class<?>> unloadedClasses = new HashMap<String, Class<?>>();
+        final Map<String, Class<?>> unloadedClasses = new HashMap<>();
 
         for (final Entry<String, Class<?>> entry : tagClassByTagName
                 .entrySet()) {
@@ -424,6 +418,28 @@ public class TagRegistry {
             tagClassByTagName.putAll(unloadedClasses);
         } else {
             tagClassByTagName = null;
+        }
+    }
+
+    // only for testing purpose
+    static void test() throws InstantiationException, IllegalAccessException,
+            NoSuchFieldException, SecurityException, IllegalArgumentException,
+            InvocationTargetException, NoSuchMethodException,
+            InvalidValueException {
+        for (final Entry<String, Class<?>> each : tagClassByTagName
+                .entrySet()) {
+            final String expectedTagName = each.getKey();
+            final Class<?> tagClass = each.getValue();
+            final AbstractHtml newInstance = (AbstractHtml) tagClass
+                    .getConstructor(AbstractHtml.class,
+                            AbstractAttribute[].class)
+                    .newInstance(null, new AbstractAttribute[0]);
+            final String actualTagName = newInstance.getTagName();
+
+            if (!expectedTagName.equals(actualTagName)) {
+                throw new InvalidValueException("expectedTagName: "
+                        + expectedTagName + " actualTagName: " + actualTagName);
+            }
         }
     }
 

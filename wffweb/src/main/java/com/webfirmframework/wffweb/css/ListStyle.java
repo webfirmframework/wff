@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,7 +75,7 @@ public class ListStyle extends AbstractCssProperty<ListStyle>
 
     /**
      * @param cssValue
-     *            the css value to set.
+     *                     the css value to set.
      */
     public ListStyle(final String cssValue) {
         setCssValue(cssValue);
@@ -83,8 +83,9 @@ public class ListStyle extends AbstractCssProperty<ListStyle>
 
     /**
      * @param listStyle
-     *            the {@code ListStyle} object from which the cssValue to
-     *            set.And, {@code null} will throw {@code NullValueException}
+     *                      the {@code ListStyle} object from which the cssValue
+     *                      to set.And, {@code null} will throw
+     *                      {@code NullValueException}
      */
     public ListStyle(final ListStyle listStyle) {
         if (listStyle == null) {
@@ -128,9 +129,10 @@ public class ListStyle extends AbstractCssProperty<ListStyle>
 
     /**
      * @param cssValue
-     *            the value should be in the format of <code>55px</code> or
-     *            <code>95%</code>. {@code null} is considered as an invalid
-     *            value and it will throw {@code NullValueException}.
+     *                     the value should be in the format of
+     *                     <code>55px</code> or <code>95%</code>. {@code null}
+     *                     is considered as an invalid value and it will throw
+     *                     {@code NullValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -142,7 +144,7 @@ public class ListStyle extends AbstractCssProperty<ListStyle>
         if (cssValue == null) {
             throw new NullValueException(
                     "null is an invalid value. The value format should be as for example cjk-ideographic inside url(\"Sqpurple.gif\"). Or, initial/inherit.");
-        } else if ((trimmedCssValue = cssValue.trim()).isEmpty()) {
+        } else if ((trimmedCssValue = StringUtil.strip(cssValue)).isEmpty()) {
             throw new NullValueException(cssValue
                     + " is an invalid value. The value format should be as for example cjk-ideographic inside url(\"Sqpurple.gif\"). Or, initial/inherit.");
         }
@@ -242,7 +244,7 @@ public class ListStyle extends AbstractCssProperty<ListStyle>
      */
     public static boolean isValid(final String cssValue) {
         // TODO modify to make a strict validation
-        if (cssValue == null || cssValue.trim().isEmpty()) {
+        if (cssValue == null || StringUtil.isBlank(cssValue)) {
             return false;
         }
 

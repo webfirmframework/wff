@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.tag.html.attribute;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
+import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
  *
@@ -63,12 +64,12 @@ public class MaxLength extends AbstractAttribute implements InputAttributable {
     /**
      *
      * @param value
-     *            should be number
+     *                  should be number
      * @since 1.1.4
      * @author WFF
      */
     public MaxLength(final String value) {
-        final String trimmedValue = value.trim();
+        final String trimmedValue = StringUtil.strip(value);
         this.value = Integer.parseInt(trimmedValue);
         setAttributeValue(trimmedValue);
     }
@@ -76,7 +77,7 @@ public class MaxLength extends AbstractAttribute implements InputAttributable {
     /**
      *
      * @param value
-     *            the value for the attribute
+     *                  the value for the attribute
      * @since 1.0.0
      */
     public MaxLength(final int value) {
@@ -88,7 +89,7 @@ public class MaxLength extends AbstractAttribute implements InputAttributable {
      * sets the value for this attribute
      *
      * @param value
-     *            the value for the attribute.
+     *                  the value for the attribute.
      * @since 1.0.0
      */
     public void setValue(final int value) {

@@ -15,19 +15,23 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.WeakHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.tag.core.AbstractTagBase;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attribute.listener.AttributeValueChangeListener;
+import com.webfirmframework.wffweb.tag.html.listener.PushQueue;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 import com.webfirmframework.wffweb.util.StringBuilderUtil;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 
 public abstract class AbstractAttribute extends AbstractTagBase {
 
-    private static final long serialVersionUID = 1_1_0L;
+    private static final long serialVersionUID = 1_1_1L;
 
     public static final Logger LOGGER = Logger
             .getLogger(AbstractAttribute.class.getName());
@@ -42,15 +46,17 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
     private volatile Set<String> attributeValueSet;
 
-    private transient Set<AbstractHtml> ownerTags;
+    private transient final Set<AbstractHtml> ownerTags;
 
-    private StringBuilder tagBuilder;
+    private final StringBuilder tagBuilder;
 
     // private AttributeValueChangeListener valueChangeListener;
 
     private volatile Set<AttributeValueChangeListener> valueChangeListeners;
 
     private transient Charset charset = Charset.defaultCharset();
+
+    private final boolean nullableAttrValueMapValue;
 
     // for security purpose, the class name should not be modified
     private static final class Security implements Serializable {
@@ -66,14 +72,29 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     }
 
     {
-        init();
+        tagBuilder = new StringBuilder();
+        // almost all attributes may have only one owner tag
+        // in a practical scenario so passed 2 here because the load factor is
+        // 0.75f
+        ownerTags = Collections
+                .newSetFromMap(new WeakHashMap<AbstractHtml, Boolean>(2));
+
+        setRebuild(true);
     }
 
-    private void init() {
-        tagBuilder = new StringBuilder();
-        ownerTags = Collections
-                .newSetFromMap(new WeakHashMap<AbstractHtml, Boolean>());
-        setRebuild(true);
+    public AbstractAttribute() {
+        nullableAttrValueMapValue = false;
+    }
+
+    /**
+     * this constructor is only for the attribute whose value is an attribute
+     * value map, eg: style
+     *
+     * @param nullableAttrValueMapValue
+     *                                      only
+     */
+    protected AbstractAttribute(final boolean nullableAttrValueMapValue) {
+        this.nullableAttrValueMapValue = nullableAttrValueMapValue;
     }
 
     /**
@@ -143,8 +164,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             // result = StringBuilderUtil.getTrimmedString(tagBuilder) + "\"";
             // tagBuilder.append("\"");
             setRebuild(false);
+            tagBuilder.trimToSize();
         }
-        tagBuilder.trimToSize();
+
         return result;
     }
 
@@ -223,7 +245,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     protected byte[] getBinaryStructureCompressedByIndex(final boolean rebuild)
             throws IOException {
 
-        final String charset = this.charset.name();
+        final Charset charset = this.charset;
         // TODO review code
 
         final ByteArrayOutputStream compressedByIndexBytes = new ByteArrayOutputStream();
@@ -308,7 +330,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * Set attribute name, eg: width, height, name, type etc..
      *
      * @param attributeName
-     *            the attributeName to set
+     *                          the attributeName to set
      * @since 1.0.0
      * @author WFF
      */
@@ -456,7 +478,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
     /**
      * @param attributeValueMap
-     *            the attributeValueMap to set
+     *                              the attributeValueMap to set
      * @since 1.0.0
      * @author WFF
      */
@@ -482,41 +504,37 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     protected boolean addToAttributeValueMap(final String key,
             final String value) {
 
-        final Map<String, String> attributeValueMap = getAttributeValueMap();
+        final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+        boolean listenerInvoked = false;
+        final Collection<WriteLock> writeLocks = lockAndGetWriteLocks();
+        try {
+            final Map<String, String> attributeValueMap = getAttributeValueMap();
 
-        final String previousValue = attributeValueMap.put(key, value);
+            final String previousValue = attributeValueMap.put(key, value);
 
-        if (!Objects.equals(previousValue, value)) {
+            if (!Objects.equals(previousValue, value)) {
+                setModified(true);
+                invokeValueChangeListeners(sharedObjects);
+                listenerInvoked = true;
+            }
 
-            setModified(true);
-
-            invokeValueChangeListeners();
-
-            return true;
-
+        } finally {
+            for (final Lock lock : writeLocks) {
+                lock.unlock();
+            }
         }
 
-        // if (!attributeValueMap.containsKey(key)
-        // || !value.equals(attributeValueMap.get(key))) {
-        //
-        //
-        // setModified(true);
-        // return true;
-        // }
-        return false;
+        pushQueues(sharedObjects, listenerInvoked);
+
+        return listenerInvoked;
     }
 
     /**
      * this method should be called after changing of attribute value not before
      * changing value
      */
-    private void invokeValueChangeListeners() {
-        final Set<AbstractHtml5SharedObject> sharedObjects = new HashSet<AbstractHtml5SharedObject>(
-                ownerTags.size());
-
-        for (final AbstractHtml ownerTag : ownerTags) {
-            sharedObjects.add(ownerTag.getSharedObject());
-        }
+    private void invokeValueChangeListeners(
+            final Collection<AbstractHtml5SharedObject> sharedObjects) {
 
         for (final AbstractHtml5SharedObject sharedObject : sharedObjects) {
             final AttributeValueChangeListener valueChangeListener = sharedObject
@@ -540,6 +558,22 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 listener.valueChanged(event);
             }
         }
+
+    }
+
+    private Collection<AbstractHtml5SharedObject> getSharedObjects() {
+
+        // internally ownerTags.size() (WeakHashMap) contains synchronization so
+        // better avoid calling it
+        // normally there will be one sharedObject so the capacity may be
+        // considered as 1
+        final Collection<AbstractHtml5SharedObject> sharedObjects = new HashSet<>(
+                1);
+
+        for (final AbstractHtml ownerTag : ownerTags) {
+            sharedObjects.add(ownerTag.getSharedObject());
+        }
+        return sharedObjects;
     }
 
     /**
@@ -551,14 +585,30 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @return true if it is modified
      */
     protected boolean addAllToAttributeValueMap(final Map<String, String> map) {
+
         if (map != null && map.size() > 0) {
-            getAttributeValueMap().putAll(map);
 
-            setModified(true);
+            final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+            boolean listenerInvoked = false;
 
-            invokeValueChangeListeners();
+            final Collection<WriteLock> writeLocks = lockAndGetWriteLocks();
+            try {
 
-            return true;
+                getAttributeValueMap().putAll(map);
+
+                setModified(true);
+
+                invokeValueChangeListeners(sharedObjects);
+                listenerInvoked = true;
+
+            } finally {
+                for (final Lock lock : writeLocks) {
+                    lock.unlock();
+                }
+            }
+            pushQueues(sharedObjects, listenerInvoked);
+            return listenerInvoked;
+
         }
         return false;
     }
@@ -573,16 +623,77 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      *         to it) has been removed.
      */
     protected boolean removeFromAttributeValueMap(final String key) {
+        return removeFromAttributeValueMapByKeys(key);
+    }
+
+    /**
+     * removes the key value for the input key.
+     *
+     * @param keys
+     * @since 3.0.1
+     * @author WFF
+     * @return true if any of the given keys (as well as value contained
+     *         corresponding to it) has been removed.
+     */
+    protected boolean removeFromAttributeValueMapByKeys(final String... keys) {
+
+        final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+        boolean listenerInvoked = false;
+        final Collection<WriteLock> writeLocks = lockAndGetWriteLocks();
         boolean result = false;
-        final String previous = getAttributeValueMap().remove(key);
+        try {
 
-        if (previous != null) {
-            setModified(true);
-            result = true;
-            invokeValueChangeListeners();
+            final Map<String, String> valueMap = getAttributeValueMap();
+
+            if (nullableAttrValueMapValue) {
+                for (final String key : keys) {
+                    result = valueMap.containsKey(key);
+                    if (result) {
+                        break;
+                    }
+                }
+            }
+
+            for (final String key : keys) {
+                final String previous = valueMap.remove(key);
+                if (previous != null) {
+                    result = true;
+                }
+            }
+
+            if (result) {
+                setModified(true);
+                invokeValueChangeListeners(sharedObjects);
+                listenerInvoked = true;
+            }
+
+        } finally {
+            for (final Lock lock : writeLocks) {
+                lock.unlock();
+            }
         }
-
+        pushQueues(sharedObjects, listenerInvoked);
         return result;
+    }
+
+    /**
+     * pushes PushQueue from all shared object of parent tags.
+     *
+     * @param sharedObjects
+     * @param listenerInvoked
+     */
+    private void pushQueues(
+            final Collection<AbstractHtml5SharedObject> sharedObjects,
+            final boolean listenerInvoked) {
+        if (listenerInvoked) {
+            for (final AbstractHtml5SharedObject sharedObject : sharedObjects) {
+                final PushQueue pushQueue = sharedObject
+                        .getPushQueue(ACCESS_OBJECT);
+                if (pushQueue != null) {
+                    pushQueue.push();
+                }
+            }
+        }
     }
 
     /**
@@ -597,27 +708,47 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected boolean removeFromAttributeValueMap(final String key,
             final String value) {
-        final String previousValue = getAttributeValueMap().remove(key);
 
-        if (!Objects.equals(previousValue, value)) {
+        final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
 
-            setModified(true);
+        final Collection<WriteLock> writeLocks = lockAndGetWriteLocks();
+        boolean listenerInvoked = false;
+        try {
 
-            invokeValueChangeListeners();
+            final boolean removed = getAttributeValueMap().remove(key, value);
 
-            return true;
+            if (removed) {
+                setModified(true);
+                invokeValueChangeListeners(sharedObjects);
+                listenerInvoked = true;
+            }
 
+        } finally {
+            for (final Lock lock : writeLocks) {
+                lock.unlock();
+            }
         }
-        return false;
+        pushQueues(sharedObjects, listenerInvoked);
+        return listenerInvoked;
     }
 
     protected void removeAllFromAttributeValueMap() {
         if (attributeValueMap != null && getAttributeValueMap().size() > 0) {
-            getAttributeValueMap().clear();
-            setModified(true);
+            final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+            boolean listenerInvoked = false;
+            final Collection<WriteLock> writeLocks = lockAndGetWriteLocks();
+            try {
+                getAttributeValueMap().clear();
+                setModified(true);
 
-            invokeValueChangeListeners();
-
+                invokeValueChangeListeners(sharedObjects);
+                listenerInvoked = true;
+            } finally {
+                for (final Lock lock : writeLocks) {
+                    lock.unlock();
+                }
+            }
+            pushQueues(sharedObjects, listenerInvoked);
         }
     }
 
@@ -635,40 +766,69 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
     /**
      * @param attributeValue
-     *            the attributeValue to set
+     *                           the attributeValue to set
      * @since 1.0.0
      * @author WFF
      */
     protected void setAttributeValue(final String attributeValue) {
         if (!Objects.equals(this.attributeValue, attributeValue)) {
-            // this.attributeValue = attributeValue must be
-            // before invokeValueChangeListeners
-            this.attributeValue = attributeValue;
-            setModified(true);
-            invokeValueChangeListeners();
+            final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+            boolean listenerInvoked = false;
+            final Collection<WriteLock> writeLocks = lockAndGetWriteLocks();
+
+            try {
+
+                // this.attributeValue = attributeValue must be
+                // before invokeValueChangeListeners
+                this.attributeValue = attributeValue;
+                setModified(true);
+                invokeValueChangeListeners(sharedObjects);
+                listenerInvoked = true;
+            } finally {
+                for (final Lock lock : writeLocks) {
+                    lock.unlock();
+                }
+            }
+
+            pushQueues(sharedObjects, listenerInvoked);
         }
     }
 
     /**
      * @param updateClient
-     *            true to update client browser page if it is available. The
-     *            default value is true but it will be ignored if there is no
-     *            client browser page.
+     *                           true to update client browser page if it is
+     *                           available. The default value is true but it
+     *                           will be ignored if there is no client browser
+     *                           page.
      * @param attributeValue
-     *            the attributeValue to set
+     *                           the attributeValue to set
      * @since 2.1.15
      * @author WFF
      */
     protected void setAttributeValue(final boolean updateClient,
             final String attributeValue) {
+
         if (!Objects.equals(this.attributeValue, attributeValue)) {
-            // this.attributeValue = attributeValue must be
-            // before invokeValueChangeListeners
-            this.attributeValue = attributeValue;
-            setModified(true);
-            if (updateClient) {
-                invokeValueChangeListeners();
+            final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+            boolean listenerInvoked = false;
+            final Collection<WriteLock> writeLocks = lockAndGetWriteLocks();
+
+            try {
+
+                // this.attributeValue = attributeValue must be
+                // before invokeValueChangeListeners
+                this.attributeValue = attributeValue;
+                setModified(true);
+                if (updateClient) {
+                    invokeValueChangeListeners(sharedObjects);
+                    listenerInvoked = true;
+                }
+            } finally {
+                for (final Lock lock : writeLocks) {
+                    lock.unlock();
+                }
             }
+            pushQueues(sharedObjects, listenerInvoked);
         }
     }
 
@@ -709,7 +869,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * consumed.
      *
      * @param ownerTag
-     *            the ownerTag to set
+     *                     the ownerTag to set
      * @since 1.0.0
      * @author WFF
      */
@@ -722,7 +882,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * consumed.
      *
      * @param ownerTag
-     *            the ownerTag to unset
+     *                     the ownerTag to unset
      * @return true if the given ownerTag is an owner of the attribute.
      * @since 2.0.0
      * @author WFF
@@ -754,7 +914,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         if (attributeValueSet == null) {
             synchronized (this) {
                 if (attributeValueSet == null) {
-                    attributeValueSet = new LinkedHashSet<String>();
+                    // because the load factor is 0.75f
+                    attributeValueSet = new LinkedHashSet<>(2);
                 }
             }
         }
@@ -763,7 +924,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
     /**
      * @param attributeValueSet
-     *            the attributeValueSet to set
+     *                              the attributeValueSet to set
      * @since 1.0.0
      * @author WFF
      */
@@ -783,15 +944,28 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @return
      */
     protected boolean addToAttributeValueSet(final String value) {
-        final boolean added = getAttributeValueSet().add(value);
+        final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+        boolean listenerInvoked = false;
+        final Collection<WriteLock> writeLocks = lockAndGetWriteLocks();
+        try {
 
-        if (added) {
-            setModified(true);
+            final boolean added = getAttributeValueSet().add(value);
 
-            invokeValueChangeListeners();
+            if (added) {
+                setModified(true);
 
+                invokeValueChangeListeners(sharedObjects);
+                listenerInvoked = true;
+
+            }
+
+        } finally {
+            for (final Lock lock : writeLocks) {
+                lock.unlock();
+            }
         }
-        return added;
+        pushQueues(sharedObjects, listenerInvoked);
+        return listenerInvoked;
     }
 
     /**
@@ -803,16 +977,77 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected void addAllToAttributeValueSet(final Collection<String> values) {
         if (values != null) {
+            final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+            boolean listenerInvoked = false;
+            final Collection<WriteLock> writeLocks = lockAndGetWriteLocks();
+            try {
 
-            final boolean added = getAttributeValueSet().addAll(values);
+                final boolean added = getAttributeValueSet().addAll(values);
 
-            if (added) {
-                setModified(true);
+                if (added) {
+                    setModified(true);
 
-                invokeValueChangeListeners();
+                    invokeValueChangeListeners(sharedObjects);
+                    listenerInvoked = true;
+                }
 
+            } finally {
+                for (final Lock lock : writeLocks) {
+                    lock.unlock();
+                }
             }
+            pushQueues(sharedObjects, listenerInvoked);
+        }
+    }
 
+    /**
+     * removes all and then adds all to the attribute value set.
+     *
+     * @param values
+     * @since 3.0.1
+     * @author WFF
+     */
+    protected void replaceAllInAttributeValueSet(
+            final Collection<String> values) {
+        replaceAllInAttributeValueSet(true, values);
+    }
+
+    /**
+     * removes all and then adds all to the attribute value set.
+     *
+     * @param updateClient
+     *                         true to update client browser page
+     * @param values
+     * @since 3.0.1
+     * @author WFF
+     */
+    protected void replaceAllInAttributeValueSet(final boolean updateClient,
+            final Collection<String> values) {
+        if (values != null) {
+            final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+            boolean listenerInvoked = false;
+            final Collection<WriteLock> writeLocks = lockAndGetWriteLocks();
+            try {
+
+                final Set<String> attrValueSet = getAttributeValueSet();
+                attrValueSet.clear();
+                final boolean added = attrValueSet.addAll(values);
+
+                if (added) {
+                    setModified(true);
+
+                    if (updateClient) {
+                        invokeValueChangeListeners(sharedObjects);
+                        listenerInvoked = true;
+                    }
+                }
+
+            } finally {
+                for (final Lock lock : writeLocks) {
+                    lock.unlock();
+                }
+            }
+            pushQueues(sharedObjects, listenerInvoked);
         }
     }
 
@@ -820,9 +1055,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * adds all to the attribute value set.
      *
      * @param updateClient
-     *            true to update client browser page if it is available. The
-     *            default value is true but it will be ignored if there is no
-     *            client browser page.
+     *                         true to update client browser page if it is
+     *                         available. The default value is true but it will
+     *                         be ignored if there is no client browser page.
      * @param values
      * @since 2.1.15
      * @author WFF
@@ -830,18 +1065,27 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     protected void addAllToAttributeValueSet(final boolean updateClient,
             final Collection<String> values) {
         if (values != null) {
+            final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+            boolean listenerInvoked = false;
+            final Collection<WriteLock> writeLocks = lockAndGetWriteLocks();
+            try {
 
-            final boolean added = getAttributeValueSet().addAll(values);
+                final boolean added = getAttributeValueSet().addAll(values);
 
-            if (added) {
-                setModified(true);
+                if (added) {
+                    setModified(true);
 
-                if (updateClient) {
-                    invokeValueChangeListeners();
+                    if (updateClient) {
+                        invokeValueChangeListeners(sharedObjects);
+                        listenerInvoked = true;
+                    }
                 }
-
+            } finally {
+                for (final Lock lock : writeLocks) {
+                    lock.unlock();
+                }
             }
-
+            pushQueues(sharedObjects, listenerInvoked);
         }
     }
 
@@ -853,15 +1097,26 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @author WFF
      */
     protected void removeFromAttributeValueSet(final String value) {
-        final boolean removed = getAttributeValueSet().remove(value);
+        final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+        boolean listenerInvoked = false;
+        final Collection<WriteLock> writeLocks = lockAndGetWriteLocks();
+        try {
 
-        if (removed) {
+            final boolean removed = getAttributeValueSet().remove(value);
 
-            setModified(true);
+            if (removed) {
 
-            invokeValueChangeListeners();
+                setModified(true);
 
+                invokeValueChangeListeners(sharedObjects);
+                listenerInvoked = true;
+            }
+        } finally {
+            for (final Lock lock : writeLocks) {
+                lock.unlock();
+            }
         }
+        pushQueues(sharedObjects, listenerInvoked);
     }
 
     /**
@@ -873,15 +1128,26 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected void removeAllFromAttributeValueSet(
             final Collection<String> values) {
-        final boolean removedAll = getAttributeValueSet().removeAll(values);
+        final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+        boolean listenerInvoked = false;
+        final Collection<WriteLock> writeLocks = lockAndGetWriteLocks();
+        try {
 
-        if (removedAll) {
-            setModified(true);
+            final boolean removedAll = getAttributeValueSet().removeAll(values);
 
-            invokeValueChangeListeners();
+            if (removedAll) {
+                setModified(true);
 
+                invokeValueChangeListeners(sharedObjects);
+                listenerInvoked = true;
+            }
+
+        } finally {
+            for (final Lock lock : writeLocks) {
+                lock.unlock();
+            }
         }
-
+        pushQueues(sharedObjects, listenerInvoked);
     }
 
     /**
@@ -891,11 +1157,23 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @author WFF
      */
     protected void removeAllFromAttributeValueSet() {
-        getAttributeValueSet().clear();
-        setModified(true);
 
-        invokeValueChangeListeners();
+        final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+        boolean listenerInvoked = false;
 
+        final Collection<WriteLock> writeLocks = lockAndGetWriteLocks();
+        try {
+            getAttributeValueSet().clear();
+            setModified(true);
+
+            invokeValueChangeListeners(sharedObjects);
+            listenerInvoked = true;
+        } finally {
+            for (final Lock lock : writeLocks) {
+                lock.unlock();
+            }
+        }
+        pushQueues(sharedObjects, listenerInvoked);
     }
 
     /**
@@ -931,7 +1209,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
     /**
      * @param charset
-     *            the charset to set
+     *                    the charset to set
      */
     public void setCharset(final Charset charset) {
         this.charset = charset;
@@ -947,9 +1225,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     public void addValueChangeListener(
             final AttributeValueChangeListener valueChangeListener) {
         if (valueChangeListeners == null) {
-            synchronized (valueChangeListener) {
+            synchronized (this) {
                 if (valueChangeListeners == null) {
-                    valueChangeListeners = new TreeSet<AttributeValueChangeListener>();
+                    valueChangeListeners = new LinkedHashSet<>();
                 }
             }
         }
@@ -978,6 +1256,124 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     public Set<AttributeValueChangeListener> getValueChangeListeners() {
         return Collections.unmodifiableSet(valueChangeListeners);
+    }
+
+    /**
+     * NB: this may not return the same locks as there could be the its
+     * ownerTags change. Use it for only unlock.
+     *
+     * @return the set of write locks after locking
+     */
+    protected Collection<WriteLock> lockAndGetWriteLocks() {
+
+        final Collection<WriteLock> writeLocks = new TreeSet<>((o1,
+                o2) -> Integer.compare(o2.getHoldCount(), o1.getHoldCount()));
+
+        for (final AbstractHtml ownerTag : ownerTags) {
+            final WriteLock writeLock = ownerTag.getSharedObject()
+                    .getLock(ACCESS_OBJECT).writeLock();
+            if (writeLock != null) {
+                try {
+                    writeLocks.add(writeLock);
+                } catch (final Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        // must be separately locked
+        for (final WriteLock writeLock : writeLocks) {
+            writeLock.lock();
+        }
+
+        return writeLocks;
+    }
+
+    /**
+     * NB: this may not return the same locks as there could be the its
+     * ownerTags change. Use it for only unlock.
+     *
+     * @return the set of read locks after locking
+     */
+    protected Collection<ReadLock> lockAndGetReadLocks() {
+
+        // internally ownerTags.size() (WeakHashMap) contains synchronization
+        // better avoid calling it
+        // normally there will be one sharedObject so the capacity may be
+        // considered as 2 because the load factor is 0.75f
+        final Collection<ReadLock> readLocks = new HashSet<>(2);
+
+        for (final AbstractHtml ownerTag : ownerTags) {
+            final ReadLock readLock = ownerTag.getSharedObject()
+                    .getLock(ACCESS_OBJECT).readLock();
+            if (readLock != null) {
+                readLocks.add(readLock);
+            }
+        }
+
+        // must be separately locked
+        for (final ReadLock readLock : readLocks) {
+            try {
+                readLock.lock();
+                readLocks.add(readLock);
+            } catch (final Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return readLocks;
+    }
+
+    /**
+     * NB: this may not return the same locks as there could be the its
+     * ownerTags change. So call only once and reuse it for both lock and unlock
+     * call.
+     *
+     * @return the set of write locks
+     */
+    protected Collection<WriteLock> getWriteLocks() {
+
+        final Collection<WriteLock> writeLocks = new TreeSet<>((o1,
+                o2) -> Integer.compare(o2.getHoldCount(), o1.getHoldCount()));
+
+        for (final AbstractHtml ownerTag : ownerTags) {
+            final WriteLock writeLock = ownerTag.getSharedObject()
+                    .getLock(ACCESS_OBJECT).writeLock();
+            if (writeLock != null) {
+                try {
+                    writeLocks.add(writeLock);
+                } catch (final Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return writeLocks;
+    }
+
+    /**
+     * NB: this may not return the same locks as there could be the its
+     * ownerTags change. So call only once and reuse it for both lock and unlock
+     * call.
+     *
+     * @return the set of read locks
+     */
+    protected Collection<ReadLock> getReadLocks() {
+
+        // internally ownerTags.size() (WeakHashMap) contains synchronization
+        // better avoid calling it
+        // normally there will be one sharedObject so the capacity may be
+        // considered as 2 because the load factor is 0.75f
+        final Collection<ReadLock> readLocks = new HashSet<>(2);
+
+        for (final AbstractHtml ownerTag : ownerTags) {
+            final ReadLock readLock = ownerTag.getSharedObject()
+                    .getLock(ACCESS_OBJECT).readLock();
+            if (readLock != null) {
+                readLocks.add(readLock);
+            }
+        }
+
+        return readLocks;
     }
 
 }

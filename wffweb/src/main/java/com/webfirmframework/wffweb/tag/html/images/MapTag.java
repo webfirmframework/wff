@@ -30,9 +30,9 @@ public class MapTag extends AbstractHtml {
 
     /**
      * @param base
-     *            i.e. parent tag of this tag
+     *                       i.e. parent tag of this tag
      * @param attributes
-     *            An array of {@code AbstractAttribute}
+     *                       An array of {@code AbstractAttribute}
      *
      * @since 1.0.0
      */

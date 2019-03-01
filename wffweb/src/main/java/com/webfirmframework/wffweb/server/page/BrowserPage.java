@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,20 +20,27 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.atomic.LongAdder;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.webfirmframework.wffweb.InvalidUsageException;
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.NotRenderedException;
 import com.webfirmframework.wffweb.NullValueException;
@@ -42,6 +49,9 @@ import com.webfirmframework.wffweb.server.page.js.WffJsFile;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.Html;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
+import com.webfirmframework.wffweb.tag.html.attribute.Defer;
+import com.webfirmframework.wffweb.tag.html.attribute.Nonce;
+import com.webfirmframework.wffweb.tag.html.attribute.Src;
 import com.webfirmframework.wffweb.tag.html.attribute.Type;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.event.EventAttribute;
@@ -51,6 +61,7 @@ import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.tag.html.programming.Script;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 import com.webfirmframework.wffweb.tag.repository.TagRepository;
+import com.webfirmframework.wffweb.util.HashUtil;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 import com.webfirmframework.wffweb.util.data.NameValue;
 import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
@@ -64,10 +75,12 @@ public abstract class BrowserPage implements Serializable {
     // if this class' is refactored then SecurityClassConstants should be
     // updated.
 
-    private static final long serialVersionUID = 1_0_0L;
+    private static final long serialVersionUID = 1_0_1L;
 
     public static final Logger LOGGER = Logger
             .getLogger(BrowserPage.class.getName());
+
+    public static final String WFF_INSTANCE_ID = "wffInstanceId";
 
     private static final boolean PRODUCTION_MODE = true;
 
@@ -79,17 +92,34 @@ public abstract class BrowserPage implements Serializable {
 
     private volatile AbstractHtml rootTag;
 
-    private final Map<String, WebSocketPushListener> sessionIdWsListeners = new HashMap<String, WebSocketPushListener>();
+    private volatile boolean wsWarningDisabled;
 
-    private final Deque<WebSocketPushListener> wsListeners = new ArrayDeque<WebSocketPushListener>();
+    private final Map<String, WebSocketPushListener> sessionIdWsListeners = new ConcurrentHashMap<>();
+
+    private final Deque<WebSocketPushListener> wsListeners = new ArrayDeque<>();
 
     private WebSocketPushListener wsListener;
 
     private DataWffId wffScriptTagId;
 
-    private final Queue<ByteBuffer> wffBMBytesQueue = new ConcurrentLinkedDeque<ByteBuffer>();
+    /**
+     * it's true by default since 3.0.1
+     */
+    private boolean enableDeferOnWffScript = true;
 
-    private final Queue<ByteBuffer> wffBMBytesHoldPushQueue = new ConcurrentLinkedDeque<ByteBuffer>();
+    private Nonce nonceForWffScriptTag;
+
+    private boolean autoremoveWffScript = true;
+
+    private volatile boolean renderInvoked;
+
+    // ConcurrentLinkedQueue give better performance than ConcurrentLinkedDeque
+    // on benchmark
+    private final Deque<ByteBuffer> wffBMBytesQueue = new ConcurrentLinkedDeque<>();
+
+    // ConcurrentLinkedQueue give better performance than ConcurrentLinkedDeque
+    // on benchmark
+    private final Queue<ByteBuffer> wffBMBytesHoldPushQueue = new ConcurrentLinkedQueue<>();
 
     private static final Security ACCESS_OBJECT = new Security();
 
@@ -99,9 +129,9 @@ public abstract class BrowserPage implements Serializable {
     // by default the pushQueueOnNewWebSocketListener should be enabled
     private boolean pushQueueOnNewWebSocketListener = true;
 
-    private volatile boolean holdPush;
+    private final AtomicInteger holdPush = new AtomicInteger(0);
 
-    private final Map<String, ServerAsyncMethod> serverMethods = new HashMap<String, ServerAsyncMethod>();
+    private final Map<String, ServerAsyncMethod> serverMethods = new ConcurrentHashMap<>();
 
     private boolean removeFromBrowserContextOnTabClose = true;
 
@@ -115,7 +145,14 @@ public abstract class BrowserPage implements Serializable {
 
     private static int wsDefaultReconnectInterval = 2_000;
 
-    private final AtomicInteger pushQueueSize = new AtomicInteger(0);
+    private final LongAdder pushQueueSize = new LongAdder();
+
+    // there will be only one thread waiting for the lock so fairness must be
+    // false and fairness may decrease the lock time
+    private final ReentrantLock pushWffBMBytesQueueLock = new ReentrantLock(
+            false);
+
+    private final AtomicReference<Thread> waitingThreadRef = new AtomicReference<>();
 
     private volatile TagRepository tagRepository;
 
@@ -169,7 +206,7 @@ public abstract class BrowserPage implements Serializable {
      * adds the WebSocket listener for the given WebSocket session
      *
      * @param sessionId
-     *            the unique id of WebSocket session
+     *                       the unique id of WebSocket session
      * @param wsListener
      * @since 2.1.0
      * @author WFF
@@ -192,7 +229,7 @@ public abstract class BrowserPage implements Serializable {
      * removes the WebSocket listener added for this WebSocket session
      *
      * @param sessionId
-     *            the unique id of WebSocket session
+     *                      the unique id of WebSocket session
      * @since 2.1.0
      * @author WFF
      */
@@ -201,7 +238,6 @@ public abstract class BrowserPage implements Serializable {
         final WebSocketPushListener removed = sessionIdWsListeners
                 .remove(sessionId);
         wsListeners.remove(removed);
-
         wsListener = wsListeners.peek();
     }
 
@@ -216,41 +252,81 @@ public abstract class BrowserPage implements Serializable {
 
     private void push(final ByteBuffer wffBM) {
 
-        if (holdPush) {
-            wffBMBytesHoldPushQueue.add(wffBM);
+        if (holdPush.get() > 0) {
+            // add method internally calls offer method in ConcurrentLinkedQueue
+            wffBMBytesHoldPushQueue.offer(wffBM);
         } else {
-            wffBMBytesQueue.add(wffBM);
-            pushQueueSize.incrementAndGet();
-            pushWffBMBytesQueue();
+            // add method internally calls offer which internally
+            // calls offerLast method in ConcurrentLinkedQueue
+
+            if (wffBMBytesQueue.offerLast(wffBM)) {
+                pushQueueSize.increment();
+            }
         }
     }
 
     private void pushWffBMBytesQueue() {
+
         if (wsListener != null) {
 
-            ByteBuffer byteBuffer = wffBMBytesQueue.poll();
+            // hasQueuedThreads internally uses transient volatile Node
+            // so it must be fine for production use but
+            // TODO verify it in deep if it is good for production
+            if (!pushWffBMBytesQueueLock.hasQueuedThreads()
+                    && !wffBMBytesQueue.isEmpty()) {
+                try {
+                    waitingThreadRef.set(Thread.currentThread());
+                    pushWffBMBytesQueueLock.lock();
 
-            if (byteBuffer != null) {
+                    // wsPushInProgress must be implemented here and it is very
+                    // important because multiple threads should not push
+                    // simultaneously
+                    // from same wffBMBytesQueue which will cause incorrect
+                    // order of
+                    // push
 
-                do {
-                    pushQueueSize.decrementAndGet();
+                    ByteBuffer byteBuffer = wffBMBytesQueue.poll();
 
-                    try {
-                        wsListener.push(byteBuffer);
-                    } catch (final PushFailedException e) {
-                        if (pushQueueEnabled) {
-                            wffBMBytesQueue.add(byteBuffer);
-                            pushQueueSize.incrementAndGet();
-                        }
-                        break;
+                    if (byteBuffer != null) {
+
+                        final Thread currentThread = Thread.currentThread();
+                        do {
+                            pushQueueSize.decrement();
+
+                            try {
+                                wsListener.push(byteBuffer);
+                            } catch (final PushFailedException e) {
+                                if (pushQueueEnabled && wffBMBytesQueue
+                                        .offerFirst(byteBuffer)) {
+                                    pushQueueSize.increment();
+                                }
+
+                                break;
+                            } catch (final NullPointerException e) {
+                                if (wffBMBytesQueue.offerFirst(byteBuffer)) {
+                                    pushQueueSize.increment();
+                                }
+                                break;
+                            }
+
+                            if (pushWffBMBytesQueueLock.hasQueuedThreads()
+                                    && waitingThreadRef.get()
+                                            .getPriority() >= currentThread
+                                                    .getPriority()) {
+                                break;
+                            }
+
+                            byteBuffer = wffBMBytesQueue.poll();
+
+                        } while (byteBuffer != null);
                     }
 
-                    byteBuffer = wffBMBytesQueue.poll();
-                } while (byteBuffer != null);
+                } finally {
+                    pushWffBMBytesQueueLock.unlock();
+                }
             }
-
         } else {
-            if (LOGGER.isLoggable(Level.WARNING)) {
+            if (LOGGER.isLoggable(Level.WARNING) && !wsWarningDisabled) {
                 LOGGER.warning(
                         "There is no WebSocket listener set, set it with BrowserPage#setWebSocketPushListener method.");
             }
@@ -265,7 +341,7 @@ public abstract class BrowserPage implements Serializable {
      * This method will be remove later. Use {@code webSocketMessaged}.
      *
      * @param message
-     *            the bytes the received in onmessage
+     *                    the bytes the received in onmessage
      * @since 2.0.0
      * @author WFF
      * @deprecated alternative method webSocketMessaged is available for the
@@ -279,7 +355,7 @@ public abstract class BrowserPage implements Serializable {
 
     /**
      * @param message
-     *            the bytes the received in onmessage
+     *                    the bytes the received in onmessage
      * @since 2.1.0
      * @author WFF
      */
@@ -310,8 +386,19 @@ public abstract class BrowserPage implements Serializable {
     }
 
     /**
+     * Invokes just before {@link BrowserPage#render()} method. This is an empty
+     * method in BrowserPage. Override and use. This method invokes only once
+     * per object in all of its life time.
+     *
+     * @since 3.0.1
+     */
+    protected void beforeRender() {
+        // NOP override and use
+    }
+
+    /**
      * Override and use this method to render html content to the client browser
-     * page.
+     * page. This method invokes only once per object in all of its life time.
      *
      * @return the object of {@link Html} class which needs to be displayed in
      *         the client browser page.
@@ -319,6 +406,65 @@ public abstract class BrowserPage implements Serializable {
      */
     public abstract AbstractHtml render();
 
+    /**
+     * Invokes after {@link BrowserPage#render()} method. This is an empty
+     * method in BrowserPage. Override and use. This method invokes only once
+     * per object in all of its life time.
+     *
+     * @param rootTag
+     *                    the rootTag returned by {@link BrowserPage#render()}
+     *                    method.
+     *
+     * @since 3.0.1
+     */
+    protected void afterRender(final AbstractHtml rootTag) {
+        // NOP override and use
+    }
+
+    /**
+     * Invokes before any of the {@code toHtmlString} or {@code toOutputStream}
+     * methods invoked. This is an empty method in BrowserPage. Override and use
+     * it. This method will invoke every time before any of the following
+     * methods is called, {@code toHtmlString}, {@code toOutputStream} etc..
+     *
+     *
+     * @param rootTag
+     *                    the rootTag returned by {@link BrowserPage#render()}
+     *                    method.
+     *
+     * @since 3.0.1
+     */
+    protected void beforeToHtml(final AbstractHtml rootTag) {
+        // NOP override and use
+    }
+
+    /**
+     * Invokes after any of the {@code toHtmlString} or {@code toOutputStream}
+     * methods invoked. This is an empty method in BrowserPage. Override and use
+     * it. This method will invoke every time after any of the following methods
+     * is called, {@code toHtmlString}, {@code toOutputStream} etc..
+     *
+     *
+     * @param rootTag
+     *                    the rootTag returned by {@link BrowserPage#render()}
+     *                    method.
+     *
+     * @since 3.0.1
+     */
+    protected void afterToHtml(final AbstractHtml rootTag) {
+        // NOP override and use
+    }
+
+    /**
+     * @param nameValues
+     * @throws UnsupportedEncodingException
+     *                                          throwing this exception will be
+     *                                          removed in future version
+     *                                          because its internal
+     *                                          implementation will never make
+     *                                          this exception due to the code
+     *                                          changes since 3.0.1.
+     */
     private void invokeAsychMethod(final List<NameValue> nameValues)
             throws UnsupportedEncodingException {
         //@formatter:off
@@ -334,11 +480,12 @@ public abstract class BrowserPage implements Serializable {
                 intBytes.length);
 
         final String wffTagId = new String(wffTagIdAndAttrName.getName(), 0, 1,
-                "UTF-8")
+                StandardCharsets.UTF_8)
                 + WffBinaryMessageUtil.getIntFromOptimizedBytes(intBytes);
 
         final byte[][] values = wffTagIdAndAttrName.getValues();
-        final String eventAttrName = new String(values[0], "UTF-8");
+        final String eventAttrName = new String(values[0],
+                StandardCharsets.UTF_8);
 
         WffBMObject wffBMObject = null;
         if (values.length > 1) {
@@ -379,7 +526,8 @@ public abstract class BrowserPage implements Serializable {
                         // name as function body string and value at
                         // zeroth index as
                         // wffBMObject bytes
-                        nameValue.setName(jsPostFunctionBody.getBytes("UTF-8"));
+                        nameValue.setName(jsPostFunctionBody
+                                .getBytes(StandardCharsets.UTF_8));
 
                         if (returnedObject != null) {
                             nameValue.setValues(new byte[][] {
@@ -387,6 +535,9 @@ public abstract class BrowserPage implements Serializable {
                         }
 
                         push(invokePostFunTask, nameValue);
+                        if (holdPush.get() == 0) {
+                            pushWffBMBytesQueue();
+                        }
                     }
 
                 } else {
@@ -406,6 +557,16 @@ public abstract class BrowserPage implements Serializable {
         }
     }
 
+    /**
+     * @param nameValues
+     * @throws UnsupportedEncodingException
+     *                                          throwing this exception will be
+     *                                          removed in future version
+     *                                          because its internal
+     *                                          implementation will never make
+     *                                          this exception due to the code
+     *                                          changes since 3.0.1.
+     */
     private void removeBrowserPageFromContext(final List<NameValue> nameValues)
             throws UnsupportedEncodingException {
         //@formatter:off
@@ -417,12 +578,22 @@ public abstract class BrowserPage implements Serializable {
         final NameValue instanceIdNameValue = nameValues.get(1);
 
         final String instanceIdToRemove = new String(
-                instanceIdNameValue.getName(), "UTF-8");
+                instanceIdNameValue.getName(), StandardCharsets.UTF_8);
 
         BrowserPageContext.INSTANCE.removeBrowserPage(getInstanceId(),
                 instanceIdToRemove);
     }
 
+    /**
+     * @param nameValues
+     * @throws UnsupportedEncodingException
+     *                                          throwing this exception will be
+     *                                          removed in future version
+     *                                          because its internal
+     *                                          implementation will never make
+     *                                          this exception due to the code
+     *                                          changes since 3.0.1.
+     */
     private void invokeCustomServerMethod(final List<NameValue> nameValues)
             throws UnsupportedEncodingException {
         //@formatter:off
@@ -434,7 +605,7 @@ public abstract class BrowserPage implements Serializable {
 
         final NameValue methodNameAndArg = nameValues.get(1);
         final String methodName = new String(methodNameAndArg.getName(),
-                "UTF-8");
+                StandardCharsets.UTF_8);
 
         final ServerAsyncMethod serverAsyncMethod = serverMethods
                 .get(methodName);
@@ -460,7 +631,7 @@ public abstract class BrowserPage implements Serializable {
             if (nameValues.size() > 2) {
                 final NameValue callbackFunNameValue = nameValues.get(2);
                 callbackFunId = new String(callbackFunNameValue.getName(),
-                        "UTF-8");
+                        StandardCharsets.UTF_8);
             }
 
             if (callbackFunId != null) {
@@ -468,7 +639,8 @@ public abstract class BrowserPage implements Serializable {
                         .getTaskNameValue();
 
                 final NameValue nameValue = new NameValue();
-                nameValue.setName(callbackFunId.getBytes("UTF-8"));
+                nameValue.setName(
+                        callbackFunId.getBytes(StandardCharsets.UTF_8));
 
                 if (returnedObject != null) {
                     nameValue.setValues(
@@ -476,6 +648,9 @@ public abstract class BrowserPage implements Serializable {
                 }
 
                 push(invokeCallbackFuncTask, nameValue);
+                if (holdPush.get() == 0) {
+                    pushWffBMBytesQueue();
+                }
 
             }
 
@@ -496,6 +671,12 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.0.0
      * @author WFF
      * @throws UnsupportedEncodingException
+     *                                          throwing this exception will be
+     *                                          removed in future version
+     *                                          because its internal
+     *                                          implementation will never make
+     *                                          this exception due to the code
+     *                                          changes since 3.0.1.
      */
     private void executeWffBMTask(final byte[] message)
             throws UnsupportedEncodingException {
@@ -541,14 +722,15 @@ public abstract class BrowserPage implements Serializable {
 
     private void addDataWffIdAttribute(final AbstractHtml abstractHtml) {
 
-        final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<Set<AbstractHtml>>();
-        final Set<AbstractHtml> initialSet = new LinkedHashSet<AbstractHtml>(1);
+        final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
+        // passed 2 instead of 1 because the load factor is 0.75f
+        final Set<AbstractHtml> initialSet = new LinkedHashSet<>(2);
         initialSet.add(abstractHtml);
         childrenStack.push(initialSet);
 
-        while (childrenStack.size() > 0) {
+        Set<AbstractHtml> children;
 
-            final Set<AbstractHtml> children = childrenStack.pop();
+        while ((children = childrenStack.poll()) != null) {
 
             for (final AbstractHtml child : children) {
 
@@ -580,38 +762,60 @@ public abstract class BrowserPage implements Serializable {
             return;
         }
 
-        final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<Set<AbstractHtml>>();
-        final Set<AbstractHtml> initialSet = new LinkedHashSet<AbstractHtml>(1);
+        final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
+        // passed 2 instead of 1 because the load factor is 0.75f
+        final Set<AbstractHtml> initialSet = new LinkedHashSet<>(2);
         initialSet.add(abstractHtml);
         childrenStack.push(initialSet);
 
-        boolean bodyTagMissing = true;
+        boolean headAndbodyTagMissing = true;
 
-        outerLoop: while (childrenStack.size() > 0) {
+        Set<AbstractHtml> children;
 
-            final Set<AbstractHtml> children = childrenStack.pop();
+        outerLoop: while ((children = childrenStack.poll()) != null) {
 
             for (final AbstractHtml child : children) {
 
-                if (TagNameConstants.BODY.equals(child.getTagName())) {
+                if ((enableDeferOnWffScript
+                        && TagNameConstants.HEAD.equals(child.getTagName()))
+                        || (!enableDeferOnWffScript && TagNameConstants.BODY
+                                .equals(child.getTagName()))) {
 
-                    bodyTagMissing = false;
+                    headAndbodyTagMissing = false;
 
                     wffScriptTagId = getNewDataWffId();
 
                     final Script script = new Script(null,
-                            new Type("text/javascript"));
+                            new Type(Type.TEXT_JAVASCRIPT));
 
                     script.setDataWffId(wffScriptTagId);
 
-                    new NoTag(script, WffJsFile.getAllOptimizedContent(
+                    final String wffJs = WffJsFile.getAllOptimizedContent(
                             wsUrlWithInstanceId, getInstanceId(),
                             removePrevFromBrowserContextOnTabInit,
                             removeFromBrowserContextOnTabClose,
                             (wsHeartbeatInterval > 0 ? wsHeartbeatInterval
                                     : wsDefaultHeartbeatInterval),
                             (wsReconnectInterval > 0 ? wsReconnectInterval
-                                    : wsDefaultReconnectInterval)));
+                                    : wsDefaultReconnectInterval),
+                            autoremoveWffScript);
+
+                    if (enableDeferOnWffScript) {
+                        // byes are in UTF-8 so charset=utf-8 is explicitly
+                        // specified
+                        // Defer must be first argument
+                        script.addAttributes(new Defer(null), new Src(
+                                "data:text/javascript;charset=utf-8;base64,"
+                                        + HashUtil.base64FromUtf8Bytes(
+                                                wffJs.getBytes(
+                                                        StandardCharsets.UTF_8))));
+                    } else {
+                        new NoTag(script, wffJs);
+                    }
+
+                    if (nonceForWffScriptTag != null) {
+                        script.addAttributes(nonceForWffScriptTag);
+                    }
 
                     // to avoid invoking listener
                     child.addChild(ACCESS_OBJECT, script, false);
@@ -632,22 +836,38 @@ public abstract class BrowserPage implements Serializable {
 
         }
 
-        if (bodyTagMissing) {
+        if (headAndbodyTagMissing) {
             wffScriptTagId = getNewDataWffId();
 
-            final Script script = new Script(null, new Type("text/javascript"));
+            final Script script = new Script(null,
+                    new Type(Type.TEXT_JAVASCRIPT));
 
             script.setDataWffId(wffScriptTagId);
 
-            new NoTag(script,
-                    WffJsFile.getAllOptimizedContent(wsUrlWithInstanceId,
-                            getInstanceId(),
-                            removePrevFromBrowserContextOnTabInit,
-                            removeFromBrowserContextOnTabClose,
-                            (wsHeartbeatInterval > 0 ? wsHeartbeatInterval
-                                    : wsDefaultHeartbeatInterval),
-                            (wsReconnectInterval > 0 ? wsReconnectInterval
-                                    : wsDefaultReconnectInterval)));
+            final String wffJs = WffJsFile.getAllOptimizedContent(
+                    wsUrlWithInstanceId, getInstanceId(),
+                    removePrevFromBrowserContextOnTabInit,
+                    removeFromBrowserContextOnTabClose,
+                    (wsHeartbeatInterval > 0 ? wsHeartbeatInterval
+                            : wsDefaultHeartbeatInterval),
+                    (wsReconnectInterval > 0 ? wsReconnectInterval
+                            : wsDefaultReconnectInterval),
+                    autoremoveWffScript);
+
+            if (enableDeferOnWffScript) {
+                // byes are in UTF-8 so charset=utf-8 is explicitly specified
+                // Defer must be first argument
+                script.addAttributes(new Defer(null),
+                        new Src("data:text/javascript;charset=utf-8;base64,"
+                                + HashUtil.base64FromUtf8Bytes(wffJs
+                                        .getBytes(StandardCharsets.UTF_8))));
+            } else {
+                new NoTag(script, wffJs);
+            }
+
+            if (nonceForWffScriptTag != null) {
+                script.addAttributes(nonceForWffScriptTag);
+            }
 
             // to avoid invoking listener
             abstractHtml.addChild(ACCESS_OBJECT, script, false);
@@ -706,7 +926,19 @@ public abstract class BrowserPage implements Serializable {
                 new WffBMDataDeleteListenerImpl(this), ACCESS_OBJECT);
     }
 
+    private void addPushQueue(final AbstractHtml rootTag) {
+        rootTag.getSharedObject().setPushQueue(() -> {
+            if (holdPush.get() == 0) {
+                pushWffBMBytesQueue();
+            }
+        }, ACCESS_OBJECT);
+    }
+
     /**
+     * NB: this method should not be called under {@link BrowserPage#render()}
+     * method because this method internally calls {@link BrowserPage#render()}
+     * method.
+     *
      * @return {@code String} equalent to the html string of the tag including
      *         the child tags.
      *
@@ -714,16 +946,26 @@ public abstract class BrowserPage implements Serializable {
      */
     public String toHtmlString() {
         initAbstractHtml();
-        return rootTag.toHtmlString(true);
+        wsWarningDisabled = true;
+        beforeToHtml(rootTag);
+        wsWarningDisabled = false;
+        final String htmlString = rootTag.toHtmlString(true);
+        wsWarningDisabled = true;
+        afterToHtml(rootTag);
+        wsWarningDisabled = false;
+        return htmlString;
     }
 
     /**
-     * rebuilds the html string of the tag including the child tags/values if
-     * parameter is true, otherwise returns the html string prebuilt and kept in
-     * the cache.
+     * NB: this method should not be called under {@link BrowserPage#render()}
+     * method because this method internally calls {@link BrowserPage#render()}
+     * method. rebuilds the html string of the tag including the child
+     * tags/values if parameter is true, otherwise returns the html string
+     * prebuilt and kept in the cache.
      *
      * @param rebuild
-     *            true to rebuild &amp; false to return previously built string.
+     *                    true to rebuild &amp; false to return previously built
+     *                    string.
      * @return {@code String} equalent to the html string of the tag including
      *         the child tags.
      * @since 2.1.4
@@ -731,31 +973,52 @@ public abstract class BrowserPage implements Serializable {
      */
     public String toHtmlString(final boolean rebuild) {
         initAbstractHtml();
-        return rootTag.toHtmlString(rebuild);
+        wsWarningDisabled = true;
+        beforeToHtml(rootTag);
+        wsWarningDisabled = false;
+        final String htmlString = rootTag.toHtmlString(rebuild);
+        wsWarningDisabled = true;
+        afterToHtml(rootTag);
+        wsWarningDisabled = false;
+        return htmlString;
     }
 
     /**
+     * NB: this method should not be called under {@link BrowserPage#render()}
+     * method because this method internally calls {@link BrowserPage#render()}
+     * method.
+     *
      * @param charset
-     *            the charset
+     *                    the charset
      * @return {@code String} equalent to the html string of the tag including
      *         the child tags.
      * @author WFF
      */
     public String toHtmlString(final String charset) {
         initAbstractHtml();
-        return rootTag.toHtmlString(true, charset);
+        wsWarningDisabled = true;
+        beforeToHtml(rootTag);
+        wsWarningDisabled = false;
+        final String htmlString = rootTag.toHtmlString(true, charset);
+        wsWarningDisabled = true;
+        afterToHtml(rootTag);
+        wsWarningDisabled = false;
+        return htmlString;
     }
 
     /**
-     * rebuilds the html string of the tag including the child tags/values if
-     * parameter is true, otherwise returns the html string prebuilt and kept in
-     * the cache.
+     * NB: this method should not be called under {@link BrowserPage#render()}
+     * method because this method internally calls {@link BrowserPage#render()}
+     * method. rebuilds the html string of the tag including the child
+     * tags/values if parameter is true, otherwise returns the html string
+     * prebuilt and kept in the cache.
      *
      * @param rebuild
-     *            true to rebuild &amp; false to return previously built string.
+     *                    true to rebuild &amp; false to return previously built
+     *                    string.
      * @param charset
-     *            the charset to set for the returning value, eg:
-     *            {@code StandardCharsets.UTF_8.name()}
+     *                    the charset to set for the returning value, eg:
+     *                    {@code StandardCharsets.UTF_8.name()}
      * @return {@code String} equalent to the html string of the tag including
      *         the child tags.
      *
@@ -764,12 +1027,23 @@ public abstract class BrowserPage implements Serializable {
      */
     public String toHtmlString(final boolean rebuild, final String charset) {
         initAbstractHtml();
-        return rootTag.toHtmlString(rebuild, charset);
+        wsWarningDisabled = true;
+        beforeToHtml(rootTag);
+        wsWarningDisabled = false;
+        final String htmlString = rootTag.toHtmlString(rebuild, charset);
+        wsWarningDisabled = true;
+        afterToHtml(rootTag);
+        wsWarningDisabled = false;
+        return htmlString;
     }
 
     /**
+     * NB: this method should not be called under {@link BrowserPage#render()}
+     * method because this method internally calls {@link BrowserPage#render()}
+     * method.
+     *
      * @param os
-     *            the object of {@code OutputStream} to write to.
+     *               the object of {@code OutputStream} to write to.
      * @return the total number of bytes written
      * @since 2.1.4 void toOutputStream
      * @since 2.1.8 int toOutputStream
@@ -777,14 +1051,26 @@ public abstract class BrowserPage implements Serializable {
      */
     public int toOutputStream(final OutputStream os) throws IOException {
         initAbstractHtml();
-        return rootTag.toOutputStream(os, true);
+        wsWarningDisabled = true;
+        beforeToHtml(rootTag);
+        wsWarningDisabled = false;
+        final int totalWritten = rootTag.toOutputStream(os, true);
+        wsWarningDisabled = true;
+        afterToHtml(rootTag);
+        wsWarningDisabled = false;
+        return totalWritten;
     }
 
     /**
+     * NB: this method should not be called under {@link BrowserPage#render()}
+     * method because this method internally calls {@link BrowserPage#render()}
+     * method.
+     *
      * @param os
-     *            the object of {@code OutputStream} to write to.
+     *                    the object of {@code OutputStream} to write to.
      * @param rebuild
-     *            true to rebuild &amp; false to write previously built bytes.
+     *                    true to rebuild &amp; false to write previously built
+     *                    bytes.
      * @return the total number of bytes written
      *
      * @throws IOException
@@ -795,14 +1081,25 @@ public abstract class BrowserPage implements Serializable {
     public int toOutputStream(final OutputStream os, final boolean rebuild)
             throws IOException {
         initAbstractHtml();
-        return rootTag.toOutputStream(os, rebuild);
+        wsWarningDisabled = true;
+        beforeToHtml(rootTag);
+        wsWarningDisabled = false;
+        final int totalWritten = rootTag.toOutputStream(os, rebuild);
+        wsWarningDisabled = true;
+        afterToHtml(rootTag);
+        wsWarningDisabled = false;
+        return totalWritten;
     }
 
     /**
+     * NB: this method should not be called under {@link BrowserPage#render()}
+     * method because this method internally calls {@link BrowserPage#render()}
+     * method.
+     *
      * @param os
-     *            the object of {@code OutputStream} to write to.
+     *                    the object of {@code OutputStream} to write to.
      * @param charset
-     *            the charset
+     *                    the charset
      * @return the total number of bytes written
      * @throws IOException
      * @since 2.1.4 void toOutputStream
@@ -811,17 +1108,28 @@ public abstract class BrowserPage implements Serializable {
     public int toOutputStream(final OutputStream os, final String charset)
             throws IOException {
         initAbstractHtml();
-
-        return rootTag.toOutputStream(os, true, charset);
+        wsWarningDisabled = true;
+        beforeToHtml(rootTag);
+        wsWarningDisabled = false;
+        final int totalWritten = rootTag.toOutputStream(os, true, charset);
+        wsWarningDisabled = true;
+        afterToHtml(rootTag);
+        wsWarningDisabled = false;
+        return totalWritten;
     }
 
     /**
+     * NB: this method should not be called under {@link BrowserPage#render()}
+     * method because this method internally calls {@link BrowserPage#render()}
+     * method.
+     *
      * @param os
-     *            the object of {@code OutputStream} to write to.
+     *                    the object of {@code OutputStream} to write to.
      * @param rebuild
-     *            true to rebuild &amp; false to write previously built bytes.
+     *                    true to rebuild &amp; false to write previously built
+     *                    bytes.
      * @param charset
-     *            the charset
+     *                    the charset
      * @return the total number of bytes written
      * @throws IOException
      * @since 2.1.4 void toOutputStream
@@ -831,8 +1139,14 @@ public abstract class BrowserPage implements Serializable {
     public int toOutputStream(final OutputStream os, final boolean rebuild,
             final String charset) throws IOException {
         initAbstractHtml();
-
-        return rootTag.toOutputStream(os, rebuild, charset);
+        wsWarningDisabled = true;
+        beforeToHtml(rootTag);
+        wsWarningDisabled = false;
+        final int totalWritten = rootTag.toOutputStream(os, rebuild, charset);
+        wsWarningDisabled = true;
+        afterToHtml(rootTag);
+        wsWarningDisabled = false;
+        return totalWritten;
     }
 
     private void initAbstractHtml() {
@@ -841,8 +1155,15 @@ public abstract class BrowserPage implements Serializable {
 
             synchronized (this) {
                 if (rootTag == null) {
+                    if (renderInvoked) {
+                        throw new InvalidUsageException(
+                                "This method cannot be called here because this method is called by render or its child method.");
+                    }
+                    renderInvoked = true;
+                    beforeRender();
                     rootTag = render();
                     if (rootTag == null) {
+                        renderInvoked = false;
                         throw new NullValueException(
                                 "render must return an instance of AbstractHtml, eg:- new Html(null);");
                     }
@@ -862,10 +1183,15 @@ public abstract class BrowserPage implements Serializable {
                     addInsertBeforeListener(rootTag);
                     addWffBMDataUpdateListener(rootTag);
                     addWffBMDataDeleteListener(rootTag);
+                    addPushQueue(rootTag);
+
+                    wsWarningDisabled = true;
+                    afterRender(rootTag);
+                    wsWarningDisabled = false;
                 } else {
                     synchronized (wffBMBytesQueue) {
                         wffBMBytesQueue.clear();
-                        pushQueueSize.set(0);
+                        pushQueueSize.reset();
                     }
                 }
             }
@@ -873,7 +1199,7 @@ public abstract class BrowserPage implements Serializable {
         } else {
             synchronized (wffBMBytesQueue) {
                 wffBMBytesQueue.clear();
-                pushQueueSize.set(0);
+                pushQueueSize.reset();
             }
         }
 
@@ -915,7 +1241,7 @@ public abstract class BrowserPage implements Serializable {
      * updates from this queue. By default, it is set as true.
      *
      * @param enabledPushQueue
-     *            the enabledPushQueue to set
+     *                             the enabledPushQueue to set
      * @since 2.0.2
      */
     public void setPushQueueEnabled(final boolean enabledPushQueue) {
@@ -948,13 +1274,17 @@ public abstract class BrowserPage implements Serializable {
      * performs action provided by {@code BrowserPageAction}.
      *
      * @param actionByteBuffer
-     *            The ByteBuffer object taken from {@code BrowserPageAction}
-     *            .Eg:- {@code BrowserPageAction.RELOAD.getActionByteBuffer();}
+     *                             The ByteBuffer object taken from
+     *                             {@code BrowserPageAction} .Eg:-
+     *                             {@code BrowserPageAction.RELOAD.getActionByteBuffer();}
      * @since 2.1.0
      * @author WFF
      */
     public void performBrowserPageAction(final ByteBuffer actionByteBuffer) {
         push(actionByteBuffer);
+        if (holdPush.get() == 0) {
+            pushWffBMBytesQueue();
+        }
     }
 
     /**
@@ -971,8 +1301,11 @@ public abstract class BrowserPage implements Serializable {
      * will be pushed when new webSocket listener is added/set.
      *
      * @param pushQueueOnNewWebSocketListener
-     *            the pushQueueOnNewWebSocketListener to set. Pass true to
-     *            enable this option and false to disable this option.
+     *                                            the
+     *                                            pushQueueOnNewWebSocketListener
+     *                                            to set. Pass true to enable
+     *                                            this option and false to
+     *                                            disable this option.
      * @since 2.1.1
      */
     public void setPushQueueOnNewWebSocketListener(
@@ -986,7 +1319,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.3
      */
     public boolean isHoldPush() {
-        return holdPush;
+        return holdPush.get() > 0;
     }
 
     /**
@@ -1009,7 +1342,7 @@ public abstract class BrowserPage implements Serializable {
      * @author WFF
      */
     public void holdPush() {
-        holdPush = true;
+        holdPush.incrementAndGet();
     }
 
     /**
@@ -1033,11 +1366,11 @@ public abstract class BrowserPage implements Serializable {
      */
     public void unholdPush() {
 
-        if (holdPush) {
+        if (holdPush.get() > 0) {
 
             synchronized (wffBMBytesQueue) {
 
-                holdPush = false;
+                holdPush.decrementAndGet();
 
                 ByteBuffer wffBM = wffBMBytesHoldPushQueue.poll();
 
@@ -1046,8 +1379,8 @@ public abstract class BrowserPage implements Serializable {
                     final NameValue invokeMultipleTasks = Task
                             .getTaskOfTasksNameValue();
 
-                    final Deque<ByteBuffer> wffBMs = new ArrayDeque<ByteBuffer>(
-                            wffBMBytesHoldPushQueue.size());
+                    final Deque<ByteBuffer> wffBMs = new ArrayDeque<>(
+                            wffBMBytesHoldPushQueue.size() + 1);
 
                     do {
 
@@ -1070,7 +1403,7 @@ public abstract class BrowserPage implements Serializable {
                             .add(ByteBuffer.wrap(WffBinaryMessageUtil.VERSION_1
                                     .getWffBinaryMessageBytes(
                                             invokeMultipleTasks)));
-                    pushQueueSize.incrementAndGet();
+                    pushQueueSize.increment();
 
                     pushWffBMBytesQueue();
                 }
@@ -1096,8 +1429,12 @@ public abstract class BrowserPage implements Serializable {
      */
     public int getPushQueueSize() {
         // wffBMBytesQueue.size() is not reliable as
-        // it's ConcurrentLinkedDeque
-        return pushQueueSize.get();
+        // it's ConcurrentLinkedQueue.
+        // As per the javadoc ConcurrentLinkedQueue.size is NOT a constant-time
+        // operation. So to avoid performance degrade of using
+        // wffBMBytesQueue.size a separate LongAdder is kept to maintain the
+        // queue size.
+        return pushQueueSize.intValue();
     }
 
     /**
@@ -1105,8 +1442,8 @@ public abstract class BrowserPage implements Serializable {
      *
      * @param enable
      * @param ons
-     *            the instance of On to represent on which browser event the
-     *            browser page needs to be removed.
+     *                   the instance of On to represent on which browser event
+     *                   the browser page needs to be removed.
      * @since 2.1.4
      * @author WFF
      */
@@ -1140,16 +1477,19 @@ public abstract class BrowserPage implements Serializable {
      * time.
      *
      * @param tag
-     *            the tag object to be checked.
+     *                the tag object to be checked.
      * @return true if the given tag contains in the BrowserPage i.e. UI. false
      *         if the given tag was removed or was not already added in the UI.
      * @throws NullValueException
-     *             throws this exception if the given tag is null.
+     *                                  throws this exception if the given tag
+     *                                  is null.
      * @throws NotRenderedException
-     *             if the {@code BrowserPage} object is not rendered. i.e. if
-     *             {@code browserPage#toHtmlString} or
-     *             {@code browserPage#toOutputStream} was NOT called at least
-     *             once in the life time.
+     *                                  if the {@code BrowserPage} object is not
+     *                                  rendered. i.e. if
+     *                                  {@code browserPage#toHtmlString} or
+     *                                  {@code browserPage#toOutputStream} was
+     *                                  NOT called at least once in the life
+     *                                  time.
      * @since 2.1.7
      * @author WFF
      */
@@ -1185,8 +1525,8 @@ public abstract class BrowserPage implements Serializable {
      * {@code BrowserPage#setWebSocketDefultHeartbeatInterval(int)} method.
      *
      * @param milliseconds
-     *            the heartbeat ping interval of webSocket client in
-     *            milliseconds. Give -1 to disable it.
+     *                         the heartbeat ping interval of webSocket client
+     *                         in milliseconds. Give -1 to disable it.
      * @since 2.1.8
      * @author WFF
      */
@@ -1214,8 +1554,8 @@ public abstract class BrowserPage implements Serializable {
      *
      *
      * @param milliseconds
-     *            the heartbeat ping interval of webSocket client in
-     *            milliseconds. Give -1 to disable it
+     *                         the heartbeat ping interval of webSocket client
+     *                         in milliseconds. Give -1 to disable it
      * @since 2.1.8
      * @since 2.1.9 the default value is 25000ms i.e. 25 seconds.
      * @author WFF
@@ -1243,8 +1583,8 @@ public abstract class BrowserPage implements Serializable {
      *
      *
      * @param milliseconds
-     *            the reconnect interval of webSocket client in milliseconds. It
-     *            must be greater than 0.
+     *                         the reconnect interval of webSocket client in
+     *                         milliseconds. It must be greater than 0.
      * @since 2.1.8
      * @author WFF
      */
@@ -1277,8 +1617,8 @@ public abstract class BrowserPage implements Serializable {
      * {@code BrowserPage#setWebSocketDefultReconnectInterval(int)} method.
      *
      * @param milliseconds
-     *            the reconnect interval of webSocket client in milliseconds.
-     *            Give -1 to disable it.
+     *                         the reconnect interval of webSocket client in
+     *                         milliseconds. Give -1 to disable it.
      * @since 2.1.8
      * @author WFF
      */
@@ -1309,15 +1649,178 @@ public abstract class BrowserPage implements Serializable {
     public final TagRepository getTagRepository() {
 
         if (tagRepository == null && rootTag != null) {
-            synchronized (this) {
-                if (tagRepository == null) {
-                    tagRepository = new TagRepository(ACCESS_OBJECT, this,
-                            tagByWffId, rootTag);
+            initTagRepository();
+        }
+
+        return tagRepository;
+    }
+
+    /**
+     *
+     */
+    private synchronized void initTagRepository() {
+        if (tagRepository == null) {
+            tagRepository = new TagRepository(ACCESS_OBJECT, this, tagByWffId,
+                    rootTag);
+        }
+    }
+
+    /**
+     * Sets nonce attribute value for wff script.
+     *
+     * @param value
+     *                  pass value to set nonce value or pass null to remove
+     *                  nonce attribute
+     * @since 3.0.1
+     */
+    protected void setNonceForWffScript(final String value) {
+
+        if (autoremoveWffScript) {
+            throw new InvalidUsageException(
+                    "Cannot remove while autoremoveWffScript is set as true. Please do setAutoremoveWffScript(false)");
+        }
+
+        if (value != null) {
+            if (nonceForWffScriptTag == null) {
+                nonceForWffScriptTag = new Nonce(value);
+                if (wffScriptTagId != null) {
+                    final AbstractHtml[] ownerTags = wffScriptTagId
+                            .getOwnerTags();
+                    if (ownerTags.length > 0) {
+                        final AbstractHtml wffScript = ownerTags[0];
+                        wffScript.addAttributes(nonceForWffScriptTag);
+                    }
+                }
+            } else {
+                nonceForWffScriptTag.setValue(value);
+            }
+        } else {
+            if (wffScriptTagId != null && nonceForWffScriptTag != null) {
+                final AbstractHtml[] ownerTags = wffScriptTagId.getOwnerTags();
+                if (ownerTags.length > 0) {
+                    final AbstractHtml wffScript = ownerTags[0];
+                    wffScript.removeAttributes(nonceForWffScriptTag);
+                }
+            }
+            nonceForWffScriptTag = null;
+        }
+
+    }
+
+    /**
+     * @param algo
+     *                 eg: HashUtil.SHA_256
+     * @return the base64 encoded string of the hash generated with the given
+     *         algo for the wff script (text/javascript) content.
+     * @since 3.0.1
+     */
+    private String getWffScriptHashInBase64(final String algo) {
+
+        initAbstractHtml();
+
+        if (wffScriptTagId != null) {
+            final AbstractHtml[] ownerTags = wffScriptTagId.getOwnerTags();
+            if (ownerTags.length > 0) {
+                final AbstractHtml wffScript = ownerTags[0];
+                final NoTag firstChild = (NoTag) wffScript.getFirstChild();
+                final String childContent = firstChild.getChildContent();
+                try {
+                    return HashUtil.hashInBase64(childContent, algo);
+                } catch (final NoSuchAlgorithmException e) {
+                    if (LOGGER.isLoggable(Level.SEVERE)) {
+                        LOGGER.log(Level.SEVERE,
+                                "Make sure that the jdk supports " + algo, e);
+                    }
                 }
             }
         }
 
-        return tagRepository;
+        return null;
+    }
+
+    /**
+     * Generates and gets the SHA hash of internal wff script as base64 encoded
+     * string. NB: this method should not be called under
+     * {@link BrowserPage#render()} method because this method internally calls
+     * {@link BrowserPage#render()} method.
+     *
+     * @return the wff script (text/javascript) content converted to SHA-256
+     *         hash encoded in base64 string.
+     * @since 3.0.1
+     */
+    public String getWffScriptSHA256InBase64() {
+        return getWffScriptHashInBase64(HashUtil.SHA_256);
+    }
+
+    /**
+     * Generates and gets the SHA hash of internal wff script as base64 encoded
+     * string. NB: this method should not be called under
+     * {@link BrowserPage#render()} method because this method internally calls
+     * {@link BrowserPage#render()} method.
+     *
+     * @return the wff script (text/javascript) content converted to SHA-384
+     *         hash encoded in base64 string.
+     * @since 3.0.1
+     */
+    public String getWffScriptSHA384InBase64() {
+        return getWffScriptHashInBase64(HashUtil.SHA_384);
+    }
+
+    /**
+     * Generates and gets the SHA hash of internal wff script as base64 encoded
+     * string. NB: this method should not be called under
+     * {@link BrowserPage#render()} method because this method internally calls
+     * {@link BrowserPage#render()} method.
+     *
+     * @return the wff script (text/javascript) content converted to SHA-512
+     *         hash encoded in base64 string.
+     * @since 3.0.1
+     */
+    public String getWffScriptSHA512InBase64() {
+        return getWffScriptHashInBase64(HashUtil.SHA_512);
+    }
+
+    /**
+     * It must be called from render method to take effect. By default it's set
+     * as true. so Content-Security-Policy is implemented then script-src must
+     * allow data:.
+     *
+     * @param enable
+     * @since 3.0.1
+     */
+    protected void setEnableDeferOnWffScript(final boolean enable) {
+        enableDeferOnWffScript = enable;
+    }
+
+    /**
+     * by default it's true.
+     *
+     * @return true if enabled otherwise false
+     * @since 3.0.1
+     */
+    protected boolean isEnableDeferOnWffScript() {
+        return enableDeferOnWffScript;
+    }
+
+    /**
+     * By default it is true.
+     *
+     * @return the current state
+     * @since 3.0.1
+     */
+    protected boolean isAutoremoveWffScript() {
+        return autoremoveWffScript;
+    }
+
+    /**
+     * Automatically removes the wff script tag after loading it from the ui. By
+     * default it is true.
+     *
+     * @param autoremoveWffScript
+     * @since 3.0.1
+     */
+    protected void setAutoremoveWffScript(final boolean autoremoveWffScript) {
+        this.autoremoveWffScript = autoremoveWffScript;
     }
 
 }

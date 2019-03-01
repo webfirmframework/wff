@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package com.webfirmframework.wffweb.tag.html.listener;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.List;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 
@@ -57,7 +56,7 @@ public interface ChildTagAppendListener extends Serializable {
 
         /**
          * @param appendedChildTag
-         *            the appendedChildTag to set
+         *                             the appendedChildTag to set
          */
         public void setAppendedChildTag(final AbstractHtml appendedChildTag) {
             this.appendedChildTag = appendedChildTag;
@@ -72,7 +71,7 @@ public interface ChildTagAppendListener extends Serializable {
 
         /**
          * @param parentTag
-         *            the parentTag to set
+         *                      the parentTag to set
          */
         public void setParentTag(final AbstractHtml parentTag) {
             this.parentTag = parentTag;
@@ -87,7 +86,7 @@ public interface ChildTagAppendListener extends Serializable {
 
         /**
          * @param appendedChildrenTags
-         *            the appendedChildrenTags to set
+         *                                 the appendedChildrenTags to set
          */
         public void setAppendedChildrenTags(
                 final Collection<AbstractHtml> appendedChildrenTags) {
@@ -157,6 +156,6 @@ public interface ChildTagAppendListener extends Serializable {
      */
     public void childMoved(ChildMovedEvent event);
 
-    public void childrendAppendedOrMoved(List<ChildMovedEvent> events);
+    public void childrendAppendedOrMoved(Collection<ChildMovedEvent> events);
 
 }

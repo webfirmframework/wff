@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -84,7 +85,7 @@ public class AttributeRemoveListenerImpl implements AttributeRemoveListener {
             for (int i = 2; i < totalValues; i++) {
                 // should be just name
                 final byte[] attrNameBytes = removedAttributes[i - 2]
-                        .getBytes("UTF-8");
+                        .getBytes(StandardCharsets.UTF_8);
 
                 values[i] = attrNameBytes;
             }

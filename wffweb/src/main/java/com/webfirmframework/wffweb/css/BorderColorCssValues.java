@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import com.webfirmframework.wffweb.clone.CloneUtil;
 import com.webfirmframework.wffweb.data.AbstractBean;
 import com.webfirmframework.wffweb.data.Bean;
 import com.webfirmframework.wffweb.informer.StateChangeInformer;
+import com.webfirmframework.wffweb.util.StringUtil;
 import com.webfirmframework.wffweb.util.TagStringUtil;
 
 /**
@@ -62,7 +63,7 @@ public class BorderColorCssValues extends AbstractBean<BorderColorCssValues>
 
     /**
      * @param cssValue
-     *            the css value to set.
+     *                     the css value to set.
      */
     public BorderColorCssValues(final String cssValue) {
         setValue(cssValue);
@@ -70,9 +71,10 @@ public class BorderColorCssValues extends AbstractBean<BorderColorCssValues>
 
     /**
      * @param borderColorCssValue
-     *            the {@code BorderColorCssValues} object from which the
-     *            cssValue to set.And, {@code null} will throw
-     *            {@code NullValueException}
+     *                                the {@code BorderColorCssValues} object
+     *                                from which the cssValue to set.And,
+     *                                {@code null} will throw
+     *                                {@code NullValueException}
      */
     public BorderColorCssValues(
             final BorderColorCssValues borderColorCssValue) {
@@ -170,7 +172,7 @@ public class BorderColorCssValues extends AbstractBean<BorderColorCssValues>
 
     /**
      * @param hslaCssValue
-     *            the hslaCssValue to set.
+     *                         the hslaCssValue to set.
      * @author WFF
      * @since 1.0.0
      */
@@ -243,11 +245,12 @@ public class BorderColorCssValues extends AbstractBean<BorderColorCssValues>
 
     /**
      * @param cssValue
-     *            the value should be a color/color code/rgb, for example
-     *            <code>#0000ff</code>. {@code null} is considered as an invalid
-     *            value and it will throw {@code NullValueException}.And an
-     *            empty string is also considered as an invalid value and it
-     *            will throw {@code InvalidValueException}.
+     *                     the value should be a color/color code/rgb, for
+     *                     example <code>#0000ff</code>. {@code null} is
+     *                     considered as an invalid value and it will throw
+     *                     {@code NullValueException}.And an empty string is
+     *                     also considered as an invalid value and it will throw
+     *                     {@code InvalidValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -261,7 +264,7 @@ public class BorderColorCssValues extends AbstractBean<BorderColorCssValues>
                 throw new InvalidValueException(cssValue
                         + " is an invalid value. The value should be any color for example #0000ff, rgb(15, 25, 155), rgba(15, 25, 155, 0.5) Or, initial/inherit/transparent.");
             } else {
-                this.cssValue = cssValue.trim();
+                this.cssValue = StringUtil.strip(cssValue);
                 if (RgbCssValue.isValid(cssValue)) {
                     if (rgbCssValue == null) {
                         rgbCssValue = new RgbCssValue(cssValue);
@@ -339,7 +342,7 @@ public class BorderColorCssValues extends AbstractBean<BorderColorCssValues>
             return false;
         }
 
-        final String trimmedCssValue = cssValue.trim();
+        final String trimmedCssValue = StringUtil.strip(cssValue);
 
         if (trimmedCssValue.isEmpty()) {
             return false;
@@ -431,7 +434,7 @@ public class BorderColorCssValues extends AbstractBean<BorderColorCssValues>
 
     /**
      * @param rgbCssValue
-     *            the rgbCssValue to set
+     *                        the rgbCssValue to set
      * @since 1.0.0
      * @author WFF
      */
@@ -486,7 +489,7 @@ public class BorderColorCssValues extends AbstractBean<BorderColorCssValues>
 
     /**
      * @param hslCssValue
-     *            the hslCssValue to set
+     *                        the hslCssValue to set
      * @since 1.0.0
      * @author WFF
      */

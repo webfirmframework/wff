@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -270,9 +270,10 @@ public abstract class DocType extends AbstractHtml {
 
     /**
      * @param os
-     *            object of OutputStream to which the bytes to be written
+     *                    object of OutputStream to which the bytes to be
+     *                    written
      * @param charset
-     *            the charset to encode for the bytes
+     *                    the charset to encode for the bytes
      *
      * @return the total number of bytes written
      * @throws IOException
@@ -295,9 +296,10 @@ public abstract class DocType extends AbstractHtml {
 
     /**
      * @param os
-     *            object of OutputStream to which the bytes to be written
+     *                    object of OutputStream to which the bytes to be
+     *                    written
      * @param charset
-     *            the charset to encode for the bytes
+     *                    the charset to encode for the bytes
      * @return the total number of bytes written
      * @throws IOException
      * @since 1.0.0
@@ -318,11 +320,12 @@ public abstract class DocType extends AbstractHtml {
 
     /**
      * @param os
-     *            object of OutputStream to which the bytes to be written
+     *                    object of OutputStream to which the bytes to be
+     *                    written
      * @param rebuild
-     *            true to rebuild the tags
+     *                    true to rebuild the tags
      * @param charset
-     *            the charset to encode for the bytes
+     *                    the charset to encode for the bytes
      * @return the total number of bytes written
      * @throws IOException
      * @since 1.0.0
@@ -344,11 +347,12 @@ public abstract class DocType extends AbstractHtml {
 
     /**
      * @param os
-     *            object of OutputStream to which the bytes to be written
+     *                    object of OutputStream to which the bytes to be
+     *                    written
      * @param rebuild
-     *            true to rebuild the tags
+     *                    true to rebuild the tags
      * @param charset
-     *            the charset to encode for the bytes
+     *                    the charset to encode for the bytes
      * @return the total number of bytes written
      * @throws IOException
      * @since 1.0.0
@@ -510,7 +514,7 @@ public abstract class DocType extends AbstractHtml {
 
     /**
      * @param prependDocType
-     *            the prependDocType to set
+     *                           the prependDocType to set
      * @author WFF
      * @since 1.0.0
      */
@@ -531,7 +535,7 @@ public abstract class DocType extends AbstractHtml {
      * the default doc type is <code>&lt;!DOCTYPE html&gt;</code>
      *
      * @param docTypeTag
-     *            the docTypeTag to set
+     *                       the docTypeTag to set
      * @author WFF
      * @since 1.0.0
      */

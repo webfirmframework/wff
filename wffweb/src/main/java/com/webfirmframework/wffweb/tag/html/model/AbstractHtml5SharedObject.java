@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,8 @@ import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.webfirmframework.wffweb.DataWffIdOutOfRangeError;
 import com.webfirmframework.wffweb.WffSecurityException;
@@ -38,6 +40,7 @@ import com.webfirmframework.wffweb.tag.html.listener.ChildTagAppendListener;
 import com.webfirmframework.wffweb.tag.html.listener.ChildTagRemoveListener;
 import com.webfirmframework.wffweb.tag.html.listener.InnerHtmlAddListener;
 import com.webfirmframework.wffweb.tag.html.listener.InsertBeforeListener;
+import com.webfirmframework.wffweb.tag.html.listener.PushQueue;
 import com.webfirmframework.wffweb.tag.html.listener.WffBMDataDeleteListener;
 import com.webfirmframework.wffweb.tag.html.listener.WffBMDataUpdateListener;
 
@@ -48,7 +51,7 @@ import com.webfirmframework.wffweb.tag.html.listener.WffBMDataUpdateListener;
  */
 public class AbstractHtml5SharedObject implements Serializable {
 
-    private static final long serialVersionUID = 1_0_0L;
+    private static final long serialVersionUID = 1_0_1L;
 
     private boolean childModified;
 
@@ -67,7 +70,7 @@ public class AbstractHtml5SharedObject implements Serializable {
     /**
      * key : "S" + dataWffId and value : abstractHtml tag
      */
-    private Map<String, AbstractHtml> tagByWffId;
+    private final Map<String, AbstractHtml> tagByWffId = new ConcurrentHashMap<>();
 
     private AttributeValueChangeListener valueChangeListener;
 
@@ -76,6 +79,8 @@ public class AbstractHtml5SharedObject implements Serializable {
     private WffBMDataDeleteListener wffBMDataDeleteListener;
 
     private WffBMDataUpdateListener wffBMDataUpdateListener;
+
+    private PushQueue pushQueue;
 
     /**
      * no need to make it volatile
@@ -86,7 +91,29 @@ public class AbstractHtml5SharedObject implements Serializable {
 
     private final AbstractHtml rootTag;
 
-    private Object sharedData;
+    private final AtomicReference<Object> sharedData = new AtomicReference<>();
+
+    /**
+     * Java 8's {@code StampedLock} is not suitable here because it seems to be
+     * thread independent. Eg:-
+     *
+     * <pre>
+     * ReadWriteLock lock = new StampedLock().asReadWriteLock();
+     * lock.writeLock().lock()&#59;
+     * System.out.println("after writeLock")&#59;
+     * lock.readLock().lock()&#59;
+     * System.out.println("after readLock")&#59;
+     * </pre>
+     *
+     * If the lock is a {@code StampedLock} then the code will block at
+     * <code>lock.readLock().lock()&#59;</code> even in the same thread. But
+     * {@code ReentrantReadWriteLock} will not block in the same thread, it will
+     * print both system print.
+     *
+     * @since 3.0.1
+     */
+    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock(
+            true);
 
     public AbstractHtml5SharedObject(final AbstractHtml rootTag) {
         this.rootTag = rootTag;
@@ -145,6 +172,22 @@ public class AbstractHtml5SharedObject implements Serializable {
 
     }
 
+    /**
+     * @param accessObject
+     * @return the ReadWriteLock lock
+     * @since 3.0.1
+     */
+    public ReentrantReadWriteLock getLock(final Object accessObject) {
+        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML
+                .equals(accessObject.getClass().getName())
+                || SecurityClassConstants.ABSTRACT_ATTRIBUTE
+                        .equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException(
+                    "Not allowed to consume this method. This method is for internal use.");
+        }
+        return lock;
+    }
+
     public int getLastDataWffId(final Object accessObject) {
 
         if (accessObject == null || !((SecurityClassConstants.ABSTRACT_HTML
@@ -169,7 +212,7 @@ public class AbstractHtml5SharedObject implements Serializable {
      * NB:- it's for internal use
      *
      * @param childModified
-     *            the childModified to set
+     *                          the childModified to set
      * @since 1.0.0
      * @author WFF
      */
@@ -228,7 +271,7 @@ public class AbstractHtml5SharedObject implements Serializable {
      * NB:- This method is for only for internal use
      *
      * @param childTagAppendListener
-     *            the childTagAppendListener to set
+     *                                   the childTagAppendListener to set
      */
     public void setChildTagAppendListener(
             final ChildTagAppendListener childTagAppendListener,
@@ -260,7 +303,7 @@ public class AbstractHtml5SharedObject implements Serializable {
      * NB:- This method is for only for internal use
      *
      * @param childTagRemoveListener
-     *            the childTagRemoveListener to set
+     *                                   the childTagRemoveListener to set
      */
     public void setChildTagRemoveListener(
             final ChildTagRemoveListener childTagRemoveListener,
@@ -288,7 +331,7 @@ public class AbstractHtml5SharedObject implements Serializable {
 
     /**
      * @param attributeAddListener
-     *            the attributeAddListener to set
+     *                                 the attributeAddListener to set
      */
     public void setAttributeAddListener(
             final AttributeAddListener attributeAddListener,
@@ -316,7 +359,7 @@ public class AbstractHtml5SharedObject implements Serializable {
 
     /**
      * @param attributeRemoveListener
-     *            the attributeRemoveListener to set
+     *                                    the attributeRemoveListener to set
      */
     public void setAttributeRemoveListener(
             final AttributeRemoveListener attributeRemoveListener,
@@ -344,7 +387,7 @@ public class AbstractHtml5SharedObject implements Serializable {
 
     /**
      * @param innerHtmlAddListener
-     *            the innerHtmlAddListener to set
+     *                                 the innerHtmlAddListener to set
      */
     public void setInnerHtmlAddListener(
             final InnerHtmlAddListener innerHtmlAddListener,
@@ -372,9 +415,6 @@ public class AbstractHtml5SharedObject implements Serializable {
             throw new WffSecurityException(
                     "Not allowed to consume this method. This method is for internal use.");
         }
-        if (tagByWffId == null) {
-            tagByWffId = new ConcurrentHashMap<String, AbstractHtml>();
-        }
         return tagByWffId;
     }
 
@@ -390,9 +430,6 @@ public class AbstractHtml5SharedObject implements Serializable {
             throw new WffSecurityException(
                     "Not allowed to consume this method. This method is for internal use.");
         }
-        if (tagByWffId == null) {
-            tagByWffId = new ConcurrentHashMap<String, AbstractHtml>();
-        }
         return tagByWffId;
     }
 
@@ -402,7 +439,7 @@ public class AbstractHtml5SharedObject implements Serializable {
      * methods.
      *
      * @param accessObject
-     *            access object of this method
+     *                         access object of this method
      * @return the valueChangeListener
      */
     public AttributeValueChangeListener getValueChangeListener(
@@ -421,9 +458,9 @@ public class AbstractHtml5SharedObject implements Serializable {
      * methods.
      *
      * @param valueChangeListener
-     *            the valueChangeListener to set
+     *                                the valueChangeListener to set
      * @param accessObject
-     *            access object of this method
+     *                                access object of this method
      */
     public void setValueChangeListener(
             final AttributeValueChangeListener valueChangeListener,
@@ -460,7 +497,7 @@ public class AbstractHtml5SharedObject implements Serializable {
      * NB:- This method is for only for internal use
      *
      * @param insertBeforeListener
-     *            the insertBeforeListener to set
+     *                                 the insertBeforeListener to set
      * @since 2.1.1
      */
     public void setInsertBeforeListener(
@@ -480,7 +517,7 @@ public class AbstractHtml5SharedObject implements Serializable {
      * NB:- This method is for only for internal use
      *
      * @param wffBMDataDeleteListener
-     *            the wffDataDeleteListener to set
+     *                                    the wffDataDeleteListener to set
      * @since 2.1.8
      */
     public void setWffBMDataDeleteListener(
@@ -498,7 +535,7 @@ public class AbstractHtml5SharedObject implements Serializable {
      * NB:- This method is for only for internal use
      *
      * @param wffBMDataUpdateListener
-     *            the wffDataUpdateListener to set
+     *                                    the wffDataUpdateListener to set
      * @since 2.1.8
      */
     public void setWffBMDataUpdateListener(
@@ -568,7 +605,7 @@ public class AbstractHtml5SharedObject implements Serializable {
      * @author WFF
      */
     public Object getSharedData() {
-        return sharedData;
+        return sharedData.get();
     }
 
     /**
@@ -578,12 +615,56 @@ public class AbstractHtml5SharedObject implements Serializable {
      * hierarchy.
      *
      * @param sharedData
-     *            the object to access through all of this tag hierarchy.
+     *                       the object to access through all of this tag
+     *                       hierarchy.
      * @since 2.1.11
      * @author WFF
      */
     public void setSharedData(final Object sharedData) {
-        this.sharedData = sharedData;
+        this.sharedData.set(sharedData);
+    }
+
+    /**
+     * @param sharedData
+     * @return true if set or false if it already had a value
+     * @since 3.0.1
+     */
+    public boolean setSharedDataIfNull(final Object sharedData) {
+        return this.sharedData.compareAndSet(null, sharedData);
+    }
+
+    /**
+     * NB:- This method is for only for internal use
+     *
+     * @param pushQueue
+     *                      the BrowserPage push queue to set
+     */
+    public void setPushQueue(final PushQueue pushQueue,
+            final Object accessObject) {
+        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE
+                .equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException(
+                    "Not allowed to consume this method. This method is for internal use.");
+        }
+        this.pushQueue = pushQueue;
+    }
+
+    /**
+     * NB:- This method is for only for internal use
+     *
+     * @return the the push queue of BrowserPage
+     */
+    public PushQueue getPushQueue(final Object accessObject) {
+        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML
+                .equals(accessObject.getClass().getName())
+                || SecurityClassConstants.ABSTRACT_ATTRIBUTE
+                        .equals(accessObject.getClass().getName())
+                || SecurityClassConstants.ABSTRACT_JS_OBJECT
+                        .equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException(
+                    "Not allowed to consume this method. This method is for internal use.");
+        }
+        return pushQueue;
     }
 
 }

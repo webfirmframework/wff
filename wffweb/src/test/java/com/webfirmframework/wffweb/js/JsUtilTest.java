@@ -15,7 +15,7 @@
  */
 package com.webfirmframework.wffweb.js;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -41,6 +41,22 @@ public class JsUtilTest {
     }
 
     @Test
+    public void testGetJsObjectForFieldsValueWithAlternativeFunction() {
+        final Map<String, Object> jsKeyFieldIds = new LinkedHashMap<String, Object>();
+        jsKeyFieldIds.put("username", "uId");
+        jsKeyFieldIds.put("email",
+                UUID.fromString("b2593ccc-2ab9-4cf8-818d-1f317a27a691"));
+        jsKeyFieldIds.put("password", 555);
+
+        String alternativeFunction = "gebi";
+
+        assertEquals(
+                "{username:gebi('uId').value,email:gebi('b2593ccc-2ab9-4cf8-818d-1f317a27a691').value,password:gebi('555').value}",
+                JsUtil.getJsObjectForFieldsValue(jsKeyFieldIds,
+                        alternativeFunction));
+    }
+
+    @Test
     public void testGetJsObjectForFieldsValueByElementIds() {
         final Set<Object> jsKeyFieldIds = new LinkedHashSet<Object>();
         jsKeyFieldIds.add("uId");
@@ -52,7 +68,20 @@ public class JsUtilTest {
                 "{uId:document.getElementById('uId').value,b2593ccc-2ab9-4cf8-818d-1f317a27a691:document.getElementById('b2593ccc-2ab9-4cf8-818d-1f317a27a691').value,555:document.getElementById('555').value}",
                 JsUtil.getJsObjectForFieldsValue(jsKeyFieldIds));
     }
-    
+
+    @Test
+    public void testGetJsObjectForFieldsValueByElementIdsWithAltFun() {
+        final Set<Object> jsKeyFieldIds = new LinkedHashSet<Object>();
+        jsKeyFieldIds.add("uId");
+        jsKeyFieldIds
+                .add(UUID.fromString("b2593ccc-2ab9-4cf8-818d-1f317a27a691"));
+        jsKeyFieldIds.add(555);
+
+        assertEquals(
+                "{uId:gebi('uId').value,b2593ccc-2ab9-4cf8-818d-1f317a27a691:gebi('b2593ccc-2ab9-4cf8-818d-1f317a27a691').value,555:gebi('555').value}",
+                JsUtil.getJsObjectForFieldsValue(jsKeyFieldIds, "gebi"));
+    }
+
     @Test
     public void testGetJsObjectForFieldsValueByElementIdsStrings() {
         assertEquals(
@@ -61,4 +90,41 @@ public class JsUtilTest {
                         "b2593ccc-2ab9-4cf8-818d-1f317a27a691", "555"));
     }
 
+    @Test
+    public void testGetJsObjectForFieldsValueByElementIdsStringsWithAltFun() {
+        assertEquals(
+                "{uId:gebi('uId').value,b2593ccc-2ab9-4cf8-818d-1f317a27a691:gebi('b2593ccc-2ab9-4cf8-818d-1f317a27a691').value,555:gebi('555').value}",
+                JsUtil.getJsObjectForFieldsValueWithAltFun("gebi", "uId",
+                        "b2593ccc-2ab9-4cf8-818d-1f317a27a691", "555"));
+    }
+
+    @Test
+    public void testGetJsObjectForFieldsValueSetObjectSetObject()
+            throws Exception {
+        final Set<Object> jsInputKeyFieldIds = new LinkedHashSet<Object>();
+        jsInputKeyFieldIds.add("usernameInputId");
+
+        final Set<Object> jsCheckboxKeyFieldIds = new LinkedHashSet<Object>();
+        jsCheckboxKeyFieldIds.add("dateExpiredCheckboxId");
+
+        assertEquals(
+                "{usernameInputId:document.getElementById('usernameInputId').value,dateExpiredCheckboxId:document.getElementById('dateExpiredCheckboxId').checked}",
+                JsUtil.getJsObjectForFieldsValue(jsInputKeyFieldIds,
+                        jsCheckboxKeyFieldIds));
+    }
+
+    @Test
+    public void testGetJsObjectForFieldsValueSetObjectSetObjectWithAltFun()
+            throws Exception {
+        final Set<Object> jsInputKeyFieldIds = new LinkedHashSet<Object>();
+        jsInputKeyFieldIds.add("usernameInputId");
+
+        final Set<Object> jsCheckboxKeyFieldIds = new LinkedHashSet<Object>();
+        jsCheckboxKeyFieldIds.add("dateExpiredCheckboxId");
+
+        assertEquals(
+                "{usernameInputId:gebi('usernameInputId').value,dateExpiredCheckboxId:gebi('dateExpiredCheckboxId').checked}",
+                JsUtil.getJsObjectForFieldsValue(jsInputKeyFieldIds,
+                        jsCheckboxKeyFieldIds, "gebi"));
+    }
 }

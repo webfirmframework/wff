@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -95,7 +95,7 @@ public class Padding extends AbstractCssProperty<Padding>
 
     /**
      * @param cssValue
-     *            the css value to set.
+     *                     the css value to set.
      */
     public Padding(final String cssValue) {
         setCssValue(cssValue);
@@ -103,8 +103,9 @@ public class Padding extends AbstractCssProperty<Padding>
 
     /**
      * @param paddingBottom
-     *            the {@code PaddingBottom} object from which the cssValue to
-     *            set.And, {@code null} will throw {@code NullValueException}
+     *                          the {@code PaddingBottom} object from which the
+     *                          cssValue to set.And, {@code null} will throw
+     *                          {@code NullValueException}
      */
     public Padding(final Padding paddingBottom) {
         if (paddingBottom == null) {
@@ -174,11 +175,12 @@ public class Padding extends AbstractCssProperty<Padding>
 
     /**
      * @param cssValue
-     *            the value should be a length value, for example
-     *            <code>5px</code>. {@code null} is considered as an invalid
-     *            value and it will throw {@code NullValueException}.And an
-     *            empty string is also considered as an invalid value and it
-     *            will throw {@code InvalidValueException}.
+     *                     the value should be a length value, for example
+     *                     <code>5px</code>. {@code null} is considered as an
+     *                     invalid value and it will throw
+     *                     {@code NullValueException}.And an empty string is
+     *                     also considered as an invalid value and it will throw
+     *                     {@code InvalidValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -187,11 +189,11 @@ public class Padding extends AbstractCssProperty<Padding>
         if (cssValue == null) {
             throw new NullValueException(
                     "null is an invalid value. The value should be css length for example 2px. Or, initial/inherit.");
-        } else if (cssValue.trim().isEmpty()) {
+        } else if (StringUtil.isBlank(cssValue)) {
             throw new InvalidValueException(
                     "blank string is an invalid value. The value should be css length for example 5px. Or, initial/inherit.");
         } else {
-            final String trimmedCssValue = cssValue.trim();
+            final String trimmedCssValue = StringUtil.strip(cssValue);
 
             if (PREDEFINED_CONSTANTS.contains(trimmedCssValue)) {
                 this.cssValue = trimmedCssValue;
@@ -695,7 +697,7 @@ public class Padding extends AbstractCssProperty<Padding>
     public static boolean isValid(final String cssValue) {
         final String trimmedCssValue;
         if (cssValue == null || (trimmedCssValue = TagStringUtil
-                .toLowerCase(cssValue.trim())).isEmpty()) {
+                .toLowerCase(StringUtil.strip(cssValue))).isEmpty()) {
             return false;
         }
         if (INITIAL.equalsIgnoreCase(trimmedCssValue)

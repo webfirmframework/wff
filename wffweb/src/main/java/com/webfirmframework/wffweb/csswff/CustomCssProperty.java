@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,27 +39,30 @@ public class CustomCssProperty extends AbstractCssProperty<CustomCssProperty> {
 
     /**
      * @param cssName
-     *            the css name to set.
+     *                     the css name to set.
      * @param cssValue
-     *            the css value to set.
+     *                     the css value to set.
      * @author WFF
      */
     public CustomCssProperty(final String cssName, final String cssValue) {
         if (cssName == null) {
             throw new NullValueException("cssName can not be null");
         }
-        if (StringUtil.endsWithColon(cssName.trim())) {
+        if (cssValue == null) {
+            throw new NullValueException("cssValue can not be null");
+        }
+        if (StringUtil.endsWithColon(StringUtil.strip(cssName))) {
             throw new InvalidValueException(
                     "cssName can not end with : (colon)");
         }
-        this.cssName = cssName;
-        setCssValue(cssValue);
+        this.cssName = StringUtil.strip(cssName);
+        setCssValue(StringUtil.strip(cssValue));
     }
 
     /**
      * @param customCssProperty
-     *            the {@code CustomCss} object from which the cssName and
-     *            cssValue to set.
+     *                              the {@code CustomCss} object from which the
+     *                              cssName and cssValue to set.
      * @author WFF
      */
     public CustomCssProperty(final CustomCssProperty customCssProperty) {
@@ -70,7 +73,7 @@ public class CustomCssProperty extends AbstractCssProperty<CustomCssProperty> {
             throw new NullValueException(
                     "customCss.getCssName() can not be null");
         }
-        if (StringUtil.endsWithColon(customCssProperty.getCssName().trim())) {
+        if (StringUtil.endsWithColon(customCssProperty.getCssName())) {
             throw new InvalidValueException(
                     "customCss.getCssName() can not end with : (colon)");
         }
@@ -113,7 +116,7 @@ public class CustomCssProperty extends AbstractCssProperty<CustomCssProperty> {
 
     /**
      * @param cssValue
-     *            {@code null} is considered as an invalid value.
+     *                     {@code null} is considered as an invalid value.
      * @since 1.0.0
      * @author WFF
      */
@@ -122,7 +125,7 @@ public class CustomCssProperty extends AbstractCssProperty<CustomCssProperty> {
         if (cssValue == null) {
             throw new NullValueException("the value can not be null");
         }
-        final String trimmedCssValue = cssValue.trim();
+        final String trimmedCssValue = StringUtil.strip(cssValue);
         if (trimmedCssValue.length() > 0
                 && (trimmedCssValue.charAt(0) == ':' || trimmedCssValue
                         .charAt(trimmedCssValue.length() - 1) == ';')) {

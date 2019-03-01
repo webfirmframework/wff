@@ -19,9 +19,9 @@ import static org.junit.Assert.*;
 
 import java.lang.reflect.Field;
 
-import org.junit.Assert;
 import org.junit.Test;
 
+import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 
 public class TagRegistryTest {
@@ -30,16 +30,33 @@ public class TagRegistryTest {
     public void testIfAllTagNamesAreReffered() throws Exception {
         Field[] fields = TagNameConstants.class.getFields();
         for (Field field : fields) {
-            if (TagRegistry.getTagClassNameByTagName().get(field.get(null)) == null) {
-                fail(field.get(null) +" tag name is not included in all tag names map");
-                
+
+            // value from constant name field
+            final String constantName = field.get(null).toString();
+            final String simpleClassName = TagRegistry
+                    .getTagClassNameByTagName().get(constantName);
+            if (simpleClassName == null) {
+                fail(constantName
+                        + " tag name is not included in all tag names map");
+
+            } else if (!simpleClassName.replace("Tag", "")
+                    .equalsIgnoreCase(constantName.replace("-", ""))) {
+                fail(constantName + " tag has an incorrect class mapping");
             }
         }
     }
     
     @Test
-    public void testLoadAllTagClasses() throws Exception {        
-        TagRegistry.loadAllTagClasses();        
-    }
+    public void testLoadAllTagClasses() throws Exception {
+        try {
+            //loadAllTagClasses must be after test
+            //not possible to write a separate test case for test() method
+            //as the internal map will be nullified in loadAllTagClasses
+            TagRegistry.test();            
+        } catch (InvalidValueException e) {
+            fail(e.getMessage());
+        }
+        TagRegistry.loadAllTagClasses();    
+    }   
 
 }

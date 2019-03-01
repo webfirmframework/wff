@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,7 +62,7 @@ public class PaddingRight extends AbstractCssProperty<PaddingRight> {
 
     /**
      * @param cssValue
-     *            the css value to set.
+     *                     the css value to set.
      */
     public PaddingRight(final String cssValue) {
         setCssValue(cssValue);
@@ -70,8 +70,9 @@ public class PaddingRight extends AbstractCssProperty<PaddingRight> {
 
     /**
      * @param paddingRight
-     *            the {@code PaddingRight} object from which the cssValue to
-     *            set.And, {@code null} will throw {@code NullValueException}
+     *                         the {@code PaddingRight} object from which the
+     *                         cssValue to set.And, {@code null} will throw
+     *                         {@code NullValueException}
      */
     public PaddingRight(final PaddingRight paddingRight) {
         if (paddingRight == null) {
@@ -82,8 +83,8 @@ public class PaddingRight extends AbstractCssProperty<PaddingRight> {
 
     /**
      * @param percent
-     *            the percentage value to set. The cssLengthUnit will
-     *            automatically set to %.
+     *                    the percentage value to set. The cssLengthUnit will
+     *                    automatically set to %.
      * @since 1.0.0
      * @author WFF
      */
@@ -123,7 +124,7 @@ public class PaddingRight extends AbstractCssProperty<PaddingRight> {
 
     /**
      * @param percent
-     *            the percent to set
+     *                    the percent to set
      * @since 1.0.0
      * @author WFF
      */
@@ -194,9 +195,10 @@ public class PaddingRight extends AbstractCssProperty<PaddingRight> {
 
     /**
      * @param cssValue
-     *            the value should be in the format of <code>55px</code> or
-     *            <code>95%</code>. {@code null} is considered as an invalid
-     *            value and it will throw {@code NullValueException}.
+     *                     the value should be in the format of
+     *                     <code>55px</code> or <code>95%</code>. {@code null}
+     *                     is considered as an invalid value and it will throw
+     *                     {@code NullValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -208,7 +210,7 @@ public class PaddingRight extends AbstractCssProperty<PaddingRight> {
                 throw new NullValueException(
                         "null is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit.");
             } else {
-                final String trimmedCssValue = cssValue.trim();
+                final String trimmedCssValue = StringUtil.strip(cssValue);
                 boolean invalidValue = true;
                 for (final CssLengthUnit cssLengthUnit : CssLengthUnit
                         .values()) {
@@ -249,8 +251,8 @@ public class PaddingRight extends AbstractCssProperty<PaddingRight> {
             }
         } catch (final NumberFormatException e) {
             this.cssValue = previousCssValue;
-            throw new InvalidValueException(
-                    cssValue + " is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit.",
+            throw new InvalidValueException(cssValue
+                    + " is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit.",
                     e);
         } catch (final InvalidValueException e) {
             this.cssValue = previousCssValue;
@@ -284,14 +286,14 @@ public class PaddingRight extends AbstractCssProperty<PaddingRight> {
      * validates if the given cssValue is valid for this class.
      *
      * @param cssValue
-     *            the value to check.
+     *                     the value to check.
      * @return true if valid and false if invalid.
      * @author WFF
      * @since 1.0.0
      */
     public static boolean isValid(final String cssValue) {
 
-        final String trimmedCssValue = cssValue.trim().toLowerCase();
+        final String trimmedCssValue = StringUtil.strip(cssValue).toLowerCase();
 
         if (StringUtil.containsSpace(trimmedCssValue)) {
             return false;

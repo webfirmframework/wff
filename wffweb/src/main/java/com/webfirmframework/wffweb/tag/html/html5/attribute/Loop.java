@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ public class Loop extends AbstractAttribute implements AudioAttributable {
 
     /**
      * @param value
-     *            the value may be <code>loop</code>
+     *                  the value may be <code>loop</code>
      * @since 1.1.4
      * @author WFF
      */
@@ -97,7 +97,7 @@ public class Loop extends AbstractAttribute implements AudioAttributable {
 
     /**
      * @param loop
-     *            the loop to set. {@code null} will remove the value.
+     *                 the loop to set. {@code null} will remove the value.
      * @author WFF
      * @since 1.0.0
      */

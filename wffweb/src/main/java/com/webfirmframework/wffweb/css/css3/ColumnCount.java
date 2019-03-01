@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,7 +67,7 @@ public class ColumnCount extends AbstractCssProperty<ColumnCount> {
 
     /**
      * @param cssValue
-     *            the css value to set.
+     *                     the css value to set.
      */
     public ColumnCount(final String cssValue) {
         setCssValue(cssValue);
@@ -75,8 +75,9 @@ public class ColumnCount extends AbstractCssProperty<ColumnCount> {
 
     /**
      * @param columnCount
-     *            the {@code Opacity} object from which the cssValue to set.And,
-     *            {@code null} will throw {@code NullValueException}
+     *                        the {@code Opacity} object from which the cssValue
+     *                        to set.And, {@code null} will throw
+     *                        {@code NullValueException}
      */
     public ColumnCount(final ColumnCount columnCount) {
         if (columnCount == null) {
@@ -140,7 +141,7 @@ public class ColumnCount extends AbstractCssProperty<ColumnCount> {
 
     /**
      * @param value
-     *            the value to set
+     *                  the value to set
      * @author WFF
      * @since 1.0.0
      */
@@ -154,9 +155,10 @@ public class ColumnCount extends AbstractCssProperty<ColumnCount> {
 
     /**
      * @param cssValue
-     *            the value should be in the format of <code>0.5</code>,
-     *            <code>initial/inherit</code>. {@code null} is considered as an
-     *            invalid value and it will throw {@code NullValueException}.
+     *                     the value should be in the format of
+     *                     <code>0.5</code>, <code>initial/inherit</code>.
+     *                     {@code null} is considered as an invalid value and it
+     *                     will throw {@code NullValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -170,7 +172,7 @@ public class ColumnCount extends AbstractCssProperty<ColumnCount> {
             } else {
 
                 final String trimmedCssValue = TagStringUtil
-                        .toLowerCase(cssValue.trim());
+                        .toLowerCase(StringUtil.strip(cssValue));
 
                 if (PREDEFINED_CONSTANTS.contains(trimmedCssValue)) {
                     this.cssValue = trimmedCssValue;
@@ -231,14 +233,14 @@ public class ColumnCount extends AbstractCssProperty<ColumnCount> {
      * validates if the given cssValue is valid for this class.
      *
      * @param cssValue
-     *            the value to check.
+     *                     the value to check.
      * @return true if valid and false if invalid.
      * @author WFF
      * @since 1.0.0
      */
     public static boolean isValid(final String cssValue) {
         final String trimmedCssValue = TagStringUtil
-                .toLowerCase(cssValue.trim());
+                .toLowerCase(StringUtil.strip(cssValue));
         if (StringUtil.containsSpace(trimmedCssValue)) {
             return false;
         }

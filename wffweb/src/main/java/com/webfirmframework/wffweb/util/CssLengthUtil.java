@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,8 +55,8 @@ public final class CssLengthUtil {
      * </pre>
      *
      * @param cssValue
-     *            the value from which the length value and unit required to be
-     *            parsed, Eg:- <code>555px</code>.
+     *                     the value from which the length value and unit
+     *                     required to be parsed, Eg:- <code>555px</code>.
      * @return an array containing length and unit. The length will be in the
      *         zeroth index as {@code float} (primitive type) type and its unit
      *         in the first index as an object of {@code CssLengthUnit}. If the
@@ -72,7 +72,7 @@ public final class CssLengthUtil {
     public static Object[] getLengthValueAsPremitiveAndUnit(
             final String cssValue) {
 
-        final String trimmedCssValue = cssValue.trim();
+        final String trimmedCssValue = StringUtil.strip(cssValue);
         final char[] cssValueChars = trimmedCssValue.toCharArray();
 
         int lengthSeparationIndex = -1;
@@ -89,16 +89,16 @@ public final class CssLengthUtil {
 
         }
 
-        final String value = trimmedCssValue
-                .substring(0, lengthSeparationIndex + 1).trim();
+        final String value = StringUtil
+                .strip(trimmedCssValue.substring(0, lengthSeparationIndex + 1));
 
         try {
             if (lengthSeparationIndex == (cssValueChars.length - 1)) {
                 return new Object[] { Float.parseFloat(value) };
             }
 
-            String unit = trimmedCssValue.substring(lengthSeparationIndex + 1)
-                    .trim();
+            String unit = StringUtil.strip(
+                    trimmedCssValue.substring(lengthSeparationIndex + 1));
 
             if (unit.length() == 1 && unit.charAt(0) == '%') {
                 return new Object[] { Float.parseFloat(value),
@@ -134,8 +134,8 @@ public final class CssLengthUtil {
      * </pre>
      *
      * @param cssValue
-     *            the value from which the length value and unit required to be
-     *            parsed, Eg:- <code>555px</code>.
+     *                     the value from which the length value and unit
+     *                     required to be parsed, Eg:- <code>555px</code>.
      * @return an array containing length and unit. The length will be in the
      *         zeroth index as {@code Float} (wrapper type) type and its unit in
      *         the first index as an object of {@code CssLengthUnit}. If the
@@ -150,7 +150,7 @@ public final class CssLengthUtil {
      */
     public static Object[] getLengthValueAndUnit(final String cssValue) {
 
-        final String trimmedCssValue = cssValue.trim();
+        final String trimmedCssValue = StringUtil.strip(cssValue);
         final char[] cssValueChars = trimmedCssValue.toCharArray();
 
         int lengthSeparationIndex = -1;
@@ -167,16 +167,16 @@ public final class CssLengthUtil {
 
         }
 
-        final String value = trimmedCssValue
-                .substring(0, lengthSeparationIndex + 1).trim();
+        final String value = StringUtil
+                .strip(trimmedCssValue.substring(0, lengthSeparationIndex + 1));
 
         try {
             if (lengthSeparationIndex == (cssValueChars.length - 1)) {
                 return new Object[] { Float.valueOf(value) };
             }
 
-            String unit = trimmedCssValue.substring(lengthSeparationIndex + 1)
-                    .trim();
+            String unit = StringUtil.strip(
+                    trimmedCssValue.substring(lengthSeparationIndex + 1));
 
             if (unit.length() == 1 && unit.charAt(0) == '%') {
                 return new Object[] { Float.valueOf(value), CssLengthUnit.PER };

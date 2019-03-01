@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,7 +64,8 @@ public enum CssTimeUnit implements TimeUnit {
      * {@code CssTimeUnit.valueOf(String)} method.
      *
      * @param unitName
-     *            the name of the unit eg:- <code>s</code> or <code>ms</code>.
+     *                     the name of the unit eg:- <code>s</code> or
+     *                     <code>ms</code>.
      * @return the corresponding object for the given {@code unitName} or null
      *         for invalid unitName.
      * @since 1.0.0

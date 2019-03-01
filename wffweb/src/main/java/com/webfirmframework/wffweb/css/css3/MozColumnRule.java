@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,7 +68,7 @@ public class MozColumnRule extends AbstractCssProperty<MozColumnRule>
 
     /**
      * @param cssValue
-     *            the css value to set.
+     *                     the css value to set.
      */
     public MozColumnRule(final String cssValue) {
         setCssValue(cssValue);
@@ -76,8 +76,9 @@ public class MozColumnRule extends AbstractCssProperty<MozColumnRule>
 
     /**
      * @param mozColumnRule
-     *            the {@code MozColumnRule} object from which the cssValue to
-     *            set.And, {@code null} will throw {@code NullValueException}
+     *                          the {@code MozColumnRule} object from which the
+     *                          cssValue to set.And, {@code null} will throw
+     *                          {@code NullValueException}
      */
     public MozColumnRule(final MozColumnRule mozColumnRule) {
         if (mozColumnRule == null) {
@@ -147,12 +148,12 @@ public class MozColumnRule extends AbstractCssProperty<MozColumnRule>
 
     /**
      * @param cssValue
-     *            the value should be for example
-     *            <code>medium none #0000ff</code>. {@code null} is considered
-     *            as an invalid value and it will throw
-     *            {@code NullValueException}.And an empty string is also
-     *            considered as an invalid value and it will throw
-     *            {@code InvalidValueException}.
+     *                     the value should be for example
+     *                     <code>medium none #0000ff</code>. {@code null} is
+     *                     considered as an invalid value and it will throw
+     *                     {@code NullValueException}.And an empty string is
+     *                     also considered as an invalid value and it will throw
+     *                     {@code InvalidValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -161,12 +162,12 @@ public class MozColumnRule extends AbstractCssProperty<MozColumnRule>
         if (cssValue == null) {
             throw new NullValueException(
                     "null is an invalid value. The value should be any color for example medium none #0000ff. Or, initial/inherit.");
-        } else if (cssValue.trim().isEmpty()) {
+        } else if (StringUtil.isBlank(cssValue)) {
             throw new InvalidValueException(cssValue
                     + " is an invalid value. The value should be any color for example medium none #0000ff. Or, initial/inherit.");
         } else {
 
-            final String trimmedCssValue = cssValue.trim();
+            final String trimmedCssValue = StringUtil.strip(cssValue);
             final String[] cssValueParts = StringUtil
                     .splitBySpace(trimmedCssValue);
 
@@ -277,7 +278,7 @@ public class MozColumnRule extends AbstractCssProperty<MozColumnRule>
 
     /**
      * @param mozColumnRuleWidth
-     *            the mozColumnRuleWidth to set
+     *                               the mozColumnRuleWidth to set
      * @since 1.0.0
      * @author WFF
      */
@@ -300,7 +301,8 @@ public class MozColumnRule extends AbstractCssProperty<MozColumnRule>
             cssValueBuilder.append(mozColumnRuleColor.getCssValue());
         }
 
-        final String trimmedCssValue = cssValueBuilder.toString().trim();
+        final String trimmedCssValue = StringBuilderUtil
+                .getTrimmedString(cssValueBuilder).toString();
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
         if (this.mozColumnRuleWidth != null) {
@@ -332,7 +334,7 @@ public class MozColumnRule extends AbstractCssProperty<MozColumnRule>
 
     /**
      * @param mozColunmRuleStyle
-     *            the mozColunmRuleStyle to set
+     *                               the mozColunmRuleStyle to set
      * @since 1.0.0
      * @author WFF
      * @return
@@ -356,7 +358,8 @@ public class MozColumnRule extends AbstractCssProperty<MozColumnRule>
             cssValueBuilder.append(mozColumnRuleColor.getCssValue());
         }
 
-        final String trimmedCssValue = cssValueBuilder.toString().trim();
+        final String trimmedCssValue = StringBuilderUtil
+                .getTrimmedString(cssValueBuilder).toString();
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
         mozColumnRuleStyle = mozColunmRuleStyle;
@@ -379,7 +382,7 @@ public class MozColumnRule extends AbstractCssProperty<MozColumnRule>
 
     /**
      * @param mozColumnRuleColor
-     *            the mozColumnRuleColor to set
+     *                               the mozColumnRuleColor to set
      * @since 1.0.0
      * @author WFF
      * @return the current instance.
@@ -403,7 +406,8 @@ public class MozColumnRule extends AbstractCssProperty<MozColumnRule>
             cssValueBuilder.append(mozColumnRuleColor.getCssValue());
         }
 
-        final String trimmedCssValue = cssValueBuilder.toString().trim();
+        final String trimmedCssValue = StringBuilderUtil
+                .getTrimmedString(cssValueBuilder).toString();
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
         if (this.mozColumnRuleColor != null) {

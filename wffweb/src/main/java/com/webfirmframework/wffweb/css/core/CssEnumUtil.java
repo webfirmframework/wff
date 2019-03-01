@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,16 +37,16 @@ public final class CssEnumUtil {
      * {@code cssValue}.
      *
      * @param cssValue
-     *            the value to be checked.
+     *                          the value to be checked.
      * @param cssValues
-     *            the {@code cssValue} will be checked in this {@code cssValues}
-     *            .
+     *                          the {@code cssValue} will be checked in this
+     *                          {@code cssValues} .
      * @param lowestLength
-     *            the lowest length of the string contained in the given
-     *            {@code cssValues}.
+     *                          the lowest length of the string contained in the
+     *                          given {@code cssValues}.
      * @param highestLength
-     *            the highest length of the string contained in the given
-     *            {@code cssValues}.
+     *                          the highest length of the string contained in
+     *                          the given {@code cssValues}.
      * @return true if the given {@code cssValues} contains the given
      *         {@code cssValue}, and the length of {@code cssValue} is not less
      *         than {@code lowestLength} and not greater than

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,7 +75,8 @@ public class Controls extends AbstractAttribute implements AudioAttributable {
 
     /**
      * @param controls
-     *            the controls to set. {@code null} will remove the value.
+     *                     the controls to set. {@code null} will remove the
+     *                     value.
      * @author WFF
      * @since 1.0.0
      */

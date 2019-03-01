@@ -6,7 +6,7 @@ var wffWS = new function() {
 
 	var webSocket;
 
-	this.openSocket = function(wsUtl) {
+	this.openSocket = function(wsUrl) {
 
 		// Ensures only one connection is open at a time
 		if (typeof webSocket !== 'undefined'
@@ -17,7 +17,7 @@ var wffWS = new function() {
 		}
 
 		// Create a new instance of websocket
-		webSocket = new WebSocket(wsUtl);
+		webSocket = new WebSocket(wsUrl);
 
 		// this is required to send binary data
 		webSocket.binaryType = 'arraybuffer';

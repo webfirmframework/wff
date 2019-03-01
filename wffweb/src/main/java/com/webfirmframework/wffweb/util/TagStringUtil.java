@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ public final class TagStringUtil {
      * {@code String.toLowerCase()} method.
      *
      * @param value
-     *            The String to lower case
+     *                  The String to lower case
      * @return The lower case string
      * @author WFF
      */
@@ -61,7 +61,7 @@ public final class TagStringUtil {
      * {@code String.toUpperCase()} method.
      *
      * @param value
-     *            The String to lower case
+     *                  The String to lower case
      * @return The upper case string
      * @author WFF
      */

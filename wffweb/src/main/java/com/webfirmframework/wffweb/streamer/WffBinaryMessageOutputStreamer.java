@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,8 +40,8 @@ public class WffBinaryMessageOutputStreamer {
 
     /**
      * @param os
-     *            the output stream object to which the wff binary message bytes
-     *            will be written
+     *               the output stream object to which the wff binary message
+     *               bytes will be written
      * @since 1.0.0
      * @author WFF
      */
@@ -53,8 +53,8 @@ public class WffBinaryMessageOutputStreamer {
 
     /**
      * @param os
-     *            the output stream object to which the wff binary message bytes
-     *            will be written
+     *               the output stream object to which the wff binary message
+     *               bytes will be written
      * @since 1.1.2
      * @author WFF
      */
@@ -105,7 +105,7 @@ public class WffBinaryMessageOutputStreamer {
 
     /**
      * @param nameValue
-     *            the nameValue to be written to the output stream
+     *                      the nameValue to be written to the output stream
      * @return the number of bytes written to the output stream
      * @throws IOException
      * @since 1.1.2
@@ -184,8 +184,8 @@ public class WffBinaryMessageOutputStreamer {
 
     /**
      * @param chunkSize
-     *            the wff message bytes will be written maximum with the given
-     *            chuck size.
+     *                      the wff message bytes will be written maximum with
+     *                      the given chuck size.
      * @since 1.1.2
      * @author WFF
      */

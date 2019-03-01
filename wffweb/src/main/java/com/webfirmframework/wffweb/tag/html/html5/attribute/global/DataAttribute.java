@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,8 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 public class DataAttribute extends AbstractAttribute
         implements GlobalAttributable {
 
+    // NB: this class should always super keyword to refer super class methods
+    // otherwise DataWffId will make bug, see its implementation
     private static final long serialVersionUID = 1_0_0L;
 
     {
@@ -41,7 +43,7 @@ public class DataAttribute extends AbstractAttribute
         }
         super.setAttributeName(
                 AttributeNameConstants.DATA.concat(attributeNameExension));
-        setAttributeValue(null);
+        super.setAttributeValue(null);
     }
 
     public DataAttribute(final String attributeNameExension,
@@ -52,7 +54,7 @@ public class DataAttribute extends AbstractAttribute
         }
         super.setAttributeName(
                 AttributeNameConstants.DATA.concat(attributeNameExension));
-        setAttributeValue(value);
+        super.setAttributeValue(value);
     }
 
     /**
@@ -71,17 +73,17 @@ public class DataAttribute extends AbstractAttribute
      * @since 1.0.0
      */
     public String getValue() {
-        return getAttributeValue();
+        return super.getAttributeValue();
     }
 
     /**
      * @param value
-     *            the value to set
+     *                  the value to set
      * @author WFF
      * @since 1.0.0
      */
     public void setValue(final String value) {
-        setAttributeValue(value);
+        super.setAttributeValue(value);
     }
 
 }

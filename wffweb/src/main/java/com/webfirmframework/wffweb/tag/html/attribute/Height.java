@@ -64,7 +64,7 @@ public class Height extends AbstractAttribute
 
     /**
      * @param percent
-     *            the percentage value to set.
+     *                    the percentage value to set.
      * @since 1.1.4
      */
     public Height(final int percent) {
@@ -76,7 +76,7 @@ public class Height extends AbstractAttribute
 
     /**
      * @param percent
-     *            the percentage value to set.
+     *                    the percentage value to set.
      * @since 1.0.0
      */
     public Height(final float percent) {
@@ -88,9 +88,9 @@ public class Height extends AbstractAttribute
 
     /**
      * @param value
-     *            the value to set
+     *                          the value to set
      * @param cssLengthUnit
-     *            the unit for the value.
+     *                          the unit for the value.
      * @since 1.0.0
      */
     public Height(final int value, final CssLengthUnit cssLengthUnit) {
@@ -102,10 +102,11 @@ public class Height extends AbstractAttribute
 
     /**
      * @param value
-     *            the value to set
+     *                       the value to set
      * @param lengthUnit
-     *            The length unit. It may be an enum class which implements
-     *            {@code LengthUnit} interface. the unit for the value.
+     *                       The length unit. It may be an enum class which
+     *                       implements {@code LengthUnit} interface. the unit
+     *                       for the value.
      * @since 1.0.0
      */
     public Height(final int value, final LengthUnit lengthUnit) {
@@ -121,7 +122,7 @@ public class Height extends AbstractAttribute
 
     /**
      * @param percent
-     *            the percent to set
+     *                    the percent to set
      * @since 1.0.0
      */
     public void setPercent(final float percent) {
@@ -132,10 +133,10 @@ public class Height extends AbstractAttribute
 
     /**
      * @param value
-     *            the value to set
+     *                          the value to set
      * @param cssLengthUnit
-     *            the unit for the value. return the current object will be
-     *            returned.
+     *                          the unit for the value. return the current
+     *                          object will be returned.
      * @since 1.0.0
      */
     public Height setValue(final int value, final CssLengthUnit cssLengthUnit) {
@@ -148,11 +149,11 @@ public class Height extends AbstractAttribute
 
     /**
      * @param value
-     *            the value to set
+     *                       the value to set
      * @param lengthUnit
-     *            the unit for the value. It may be an enum class which
-     *            implements {@code LengthUnit} interface. return the current
-     *            object will be returned.
+     *                       the unit for the value. It may be an enum class
+     *                       which implements {@code LengthUnit} interface.
+     *                       return the current object will be returned.
      * @since 1.0.0
      */
     public Height setValue(final int value, final LengthUnit lengthUnit) {
@@ -165,10 +166,10 @@ public class Height extends AbstractAttribute
 
     /**
      * @param value
-     *            the value to set
+     *                          the value to set
      * @param cssLengthUnit
-     *            the unit for the value. return the current object will be
-     *            returned.
+     *                          the unit for the value. return the current
+     *                          object will be returned.
      * @since 1.0.0
      */
     public Height setValue(final float value,
@@ -182,10 +183,10 @@ public class Height extends AbstractAttribute
 
     /**
      * @param value
-     *            the value to set
+     *                       the value to set
      * @param lengthUnit
-     *            the unit for the value. return the current object will be
-     *            returned.
+     *                       the unit for the value. return the current object
+     *                       will be returned.
      * @since 1.0.0
      */
     public Height setValue(final float value, final LengthUnit lengthUnit) {

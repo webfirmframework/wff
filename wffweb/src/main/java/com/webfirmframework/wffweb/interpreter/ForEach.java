@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,10 +36,10 @@ public abstract class ForEach<EACHTYPE> implements Serializable, Cloneable {
 
     /**
      * @param base
-     *            the parent object i.e. the outer tag, usually this (current
-     *            object). This argument cannot be null.
+     *                   the parent object i.e. the outer tag, usually this
+     *                   (current object). This argument cannot be null.
      * @param values
-     *            from which to do the iteration
+     *                   from which to do the iteration
      */
     public ForEach(final AbstractHtml base, final Collection<EACHTYPE> values) {
         if (base != null && values != null) {
@@ -51,10 +51,10 @@ public abstract class ForEach<EACHTYPE> implements Serializable, Cloneable {
 
     /**
      * @param base
-     *            the parent object i.e. the outer tag, usually this (current
-     *            object). This argument cannot be null.
+     *                   the parent object i.e. the outer tag, usually this
+     *                   (current object). This argument cannot be null.
      * @param values
-     *            from which to do the iteration
+     *                   from which to do the iteration
      */
     @SafeVarargs
     public ForEach(final AbstractHtml base, final EACHTYPE... values) {
@@ -69,12 +69,13 @@ public abstract class ForEach<EACHTYPE> implements Serializable, Cloneable {
      * invokes for each looping.
      *
      * @param base
-     *            the base object given as the argument.
+     *                      the base object given as the argument.
      * @param values
-     *            the values object passed as a constructor argument. Type cast
-     *            to the corresponding type.
+     *                      the values object passed as a constructor argument.
+     *                      Type cast to the corresponding type.
      * @param eachValue
-     *            each value from the given values passed in constructor.
+     *                      each value from the given values passed in
+     *                      constructor.
      * @since 1.0.0
      * @author WFF
      */

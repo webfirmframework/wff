@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -42,6 +43,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.metainfo.Head;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 import com.webfirmframework.wffweb.wffbm.data.WffBMArray;
+import com.webfirmframework.wffweb.wffbm.data.WffBMData;
 import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
 
 /**
@@ -60,7 +62,6 @@ public class TagRepository extends AbstractHtmlRepository
 
     private final BrowserPage browserPage;
 
-    @SuppressWarnings("unused")
     private final AbstractHtml[] rootTags;
 
     private final Map<String, AbstractHtml> tagByWffId;
@@ -70,9 +71,9 @@ public class TagRepository extends AbstractHtmlRepository
      * {@code TagRepository} use {@code BrowserPage#getTagRepository()} method.
      *
      * @param browserPage
-     *            the instance of {@code BrowserPage}
+     *                        the instance of {@code BrowserPage}
      * @param rootTags
-     *            the rootTags in the browserPage instance.
+     *                        the rootTags in the browserPage instance.
      * @since 2.1.8
      * @author WFF
      * @deprecated since 3.0.0
@@ -98,12 +99,12 @@ public class TagRepository extends AbstractHtmlRepository
      * {@code TagRepository} use {@code BrowserPage#getTagRepository()} method.
      *
      * @param browserPage
-     *            the instance of {@code BrowserPage}
+     *                        the instance of {@code BrowserPage}
      * @param tagByWffId
-     *            map containing wff id and its corresponding
-     *            {@code AbstractHtml}.
+     *                        map containing wff id and its corresponding
+     *                        {@code AbstractHtml}.
      * @param rootTags
-     *            the rootTags in the browserPage instance.
+     *                        the rootTags in the browserPage instance.
      * @since 2.1.16
      * @author WFF
      */
@@ -129,13 +130,14 @@ public class TagRepository extends AbstractHtmlRepository
      * Finds and returns the first tag matching with the given id.
      *
      * @param id
-     *            the value of id attribute.
+     *                     the value of id attribute.
      * @param fromTags
-     *            from the given tags and its nested children the finding to be
-     *            done.
+     *                     from the given tags and its nested children the
+     *                     finding to be done.
      * @return the first found tag with the given id
      * @throws NullValueException
-     *             if the {@code id} or {@code fromTags} is null
+     *                                if the {@code id} or {@code fromTags} is
+     *                                null
      * @since 2.1.8
      * @author WFF
      */
@@ -148,20 +150,22 @@ public class TagRepository extends AbstractHtmlRepository
      * Finds and returns the first tag matching with the given id.
      *
      * @param parallel
-     *            true to internally use parallel stream. If true it will split
-     *            the finding task to different batches and will execute the
-     *            batches in different threads in parallel consuming all CPUs.
-     *            It will perform faster in finding from extremely large number
-     *            of tags but at the same time it will less efficient in finding
-     *            from small number of tags.
+     *                     true to internally use parallel stream. If true it
+     *                     will split the finding task to different batches and
+     *                     will execute the batches in different threads in
+     *                     parallel consuming all CPUs. It will perform faster
+     *                     in finding from extremely large number of tags but at
+     *                     the same time it will less efficient in finding from
+     *                     small number of tags.
      * @param id
-     *            the value of id attribute.
+     *                     the value of id attribute.
      * @param fromTags
-     *            from the given tags and its nested children the finding to be
-     *            done.
+     *                     from the given tags and its nested children the
+     *                     finding to be done.
      * @return the first found tag with the given id
      * @throws NullValueException
-     *             if the {@code id} or {@code fromTags} is null
+     *                                if the {@code id} or {@code fromTags} is
+     *                                null
      * @since 3.0.0
      * @author WFF
      */
@@ -177,33 +181,44 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The fromTags should not be null");
         }
 
-        final Stream<AbstractHtml> stream = getAllNestedChildrenIncludingParent(
-                parallel, fromTags);
-
-        final Optional<AbstractHtml> any = stream.filter((child) -> {
-
-            final AbstractAttribute idAttr = child
-                    .getAttributeByName(AttributeNameConstants.ID);
-
-            return idAttr != null && id.equals(idAttr.getAttributeValue());
-
-        }).findAny();
-
-        if (any.isPresent()) {
-            return any.get();
+        final Collection<Lock> locks = getReadLocks(fromTags);
+        for (final Lock lock : locks) {
+            lock.lock();
         }
-        return null;
+
+        try {
+            final Stream<AbstractHtml> stream = getAllNestedChildrenIncludingParent(
+                    parallel, fromTags);
+
+            final Optional<AbstractHtml> any = stream.filter(child -> {
+
+                final AbstractAttribute idAttr = child
+                        .getAttributeByName(AttributeNameConstants.ID);
+
+                return idAttr != null && id.equals(idAttr.getAttributeValue());
+
+            }).findAny();
+
+            if (any.isPresent()) {
+                return any.get();
+            }
+            return null;
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
     }
 
     /**
      * Finds and returns the first tag matching with the given id.
      *
      * @param id
-     *            the value of id attribute.
+     *               the value of id attribute.
      * @return the first found tag with the given id
      *
      * @throws NullValueException
-     *             if the {@code id} is null
+     *                                if the {@code id} is null
      * @since 2.1.8
      * @author WFF
      */
@@ -215,18 +230,19 @@ public class TagRepository extends AbstractHtmlRepository
      * Finds and returns the first tag matching with the given id.
      *
      * @param parallel
-     *            true to internally use parallel stream. If true it will split
-     *            the finding task to different batches and will execute the
-     *            batches in different threads in parallel consuming all CPUs.
-     *            It will perform faster in finding from extremely large number
-     *            of tags but at the same time it will less efficient in finding
-     *            from small number of tags.
+     *                     true to internally use parallel stream. If true it
+     *                     will split the finding task to different batches and
+     *                     will execute the batches in different threads in
+     *                     parallel consuming all CPUs. It will perform faster
+     *                     in finding from extremely large number of tags but at
+     *                     the same time it will less efficient in finding from
+     *                     small number of tags.
      * @param id
-     *            the value of id attribute.
+     *                     the value of id attribute.
      * @return the first found tag with the given id
      *
      * @throws NullValueException
-     *             if the {@code id} is null
+     *                                if the {@code id} is null
      * @since 3.0.0
      * @author WFF
      */
@@ -240,16 +256,17 @@ public class TagRepository extends AbstractHtmlRepository
      * matching with the given attribute name and value.
      *
      * @param attributeName
-     *            the name of the attribute.
+     *                           the name of the attribute.
      * @param attributeValue
-     *            the value of the attribute
+     *                           the value of the attribute
      * @param fromTags
-     *            from which the findings to be done.
+     *                           from which the findings to be done.
      * @return the collection of tags matching with the given attribute name and
      *         value.
      * @throws NullValueException
-     *             if the {@code attributeName}, {@code attributeValue} or
-     *             {@code fromTags} is null
+     *                                if the {@code attributeName},
+     *                                {@code attributeValue} or {@code fromTags}
+     *                                is null
      * @since 2.1.8
      * @author WFF
      */
@@ -266,23 +283,26 @@ public class TagRepository extends AbstractHtmlRepository
      * matching with the given attribute name and value.
      *
      * @param parallel
-     *            true to internally use parallel stream. If true it will split
-     *            the finding task to different batches and will execute the
-     *            batches in different threads in parallel consuming all CPUs.
-     *            It will perform faster in finding from extremely large number
-     *            of tags but at the same time it will less efficient in finding
-     *            from small number of tags.
+     *                           true to internally use parallel stream. If true
+     *                           it will split the finding task to different
+     *                           batches and will execute the batches in
+     *                           different threads in parallel consuming all
+     *                           CPUs. It will perform faster in finding from
+     *                           extremely large number of tags but at the same
+     *                           time it will less efficient in finding from
+     *                           small number of tags.
      * @param attributeName
-     *            the name of the attribute.
+     *                           the name of the attribute.
      * @param attributeValue
-     *            the value of the attribute
+     *                           the value of the attribute
      * @param fromTags
-     *            from which the findings to be done.
+     *                           from which the findings to be done.
      * @return the collection of tags matching with the given attribute name and
      *         value.
      * @throws NullValueException
-     *             if the {@code attributeName}, {@code attributeValue} or
-     *             {@code fromTags} is null
+     *                                if the {@code attributeName},
+     *                                {@code attributeValue} or {@code fromTags}
+     *                                is null
      * @since 3.0.0
      * @author WFF
      */
@@ -304,15 +324,26 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The fromTags should not be null");
         }
 
-        return getAllNestedChildrenIncludingParent(parallel, fromTags)
-                .filter(child -> {
+        final Collection<Lock> locks = getReadLocks(fromTags);
+        for (final Lock lock : locks) {
+            lock.lock();
+        }
 
-                    final AbstractAttribute attribute = child
-                            .getAttributeByName(attributeName);
+        try {
+            return getAllNestedChildrenIncludingParent(parallel, fromTags)
+                    .filter(child -> {
 
-                    return attribute != null && attributeValue
-                            .equals(attribute.getAttributeValue());
-                }).collect(Collectors.toSet());
+                        final AbstractAttribute attribute = child
+                                .getAttributeByName(attributeName);
+
+                        return attribute != null && attributeValue
+                                .equals(attribute.getAttributeValue());
+                    }).collect(Collectors.toSet());
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
     }
 
     /**
@@ -320,12 +351,13 @@ public class TagRepository extends AbstractHtmlRepository
      * matching with the give tag name.
      *
      * @param tagName
-     *            the name of the tag.
+     *                     the name of the tag.
      * @param fromTags
-     *            from which the findings to be done.
+     *                     from which the findings to be done.
      * @return the collection of tags matching with the given tag name .
      * @throws NullValueException
-     *             if the {@code tagName} or {@code fromTags} is null
+     *                                if the {@code tagName} or {@code fromTags}
+     *                                is null
      * @since 2.1.11
      * @author WFF
      */
@@ -341,19 +373,21 @@ public class TagRepository extends AbstractHtmlRepository
      * matching with the give tag name.
      *
      * @param parallel
-     *            true to internally use parallel stream. If true it will split
-     *            the finding task to different batches and will execute the
-     *            batches in different threads in parallel consuming all CPUs.
-     *            It will perform faster in finding from extremely large number
-     *            of tags but at the same time it will less efficient in finding
-     *            from small number of tags.
+     *                     true to internally use parallel stream. If true it
+     *                     will split the finding task to different batches and
+     *                     will execute the batches in different threads in
+     *                     parallel consuming all CPUs. It will perform faster
+     *                     in finding from extremely large number of tags but at
+     *                     the same time it will less efficient in finding from
+     *                     small number of tags.
      * @param tagName
-     *            the name of the tag.
+     *                     the name of the tag.
      * @param fromTags
-     *            from which the findings to be done.
+     *                     from which the findings to be done.
      * @return the collection of tags matching with the given tag name .
      * @throws NullValueException
-     *             if the {@code tagName} or {@code fromTags} is null
+     *                                if the {@code tagName} or {@code fromTags}
+     *                                is null
      * @since 3.0.0
      * @author WFF
      */
@@ -369,10 +403,21 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The fromTags should not be null");
         }
 
-        return getAllNestedChildrenIncludingParent(parallel, fromTags)
-                .filter(child -> {
-                    return tagName.equals(child.getTagName());
-                }).collect(Collectors.toSet());
+        final Collection<Lock> locks = getReadLocks(fromTags);
+        for (final Lock lock : locks) {
+            lock.lock();
+        }
+
+        try {
+            return getAllNestedChildrenIncludingParent(parallel, fromTags)
+                    .filter(child -> {
+                        return tagName.equals(child.getTagName());
+                    }).collect(Collectors.toSet());
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
     }
 
     /**
@@ -380,13 +425,14 @@ public class TagRepository extends AbstractHtmlRepository
      * tags) of the tags matching with the give tag name.
      *
      * @param tagName
-     *            the name of the tag.
+     *                     the name of the tag.
      * @param fromTags
-     *            from which the findings to be done.
+     *                     from which the findings to be done.
      * @return the collection of attributes of the tags matching with the given
      *         tag name.
      * @throws NullValueException
-     *             if the {@code tagName} or {@code fromTags} is null
+     *                                if the {@code tagName} or {@code fromTags}
+     *                                is null
      * @since 2.1.11
      * @author WFF
      */
@@ -403,13 +449,14 @@ public class TagRepository extends AbstractHtmlRepository
      *
      *
      * @param filter
-     *            the filter lambda expression containing return true to include
-     *            and false to exclude.
+     *                     the filter lambda expression containing return true
+     *                     to include and false to exclude.
      * @param fromTags
-     *            from which the findings to be done.
+     *                     from which the findings to be done.
      * @return the collection of attributes of the tags by the given filter.
      * @throws NullValueException
-     *             if the {@code filter} or {@code fromTags} is null
+     *                                if the {@code filter} or {@code fromTags}
+     *                                is null
      * @since 3.0.0
      * @author WFF
      */
@@ -425,21 +472,23 @@ public class TagRepository extends AbstractHtmlRepository
      * tags) of the tags by the given filter.
      *
      * @param parallel
-     *            true to internally use parallel stream. If true it will split
-     *            the finding task to different batches and will execute the
-     *            batches in different threads in parallel consuming all CPUs.
-     *            It will perform faster in finding from extremely large number
-     *            of tags but at the same time it will less efficient in finding
-     *            from small number of tags.
+     *                     true to internally use parallel stream. If true it
+     *                     will split the finding task to different batches and
+     *                     will execute the batches in different threads in
+     *                     parallel consuming all CPUs. It will perform faster
+     *                     in finding from extremely large number of tags but at
+     *                     the same time it will less efficient in finding from
+     *                     small number of tags.
      *
      * @param filter
-     *            the filter lambda expression containing return true to include
-     *            and false to exclude.
+     *                     the filter lambda expression containing return true
+     *                     to include and false to exclude.
      * @param fromTags
-     *            from which the findings to be done.
+     *                     from which the findings to be done.
      * @return the collection of attributes of the tags by the given filter.
      * @throws NullValueException
-     *             if the {@code filter} or {@code fromTags} is null
+     *                                if the {@code filter} or {@code fromTags}
+     *                                is null
      * @since 3.0.0
      * @author WFF
      */
@@ -456,13 +505,24 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The fromTags should not be null");
         }
 
-        return getAllNestedChildrenIncludingParent(parallel, fromTags)
-                .filter(child -> {
-                    return child.getAttributes() != null;
-                }).map(child -> {
-                    return child.getAttributes();
-                }).flatMap(attributes -> attributes.stream()).filter(filter)
-                .collect(Collectors.toSet());
+        final Collection<Lock> locks = getReadLocks(fromTags);
+        for (final Lock lock : locks) {
+            lock.lock();
+        }
+
+        try {
+            return getAllNestedChildrenIncludingParent(parallel, fromTags)
+                    .filter(child -> {
+                        return child.getAttributes() != null;
+                    }).map(child -> {
+                        return child.getAttributes();
+                    }).flatMap(attributes -> attributes.stream()).filter(filter)
+                    .collect(Collectors.toSet());
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
     }
 
     /**
@@ -470,21 +530,23 @@ public class TagRepository extends AbstractHtmlRepository
      * tags) of the tags matching with the give tag name.
      *
      * @param parallel
-     *            true to internally use parallel stream. If true it will split
-     *            the finding task to different batches and will execute the
-     *            batches in different threads in parallel consuming all CPUs.
-     *            It will perform faster in finding from extremely large number
-     *            of tags but at the same time it will less efficient in finding
-     *            from small number of tags.
+     *                     true to internally use parallel stream. If true it
+     *                     will split the finding task to different batches and
+     *                     will execute the batches in different threads in
+     *                     parallel consuming all CPUs. It will perform faster
+     *                     in finding from extremely large number of tags but at
+     *                     the same time it will less efficient in finding from
+     *                     small number of tags.
      *
      * @param tagName
-     *            the name of the tag.
+     *                     the name of the tag.
      * @param fromTags
-     *            from which the findings to be done.
+     *                     from which the findings to be done.
      * @return the collection of attributes of the tags matching with the given
      *         tag name.
      * @throws NullValueException
-     *             if the {@code tagName} or {@code fromTags} is null
+     *                                if the {@code tagName} or {@code fromTags}
+     *                                is null
      * @since 3.0.0
      * @author WFF
      */
@@ -500,14 +562,25 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The fromTags should not be null");
         }
 
-        return getAllNestedChildrenIncludingParent(parallel, fromTags)
-                .filter(child -> {
-                    return tagName.equals(child.getTagName())
-                            && child.getAttributes() != null;
-                }).map(child -> {
-                    return child.getAttributes();
-                }).flatMap(attributes -> attributes.stream())
-                .collect(Collectors.toSet());
+        final Collection<Lock> locks = getReadLocks(fromTags);
+        for (final Lock lock : locks) {
+            lock.lock();
+        }
+        try {
+            return getAllNestedChildrenIncludingParent(parallel, fromTags)
+                    .filter(child -> {
+                        return tagName.equals(child.getTagName())
+                                && child.getAttributes() != null;
+                    }).map(child -> {
+                        return child.getAttributes();
+                    }).flatMap(attributes -> attributes.stream())
+                    .collect(Collectors.toSet());
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
+
     }
 
     /**
@@ -517,12 +590,13 @@ public class TagRepository extends AbstractHtmlRepository
      *
      *
      * @param filter
-     *            the filter lambda expression containing return true to include
-     *            and false to exclude.
+     *                   the filter lambda expression containing return true to
+     *                   include and false to exclude.
      *
      * @return the collection of attributes of the tags by the given tag filter
      * @throws NullValueException
-     *             if the {@code filter} or {@code fromTags} is null
+     *                                if the {@code filter} or {@code fromTags}
+     *                                is null
      * @since 3.0.0
      * @author WFF
      */
@@ -537,20 +611,22 @@ public class TagRepository extends AbstractHtmlRepository
      * tags) of the tags by the given filter
      *
      * @param parallel
-     *            true to internally use parallel stream. If true it will split
-     *            the finding task to different batches and will execute the
-     *            batches in different threads in parallel consuming all CPUs.
-     *            It will perform faster in finding from extremely large number
-     *            of tags but at the same time it will less efficient in finding
-     *            from small number of tags.
+     *                     true to internally use parallel stream. If true it
+     *                     will split the finding task to different batches and
+     *                     will execute the batches in different threads in
+     *                     parallel consuming all CPUs. It will perform faster
+     *                     in finding from extremely large number of tags but at
+     *                     the same time it will less efficient in finding from
+     *                     small number of tags.
      *
      * @param filter
-     *            the filter lambda expression containing return true to include
-     *            and false to exclude.
+     *                     the filter lambda expression containing return true
+     *                     to include and false to exclude.
      *
      * @return the collection of attributes of the tags by the given tag filter
      * @throws NullValueException
-     *             if the {@code filter} or {@code fromTags} is null
+     *                                if the {@code filter} or {@code fromTags}
+     *                                is null
      * @since 3.0.0
      * @author WFF
      */
@@ -567,13 +643,24 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The fromTags should not be null");
         }
 
-        return getAllNestedChildrenIncludingParent(parallel, fromTags)
-                .filter(child -> {
-                    return child.getAttributes() != null;
-                }).filter(filter).map(child -> {
-                    return child.getAttributes();
-                }).flatMap(attributes -> attributes.stream())
-                .collect(Collectors.toSet());
+        final Collection<Lock> locks = getReadLocks(fromTags);
+        for (final Lock lock : locks) {
+            lock.lock();
+        }
+
+        try {
+            return getAllNestedChildrenIncludingParent(parallel, fromTags)
+                    .filter(child -> {
+                        return child.getAttributes() != null;
+                    }).filter(filter).map(child -> {
+                        return child.getAttributes();
+                    }).flatMap(attributes -> attributes.stream())
+                    .collect(Collectors.toSet());
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
     }
 
     /**
@@ -581,15 +668,16 @@ public class TagRepository extends AbstractHtmlRepository
      * given attribute name and value.
      *
      * @param attributeName
-     *            the name of the attribute.
+     *                           the name of the attribute.
      * @param attributeValue
-     *            the value of the attribute
+     *                           the value of the attribute
      * @param fromTags
-     *            from which the findings to be done.
+     *                           from which the findings to be done.
      * @return the first matching tag with the given attribute name and value.
      * @throws NullValueException
-     *             if the {@code attributeName}, {@code attributeValue} or
-     *             {@code fromTags} is null
+     *                                if the {@code attributeName},
+     *                                {@code attributeValue} or {@code fromTags}
+     *                                is null
      * @since 2.1.8
      * @author WFF
      */
@@ -605,15 +693,16 @@ public class TagRepository extends AbstractHtmlRepository
      * given attribute name and value.
      *
      * @param attributeName
-     *            the name of the attribute.
+     *                           the name of the attribute.
      * @param attributeValue
-     *            the value of the attribute
+     *                           the value of the attribute
      * @param fromTags
-     *            from which the findings to be done.
+     *                           from which the findings to be done.
      * @return the first matching tag with the given attribute name and value.
      * @throws NullValueException
-     *             if the {@code attributeName}, {@code attributeValue} or
-     *             {@code fromTags} is null
+     *                                if the {@code attributeName},
+     *                                {@code attributeValue} or {@code fromTags}
+     *                                is null
      * @since 3.0.0
      * @author WFF
      */
@@ -634,23 +723,34 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The fromTags should not be null");
         }
 
-        final Stream<AbstractHtml> stream = getAllNestedChildrenIncludingParent(
-                parallel, fromTags);
-
-        final Optional<AbstractHtml> any = stream.filter((child) -> {
-
-            final AbstractAttribute attr = child
-                    .getAttributeByName(attributeName);
-
-            return attr != null
-                    && attributeValue.equals(attr.getAttributeValue());
-
-        }).findAny();
-
-        if (any.isPresent()) {
-            return any.get();
+        final Collection<Lock> locks = getReadLocks(fromTags);
+        for (final Lock lock : locks) {
+            lock.lock();
         }
-        return null;
+
+        try {
+            final Stream<AbstractHtml> stream = getAllNestedChildrenIncludingParent(
+                    parallel, fromTags);
+
+            final Optional<AbstractHtml> any = stream.filter(child -> {
+
+                final AbstractAttribute attr = child
+                        .getAttributeByName(attributeName);
+
+                return attr != null
+                        && attributeValue.equals(attr.getAttributeValue());
+
+            }).findAny();
+
+            if (any.isPresent()) {
+                return any.get();
+            }
+            return null;
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
     }
 
     /**
@@ -658,12 +758,13 @@ public class TagRepository extends AbstractHtmlRepository
      * given tag name.
      *
      * @param tagName
-     *            the name of the tag.
+     *                     the name of the tag.
      * @param fromTags
-     *            from which the findings to be done.
+     *                     from which the findings to be done.
      * @return the first matching tag with the given tag name.
      * @throws NullValueException
-     *             if the {@code tagName} or {@code fromTags} is null
+     *                                if the {@code tagName} or {@code fromTags}
+     *                                is null
      * @since 2.1.11
      * @author WFF
      */
@@ -677,19 +778,21 @@ public class TagRepository extends AbstractHtmlRepository
      * given tag name.
      *
      * @param parallel
-     *            true to internally use parallel stream. If true it will split
-     *            the finding task to different batches and will execute the
-     *            batches in different threads in parallel consuming all CPUs.
-     *            It will perform faster in finding from extremely large number
-     *            of tags but at the same time it will less efficient in finding
-     *            from small number of tags.
+     *                     true to internally use parallel stream. If true it
+     *                     will split the finding task to different batches and
+     *                     will execute the batches in different threads in
+     *                     parallel consuming all CPUs. It will perform faster
+     *                     in finding from extremely large number of tags but at
+     *                     the same time it will less efficient in finding from
+     *                     small number of tags.
      * @param tagName
-     *            the name of the tag.
+     *                     the name of the tag.
      * @param fromTags
-     *            from which the findings to be done.
+     *                     from which the findings to be done.
      * @return the first matching tag with the given tag name.
      * @throws NullValueException
-     *             if the {@code tagName} or {@code fromTags} is null
+     *                                if the {@code tagName} or {@code fromTags}
+     *                                is null
      * @since 3.0.0
      * @author WFF
      */
@@ -705,16 +808,27 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The fromTags should not be null");
         }
 
-        final Optional<AbstractHtml> any = getAllNestedChildrenIncludingParent(
-                parallel, fromTags).filter((tag) -> {
-                    return tagName.equals(tag.getTagName());
-                }).findAny();
-
-        if (any.isPresent()) {
-            return any.get();
+        final Collection<Lock> locks = getReadLocks(fromTags);
+        for (final Lock lock : locks) {
+            lock.lock();
         }
 
-        return null;
+        try {
+            final Optional<AbstractHtml> any = getAllNestedChildrenIncludingParent(
+                    parallel, fromTags).filter(tag -> {
+                        return tagName.equals(tag.getTagName());
+                    }).findAny();
+
+            if (any.isPresent()) {
+                return any.get();
+            }
+
+            return null;
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
     }
 
     /**
@@ -749,15 +863,16 @@ public class TagRepository extends AbstractHtmlRepository
      * </pre>
      *
      * @param tagClass
-     *            the class of the tag.
+     *                     the class of the tag.
      * @param fromTags
-     *            from which the findings to be done.
+     *                     from which the findings to be done.
      * @return the first matching tag which is assignable to the given tag
      *         class.
      * @throws NullValueException
-     *             if the {@code tagClass} or {@code fromTags} is null
+     *                                 if the {@code tagClass} or
+     *                                 {@code fromTags} is null
      * @throws InvalidTagException
-     *             if the given tag class is NoTag.class
+     *                                 if the given tag class is NoTag.class
      * @since 2.1.11
      * @author WFF
      */
@@ -799,23 +914,25 @@ public class TagRepository extends AbstractHtmlRepository
      * </pre>
      *
      * @param parallel
-     *            true to internally use parallel stream. If true it will split
-     *            the finding task to different batches and will execute the
-     *            batches in different threads in parallel consuming all CPUs.
-     *            It will perform faster in finding from extremely large number
-     *            of tags but at the same time it will less efficient in finding
-     *            from small number of tags.
+     *                     true to internally use parallel stream. If true it
+     *                     will split the finding task to different batches and
+     *                     will execute the batches in different threads in
+     *                     parallel consuming all CPUs. It will perform faster
+     *                     in finding from extremely large number of tags but at
+     *                     the same time it will less efficient in finding from
+     *                     small number of tags.
      *
      * @param tagClass
-     *            the class of the tag.
+     *                     the class of the tag.
      * @param fromTags
-     *            from which the findings to be done.
+     *                     from which the findings to be done.
      * @return the first matching tag which is assignable to the given tag
      *         class.
      * @throws NullValueException
-     *             if the {@code tagClass} or {@code fromTags} is null
+     *                                 if the {@code tagClass} or
+     *                                 {@code fromTags} is null
      * @throws InvalidTagException
-     *             if the given tag class is NoTag.class
+     *                                 if the given tag class is NoTag.class
      * @since 3.0.0
      * @author WFF
      */
@@ -838,18 +955,29 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The fromTags should not be null");
         }
 
-        final Optional<AbstractHtml> any = getAllNestedChildrenIncludingParent(
-                parallel,
-                fromTags).filter(child -> tagClass
-                        .isAssignableFrom(child.getClass())
-                        && !NoTag.class.isAssignableFrom(child.getClass()))
-                        .findAny();
-
-        if (any.isPresent()) {
-            return (T) any.get();
+        final Collection<Lock> locks = getReadLocks(fromTags);
+        for (final Lock lock : locks) {
+            lock.lock();
         }
 
-        return null;
+        try {
+            final Optional<AbstractHtml> any = getAllNestedChildrenIncludingParent(
+                    parallel, fromTags).filter(
+                            child -> tagClass.isAssignableFrom(child.getClass())
+                                    && !NoTag.class
+                                            .isAssignableFrom(child.getClass()))
+                            .findAny();
+
+            if (any.isPresent()) {
+                return (T) any.get();
+            }
+
+            return null;
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
     }
 
     /**
@@ -891,14 +1019,15 @@ public class TagRepository extends AbstractHtmlRepository
      * </pre>
      *
      * @param tagClass
-     *            the class of the tag.
+     *                     the class of the tag.
      * @param fromTags
-     *            from which the findings to be done.
+     *                     from which the findings to be done.
      * @return the all matching tags which is assignable to the given tag class.
      * @throws NullValueException
-     *             if the {@code tagClass} or {@code fromTags} is null
+     *                                 if the {@code tagClass} or
+     *                                 {@code fromTags} is null
      * @throws InvalidTagException
-     *             if the given tag class is NoTag.class
+     *                                 if the given tag class is NoTag.class
      * @since 2.1.11
      * @author WFF
      */
@@ -947,22 +1076,24 @@ public class TagRepository extends AbstractHtmlRepository
      * </pre>
      *
      * @param parallel
-     *            true to internally use parallel stream. If true it will split
-     *            the finding task to different batches and will execute the
-     *            batches in different threads in parallel consuming all CPUs.
-     *            It will perform faster in finding from extremely large number
-     *            of tags but at the same time it will less efficient in finding
-     *            from small number of tags.
+     *                     true to internally use parallel stream. If true it
+     *                     will split the finding task to different batches and
+     *                     will execute the batches in different threads in
+     *                     parallel consuming all CPUs. It will perform faster
+     *                     in finding from extremely large number of tags but at
+     *                     the same time it will less efficient in finding from
+     *                     small number of tags.
      *
      * @param tagClass
-     *            the class of the tag.
+     *                     the class of the tag.
      * @param fromTags
-     *            from which the findings to be done.
+     *                     from which the findings to be done.
      * @return the all matching tags which is assignable to the given tag class.
      * @throws NullValueException
-     *             if the {@code tagClass} or {@code fromTags} is null
+     *                                 if the {@code tagClass} or
+     *                                 {@code fromTags} is null
      * @throws InvalidTagException
-     *             if the given tag class is NoTag.class
+     *                                 if the given tag class is NoTag.class
      * @since 3.0.0
      * @author WFF
      */
@@ -985,11 +1116,23 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The fromTags should not be null");
         }
 
-        return (Collection<T>) getAllNestedChildrenIncludingParent(parallel,
-                fromTags).filter(tag -> {
-                    return tagClass.isAssignableFrom(tag.getClass())
-                            && !NoTag.class.isAssignableFrom(tag.getClass());
-                }).collect(Collectors.toSet());
+        final Collection<Lock> locks = getReadLocks(fromTags);
+        for (final Lock lock : locks) {
+            lock.lock();
+        }
+
+        try {
+            return (Collection<T>) getAllNestedChildrenIncludingParent(parallel,
+                    fromTags).filter(tag -> {
+                        return tagClass.isAssignableFrom(tag.getClass())
+                                && !NoTag.class
+                                        .isAssignableFrom(tag.getClass());
+                    }).collect(Collectors.toSet());
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
     }
 
     /**
@@ -997,12 +1140,13 @@ public class TagRepository extends AbstractHtmlRepository
      * given attribute name.
      *
      * @param attributeName
-     *            the name of the attribute.
+     *                          the name of the attribute.
      * @param fromTags
-     *            from which the findings to be done.
+     *                          from which the findings to be done.
      * @return the first matching tag with the given attribute name and value.
      * @throws NullValueException
-     *             if the {@code attributeName} or {@code fromTags} is null
+     *                                if the {@code attributeName} or
+     *                                {@code fromTags} is null
      * @since 2.1.8
      * @author WFF
      */
@@ -1017,19 +1161,22 @@ public class TagRepository extends AbstractHtmlRepository
      * given attribute name.
      *
      * @param parallel
-     *            true to internally use parallel stream. If true it will split
-     *            the finding task to different batches and will execute the
-     *            batches in different threads in parallel consuming all CPUs.
-     *            It will perform faster in finding from extremely large number
-     *            of tags but at the same time it will less efficient in finding
-     *            from small number of tags.
+     *                          true to internally use parallel stream. If true
+     *                          it will split the finding task to different
+     *                          batches and will execute the batches in
+     *                          different threads in parallel consuming all
+     *                          CPUs. It will perform faster in finding from
+     *                          extremely large number of tags but at the same
+     *                          time it will less efficient in finding from
+     *                          small number of tags.
      * @param attributeName
-     *            the name of the attribute.
+     *                          the name of the attribute.
      * @param fromTags
-     *            from which the findings to be done.
+     *                          from which the findings to be done.
      * @return the first matching tag with the given attribute name and value.
      * @throws NullValueException
-     *             if the {@code attributeName} or {@code fromTags} is null
+     *                                if the {@code attributeName} or
+     *                                {@code fromTags} is null
      * @since 3.0.0
      * @author WFF
      */
@@ -1046,17 +1193,27 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The fromTags should not be null");
         }
 
-        final Optional<AbstractHtml> any = getAllNestedChildrenIncludingParent(
-                parallel, fromTags).filter(child -> {
-
-                    return child.getAttributeByName(attributeName) != null;
-                }).findAny();
-
-        if (any.isPresent()) {
-            return any.get();
+        final Collection<Lock> locks = getReadLocks(fromTags);
+        for (final Lock lock : locks) {
+            lock.lock();
         }
+        try {
+            final Optional<AbstractHtml> any = getAllNestedChildrenIncludingParent(
+                    parallel, fromTags).filter(child -> {
 
-        return null;
+                        return child.getAttributeByName(attributeName) != null;
+                    }).findAny();
+
+            if (any.isPresent()) {
+                return any.get();
+            }
+
+            return null;
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
     }
 
     /**
@@ -1064,12 +1221,13 @@ public class TagRepository extends AbstractHtmlRepository
      * matching with the given attribute name.
      *
      * @param attributeName
-     *            the name of the attribute.
+     *                          the name of the attribute.
      * @param fromTags
-     *            from which the findings to be done.
+     *                          from which the findings to be done.
      * @return the collection of tags matching with the given attribute.
      * @throws NullValueException
-     *             if the {@code attributeName} or {@code fromTags} is null
+     *                                if the {@code attributeName} or
+     *                                {@code fromTags} is null
      * @since 2.1.8
      * @author WFF
      */
@@ -1084,20 +1242,23 @@ public class TagRepository extends AbstractHtmlRepository
      * matching with the given attribute name.
      *
      * @param parallel
-     *            true to internally use parallel stream. If true it will split
-     *            the finding task to different batches and will execute the
-     *            batches in different threads in parallel consuming all CPUs.
-     *            It will perform faster in finding from extremely large number
-     *            of tags but at the same time it will less efficient in finding
-     *            from small number of tags.
+     *                          true to internally use parallel stream. If true
+     *                          it will split the finding task to different
+     *                          batches and will execute the batches in
+     *                          different threads in parallel consuming all
+     *                          CPUs. It will perform faster in finding from
+     *                          extremely large number of tags but at the same
+     *                          time it will less efficient in finding from
+     *                          small number of tags.
      *
      * @param attributeName
-     *            the name of the attribute.
+     *                          the name of the attribute.
      * @param fromTags
-     *            from which the findings to be done.
+     *                          from which the findings to be done.
      * @return the collection of tags matching with the given attribute.
      * @throws NullValueException
-     *             if the {@code attributeName} or {@code fromTags} is null
+     *                                if the {@code attributeName} or
+     *                                {@code fromTags} is null
      * @since 3.0.0
      * @author WFF
      */
@@ -1114,11 +1275,22 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The fromTags should not be null");
         }
 
-        return getAllNestedChildrenIncludingParent(parallel, fromTags)
-                .filter(child -> {
+        final Collection<Lock> locks = getReadLocks(fromTags);
+        for (final Lock lock : locks) {
+            lock.lock();
+        }
 
-                    return child.getAttributeByName(attributeName) != null;
-                }).collect(Collectors.toSet());
+        try {
+            return getAllNestedChildrenIncludingParent(parallel, fromTags)
+                    .filter(child -> {
+
+                        return child.getAttributeByName(attributeName) != null;
+                    }).collect(Collectors.toSet());
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
     }
 
     /**
@@ -1126,10 +1298,10 @@ public class TagRepository extends AbstractHtmlRepository
      * matching with the given attribute name.
      *
      * @param attributeName
-     *            the name of the attribute.
+     *                          the name of the attribute.
      * @return the collection of tags matching with the given attribute.
      * @throws NullValueException
-     *             if the {@code attributeName} is null
+     *                                if the {@code attributeName} is null
      * @since 2.1.8
      * @author WFF
      */
@@ -1143,17 +1315,19 @@ public class TagRepository extends AbstractHtmlRepository
      * matching with the given attribute name.
      *
      * @param parallel
-     *            true to internally use parallel stream. If true it will split
-     *            the finding task to different batches and will execute the
-     *            batches in different threads in parallel consuming all CPUs.
-     *            It will perform faster in finding from extremely large number
-     *            of tags but at the same time it will less efficient in finding
-     *            from small number of tags.
+     *                          true to internally use parallel stream. If true
+     *                          it will split the finding task to different
+     *                          batches and will execute the batches in
+     *                          different threads in parallel consuming all
+     *                          CPUs. It will perform faster in finding from
+     *                          extremely large number of tags but at the same
+     *                          time it will less efficient in finding from
+     *                          small number of tags.
      * @param attributeName
-     *            the name of the attribute.
+     *                          the name of the attribute.
      * @return the collection of tags matching with the given attribute.
      * @throws NullValueException
-     *             if the {@code attributeName} is null
+     *                                if the {@code attributeName} is null
      * @since 3.0.0
      * @author WFF
      */
@@ -1166,9 +1340,20 @@ public class TagRepository extends AbstractHtmlRepository
                     "The attributeName should not be null");
         }
 
-        return buildAllTagsStream(parallel).filter(tag -> {
-            return tag.getAttributeByName(attributeName) != null;
-        }).collect(Collectors.toSet());
+        final Collection<Lock> locks = getReadLocks(rootTags);
+        for (final Lock lock : locks) {
+            lock.lock();
+        }
+
+        try {
+            return buildAllTagsStream(parallel).filter(tag -> {
+                return tag.getAttributeByName(attributeName) != null;
+            }).collect(Collectors.toSet());
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
     }
 
     /**
@@ -1176,14 +1361,14 @@ public class TagRepository extends AbstractHtmlRepository
      * matching with the given attribute name and value.
      *
      * @param attributeName
-     *            the name of the attribute.
+     *                           the name of the attribute.
      * @param attributeValue
-     *            the value of the attribute
+     *                           the value of the attribute
      * @return the collection of tags matching with the given attribute name and
      *         value.
      * @throws NullValueException
-     *             if the {@code attributeName} or {@code attributeValue} is
-     *             null
+     *                                if the {@code attributeName} or
+     *                                {@code attributeValue} is null
      * @since 2.1.8
      * @author WFF
      */
@@ -1198,21 +1383,23 @@ public class TagRepository extends AbstractHtmlRepository
      * matching with the given attribute name and value.
      *
      * @param parallel
-     *            true to internally use parallel stream. If true it will split
-     *            the finding task to different batches and will execute the
-     *            batches in different threads in parallel consuming all CPUs.
-     *            It will perform faster in finding from extremely large number
-     *            of tags but at the same time it will less efficient in finding
-     *            from small number of tags.
+     *                           true to internally use parallel stream. If true
+     *                           it will split the finding task to different
+     *                           batches and will execute the batches in
+     *                           different threads in parallel consuming all
+     *                           CPUs. It will perform faster in finding from
+     *                           extremely large number of tags but at the same
+     *                           time it will less efficient in finding from
+     *                           small number of tags.
      * @param attributeName
-     *            the name of the attribute.
+     *                           the name of the attribute.
      * @param attributeValue
-     *            the value of the attribute
+     *                           the value of the attribute
      * @return the collection of tags matching with the given attribute name and
      *         value.
      * @throws NullValueException
-     *             if the {@code attributeName} or {@code attributeValue} is
-     *             null
+     *                                if the {@code attributeName} or
+     *                                {@code attributeValue} is null
      * @since 3.0.0
      * @author WFF
      */
@@ -1230,14 +1417,25 @@ public class TagRepository extends AbstractHtmlRepository
                     "The attributeValue should not be null");
         }
 
-        return buildAllTagsStream(parallel).filter(tag -> {
+        final Collection<Lock> locks = getReadLocks(rootTags);
+        for (final Lock lock : locks) {
+            lock.lock();
+        }
 
-            final AbstractAttribute attribute = tag
-                    .getAttributeByName(attributeName);
+        try {
+            return buildAllTagsStream(parallel).filter(tag -> {
 
-            return attribute != null
-                    && attributeValue.equals(attribute.getAttributeValue());
-        }).collect(Collectors.toSet());
+                final AbstractAttribute attribute = tag
+                        .getAttributeByName(attributeName);
+
+                return attribute != null
+                        && attributeValue.equals(attribute.getAttributeValue());
+            }).collect(Collectors.toSet());
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
     }
 
     /**
@@ -1245,11 +1443,11 @@ public class TagRepository extends AbstractHtmlRepository
      * matching with the give tag name and value.
      *
      * @param tagName
-     *            the name of the tag.
+     *                    the name of the tag.
      * @return the collection of tags matching with the given tag name and
      *         value.
      * @throws NullValueException
-     *             if the {@code tagName} is null
+     *                                if the {@code tagName} is null
      * @since 2.1.11
      * @author WFF
      */
@@ -1263,18 +1461,19 @@ public class TagRepository extends AbstractHtmlRepository
      * matching with the give tag name and value.
      *
      * @param parallel
-     *            true to internally use parallel stream. If true it will split
-     *            the finding task to different batches and will execute the
-     *            batches in different threads in parallel consuming all CPUs.
-     *            It will perform faster in finding from extremely large number
-     *            of tags but at the same time it will less efficient in finding
-     *            from small number of tags.
+     *                     true to internally use parallel stream. If true it
+     *                     will split the finding task to different batches and
+     *                     will execute the batches in different threads in
+     *                     parallel consuming all CPUs. It will perform faster
+     *                     in finding from extremely large number of tags but at
+     *                     the same time it will less efficient in finding from
+     *                     small number of tags.
      * @param tagName
-     *            the name of the tag.
+     *                     the name of the tag.
      * @return the collection of tags matching with the given tag name and
      *         value.
      * @throws NullValueException
-     *             if the {@code tagName} is null
+     *                                if the {@code tagName} is null
      * @since 3.0.0
      * @author WFF
      */
@@ -1285,9 +1484,20 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The tagName should not be null");
         }
 
-        return buildAllTagsStream(parallel)
-                .filter(tag -> tagName.equals(tag.getTagName()))
-                .collect(Collectors.toSet());
+        final Collection<Lock> locks = getReadLocks(rootTags);
+        for (final Lock lock : locks) {
+            lock.lock();
+        }
+
+        try {
+            return buildAllTagsStream(parallel)
+                    .filter(tag -> tagName.equals(tag.getTagName()))
+                    .collect(Collectors.toSet());
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
     }
 
     /**
@@ -1296,11 +1506,11 @@ public class TagRepository extends AbstractHtmlRepository
      *
      *
      * @param filter
-     *            the filter lambda expression containing return true to include
-     *            and false to exclude.
+     *                   the filter lambda expression containing return true to
+     *                   include and false to exclude.
      * @return the collection of tags by the given filter.
      * @throws NullValueException
-     *             if the {@code Predicate filter} is null
+     *                                if the {@code Predicate filter} is null
      * @since 3.0.0
      * @author WFF
      */
@@ -1315,18 +1525,19 @@ public class TagRepository extends AbstractHtmlRepository
      * excluding {@code NoTag} ) filtered by the given filter.
      *
      * @param parallel
-     *            true to internally use parallel stream. If true it will split
-     *            the finding task to different batches and will execute the
-     *            batches in different threads in parallel consuming all CPUs.
-     *            It will perform faster in finding from extremely large number
-     *            of tags but at the same time it will less efficient in finding
-     *            from small number of tags.
+     *                     true to internally use parallel stream. If true it
+     *                     will split the finding task to different batches and
+     *                     will execute the batches in different threads in
+     *                     parallel consuming all CPUs. It will perform faster
+     *                     in finding from extremely large number of tags but at
+     *                     the same time it will less efficient in finding from
+     *                     small number of tags.
      * @param filter
-     *            the filter lambda expression containing return true to include
-     *            and false to exclude.
+     *                     the filter lambda expression containing return true
+     *                     to include and false to exclude.
      * @return the collection of tags by the given filter.
      * @throws NullValueException
-     *             if the {@code Predicate filter} is null
+     *                                if the {@code Predicate filter} is null
      * @since 3.0.0
      * @author WFF
      */
@@ -1338,8 +1549,19 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The filter should not be null");
         }
 
-        return buildAllTagsStream(parallel).filter(filter)
-                .collect(Collectors.toSet());
+        final Collection<Lock> locks = getReadLocks(rootTags);
+        for (final Lock lock : locks) {
+            lock.lock();
+        }
+
+        try {
+            return buildAllTagsStream(parallel).filter(filter)
+                    .collect(Collectors.toSet());
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
     }
 
     /**
@@ -1347,18 +1569,20 @@ public class TagRepository extends AbstractHtmlRepository
      * {@code NoTag}) filtered by the given filter.
      *
      * @param parallel
-     *            true to internally use parallel stream. If true it will split
-     *            the finding task to different batches and will execute the
-     *            batches in different threads in parallel consuming all CPUs.
-     *            It will perform faster in finding from extremely large number
-     *            of tags but at the same time it will less efficient in finding
-     *            from small number of tags.
+     *                     true to internally use parallel stream. If true it
+     *                     will split the finding task to different batches and
+     *                     will execute the batches in different threads in
+     *                     parallel consuming all CPUs. It will perform faster
+     *                     in finding from extremely large number of tags but at
+     *                     the same time it will less efficient in finding from
+     *                     small number of tags.
      * @param filter
-     *            the filter lambda expression containing return true to include
-     *            and false to exclude.
+     *                     the filter lambda expression containing return true
+     *                     to include and false to exclude.
      * @return the collection of tags by the given filter.
      * @throws NullValueException
-     *             if the {@code Predicate filter} or {@code fromTags} is null
+     *                                if the {@code Predicate filter} or
+     *                                {@code fromTags} is null
      * @since 3.0.0
      * @author WFF
      */
@@ -1374,8 +1598,19 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The fromTags should not be null");
         }
 
-        return getAllNestedChildrenIncludingParent(parallel, fromTags)
-                .filter(filter).collect(Collectors.toSet());
+        final Collection<Lock> locks = getReadLocks(fromTags);
+        for (final Lock lock : locks) {
+            lock.lock();
+        }
+        try {
+
+            return getAllNestedChildrenIncludingParent(parallel, fromTags)
+                    .filter(filter).collect(Collectors.toSet());
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
     }
 
     /**
@@ -1384,12 +1619,13 @@ public class TagRepository extends AbstractHtmlRepository
      *
      *
      * @param filter
-     *            the filter lambda expression containing return true to include
-     *            and false to exclude.
+     *                   the filter lambda expression containing return true to
+     *                   include and false to exclude.
      * @return the collection of tags matching with the given tag name and
      *         value.
      * @throws NullValueException
-     *             if the {@code tagName} or {@code fromTags} is null
+     *                                if the {@code tagName} or {@code fromTags}
+     *                                is null
      * @since 3.0.0
      * @author WFF
      */
@@ -1409,11 +1645,12 @@ public class TagRepository extends AbstractHtmlRepository
      * tags) of the tags matching with the give tag name.
      *
      * @param tagName
-     *            the name of the tag.
+     *                    the name of the tag.
      * @return the collection of attributes of the tags matching with the given
      *         tag name.
      * @throws NullValueException
-     *             if the {@code tagName} or {@code fromTags} is null
+     *                                if the {@code tagName} or {@code fromTags}
+     *                                is null
      * @since 2.1.11
      * @author WFF
      */
@@ -1427,18 +1664,19 @@ public class TagRepository extends AbstractHtmlRepository
      * tags) of the tags matching with the give tag name.
      *
      * @param parallel
-     *            true to internally use parallel stream. If true it will split
-     *            the finding task to different batches and will execute the
-     *            batches in different threads in parallel consuming all CPUs.
-     *            It will perform faster in finding from extremely large number
-     *            of tags but at the same time it will less efficient in finding
-     *            from small number of tags.
+     *                     true to internally use parallel stream. If true it
+     *                     will split the finding task to different batches and
+     *                     will execute the batches in different threads in
+     *                     parallel consuming all CPUs. It will perform faster
+     *                     in finding from extremely large number of tags but at
+     *                     the same time it will less efficient in finding from
+     *                     small number of tags.
      * @param tagName
-     *            the name of the tag.
+     *                     the name of the tag.
      * @return the collection of attributes of the tags matching with the given
      *         tag name.
      * @throws NullValueException
-     *             if the {@code tagName} is null
+     *                                if the {@code tagName} is null
      * @since 3.0.0
      * @author WFF
      */
@@ -1450,15 +1688,26 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The tagName should not be null");
         }
 
-        final Stream<AbstractAttribute> attributesStream = buildAllTagsStream(
-                parallel)
-                        .filter(tag -> tagName.equals(tag.getTagName())
-                                && tag.getAttributes() != null)
-                        .map((tag) -> {
-                            return tag.getAttributes();
-                        }).flatMap(attributes -> attributes.stream());
+        final Collection<Lock> locks = getReadLocks(rootTags);
+        for (final Lock lock : locks) {
+            lock.lock();
+        }
 
-        return attributesStream.collect(Collectors.toSet());
+        try {
+            final Stream<AbstractAttribute> attributesStream = buildAllTagsStream(
+                    parallel)
+                            .filter(tag -> tagName.equals(tag.getTagName())
+                                    && tag.getAttributes() != null)
+                            .map(tag -> {
+                                return tag.getAttributes();
+                            }).flatMap(attributes -> attributes.stream());
+
+            return attributesStream.collect(Collectors.toSet());
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
     }
 
     /**
@@ -1467,11 +1716,11 @@ public class TagRepository extends AbstractHtmlRepository
      *
      *
      * @param filter
-     *            the filter lambda expression containing return true to include
-     *            and false to exclude.
+     *                   the filter lambda expression containing return true to
+     *                   include and false to exclude.
      * @return the collection of attributes by the given filter.
      * @throws NullValueException
-     *             if the {@code tagName} is null
+     *                                if the {@code tagName} is null
      * @since 3.0.0
      * @author WFF
      */
@@ -1487,18 +1736,19 @@ public class TagRepository extends AbstractHtmlRepository
      * tags) of the tags filtered by the given filter
      *
      * @param parallel
-     *            true to internally use parallel stream. If true it will split
-     *            the finding task to different batches and will execute the
-     *            batches in different threads in parallel consuming all CPUs.
-     *            It will perform faster in finding from extremely large number
-     *            of tags but at the same time it will less efficient in finding
-     *            from small number of tags.
+     *                     true to internally use parallel stream. If true it
+     *                     will split the finding task to different batches and
+     *                     will execute the batches in different threads in
+     *                     parallel consuming all CPUs. It will perform faster
+     *                     in finding from extremely large number of tags but at
+     *                     the same time it will less efficient in finding from
+     *                     small number of tags.
      * @param filter
-     *            the filter lambda expression containing return true to include
-     *            and false to exclude.
+     *                     the filter lambda expression containing return true
+     *                     to include and false to exclude.
      * @return the collection of attributes by the given filter.
      * @throws NullValueException
-     *             if the {@code tagName} is null
+     *                                if the {@code tagName} is null
      * @since 3.0.0
      * @author WFF
      */
@@ -1511,13 +1761,25 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The filter should not be null");
         }
 
-        final Stream<AbstractAttribute> attributesStream = buildAllTagsStream(
-                parallel).filter(tag -> tag.getAttributes() != null)
-                        .map((tag) -> {
-                            return tag.getAttributes();
-                        }).flatMap(attributes -> attributes.stream());
+        final Collection<Lock> locks = getReadLocks(rootTags);
+        for (final Lock lock : locks) {
+            lock.lock();
+        }
 
-        return attributesStream.filter(filter).collect(Collectors.toSet());
+        try {
+            final Stream<AbstractAttribute> attributesStream = buildAllTagsStream(
+                    parallel).filter(tag -> tag.getAttributes() != null)
+                            .map(tag -> {
+                                return tag.getAttributes();
+                            }).flatMap(attributes -> attributes.stream());
+
+            return attributesStream.filter(filter).collect(Collectors.toSet());
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+
+        }
     }
 
     /**
@@ -1525,13 +1787,13 @@ public class TagRepository extends AbstractHtmlRepository
      * given attribute name and value.
      *
      * @param attributeName
-     *            the name of the attribute.
+     *                           the name of the attribute.
      * @param attributeValue
-     *            the value of the attribute
+     *                           the value of the attribute
      * @return the first matching tag with the given attribute name and value.
      * @throws NullValueException
-     *             if the {@code attributeName} or {@code attributeValue} is
-     *             null
+     *                                if the {@code attributeName} or
+     *                                {@code attributeValue} is null
      * @since 2.1.8
      * @author WFF
      */
@@ -1545,20 +1807,22 @@ public class TagRepository extends AbstractHtmlRepository
      * given attribute name and value.
      *
      * @param parallel
-     *            true to internally use parallel stream. If true it will split
-     *            the finding task to different batches and will execute the
-     *            batches in different threads in parallel consuming all CPUs.
-     *            It will perform faster in finding from extremely large number
-     *            of tags but at the same time it will less efficient in finding
-     *            from small number of tags.
+     *                           true to internally use parallel stream. If true
+     *                           it will split the finding task to different
+     *                           batches and will execute the batches in
+     *                           different threads in parallel consuming all
+     *                           CPUs. It will perform faster in finding from
+     *                           extremely large number of tags but at the same
+     *                           time it will less efficient in finding from
+     *                           small number of tags.
      * @param attributeName
-     *            the name of the attribute.
+     *                           the name of the attribute.
      * @param attributeValue
-     *            the value of the attribute
+     *                           the value of the attribute
      * @return the first matching tag with the given attribute name and value.
      * @throws NullValueException
-     *             if the {@code attributeName} or {@code attributeValue} is
-     *             null
+     *                                if the {@code attributeName} or
+     *                                {@code attributeValue} is null
      * @since 3.0.0
      * @author WFF
      */
@@ -1566,20 +1830,31 @@ public class TagRepository extends AbstractHtmlRepository
             final String attributeName, final String attributeValue)
             throws NullValueException {
 
-        final Stream<AbstractHtml> stream = buildAllTagsStream(parallel);
-
-        final Optional<AbstractHtml> any = stream.filter((tag) -> {
-            final AbstractAttribute attribute = tag
-                    .getAttributeByName(attributeName);
-            return attribute != null
-                    && attributeValue.equals(attribute.getAttributeValue());
-        }).findAny();
-
-        if (any.isPresent()) {
-            return any.get();
+        final Collection<Lock> locks = getReadLocks(rootTags);
+        for (final Lock lock : locks) {
+            lock.lock();
         }
 
-        return null;
+        try {
+            final Stream<AbstractHtml> stream = buildAllTagsStream(parallel);
+
+            final Optional<AbstractHtml> any = stream.filter(tag -> {
+                final AbstractAttribute attribute = tag
+                        .getAttributeByName(attributeName);
+                return attribute != null
+                        && attributeValue.equals(attribute.getAttributeValue());
+            }).findAny();
+
+            if (any.isPresent()) {
+                return any.get();
+            }
+
+            return null;
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
     }
 
     /**
@@ -1587,10 +1862,10 @@ public class TagRepository extends AbstractHtmlRepository
      * given tag name.
      *
      * @param tagName
-     *            the name of the tag.
+     *                    the name of the tag.
      * @return the first matching tag with the given tag name.
      * @throws NullValueException
-     *             if the {@code tagName} is null
+     *                                if the {@code tagName} is null
      * @since 2.1.11
      * @author WFF
      */
@@ -1604,17 +1879,18 @@ public class TagRepository extends AbstractHtmlRepository
      * given tag name.
      *
      * @param parallel
-     *            true to internally use parallel stream. If true it will split
-     *            the finding task to different batches and will execute the
-     *            batches in different threads in parallel consuming all CPUs.
-     *            It will perform faster in finding from extremely large number
-     *            of tags but at the same time it will less efficient in finding
-     *            from small number of tags.
+     *                     true to internally use parallel stream. If true it
+     *                     will split the finding task to different batches and
+     *                     will execute the batches in different threads in
+     *                     parallel consuming all CPUs. It will perform faster
+     *                     in finding from extremely large number of tags but at
+     *                     the same time it will less efficient in finding from
+     *                     small number of tags.
      * @param tagName
-     *            the name of the tag.
+     *                     the name of the tag.
      * @return the first matching tag with the given tag name.
      * @throws NullValueException
-     *             if the {@code tagName} is null
+     *                                if the {@code tagName} is null
      * @since 3.0.0
      * @author WFF
      */
@@ -1625,16 +1901,27 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("The tagName should not be null");
         }
 
-        final Optional<AbstractHtml> any = buildAllTagsStream(parallel)
-                .filter((tag) -> {
-                    return tagName.equals(tag.getTagName());
-                }).findAny();
-
-        if (any.isPresent()) {
-            return any.get();
+        final Collection<Lock> locks = getReadLocks(rootTags);
+        for (final Lock lock : locks) {
+            lock.lock();
         }
 
-        return null;
+        try {
+            final Optional<AbstractHtml> any = buildAllTagsStream(parallel)
+                    .filter(tag -> {
+                        return tagName.equals(tag.getTagName());
+                    }).findAny();
+
+            if (any.isPresent()) {
+                return any.get();
+            }
+
+            return null;
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
     }
 
     /**
@@ -1669,11 +1956,11 @@ public class TagRepository extends AbstractHtmlRepository
      * </pre>
      *
      * @param tagClass
-     *            the class of the tag.
+     *                     the class of the tag.
      * @return the first matching tag which is assignable to the given tag
      *         class.
      * @throws NullValueException
-     *             if the {@code tagClass} is null
+     *                                if the {@code tagClass} is null
      * @since 2.1.11
      * @author WFF
      */
@@ -1714,18 +2001,19 @@ public class TagRepository extends AbstractHtmlRepository
      * </pre>
      *
      * @param parallel
-     *            true to internally use parallel stream. If true it will split
-     *            the finding task to different batches and will execute the
-     *            batches in different threads in parallel consuming all CPUs.
-     *            It will perform faster in finding from extremely large number
-     *            of tags but at the same time it will less efficient in finding
-     *            from small number of tags.
+     *                     true to internally use parallel stream. If true it
+     *                     will split the finding task to different batches and
+     *                     will execute the batches in different threads in
+     *                     parallel consuming all CPUs. It will perform faster
+     *                     in finding from extremely large number of tags but at
+     *                     the same time it will less efficient in finding from
+     *                     small number of tags.
      * @param tagClass
-     *            the class of the tag.
+     *                     the class of the tag.
      * @return the first matching tag which is assignable to the given tag
      *         class.
      * @throws NullValueException
-     *             if the {@code tagClass} is null
+     *                                if the {@code tagClass} is null
      * @since 3.0.0
      * @author WFF
      */
@@ -1734,18 +2022,30 @@ public class TagRepository extends AbstractHtmlRepository
             final boolean parallel, final Class<T> tagClass)
             throws NullValueException {
 
-        final Stream<AbstractHtml> stream = buildAllTagsStream(parallel);
-
-        final Optional<AbstractHtml> any = stream.filter((tag) -> {
-            return tagClass.isAssignableFrom(tag.getClass())
-                    && !NoTag.class.isAssignableFrom(tag.getClass());
-        }).findAny();
-
-        if (any.isPresent()) {
-            return (T) any.get();
+        final Collection<Lock> locks = getReadLocks(rootTags);
+        for (final Lock lock : locks) {
+            lock.lock();
         }
 
-        return null;
+        try {
+            final Stream<AbstractHtml> stream = buildAllTagsStream(parallel);
+
+            final Optional<AbstractHtml> any = stream.filter(tag -> {
+                return tagClass.isAssignableFrom(tag.getClass())
+                        && !NoTag.class.isAssignableFrom(tag.getClass());
+            }).findAny();
+
+            if (any.isPresent()) {
+                return (T) any.get();
+            }
+
+            return null;
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
+
     }
 
     /**
@@ -1787,12 +2087,12 @@ public class TagRepository extends AbstractHtmlRepository
      * </pre>
      *
      * @param tagClass
-     *            the class of the tag.
+     *                     the class of the tag.
      * @return the all matching tags which is assignable to the given tag class.
      * @throws NullValueException
-     *             if the {@code tagClass} is null
+     *                                 if the {@code tagClass} is null
      * @throws InvalidTagException
-     *             if the given tag class is NoTag.class
+     *                                 if the given tag class is NoTag.class
      * @since 2.1.11
      * @author WFF
      */
@@ -1841,19 +2141,20 @@ public class TagRepository extends AbstractHtmlRepository
      * </pre>
      *
      * @param parallel
-     *            true to internally use parallel stream. If true it will split
-     *            the finding task to different batches and will execute the
-     *            batches in different threads in parallel consuming all CPUs.
-     *            It will perform faster in finding from extremely large number
-     *            of tags but at the same time it will less efficient in finding
-     *            from small number of tags.
+     *                     true to internally use parallel stream. If true it
+     *                     will split the finding task to different batches and
+     *                     will execute the batches in different threads in
+     *                     parallel consuming all CPUs. It will perform faster
+     *                     in finding from extremely large number of tags but at
+     *                     the same time it will less efficient in finding from
+     *                     small number of tags.
      * @param tagClass
-     *            the class of the tag.
+     *                     the class of the tag.
      * @return the all matching tags which is assignable to the given tag class.
      * @throws NullValueException
-     *             if the {@code tagClass} is null
+     *                                 if the {@code tagClass} is null
      * @throws InvalidTagException
-     *             if the given tag class is NoTag.class
+     *                                 if the given tag class is NoTag.class
      * @since 3.0.0
      * @author WFF
      */
@@ -1871,13 +2172,25 @@ public class TagRepository extends AbstractHtmlRepository
                     "classes like NoTag.class cannot be used to find tags as it's not a logical tag in behaviour.");
         }
 
-        final Set<AbstractHtml> set = buildAllTagsStream(parallel)
-                .filter(tag -> {
-                    return tagClass.isAssignableFrom(tag.getClass())
-                            && !NoTag.class.isAssignableFrom(tag.getClass());
-                }).collect(Collectors.toSet());
+        final Collection<Lock> locks = getReadLocks(rootTags);
+        for (final Lock lock : locks) {
+            lock.lock();
+        }
 
-        return (Collection<T>) set;
+        try {
+            final Set<AbstractHtml> set = buildAllTagsStream(parallel)
+                    .filter(tag -> {
+                        return tagClass.isAssignableFrom(tag.getClass())
+                                && !NoTag.class
+                                        .isAssignableFrom(tag.getClass());
+                    }).collect(Collectors.toSet());
+
+            return (Collection<T>) set;
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
     }
 
     /**
@@ -1885,10 +2198,10 @@ public class TagRepository extends AbstractHtmlRepository
      * given attribute name.
      *
      * @param attributeName
-     *            the name of the attribute.
+     *                          the name of the attribute.
      * @return the first matching tag with the given attribute name and value.
      * @throws NullValueException
-     *             if the {@code attributeName} is null
+     *                                if the {@code attributeName} is null
      * @since 2.1.8
      * @author WFF
      */
@@ -1902,17 +2215,19 @@ public class TagRepository extends AbstractHtmlRepository
      * given attribute name.
      *
      * @param parallel
-     *            true to internally use parallel stream. If true it will split
-     *            the finding task to different batches and will execute the
-     *            batches in different threads in parallel consuming all CPUs.
-     *            It will perform faster in finding from extremely large number
-     *            of tags but at the same time it will less efficient in finding
-     *            from small number of tags.
+     *                          true to internally use parallel stream. If true
+     *                          it will split the finding task to different
+     *                          batches and will execute the batches in
+     *                          different threads in parallel consuming all
+     *                          CPUs. It will perform faster in finding from
+     *                          extremely large number of tags but at the same
+     *                          time it will less efficient in finding from
+     *                          small number of tags.
      * @param attributeName
-     *            the name of the attribute.
+     *                          the name of the attribute.
      * @return the first matching tag with the given attribute name and value.
      * @throws NullValueException
-     *             if the {@code attributeName} is null
+     *                                if the {@code attributeName} is null
      * @since 3.0.0
      * @author WFF
      */
@@ -1923,18 +2238,28 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException(
                     "The attributeName should not be null");
         }
-
-        final Stream<AbstractHtml> stream = buildAllTagsStream(parallel);
-
-        final Optional<AbstractHtml> any = stream.filter((tag) -> {
-            return tag.getAttributeByName(attributeName) != null;
-        }).findAny();
-
-        if (any.isPresent()) {
-            return any.get();
+        final Collection<Lock> locks = getReadLocks(rootTags);
+        for (final Lock lock : locks) {
+            lock.lock();
         }
 
-        return null;
+        try {
+            final Stream<AbstractHtml> stream = buildAllTagsStream(parallel);
+
+            final Optional<AbstractHtml> any = stream.filter(tag -> {
+                return tag.getAttributeByName(attributeName) != null;
+            }).findAny();
+
+            if (any.isPresent()) {
+                return any.get();
+            }
+
+            return null;
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
     }
 
     /**
@@ -1945,7 +2270,7 @@ public class TagRepository extends AbstractHtmlRepository
      *         returns the only tags consuming the given attribute object which
      *         are available in browserPage.
      * @throws NullValueException
-     *             if the {@code attribute} is null
+     *                                if the {@code attribute} is null
      * @since 2.1.8
      * @author WFF
      */
@@ -1956,7 +2281,7 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("attribute cannot be null");
         }
 
-        final Collection<AbstractHtml> tags = new HashSet<AbstractHtml>();
+        final Collection<AbstractHtml> tags = new HashSet<>();
 
         for (final AbstractHtml ownerTag : attribute.getOwnerTags()) {
             if (browserPage.contains(ownerTag)) {
@@ -1975,7 +2300,7 @@ public class TagRepository extends AbstractHtmlRepository
      *         There must be a consuming tag which is available in the
      *         browserPage instance otherwise returns null.
      * @throws NullValueException
-     *             if the {@code attribute } is null
+     *                                if the {@code attribute } is null
      * @since 2.1.8
      * @author WFF
      */
@@ -2002,14 +2327,14 @@ public class TagRepository extends AbstractHtmlRepository
      * given tag at client side.
      *
      * @param tag
-     *            the tag object on which the given bmObject to be set.
+     *                     the tag object on which the given bmObject to be set.
      * @param key
-     *            key to set in wffObjects property of the tag.
+     *                     key to set in wffObjects property of the tag.
      * @param bmObject
      * @throws InvalidTagException
-     *             if the given instance is of NoTag / Blank
+     *                                 if the given instance is of NoTag / Blank
      * @throws NullValueException
-     *             if tag, key or bmObject is null
+     *                                 if tag, key or bmObject is null
      * @since 2.1.8
      * @author WFF
      */
@@ -2045,14 +2370,14 @@ public class TagRepository extends AbstractHtmlRepository
      * given tag at client side.
      *
      * @param tag
-     *            the tag object on which the given bmArray to be set.
+     *                    the tag object on which the given bmArray to be set.
      * @param key
-     *            key to set in wffObjects property of the tag.
+     *                    key to set in wffObjects property of the tag.
      * @param bmArray
      * @throws InvalidTagException
-     *             if the given instance is of NoTag / Blank
+     *                                 if the given instance is of NoTag / Blank
      * @throws NullValueException
-     *             if tag, key or bmArray is null
+     *                                 if tag, key or bmArray is null
      * @since 2.1.8
      * @author WFF
      */
@@ -2087,9 +2412,9 @@ public class TagRepository extends AbstractHtmlRepository
      * @param tag
      * @param key
      * @throws InvalidTagException
-     *             if the given instance is of NoTag / Blank
+     *                                 if the given instance is of NoTag / Blank
      * @throws NullValueException
-     *             if tag or key is null
+     *                                 if tag or key is null
      * @since 2.1.8
      * @author WFF
      */
@@ -2111,6 +2436,41 @@ public class TagRepository extends AbstractHtmlRepository
                     "The given tag is not available in the corresponding browserPage instance.");
         }
         AbstractHtmlRepository.removeWffData(tag, key);
+    }
+
+    /**
+     * gets the WffBMObject/WffBMArray from the {@code wffObjects} property of
+     * tag in the form of WffBMData.
+     *
+     * @param tag
+     * @param key
+     * @return WffBMData which may be type casted to either WffBMObject or
+     *         WffBMArray.
+     * @throws InvalidTagException
+     *                                 if the given instance is of NoTag / Blank
+     * @throws NullValueException
+     *                                 if tag or key is null
+     * @since 3.0.1
+     * @author WFF
+     */
+    public WffBMData getWffBMData(final AbstractHtml tag, final String key)
+            throws InvalidTagException, NullValueException {
+
+        if (tag == null) {
+            throw new NullValueException("tag cannot be null");
+        }
+        if (tag instanceof NoTag) {
+            throw new InvalidTagException(
+                    "NoTag and Blank tag are not allowed to use");
+        }
+        if (key == null) {
+            throw new NullValueException("key cannot be null");
+        }
+        if (!browserPage.contains(tag)) {
+            throw new InvalidTagException(
+                    "The given tag is not available in the corresponding browserPage instance.");
+        }
+        return AbstractHtmlRepository.getWffData(tag, key);
     }
 
     /**
@@ -2136,30 +2496,42 @@ public class TagRepository extends AbstractHtmlRepository
      * This method may perform better than the static method.
      *
      * @param parallel
-     *            true to internally use parallel stream. If true it will split
-     *            the finding task to different batches and will execute the
-     *            batches in different threads in parallel consuming all CPUs.
-     *            It will perform faster in finding from extremely large number
-     *            of tags but at the same time it will less efficient in finding
-     *            from small number of tags.
+     *                     true to internally use parallel stream. If true it
+     *                     will split the finding task to different batches and
+     *                     will execute the batches in different threads in
+     *                     parallel consuming all CPUs. It will perform faster
+     *                     in finding from extremely large number of tags but at
+     *                     the same time it will less efficient in finding from
+     *                     small number of tags.
      * @return the collection of all tags
      * @since 3.0.0
      * @author WFF
      */
     public Collection<AbstractHtml> findAllTags(final boolean parallel) {
-        return buildAllTagsStream(parallel).collect(Collectors.toSet());
+        final Collection<Lock> locks = getReadLocks(rootTags);
+        for (final Lock lock : locks) {
+            lock.lock();
+        }
+        try {
+            return buildAllTagsStream(parallel).collect(Collectors.toSet());
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
     }
 
     /**
      * Finds all tags excluding {@code NoTag}.
      *
      * @param parallel
-     *            true to internally use parallel stream. If true it will split
-     *            the finding task to different batches and will execute the
-     *            batches in different threads in parallel consuming all CPUs.
-     *            It will perform faster in finding from extremely large number
-     *            of tags but at the same time it will less efficient in finding
-     *            from small number of tags.
+     *                     true to internally use parallel stream. If true it
+     *                     will split the finding task to different batches and
+     *                     will execute the batches in different threads in
+     *                     parallel consuming all CPUs. It will perform faster
+     *                     in finding from extremely large number of tags but at
+     *                     the same time it will less efficient in finding from
+     *                     small number of tags.
      * @return the stream of all tags
      * @since 3.0.0
      * @author WFF
@@ -2174,10 +2546,10 @@ public class TagRepository extends AbstractHtmlRepository
      * from the given tags.
      *
      * @param fromTags
-     *            to find all tags from these tags
+     *                     to find all tags from these tags
      * @return all tags including the nested tags from the given tags.
      * @throws NullValueException
-     *             if {@code fromTags} is null
+     *                                if {@code fromTags} is null
      * @since 2.1.9
      * @author WFF
      */
@@ -2191,18 +2563,19 @@ public class TagRepository extends AbstractHtmlRepository
      * from the given tags.
      *
      * @param parallel
-     *            true to internally use parallel stream. If true it will split
-     *            the finding task to different batches and will execute the
-     *            batches in different threads in parallel consuming all CPUs.
-     *            It will perform faster in finding from extremely large number
-     *            of tags but at the same time it will less efficient in finding
-     *            from small number of tags.
+     *                     true to internally use parallel stream. If true it
+     *                     will split the finding task to different batches and
+     *                     will execute the batches in different threads in
+     *                     parallel consuming all CPUs. It will perform faster
+     *                     in finding from extremely large number of tags but at
+     *                     the same time it will less efficient in finding from
+     *                     small number of tags.
      *
      * @param fromTags
-     *            to find all tags from these tags
+     *                     to find all tags from these tags
      * @return all tags including the nested tags from the given tags.
      * @throws NullValueException
-     *             if {@code fromTags} is null
+     *                                if {@code fromTags} is null
      * @since 3.0.0
      * @author WFF
      */
@@ -2213,8 +2586,20 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("fromTags cannot be null");
         }
 
-        return getAllNestedChildrenIncludingParent(parallel, fromTags)
-                .collect(Collectors.toSet());
+        final Collection<Lock> locks = getReadLocks(fromTags);
+        for (final Lock lock : locks) {
+            lock.lock();
+        }
+
+        try {
+            return getAllNestedChildrenIncludingParent(parallel, fromTags)
+                    .collect(Collectors.toSet());
+
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
     }
 
     /**
@@ -2232,31 +2617,44 @@ public class TagRepository extends AbstractHtmlRepository
      * Finds all attributes from all tags.
      *
      * @param parallel
-     *            true to internally use parallel stream. If true it will split
-     *            the finding task to different batches and will execute the
-     *            batches in different threads in parallel consuming all CPUs.
-     *            It will perform faster in finding from extremely large number
-     *            of tags but at the same time it will less efficient in finding
-     *            from small number of tags.
+     *                     true to internally use parallel stream. If true it
+     *                     will split the finding task to different batches and
+     *                     will execute the batches in different threads in
+     *                     parallel consuming all CPUs. It will perform faster
+     *                     in finding from extremely large number of tags but at
+     *                     the same time it will less efficient in finding from
+     *                     small number of tags.
      * @return the collection of all attributes
      * @since 3.0.0
      * @author WFF
      */
     public Collection<AbstractAttribute> findAllAttributes(
             final boolean parallel) {
-        return buildAllAttributesStream(parallel).collect(Collectors.toSet());
+        final Collection<Lock> locks = getReadLocks(rootTags);
+        for (final Lock lock : locks) {
+            lock.lock();
+        }
+        try {
+            return buildAllAttributesStream(parallel)
+                    .collect(Collectors.toSet());
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
     }
 
     /**
      * Finds all attributes as stream from all tags.
      *
      * @param parallel
-     *            true to internally use parallel stream. If true it will split
-     *            the finding task to different batches and will execute the
-     *            batches in different threads in parallel consuming all CPUs.
-     *            It will perform faster in finding from extremely large number
-     *            of tags but at the same time it will less efficient in finding
-     *            from small number of tags.
+     *                     true to internally use parallel stream. If true it
+     *                     will split the finding task to different batches and
+     *                     will execute the batches in different threads in
+     *                     parallel consuming all CPUs. It will perform faster
+     *                     in finding from extremely large number of tags but at
+     *                     the same time it will less efficient in finding from
+     *                     small number of tags.
      * @return the stream of all attributes
      * @since 3.0.0
      * @author WFF
@@ -2265,7 +2663,7 @@ public class TagRepository extends AbstractHtmlRepository
             final boolean parallel) {
         final Stream<AbstractAttribute> attributesStream = buildAllTagsStream(
                 parallel).filter(tag -> tag.getAttributes() != null)
-                        .map((tag) -> {
+                        .map(tag -> {
                             return tag.getAttributes();
                         }).flatMap(attributes -> attributes.stream());
         return attributesStream;
@@ -2275,10 +2673,10 @@ public class TagRepository extends AbstractHtmlRepository
      * Finds all attributes from the given tags
      *
      * @param fromTags
-     *            the tags to find the attributes from.
+     *                     the tags to find the attributes from.
      * @return the all attributes from the given tags including the nested tags.
      * @throws NullValueException
-     *             if {@code fromTags} is null
+     *                                if {@code fromTags} is null
      * @since 2.1.9
      * @author WFF
      */
@@ -2291,17 +2689,18 @@ public class TagRepository extends AbstractHtmlRepository
      * Finds all attributes from the given tags
      *
      * @param parallel
-     *            true to internally use parallel stream. If true it will split
-     *            the finding task to different batches and will execute the
-     *            batches in different threads in parallel consuming all CPUs.
-     *            It will perform faster in finding from extremely large number
-     *            of tags but at the same time it will less efficient in finding
-     *            from small number of tags.
+     *                     true to internally use parallel stream. If true it
+     *                     will split the finding task to different batches and
+     *                     will execute the batches in different threads in
+     *                     parallel consuming all CPUs. It will perform faster
+     *                     in finding from extremely large number of tags but at
+     *                     the same time it will less efficient in finding from
+     *                     small number of tags.
      * @param fromTags
-     *            the tags to find the attributes from.
+     *                     the tags to find the attributes from.
      * @return the all attributes from the given tags including the nested tags.
      * @throws NullValueException
-     *             if {@code fromTags} is null
+     *                                if {@code fromTags} is null
      * @since 3.0.0
      * @author WFF
      */
@@ -2313,11 +2712,21 @@ public class TagRepository extends AbstractHtmlRepository
             throw new NullValueException("fromTags cannot be null");
         }
 
-        return getAllNestedChildrenIncludingParent(parallel, fromTags)
-                .filter(tag -> tag.getAttributes() != null).map((tag) -> {
-                    return tag.getAttributes();
-                }).flatMap(attributes -> attributes.stream())
-                .collect(Collectors.toSet());
+        final Collection<Lock> locks = getReadLocks(fromTags);
+        for (final Lock lock : locks) {
+            lock.lock();
+        }
+        try {
+            return getAllNestedChildrenIncludingParent(parallel, fromTags)
+                    .filter(tag -> tag.getAttributes() != null).map(tag -> {
+                        return tag.getAttributes();
+                    }).flatMap(attributes -> attributes.stream())
+                    .collect(Collectors.toSet());
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
     }
 
     /**
@@ -2327,9 +2736,9 @@ public class TagRepository extends AbstractHtmlRepository
      * @return true if the given tag instance exists anywhere in the browser
      *         page.
      * @throws NullValueException
-     *             if the tag is null
+     *                                 if the tag is null
      * @throws InvalidTagException
-     *             if the given tag is {@code NoTag}.
+     *                                 if the given tag is {@code NoTag}.
      * @since 2.1.8
      * @author WFF
      */
@@ -2352,7 +2761,7 @@ public class TagRepository extends AbstractHtmlRepository
      * @return true if the given attribute instance exists anywhere in the
      *         browser page.
      * @throws NullValueException
-     *             if the {@code attribute} is null
+     *                                if the {@code attribute} is null
      * @since 2.1.8
      * @author WFF
      */
@@ -2399,7 +2808,7 @@ public class TagRepository extends AbstractHtmlRepository
      * This shows an alert in the browser: <b><i>This is an alert</i></b>.
      *
      * @param js
-     *            the JavaScript to be executed at the client browser page.
+     *               the JavaScript to be executed at the client browser page.
      * @return true if the given js string is in a supported encoding otherwise
      *         false. Returning true DOESN'T mean the given js string is valid ,
      *         successfully sent to the client browser to execute or executed
@@ -2433,7 +2842,7 @@ public class TagRepository extends AbstractHtmlRepository
      * </pre>
      *
      * @param pageAction
-     *            to perform the given {@code BrowserPageAction}
+     *                       to perform the given {@code BrowserPageAction}
      * @since 2.1.11
      * @author WFF
      */
@@ -2458,12 +2867,13 @@ public class TagRepository extends AbstractHtmlRepository
      * Finds the {@code body} tag.
      *
      * @param parallel
-     *            true to internally use parallel stream. If true it will split
-     *            the finding task to different batches and will execute the
-     *            batches in different threads in parallel consuming all CPUs.
-     *            It will perform faster in finding from extremely large number
-     *            of tags but at the same time it will less efficient in finding
-     *            from small number of tags.
+     *                     true to internally use parallel stream. If true it
+     *                     will split the finding task to different batches and
+     *                     will execute the batches in different threads in
+     *                     parallel consuming all CPUs. It will perform faster
+     *                     in finding from extremely large number of tags but at
+     *                     the same time it will less efficient in finding from
+     *                     small number of tags.
      *
      * @return the {@code body} tag. If there are multiple {@code body} tags
      *         available any one of them will be returned. If no {@code body}
@@ -2492,12 +2902,13 @@ public class TagRepository extends AbstractHtmlRepository
      * Finds the {@code head} tag.
      *
      * @param parallel
-     *            true to internally use parallel stream. If true it will split
-     *            the finding task to different batches and will execute the
-     *            batches in different threads in parallel consuming all CPUs.
-     *            It will perform faster in finding from extremely large number
-     *            of tags but at the same time it will less efficient in finding
-     *            from small number of tags.
+     *                     true to internally use parallel stream. If true it
+     *                     will split the finding task to different batches and
+     *                     will execute the batches in different threads in
+     *                     parallel consuming all CPUs. It will perform faster
+     *                     in finding from extremely large number of tags but at
+     *                     the same time it will less efficient in finding from
+     *                     small number of tags.
      *
      * @return the {@code head} tag. If there are multiple {@code head} tags
      *         available any one of them will be returned. If no {@code head}
@@ -2527,12 +2938,13 @@ public class TagRepository extends AbstractHtmlRepository
      * Finds the {@code title} tag.
      *
      * @param parallel
-     *            true to internally use parallel stream. If true it will split
-     *            the finding task to different batches and will execute the
-     *            batches in different threads in parallel consuming all CPUs.
-     *            It will perform faster in finding from extremely large number
-     *            of tags but at the same time it will less efficient in finding
-     *            from small number of tags.
+     *                     true to internally use parallel stream. If true it
+     *                     will split the finding task to different batches and
+     *                     will execute the batches in different threads in
+     *                     parallel consuming all CPUs. It will perform faster
+     *                     in finding from extremely large number of tags but at
+     *                     the same time it will less efficient in finding from
+     *                     small number of tags.
      *
      * @return the {@code title} tag. If there are multiple {@code title} tags
      *         available any one of them will be returned. If no {@code title}
@@ -2549,14 +2961,15 @@ public class TagRepository extends AbstractHtmlRepository
      * Builds all tags stream from the given tags and its nested children.
      *
      * @param parallel
-     *            true to internally use parallel stream. If true it will split
-     *            the finding task to different batches and will execute the
-     *            batches in different threads in parallel consuming all CPUs.
-     *            It will perform faster in finding from extremely large number
-     *            of tags but at the same time it will less efficient in finding
-     *            from small number of tags.
+     *                     true to internally use parallel stream. If true it
+     *                     will split the finding task to different batches and
+     *                     will execute the batches in different threads in
+     *                     parallel consuming all CPUs. It will perform faster
+     *                     in finding from extremely large number of tags but at
+     *                     the same time it will less efficient in finding from
+     *                     small number of tags.
      * @param fromTags
-     *            the tags to to build stream of nested children from.
+     *                     the tags to to build stream of nested children from.
      * @return {@code Stream<AbstractHtml> }
      * @since 3.0.0
      * @author WFF
@@ -2570,7 +2983,7 @@ public class TagRepository extends AbstractHtmlRepository
      * Builds all tags stream from the given tags and its nested children.
      *
      * @param fromTags
-     *            the tags to build stream of nested children from.
+     *                     the tags to build stream of nested children from.
      * @return {@code Stream<AbstractHtml> }
      * @since 3.0.0
      * @author WFF
@@ -2584,7 +2997,8 @@ public class TagRepository extends AbstractHtmlRepository
      * Builds all attributes stream from the given tags.
      *
      * @param fromTags
-     *            the tags to build stream of nested children's attributes from.
+     *                     the tags to build stream of nested children's
+     *                     attributes from.
      * @return {@code Stream<AbstractAttribute>}
      * @since 3.0.0
      * @author WFF
@@ -2598,14 +3012,16 @@ public class TagRepository extends AbstractHtmlRepository
      * Builds all attributes stream from the given tags.
      *
      * @param parallel
-     *            true to internally use parallel stream. If true it will split
-     *            the finding task to different batches and will execute the
-     *            batches in different threads in parallel consuming all CPUs.
-     *            It will perform faster in finding from extremely large number
-     *            of tags but at the same time it will less efficient in finding
-     *            from small number of tags.
+     *                     true to internally use parallel stream. If true it
+     *                     will split the finding task to different batches and
+     *                     will execute the batches in different threads in
+     *                     parallel consuming all CPUs. It will perform faster
+     *                     in finding from extremely large number of tags but at
+     *                     the same time it will less efficient in finding from
+     *                     small number of tags.
      * @param fromTags
-     *            the tags to build stream of nested children's attributes from.
+     *                     the tags to build stream of nested children's
+     *                     attributes from.
      * @return {@code Stream<AbstractAttribute>}
      * @since 3.0.0
      * @author WFF
@@ -2614,7 +3030,7 @@ public class TagRepository extends AbstractHtmlRepository
             final boolean parallel, final AbstractHtml... fromTags) {
         final Stream<AbstractAttribute> attributesStream = getAllNestedChildrenIncludingParent(
                 parallel, fromTags).filter(tag -> tag.getAttributes() != null)
-                        .map((tag) -> {
+                        .map(tag -> {
                             return tag.getAttributes();
                         }).flatMap(attributes -> attributes.stream());
         return attributesStream;

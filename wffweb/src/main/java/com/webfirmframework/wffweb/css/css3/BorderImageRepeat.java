@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,7 +72,7 @@ public class BorderImageRepeat extends AbstractCssProperty<BorderImageRepeat> {
 
     /**
      * @param cssValue
-     *            the css value to set.
+     *                     the css value to set.
      */
     public BorderImageRepeat(final String cssValue) {
         setCssValue(cssValue);
@@ -80,8 +80,9 @@ public class BorderImageRepeat extends AbstractCssProperty<BorderImageRepeat> {
 
     /**
      * @param borderImageRepeat
-     *            the {@code BorderImageRepeat} object from which the cssValue
-     *            to set.And, {@code null} will throw {@code NullValueException}
+     *                              the {@code BorderImageRepeat} object from
+     *                              which the cssValue to set.And, {@code null}
+     *                              will throw {@code NullValueException}
      */
     public BorderImageRepeat(final BorderImageRepeat borderImageRepeat) {
         if (borderImageRepeat == null) {
@@ -125,10 +126,10 @@ public class BorderImageRepeat extends AbstractCssProperty<BorderImageRepeat> {
 
     /**
      * @param cssValue
-     *            the value should be in the format of
-     *            <code>round stretch</code> or <code>round</code>. {@code null}
-     *            is considered as an invalid value and it will throw
-     *            {@code NullValueException}.
+     *                     the value should be in the format of
+     *                     <code>round stretch</code> or <code>round</code>.
+     *                     {@code null} is considered as an invalid value and it
+     *                     will throw {@code NullValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -144,7 +145,7 @@ public class BorderImageRepeat extends AbstractCssProperty<BorderImageRepeat> {
             } else {
 
                 final String trimmedCssValue = StringUtil.convertToSingleSpace(
-                        TagStringUtil.toLowerCase(cssValue.trim()));
+                        TagStringUtil.toLowerCase(StringUtil.strip(cssValue)));
 
                 final String[] verticalHorzontal = StringUtil
                         .splitBySpace(trimmedCssValue);
@@ -197,7 +198,7 @@ public class BorderImageRepeat extends AbstractCssProperty<BorderImageRepeat> {
 
     /**
      * @param vertical
-     *            the vertical to set
+     *                     the vertical to set
      * @author WFF
      * @since 1.0.0
      */
@@ -205,7 +206,8 @@ public class BorderImageRepeat extends AbstractCssProperty<BorderImageRepeat> {
         if (vertical == null) {
             throw new NullValueException("The vertical value cannot be null.");
         }
-        final String inputVertical = TagStringUtil.toLowerCase(vertical.trim());
+        final String inputVertical = TagStringUtil
+                .toLowerCase(StringUtil.strip(vertical));
         if (!INITIAL.equals(vertical) && !INHERIT.equals(inputVertical)
                 && PREDEFINED_CONSTANTS.contains(inputVertical)) {
             this.vertical = inputVertical;
@@ -222,7 +224,7 @@ public class BorderImageRepeat extends AbstractCssProperty<BorderImageRepeat> {
 
     /**
      * @param horizontal
-     *            the horizontal to set
+     *                       the horizontal to set
      * @author WFF
      * @since 1.0.0
      */
@@ -231,7 +233,7 @@ public class BorderImageRepeat extends AbstractCssProperty<BorderImageRepeat> {
             throw new NullValueException("The vertical value cannot be null.");
         }
         final String inputHorizontal = TagStringUtil
-                .toLowerCase(horizontal.trim());
+                .toLowerCase(StringUtil.strip(horizontal));
         if (!INITIAL.equals(vertical) && !INHERIT.equals(inputHorizontal)
                 && PREDEFINED_CONSTANTS.contains(inputHorizontal)) {
             this.horizontal = inputHorizontal;
@@ -288,14 +290,14 @@ public class BorderImageRepeat extends AbstractCssProperty<BorderImageRepeat> {
      * validates if the given cssValue is valid for this class.
      *
      * @param cssValue
-     *            the value to check.
+     *                     the value to check.
      * @return true if valid and false if invalid.
      * @author WFF
      * @since 1.0.0
      */
     public static boolean isValid(final String cssValue) {
         final String trimmedCssValue = TagStringUtil
-                .toLowerCase(cssValue.trim());
+                .toLowerCase(StringUtil.strip(cssValue));
 
         final String[] cssValueParts = StringUtil.splitBySpace(trimmedCssValue);
         if (cssValueParts.length > 2) {

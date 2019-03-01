@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 package com.webfirmframework.wffweb.tag.html.attribute.core;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -28,8 +28,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.webfirmframework.wffweb.css.Border;
-import com.webfirmframework.wffweb.css.Color;
+import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.tag.html.attribute.Accept;
 import com.webfirmframework.wffweb.tag.html.attribute.AcceptCharset;
 import com.webfirmframework.wffweb.tag.html.attribute.Action;
@@ -37,12 +36,14 @@ import com.webfirmframework.wffweb.tag.html.attribute.Align;
 import com.webfirmframework.wffweb.tag.html.attribute.Alt;
 import com.webfirmframework.wffweb.tag.html.attribute.Async;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
+import com.webfirmframework.wffweb.tag.html.attribute.Border;
 import com.webfirmframework.wffweb.tag.html.attribute.CellPadding;
 import com.webfirmframework.wffweb.tag.html.attribute.CellSpacing;
 import com.webfirmframework.wffweb.tag.html.attribute.Charset;
 import com.webfirmframework.wffweb.tag.html.attribute.Checked;
 import com.webfirmframework.wffweb.tag.html.attribute.CoOrds;
 import com.webfirmframework.wffweb.tag.html.attribute.ColSpan;
+import com.webfirmframework.wffweb.tag.html.attribute.ColorAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.Cols;
 import com.webfirmframework.wffweb.tag.html.attribute.Defer;
 import com.webfirmframework.wffweb.tag.html.attribute.DirName;
@@ -55,11 +56,13 @@ import com.webfirmframework.wffweb.tag.html.attribute.Height;
 import com.webfirmframework.wffweb.tag.html.attribute.Href;
 import com.webfirmframework.wffweb.tag.html.attribute.HrefLang;
 import com.webfirmframework.wffweb.tag.html.attribute.HttpEquiv;
+import com.webfirmframework.wffweb.tag.html.attribute.IsMap;
 import com.webfirmframework.wffweb.tag.html.attribute.MaxLength;
 import com.webfirmframework.wffweb.tag.html.attribute.Method;
 import com.webfirmframework.wffweb.tag.html.attribute.MinLength;
 import com.webfirmframework.wffweb.tag.html.attribute.Name;
 import com.webfirmframework.wffweb.tag.html.attribute.NoHref;
+import com.webfirmframework.wffweb.tag.html.attribute.Nonce;
 import com.webfirmframework.wffweb.tag.html.attribute.ReadOnly;
 import com.webfirmframework.wffweb.tag.html.attribute.Rel;
 import com.webfirmframework.wffweb.tag.html.attribute.Rev;
@@ -73,6 +76,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.Size;
 import com.webfirmframework.wffweb.tag.html.attribute.Sorted;
 import com.webfirmframework.wffweb.tag.html.attribute.Target;
 import com.webfirmframework.wffweb.tag.html.attribute.Type;
+import com.webfirmframework.wffweb.tag.html.attribute.UseMap;
 import com.webfirmframework.wffweb.tag.html.attribute.Value;
 import com.webfirmframework.wffweb.tag.html.attribute.Width;
 import com.webfirmframework.wffweb.tag.html.attribute.event.animation.AnimationEnd;
@@ -164,7 +168,6 @@ import com.webfirmframework.wffweb.tag.html.attribute.global.Lang;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Style;
 import com.webfirmframework.wffweb.tag.html.attribute.global.TabIndex;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Title;
-import com.webfirmframework.wffweb.tag.html.formsandinputs.Form;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.AutoComplete;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.AutoFocus;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.AutoPlay;
@@ -174,9 +177,11 @@ import com.webfirmframework.wffweb.tag.html.html5.attribute.DateTime;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Default;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Download;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.FormAction;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.FormAttribute;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.FormEncType;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.FormMethod;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.FormNoValidate;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.FormTarget;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.High;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Loop;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Low;
@@ -193,9 +198,11 @@ import com.webfirmframework.wffweb.tag.html.html5.attribute.Poster;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Preload;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Required;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Reversed;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.Sandbox;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Sizes;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.SrcSet;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Step;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.Wrap;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.ContentEditable;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.ContextMenu;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataAttribute;
@@ -223,10 +230,8 @@ public class AttributeRegistry {
         final Field[] fields = AttributeNameConstants.class.getFields();
         final int initialCapacity = fields.length;
 
-        attributeClassByAttrName = new HashMap<String, Class<?>>(
-                initialCapacity);
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME = new HashMap<String, String>(
-                initialCapacity);
+        attributeClassByAttrName = new HashMap<>(initialCapacity);
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME = new HashMap<>(initialCapacity);
 
         attributeClassByAttrName.put(AttributeNameConstants.ACCEPT,
                 Accept.class);
@@ -246,7 +251,8 @@ public class AttributeRegistry {
                 Checked.class);
         attributeClassByAttrName.put(AttributeNameConstants.CLASS,
                 ClassAttribute.class);
-        attributeClassByAttrName.put(AttributeNameConstants.COLOR, Color.class);
+        attributeClassByAttrName.put(AttributeNameConstants.COLOR,
+                ColorAttribute.class);
         attributeClassByAttrName.put(AttributeNameConstants.CONTENT,
                 Content.class);
         attributeClassByAttrName.put(AttributeNameConstants.CONTENTEDITABLE,
@@ -269,7 +275,8 @@ public class AttributeRegistry {
         attributeClassByAttrName.put(AttributeNameConstants.DROPZONE,
                 Dropzone.class);
         attributeClassByAttrName.put(AttributeNameConstants.FACE, Face.class);
-        attributeClassByAttrName.put(AttributeNameConstants.FORM, Form.class);
+        attributeClassByAttrName.put(AttributeNameConstants.FORM,
+                FormAttribute.class);
         attributeClassByAttrName.put(AttributeNameConstants.FORMACTION,
                 FormAction.class);
         attributeClassByAttrName.put(AttributeNameConstants.FORMENCTYPE,
@@ -279,7 +286,7 @@ public class AttributeRegistry {
         attributeClassByAttrName.put(AttributeNameConstants.FORMNOVALIDATE,
                 FormNoValidate.class);
         attributeClassByAttrName.put(AttributeNameConstants.FORMTARGET,
-                Target.class);
+                FormTarget.class);
         attributeClassByAttrName.put(AttributeNameConstants.HEIGHT,
                 Height.class);
         attributeClassByAttrName.put(AttributeNameConstants.HIDDEN,
@@ -291,7 +298,8 @@ public class AttributeRegistry {
                 HttpEquiv.class);
         attributeClassByAttrName.put(AttributeNameConstants.ID, Id.class);
         attributeClassByAttrName.put(AttributeNameConstants.LANG, Lang.class);
-        attributeClassByAttrName.put(AttributeNameConstants.LIST, List.class);
+        attributeClassByAttrName.put(AttributeNameConstants.LIST,
+                com.webfirmframework.wffweb.tag.html.html5.attribute.List.class);
         attributeClassByAttrName.put(AttributeNameConstants.LOOP, Loop.class);
         attributeClassByAttrName.put(AttributeNameConstants.MAX, Max.class);
         attributeClassByAttrName.put(AttributeNameConstants.MAXLENGTH,
@@ -552,6 +560,13 @@ public class AttributeRegistry {
                 Reversed.class);
         attributeClassByAttrName.put(AttributeNameConstants.POSTER,
                 Poster.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ISMAP, IsMap.class);
+        attributeClassByAttrName.put(AttributeNameConstants.SANDBOX,
+                Sandbox.class);
+        attributeClassByAttrName.put(AttributeNameConstants.WRAP, Wrap.class);
+        attributeClassByAttrName.put(AttributeNameConstants.USEMAP,
+                UseMap.class);
+        attributeClassByAttrName.put(AttributeNameConstants.NONCE, Nonce.class);
 
         for (final Entry<String, Class<?>> entry : attributeClassByAttrName
                 .entrySet()) {
@@ -577,23 +592,20 @@ public class AttributeRegistry {
         }
 
         attributeNames.addAll(attributeNamesSet);
-        Collections.sort(attributeNames, new Comparator<String>() {
+        Collections.sort(attributeNames, (o1, o2) -> {
 
-            @Override
-            public int compare(final String o1, final String o2) {
+            final Integer length1 = o1.length();
+            final Integer length2 = o2.length();
 
-                final Integer length1 = o1.length();
-                final Integer length2 = o2.length();
-
-                return length1.compareTo(length2);
-            }
+            return length1.compareTo(length2);
         });
     }
 
     /**
      * @param attrNames
-     *            the attribute names to register, eg:-
-     *            AttributeRegistry.register("attri-name1", "attri-name2")
+     *                      the attribute names to register, eg:-
+     *                      AttributeRegistry.register("attri-name1",
+     *                      "attri-name2")
      * @since 1.1.3
      * @author WFF
      */
@@ -609,16 +621,12 @@ public class AttributeRegistry {
         attributeNames.clear();
         attributeNames.addAll(attributeNamesSet);
 
-        Collections.sort(attributeNames, new Comparator<String>() {
+        Collections.sort(attributeNames, (o1, o2) -> {
 
-            @Override
-            public int compare(final String o1, final String o2) {
+            final Integer length1 = o1.length();
+            final Integer length2 = o2.length();
 
-                final Integer length1 = o1.length();
-                final Integer length2 = o2.length();
-
-                return length1.compareTo(length2);
-            }
+            return length1.compareTo(length2);
         });
     }
 
@@ -650,7 +658,7 @@ public class AttributeRegistry {
      */
     public static void loadAllAttributeClasses() {
 
-        final Map<String, Class<?>> unloadedClasses = new HashMap<String, Class<?>>();
+        final Map<String, Class<?>> unloadedClasses = new HashMap<>();
 
         for (final Entry<String, Class<?>> entry : attributeClassByAttrName
                 .entrySet()) {
@@ -672,6 +680,45 @@ public class AttributeRegistry {
             attributeClassByAttrName.putAll(unloadedClasses);
         } else {
             attributeClassByAttrName = null;
+        }
+    }
+
+    // only for testing purpose
+    static void test() throws InstantiationException, IllegalAccessException,
+            NoSuchFieldException, SecurityException, IllegalArgumentException,
+            InvocationTargetException, NoSuchMethodException,
+            InvalidValueException {
+        for (final Entry<String, Class<?>> each : attributeClassByAttrName
+                .entrySet()) {
+            final String expectedAttrName = each.getKey();
+            final Class<?> attrClass = each.getValue();
+
+            AbstractAttribute newInstance = null;
+            try {
+                newInstance = (AbstractAttribute) attrClass.getConstructor()
+                        .newInstance();
+            } catch (final Exception e) {
+                try {
+                    final Object[] initargs = { null };
+                    newInstance = (AbstractAttribute) attrClass
+                            .getConstructor(String.class).newInstance(initargs);
+                } catch (final Exception e1) {
+                    try {
+                        newInstance = (AbstractAttribute) attrClass
+                                .getConstructor(int.class).newInstance(1);
+                    } catch (final Exception e2) {
+                        newInstance = (AbstractAttribute) attrClass
+                                .getConstructor(String.class).newInstance("");
+                    }
+                }
+            }
+
+            final String actualAttrName = newInstance.getAttributeName();
+            if (!expectedAttrName.equals(actualAttrName)) {
+                throw new InvalidValueException(
+                        "expectedAttrName: " + expectedAttrName
+                                + " actualAttrName: " + actualAttrName);
+            }
         }
     }
 

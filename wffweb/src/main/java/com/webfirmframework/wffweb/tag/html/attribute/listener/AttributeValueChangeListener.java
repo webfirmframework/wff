@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,7 +57,7 @@ public interface AttributeValueChangeListener extends Serializable {
 
         /**
          * @param sourceAttribute
-         *            the sourceAttribute to set
+         *                            the sourceAttribute to set
          */
         public void setSourceAttribute(
                 final AbstractAttribute sourceAttribute) {
@@ -73,7 +73,7 @@ public interface AttributeValueChangeListener extends Serializable {
 
         /**
          * @param ownerTags
-         *            the ownerTags to set
+         *                      the ownerTags to set
          */
         public void setOwnerTags(final Set<AbstractHtml> ownerTags) {
             this.ownerTags = ownerTags;
@@ -88,7 +88,7 @@ public interface AttributeValueChangeListener extends Serializable {
 
         /**
          * @param changedByClient
-         *            the changedByClient to set
+         *                            the changedByClient to set
          */
         public void setChangedByClient(final boolean changedByClient) {
             this.changedByClient = changedByClient;

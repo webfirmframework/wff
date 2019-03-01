@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,9 +37,9 @@ public class Blank extends NoTag {
     /**
      *
      * @param base
-     *            i.e. parent tag of this tag
+     *                     i.e. parent tag of this tag
      * @param children
-     *            An array of {@code AbstractHtml}
+     *                     An array of {@code AbstractHtml}
      *
      * @since 1.0.0
      */
@@ -50,9 +50,9 @@ public class Blank extends NoTag {
     /**
      *
      * @param base
-     *            i.e. parent tag of this tag
+     *                     i.e. parent tag of this tag
      * @param children
-     *            An array of {@code AbstractHtml}
+     *                     An array of {@code AbstractHtml}
      *
      * @since 1.0.0
      */
@@ -64,7 +64,7 @@ public class Blank extends NoTag {
     /**
      *
      * @param base
-     *            i.e. parent tag of this tag
+     *                         i.e. parent tag of this tag
      * @param childContent
      *
      * @since 1.0.0

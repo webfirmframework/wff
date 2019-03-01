@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -96,7 +96,7 @@ public class Font extends AbstractCssProperty<Font>
 
     /**
      * @param cssValue
-     *            the css value to set.
+     *                     the css value to set.
      */
     public Font(final String cssValue) {
         setCssValue(cssValue);
@@ -104,8 +104,9 @@ public class Font extends AbstractCssProperty<Font>
 
     /**
      * @param font
-     *            the {@code Font} object from which the cssValue to set.And,
-     *            {@code null} will throw {@code NullValueException}
+     *                 the {@code Font} object from which the cssValue to
+     *                 set.And, {@code null} will throw
+     *                 {@code NullValueException}
      */
     public Font(final Font font) {
         if (font == null) {
@@ -149,10 +150,11 @@ public class Font extends AbstractCssProperty<Font>
 
     /**
      * @param cssValue
-     *            the value should be in the format of
-     *            <code>italic small-caps bold 12px arial,sans-serif</code> or
-     *            <code>initial/inherit</code>. {@code null} is considered as an
-     *            invalid value and it will throw {@code NullValueException}.
+     *                     the value should be in the format of
+     *                     <code>italic small-caps bold 12px arial,sans-serif</code>
+     *                     or <code>initial/inherit</code>. {@code null} is
+     *                     considered as an invalid value and it will throw
+     *                     {@code NullValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -164,7 +166,7 @@ public class Font extends AbstractCssProperty<Font>
         if (cssValue == null) {
             throw new NullValueException(
                     "null is an invalid value. The value format should be as for example italic small-caps bold 12px arial,sans-serif Or initial/inherit.");
-        } else if ((trimmedCssValue = cssValue.trim()).isEmpty()) {
+        } else if ((trimmedCssValue = StringUtil.strip(cssValue)).isEmpty()) {
             throw new NullValueException(cssValue
                     + " is an invalid value. The value format should be as for example italic small-caps bold 12px arial,sans-serif Or initial/inherit.");
         }
@@ -348,7 +350,7 @@ public class Font extends AbstractCssProperty<Font>
         // TODO verify this method. the fontFamily cannot be validated so this
         // method may be invalid. remove after verified
 
-        if (cssValue == null || cssValue.trim().isEmpty()) {
+        if (cssValue == null || StringUtil.isBlank(cssValue)) {
             return false;
         }
 
@@ -545,7 +547,8 @@ public class Font extends AbstractCssProperty<Font>
             cssValueBuilder.append(fontFamily.getCssValue()).append(' ');
         }
 
-        final String trimmedCssValue = cssValueBuilder.toString().trim();
+        final String trimmedCssValue = StringBuilderUtil
+                .getTrimmedString(cssValueBuilder).toString();
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
         this.fontStyle = fontStyle;
@@ -590,7 +593,8 @@ public class Font extends AbstractCssProperty<Font>
             cssValueBuilder.append(fontFamily.getCssValue()).append(' ');
         }
 
-        final String trimmedCssValue = cssValueBuilder.toString().trim();
+        final String trimmedCssValue = StringBuilderUtil
+                .getTrimmedString(cssValueBuilder).toString();
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
         this.fontVariant = fontVariant;
@@ -635,7 +639,8 @@ public class Font extends AbstractCssProperty<Font>
             cssValueBuilder.append(fontFamily.getCssValue()).append(' ');
         }
 
-        final String trimmedCssValue = cssValueBuilder.toString().trim();
+        final String trimmedCssValue = StringBuilderUtil
+                .getTrimmedString(cssValueBuilder).toString();
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
         this.fontWeight = fontWeight;
@@ -688,7 +693,8 @@ public class Font extends AbstractCssProperty<Font>
             cssValueBuilder.append(fontFamilyCssValue).append(' ');
         }
 
-        final String trimmedCssValue = cssValueBuilder.toString().trim();
+        final String trimmedCssValue = StringBuilderUtil
+                .getTrimmedString(cssValueBuilder).toString();
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
         if (fontSize != null && fontSize.isAlreadyInUse()
@@ -759,7 +765,8 @@ public class Font extends AbstractCssProperty<Font>
             cssValueBuilder.append(fontFamilyCssValue).append(' ');
         }
 
-        final String trimmedCssValue = cssValueBuilder.toString().trim();
+        final String trimmedCssValue = StringBuilderUtil
+                .getTrimmedString(cssValueBuilder).toString();
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
         if (lineHeight != null && lineHeight.isAlreadyInUse()
@@ -830,7 +837,8 @@ public class Font extends AbstractCssProperty<Font>
             cssValueBuilder.append(fontFamilyCssValue).append(' ');
         }
 
-        final String trimmedCssValue = cssValueBuilder.toString().trim();
+        final String trimmedCssValue = StringBuilderUtil
+                .getTrimmedString(cssValueBuilder).toString();
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
         if (fontFamily != null && fontFamily.isAlreadyInUse()

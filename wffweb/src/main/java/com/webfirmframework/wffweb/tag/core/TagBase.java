@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,8 +38,8 @@ public interface TagBase extends Serializable, Cloneable {
      * attributes have been modified.
      *
      * @param charset
-     *            the charset to set for the returning value, eg:
-     *            {@code StandardCharsets.UTF_8}
+     *                    the charset to set for the returning value, eg:
+     *                    {@code StandardCharsets.UTF_8}
      * @return {@code String} equalent to the html string of the tag including
      *         the child tags.
      * @since 1.0.0
@@ -53,8 +53,8 @@ public interface TagBase extends Serializable, Cloneable {
      * attributes have been modified.
      *
      * @param charset
-     *            the charset to set for the returning value, eg:
-     *            {@code StandardCharsets.UTF_8.name()}
+     *                    the charset to set for the returning value, eg:
+     *                    {@code StandardCharsets.UTF_8.name()}
      *
      * @return {@code String} equalent to the html string of the tag including
      *         the child tags.
@@ -69,7 +69,8 @@ public interface TagBase extends Serializable, Cloneable {
      * the cache.
      *
      * @param rebuild
-     *            true to rebuild &amp; false to return previously built string.
+     *                    true to rebuild &amp; false to return previously built
+     *                    string.
      * @return {@code String} equalent to the html string of the tag including
      *         the child tags.
      * @since 1.0.0
@@ -83,10 +84,11 @@ public interface TagBase extends Serializable, Cloneable {
      * the cache.
      *
      * @param rebuild
-     *            true to rebuild &amp; false to return previously built string.
+     *                    true to rebuild &amp; false to return previously built
+     *                    string.
      * @param charset
-     *            the charset to set for the returning value, eg:
-     *            {@code StandardCharsets.UTF_8}
+     *                    the charset to set for the returning value, eg:
+     *                    {@code StandardCharsets.UTF_8}
      * @return {@code String} equalent to the html string of the tag including
      *         the child tags.
      *
@@ -101,10 +103,11 @@ public interface TagBase extends Serializable, Cloneable {
      * the cache.
      *
      * @param rebuild
-     *            true to rebuild &amp; false to return previously built string.
+     *                    true to rebuild &amp; false to return previously built
+     *                    string.
      * @param charset
-     *            the charset to set for the returning value, eg:
-     *            {@code StandardCharsets.UTF_8.name()}
+     *                    the charset to set for the returning value, eg:
+     *                    {@code StandardCharsets.UTF_8.name()}
      * @return {@code String} equalent to the html string of the tag including
      *         the child tags.
      *

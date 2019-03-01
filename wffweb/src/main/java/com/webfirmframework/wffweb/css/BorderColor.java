@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -98,7 +98,7 @@ public class BorderColor extends AbstractCssProperty<BorderColor>
 
     /**
      * @param cssValue
-     *            the css value to set.
+     *                     the css value to set.
      */
     public BorderColor(final String cssValue) {
         setCssValue(cssValue);
@@ -106,8 +106,9 @@ public class BorderColor extends AbstractCssProperty<BorderColor>
 
     /**
      * @param borderBottomColor
-     *            the {@code BorderBottomColor} object from which the cssValue
-     *            to set.And, {@code null} will throw {@code NullValueException}
+     *                              the {@code BorderBottomColor} object from
+     *                              which the cssValue to set.And, {@code null}
+     *                              will throw {@code NullValueException}
      */
     public BorderColor(final BorderColor borderBottomColor) {
         if (borderBottomColor == null) {
@@ -177,11 +178,12 @@ public class BorderColor extends AbstractCssProperty<BorderColor>
 
     /**
      * @param cssValue
-     *            the value should be a color/color code, for example
-     *            <code>#0000ff</code>. {@code null} is considered as an invalid
-     *            value and it will throw {@code NullValueException}.And an
-     *            empty string is also considered as an invalid value and it
-     *            will throw {@code InvalidValueException}.
+     *                     the value should be a color/color code, for example
+     *                     <code>#0000ff</code>. {@code null} is considered as
+     *                     an invalid value and it will throw
+     *                     {@code NullValueException}.And an empty string is
+     *                     also considered as an invalid value and it will throw
+     *                     {@code InvalidValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -190,11 +192,11 @@ public class BorderColor extends AbstractCssProperty<BorderColor>
         if (cssValue == null) {
             throw new NullValueException(
                     "null is an invalid value. The value should be any color for example #0000ff. Or, initial/inherit/transparent.");
-        } else if (cssValue.trim().isEmpty()) {
+        } else if (StringUtil.isBlank(cssValue)) {
             throw new InvalidValueException(
                     "blank string is an invalid value. The value should be any color for example #0000ff. Or, initial/inherit/transparent.");
         } else {
-            final String trimmedCssValue = cssValue.trim();
+            final String trimmedCssValue = StringUtil.strip(cssValue);
 
             if (PREDEFINED_CONSTANTS.contains(trimmedCssValue)) {
                 this.cssValue = trimmedCssValue;
@@ -692,7 +694,7 @@ public class BorderColor extends AbstractCssProperty<BorderColor>
     public static boolean isValid(final String cssValue) {
         final String trimmedCssValue;
         if (cssValue == null || (trimmedCssValue = TagStringUtil
-                .toLowerCase(cssValue.trim())).isEmpty()) {
+                .toLowerCase(StringUtil.strip(cssValue))).isEmpty()) {
             return false;
         }
         if (INITIAL.equalsIgnoreCase(trimmedCssValue)

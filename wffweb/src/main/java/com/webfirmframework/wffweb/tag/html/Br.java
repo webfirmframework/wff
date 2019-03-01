@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,11 +41,19 @@ public class Br extends AbstractHtml {
     }
 
     /**
+     * @param base
+     * @since 3.0.1
+     */
+    public Br(final AbstractHtml base) {
+        this(base, (AbstractAttribute[]) null);
+    }
+
+    /**
      *
      * @param base
-     *            i.e. parent tag of this tag
+     *                       i.e. parent tag of this tag
      * @param attributes
-     *            An array of {@code AbstractAttribute}
+     *                       An array of {@code AbstractAttribute}
      *
      * @since 1.0.0
      */
@@ -80,9 +88,9 @@ public class Br extends AbstractHtml {
 
     /**
      * @param selfClosing
-     *            <code>true</code> to set as self closing tag and
-     *            <code>false</code> for not to set as self closing tag. The
-     *            default value is <code>true</code>.
+     *                        <code>true</code> to set as self closing tag and
+     *                        <code>false</code> for not to set as self closing
+     *                        tag. The default value is <code>true</code>.
      * @since 1.0.0
      * @author WFF
      */
@@ -92,9 +100,9 @@ public class Br extends AbstractHtml {
 
     /**
      * @param nonClosing
-     *            <code>true</code> to set as self closing tag and
-     *            <code>false</code> for not to set as self closing tag. The
-     *            default value is <code>true</code>.
+     *                       <code>true</code> to set as self closing tag and
+     *                       <code>false</code> for not to set as self closing
+     *                       tag. The default value is <code>true</code>.
      * @since 1.0.0
      * @author WFF
      */

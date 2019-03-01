@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,11 @@
 package com.webfirmframework.wffweb.server.page;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -69,13 +69,14 @@ class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
      */
     private void addInWffIdMap(final AbstractHtml tag) {
 
-        final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<Set<AbstractHtml>>();
-        final Set<AbstractHtml> initialSet = new HashSet<AbstractHtml>(1);
+        final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
+        // passed 2 instead of 1 because the load factor is 0.75f
+        final Set<AbstractHtml> initialSet = new HashSet<>(2);
         initialSet.add(tag);
         childrenStack.push(initialSet);
 
-        while (childrenStack.size() > 0) {
-            final Set<AbstractHtml> children = childrenStack.pop();
+        Set<AbstractHtml> children;
+        while ((children = childrenStack.poll()) != null) {
             for (final AbstractHtml child : children) {
 
                 final DataWffId wffIdAttr = child.getDataWffId();
@@ -105,7 +106,8 @@ class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
         // { "name": 2, "values" : [[3]]}, { "name":"C55", "values" : ["div", "<span></span>", 1]}
         //@formatter:on
 
-        final List<NameValue> nameValues = new LinkedList<NameValue>();
+        final Collection<NameValue> nameValues = new ArrayDeque<>(
+                events.length + 2);
 
         final NameValue task = Task.ADDED_INNER_HTML.getTaskNameValue();
         nameValues.add(task);
@@ -141,7 +143,8 @@ class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
                 final NameValue nameValue = new NameValue();
 
                 try {
-                    nameValue.setName(innerHtmlTag.toWffBMBytes("UTF-8"));
+                    nameValue.setName(
+                            innerHtmlTag.toWffBMBytes(StandardCharsets.UTF_8));
                 } catch (final InvalidTagException e) {
                     if (LOGGER.isLoggable(Level.WARNING)) {
                         LOGGER.log(Level.WARNING,
@@ -168,7 +171,7 @@ class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
                     .push(nameValues.toArray(new NameValue[nameValues.size()]));
 
             final String parentTagNameString = new String(parentTagName,
-                    "UTF-8");
+                    StandardCharsets.UTF_8);
             if (TagNameConstants.TEXTAREA.equals(parentTagNameString)) {
                 //@formatter:off
                 // removed all children tags task format :-

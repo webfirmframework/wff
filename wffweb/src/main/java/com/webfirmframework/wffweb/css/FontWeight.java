@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,8 +61,8 @@ public enum FontWeight implements CssProperty {
     private static final int HIGHEST_LENGTH;
 
     static {
-        ALL_OBJECTS = new HashMap<String, FontWeight>();
-        Collection<String> upperCaseSuperToStringsTemp = new ArrayList<String>();
+        ALL_OBJECTS = new HashMap<>();
+        Collection<String> upperCaseSuperToStringsTemp = new ArrayList<>();
         int min = values()[0].cssValue.length();
         int max = 0;
         for (int i = 0; i < values().length; i++) {
@@ -81,7 +81,7 @@ public enum FontWeight implements CssProperty {
         LOWEST_LENGTH = min;
         HIGHEST_LENGTH = max;
         if (values().length > 10) {
-            upperCaseSuperToStringsTemp = new HashSet<String>(
+            upperCaseSuperToStringsTemp = new HashSet<>(
                     upperCaseSuperToStringsTemp);
         }
         UPPER_CASE_SUPER_TO_STRINGS = upperCaseSuperToStringsTemp;
@@ -128,7 +128,7 @@ public enum FontWeight implements CssProperty {
      * invalid cssValue.
      *
      * @param cssValue
-     *            the inbuilt cssValue as per w3 standard.
+     *                     the inbuilt cssValue as per w3 standard.
      * @return the corresponding object for the given {@code cssValue} or null
      *         for invalid cssValue.
      * @since 1.0.0

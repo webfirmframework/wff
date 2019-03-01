@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -92,8 +92,8 @@ public class BorderImageSource extends AbstractCssProperty<BorderImageSource>
 
     /**
      * @param cssValue
-     *            the cssValue to set. <br>
-     *            eg:- {@code url(images/BackgroundDesign.png)}
+     *                     the cssValue to set. <br>
+     *                     eg:- {@code url(images/BackgroundDesign.png)}
      * @author WFF
      */
     public BorderImageSource(final String cssValue) {
@@ -102,8 +102,8 @@ public class BorderImageSource extends AbstractCssProperty<BorderImageSource>
 
     /**
      * @param borderImageSource
-     *            the {@code BorderImageSource} object from which the cssName
-     *            and cssValue to set.
+     *                              the {@code BorderImageSource} object from
+     *                              which the cssName and cssValue to set.
      * @author WFF
      */
     public BorderImageSource(final BorderImageSource borderImageSource) {
@@ -127,10 +127,10 @@ public class BorderImageSource extends AbstractCssProperty<BorderImageSource>
      * {@code setImageUrls(UrlCss3Value... urlCss3Values)} method.
      *
      * @param imageUrls
-     *            an array of backgroundImage urls, eg:-
-     *            {@code backgroundImage.setImageUrls("Test.gif", "TestImage.png")}
-     *            and the generated css will be
-     *            <code>background-image: url("Test.gif"), url("TestImage.png");</code>
+     *                      an array of backgroundImage urls, eg:-
+     *                      {@code backgroundImage.setImageUrls("Test.gif", "TestImage.png")}
+     *                      and the generated css will be
+     *                      <code>background-image: url("Test.gif"), url("TestImage.png");</code>
      * @since 1.0.0
      * @author WFF
      */
@@ -140,7 +140,7 @@ public class BorderImageSource extends AbstractCssProperty<BorderImageSource>
 
     /**
      * @param urlCss3Values
-     *            an array of {@code UrlCss3Value} objects.
+     *                          an array of {@code UrlCss3Value} objects.
      * @author WFF
      */
     public BorderImageSource(final UrlCss3Value... urlCss3Values) {
@@ -182,7 +182,7 @@ public class BorderImageSource extends AbstractCssProperty<BorderImageSource>
 
     /**
      * @param cssValue
-     *            {@code null} is considered as an invalid value.
+     *                     {@code null} is considered as an invalid value.
      * @since 1.0.0
      * @author WFF
      */
@@ -191,7 +191,7 @@ public class BorderImageSource extends AbstractCssProperty<BorderImageSource>
 
         CssValueUtil.throwExceptionForInvalidValue(cssValue);
 
-        if (PREDEFINED_CONSTANTS.contains(cssValue.trim())) {
+        if (PREDEFINED_CONSTANTS.contains(StringUtil.strip(cssValue))) {
             imageUrls = null;
             if (urlCss3Values != null) {
                 for (final UrlCss3Value urlCss3Value : urlCss3Values) {
@@ -279,10 +279,10 @@ public class BorderImageSource extends AbstractCssProperty<BorderImageSource>
      * {@code setImageUrls(UrlCss3Value... urlCss3Values)} method.
      *
      * @param imageUrls
-     *            an array of backgroundImage urls, eg:-
-     *            {@code backgroundImage.setImageUrls("Test.gif", "TestImage.png")}
-     *            and the generated css will be
-     *            <code>background-image: url("Test.gif"), url("TestImage.png");</code>
+     *                      an array of backgroundImage urls, eg:-
+     *                      {@code backgroundImage.setImageUrls("Test.gif", "TestImage.png")}
+     *                      and the generated css will be
+     *                      <code>background-image: url("Test.gif"), url("TestImage.png");</code>
      * @since 1.0.0
      * @author WFF
      */
@@ -305,7 +305,8 @@ public class BorderImageSource extends AbstractCssProperty<BorderImageSource>
 
     /**
      * @param urlCss3Values
-     *            urlCss3Values an array of {@code UrlCss3Value} objects.
+     *                          urlCss3Values an array of {@code UrlCss3Value}
+     *                          objects.
      * @since 1.0.0
      * @author WFF
      */

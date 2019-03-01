@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  * WffBMObject bmObject = new WffBMObject();
  *
  * WffBMByteArray byteArray = new WffBMByteArray(); byteArray.write("こんにちは
- * WFFWEB".getBytes("UTF-8"));
+ * WFFWEB".getBytes(StandardCharsets.UTF_8));
  *
  * bmObject.put("byteArray", BMValueType.BM_BYTE_ARRAY, byteArray);
  *
@@ -160,7 +160,8 @@ public class WffBMByteArray extends ByteArrayOutputStream
      * @author WFF
      */
     public byte[] build(final boolean outer) {
-        final Deque<NameValue> nameValues = new ArrayDeque<NameValue>();
+
+        final Deque<NameValue> nameValues = new ArrayDeque<>(outer ? 2 : 1);
 
         if (outer) {
             final NameValue typeNameValue = new NameValue();

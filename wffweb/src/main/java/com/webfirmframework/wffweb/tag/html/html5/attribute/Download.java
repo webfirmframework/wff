@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,7 +84,7 @@ public class Download extends AbstractAttribute
      * file names accordingly.
      *
      * @param filename
-     *            the filename for the downloading file.
+     *                     the filename for the downloading file.
      * @since 1.0.0
      * @author WFF
      */
@@ -96,7 +96,7 @@ public class Download extends AbstractAttribute
      * sets the value for this attribute
      *
      * @param filename
-     *            the filename for the downloading file.
+     *                     the filename for the downloading file.
      * @since 1.0.0
      * @author WFF
      */

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,7 @@ package com.webfirmframework.wffweb.server.page.action;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.nio.charset.StandardCharsets;
 
 import com.webfirmframework.wffweb.server.page.Task;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
@@ -29,9 +28,6 @@ public enum BrowserPageAction {
     RELOAD(Task.RELOAD_BROWSER,
             null), RELOAD_FROM_CACHE(Task.RELOAD_BROWSER_FROM_CACHE, null);
 
-    private static final Logger LOGGER = Logger
-            .getLogger(BrowserPageAction.class.getName());
-
     private byte[] actionBytes;
 
     private BrowserPageAction(final Task task, final String js) {
@@ -39,28 +35,19 @@ public enum BrowserPageAction {
     }
 
     private void init(final Task task, final String js) {
-        try {
+        if (js != null) {
 
-            if (js != null) {
+            final NameValue nameValue = new NameValue();
+            nameValue.setName(js.getBytes(StandardCharsets.UTF_8));
+            nameValue.setValues(new byte[][] {});
 
-                final NameValue nameValue = new NameValue();
-                nameValue.setName(js.getBytes("UTF-8"));
-                nameValue.setValues(new byte[][] {});
-
-                actionBytes = WffBinaryMessageUtil.VERSION_1
-                        .getWffBinaryMessageBytes(
-                                Task.RELOAD_BROWSER.getTaskNameValue(),
-                                nameValue);
-            } else {
-                actionBytes = WffBinaryMessageUtil.VERSION_1
-                        .getWffBinaryMessageBytes(
-                                Task.RELOAD_BROWSER.getTaskNameValue());
-            }
-
-        } catch (final UnsupportedEncodingException e) {
-            if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
-            }
+            actionBytes = WffBinaryMessageUtil.VERSION_1
+                    .getWffBinaryMessageBytes(
+                            Task.RELOAD_BROWSER.getTaskNameValue(), nameValue);
+        } else {
+            actionBytes = WffBinaryMessageUtil.VERSION_1
+                    .getWffBinaryMessageBytes(
+                            Task.RELOAD_BROWSER.getTaskNameValue());
         }
     }
 
@@ -86,10 +73,16 @@ public enum BrowserPageAction {
      * Gets the action {@code ByteBuffer} for executing the given JavaScript
      *
      * @param js
-     *            JavaScript to execute in the browser
+     *               JavaScript to execute in the browser
      * @return the action {@code ByteBuffer} for executing the given JavaScript
      *         in the browser.
      * @throws UnsupportedEncodingException
+     *                                          throwing this exception will be
+     *                                          removed in future version
+     *                                          because its internal
+     *                                          implementation will never make
+     *                                          this exception due to the code
+     *                                          changes since 3.0.1.
      * @since 2.1.0
      * @author WFF
      */
@@ -102,15 +95,25 @@ public enum BrowserPageAction {
      * Gets the action bytes for executing the given JavaScript in the browser.
      *
      * @param js
-     *            JavaScript to execute in the browser
+     *               JavaScript to execute in the browser
      * @return the action bytes for executing the given JavaScript in the
      *         browser.
      * @throws UnsupportedEncodingException
+     *                                          throwing this exception will be
+     *                                          removed in future version
+     *                                          because its internal
+     *                                          implementation will never make
+     *                                          this exception due to the code
+     *                                          changes since 3.0.1.
      * @since 2.1.0
      * @author WFF
      */
     public static byte[] getActionBytesForExecuteJS(final String js)
             throws UnsupportedEncodingException {
+
+        // this method will never throw UnsupportedEncodingException
+        // but not changing the method signature to keep consistency of this
+        // method
 
         final NameValue taskNameValue = Task.EXECURE_JS.getTaskNameValue();
         final byte[][] taskValue = taskNameValue.getValues();
@@ -118,7 +121,12 @@ public enum BrowserPageAction {
 
         System.arraycopy(taskValue, 0, values, 0, taskValue.length);
 
-        values[taskValue.length] = js.getBytes("UTF-8");
+        // previously it was passing "UTF-8" so it was throwing
+        // UnsupportedEncodingException
+        // but not it is not throwing this exception
+        // however, do not change method signature to keep consistency of the
+        // method accross multiple versions.
+        values[taskValue.length] = js.getBytes(StandardCharsets.UTF_8);
 
         taskNameValue.setValues(values);
 

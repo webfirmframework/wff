@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ public class RgbCssValue extends AbstractBean<RgbCssValue> {
 
     /**
      * @param rgbCssValue
-     *            eg:- <code> rgb(15, 55, 155) </code>
+     *                        eg:- <code> rgb(15, 55, 155) </code>
      */
     public RgbCssValue(final String rgbCssValue) {
         super();
@@ -53,7 +53,7 @@ public class RgbCssValue extends AbstractBean<RgbCssValue> {
 
     /**
      * @param rgb
-     *            eg:- <code> rgb(15, 55, 155) </code>
+     *                eg:- <code> rgb(15, 55, 155) </code>
      *
      * @since 1.0.0
      * @author WFF
@@ -78,8 +78,7 @@ public class RgbCssValue extends AbstractBean<RgbCssValue> {
 
             final String[] rgbStringParts = StringUtil
                     .splitByComma(rgbStringLowerCase.substring(
-                            rgbStringLowerCase.indexOf('(')
-                                    + 1,
+                            rgbStringLowerCase.indexOf('(') + 1,
                             rgbStringLowerCase.lastIndexOf(')')));
 
             if (rgbStringParts.length == 3) {
@@ -111,11 +110,11 @@ public class RgbCssValue extends AbstractBean<RgbCssValue> {
 
     /**
      * @param r
-     *            red value. accepts values only from 0 to 255.
+     *              red value. accepts values only from 0 to 255.
      * @param g
-     *            green value. accepts values only from 0 to 255.
+     *              green value. accepts values only from 0 to 255.
      * @param b
-     *            blue value. accepts values only from 0 to 255.
+     *              blue value. accepts values only from 0 to 255.
      */
     public RgbCssValue(final int r, final int g, final int b) {
         super();
@@ -194,7 +193,7 @@ public class RgbCssValue extends AbstractBean<RgbCssValue> {
 
     /**
      * @param rgbString
-     *            eg:- rgb(25, 155, 55)
+     *                      eg:- rgb(25, 155, 55)
      * @return true if valid and false for invalid.
      * @since 1.0.0
      * @author WFF

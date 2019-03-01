@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,11 +47,24 @@ public final class AttributeUtil {
     public static String getAttributeHtmlString(final boolean rebuild,
             final AbstractAttribute... attributes) {
         if (attributes != null) {
-            final StringBuilder attributeSB = new StringBuilder(
-                    attributes.length * 16);
-            for (final AbstractAttribute attribute : attributes) {
-                attributeSB.append(' ').append(attribute.toHtmlString(rebuild));
+
+            // prefix + total delimiters
+            // 1 + (attributes.length - 1)
+            // StringUtil.join for reference
+            int capacity = attributes.length;
+
+            final String[] htmlStrings = new String[attributes.length];
+            for (int i = 0; i < attributes.length; i++) {
+                final String htmlString = attributes[i].toHtmlString(rebuild);
+                htmlStrings[i] = htmlString;
+                capacity += htmlString.length();
             }
+
+            final StringBuilder attributeSB = new StringBuilder(capacity);
+            for (final String htmlString : htmlStrings) {
+                attributeSB.append(' ').append(htmlString);
+            }
+
             return attributeSB.toString();
         }
         return "";
@@ -61,7 +74,7 @@ public final class AttributeUtil {
      * @param rebuild
      * @param attributes
      * @param charset
-     *            the charset
+     *                       the charset
      * @return the attributes string starting with a space.
      * @author WFF
      * @since 1.0.0
@@ -69,12 +82,25 @@ public final class AttributeUtil {
     public static String getAttributeHtmlString(final boolean rebuild,
             final Charset charset, final AbstractAttribute... attributes) {
         if (attributes != null) {
-            final StringBuilder attributeSB = new StringBuilder(
-                    attributes.length * 16);
-            for (final AbstractAttribute attribute : attributes) {
-                attributeSB.append(' ')
-                        .append(attribute.toHtmlString(rebuild, charset));
+
+            // prefix + total delimiters
+            // 1 + (attributes.length - 1)
+            // StringUtil.join for reference
+            int capacity = attributes.length;
+
+            final String[] htmlStrings = new String[attributes.length];
+            for (int i = 0; i < attributes.length; i++) {
+                final String htmlString = attributes[i].toHtmlString(rebuild,
+                        charset);
+                htmlStrings[i] = htmlString;
+                capacity += htmlString.length();
             }
+
+            final StringBuilder attributeSB = new StringBuilder(capacity);
+            for (final String htmlString : htmlStrings) {
+                attributeSB.append(' ').append(htmlString);
+            }
+
             return attributeSB.toString();
         }
         return "";
@@ -84,7 +110,7 @@ public final class AttributeUtil {
      * @param rebuild
      * @param attributes
      * @param charset
-     *            the charset
+     *                       the charset
      * @return the attributes bytes array compressed by index
      * @author WFF
      * @throws IOException
@@ -111,15 +137,34 @@ public final class AttributeUtil {
     /**
      * @param attributes
      * @param charset
-     *            the charset
+     *                       the charset
      * @return the wff attributes strings bytes array.
      * @author WFF
      * @throws UnsupportedEncodingException
+     *                                          throwing this exception will be
+     *                                          removed in future version
+     *                                          because its internal
+     *                                          implementation will never make
+     *                                          this exception due to the code
+     *                                          changes since 3.0.1.
      * @since 2.0.0
      */
     public static byte[][] getWffAttributeBytes(final String charset,
             final AbstractAttribute... attributes)
             throws UnsupportedEncodingException {
+        return getWffAttributeBytes(Charset.forName(charset), attributes);
+    }
+
+    /**
+     * @param attributes
+     * @param charset
+     *                       the charset
+     * @return the wff attributes strings bytes array.
+     * @author WFF
+     * @since 3.0.1
+     */
+    public static byte[][] getWffAttributeBytes(final Charset charset,
+            final AbstractAttribute... attributes) {
 
         if (attributes != null) {
             final byte[][] attributesArray = new byte[attributes.length][0];

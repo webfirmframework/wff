@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,7 +69,7 @@ public class FlexGrow extends AbstractCssProperty<FlexGrow> {
 
     /**
      * @param cssValue
-     *            the css value to set.
+     *                     the css value to set.
      */
     public FlexGrow(final String cssValue) {
         setCssValue(cssValue);
@@ -77,8 +77,9 @@ public class FlexGrow extends AbstractCssProperty<FlexGrow> {
 
     /**
      * @param flexGrow
-     *            the {@code FlexGrow} object from which the cssValue to
-     *            set.And, {@code null} will throw {@code NullValueException}
+     *                     the {@code FlexGrow} object from which the cssValue
+     *                     to set.And, {@code null} will throw
+     *                     {@code NullValueException}
      */
     public FlexGrow(final FlexGrow flexGrow) {
         if (flexGrow == null) {
@@ -142,7 +143,7 @@ public class FlexGrow extends AbstractCssProperty<FlexGrow> {
 
     /**
      * @param value
-     *            the value to set
+     *                  the value to set
      * @author WFF
      * @since 1.0.0
      */
@@ -156,9 +157,10 @@ public class FlexGrow extends AbstractCssProperty<FlexGrow> {
 
     /**
      * @param cssValue
-     *            the value should be in the format of <code>0.5</code>,
-     *            <code>initial/inherit</code>. {@code null} is considered as an
-     *            invalid value and it will throw {@code NullValueException}.
+     *                     the value should be in the format of
+     *                     <code>0.5</code>, <code>initial/inherit</code>.
+     *                     {@code null} is considered as an invalid value and it
+     *                     will throw {@code NullValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -172,7 +174,7 @@ public class FlexGrow extends AbstractCssProperty<FlexGrow> {
             } else {
 
                 final String trimmedCssValue = TagStringUtil
-                        .toLowerCase(cssValue.trim());
+                        .toLowerCase(StringUtil.strip(cssValue));
 
                 if (INITIAL.equals(trimmedCssValue)
                         || INHERIT.equals(trimmedCssValue)) {
@@ -224,14 +226,14 @@ public class FlexGrow extends AbstractCssProperty<FlexGrow> {
      * validates if the given cssValue is valid for this class.
      *
      * @param cssValue
-     *            the value to check.
+     *                     the value to check.
      * @return true if valid and false if invalid.
      * @author WFF
      * @since 1.0.0
      */
     public static boolean isValid(final String cssValue) {
         final String trimmedCssValue = TagStringUtil
-                .toLowerCase(cssValue.trim());
+                .toLowerCase(StringUtil.strip(cssValue));
         if (StringUtil.containsSpace(trimmedCssValue)) {
             return false;
         }

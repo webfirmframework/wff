@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.tag.html.html5.attribute;
 
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.identifier.BooleanAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 
 /**
@@ -32,7 +33,8 @@ import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
  * @author WFF
  * @since 1.0.0
  */
-public class Multiple extends AbstractAttribute implements InputAttributable {
+public class Multiple extends AbstractAttribute
+        implements BooleanAttribute, InputAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -41,8 +43,14 @@ public class Multiple extends AbstractAttribute implements InputAttributable {
         init();
     }
 
+    /**
+     * sets the default value as <code>multiple</code> (since 3.0.1). If value
+     * is not required then use <code>new Multiple(null)</code>. Note : There
+     * might be some issue in dynamically changing state of tag if there is no
+     * default value.
+     */
     public Multiple() {
-        setAttributeValue(null);
+        setAttributeValue(AttributeNameConstants.MULTIPLE);
     }
 
     public Multiple(final String value) {
@@ -57,11 +65,11 @@ public class Multiple extends AbstractAttribute implements InputAttributable {
      * sets the value for this attribute
      *
      * @param updateClient
-     *            true to update client browser page if it is available. The
-     *            default value is true but it will be ignored if there is no
-     *            client browser page.
+     *                         true to update client browser page if it is
+     *                         available. The default value is true but it will
+     *                         be ignored if there is no client browser page.
      * @param value
-     *            the value for the attribute.
+     *                         the value for the attribute.
      * @since 2.1.15
      * @author WFF
      */

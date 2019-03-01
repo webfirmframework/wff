@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,10 +49,12 @@ public final class CloneUtil {
      * {@code objectToBeClonned}, otherwise returns the same object.
      *
      * @param objectToBeClonned
-     *            from which a new object will be cloned. {@code null} will be
-     *            returned for null value.
+     *                              from which a new object will be cloned.
+     *                              {@code null} will be returned for null
+     *                              value.
      * @param objects
-     *            to check if it contains {@code objectToBeClonned}.
+     *                              to check if it contains
+     *                              {@code objectToBeClonned}.
      * @return the new cloned object only if {@code objects} contains the given
      *         {@code objectToBeClonned}, otherwise returns the same object. If
      *         {@code objectToBeClonned} is null then returns {@code null}. If
@@ -67,10 +69,11 @@ public final class CloneUtil {
         if (objectToBeClonned == null || objects == null) {
             return objectToBeClonned;
         }
-        final Set<T> objectsSet = new HashSet<T>(objects.length);
+        final Set<T> objectsSet = new HashSet<>(objects.length);
         Collections.addAll(objectsSet, objects);
         return objectsSet.contains(objectToBeClonned)
-                ? deepClone(objectToBeClonned) : objectToBeClonned;
+                ? deepClone(objectToBeClonned)
+                : objectToBeClonned;
     }
 
     /**
@@ -78,10 +81,12 @@ public final class CloneUtil {
      * {@code objectToBeClonned}, otherwise returns the same object.
      *
      * @param objectToBeClonned
-     *            from which a new object will be cloned. {@code null} will be
-     *            returned for null value.
+     *                              from which a new object will be cloned.
+     *                              {@code null} will be returned for null
+     *                              value.
      * @param objects
-     *            to check if it contains {@code objectToBeClonned}.
+     *                              to check if it contains
+     *                              {@code objectToBeClonned}.
      * @return the new cloned object only if {@code objects} contains the given
      *         {@code objectToBeClonned}, otherwise returns the same object. If
      *         {@code objectToBeClonned} is null then returns {@code null}. If
@@ -96,9 +101,10 @@ public final class CloneUtil {
         if (objectToBeClonned == null || objects == null) {
             return objectToBeClonned;
         }
-        final Set<T> objectsSet = new HashSet<T>(objects);
+        final Set<T> objectsSet = new HashSet<>(objects);
         return objectsSet.contains(objectToBeClonned)
-                ? deepClone(objectToBeClonned) : objectToBeClonned;
+                ? deepClone(objectToBeClonned)
+                : objectToBeClonned;
     }
 
     /**
@@ -106,10 +112,12 @@ public final class CloneUtil {
      * {@code objectToBeClonned}, otherwise returns the same object.
      *
      * @param objectToBeClonned
-     *            from which a new object will be cloned. {@code null} will be
-     *            returned for null value.
+     *                              from which a new object will be cloned.
+     *                              {@code null} will be returned for null
+     *                              value.
      * @param objects
-     *            to check if it contains {@code objectToBeClonned}.
+     *                              to check if it contains
+     *                              {@code objectToBeClonned}.
      * @return the new cloned object only if {@code objects} contains the given
      *         {@code objectToBeClonned}, otherwise returns the same object. If
      *         {@code objectToBeClonned} is null then returns {@code null}. If
@@ -125,7 +133,8 @@ public final class CloneUtil {
             return objectToBeClonned;
         }
         return objects.contains(objectToBeClonned)
-                ? deepClone(objectToBeClonned) : objectToBeClonned;
+                ? deepClone(objectToBeClonned)
+                : objectToBeClonned;
     }
 
     /**
@@ -133,10 +142,12 @@ public final class CloneUtil {
      * {@code objectToBeClonned}, otherwise returns the same object.
      *
      * @param objectToBeClonned
-     *            from which a new object will be cloned. {@code null} will be
-     *            returned for null value.
+     *                              from which a new object will be cloned.
+     *                              {@code null} will be returned for null
+     *                              value.
      * @param objects
-     *            to check if it doesn't contain {@code objectToBeClonned}.
+     *                              to check if it doesn't contain
+     *                              {@code objectToBeClonned}.
      * @return the new cloned object only if {@code objects} doesn't contain the
      *         given {@code objectToBeClonned}, otherwise returns the same
      *         object. If {@code objectToBeClonned} is null then returns
@@ -154,7 +165,7 @@ public final class CloneUtil {
         if (objects == null) {
             return deepClone(objectToBeClonned);
         }
-        final Set<T> objectsSet = new HashSet<T>(objects.length);
+        final Set<T> objectsSet = new HashSet<>(objects.length);
         Collections.addAll(objectsSet, objects);
         return objectsSet.contains(objectToBeClonned) ? objectToBeClonned
                 : deepClone(objectToBeClonned);
@@ -165,10 +176,12 @@ public final class CloneUtil {
      * {@code objectToBeClonned}, otherwise returns the same object.
      *
      * @param objectToBeClonned
-     *            from which a new object will be cloned. {@code null} will be
-     *            returned for null value.
+     *                              from which a new object will be cloned.
+     *                              {@code null} will be returned for null
+     *                              value.
      * @param objects
-     *            to check if it doesn't contain {@code objectToBeClonned}.
+     *                              to check if it doesn't contain
+     *                              {@code objectToBeClonned}.
      * @return the new cloned object only if {@code objects} doesn't contain the
      *         given {@code objectToBeClonned}, otherwise returns the same
      *         object. If {@code objectToBeClonned} is null then returns
@@ -186,7 +199,7 @@ public final class CloneUtil {
         if (objects == null) {
             return deepClone(objectToBeClonned);
         }
-        final Set<T> objectsSet = new HashSet<T>(objects);
+        final Set<T> objectsSet = new HashSet<>(objects);
         return objectsSet.contains(objectToBeClonned) ? objectToBeClonned
                 : deepClone(objectToBeClonned);
     }
@@ -196,10 +209,12 @@ public final class CloneUtil {
      * {@code objectToBeClonned}, otherwise returns the same object.
      *
      * @param objectToBeClonned
-     *            from which a new object will be cloned. {@code null} will be
-     *            returned for null value.
+     *                              from which a new object will be cloned.
+     *                              {@code null} will be returned for null
+     *                              value.
      * @param objects
-     *            to check if it doesn't contain {@code objectToBeClonned}.
+     *                              to check if it doesn't contain
+     *                              {@code objectToBeClonned}.
      * @return the new cloned object only if {@code objects} doesn't contain the
      *         given {@code objectToBeClonned}, otherwise returns the same
      *         object. If {@code objectToBeClonned} is null then returns
@@ -223,8 +238,9 @@ public final class CloneUtil {
 
     /**
      * @param objectToBeClonned
-     *            from which a new object will be cloned. {@code null} will be
-     *            returned for null value.
+     *                              from which a new object will be cloned.
+     *                              {@code null} will be returned for null
+     *                              value.
      * @return the newly cloned object or {@code null} if
      *         {@code objectToBeClonned} is null.
      * @throws CloneNotSupportedException

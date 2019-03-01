@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ public class Optimum extends AbstractAttribute implements MeterAttributable {
     /**
      *
      * @param value
-     *            the value for the attribute
+     *                  the value for the attribute
      * @since 2.1.9
      */
     public Optimum(final String value) {
@@ -50,7 +50,7 @@ public class Optimum extends AbstractAttribute implements MeterAttributable {
      * sets the value for this attribute
      *
      * @param value
-     *            the value for the attribute.
+     *                  the value for the attribute.
      * @since 2.1.9
      */
     public void setValue(final String value) {
@@ -61,11 +61,11 @@ public class Optimum extends AbstractAttribute implements MeterAttributable {
      * sets the value for this attribute
      *
      * @param updateClient
-     *            true to update client browser page if it is available. The
-     *            default value is true but it will be ignored if there is no
-     *            client browser page.
+     *                         true to update client browser page if it is
+     *                         available. The default value is true but it will
+     *                         be ignored if there is no client browser page.
      * @param value
-     *            the value for the attribute.
+     *                         the value for the attribute.
      * @since 2.1.15
      * @author WFF
      */

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ public class HslCssValue extends AbstractBean<HslCssValue> {
 
     /**
      * @param hslCssValue
-     *            eg:- <code>hsl(155, 55%, 75%)</code>
+     *                        eg:- <code>hsl(155, 55%, 75%)</code>
      */
     public HslCssValue(final String hslCssValue) {
         super();
@@ -53,7 +53,7 @@ public class HslCssValue extends AbstractBean<HslCssValue> {
 
     /**
      * @param hsl
-     *            eg:- <code> hsl(155, 55%, 75%) </code>
+     *                eg:- <code> hsl(155, 55%, 75%) </code>
      *
      * @since 1.0.0
      * @author WFF
@@ -78,8 +78,7 @@ public class HslCssValue extends AbstractBean<HslCssValue> {
 
             final String[] hslStringParts = StringUtil
                     .splitByComma(hslStringLowerCase.substring(
-                            hslStringLowerCase.indexOf('(')
-                                    + 1,
+                            hslStringLowerCase.indexOf('(') + 1,
                             hslStringLowerCase.lastIndexOf(')')));
 
             if (hslStringParts.length == 3) {
@@ -111,11 +110,11 @@ public class HslCssValue extends AbstractBean<HslCssValue> {
 
     /**
      * @param h
-     *            hue value. accepts values only from 0 to 360.
+     *              hue value. accepts values only from 0 to 360.
      * @param s
-     *            saturation value. accepts values only from 0 to 100.
+     *              saturation value. accepts values only from 0 to 100.
      * @param l
-     *            lightness value. accepts values only from 0 to 100.
+     *              lightness value. accepts values only from 0 to 100.
      */
     public HslCssValue(final int h, final float s, final float l) {
         super();
@@ -135,7 +134,7 @@ public class HslCssValue extends AbstractBean<HslCssValue> {
 
     /**
      * @param h
-     *            the hue value, it should be in between 0 to 360.
+     *              the hue value, it should be in between 0 to 360.
      * @author WFF
      * @since 1.0.0
      */
@@ -162,7 +161,7 @@ public class HslCssValue extends AbstractBean<HslCssValue> {
 
     /**
      * @param s
-     *            the saturation value, it should be in between 0 to 100.
+     *              the saturation value, it should be in between 0 to 100.
      * @author WFF
      * @since 1.0.0
      */
@@ -209,7 +208,7 @@ public class HslCssValue extends AbstractBean<HslCssValue> {
 
     /**
      * @param l
-     *            the lightness value, it should be in between 0 to 100.
+     *              the lightness value, it should be in between 0 to 100.
      * @author WFF
      * @since 1.0.0
      */
@@ -242,7 +241,7 @@ public class HslCssValue extends AbstractBean<HslCssValue> {
 
     /**
      * @param hslString
-     *            eg:- hsl(125, 55%, 75%)
+     *                      eg:- hsl(125, 55%, 75%)
      * @return true if valid and false for invalid.
      * @since 1.0.0
      * @author WFF

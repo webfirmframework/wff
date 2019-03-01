@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ public class Border extends AbstractAttribute implements TableAttributable {
 
     /**
      * @param value
-     *            the the number of borders
+     *                  the the number of borders
      * @since 1.1.5
      * @author WFF
      */
@@ -58,7 +58,7 @@ public class Border extends AbstractAttribute implements TableAttributable {
 
     /**
      * @param value
-     *            the the number of borders
+     *                  the the number of borders
      * @since 1.1.5
      * @author WFF
      */
@@ -89,7 +89,7 @@ public class Border extends AbstractAttribute implements TableAttributable {
 
     /**
      * @param value
-     *            the the number of borders
+     *                  the the number of borders
      * @author WFF
      * @since 1.1.5
      */

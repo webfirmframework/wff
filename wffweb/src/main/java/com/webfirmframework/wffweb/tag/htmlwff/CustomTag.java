@@ -31,14 +31,15 @@ public class CustomTag extends AbstractHtml {
     /**
      *
      * @param tagName
-     *            the tag name
+     *                       the tag name
      * @param tagType
-     *            the tag type for eg: {@code AbstractHtml.TagType.SELF_CLOSING}
+     *                       the tag type for eg:
+     *                       {@code AbstractHtml.TagType.SELF_CLOSING}
      *
      * @param base
-     *            i.e. parent tag of this tag
+     *                       i.e. parent tag of this tag
      * @param attributes
-     *            An array of {@code AbstractAttribute}
+     *                       An array of {@code AbstractAttribute}
      *
      * @since 1.0.0
      */
@@ -68,12 +69,12 @@ public class CustomTag extends AbstractHtml {
     /**
      *
      * @param tagName
-     *            the tag name
+     *                       the tag name
      *
      * @param base
-     *            i.e. parent tag of this tag
+     *                       i.e. parent tag of this tag
      * @param attributes
-     *            An array of {@code AbstractAttribute}
+     *                       An array of {@code AbstractAttribute}
      *
      * @since 1.0.0
      */

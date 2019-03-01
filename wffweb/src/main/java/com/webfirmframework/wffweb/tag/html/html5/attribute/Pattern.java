@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  * @author WFF
  */
 package com.webfirmframework.wffweb.tag.html.html5.attribute;
+
+import java.util.regex.PatternSyntaxException;
 
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
@@ -48,7 +50,7 @@ public class Pattern extends AbstractAttribute implements InputAttributable {
     /**
      *
      * @param value
-     *            the value for the attribute
+     *                  the value for the attribute
      * @since 1.0.0
      * @author WFF
      */
@@ -60,7 +62,7 @@ public class Pattern extends AbstractAttribute implements InputAttributable {
      * sets the value for this attribute
      *
      * @param value
-     *            the value for the attribute.
+     *                  the value for the attribute.
      * @since 1.0.0
      * @author WFF
      */
@@ -72,11 +74,11 @@ public class Pattern extends AbstractAttribute implements InputAttributable {
      * sets the value for this attribute
      *
      * @param updateClient
-     *            true to update client browser page if it is available. The
-     *            default value is true but it will be ignored if there is no
-     *            client browser page.
+     *                         true to update client browser page if it is
+     *                         available. The default value is true but it will
+     *                         be ignored if there is no client browser page.
      * @param value
-     *            the value for the attribute.
+     *                         the value for the attribute.
      * @since 2.1.15
      * @author WFF
      */
@@ -103,6 +105,25 @@ public class Pattern extends AbstractAttribute implements InputAttributable {
      */
     protected void init() {
         // to override and use this method
+    }
+
+    /**
+     * checks the value in this attribute contains a valid regex.
+     *
+     * @return true if this attribute contains a valid regex
+     * @since 3.0.1
+     * @author WFF
+     */
+    public boolean containsValidRegEx() {
+
+        try {
+            java.util.regex.Pattern.compile(super.getAttributeValue());
+            return true;
+        } catch (final PatternSyntaxException e) {
+            // NOP
+        }
+
+        return false;
     }
 
 }

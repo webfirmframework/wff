@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -93,7 +93,7 @@ public class Cursor extends AbstractCssProperty<Cursor>
             .getLogger(Cursor.class.getName());
 
     static {
-        ALL_CURSORTYPES = new ArrayList<String>();
+        ALL_CURSORTYPES = new ArrayList<>();
         ALL_CURSORTYPES.add(ALL_SCROLL);
         ALL_CURSORTYPES.add(AUTO);
         ALL_CURSORTYPES.add(CELL);
@@ -147,7 +147,7 @@ public class Cursor extends AbstractCssProperty<Cursor>
 
     /**
      * @param cssValue
-     *            the cssValue to set. eg:- {@code Cursor.ALIAS}
+     *                     the cssValue to set. eg:- {@code Cursor.ALIAS}
      * @author WFF
      */
     public Cursor(final String cssValue) {
@@ -156,8 +156,8 @@ public class Cursor extends AbstractCssProperty<Cursor>
 
     /**
      * @param cursor
-     *            the {@code Cursor} object from which the cssName and cssValue
-     *            to set.
+     *                   the {@code Cursor} object from which the cssName and
+     *                   cssValue to set.
      * @author WFF
      */
     public Cursor(final Cursor cursor) {
@@ -168,7 +168,7 @@ public class Cursor extends AbstractCssProperty<Cursor>
             throw new NullValueException(
                     "customCss.getCssName() can not be null");
         }
-        if (StringUtil.endsWithColon(cursor.getCssName().trim())) {
+        if (StringUtil.endsWithColon(cursor.getCssName())) {
             throw new InvalidValueException(
                     "customCss.getCssName() can not end with : (colon)");
         }
@@ -185,15 +185,16 @@ public class Cursor extends AbstractCssProperty<Cursor>
      * method.
      *
      * @param cursorType
-     *            This will be the last value, eg:- <code>auto</code> in
-     *            <code>cursor: url(Test.gif), url(TestImage.png), auto;</code>.
-     *            This value can not be null. And, it will throw
-     *            {@code NullValueException} for null value.
+     *                       This will be the last value, eg:- <code>auto</code>
+     *                       in
+     *                       <code>cursor: url(Test.gif), url(TestImage.png), auto;</code>.
+     *                       This value can not be null. And, it will throw
+     *                       {@code NullValueException} for null value.
      * @param cursorUrls
-     *            an array of cursor urls, eg:-
-     *            {@code cursor.setCursorUrls("auto", "Test.gif", "TestImage.png")}
-     *            and the generated css will be
-     *            <code>cursor: url("Test.gif"), url("TestImage.png"), auto;</code>
+     *                       an array of cursor urls, eg:-
+     *                       {@code cursor.setCursorUrls("auto", "Test.gif", "TestImage.png")}
+     *                       and the generated css will be
+     *                       <code>cursor: url("Test.gif"), url("TestImage.png"), auto;</code>
      * @since 1.0.0
      * @author WFF
      */
@@ -203,10 +204,10 @@ public class Cursor extends AbstractCssProperty<Cursor>
 
     /**
      * @param cursorType
-     *            the any of the inbuilt cursor types. It will come as the last
-     *            one in the css value.
+     *                          the any of the inbuilt cursor types. It will
+     *                          come as the last one in the css value.
      * @param urlCss3Values
-     *            an array of {@code UrlCss3Value} objects.
+     *                          an array of {@code UrlCss3Value} objects.
      * @author WFF
      */
     public Cursor(final String cursorType,
@@ -249,7 +250,7 @@ public class Cursor extends AbstractCssProperty<Cursor>
 
     /**
      * @param cssValue
-     *            {@code null} is considered as an invalid value.
+     *                     {@code null} is considered as an invalid value.
      * @since 1.0.0
      * @author WFF
      */
@@ -258,7 +259,7 @@ public class Cursor extends AbstractCssProperty<Cursor>
         if (cssValue == null) {
             throw new NullValueException("the value can not be null");
         }
-        final String trimmedCssValue = cssValue.trim();
+        final String trimmedCssValue = StringUtil.strip(cssValue);
         final int cssValueLength = trimmedCssValue.length();
         if (cssValueLength > 0 && (trimmedCssValue.charAt(0) == ':'
                 || trimmedCssValue.charAt(cssValueLength - 1) == ';')) {
@@ -267,9 +268,9 @@ public class Cursor extends AbstractCssProperty<Cursor>
         }
 
         final String[] cssValueParts = StringUtil.splitByComma(trimmedCssValue);
-        final String cursorType = cssValueParts[cssValueParts.length - 1].trim()
-                .toLowerCase();
-        if (!ALL_CURSORTYPES.contains(cursorType.trim())) {
+        final String cursorType = StringUtil
+                .strip(cssValueParts[cssValueParts.length - 1]).toLowerCase();
+        if (!ALL_CURSORTYPES.contains(StringUtil.strip(cursorType))) {
             throw new InvalidValueException(
                     "The last cursor should be the inbuild cursor like auto, default etc..");
         }
@@ -338,7 +339,8 @@ public class Cursor extends AbstractCssProperty<Cursor>
 
     /**
      * @param cursorType
-     *            it should be one of the following <code> Cursor.ALL_SCROLL ,
+     *                       it should be one of the following
+     *                       <code> Cursor.ALL_SCROLL ,
      *            Cursor.AUTO , Cursor.CELL , Cursor.CONTEXT_MENU ,
      *            Cursor.COL_RESIZE , Cursor.COPY , Cursor.CROSSHAIR ,
      *            Cursor.DEFAULT , Cursor.E_RESIZE , Cursor.EW_RESIZE ,
@@ -356,7 +358,7 @@ public class Cursor extends AbstractCssProperty<Cursor>
      */
     public void setCursorType(final String cursorType) {
         this.cursorType = cursorType;
-        final String cursor = cursorType.trim().toLowerCase();
+        final String cursor = StringUtil.strip(cursorType).toLowerCase();
         if (ALL_CURSORTYPES.contains(cursor)) {
             setCssValue(cursor);
         } else {
@@ -396,15 +398,16 @@ public class Cursor extends AbstractCssProperty<Cursor>
      * method.
      *
      * @param cursorType
-     *            This will be the last value, eg:- <code>auto</code> in
-     *            <code>cursor: url(Test.gif), url(TestImage.png), auto;</code>.
-     *            This value can not be null. And, it will throw
-     *            {@code NullValueException} for null value.
+     *                       This will be the last value, eg:- <code>auto</code>
+     *                       in
+     *                       <code>cursor: url(Test.gif), url(TestImage.png), auto;</code>.
+     *                       This value can not be null. And, it will throw
+     *                       {@code NullValueException} for null value.
      * @param cursorUrls
-     *            an array of cursor urls, eg:-
-     *            {@code cursor.setCursorUrls("auto", "Test.gif", "TestImage.png")}
-     *            and the generated css will be
-     *            <code>cursor: url("Test.gif"), url("TestImage.png"), auto;</code>
+     *                       an array of cursor urls, eg:-
+     *                       {@code cursor.setCursorUrls("auto", "Test.gif", "TestImage.png")}
+     *                       and the generated css will be
+     *                       <code>cursor: url("Test.gif"), url("TestImage.png"), auto;</code>
      * @since 1.0.0
      * @author WFF
      */
@@ -416,7 +419,8 @@ public class Cursor extends AbstractCssProperty<Cursor>
         if (cursorUrls == null) {
             throw new NullValueException("cursorUrls is null");
         }
-        if (!ALL_CURSORTYPES.contains(cursorType.trim().toLowerCase())) {
+        if (!ALL_CURSORTYPES
+                .contains(StringUtil.strip(cursorType).toLowerCase())) {
             throw new InvalidValueException(cursorType
                     + " is invalid. The cursorType should be any predefined cursor type, eg default, auto etc..");
         }
@@ -437,10 +441,11 @@ public class Cursor extends AbstractCssProperty<Cursor>
 
     /**
      * @param cursorType
-     *            * the any of the inbuilt cursor types. It will come as the
-     *            last one in the css value.
+     *                          * the any of the inbuilt cursor types. It will
+     *                          come as the last one in the css value.
      * @param urlCss3Values
-     *            urlCss3Values an array of {@code UrlCss3Value} objects.
+     *                          urlCss3Values an array of {@code UrlCss3Value}
+     *                          objects.
      * @since 1.0.0
      * @author WFF
      */
@@ -452,7 +457,8 @@ public class Cursor extends AbstractCssProperty<Cursor>
         if (urlCss3Values == null) {
             throw new NullValueException("urlCss3Values is null");
         }
-        if (!ALL_CURSORTYPES.contains(cursorType.trim().toLowerCase())) {
+        if (!ALL_CURSORTYPES
+                .contains(StringUtil.strip(cursorType).toLowerCase())) {
             throw new InvalidValueException(cursorType
                     + " is invalid. The cursorType should be any predefined cursor type, eg default, auto etc..");
         }

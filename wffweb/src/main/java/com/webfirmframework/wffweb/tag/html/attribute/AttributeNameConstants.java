@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -378,6 +378,16 @@ public final class AttributeNameConstants {
     public static final String REVERSED = "reversed";
 
     public static final String POSTER = "poster";
+
+    public static final String ISMAP = "ismap";
+
+    public static final String SANDBOX = "sandbox";
+
+    public static final String WRAP = "wrap";
+
+    public static final String USEMAP = "usemap";
+
+    public static final String NONCE = "nonce";
 
     /**
      *

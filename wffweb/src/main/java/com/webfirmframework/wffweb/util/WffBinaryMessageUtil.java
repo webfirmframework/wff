@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -235,7 +235,7 @@ public enum WffBinaryMessageUtil {
         public List<NameValue> parse(final byte[] message) {
 
             // needs to optimize this code to find the total no. of name values.
-            final List<NameValue> nameValues = new LinkedList<NameValue>();
+            final List<NameValue> nameValues = new LinkedList<>();
 
             final byte[] nameLengthBytes = new byte[message[0]];
             final byte[] valueLengthBytes = new byte[message[1]];
@@ -340,7 +340,7 @@ public enum WffBinaryMessageUtil {
 
     /**
      * @param message
-     *            the wff binary message bytes
+     *                    the wff binary message bytes
      * @return the list of name value pairs
      * @since 1.0.0
      * @author WFF
@@ -372,7 +372,7 @@ public enum WffBinaryMessageUtil {
 
     /**
      * @param bytes
-     *            from which the integer value will be obtained
+     *                  from which the integer value will be obtained
      * @return the integer value from the given bytes
      * @since 1.0.0
      * @author WFF
@@ -384,8 +384,8 @@ public enum WffBinaryMessageUtil {
 
     /**
      * @param bytes
-     *            the optimized bytes from which the integer value will be
-     *            obtained
+     *                  the optimized bytes from which the integer value will be
+     *                  obtained
      * @return the integer value from the given bytes
      * @since 1.1.3
      * @author WFF
@@ -477,7 +477,7 @@ public enum WffBinaryMessageUtil {
 
     /**
      * @param value
-     *            the integer value to be converted to bytes.
+     *                  the integer value to be converted to bytes.
      * @return the bytes for the corresponding integer given.
      * @since 1.0.0
      * @author WFF
@@ -489,9 +489,9 @@ public enum WffBinaryMessageUtil {
 
     /**
      * @param value
-     *            the integer value to be converted to optimized bytes.
-     *            Optimized bytes means the minimum bytes required to represent
-     *            the given integer value.
+     *                  the integer value to be converted to optimized bytes.
+     *                  Optimized bytes means the minimum bytes required to
+     *                  represent the given integer value.
      * @return the bytes for the corresponding integer given.
      * @since 1.1.3
      * @author WFF
@@ -523,9 +523,9 @@ public enum WffBinaryMessageUtil {
 
     /**
      * @param value
-     *            the integer value to be converted to optimized bytes.
-     *            Optimized bytes means the minimum bytes required to represent
-     *            the given integer value.
+     *                  the integer value to be converted to optimized bytes.
+     *                  Optimized bytes means the minimum bytes required to
+     *                  represent the given integer value.
      * @return the array length of the bytes for the corresponding integer
      *         given.
      * @since 1.1.5
@@ -567,12 +567,12 @@ public enum WffBinaryMessageUtil {
 
     /**
      * @param value
-     *            the integer value to be converted to optimized bytes.
-     *            Optimized bytes means the minimum bytes required to represent
-     *            the given integer value.
+     *                          the integer value to be converted to optimized
+     *                          bytes. Optimized bytes means the minimum bytes
+     *                          required to represent the given integer value.
      * @param lastNoOfBytes
-     *            the last no of bytes to be returned. Expected inputs are 1, 2,
-     *            3 or 4.
+     *                          the last no of bytes to be returned. Expected
+     *                          inputs are 1, 2, 3 or 4.
      * @return the bytes for the corresponding integer given.
      * @since 1.1.5
      * @author WFF

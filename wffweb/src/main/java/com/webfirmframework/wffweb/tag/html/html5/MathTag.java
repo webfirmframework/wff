@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,9 +48,9 @@ public class MathTag extends AbstractHtml {
     /**
      *
      * @param base
-     *            i.e. parent tag of this tag
+     *                       i.e. parent tag of this tag
      * @param attributes
-     *            An array of {@code AbstractAttribute}
+     *                       An array of {@code AbstractAttribute}
      *
      */
     public MathTag(final AbstractHtml base,

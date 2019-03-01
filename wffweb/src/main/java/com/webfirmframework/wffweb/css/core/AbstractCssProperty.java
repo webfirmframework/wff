@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,8 +35,9 @@ public abstract class AbstractCssProperty<EXTENDEDCLASS extends AbstractCssPrope
 
     /**
      * @param value
-     *            to set the value portion in style, eg <code>center</code> for
-     *            style <code>align-content: center</code>.
+     *                  to set the value portion in style, eg
+     *                  <code>center</code> for style
+     *                  <code>align-content: center</code>.
      * @since 1.0.0
      * @author WFF
      * @return the current object.
@@ -54,7 +55,7 @@ public abstract class AbstractCssProperty<EXTENDEDCLASS extends AbstractCssPrope
 
     /**
      * @param stateChangeInformer
-     *            the stateChangeInformer to set
+     *                                the stateChangeInformer to set
      * @since 1.0.0
      * @author WFF
      */
@@ -87,7 +88,7 @@ public abstract class AbstractCssProperty<EXTENDEDCLASS extends AbstractCssPrope
      * dereferences stateChangeInformer object if the given argument is false.
      *
      * @param alreadyInUse
-     *            the alreadyInUse to set
+     *                         the alreadyInUse to set
      * @since 1.0.0
      * @author WFF
      */
@@ -104,7 +105,7 @@ public abstract class AbstractCssProperty<EXTENDEDCLASS extends AbstractCssPrope
      * @author WFF
      */
     public String toCssString() {
-        return getCssName() + ":" + getCssValue();
+        return getCssName() + ':' + getCssValue();
     }
 
 }

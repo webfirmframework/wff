@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -73,13 +74,15 @@ class WffBMDataUpdateListenerImpl implements WffBMDataUpdateListener {
 
             final NameValue[] nameValues = { task, nameValue };
 
-            nameValue.setName(tag.getTagName().getBytes("UTF-8"));
+            nameValue
+                    .setName(tag.getTagName().getBytes(StandardCharsets.UTF_8));
 
             final byte[] dataWffIdBytes = DataWffIdUtil
                     .getDataWffIdBytes(tag.getDataWffId().getValue());
 
             nameValue.setValues(new byte[][] { dataWffIdBytes,
-                    event.getKey().getBytes("UTF-8"), wffBMData.build(true) });
+                    event.getKey().getBytes(StandardCharsets.UTF_8),
+                    wffBMData.build(true) });
 
             browserPage.push(nameValues);
 

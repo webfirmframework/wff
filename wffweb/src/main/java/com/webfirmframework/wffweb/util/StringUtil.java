@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package com.webfirmframework.wffweb.util;
+
+import java.util.Collection;
 
 /**
  *
@@ -31,8 +33,8 @@ public final class StringUtil {
      * words will have a single space as separator.
      *
      * @param input
-     *            the string in which all continues multiple spaces required to
-     *            be converted to single space.
+     *                  the string in which all continues multiple spaces
+     *                  required to be converted to single space.
      * @return the converted string having a single space in between words.
      * @author WFF
      * @since 1.0.0
@@ -48,11 +50,12 @@ public final class StringUtil {
      * gets the first substring which starts and ends with the given values.
      *
      * @param inputString
-     *            the string from which the substring will be extracted.
+     *                         the string from which the substring will be
+     *                         extracted.
      * @param startingWith
-     *            to match the starting substring
+     *                         to match the starting substring
      * @param endingWith
-     *            to match the ending substring
+     *                         to match the ending substring
      * @return the substring which starts and ends with the given
      *         {@code startingWith} and {@code endingWith} values. Or returns
      *         null if it doesn't contain.
@@ -83,14 +86,15 @@ public final class StringUtil {
      * gets the first substring which starts and ends with the given values.
      *
      * @param inputString
-     *            the string from which the substring will be extracted.
+     *                            the string from which the substring will be
+     *                            extracted.
      * @param startingWith
-     *            to match the starting substring
+     *                            to match the starting substring
      * @param endingWith
-     *            to match the ending substring
+     *                            to match the ending substring
      * @param searchFromIndex
-     *            the starting index from where the substring should be
-     *            searched.
+     *                            the starting index from where the substring
+     *                            should be searched.
      *
      * @return the substring which starts and ends with the given
      *         {@code startingWith} and {@code endingWith} values. Or returns
@@ -136,11 +140,12 @@ public final class StringUtil {
      * </pre>
      *
      * @param inputString
-     *            the string from which the substrings will be extracted.
+     *                         the string from which the substrings will be
+     *                         extracted.
      * @param startingWith
-     *            to match the starting substring
+     *                         to match the starting substring
      * @param endingWith
-     *            to match the ending substring
+     *                         to match the ending substring
      * @return the array of substrings which contains strings starting and
      *         ending with the given {@code startingWith} and {@code endingWith}
      *         values. Or returns an empty array (i.e an array having length
@@ -203,13 +208,15 @@ public final class StringUtil {
 
     /**
      * @param inputString
-     *            the string from the index should be found.
+     *                         the string from the index should be found.
      * @param startingWith
-     *            the substring to check whether it comes in the given
-     *            inputString before {@code endingWith} substring.
+     *                         the substring to check whether it comes in the
+     *                         given inputString before {@code endingWith}
+     *                         substring.
      * @param endingWith
-     *            the substring to check whether it comes in the given
-     *            inputString after {@code startingWith} substring.
+     *                         the substring to check whether it comes in the
+     *                         given inputString after {@code startingWith}
+     *                         substring.
      * @return the index of {@code startingWith} substring if the given
      *         {@code inputString} contains a substring starting with
      *         {@code startingWith} string and ending with {@code endingWith}
@@ -237,13 +244,15 @@ public final class StringUtil {
 
     /**
      * @param inputString
-     *            the string from the index should be found.
+     *                         the string from the index should be found.
      * @param startingWith
-     *            the substring to check whether it comes in the given
-     *            inputString before {@code endingWith} substring.
+     *                         the substring to check whether it comes in the
+     *                         given inputString before {@code endingWith}
+     *                         substring.
      * @param endingWith
-     *            the substring to check whether it comes in the given
-     *            inputString after {@code startingWith} substring.
+     *                         the substring to check whether it comes in the
+     *                         given inputString after {@code startingWith}
+     *                         substring.
      * @return the index of {@code endingWith} substring if the given
      *         {@code inputString} contains a substring starting with
      *         {@code startingWith} string and ending with {@code endingWith}
@@ -271,16 +280,18 @@ public final class StringUtil {
 
     /**
      * @param inputString
-     *            the string from the index should be found.
+     *                            the string from the index should be found.
      * @param startingWith
-     *            the substring to check whether it comes in the given
-     *            inputString before {@code endingWith} substring.
+     *                            the substring to check whether it comes in the
+     *                            given inputString before {@code endingWith}
+     *                            substring.
      * @param endingWith
-     *            the substring to check whether it comes in the given
-     *            inputString after {@code startingWith} substring.
+     *                            the substring to check whether it comes in the
+     *                            given inputString after {@code startingWith}
+     *                            substring.
      * @param searchFromIndex
-     *            the starting index from where the substring should be
-     *            searched.
+     *                            the starting index from where the substring
+     *                            should be searched.
      * @return the index of {@code startingWith} substring if the given
      *         {@code inputString} contains a substring starting with
      *         {@code startingWith} string and ending with {@code endingWith}
@@ -310,16 +321,18 @@ public final class StringUtil {
 
     /**
      * @param inputString
-     *            the string from the index should be found.
+     *                            the string from the index should be found.
      * @param startingWith
-     *            the substring to check whether it comes in the given
-     *            inputString before {@code endingWith} substring.
+     *                            the substring to check whether it comes in the
+     *                            given inputString before {@code endingWith}
+     *                            substring.
      * @param endingWith
-     *            the substring to check whether it comes in the given
-     *            inputString after {@code startingWith} substring.
+     *                            the substring to check whether it comes in the
+     *                            given inputString after {@code startingWith}
+     *                            substring.
      * @param searchFromIndex
-     *            the starting index from where the substring should be
-     *            searched.
+     *                            the starting index from where the substring
+     *                            should be searched.
      * @return the index of {@code endingWith} substring if the given
      *         {@code inputString} contains a substring starting with
      *         {@code startingWith} string and ending with {@code endingWith}
@@ -351,13 +364,15 @@ public final class StringUtil {
 
     /**
      * @param inputString
-     *            the string from the index should be found.
+     *                         the string from the index should be found.
      * @param startingWith
-     *            the substring to check whether it comes in the given
-     *            inputString before {@code endingWith} substring.
+     *                         the substring to check whether it comes in the
+     *                         given inputString before {@code endingWith}
+     *                         substring.
      * @param endingWith
-     *            the substring to check whether it comes in the given
-     *            inputString after {@code startingWith} substring.
+     *                         the substring to check whether it comes in the
+     *                         given inputString after {@code startingWith}
+     *                         substring.
      * @return an array containing the index of {@code startingWith} substring
      *         if the given {@code inputString} contains a substring starting
      *         with {@code startingWith} string and ending with
@@ -388,16 +403,18 @@ public final class StringUtil {
 
     /**
      * @param inputString
-     *            the string from the index should be found.
+     *                            the string from the index should be found.
      * @param startingWith
-     *            the substring to check whether it comes in the given
-     *            inputString before {@code endingWith} substring.
+     *                            the substring to check whether it comes in the
+     *                            given inputString before {@code endingWith}
+     *                            substring.
      * @param endingWith
-     *            the substring to check whether it comes in the given
-     *            inputString after {@code startingWith} substring.
+     *                            the substring to check whether it comes in the
+     *                            given inputString after {@code startingWith}
+     *                            substring.
      * @param searchFromIndex
-     *            the starting index from where the substring should be
-     *            searched.
+     *                            the starting index from where the substring
+     *                            should be searched.
      * @return an array containing the index of {@code startingWith} substring
      *         if the given {@code inputString} contains a substring starting
      *         with {@code startingWith} string and ending with
@@ -465,11 +482,12 @@ public final class StringUtil {
      * </pre>
      *
      * @param inputString
-     *            the string from which the substrings will be extracted.
+     *                         the string from which the substrings will be
+     *                         extracted.
      * @param startingWith
-     *            to match the starting substring
+     *                         to match the starting substring
      * @param endingWith
-     *            to match the ending substring
+     *                         to match the ending substring
      * @return the array of substrings which contains strings starting and
      *         ending with the given {@code startingWith} and {@code endingWith}
      *         values. Or returns an empty array (i.e an array having length
@@ -596,9 +614,9 @@ public final class StringUtil {
 
     /**
      * @param string
-     *            the string to split.
+     *                   the string to split.
      * @param delim
-     *            to by which the given string to be split.
+     *                   to by which the given string to be split.
      * @return the array of strings split by the given char.
      * @since 3.0.0 public
      * @author WFF
@@ -740,6 +758,25 @@ public final class StringUtil {
     }
 
     /**
+     * Checks if the given string contains whitespace.
+     *
+     * @param string
+     * @return true if the given string contains space char.
+     * @since 3.0.1
+     * @author WFF
+     */
+    public static boolean containsWhitespace(final String string) {
+
+        for (int i = 0; i < string.length(); i++) {
+            if (Character.isWhitespace(string.charAt(i))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Checks if the given string contains minus (-).
      *
      * @param string
@@ -761,6 +798,161 @@ public final class StringUtil {
      */
     public static boolean containsPlus(final String string) {
         return contains(string, '+');
+    }
+
+    /**
+     *
+     * Eg:
+     *
+     * <pre>
+     * String join = StringUtil.join(',', ':', ';', "one", "two", "three", "four");
+     * prints <i>:one,two,three,four;</i>
+     * </pre>
+     *
+     * This method must be faster than Java 8's StringJoiner.
+     *
+     * @param delimiter
+     * @param prefix
+     * @param suffix
+     * @param items
+     * @return String
+     * @since 3.0.1
+     */
+    public static String join(final char delimiter, final char prefix,
+            final char suffix, final String... items) {
+
+        // total delimiters: items.length -1
+        // prefix and suffix: 2
+        int capacity = (items.length - 1) + 2;
+        for (final String item : items) {
+            capacity += item.length();
+        }
+
+        final StringBuilder builder = new StringBuilder(capacity);
+        builder.append(prefix);
+
+        for (final String item : items) {
+            builder.append(item).append(delimiter);
+        }
+
+        builder.deleteCharAt(builder.length() - 1);
+        builder.append(suffix);
+
+        return builder.toString();
+    }
+
+    /**
+     * Eg:
+     *
+     * <pre>
+     * String join = StringUtil.join(',', "one", "two", "three", "four");
+     * prints <i>one,two,three,four</i>
+     * </pre>
+     *
+     * This method must be faster than Java 8's String.join method.
+     *
+     * @param delimiter
+     * @param items
+     * @return String
+     * @since 3.0.1
+     */
+    public static String join(final char delimiter, final String... items) {
+
+        // total delimiters: items.length -1
+        int capacity = (items.length - 1);
+        for (final String item : items) {
+            capacity += item.length();
+        }
+
+        final StringBuilder builder = new StringBuilder(capacity);
+
+        for (final String item : items) {
+            builder.append(item).append(delimiter);
+        }
+
+        builder.deleteCharAt(builder.length() - 1);
+
+        return builder.toString();
+    }
+
+    /**
+     * Eg:
+     *
+     * <pre>
+     * String join = StringUtil.join(',', "one", "two", "three", "four");
+     * prints <i>one,two,three,four</i>
+     * </pre>
+     *
+     * This method must be faster than Java 8's String.join method.
+     *
+     * @param delimiter
+     * @param items
+     * @return String
+     * @since 3.0.1
+     */
+    public static String join(final char delimiter,
+            final Collection<String> items) {
+
+        // total delimiters: items.length -1
+        int capacity = (items.size() - 1);
+        for (final String item : items) {
+            capacity += item.length();
+        }
+
+        final StringBuilder builder = new StringBuilder(capacity);
+
+        for (final String item : items) {
+            builder.append(item).append(delimiter);
+        }
+
+        builder.deleteCharAt(builder.length() - 1);
+
+        return builder.toString();
+    }
+
+    /**
+     * @param s
+     *              String to check
+     * @return true if the given string doesn't contain any char other than
+     *         whitespace.
+     * @since 3.0.1
+     */
+    public static boolean isBlank(final String s) {
+
+        for (int i = 0; i < s.length(); i++) {
+            if (!Character.isWhitespace(s.charAt(i))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Removes the trailing and leading whitespaces
+     *
+     * @param s
+     * @return the striped string
+     * @since 3.0.1
+     */
+    public static String strip(final String s) {
+
+        int first;
+        int last;
+
+        for (first = 0; first < s.length(); first++) {
+            if (!Character.isWhitespace(s.charAt(first))) {
+                break;
+            }
+        }
+
+        for (last = s.length(); last > first; last--) {
+            if (!Character.isWhitespace(s.charAt(last - 1))) {
+                break;
+            }
+        }
+
+        return s.substring(first, last);
     }
 
 }

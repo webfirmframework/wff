@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ public final class CssValueUtil {
     private static final Map<String, String> CSS_VALUE_PART_START_END_VALUES;
 
     static {
-        CSS_VALUE_PART_START_END_VALUES = new HashMap<String, String>();
+        CSS_VALUE_PART_START_END_VALUES = new HashMap<>();
         CSS_VALUE_PART_START_END_VALUES.put("rgb(", ")");
         CSS_VALUE_PART_START_END_VALUES.put("rgba(", ")");
         CSS_VALUE_PART_START_END_VALUES.put("hsl(", ")");
@@ -104,7 +104,7 @@ public final class CssValueUtil {
      *
      *
      * @param cssValue
-     *            the value from which the css parts will be extracted
+     *                     the value from which the css parts will be extracted
      * @return the list containing cssValue parts
      * @author WFF
      * @since 1.0.0
@@ -112,7 +112,7 @@ public final class CssValueUtil {
     public static List<String> split(final String cssValue) {
         try {
 
-            final Map<Integer, int[]> startAndEndIndexes = new TreeMap<Integer, int[]>();
+            final Map<Integer, int[]> startAndEndIndexes = new TreeMap<>();
 
             for (final Entry<String, String> entry : CSS_VALUE_PART_START_END_VALUES
                     .entrySet()) {
@@ -130,7 +130,7 @@ public final class CssValueUtil {
                         StringUtil.convertToSingleSpace(cssValue)));
             }
 
-            final List<String> cssValueParts = new ArrayList<String>();
+            final List<String> cssValueParts = new ArrayList<>();
 
             int count = 0;
             final int startAndEndIndexesSize = startAndEndIndexes.size();
@@ -159,8 +159,8 @@ public final class CssValueUtil {
                         final String cssValuePart2 = cssValue.substring(
                                 firstSlotOfPrevious + 1, zerothSlotCurrent);
 
-                        final String trimmedCssValuePart2 = cssValuePart2
-                                .trim();
+                        final String trimmedCssValuePart2 = StringUtil
+                                .strip(cssValuePart2);
 
                         if (StringUtil.startsWithWhitespace(cssValuePart2)
                                 && StringUtil
@@ -169,7 +169,8 @@ public final class CssValueUtil {
                                 for (final String each : StringUtil
                                         .splitBySpace(trimmedCssValuePart2)) {
                                     final String trimmed;
-                                    if (!(trimmed = each.trim()).isEmpty()) {
+                                    if (!(trimmed = StringUtil.strip(each))
+                                            .isEmpty()) {
                                         cssValueParts.add(trimmed);
                                     }
                                 }
@@ -203,14 +204,15 @@ public final class CssValueUtil {
                         final String cssValuePart2 = cssValue.substring(0,
                                 zerothSlotCurrent);
 
-                        final String trimmedCssValuePart2 = cssValuePart2
-                                .trim();
+                        final String trimmedCssValuePart2 = StringUtil
+                                .strip(cssValuePart2);
 
                         if (StringUtil.endsWithWhitespace(cssValuePart2)) {
                             for (final String each : StringUtil
                                     .splitBySpace(trimmedCssValuePart2)) {
                                 final String trimmed;
-                                if (!(trimmed = each.trim()).isEmpty()) {
+                                if (!(trimmed = StringUtil.strip(each))
+                                        .isEmpty()) {
                                     cssValueParts.add(trimmed);
                                 }
                             }
@@ -236,7 +238,8 @@ public final class CssValueUtil {
                     final String cssValuePart2 = cssValue
                             .substring(firstSlotCurrent + 1);
 
-                    final String trimmedCssValuePart2 = cssValuePart2.trim();
+                    final String trimmedCssValuePart2 = StringUtil
+                            .strip(cssValuePart2);
 
                     if (StringUtil.startsWithWhitespace(cssValuePart2)) {
                         for (final String each : StringUtil
@@ -278,7 +281,7 @@ public final class CssValueUtil {
             throws NullValueException, InvalidValueException {
         if (cssValue == null) {
             throw new NullValueException("the cssValue should not be null.");
-        } else if (cssValue.trim().isEmpty()) {
+        } else if (StringUtil.isBlank(cssValue)) {
             throw new InvalidValueException(
                     "the cssValue should not be blank.");
         }

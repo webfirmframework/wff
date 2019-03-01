@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ public class RgbaCssValue extends AbstractBean<RgbaCssValue> {
 
     /**
      * @param rgbaCssValue
-     *            eg:- <code> rgba(15, 55, 155, 1) </code>
+     *                         eg:- <code> rgba(15, 55, 155, 1) </code>
      */
     public RgbaCssValue(final String rgbaCssValue) {
         super();
@@ -65,7 +65,7 @@ public class RgbaCssValue extends AbstractBean<RgbaCssValue> {
 
     /**
      * @param rgba
-     *            eg:- <code> rgba(15, 55, 155, 0.5) </code>
+     *                 eg:- <code> rgba(15, 55, 155, 0.5) </code>
      *
      * @since 1.0.0
      * @author WFF
@@ -90,8 +90,7 @@ public class RgbaCssValue extends AbstractBean<RgbaCssValue> {
 
             final String[] rgbaStringParts = StringUtil
                     .splitByComma(rgbaStringLowerCase.substring(
-                            rgbaStringLowerCase.indexOf('(')
-                                    + 1,
+                            rgbaStringLowerCase.indexOf('(') + 1,
                             rgbaStringLowerCase.lastIndexOf(')')));
 
             if (rgbaStringParts.length == 4) {
@@ -128,13 +127,13 @@ public class RgbaCssValue extends AbstractBean<RgbaCssValue> {
 
     /**
      * @param r
-     *            red value. accepts values only from 0 to 255.
+     *              red value. accepts values only from 0 to 255.
      * @param g
-     *            green value. accepts values only from 0 to 255.
+     *              green value. accepts values only from 0 to 255.
      * @param b
-     *            blue value. accepts values only from 0 to 255.
+     *              blue value. accepts values only from 0 to 255.
      * @param a
-     *            alpha value. accepts values only from 0 to 1.
+     *              alpha value. accepts values only from 0 to 1.
      */
     public RgbaCssValue(final int r, final int g, final int b, final float a) {
         super();
@@ -164,7 +163,7 @@ public class RgbaCssValue extends AbstractBean<RgbaCssValue> {
      * to set the red value which is in between 0 to 255.
      *
      * @param r
-     *            represents red
+     *              represents red
      * @author WFF
      * @since 1.0.0
      */
@@ -193,7 +192,7 @@ public class RgbaCssValue extends AbstractBean<RgbaCssValue> {
      * to set the green value which is in between 0 to 255.
      *
      * @param g
-     *            represents green
+     *              represents green
      * @author WFF
      * @since 1.0.0
      */
@@ -282,7 +281,7 @@ public class RgbaCssValue extends AbstractBean<RgbaCssValue> {
 
     /**
      * @param rgbaString
-     *            eg:- rgba(25, 155, 55, 0.2)
+     *                       eg:- rgba(25, 155, 55, 0.2)
      * @return true if valid and false for invalid.
      * @since 1.0.0
      * @author WFF

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
-import java.util.Comparator;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -204,23 +203,18 @@ public enum Task {
      */
     public static Set<Task> getSortedTasks() {
 
-        final Set<Task> sortedTaskNames = new TreeSet<Task>(
-                new Comparator<Task>() {
-
-                    @Override
-                    public int compare(final Task o1, final Task o2) {
-                        // to sort the tasks in descending order of the length
-                        // of the
-                        // names
-                        if (o1.name().length() > o2.name().length()) {
-                            return -1;
-                        }
-                        if (o1.name().length() < o2.name().length()) {
-                            return 1;
-                        }
-                        return -1;
-                    }
-                });
+        final Set<Task> sortedTaskNames = new TreeSet<>((o1, o2) -> {
+            // to sort the tasks in descending order of the length
+            // of the
+            // names
+            if (o1.name().length() > o2.name().length()) {
+                return -1;
+            }
+            if (o1.name().length() < o2.name().length()) {
+                return 1;
+            }
+            return -1;
+        });
 
         for (final Task task : Task.values()) {
             sortedTaskNames.add(task);

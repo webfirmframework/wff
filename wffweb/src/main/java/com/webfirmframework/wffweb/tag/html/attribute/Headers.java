@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,21 +16,18 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
-import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractValueSetAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.TdAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.ThAttributable;
-import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
  * @author WFF
  *
  */
-public class Headers extends AbstractAttribute
+public class Headers extends AbstractValueSetAttribute
         implements ThAttributable, TdAttributable {
 
     /**
@@ -53,25 +50,7 @@ public class Headers extends AbstractAttribute
      */
     public Headers(final String... headerIds) {
         if (headerIds != null) {
-            /*
-             * should not call addHeaderIds(final String headerId) instead of
-             * the below duplicate code since the addHeaderIds method may be
-             * overridden by the extended class.
-             */
-            for (final String headerId : headerIds) {
-                String trimmmedValue = null;
-                if (headerId != null
-                        && !(trimmmedValue = headerId.trim()).isEmpty()) {
-                    final String[] values = StringUtil
-                            .splitBySpace(trimmmedValue);
-
-                    final List<String> allValues = new ArrayList<String>(
-                            values.length);
-                    Collections.addAll(allValues, values);
-
-                    addAllToAttributeValueSet(allValues);
-                }
-            }
+            super.addAllToAttributeValueSet(headerIds);
         }
     }
 
@@ -89,25 +68,14 @@ public class Headers extends AbstractAttribute
      * adds the given header ids.
      *
      * @param headerIds
-     *            one or more header ids separated by space or as an array of
-     *            header ids.
+     *                      one or more header ids separated by space or as an
+     *                      array of header ids.
      * @since 1.1.3
      * @author WFF
      */
     public void addHeaderIds(final String... headerIds) {
         if (headerIds != null) {
-            for (final String headerId : headerIds) {
-                String trimmmedValue = null;
-                if (headerId != null
-                        && !(trimmmedValue = headerId.trim()).isEmpty()) {
-                    final String[] values = StringUtil
-                            .splitBySpace(trimmmedValue);
-                    final List<String> allValues = new ArrayList<String>(
-                            values.length);
-                    Collections.addAll(allValues, values);
-                    addAllToAttributeValueSet(allValues);
-                }
-            }
+            super.addAllToAttributeValueSet(headerIds);
         }
     }
 
@@ -115,27 +83,14 @@ public class Headers extends AbstractAttribute
      * removed all current header ids and adds the given header ids.
      *
      * @param headerIds
-     *            one or more header ids separated by space or an array of
-     *            header ids.
+     *                      one or more header ids separated by space or an
+     *                      array of header ids.
      * @since 1.1.3
      * @author WFF
      */
     public void addNewHeaderIds(final String... headerIds) {
-
         if (headerIds != null) {
-            for (final String headerId : headerIds) {
-                String trimmmedValue = null;
-                if (headerId != null
-                        && !(trimmmedValue = headerId.trim()).isEmpty()) {
-                    final String[] values = StringUtil
-                            .splitBySpace(trimmmedValue);
-                    final List<String> allValues = new ArrayList<String>(
-                            values.length);
-                    Collections.addAll(allValues, values);
-                    removeAllFromAttributeValueSet();
-                    addAllToAttributeValueSet(allValues);
-                }
-            }
+            super.replaceAllInAttributeValueSet(headerIds);
         }
     }
 
@@ -147,30 +102,78 @@ public class Headers extends AbstractAttribute
      * @author WFF
      */
     public void addAllHeaderIds(final Collection<String> headerIds) {
-        addAllToAttributeValueSet(headerIds);
+        super.addAllToAttributeValueSet(headerIds);
     }
 
     /**
      * removes all header ids from the class attribute
      *
      * @param headerIds
-     *            the header ids to remove
+     *                      the header ids to remove
      * @since 1.1.3
      * @author WFF
      */
     public void removeAllHeaderIds(final Collection<String> headerIds) {
-        removeAllFromAttributeValueSet(headerIds);
+        super.removeAllFromAttributeValueSet(headerIds);
     }
 
     /**
      * removes the given header id
      *
      * @param headerId
-     *            the header id to remove
+     *                     the header id to remove
      * @since 1.1.3
      * @author WFF
+     * @deprecated this method will be removed in the future release, use
+     *             removeHeaderId instead of it.
      */
+    @Deprecated
     public void removeClassName(final String headerId) {
-        removeFromAttributeValueSet(headerId);
+        super.removeFromAttributeValueSet(headerId);
+    }
+
+    /**
+     * removes the given header id
+     *
+     * @param headerId
+     *                     the header id to remove
+     * @since 3.0.1
+     * @author WFF
+     */
+    public void removeHeaderId(final String headerId) {
+        super.removeFromAttributeValueSet(headerId);
+    }
+
+    /**
+     * removes the given header ids
+     *
+     * @param headerIds
+     *                      the header ids to remove
+     * @since 3.0.1
+     * @author WFF
+     */
+    public void removeHeaderIds(final Collection<String> headerIds) {
+        super.removeAllFromAttributeValueSet(headerIds);
+    }
+
+    /**
+     * removes the given header ids
+     *
+     * @param headerIds
+     *                      the header ids to remove
+     * @since 3.0.1
+     * @author WFF
+     */
+    public void removeHeaderIds(final String... headerIds) {
+        super.removeAllFromAttributeValueSet(Arrays.asList(headerIds));
+    }
+
+    /**
+     * Removes all header ids
+     *
+     * @since 3.0.1
+     */
+    public void removeAllHeaderIds() {
+        super.removeAllFromAttributeValueSet();
     }
 }

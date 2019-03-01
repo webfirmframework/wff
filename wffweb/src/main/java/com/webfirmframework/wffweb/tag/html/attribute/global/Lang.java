@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ public class Lang extends AbstractAttribute implements GlobalAttributable {
 
     /**
      * @param lang
-     *            eg: fr
+     *                 eg: fr
      * @author WFF
      */
     public Lang(final String lang) {
@@ -68,7 +68,7 @@ public class Lang extends AbstractAttribute implements GlobalAttributable {
 
     /**
      * @param locale
-     *            eg: Locale.JAPAN
+     *                   eg: Locale.JAPAN
      * @author WFF
      */
     public Lang(final Locale locale) {
@@ -87,7 +87,7 @@ public class Lang extends AbstractAttribute implements GlobalAttributable {
 
     /**
      * @param lang
-     *            eg: fr
+     *                 eg: fr
      * @since 1.0.0
      * @author WFF
      */

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,8 +43,8 @@ public class UrlCss3Value extends AbstractBean<UrlCss3Value> {
 
     /**
      * @param urlCssValue
-     *            eg:- <code> url(\"Test.png\")75 158 </code> or
-     *            <code> url(\"Test.png\")</code>
+     *                        eg:- <code> url(\"Test.png\")75 158 </code> or
+     *                        <code> url(\"Test.png\")</code>
      * @param urlCssValue
      */
     public UrlCss3Value(final String urlCssValue) {
@@ -64,7 +64,7 @@ public class UrlCss3Value extends AbstractBean<UrlCss3Value> {
      */
     private void extractAndAssign(final String urlString) {
 
-        final String urlStringTrimmed = urlString.trim();
+        final String urlStringTrimmed = StringUtil.strip(urlString);
 
         final int lastIndexOfClosingParentheses = urlStringTrimmed
                 .lastIndexOf(')');
@@ -80,8 +80,8 @@ public class UrlCss3Value extends AbstractBean<UrlCss3Value> {
             String extractedUrl = "";
 
             if (indexOfOpeningParantheses + 1 < urlPart.length()) {
-                extractedUrl = urlPart.substring(indexOfOpeningParantheses + 1)
-                        .trim();
+                extractedUrl = StringUtil.strip(
+                        urlPart.substring(indexOfOpeningParantheses + 1));
             }
 
             extractedUrl = extractedUrl.length() > 0
@@ -98,8 +98,9 @@ public class UrlCss3Value extends AbstractBean<UrlCss3Value> {
 
             if (beginIndexCoordinatesPart < urlStringTrimmed.length()) {
 
-                final String coordinatesPart = urlStringTrimmed
-                        .substring(beginIndexCoordinatesPart).trim()
+                final String coordinatesPart = StringUtil
+                        .strip(urlStringTrimmed
+                                .substring(beginIndexCoordinatesPart))
                         .replaceAll("\\s+", " ");
 
                 final String[] coordinatesStringParts = StringUtil
@@ -118,11 +119,13 @@ public class UrlCss3Value extends AbstractBean<UrlCss3Value> {
 
     /**
      * @param url
-     *            eg:- Test.png
+     *                eg:- Test.png
      * @param x
-     *            x coordinate value. give -1 if no value needs to be defined.
+     *                x coordinate value. give -1 if no value needs to be
+     *                defined.
      * @param y
-     *            y coordinate value. give -1 if no value needs to be defined.
+     *                y coordinate value. give -1 if no value needs to be
+     *                defined.
      */
     public UrlCss3Value(final String url, final int x, final int y) {
         super();

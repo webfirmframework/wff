@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ public enum FloatCss implements CssProperty {
     private static final int HIGHEST_LENGTH;
 
     static {
-        Collection<String> upperCaseSuperToStringsTemp = new ArrayList<String>();
+        Collection<String> upperCaseSuperToStringsTemp = new ArrayList<>();
         int min = values()[0].upperCaseSuperToString.length();
         int max = 0;
         for (int i = 0; i < values().length; i++) {
@@ -66,7 +66,7 @@ public enum FloatCss implements CssProperty {
         LOWEST_LENGTH = min;
         HIGHEST_LENGTH = max;
         if (values().length > 10) {
-            upperCaseSuperToStringsTemp = new HashSet<String>(
+            upperCaseSuperToStringsTemp = new HashSet<>(
                     upperCaseSuperToStringsTemp);
         }
         UPPER_CASE_SUPER_TO_STRINGS = upperCaseSuperToStringsTemp;
@@ -109,8 +109,8 @@ public enum FloatCss implements CssProperty {
      * invalid cssValue.
      *
      * @param cssValue
-     *            the css property value without including
-     *            <code>!important</code> in it.
+     *                     the css property value without including
+     *                     <code>!important</code> in it.
      * @return the corresponding object for the given {@code cssValue} or null
      *         for invalid cssValue.
      * @since 1.0.0

@@ -26,9 +26,9 @@ public class H6 extends AbstractHtml {
     /**
      *
      * @param base
-     *            i.e. parent tag of this tag
+     *                       i.e. parent tag of this tag
      * @param attributes
-     *            An array of {@code AbstractAttribute}
+     *                       An array of {@code AbstractAttribute}
      *
      * @since 1.1.3
      */

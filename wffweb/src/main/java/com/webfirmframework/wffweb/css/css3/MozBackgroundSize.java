@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,7 +73,7 @@ public class MozBackgroundSize extends AbstractCssProperty<MozBackgroundSize> {
 
     /**
      * @param cssValue
-     *            the css value to set.
+     *                     the css value to set.
      */
     public MozBackgroundSize(final String cssValue) {
         setCssValue(cssValue);
@@ -81,8 +81,9 @@ public class MozBackgroundSize extends AbstractCssProperty<MozBackgroundSize> {
 
     /**
      * @param backgroundSize
-     *            the {@code backgroundSize} object from which the cssValue to
-     *            set.And, {@code null} will throw {@code NullValueException}
+     *                           the {@code backgroundSize} object from which
+     *                           the cssValue to set.And, {@code null} will
+     *                           throw {@code NullValueException}
      */
     public MozBackgroundSize(final MozBackgroundSize backgroundSize) {
         if (backgroundSize == null) {
@@ -93,9 +94,9 @@ public class MozBackgroundSize extends AbstractCssProperty<MozBackgroundSize> {
 
     /**
      * @param horizontalHeight
-     *            the value to set.
+     *                             the value to set.
      * @param cssLengthUnit
-     *            the value unit to set.
+     *                             the value unit to set.
      * @since 1.0.0
      * @author WFF
      */
@@ -276,9 +277,10 @@ public class MozBackgroundSize extends AbstractCssProperty<MozBackgroundSize> {
 
     /**
      * @param cssValue
-     *            the value should be in the format of <code>55px</code> or
-     *            <code>95%</code>. {@code null} is considered as an invalid
-     *            value and it will throw {@code NullValueException}.
+     *                     the value should be in the format of
+     *                     <code>55px</code> or <code>95%</code>. {@code null}
+     *                     is considered as an invalid value and it will throw
+     *                     {@code NullValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -290,7 +292,7 @@ public class MozBackgroundSize extends AbstractCssProperty<MozBackgroundSize> {
                         "null is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit.");
             } else {
                 final String trimmedCssValue = TagStringUtil
-                        .toLowerCase(cssValue.trim());
+                        .toLowerCase(StringUtil.strip(cssValue));
                 boolean invalidValue = true;
 
                 final String[] lengthValues = StringUtil
@@ -357,8 +359,8 @@ public class MozBackgroundSize extends AbstractCssProperty<MozBackgroundSize> {
                 getStateChangeInformer().stateChanged(this);
             }
         } catch (final NumberFormatException e) {
-            throw new InvalidValueException(
-                    cssValue + " is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit.",
+            throw new InvalidValueException(cssValue
+                    + " is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit.",
                     e);
         }
         return this;
@@ -389,14 +391,14 @@ public class MozBackgroundSize extends AbstractCssProperty<MozBackgroundSize> {
      * validates if the given cssValue is valid for this class.
      *
      * @param cssValue
-     *            the value to check.
+     *                     the value to check.
      * @return true if valid and false if invalid.
      * @author WFF
      * @since 1.0.0
      */
     public static boolean isValid(final String cssValue) {
         final String trimmedCssValue = TagStringUtil
-                .toLowerCase(cssValue.trim());
+                .toLowerCase(StringUtil.strip(cssValue));
 
         final String[] cssValueParts = StringUtil.splitBySpace(trimmedCssValue);
         if (cssValueParts.length > 2) {

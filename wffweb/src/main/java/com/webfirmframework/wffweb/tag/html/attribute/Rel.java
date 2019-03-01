@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import java.util.Set;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractValueSetAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.AreaAttributable;
+import com.webfirmframework.wffweb.tag.html.identifier.LinkAttributable;
 
 /**
  * For anchors containing the href attribute, this attribute specifies the
@@ -38,7 +39,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.AreaAttributable;
  *
  */
 public class Rel extends AbstractValueSetAttribute
-        implements AAttributable, AreaAttributable {
+        implements AAttributable, AreaAttributable, LinkAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -117,6 +118,39 @@ public class Rel extends AbstractValueSetAttribute
      */
     public static final String STYLESHEET = "stylesheet";
 
+    /**
+     * preloads the resource from <i>href</i> attribute as the attribute value
+     * given in <i>as</i> attribute
+     */
+    public static final String PRELOAD = "preload";
+
+    /**
+     * preemptively connects to the target resource's origin.
+     */
+    public static final String PRECONNECT = "preconnect";
+
+    /**
+     * gives pingback server address which handles the pingback to the current
+     * document.
+     */
+    public static final String PINGBACK = "pingback";
+
+    /**
+     * icon url to be used in <i>href</i> attribute
+     */
+    public static final String ICON = "icon";
+
+    /**
+     * Represents the browser should preemptively perform DNS resolution for the
+     * target resource's origin.
+     */
+    public static final String DNS_PREFETCH = "dns-prefetch";
+
+    /**
+     * Represents that the referenced document is from an external site
+     */
+    public static final String EXTERNAL = "external";
+
     {
         // This class may to be re-implemented just like ClassAttribute because
         // this class is also taking multiple values separated by space just as
@@ -128,8 +162,8 @@ public class Rel extends AbstractValueSetAttribute
     /**
      *
      * @param value
-     *            the value for the attribute. If there are multiple values it
-     *            can be separated by space.
+     *                  the value for the attribute. If there are multiple
+     *                  values it can be separated by space.
      * @since 1.0.0
      * @author WFF
      */
@@ -140,8 +174,8 @@ public class Rel extends AbstractValueSetAttribute
     /**
      *
      * @param values
-     *            the values for the attribute. If there are multiple values it
-     *            can be separated by space.
+     *                   the values for the attribute. If there are multiple
+     *                   values it can be separated by space.
      * @since 1.0.0
      * @author WFF
      */
@@ -153,7 +187,7 @@ public class Rel extends AbstractValueSetAttribute
      * sets the value for this attribute
      *
      * @param value
-     *            the value for the attribute.
+     *                  the value for the attribute.
      * @since 1.0.0
      * @author WFF
      */
@@ -178,7 +212,7 @@ public class Rel extends AbstractValueSetAttribute
      * @author WFF
      */
     public Set<String> getValueSet() {
-        return new LinkedHashSet<String>(super.getAttributeValueSet());
+        return new LinkedHashSet<>(super.getAttributeValueSet());
     }
 
     /**

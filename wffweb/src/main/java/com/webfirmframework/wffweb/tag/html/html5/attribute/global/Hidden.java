@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,7 +62,7 @@ public class Hidden extends AbstractAttribute
      *
      *
      * @param value
-     *            the value should be either true or false
+     *                  the value should be either true or false
      * @author WFF
      * @since 1.1.4
      */
@@ -107,7 +107,7 @@ public class Hidden extends AbstractAttribute
 
     /**
      * @param hidden
-     *            the hidden to set. {@code null} will remove the value.
+     *                   the hidden to set. {@code null} will remove the value.
      * @author WFF
      * @since 1.0.0
      * @deprecated as there is no affect of boolean values for this attribute

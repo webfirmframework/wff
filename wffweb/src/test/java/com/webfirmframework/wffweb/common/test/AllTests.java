@@ -20,6 +20,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.webfirmframework.wffweb.common.performance.test.CodePerformanceTest;
 import com.webfirmframework.wffweb.css.BackgroundColorTest;
 import com.webfirmframework.wffweb.css.BackgroundImageTest;
 import com.webfirmframework.wffweb.css.BorderBottomColorTest;
@@ -149,8 +150,10 @@ import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObjectTest;
 import com.webfirmframework.wffweb.tag.htmlwff.BlankTest;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTagTest;
 import com.webfirmframework.wffweb.tag.repository.TagRepositoryTest;
+import com.webfirmframework.wffweb.util.ByteBufferUtilTest;
 import com.webfirmframework.wffweb.util.CssLengthUtilTest;
 import com.webfirmframework.wffweb.util.CssValueUtilTest;
+import com.webfirmframework.wffweb.util.HashUtilTest;
 import com.webfirmframework.wffweb.util.ObjectUtilTest;
 import com.webfirmframework.wffweb.util.StringUtilTest;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtilTest;
@@ -215,7 +218,9 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObjectArrayTest;
         FormTest.class, TagRepositoryTest.class, SrcCssPropertyTest.class,
         UrlCss3ValueTest.class, WffBMObjectArrayTest.class, RelTest.class,
         AbstractHtml5SharedObjectTest.class, HeightCssTest.class,
-        AutoCompleteTest.class, AbstractHtmlRepositoryTest.class })
+        AutoCompleteTest.class, AbstractHtmlRepositoryTest.class,
+        CodePerformanceTest.class, HashUtilTest.class,
+        AbstractHtml5SharedObjectTest.class, ByteBufferUtilTest.class })
 public class AllTests {
 
 }

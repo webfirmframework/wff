@@ -30,9 +30,9 @@ public class Img extends AbstractHtml {
     /**
      *
      * @param base
-     *            i.e. parent tag of this tag
+     *                       i.e. parent tag of this tag
      * @param attributes
-     *            An array of {@code AbstractAttribute}
+     *                       An array of {@code AbstractAttribute}
      *
      * @since 1.0.0
      */
@@ -74,7 +74,7 @@ public class Img extends AbstractHtml {
 
     /**
      * @param tagType
-     *            the tagType to set
+     *                    the tagType to set
      */
     public static void setTagType(final TagType tagType) {
         Img.tagType = tagType;

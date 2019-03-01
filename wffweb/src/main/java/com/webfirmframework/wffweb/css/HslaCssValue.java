@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ public class HslaCssValue extends AbstractBean<HslaCssValue> {
 
     /**
      * @param hslCssValue
-     *            eg:- <code>hsla(155, 55%, 75%, 1)</code>
+     *                        eg:- <code>hsla(155, 55%, 75%, 1)</code>
      */
     public HslaCssValue(final String hslCssValue) {
         super();
@@ -60,7 +60,7 @@ public class HslaCssValue extends AbstractBean<HslaCssValue> {
 
     /**
      * @param hsl
-     *            eg:- <code> hsla(155, 55%, 75%, 1) </code>
+     *                eg:- <code> hsla(155, 55%, 75%, 1) </code>
      *
      * @since 1.0.0
      * @author WFF
@@ -85,8 +85,7 @@ public class HslaCssValue extends AbstractBean<HslaCssValue> {
 
             final String[] hslStringParts = StringUtil
                     .splitByComma(hslStringLowerCase.substring(
-                            hslStringLowerCase.indexOf('(')
-                                    + 1,
+                            hslStringLowerCase.indexOf('(') + 1,
                             hslStringLowerCase.lastIndexOf(')')));
 
             if (hslStringParts.length == 4) {
@@ -123,13 +122,13 @@ public class HslaCssValue extends AbstractBean<HslaCssValue> {
 
     /**
      * @param h
-     *            hue value. accepts values only from 0 to 360.
+     *              hue value. accepts values only from 0 to 360.
      * @param s
-     *            saturation value. accepts values only from 0 to 100.
+     *              saturation value. accepts values only from 0 to 100.
      * @param l
-     *            lightness value. accepts values only from 0 to 100.
+     *              lightness value. accepts values only from 0 to 100.
      * @param a
-     *            alpha value. accepts values only from 0 to 1.
+     *              alpha value. accepts values only from 0 to 1.
      */
     public HslaCssValue(final int h, final float s, final float l,
             final float a) {
@@ -151,7 +150,7 @@ public class HslaCssValue extends AbstractBean<HslaCssValue> {
 
     /**
      * @param h
-     *            the hue value, it should be in between 0 to 360.
+     *              the hue value, it should be in between 0 to 360.
      * @author WFF
      * @since 1.0.0
      */
@@ -178,7 +177,7 @@ public class HslaCssValue extends AbstractBean<HslaCssValue> {
 
     /**
      * @param s
-     *            the saturation value, it should be in between 0 to 100.
+     *              the saturation value, it should be in between 0 to 100.
      * @author WFF
      * @since 1.0.0
      */
@@ -225,7 +224,7 @@ public class HslaCssValue extends AbstractBean<HslaCssValue> {
 
     /**
      * @param l
-     *            the lightness value, it should be in between 0 to 100.
+     *              the lightness value, it should be in between 0 to 100.
      * @author WFF
      * @since 1.0.0
      */
@@ -243,7 +242,7 @@ public class HslaCssValue extends AbstractBean<HslaCssValue> {
 
     /**
      * @param a
-     *            the alpha value, it should be in between 0 to 1.
+     *              the alpha value, it should be in between 0 to 1.
      * @author WFF
      * @since 1.0.0
      */
@@ -287,7 +286,7 @@ public class HslaCssValue extends AbstractBean<HslaCssValue> {
 
     /**
      * @param hslString
-     *            eg:- hsla(125, 55%, 75%, 1)
+     *                      eg:- hsla(125, 55%, 75%, 1)
      * @return true if valid and false for invalid.
      * @since 1.0.0
      * @author WFF

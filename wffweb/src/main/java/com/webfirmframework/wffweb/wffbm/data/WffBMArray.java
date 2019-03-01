@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package com.webfirmframework.wffweb.wffbm.data;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Iterator;
@@ -49,7 +50,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  *
  * <code>// to store bytes in an array use WffBMByteArray</code>
  * WffBMByteArray byteArray = new WffBMByteArray();
- * byteArray.write("こんにちは WFFWEB".getBytes("UTF-8"));
+ * byteArray.write("こんにちは WFFWEB".getBytes(StandardCharsets.UTF_8));
  *
  * bmObject.put("byteArray", BMValueType.BM_BYTE_ARRAY, byteArray);
  *
@@ -140,6 +141,18 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
         }
     }
 
+    /**
+     * @param bmArrayBytes
+     * @param outer
+     * @return
+     * @throws UnsupportedEncodingException
+     *                                          throwing this exception will be
+     *                                          removed in future version
+     *                                          because its internal
+     *                                          implementation will never make
+     *                                          this exception due to the code
+     *                                          changes since 3.0.1.
+     */
     private BMValueType initWffBMObject(final byte[] bmArrayBytes,
             final boolean outer) throws UnsupportedEncodingException {
 
@@ -176,7 +189,7 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
                 if (valueType == BMValueType.STRING.getType()) {
 
                     for (final byte[] value : values) {
-                        this.add(new String(value, "UTF-8"));
+                        this.add(new String(value, StandardCharsets.UTF_8));
                     }
                 } else if (valueType == BMValueType.NUMBER.getType()) {
 
@@ -220,12 +233,12 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
 
                 } else if (valueType == BMValueType.REG_EXP.getType()) {
                     for (final byte[] value : values) {
-                        this.add(new String(value, "UTF-8"));
+                        this.add(new String(value, StandardCharsets.UTF_8));
                     }
                 } else if (valueType == BMValueType.FUNCTION.getType()) {
 
                     for (final byte[] value : values) {
-                        this.add(new String(value, "UTF-8"));
+                        this.add(new String(value, StandardCharsets.UTF_8));
                     }
                 } else if (valueType == BMValueType.BM_BYTE_ARRAY.getType()) {
                     for (final byte[] value : values) {
@@ -260,11 +273,16 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
         }
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.webfirmframework.wffweb.wffbm.data.WffBMData#build(boolean)
+     */
     @Override
     public byte[] build(final boolean outer)
             throws UnsupportedEncodingException {
 
-        final Deque<NameValue> nameValues = new ArrayDeque<NameValue>();
+        final Deque<NameValue> nameValues = new ArrayDeque<>(outer ? 2 : 1);
 
         if (outer) {
             final NameValue typeNameValue = new NameValue();
@@ -286,7 +304,7 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
             int count = 0;
             for (final Object eachValue : this) {
                 final String value = (String) eachValue;
-                values[count] = value.getBytes("UTF-8");
+                values[count] = value.getBytes(StandardCharsets.UTF_8);
                 count++;
             }
         } else if (valueType == BMValueType.NUMBER.getType()) {
@@ -340,7 +358,7 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
             int count = 0;
             for (final Object eachValue : this) {
                 final String value = (String) eachValue;
-                values[count] = value.getBytes("UTF-8");
+                values[count] = value.getBytes(StandardCharsets.UTF_8);
                 count++;
             }
         } else if (valueType == BMValueType.FUNCTION.getType()) {
@@ -348,7 +366,7 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
             int count = 0;
             for (final Object eachValue : this) {
                 final String value = (String) eachValue;
-                values[count] = value.getBytes("UTF-8");
+                values[count] = value.getBytes(StandardCharsets.UTF_8);
                 count++;
             }
         } else if (valueType == BMValueType.BM_BYTE_ARRAY.getType()) {

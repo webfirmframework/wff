@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ public abstract class CssFile implements Serializable, Cloneable {
     private static final Logger LOGGER = Logger
             .getLogger(CssFile.class.getName());
 
-    private final Map<String, Set<AbstractCssFileBlock>> selectorCssFileBlocks = new LinkedHashMap<String, Set<AbstractCssFileBlock>>();
+    private final Map<String, Set<AbstractCssFileBlock>> selectorCssFileBlocks = new LinkedHashMap<>();
 
     private boolean optimizeCssString = true;
 
@@ -130,7 +130,7 @@ public abstract class CssFile implements Serializable, Cloneable {
 
                             boolean exclude = true;
 
-                            final Map<String, CssProperty> cssProperties = new LinkedHashMap<String, CssProperty>();
+                            final Map<String, CssProperty> cssProperties = new LinkedHashMap<>();
                             for (final AbstractCssFileBlock cssFileBlock : cssFileBlocks) {
 
                                 // should be called before
@@ -261,7 +261,7 @@ public abstract class CssFile implements Serializable, Cloneable {
 
     /**
      * @param rebuild
-     *            true to force to rebuild
+     *                    true to force to rebuild
      * @return the css string. i.e. the contents in the css file as a string.
      * @since 1.0.0
      * @author WFF
@@ -275,9 +275,9 @@ public abstract class CssFile implements Serializable, Cloneable {
 
     /**
      * @param os
-     *            the {@code OutputStream} object to write
+     *                    the {@code OutputStream} object to write
      * @param charset
-     *            the charset type of bytes to write
+     *                    the charset type of bytes to write
      * @throws IOException
      * @since 1.1.2
      * @author WFF
@@ -289,11 +289,12 @@ public abstract class CssFile implements Serializable, Cloneable {
 
     /**
      * @param os
-     *            the {@code OutputStream} object to write
+     *                        the {@code OutputStream} object to write
      * @param charsetName
-     *            the charset type of bytes to write
+     *                        the charset type of bytes to write
      * @param rebuild
-     *            the load method in CssBlocked will be invoked a gain
+     *                        the load method in CssBlocked will be invoked a
+     *                        gain
      * @throws IOException
      * @since 1.1.2
      * @author WFF
@@ -318,7 +319,7 @@ public abstract class CssFile implements Serializable, Cloneable {
 
                     boolean exclude = true;
 
-                    final Map<String, CssProperty> cssProperties = new LinkedHashMap<String, CssProperty>();
+                    final Map<String, CssProperty> cssProperties = new LinkedHashMap<>();
                     for (final AbstractCssFileBlock cssFileBlock : cssFileBlocks) {
 
                         // should be called before
@@ -365,9 +366,9 @@ public abstract class CssFile implements Serializable, Cloneable {
 
     /**
      * @param os
-     *            the {@code OutputStream} object to write
+     *                    the {@code OutputStream} object to write
      * @param rebuild
-     *            the load method in CssBlocked will be invoked a gain
+     *                    the load method in CssBlocked will be invoked a gain
      * @throws IOException
      * @since 1.1.2
      * @author WFF
@@ -379,9 +380,9 @@ public abstract class CssFile implements Serializable, Cloneable {
 
     /**
      * @param os
-     *            the {@code OutputStream} object to write
+     *                    the {@code OutputStream} object to write
      * @param charset
-     *            the charset type of bytes to write
+     *                    the charset type of bytes to write
      * @throws IOException
      * @since 1.1.2
      * @author WFF
@@ -393,9 +394,9 @@ public abstract class CssFile implements Serializable, Cloneable {
 
     /**
      * @param os
-     *            the {@code OutputStream} object to write
+     *                    the {@code OutputStream} object to write
      * @param charset
-     *            the charset type of bytes to write
+     *                    the charset type of bytes to write
      * @throws IOException
      * @since 1.1.2
      * @author WFF
@@ -407,7 +408,7 @@ public abstract class CssFile implements Serializable, Cloneable {
 
     /**
      * @param os
-     *            the {@code OutputStream} object to write
+     *               the {@code OutputStream} object to write
      * @throws IOException
      * @since 1.1.2
      * @author WFF
@@ -418,7 +419,7 @@ public abstract class CssFile implements Serializable, Cloneable {
 
     /**
      * @param modified
-     *            the modified to set
+     *                     the modified to set
      * @since 1.0.0
      * @author WFF
      */
@@ -431,7 +432,7 @@ public abstract class CssFile implements Serializable, Cloneable {
         Set<AbstractCssFileBlock> abstractCssFileBlocks = selectorCssFileBlocks
                 .get(cssFileBlock.getSelectors());
         if (abstractCssFileBlocks == null) {
-            abstractCssFileBlocks = new LinkedHashSet<AbstractCssFileBlock>();
+            abstractCssFileBlocks = new LinkedHashSet<>();
             selectorCssFileBlocks.put(cssFileBlock.getSelectors(),
                     abstractCssFileBlocks);
         }
@@ -484,9 +485,10 @@ public abstract class CssFile implements Serializable, Cloneable {
      * <code> }; </code>
      *
      * @param optimizeCssString
-     *            the optimizeCssString to set. true to optimize the
-     *            {@code toCssString} value and false to turn off optimization.
-     *            The default value is true.
+     *                              the optimizeCssString to set. true to
+     *                              optimize the {@code toCssString} value and
+     *                              false to turn off optimization. The default
+     *                              value is true.
      * @since 1.0.0
      * @author WFF
      */
@@ -518,9 +520,10 @@ public abstract class CssFile implements Serializable, Cloneable {
      * methods.
      *
      * @param prependCharset
-     *            true to prepend the charset declaration (eg:
-     *            <code>@CHARSET "UTF-8";</code>) while writing css string to
-     *            the output stream by {@code toOutputStream} methods.
+     *                           true to prepend the charset declaration (eg:
+     *                           <code>@CHARSET "UTF-8";</code>) while writing
+     *                           css string to the output stream by
+     *                           {@code toOutputStream} methods.
      * @since 1.1.2
      * @author WFF
      */

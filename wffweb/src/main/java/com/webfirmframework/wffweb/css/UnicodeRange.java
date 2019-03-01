@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ public class UnicodeRange extends AbstractCssProperty<UnicodeRange> {
 
     /**
      * @param cssValue
-     *            the css value to set.
+     *                     the css value to set.
      */
     public UnicodeRange(final String cssValue) {
         setCssValue(cssValue);
@@ -70,7 +70,7 @@ public class UnicodeRange extends AbstractCssProperty<UnicodeRange> {
      * </pre>
      *
      * @param unicodeChars
-     *            the unicodeChars to set
+     *                         the unicodeChars to set
      * @author WFF
      * @since 1.1.2
      */
@@ -105,8 +105,9 @@ public class UnicodeRange extends AbstractCssProperty<UnicodeRange> {
 
     /**
      * @param fontFamily
-     *            the {@code FontFamily} object from which the cssValue to
-     *            set.And, {@code null} will throw {@code NullValueException}
+     *                       the {@code FontFamily} object from which the
+     *                       cssValue to set.And, {@code null} will throw
+     *                       {@code NullValueException}
      */
     public UnicodeRange(final UnicodeRange fontFamily) {
         if (fontFamily == null) {
@@ -150,7 +151,7 @@ public class UnicodeRange extends AbstractCssProperty<UnicodeRange> {
 
     /**
      * @param cssValue
-     *            The value should be a unicodeChars sequence.
+     *                     The value should be a unicodeChars sequence.
      * @since 1.1.2
      * @author WFF
      */
@@ -161,11 +162,11 @@ public class UnicodeRange extends AbstractCssProperty<UnicodeRange> {
                     "null is an invalid value. The value should be a unicodeChars sequence.");
         } else {
 
-            final String trimmedCssValue = cssValue.trim();
+            final String trimmedCssValue = StringUtil.strip(cssValue);
 
             unicodeChars = StringUtil.splitByComma(cssValue);
             for (int i = 0; i < unicodeChars.length; i++) {
-                unicodeChars[i] = unicodeChars[i].trim();
+                unicodeChars[i] = StringUtil.strip(unicodeChars[i]);
             }
 
             this.cssValue = trimmedCssValue;
@@ -185,7 +186,7 @@ public class UnicodeRange extends AbstractCssProperty<UnicodeRange> {
      * </pre>
      *
      * @param unicodeChars
-     *            the unicodeChars to set
+     *                         the unicodeChars to set
      * @author WFF
      * @since 1.1.2
      */

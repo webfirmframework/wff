@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -109,7 +109,7 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
 
     /**
      * @param cssValue
-     *            the css value to set.
+     *                     the css value to set.
      */
     public BorderImageWidth(final String cssValue) {
         setCssValue(cssValue);
@@ -117,8 +117,9 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
 
     /**
      * @param bottom
-     *            the {@code BorderBottomWidth} object from which the cssValue
-     *            to set.And, {@code null} will throw {@code NullValueException}
+     *                   the {@code BorderBottomWidth} object from which the
+     *                   cssValue to set.And, {@code null} will throw
+     *                   {@code NullValueException}
      */
     public BorderImageWidth(final BorderImageWidth bottom) {
         if (bottom == null) {
@@ -129,8 +130,8 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
 
     /**
      * @param percent
-     *            the percentage value to set. The cssLengthUnit will
-     *            automatically set to %.
+     *                    the percentage value to set. The cssLengthUnit will
+     *                    automatically set to %.
      * @since 1.0.0
      * @author WFF
      */
@@ -149,7 +150,7 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
 
     /**
      * @param percent
-     *            the percent to set
+     *                    the percent to set
      * @since 1.0.0
      * @author WFF
      */
@@ -192,9 +193,10 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
 
     /**
      * @param cssValue
-     *            the value should be in the format of <code>55px</code> or
-     *            <code>95%</code>. {@code null} is considered as an invalid
-     *            value and it will throw {@code NullValueException}.
+     *                     the value should be in the format of
+     *                     <code>55px</code> or <code>95%</code>. {@code null}
+     *                     is considered as an invalid value and it will throw
+     *                     {@code NullValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -203,12 +205,12 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
         if (cssValue == null) {
             throw new NullValueException(
                     "null is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit/medium/thin/thick.");
-        } else if (cssValue.trim().isEmpty()) {
+        } else if (StringUtil.isBlank(cssValue)) {
             throw new InvalidValueException(
                     "blank string is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit/medium/thin/thick.");
         } else {
             final String trimmedCssValue = TagStringUtil
-                    .toLowerCase(cssValue.trim());
+                    .toLowerCase(StringUtil.strip(cssValue));
 
             if (PREDEFINED_CONSTANTS.contains(trimmedCssValue)) {
                 this.cssValue = trimmedCssValue;
@@ -422,20 +424,20 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
      * sets the top, right, bottom and left in {@code BorderImageWidth}.
      *
      * @param top
-     *            the value for top. The value {@code auto} will be assigned for
-     *            null value.
+     *                   the value for top. The value {@code auto} will be
+     *                   assigned for null value.
      * @param right
-     *            the value for right. The value {@code auto} will be assigned
-     *            for null value.
+     *                   the value for right. The value {@code auto} will be
+     *                   assigned for null value.
      * @param bottom
-     *            the value for bottom. The value {@code auto} will be assigned
-     *            for null value.
+     *                   the value for bottom. The value {@code auto} will be
+     *                   assigned for null value.
      * @param left
-     *            the value for left. The value {@code auto} will be assigned
-     *            for null value.
+     *                   the value for left. The value {@code auto} will be
+     *                   assigned for null value.
      * @param unit
-     *            the {@code CssLengthUnit} for all of the given top, right,
-     *            bottom and left values.
+     *                   the {@code CssLengthUnit} for all of the given top,
+     *                   right, bottom and left values.
      * @author WFF
      * @since 1.0.0
      */
@@ -485,7 +487,7 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
 
     /**
      * @param top
-     *            the top to set
+     *                the top to set
      * @author WFF
      * @since 1.0.0
      */
@@ -502,7 +504,7 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
 
     /**
      * @param right
-     *            the right to set
+     *                  the right to set
      * @author WFF
      * @param rightUnit
      * @since 1.0.0
@@ -520,7 +522,7 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
 
     /**
      * @param bottom
-     *            the bottom to set
+     *                   the bottom to set
      * @author WFF
      * @param bottomUnit
      * @since 1.0.0
@@ -538,7 +540,7 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
 
     /**
      * @param left
-     *            the left to set
+     *                 the left to set
      * @author WFF
      * @param leftUnit
      * @since 1.0.0
@@ -633,20 +635,20 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
     /**
      *
      * @param top
-     *            the value for top. The value {@code auto} will be assigned for
-     *            null value.
+     *                       the value for top. The value {@code auto} will be
+     *                       assigned for null value.
      * @param topUnit
      * @param right
-     *            the value for right. The value {@code auto} will be assigned
-     *            for null value.
+     *                       the value for right. The value {@code auto} will be
+     *                       assigned for null value.
      * @param rightUnit
      * @param bottom
-     *            the value for bottom. The value {@code auto} will be assigned
-     *            for null value.
+     *                       the value for bottom. The value {@code auto} will
+     *                       be assigned for null value.
      * @param bottomUnit
      * @param left
-     *            the value for left. The value {@code auto} will be assigned
-     *            for null value.
+     *                       the value for left. The value {@code auto} will be
+     *                       assigned for null value.
      * @param leftUnit
      * @author WFF
      * @return
@@ -784,14 +786,14 @@ public class BorderImageWidth extends AbstractCssProperty<BorderImageWidth> {
      * validates if the given cssValue is valid for this class.
      *
      * @param cssValue
-     *            the value to check.
+     *                     the value to check.
      * @return true if valid and false if invalid.
      * @author WFF
      * @since 1.0.0
      */
     public static boolean isValid(final String cssValue) {
         final String trimmedCssValue = TagStringUtil
-                .toLowerCase(cssValue.trim());
+                .toLowerCase(StringUtil.strip(cssValue));
 
         if (PREDEFINED_CONSTANTS.contains(trimmedCssValue)) {
             return true;

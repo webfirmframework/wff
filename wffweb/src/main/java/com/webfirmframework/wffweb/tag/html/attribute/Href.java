@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.AreaAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.BaseAttributable;
+import com.webfirmframework.wffweb.tag.html.identifier.LinkAttributable;
 
 /**
  * This was the single required attribute for anchors defining a hypertext
@@ -34,8 +35,8 @@ import com.webfirmframework.wffweb.tag.html.identifier.BaseAttributable;
  * @author WFF
  * @since 1.0.0
  */
-public class Href extends AbstractAttribute
-        implements AAttributable, AreaAttributable, BaseAttributable {
+public class Href extends AbstractAttribute implements AAttributable,
+        AreaAttributable, BaseAttributable, LinkAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -55,7 +56,7 @@ public class Href extends AbstractAttribute
      * example, file, ftp, and mailto work in most user agents.
      *
      * @param url
-     *            the url.
+     *                the url.
      * @since 1.0.0
      * @author WFF
      */
@@ -67,7 +68,7 @@ public class Href extends AbstractAttribute
      * sets the value for this attribute
      *
      * @param url
-     *            the url.
+     *                the url.
      * @since 1.0.0
      * @author WFF
      */

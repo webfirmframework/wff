@@ -15,12 +15,10 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute.core;
 
-import java.util.ArrayList;
+import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
-import com.webfirmframework.wffweb.util.StringBuilderUtil;
 import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
@@ -35,11 +33,11 @@ public abstract class AbstractValueSetAttribute extends AbstractAttribute {
      * sets the value for this attribute
      *
      * @param updateClient
-     *            true to update client browser page if it is available. The
-     *            default value is true but it will be ignored if there is no
-     *            client browser page.
+     *                         true to update client browser page if it is
+     *                         available. The default value is true but it will
+     *                         be ignored if there is no client browser page.
      * @param value
-     *            the value for the attribute.
+     *                         the value for the attribute.
      * @since 2.1.15
      * @author WFF
      */
@@ -47,27 +45,21 @@ public abstract class AbstractValueSetAttribute extends AbstractAttribute {
     protected void setAttributeValue(final boolean updateClient,
             final String value) {
         if (value != null) {
-            final List<String> allValues = extractValues(value);
-            super.removeAllFromAttributeValueSet();
-            super.addAllToAttributeValueSet(updateClient, allValues);
+            final Collection<String> allValues = extractValues(value);
+            super.replaceAllInAttributeValueSet(updateClient, allValues);
         }
     }
 
     /*
      * splits by space
      */
-    private static List<String> extractValues(final String value) {
+    private static Collection<String> extractValues(final String value) {
         final String[] inputValues = StringUtil.splitBySpace(value);
-        final List<String> allValues = new ArrayList<String>(
-                inputValues.length);
+        final Collection<String> allValues = new ArrayDeque<>();
         for (final String each : inputValues) {
-            String trimmmedValue = null;
-            if (each != null && !(trimmmedValue = each.trim()).isEmpty()) {
-                // As per Collections.addAll's doc it is faster than
-                // allValues.addAll(Arrays.asList(values));
-                Collections.addAll(allValues,
-                        StringUtil.splitBySpace(trimmmedValue));
-            }
+            // As per Collections.addAll's doc it is faster than
+            // allValues.addAll(Arrays.asList(values));
+            Collections.addAll(allValues, StringUtil.strip(each));
         }
         return allValues;
     }
@@ -77,16 +69,14 @@ public abstract class AbstractValueSetAttribute extends AbstractAttribute {
      *
      *
      * @param value
-     *            the value for the attribute.
+     *                  the value for the attribute.
      * @since 2.1.15
      * @author WFF
      */
     @Override
     protected void setAttributeValue(final String value) {
         if (value != null) {
-            final List<String> allValues = extractValues(value);
-            super.removeAllFromAttributeValueSet();
-            super.addAllToAttributeValueSet(allValues);
+            replaceAllInAttributeValueSet(value);
         }
     }
 
@@ -94,7 +84,7 @@ public abstract class AbstractValueSetAttribute extends AbstractAttribute {
      * Checks if the value is a part of this attribute value.
      *
      * @param value
-     *            the value to be checked
+     *                  the value to be checked
      * @return true if the given value is contained in the value string of this
      *         attribute.
      * @since 2.1.15
@@ -108,7 +98,7 @@ public abstract class AbstractValueSetAttribute extends AbstractAttribute {
      * Checks if the values are part of this attribute value.
      *
      * @param values
-     *            the values to be checked
+     *                   the values to be checked
      * @return true if the given values are contained in the value string of
      *         this attribute.
      * @since 2.1.15
@@ -120,11 +110,7 @@ public abstract class AbstractValueSetAttribute extends AbstractAttribute {
 
     @Override
     public String getAttributeValue() {
-        final StringBuilder builder = new StringBuilder();
-        for (final String className : getAttributeValueSet()) {
-            builder.append(className).append(' ');
-        }
-        return StringBuilderUtil.getTrimmedString(builder);
+        return StringUtil.join(' ', getAttributeValueSet());
     }
 
     /**
@@ -135,12 +121,12 @@ public abstract class AbstractValueSetAttribute extends AbstractAttribute {
     protected void addAllToAttributeValueSet(final String... attrValues) {
         if (attrValues != null) {
 
-            final List<String> allValues = new ArrayList<String>(
-                    attrValues.length);
-            for (final String className : attrValues) {
+            final Collection<String> allValues = new ArrayDeque<>();
+            for (final String attrValue : attrValues) {
                 String trimmmedValue = null;
-                if (className != null
-                        && !(trimmmedValue = className.trim()).isEmpty()) {
+                if (attrValue != null
+                        && !(trimmmedValue = StringUtil.strip(attrValue))
+                                .isEmpty()) {
                     // As per Collections.addAll's doc it is faster than
                     // allValues.addAll(Arrays.asList(values));
                     Collections.addAll(allValues,
@@ -149,6 +135,40 @@ public abstract class AbstractValueSetAttribute extends AbstractAttribute {
             }
 
             super.addAllToAttributeValueSet(allValues);
+        }
+    }
+
+    /**
+     * Removes all values from the attributeValueSet and adds the given
+     * attribute values.
+     *
+     * @param attrValues
+     * @since 3.0.1
+     */
+    protected void replaceAllInAttributeValueSet(final String... attrValues) {
+        replaceAllInAttributeValueSet(true, attrValues);
+    }
+
+    /**
+     * Removes all values from the attributeValueSet and adds the given
+     * attribute values.
+     *
+     * @param updateClient
+     * @param attrValues
+     * @since 3.0.1
+     */
+    protected void replaceAllInAttributeValueSet(final boolean updateClient,
+            final String... attrValues) {
+        if (attrValues != null) {
+
+            final Collection<String> allValues = new ArrayDeque<>();
+            for (final String attrValue : attrValues) {
+                if (attrValue != null) {
+                    allValues.addAll(extractValues(attrValue));
+                }
+            }
+
+            super.replaceAllInAttributeValueSet(updateClient, allValues);
         }
     }
 

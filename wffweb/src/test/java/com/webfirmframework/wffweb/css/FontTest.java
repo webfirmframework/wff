@@ -16,15 +16,13 @@
  */
 package com.webfirmframework.wffweb.css;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.InvalidValueException;
+import com.webfirmframework.wffweb.css.core.CssProperty;
+import com.webfirmframework.wffweb.tag.html.attribute.global.Style;
 
 /**
  * 
@@ -645,6 +643,183 @@ public class FontTest {
                 }
             }
         }
+    }
+    
+    
+    @Test
+    public void testParsing() {
+        //font-style: italic 
+        //font-variant: small-caps 
+        //font-weight: bold 
+        //font-size/line-height: 12px/1.4 
+        //font-family: arial,sans-serif
+        
+        //valid patterns
+        //italic small-caps bold 12px/1.4 arial,sans-serif
+        //small-caps bold 12px/1.4 arial,sans-serif
+        //bold 12px/1.4 arial,sans-serif
+        //12px/1.4 arial,sans-serif
+        //12px arial,sans-serif
+        
+
+        //TODO
+        //invalid patterns
+        //arial,sans-serif
+        //italic small-caps bold 12px/1.4
+        //small-caps bold 12px/1.4
+        //bold 12px/1.4
+        //12px/1.4
+        //12px
+
+        
+        //start valid patterns
+        //italic small-caps bold 12px/1.4 arial,sans-serif
+        {
+            Font font = new Font("italic small-caps bold 12px/1.4 arial,sans-serif");
+            final FontStyle fontStyle = font.getFontStyle();
+            final FontVariant fontVariant = font.getFontVariant();
+            final FontWeight fontWeight = font.getFontWeight();
+            final FontSize fontSize = font.getFontSize();
+            final LineHeight lineHeight = font.getLineHeight();
+            final FontFamily fontFamily = font.getFontFamily();
+            assertNotNull(fontStyle);
+            assertNotNull(fontVariant);
+            assertNotNull(fontWeight);
+            assertNotNull(fontSize);
+            assertNotNull(lineHeight);
+            assertNotNull(fontFamily);
+            
+            assertEquals("italic", fontStyle.getCssValue());
+            assertEquals("small-caps", fontVariant.getCssValue());
+            assertEquals("bold", fontWeight.getCssValue());
+            assertEquals("12px", fontSize.getCssValue());
+            assertEquals("1.4", lineHeight.getCssValue());
+            assertEquals("arial,sans-serif", fontFamily.getCssValue());
+           
+        }        
+        //small-caps bold 12px/1.4 arial,sans-serif
+        {
+            Font font = new Font("small-caps bold 12px/1.4 arial,sans-serif");
+            assertNull(font.getFontStyle());
+            
+            assertNotNull(font.getFontVariant());
+            assertNotNull(font.getFontWeight());
+            assertNotNull(font.getFontSize());
+            assertNotNull(font.getLineHeight());
+            assertNotNull(font.getFontFamily());
+            
+            final FontVariant fontVariant = font.getFontVariant();
+            final FontWeight fontWeight = font.getFontWeight();
+            final FontSize fontSize = font.getFontSize();
+            final LineHeight lineHeight = font.getLineHeight();
+            final FontFamily fontFamily = font.getFontFamily();
+            
+            assertEquals("small-caps", fontVariant.getCssValue());
+            assertEquals("bold", fontWeight.getCssValue());
+            assertEquals("12px", fontSize.getCssValue());
+            assertEquals("1.4", lineHeight.getCssValue());
+            assertEquals("arial,sans-serif", fontFamily.getCssValue());
+        }
+        //bold 12px/1.4 arial,sans-serif
+        {
+            Font font = new Font("bold 12px/1.4 arial,sans-serif");
+            assertNull(font.getFontStyle());
+            assertNull(font.getFontVariant());
+            
+            assertNotNull(font.getFontWeight());
+            assertNotNull(font.getFontSize());
+            assertNotNull(font.getLineHeight());
+            assertNotNull(font.getFontFamily());
+            
+            final FontWeight fontWeight = font.getFontWeight();
+            final FontSize fontSize = font.getFontSize();
+            final LineHeight lineHeight = font.getLineHeight();
+            final FontFamily fontFamily = font.getFontFamily();
+            
+            assertEquals("bold", fontWeight.getCssValue());
+            assertEquals("12px", fontSize.getCssValue());
+            assertEquals("1.4", lineHeight.getCssValue());
+            assertEquals("arial,sans-serif", fontFamily.getCssValue());
+
+        }
+        
+        //12px/1.4 arial,sans-serif
+        {
+            Font font = new Font("12px/1.4 arial,sans-serif");
+            assertNull(font.getFontStyle());
+            assertNull(font.getFontVariant());
+            assertNull(font.getFontWeight());
+            
+            assertNotNull(font.getFontSize());
+            assertNotNull(font.getLineHeight());
+            assertNotNull(font.getFontFamily());
+            
+            final FontSize fontSize = font.getFontSize();
+            final LineHeight lineHeight = font.getLineHeight();
+            final FontFamily fontFamily = font.getFontFamily();
+            
+            assertEquals("12px", fontSize.getCssValue());
+            assertEquals("1.4", lineHeight.getCssValue());
+            assertEquals("arial,sans-serif", fontFamily.getCssValue());
+
+        }
+        
+        //12px arial,sans-serif
+        {
+            Font font = new Font("12px arial, sans-serif");
+            assertNull(font.getFontStyle());
+            assertNull(font.getFontVariant());
+            assertNull(font.getFontWeight());
+            assertNull(font.getLineHeight());
+            
+            assertNotNull(font.getFontSize());
+            assertNotNull(font.getFontFamily());
+            
+            final FontSize fontSize = font.getFontSize();
+            final FontFamily fontFamily = font.getFontFamily();
+            
+            assertEquals("12px", fontSize.getCssValue());
+            assertEquals("arial,sans-serif", fontFamily.getCssValue());
+
+        }
+
+        //stop valid patterns
+        
+        //start invalid patterns
+        //arial,sans-serif
+        {
+            //TODO review and modify impl of Font
+            Font font = new Font("arial,sans-serif");
+            assertNull(font.getFontStyle());
+            assertNull(font.getFontVariant());
+            assertNull(font.getFontWeight());
+            assertNull(font.getFontSize());
+            assertNull(font.getLineHeight());
+            
+            assertNotNull(font.getFontFamily());
+            
+            final FontFamily fontFamily = font.getFontFamily();           
+            
+            assertEquals("arial,sans-serif", fontFamily.getCssValue());
+        }
+        
+        
+        
+     
+        
+    } 
+    
+    @Test
+    public void testFontInStyle() {
+        Style stle = new Style(
+                "font:italic small-caps bold 12px/1.4 arial,sans-serif");
+        final CssProperty cssProperty = stle.getCssProperty("font");
+
+        assertEquals("italic small-caps bold 12px/1.4 arial,sans-serif",
+                cssProperty.getCssValue());
+        assertEquals("font", cssProperty.getCssName());
+        assertEquals(Font.class, cssProperty.getClass());
+
     }
 
 }

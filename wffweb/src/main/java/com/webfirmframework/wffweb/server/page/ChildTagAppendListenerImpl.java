@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,12 @@
 package com.webfirmframework.wffweb.server.page;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -69,14 +69,14 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
             final AbstractHtml appendedChildTag = event.getAppendedChildTag();
 
             // add data-wff-id to all tags including nested tags
-            final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<Set<AbstractHtml>>();
-            final Set<AbstractHtml> initialSet = new LinkedHashSet<AbstractHtml>(
-                    1);
+            final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
+            // passed 2 instead of 1 because the load factor is 0.75f
+            final Set<AbstractHtml> initialSet = new LinkedHashSet<>(2);
             initialSet.add(appendedChildTag);
             childrenStack.push(initialSet);
 
-            while (childrenStack.size() > 0) {
-                final Set<AbstractHtml> children = childrenStack.pop();
+            Set<AbstractHtml> children;
+            while ((children = childrenStack.poll()) != null) {
                 for (final AbstractHtml child : children) {
 
                     if (child.getDataWffId() == null) {
@@ -121,7 +121,7 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
             final byte[] parentTagName = tagNameAndWffId[0];
 
             nameValue.setValues(parentTagName,
-                    appendedChildTag.toWffBMBytes("UTF-8"));
+                    appendedChildTag.toWffBMBytes(StandardCharsets.UTF_8));
 
             browserPage.push(task, nameValue);
 
@@ -150,12 +150,12 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
                     .getAppendedChildrenTags();
 
             // add data-wff-id to all tags including nested tags
-            final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<Set<AbstractHtml>>();
+            final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
             childrenStack
                     .push(new LinkedHashSet<AbstractHtml>(appendedChildTags));
 
-            while (childrenStack.size() > 0) {
-                final Set<AbstractHtml> children = childrenStack.pop();
+            Set<AbstractHtml> children;
+            while ((children = childrenStack.poll()) != null) {
                 for (final AbstractHtml child : children) {
 
                     if (child.getDataWffId() == null) {
@@ -189,7 +189,8 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
             final NameValue task = Task.APPENDED_CHILDREN_TAGS
                     .getTaskNameValue();
 
-            final Deque<NameValue> nameValues = new ArrayDeque<NameValue>();
+            final Deque<NameValue> nameValues = new ArrayDeque<>(
+                    appendedChildTags.size() + 1);
             nameValues.add(task);
 
             for (final AbstractHtml appendedChildTag : appendedChildTags) {
@@ -206,8 +207,8 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
                 final byte[] parentTagName = tagNameAndWffId[0];
 
                 try {
-                    nameValue.setValues(parentTagName,
-                            appendedChildTag.toWffBMBytes("UTF-8"));
+                    nameValue.setValues(parentTagName, appendedChildTag
+                            .toWffBMBytes(StandardCharsets.UTF_8));
                 } catch (final InvalidTagException e) {
                     if (LOGGER.isLoggable(Level.WARNING)) {
                         LOGGER.log(Level.WARNING,
@@ -241,13 +242,14 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
      */
     private void addInWffIdMap(final AbstractHtml tag) {
 
-        final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<Set<AbstractHtml>>();
-        final Set<AbstractHtml> initialSet = new HashSet<AbstractHtml>(1);
+        final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
+        // passed 2 instead of 1 because the load factor is 0.75f
+        final Set<AbstractHtml> initialSet = new HashSet<>(2);
         initialSet.add(tag);
         childrenStack.push(initialSet);
 
-        while (childrenStack.size() > 0) {
-            final Set<AbstractHtml> children = childrenStack.pop();
+        Set<AbstractHtml> children;
+        while ((children = childrenStack.poll()) != null) {
             for (final AbstractHtml child : children) {
 
                 final DataWffId wffIdAttr = child.getDataWffId();
@@ -326,7 +328,8 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
     }
 
     @Override
-    public void childrendAppendedOrMoved(final List<ChildMovedEvent> events) {
+    public void childrendAppendedOrMoved(
+            final Collection<ChildMovedEvent> events) {
 
         //@formatter:off
         // moved children tags from some parents to another task format (in this method moving only one child) :-
@@ -338,7 +341,7 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
 
             final NameValue task = Task.MOVED_CHILDREN_TAGS.getTaskNameValue();
 
-            final Deque<NameValue> nameValues = new ArrayDeque<NameValue>();
+            final Deque<NameValue> nameValues = new ArrayDeque<>();
             nameValues.add(task);
 
             for (final ChildMovedEvent event : events) {
@@ -385,7 +388,8 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
                             // tag
                             nameValue.setValues(currentTagName,
                                     movedChildWffIdBytes, movedChildTagName,
-                                    movedChildTag.toWffBMBytes("UTF-8"));
+                                    movedChildTag.toWffBMBytes(
+                                            StandardCharsets.UTF_8));
                         } catch (final InvalidTagException e) {
                             if (LOGGER.isLoggable(Level.WARNING)) {
                                 LOGGER.log(Level.WARNING,

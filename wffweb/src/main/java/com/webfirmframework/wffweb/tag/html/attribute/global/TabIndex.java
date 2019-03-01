@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ public class TabIndex extends AbstractAttribute implements GlobalAttributable {
 
     /**
      * @param index
-     *            the index
+     *                  the index
      * @since 1.1.3
      * @author WFF
      */
@@ -58,7 +58,7 @@ public class TabIndex extends AbstractAttribute implements GlobalAttributable {
 
     /**
      * @param index
-     *            the index
+     *                  the index
      * @since 1.1.3
      * @author WFF
      */
@@ -88,7 +88,7 @@ public class TabIndex extends AbstractAttribute implements GlobalAttributable {
 
     /**
      * @param index
-     *            the index to set
+     *                  the index to set
      * @author WFF
      * @since 1.0.0
      */

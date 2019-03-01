@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -67,23 +67,24 @@ class AttributeValueChangeListenerImpl implements AttributeValueChangeListener {
 
             // should be name=somevalue
             String attrNameValue = event.getSourceAttribute()
-                    .toHtmlString("UTF-8").replaceFirst("[=][\"]", "=");
+                    .toHtmlString(StandardCharsets.UTF_8)
+                    .replaceFirst("[=][\"]", "=");
 
             if (attrNameValue.charAt(attrNameValue.length() - 1) == '"') {
                 attrNameValue = attrNameValue.substring(0,
                         attrNameValue.length() - 1);
             }
 
-            nameValue.setName(attrNameValue.getBytes("UTF-8"));
+            nameValue.setName(attrNameValue.getBytes(StandardCharsets.UTF_8));
 
-            final Set<AbstractHtml> ownerTags = new HashSet<AbstractHtml>(
+            final Set<AbstractHtml> ownerTags = new HashSet<>(
                     event.getOwnerTags());
 
             final Collection<AbstractHtml> uiTags = tagByWffId.values();
             if (uiTags.size() > 10) {
                 // to remove ownerTags which don't exist in ui
                 // to improve performance HashSet object passed as an argument
-                ownerTags.retainAll(new HashSet<AbstractHtml>(uiTags));
+                ownerTags.retainAll(new HashSet<>(uiTags));
             } else {
                 ownerTags.retainAll(uiTags);
             }
@@ -129,7 +130,7 @@ class AttributeValueChangeListenerImpl implements AttributeValueChangeListener {
             nameValue.setValues(values);
 
             browserPage.push(task, nameValue);
-        } catch (final UnsupportedEncodingException e) {
+        } catch (final Exception e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,14 @@ package com.webfirmframework.wffweb.wffbm.data;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.WffRuntimeException;
@@ -114,6 +116,12 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
     /**
      * @return
      * @throws UnsupportedEncodingException
+     *                                          throwing this exception will be
+     *                                          removed in future version
+     *                                          because its internal
+     *                                          implementation will never make
+     *                                          this exception due to the code
+     *                                          changes since 3.0.1.
      * @since 1.1.5
      * @author WFF
      */
@@ -125,6 +133,12 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
      * @param outer
      * @return
      * @throws UnsupportedEncodingException
+     *                                          throwing this exception will be
+     *                                          removed in future version
+     *                                          because its internal
+     *                                          implementation will never make
+     *                                          this exception due to the code
+     *                                          changes since 3.0.1.
      * @since 1.1.5
      * @author WFF
      */
@@ -132,7 +146,12 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
     public byte[] build(final boolean outer)
             throws UnsupportedEncodingException {
 
-        final Deque<NameValue> nameValues = new ArrayDeque<NameValue>();
+        final Set<Entry<String, ValueValueType>> superEntrySet = super.entrySet();
+
+        final int capacity = outer ? superEntrySet.size() + 1
+                : superEntrySet.size();
+
+        final Deque<NameValue> nameValues = new ArrayDeque<>(capacity);
 
         if (outer) {
             final NameValue typeNameValue = new NameValue();
@@ -140,13 +159,13 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
             nameValues.add(typeNameValue);
         }
 
-        for (final Entry<String, ValueValueType> entry : super.entrySet()) {
+        for (final Entry<String, ValueValueType> entry : superEntrySet) {
             final String key = entry.getKey();
             final ValueValueType valueValueType = entry.getValue();
             final byte valueType = valueValueType.getValueTypeByte();
 
             final NameValue nameValue = new NameValue();
-            nameValue.setName(key.getBytes("UTF-8"));
+            nameValue.setName(key.getBytes(StandardCharsets.UTF_8));
 
             nameValues.add(nameValue);
 
@@ -155,7 +174,7 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
                 final String value = (String) valueValueType.getValue();
 
                 nameValue.setValues(new byte[] { valueType },
-                        value.getBytes("UTF-8"));
+                        value.getBytes(StandardCharsets.UTF_8));
 
             } else if (valueType == BMValueType.NUMBER.getType()) {
 
@@ -201,13 +220,13 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
             } else if (valueType == BMValueType.REG_EXP.getType()) {
                 final String value = (String) valueValueType.getValue();
                 nameValue.setValues(new byte[] { valueType },
-                        value.getBytes("UTF-8"));
+                        value.getBytes(StandardCharsets.UTF_8));
             } else if (valueType == BMValueType.FUNCTION.getType()) {
 
                 final String value = (String) valueValueType.getValue();
 
                 nameValue.setValues(new byte[] { valueType },
-                        value.getBytes("UTF-8"));
+                        value.getBytes(StandardCharsets.UTF_8));
 
             } else if (valueType == BMValueType.INTERNAL_BYTE.getType()) {
                 throw new WffRuntimeException(
@@ -220,6 +239,17 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
                 .getWffBinaryMessageBytes(nameValues);
     }
 
+    /**
+     * @param bmObjectBytes
+     * @param outer
+     * @throws UnsupportedEncodingException
+     *                                          throwing this exception will be
+     *                                          removed in future version
+     *                                          because its internal
+     *                                          implementation will never make
+     *                                          this exception due to the code
+     *                                          changes since 3.0.1.
+     */
     private void initWffBMObject(final byte[] bmObjectBytes,
             final boolean outer) throws UnsupportedEncodingException {
 
@@ -243,14 +273,16 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
 
             while (iterator.hasNext()) {
                 final NameValue nameValue = iterator.next();
-                final String name = new String(nameValue.getName(), "UTF-8");
+                final String name = new String(nameValue.getName(),
+                        StandardCharsets.UTF_8);
                 final byte[][] values = nameValue.getValues();
                 final byte valueType = values[0][0];
                 final byte[] value = values[1];
 
                 if (valueType == BMValueType.STRING.getType()) {
                     final ValueValueType valueValueType = new ValueValueType(
-                            name, valueType, new String(value, "UTF-8"));
+                            name, valueType,
+                            new String(value, StandardCharsets.UTF_8));
                     wffBMObject.put(name, valueValueType);
                 } else if (valueType == BMValueType.NUMBER.getType()) {
 
@@ -290,11 +322,13 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
                     wffBMObject.put(name, valueValueType);
                 } else if (valueType == BMValueType.REG_EXP.getType()) {
                     final ValueValueType valueValueType = new ValueValueType(
-                            name, valueType, new String(value, "UTF-8"));
+                            name, valueType,
+                            new String(value, StandardCharsets.UTF_8));
                     wffBMObject.put(name, valueValueType);
                 } else if (valueType == BMValueType.FUNCTION.getType()) {
                     final ValueValueType valueValueType = new ValueValueType(
-                            name, valueType, new String(value, "UTF-8"));
+                            name, valueType,
+                            new String(value, StandardCharsets.UTF_8));
                     wffBMObject.put(name, valueValueType);
                 } else if (valueType == BMValueType.INTERNAL_BYTE.getType()) {
                     throw new WffRuntimeException(
@@ -320,7 +354,7 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
 
     /**
      * @param key
-     *            the key name
+     *                the key name
      * @since 2.0.0
      * @author WFF
      */

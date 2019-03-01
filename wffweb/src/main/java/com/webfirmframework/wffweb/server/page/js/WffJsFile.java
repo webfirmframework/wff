@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.server.page.js;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Comparator;
 import java.util.Set;
 import java.util.TreeSet;
@@ -25,6 +26,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.server.page.Task;
+import com.webfirmframework.wffweb.util.StringBuilderUtil;
+import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
  * @author WFF
@@ -59,6 +62,8 @@ public enum WffJsFile {
 
     WFF_CLIENT_EVENTS("wffClientEvents.js");
 
+    private static final String AUTOREMOVE_PARENT_SCRIPT = "document.currentScript.parentNode.removeChild(document.currentScript);";
+
     public static final Logger LOGGER = Logger
             .getLogger(WffJsFile.class.getName());
 
@@ -88,23 +93,19 @@ public enum WffJsFile {
 
         if (PRODUCTION_MODE) {
 
-            final Comparator<String> descendingLehgth = new Comparator<String>() {
-
-                @Override
-                public int compare(final String o1, final String o2) {
-                    // to sort in descending order of the length of the names
-                    if (o1.length() > o2.length()) {
-                        return -1;
-                    }
-                    if (o1.length() < o2.length()) {
-                        return 1;
-                    }
+            final Comparator<String> descendingLehgth = (o1, o2) -> {
+                // to sort in descending order of the length of the names
+                if (o1.length() > o2.length()) {
                     return -1;
                 }
+                if (o1.length() < o2.length()) {
+                    return 1;
+                }
+                return -1;
             };
 
-            functionNames = new TreeSet<String>(descendingLehgth);
-            variableNames = new TreeSet<String>(descendingLehgth);
+            functionNames = new TreeSet<>(descendingLehgth);
+            variableNames = new TreeSet<>(descendingLehgth);
 
             // should be in descending order of the value length
 
@@ -278,7 +279,7 @@ public enum WffJsFile {
             final InputStream in = WffJsFile.class
                     .getResourceAsStream(filename);
             final BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(in, "UTF-8"));
+                    new InputStreamReader(in, StandardCharsets.UTF_8));
 
             // this will might java.nio.file.FileSystemNotFoundException in
             // production server.
@@ -306,7 +307,7 @@ public enum WffJsFile {
                         line = line.substring(0, indexOfCommentSlashes);
                     }
                 }
-                line = line.trim();
+                line = StringUtil.strip(line);
 
                 builder.append(line);
 
@@ -360,7 +361,8 @@ public enum WffJsFile {
                 } while (containsLog);
             }
 
-            optimizedFileContent = builder.toString().trim();
+            optimizedFileContent = StringBuilderUtil.getTrimmedString(builder)
+                    .toString();
         } catch (final Exception e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
@@ -376,23 +378,37 @@ public enum WffJsFile {
      * @param removePrevBPOnInitTab
      * @param removePrevBPOnClosetTab
      * @param heartbeatInterval
-     *            in milliseconds
+     *                                    in milliseconds
      * @return the js string for the client
      * @author WFF
      */
     public static String getAllOptimizedContent(final String wsUrl,
             final String instanceId, final boolean removePrevBPOnInitTab,
             final boolean removePrevBPOnClosetTab, final int heartbeatInterval,
-            final int wsReconnectInterval) {
+            final int wsReconnectInterval,
+            final boolean autoremoveParentScript) {
 
         if (allOptimizedContent != null) {
 
             if (heartbeatInterval > 0) {
+                if (autoremoveParentScript) {
+                    return buildJsContentWithHeartbeat(wsUrl, instanceId,
+                            removePrevBPOnInitTab, removePrevBPOnClosetTab,
+                            heartbeatInterval, wsReconnectInterval)
+                                    .append(AUTOREMOVE_PARENT_SCRIPT)
+                                    .toString();
+                }
                 return buildJsContentWithHeartbeat(wsUrl, instanceId,
                         removePrevBPOnInitTab, removePrevBPOnClosetTab,
-                        heartbeatInterval, wsReconnectInterval);
+                        heartbeatInterval, wsReconnectInterval).toString();
             }
 
+            if (autoremoveParentScript) {
+                return buildJsContentWithoutHeartbeat(wsUrl, instanceId,
+                        removePrevBPOnInitTab, removePrevBPOnClosetTab,
+                        wsReconnectInterval).append(AUTOREMOVE_PARENT_SCRIPT)
+                                .toString();
+            }
             return buildJsContentWithoutHeartbeat(wsUrl, instanceId,
                     removePrevBPOnInitTab, removePrevBPOnClosetTab,
                     wsReconnectInterval).toString();
@@ -412,7 +428,8 @@ public enum WffJsFile {
                 builder.append('\n').append(wffJsFiles[i].optimizedFileContent);
             }
 
-            allOptimizedContent = builder.toString().trim();
+            allOptimizedContent = StringBuilderUtil.getTrimmedString(builder)
+                    .toString();
 
             if (PRODUCTION_MODE && functionNames != null) {
 
@@ -452,11 +469,24 @@ public enum WffJsFile {
             }
 
             if (heartbeatInterval > 0) {
+                if (autoremoveParentScript) {
+                    return buildJsContentWithHeartbeat(wsUrl, instanceId,
+                            removePrevBPOnInitTab, removePrevBPOnClosetTab,
+                            heartbeatInterval, wsReconnectInterval)
+                                    .append(AUTOREMOVE_PARENT_SCRIPT)
+                                    .toString();
+                }
                 return buildJsContentWithHeartbeat(wsUrl, instanceId,
                         removePrevBPOnInitTab, removePrevBPOnClosetTab,
-                        heartbeatInterval, wsReconnectInterval);
+                        heartbeatInterval, wsReconnectInterval).toString();
             }
 
+            if (autoremoveParentScript) {
+                return buildJsContentWithoutHeartbeat(wsUrl, instanceId,
+                        removePrevBPOnInitTab, removePrevBPOnClosetTab,
+                        wsReconnectInterval).append(AUTOREMOVE_PARENT_SCRIPT)
+                                .toString();
+            }
             return buildJsContentWithoutHeartbeat(wsUrl, instanceId,
                     removePrevBPOnInitTab, removePrevBPOnClosetTab,
                     wsReconnectInterval).toString();
@@ -468,7 +498,7 @@ public enum WffJsFile {
         return "";
     }
 
-    private static String buildJsContentWithHeartbeat(final String wsUrl,
+    private static StringBuilder buildJsContentWithHeartbeat(final String wsUrl,
             final String instanceId, final boolean removePrevBPOnInitTab,
             final boolean removePrevBPOnClosetTab, final int heartbeatInterval,
             final int wsReconnectInterval) {
@@ -476,8 +506,7 @@ public enum WffJsFile {
                 removePrevBPOnInitTab, removePrevBPOnClosetTab,
                 wsReconnectInterval).append(
                         HEART_BEAT_JS.replace("\"${HEARTBEAT_INTERVAL}\"",
-                                Integer.toString(heartbeatInterval)))
-                        .toString();
+                                Integer.toString(heartbeatInterval)));
     }
 
     private static StringBuilder buildJsContentWithoutHeartbeat(

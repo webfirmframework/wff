@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
  */
 package com.webfirmframework.wffweb.util;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
@@ -26,9 +26,9 @@ import java.util.Map;
  */
 public final class CharsetUtil {
 
-    private static final Map<Integer, char[]> CHACHED_UPPER_CASE_CHARSETS = new HashMap<Integer, char[]>();
+    private static final Map<Integer, char[]> CHACHED_UPPER_CASE_CHARSETS = new ConcurrentHashMap<>();
 
-    private static final Map<Integer, char[]> CHACHED_LOWER_CASE_CHARSETS = new HashMap<Integer, char[]>();
+    private static final Map<Integer, char[]> CHACHED_LOWER_CASE_CHARSETS = new ConcurrentHashMap<>();
 
     private CharsetUtil() {
         throw new AssertionError();
@@ -55,7 +55,11 @@ public final class CharsetUtil {
             charset[index] = Character.toUpperCase(index);
             index++;
         }
-        CHACHED_UPPER_CASE_CHARSETS.put(uptoPlusOne, charset);
+        final char[] previous = CHACHED_UPPER_CASE_CHARSETS
+                .putIfAbsent(uptoPlusOne, charset);
+        if (previous != null) {
+            return previous;
+        }
         return charset;
     }
 
@@ -80,7 +84,11 @@ public final class CharsetUtil {
             charset[index] = Character.toLowerCase(index);
             index++;
         }
-        CHACHED_LOWER_CASE_CHARSETS.put(uptoPlusOne, charset);
+        final char[] previous = CHACHED_LOWER_CASE_CHARSETS
+                .putIfAbsent(uptoPlusOne, charset);
+        if (previous != null) {
+            return previous;
+        }
         return charset;
     }
 

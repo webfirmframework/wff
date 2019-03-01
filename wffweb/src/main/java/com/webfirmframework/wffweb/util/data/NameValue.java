@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,10 +38,10 @@ public class NameValue implements Serializable {
 
     /**
      * @param name
-     *            an array of bytes
+     *                   an array of bytes
      * @param values
-     *            an array of bytes array, i.e. a two dimensional array of
-     *            bytes.
+     *                   an array of bytes array, i.e. a two dimensional array
+     *                   of bytes.
      * @author WFF
      */
     public NameValue(final byte[] name, final byte[][] values) {

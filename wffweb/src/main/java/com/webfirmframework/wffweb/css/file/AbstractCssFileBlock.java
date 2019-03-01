@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,9 +57,9 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
     }
 
     {
-        cssFiles = new LinkedHashSet<CssFile>();
+        cssFiles = new LinkedHashSet<>();
 
-        cssPropertiesAsMap = new LinkedHashMap<String, CssProperty>();
+        cssPropertiesAsMap = new LinkedHashMap<>();
 
         cssProperties = new LinkedHashSet<CssProperty>() {
 
@@ -233,7 +233,7 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
 
     /**
      * @param modified
-     *            the modified to set
+     *                     the modified to set
      * @since 1.0.0
      * @author WFF
      */
@@ -287,8 +287,9 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
 
     /**
      * @param excludeCssBlock
-     *            the excludeCssBlock to set. If it is set to true, then this
-     *            css block will not be contained in the generated css.
+     *                            the excludeCssBlock to set. If it is set to
+     *                            true, then this css block will not be
+     *                            contained in the generated css.
      */
     protected void setExcludeCssBlock(final boolean excludeCssBlock) {
         this.excludeCssBlock = excludeCssBlock;

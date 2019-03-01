@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,7 +82,7 @@ public class OutputBuffer {
 
     /**
      * @param rebuild
-     *            the rebuild to set
+     *                    the rebuild to set
      * @since 1.0.0
      * @author WFF
      */
@@ -92,9 +92,9 @@ public class OutputBuffer {
 
     /**
      * @param newLength
-     *            sets the length to the output buffer so that the first chars
-     *            up to newLength will be kept and the remaining will be
-     *            removed.
+     *                      sets the length to the output buffer so that the
+     *                      first chars up to newLength will be kept and the
+     *                      remaining will be removed.
      * @since 1.0.0
      * @author WFF
      */

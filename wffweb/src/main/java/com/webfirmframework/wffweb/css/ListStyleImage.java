@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.WffRuntimeException;
 import com.webfirmframework.wffweb.css.core.AbstractCssProperty;
+import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
  * list-style-image: none|url|initial|inherit;
@@ -48,7 +49,7 @@ public class ListStyleImage extends AbstractCssProperty<ListStyleImage> {
 
     /**
      * @param cssValue
-     *            the css value to set.
+     *                     the css value to set.
      *
      */
     public ListStyleImage(final String cssValue) {
@@ -57,9 +58,9 @@ public class ListStyleImage extends AbstractCssProperty<ListStyleImage> {
 
     /**
      * @param value
-     *            the css value or url value to set.
+     *                     the css value or url value to set.
      * @param urlValue
-     *            images/TestImage.png
+     *                     images/TestImage.png
      */
     public ListStyleImage(final String value, final boolean urlValue) {
         if (urlValue) {
@@ -71,8 +72,9 @@ public class ListStyleImage extends AbstractCssProperty<ListStyleImage> {
 
     /**
      * @param listStyleImage
-     *            the {@code ListStyleImage} object from which the cssValue to
-     *            set.And, {@code null} will throw {@code NullValueException}
+     *                           the {@code ListStyleImage} object from which
+     *                           the cssValue to set.And, {@code null} will
+     *                           throw {@code NullValueException}
      */
     public ListStyleImage(final ListStyleImage listStyleImage) {
         if (listStyleImage == null) {
@@ -116,9 +118,10 @@ public class ListStyleImage extends AbstractCssProperty<ListStyleImage> {
 
     /**
      * @param cssValue
-     *            the value should be in the format of <code>55px</code> or
-     *            <code>95%</code>. {@code null} is considered as an invalid
-     *            value and it will throw {@code NullValueException}.
+     *                     the value should be in the format of
+     *                     <code>55px</code> or <code>95%</code>. {@code null}
+     *                     is considered as an invalid value and it will throw
+     *                     {@code NullValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -130,10 +133,11 @@ public class ListStyleImage extends AbstractCssProperty<ListStyleImage> {
             if (cssValue == null) {
                 throw new NullValueException(
                         "null is an invalid value. The value format should be as for example url(/images/Test.png). Or, initial/inherit.");
-            } else if ((trimmedCssValue = cssValue.trim()).equalsIgnoreCase(
-                    INITIAL) || trimmedCssValue.equalsIgnoreCase(INHERIT)
+            } else if ((trimmedCssValue = StringUtil.strip(cssValue))
+                    .equalsIgnoreCase(INITIAL)
+                    || trimmedCssValue.equalsIgnoreCase(INHERIT)
                     || trimmedCssValue.equalsIgnoreCase(NONE)) {
-                this.cssValue = cssValue.trim().toLowerCase();
+                this.cssValue = StringUtil.strip(cssValue).toLowerCase();
                 url = null;
             } else if (trimmedCssValue.toLowerCase().startsWith("url(")
                     && trimmedCssValue.endsWith(")")) {
@@ -160,8 +164,8 @@ public class ListStyleImage extends AbstractCssProperty<ListStyleImage> {
             throw new InvalidValueException(e.getMessage(), e);
         } catch (final NumberFormatException e) {
             this.cssValue = previousCssValue;
-            throw new InvalidValueException(
-                    cssValue + " is an invalid value. The value format should be as for example url(/images/Test.png). Or, initial/inherit.",
+            throw new InvalidValueException(cssValue
+                    + " is an invalid value. The value format should be as for example url(/images/Test.png). Or, initial/inherit.",
                     e);
         }
         return this;
@@ -169,7 +173,7 @@ public class ListStyleImage extends AbstractCssProperty<ListStyleImage> {
 
     /**
      * @param url
-     *            eg:- images/Test.png
+     *                eg:- images/Test.png
      * @return the current object
      * @since 1.0.0
      * @author WFF
@@ -228,7 +232,7 @@ public class ListStyleImage extends AbstractCssProperty<ListStyleImage> {
         if (getCssValue() == null) {
             return false;
         }
-        final String trimmedCssValue = getCssValue().trim();
+        final String trimmedCssValue = StringUtil.strip(getCssValue());
         return trimmedCssValue.equalsIgnoreCase(INITIAL)
                 || trimmedCssValue.equalsIgnoreCase(INHERIT)
                 || trimmedCssValue.equalsIgnoreCase(NONE);
@@ -246,7 +250,8 @@ public class ListStyleImage extends AbstractCssProperty<ListStyleImage> {
         String trimmedCssValue = null;
         if (cssValue == null) {
             return false;
-        } else if ((trimmedCssValue = cssValue.trim()).equalsIgnoreCase(INITIAL)
+        } else if ((trimmedCssValue = StringUtil.strip(cssValue))
+                .equalsIgnoreCase(INITIAL)
                 || trimmedCssValue.equalsIgnoreCase(INHERIT)
                 || trimmedCssValue.equalsIgnoreCase(NONE)) {
             return true;

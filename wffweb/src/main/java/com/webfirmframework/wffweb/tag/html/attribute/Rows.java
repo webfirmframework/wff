@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ public class Rows extends AbstractAttribute implements TextAreaAttributable {
 
     /**
      * @param value
-     *            the the number of columns to span
+     *                  the the number of columns to span
      * @since 2.1.4
      * @author WFF
      */
@@ -64,7 +64,7 @@ public class Rows extends AbstractAttribute implements TextAreaAttributable {
 
     /**
      * @param value
-     *            the the number of columns to span
+     *                  the the number of columns to span
      * @since 2.1.4
      * @author WFF
      */
@@ -95,7 +95,7 @@ public class Rows extends AbstractAttribute implements TextAreaAttributable {
 
     /**
      * @param index
-     *            the the number of columns to span
+     *                  the the number of columns to span
      * @author WFF
      * @since 2.1.4
      */

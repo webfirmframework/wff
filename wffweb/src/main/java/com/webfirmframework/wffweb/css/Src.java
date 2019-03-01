@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.css.core.AbstractCssProperty;
+import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
  * <pre>
@@ -44,7 +45,7 @@ public class Src extends AbstractCssProperty<Src> {
     /**
      *
      * @param cssValue
-     *            the cssValue to set
+     *                     the cssValue to set
      * @author WFF
      * @since 1.1.2
      */
@@ -87,7 +88,7 @@ public class Src extends AbstractCssProperty<Src> {
 
     /**
      * @param cssValue
-     *            The value should be a unicodeChars sequence.
+     *                     The value should be a unicodeChars sequence.
      * @since 1.1.2
      * @author WFF
      */
@@ -97,7 +98,7 @@ public class Src extends AbstractCssProperty<Src> {
             throw new NullValueException("null is an invalid value");
         } else {
 
-            this.cssValue = cssValue.trim();
+            this.cssValue = StringUtil.strip(cssValue);
 
             if (getStateChangeInformer() != null) {
                 getStateChangeInformer().stateChanged(this);

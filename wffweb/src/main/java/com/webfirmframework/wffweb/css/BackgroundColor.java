@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import com.webfirmframework.wffweb.core.constants.CommonConstants;
 import com.webfirmframework.wffweb.css.core.AbstractCssProperty;
 import com.webfirmframework.wffweb.data.Bean;
 import com.webfirmframework.wffweb.informer.StateChangeInformer;
+import com.webfirmframework.wffweb.util.StringUtil;
 import com.webfirmframework.wffweb.util.TagStringUtil;
 
 /**
@@ -77,7 +78,7 @@ public class BackgroundColor extends AbstractCssProperty<BackgroundColor>
 
     /**
      * @param cssValue
-     *            the css value to set.
+     *                     the css value to set.
      */
     public BackgroundColor(final String cssValue) {
         setCssValue(cssValue);
@@ -85,8 +86,9 @@ public class BackgroundColor extends AbstractCssProperty<BackgroundColor>
 
     /**
      * @param backgroundColor
-     *            the {@code BackgroundColor} object from which the cssValue to
-     *            set.And, {@code null} will throw {@code NullValueException}
+     *                            the {@code BackgroundColor} object from which
+     *                            the cssValue to set.And, {@code null} will
+     *                            throw {@code NullValueException}
      */
     public BackgroundColor(final BackgroundColor backgroundColor) {
         if (backgroundColor == null) {
@@ -163,11 +165,12 @@ public class BackgroundColor extends AbstractCssProperty<BackgroundColor>
 
     /**
      * @param cssValue
-     *            the value should be a color/color code/rgb, for example
-     *            <code>#0000ff</code>. {@code null} is considered as an invalid
-     *            value and it will throw {@code NullValueException}.And an
-     *            empty string is also considered as an invalid value and it
-     *            will throw {@code InvalidValueException}.
+     *                     the value should be a color/color code/rgb, for
+     *                     example <code>#0000ff</code>. {@code null} is
+     *                     considered as an invalid value and it will throw
+     *                     {@code NullValueException}.And an empty string is
+     *                     also considered as an invalid value and it will throw
+     *                     {@code InvalidValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -180,7 +183,7 @@ public class BackgroundColor extends AbstractCssProperty<BackgroundColor>
             throw new InvalidValueException(cssValue
                     + " is an invalid value. The value should be any color for example #0000ff, rgb(15, 25, 155) Or, initial/inherit/transparent.");
         } else {
-            this.cssValue = cssValue.trim();
+            this.cssValue = StringUtil.strip(cssValue);
             if (RgbCssValue.isValid(cssValue)) {
                 if (rgbCssValue == null) {
                     rgbCssValue = new RgbCssValue(cssValue);
@@ -271,7 +274,7 @@ public class BackgroundColor extends AbstractCssProperty<BackgroundColor>
             return false;
         }
 
-        final String trimmedCssValue = cssValue.trim();
+        final String trimmedCssValue = StringUtil.strip(cssValue);
 
         if (trimmedCssValue.isEmpty()) {
             return false;
@@ -364,7 +367,7 @@ public class BackgroundColor extends AbstractCssProperty<BackgroundColor>
 
     /**
      * @param rgbCssValue
-     *            the rgbCssValue to set
+     *                        the rgbCssValue to set
      * @since 1.0.0
      * @author WFF
      */
@@ -419,7 +422,7 @@ public class BackgroundColor extends AbstractCssProperty<BackgroundColor>
 
     /**
      * @param rgbaCssValue
-     *            the rgbaCssValue to set
+     *                         the rgbaCssValue to set
      * @since 1.0.0
      * @author WFF
      */
@@ -474,7 +477,7 @@ public class BackgroundColor extends AbstractCssProperty<BackgroundColor>
 
     /**
      * @param hslCssValue
-     *            the hslCssValue to set
+     *                        the hslCssValue to set
      * @since 1.0.0
      * @author WFF
      */
@@ -529,7 +532,7 @@ public class BackgroundColor extends AbstractCssProperty<BackgroundColor>
 
     /**
      * @param hslaCssValue
-     *            the hslaCssValue to set
+     *                         the hslaCssValue to set
      * @since 1.0.0
      * @author WFF
      */

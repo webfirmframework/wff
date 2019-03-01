@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package com.webfirmframework.wffweb.server.page;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashSet;
@@ -70,13 +71,14 @@ class InsertBeforeListenerImpl implements InsertBeforeListener {
      */
     private void addInWffIdMap(final AbstractHtml tag) {
 
-        final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<Set<AbstractHtml>>();
-        final Set<AbstractHtml> initialSet = new HashSet<AbstractHtml>(1);
+        final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
+        // passed 2 instead of 1 because the load factor is 0.75f
+        final Set<AbstractHtml> initialSet = new HashSet<>(2);
         initialSet.add(tag);
         childrenStack.push(initialSet);
 
-        while (childrenStack.size() > 0) {
-            final Set<AbstractHtml> children = childrenStack.pop();
+        Set<AbstractHtml> children;
+        while ((children = childrenStack.poll()) != null) {
             for (final AbstractHtml child : children) {
 
                 final DataWffId wffIdAttr = child.getDataWffId();
@@ -108,7 +110,7 @@ class InsertBeforeListenerImpl implements InsertBeforeListener {
         try {
             final NameValue task = Task.INSERTED_BEFORE_TAG.getTaskNameValue();
 
-            final Deque<NameValue> nameValues = new ArrayDeque<NameValue>();
+            final Deque<NameValue> nameValues = new ArrayDeque<>();
             nameValues.add(task);
 
             for (final Event event : events) {
@@ -143,12 +145,14 @@ class InsertBeforeListenerImpl implements InsertBeforeListener {
                     try {
                         if (previousParentTag != null) {
                             nameValue.setValues(parentTagName,
-                                    insertedTag.toWffBMBytes("UTF-8"),
+                                    insertedTag.toWffBMBytes(
+                                            StandardCharsets.UTF_8),
                                     beforeTagNameAndWffId[0],
                                     beforeTagNameAndWffId[1], new byte[] { 1 });
                         } else {
                             nameValue.setValues(parentTagName,
-                                    insertedTag.toWffBMBytes("UTF-8"),
+                                    insertedTag.toWffBMBytes(
+                                            StandardCharsets.UTF_8),
                                     beforeTagNameAndWffId[0],
                                     beforeTagNameAndWffId[1]);
                         }

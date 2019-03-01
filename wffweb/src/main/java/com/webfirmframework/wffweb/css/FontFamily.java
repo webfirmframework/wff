@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -112,7 +112,7 @@ public class FontFamily extends AbstractCssProperty<FontFamily> {
 
     /**
      * @param cssValue
-     *            the css value to set.
+     *                     the css value to set.
      */
     public FontFamily(final String cssValue) {
         setCssValue(cssValue);
@@ -126,7 +126,7 @@ public class FontFamily extends AbstractCssProperty<FontFamily> {
      * </pre>
      *
      * @param fontFamilyNames
-     *            the font family names.
+     *                            the font family names.
      */
     public FontFamily(final String... fontFamilyNames) {
         this.fontFamilyNames = StringUtil.cloneArray(fontFamilyNames);
@@ -161,8 +161,9 @@ public class FontFamily extends AbstractCssProperty<FontFamily> {
 
     /**
      * @param fontFamily
-     *            the {@code FontFamily} object from which the cssValue to
-     *            set.And, {@code null} will throw {@code NullValueException}
+     *                       the {@code FontFamily} object from which the
+     *                       cssValue to set.And, {@code null} will throw
+     *                       {@code NullValueException}
      */
     public FontFamily(final FontFamily fontFamily) {
         if (fontFamily == null) {
@@ -206,8 +207,9 @@ public class FontFamily extends AbstractCssProperty<FontFamily> {
 
     /**
      * @param cssValue
-     *            The value should be a fontFamilies sequence for example \
-     *            "Times New Roman\", Georgia, Serif Or initial/inherit.
+     *                     The value should be a fontFamilies sequence for
+     *                     example \ "Times New Roman\", Georgia, Serif Or
+     *                     initial/inherit.
      * @since 1.0.0
      * @author WFF
      */
@@ -217,7 +219,7 @@ public class FontFamily extends AbstractCssProperty<FontFamily> {
             throw new NullValueException(
                     "null is an invalid value. The value should be a fontFamilies sequence for example \"Times New Roman\", Georgia, Serif Or initial/inherit.");
         } else {
-            final String trimmedCssValue = cssValue.trim();
+            final String trimmedCssValue = StringUtil.strip(cssValue);
 
             if (INITIAL.equals(cssValue) || INHERIT.equals(cssValue)) {
                 fontFamilyNames = null;
@@ -238,7 +240,7 @@ public class FontFamily extends AbstractCssProperty<FontFamily> {
     /**
      * @param familyNames
      * @param validate
-     *            TODO
+     *                        TODO
      * @return an array containing extracted family names from the given input.
      * @author WFF
      * @since 1.0.0
@@ -250,7 +252,7 @@ public class FontFamily extends AbstractCssProperty<FontFamily> {
         int count = 0;
 
         for (final String each : parts) {
-            final String trimmed = each.trim();
+            final String trimmed = StringUtil.strip(each);
 
             final char firstChar;
             final char lastChar;
@@ -298,7 +300,7 @@ public class FontFamily extends AbstractCssProperty<FontFamily> {
      * </pre>
      *
      * @param fontFamilyNames
-     *            the fontFamilyNames to set
+     *                            the fontFamilyNames to set
      * @author WFF
      * @since 1.0.0
      */
@@ -358,7 +360,7 @@ public class FontFamily extends AbstractCssProperty<FontFamily> {
     /**
      *
      * @param fontFamilyName
-     *            the supported font-family.
+     *                           the supported font-family.
      * @author WFF
      * @since 1.0.0
      */
@@ -368,7 +370,7 @@ public class FontFamily extends AbstractCssProperty<FontFamily> {
 
     /**
      * @param fontFamilyNames
-     *            the supported font-family names.
+     *                            the supported font-family names.
      * @author WFF
      * @since 1.0.0
      */
@@ -400,7 +402,7 @@ public class FontFamily extends AbstractCssProperty<FontFamily> {
 
     /**
      * @param validateFontFamilyName
-     *            the validateFontFamilyName to set
+     *                                   the validateFontFamilyName to set
      * @author WFF
      * @since 1.0.0
      */
@@ -420,7 +422,9 @@ public class FontFamily extends AbstractCssProperty<FontFamily> {
 
     /**
      * @param validateFontFamilyNameGlobally
-     *            the validateFontFamilyNameGlobally to set
+     *                                           the
+     *                                           validateFontFamilyNameGlobally
+     *                                           to set
      * @author WFF
      * @since 1.0.0
      */
@@ -439,7 +443,8 @@ public class FontFamily extends AbstractCssProperty<FontFamily> {
      * @since 1.0.0
      */
     public static boolean isValid(final String cssValue) {
-        final String cssValueLC = TagStringUtil.toLowerCase(cssValue.trim());
+        final String cssValueLC = TagStringUtil
+                .toLowerCase(StringUtil.strip(cssValue));
         return INITIAL.equals(cssValueLC) || INHERIT.equals(cssValueLC)
                 || FONT_FAMILY_NAMES.contains(cssValueLC);
     }

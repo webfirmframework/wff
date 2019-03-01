@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ public abstract class AbstractBean<FORCLASS> implements Bean {
 
     /**
      * @param stateChangeInformer
-     *            the stateChangeInformer to set
+     *                                the stateChangeInformer to set
      * @since 1.0.0
      * @author WFF
      */
@@ -65,7 +65,7 @@ public abstract class AbstractBean<FORCLASS> implements Bean {
      * stateChangeInformer if the given argument is false.
      *
      * @param alreadyInUse
-     *            the alreadyInUse to set
+     *                         the alreadyInUse to set
      * @since 1.0.0
      * @author WFF
      */

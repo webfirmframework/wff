@@ -17,6 +17,7 @@ package com.webfirmframework.wffweb.util;
 
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 import org.junit.Test;
@@ -28,11 +29,13 @@ import org.junit.Test;
  *
  */
 public class StringUtilTest {
-    
-    private static final Logger LOGGER = Logger.getLogger(StringUtilTest.class.getName());
+
+    private static final Logger LOGGER = Logger
+            .getLogger(StringUtilTest.class.getName());
 
     /**
-     * Test method for {@link com.webfirmframework.wffweb.util.StringUtil#convertToSingleSpace(java.lang.String)}.
+     * Test method for
+     * {@link com.webfirmframework.wffweb.util.StringUtil#convertToSingleSpace(java.lang.String)}.
      */
     @Test
     public void testConvertToSingleSpace() {
@@ -40,123 +43,146 @@ public class StringUtilTest {
     }
 
     /**
-     * Test method for {@link com.webfirmframework.wffweb.util.StringUtil#getFirstSubstring(java.lang.String, java.lang.String, java.lang.String)}.
+     * Test method for
+     * {@link com.webfirmframework.wffweb.util.StringUtil#getFirstSubstring(java.lang.String, java.lang.String, java.lang.String)}.
      */
     @Test
     public void testGetFirstSubstringStringStringString() {
-        final String firstSubstring = StringUtil.getFirstSubstring("dfsf rgb(7, 8, 9)rgb(3, 5, 6)", "rgb(", ")");
+        final String firstSubstring = StringUtil.getFirstSubstring(
+                "dfsf rgb(7, 8, 9)rgb(3, 5, 6)", "rgb(", ")");
         assertEquals("rgb(7, 8, 9)", firstSubstring);
     }
 
     /**
-     * Test method for {@link com.webfirmframework.wffweb.util.StringUtil#getFirstSubstring(java.lang.String, java.lang.String, java.lang.String, int)}.
+     * Test method for
+     * {@link com.webfirmframework.wffweb.util.StringUtil#getFirstSubstring(java.lang.String, java.lang.String, java.lang.String, int)}.
      */
     @Test
     public void testGetFirstSubstringStringStringStringInt() {
-        final String firstSubstring = StringUtil.getFirstSubstring("dfsf rgb(7, 8, 9, 1)rgb(3, 5, 6)", "rgb(", ")", 19);
+        final String firstSubstring = StringUtil.getFirstSubstring(
+                "dfsf rgb(7, 8, 9, 1)rgb(3, 5, 6)", "rgb(", ")", 19);
         assertEquals("rgb(3, 5, 6)", firstSubstring);
     }
 
     /**
-     * Test method for {@link com.webfirmframework.wffweb.util.StringUtil#getAllSubstrings(java.lang.String, java.lang.String, java.lang.String)}.
+     * Test method for
+     * {@link com.webfirmframework.wffweb.util.StringUtil#getAllSubstrings(java.lang.String, java.lang.String, java.lang.String)}.
      */
     @Test
     public void testGetAllSubstrings() {
-        final String[] allSubstrings = StringUtil.getAllSubstrings("dfsf rgb(7, 8, 9, 1)rgb(3, 5, 6)", "rgb(", ")");
-        
+        final String[] allSubstrings = StringUtil.getAllSubstrings(
+                "dfsf rgb(7, 8, 9, 1)rgb(3, 5, 6)", "rgb(", ")");
+
         assertEquals("rgb(7, 8, 9, 1)", allSubstrings[0]);
         assertEquals("rgb(3, 5, 6)", allSubstrings[1]);
         assertEquals(2, allSubstrings.length);
     }
 
     /**
-     * Test method for {@link com.webfirmframework.wffweb.util.StringUtil#startIndexOf(java.lang.String, java.lang.String, java.lang.String)}.
+     * Test method for
+     * {@link com.webfirmframework.wffweb.util.StringUtil#startIndexOf(java.lang.String, java.lang.String, java.lang.String)}.
      */
     @Test
     public void testStartIndexOfStringStringString() {
-        final int startIndexOf = StringUtil.startIndexOf("green rgb(7, 8, 9, 1)rgb(3, 5, 6)", "rgb(", ")");
+        final int startIndexOf = StringUtil
+                .startIndexOf("green rgb(7, 8, 9, 1)rgb(3, 5, 6)", "rgb(", ")");
         assertEquals(6, startIndexOf);
     }
 
     /**
-     * Test method for {@link com.webfirmframework.wffweb.util.StringUtil#endIndexOf(java.lang.String, java.lang.String, java.lang.String)}.
+     * Test method for
+     * {@link com.webfirmframework.wffweb.util.StringUtil#endIndexOf(java.lang.String, java.lang.String, java.lang.String)}.
      */
     @Test
     public void testEndIndexOfStringStringString() {
-        final int endIndex = StringUtil.endIndexOf("green rgb(7, 8, 9, 1)rgb(3, 5, 6)", "rgb(", ")");
+        final int endIndex = StringUtil
+                .endIndexOf("green rgb(7, 8, 9, 1)rgb(3, 5, 6)", "rgb(", ")");
         assertEquals(20, endIndex);
     }
 
     /**
-     * Test method for {@link com.webfirmframework.wffweb.util.StringUtil#startIndexOf(java.lang.String, java.lang.String, java.lang.String, int)}.
+     * Test method for
+     * {@link com.webfirmframework.wffweb.util.StringUtil#startIndexOf(java.lang.String, java.lang.String, java.lang.String, int)}.
      */
     @Test
     public void testStartIndexOfStringStringStringInt() {
-        final int startIndex = StringUtil.startIndexOf("green rgb(7, 8, 9, 1) rgb(3, 5, 6)", "rgb(", ")", 20);
+        final int startIndex = StringUtil.startIndexOf(
+                "green rgb(7, 8, 9, 1) rgb(3, 5, 6)", "rgb(", ")", 20);
         assertEquals(22, startIndex);
     }
 
     /**
-     * Test method for {@link com.webfirmframework.wffweb.util.StringUtil#endIndexOf(java.lang.String, java.lang.String, java.lang.String, int)}.
+     * Test method for
+     * {@link com.webfirmframework.wffweb.util.StringUtil#endIndexOf(java.lang.String, java.lang.String, java.lang.String, int)}.
      */
     @Test
     public void testEndIndexOfStringStringStringInt() {
-        final int endIndex = StringUtil.endIndexOf("green rgb(7, 8, 9, 1) rgb(3, 5, 6)", "rgb(", ")", 20);
+        final int endIndex = StringUtil.endIndexOf(
+                "green rgb(7, 8, 9, 1) rgb(3, 5, 6)", "rgb(", ")", 20);
         assertEquals(33, endIndex);
     }
 
     /**
-     * Test method for {@link com.webfirmframework.wffweb.util.StringUtil#startIndexAndEndIndexOf(java.lang.String, java.lang.String, java.lang.String)}.
+     * Test method for
+     * {@link com.webfirmframework.wffweb.util.StringUtil#startIndexAndEndIndexOf(java.lang.String, java.lang.String, java.lang.String)}.
      */
     @Test
     public void testStartIndexAndEndIndexOfStringStringString() {
-        final int[] startIndexAndEndIndex = StringUtil.startIndexAndEndIndexOf("green rgb(7, 8, 9, 1) rgb(3, 5, 6)", "rgb(", ")");
+        final int[] startIndexAndEndIndex = StringUtil.startIndexAndEndIndexOf(
+                "green rgb(7, 8, 9, 1) rgb(3, 5, 6)", "rgb(", ")");
         assertEquals(6, startIndexAndEndIndex[0]);
         assertEquals(20, startIndexAndEndIndex[1]);
         assertEquals(2, startIndexAndEndIndex.length);
     }
 
     /**
-     * Test method for {@link com.webfirmframework.wffweb.util.StringUtil#startIndexAndEndIndexOf(java.lang.String, java.lang.String, java.lang.String, int)}.
+     * Test method for
+     * {@link com.webfirmframework.wffweb.util.StringUtil#startIndexAndEndIndexOf(java.lang.String, java.lang.String, java.lang.String, int)}.
      */
     @Test
     public void testStartIndexAndEndIndexOfStringStringStringInt() {
-        final int[] startIndexAndEndIndex = StringUtil.startIndexAndEndIndexOf("green rgb(7, 8, 9, 1) rgb(3, 5, 6)", "rgb(", ")", 7);
+        final int[] startIndexAndEndIndex = StringUtil.startIndexAndEndIndexOf(
+                "green rgb(7, 8, 9, 1) rgb(3, 5, 6)", "rgb(", ")", 7);
         assertEquals(22, startIndexAndEndIndex[0]);
         assertEquals(33, startIndexAndEndIndex[1]);
         assertEquals(2, startIndexAndEndIndex.length);
     }
 
     /**
-     * Test method for {@link com.webfirmframework.wffweb.util.StringUtil#startAndEndIndexesOf(java.lang.String, java.lang.String, java.lang.String)}.
+     * Test method for
+     * {@link com.webfirmframework.wffweb.util.StringUtil#startAndEndIndexesOf(java.lang.String, java.lang.String, java.lang.String)}.
      */
     @Test
     public void testStartAndEndIndexesOf() {
-        final int[][] startAndEndIndexes = StringUtil.startAndEndIndexesOf("green rgb(7, 8, 9, 1) rgb(3, 5, 6)", "rgb(", ")");
+        final int[][] startAndEndIndexes = StringUtil.startAndEndIndexesOf(
+                "green rgb(7, 8, 9, 1) rgb(3, 5, 6)", "rgb(", ")");
         assertEquals(2, startAndEndIndexes.length);
-        
+
         int[] startIndexAndEndIndex = startAndEndIndexes[0];
         assertEquals(6, startIndexAndEndIndex[0]);
         assertEquals(20, startIndexAndEndIndex[1]);
         assertEquals(2, startIndexAndEndIndex.length);
-        
+
         startIndexAndEndIndex = startAndEndIndexes[1];
         assertEquals(22, startIndexAndEndIndex[0]);
         assertEquals(33, startIndexAndEndIndex[1]);
         assertEquals(2, startIndexAndEndIndex.length);
-        
-        assertEquals(0, StringUtil.startAndEndIndexesOf("there is no combination", "rgb(", ")").length);
-        
+
+        assertEquals(0,
+                StringUtil.startAndEndIndexesOf("there is no combination",
+                        "rgb(", ")").length);
+
     }
-    
+
     /**
-     * Test method for {@link com.webfirmframework.wffweb.util.StringUtil#isEqual(java.lang.Object[])}.
+     * Test method for
+     * {@link com.webfirmframework.wffweb.util.StringUtil#isEqual(java.lang.Object[])}.
      */
     @Test
     public void testIsEqualStringArray() {
         assertFalse(StringUtil.isEqual(null));
-        assertFalse(StringUtil.isEqual(new String[]{null}));
-        assertFalse(StringUtil.isEqual(new String[]{"d"}));
+        assertFalse(StringUtil.isEqual(new String[] { null }));
+        assertFalse(StringUtil.isEqual(new String[] { "d" }));
         assertFalse(StringUtil.isEqual("dfd"));
         assertTrue(StringUtil.isEqual(null, null, null));
         assertFalse(StringUtil.isEqual("d", null, null));
@@ -179,7 +205,8 @@ public class StringUtilTest {
     }
 
     /**
-     * Test method for {@link com.webfirmframework.wffweb.util.StringUtil#isEqual(java.lang.Object, java.lang.Object)}.
+     * Test method for
+     * {@link com.webfirmframework.wffweb.util.StringUtil#isEqual(java.lang.Object, java.lang.Object)}.
      */
     @Test
     public void testIsEqualStringObject() {
@@ -191,7 +218,7 @@ public class StringUtilTest {
         assertTrue(StringUtil.isEqual(obj1, obj2));
         assertTrue(StringUtil.isEqual("hi", "hi"));
     }
-    
+
     @SuppressWarnings("unused")
     @Test
     public void testSplitBySpace() {
@@ -215,22 +242,29 @@ public class StringUtilTest {
             long after = System.nanoTime();
             withSplit = after - before;
         }
-        LOGGER.info("ns of withSplit " + withSplit + ", withSplitBySpace " + withSplitBySpace);
-        LOGGER.info("withSplit - withSplitBySpace = " +  (withSplit - withSplitBySpace ) + " ns");
-        
+        LOGGER.info("ns of withSplit " + withSplit + ", withSplitBySpace "
+                + withSplitBySpace);
+        LOGGER.info("withSplit - withSplitBySpace = "
+                + (withSplit - withSplitBySpace) + " ns");
+        {
+            String s = "";
+            assertEquals(1, StringUtil.splitBySpace(s).length);
+        }
+
     }
-    
+
     @Test
     public void testEndsWithSpace() {
         assertFalse(StringUtil.endsWithSpace("something"));
         assertTrue(StringUtil.endsWithSpace("something "));
     }
+
     @Test
     public void testStartsWithSpace() {
         assertFalse(StringUtil.startsWithSpace("something"));
         assertTrue(StringUtil.startsWithSpace(" something"));
     }
-    
+
     @Test
     public void testContainsSpace() throws Exception {
         assertFalse(StringUtil.containsSpace(""));
@@ -238,7 +272,7 @@ public class StringUtilTest {
         assertTrue(StringUtil.containsSpace("something "));
         assertTrue(StringUtil.containsSpace("some thing"));
     }
-    
+
     @Test
     public void testContainsMinus() throws Exception {
         assertFalse(StringUtil.containsMinus(""));
@@ -246,7 +280,7 @@ public class StringUtilTest {
         assertTrue(StringUtil.containsMinus("something-"));
         assertTrue(StringUtil.containsMinus("some-thing"));
     }
-    
+
     @Test
     public void testContainsPlus() throws Exception {
         assertFalse(StringUtil.containsPlus(""));
@@ -254,7 +288,7 @@ public class StringUtilTest {
         assertTrue(StringUtil.containsPlus("something+"));
         assertTrue(StringUtil.containsPlus("some+thing"));
     }
-    
+
     @Test
     public void testEndsWithColon() throws Exception {
         assertFalse(StringUtil.endsWithColon(""));
@@ -263,6 +297,63 @@ public class StringUtilTest {
         assertTrue(StringUtil.endsWithColon("something:"));
         assertTrue(StringUtil.endsWithColon("something :"));
         assertTrue(StringUtil.endsWithColon("some+thing :"));
+    }
+
+    @Test
+    public void testJoin1() throws Exception {
+        final String join = StringUtil.join(',', ':', ';', "one", "two",
+                "three", "four");
+
+        assertEquals(":one,two,three,four;", join);
+
+    }
+
+    @Test
+    public void testJoin2() throws Exception {
+        final String join = StringUtil.join(',', "one", "two", "three", "four");
+
+        assertEquals("one,two,three,four", join);
+
+    }
+
+    @Test
+    public void testJoin3() throws Exception {
+        {
+            final String join = StringUtil.join(',',
+                    Arrays.asList("one", "two", "three", "four"));
+            assertEquals("one,two,three,four", join);
+        }
+        {
+            final String join = StringUtil.join(' ',
+                    Arrays.asList("one", "two", "three", "four"));
+            assertEquals("one two three four", join);
+        }
+    }
+    
+    @Test
+    public void testIsBlank() throws Exception {
+        assertTrue(StringUtil.isBlank("  \n  "));
+        assertTrue(StringUtil.isBlank("\n"));
+        assertTrue(StringUtil.isBlank("\r\n"));
+        assertTrue(StringUtil.isBlank("\r\r\r"));
+        assertTrue(StringUtil.isBlank(" "));
+        assertTrue(StringUtil.isBlank("\t"));
+        assertTrue(StringUtil.isBlank("      "));
+        assertTrue(StringUtil.isBlank(""));
+        assertFalse(StringUtil.isBlank("\na\n"));
+        assertFalse(StringUtil.isBlank("abc"));
+        assertFalse(StringUtil.isBlank("_"));
+    }
+    
+    @Test
+    public void testStrip() throws Exception {
+        assertEquals("one", StringUtil.strip("    one      "));
+        assertEquals("one", StringUtil.strip("\none\n"));
+        assertEquals("one", StringUtil.strip("\r\none\r\n"));
+        assertEquals("one", StringUtil.strip("\rone\r"));
+        assertEquals("one", StringUtil.strip("\t\tone\t\t\t"));
+        assertEquals("_", StringUtil.strip("\t\t_\t\t\t"));
+        assertEquals("", StringUtil.strip(" \t\r\r\n  "));
     }
 
 }

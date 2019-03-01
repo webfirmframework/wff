@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Web Firm Framework
+ * Copyright 2014-2019 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,7 +60,7 @@ public class Draggable extends AbstractAttribute implements GlobalAttributable {
      *
      *
      * @param value
-     *            the value should be either true or false
+     *                  the value should be either true or false
      * @author WFF
      * @since 1.1.4
      */
@@ -76,8 +76,8 @@ public class Draggable extends AbstractAttribute implements GlobalAttributable {
 
     /**
      * @param draggable
-     *            the draggable to set, true/false/null. The null will set
-     *            <code>auto</code> for draggable value.
+     *                      the draggable to set, true/false/null. The null will
+     *                      set <code>auto</code> for draggable value.
      * @author WFF
      * @since 1.0.0
      */
@@ -112,8 +112,8 @@ public class Draggable extends AbstractAttribute implements GlobalAttributable {
 
     /**
      * @param draggable
-     *            the draggable to set, true/false/null. The null will set
-     *            <code>auto</code> for draggable value.
+     *                      the draggable to set, true/false/null. The null will
+     *                      set <code>auto</code> for draggable value.
      * @author WFF
      * @since 1.0.0
      */

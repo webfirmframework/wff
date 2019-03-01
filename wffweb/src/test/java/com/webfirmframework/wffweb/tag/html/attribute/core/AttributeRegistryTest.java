@@ -21,6 +21,7 @@ import java.lang.reflect.Field;
 
 import org.junit.Test;
 
+import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 
 public class AttributeRegistryTest {
@@ -29,17 +30,33 @@ public class AttributeRegistryTest {
     public void testIfAllAttributeNamesAreReffered() throws Exception {
         final Field[] fields = AttributeNameConstants.class.getFields();
         for (final Field field : fields) {
-            if (AttributeRegistry.getAttributeClassNameByAttributeName()
-                    .get(field.get(null)) == null) {
-                fail(field.get(null)
+            // value from constant name field
+            final String constantName = field.get(null).toString();
+            final String simpleClassName = AttributeRegistry
+                    .getAttributeClassNameByAttributeName().get(constantName);
+            System.out.println(simpleClassName);
+            if (simpleClassName == null) {
+                fail(constantName
                         + " attribute name is not included in all tag names map");
 
+            } else if (!simpleClassName.replace("Attribute", "")
+                    .equalsIgnoreCase(constantName.replace("-", ""))) {
+                fail(constantName
+                        + " attribute has an incorrect class mapping");
             }
         }
     }
     
     @Test
     public void testLoadAllAttributeClasses() throws Exception {
+        try {
+            //loadAllTagClasses must be after test
+            //not possible to write a separate test case for test() method
+            //as the internal map will be nullified in loadAllTagClasses
+            AttributeRegistry.test();            
+        } catch (InvalidValueException e) {
+            fail(e.getMessage());
+        }
         AttributeRegistry.loadAllAttributeClasses();
     }
 
