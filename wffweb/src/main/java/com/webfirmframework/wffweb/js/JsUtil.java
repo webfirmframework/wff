@@ -95,7 +95,7 @@ public final class JsUtil {
 
         for (final Entry<String, Object> entry : jsKeyAndElementId.entrySet()) {
 
-            builder.append(entry.getKey()).append(":")
+            builder.append(entry.getKey()).append(':')
                     .append(alternativeFunction).append("('")
                     .append(entry.getValue().toString()).append("').value,");
 
@@ -320,7 +320,7 @@ public final class JsUtil {
 
         for (final Object id : checkboxIds) {
 
-            builder.append(id.toString()).append(":")
+            builder.append(id.toString()).append(':')
                     .append(alternativeFunction).append("('")
                     .append(id.toString()).append("').checked,");
 
