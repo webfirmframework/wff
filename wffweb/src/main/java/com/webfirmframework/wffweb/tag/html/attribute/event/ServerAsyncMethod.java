@@ -30,10 +30,14 @@ public interface ServerAsyncMethod extends Serializable {
 
         private String serverMethodName;
 
-        private AbstractAttribute sourceAttribute;
+        private final AbstractAttribute sourceAttribute;
+
+        private final Object serverSideData;
 
         public Event(final String serverMethodName) {
             this.serverMethodName = serverMethodName;
+            sourceAttribute = null;
+            serverSideData = null;
         }
 
         public Event(final AbstractHtml sourceTag,
@@ -41,6 +45,34 @@ public interface ServerAsyncMethod extends Serializable {
             super();
             this.sourceTag = sourceTag;
             this.sourceAttribute = sourceAttribute;
+            serverSideData = null;
+        }
+
+        /**
+         * @param serverMethodName
+         * @param serverSideData
+         * @since 3.0.2
+         */
+        public Event(final String serverMethodName,
+                final Object serverSideData) {
+            sourceAttribute = null;
+            this.serverMethodName = serverMethodName;
+            this.serverSideData = serverSideData;
+        }
+
+        /**
+         * @param sourceTag
+         * @param sourceAttribute
+         * @param serverSideData
+         * @since 3.0.2
+         */
+        public Event(final AbstractHtml sourceTag,
+                final AbstractAttribute sourceAttribute,
+                final Object serverSideData) {
+            super();
+            this.sourceTag = sourceTag;
+            this.sourceAttribute = sourceAttribute;
+            this.serverSideData = serverSideData;
         }
 
         /**
@@ -84,6 +116,14 @@ public interface ServerAsyncMethod extends Serializable {
          */
         public AbstractAttribute getSourceAttribute() {
             return sourceAttribute;
+        }
+
+        /**
+         * @return the server side data passed in the event attribute argument
+         * @since 3.0.2
+         */
+        public Object getServerSideData() {
+            return serverSideData;
         }
 
     }

@@ -131,7 +131,7 @@ public abstract class BrowserPage implements Serializable {
 
     private final AtomicInteger holdPush = new AtomicInteger(0);
 
-    private final Map<String, ServerAsyncMethod> serverMethods = new ConcurrentHashMap<>();
+    private final Map<String, ServerMethod> serverMethods = new ConcurrentHashMap<>();
 
     private boolean removeFromBrowserContextOnTabClose = true;
 
@@ -510,7 +510,8 @@ public abstract class BrowserPage implements Serializable {
                             .getServerAsyncMethod();
 
                     final ServerAsyncMethod.Event event = new ServerAsyncMethod.Event(
-                            methodTag, attributeByName);
+                            methodTag, attributeByName,
+                            eventAttr.getServerSideData());
 
                     final WffBMObject returnedObject = serverAsyncMethod
                             .asyncMethod(wffBMObject, event);
@@ -607,10 +608,9 @@ public abstract class BrowserPage implements Serializable {
         final String methodName = new String(methodNameAndArg.getName(),
                 StandardCharsets.UTF_8);
 
-        final ServerAsyncMethod serverAsyncMethod = serverMethods
-                .get(methodName);
+        final ServerMethod serverMethod = serverMethods.get(methodName);
 
-        if (serverAsyncMethod != null) {
+        if (serverMethod != null) {
 
             final byte[][] values = methodNameAndArg.getValues();
 
@@ -620,11 +620,10 @@ public abstract class BrowserPage implements Serializable {
                 wffBMObject = new WffBMObject(values[0], true);
             }
 
-            final ServerAsyncMethod.Event event = new ServerAsyncMethod.Event(
-                    methodName);
-
-            final WffBMObject returnedObject = serverAsyncMethod
-                    .asyncMethod(wffBMObject, event);
+            final WffBMObject returnedObject = serverMethod
+                    .getServerAsyncMethod().asyncMethod(wffBMObject,
+                            new ServerAsyncMethod.Event(methodName,
+                                    serverMethod.getServerSideData()));
 
             String callbackFunId = null;
 
@@ -1256,7 +1255,24 @@ public abstract class BrowserPage implements Serializable {
      */
     public void addServerMethod(final String methodName,
             final ServerAsyncMethod serverAsyncMethod) {
-        serverMethods.put(methodName, serverAsyncMethod);
+        serverMethods.put(methodName,
+                new ServerMethod(serverAsyncMethod, null));
+    }
+
+    /**
+     * @param methodName
+     * @param serverAsyncMethod
+     * @param serverSideData
+     *                              this object will be available in the event
+     *                              of serverAsyncMethod.asyncMethod
+     * @since 3.0.2
+     * @author WFF
+     */
+    public void addServerMethod(final String methodName,
+            final ServerAsyncMethod serverAsyncMethod,
+            final Object serverSideData) {
+        serverMethods.put(methodName,
+                new ServerMethod(serverAsyncMethod, serverSideData));
     }
 
     /**
