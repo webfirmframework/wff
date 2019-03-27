@@ -1676,6 +1676,33 @@ public class AbstractHtmlTest {
 
             assertEquals(div.toHtmlString(), tagFromWffBMBytes.toHtmlString());
         }
+        {
+            Div div = new Div(null) {{
+                new P(this) {{
+                    new NoTag(this, "<h1>heading</h1>", false);
+                    new NoTag(this, "<h1>heading</h1>", true);
+                    new NoTag(this, "<h1>heading</h1>", false);
+                }};
+            }};
+            final P firstChild = (P) div.getFirstChild();
+            
+            final NoTag noTag0 = (NoTag) firstChild.getChildAt(0);
+            final NoTag noTag1 = (NoTag) firstChild.getChildAt(1);
+            final NoTag noTag2 = (NoTag) firstChild.getChildAt(2);
+            org.junit.Assert.assertFalse(noTag0.noTagContentTypeHtml);
+            org.junit.Assert.assertTrue(noTag1.noTagContentTypeHtml);
+            org.junit.Assert.assertFalse(noTag2.noTagContentTypeHtml);
+            
+            org.junit.Assert.assertFalse(noTag0.isChildContentTypeHtml());
+            org.junit.Assert.assertTrue(noTag1.isChildContentTypeHtml());
+            org.junit.Assert.assertFalse(noTag2.isChildContentTypeHtml());
+            
+            final byte[] wffBMBytes = div.toWffBMBytes(StandardCharsets.UTF_8);
+            final AbstractHtml tagFromWffBMBytes = AbstractHtml
+                    .getTagFromWffBMBytes(wffBMBytes, StandardCharsets.UTF_8);
+
+            assertEquals(div.toHtmlString(), tagFromWffBMBytes.toHtmlString());
+        }
     }
 
 }
