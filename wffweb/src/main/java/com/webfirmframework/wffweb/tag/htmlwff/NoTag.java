@@ -73,7 +73,7 @@ public class NoTag extends AbstractHtml {
      * @since 1.0.0
      */
     public NoTag(final AbstractHtml base, final String childContent) {
-        super(base, childContent);
+        super(base, childContent, false);
     }
 
     /**
@@ -88,8 +88,7 @@ public class NoTag extends AbstractHtml {
      */
     public NoTag(final AbstractHtml base, final String childContent,
             final boolean contentTypeHtml) {
-        super(base, childContent);
-        super.noTagContentTypeHtml = contentTypeHtml;
+        super(base, childContent, contentTypeHtml);
     }
 
     /**

@@ -133,6 +133,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     private TagType tagType = TagType.OPENING_CLOSING;
 
+    protected final boolean noTagContentTypeHtml;
+
     public static enum TagType {
         OPENING_CLOSING, SELF_CLOSING, NON_CLOSING;
 
@@ -344,7 +346,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     public AbstractHtml(final AbstractHtml base,
             final AbstractHtml... children) {
-
+        noTagContentTypeHtml = false;
         if (base == null) {
             sharedObject = new AbstractHtml5SharedObject(this);
         }
@@ -374,8 +376,12 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param base
      * @param childContent
      *                         any text, it can also be html text.
+     * @since 3.0.2
      */
-    public AbstractHtml(final AbstractHtml base, final String childContent) {
+    protected AbstractHtml(final AbstractHtml base, final String childContent,
+            final boolean noTagContentTypeHtml) {
+
+        this.noTagContentTypeHtml = noTagContentTypeHtml;
 
         if (base == null) {
             sharedObject = new AbstractHtml5SharedObject(this);
@@ -405,6 +411,15 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
+     * @param base
+     * @param childContent
+     *                         any text, it can also be html text.
+     */
+    public AbstractHtml(final AbstractHtml base, final String childContent) {
+        this(base, childContent, false);
+    }
+
+    /**
      * should be invoked to generate opening and closing tag base class
      * containing the functionalities to generate html string.
      *
@@ -417,6 +432,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     public AbstractHtml(final String tagName, final AbstractHtml base,
             final AbstractAttribute[] attributes) {
         this.tagName = tagName;
+        noTagContentTypeHtml = false;
         if (base == null) {
             sharedObject = new AbstractHtml5SharedObject(this);
         }
@@ -1538,6 +1554,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             final AbstractHtml base, final AbstractAttribute[] attributes) {
         this.tagType = tagType;
         this.tagName = tagName;
+        noTagContentTypeHtml = false;
 
         if (base == null) {
             sharedObject = new AbstractHtml5SharedObject(this);
@@ -3356,8 +3373,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
         return toWffBMBytes(Charset.forName(charset));
     }
 
-    protected boolean noTagContentTypeHtml;
-
     /**
      * @param charset
      * @return the Wff Binary Message bytes of this tag
@@ -3531,8 +3546,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
         // @ short for html content
         boolean noTagContentTypeHtml = superParentValues[0][0] == '@';
         if (superParentValues[0][0] == '#' || noTagContentTypeHtml) {
-            parent = new NoTag(null, new String(superParentValues[1], charset));
-            parent.noTagContentTypeHtml = noTagContentTypeHtml;
+            parent = new NoTag(null, new String(superParentValues[1], charset),
+                    noTagContentTypeHtml);
         } else {
             final String tagName = new String(superParentValues[0], charset);
 
@@ -3568,8 +3583,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             AbstractHtml child;
             if (values[0][0] == '#' || noTagContentTypeHtml) {
                 child = new NoTag(allTags[indexOfParent],
-                        new String(values[1], charset));
-                child.noTagContentTypeHtml = noTagContentTypeHtml;
+                        new String(values[1], charset), noTagContentTypeHtml);
             } else {
                 final String tagName = new String(values[0], charset);
 
