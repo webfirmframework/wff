@@ -77,6 +77,22 @@ public class NoTag extends AbstractHtml {
     }
 
     /**
+     *
+     * @param base
+     *                            i.e. parent tag of this tag
+     * @param childContent
+     * @param contentTypeHtml
+     *                            true if the given childContent is HTML. by
+     *                            default it is false.
+     * @since 3.0.2
+     */
+    public NoTag(final AbstractHtml base, final String childContent,
+            final boolean contentTypeHtml) {
+        super(base, childContent);
+        super.noTagContentTypeHtml = contentTypeHtml;
+    }
+
+    /**
      * invokes only once per object
      *
      * @author WFF
@@ -167,5 +183,13 @@ public class NoTag extends AbstractHtml {
      */
     public String getChildContent() {
         return getHtmlMiddleSB().toString();
+    }
+
+    /**
+     * @return true if the child content is considered to be HTML
+     * @since 3.0.2
+     */
+    public boolean isChildContentTypeHtml() {
+        return noTagContentTypeHtml;
     }
 }

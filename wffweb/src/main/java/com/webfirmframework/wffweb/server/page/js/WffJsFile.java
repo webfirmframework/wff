@@ -129,6 +129,7 @@ public enum WffJsFile {
             functionNames.add("extractEachValueBytes");
             functionNames.add("getWffIdBytesFromTag");
             functionNames.add("getWffIdBytesFromTag");
+            functionNames.add("appendHtmlAsChildren");
             functionNames.add("wffRemoveBPInstance");
             functionNames.add("getLastBytesFromInt");
             functionNames.add("getAttributeUpdates");

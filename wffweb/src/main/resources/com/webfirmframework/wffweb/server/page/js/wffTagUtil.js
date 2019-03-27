@@ -1,6 +1,3 @@
-/**
- * 
- */
 
 var wffTagUtil = new function() {
 
@@ -9,6 +6,22 @@ var wffTagUtil = new function() {
 
 	var getStringFromBytes = function(utf8Bytes) {
 		return decoder.decode(new Uint8Array(utf8Bytes));
+	};
+	
+	var appendHtmlAsChildren = function(tag, htmlString) {
+		var tmpDv = document.createElement('div');
+		tmpDv.innerHTML = htmlString;
+
+		for (var i = 0; i < tmpDv.childNodes.length; i++) {
+			var cn = tmpDv.childNodes[i];
+			
+			if (cn.nodeName === '#text') {
+				tag.appendChild(document.createTextNode(cn.nodeValue));
+			} else {
+				// must clone otherwise will not be appended
+				tag.appendChild(cn.cloneNode(true));
+			}
+		}
 	};
 
 	//Not required for now
@@ -124,6 +137,12 @@ var wffTagUtil = new function() {
 			var text = getStringFromBytes(superParentValues[1]);
 			parent = document.createDocumentFragment();
 			parent.appendChild(document.createTextNode(text));
+		} else if (parentTagName === '@') {
+			// @ short for html content
+			var text = getStringFromBytes(superParentValues[1]);
+			parent = document.createDocumentFragment();			
+			appendHtmlAsChildren(parent, text);
+			
 		} else {
 
 			parent = document.createElement(parentTagName);
@@ -151,6 +170,11 @@ var wffTagUtil = new function() {
 				var text = getStringFromBytes(values[1]);
 				child = document.createDocumentFragment();
 				child.appendChild(document.createTextNode(text));
+			} else if (tagName === '@') {
+				// @ short for html content
+				var text = getStringFromBytes(values[1]);
+				child = document.createDocumentFragment();				
+				appendHtmlAsChildren(child, text);
 			} else {
 				child = document.createElement(tagName);
 

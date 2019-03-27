@@ -3335,7 +3335,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * @return the Wff Binary Message bytes of this tag. It uses default charset
      *         for encoding values.
-     * @since 2.0.0
+     * @since 2.0.0 initial implementation
+     * @since 3.0.2 improved to handle NoTag with contentTypeHtml true
      * @author WFF
      */
     public byte[] toWffBMBytes() {
@@ -3346,7 +3347,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param charset
      *                    Eg: UTF-8
      * @return the Wff Binary Message bytes of this tag
-     * @since 2.0.0
+     * @since 2.0.0 initial implementation
+     * @since 3.0.2 improved to handle NoTag with contentTypeHtml true
      * @author WFF
      * @throws InvalidTagException
      */
@@ -3354,14 +3356,20 @@ public abstract class AbstractHtml extends AbstractJsObject {
         return toWffBMBytes(Charset.forName(charset));
     }
 
+    protected boolean noTagContentTypeHtml;
+
     /**
      * @param charset
      * @return the Wff Binary Message bytes of this tag
-     * @since 3.0.1
+     * @since 3.0.1 initial implementation
+     * @since 3.0.2 improved to handle NoTag with contentTypeHtml true
      * @author WFF
      * @throws InvalidTagException
      */
     public byte[] toWffBMBytes(final Charset charset) {
+
+        final byte[] encodedBytesForAtChar = "@".getBytes(charset);
+        final byte[] encodedByesForHashChar = "#".getBytes(charset);
 
         final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
         try {
@@ -3416,7 +3424,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         final NameValue nameValue = new NameValue();
 
                         // # short for #text
-                        final byte[] nodeNameBytes = "#".getBytes(charset);
+                        // @ short for html content
+                        final byte[] nodeNameBytes = tag.noTagContentTypeHtml
+                                ? encodedBytesForAtChar
+                                : encodedByesForHashChar;
 
                         nameValue.setName(WffBinaryMessageUtil
                                 .getBytesFromInt(parentWffSlotIndex));
@@ -3462,7 +3473,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param bmMessageBytes
      * @return the AbstractHtml instance from the given Wff BM bytes. It uses
      *         system default charset.
-     * @since 2.0.0
+     * @since 2.0.0 initial implementation
+     * @since 3.0.2 improved to handle NoTag with contentTypeHtml true
      * @author WFF
      */
     public static AbstractHtml getTagFromWffBMBytes(
@@ -3478,7 +3490,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *                    the charset used to generate bm bytes in
      *                    {@link AbstractHtml#toWffBMBytes(String)}
      * @return the AbstractHtml instance from the given Wff BM bytes
-     * @since 2.0.0
+     * @since 2.0.0 initial implementation
+     * @since 3.0.2 improved to handle NoTag with contentTypeHtml true
      * @author WFF
      */
     public static AbstractHtml getTagFromWffBMBytes(final byte[] bmBytes,
@@ -3494,7 +3507,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *                    the charset used to generate bm bytes in
      *                    {@link AbstractHtml#toWffBMBytes(Charset)}
      * @return the AbstractHtml instance from the given Wff BM bytes
-     * @since 3.0.1
+     * @since 3.0.1 initial implementation
+     * @since 3.0.2 improved to handle NoTag with contentTypeHtml true
      * @author WFF
      */
     public static AbstractHtml getTagFromWffBMBytes(final byte[] bmBytes,
@@ -3513,8 +3527,12 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
         AbstractHtml parent = null;
 
-        if (superParentValues[0][0] == '#') {
+        // # short for #text
+        // @ short for html content
+        boolean noTagContentTypeHtml = superParentValues[0][0] == '@';
+        if (superParentValues[0][0] == '#' || noTagContentTypeHtml) {
             parent = new NoTag(null, new String(superParentValues[1], charset));
+            parent.noTagContentTypeHtml = noTagContentTypeHtml;
         } else {
             final String tagName = new String(superParentValues[0], charset);
 
@@ -3544,11 +3562,14 @@ public abstract class AbstractHtml extends AbstractJsObject {
                     .getIntFromOptimizedBytes(nameValue.getName());
 
             final byte[][] values = nameValue.getValues();
-
+            // # short for #text
+            // @ short for html content
+            noTagContentTypeHtml = values[0][0] == '@';
             AbstractHtml child;
-            if (values[0][0] == '#') {
+            if (values[0][0] == '#' || noTagContentTypeHtml) {
                 child = new NoTag(allTags[indexOfParent],
                         new String(values[1], charset));
+                child.noTagContentTypeHtml = noTagContentTypeHtml;
             } else {
                 final String tagName = new String(values[0], charset);
 
