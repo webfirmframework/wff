@@ -1634,5 +1634,48 @@ public class AbstractHtmlTest {
         assertNotEquals(html.toHtmlString(), tagFromWffBMBytes.toHtmlString());
         assertEquals("<html><div><span><h1></h1><h2></h2>something</span><h3 name=\"name1\"></h3></div></html>", tagFromWffBMBytes.toHtmlString());
     }
+    
+    @Test
+    public void testToWffBMBytesCharsetSince302() {
+        {
+            final Html html = new Html(null) {
+                {
+                    new Div(this, new Id("one")) {
+                        {
+                            new Span(this, new Id("two")) {
+                                {
+                                    new H1(this, new Id("three"));
+                                    new H2(this, new Id("three"));
+                                    new NoTag(this, "something");
+                                    new NoTag(this, "<h1>heading</h1>", true);
+                                }
+                            };
+
+                            new H3(this, new Name("name1"));
+                        }
+                    };
+                }
+            };
+
+            final byte[] wffBMBytes = html.toWffBMBytes(StandardCharsets.UTF_8);
+            final AbstractHtml tagFromWffBMBytes = AbstractHtml
+                    .getTagFromWffBMBytes(wffBMBytes, StandardCharsets.UTF_8);
+
+            assertEquals(html.toHtmlString(), tagFromWffBMBytes.toHtmlString());  
+        }
+        {
+            Div div = new Div(null) {{
+                new NoTag(this, "<h1>heading</h1>", true);
+            }};
+            final NoTag firstChild = (NoTag) div.getFirstChild();
+            org.junit.Assert.assertTrue(firstChild.noTagContentTypeHtml);
+            org.junit.Assert.assertTrue(firstChild.isChildContentTypeHtml());
+            final byte[] wffBMBytes = div.toWffBMBytes(StandardCharsets.UTF_8);
+            final AbstractHtml tagFromWffBMBytes = AbstractHtml
+                    .getTagFromWffBMBytes(wffBMBytes, StandardCharsets.UTF_8);
+
+            assertEquals(div.toHtmlString(), tagFromWffBMBytes.toHtmlString());
+        }
+    }
 
 }
