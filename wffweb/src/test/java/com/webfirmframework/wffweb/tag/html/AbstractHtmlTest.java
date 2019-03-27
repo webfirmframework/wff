@@ -1681,7 +1681,7 @@ public class AbstractHtmlTest {
                 new P(this) {{
                     new NoTag(this, "<h1>heading</h1>", false);
                     new NoTag(this, "<h1>heading</h1>", true);
-                    new NoTag(this, "<h1>heading</h1>", false);
+                    new NoTag(this, "<h1>heading</h1>");
                 }};
             }};
             final P firstChild = (P) div.getFirstChild();
