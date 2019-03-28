@@ -69,10 +69,12 @@ public enum TagContent {
      *                    the tag on which the operation to be done.
      * @param content
      *                    content to append to the given parent tag.
+     * @return true if appended
      * @since 3.0.2
      */
-    public void appendChild(final AbstractHtml parent, final String content) {
-        parent.appendChild(new NoTag(null, content, contentTypeHtml));
+    public boolean appendChild(final AbstractHtml parent,
+            final String content) {
+        return parent.appendChild(new NoTag(null, content, contentTypeHtml));
     }
 
     /**
@@ -119,10 +121,12 @@ public enum TagContent {
      *                    the tag on which the operation to be done.
      * @param content
      *                    content to insert before the given parent tag.
+     * @return true if inserted
      * @since 3.0.2
      */
-    public void insertBefore(final AbstractHtml parent, final String content) {
-        parent.insertBefore(new NoTag(null, content, contentTypeHtml));
+    public boolean insertBefore(final AbstractHtml parent,
+            final String content) {
+        return parent.insertBefore(new NoTag(null, content, contentTypeHtml));
     }
 
     /**
@@ -134,9 +138,10 @@ public enum TagContent {
      *                     the tag on which the operation to be done.
      * @param contents
      *                     contents to insert before the given parent tag.
+     * @return true if inserted
      * @since 3.0.2
      */
-    public void insertBefore(final AbstractHtml parent,
+    public boolean insertBefore(final AbstractHtml parent,
             final String... contents) {
         final NoTag[] noTags = new NoTag[contents.length];
         int index = 0;
@@ -144,7 +149,7 @@ public enum TagContent {
             noTags[index] = new NoTag(null, content, contentTypeHtml);
             index++;
         }
-        parent.insertBefore(noTags);
+        return parent.insertBefore(noTags);
     }
 
     /**
@@ -156,10 +161,12 @@ public enum TagContent {
      *                    the tag on which the operation to be done.
      * @param content
      *                    content to insert after the given parent tag.
+     * @return true if inserted
      * @since 3.0.2
      */
-    public void insertAfter(final AbstractHtml parent, final String content) {
-        parent.insertAfter(new NoTag(null, content, contentTypeHtml));
+    public boolean insertAfter(final AbstractHtml parent,
+            final String content) {
+        return parent.insertAfter(new NoTag(null, content, contentTypeHtml));
     }
 
     /**
@@ -171,9 +178,10 @@ public enum TagContent {
      *                     the tag on which the operation to be done.
      * @param contents
      *                     contents to insert after the given parent tag.
+     * @return true if inserted
      * @since 3.0.2
      */
-    public void insertAfter(final AbstractHtml parent,
+    public boolean insertAfter(final AbstractHtml parent,
             final String... contents) {
         final NoTag[] noTags = new NoTag[contents.length];
         int index = 0;
@@ -181,7 +189,7 @@ public enum TagContent {
             noTags[index] = new NoTag(null, content, contentTypeHtml);
             index++;
         }
-        parent.insertAfter(noTags);
+        return parent.insertAfter(noTags);
     }
 
     /**
