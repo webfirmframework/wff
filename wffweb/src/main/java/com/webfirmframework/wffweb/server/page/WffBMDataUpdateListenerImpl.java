@@ -82,7 +82,7 @@ class WffBMDataUpdateListenerImpl implements WffBMDataUpdateListener {
 
             nameValue.setValues(new byte[][] { dataWffIdBytes,
                     event.getKey().getBytes(StandardCharsets.UTF_8),
-                    wffBMData.build(true) });
+                    wffBMData.buildBytes(true) });
 
             browserPage.push(nameValues);
 

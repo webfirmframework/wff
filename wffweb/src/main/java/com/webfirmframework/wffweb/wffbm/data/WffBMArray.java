@@ -266,21 +266,43 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
 
     public byte[] build() {
         try {
-            return build(outer);
-        } catch (final UnsupportedEncodingException e) {
+            return buildBytes(outer);
+        } catch (final Exception e) {
             throw new WffRuntimeException("Could not build wff bm array bytes",
                     e);
         }
     }
 
-    /*
-     * (non-Javadoc)
+    /**
+     * NB: use buildBytes instead of this method.
      *
-     * @see com.webfirmframework.wffweb.wffbm.data.WffBMData#build(boolean)
+     * @param outer
+     * @return the bytes representation of the object
+     * @throws UnsupportedEncodingException
+     *                                          throwing this exception will be
+     *                                          removed in future version
+     *                                          because its internal
+     *                                          implementation will never make
+     *                                          this exception due to the code
+     *                                          changes since 3.0.1.
+     * @since 1.1.5
+     * @deprecated building bytes implementation doesn't throw
+     *             UnsupportedEncodingException so deprecated this method. The
+     *             same goal can be achieved using buildBytes method.
      */
+    @Deprecated
     @Override
     public byte[] build(final boolean outer)
             throws UnsupportedEncodingException {
+        return buildBytes(outer);
+    }
+
+    /**
+     * @param outer
+     * @return bytes for this WffBMArray object
+     */
+    @Override
+    public byte[] buildBytes(final boolean outer) {
 
         final Deque<NameValue> nameValues = new ArrayDeque<>(outer ? 2 : 1);
 
@@ -341,7 +363,7 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
             int count = 0;
             for (final Object eachValue : this) {
                 final WffBMObject value = (WffBMObject) eachValue;
-                values[count] = value.build(false);
+                values[count] = value.buildBytes(false);
                 count++;
             }
 
@@ -350,7 +372,7 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
             int count = 0;
             for (final Object eachValue : this) {
                 final WffBMArray value = (WffBMArray) eachValue;
-                values[count] = value.build(false);
+                values[count] = value.buildBytes(false);
                 count++;
             }
 

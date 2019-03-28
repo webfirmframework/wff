@@ -532,7 +532,7 @@ public abstract class BrowserPage implements Serializable {
 
                         if (returnedObject != null) {
                             nameValue.setValues(new byte[][] {
-                                    returnedObject.build(true) });
+                                    returnedObject.buildBytes(true) });
                         }
 
                         push(invokePostFunTask, nameValue);
@@ -643,7 +643,7 @@ public abstract class BrowserPage implements Serializable {
 
                 if (returnedObject != null) {
                     nameValue.setValues(
-                            new byte[][] { returnedObject.build(true) });
+                            new byte[][] { returnedObject.buildBytes(true) });
                 }
 
                 push(invokeCallbackFuncTask, nameValue);

@@ -31,8 +31,10 @@ public interface WffBMData extends WffData {
     public abstract BMType getBMType();
 
     /**
+     * NB: use buildBytes instead of this method.
+     *
      * @param outer
-     * @return
+     * @return the bytes representation of the object
      * @throws UnsupportedEncodingException
      *                                          throwing this exception will be
      *                                          removed in future version
@@ -42,8 +44,22 @@ public interface WffBMData extends WffData {
      *                                          changes since 3.0.1.
      * @since 2.1.8
      * @author WFF
+     * @deprecated building bytes implementation doesn't throw
+     *             UnsupportedEncodingException so deprecated this method. The
+     *             same goal can be achieved using buildBytes method.
      */
+    @Deprecated
     public abstract byte[] build(boolean outer)
             throws UnsupportedEncodingException;
+
+    /**
+     *
+     * @param outer
+     * @return the bytes representation of the object
+     *
+     * @since 3.0.2
+     * @author WFF
+     */
+    public abstract byte[] buildBytes(boolean outer);
 
 }
