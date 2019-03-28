@@ -134,5 +134,41 @@ public class NoTagTest {
     public void testGetChildContent() {
         // fail("Not yet implemented");
     }
+    
+    @Test
+    public void testTagContent() {
+
+        {
+            Div div = new Div(null, new Id("one")) {
+
+                {
+                    new Div(this, new Id("two")) {{
+                        TagContent.HTML.addInnerContent(this, "inner content");
+                    }};
+                    
+                }
+
+            };
+
+            Assert.assertEquals("<div id=\"one\"><div id=\"two\">inner content</div></div>",
+                    div.toHtmlString());
+        }
+        {
+            Div div = new Div(null, new Id("one")) {
+
+                {
+                    new Div(this, new Id("two")) {{
+                        TagContent.TEXT.addInnerContent(this, "inner content");
+                    }};
+                    
+                }
+
+            };
+
+            Assert.assertEquals("<div id=\"one\"><div id=\"two\">inner content</div></div>",
+                    div.toHtmlString());
+        }
+        
+    }
 
 }

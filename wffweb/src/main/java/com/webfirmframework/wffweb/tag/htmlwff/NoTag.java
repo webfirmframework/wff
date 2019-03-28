@@ -22,7 +22,11 @@ import java.util.List;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 
 /**
- * It's a tag which makes child content without any opening closing tag.
+ * It's a tag which makes child content without any opening closing tag. <br>
+ * <br>
+ * NB: Nesting NoTag is not recommended and it may cause strange behavior. We
+ * recommend TagContent enum for NoTag insertion in a tag instead of creating
+ * new NoTag object.
  *
  * @author WFF
  * @since 1.0.0

@@ -1661,7 +1661,14 @@ public class AbstractHtmlTest {
             final AbstractHtml tagFromWffBMBytes = AbstractHtml
                     .getTagFromWffBMBytes(wffBMBytes, StandardCharsets.UTF_8);
 
-            assertEquals(html.toHtmlString(), tagFromWffBMBytes.toHtmlString());  
+            assertEquals(html.toHtmlString(), tagFromWffBMBytes.toHtmlString()); 
+            
+            final NoTag noTagWithContentTypeHtmlFalse = (NoTag) tagFromWffBMBytes.getFirstChild().getFirstChild().getChildAt(2);
+            final NoTag noTagWithContentTypeHtmlTrue = (NoTag) tagFromWffBMBytes.getFirstChild().getFirstChild().getChildAt(3);
+            org.junit.Assert.assertFalse(noTagWithContentTypeHtmlFalse.isChildContentTypeHtml());
+            org.junit.Assert.assertTrue(noTagWithContentTypeHtmlTrue.isChildContentTypeHtml());
+            
+            
         }
         {
             Div div = new Div(null) {{
@@ -1684,24 +1691,45 @@ public class AbstractHtmlTest {
                     new NoTag(this, "<h1>heading</h1>");
                 }};
             }};
-            final P firstChild = (P) div.getFirstChild();
-            
-            final NoTag noTag0 = (NoTag) firstChild.getChildAt(0);
-            final NoTag noTag1 = (NoTag) firstChild.getChildAt(1);
-            final NoTag noTag2 = (NoTag) firstChild.getChildAt(2);
-            org.junit.Assert.assertFalse(noTag0.noTagContentTypeHtml);
-            org.junit.Assert.assertTrue(noTag1.noTagContentTypeHtml);
-            org.junit.Assert.assertFalse(noTag2.noTagContentTypeHtml);
-            
-            org.junit.Assert.assertFalse(noTag0.isChildContentTypeHtml());
-            org.junit.Assert.assertTrue(noTag1.isChildContentTypeHtml());
-            org.junit.Assert.assertFalse(noTag2.isChildContentTypeHtml());
+            {
+                final P firstChild = (P) div.getFirstChild();
+                
+                final NoTag noTag0 = (NoTag) firstChild.getChildAt(0);
+                final NoTag noTag1 = (NoTag) firstChild.getChildAt(1);
+                final NoTag noTag2 = (NoTag) firstChild.getChildAt(2);
+                org.junit.Assert.assertFalse(noTag0.noTagContentTypeHtml);
+                org.junit.Assert.assertTrue(noTag1.noTagContentTypeHtml);
+                org.junit.Assert.assertFalse(noTag2.noTagContentTypeHtml);
+                
+                org.junit.Assert.assertFalse(noTag0.isChildContentTypeHtml());
+                org.junit.Assert.assertTrue(noTag1.isChildContentTypeHtml());
+                org.junit.Assert.assertFalse(noTag2.isChildContentTypeHtml());
+            }
             
             final byte[] wffBMBytes = div.toWffBMBytes(StandardCharsets.UTF_8);
             final AbstractHtml tagFromWffBMBytes = AbstractHtml
                     .getTagFromWffBMBytes(wffBMBytes, StandardCharsets.UTF_8);
 
             assertEquals(div.toHtmlString(), tagFromWffBMBytes.toHtmlString());
+            
+            {
+                //cannot cast to  P as it creates a custom tag internally
+                //TODO the method getTagFromWffBMBytes must be improved later
+                final AbstractHtml firstChild = tagFromWffBMBytes.getFirstChild();
+                
+                assertEquals(firstChild.getTagName(), TagNameConstants.P);
+                
+                final NoTag noTag0 = (NoTag) firstChild.getChildAt(0);
+                final NoTag noTag1 = (NoTag) firstChild.getChildAt(1);
+                final NoTag noTag2 = (NoTag) firstChild.getChildAt(2);
+                org.junit.Assert.assertFalse(noTag0.noTagContentTypeHtml);
+                org.junit.Assert.assertTrue(noTag1.noTagContentTypeHtml);
+                org.junit.Assert.assertFalse(noTag2.noTagContentTypeHtml);
+                
+                org.junit.Assert.assertFalse(noTag0.isChildContentTypeHtml());
+                org.junit.Assert.assertTrue(noTag1.isChildContentTypeHtml());
+                org.junit.Assert.assertFalse(noTag2.isChildContentTypeHtml());
+            }
         }
     }
 
