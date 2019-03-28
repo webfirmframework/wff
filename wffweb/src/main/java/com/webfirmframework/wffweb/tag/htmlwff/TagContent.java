@@ -261,7 +261,7 @@ public enum TagContent {
      *                     parent.
      * @since 3.0.2
      */
-    public void addInnerContent(final AbstractHtml parent,
+    public void addInnerContents(final AbstractHtml parent,
             final String... contents) {
         replaceChildren(parent, contents);
     }
