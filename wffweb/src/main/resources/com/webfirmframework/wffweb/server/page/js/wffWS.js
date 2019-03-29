@@ -114,7 +114,7 @@ var wffWS = new function() {
 	 * Sends the bytes to the server
 	 */
 	this.send = function(bytes) {
-		webSocket.send(new Int8Array(bytes));
+		webSocket.send(new Int8Array(bytes).buffer);
 	};
 
 	this.closeSocket = function() {
