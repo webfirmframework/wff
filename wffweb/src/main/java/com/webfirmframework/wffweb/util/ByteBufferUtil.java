@@ -182,4 +182,29 @@ public final class ByteBufferUtil {
         return sliceCount;
     }
 
+    /**
+     * Merges and returns ByteBuffer from the given dataArray. The ByteBuffer
+     * will be returned after flip.
+     *
+     * @param dataArray
+     *                      the ByteByffers to merge
+     * @return a single ByteBuffer after flip merged from all ByteBuffer objects
+     *         from dataArray.
+     *
+     * @since 3.0.2
+     */
+    public static ByteBuffer merge(final ByteBuffer... dataArray) {
+        int totalCapacity = 0;
+        for (final ByteBuffer data : dataArray) {
+            totalCapacity += data.capacity();
+        }
+        final ByteBuffer wholeData = ByteBuffer.allocate(totalCapacity);
+        for (final ByteBuffer data : dataArray) {
+            wholeData.put(data);
+        }
+        wholeData.flip();
+
+        return wholeData;
+    }
+
 }
