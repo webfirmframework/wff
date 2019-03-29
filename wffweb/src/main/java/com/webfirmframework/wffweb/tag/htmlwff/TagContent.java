@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.tag.htmlwff;
 
+import com.webfirmframework.wffweb.InvalidTagException;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 
 /**
@@ -40,6 +41,13 @@ public enum TagContent {
         this.contentTypeHtml = contentTypeHtml;
     }
 
+    private void checkCompatibility(final AbstractHtml tag) {
+        if (tag.getTagName() == null || tag.getTagName().isEmpty()) {
+            throw new InvalidTagException(
+                    "The given tag instance is not supported for this operation.");
+        }
+    }
+
     /**
      * appends the given contents on the given parent tag either as text or HTML
      * based on the enum constant
@@ -48,10 +56,17 @@ public enum TagContent {
      *                     the tag on which the operation to be done.
      * @param contents
      *                     contents to append to the given parent tag.
+     *
+     * @throws InvalidTagException
+     *                                 if the given tag instance is not
+     *                                 supported for this operation.
      * @since 3.0.2
      */
     public void appendChildren(final AbstractHtml parent,
             final String... contents) {
+
+        checkCompatibility(parent);
+
         final NoTag[] noTags = new NoTag[contents.length];
         int index = 0;
         for (final String content : contents) {
@@ -70,10 +85,14 @@ public enum TagContent {
      * @param content
      *                    content to append to the given parent tag.
      * @return true if appended
+     * @throws InvalidTagException
+     *                                 if the given tag instance is not
+     *                                 supported for this operation.
      * @since 3.0.2
      */
     public boolean appendChild(final AbstractHtml parent,
             final String content) {
+        checkCompatibility(parent);
         return parent.appendChild(new NoTag(null, content, contentTypeHtml));
     }
 
@@ -85,9 +104,13 @@ public enum TagContent {
      *                    the tag on which the operation to be done.
      * @param content
      *                    content to prepend to the given parent tag.
+     * @throws InvalidTagException
+     *                                 if the given tag instance is not
+     *                                 supported for this operation.
      * @since 3.0.2
      */
     public void prependChild(final AbstractHtml parent, final String content) {
+        checkCompatibility(parent);
         parent.prependChildren(new NoTag(null, content, contentTypeHtml));
     }
 
@@ -99,10 +122,14 @@ public enum TagContent {
      *                     the tag on which the operation to be done.
      * @param contents
      *                     contents to prepend to the given parent tag.
+     * @throws InvalidTagException
+     *                                 if the given tag instance is not
+     *                                 supported for this operation.
      * @since 3.0.2
      */
     public void prependChildren(final AbstractHtml parent,
             final String... contents) {
+        checkCompatibility(parent);
         final NoTag[] noTags = new NoTag[contents.length];
         int index = 0;
         for (final String content : contents) {
@@ -202,11 +229,18 @@ public enum TagContent {
      * @param content
      *                    replacement content for the children of the given
      *                    parent.
+     * @throws InvalidTagException
+     *                                 if the given tag instance is not
+     *                                 supported for this operation.
+     * @throws InvalidTagException
+     *                                 if the given tag instance is not
+     *                                 supported for this operation.
      * @since 3.0.2
      */
     public void replaceChildren(final AbstractHtml parent,
             final String content) {
-        parent.addInnerHtml(new NoTag(null, content, contentTypeHtml));
+        checkCompatibility(parent);
+        parent.addInnerHtmls(new NoTag(null, content, contentTypeHtml));
     }
 
     /**
@@ -219,10 +253,14 @@ public enum TagContent {
      * @param contents
      *                     replacement contents for the children of the given
      *                     parent.
+     * @throws InvalidTagException
+     *                                 if the given tag instance is not
+     *                                 supported for this operation.
      * @since 3.0.2
      */
     public void replaceChildren(final AbstractHtml parent,
             final String... contents) {
+        checkCompatibility(parent);
         final NoTag[] noTags = new NoTag[contents.length];
         int index = 0;
         for (final String content : contents) {
@@ -242,6 +280,9 @@ public enum TagContent {
      * @param content
      *                    replacement content for the children of the given
      *                    parent.
+     * @throws InvalidTagException
+     *                                 if the given tag instance is not
+     *                                 supported for this operation.
      * @since 3.0.2
      */
     public void addInnerContent(final AbstractHtml parent,
@@ -259,6 +300,9 @@ public enum TagContent {
      * @param contents
      *                     replacement contents for the children of the given
      *                     parent.
+     * @throws InvalidTagException
+     *                                 if the given tag instance is not
+     *                                 supported for this operation.
      * @since 3.0.2
      */
     public void addInnerContents(final AbstractHtml parent,
