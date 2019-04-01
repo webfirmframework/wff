@@ -7,6 +7,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
+ * PayloadProcessor for BrowserPage WebSocket's incoming bytes
+ *
  * @author WFF
  * @since 3.0.2
  */
