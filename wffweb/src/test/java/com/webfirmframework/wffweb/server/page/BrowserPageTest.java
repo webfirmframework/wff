@@ -174,18 +174,6 @@ public class BrowserPageTest {
                 for (ByteBuffer byteBuffer : queue) {
                     totalCapacity += byteBuffer.array().length;
                 }
-                final byte[] merged = BrowserPage.pollAndConvertToByteArray(totalCapacity, queue);
-                assertEquals("webfirmframework-wffweb-use latest version", new String(merged, StandardCharsets.UTF_8));
-            }
-            {
-                Queue<ByteBuffer> queue = new ArrayDeque<>();
-                queue.add(webfirmframework);
-                queue.add(wffweb);
-                queue.add(useLatestVersion);
-                int totalCapacity = 0;
-                for (ByteBuffer byteBuffer : queue) {
-                    totalCapacity += byteBuffer.array().length;
-                }
                 final byte[] merged = PayloadProcessor.pollAndConvertToByteArray(totalCapacity, queue);
                 assertEquals("webfirmframework-wffweb-use latest version", new String(merged, StandardCharsets.UTF_8));
             }
