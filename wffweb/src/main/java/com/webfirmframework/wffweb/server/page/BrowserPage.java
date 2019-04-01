@@ -1909,10 +1909,10 @@ public abstract class BrowserPage implements Serializable {
     }
 
     /**
-     * Ges new instance of payload processor for this browser page.
+     * Gets new instance of payload processor for this browser page.
      *
      * @return new instance of PayloadProcessor
-     * @since 3.0.1
+     * @since 3.0.2
      */
     public PayloadProcessor getNewPayloadProcessor() {
         return new PayloadProcessor(this);
