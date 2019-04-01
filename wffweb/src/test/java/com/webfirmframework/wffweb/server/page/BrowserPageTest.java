@@ -32,7 +32,6 @@ import com.webfirmframework.wffweb.tag.html.Body;
 import com.webfirmframework.wffweb.tag.html.Html;
 import com.webfirmframework.wffweb.tag.html.metainfo.Head;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
-import com.webfirmframework.wffweb.util.ByteBufferUtil;
 
 @SuppressWarnings("serial")
 public class BrowserPageTest {
