@@ -26,6 +26,8 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
+import com.webfirmframework.wffweb.tag.html.attribute.global.Style;
+
 /**
  * 
  * @author WFF
@@ -177,6 +179,18 @@ public class ColorTest {
            assertNull(color.getHslCssValue());
            assertNull(color.getHslaCssValue());
         }
+    }
+    
+    @SuppressWarnings("unused")
+    @Test
+    public void testColorCssStringInStyle() {
+        
+        Style style1 = new Style("font-size:140px;color:#49d87e78");
+        Style style2 = new Style("font-size:140px;color:#FFFFFFFF");
+        assertTrue(Color.isValid("#49d87e78"));
+        assertTrue(Color.isValid("#FFFFFFFF"));
+        
+           
     }
 
 }

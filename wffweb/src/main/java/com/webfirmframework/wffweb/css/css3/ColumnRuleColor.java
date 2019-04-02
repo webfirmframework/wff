@@ -224,7 +224,7 @@ public class ColumnRuleColor extends AbstractCssProperty<ColumnRuleColor> {
 
             final long value = Long.parseLong(trimmedCssValue.substring(1), 16);
 
-            return !(value > CommonConstants.FFFFFF_HEX_VALUE || value < 0);
+            return !(value > CommonConstants.FFFFFFFF_HEX_VALUE || value < 0);
         } catch (final NumberFormatException ex) {
         }
 
