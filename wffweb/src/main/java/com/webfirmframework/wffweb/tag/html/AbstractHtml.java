@@ -3352,6 +3352,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * @return the Wff Binary Message bytes of this tag. It uses default charset
      *         for encoding values.
+     * @version 1.1
      * @since 2.0.0 initial implementation
      * @since 3.0.2 improved to handle NoTag with contentTypeHtml true
      * @author WFF
@@ -3364,10 +3365,11 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param charset
      *                    Eg: UTF-8
      * @return the Wff Binary Message bytes of this tag
+     * @throws InvalidTagException
+     * @version 1.1
      * @since 2.0.0 initial implementation
      * @since 3.0.2 improved to handle NoTag with contentTypeHtml true
      * @author WFF
-     * @throws InvalidTagException
      */
     public byte[] toWffBMBytes(final String charset) {
         return toWffBMBytes(Charset.forName(charset));
@@ -3376,10 +3378,11 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * @param charset
      * @return the Wff Binary Message bytes of this tag
-     * @since 3.0.1 initial implementation
-     * @since 3.0.2 improved to handle NoTag with contentTypeHtml true
      * @author WFF
      * @throws InvalidTagException
+     * @version 1.1
+     * @since 3.0.1 initial implementation
+     * @since 3.0.2 improved to handle NoTag with contentTypeHtml true
      */
     public byte[] toWffBMBytes(final Charset charset) {
 
