@@ -1583,7 +1583,7 @@ public class AbstractHtmlTest {
             {
                 new Div(this, new Id("one")) {
                     {
-                        new Span(this, new Id("two"), new Style("color:green"), new ClassAttribute("cls1 cls2"), new Controls()) {
+                        new Span(this, new Id("two"), new Style("color:green"), new ClassAttribute("cls1 cls2"), new Controls(), new CustomAttribute("custom-attr1", "value"), new CustomAttribute("custom-attr2", ""), new CustomAttribute("custom-attr3", null)) {
                             {
                                 new H1(this, new Id("three"), new Translate(), new MaxLength(), new Controls("true"));
                                 new H2(this, new Id("three"), new Translate(false), new Controls(true));
@@ -1743,7 +1743,7 @@ public class AbstractHtmlTest {
             {
                 new Div(this, new Id("one")) {
                     {
-                        new Span(this, new Id("two"), new Style("color:green"), new ClassAttribute("cls1 cls2"), new Controls()) {
+                        new Span(this, new Id("two"), new Style("color:green"), new ClassAttribute("cls1 cls2"), new Controls(), new ClassAttribute("cls1 cls2"), new Controls(), new CustomAttribute("custom-attr1", "value"), new CustomAttribute("custom-attr2", ""), new CustomAttribute("custom-attr3", null)) {
                             {
                                 new H1(this, new Id("three"), new Translate(), new MaxLength(), new Controls("true"));
                                 new H2(this, new Id("three"), new Translate(false), new Controls(true));
