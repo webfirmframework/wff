@@ -770,7 +770,6 @@ public class AttributeRegistry {
                     newInstance = (AbstractAttribute) attrClass
                             .getConstructor(String.class).newInstance(initargs);
                 } catch (final Exception e1) {
-                    e1.printStackTrace();
                     try {
                         newInstance = (AbstractAttribute) attrClass
                                 .getConstructor(int.class).newInstance(1);
