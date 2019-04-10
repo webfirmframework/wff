@@ -1585,8 +1585,8 @@ public class AbstractHtmlTest {
                     {
                         new Span(this, new Id("two"), new Style("color:green"), new ClassAttribute("cls1 cls2"), new Controls()) {
                             {
-                                new H1(this, new Id("three"), new Translate(), new MaxLength());
-                                new H2(this, new Id("three"), new Translate(false));
+                                new H1(this, new Id("three"), new Translate(), new MaxLength(), new Controls("true"));
+                                new H2(this, new Id("three"), new Translate(false), new Controls(true));
                                 new H3(this, new Id("three"), new Translate("yes"));
                                 new NoTag(this, "something");
                             }
@@ -1745,8 +1745,8 @@ public class AbstractHtmlTest {
                     {
                         new Span(this, new Id("two"), new Style("color:green"), new ClassAttribute("cls1 cls2"), new Controls()) {
                             {
-                                new H1(this, new Id("three"), new Translate(), new MaxLength());
-                                new H2(this, new Id("three"), new Translate(false));
+                                new H1(this, new Id("three"), new Translate(), new MaxLength(), new Controls("true"));
+                                new H2(this, new Id("three"), new Translate(false), new Controls(true));
                                 new H3(this, new Id("three"), new Translate("yes"));
                                 new NoTag(this, "something");
                             }
