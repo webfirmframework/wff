@@ -31,12 +31,15 @@ import com.webfirmframework.wffweb.NoParentException;
 import com.webfirmframework.wffweb.css.Color;
 import com.webfirmframework.wffweb.server.page.BrowserPage;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
+import com.webfirmframework.wffweb.tag.html.attribute.MaxLength;
 import com.webfirmframework.wffweb.tag.html.attribute.Name;
 import com.webfirmframework.wffweb.tag.html.attribute.global.ClassAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Style;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
 import com.webfirmframework.wffweb.tag.html.formatting.B;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.Controls;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.global.Translate;
 import com.webfirmframework.wffweb.tag.html.links.A;
 import com.webfirmframework.wffweb.tag.html.metainfo.Head;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
@@ -1580,10 +1583,11 @@ public class AbstractHtmlTest {
             {
                 new Div(this, new Id("one")) {
                     {
-                        new Span(this, new Id("two")) {
+                        new Span(this, new Id("two"), new Style("color:green"), new ClassAttribute("cls1 cls2"), new Controls()) {
                             {
-                                new H1(this, new Id("three"));
-                                new H2(this, new Id("three"));
+                                new H1(this, new Id("three"), new Translate(), new MaxLength());
+                                new H2(this, new Id("three"), new Translate(false));
+                                new H3(this, new Id("three"), new Translate("yes"));
                                 new NoTag(this, "something");
                             }
                         };
@@ -1731,6 +1735,34 @@ public class AbstractHtmlTest {
                 org.junit.Assert.assertFalse(noTag2.isChildContentTypeHtml());
             }
         }
+    }
+    
+    @Test
+    public void testGetTagFromWffBMBytesCharset() throws Exception {
+        final Html html = new Html(null) {
+            {
+                new Div(this, new Id("one")) {
+                    {
+                        new Span(this, new Id("two"), new Style("color:green"), new ClassAttribute("cls1 cls2"), new Controls()) {
+                            {
+                                new H1(this, new Id("three"), new Translate(), new MaxLength());
+                                new H2(this, new Id("three"), new Translate(false));
+                                new H3(this, new Id("three"), new Translate("yes"));
+                                new NoTag(this, "something");
+                            }
+                        };
+
+                        new H3(this, new Name("name1"));
+                    }
+                };
+            }
+        };
+
+        final byte[] wffBMBytes = html.toWffBMBytes(StandardCharsets.UTF_8);
+        final AbstractHtml tagFromWffBMBytes = AbstractHtml
+                .getExactTagFromWffBMBytes(wffBMBytes, StandardCharsets.UTF_8);
+
+        assertEquals(html.toHtmlString(), tagFromWffBMBytes.toHtmlString());
     }
 
 }

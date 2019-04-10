@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.tag.html.html5.attribute;
 
+import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.html5.identifier.AudioAttributable;
@@ -43,6 +44,21 @@ public class Controls extends AbstractAttribute implements AudioAttributable {
 
     public Controls() {
         setAttributeValue(null);
+    }
+
+    /**
+     * @param value
+     *                  true or false
+     * @since 3.0.2
+     */
+    public Controls(final String value) {
+        if ("true".equals(value) || "false".equals(value)) {
+            controls = Boolean.parseBoolean(value);
+        } else {
+            throw new InvalidValueException(
+                    "the value should be either true or false");
+        }
+        setAttributeValue(value);
     }
 
     public Controls(final Boolean controls) {

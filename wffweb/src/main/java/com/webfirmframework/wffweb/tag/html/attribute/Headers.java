@@ -44,7 +44,19 @@ public class Headers extends AbstractValueSetAttribute
     }
 
     /**
-     * one or more header id separated by space or as an array of header ids.
+     * one or more header ids separated by space.
+     *
+     * @param headerIds
+     * @since 3.0.2
+     */
+    public Headers(final String headerIds) {
+        if (headerIds != null) {
+            super.addAllToAttributeValueSet(headerIds);
+        }
+    }
+
+    /**
+     * one or more header ids separated by space or as an array of header ids.
      *
      * @param headerIds
      */

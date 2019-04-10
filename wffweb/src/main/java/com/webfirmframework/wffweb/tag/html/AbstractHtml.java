@@ -47,6 +47,7 @@ import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
 import com.webfirmframework.wffweb.streamer.WffBinaryMessageOutputStreamer;
 import com.webfirmframework.wffweb.tag.core.AbstractJsObject;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeRegistry;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeUtil;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
 import com.webfirmframework.wffweb.tag.html.core.TagRegistry;
@@ -3560,10 +3561,18 @@ public abstract class AbstractHtml extends AbstractJsObject {
             for (int i = 1; i < superParentValues.length; i++) {
                 final String attrNameValue = new String(superParentValues[i],
                         charset);
-                final int indexOfHash = attrNameValue.indexOf('=');
-                final String attrName = attrNameValue.substring(0, indexOfHash);
-                final String attrValue = attrNameValue
-                        .substring(indexOfHash + 1, attrNameValue.length());
+                final int indexOfEqualChar = attrNameValue.indexOf('=');
+                final String attrName;
+                final String attrValue;
+
+                if (indexOfEqualChar == -1) {
+                    attrName = attrNameValue;
+                    attrValue = null;
+                } else {
+                    attrName = attrNameValue.substring(0, indexOfEqualChar);
+                    attrValue = attrNameValue.substring(indexOfEqualChar + 1,
+                            attrNameValue.length());
+                }
                 // CustomAttribute should be replaced with relevant class
                 // later
                 attributes[i - 1] = new CustomAttribute(attrName, attrValue);
@@ -3595,11 +3604,20 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                 for (int j = 1; j < values.length; j++) {
                     final String attrNameValue = new String(values[j], charset);
-                    final int indexOfHash = attrNameValue.indexOf('=');
-                    final String attrName = attrNameValue.substring(0,
-                            indexOfHash);
-                    final String attrValue = attrNameValue
-                            .substring(indexOfHash + 1, attrNameValue.length());
+                    final int indexOfEqualChar = attrNameValue.indexOf('=');
+
+                    final String attrName;
+                    final String attrValue;
+
+                    if (indexOfEqualChar == -1) {
+                        attrName = attrNameValue;
+                        attrValue = null;
+                    } else {
+                        attrName = attrNameValue.substring(0, indexOfEqualChar);
+                        attrValue = attrNameValue.substring(
+                                indexOfEqualChar + 1, attrNameValue.length());
+                    }
+
                     // CustomAttribute should be replaced with relevant
                     // class later
                     attributes[j - 1] = new CustomAttribute(attrName,
@@ -3608,6 +3626,152 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 // CustomTag should be replaced with relevant class later
                 child = new CustomTag(tagName, allTags[indexOfParent],
                         attributes);
+            }
+            allTags[i] = child;
+        }
+
+        return parent;
+    }
+
+    /**
+     * @param bmBytes
+     *                    Wff Binary Message bytes of tag i.e. returned by
+     *                    {@link AbstractHtml#toWffBMBytes(Charset)}
+     * @param charset
+     *                    the charset used to generate bm bytes in
+     *                    {@link AbstractHtml#toWffBMBytes(Charset)}
+     * @return the AbstractHtml instance from the given Wff BM bytes
+     * @since 3.0.2 Also includes the improvement to handle NoTag with
+     *        contentTypeHtml true
+     * @author WFF
+     */
+    public static AbstractHtml getExactTagFromWffBMBytes(final byte[] bmBytes,
+            final Charset charset) {
+
+        final List<NameValue> nameValuesAsList = WffBinaryMessageUtil.VERSION_1
+                .parse(bmBytes);
+
+        final NameValue[] nameValues = nameValuesAsList
+                .toArray(new NameValue[nameValuesAsList.size()]);
+
+        final NameValue superParentNameValue = nameValues[0];
+        final byte[][] superParentValues = superParentNameValue.getValues();
+
+        final AbstractHtml[] allTags = new AbstractHtml[nameValues.length];
+
+        AbstractHtml parent = null;
+
+        // # short for #text
+        // @ short for html content
+        boolean noTagContentTypeHtml = superParentValues[0][0] == '@';
+        if (superParentValues[0][0] == '#' || noTagContentTypeHtml) {
+            parent = new NoTag(null, new String(superParentValues[1], charset),
+                    noTagContentTypeHtml);
+        } else {
+            final String tagName = new String(superParentValues[0], charset);
+
+            final AbstractAttribute[] attributes = new AbstractAttribute[superParentValues.length
+                    - 1];
+
+            for (int i = 1; i < superParentValues.length; i++) {
+                final String attrNameValue = new String(superParentValues[i],
+                        charset);
+                final int indexOfEqualChar = attrNameValue.indexOf('=');
+
+                final String attrName;
+                final String attrValue;
+
+                if (indexOfEqualChar == -1) {
+                    attrName = attrNameValue;
+                    attrValue = null;
+                } else {
+                    attrName = attrNameValue.substring(0, indexOfEqualChar);
+                    attrValue = attrNameValue.substring(indexOfEqualChar + 1,
+                            attrNameValue.length());
+                }
+
+                final AbstractAttribute newAttributeInstance = AttributeRegistry
+                        .getNewAttributeInstance(attrName, attrValue);
+
+                if (newAttributeInstance != null) {
+                    attributes[i - 1] = newAttributeInstance;
+                } else {
+                    attributes[i - 1] = new CustomAttribute(attrName,
+                            attrValue);
+                }
+            }
+
+            final AbstractHtml newTagInstance = TagRegistry
+                    .getNewTagInstance(tagName, null, attributes);
+
+            if (newTagInstance != null) {
+                parent = newTagInstance;
+            } else {
+                parent = new CustomTag(tagName, null, attributes);
+            }
+
+        }
+        allTags[0] = parent;
+
+        for (int i = 1; i < nameValues.length; i++) {
+
+            final NameValue nameValue = nameValues[i];
+            final int indexOfParent = WffBinaryMessageUtil
+                    .getIntFromOptimizedBytes(nameValue.getName());
+
+            final byte[][] values = nameValue.getValues();
+            // # short for #text
+            // @ short for html content
+            noTagContentTypeHtml = values[0][0] == '@';
+            AbstractHtml child;
+            if (values[0][0] == '#' || noTagContentTypeHtml) {
+                child = new NoTag(allTags[indexOfParent],
+                        new String(values[1], charset), noTagContentTypeHtml);
+            } else {
+                final String tagName = new String(values[0], charset);
+
+                final AbstractAttribute[] attributes = new AbstractAttribute[values.length
+                        - 1];
+
+                for (int j = 1; j < values.length; j++) {
+                    final String attrNameValue = new String(values[j], charset);
+                    final int indexOfEqualChar = attrNameValue.indexOf('=');
+
+                    final String attrName;
+                    final String attrValue;
+
+                    if (indexOfEqualChar == -1) {
+                        attrName = attrNameValue;
+                        attrValue = null;
+                    } else {
+                        attrName = attrNameValue.substring(0, indexOfEqualChar);
+                        attrValue = attrNameValue.substring(
+                                indexOfEqualChar + 1, attrNameValue.length());
+                    }
+
+                    final AbstractAttribute newAttributeInstance = AttributeRegistry
+                            .getNewAttributeInstance(attrName, attrValue);
+
+                    if (newAttributeInstance != null) {
+                        attributes[j - 1] = newAttributeInstance;
+                    } else {
+                        attributes[j - 1] = new CustomAttribute(attrName,
+                                attrValue);
+                    }
+
+                }
+
+                final AbstractHtml newTagInstance = TagRegistry
+                        .getNewTagInstance(tagName, allTags[indexOfParent],
+                                attributes);
+
+                if (newTagInstance != null) {
+                    child = newTagInstance;
+                } else {
+                    child = new CustomTag(tagName, allTags[indexOfParent],
+                            attributes);
+                }
+
             }
             allTags[i] = child;
         }
