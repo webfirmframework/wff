@@ -44,9 +44,9 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
 
     private String jsPreFunctionBody;
 
-    private String jsPostFunctionBody;
+    private volatile String jsPostFunctionBody;
 
-    private Object serverSideData;
+    private volatile Object serverSideData;
 
     // short name for wffServerMethods is wffSM
 
