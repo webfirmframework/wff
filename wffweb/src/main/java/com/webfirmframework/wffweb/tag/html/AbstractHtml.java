@@ -3691,7 +3691,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 }
 
                 final AbstractAttribute newAttributeInstance = AttributeRegistry
-                        .getNewAttributeInstance(attrName, attrValue);
+                        .getNewAttributeInstanceOrNullIfFailed(attrName,
+                                attrValue);
 
                 if (newAttributeInstance != null) {
                     attributes[i - 1] = newAttributeInstance;
@@ -3702,7 +3703,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             }
 
             final AbstractHtml newTagInstance = TagRegistry
-                    .getNewTagInstance(tagName, null, attributes);
+                    .getNewTagInstanceOrNullIfFailed(tagName, null, attributes);
 
             if (newTagInstance != null) {
                 parent = newTagInstance;
@@ -3750,7 +3751,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
                     }
 
                     final AbstractAttribute newAttributeInstance = AttributeRegistry
-                            .getNewAttributeInstance(attrName, attrValue);
+                            .getNewAttributeInstanceOrNullIfFailed(attrName,
+                                    attrValue);
 
                     if (newAttributeInstance != null) {
                         attributes[j - 1] = newAttributeInstance;
@@ -3762,8 +3764,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 }
 
                 final AbstractHtml newTagInstance = TagRegistry
-                        .getNewTagInstance(tagName, allTags[indexOfParent],
-                                attributes);
+                        .getNewTagInstanceOrNullIfFailed(tagName,
+                                allTags[indexOfParent], attributes);
 
                 if (newTagInstance != null) {
                     child = newTagInstance;

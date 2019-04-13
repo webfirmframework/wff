@@ -707,6 +707,7 @@ public class AttributeRegistry {
      * @param attributeName
      * @return
      * @since 3.0.2
+     * @throws InvalidValueException
      */
     public static AbstractAttribute getNewAttributeInstance(
             final String attributeName) {
@@ -718,6 +719,7 @@ public class AttributeRegistry {
      * @param attributeValue
      * @return
      * @since 3.0.2
+     * @throws InvalidValueException
      */
     public static AbstractAttribute getNewAttributeInstance(
             final String attributeName, final String attributeValue) {
@@ -748,6 +750,43 @@ public class AttributeRegistry {
                     + attributeValue + " is invalid for " + attributeName);
         }
 
+    }
+
+    /**
+     * @param attributeName
+     * @param attributeValue
+     * @return new instance or null if failed
+     * @since 3.0.2
+     */
+    public static AbstractAttribute getNewAttributeInstanceOrNullIfFailed(
+            final String attributeName, final String attributeValue) {
+
+        final Class<?> attrClass = ATTRIBUTE_CLASS_BY_ATTR_NAME
+                .get(attributeName);
+
+        if (attrClass == null) {
+            return null;
+        }
+
+        try {
+
+            if (attributeValue == null) {
+                final AbstractAttribute newInstance = (AbstractAttribute) attrClass
+                        .getConstructor().newInstance();
+                return newInstance;
+            }
+
+            final AbstractAttribute newInstance = (AbstractAttribute) attrClass
+                    .getConstructor(String.class).newInstance(attributeValue);
+
+            return newInstance;
+        } catch (InstantiationException | IllegalAccessException
+                | IllegalArgumentException | InvocationTargetException
+                | NoSuchMethodException | SecurityException e) {
+            // NOP
+        }
+
+        return null;
     }
 
     // only for testing purpose

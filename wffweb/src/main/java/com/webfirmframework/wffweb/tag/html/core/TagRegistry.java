@@ -29,7 +29,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.webfirmframework.wffweb.InvalidTagException;
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.BaseFont;
@@ -449,6 +448,7 @@ public class TagRegistry {
      * @return the new instance of given tag name without any parent tag and
      *         attributes
      * @since 3.0.2
+     * @throws InvalidValueException
      */
     public static AbstractHtml getNewTagInstance(final String tagName) {
         return getNewTagInstance(tagName, null, new AbstractAttribute[0]);
@@ -461,6 +461,7 @@ public class TagRegistry {
      * @param attributes
      * @return
      * @since 3.0.2
+     * @throws InvalidValueException
      */
     public static AbstractHtml getNewTagInstance(final String tagName,
             final AbstractHtml parent, final AbstractAttribute... attributes) {
@@ -482,9 +483,43 @@ public class TagRegistry {
         } catch (InstantiationException | IllegalAccessException
                 | IllegalArgumentException | InvocationTargetException
                 | NoSuchMethodException | SecurityException e) {
-            throw new InvalidTagException(
+            throw new InvalidValueException(
                     "Unable to create instance for " + tagClass, e);
         }
+    }
+
+    /**
+     * @param tagName
+     *                       name of tag in lower case
+     * @param parent
+     * @param attributes
+     * @return new instance or null if failed
+     * @since 3.0.2
+     */
+    public static AbstractHtml getNewTagInstanceOrNullIfFailed(
+            final String tagName, final AbstractHtml parent,
+            final AbstractAttribute... attributes) {
+
+        final Class<?> tagClass = TAG_CLASS_BY_TAG_NAME.get(tagName);
+
+        if (tagClass == null) {
+            return null;
+        }
+
+        try {
+
+            final AbstractHtml tag = (AbstractHtml) tagClass
+                    .getConstructor(AbstractHtml.class,
+                            AbstractAttribute[].class)
+                    .newInstance(parent, attributes);
+
+            return tag;
+        } catch (InstantiationException | IllegalAccessException
+                | IllegalArgumentException | InvocationTargetException
+                | NoSuchMethodException | SecurityException e) {
+            // NOP
+        }
+        return null;
     }
 
     // only for testing purpose
