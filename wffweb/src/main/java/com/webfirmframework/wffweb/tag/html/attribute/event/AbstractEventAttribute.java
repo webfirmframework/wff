@@ -44,7 +44,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
 
     private String jsPreFunctionBody;
 
-    private volatile String jsPostFunctionBody;
+    private String jsPostFunctionBody;
 
     private volatile Object serverSideData;
 
