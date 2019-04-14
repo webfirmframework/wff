@@ -1861,4 +1861,15 @@ public abstract class BrowserPage implements Serializable {
         return PALYLOAD_PROCESSOR_TL.get();
     }
 
+    /**
+     * Removes the current instance of {@code PayloadProcessor} of this caller
+     * thread for this browser page and new instance will be reinitialized when
+     * calling {@link #getPayloadProcessor()}.
+     *
+     * @since 3.0.2
+     */
+    public void removePayloadProcessor() {
+        PALYLOAD_PROCESSOR_TL.remove();
+    }
+
 }
