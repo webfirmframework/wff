@@ -40,7 +40,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
     private String attributeName;
 
-    private String attributeValue;
+    private volatile String attributeValue;
 
     private volatile Map<String, String> attributeValueMap;
 
@@ -115,6 +115,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     }
 
     protected String getPrintStructure(final boolean rebuild) {
+        final String attributeValue = this.attributeValue;
         String result = "";
         if (rebuild || isRebuild() || isModified()) {
             beforePrintStructure();
@@ -181,6 +182,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @author WFF
      */
     protected String getWffPrintStructure() {
+        final String attributeValue = this.attributeValue;
         String result = "";
         beforeWffPrintStructure();
         final StringBuilder attrBuilder = new StringBuilder();
@@ -244,6 +246,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected byte[] getBinaryStructureCompressedByIndex(final boolean rebuild)
             throws IOException {
+
+        final String attributeValue = this.attributeValue;
 
         final Charset charset = this.charset;
         // TODO review code
