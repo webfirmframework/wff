@@ -156,6 +156,10 @@ public abstract class BrowserPage implements Serializable {
 
     private volatile TagRepository tagRepository;
 
+    // inline initialization is better because object creation is not heavy.
+    private final ThreadLocal<PayloadProcessor> PALYLOAD_PROCESSOR_TL = ThreadLocal
+            .withInitial(() -> new PayloadProcessor(this));
+
     // for security purpose, the class name should not be modified
     private static final class Security implements Serializable {
 
@@ -1835,7 +1839,7 @@ public abstract class BrowserPage implements Serializable {
     }
 
     /**
-     * Gets new instance of payload processor for this browser page. This
+     * Gets new instance of {@code PayloadProcessor} for this browser page. This
      * PayloadProcessor can process incoming partial bytes from WebSocket.
      *
      * @return new instance of PayloadProcessor
@@ -1843,6 +1847,18 @@ public abstract class BrowserPage implements Serializable {
      */
     public PayloadProcessor getNewPayloadProcessor() {
         return new PayloadProcessor(this);
+    }
+
+    /**
+     * Gets the same instance of {@code PayloadProcessor} per caller thread for
+     * this browser page. This PayloadProcessor can process incoming partial
+     * bytes from WebSocket.
+     *
+     * @return new instance of PayloadProcessor
+     * @since 3.0.2
+     */
+    public PayloadProcessor getPayloadProcessor() {
+        return PALYLOAD_PROCESSOR_TL.get();
     }
 
 }
