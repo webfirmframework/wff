@@ -1665,20 +1665,15 @@ public abstract class BrowserPage implements Serializable {
     public final TagRepository getTagRepository() {
 
         if (tagRepository == null && rootTag != null) {
-            initTagRepository();
+            synchronized (this) {
+                if (tagRepository == null) {
+                    tagRepository = new TagRepository(ACCESS_OBJECT, this,
+                            tagByWffId, rootTag);
+                }
+            }
         }
 
         return tagRepository;
-    }
-
-    /**
-     *
-     */
-    private synchronized void initTagRepository() {
-        if (tagRepository == null) {
-            tagRepository = new TagRepository(ACCESS_OBJECT, this, tagByWffId,
-                    rootTag);
-        }
     }
 
     /**
