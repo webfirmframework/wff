@@ -198,7 +198,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.0.0
      * @author WFF
      */
-    public void setWebSocketPushListener(
+    public final void setWebSocketPushListener(
             final WebSocketPushListener wsListener) {
         this.wsListener = wsListener;
         if (pushQueueOnNewWebSocketListener) {
@@ -215,7 +215,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.0
      * @author WFF
      */
-    public void addWebSocketPushListener(final String sessionId,
+    public final void addWebSocketPushListener(final String sessionId,
             final WebSocketPushListener wsListener) {
 
         sessionIdWsListeners.put(sessionId, wsListener);
@@ -237,7 +237,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.0
      * @author WFF
      */
-    public void removeWebSocketPushListener(final String sessionId) {
+    public final void removeWebSocketPushListener(final String sessionId) {
 
         final WebSocketPushListener removed = sessionIdWsListeners
                 .remove(sessionId);
@@ -245,11 +245,11 @@ public abstract class BrowserPage implements Serializable {
         wsListener = wsListeners.peek();
     }
 
-    public WebSocketPushListener getWsListener() {
+    public final WebSocketPushListener getWsListener() {
         return wsListener;
     }
 
-    void push(final NameValue... nameValues) {
+    final void push(final NameValue... nameValues) {
         push(ByteBuffer.wrap(WffBinaryMessageUtil.VERSION_1
                 .getWffBinaryMessageBytes(nameValues)));
     }
@@ -337,7 +337,7 @@ public abstract class BrowserPage implements Serializable {
         }
     }
 
-    DataWffId getNewDataWffId() {
+    final DataWffId getNewDataWffId() {
         return rootTag.getSharedObject().getNewDataWffId(ACCESS_OBJECT);
     }
 
@@ -353,7 +353,7 @@ public abstract class BrowserPage implements Serializable {
      *
      */
     @Deprecated
-    public void websocketMessaged(final byte[] message) {
+    public final void websocketMessaged(final byte[] message) {
         webSocketMessaged(message);
     }
 
@@ -363,7 +363,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.0
      * @author WFF
      */
-    public void webSocketMessaged(final byte[] message) {
+    public final void webSocketMessaged(final byte[] message) {
         try {
 
             // TODO minimum number of an empty bm message length is 4
@@ -1224,7 +1224,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.0.0
      * @author WFF
      */
-    public String getInstanceId() {
+    public final String getInstanceId() {
         return instanceId;
     }
 
@@ -1234,7 +1234,7 @@ public abstract class BrowserPage implements Serializable {
      * @return the pushQueueEnabled
      * @since 2.0.2
      */
-    public boolean isPushQueueEnabled() {
+    public final boolean isPushQueueEnabled() {
         return pushQueueEnabled;
     }
 
@@ -1247,7 +1247,7 @@ public abstract class BrowserPage implements Serializable {
      *                             the enabledPushQueue to set
      * @since 2.0.2
      */
-    public void setPushQueueEnabled(final boolean enabledPushQueue) {
+    public final void setPushQueueEnabled(final boolean enabledPushQueue) {
         pushQueueEnabled = enabledPushQueue;
     }
 
@@ -1257,7 +1257,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.0
      * @author WFF
      */
-    public void addServerMethod(final String methodName,
+    public final void addServerMethod(final String methodName,
             final ServerAsyncMethod serverAsyncMethod) {
         serverMethods.put(methodName,
                 new ServerMethod(serverAsyncMethod, null));
@@ -1272,7 +1272,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 3.0.2
      * @author WFF
      */
-    public void addServerMethod(final String methodName,
+    public final void addServerMethod(final String methodName,
             final ServerAsyncMethod serverAsyncMethod,
             final Object serverSideData) {
         serverMethods.put(methodName,
@@ -1286,7 +1286,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.0
      * @author WFF
      */
-    public void removeServerMethod(final String methodName) {
+    public final void removeServerMethod(final String methodName) {
         serverMethods.remove(methodName);
     }
 
@@ -1300,7 +1300,8 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.0
      * @author WFF
      */
-    public void performBrowserPageAction(final ByteBuffer actionByteBuffer) {
+    public final void performBrowserPageAction(
+            final ByteBuffer actionByteBuffer) {
         push(actionByteBuffer);
         if (holdPush.get() == 0) {
             pushWffBMBytesQueue();
@@ -1312,7 +1313,7 @@ public abstract class BrowserPage implements Serializable {
      *         otherwise false. By default it's set as true.
      * @since 2.1.1
      */
-    public boolean isPushQueueOnNewWebSocketListener() {
+    public final boolean isPushQueueOnNewWebSocketListener() {
         return pushQueueOnNewWebSocketListener;
     }
 
@@ -1328,7 +1329,7 @@ public abstract class BrowserPage implements Serializable {
      *                                            disable this option.
      * @since 2.1.1
      */
-    public void setPushQueueOnNewWebSocketListener(
+    public final void setPushQueueOnNewWebSocketListener(
             final boolean pushQueueOnNewWebSocketListener) {
         this.pushQueueOnNewWebSocketListener = pushQueueOnNewWebSocketListener;
     }
@@ -1338,7 +1339,7 @@ public abstract class BrowserPage implements Serializable {
      * @return the holdPush true if the push is on hold
      * @since 2.1.3
      */
-    public boolean isHoldPush() {
+    public final boolean isHoldPush() {
         return holdPush.get() > 0;
     }
 
@@ -1361,7 +1362,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.3
      * @author WFF
      */
-    public void holdPush() {
+    public final void holdPush() {
         holdPush.incrementAndGet();
     }
 
@@ -1384,7 +1385,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.3
      * @author WFF
      */
-    public void unholdPush() {
+    public final void unholdPush() {
 
         if (holdPush.get() > 0) {
 
@@ -1447,7 +1448,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.4
      * @author WFF
      */
-    public int getPushQueueSize() {
+    public final int getPushQueueSize() {
         // wffBMBytesQueue.size() is not reliable as
         // it's ConcurrentLinkedQueue.
         // As per the javadoc ConcurrentLinkedQueue.size is NOT a constant-time
@@ -1467,7 +1468,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.4
      * @author WFF
      */
-    public void removeFromContext(final boolean enable, final On... ons) {
+    public final void removeFromContext(final boolean enable, final On... ons) {
         for (final On on : ons) {
             if (On.TAB_CLOSE.equals(on)) {
                 removeFromBrowserContextOnTabClose = enable;
@@ -1550,7 +1551,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.8
      * @author WFF
      */
-    protected void setWebSocketHeartbeatInterval(final int milliseconds) {
+    protected final void setWebSocketHeartbeatInterval(final int milliseconds) {
         wsHeartbeatInterval = milliseconds;
     }
 
@@ -1560,7 +1561,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.8
      * @author WFF
      */
-    public int getWebSocketHeartbeatInterval() {
+    public final int getWebSocketHeartbeatInterval() {
         return wsHeartbeatInterval;
     }
 
@@ -1580,7 +1581,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.9 the default value is 25000ms i.e. 25 seconds.
      * @author WFF
      */
-    public static void setWebSocketDefultHeartbeatInterval(
+    public static final void setWebSocketDefultHeartbeatInterval(
             final int milliseconds) {
         wsDefaultHeartbeatInterval = milliseconds;
     }
@@ -1591,7 +1592,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.8
      * @author WFF
      */
-    public static int getWebSocketDefultHeartbeatInterval() {
+    public static final int getWebSocketDefultHeartbeatInterval() {
         return wsDefaultHeartbeatInterval;
     }
 
@@ -1608,7 +1609,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.8
      * @author WFF
      */
-    public static void setWebSocketDefultReconnectInterval(
+    public static final void setWebSocketDefultReconnectInterval(
             final int milliseconds) {
         if (milliseconds < 1) {
             throw new InvalidValueException("The value must be greater than 0");
@@ -1622,7 +1623,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.8
      * @author WFF
      */
-    public static int getWebSocketDefultReconnectInterval() {
+    public static final int getWebSocketDefultReconnectInterval() {
         return wsDefaultReconnectInterval;
     }
 
@@ -1642,7 +1643,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.8
      * @author WFF
      */
-    protected void setWebSocketReconnectInterval(final int milliseconds) {
+    protected final void setWebSocketReconnectInterval(final int milliseconds) {
         wsReconnectInterval = milliseconds;
     }
 
@@ -1652,7 +1653,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.8
      * @author WFF
      */
-    public int getWebSocketReconnectInterval() {
+    public final int getWebSocketReconnectInterval() {
         return wsReconnectInterval;
     }
 
@@ -1688,7 +1689,7 @@ public abstract class BrowserPage implements Serializable {
      *                  nonce attribute
      * @since 3.0.1
      */
-    protected void setNonceForWffScript(final String value) {
+    protected final void setNonceForWffScript(final String value) {
 
         if (autoremoveWffScript) {
             throw new InvalidUsageException(
@@ -1763,7 +1764,7 @@ public abstract class BrowserPage implements Serializable {
      *         hash encoded in base64 string.
      * @since 3.0.1
      */
-    public String getWffScriptSHA256InBase64() {
+    public final String getWffScriptSHA256InBase64() {
         return getWffScriptHashInBase64(HashUtil.SHA_256);
     }
 
@@ -1777,7 +1778,7 @@ public abstract class BrowserPage implements Serializable {
      *         hash encoded in base64 string.
      * @since 3.0.1
      */
-    public String getWffScriptSHA384InBase64() {
+    public final String getWffScriptSHA384InBase64() {
         return getWffScriptHashInBase64(HashUtil.SHA_384);
     }
 
@@ -1791,7 +1792,7 @@ public abstract class BrowserPage implements Serializable {
      *         hash encoded in base64 string.
      * @since 3.0.1
      */
-    public String getWffScriptSHA512InBase64() {
+    public final String getWffScriptSHA512InBase64() {
         return getWffScriptHashInBase64(HashUtil.SHA_512);
     }
 
@@ -1803,7 +1804,7 @@ public abstract class BrowserPage implements Serializable {
      * @param enable
      * @since 3.0.1
      */
-    protected void setEnableDeferOnWffScript(final boolean enable) {
+    protected final void setEnableDeferOnWffScript(final boolean enable) {
         enableDeferOnWffScript = enable;
     }
 
@@ -1813,7 +1814,7 @@ public abstract class BrowserPage implements Serializable {
      * @return true if enabled otherwise false
      * @since 3.0.1
      */
-    protected boolean isEnableDeferOnWffScript() {
+    protected final boolean isEnableDeferOnWffScript() {
         return enableDeferOnWffScript;
     }
 
@@ -1823,7 +1824,7 @@ public abstract class BrowserPage implements Serializable {
      * @return the current state
      * @since 3.0.1
      */
-    protected boolean isAutoremoveWffScript() {
+    protected final boolean isAutoremoveWffScript() {
         return autoremoveWffScript;
     }
 
@@ -1834,7 +1835,8 @@ public abstract class BrowserPage implements Serializable {
      * @param autoremoveWffScript
      * @since 3.0.1
      */
-    protected void setAutoremoveWffScript(final boolean autoremoveWffScript) {
+    protected final void setAutoremoveWffScript(
+            final boolean autoremoveWffScript) {
         this.autoremoveWffScript = autoremoveWffScript;
     }
 
@@ -1845,7 +1847,7 @@ public abstract class BrowserPage implements Serializable {
      * @return new instance of PayloadProcessor
      * @since 3.0.2
      */
-    public PayloadProcessor getNewPayloadProcessor() {
+    public final PayloadProcessor getNewPayloadProcessor() {
         return new PayloadProcessor(this);
     }
 
@@ -1857,7 +1859,7 @@ public abstract class BrowserPage implements Serializable {
      * @return new instance of PayloadProcessor
      * @since 3.0.2
      */
-    public PayloadProcessor getPayloadProcessor() {
+    public final PayloadProcessor getPayloadProcessor() {
         return PALYLOAD_PROCESSOR_TL.get();
     }
 
@@ -1868,7 +1870,7 @@ public abstract class BrowserPage implements Serializable {
      *
      * @since 3.0.2
      */
-    public void removePayloadProcessor() {
+    public final void removePayloadProcessor() {
         PALYLOAD_PROCESSOR_TL.remove();
     }
 
