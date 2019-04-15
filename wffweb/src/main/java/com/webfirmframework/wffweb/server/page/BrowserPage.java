@@ -20,6 +20,7 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayDeque;
@@ -1168,7 +1169,7 @@ public abstract class BrowserPage implements Serializable {
      * @throws IOException
      * @since 3.0.2
      */
-    public int toOutputStream(final OutputStream os, final String charset,
+    public int toOutputStream(final OutputStream os, final Charset charset,
             final boolean flushOnWrite) throws IOException {
         initAbstractHtml();
         wsWarningDisabled = true;
@@ -1233,7 +1234,7 @@ public abstract class BrowserPage implements Serializable {
      *
      */
     public int toOutputStream(final OutputStream os, final boolean rebuild,
-            final String charset, final boolean flushOnWrite)
+            final Charset charset, final boolean flushOnWrite)
             throws IOException {
         initAbstractHtml();
         wsWarningDisabled = true;
