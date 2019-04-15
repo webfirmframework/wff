@@ -1100,6 +1100,38 @@ public abstract class BrowserPage implements Serializable {
      * method.
      *
      * @param os
+     *                         the object of {@code OutputStream} to write to.
+     * @param rebuild
+     *                         true to rebuild &amp; false to write previously
+     *                         built bytes.
+     * @param flushOnWrite
+     *                         true to flush on each write to OutputStream
+     * @return the total number of bytes written
+     *
+     * @throws IOException
+     * @since 3.0.2
+     *
+     */
+    public int toOutputStream(final OutputStream os, final boolean rebuild,
+            final boolean flushOnWrite) throws IOException {
+        initAbstractHtml();
+        wsWarningDisabled = true;
+        beforeToHtml(rootTag);
+        wsWarningDisabled = false;
+        final int totalWritten = rootTag.toOutputStream(os, rebuild,
+                flushOnWrite);
+        wsWarningDisabled = true;
+        afterToHtml(rootTag);
+        wsWarningDisabled = false;
+        return totalWritten;
+    }
+
+    /**
+     * NB: this method should not be called under {@link BrowserPage#render()}
+     * method because this method internally calls {@link BrowserPage#render()}
+     * method.
+     *
+     * @param os
      *                    the object of {@code OutputStream} to write to.
      * @param charset
      *                    the charset
@@ -1115,6 +1147,35 @@ public abstract class BrowserPage implements Serializable {
         beforeToHtml(rootTag);
         wsWarningDisabled = false;
         final int totalWritten = rootTag.toOutputStream(os, true, charset);
+        wsWarningDisabled = true;
+        afterToHtml(rootTag);
+        wsWarningDisabled = false;
+        return totalWritten;
+    }
+
+    /**
+     * NB: this method should not be called under {@link BrowserPage#render()}
+     * method because this method internally calls {@link BrowserPage#render()}
+     * method.
+     *
+     * @param os
+     *                         the object of {@code OutputStream} to write to.
+     * @param charset
+     *                         the charset
+     * @param flushOnWrite
+     *                         true to flush on each write to OutputStream
+     * @return the total number of bytes written
+     * @throws IOException
+     * @since 3.0.2
+     */
+    public int toOutputStream(final OutputStream os, final String charset,
+            final boolean flushOnWrite) throws IOException {
+        initAbstractHtml();
+        wsWarningDisabled = true;
+        beforeToHtml(rootTag);
+        wsWarningDisabled = false;
+        final int totalWritten = rootTag.toOutputStream(os, true, charset,
+                flushOnWrite);
         wsWarningDisabled = true;
         afterToHtml(rootTag);
         wsWarningDisabled = false;
@@ -1146,6 +1207,40 @@ public abstract class BrowserPage implements Serializable {
         beforeToHtml(rootTag);
         wsWarningDisabled = false;
         final int totalWritten = rootTag.toOutputStream(os, rebuild, charset);
+        wsWarningDisabled = true;
+        afterToHtml(rootTag);
+        wsWarningDisabled = false;
+        return totalWritten;
+    }
+
+    /**
+     * NB: this method should not be called under {@link BrowserPage#render()}
+     * method because this method internally calls {@link BrowserPage#render()}
+     * method.
+     *
+     * @param os
+     *                         the object of {@code OutputStream} to write to.
+     * @param rebuild
+     *                         true to rebuild &amp; false to write previously
+     *                         built bytes.
+     * @param charset
+     *                         the charset
+     * @param flushOnWrite
+     *                         true to flush on each write to OutputStream
+     * @return the total number of bytes written
+     * @throws IOException
+     * @since 3.0.2
+     *
+     */
+    public int toOutputStream(final OutputStream os, final boolean rebuild,
+            final String charset, final boolean flushOnWrite)
+            throws IOException {
+        initAbstractHtml();
+        wsWarningDisabled = true;
+        beforeToHtml(rootTag);
+        wsWarningDisabled = false;
+        final int totalWritten = rootTag.toOutputStream(os, rebuild, charset,
+                flushOnWrite);
         wsWarningDisabled = true;
         afterToHtml(rootTag);
         wsWarningDisabled = false;
