@@ -2940,28 +2940,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     /**
      * @param os
-     *                         the object of {@code OutputStream} to write to.
-     * @param charset
-     *                         the charset
-     * @param flushOnWrite
-     *                         true to flush on each write to OutputStream
-     * @return the total number of bytes written
-     * @throws IOException
-     * @since 3.0.2
-     */
-    public int toOutputStream(final OutputStream os, final String charset,
-            final boolean flushOnWrite) throws IOException {
-
-        if (charset == null) {
-            return writePrintStructureToOutputStream(os, true,
-                    Charset.forName(charset), flushOnWrite);
-        }
-        return writePrintStructureToOutputStream(os, true, this.charset,
-                flushOnWrite);
-    }
-
-    /**
-     * @param os
      *                    the object of {@code OutputStream} to write to.
      * @param rebuild
      *                    true to rebuild &amp; false to write previously built
@@ -3057,32 +3035,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
         }
         return writePrintStructureToOutputStream(Charset.forName(charset), os,
                 rebuild);
-    }
-
-    /**
-     * @param os
-     *                         the object of {@code OutputStream} to write to.
-     * @param rebuild
-     *                         true to rebuild &amp; false to write previously
-     *                         built bytes.
-     * @param charset
-     *                         the charset
-     * @param flushOnWrite
-     *                         true to flush on each write to OutputStream
-     * @return the total number of bytes written
-     * @throws IOException
-     * @since 3.0.2
-     */
-    public int toOutputStream(final OutputStream os, final boolean rebuild,
-            final String charset, final boolean flushOnWrite)
-            throws IOException {
-
-        if (charset == null) {
-            return writePrintStructureToOutputStream(os, rebuild, this.charset,
-                    flushOnWrite);
-        }
-        return writePrintStructureToOutputStream(os, rebuild,
-                Charset.forName(charset), flushOnWrite);
     }
 
     /*
