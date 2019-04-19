@@ -1937,20 +1937,10 @@ public abstract class BrowserPage implements Serializable {
     }
 
     /**
-     * Gets new instance of {@code PayloadProcessor} for this browser page. This
-     * PayloadProcessor can process incoming partial bytes from WebSocket.
-     *
-     * @return new instance of PayloadProcessor
-     * @since 3.0.2
-     */
-    public final PayloadProcessor getNewPayloadProcessor() {
-        return new PayloadProcessor(this);
-    }
-
-    /**
      * Gets the same instance of {@code PayloadProcessor} per caller thread for
      * this browser page. This PayloadProcessor can process incoming partial
-     * bytes from WebSocket.
+     * bytes from WebSocket. To manually create new PayloadProcessor use <em>new
+     * PayloadProcessor(browserPage)</em>.
      *
      * @return new instance of PayloadProcessor
      * @since 3.0.2
@@ -1962,7 +1952,7 @@ public abstract class BrowserPage implements Serializable {
     /**
      * Removes the current instance of {@code PayloadProcessor} of this caller
      * thread for this browser page and new instance will be reinitialized when
-     * calling {@link #getPayloadProcessor()}.
+     * calling {@link #getPayloadProcessor()} by the same thread.
      *
      * @since 3.0.2
      */
