@@ -20,6 +20,7 @@ import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.html5.identifier.AudioAttributable;
+import com.webfirmframework.wffweb.tag.html.identifier.BooleanAttribute;
 
 /**
  * {@code <element controls> }
@@ -31,7 +32,8 @@ import com.webfirmframework.wffweb.tag.html.html5.identifier.AudioAttributable;
  * @author WFF
  * @since 1.0.0
  */
-public class Controls extends AbstractAttribute implements AudioAttributable {
+public class Controls extends AbstractAttribute
+        implements AudioAttributable, BooleanAttribute {
 
     private static final long serialVersionUID = 1_0_0L;
 
