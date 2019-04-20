@@ -50,8 +50,12 @@ public class UnicodeRange extends AbstractCssProperty<UnicodeRange> {
 
     private String[] unicodeChars;
 
+    /**
+     * @since 1.1.2 initial implementation
+     * @since 3.0.2 the default value is U+0-10FFFF
+     */
     public UnicodeRange() {
-        setCssValue("");
+        setCssValue(DEFAULT_VALUE);
     }
 
     /**
