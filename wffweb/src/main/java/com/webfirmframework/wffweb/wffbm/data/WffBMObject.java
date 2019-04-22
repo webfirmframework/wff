@@ -126,12 +126,14 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
      * @author WFF
      */
     public byte[] build() throws UnsupportedEncodingException {
-        return build(outer);
+        return buildBytes(outer);
     }
 
     /**
+     * NB: use buildBytes instead of this method.
+     *
      * @param outer
-     * @return
+     * @return the bytes representation of the object
      * @throws UnsupportedEncodingException
      *                                          throwing this exception will be
      *                                          removed in future version
@@ -140,11 +142,26 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
      *                                          this exception due to the code
      *                                          changes since 3.0.1.
      * @since 1.1.5
-     * @author WFF
+     * @deprecated building bytes implementation doesn't throw
+     *             UnsupportedEncodingException so deprecated this method. The
+     *             same goal can be achieved using buildBytes method.
      */
+    @Deprecated
     @Override
     public byte[] build(final boolean outer)
             throws UnsupportedEncodingException {
+        return buildBytes(outer);
+    }
+
+    /**
+     * @param outer
+     * @return bytes for this WffBMObject
+     *
+     * @since 3.0.2
+     * @author WFF
+     */
+    @Override
+    public byte[] buildBytes(final boolean outer) {
 
         final Set<Entry<String, ValueValueType>> superEntrySet = super.entrySet();
 
@@ -201,13 +218,13 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
 
                 final WffBMObject value = (WffBMObject) valueValueType
                         .getValue();
-                final byte[] valueBytes = value.build(false);
+                final byte[] valueBytes = value.buildBytes(false);
                 nameValue.setValues(new byte[] { valueType }, valueBytes);
 
             } else if (valueType == BMValueType.BM_ARRAY.getType()) {
 
                 final WffBMArray value = (WffBMArray) valueValueType.getValue();
-                final byte[] valueBytes = value.build(false);
+                final byte[] valueBytes = value.buildBytes(false);
                 nameValue.setValues(new byte[] { valueType }, valueBytes);
 
             } else if (valueType == BMValueType.BM_BYTE_ARRAY.getType()) {

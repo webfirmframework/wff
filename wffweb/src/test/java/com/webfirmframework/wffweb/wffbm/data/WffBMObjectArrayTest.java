@@ -41,7 +41,7 @@ public class WffBMObjectArrayTest {
                     bmArrayInOuterBMObject);
 
             final WffBMObject parsed = new WffBMObject(
-                    outerBMObject.build(true), true);
+                    outerBMObject.buildBytes(true), true);
 
             WffBMArray parsedArray = (WffBMArray) parsed.getValue("r");
             final WffBMObject arrayObj = (WffBMObject) parsedArray.get(0);

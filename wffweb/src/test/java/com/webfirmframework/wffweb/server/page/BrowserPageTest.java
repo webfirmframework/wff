@@ -15,6 +15,13 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
+import static org.junit.Assert.assertEquals;
+
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayDeque;
+import java.util.Queue;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -148,6 +155,28 @@ public class BrowserPageTest {
         @SuppressWarnings("unused")
         String toHtmlString = browserPage.toHtmlString();
         Assert.assertFalse(browserPage.contains(null));
+    }
+    
+    @Test
+    public void testPollAndConvertToByteArray() {
+        {
+            final ByteBuffer webfirmframework = ByteBuffer.wrap("webfirmframework".getBytes(StandardCharsets.UTF_8));
+            final ByteBuffer wffweb = ByteBuffer.wrap("-wffweb".getBytes(StandardCharsets.UTF_8));
+            final ByteBuffer useLatestVersion = ByteBuffer.wrap("-use latest version".getBytes(StandardCharsets.UTF_8));
+            
+            {
+                Queue<ByteBuffer> queue = new ArrayDeque<>();
+                queue.add(webfirmframework);
+                queue.add(wffweb);
+                queue.add(useLatestVersion);
+                int totalCapacity = 0;
+                for (ByteBuffer byteBuffer : queue) {
+                    totalCapacity += byteBuffer.array().length;
+                }
+                final byte[] merged = PayloadProcessor.pollAndConvertToByteArray(totalCapacity, queue);
+                assertEquals("webfirmframework-wffweb-use latest version", new String(merged, StandardCharsets.UTF_8));
+            }
+        }
     }
         
 

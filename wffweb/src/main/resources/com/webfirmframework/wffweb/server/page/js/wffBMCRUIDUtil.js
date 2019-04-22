@@ -6,6 +6,8 @@ var wffBMCRUIDUtil = new function() {
 
 	var encoder = wffGlobal.encoder;
 	var decoder = wffGlobal.decoder;
+	
+	var encodedBytesForHash = encoder.encode('#');	
 
 	// this.applyAttributeUpadates = function (wffBMBytes) {
 	// var nameValues = wffBMUtil.parseWffBinaryMessageBytes(wffBMBytes);
@@ -63,11 +65,14 @@ var wffBMCRUIDUtil = new function() {
 		var indexInWffBinaryMessage = parentIndex + 1;
 
 		var nodeName = tag.nodeName;
-		var nodeNameBytes = encoder.encode(nodeName);
+		
+		//in javascript element.nodeName will be #text if it contains Text Node		
 		if (nodeName != '#text') {
 
 			var values = [];
 
+			var nodeNameBytes = encoder.encode(nodeName);
+			
 			values.push(nodeNameBytes);
 
 			for (var i = 0; i < tag.attributes.length; i++) {
@@ -95,8 +100,9 @@ var wffBMCRUIDUtil = new function() {
 			nameValues.push(nameValue);
 
 		} else {
+			// we are using short form for #text as #						
 			var nodeValueBytes = encoder.encode(tag.nodeValue);
-			var values = [ nodeNameBytes, nodeValueBytes ];
+			var values = [ encodedBytesForHash, nodeValueBytes ];
 			var nameValue = {
 				'name' : getOptimizedBytesFromInt(parentIndex),
 				'values' : values
@@ -128,7 +134,7 @@ var wffBMCRUIDUtil = new function() {
 
 		var parentIndex = 0;
 		recurChild(nameValues, tag, parentIndex);
-		// the parent index in the docuement.
+		// the parent index in the document.
 		nameValues[1].name = wffBMUtil.getOptimizedBytesFromInt(parentDocIndex);
 		return wffBMUtil.getWffBinaryMessageBytes(nameValues);
 	};

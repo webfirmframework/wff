@@ -18,11 +18,19 @@ package com.webfirmframework.wffweb.tag.html.attribute.core;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.Field;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.InvalidValueException;
+import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
+import com.webfirmframework.wffweb.tag.html.attribute.global.Style;
+import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
+import com.webfirmframework.wffweb.tag.html.core.TagRegistry;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataAttribute;
+import com.webfirmframework.wffweb.tag.htmlwff.CustomTag;
 
 public class AttributeRegistryTest {
 
@@ -53,11 +61,73 @@ public class AttributeRegistryTest {
             //loadAllTagClasses must be after test
             //not possible to write a separate test case for test() method
             //as the internal map will be nullified in loadAllTagClasses
-            AttributeRegistry.test();            
+            AttributeRegistry.test();      
+            AttributeRegistry.test1();       
         } catch (InvalidValueException e) {
+            e.printStackTrace();
             fail(e.getMessage());
         }
         AttributeRegistry.loadAllAttributeClasses();
+    }
+    
+    @Test
+    public void testGetNewTagInstance() {
+        final Map<String, Class<?>> attrClassNameByAttrName = AttributeRegistry
+                .getAttributeClassByAttrName();
+        {
+            for (Entry<String, Class<?>> entry : attrClassNameByAttrName
+                    .entrySet()) {
+                AbstractAttribute attr = null;
+                try {
+                    attr = AttributeRegistry
+                            .getNewAttributeInstance(entry.getKey());
+                } catch (InvalidValueException e) {
+                    continue;
+                }
+
+                assertNotNull(attr);
+                assertEquals(entry.getValue(), attr.getClass());
+
+            }
+        }
+
+        {
+            for (Entry<String, Class<?>> entry : attrClassNameByAttrName
+                    .entrySet()) {
+                
+                AbstractAttribute attr = null;
+                
+                if (entry.getValue().equals(Style.class)) {
+                    attr = AttributeRegistry
+                            .getNewAttributeInstance(entry.getKey(), "color:green;");
+                    assertNotNull(attr);
+                    assertEquals(entry.getValue(), attr.getClass());
+                    continue;
+                }
+                
+                try {
+                    attr = AttributeRegistry
+                            .getNewAttributeInstance(entry.getKey(), "1");
+                } catch (InvalidValueException e) {
+                    try {
+                        attr = AttributeRegistry
+                                .getNewAttributeInstance(entry.getKey(), "true");
+                    } catch (InvalidValueException e2) {
+                        try {
+                            attr = AttributeRegistry
+                                    .getNewAttributeInstance(entry.getKey(), "yes");
+                        } catch (InvalidValueException e3) {
+                            fail("yes is invalid value for " + entry.getValue());
+                        }
+                    }
+                }
+
+                assertNotNull(attr);
+                assertEquals(entry.getValue(), attr.getClass());
+
+            }
+        }
+
     }
 
 }

@@ -259,5 +259,24 @@ public class ByteBufferUtilTest {
             assertEquals(2, totalSlices);
         }
     }
+    
+    @Test
+    public void testMerge() throws Exception {
+        {
+            final ByteBuffer webfirmframework = ByteBuffer.wrap("webfirmframework".getBytes(StandardCharsets.UTF_8));
+            final ByteBuffer merged = ByteBufferUtil.merge(webfirmframework);
+            
+            assertEquals("webfirmframework", new String(merged.array(), StandardCharsets.UTF_8));
+        }
+        {
+            final ByteBuffer webfirmframework = ByteBuffer.wrap("webfirmframework".getBytes(StandardCharsets.UTF_8));
+            final ByteBuffer wffweb = ByteBuffer.wrap("-wffweb".getBytes(StandardCharsets.UTF_8));
+            final ByteBuffer useLatestVersion = ByteBuffer.wrap("-use latest version".getBytes(StandardCharsets.UTF_8));
+            final ByteBuffer merged = ByteBufferUtil.merge(webfirmframework, wffweb, useLatestVersion);
+            
+            assertEquals("webfirmframework-wffweb-use latest version", new String(merged.array(), StandardCharsets.UTF_8));
+        }
+
+    }
 
 }

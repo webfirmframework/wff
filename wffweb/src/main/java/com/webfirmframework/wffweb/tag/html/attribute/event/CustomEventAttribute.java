@@ -33,4 +33,35 @@ public class CustomEventAttribute extends AbstractEventAttribute {
                 jsFilterFunctionBody, postJsFunctionBody);
     }
 
+    /**
+     * @param attributeName
+     * @param serverAsyncMethod
+     * @param serverSideData
+     * @since 3.0.2
+     */
+    public CustomEventAttribute(final String attributeName,
+            final ServerAsyncMethod serverAsyncMethod,
+            final Object serverSideData) {
+        super(attributeName, null, serverAsyncMethod, null, null,
+                serverSideData);
+    }
+
+    /**
+     * @param attributeName
+     * @param preJsFunctionBody
+     * @param serverAsyncMethod
+     * @param jsFilterFunctionBody
+     * @param postJsFunctionBody
+     * @param serverSideData
+     * @since 3.0.2
+     */
+    public CustomEventAttribute(final String attributeName,
+            final String preJsFunctionBody,
+            final ServerAsyncMethod serverAsyncMethod,
+            final String jsFilterFunctionBody, final String postJsFunctionBody,
+            final Object serverSideData) {
+        super(attributeName, preJsFunctionBody, serverAsyncMethod,
+                jsFilterFunctionBody, postJsFunctionBody, serverSideData);
+    }
+
 }

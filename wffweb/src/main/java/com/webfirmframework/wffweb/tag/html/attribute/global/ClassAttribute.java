@@ -45,6 +45,16 @@ public class ClassAttribute extends AbstractValueSetAttribute
     }
 
     /**
+     * one or more class names separated by space.
+     *
+     * @param classNames
+     * @since 3.0.2
+     */
+    public ClassAttribute(final String classNames) {
+        super.addAllToAttributeValueSet(classNames);
+    }
+
+    /**
      * one or more class name separated by space or as an array of class names.
      *
      * @param classNames

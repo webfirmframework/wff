@@ -73,6 +73,7 @@ import com.webfirmframework.wffweb.css.RgbaCssValueTest;
 import com.webfirmframework.wffweb.css.RightTest;
 import com.webfirmframework.wffweb.css.SrcCssPropertyTest;
 import com.webfirmframework.wffweb.css.TopTest;
+import com.webfirmframework.wffweb.css.UnicodeRangeTest;
 import com.webfirmframework.wffweb.css.UrlCss3ValueTest;
 import com.webfirmframework.wffweb.css.WidthCssTest;
 import com.webfirmframework.wffweb.css.WordSpacingTest;
@@ -220,7 +221,8 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObjectArrayTest;
         AbstractHtml5SharedObjectTest.class, HeightCssTest.class,
         AutoCompleteTest.class, AbstractHtmlRepositoryTest.class,
         CodePerformanceTest.class, HashUtilTest.class,
-        AbstractHtml5SharedObjectTest.class, ByteBufferUtilTest.class })
+        AbstractHtml5SharedObjectTest.class, ByteBufferUtilTest.class,
+        UnicodeRangeTest.class })
 public class AllTests {
 
 }

@@ -22,7 +22,11 @@ import java.util.List;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 
 /**
- * It's a tag which makes child content without any opening closing tag.
+ * It's a tag which makes child content without any opening closing tag. <br>
+ * <br>
+ * NB: Nesting NoTag is not recommended and it may cause strange behavior. We
+ * recommend TagContent enum for NoTag insertion in a tag instead of creating
+ * new NoTag object.
  *
  * @author WFF
  * @since 1.0.0
@@ -73,7 +77,22 @@ public class NoTag extends AbstractHtml {
      * @since 1.0.0
      */
     public NoTag(final AbstractHtml base, final String childContent) {
-        super(base, childContent);
+        super(base, childContent, false);
+    }
+
+    /**
+     *
+     * @param base
+     *                            i.e. parent tag of this tag
+     * @param childContent
+     * @param contentTypeHtml
+     *                            true if the given childContent is HTML. by
+     *                            default it is false.
+     * @since 3.0.2
+     */
+    public NoTag(final AbstractHtml base, final String childContent,
+            final boolean contentTypeHtml) {
+        super(base, childContent, contentTypeHtml);
     }
 
     /**
@@ -167,5 +186,13 @@ public class NoTag extends AbstractHtml {
      */
     public String getChildContent() {
         return getHtmlMiddleSB().toString();
+    }
+
+    /**
+     * @return true if the child content is considered to be HTML
+     * @since 3.0.2
+     */
+    public boolean isChildContentTypeHtml() {
+        return noTagContentTypeHtml;
     }
 }

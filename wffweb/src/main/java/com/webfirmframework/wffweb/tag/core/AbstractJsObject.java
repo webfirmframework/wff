@@ -66,20 +66,13 @@ public abstract class AbstractJsObject extends AbstractTagBase {
      */
     private Map<String, WffBMData> getWffDatas() {
         if (wffBMDatas == null) {
-            initWffDatas();
+            synchronized (this) {
+                if (wffBMDatas == null) {
+                    wffBMDatas = new ConcurrentHashMap<>();
+                }
+            }
         }
         return wffBMDatas;
-    }
-
-    /**
-     *
-     * @since 2.1.8
-     * @author WFF
-     */
-    private synchronized void initWffDatas() {
-        if (wffBMDatas == null) {
-            wffBMDatas = new ConcurrentHashMap<>();
-        }
     }
 
     /**

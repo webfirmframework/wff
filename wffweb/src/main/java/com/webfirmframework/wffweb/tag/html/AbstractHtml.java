@@ -47,6 +47,7 @@ import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
 import com.webfirmframework.wffweb.streamer.WffBinaryMessageOutputStreamer;
 import com.webfirmframework.wffweb.tag.core.AbstractJsObject;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeRegistry;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeUtil;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
 import com.webfirmframework.wffweb.tag.html.core.TagRegistry;
@@ -132,6 +133,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
     private transient Charset charset = Charset.defaultCharset();
 
     private TagType tagType = TagType.OPENING_CLOSING;
+
+    protected final boolean noTagContentTypeHtml;
 
     public static enum TagType {
         OPENING_CLOSING, SELF_CLOSING, NON_CLOSING;
@@ -344,7 +347,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     public AbstractHtml(final AbstractHtml base,
             final AbstractHtml... children) {
-
+        noTagContentTypeHtml = false;
         if (base == null) {
             sharedObject = new AbstractHtml5SharedObject(this);
         }
@@ -374,8 +377,12 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param base
      * @param childContent
      *                         any text, it can also be html text.
+     * @since 3.0.2
      */
-    public AbstractHtml(final AbstractHtml base, final String childContent) {
+    protected AbstractHtml(final AbstractHtml base, final String childContent,
+            final boolean noTagContentTypeHtml) {
+
+        this.noTagContentTypeHtml = noTagContentTypeHtml;
 
         if (base == null) {
             sharedObject = new AbstractHtml5SharedObject(this);
@@ -405,6 +412,15 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
+     * @param base
+     * @param childContent
+     *                         any text, it can also be html text.
+     */
+    public AbstractHtml(final AbstractHtml base, final String childContent) {
+        this(base, childContent, false);
+    }
+
+    /**
      * should be invoked to generate opening and closing tag base class
      * containing the functionalities to generate html string.
      *
@@ -417,6 +433,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     public AbstractHtml(final String tagName, final AbstractHtml base,
             final AbstractAttribute[] attributes) {
         this.tagName = tagName;
+        noTagContentTypeHtml = false;
         if (base == null) {
             sharedObject = new AbstractHtml5SharedObject(this);
         }
@@ -1538,6 +1555,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             final AbstractHtml base, final AbstractAttribute[] attributes) {
         this.tagType = tagType;
         this.tagName = tagName;
+        noTagContentTypeHtml = false;
 
         if (base == null) {
             sharedObject = new AbstractHtml5SharedObject(this);
@@ -1900,14 +1918,31 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
+     * @param charset
+     * @param os
      * @param rebuild
-     * @since 1.0.0
-     * @author WFF
      * @return the total number of bytes written
      * @throws IOException
+     * @since 1.0.0
      */
     protected int writePrintStructureToOutputStream(final Charset charset,
             final OutputStream os, final boolean rebuild) throws IOException {
+        return writePrintStructureToOutputStream(os, rebuild, charset, false);
+    }
+
+    /**
+     * @param os
+     * @param rebuild
+     * @param charset
+     * @param flushOnWrite
+     *                         true to flush on each write to OutputStream
+     * @return the total number of bytes written
+     * @throws IOException
+     * @since 3.0.2
+     */
+    protected int writePrintStructureToOutputStream(final OutputStream os,
+            final boolean rebuild, final Charset charset,
+            final boolean flushOnWrite) throws IOException {
 
         final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
         try {
@@ -1919,7 +1954,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             final Set<AbstractHtml> localChildren = new LinkedHashSet<>(2);
             localChildren.add(this);
             recurChildrenToOutputStream(totalWritten, charset, os,
-                    localChildren, rebuild);
+                    localChildren, rebuild, flushOnWrite);
             return totalWritten[0];
         } finally {
             lock.unlock();
@@ -2540,15 +2575,18 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *
      * @param children
      * @param rebuild
-     *                     TODO
+     *                         TODO
+     * @param flushOnWrite
+     *                         true to flush on each write to OutputStream
+     *
      * @since 1.0.0
      * @author WFF
      * @throws IOException
      */
     private static void recurChildrenToOutputStream(final int[] totalWritten,
             final Charset charset, final OutputStream os,
-            final Set<AbstractHtml> children, final boolean rebuild)
-            throws IOException {
+            final Set<AbstractHtml> children, final boolean rebuild,
+            final boolean flushOnWrite) throws IOException {
 
         if (children != null && children.size() > 0) {
             for (final AbstractHtml child : children) {
@@ -2557,6 +2595,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 byte[] openingTagBytes = child.getOpeningTag()
                         .getBytes(charset);
                 os.write(openingTagBytes);
+                if (flushOnWrite) {
+                    os.flush();
+                }
                 totalWritten[0] += openingTagBytes.length;
                 // explicitly dereferenced right after use
                 // because it's a recursive method.
@@ -2566,10 +2607,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 // declaring a separate local variable childrenOfChildren will
                 // consume stack space so directly passed it as argument
                 recurChildrenToOutputStream(totalWritten, charset, os,
-                        child.children, rebuild);
+                        child.children, rebuild, flushOnWrite);
 
                 byte[] closingTagBytes = child.closingTag.getBytes(charset);
                 os.write(closingTagBytes);
+                if (flushOnWrite) {
+                    os.flush();
+                }
                 totalWritten[0] += closingTagBytes.length;
                 // explicitly dereferenced right after use
                 // because it's a recursive method.
@@ -2861,6 +2905,23 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     /**
      * @param os
+     *                         the object of {@code OutputStream} to write to.
+     * @param charset
+     *                         the charset
+     * @param flushOnWrite
+     *                         true to flush on each write to OutputStream
+     * @return
+     * @throws IOException
+     * @since 3.0.2
+     */
+    public int toOutputStream(final OutputStream os, final Charset charset,
+            final boolean flushOnWrite) throws IOException {
+        return writePrintStructureToOutputStream(os, true, charset,
+                flushOnWrite);
+    }
+
+    /**
+     * @param os
      *                    the object of {@code OutputStream} to write to.
      * @param charset
      *                    the charset
@@ -2894,6 +2955,25 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     /**
      * @param os
+     *                         the object of {@code OutputStream} to write to.
+     * @param rebuild
+     *                         true to rebuild &amp; false to write previously
+     *                         built bytes.
+     * @param flushOnWrite
+     *                         true to flush on each write to OutputStream
+     * @return the total number of bytes written
+     *
+     * @throws IOException
+     * @since 3.0.2
+     */
+    public int toOutputStream(final OutputStream os, final boolean rebuild,
+            final boolean flushOnWrite) throws IOException {
+        return writePrintStructureToOutputStream(os, rebuild, charset,
+                flushOnWrite);
+    }
+
+    /**
+     * @param os
      *                    the object of {@code OutputStream} to write to.
      * @param rebuild
      *                    true to rebuild &amp; false to write previously built
@@ -2909,6 +2989,31 @@ public abstract class AbstractHtml extends AbstractJsObject {
             return writePrintStructureToOutputStream(this.charset, os, rebuild);
         }
         return writePrintStructureToOutputStream(charset, os, rebuild);
+    }
+
+    /**
+     * @param os
+     *                         the object of {@code OutputStream} to write to.
+     * @param rebuild
+     *                         true to rebuild &amp; false to write previously
+     *                         built bytes.
+     * @param charset
+     *                         the charset
+     * @param flushOnWrite
+     *                         true to flush on each write to OutputStream
+     * @return the total number of bytes written
+     * @throws IOException
+     * @since 3.0.2
+     */
+    public int toOutputStream(final OutputStream os, final boolean rebuild,
+            final Charset charset, final boolean flushOnWrite)
+            throws IOException {
+        if (charset == null) {
+            return writePrintStructureToOutputStream(os, rebuild, this.charset,
+                    flushOnWrite);
+        }
+        return writePrintStructureToOutputStream(os, rebuild, charset,
+                flushOnWrite);
     }
 
     /**
@@ -3335,7 +3440,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * @return the Wff Binary Message bytes of this tag. It uses default charset
      *         for encoding values.
-     * @since 2.0.0
+     * @version 1.1
+     * @since 2.0.0 initial implementation
+     * @since 3.0.2 improved to handle NoTag with contentTypeHtml true
      * @author WFF
      */
     public byte[] toWffBMBytes() {
@@ -3346,9 +3453,11 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param charset
      *                    Eg: UTF-8
      * @return the Wff Binary Message bytes of this tag
-     * @since 2.0.0
-     * @author WFF
      * @throws InvalidTagException
+     * @version 1.1
+     * @since 2.0.0 initial implementation
+     * @since 3.0.2 improved to handle NoTag with contentTypeHtml true
+     * @author WFF
      */
     public byte[] toWffBMBytes(final String charset) {
         return toWffBMBytes(Charset.forName(charset));
@@ -3357,11 +3466,16 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * @param charset
      * @return the Wff Binary Message bytes of this tag
-     * @since 3.0.1
      * @author WFF
      * @throws InvalidTagException
+     * @version 1.1
+     * @since 3.0.1 initial implementation
+     * @since 3.0.2 improved to handle NoTag with contentTypeHtml true
      */
     public byte[] toWffBMBytes(final Charset charset) {
+
+        final byte[] encodedBytesForAtChar = "@".getBytes(charset);
+        final byte[] encodedByesForHashChar = "#".getBytes(charset);
 
         final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
         try {
@@ -3416,7 +3530,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         final NameValue nameValue = new NameValue();
 
                         // # short for #text
-                        final byte[] nodeNameBytes = "#".getBytes(charset);
+                        // @ short for html content
+                        final byte[] nodeNameBytes = tag.noTagContentTypeHtml
+                                ? encodedBytesForAtChar
+                                : encodedByesForHashChar;
 
                         nameValue.setName(WffBinaryMessageUtil
                                 .getBytesFromInt(parentWffSlotIndex));
@@ -3462,7 +3579,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param bmMessageBytes
      * @return the AbstractHtml instance from the given Wff BM bytes. It uses
      *         system default charset.
-     * @since 2.0.0
+     * @since 2.0.0 initial implementation
+     * @since 3.0.2 improved to handle NoTag with contentTypeHtml true
      * @author WFF
      */
     public static AbstractHtml getTagFromWffBMBytes(
@@ -3478,7 +3596,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *                    the charset used to generate bm bytes in
      *                    {@link AbstractHtml#toWffBMBytes(String)}
      * @return the AbstractHtml instance from the given Wff BM bytes
-     * @since 2.0.0
+     * @since 2.0.0 initial implementation
+     * @since 3.0.2 improved to handle NoTag with contentTypeHtml true
      * @author WFF
      */
     public static AbstractHtml getTagFromWffBMBytes(final byte[] bmBytes,
@@ -3494,7 +3613,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *                    the charset used to generate bm bytes in
      *                    {@link AbstractHtml#toWffBMBytes(Charset)}
      * @return the AbstractHtml instance from the given Wff BM bytes
-     * @since 3.0.1
+     * @since 3.0.1 initial implementation
+     * @since 3.0.2 improved to handle NoTag with contentTypeHtml true
      * @author WFF
      */
     public static AbstractHtml getTagFromWffBMBytes(final byte[] bmBytes,
@@ -3513,8 +3633,12 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
         AbstractHtml parent = null;
 
-        if (superParentValues[0][0] == '#') {
-            parent = new NoTag(null, new String(superParentValues[1], charset));
+        // # short for #text
+        // @ short for html content
+        boolean noTagContentTypeHtml = superParentValues[0][0] == '@';
+        if (superParentValues[0][0] == '#' || noTagContentTypeHtml) {
+            parent = new NoTag(null, new String(superParentValues[1], charset),
+                    noTagContentTypeHtml);
         } else {
             final String tagName = new String(superParentValues[0], charset);
 
@@ -3524,10 +3648,18 @@ public abstract class AbstractHtml extends AbstractJsObject {
             for (int i = 1; i < superParentValues.length; i++) {
                 final String attrNameValue = new String(superParentValues[i],
                         charset);
-                final int indexOfHash = attrNameValue.indexOf('=');
-                final String attrName = attrNameValue.substring(0, indexOfHash);
-                final String attrValue = attrNameValue
-                        .substring(indexOfHash + 1, attrNameValue.length());
+                final int indexOfEqualChar = attrNameValue.indexOf('=');
+                final String attrName;
+                final String attrValue;
+
+                if (indexOfEqualChar == -1) {
+                    attrName = attrNameValue;
+                    attrValue = null;
+                } else {
+                    attrName = attrNameValue.substring(0, indexOfEqualChar);
+                    attrValue = attrNameValue.substring(indexOfEqualChar + 1,
+                            attrNameValue.length());
+                }
                 // CustomAttribute should be replaced with relevant class
                 // later
                 attributes[i - 1] = new CustomAttribute(attrName, attrValue);
@@ -3544,11 +3676,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
                     .getIntFromOptimizedBytes(nameValue.getName());
 
             final byte[][] values = nameValue.getValues();
-
+            // # short for #text
+            // @ short for html content
+            noTagContentTypeHtml = values[0][0] == '@';
             AbstractHtml child;
-            if (values[0][0] == '#') {
+            if (values[0][0] == '#' || noTagContentTypeHtml) {
                 child = new NoTag(allTags[indexOfParent],
-                        new String(values[1], charset));
+                        new String(values[1], charset), noTagContentTypeHtml);
             } else {
                 final String tagName = new String(values[0], charset);
 
@@ -3557,11 +3691,20 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                 for (int j = 1; j < values.length; j++) {
                     final String attrNameValue = new String(values[j], charset);
-                    final int indexOfHash = attrNameValue.indexOf('=');
-                    final String attrName = attrNameValue.substring(0,
-                            indexOfHash);
-                    final String attrValue = attrNameValue
-                            .substring(indexOfHash + 1, attrNameValue.length());
+                    final int indexOfEqualChar = attrNameValue.indexOf('=');
+
+                    final String attrName;
+                    final String attrValue;
+
+                    if (indexOfEqualChar == -1) {
+                        attrName = attrNameValue;
+                        attrValue = null;
+                    } else {
+                        attrName = attrNameValue.substring(0, indexOfEqualChar);
+                        attrValue = attrNameValue.substring(
+                                indexOfEqualChar + 1, attrNameValue.length());
+                    }
+
                     // CustomAttribute should be replaced with relevant
                     // class later
                     attributes[j - 1] = new CustomAttribute(attrName,
@@ -3570,6 +3713,154 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 // CustomTag should be replaced with relevant class later
                 child = new CustomTag(tagName, allTags[indexOfParent],
                         attributes);
+            }
+            allTags[i] = child;
+        }
+
+        return parent;
+    }
+
+    /**
+     * @param bmBytes
+     *                    Wff Binary Message bytes of tag i.e. returned by
+     *                    {@link AbstractHtml#toWffBMBytes(Charset)}
+     * @param charset
+     *                    the charset used to generate bm bytes in
+     *                    {@link AbstractHtml#toWffBMBytes(Charset)}
+     * @return the AbstractHtml instance from the given Wff BM bytes
+     * @since 3.0.2 Also includes the improvement to handle NoTag with
+     *        contentTypeHtml true
+     * @author WFF
+     */
+    public static AbstractHtml getExactTagFromWffBMBytes(final byte[] bmBytes,
+            final Charset charset) {
+
+        final List<NameValue> nameValuesAsList = WffBinaryMessageUtil.VERSION_1
+                .parse(bmBytes);
+
+        final NameValue[] nameValues = nameValuesAsList
+                .toArray(new NameValue[nameValuesAsList.size()]);
+
+        final NameValue superParentNameValue = nameValues[0];
+        final byte[][] superParentValues = superParentNameValue.getValues();
+
+        final AbstractHtml[] allTags = new AbstractHtml[nameValues.length];
+
+        AbstractHtml parent = null;
+
+        // # short for #text
+        // @ short for html content
+        boolean noTagContentTypeHtml = superParentValues[0][0] == '@';
+        if (superParentValues[0][0] == '#' || noTagContentTypeHtml) {
+            parent = new NoTag(null, new String(superParentValues[1], charset),
+                    noTagContentTypeHtml);
+        } else {
+            final String tagName = new String(superParentValues[0], charset);
+
+            final AbstractAttribute[] attributes = new AbstractAttribute[superParentValues.length
+                    - 1];
+
+            for (int i = 1; i < superParentValues.length; i++) {
+                final String attrNameValue = new String(superParentValues[i],
+                        charset);
+                final int indexOfEqualChar = attrNameValue.indexOf('=');
+
+                final String attrName;
+                final String attrValue;
+
+                if (indexOfEqualChar == -1) {
+                    attrName = attrNameValue;
+                    attrValue = null;
+                } else {
+                    attrName = attrNameValue.substring(0, indexOfEqualChar);
+                    attrValue = attrNameValue.substring(indexOfEqualChar + 1,
+                            attrNameValue.length());
+                }
+
+                final AbstractAttribute newAttributeInstance = AttributeRegistry
+                        .getNewAttributeInstanceOrNullIfFailed(attrName,
+                                attrValue);
+
+                if (newAttributeInstance != null) {
+                    attributes[i - 1] = newAttributeInstance;
+                } else {
+                    attributes[i - 1] = new CustomAttribute(attrName,
+                            attrValue);
+                }
+            }
+
+            final AbstractHtml newTagInstance = TagRegistry
+                    .getNewTagInstanceOrNullIfFailed(tagName, null, attributes);
+
+            if (newTagInstance != null) {
+                parent = newTagInstance;
+            } else {
+                parent = new CustomTag(tagName, null, attributes);
+            }
+
+        }
+        allTags[0] = parent;
+
+        for (int i = 1; i < nameValues.length; i++) {
+
+            final NameValue nameValue = nameValues[i];
+            final int indexOfParent = WffBinaryMessageUtil
+                    .getIntFromOptimizedBytes(nameValue.getName());
+
+            final byte[][] values = nameValue.getValues();
+            // # short for #text
+            // @ short for html content
+            noTagContentTypeHtml = values[0][0] == '@';
+            AbstractHtml child;
+            if (values[0][0] == '#' || noTagContentTypeHtml) {
+                child = new NoTag(allTags[indexOfParent],
+                        new String(values[1], charset), noTagContentTypeHtml);
+            } else {
+                final String tagName = new String(values[0], charset);
+
+                final AbstractAttribute[] attributes = new AbstractAttribute[values.length
+                        - 1];
+
+                for (int j = 1; j < values.length; j++) {
+                    final String attrNameValue = new String(values[j], charset);
+                    final int indexOfEqualChar = attrNameValue.indexOf('=');
+
+                    final String attrName;
+                    final String attrValue;
+
+                    if (indexOfEqualChar == -1) {
+                        attrName = attrNameValue;
+                        attrValue = null;
+                    } else {
+                        attrName = attrNameValue.substring(0, indexOfEqualChar);
+                        attrValue = attrNameValue.substring(
+                                indexOfEqualChar + 1, attrNameValue.length());
+                    }
+
+                    final AbstractAttribute newAttributeInstance = AttributeRegistry
+                            .getNewAttributeInstanceOrNullIfFailed(attrName,
+                                    attrValue);
+
+                    if (newAttributeInstance != null) {
+                        attributes[j - 1] = newAttributeInstance;
+                    } else {
+                        attributes[j - 1] = new CustomAttribute(attrName,
+                                attrValue);
+                    }
+
+                }
+
+                final AbstractHtml newTagInstance = TagRegistry
+                        .getNewTagInstanceOrNullIfFailed(tagName,
+                                allTags[indexOfParent], attributes);
+
+                if (newTagInstance != null) {
+                    child = newTagInstance;
+                } else {
+                    child = new CustomTag(tagName, allTags[indexOfParent],
+                            attributes);
+                }
+
             }
             allTags[i] = child;
         }

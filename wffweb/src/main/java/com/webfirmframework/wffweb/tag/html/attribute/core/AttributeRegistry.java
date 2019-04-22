@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -219,19 +220,25 @@ public class AttributeRegistry {
 
     private static List<String> attributeNames;
 
-    private static final Set<String> attributeNamesSet;
+    private static final Set<String> ATTRIBUTE_NAMES_SET;
 
     private static final Map<String, String> ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME;
 
-    private static Map<String, Class<?>> attributeClassByAttrName;
+    private static final Map<String, Class<?>> ATTRIBUTE_CLASS_BY_ATTR_NAME;
+
+    private static Map<String, Class<?>> attributeClassByAttrNameTmp;
 
     static {
 
         final Field[] fields = AttributeNameConstants.class.getFields();
         final int initialCapacity = fields.length;
 
-        attributeClassByAttrName = new HashMap<>(initialCapacity);
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME = new HashMap<>(initialCapacity);
+        Map<String, Class<?>> attributeClassByAttrName = new ConcurrentHashMap<>(
+                initialCapacity);
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME = new ConcurrentHashMap<>(
+                initialCapacity);
+        attributeClassByAttrNameTmp = new ConcurrentHashMap<>(initialCapacity);
+        attributeClassByAttrName = new ConcurrentHashMap<>(initialCapacity);
 
         attributeClassByAttrName.put(AttributeNameConstants.ACCEPT,
                 Accept.class);
@@ -568,6 +575,11 @@ public class AttributeRegistry {
                 UseMap.class);
         attributeClassByAttrName.put(AttributeNameConstants.NONCE, Nonce.class);
 
+        ATTRIBUTE_CLASS_BY_ATTR_NAME = Collections
+                .unmodifiableMap(attributeClassByAttrName);
+
+        attributeClassByAttrNameTmp.putAll(attributeClassByAttrName);
+
         for (final Entry<String, Class<?>> entry : attributeClassByAttrName
                 .entrySet()) {
             ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(entry.getKey(),
@@ -575,15 +587,15 @@ public class AttributeRegistry {
         }
 
         attributeNames = new ArrayList<>(initialCapacity);
-        attributeNamesSet = new HashSet<>(initialCapacity);
+        ATTRIBUTE_NAMES_SET = new HashSet<>(initialCapacity);
 
-        attributeNamesSet.addAll(ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.keySet());
-        attributeNames.addAll(attributeNamesSet);
+        ATTRIBUTE_NAMES_SET.addAll(ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.keySet());
+        attributeNames.addAll(ATTRIBUTE_NAMES_SET);
 
         for (final Field field : fields) {
             try {
                 final String tagName = field.get(null).toString();
-                attributeNamesSet.add(tagName);
+                ATTRIBUTE_NAMES_SET.add(tagName);
             } catch (final Exception e) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE, e.getMessage(), e);
@@ -591,7 +603,7 @@ public class AttributeRegistry {
             }
         }
 
-        attributeNames.addAll(attributeNamesSet);
+        attributeNames.addAll(ATTRIBUTE_NAMES_SET);
         Collections.sort(attributeNames, (o1, o2) -> {
 
             final Integer length1 = o1.length();
@@ -616,10 +628,10 @@ public class AttributeRegistry {
 
         Collections.addAll(tagNamesWithoutDuplicates, attrNames);
 
-        attributeNamesSet.addAll(tagNamesWithoutDuplicates);
+        ATTRIBUTE_NAMES_SET.addAll(tagNamesWithoutDuplicates);
 
         attributeNames.clear();
-        attributeNames.addAll(attributeNamesSet);
+        attributeNames.addAll(ATTRIBUTE_NAMES_SET);
 
         Collections.sort(attributeNames, (o1, o2) -> {
 
@@ -637,7 +649,7 @@ public class AttributeRegistry {
      * @author WFF
      */
     public static List<String> getAttributeNames() {
-        return attributeNames;
+        return new ArrayList<>(attributeNames);
     }
 
     /**
@@ -651,6 +663,14 @@ public class AttributeRegistry {
     }
 
     /**
+     * @return
+     * @since 3.0.2
+     */
+    static Map<String, Class<?>> getAttributeClassByAttrName() {
+        return ATTRIBUTE_CLASS_BY_ATTR_NAME;
+    }
+
+    /**
      * Loads all attribute classes.
      *
      * @since 2.1.13
@@ -660,7 +680,7 @@ public class AttributeRegistry {
 
         final Map<String, Class<?>> unloadedClasses = new HashMap<>();
 
-        for (final Entry<String, Class<?>> entry : attributeClassByAttrName
+        for (final Entry<String, Class<?>> entry : attributeClassByAttrNameTmp
                 .entrySet()) {
             try {
 
@@ -675,12 +695,98 @@ public class AttributeRegistry {
 
             }
         }
-        attributeClassByAttrName.clear();
+        attributeClassByAttrNameTmp.clear();
         if (unloadedClasses.size() > 0) {
-            attributeClassByAttrName.putAll(unloadedClasses);
+            attributeClassByAttrNameTmp.putAll(unloadedClasses);
         } else {
-            attributeClassByAttrName = null;
+            attributeClassByAttrNameTmp = null;
         }
+    }
+
+    /**
+     * @param attributeName
+     * @return
+     * @since 3.0.2
+     * @throws InvalidValueException
+     */
+    public static AbstractAttribute getNewAttributeInstance(
+            final String attributeName) {
+        return getNewAttributeInstance(attributeName, null);
+    }
+
+    /**
+     * @param attributeName
+     * @param attributeValue
+     * @return
+     * @since 3.0.2
+     * @throws InvalidValueException
+     */
+    public static AbstractAttribute getNewAttributeInstance(
+            final String attributeName, final String attributeValue) {
+
+        final Class<?> attrClass = ATTRIBUTE_CLASS_BY_ATTR_NAME
+                .get(attributeName);
+
+        if (attrClass == null) {
+            return null;
+        }
+
+        try {
+
+            if (attributeValue == null) {
+                final AbstractAttribute newInstance = (AbstractAttribute) attrClass
+                        .getConstructor().newInstance();
+                return newInstance;
+            }
+
+            final AbstractAttribute newInstance = (AbstractAttribute) attrClass
+                    .getConstructor(String.class).newInstance(attributeValue);
+
+            return newInstance;
+        } catch (InstantiationException | IllegalAccessException
+                | IllegalArgumentException | InvocationTargetException
+                | NoSuchMethodException | SecurityException e) {
+            throw new InvalidValueException("The given attributeValue "
+                    + attributeValue + " is invalid for " + attributeName);
+        }
+
+    }
+
+    /**
+     * @param attributeName
+     * @param attributeValue
+     * @return new instance or null if failed
+     * @since 3.0.2
+     */
+    public static AbstractAttribute getNewAttributeInstanceOrNullIfFailed(
+            final String attributeName, final String attributeValue) {
+
+        final Class<?> attrClass = ATTRIBUTE_CLASS_BY_ATTR_NAME
+                .get(attributeName);
+
+        if (attrClass == null) {
+            return null;
+        }
+
+        try {
+
+            if (attributeValue == null) {
+                final AbstractAttribute newInstance = (AbstractAttribute) attrClass
+                        .getConstructor().newInstance();
+                return newInstance;
+            }
+
+            final AbstractAttribute newInstance = (AbstractAttribute) attrClass
+                    .getConstructor(String.class).newInstance(attributeValue);
+
+            return newInstance;
+        } catch (InstantiationException | IllegalAccessException
+                | IllegalArgumentException | InvocationTargetException
+                | NoSuchMethodException | SecurityException e) {
+            // NOP
+        }
+
+        return null;
     }
 
     // only for testing purpose
@@ -688,7 +794,7 @@ public class AttributeRegistry {
             NoSuchFieldException, SecurityException, IllegalArgumentException,
             InvocationTargetException, NoSuchMethodException,
             InvalidValueException {
-        for (final Entry<String, Class<?>> each : attributeClassByAttrName
+        for (final Entry<String, Class<?>> each : attributeClassByAttrNameTmp
                 .entrySet()) {
             final String expectedAttrName = each.getKey();
             final Class<?> attrClass = each.getValue();
@@ -718,6 +824,83 @@ public class AttributeRegistry {
                 throw new InvalidValueException(
                         "expectedAttrName: " + expectedAttrName
                                 + " actualAttrName: " + actualAttrName);
+            }
+        }
+    }
+
+    // only for testing purpose
+    static void test1() throws InstantiationException, IllegalAccessException,
+            NoSuchFieldException, SecurityException, IllegalArgumentException,
+            InvocationTargetException, NoSuchMethodException,
+            InvalidValueException {
+        for (final Entry<String, Class<?>> each : attributeClassByAttrNameTmp
+                .entrySet()) {
+            String expectedHtmlString = each.getKey() + "=";
+            final Class<?> attrClass = each.getValue();
+
+            AbstractAttribute newInstance = null;
+
+            if (attrClass.equals(DataAttribute.class)) {
+                expectedHtmlString = each.getKey() + "attrName";
+                final Object[] initargs = { "attrName" };
+                newInstance = (AbstractAttribute) attrClass
+                        .getConstructor(String.class).newInstance(initargs);
+                final String actualHtmlString = newInstance.toHtmlString();
+                if (!expectedHtmlString.equals(actualHtmlString)) {
+                    throw new InvalidValueException(
+                            "expectedHtmlString: " + expectedHtmlString
+                                    + " actualHtmlString: " + actualHtmlString);
+                }
+                continue;
+            }
+
+            if (attrClass.equals(Style.class)) {
+                expectedHtmlString += "\"color:green;\"";
+                final Object[] initargs = { "color:green;" };
+                newInstance = (AbstractAttribute) attrClass
+                        .getConstructor(String.class).newInstance(initargs);
+                final String actualHtmlString = newInstance.toHtmlString();
+                if (!expectedHtmlString.equals(actualHtmlString)) {
+                    throw new InvalidValueException(
+                            "expectedHtmlString: " + expectedHtmlString
+                                    + " actualHtmlString: " + actualHtmlString);
+                }
+                continue;
+            }
+
+            try {
+                final Object[] initargs = { "1" };
+                newInstance = (AbstractAttribute) attrClass
+                        .getConstructor(String.class).newInstance(initargs);
+                expectedHtmlString += "\"1\"";
+            } catch (final Exception e) {
+
+                try {
+                    final Object[] initargs = { "true" };
+                    newInstance = (AbstractAttribute) attrClass
+                            .getConstructor(String.class).newInstance(initargs);
+                    expectedHtmlString += "\"true\"";
+                } catch (final Exception e1) {
+                    try {
+                        final Object[] initargs = { "yes" };
+                        newInstance = (AbstractAttribute) attrClass
+                                .getConstructor(String.class)
+                                .newInstance(initargs);
+                        expectedHtmlString += "\"yes\"";
+                    } catch (final Exception e2) {
+                        throw new InvalidValueException(
+                                "could not pass string true as arg for "
+                                        + attrClass.getName());
+                    }
+                }
+
+            }
+
+            final String actualHtmlString = newInstance.toHtmlString();
+            if (!expectedHtmlString.equals(actualHtmlString)) {
+                throw new InvalidValueException(
+                        "expectedHtmlString: " + expectedHtmlString
+                                + " actualHtmlString: " + actualHtmlString);
             }
         }
     }

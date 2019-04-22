@@ -20,6 +20,7 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayDeque;
@@ -131,7 +132,7 @@ public abstract class BrowserPage implements Serializable {
 
     private final AtomicInteger holdPush = new AtomicInteger(0);
 
-    private final Map<String, ServerAsyncMethod> serverMethods = new ConcurrentHashMap<>();
+    private final Map<String, ServerMethod> serverMethods = new ConcurrentHashMap<>();
 
     private boolean removeFromBrowserContextOnTabClose = true;
 
@@ -155,6 +156,10 @@ public abstract class BrowserPage implements Serializable {
     private final AtomicReference<Thread> waitingThreadRef = new AtomicReference<>();
 
     private volatile TagRepository tagRepository;
+
+    // inline initialization is better because object creation is not heavy.
+    private final ThreadLocal<PayloadProcessor> PALYLOAD_PROCESSOR_TL = ThreadLocal
+            .withInitial(() -> new PayloadProcessor(this));
 
     // for security purpose, the class name should not be modified
     private static final class Security implements Serializable {
@@ -194,7 +199,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.0.0
      * @author WFF
      */
-    public void setWebSocketPushListener(
+    public final void setWebSocketPushListener(
             final WebSocketPushListener wsListener) {
         this.wsListener = wsListener;
         if (pushQueueOnNewWebSocketListener) {
@@ -211,7 +216,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.0
      * @author WFF
      */
-    public void addWebSocketPushListener(final String sessionId,
+    public final void addWebSocketPushListener(final String sessionId,
             final WebSocketPushListener wsListener) {
 
         sessionIdWsListeners.put(sessionId, wsListener);
@@ -233,7 +238,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.0
      * @author WFF
      */
-    public void removeWebSocketPushListener(final String sessionId) {
+    public final void removeWebSocketPushListener(final String sessionId) {
 
         final WebSocketPushListener removed = sessionIdWsListeners
                 .remove(sessionId);
@@ -241,11 +246,11 @@ public abstract class BrowserPage implements Serializable {
         wsListener = wsListeners.peek();
     }
 
-    public WebSocketPushListener getWsListener() {
+    public final WebSocketPushListener getWsListener() {
         return wsListener;
     }
 
-    void push(final NameValue... nameValues) {
+    final void push(final NameValue... nameValues) {
         push(ByteBuffer.wrap(WffBinaryMessageUtil.VERSION_1
                 .getWffBinaryMessageBytes(nameValues)));
     }
@@ -333,7 +338,7 @@ public abstract class BrowserPage implements Serializable {
         }
     }
 
-    DataWffId getNewDataWffId() {
+    final DataWffId getNewDataWffId() {
         return rootTag.getSharedObject().getNewDataWffId(ACCESS_OBJECT);
     }
 
@@ -349,7 +354,7 @@ public abstract class BrowserPage implements Serializable {
      *
      */
     @Deprecated
-    public void websocketMessaged(final byte[] message) {
+    public final void websocketMessaged(final byte[] message) {
         webSocketMessaged(message);
     }
 
@@ -359,7 +364,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.0
      * @author WFF
      */
-    public void webSocketMessaged(final byte[] message) {
+    public final void webSocketMessaged(final byte[] message) {
         try {
 
             // TODO minimum number of an empty bm message length is 4
@@ -510,7 +515,8 @@ public abstract class BrowserPage implements Serializable {
                             .getServerAsyncMethod();
 
                     final ServerAsyncMethod.Event event = new ServerAsyncMethod.Event(
-                            methodTag, attributeByName);
+                            methodTag, attributeByName,
+                            eventAttr.getServerSideData());
 
                     final WffBMObject returnedObject = serverAsyncMethod
                             .asyncMethod(wffBMObject, event);
@@ -531,7 +537,7 @@ public abstract class BrowserPage implements Serializable {
 
                         if (returnedObject != null) {
                             nameValue.setValues(new byte[][] {
-                                    returnedObject.build(true) });
+                                    returnedObject.buildBytes(true) });
                         }
 
                         push(invokePostFunTask, nameValue);
@@ -607,10 +613,9 @@ public abstract class BrowserPage implements Serializable {
         final String methodName = new String(methodNameAndArg.getName(),
                 StandardCharsets.UTF_8);
 
-        final ServerAsyncMethod serverAsyncMethod = serverMethods
-                .get(methodName);
+        final ServerMethod serverMethod = serverMethods.get(methodName);
 
-        if (serverAsyncMethod != null) {
+        if (serverMethod != null) {
 
             final byte[][] values = methodNameAndArg.getValues();
 
@@ -620,11 +625,10 @@ public abstract class BrowserPage implements Serializable {
                 wffBMObject = new WffBMObject(values[0], true);
             }
 
-            final ServerAsyncMethod.Event event = new ServerAsyncMethod.Event(
-                    methodName);
-
-            final WffBMObject returnedObject = serverAsyncMethod
-                    .asyncMethod(wffBMObject, event);
+            final WffBMObject returnedObject = serverMethod
+                    .getServerAsyncMethod().asyncMethod(wffBMObject,
+                            new ServerAsyncMethod.Event(methodName,
+                                    serverMethod.getServerSideData()));
 
             String callbackFunId = null;
 
@@ -644,7 +648,7 @@ public abstract class BrowserPage implements Serializable {
 
                 if (returnedObject != null) {
                     nameValue.setValues(
-                            new byte[][] { returnedObject.build(true) });
+                            new byte[][] { returnedObject.buildBytes(true) });
                 }
 
                 push(invokeCallbackFuncTask, nameValue);
@@ -1097,6 +1101,38 @@ public abstract class BrowserPage implements Serializable {
      * method.
      *
      * @param os
+     *                         the object of {@code OutputStream} to write to.
+     * @param rebuild
+     *                         true to rebuild &amp; false to write previously
+     *                         built bytes.
+     * @param flushOnWrite
+     *                         true to flush on each write to OutputStream
+     * @return the total number of bytes written
+     *
+     * @throws IOException
+     * @since 3.0.2
+     *
+     */
+    public int toOutputStream(final OutputStream os, final boolean rebuild,
+            final boolean flushOnWrite) throws IOException {
+        initAbstractHtml();
+        wsWarningDisabled = true;
+        beforeToHtml(rootTag);
+        wsWarningDisabled = false;
+        final int totalWritten = rootTag.toOutputStream(os, rebuild,
+                flushOnWrite);
+        wsWarningDisabled = true;
+        afterToHtml(rootTag);
+        wsWarningDisabled = false;
+        return totalWritten;
+    }
+
+    /**
+     * NB: this method should not be called under {@link BrowserPage#render()}
+     * method because this method internally calls {@link BrowserPage#render()}
+     * method.
+     *
+     * @param os
      *                    the object of {@code OutputStream} to write to.
      * @param charset
      *                    the charset
@@ -1112,6 +1148,35 @@ public abstract class BrowserPage implements Serializable {
         beforeToHtml(rootTag);
         wsWarningDisabled = false;
         final int totalWritten = rootTag.toOutputStream(os, true, charset);
+        wsWarningDisabled = true;
+        afterToHtml(rootTag);
+        wsWarningDisabled = false;
+        return totalWritten;
+    }
+
+    /**
+     * NB: this method should not be called under {@link BrowserPage#render()}
+     * method because this method internally calls {@link BrowserPage#render()}
+     * method.
+     *
+     * @param os
+     *                         the object of {@code OutputStream} to write to.
+     * @param charset
+     *                         the charset
+     * @param flushOnWrite
+     *                         true to flush on each write to OutputStream
+     * @return the total number of bytes written
+     * @throws IOException
+     * @since 3.0.2
+     */
+    public int toOutputStream(final OutputStream os, final Charset charset,
+            final boolean flushOnWrite) throws IOException {
+        initAbstractHtml();
+        wsWarningDisabled = true;
+        beforeToHtml(rootTag);
+        wsWarningDisabled = false;
+        final int totalWritten = rootTag.toOutputStream(os, true, charset,
+                flushOnWrite);
         wsWarningDisabled = true;
         afterToHtml(rootTag);
         wsWarningDisabled = false;
@@ -1143,6 +1208,40 @@ public abstract class BrowserPage implements Serializable {
         beforeToHtml(rootTag);
         wsWarningDisabled = false;
         final int totalWritten = rootTag.toOutputStream(os, rebuild, charset);
+        wsWarningDisabled = true;
+        afterToHtml(rootTag);
+        wsWarningDisabled = false;
+        return totalWritten;
+    }
+
+    /**
+     * NB: this method should not be called under {@link BrowserPage#render()}
+     * method because this method internally calls {@link BrowserPage#render()}
+     * method.
+     *
+     * @param os
+     *                         the object of {@code OutputStream} to write to.
+     * @param rebuild
+     *                         true to rebuild &amp; false to write previously
+     *                         built bytes.
+     * @param charset
+     *                         the charset
+     * @param flushOnWrite
+     *                         true to flush on each write to OutputStream
+     * @return the total number of bytes written
+     * @throws IOException
+     * @since 3.0.2
+     *
+     */
+    public int toOutputStream(final OutputStream os, final boolean rebuild,
+            final Charset charset, final boolean flushOnWrite)
+            throws IOException {
+        initAbstractHtml();
+        wsWarningDisabled = true;
+        beforeToHtml(rootTag);
+        wsWarningDisabled = false;
+        final int totalWritten = rootTag.toOutputStream(os, rebuild, charset,
+                flushOnWrite);
         wsWarningDisabled = true;
         afterToHtml(rootTag);
         wsWarningDisabled = false;
@@ -1221,7 +1320,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.0.0
      * @author WFF
      */
-    public String getInstanceId() {
+    public final String getInstanceId() {
         return instanceId;
     }
 
@@ -1231,7 +1330,7 @@ public abstract class BrowserPage implements Serializable {
      * @return the pushQueueEnabled
      * @since 2.0.2
      */
-    public boolean isPushQueueEnabled() {
+    public final boolean isPushQueueEnabled() {
         return pushQueueEnabled;
     }
 
@@ -1244,7 +1343,7 @@ public abstract class BrowserPage implements Serializable {
      *                             the enabledPushQueue to set
      * @since 2.0.2
      */
-    public void setPushQueueEnabled(final boolean enabledPushQueue) {
+    public final void setPushQueueEnabled(final boolean enabledPushQueue) {
         pushQueueEnabled = enabledPushQueue;
     }
 
@@ -1254,9 +1353,26 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.0
      * @author WFF
      */
-    public void addServerMethod(final String methodName,
+    public final void addServerMethod(final String methodName,
             final ServerAsyncMethod serverAsyncMethod) {
-        serverMethods.put(methodName, serverAsyncMethod);
+        serverMethods.put(methodName,
+                new ServerMethod(serverAsyncMethod, null));
+    }
+
+    /**
+     * @param methodName
+     * @param serverAsyncMethod
+     * @param serverSideData
+     *                              this object will be available in the event
+     *                              of serverAsyncMethod.asyncMethod
+     * @since 3.0.2
+     * @author WFF
+     */
+    public final void addServerMethod(final String methodName,
+            final ServerAsyncMethod serverAsyncMethod,
+            final Object serverSideData) {
+        serverMethods.put(methodName,
+                new ServerMethod(serverAsyncMethod, serverSideData));
     }
 
     /**
@@ -1266,7 +1382,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.0
      * @author WFF
      */
-    public void removeServerMethod(final String methodName) {
+    public final void removeServerMethod(final String methodName) {
         serverMethods.remove(methodName);
     }
 
@@ -1280,7 +1396,8 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.0
      * @author WFF
      */
-    public void performBrowserPageAction(final ByteBuffer actionByteBuffer) {
+    public final void performBrowserPageAction(
+            final ByteBuffer actionByteBuffer) {
         push(actionByteBuffer);
         if (holdPush.get() == 0) {
             pushWffBMBytesQueue();
@@ -1292,7 +1409,7 @@ public abstract class BrowserPage implements Serializable {
      *         otherwise false. By default it's set as true.
      * @since 2.1.1
      */
-    public boolean isPushQueueOnNewWebSocketListener() {
+    public final boolean isPushQueueOnNewWebSocketListener() {
         return pushQueueOnNewWebSocketListener;
     }
 
@@ -1308,7 +1425,7 @@ public abstract class BrowserPage implements Serializable {
      *                                            disable this option.
      * @since 2.1.1
      */
-    public void setPushQueueOnNewWebSocketListener(
+    public final void setPushQueueOnNewWebSocketListener(
             final boolean pushQueueOnNewWebSocketListener) {
         this.pushQueueOnNewWebSocketListener = pushQueueOnNewWebSocketListener;
     }
@@ -1318,7 +1435,7 @@ public abstract class BrowserPage implements Serializable {
      * @return the holdPush true if the push is on hold
      * @since 2.1.3
      */
-    public boolean isHoldPush() {
+    public final boolean isHoldPush() {
         return holdPush.get() > 0;
     }
 
@@ -1341,7 +1458,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.3
      * @author WFF
      */
-    public void holdPush() {
+    public final void holdPush() {
         holdPush.incrementAndGet();
     }
 
@@ -1364,7 +1481,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.3
      * @author WFF
      */
-    public void unholdPush() {
+    public final void unholdPush() {
 
         if (holdPush.get() > 0) {
 
@@ -1427,7 +1544,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.4
      * @author WFF
      */
-    public int getPushQueueSize() {
+    public final int getPushQueueSize() {
         // wffBMBytesQueue.size() is not reliable as
         // it's ConcurrentLinkedQueue.
         // As per the javadoc ConcurrentLinkedQueue.size is NOT a constant-time
@@ -1447,7 +1564,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.4
      * @author WFF
      */
-    public void removeFromContext(final boolean enable, final On... ons) {
+    public final void removeFromContext(final boolean enable, final On... ons) {
         for (final On on : ons) {
             if (On.TAB_CLOSE.equals(on)) {
                 removeFromBrowserContextOnTabClose = enable;
@@ -1530,7 +1647,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.8
      * @author WFF
      */
-    protected void setWebSocketHeartbeatInterval(final int milliseconds) {
+    protected final void setWebSocketHeartbeatInterval(final int milliseconds) {
         wsHeartbeatInterval = milliseconds;
     }
 
@@ -1540,7 +1657,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.8
      * @author WFF
      */
-    public int getWebSocketHeartbeatInterval() {
+    public final int getWebSocketHeartbeatInterval() {
         return wsHeartbeatInterval;
     }
 
@@ -1560,7 +1677,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.9 the default value is 25000ms i.e. 25 seconds.
      * @author WFF
      */
-    public static void setWebSocketDefultHeartbeatInterval(
+    public static final void setWebSocketDefultHeartbeatInterval(
             final int milliseconds) {
         wsDefaultHeartbeatInterval = milliseconds;
     }
@@ -1571,7 +1688,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.8
      * @author WFF
      */
-    public static int getWebSocketDefultHeartbeatInterval() {
+    public static final int getWebSocketDefultHeartbeatInterval() {
         return wsDefaultHeartbeatInterval;
     }
 
@@ -1588,7 +1705,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.8
      * @author WFF
      */
-    public static void setWebSocketDefultReconnectInterval(
+    public static final void setWebSocketDefultReconnectInterval(
             final int milliseconds) {
         if (milliseconds < 1) {
             throw new InvalidValueException("The value must be greater than 0");
@@ -1602,7 +1719,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.8
      * @author WFF
      */
-    public static int getWebSocketDefultReconnectInterval() {
+    public static final int getWebSocketDefultReconnectInterval() {
         return wsDefaultReconnectInterval;
     }
 
@@ -1622,7 +1739,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.8
      * @author WFF
      */
-    protected void setWebSocketReconnectInterval(final int milliseconds) {
+    protected final void setWebSocketReconnectInterval(final int milliseconds) {
         wsReconnectInterval = milliseconds;
     }
 
@@ -1632,7 +1749,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.8
      * @author WFF
      */
-    public int getWebSocketReconnectInterval() {
+    public final int getWebSocketReconnectInterval() {
         return wsReconnectInterval;
     }
 
@@ -1649,20 +1766,15 @@ public abstract class BrowserPage implements Serializable {
     public final TagRepository getTagRepository() {
 
         if (tagRepository == null && rootTag != null) {
-            initTagRepository();
+            synchronized (this) {
+                if (tagRepository == null) {
+                    tagRepository = new TagRepository(ACCESS_OBJECT, this,
+                            tagByWffId, rootTag);
+                }
+            }
         }
 
         return tagRepository;
-    }
-
-    /**
-     *
-     */
-    private synchronized void initTagRepository() {
-        if (tagRepository == null) {
-            tagRepository = new TagRepository(ACCESS_OBJECT, this, tagByWffId,
-                    rootTag);
-        }
     }
 
     /**
@@ -1673,7 +1785,7 @@ public abstract class BrowserPage implements Serializable {
      *                  nonce attribute
      * @since 3.0.1
      */
-    protected void setNonceForWffScript(final String value) {
+    protected final void setNonceForWffScript(final String value) {
 
         if (autoremoveWffScript) {
             throw new InvalidUsageException(
@@ -1748,7 +1860,7 @@ public abstract class BrowserPage implements Serializable {
      *         hash encoded in base64 string.
      * @since 3.0.1
      */
-    public String getWffScriptSHA256InBase64() {
+    public final String getWffScriptSHA256InBase64() {
         return getWffScriptHashInBase64(HashUtil.SHA_256);
     }
 
@@ -1762,7 +1874,7 @@ public abstract class BrowserPage implements Serializable {
      *         hash encoded in base64 string.
      * @since 3.0.1
      */
-    public String getWffScriptSHA384InBase64() {
+    public final String getWffScriptSHA384InBase64() {
         return getWffScriptHashInBase64(HashUtil.SHA_384);
     }
 
@@ -1776,7 +1888,7 @@ public abstract class BrowserPage implements Serializable {
      *         hash encoded in base64 string.
      * @since 3.0.1
      */
-    public String getWffScriptSHA512InBase64() {
+    public final String getWffScriptSHA512InBase64() {
         return getWffScriptHashInBase64(HashUtil.SHA_512);
     }
 
@@ -1788,7 +1900,7 @@ public abstract class BrowserPage implements Serializable {
      * @param enable
      * @since 3.0.1
      */
-    protected void setEnableDeferOnWffScript(final boolean enable) {
+    protected final void setEnableDeferOnWffScript(final boolean enable) {
         enableDeferOnWffScript = enable;
     }
 
@@ -1798,7 +1910,7 @@ public abstract class BrowserPage implements Serializable {
      * @return true if enabled otherwise false
      * @since 3.0.1
      */
-    protected boolean isEnableDeferOnWffScript() {
+    protected final boolean isEnableDeferOnWffScript() {
         return enableDeferOnWffScript;
     }
 
@@ -1808,7 +1920,7 @@ public abstract class BrowserPage implements Serializable {
      * @return the current state
      * @since 3.0.1
      */
-    protected boolean isAutoremoveWffScript() {
+    protected final boolean isAutoremoveWffScript() {
         return autoremoveWffScript;
     }
 
@@ -1819,8 +1931,33 @@ public abstract class BrowserPage implements Serializable {
      * @param autoremoveWffScript
      * @since 3.0.1
      */
-    protected void setAutoremoveWffScript(final boolean autoremoveWffScript) {
+    protected final void setAutoremoveWffScript(
+            final boolean autoremoveWffScript) {
         this.autoremoveWffScript = autoremoveWffScript;
+    }
+
+    /**
+     * Gets the same instance of {@code PayloadProcessor} per caller thread for
+     * this browser page. This PayloadProcessor can process incoming partial
+     * bytes from WebSocket. To manually create new PayloadProcessor use <em>new
+     * PayloadProcessor(browserPage)</em>.
+     *
+     * @return new instance of PayloadProcessor
+     * @since 3.0.2
+     */
+    public final PayloadProcessor getPayloadProcessor() {
+        return PALYLOAD_PROCESSOR_TL.get();
+    }
+
+    /**
+     * Removes the current instance of {@code PayloadProcessor} of this caller
+     * thread for this browser page and new instance will be reinitialized when
+     * calling {@link #getPayloadProcessor()} by the same thread.
+     *
+     * @since 3.0.2
+     */
+    public final void removePayloadProcessor() {
+        PALYLOAD_PROCESSOR_TL.remove();
     }
 
 }

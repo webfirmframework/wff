@@ -21,4 +21,10 @@ public interface EventAttribute {
 
     public String getJsPostFunctionBody();
 
+    /**
+     * @return the server side data set in the event attribute
+     * @since 3.0.2
+     */
+    public Object getServerSideData();
+
 }

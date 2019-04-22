@@ -1,3 +1,18 @@
+/*
+ * Copyright 2014-2019 Web Firm Framework
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.webfirmframework.wffweb.tag.html.attribute.core;
 
 import java.io.ByteArrayOutputStream;
@@ -40,7 +55,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
     private String attributeName;
 
-    private String attributeValue;
+    private volatile String attributeValue;
 
     private volatile Map<String, String> attributeValueMap;
 
@@ -115,6 +130,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     }
 
     protected String getPrintStructure(final boolean rebuild) {
+        final String attributeValue = this.attributeValue;
         String result = "";
         if (rebuild || isRebuild() || isModified()) {
             beforePrintStructure();
@@ -181,6 +197,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @author WFF
      */
     protected String getWffPrintStructure() {
+        final String attributeValue = this.attributeValue;
         String result = "";
         beforeWffPrintStructure();
         final StringBuilder attrBuilder = new StringBuilder();
@@ -244,6 +261,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected byte[] getBinaryStructureCompressedByIndex(final boolean rebuild)
             throws IOException {
+
+        final String attributeValue = this.attributeValue;
 
         final Charset charset = this.charset;
         // TODO review code

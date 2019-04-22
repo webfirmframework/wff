@@ -58,6 +58,33 @@ public class AnimationStart extends AbstractEventAttribute {
     }
 
     /**
+     * @param serverAsyncMethod
+     * @param serverSideData
+     * @since 3.0.2
+     */
+    public AnimationStart(final ServerAsyncMethod serverAsyncMethod,
+            final Object serverSideData) {
+        setServerAsyncMethod(null, serverAsyncMethod, null, null,
+                serverSideData);
+    }
+
+    /**
+     * @param preJsFunctionBody
+     * @param serverAsyncMethod
+     * @param jsFilterFunctionBody
+     * @param postJsFunctionBody
+     * @param serverSideData
+     * @since 3.0.2
+     */
+    public AnimationStart(final String preJsFunctionBody,
+            final ServerAsyncMethod serverAsyncMethod,
+            final String jsFilterFunctionBody, final String postJsFunctionBody,
+            final Object serverSideData) {
+        setServerAsyncMethod(preJsFunctionBody, serverAsyncMethod,
+                jsFilterFunctionBody, postJsFunctionBody, serverSideData);
+    }
+
+    /**
      * invokes only once per object
      *
      * @author WFF

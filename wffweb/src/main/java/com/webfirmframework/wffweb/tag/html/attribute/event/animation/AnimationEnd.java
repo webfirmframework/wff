@@ -53,6 +53,33 @@ public class AnimationEnd extends AbstractEventAttribute {
                 jsFilterFunctionBody, postJsFunctionBody);
     }
 
+    /**
+     * @param serverAsyncMethod
+     * @param serverSideData
+     * @since 3.0.2
+     */
+    public AnimationEnd(final ServerAsyncMethod serverAsyncMethod,
+            final Object serverSideData) {
+        setServerAsyncMethod(null, serverAsyncMethod, null, null,
+                serverSideData);
+    }
+
+    /**
+     * @param preJsFunctionBody
+     * @param serverAsyncMethod
+     * @param jsFilterFunctionBody
+     * @param postJsFunctionBody
+     * @param serverSideData
+     * @since 3.0.2
+     */
+    public AnimationEnd(final String preJsFunctionBody,
+            final ServerAsyncMethod serverAsyncMethod,
+            final String jsFilterFunctionBody, final String postJsFunctionBody,
+            final Object serverSideData) {
+        setServerAsyncMethod(preJsFunctionBody, serverAsyncMethod,
+                jsFilterFunctionBody, postJsFunctionBody, serverSideData);
+    }
+
     public AnimationEnd(final String value) {
         setAttributeValue(value);
     }

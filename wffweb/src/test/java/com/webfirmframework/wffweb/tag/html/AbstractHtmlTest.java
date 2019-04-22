@@ -31,12 +31,15 @@ import com.webfirmframework.wffweb.NoParentException;
 import com.webfirmframework.wffweb.css.Color;
 import com.webfirmframework.wffweb.server.page.BrowserPage;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
+import com.webfirmframework.wffweb.tag.html.attribute.MaxLength;
 import com.webfirmframework.wffweb.tag.html.attribute.Name;
 import com.webfirmframework.wffweb.tag.html.attribute.global.ClassAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Style;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
 import com.webfirmframework.wffweb.tag.html.formatting.B;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.Controls;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.global.Translate;
 import com.webfirmframework.wffweb.tag.html.links.A;
 import com.webfirmframework.wffweb.tag.html.metainfo.Head;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
@@ -1580,10 +1583,11 @@ public class AbstractHtmlTest {
             {
                 new Div(this, new Id("one")) {
                     {
-                        new Span(this, new Id("two")) {
+                        new Span(this, new Id("two"), new Style("color:green"), new ClassAttribute("cls1 cls2"), new Controls(), new CustomAttribute("custom-attr1", "value"), new CustomAttribute("custom-attr2", ""), new CustomAttribute("custom-attr3", null)) {
                             {
-                                new H1(this, new Id("three"));
-                                new H2(this, new Id("three"));
+                                new H1(this, new Id("three"), new Translate(), new MaxLength(), new Controls("true"));
+                                new H2(this, new Id("three"), new Translate(false), new Controls(true));
+                                new H3(this, new Id("three"), new Translate("yes"));
                                 new NoTag(this, "something");
                             }
                         };
@@ -1633,6 +1637,132 @@ public class AbstractHtmlTest {
         }
         assertNotEquals(html.toHtmlString(), tagFromWffBMBytes.toHtmlString());
         assertEquals("<html><div><span><h1></h1><h2></h2>something</span><h3 name=\"name1\"></h3></div></html>", tagFromWffBMBytes.toHtmlString());
+    }
+    
+    @Test
+    public void testToWffBMBytesCharsetSince302() {
+        {
+            final Html html = new Html(null) {
+                {
+                    new Div(this, new Id("one")) {
+                        {
+                            new Span(this, new Id("two")) {
+                                {
+                                    new H1(this, new Id("three"));
+                                    new H2(this, new Id("three"));
+                                    new NoTag(this, "something");
+                                    new NoTag(this, "<h1>heading</h1>", true);
+                                }
+                            };
+
+                            new H3(this, new Name("name1"));
+                        }
+                    };
+                }
+            };
+
+            final byte[] wffBMBytes = html.toWffBMBytes(StandardCharsets.UTF_8);
+            final AbstractHtml tagFromWffBMBytes = AbstractHtml
+                    .getTagFromWffBMBytes(wffBMBytes, StandardCharsets.UTF_8);
+
+            assertEquals(html.toHtmlString(), tagFromWffBMBytes.toHtmlString()); 
+            
+            final NoTag noTagWithContentTypeHtmlFalse = (NoTag) tagFromWffBMBytes.getFirstChild().getFirstChild().getChildAt(2);
+            final NoTag noTagWithContentTypeHtmlTrue = (NoTag) tagFromWffBMBytes.getFirstChild().getFirstChild().getChildAt(3);
+            org.junit.Assert.assertFalse(noTagWithContentTypeHtmlFalse.isChildContentTypeHtml());
+            org.junit.Assert.assertTrue(noTagWithContentTypeHtmlTrue.isChildContentTypeHtml());
+            
+            
+        }
+        {
+            Div div = new Div(null) {{
+                new NoTag(this, "<h1>heading</h1>", true);
+            }};
+            final NoTag firstChild = (NoTag) div.getFirstChild();
+            org.junit.Assert.assertTrue(firstChild.noTagContentTypeHtml);
+            org.junit.Assert.assertTrue(firstChild.isChildContentTypeHtml());
+            final byte[] wffBMBytes = div.toWffBMBytes(StandardCharsets.UTF_8);
+            final AbstractHtml tagFromWffBMBytes = AbstractHtml
+                    .getTagFromWffBMBytes(wffBMBytes, StandardCharsets.UTF_8);
+
+            assertEquals(div.toHtmlString(), tagFromWffBMBytes.toHtmlString());
+        }
+        {
+            Div div = new Div(null) {{
+                new P(this) {{
+                    new NoTag(this, "<h1>heading</h1>", false);
+                    new NoTag(this, "<h1>heading</h1>", true);
+                    new NoTag(this, "<h1>heading</h1>");
+                }};
+            }};
+            {
+                final P firstChild = (P) div.getFirstChild();
+                
+                final NoTag noTag0 = (NoTag) firstChild.getChildAt(0);
+                final NoTag noTag1 = (NoTag) firstChild.getChildAt(1);
+                final NoTag noTag2 = (NoTag) firstChild.getChildAt(2);
+                org.junit.Assert.assertFalse(noTag0.noTagContentTypeHtml);
+                org.junit.Assert.assertTrue(noTag1.noTagContentTypeHtml);
+                org.junit.Assert.assertFalse(noTag2.noTagContentTypeHtml);
+                
+                org.junit.Assert.assertFalse(noTag0.isChildContentTypeHtml());
+                org.junit.Assert.assertTrue(noTag1.isChildContentTypeHtml());
+                org.junit.Assert.assertFalse(noTag2.isChildContentTypeHtml());
+            }
+            
+            final byte[] wffBMBytes = div.toWffBMBytes(StandardCharsets.UTF_8);
+            final AbstractHtml tagFromWffBMBytes = AbstractHtml
+                    .getTagFromWffBMBytes(wffBMBytes, StandardCharsets.UTF_8);
+
+            assertEquals(div.toHtmlString(), tagFromWffBMBytes.toHtmlString());
+            
+            {
+                //cannot cast to  P as it creates a custom tag internally
+                //TODO the method getTagFromWffBMBytes must be improved later
+                final AbstractHtml firstChild = tagFromWffBMBytes.getFirstChild();
+                
+                assertEquals(firstChild.getTagName(), TagNameConstants.P);
+                
+                final NoTag noTag0 = (NoTag) firstChild.getChildAt(0);
+                final NoTag noTag1 = (NoTag) firstChild.getChildAt(1);
+                final NoTag noTag2 = (NoTag) firstChild.getChildAt(2);
+                org.junit.Assert.assertFalse(noTag0.noTagContentTypeHtml);
+                org.junit.Assert.assertTrue(noTag1.noTagContentTypeHtml);
+                org.junit.Assert.assertFalse(noTag2.noTagContentTypeHtml);
+                
+                org.junit.Assert.assertFalse(noTag0.isChildContentTypeHtml());
+                org.junit.Assert.assertTrue(noTag1.isChildContentTypeHtml());
+                org.junit.Assert.assertFalse(noTag2.isChildContentTypeHtml());
+            }
+        }
+    }
+    
+    @Test
+    public void testGetTagFromWffBMBytesCharset() throws Exception {
+        final Html html = new Html(null) {
+            {
+                new Div(this, new Id("one")) {
+                    {
+                        new Span(this, new Id("two"), new Style("color:green"), new ClassAttribute("cls1 cls2"), new Controls(), new ClassAttribute("cls1 cls2"), new Controls(), new CustomAttribute("custom-attr1", "value"), new CustomAttribute("custom-attr2", ""), new CustomAttribute("custom-attr3", null)) {
+                            {
+                                new H1(this, new Id("three"), new Translate(), new MaxLength(), new Controls("true"));
+                                new H2(this, new Id("three"), new Translate(false), new Controls(true));
+                                new H3(this, new Id("three"), new Translate("yes"));
+                                new NoTag(this, "something");
+                            }
+                        };
+
+                        new H3(this, new Name("name1"));
+                    }
+                };
+            }
+        };
+
+        final byte[] wffBMBytes = html.toWffBMBytes(StandardCharsets.UTF_8);
+        final AbstractHtml tagFromWffBMBytes = AbstractHtml
+                .getExactTagFromWffBMBytes(wffBMBytes, StandardCharsets.UTF_8);
+
+        assertEquals(html.toHtmlString(), tagFromWffBMBytes.toHtmlString());
     }
 
 }
