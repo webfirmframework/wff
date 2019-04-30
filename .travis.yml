@@ -4,8 +4,10 @@ language: java
 
 jdk:
   
+  - oraclejdk11
   - oraclejdk9
   - oraclejdk8
+  - openjdk12
   - openjdk11
   - openjdk10
   - openjdk9
