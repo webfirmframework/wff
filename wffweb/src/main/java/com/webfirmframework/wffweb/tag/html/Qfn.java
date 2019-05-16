@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.core.TagRegistry;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.QfnAttributable;
 
@@ -19,7 +20,16 @@ public class Qfn extends AbstractHtml {
 
     public static final Logger LOGGER = Logger.getLogger(Qfn.class.getName());
 
+    private static final int TAG_NAME_INDEX;
+
+    static {
+        final Integer index = TagRegistry
+                .getIndexByTagName(TagNameConstants.QFN);
+        TAG_NAME_INDEX = index != null ? index : -1;
+    }
+
     {
+        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 

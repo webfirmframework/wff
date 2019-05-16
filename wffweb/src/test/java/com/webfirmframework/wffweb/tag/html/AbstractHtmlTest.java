@@ -1764,5 +1764,34 @@ public class AbstractHtmlTest {
 
         assertEquals(html.toHtmlString(), tagFromWffBMBytes.toHtmlString());
     }
+    @Test
+    public void testToCompressedWffBMBytesCharset() throws Exception {
+        final Html html = new Html(null) {
+            {
+                new Div(this, new Id("one")) {
+                    {
+                        new Span(this, new Id("two"), new Style("color:green"), new ClassAttribute("cls1 cls2"), new Controls(), new ClassAttribute("cls1 cls2"), new Controls(), new CustomAttribute("custom-attr1", "value"), new CustomAttribute("custom-attr2", ""), new CustomAttribute("custom-attr3", null)) {
+                            {
+                                new H1(this, new Id("three"), new Translate(), new MaxLength(), new Controls("true"));
+                                new H2(this, new Id("three"), new Translate(false), new Controls(true));
+                                new H3(this, new Id("three"), new Translate("yes"));
+                                new NoTag(this, "something");
+                            }
+                        };
+                        
+                        new H3(this, new Name("name1"));
+                    }
+                };
+            }
+        };
+        
+        final byte[] wffBMBytes = html.toWffBMBytes(StandardCharsets.UTF_8);
+        final byte[] compressedWffBMBytes = html.toCompressedWffBMBytes(StandardCharsets.UTF_8);
+        
+        //without tagIndex impl: wffBMBytes.length: 311 compressedWffBMBytes.length: 247
+        //with tagIndex impl compressedWffBMBytes.length: 242
+//        System.out.println("wffBMBytes.length: " + wffBMBytes.length + "\ncompressedWffBMBytes.length: " + compressedWffBMBytes.length);
+        assertTrue( wffBMBytes.length > compressedWffBMBytes.length);
+    }
 
 }

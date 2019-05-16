@@ -85,7 +85,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     private static final Security ACCESS_OBJECT;
 
-    protected static int tagNameIndex;
+    // initial value must be -1
+    private int tagNameIndex = -1;
 
     private volatile AbstractHtml parent;
 
@@ -464,6 +465,16 @@ public abstract class AbstractHtml extends AbstractJsObject {
     private void init() {
         tagBuilder = new StringBuilder();
         setRebuild(true);
+    }
+
+    /**
+     * @param tagNameIndex
+     * @since 3.0.3
+     */
+    protected void setTagNameIndex(final int tagNameIndex) {
+        if (this.tagNameIndex == -1) {
+            this.tagNameIndex = tagNameIndex;
+        }
     }
 
     /**
@@ -3504,6 +3515,142 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         final byte[] nodeNameBytes = nodeName.getBytes(charset);
                         final byte[][] wffAttributeBytes = AttributeUtil
                                 .getWffAttributeBytes(charset, tag.attributes);
+
+                        final int parentWffSlotIndex = tag.parent == null ? -1
+                                : tag.parent.wffSlotIndex;
+                        nameValue.setName(WffBinaryMessageUtil
+                                .getBytesFromInt(parentWffSlotIndex));
+
+                        final byte[][] values = new byte[wffAttributeBytes.length
+                                + 1][0];
+
+                        values[0] = nodeNameBytes;
+
+                        System.arraycopy(wffAttributeBytes, 0, values, 1,
+                                wffAttributeBytes.length);
+
+                        nameValue.setValues(values);
+                        tag.wffSlotIndex = nameValues.size();
+                        nameValues.add(nameValue);
+
+                    } else if (!tag.getClosingTag().isEmpty()) {
+
+                        final int parentWffSlotIndex = tag.parent == null ? -1
+                                : tag.parent.wffSlotIndex;
+
+                        final NameValue nameValue = new NameValue();
+
+                        // # short for #text
+                        // @ short for html content
+                        final byte[] nodeNameBytes = tag.noTagContentTypeHtml
+                                ? encodedBytesForAtChar
+                                : encodedByesForHashChar;
+
+                        nameValue.setName(WffBinaryMessageUtil
+                                .getBytesFromInt(parentWffSlotIndex));
+
+                        final byte[][] values = new byte[2][0];
+
+                        values[0] = nodeNameBytes;
+                        values[1] = tag.getClosingTag().getBytes(charset);
+
+                        nameValue.setValues(values);
+
+                        tag.wffSlotIndex = nameValues.size();
+                        nameValues.add(nameValue);
+                    }
+
+                    final Set<AbstractHtml> subChildren = tag.children;
+
+                    if (subChildren != null && subChildren.size() > 0) {
+                        childrenStack.push(subChildren);
+                    }
+
+                }
+
+            }
+
+            final NameValue nameValue = nameValues.getFirst();
+            nameValue.setName(new byte[] {});
+
+            return WffBinaryMessageUtil.VERSION_1
+                    .getWffBinaryMessageBytes(nameValues);
+        } catch (final NoSuchElementException e) {
+            throw new InvalidTagException(
+                    "Not possible to build wff bm bytes on this tag.\nDon't use an empty new NoTag(null, \"\") or new Blank(null, \"\")",
+                    e);
+        } catch (final Exception e) {
+            throw new WffRuntimeException(e.getMessage(), e);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * @param charset
+     * @return the Wff Binary Message bytes of this tag containing indexed tag
+     *         name and attribute name
+     * @author WFF
+     * @throws InvalidTagException
+     * @version algorithm version 1.0
+     * @since 3.0.3
+     */
+    public byte[] toCompressedWffBMBytes(final Charset charset) {
+
+        final byte[] encodedBytesForAtChar = "@".getBytes(charset);
+        final byte[] encodedByesForHashChar = "#".getBytes(charset);
+
+        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
+        try {
+            lock.lock();
+
+            final Deque<NameValue> nameValues = new ArrayDeque<>();
+
+            // ArrayDeque give better performance than Stack, LinkedList
+            final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
+            // passed 2 instead of 1 because the load factor is 0.75f
+            final HashSet<AbstractHtml> initialSet = new HashSet<>(2);
+            initialSet.add(this);
+            childrenStack.push(initialSet);
+
+            Set<AbstractHtml> children;
+            while ((children = childrenStack.poll()) != null) {
+
+                for (final AbstractHtml tag : children) {
+
+                    final String nodeName = tag.getTagName();
+
+                    if (nodeName != null && !nodeName.isEmpty()) {
+
+                        final NameValue nameValue = new NameValue();
+
+                        final byte[] nodeNameBytes;
+
+                        if (tag.tagNameIndex == -1) {
+                            final byte[] rowNodeNameBytes = nodeName
+                                    .getBytes(charset);
+                            nodeNameBytes = new byte[rowNodeNameBytes.length
+                                    + 1];
+                            // if zero there is no optimized int bytes for index
+                            // because there is no tagNameIndex. second byte
+                            // onwards the bytes of tag name
+                            nodeNameBytes[0] = 0;
+                            System.arraycopy(rowNodeNameBytes, 0, nodeNameBytes,
+                                    1, rowNodeNameBytes.length);
+                        } else {
+                            final byte[] optimizedBytesFromInt = WffBinaryMessageUtil
+                                    .getOptimizedBytesFromInt(tag.tagNameIndex);
+                            nodeNameBytes = new byte[optimizedBytesFromInt.length
+                                    + 1];
+                            nodeNameBytes[0] = (byte) optimizedBytesFromInt.length;
+                            System.arraycopy(optimizedBytesFromInt, 0,
+                                    nodeNameBytes, 1,
+                                    optimizedBytesFromInt.length);
+                        }
+
+                        final byte[][] wffAttributeBytes = AttributeUtil
+                                .getAttributeHtmlBytesCompressedByIndex(true,
+                                        charset, tag.attributes);
 
                         final int parentWffSlotIndex = tag.parent == null ? -1
                                 : tag.parent.wffSlotIndex;

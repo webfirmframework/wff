@@ -6,6 +6,7 @@ import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.core.TagRegistry;
 import com.webfirmframework.wffweb.tag.html.identifier.BdoAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
@@ -21,7 +22,16 @@ public class Bdo extends AbstractHtml {
 
     public static final Logger LOGGER = Logger.getLogger(Bdo.class.getName());
 
+    private static final int TAG_NAME_INDEX;
+
+    static {
+        final Integer index = TagRegistry
+                .getIndexByTagName(TagNameConstants.BDO);
+        TAG_NAME_INDEX = index != null ? index : -1;
+    }
+
     {
+        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 

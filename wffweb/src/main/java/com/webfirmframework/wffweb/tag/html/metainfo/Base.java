@@ -6,6 +6,7 @@ import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.core.TagRegistry;
 import com.webfirmframework.wffweb.tag.html.identifier.BaseAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
@@ -23,7 +24,16 @@ public class Base extends AbstractHtml {
 
     private static TagType tagType = TagType.SELF_CLOSING;
 
+    private static final int TAG_NAME_INDEX;
+
+    static {
+        final Integer index = TagRegistry
+                .getIndexByTagName(TagNameConstants.BASE);
+        TAG_NAME_INDEX = index != null ? index : -1;
+    }
+
     {
+        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 

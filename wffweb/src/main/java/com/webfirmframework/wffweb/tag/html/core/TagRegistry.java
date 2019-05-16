@@ -171,6 +171,11 @@ public class TagRegistry {
     private static final Map<String, String> TAG_CLASS_NAME_BY_TAG_NAME;
 
     private static final Map<String, Class<?>> TAG_CLASS_BY_TAG_NAME;
+
+    private static final Map<String, Integer> INDEXED_TAG_NAMES = new HashMap<>();
+
+    private static final List<Class<?>> INDEXED_TAG_CLASSES = new ArrayList<>();
+
     private static Map<String, Class<?>> tagClassByTagNameTmp;
 
     static {
@@ -329,7 +334,6 @@ public class TagRegistry {
                 .newSetFromMap(new ConcurrentHashMap<>(initialCapacity));
 
         TAG_NAMES_SET.addAll(TAG_CLASS_NAME_BY_TAG_NAME.keySet());
-        TAG_NAMES.addAll(TAG_NAMES_SET);
 
         for (final Field field : fields) {
             try {
@@ -351,6 +355,15 @@ public class TagRegistry {
 
             return length1.compareTo(length2);
         });
+
+        int index = 0;
+        for (final String tagName : TAG_NAMES_SET) {
+            INDEXED_TAG_NAMES.put(tagName, index);
+            final Class<?> attrClass = TAG_CLASS_BY_TAG_NAME.get(tagName);
+            INDEXED_TAG_CLASSES.add(index, attrClass);
+
+            index++;
+        }
     }
 
     /**
@@ -360,6 +373,15 @@ public class TagRegistry {
      */
     public static List<String> getTagNames() {
         return new ArrayList<>(TAG_NAMES);
+    }
+
+    /**
+     * @param tagName
+     * @return the index of tag name
+     * @since 3.0.3
+     */
+    public static Integer getIndexByTagName(final String tagName) {
+        return INDEXED_TAG_NAMES.get(tagName);
     }
 
     /**
@@ -501,6 +523,40 @@ public class TagRegistry {
             final AbstractAttribute... attributes) {
 
         final Class<?> tagClass = TAG_CLASS_BY_TAG_NAME.get(tagName);
+
+        if (tagClass == null) {
+            return null;
+        }
+
+        try {
+
+            final AbstractHtml tag = (AbstractHtml) tagClass
+                    .getConstructor(AbstractHtml.class,
+                            AbstractAttribute[].class)
+                    .newInstance(parent, attributes);
+
+            return tag;
+        } catch (InstantiationException | IllegalAccessException
+                | IllegalArgumentException | InvocationTargetException
+                | NoSuchMethodException | SecurityException e) {
+            // NOP
+        }
+        return null;
+    }
+
+    /**
+     * @param tagNameIndex
+     *                         index of tag name
+     * @param parent
+     * @param attributes
+     * @return new instance or null if failed
+     * @since 3.0.3
+     */
+    public static AbstractHtml getNewTagInstanceOrNullIfFailed(
+            final int tagNameIndex, final AbstractHtml parent,
+            final AbstractAttribute... attributes) {
+
+        final Class<?> tagClass = INDEXED_TAG_CLASSES.get(tagNameIndex);
 
         if (tagClass == null) {
             return null;
