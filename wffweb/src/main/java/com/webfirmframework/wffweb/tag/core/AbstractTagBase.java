@@ -24,9 +24,9 @@ public abstract class AbstractTagBase implements TagBase {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    private boolean rebuild = true;
+    private volatile boolean rebuild = true;
 
-    private boolean modified;
+    private volatile boolean modified;
 
     private volatile Object data;
 

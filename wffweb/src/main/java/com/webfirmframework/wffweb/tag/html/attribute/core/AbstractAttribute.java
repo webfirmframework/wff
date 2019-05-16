@@ -55,6 +55,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
     private String attributeName;
 
+    // initial value must be -1
+    private int attrNameIndex = -1;
+
     private volatile String attributeValue;
 
     private volatile Map<String, String> attributeValueMap;
@@ -72,6 +75,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     private transient Charset charset = Charset.defaultCharset();
 
     private final boolean nullableAttrValueMapValue;
+
+    private byte[] compressedBytes;
 
     // for security purpose, the class name should not be modified
     private static final class Security implements Serializable {
@@ -261,31 +266,48 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected byte[] getBinaryStructureCompressedByIndex(final boolean rebuild)
             throws IOException {
+        return getBinaryStructureCompressedByIndex(rebuild, charset);
+    }
+
+    /**
+     * gives compressed by index bytes for the attribute and value. The first
+     * byte represents the attribute name index bytes length, the next bytes
+     * represent the attribute name index bytes and the remaining bytes
+     * represent attribute value without <i>=</i> and <i>"</i>.
+     *
+     * @param rebuild
+     * @param charset
+     * @return the compressed by index bytes.
+     * @throws IOException
+     * @since 3.0.3
+     * @author WFF
+     */
+    protected byte[] getBinaryStructureCompressedByIndex(final boolean rebuild,
+            final Charset charset) throws IOException {
 
         final String attributeValue = this.attributeValue;
-
-        final Charset charset = this.charset;
-        // TODO review code
 
         final ByteArrayOutputStream compressedByIndexBytes = new ByteArrayOutputStream();
 
         byte[] compressedBytes = new byte[0];
 
         // String result = "";
-        if (rebuild || isRebuild() || isModified()) {
+        if (rebuild || this.compressedBytes == null) {
 
             beforePrintStructureCompressedByIndex();
             // tagBuildzer.append(' ');
 
-            final int attributeNameIndex = AttributeRegistry.getAttributeNames()
-                    .indexOf(attributeName);
+            // final int attributeNameIndex =
+            // AttributeRegistry.getAttributeNames()
+            // .indexOf(attributeName);
+
+            final int attributeNameIndex = attrNameIndex;
 
             if (attributeNameIndex == -1) {
 
                 compressedByIndexBytes.write(new byte[] { (byte) 0 });
 
-                compressedByIndexBytes
-                        .write(attributeName.concat("=").getBytes(charset));
+                compressedByIndexBytes.write(attributeName.getBytes(charset));
 
                 if (LOGGER.isLoggable(Level.WARNING)) {
                     LOGGER.warning(attributeName
@@ -301,11 +323,19 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             }
 
             if (attributeValue != null) {
+                if (attributeNameIndex == -1) {
+                    compressedByIndexBytes.write("=".getBytes(charset));
+                }
 
                 compressedByIndexBytes.write(attributeValue.getBytes(charset));
                 compressedBytes = compressedByIndexBytes.toByteArray();
             } else if (attributeValueMap != null
                     && attributeValueMap.size() > 0) {
+
+                if (attributeNameIndex == -1) {
+                    compressedByIndexBytes.write("=".getBytes(charset));
+                }
+
                 final Set<Entry<String, String>> entrySet = getAttributeValueMap()
                         .entrySet();
                 for (final Entry<String, String> entry : entrySet) {
@@ -320,6 +350,11 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 compressedBytes = compressedByIndexBytes.toByteArray();
             } else if (attributeValueSet != null
                     && attributeValueSet.size() > 0) {
+
+                if (attributeNameIndex == -1) {
+                    compressedByIndexBytes.write("=".getBytes(charset));
+                }
+
                 for (final String each : getAttributeValueSet()) {
 
                     compressedByIndexBytes.write(each.getBytes(charset));
@@ -330,8 +365,10 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 compressedBytes = compressedByIndexBytes.toByteArray();
             }
 
-            setRebuild(false);
+        } else {
+            return this.compressedBytes;
         }
+        this.compressedBytes = compressedBytes;
         return compressedBytes;
     }
 
@@ -355,6 +392,11 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected void setAttributeName(final String attributeName) {
         this.attributeName = attributeName;
+        final Integer index = AttributeRegistry
+                .getIndexByAttributeName(attributeName);
+        if (index != null) {
+            attrNameIndex = index;
+        }
     }
 
     /*
@@ -378,13 +420,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
     public byte[] toCompressedBytesByIndex(final boolean rebuild,
             final Charset charset) throws IOException {
-        final Charset previousCharset = this.charset;
-        try {
-            this.charset = charset;
-            return toCompressedBytesByIndex(rebuild);
-        } finally {
-            this.charset = previousCharset;
-        }
+        return getBinaryStructureCompressedByIndex(rebuild, charset);
     }
 
     /*
@@ -914,6 +950,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     public void setModified(final boolean modified) {
         super.setModified(modified);
         if (modified) {
+            compressedBytes = null;
             for (final AbstractHtml ownerTag : ownerTags) {
                 ownerTag.setModified(modified);
                 ownerTag.getSharedObject().setChildModified(modified);

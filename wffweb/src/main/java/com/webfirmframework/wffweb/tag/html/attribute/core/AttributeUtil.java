@@ -23,6 +23,9 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
+import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
+import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
+
 /**
  *
  * @author WFF
@@ -177,6 +180,76 @@ public final class AttributeUtil {
 
         }
         return new byte[0][0];
+    }
+
+    /**
+     * @param attributesBytes
+     * @return the array of attributes built from bytes
+     * @since 3.0.3
+     */
+    public static AbstractAttribute[] parseExactAttributeHtmlBytesCompressedByIndex(
+            final byte[][] attributesBytes, final Charset charset) {
+
+        final AbstractAttribute[] attributes = new AbstractAttribute[attributesBytes.length];
+
+        int index = 0;
+        for (final byte[] compressedBytesByIndex : attributesBytes) {
+
+            final int lengthOfOptimizedBytesOfAttrNameIndex = compressedBytesByIndex[0];
+
+            if (lengthOfOptimizedBytesOfAttrNameIndex > 0) {
+                final byte[] tagNameIndexBytes = new byte[lengthOfOptimizedBytesOfAttrNameIndex];
+                System.arraycopy(compressedBytesByIndex, 1, tagNameIndexBytes,
+                        0, lengthOfOptimizedBytesOfAttrNameIndex);
+
+                final int attrNameIndex = WffBinaryMessageUtil
+                        .getIntFromOptimizedBytes(tagNameIndexBytes);
+
+                final String attrValue = new String(compressedBytesByIndex,
+                        compressedBytesByIndex[0] + 1,
+                        compressedBytesByIndex.length
+                                - (compressedBytesByIndex[0] + 1),
+                        charset);
+
+                attributes[index] = AttributeRegistry
+                        .getNewAttributeInstanceOrNullIfFailed(attrNameIndex,
+                                attrValue);
+
+            } else {
+
+                final String attrNameValue = new String(compressedBytesByIndex,
+                        compressedBytesByIndex[0] + 1,
+                        compressedBytesByIndex.length
+                                - (compressedBytesByIndex[0] + 1),
+                        charset);
+
+                final int indexOfEqualChar = attrNameValue.indexOf('=');
+
+                final String attrName;
+                final String attrValue;
+
+                if (indexOfEqualChar == -1) {
+                    attrName = attrNameValue;
+                    attrValue = null;
+                } else {
+                    attrName = attrNameValue.substring(0, indexOfEqualChar);
+                    attrValue = attrNameValue.substring(indexOfEqualChar + 1,
+                            attrNameValue.length());
+                }
+
+                final AbstractAttribute newAttributeInstance = AttributeRegistry
+                        .getNewAttributeInstanceOrNullIfFailed(attrName,
+                                attrValue);
+
+                attributes[index] = newAttributeInstance != null
+                        ? newAttributeInstance
+                        : new CustomAttribute(attrName, attrValue);
+
+            }
+
+            index++;
+        }
+        return attributes;
     }
 
 }

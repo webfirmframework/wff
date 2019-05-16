@@ -207,6 +207,7 @@ import com.webfirmframework.wffweb.tag.html.html5.attribute.Wrap;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.ContentEditable;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.ContextMenu;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataAttribute;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.Draggable;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.Dropzone;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.Hidden;
@@ -228,6 +229,10 @@ public class AttributeRegistry {
 
     private static Map<String, Class<?>> attributeClassByAttrNameTmp;
 
+    private static final Map<String, Integer> INDEXED_ATTR_NAME = new HashMap<>();
+
+    private static final List<Class<?>> INDEXED_ATTR_CLASS = new ArrayList<>();
+
     static {
 
         final Field[] fields = AttributeNameConstants.class.getFields();
@@ -239,6 +244,8 @@ public class AttributeRegistry {
                 initialCapacity);
         attributeClassByAttrNameTmp = new ConcurrentHashMap<>(initialCapacity);
         attributeClassByAttrName = new ConcurrentHashMap<>(initialCapacity);
+
+        attributeClassByAttrName.put(DataWffId.ATTRIBUTE_NAME, DataWffId.class);
 
         attributeClassByAttrName.put(AttributeNameConstants.ACCEPT,
                 Accept.class);
@@ -590,7 +597,6 @@ public class AttributeRegistry {
         ATTRIBUTE_NAMES_SET = new HashSet<>(initialCapacity);
 
         ATTRIBUTE_NAMES_SET.addAll(ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.keySet());
-        attributeNames.addAll(ATTRIBUTE_NAMES_SET);
 
         for (final Field field : fields) {
             try {
@@ -611,6 +617,16 @@ public class AttributeRegistry {
 
             return length1.compareTo(length2);
         });
+
+        int index = 0;
+        for (final String attrName : attributeNames) {
+            INDEXED_ATTR_NAME.put(attrName, index);
+            final Class<?> attrClass = ATTRIBUTE_CLASS_BY_ATTR_NAME
+                    .get(attrName);
+            INDEXED_ATTR_CLASS.add(index, attrClass);
+
+            index++;
+        }
     }
 
     /**
@@ -650,6 +666,15 @@ public class AttributeRegistry {
      */
     public static List<String> getAttributeNames() {
         return new ArrayList<>(attributeNames);
+    }
+
+    /**
+     * @param attributeName
+     * @return the index of attribute name
+     * @since 3.0.3
+     */
+    public static Integer getIndexByAttributeName(final String attributeName) {
+        return INDEXED_ATTR_NAME.get(attributeName);
     }
 
     /**
@@ -763,6 +788,43 @@ public class AttributeRegistry {
 
         final Class<?> attrClass = ATTRIBUTE_CLASS_BY_ATTR_NAME
                 .get(attributeName);
+
+        if (attrClass == null) {
+            return null;
+        }
+
+        try {
+
+            if (attributeValue == null) {
+                final AbstractAttribute newInstance = (AbstractAttribute) attrClass
+                        .getConstructor().newInstance();
+                return newInstance;
+            }
+
+            final AbstractAttribute newInstance = (AbstractAttribute) attrClass
+                    .getConstructor(String.class).newInstance(attributeValue);
+
+            return newInstance;
+        } catch (InstantiationException | IllegalAccessException
+                | IllegalArgumentException | InvocationTargetException
+                | NoSuchMethodException | SecurityException e) {
+            // NOP
+        }
+
+        return null;
+    }
+
+    /**
+     * @param atribute
+     *                           index
+     * @param attributeValue
+     * @return new instance or null if failed
+     * @since 3.0.3
+     */
+    public static AbstractAttribute getNewAttributeInstanceOrNullIfFailed(
+            final int attributeNameIndex, final String attributeValue) {
+
+        final Class<?> attrClass = INDEXED_ATTR_CLASS.get(attributeNameIndex);
 
         if (attrClass == null) {
             return null;
