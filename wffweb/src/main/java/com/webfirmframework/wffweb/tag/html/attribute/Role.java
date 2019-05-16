@@ -17,6 +17,7 @@
 package com.webfirmframework.wffweb.tag.html.attribute;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeRegistry;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
 /**
@@ -384,7 +385,16 @@ public class Role extends AbstractAttribute implements GlobalAttributable {
      */
     public static final String TREEITEM = "treeitem";
 
+    private static final int ATTR_NAME_INDEX;
+
+    static {
+        final Integer index = AttributeRegistry
+                .getIndexByAttributeName(AttributeNameConstants.ROLE);
+        ATTR_NAME_INDEX = index != null ? index : -1;
+    }
+
     {
+        super.setAttributeNameIndex(ATTR_NAME_INDEX);
         super.setAttributeName(AttributeNameConstants.ROLE);
         init();
     }

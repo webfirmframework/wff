@@ -17,6 +17,7 @@
 package com.webfirmframework.wffweb.tag.html.attribute;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeRegistry;
 import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.AreaAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.BaseAttributable;
@@ -40,7 +41,16 @@ public class Href extends AbstractAttribute implements AAttributable,
 
     private static final long serialVersionUID = 1_0_0L;
 
+    private static final int ATTR_NAME_INDEX;
+
+    static {
+        final Integer index = AttributeRegistry
+                .getIndexByAttributeName(AttributeNameConstants.HREF);
+        ATTR_NAME_INDEX = index != null ? index : -1;
+    }
+
     {
+        super.setAttributeNameIndex(ATTR_NAME_INDEX);
         super.setAttributeName(AttributeNameConstants.HREF);
         init();
     }

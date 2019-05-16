@@ -21,6 +21,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractValueSetAttribute;
+import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeRegistry;
 import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.AreaAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.LinkAttributable;
@@ -151,7 +152,16 @@ public class Rel extends AbstractValueSetAttribute
      */
     public static final String EXTERNAL = "external";
 
+    private static final int ATTR_NAME_INDEX;
+
+    static {
+        final Integer index = AttributeRegistry
+                .getIndexByAttributeName(AttributeNameConstants.REL);
+        ATTR_NAME_INDEX = index != null ? index : -1;
+    }
+
     {
+        super.setAttributeNameIndex(ATTR_NAME_INDEX);
         // This class may to be re-implemented just like ClassAttribute because
         // this class is also taking multiple values separated by space just as
         // in ClassAttribute so many features can be reused from ClassAttribute.

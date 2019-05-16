@@ -219,7 +219,7 @@ public class AttributeRegistry {
     public static final Logger LOGGER = Logger
             .getLogger(AttributeRegistry.class.getName());
 
-    private static final List<String> ATTRIBUTE_NAMES;
+    private static final List<String> SORTED_ATTRIBUTE_NAMES;
 
     private static final Set<String> ATTRIBUTE_NAMES_SET;
 
@@ -593,7 +593,7 @@ public class AttributeRegistry {
                     entry.getValue().getSimpleName());
         }
 
-        ATTRIBUTE_NAMES = new ArrayList<>(initialCapacity);
+        SORTED_ATTRIBUTE_NAMES = new ArrayList<>(initialCapacity);
         ATTRIBUTE_NAMES_SET = new HashSet<>(initialCapacity);
 
         ATTRIBUTE_NAMES_SET.addAll(ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.keySet());
@@ -609,8 +609,8 @@ public class AttributeRegistry {
             }
         }
 
-        ATTRIBUTE_NAMES.addAll(ATTRIBUTE_NAMES_SET);
-        Collections.sort(ATTRIBUTE_NAMES, (o1, o2) -> {
+        SORTED_ATTRIBUTE_NAMES.addAll(ATTRIBUTE_NAMES_SET);
+        Collections.sort(SORTED_ATTRIBUTE_NAMES, (o1, o2) -> {
 
             final Integer length1 = o1.length();
             final Integer length2 = o2.length();
@@ -619,7 +619,7 @@ public class AttributeRegistry {
         });
 
         int index = 0;
-        for (final String attrName : ATTRIBUTE_NAMES) {
+        for (final String attrName : SORTED_ATTRIBUTE_NAMES) {
             INDEXED_ATTR_NAMES.put(attrName, index);
             final Class<?> attrClass = ATTRIBUTE_CLASS_BY_ATTR_NAME
                     .get(attrName);
@@ -646,10 +646,10 @@ public class AttributeRegistry {
 
         ATTRIBUTE_NAMES_SET.addAll(tagNamesWithoutDuplicates);
 
-        ATTRIBUTE_NAMES.clear();
-        ATTRIBUTE_NAMES.addAll(ATTRIBUTE_NAMES_SET);
+        SORTED_ATTRIBUTE_NAMES.clear();
+        SORTED_ATTRIBUTE_NAMES.addAll(ATTRIBUTE_NAMES_SET);
 
-        Collections.sort(ATTRIBUTE_NAMES, (o1, o2) -> {
+        Collections.sort(SORTED_ATTRIBUTE_NAMES, (o1, o2) -> {
 
             final Integer length1 = o1.length();
             final Integer length2 = o2.length();
@@ -665,7 +665,7 @@ public class AttributeRegistry {
      * @author WFF
      */
     public static List<String> getAttributeNames() {
-        return new ArrayList<>(ATTRIBUTE_NAMES);
+        return new ArrayList<>(SORTED_ATTRIBUTE_NAMES);
     }
 
     /**

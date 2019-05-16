@@ -17,6 +17,7 @@
 package com.webfirmframework.wffweb.tag.html.attribute;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeRegistry;
 import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 import com.webfirmframework.wffweb.util.StringUtil;
 
@@ -39,7 +40,16 @@ public class MinLength extends AbstractAttribute implements InputAttributable {
 
     private int value;
 
+    private static final int ATTR_NAME_INDEX;
+
+    static {
+        final Integer index = AttributeRegistry
+                .getIndexByAttributeName(AttributeNameConstants.MINLENGTH);
+        ATTR_NAME_INDEX = index != null ? index : -1;
+    }
+
     {
+        super.setAttributeNameIndex(ATTR_NAME_INDEX);
         super.setAttributeName(AttributeNameConstants.MINLENGTH);
         init();
     }

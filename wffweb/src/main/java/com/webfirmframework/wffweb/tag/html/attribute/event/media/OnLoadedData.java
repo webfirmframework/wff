@@ -17,6 +17,7 @@
 package com.webfirmframework.wffweb.tag.html.attribute.event.media;
 
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
+import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeRegistry;
 import com.webfirmframework.wffweb.tag.html.attribute.event.AbstractEventAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.event.ServerAsyncMethod;
 
@@ -33,7 +34,16 @@ public class OnLoadedData extends AbstractEventAttribute {
 
     private static final long serialVersionUID = 1_0_0L;
 
+    private static final int ATTR_NAME_INDEX;
+
+    static {
+        final Integer index = AttributeRegistry
+                .getIndexByAttributeName(AttributeNameConstants.ONLOADEDDATA);
+        ATTR_NAME_INDEX = index != null ? index : -1;
+    }
+
     {
+        super.setAttributeNameIndex(ATTR_NAME_INDEX);
         super.setAttributeName(AttributeNameConstants.ONLOADEDDATA);
         init();
     }

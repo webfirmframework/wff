@@ -17,6 +17,7 @@
 package com.webfirmframework.wffweb.tag.html.attribute.event.frame.or.object;
 
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
+import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeRegistry;
 import com.webfirmframework.wffweb.tag.html.attribute.event.AbstractEventAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.event.ServerAsyncMethod;
 import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
@@ -36,7 +37,16 @@ public class OnScroll extends AbstractEventAttribute
 
     private static final long serialVersionUID = 1_0_0L;
 
+    private static final int ATTR_NAME_INDEX;
+
+    static {
+        final Integer index = AttributeRegistry
+                .getIndexByAttributeName(AttributeNameConstants.ONSCROLL);
+        ATTR_NAME_INDEX = index != null ? index : -1;
+    }
+
     {
+        super.setAttributeNameIndex(ATTR_NAME_INDEX);
         super.setAttributeName(AttributeNameConstants.ONSCROLL);
         init();
     }

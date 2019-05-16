@@ -392,10 +392,15 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected void setAttributeName(final String attributeName) {
         this.attributeName = attributeName;
-        final Integer index = AttributeRegistry
-                .getIndexByAttributeName(attributeName);
-        if (index != null) {
-            attrNameIndex = index;
+    }
+
+    /**
+     * @param attrNameIndex
+     * @since 3.0.3
+     */
+    protected void setAttributeNameIndex(final int attrNameIndex) {
+        if (this.attrNameIndex == -1) {
+            this.attrNameIndex = attrNameIndex;
         }
     }
 

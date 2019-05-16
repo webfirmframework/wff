@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.tag.html.attribute.core;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.Field;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -87,6 +88,9 @@ public class AttributeRegistryTest {
 
                 assertNotNull(attr);
                 assertEquals(entry.getValue(), attr.getClass());
+               
+                //just for testing
+//                assertEquals(attr.attrNameIndex, (int) AttributeRegistry.getIndexByAttributeName(attr.getAttributeName()));
 
             }
         }
@@ -128,6 +132,18 @@ public class AttributeRegistryTest {
             }
         }
 
+    }
+    
+    @Test
+    public void testGetIndexByAttributeName() throws Exception {
+        
+        final List<String> attributeNames = AttributeRegistry.getAttributeNames();
+        for (String attrName : attributeNames) {
+            final int indexByAttributeName = AttributeRegistry.getIndexByAttributeName(attrName);
+            
+            final String attrNameByIndex = attributeNames.get(indexByAttributeName);
+            assertEquals(attrName, attrNameByIndex);
+        }
     }
 
 }

@@ -215,6 +215,7 @@ import com.webfirmframework.wffweb.csswff.CustomCssProperty;
 import com.webfirmframework.wffweb.informer.StateChangeInformer;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeRegistry;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 import com.webfirmframework.wffweb.util.StringUtil;
 import com.webfirmframework.wffweb.util.TagStringUtil;
@@ -433,7 +434,13 @@ public class Style extends AbstractAttribute
     private final Set<CssProperty> cssProperties = ConcurrentHashMap
             .newKeySet();
 
+    private static final int ATTR_NAME_INDEX;
+
     static {
+        final Integer index = AttributeRegistry
+                .getIndexByAttributeName(AttributeNameConstants.STYLE);
+        ATTR_NAME_INDEX = index != null ? index : -1;
+
         CSSPROPERTY_CLASSES.put(CssNameConstants.ALIGN_CONTENT,
                 AlignContent.class);
         CSSPROPERTY_CLASSES.put(CssNameConstants.ALIGN_ITEMS, AlignItems.class);
@@ -724,6 +731,7 @@ public class Style extends AbstractAttribute
     }
 
     {
+        super.setAttributeNameIndex(ATTR_NAME_INDEX);
         super.setAttributeName(AttributeNameConstants.STYLE);
         abstractCssPropertyClassObjects = new HashMap<String, AbstractCssProperty<?>>() {
 

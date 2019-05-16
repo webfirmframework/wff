@@ -164,7 +164,7 @@ public class TagRegistry {
     public static final Logger LOGGER = Logger
             .getLogger(TagRegistry.class.getName());
 
-    private static final List<String> TAG_NAMES;
+    private static final List<String> SORTED_TAG_NAMES;
 
     private static final Set<String> TAG_NAMES_SET;
 
@@ -329,7 +329,7 @@ public class TagRegistry {
         TAG_CLASS_NAME_BY_TAG_NAME = Collections
                 .unmodifiableMap(tagClassNameByTagName);
 
-        TAG_NAMES = new ArrayList<>(initialCapacity);
+        SORTED_TAG_NAMES = new ArrayList<>(initialCapacity);
         TAG_NAMES_SET = Collections
                 .newSetFromMap(new ConcurrentHashMap<>(initialCapacity));
 
@@ -346,9 +346,9 @@ public class TagRegistry {
             }
         }
 
-        TAG_NAMES.addAll(TAG_NAMES_SET);
+        SORTED_TAG_NAMES.addAll(TAG_NAMES_SET);
 
-        Collections.sort(TAG_NAMES, (o1, o2) -> {
+        Collections.sort(SORTED_TAG_NAMES, (o1, o2) -> {
 
             final Integer length1 = o1.length();
             final Integer length2 = o2.length();
@@ -357,7 +357,7 @@ public class TagRegistry {
         });
 
         int index = 0;
-        for (final String tagName : TAG_NAMES_SET) {
+        for (final String tagName : SORTED_TAG_NAMES) {
             INDEXED_TAG_NAMES.put(tagName, index);
             final Class<?> attrClass = TAG_CLASS_BY_TAG_NAME.get(tagName);
             INDEXED_TAG_CLASSES.add(index, attrClass);
@@ -372,7 +372,7 @@ public class TagRegistry {
      * @author WFF
      */
     public static List<String> getTagNames() {
-        return new ArrayList<>(TAG_NAMES);
+        return new ArrayList<>(SORTED_TAG_NAMES);
     }
 
     /**
@@ -400,10 +400,10 @@ public class TagRegistry {
 
         TAG_NAMES_SET.addAll(tagNamesWithoutDuplicates);
 
-        TAG_NAMES.clear();
-        TAG_NAMES.addAll(TAG_NAMES_SET);
+        SORTED_TAG_NAMES.clear();
+        SORTED_TAG_NAMES.addAll(TAG_NAMES_SET);
 
-        Collections.sort(TAG_NAMES, (o1, o2) -> {
+        Collections.sort(SORTED_TAG_NAMES, (o1, o2) -> {
 
             final Integer length1 = o1.length();
             final Integer length2 = o2.length();
