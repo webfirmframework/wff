@@ -12,7 +12,7 @@ var wffTagUtil = new function() {
 		
 		//# or @ represented for NoTag
 		if (utf8Bytes.length == 1) {
-			return decoder.decode(new Uint8Array(utf8Bytes));
+			return getStringFromBytes(utf8Bytes);
 		}
 		
 		var lengOfOptmzdBytsOfTgNam = utf8Bytes[0];
@@ -105,7 +105,7 @@ var wffTagUtil = new function() {
 	 */
 	this.getWffIdFromWffIdBytes = function(wffIdBytes) {
 
-		var sOrC = decoder.decode(new Uint8Array([ wffIdBytes[0] ]));
+		var sOrC = getStringFromBytes([ wffIdBytes[0] ]);
 		var intBytes = [];
 		for (var i = 1; i < wffIdBytes.length; i++) {
 			intBytes.push(wffIdBytes[i]);

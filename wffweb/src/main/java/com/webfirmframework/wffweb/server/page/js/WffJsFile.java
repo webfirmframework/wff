@@ -138,8 +138,11 @@ public enum WffJsFile {
 
             // should be in descending order of the value length
 
+            functionNames.add("getAttrNameValueFromCompressedBytes");
+            functionNames.add("createTagFromCompressedWffBMBytes");
             functionNames.add("getLengthOfOptimizedBytesFromInt");
             functionNames.add("concatArrayValuesFromPosition");
+            functionNames.add("getTagNameFromCompressedBytes");
             functionNames.add("extractValuesFromValueBytes");
             functionNames.add("getDoubleFromOptimizedBytes");
             functionNames.add("parseWffBinaryMessageBytes");
@@ -184,7 +187,9 @@ public enum WffJsFile {
             variableNames.add("totalNoOfBytesForAllValues");
             variableNames.add("maxBytesLengthForAllValues");
             variableNames.add("totalNoOfBytesForAllValues");
+            variableNames.add("lengOfOptmzdBytsOfAttrNam");
             variableNames.add("indexInWffBinaryMessage");
+            variableNames.add("lengOfOptmzdBytsOfTgNam");
             variableNames.add("valueLengthBytesLength");
             variableNames.add("nameLengthBytesLength");
             variableNames.add("wffBinaryMessageBytes");
@@ -199,11 +204,14 @@ public enum WffJsFile {
             variableNames.add("currentParentTagName");
             variableNames.add("maxValuesBytesLength");
             variableNames.add("maxNoNameLengthBytes");
+            variableNames.add("attrNamNdxOptmzdByts");
             variableNames.add("parentOfExistingTag");
             variableNames.add("maxNoOfValuesBytes");
             variableNames.add("wffInstanceIdBytes");
             variableNames.add("attrNameValueBytes");
             variableNames.add("currentParentWffId");
+            variableNames.add("tgNamNdxOptmzdByts");
+            variableNames.add("tgNamNdxOptmzdByts");
             variableNames.add("callbackFunctions");
             variableNames.add("attrNameValueArry");
             variableNames.add("superParentValues");
@@ -235,6 +243,9 @@ public enum WffJsFile {
             variableNames.add("attrNameValue");
             variableNames.add("messageIndex");
             variableNames.add("childTagName");
+            variableNames.add("tagNameBytes");
+            variableNames.add("reqBytsLngth");
+            variableNames.add("reqBytsLngth");
             variableNames.add("parentIndex");
             variableNames.add("doubleValue");
             variableNames.add("tagToRemove");
@@ -242,6 +253,8 @@ public enum WffJsFile {
             variableNames.add("zerothIndex");
             variableNames.add("valueLength");
             variableNames.add("secondIndex");
+            variableNames.add("attrValByts");
+            variableNames.add("attrNamByts");
             variableNames.add("thirdIndex");
             variableNames.add("valueLegth");
             variableNames.add("childWffId");
@@ -253,6 +266,8 @@ public enum WffJsFile {
             variableNames.add("wffBMBytes");
             variableNames.add("firstIndex");
             variableNames.add("methodName");
+            variableNames.add("attrNamNdx");
+            variableNames.add("attrValLen");
             variableNames.add("nameValue");
             variableNames.add("nameBytes");
             variableNames.add("beforeTag");
@@ -264,6 +279,7 @@ public enum WffJsFile {
             variableNames.add("childTag");
             variableNames.add("nameByte");
             variableNames.add("argBytes");
+            variableNames.add("tgNamNdx");
             variableNames.add("allTags");
             variableNames.add("allTags");
             variableNames.add("wffIds");
