@@ -302,9 +302,11 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             // AttributeRegistry.getAttributeNames()
             // .indexOf(attributeName);
 
-            final int attributeNameIndex = attrNameIndex;
+            // should always use local variable attrNameIndex
+            // this.attrNameIndex is eventually consistent
+            final int attrNameIndex = this.attrNameIndex;
 
-            if (attributeNameIndex == -1) {
+            if (attrNameIndex == -1) {
 
                 compressedByIndexBytes.write(new byte[] { (byte) 0 });
 
@@ -317,14 +319,14 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             } else {
 
                 final byte[] optimizedBytesFromInt = WffBinaryMessageUtil
-                        .getOptimizedBytesFromInt(attributeNameIndex);
+                        .getOptimizedBytesFromInt(attrNameIndex);
                 compressedByIndexBytes.write(
                         new byte[] { (byte) optimizedBytesFromInt.length });
                 compressedByIndexBytes.write(optimizedBytesFromInt);
             }
 
             if (attributeValue != null) {
-                if (attributeNameIndex == -1) {
+                if (attrNameIndex == -1) {
                     compressedByIndexBytes.write("=".getBytes(charset));
                 }
 
@@ -333,7 +335,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             } else if (attributeValueMap != null
                     && attributeValueMap.size() > 0) {
 
-                if (attributeNameIndex == -1) {
+                if (attrNameIndex == -1) {
                     compressedByIndexBytes.write("=".getBytes(charset));
                 }
 
@@ -352,7 +354,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             } else if (attributeValueSet != null
                     && attributeValueSet.size() > 0) {
 
-                if (attributeNameIndex == -1) {
+                if (attrNameIndex == -1) {
                     compressedByIndexBytes.write("=".getBytes(charset));
                 }
 

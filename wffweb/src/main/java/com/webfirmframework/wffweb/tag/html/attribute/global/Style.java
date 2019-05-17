@@ -1860,4 +1860,9 @@ public class Style extends AbstractAttribute
         }
         return "";
     }
+
+    // for testing
+    static int getAttrNameIndex() {
+        return ATTR_NAME_INDEX;
+    }
 }
