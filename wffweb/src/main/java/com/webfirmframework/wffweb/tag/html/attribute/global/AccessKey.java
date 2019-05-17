@@ -18,7 +18,7 @@ package com.webfirmframework.wffweb.tag.html.attribute.global;
 
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeRegistry;
+import com.webfirmframework.wffweb.tag.html.attribute.core.IndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
 /**
@@ -35,7 +35,7 @@ public class AccessKey extends AbstractAttribute implements GlobalAttributable {
     private static final int ATTR_NAME_INDEX;
 
     static {
-        final Integer index = AttributeRegistry
+        final Integer index = IndexedAttributeName.INSTANCE
                 .getIndexByAttributeName(AttributeNameConstants.ACCESSKEY);
         ATTR_NAME_INDEX = index != null ? index : -1;
     }

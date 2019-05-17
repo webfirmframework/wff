@@ -6,7 +6,7 @@ import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.core.TagRegistry;
+import com.webfirmframework.wffweb.tag.html.core.IndexedTagName;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.UAttributable;
 
@@ -25,7 +25,8 @@ public class U extends AbstractHtml {
     private static final int TAG_NAME_INDEX;
 
     static {
-        final Integer index = TagRegistry.getIndexByTagName(TagNameConstants.U);
+        final Integer index = IndexedTagName.INSTANCE
+                .getIndexByTagName(TagNameConstants.U);
         TAG_NAME_INDEX = index != null ? index : -1;
     }
 

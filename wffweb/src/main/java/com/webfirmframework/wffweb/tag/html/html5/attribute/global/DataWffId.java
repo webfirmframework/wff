@@ -17,12 +17,14 @@ package com.webfirmframework.wffweb.tag.html.html5.attribute.global;
 
 import com.webfirmframework.wffweb.WffSecurityException;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
-import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeRegistry;
+import com.webfirmframework.wffweb.tag.html.attribute.core.IndexedAttributeName;
 
 public class DataWffId extends DataAttribute {
 
     private static final long serialVersionUID = 1_0_0L;
 
+    // NB: if modifying its value it should also be updated in
+    // InternalAttrNameConstants.DATA_WFF_ID
     private static final String ATTRIBUTE_NAME_EXTENSION = "wff-id";
 
     // must be kept final to provide atomic consistency across multiple threads
@@ -44,7 +46,7 @@ public class DataWffId extends DataAttribute {
     private static final int ATTR_NAME_INDEX;
 
     static {
-        final Integer index = AttributeRegistry
+        final Integer index = IndexedAttributeName.INSTANCE
                 .getIndexByAttributeName(ATTRIBUTE_NAME);
         ATTR_NAME_INDEX = index != null ? index : -1;
     }
@@ -128,6 +130,11 @@ public class DataWffId extends DataAttribute {
             final String attributeValue) {
         throw new WffSecurityException(
                 "Not allowed to change value for data-wff-id");
+    }
+
+    // for testing
+    static int getAttrNameIndex() {
+        return ATTR_NAME_INDEX;
     }
 
 }

@@ -286,6 +286,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             final Charset charset) throws IOException {
 
         final String attributeValue = this.attributeValue;
+        final String attributeName = this.attributeName;
 
         final ByteArrayOutputStream compressedByIndexBytes = new ByteArrayOutputStream();
 

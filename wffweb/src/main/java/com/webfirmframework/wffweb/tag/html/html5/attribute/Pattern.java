@@ -20,7 +20,7 @@ import java.util.regex.PatternSyntaxException;
 
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeRegistry;
+import com.webfirmframework.wffweb.tag.html.attribute.core.IndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 
 /**
@@ -46,7 +46,7 @@ public class Pattern extends AbstractAttribute implements InputAttributable {
     private static final int ATTR_NAME_INDEX;
 
     static {
-        final Integer index = AttributeRegistry
+        final Integer index = IndexedAttributeName.INSTANCE
                 .getIndexByAttributeName(AttributeNameConstants.PATTERN);
         ATTR_NAME_INDEX = index != null ? index : -1;
     }

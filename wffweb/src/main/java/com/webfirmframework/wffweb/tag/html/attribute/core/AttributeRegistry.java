@@ -219,15 +219,11 @@ public class AttributeRegistry {
     public static final Logger LOGGER = Logger
             .getLogger(AttributeRegistry.class.getName());
 
-    private static final List<String> SORTED_ATTRIBUTE_NAMES;
-
     private static final Set<String> ATTRIBUTE_NAMES_SET;
 
     private static final Map<String, String> ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME;
 
     private static final Map<String, Class<?>> ATTRIBUTE_CLASS_BY_ATTR_NAME;
-
-    private static final Map<String, Integer> INDEXED_ATTR_NAMES = new HashMap<>();
 
     private static final List<Class<?>> INDEXED_ATTR_CLASSES = new ArrayList<>();
 
@@ -593,7 +589,6 @@ public class AttributeRegistry {
                     entry.getValue().getSimpleName());
         }
 
-        SORTED_ATTRIBUTE_NAMES = new ArrayList<>(initialCapacity);
         ATTRIBUTE_NAMES_SET = new HashSet<>(initialCapacity);
 
         ATTRIBUTE_NAMES_SET.addAll(ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.keySet());
@@ -609,18 +604,9 @@ public class AttributeRegistry {
             }
         }
 
-        SORTED_ATTRIBUTE_NAMES.addAll(ATTRIBUTE_NAMES_SET);
-        Collections.sort(SORTED_ATTRIBUTE_NAMES, (o1, o2) -> {
-
-            final Integer length1 = o1.length();
-            final Integer length2 = o2.length();
-
-            return length1.compareTo(length2);
-        });
-
         int index = 0;
-        for (final String attrName : SORTED_ATTRIBUTE_NAMES) {
-            INDEXED_ATTR_NAMES.put(attrName, index);
+        for (final String attrName : IndexedAttributeName.INSTANCE
+                .getSortedAttrNames()) {
             final Class<?> attrClass = ATTRIBUTE_CLASS_BY_ATTR_NAME
                     .get(attrName);
             INDEXED_ATTR_CLASSES.add(index, attrClass);
@@ -646,16 +632,18 @@ public class AttributeRegistry {
 
         ATTRIBUTE_NAMES_SET.addAll(tagNamesWithoutDuplicates);
 
-        SORTED_ATTRIBUTE_NAMES.clear();
-        SORTED_ATTRIBUTE_NAMES.addAll(ATTRIBUTE_NAMES_SET);
+        IndexedAttributeName.INSTANCE.getSortedAttrNames().clear();
+        IndexedAttributeName.INSTANCE.getSortedAttrNames()
+                .addAll(ATTRIBUTE_NAMES_SET);
 
-        Collections.sort(SORTED_ATTRIBUTE_NAMES, (o1, o2) -> {
+        Collections.sort(IndexedAttributeName.INSTANCE.getSortedAttrNames(),
+                (o1, o2) -> {
 
-            final Integer length1 = o1.length();
-            final Integer length2 = o2.length();
+                    final Integer length1 = o1.length();
+                    final Integer length2 = o2.length();
 
-            return length1.compareTo(length2);
-        });
+                    return length1.compareTo(length2);
+                });
     }
 
     /**
@@ -665,7 +653,8 @@ public class AttributeRegistry {
      * @author WFF
      */
     public static List<String> getAttributeNames() {
-        return new ArrayList<>(SORTED_ATTRIBUTE_NAMES);
+        return new ArrayList<>(
+                IndexedAttributeName.INSTANCE.getSortedAttrNames());
     }
 
     /**
@@ -674,7 +663,8 @@ public class AttributeRegistry {
      * @since 3.0.3
      */
     public static Integer getIndexByAttributeName(final String attributeName) {
-        return INDEXED_ATTR_NAMES.get(attributeName);
+        return IndexedAttributeName.INSTANCE
+                .getIndexByAttributeName(attributeName);
     }
 
     /**

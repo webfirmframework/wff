@@ -17,7 +17,7 @@
 package com.webfirmframework.wffweb.tag.html.attribute.event.frame.or.object;
 
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
-import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeRegistry;
+import com.webfirmframework.wffweb.tag.html.attribute.core.IndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.attribute.event.AbstractEventAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.event.ServerAsyncMethod;
 import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
@@ -40,7 +40,7 @@ public class OnBeforeUnload extends AbstractEventAttribute
     private static final int ATTR_NAME_INDEX;
 
     static {
-        final Integer index = AttributeRegistry
+        final Integer index = IndexedAttributeName.INSTANCE
                 .getIndexByAttributeName(AttributeNameConstants.ONBEFOREUNLOAD);
         ATTR_NAME_INDEX = index != null ? index : -1;
     }

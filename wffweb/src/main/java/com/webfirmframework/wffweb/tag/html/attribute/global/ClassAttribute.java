@@ -22,7 +22,7 @@ import java.util.Set;
 
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractValueSetAttribute;
-import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeRegistry;
+import com.webfirmframework.wffweb.tag.html.attribute.core.IndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
 /**
@@ -40,7 +40,7 @@ public class ClassAttribute extends AbstractValueSetAttribute
     private static final int ATTR_NAME_INDEX;
 
     static {
-        final Integer index = AttributeRegistry
+        final Integer index = IndexedAttributeName.INSTANCE
                 .getIndexByAttributeName(AttributeNameConstants.CLASS);
         ATTR_NAME_INDEX = index != null ? index : -1;
     }

@@ -17,7 +17,7 @@
 package com.webfirmframework.wffweb.tag.html.attribute;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeRegistry;
+import com.webfirmframework.wffweb.tag.html.attribute.core.IndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.identifier.ImgAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.ObjectTagAttributable;
@@ -40,7 +40,7 @@ public class UseMap extends AbstractAttribute
     private static final int ATTR_NAME_INDEX;
 
     static {
-        final Integer index = AttributeRegistry
+        final Integer index = IndexedAttributeName.INSTANCE
                 .getIndexByAttributeName(AttributeNameConstants.USEMAP);
         ATTR_NAME_INDEX = index != null ? index : -1;
     }

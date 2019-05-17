@@ -4,7 +4,7 @@ import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.core.TagRegistry;
+import com.webfirmframework.wffweb.tag.html.core.IndexedTagName;
 import com.webfirmframework.wffweb.tag.html.identifier.BrAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
@@ -23,7 +23,7 @@ public class Body extends AbstractHtml {
     private static final int TAG_NAME_INDEX;
 
     static {
-        final Integer index = TagRegistry
+        final Integer index = IndexedTagName.INSTANCE
                 .getIndexByTagName(TagNameConstants.BODY);
         TAG_NAME_INDEX = index != null ? index : -1;
     }

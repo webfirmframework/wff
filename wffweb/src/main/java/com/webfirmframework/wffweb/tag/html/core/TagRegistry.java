@@ -164,15 +164,11 @@ public class TagRegistry {
     public static final Logger LOGGER = Logger
             .getLogger(TagRegistry.class.getName());
 
-    private static final List<String> SORTED_TAG_NAMES;
-
     private static final Set<String> TAG_NAMES_SET;
 
     private static final Map<String, String> TAG_CLASS_NAME_BY_TAG_NAME;
 
     private static final Map<String, Class<?>> TAG_CLASS_BY_TAG_NAME;
-
-    private static final Map<String, Integer> INDEXED_TAG_NAMES = new HashMap<>();
 
     private static final List<Class<?>> INDEXED_TAG_CLASSES = new ArrayList<>();
 
@@ -329,7 +325,6 @@ public class TagRegistry {
         TAG_CLASS_NAME_BY_TAG_NAME = Collections
                 .unmodifiableMap(tagClassNameByTagName);
 
-        SORTED_TAG_NAMES = new ArrayList<>(initialCapacity);
         TAG_NAMES_SET = Collections
                 .newSetFromMap(new ConcurrentHashMap<>(initialCapacity));
 
@@ -346,19 +341,9 @@ public class TagRegistry {
             }
         }
 
-        SORTED_TAG_NAMES.addAll(TAG_NAMES_SET);
-
-        Collections.sort(SORTED_TAG_NAMES, (o1, o2) -> {
-
-            final Integer length1 = o1.length();
-            final Integer length2 = o2.length();
-
-            return length1.compareTo(length2);
-        });
-
         int index = 0;
-        for (final String tagName : SORTED_TAG_NAMES) {
-            INDEXED_TAG_NAMES.put(tagName, index);
+        for (final String tagName : IndexedTagName.INSTANCE
+                .getSortedTagNames()) {
             final Class<?> attrClass = TAG_CLASS_BY_TAG_NAME.get(tagName);
             INDEXED_TAG_CLASSES.add(index, attrClass);
 
@@ -372,7 +357,7 @@ public class TagRegistry {
      * @author WFF
      */
     public static List<String> getTagNames() {
-        return new ArrayList<>(SORTED_TAG_NAMES);
+        return new ArrayList<>(IndexedTagName.INSTANCE.getSortedTagNames());
     }
 
     /**
@@ -381,7 +366,7 @@ public class TagRegistry {
      * @since 3.0.3
      */
     public static Integer getIndexByTagName(final String tagName) {
-        return INDEXED_TAG_NAMES.get(tagName);
+        return IndexedTagName.INSTANCE.getIndexByTagName(tagName);
     }
 
     /**
@@ -400,16 +385,17 @@ public class TagRegistry {
 
         TAG_NAMES_SET.addAll(tagNamesWithoutDuplicates);
 
-        SORTED_TAG_NAMES.clear();
-        SORTED_TAG_NAMES.addAll(TAG_NAMES_SET);
+        IndexedTagName.INSTANCE.getSortedTagNames().clear();
+        IndexedTagName.INSTANCE.getSortedTagNames().addAll(TAG_NAMES_SET);
 
-        Collections.sort(SORTED_TAG_NAMES, (o1, o2) -> {
+        Collections.sort(IndexedTagName.INSTANCE.getSortedTagNames(),
+                (o1, o2) -> {
 
-            final Integer length1 = o1.length();
-            final Integer length2 = o2.length();
+                    final Integer length1 = o1.length();
+                    final Integer length2 = o2.length();
 
-            return length1.compareTo(length2);
-        });
+                    return length1.compareTo(length2);
+                });
 
     }
 
