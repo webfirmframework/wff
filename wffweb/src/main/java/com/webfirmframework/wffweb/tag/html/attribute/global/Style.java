@@ -434,7 +434,7 @@ public class Style extends AbstractAttribute
     private final Set<CssProperty> cssProperties = ConcurrentHashMap
             .newKeySet();
 
-    private static final int ATTR_NAME_INDEX;
+    private static volatile int ATTR_NAME_INDEX = -1;
 
     static {
         final Integer index = IndexedAttributeName.INSTANCE
@@ -731,6 +731,11 @@ public class Style extends AbstractAttribute
     }
 
     {
+        if (ATTR_NAME_INDEX == -1) {
+            final Integer index = IndexedAttributeName.INSTANCE
+                    .getIndexByAttributeName(AttributeNameConstants.STYLE);
+            ATTR_NAME_INDEX = index != null ? index : -1;
+        }
         super.setAttributeNameIndex(ATTR_NAME_INDEX);
         super.setAttributeName(AttributeNameConstants.STYLE);
         abstractCssPropertyClassObjects = new HashMap<String, AbstractCssProperty<?>>() {

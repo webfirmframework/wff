@@ -59,7 +59,7 @@ public class EncType extends AbstractAttribute implements FormAttributable {
      */
     public static final String TEXT_PLAIN = "text/plain";
 
-    private static final int ATTR_NAME_INDEX;
+    private static volatile int ATTR_NAME_INDEX = -1;
 
     static {
         final Integer index = IndexedAttributeName.INSTANCE
@@ -68,6 +68,11 @@ public class EncType extends AbstractAttribute implements FormAttributable {
     }
 
     {
+        if (ATTR_NAME_INDEX == -1) {
+            final Integer index = IndexedAttributeName.INSTANCE
+                    .getIndexByAttributeName(AttributeNameConstants.ENCTYPE);
+            ATTR_NAME_INDEX = index != null ? index : -1;
+        }
         super.setAttributeNameIndex(ATTR_NAME_INDEX);
         super.setAttributeName(AttributeNameConstants.ENCTYPE);
         init();

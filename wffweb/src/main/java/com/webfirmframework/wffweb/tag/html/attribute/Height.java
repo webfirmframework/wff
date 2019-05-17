@@ -25,7 +25,7 @@ public class Height extends AbstractAttribute
     private float value;
     private LengthUnit cssLengthUnit;
 
-    private static final int ATTR_NAME_INDEX;
+    private static volatile int ATTR_NAME_INDEX = -1;
 
     static {
         final Integer index = IndexedAttributeName.INSTANCE
@@ -34,6 +34,11 @@ public class Height extends AbstractAttribute
     }
 
     {
+        if (ATTR_NAME_INDEX == -1) {
+            final Integer index = IndexedAttributeName.INSTANCE
+                    .getIndexByAttributeName(AttributeNameConstants.HEIGHT);
+            ATTR_NAME_INDEX = index != null ? index : -1;
+        }
         super.setAttributeNameIndex(ATTR_NAME_INDEX);
         super.setAttributeName(AttributeNameConstants.HEIGHT);
         init();

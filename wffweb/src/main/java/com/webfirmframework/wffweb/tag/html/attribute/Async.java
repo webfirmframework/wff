@@ -35,7 +35,7 @@ public class Async extends AbstractAttribute
 
     private static final long serialVersionUID = 1_0_0L;
 
-    private static final int ATTR_NAME_INDEX;
+    private static volatile int ATTR_NAME_INDEX = -1;
 
     static {
         final Integer index = IndexedAttributeName.INSTANCE
@@ -44,6 +44,11 @@ public class Async extends AbstractAttribute
     }
 
     {
+        if (ATTR_NAME_INDEX == -1) {
+            final Integer index = IndexedAttributeName.INSTANCE
+                    .getIndexByAttributeName(AttributeNameConstants.ASYNC);
+            ATTR_NAME_INDEX = index != null ? index : -1;
+        }
         super.setAttributeNameIndex(ATTR_NAME_INDEX);
         super.setAttributeName(AttributeNameConstants.ASYNC);
         init();

@@ -21,7 +21,7 @@ public class Ol extends AbstractHtml {
     private static final long serialVersionUID = 1_0_0L;
     public static final Logger LOGGER = Logger.getLogger(Ol.class.getName());
 
-    private static final int TAG_NAME_INDEX;
+    private static volatile int TAG_NAME_INDEX = -1;
 
     static {
         final Integer index = IndexedTagName.INSTANCE
@@ -30,6 +30,11 @@ public class Ol extends AbstractHtml {
     }
 
     {
+        if (TAG_NAME_INDEX == -1) {
+            final Integer index = IndexedTagName.INSTANCE
+                    .getIndexByTagName(TagNameConstants.OL);
+            TAG_NAME_INDEX = index != null ? index : -1;
+        }
         super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }

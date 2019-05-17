@@ -20,7 +20,7 @@ public class Qfn extends AbstractHtml {
 
     public static final Logger LOGGER = Logger.getLogger(Qfn.class.getName());
 
-    private static final int TAG_NAME_INDEX;
+    private static volatile int TAG_NAME_INDEX = -1;
 
     static {
         final Integer index = IndexedTagName.INSTANCE
@@ -29,6 +29,11 @@ public class Qfn extends AbstractHtml {
     }
 
     {
+        if (TAG_NAME_INDEX == -1) {
+            final Integer index = IndexedTagName.INSTANCE
+                    .getIndexByTagName(TagNameConstants.QFN);
+            TAG_NAME_INDEX = index != null ? index : -1;
+        }
         super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }

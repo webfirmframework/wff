@@ -24,7 +24,7 @@ public class Base extends AbstractHtml {
 
     private static TagType tagType = TagType.SELF_CLOSING;
 
-    private static final int TAG_NAME_INDEX;
+    private static volatile int TAG_NAME_INDEX = -1;
 
     static {
         final Integer index = IndexedTagName.INSTANCE
@@ -33,6 +33,11 @@ public class Base extends AbstractHtml {
     }
 
     {
+        if (TAG_NAME_INDEX == -1) {
+            final Integer index = IndexedTagName.INSTANCE
+                    .getIndexByTagName(TagNameConstants.BASE);
+            TAG_NAME_INDEX = index != null ? index : -1;
+        }
         super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }

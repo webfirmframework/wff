@@ -52,7 +52,7 @@ public class Dropzone extends AbstractAttribute implements GlobalAttributable {
      */
     public static final String LINK = "link";
 
-    private static final int ATTR_NAME_INDEX;
+    private static volatile int ATTR_NAME_INDEX = -1;
 
     static {
         final Integer index = IndexedAttributeName.INSTANCE
@@ -61,6 +61,11 @@ public class Dropzone extends AbstractAttribute implements GlobalAttributable {
     }
 
     {
+        if (ATTR_NAME_INDEX == -1) {
+            final Integer index = IndexedAttributeName.INSTANCE
+                    .getIndexByAttributeName(AttributeNameConstants.DROPZONE);
+            ATTR_NAME_INDEX = index != null ? index : -1;
+        }
         super.setAttributeNameIndex(ATTR_NAME_INDEX);
         super.setAttributeName(AttributeNameConstants.DROPZONE);
         init();

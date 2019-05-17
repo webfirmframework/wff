@@ -152,7 +152,7 @@ public class Rel extends AbstractValueSetAttribute
      */
     public static final String EXTERNAL = "external";
 
-    private static final int ATTR_NAME_INDEX;
+    private static volatile int ATTR_NAME_INDEX = -1;
 
     static {
         final Integer index = IndexedAttributeName.INSTANCE
@@ -161,6 +161,11 @@ public class Rel extends AbstractValueSetAttribute
     }
 
     {
+        if (ATTR_NAME_INDEX == -1) {
+            final Integer index = IndexedAttributeName.INSTANCE
+                    .getIndexByAttributeName(AttributeNameConstants.REL);
+            ATTR_NAME_INDEX = index != null ? index : -1;
+        }
         super.setAttributeNameIndex(ATTR_NAME_INDEX);
         // This class may to be re-implemented just like ClassAttribute because
         // this class is also taking multiple values separated by space just as

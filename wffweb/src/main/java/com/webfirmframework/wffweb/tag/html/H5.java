@@ -20,7 +20,7 @@ public class H5 extends AbstractHtml {
 
     public static final Logger LOGGER = Logger.getLogger(H5.class.getName());
 
-    private static final int TAG_NAME_INDEX;
+    private static volatile int TAG_NAME_INDEX = -1;
 
     static {
         final Integer index = IndexedTagName.INSTANCE
@@ -29,6 +29,11 @@ public class H5 extends AbstractHtml {
     }
 
     {
+        if (TAG_NAME_INDEX == -1) {
+            final Integer index = IndexedTagName.INSTANCE
+                    .getIndexByTagName(TagNameConstants.H5);
+            TAG_NAME_INDEX = index != null ? index : -1;
+        }
         super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
