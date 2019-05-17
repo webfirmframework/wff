@@ -76,7 +76,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
     private final boolean nullableAttrValueMapValue;
 
-    private byte[] compressedBytes;
+    private volatile byte[] compressedBytes;
 
     // for security purpose, the class name should not be modified
     private static final class Security implements Serializable {

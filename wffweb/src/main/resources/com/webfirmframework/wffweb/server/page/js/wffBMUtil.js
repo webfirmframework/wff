@@ -212,6 +212,8 @@ var wffBMUtil = new function() {
 			appendToArray.push(valuesFrom[a]);
 		}
 	};
+	
+	this.concatArrayValuesFromPosition = concatArrayValuesFromPosition;
 
 	/**
 	 * @param bytes

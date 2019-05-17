@@ -3649,7 +3649,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         }
 
                         final byte[][] wffAttributeBytes = AttributeUtil
-                                .getAttributeHtmlBytesCompressedByIndex(true,
+                                .getAttributeHtmlBytesCompressedByIndex(false,
                                         charset, tag.attributes);
 
                         final int parentWffSlotIndex = tag.parent == null ? -1

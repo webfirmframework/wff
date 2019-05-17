@@ -15,13 +15,18 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute.core;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import org.junit.Test;
 
+import com.webfirmframework.wffweb.tag.html.attribute.ReadOnly;
+import com.webfirmframework.wffweb.tag.html.attribute.Value;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Style;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
@@ -162,7 +167,7 @@ public class AttributeUtilTest {
             
             {
                 byte[][] attributeHtmlCompressedByIndexArray = AttributeUtil.getAttributeHtmlBytesCompressedByIndex(
-                        false, StandardCharsets.UTF_8, style, ca, valuelessAttr);
+                        false, StandardCharsets.UTF_8, style, ca, valuelessAttr, new ReadOnly(), new Value(""));
                 
                 final AbstractAttribute[] attributes = AttributeUtil.parseExactAttributeHtmlBytesCompressedByIndex(attributeHtmlCompressedByIndexArray, StandardCharsets.UTF_8);
                 AbstractAttribute attr1 = attributes[0];
@@ -176,6 +181,15 @@ public class AttributeUtilTest {
                 AbstractAttribute attr3 = attributes[2];
                 assertEquals("custom-attr2", attr3.getAttributeName());
                 assertNull(attr3.getAttributeValue());
+                
+                AbstractAttribute attr4 = attributes[3];
+                assertEquals("readonly", attr4.getAttributeName());
+                assertNull(attr3.getAttributeValue());
+                
+                AbstractAttribute attr5 = attributes[4];
+                assertEquals("value", attr5.getAttributeName());
+                assertNotNull(attr5.getAttributeValue());
+                assertEquals("", attr5.getAttributeValue());
             }
             
         }
