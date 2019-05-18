@@ -390,8 +390,6 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      *
      * @param attributeName
      *                          the attributeName to set
-     * @param attrNameIndex
-     *                          TODO
      * @since 1.0.0
      * @author WFF
      */
