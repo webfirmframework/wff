@@ -287,7 +287,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         final String attributeValue = this.attributeValue;
         final String attributeName = this.attributeName;
 
-        final ByteArrayOutputStream compressedByIndexBytes = new ByteArrayOutputStream();
+        final ByteArrayOutputStream compressedBytesBuilder = new ByteArrayOutputStream();
 
         byte[] compressedBytes = new byte[0];
 
@@ -307,9 +307,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
             if (attrNameIndex == -1) {
 
-                compressedByIndexBytes.write(new byte[] { (byte) 0 });
+                compressedBytesBuilder.write(new byte[] { (byte) 0 });
 
-                compressedByIndexBytes.write(attributeName.getBytes(charset));
+                compressedBytesBuilder.write(attributeName.getBytes(charset));
 
                 // logging is not required here
                 // as it is not an unusual case
@@ -322,52 +322,52 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
                 final byte[] optimizedBytesFromInt = WffBinaryMessageUtil
                         .getOptimizedBytesFromInt(attrNameIndex);
-                compressedByIndexBytes.write(
+                compressedBytesBuilder.write(
                         new byte[] { (byte) optimizedBytesFromInt.length });
-                compressedByIndexBytes.write(optimizedBytesFromInt);
+                compressedBytesBuilder.write(optimizedBytesFromInt);
             }
 
             if (attributeValue != null) {
                 if (attrNameIndex == -1) {
-                    compressedByIndexBytes.write("=".getBytes(charset));
+                    compressedBytesBuilder.write("=".getBytes(charset));
                 }
 
-                compressedByIndexBytes.write(attributeValue.getBytes(charset));
-                compressedBytes = compressedByIndexBytes.toByteArray();
+                compressedBytesBuilder.write(attributeValue.getBytes(charset));
+                compressedBytes = compressedBytesBuilder.toByteArray();
             } else if (attributeValueMap != null
                     && attributeValueMap.size() > 0) {
 
                 if (attrNameIndex == -1) {
-                    compressedByIndexBytes.write("=".getBytes(charset));
+                    compressedBytesBuilder.write("=".getBytes(charset));
                 }
 
                 final Set<Entry<String, String>> entrySet = getAttributeValueMap()
                         .entrySet();
                 for (final Entry<String, String> entry : entrySet) {
 
-                    compressedByIndexBytes
+                    compressedBytesBuilder
                             .write(entry.getKey().getBytes(charset));
-                    compressedByIndexBytes.write(new byte[] { ':' });
-                    compressedByIndexBytes
+                    compressedBytesBuilder.write(new byte[] { ':' });
+                    compressedBytesBuilder
                             .write(entry.getValue().getBytes(charset));
-                    compressedByIndexBytes.write(new byte[] { ';' });
+                    compressedBytesBuilder.write(new byte[] { ';' });
                 }
-                compressedBytes = compressedByIndexBytes.toByteArray();
+                compressedBytes = compressedBytesBuilder.toByteArray();
             } else if (attributeValueSet != null
                     && attributeValueSet.size() > 0) {
 
                 if (attrNameIndex == -1) {
-                    compressedByIndexBytes.write("=".getBytes(charset));
+                    compressedBytesBuilder.write("=".getBytes(charset));
                 }
 
                 for (final String each : getAttributeValueSet()) {
 
-                    compressedByIndexBytes.write(each.getBytes(charset));
-                    compressedByIndexBytes.write(new byte[] { ' ' });
+                    compressedBytesBuilder.write(each.getBytes(charset));
+                    compressedBytesBuilder.write(new byte[] { ' ' });
                 }
-                compressedBytes = compressedByIndexBytes.toByteArray();
+                compressedBytes = compressedBytesBuilder.toByteArray();
             } else {
-                compressedBytes = compressedByIndexBytes.toByteArray();
+                compressedBytes = compressedBytesBuilder.toByteArray();
             }
 
         } else {
