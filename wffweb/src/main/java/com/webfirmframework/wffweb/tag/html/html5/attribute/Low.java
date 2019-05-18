@@ -42,8 +42,8 @@ public class Low extends AbstractAttribute implements MeterAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.LOW);
+        super.setAttributeNameAndIndex(AttributeNameConstants.LOW,
+                ATTR_NAME_INDEX);
         init();
     }
 

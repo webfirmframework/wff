@@ -43,8 +43,9 @@ public class AnimationStart extends AbstractEventAttribute {
     }
 
     {
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ANIMATIONSTART);
+
+        super.setAttributeNameAndIndex(AttributeNameConstants.ANIMATIONSTART,
+                ATTR_NAME_INDEX);
         init();
     }
 

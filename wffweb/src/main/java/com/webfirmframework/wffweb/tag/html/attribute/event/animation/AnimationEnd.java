@@ -44,8 +44,8 @@ public class AnimationEnd extends AbstractEventAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ANIMATIONEND);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ANIMATIONEND,
+                ATTR_NAME_INDEX);
         init();
     }
 

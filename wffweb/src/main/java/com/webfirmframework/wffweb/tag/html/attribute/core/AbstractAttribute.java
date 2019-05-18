@@ -390,6 +390,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      *
      * @param attributeName
      *                          the attributeName to set
+     * @param attrNameIndex
+     *                          TODO
      * @since 1.0.0
      * @author WFF
      */
@@ -398,13 +400,19 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     }
 
     /**
+     * Set attribute name and index, eg: width, height, name, type etc..
+     *
+     * @param attributeName
+     *                          the attributeName to set
      * @param attrNameIndex
+     *                          if there is index for attribute name in registry
      * @since 3.0.3
+     * @author WFF
      */
-    protected void setAttributeNameIndex(final int attrNameIndex) {
-        if (this.attrNameIndex == -1) {
-            this.attrNameIndex = attrNameIndex;
-        }
+    protected void setAttributeNameAndIndex(final String attributeName,
+            final int attrNameIndex) {
+        this.attributeName = attributeName;
+        this.attrNameIndex = attrNameIndex;
     }
 
     /*

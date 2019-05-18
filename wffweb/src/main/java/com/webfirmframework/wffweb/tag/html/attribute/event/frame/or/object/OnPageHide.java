@@ -47,8 +47,8 @@ public class OnPageHide extends AbstractEventAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONPAGEHIDE);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONPAGEHIDE,
+                ATTR_NAME_INDEX);
         init();
     }
 

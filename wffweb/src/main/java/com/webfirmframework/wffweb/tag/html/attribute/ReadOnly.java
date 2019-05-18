@@ -47,8 +47,8 @@ public class ReadOnly extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.READONLY);
+        super.setAttributeNameAndIndex(AttributeNameConstants.READONLY,
+                ATTR_NAME_INDEX);
         init();
     }
 

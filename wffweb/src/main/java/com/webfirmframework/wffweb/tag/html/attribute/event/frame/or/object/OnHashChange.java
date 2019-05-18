@@ -47,8 +47,8 @@ public class OnHashChange extends AbstractEventAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONHASHCHANGE);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONHASHCHANGE,
+                ATTR_NAME_INDEX);
         init();
     }
 

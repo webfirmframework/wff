@@ -44,8 +44,8 @@ public class Content extends AbstractAttribute implements MetaAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.CONTENT);
+        super.setAttributeNameAndIndex(AttributeNameConstants.CONTENT,
+                ATTR_NAME_INDEX);
         init();
     }
 

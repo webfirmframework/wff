@@ -44,8 +44,8 @@ public class OnTouchCancel extends AbstractEventAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONTOUCHCANCEL);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONTOUCHCANCEL,
+                ATTR_NAME_INDEX);
         init();
     }
 

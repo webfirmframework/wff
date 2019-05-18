@@ -44,8 +44,8 @@ public class OnDurationChange extends AbstractEventAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONDURATIONCHANGE);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONDURATIONCHANGE,
+                ATTR_NAME_INDEX);
         init();
     }
 

@@ -45,8 +45,8 @@ public class OnInvalid extends AbstractEventAttribute implements AAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONINVALID);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONINVALID,
+                ATTR_NAME_INDEX);
         init();
     }
 

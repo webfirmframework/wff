@@ -44,8 +44,8 @@ public class OnDragStart extends AbstractEventAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONDRAGSTART);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONDRAGSTART,
+                ATTR_NAME_INDEX);
         init();
     }
 

@@ -45,8 +45,8 @@ public class OnFocus extends AbstractEventAttribute implements AAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONFOCUS);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONFOCUS,
+                ATTR_NAME_INDEX);
         init();
     }
 

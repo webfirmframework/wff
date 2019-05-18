@@ -59,8 +59,8 @@ public class Align extends AbstractAttribute implements InputAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ALIGN);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ALIGN,
+                ATTR_NAME_INDEX);
         init();
     }
 

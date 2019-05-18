@@ -48,8 +48,8 @@ public class Selected extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.SELECTED);
+        super.setAttributeNameAndIndex(AttributeNameConstants.SELECTED,
+                ATTR_NAME_INDEX);
         init();
     }
 

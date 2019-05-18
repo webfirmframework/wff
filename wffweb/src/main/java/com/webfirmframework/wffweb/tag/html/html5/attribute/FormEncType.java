@@ -52,8 +52,8 @@ public class FormEncType extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.FORMENCTYPE);
+        super.setAttributeNameAndIndex(AttributeNameConstants.FORMENCTYPE,
+                ATTR_NAME_INDEX);
         init();
     }
 

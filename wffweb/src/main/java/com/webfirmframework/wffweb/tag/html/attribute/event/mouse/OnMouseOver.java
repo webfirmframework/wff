@@ -46,8 +46,8 @@ public class OnMouseOver extends AbstractEventAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONMOUSEOVER);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONMOUSEOVER,
+                ATTR_NAME_INDEX);
         init();
     }
 

@@ -17,6 +17,7 @@
 package com.webfirmframework.wffweb.tag.html.attribute;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.identifier.FormAttributable;
 
 /**
@@ -37,8 +38,12 @@ public class AcceptCharset extends AbstractAttribute
 
     public static final String UTF_8 = "UTF-8";
 
+    private static final int ATTR_NAME_INDEX = PreIndexedAttributeName
+            .getIndex(PreIndexedAttributeName.ACCEPT_CHARSET);
+
     {
-        super.setAttributeName(AttributeNameConstants.ACCEPT_CHARSET);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ACCEPT_CHARSET,
+                ATTR_NAME_INDEX);
         init();
     }
 

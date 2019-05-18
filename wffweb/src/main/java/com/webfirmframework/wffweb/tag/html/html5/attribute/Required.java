@@ -50,8 +50,8 @@ public class Required extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.REQUIRED);
+        super.setAttributeNameAndIndex(AttributeNameConstants.REQUIRED,
+                ATTR_NAME_INDEX);
         init();
     }
 

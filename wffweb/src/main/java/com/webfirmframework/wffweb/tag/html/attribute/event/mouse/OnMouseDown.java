@@ -46,8 +46,8 @@ public class OnMouseDown extends AbstractEventAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONMOUSEDOWN);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONMOUSEDOWN,
+                ATTR_NAME_INDEX);
         init();
     }
 

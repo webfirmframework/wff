@@ -51,8 +51,8 @@ public class CoOrds extends AbstractAttribute implements AreaAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.COORDS);
+        super.setAttributeNameAndIndex(AttributeNameConstants.COORDS,
+                ATTR_NAME_INDEX);
         init();
     }
 

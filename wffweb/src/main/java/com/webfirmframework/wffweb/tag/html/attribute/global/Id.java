@@ -43,8 +43,8 @@ public class Id extends AbstractAttribute implements GlobalAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ID);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ID,
+                ATTR_NAME_INDEX);
         init();
     }
 

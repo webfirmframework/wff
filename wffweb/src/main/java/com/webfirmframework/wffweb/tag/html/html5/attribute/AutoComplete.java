@@ -315,8 +315,8 @@ public class AutoComplete extends AbstractValueSetAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.AUTOCOMPLETE);
+        super.setAttributeNameAndIndex(AttributeNameConstants.AUTOCOMPLETE,
+                ATTR_NAME_INDEX);
         init();
     }
 

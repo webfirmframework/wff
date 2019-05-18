@@ -731,8 +731,8 @@ public class Style extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.STYLE);
+        super.setAttributeNameAndIndex(AttributeNameConstants.STYLE,
+                ATTR_NAME_INDEX);
         abstractCssPropertyClassObjects = new HashMap<String, AbstractCssProperty<?>>() {
 
             private static final long serialVersionUID = 1_0_0L;

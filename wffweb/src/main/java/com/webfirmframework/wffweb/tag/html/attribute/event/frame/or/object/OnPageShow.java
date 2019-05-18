@@ -47,8 +47,8 @@ public class OnPageShow extends AbstractEventAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONPAGESHOW);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONPAGESHOW,
+                ATTR_NAME_INDEX);
         init();
     }
 

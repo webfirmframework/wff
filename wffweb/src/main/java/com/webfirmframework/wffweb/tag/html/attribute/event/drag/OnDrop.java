@@ -44,8 +44,8 @@ public class OnDrop extends AbstractEventAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONDROP);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONDROP,
+                ATTR_NAME_INDEX);
         init();
     }
 

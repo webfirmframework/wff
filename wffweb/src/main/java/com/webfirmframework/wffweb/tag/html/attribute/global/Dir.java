@@ -50,8 +50,8 @@ public class Dir extends AbstractAttribute implements GlobalAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.DIR);
+        super.setAttributeNameAndIndex(AttributeNameConstants.DIR,
+                ATTR_NAME_INDEX);
         init();
     }
 

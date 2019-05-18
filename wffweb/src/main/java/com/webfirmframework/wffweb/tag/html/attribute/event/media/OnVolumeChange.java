@@ -44,8 +44,8 @@ public class OnVolumeChange extends AbstractEventAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONVOLUMECHANGE);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONVOLUMECHANGE,
+                ATTR_NAME_INDEX);
         init();
     }
 

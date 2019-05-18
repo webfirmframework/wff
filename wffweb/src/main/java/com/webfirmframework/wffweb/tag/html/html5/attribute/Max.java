@@ -46,8 +46,8 @@ public class Max extends AbstractAttribute implements InputAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.MAX);
+        super.setAttributeNameAndIndex(AttributeNameConstants.MAX,
+                ATTR_NAME_INDEX);
         init();
     }
 

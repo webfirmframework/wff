@@ -39,8 +39,8 @@ public class Sorted extends AbstractAttribute implements ThAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.SORTED);
+        super.setAttributeNameAndIndex(AttributeNameConstants.SORTED,
+                ATTR_NAME_INDEX);
         init();
     }
 

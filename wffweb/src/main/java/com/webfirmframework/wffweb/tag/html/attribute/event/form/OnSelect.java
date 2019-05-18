@@ -45,8 +45,8 @@ public class OnSelect extends AbstractEventAttribute implements AAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONSELECT);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONSELECT,
+                ATTR_NAME_INDEX);
         init();
     }
 

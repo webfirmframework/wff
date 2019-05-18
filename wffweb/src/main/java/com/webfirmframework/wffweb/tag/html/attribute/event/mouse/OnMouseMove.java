@@ -46,8 +46,8 @@ public class OnMouseMove extends AbstractEventAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONMOUSEMOVE);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONMOUSEMOVE,
+                ATTR_NAME_INDEX);
         init();
     }
 

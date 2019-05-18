@@ -44,8 +44,8 @@ public class OnLoadedData extends AbstractEventAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONLOADEDDATA);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONLOADEDDATA,
+                ATTR_NAME_INDEX);
         init();
     }
 

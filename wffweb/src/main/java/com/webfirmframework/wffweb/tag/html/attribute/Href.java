@@ -51,8 +51,8 @@ public class Href extends AbstractAttribute implements AAttributable,
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.HREF);
+        super.setAttributeNameAndIndex(AttributeNameConstants.HREF,
+                ATTR_NAME_INDEX);
         init();
     }
 

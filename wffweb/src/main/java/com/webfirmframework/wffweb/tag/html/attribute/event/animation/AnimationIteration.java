@@ -43,8 +43,9 @@ public class AnimationIteration extends AbstractEventAttribute {
     }
 
     {
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ANIMATIONITERATION);
+
+        super.setAttributeNameAndIndex(
+                AttributeNameConstants.ANIMATIONITERATION, ATTR_NAME_INDEX);
         init();
     }
 

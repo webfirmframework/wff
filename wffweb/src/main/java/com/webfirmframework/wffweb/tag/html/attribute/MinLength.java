@@ -50,8 +50,8 @@ public class MinLength extends AbstractAttribute implements InputAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.MINLENGTH);
+        super.setAttributeNameAndIndex(AttributeNameConstants.MINLENGTH,
+                ATTR_NAME_INDEX);
         init();
     }
 

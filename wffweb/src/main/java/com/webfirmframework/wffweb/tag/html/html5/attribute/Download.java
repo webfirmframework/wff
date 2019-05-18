@@ -52,8 +52,8 @@ public class Download extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.DOWNLOAD);
+        super.setAttributeNameAndIndex(AttributeNameConstants.DOWNLOAD,
+                ATTR_NAME_INDEX);
         init();
     }
 

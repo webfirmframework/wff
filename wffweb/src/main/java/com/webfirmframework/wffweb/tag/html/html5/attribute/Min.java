@@ -46,8 +46,8 @@ public class Min extends AbstractAttribute implements InputAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.MIN);
+        super.setAttributeNameAndIndex(AttributeNameConstants.MIN,
+                ATTR_NAME_INDEX);
         init();
     }
 

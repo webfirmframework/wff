@@ -41,8 +41,8 @@ public class IsMap extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ISMAP);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ISMAP,
+                ATTR_NAME_INDEX);
         init();
     }
 

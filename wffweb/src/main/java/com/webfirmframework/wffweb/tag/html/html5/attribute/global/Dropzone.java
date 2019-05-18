@@ -62,8 +62,8 @@ public class Dropzone extends AbstractAttribute implements GlobalAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.DROPZONE);
+        super.setAttributeNameAndIndex(AttributeNameConstants.DROPZONE,
+                ATTR_NAME_INDEX);
         init();
     }
 

@@ -42,8 +42,8 @@ public class High extends AbstractAttribute implements MeterAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.HIGH);
+        super.setAttributeNameAndIndex(AttributeNameConstants.HIGH,
+                ATTR_NAME_INDEX);
         init();
     }
 

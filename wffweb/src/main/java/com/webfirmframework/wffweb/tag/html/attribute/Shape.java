@@ -76,8 +76,8 @@ public class Shape extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.SHAPE);
+        super.setAttributeNameAndIndex(AttributeNameConstants.SHAPE,
+                ATTR_NAME_INDEX);
         init();
     }
 

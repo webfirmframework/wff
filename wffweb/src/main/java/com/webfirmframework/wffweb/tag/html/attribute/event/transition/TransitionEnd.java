@@ -44,8 +44,8 @@ public class TransitionEnd extends AbstractEventAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.TRANSITIONEND);
+        super.setAttributeNameAndIndex(AttributeNameConstants.TRANSITIONEND,
+                ATTR_NAME_INDEX);
         init();
     }
 

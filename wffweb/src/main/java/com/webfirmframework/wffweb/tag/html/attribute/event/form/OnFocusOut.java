@@ -46,8 +46,8 @@ public class OnFocusOut extends AbstractEventAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONFOCUSOUT);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONFOCUSOUT,
+                ATTR_NAME_INDEX);
         init();
     }
 

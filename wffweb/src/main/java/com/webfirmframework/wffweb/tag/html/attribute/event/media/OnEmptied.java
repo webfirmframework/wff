@@ -44,8 +44,8 @@ public class OnEmptied extends AbstractEventAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONEMPTIED);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONEMPTIED,
+                ATTR_NAME_INDEX);
         init();
     }
 

@@ -45,8 +45,8 @@ public class Media extends AbstractAttribute implements AAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.MEDIA);
+        super.setAttributeNameAndIndex(AttributeNameConstants.MEDIA,
+                ATTR_NAME_INDEX);
         init();
     }
 

@@ -43,8 +43,8 @@ public class ColorAttribute extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.COLOR);
+        super.setAttributeNameAndIndex(AttributeNameConstants.COLOR,
+                ATTR_NAME_INDEX);
         init();
     }
 

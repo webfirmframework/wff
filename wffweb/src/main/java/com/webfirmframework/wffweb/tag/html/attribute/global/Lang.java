@@ -59,8 +59,8 @@ public class Lang extends AbstractAttribute implements GlobalAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.LANG);
+        super.setAttributeNameAndIndex(AttributeNameConstants.LANG,
+                ATTR_NAME_INDEX);
         init();
     }
 

@@ -44,8 +44,8 @@ public class OnDragEnter extends AbstractEventAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONDRAGENTER);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONDRAGENTER,
+                ATTR_NAME_INDEX);
         init();
     }
 

@@ -47,8 +47,8 @@ public class FormAction extends AbstractAttribute implements InputAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.FORMACTION);
+        super.setAttributeNameAndIndex(AttributeNameConstants.FORMACTION,
+                ATTR_NAME_INDEX);
         init();
     }
 

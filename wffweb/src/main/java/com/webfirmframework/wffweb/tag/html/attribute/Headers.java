@@ -46,8 +46,8 @@ public class Headers extends AbstractValueSetAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.HEADERS);
+        super.setAttributeNameAndIndex(AttributeNameConstants.HEADERS,
+                ATTR_NAME_INDEX);
         init();
     }
 

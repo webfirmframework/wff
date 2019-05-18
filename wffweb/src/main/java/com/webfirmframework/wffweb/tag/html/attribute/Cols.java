@@ -47,8 +47,8 @@ public class Cols extends AbstractAttribute implements TextAreaAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.COLS);
+        super.setAttributeNameAndIndex(AttributeNameConstants.COLS,
+                ATTR_NAME_INDEX);
         init();
     }
 

@@ -52,8 +52,8 @@ public class Draggable extends AbstractAttribute implements GlobalAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        setAttributeName(AttributeNameConstants.DRAGGABLE);
+        setAttributeNameAndIndex(AttributeNameConstants.DRAGGABLE,
+                ATTR_NAME_INDEX);
         init();
     }
 

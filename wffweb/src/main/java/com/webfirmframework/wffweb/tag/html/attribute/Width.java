@@ -35,8 +35,8 @@ public class Width extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.WIDTH);
+        super.setAttributeNameAndIndex(AttributeNameConstants.WIDTH,
+                ATTR_NAME_INDEX);
         init();
     }
 

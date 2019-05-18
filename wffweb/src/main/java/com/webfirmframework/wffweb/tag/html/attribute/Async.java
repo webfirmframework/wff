@@ -45,8 +45,8 @@ public class Async extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ASYNC);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ASYNC,
+                ATTR_NAME_INDEX);
         init();
     }
 

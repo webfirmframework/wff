@@ -52,8 +52,8 @@ public class FormAttribute extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.FORM);
+        super.setAttributeNameAndIndex(AttributeNameConstants.FORM,
+                ATTR_NAME_INDEX);
         init();
     }
 

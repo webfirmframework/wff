@@ -42,8 +42,8 @@ public class Optimum extends AbstractAttribute implements MeterAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.OPTIMUM);
+        super.setAttributeNameAndIndex(AttributeNameConstants.OPTIMUM,
+                ATTR_NAME_INDEX);
         init();
     }
 

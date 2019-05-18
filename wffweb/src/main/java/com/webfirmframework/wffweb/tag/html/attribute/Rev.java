@@ -133,8 +133,8 @@ public class Rev extends AbstractAttribute implements AAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.REV);
+        super.setAttributeNameAndIndex(AttributeNameConstants.REV,
+                ATTR_NAME_INDEX);
         init();
     }
 

@@ -43,8 +43,9 @@ public class OnSuspend extends AbstractEventAttribute {
     }
 
     {
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONSUSPEND);
+
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONSUSPEND,
+                ATTR_NAME_INDEX);
         init();
     }
 

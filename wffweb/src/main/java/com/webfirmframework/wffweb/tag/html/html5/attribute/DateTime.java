@@ -44,8 +44,8 @@ public class DateTime extends AbstractAttribute implements TimeAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.DATETIME);
+        super.setAttributeNameAndIndex(AttributeNameConstants.DATETIME,
+                ATTR_NAME_INDEX);
         init();
     }
 

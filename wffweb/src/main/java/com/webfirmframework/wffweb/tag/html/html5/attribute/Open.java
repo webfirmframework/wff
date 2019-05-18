@@ -51,8 +51,8 @@ public class Open extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.OPEN);
+        super.setAttributeNameAndIndex(AttributeNameConstants.OPEN,
+                ATTR_NAME_INDEX);
         init();
     }
 

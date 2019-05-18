@@ -44,8 +44,8 @@ public class OnStalled extends AbstractEventAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONSTALLED);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONSTALLED,
+                ATTR_NAME_INDEX);
         init();
     }
 

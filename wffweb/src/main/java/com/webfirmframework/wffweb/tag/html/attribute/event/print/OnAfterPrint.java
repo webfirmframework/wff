@@ -44,8 +44,8 @@ public class OnAfterPrint extends AbstractEventAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONAFTERPRINT);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONAFTERPRINT,
+                ATTR_NAME_INDEX);
         init();
     }
 

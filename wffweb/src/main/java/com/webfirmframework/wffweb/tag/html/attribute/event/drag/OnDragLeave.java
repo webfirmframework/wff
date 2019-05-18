@@ -44,8 +44,8 @@ public class OnDragLeave extends AbstractEventAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONDRAGLEAVE);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONDRAGLEAVE,
+                ATTR_NAME_INDEX);
         init();
     }
 

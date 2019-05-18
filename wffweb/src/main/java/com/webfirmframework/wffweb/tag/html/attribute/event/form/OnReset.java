@@ -45,8 +45,8 @@ public class OnReset extends AbstractEventAttribute implements AAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONRESET);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONRESET,
+                ATTR_NAME_INDEX);
         init();
     }
 

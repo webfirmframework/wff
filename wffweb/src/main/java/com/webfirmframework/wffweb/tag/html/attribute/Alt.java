@@ -49,8 +49,8 @@ public class Alt extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ALT);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ALT,
+                ATTR_NAME_INDEX);
         init();
     }
 

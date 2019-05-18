@@ -45,8 +45,8 @@ public class Action extends AbstractAttribute implements FormAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ACTION);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ACTION,
+                ATTR_NAME_INDEX);
         init();
     }
 

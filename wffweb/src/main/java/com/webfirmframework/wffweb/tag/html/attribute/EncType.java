@@ -69,8 +69,8 @@ public class EncType extends AbstractAttribute implements FormAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ENCTYPE);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ENCTYPE,
+                ATTR_NAME_INDEX);
         init();
     }
 

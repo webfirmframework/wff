@@ -44,8 +44,8 @@ public class OnPopState extends AbstractEventAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONPOPSTATE);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONPOPSTATE,
+                ATTR_NAME_INDEX);
         init();
     }
 

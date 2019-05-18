@@ -45,8 +45,8 @@ public class DirName extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.DIRNAME);
+        super.setAttributeNameAndIndex(AttributeNameConstants.DIRNAME,
+                ATTR_NAME_INDEX);
         init();
     }
 

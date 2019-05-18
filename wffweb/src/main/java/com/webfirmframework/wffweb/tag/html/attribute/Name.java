@@ -46,8 +46,8 @@ public class Name extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.NAME);
+        super.setAttributeNameAndIndex(AttributeNameConstants.NAME,
+                ATTR_NAME_INDEX);
         init();
     }
 

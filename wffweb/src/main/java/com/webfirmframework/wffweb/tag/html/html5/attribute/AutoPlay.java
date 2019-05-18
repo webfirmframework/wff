@@ -45,8 +45,8 @@ public class AutoPlay extends AbstractAttribute implements AudioAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.AUTOPLAY);
+        super.setAttributeNameAndIndex(AttributeNameConstants.AUTOPLAY,
+                ATTR_NAME_INDEX);
         init();
     }
 

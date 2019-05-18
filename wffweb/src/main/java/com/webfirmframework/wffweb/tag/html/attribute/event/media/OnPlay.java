@@ -43,8 +43,9 @@ public class OnPlay extends AbstractEventAttribute {
     }
 
     {
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONPLAY);
+
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONPLAY,
+                ATTR_NAME_INDEX);
         init();
     }
 

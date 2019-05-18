@@ -53,8 +53,8 @@ public class FormMethod extends AbstractAttribute implements InputAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.FORMMETHOD);
+        super.setAttributeNameAndIndex(AttributeNameConstants.FORMMETHOD,
+                ATTR_NAME_INDEX);
         init();
     }
 

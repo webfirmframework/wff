@@ -42,8 +42,8 @@ public class HttpEquiv extends AbstractAttribute implements MetaAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.HTTP_EQUIV);
+        super.setAttributeNameAndIndex(AttributeNameConstants.HTTP_EQUIV,
+                ATTR_NAME_INDEX);
         init();
     }
 

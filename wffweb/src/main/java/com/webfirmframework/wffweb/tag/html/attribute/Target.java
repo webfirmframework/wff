@@ -84,8 +84,8 @@ public class Target extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.TARGET);
+        super.setAttributeNameAndIndex(AttributeNameConstants.TARGET,
+                ATTR_NAME_INDEX);
         init();
     }
 

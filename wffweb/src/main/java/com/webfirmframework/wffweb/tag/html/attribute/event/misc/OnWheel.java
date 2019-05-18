@@ -44,8 +44,8 @@ public class OnWheel extends AbstractEventAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONWHEEL);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONWHEEL,
+                ATTR_NAME_INDEX);
         init();
     }
 

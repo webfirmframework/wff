@@ -46,8 +46,8 @@ public class OnMouseEnter extends AbstractEventAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONMOUSEENTER);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONMOUSEENTER,
+                ATTR_NAME_INDEX);
         init();
     }
 

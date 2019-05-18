@@ -48,8 +48,8 @@ public class ColSpan extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.COLSPAN);
+        super.setAttributeNameAndIndex(AttributeNameConstants.COLSPAN,
+                ATTR_NAME_INDEX);
         init();
     }
 

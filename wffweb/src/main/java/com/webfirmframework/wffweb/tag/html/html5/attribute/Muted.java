@@ -44,8 +44,8 @@ public class Muted extends AbstractAttribute implements AudioAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.MUTED);
+        super.setAttributeNameAndIndex(AttributeNameConstants.MUTED,
+                ATTR_NAME_INDEX);
         init();
     }
 

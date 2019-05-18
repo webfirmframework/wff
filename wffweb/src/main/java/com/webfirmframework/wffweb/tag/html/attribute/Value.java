@@ -42,8 +42,8 @@ public class Value extends AbstractAttribute implements InputAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.VALUE);
+        super.setAttributeNameAndIndex(AttributeNameConstants.VALUE,
+                ATTR_NAME_INDEX);
         init();
     }
 

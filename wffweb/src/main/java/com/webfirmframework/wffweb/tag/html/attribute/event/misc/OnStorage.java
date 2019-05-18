@@ -44,8 +44,8 @@ public class OnStorage extends AbstractEventAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONSTORAGE);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONSTORAGE,
+                ATTR_NAME_INDEX);
         init();
     }
 

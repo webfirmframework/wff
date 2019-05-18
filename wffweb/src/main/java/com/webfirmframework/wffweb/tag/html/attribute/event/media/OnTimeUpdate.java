@@ -44,8 +44,8 @@ public class OnTimeUpdate extends AbstractEventAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONTIMEUPDATE);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONTIMEUPDATE,
+                ATTR_NAME_INDEX);
         init();
     }
 

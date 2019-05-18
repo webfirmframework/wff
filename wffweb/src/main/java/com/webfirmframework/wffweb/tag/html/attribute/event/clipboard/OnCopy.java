@@ -44,8 +44,8 @@ public class OnCopy extends AbstractEventAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONCOPY);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONCOPY,
+                ATTR_NAME_INDEX);
         init();
     }
 

@@ -47,8 +47,8 @@ public class OnUnload extends AbstractEventAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONUNLOAD);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONUNLOAD,
+                ATTR_NAME_INDEX);
         init();
     }
 

@@ -46,8 +46,8 @@ public class OnMouseLeave extends AbstractEventAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONMOUSELEAVE);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONMOUSELEAVE,
+                ATTR_NAME_INDEX);
         init();
     }
 

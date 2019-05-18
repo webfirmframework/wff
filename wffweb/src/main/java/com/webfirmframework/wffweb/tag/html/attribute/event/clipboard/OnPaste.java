@@ -43,8 +43,9 @@ public class OnPaste extends AbstractEventAttribute {
     }
 
     {
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONPASTE);
+
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONPASTE,
+                ATTR_NAME_INDEX);
         init();
     }
 

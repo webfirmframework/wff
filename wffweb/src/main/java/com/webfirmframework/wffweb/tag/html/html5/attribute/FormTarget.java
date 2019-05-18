@@ -55,8 +55,8 @@ public class FormTarget extends AbstractAttribute implements InputAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.FORMTARGET);
+        super.setAttributeNameAndIndex(AttributeNameConstants.FORMTARGET,
+                ATTR_NAME_INDEX);
         init();
     }
 

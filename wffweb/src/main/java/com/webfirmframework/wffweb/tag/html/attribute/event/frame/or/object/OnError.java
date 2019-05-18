@@ -47,8 +47,8 @@ public class OnError extends AbstractEventAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONERROR);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONERROR,
+                ATTR_NAME_INDEX);
         init();
     }
 

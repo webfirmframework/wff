@@ -50,8 +50,8 @@ public class AutoFocus extends AbstractAttribute implements InputAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.AUTOFOCUS);
+        super.setAttributeNameAndIndex(AttributeNameConstants.AUTOFOCUS,
+                ATTR_NAME_INDEX);
         init();
     }
 

@@ -45,8 +45,8 @@ public class OnSearch extends AbstractEventAttribute implements AAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONSEARCH);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONSEARCH,
+                ATTR_NAME_INDEX);
         init();
     }
 

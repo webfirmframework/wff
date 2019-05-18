@@ -47,8 +47,8 @@ public class Loop extends AbstractAttribute implements AudioAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.LOOP);
+        super.setAttributeNameAndIndex(AttributeNameConstants.LOOP,
+                ATTR_NAME_INDEX);
         init();
     }
 

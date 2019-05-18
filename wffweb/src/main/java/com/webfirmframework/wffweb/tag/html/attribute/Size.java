@@ -43,8 +43,8 @@ public class Size extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.SIZE);
+        super.setAttributeNameAndIndex(AttributeNameConstants.SIZE,
+                ATTR_NAME_INDEX);
         init();
     }
 

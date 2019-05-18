@@ -45,8 +45,8 @@ public class OnFocusIn extends AbstractEventAttribute implements AAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONFOCUSIN);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONFOCUSIN,
+                ATTR_NAME_INDEX);
         init();
     }
 

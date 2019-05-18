@@ -44,8 +44,8 @@ public class OnShow extends AbstractEventAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONSHOW);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONSHOW,
+                ATTR_NAME_INDEX);
         init();
     }
 

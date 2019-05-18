@@ -44,8 +44,8 @@ public class OnDragEnd extends AbstractEventAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONDRAGEND);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONDRAGEND,
+                ATTR_NAME_INDEX);
         init();
     }
 

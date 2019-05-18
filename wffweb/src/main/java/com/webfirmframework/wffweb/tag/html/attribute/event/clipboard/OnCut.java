@@ -43,8 +43,9 @@ public class OnCut extends AbstractEventAttribute {
     }
 
     {
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONCUT);
+
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONCUT,
+                ATTR_NAME_INDEX);
         init();
     }
 

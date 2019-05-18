@@ -45,8 +45,8 @@ public class OnBlur extends AbstractEventAttribute implements AAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONBLUR);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONBLUR,
+                ATTR_NAME_INDEX);
         init();
     }
 

@@ -44,8 +44,8 @@ public class For extends AbstractAttribute implements LabelAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.FOR);
+        super.setAttributeNameAndIndex(AttributeNameConstants.FOR,
+                ATTR_NAME_INDEX);
         init();
     }
 

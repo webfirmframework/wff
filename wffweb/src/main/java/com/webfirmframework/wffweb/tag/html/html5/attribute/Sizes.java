@@ -42,8 +42,8 @@ public class Sizes extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.SIZES);
+        super.setAttributeNameAndIndex(AttributeNameConstants.SIZES,
+                ATTR_NAME_INDEX);
         init();
     }
 

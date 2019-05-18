@@ -54,8 +54,8 @@ public class Wrap extends AbstractAttribute implements TextAreaAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.WRAP);
+        super.setAttributeNameAndIndex(AttributeNameConstants.WRAP,
+                ATTR_NAME_INDEX);
         init();
     }
 

@@ -49,8 +49,8 @@ public class Multiple extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.MULTIPLE);
+        super.setAttributeNameAndIndex(AttributeNameConstants.MULTIPLE,
+                ATTR_NAME_INDEX);
         init();
     }
 

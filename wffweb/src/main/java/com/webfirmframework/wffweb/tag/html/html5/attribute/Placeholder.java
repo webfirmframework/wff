@@ -50,8 +50,8 @@ public class Placeholder extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.PLACEHOLDER);
+        super.setAttributeNameAndIndex(AttributeNameConstants.PLACEHOLDER,
+                ATTR_NAME_INDEX);
         init();
     }
 

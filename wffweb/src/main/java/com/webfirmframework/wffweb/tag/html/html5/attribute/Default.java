@@ -50,8 +50,8 @@ public class Default extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.DEFAULT);
+        super.setAttributeNameAndIndex(AttributeNameConstants.DEFAULT,
+                ATTR_NAME_INDEX);
         init();
     }
 

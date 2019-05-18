@@ -53,7 +53,6 @@ public class DataWffId extends DataAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
     }
 
     /**

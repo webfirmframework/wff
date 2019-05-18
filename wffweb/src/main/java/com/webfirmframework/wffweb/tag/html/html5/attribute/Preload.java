@@ -61,8 +61,8 @@ public class Preload extends AbstractAttribute implements AudioAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.PRELOAD);
+        super.setAttributeNameAndIndex(AttributeNameConstants.PRELOAD,
+                ATTR_NAME_INDEX);
         init();
     }
 

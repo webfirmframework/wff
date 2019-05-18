@@ -46,8 +46,8 @@ public class OnDblClick extends AbstractEventAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONDBLCLICK);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONDBLCLICK,
+                ATTR_NAME_INDEX);
         init();
     }
 

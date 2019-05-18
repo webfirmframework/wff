@@ -44,8 +44,8 @@ public class OnBeforePrint extends AbstractEventAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONBEFOREPRINT);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONBEFOREPRINT,
+                ATTR_NAME_INDEX);
         init();
     }
 

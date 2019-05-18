@@ -44,8 +44,8 @@ public class OnWaiting extends AbstractEventAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONWAITING);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONWAITING,
+                ATTR_NAME_INDEX);
         init();
     }
 

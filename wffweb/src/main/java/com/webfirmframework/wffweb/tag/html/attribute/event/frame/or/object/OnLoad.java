@@ -47,8 +47,8 @@ public class OnLoad extends AbstractEventAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONLOAD);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONLOAD,
+                ATTR_NAME_INDEX);
         init();
     }
 

@@ -47,8 +47,8 @@ public class OnAbort extends AbstractEventAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONABORT);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONABORT,
+                ATTR_NAME_INDEX);
         init();
     }
 

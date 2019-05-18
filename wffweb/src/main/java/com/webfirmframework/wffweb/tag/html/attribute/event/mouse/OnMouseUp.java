@@ -45,8 +45,8 @@ public class OnMouseUp extends AbstractEventAttribute implements AAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONMOUSEUP);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONMOUSEUP,
+                ATTR_NAME_INDEX);
         init();
     }
 

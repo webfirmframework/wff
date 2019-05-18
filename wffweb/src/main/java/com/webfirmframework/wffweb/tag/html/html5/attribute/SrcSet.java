@@ -42,8 +42,8 @@ public class SrcSet extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.SRCSET);
+        super.setAttributeNameAndIndex(AttributeNameConstants.SRCSET,
+                ATTR_NAME_INDEX);
         init();
     }
 

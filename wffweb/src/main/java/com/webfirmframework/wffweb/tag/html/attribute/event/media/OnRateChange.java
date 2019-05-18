@@ -44,8 +44,8 @@ public class OnRateChange extends AbstractEventAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONRATECHANGE);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONRATECHANGE,
+                ATTR_NAME_INDEX);
         init();
     }
 

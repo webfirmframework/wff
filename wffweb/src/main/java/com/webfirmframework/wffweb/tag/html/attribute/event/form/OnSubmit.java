@@ -45,8 +45,8 @@ public class OnSubmit extends AbstractEventAttribute implements AAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONSUBMIT);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONSUBMIT,
+                ATTR_NAME_INDEX);
         init();
     }
 

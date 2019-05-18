@@ -44,8 +44,8 @@ public class OnDrag extends AbstractEventAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONDRAG);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONDRAG,
+                ATTR_NAME_INDEX);
         init();
     }
 

@@ -44,8 +44,8 @@ public class OnLoadStart extends AbstractEventAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONLOADSTART);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONLOADSTART,
+                ATTR_NAME_INDEX);
         init();
     }
 

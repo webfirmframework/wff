@@ -44,8 +44,8 @@ public class OnEnded extends AbstractEventAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONENDED);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONENDED,
+                ATTR_NAME_INDEX);
         init();
     }
 

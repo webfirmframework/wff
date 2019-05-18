@@ -47,8 +47,8 @@ public class Border extends AbstractAttribute implements TableAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.BORDER);
+        super.setAttributeNameAndIndex(AttributeNameConstants.BORDER,
+                ATTR_NAME_INDEX);
         init();
     }
 

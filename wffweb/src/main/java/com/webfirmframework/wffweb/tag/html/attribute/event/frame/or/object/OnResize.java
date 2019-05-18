@@ -47,8 +47,8 @@ public class OnResize extends AbstractEventAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONRESIZE);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONRESIZE,
+                ATTR_NAME_INDEX);
         init();
     }
 

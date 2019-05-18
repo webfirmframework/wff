@@ -46,8 +46,8 @@ public class Defer extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.DEFER);
+        super.setAttributeNameAndIndex(AttributeNameConstants.DEFER,
+                ATTR_NAME_INDEX);
         init();
     }
 

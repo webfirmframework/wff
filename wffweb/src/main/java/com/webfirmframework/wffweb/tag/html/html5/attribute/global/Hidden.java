@@ -56,8 +56,8 @@ public class Hidden extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.HIDDEN);
+        super.setAttributeNameAndIndex(AttributeNameConstants.HIDDEN,
+                ATTR_NAME_INDEX);
         init();
     }
 

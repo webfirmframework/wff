@@ -50,8 +50,8 @@ public class ContentEditable extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        setAttributeName(AttributeNameConstants.CONTENTEDITABLE);
+        setAttributeNameAndIndex(AttributeNameConstants.CONTENTEDITABLE,
+                ATTR_NAME_INDEX);
         init();
     }
 

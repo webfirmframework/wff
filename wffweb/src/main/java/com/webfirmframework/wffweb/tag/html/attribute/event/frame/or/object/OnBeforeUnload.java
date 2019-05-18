@@ -47,8 +47,8 @@ public class OnBeforeUnload extends AbstractEventAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONBEFOREUNLOAD);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONBEFOREUNLOAD,
+                ATTR_NAME_INDEX);
         init();
     }
 

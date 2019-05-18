@@ -44,8 +44,8 @@ public class OnOnline extends AbstractEventAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONONLINE);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONONLINE,
+                ATTR_NAME_INDEX);
         init();
     }
 

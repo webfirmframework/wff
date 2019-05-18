@@ -160,8 +160,8 @@ public class Type extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.TYPE);
+        super.setAttributeNameAndIndex(AttributeNameConstants.TYPE,
+                ATTR_NAME_INDEX);
         init();
     }
 

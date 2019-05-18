@@ -46,8 +46,8 @@ public class OnMouseOut extends AbstractEventAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONMOUSEOUT);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONMOUSEOUT,
+                ATTR_NAME_INDEX);
         init();
     }
 

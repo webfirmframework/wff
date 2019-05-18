@@ -44,8 +44,8 @@ public class OnTouchEnd extends AbstractEventAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONTOUCHEND);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONTOUCHEND,
+                ATTR_NAME_INDEX);
         init();
     }
 

@@ -44,8 +44,8 @@ public class OnOffline extends AbstractEventAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONOFFLINE);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONOFFLINE,
+                ATTR_NAME_INDEX);
         init();
     }
 

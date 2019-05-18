@@ -44,8 +44,8 @@ public class OnDragOver extends AbstractEventAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONDRAGOVER);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONDRAGOVER,
+                ATTR_NAME_INDEX);
         init();
     }
 

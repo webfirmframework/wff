@@ -50,8 +50,8 @@ public class Checked extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.CHECKED);
+        super.setAttributeNameAndIndex(AttributeNameConstants.CHECKED,
+                ATTR_NAME_INDEX);
         init();
     }
 

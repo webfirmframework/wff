@@ -42,8 +42,8 @@ public class Poster extends AbstractAttribute implements VideoAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.POSTER);
+        super.setAttributeNameAndIndex(AttributeNameConstants.POSTER,
+                ATTR_NAME_INDEX);
         init();
     }
 

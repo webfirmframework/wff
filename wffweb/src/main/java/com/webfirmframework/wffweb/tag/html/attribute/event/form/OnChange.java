@@ -45,8 +45,8 @@ public class OnChange extends AbstractEventAttribute implements AAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONCHANGE);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONCHANGE,
+                ATTR_NAME_INDEX);
         init();
     }
 

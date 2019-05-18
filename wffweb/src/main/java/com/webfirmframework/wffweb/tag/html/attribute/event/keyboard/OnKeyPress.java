@@ -47,8 +47,8 @@ public class OnKeyPress extends AbstractEventAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONKEYPRESS);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONKEYPRESS,
+                ATTR_NAME_INDEX);
         init();
     }
 

@@ -44,8 +44,8 @@ public class OnCanPlayThrough extends AbstractEventAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONCANPLAYTHROUGH);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONCANPLAYTHROUGH,
+                ATTR_NAME_INDEX);
         init();
     }
 

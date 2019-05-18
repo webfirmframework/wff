@@ -48,8 +48,8 @@ public class CellSpacing extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.CELLSPACING);
+        super.setAttributeNameAndIndex(AttributeNameConstants.CELLSPACING,
+                ATTR_NAME_INDEX);
         init();
     }
 

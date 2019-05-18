@@ -44,8 +44,8 @@ public class OnPause extends AbstractEventAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONPAUSE);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONPAUSE,
+                ATTR_NAME_INDEX);
         init();
     }
 

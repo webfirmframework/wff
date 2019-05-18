@@ -45,8 +45,8 @@ public class OnClick extends AbstractEventAttribute implements AAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONCLICK);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONCLICK,
+                ATTR_NAME_INDEX);
         init();
     }
 

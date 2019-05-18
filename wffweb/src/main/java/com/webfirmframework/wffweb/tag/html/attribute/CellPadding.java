@@ -48,8 +48,8 @@ public class CellPadding extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.CELLPADDING);
+        super.setAttributeNameAndIndex(AttributeNameConstants.CELLPADDING,
+                ATTR_NAME_INDEX);
         init();
     }
 

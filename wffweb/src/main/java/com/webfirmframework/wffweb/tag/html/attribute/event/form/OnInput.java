@@ -56,8 +56,8 @@ public class OnInput extends AbstractEventAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONINPUT);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONINPUT,
+                ATTR_NAME_INDEX);
         init();
     }
 

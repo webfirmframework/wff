@@ -53,8 +53,8 @@ public class Pattern extends AbstractAttribute implements InputAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.PATTERN);
+        super.setAttributeNameAndIndex(AttributeNameConstants.PATTERN,
+                ATTR_NAME_INDEX);
         init();
     }
 

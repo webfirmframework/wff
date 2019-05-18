@@ -41,8 +41,8 @@ public class Face extends AbstractAttribute implements BaseFontAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.FACE);
+        super.setAttributeNameAndIndex(AttributeNameConstants.FACE,
+                ATTR_NAME_INDEX);
         init();
     }
 

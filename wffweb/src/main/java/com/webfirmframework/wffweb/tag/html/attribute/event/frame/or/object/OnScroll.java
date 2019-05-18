@@ -47,8 +47,8 @@ public class OnScroll extends AbstractEventAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONSCROLL);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONSCROLL,
+                ATTR_NAME_INDEX);
         init();
     }
 

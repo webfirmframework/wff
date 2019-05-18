@@ -47,8 +47,8 @@ public class TabIndex extends AbstractAttribute implements GlobalAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.TABINDEX);
+        super.setAttributeNameAndIndex(AttributeNameConstants.TABINDEX,
+                ATTR_NAME_INDEX);
         init();
     }
 

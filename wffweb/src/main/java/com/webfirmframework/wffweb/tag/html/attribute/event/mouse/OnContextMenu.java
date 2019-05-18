@@ -46,8 +46,8 @@ public class OnContextMenu extends AbstractEventAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONCONTEXTMENU);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONCONTEXTMENU,
+                ATTR_NAME_INDEX);
         init();
     }
 

@@ -48,8 +48,8 @@ public class List extends AbstractAttribute implements InputAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.LIST);
+        super.setAttributeNameAndIndex(AttributeNameConstants.LIST,
+                ATTR_NAME_INDEX);
         init();
     }
 

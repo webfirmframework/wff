@@ -72,8 +72,8 @@ public class Sandbox extends AbstractAttribute implements IFrameAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.SANDBOX);
+        super.setAttributeNameAndIndex(AttributeNameConstants.SANDBOX,
+                ATTR_NAME_INDEX);
         init();
     }
 

@@ -44,8 +44,8 @@ public class OnCanPlay extends AbstractEventAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONCANPLAY);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONCANPLAY,
+                ATTR_NAME_INDEX);
         init();
     }
 

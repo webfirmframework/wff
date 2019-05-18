@@ -49,8 +49,8 @@ public class Translate extends AbstractAttribute implements GlobalAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.TRANSLATE);
+        super.setAttributeNameAndIndex(AttributeNameConstants.TRANSLATE,
+                ATTR_NAME_INDEX);
         init();
     }
 

@@ -42,8 +42,8 @@ public class Nonce extends AbstractAttribute implements ScriptAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.NONCE);
+        super.setAttributeNameAndIndex(AttributeNameConstants.NONCE,
+                ATTR_NAME_INDEX);
         init();
     }
 

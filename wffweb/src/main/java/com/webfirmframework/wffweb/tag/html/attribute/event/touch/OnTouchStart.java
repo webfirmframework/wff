@@ -44,8 +44,8 @@ public class OnTouchStart extends AbstractEventAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONTOUCHSTART);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONTOUCHSTART,
+                ATTR_NAME_INDEX);
         init();
     }
 

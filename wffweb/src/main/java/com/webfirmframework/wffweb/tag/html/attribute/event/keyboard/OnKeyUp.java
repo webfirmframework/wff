@@ -47,8 +47,8 @@ public class OnKeyUp extends AbstractEventAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONKEYUP);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONKEYUP,
+                ATTR_NAME_INDEX);
         init();
     }
 

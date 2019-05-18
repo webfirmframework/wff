@@ -48,8 +48,8 @@ public class Scope extends AbstractAttribute implements ThAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.SCOPE);
+        super.setAttributeNameAndIndex(AttributeNameConstants.SCOPE,
+                ATTR_NAME_INDEX);
         init();
     }
 

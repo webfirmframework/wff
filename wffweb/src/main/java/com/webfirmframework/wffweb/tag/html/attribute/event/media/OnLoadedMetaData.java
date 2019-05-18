@@ -44,8 +44,8 @@ public class OnLoadedMetaData extends AbstractEventAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONLOADEDMETADATA);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONLOADEDMETADATA,
+                ATTR_NAME_INDEX);
         init();
     }
 

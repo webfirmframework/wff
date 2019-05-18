@@ -50,8 +50,8 @@ public class ContextMenu extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        setAttributeName(AttributeNameConstants.CONTEXTMENU);
+        setAttributeNameAndIndex(AttributeNameConstants.CONTEXTMENU,
+                ATTR_NAME_INDEX);
         init();
     }
 

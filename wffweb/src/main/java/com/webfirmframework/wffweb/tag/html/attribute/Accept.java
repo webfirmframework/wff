@@ -52,8 +52,8 @@ public class Accept extends AbstractAttribute implements InputAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ACCEPT);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ACCEPT,
+                ATTR_NAME_INDEX);
         init();
     }
 

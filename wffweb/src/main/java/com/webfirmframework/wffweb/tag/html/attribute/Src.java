@@ -45,8 +45,8 @@ public class Src extends AbstractAttribute implements AudioAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.SRC);
+        super.setAttributeNameAndIndex(AttributeNameConstants.SRC,
+                ATTR_NAME_INDEX);
         init();
     }
 

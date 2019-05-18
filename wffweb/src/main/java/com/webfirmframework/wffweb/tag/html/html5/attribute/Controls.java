@@ -50,8 +50,8 @@ public class Controls extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.CONTROLS);
+        super.setAttributeNameAndIndex(AttributeNameConstants.CONTROLS,
+                ATTR_NAME_INDEX);
         init();
     }
 

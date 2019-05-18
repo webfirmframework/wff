@@ -42,8 +42,8 @@ public class AccessKey extends AbstractAttribute implements GlobalAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ACCESSKEY);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ACCESSKEY,
+                ATTR_NAME_INDEX);
         init();
     }
 

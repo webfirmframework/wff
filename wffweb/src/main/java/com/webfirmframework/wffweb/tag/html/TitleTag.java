@@ -25,8 +25,7 @@ public class TitleTag extends AbstractHtml {
 
     static {
 
-        TAG_NAME_INDEX = PreIndexedTagName
-                .getIndex(PreIndexedTagName.TITLE);
+        TAG_NAME_INDEX = PreIndexedTagName.getIndex(PreIndexedTagName.TITLE);
 
     }
 

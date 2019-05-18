@@ -51,8 +51,8 @@ public class Disabled extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.DISABLED);
+        super.setAttributeNameAndIndex(AttributeNameConstants.DISABLED,
+                ATTR_NAME_INDEX);
         init();
     }
 

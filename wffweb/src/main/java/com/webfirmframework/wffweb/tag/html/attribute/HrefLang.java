@@ -48,8 +48,8 @@ public class HrefLang extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.HREFLANG);
+        super.setAttributeNameAndIndex(AttributeNameConstants.HREFLANG,
+                ATTR_NAME_INDEX);
         init();
     }
 

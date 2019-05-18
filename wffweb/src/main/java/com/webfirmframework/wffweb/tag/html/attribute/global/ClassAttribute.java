@@ -47,8 +47,8 @@ public class ClassAttribute extends AbstractValueSetAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.CLASS);
+        super.setAttributeNameAndIndex(AttributeNameConstants.CLASS,
+                ATTR_NAME_INDEX);
         init();
     }
 

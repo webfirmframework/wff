@@ -42,8 +42,8 @@ public class Charset extends AbstractAttribute implements AAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.CHARSET);
+        super.setAttributeNameAndIndex(AttributeNameConstants.CHARSET,
+                ATTR_NAME_INDEX);
         init();
     }
 

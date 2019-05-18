@@ -48,8 +48,8 @@ public class FormNoValidate extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.FORMNOVALIDATE);
+        super.setAttributeNameAndIndex(AttributeNameConstants.FORMNOVALIDATE,
+                ATTR_NAME_INDEX);
         init();
     }
 

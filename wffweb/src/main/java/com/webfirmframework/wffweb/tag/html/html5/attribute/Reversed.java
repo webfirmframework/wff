@@ -48,8 +48,8 @@ public class Reversed extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.REVERSED);
+        super.setAttributeNameAndIndex(AttributeNameConstants.REVERSED,
+                ATTR_NAME_INDEX);
         init();
     }
 

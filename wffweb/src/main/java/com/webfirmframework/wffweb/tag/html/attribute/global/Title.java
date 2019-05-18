@@ -47,8 +47,8 @@ public class Title extends AbstractAttribute implements GlobalAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.TITLE);
+        super.setAttributeNameAndIndex(AttributeNameConstants.TITLE,
+                ATTR_NAME_INDEX);
         init();
     }
 

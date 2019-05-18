@@ -47,8 +47,8 @@ public class UseMap extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.USEMAP);
+        super.setAttributeNameAndIndex(AttributeNameConstants.USEMAP,
+                ATTR_NAME_INDEX);
         init();
     }
 

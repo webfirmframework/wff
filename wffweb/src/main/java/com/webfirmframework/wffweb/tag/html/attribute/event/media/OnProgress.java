@@ -44,8 +44,8 @@ public class OnProgress extends AbstractEventAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONPROGRESS);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONPROGRESS,
+                ATTR_NAME_INDEX);
         init();
     }
 

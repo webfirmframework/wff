@@ -47,8 +47,8 @@ public class Rows extends AbstractAttribute implements TextAreaAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ROWS);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ROWS,
+                ATTR_NAME_INDEX);
         init();
     }
 

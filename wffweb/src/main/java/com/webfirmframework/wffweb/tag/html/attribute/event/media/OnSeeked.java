@@ -44,8 +44,8 @@ public class OnSeeked extends AbstractEventAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONSEEKED);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONSEEKED,
+                ATTR_NAME_INDEX);
         init();
     }
 

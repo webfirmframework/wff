@@ -48,8 +48,8 @@ public class RowSpan extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ROWSPAN);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ROWSPAN,
+                ATTR_NAME_INDEX);
         init();
     }
 

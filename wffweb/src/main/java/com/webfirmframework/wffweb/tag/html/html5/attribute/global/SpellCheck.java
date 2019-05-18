@@ -56,8 +56,8 @@ public class SpellCheck extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.SPELLCHECK);
+        super.setAttributeNameAndIndex(AttributeNameConstants.SPELLCHECK,
+                ATTR_NAME_INDEX);
         init();
     }
 

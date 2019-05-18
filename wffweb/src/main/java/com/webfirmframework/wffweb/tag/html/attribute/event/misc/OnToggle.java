@@ -44,8 +44,8 @@ public class OnToggle extends AbstractEventAttribute {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.ONTOGGLE);
+        super.setAttributeNameAndIndex(AttributeNameConstants.ONTOGGLE,
+                ATTR_NAME_INDEX);
         init();
     }
 

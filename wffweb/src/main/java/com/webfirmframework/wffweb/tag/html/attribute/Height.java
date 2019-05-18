@@ -35,8 +35,8 @@ public class Height extends AbstractAttribute
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.HEIGHT);
+        super.setAttributeNameAndIndex(AttributeNameConstants.HEIGHT,
+                ATTR_NAME_INDEX);
         init();
     }
 

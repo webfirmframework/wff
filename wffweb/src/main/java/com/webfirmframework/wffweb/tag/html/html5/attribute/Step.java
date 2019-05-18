@@ -55,8 +55,8 @@ public class Step extends AbstractAttribute implements InputAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.STEP);
+        super.setAttributeNameAndIndex(AttributeNameConstants.STEP,
+                ATTR_NAME_INDEX);
         init();
     }
 

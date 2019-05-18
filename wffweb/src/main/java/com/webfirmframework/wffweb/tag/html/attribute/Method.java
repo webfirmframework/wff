@@ -56,8 +56,8 @@ public class Method extends AbstractAttribute implements FormAttributable {
 
     {
 
-        super.setAttributeNameIndex(ATTR_NAME_INDEX);
-        super.setAttributeName(AttributeNameConstants.METHOD);
+        super.setAttributeNameAndIndex(AttributeNameConstants.METHOD,
+                ATTR_NAME_INDEX);
         init();
     }
 
