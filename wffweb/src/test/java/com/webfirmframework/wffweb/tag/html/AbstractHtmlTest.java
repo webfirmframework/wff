@@ -15,7 +15,10 @@
  */
 package com.webfirmframework.wffweb.tag.html;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -35,12 +38,15 @@ import com.webfirmframework.wffweb.server.page.BrowserPage;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.MaxLength;
 import com.webfirmframework.wffweb.tag.html.attribute.Name;
+import com.webfirmframework.wffweb.tag.html.attribute.Type;
+import com.webfirmframework.wffweb.tag.html.attribute.Value;
 import com.webfirmframework.wffweb.tag.html.attribute.global.ClassAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Style;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
 import com.webfirmframework.wffweb.tag.html.core.TagRegistry;
 import com.webfirmframework.wffweb.tag.html.formatting.B;
+import com.webfirmframework.wffweb.tag.html.formsandinputs.Input;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Controls;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.Translate;
 import com.webfirmframework.wffweb.tag.html.links.A;
@@ -62,7 +68,6 @@ public class AbstractHtmlTest {
         Html html = new Html(null, new Id("id1")) {
             {
                 for (int i = 0; i < 100; i++) {
-
                     new Div(this, new Id("id2 " + i));
                 }
             }
@@ -1812,6 +1817,41 @@ public class AbstractHtmlTest {
             assertEquals(tag.getTagNameIndex(), (int) TagRegistry.getIndexByTagName(tag.getTagName()));
 
         }
+    }
+    
+    @Test
+    public void testCompareSizeOfToWffBMBytesAndToCompressedWffBMBytes() throws Exception {
+        Html html = new Html(null, new Id("id1")) {
+            {
+                for (int i = 0; i < 50; i++) {
+                    new Div(this, new Id("id2 " + i)) {{
+                      new Input(this, new Type(Type.TEXT), new Name("uname"), new Value("uname"));  
+                    }};
+                }
+            }
+        };
+        long before = System.nanoTime();
+        final int tagWffBMBytesLength = html.toWffBMBytes(StandardCharsets.UTF_8).length;
+        long after = System.nanoTime();
+        
+        long toWffBMBytesProcessingTime = after - before;
+        
+        before = System.nanoTime();
+        final int tagCompressedWffBMBytesLength = html.toCompressedWffBMBytes(StandardCharsets.UTF_8).length;
+        after = System.nanoTime();
+        
+        long toCompressedWffBMBytesProcessingTime = after - before;
+        
+        assertTrue(tagCompressedWffBMBytesLength < tagWffBMBytesLength);
+        System.out.println("tagWffBMBytesLength: " + tagWffBMBytesLength
+                + " tagCompressedWffBMBytesLength: "
+                + tagCompressedWffBMBytesLength + "\ntagCompressedWffBMBytesLength save " + (tagWffBMBytesLength - tagCompressedWffBMBytesLength) + " bytes"
+                + "\ntoWffBMBytesProcessingTime: " + toWffBMBytesProcessingTime + "\ntoCompressedWffBMBytesProcessingTime: " 
+                + toCompressedWffBMBytesProcessingTime);
+        
+        assertTrue(toCompressedWffBMBytesProcessingTime < toWffBMBytesProcessingTime);
+        
+        
     }
 
 }
