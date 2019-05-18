@@ -49,7 +49,6 @@ public class Polyline extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -63,7 +62,7 @@ public class Polyline extends AbstractHtml {
      */
     public Polyline(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.POLYLINE, base, attributes);
+        super(TagNameConstants.POLYLINE, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

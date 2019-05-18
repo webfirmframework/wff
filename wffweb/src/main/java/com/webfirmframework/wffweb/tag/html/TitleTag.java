@@ -31,7 +31,6 @@ public class TitleTag extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -46,7 +45,7 @@ public class TitleTag extends AbstractHtml {
      */
     public TitleTag(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.TITLE_TAG, base, attributes);
+        super(TagNameConstants.TITLE_TAG, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

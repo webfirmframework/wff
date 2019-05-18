@@ -33,7 +33,6 @@ public class Script extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -48,7 +47,7 @@ public class Script extends AbstractHtml {
      */
     public Script(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.SCRIPT, base, attributes);
+        super(TagNameConstants.SCRIPT, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

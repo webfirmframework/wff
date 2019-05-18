@@ -49,7 +49,6 @@ public class KeyGen extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -64,7 +63,7 @@ public class KeyGen extends AbstractHtml {
      */
     public KeyGen(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.KEYGEN, base, attributes);
+        super(TagNameConstants.KEYGEN, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

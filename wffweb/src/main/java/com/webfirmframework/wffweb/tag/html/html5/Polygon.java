@@ -49,7 +49,6 @@ public class Polygon extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -63,7 +62,7 @@ public class Polygon extends AbstractHtml {
      */
     public Polygon(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.POLYGON, base, attributes);
+        super(TagNameConstants.POLYGON, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

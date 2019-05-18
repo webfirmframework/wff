@@ -49,7 +49,6 @@ public class Header extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -64,7 +63,7 @@ public class Header extends AbstractHtml {
      */
     public Header(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.HEADER, base, attributes);
+        super(TagNameConstants.HEADER, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

@@ -32,7 +32,6 @@ public class THead extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -47,7 +46,7 @@ public class THead extends AbstractHtml {
      */
     public THead(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.THEAD, base, attributes);
+        super(TagNameConstants.THEAD, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

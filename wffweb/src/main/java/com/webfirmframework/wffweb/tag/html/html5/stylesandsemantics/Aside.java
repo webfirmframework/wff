@@ -48,7 +48,6 @@ public class Aside extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -63,7 +62,7 @@ public class Aside extends AbstractHtml {
      */
     public Aside(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.ASIDE, base, attributes);
+        super(TagNameConstants.ASIDE, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

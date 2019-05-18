@@ -48,7 +48,6 @@ public class Path extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -62,7 +61,7 @@ public class Path extends AbstractHtml {
      */
     public Path(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.PATH, base, attributes);
+        super(TagNameConstants.PATH, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

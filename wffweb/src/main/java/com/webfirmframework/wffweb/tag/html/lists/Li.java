@@ -32,7 +32,6 @@ public class Li extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -46,7 +45,7 @@ public class Li extends AbstractHtml {
      * @since 1.0.0
      */
     public Li(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(TagNameConstants.LI, base, attributes);
+        super(TagNameConstants.LI, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

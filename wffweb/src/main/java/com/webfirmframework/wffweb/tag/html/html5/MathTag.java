@@ -52,7 +52,6 @@ public class MathTag extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -66,7 +65,7 @@ public class MathTag extends AbstractHtml {
      */
     public MathTag(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.MATH, base, attributes);
+        super(TagNameConstants.MATH, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

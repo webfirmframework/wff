@@ -49,7 +49,6 @@ public class Section extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -64,7 +63,7 @@ public class Section extends AbstractHtml {
      */
     public Section(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.SECTION, base, attributes);
+        super(TagNameConstants.SECTION, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

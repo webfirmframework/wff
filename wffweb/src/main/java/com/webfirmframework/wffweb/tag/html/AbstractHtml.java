@@ -87,13 +87,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     // TODO remove this logger if toCompressedWffBMBytes is not using it
     // this is declared after 3.0.2
-//    public static final Logger LOGGER = Logger
-//            .getLogger(AbstractHtml.class.getName());
+    public static final Logger LOGGER = Logger
+            .getLogger(AbstractHtml.class.getName());
 
     private static final Security ACCESS_OBJECT;
 
-    // initial value must be -1
-    private int tagNameIndex = -1;
+    // initial value must be -1 if not assigning any value
+    private final int tagNameIndex;
 
     private volatile AbstractHtml parent;
 
@@ -118,7 +118,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     private StringBuilder htmlEndSB;
 
-    private String tagName;
+    private final String tagName;
 
     private StringBuilder tagBuilder;
 
@@ -355,6 +355,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     public AbstractHtml(final AbstractHtml base,
             final AbstractHtml... children) {
+        tagName = null;
+        tagNameIndex = -1;
         noTagContentTypeHtml = false;
         if (base == null) {
             sharedObject = new AbstractHtml5SharedObject(this);
@@ -389,6 +391,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     protected AbstractHtml(final AbstractHtml base, final String childContent,
             final boolean noTagContentTypeHtml) {
+
+        tagName = null;
+        tagNameIndex = -1;
 
         this.noTagContentTypeHtml = noTagContentTypeHtml;
 
@@ -440,7 +445,29 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     public AbstractHtml(final String tagName, final AbstractHtml base,
             final AbstractAttribute[] attributes) {
+        this(tagName, -1, base, attributes);
+    }
+
+    /**
+     * should be invoked to generate opening and closing tag base class
+     * containing the functionalities to generate html string.
+     *
+     * @param tagName
+     *                         TODO
+     * @param tagNameIndex
+     *                         There is an index value for the each tag name in
+     *                         tag registry pass it otherwise pass -1. Never
+     *                         pass an arbitrary value if the tag name has no
+     *                         valid index value in TagRegistry.
+     * @param base
+     *                         TODO
+     * @author WFF
+     * @since 3.0.3
+     */
+    protected AbstractHtml(final String tagName, final int tagNameIndex,
+            final AbstractHtml base, final AbstractAttribute[] attributes) {
         this.tagName = tagName;
+        this.tagNameIndex = tagNameIndex;
         noTagContentTypeHtml = false;
         if (base == null) {
             sharedObject = new AbstractHtml5SharedObject(this);
@@ -472,16 +499,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
     private void init() {
         tagBuilder = new StringBuilder();
         setRebuild(true);
-    }
-
-    /**
-     * @param tagNameIndex
-     * @since 3.0.3
-     */
-    protected void setTagNameIndex(final int tagNameIndex) {
-        if (this.tagNameIndex == -1) {
-            this.tagNameIndex = tagNameIndex;
-        }
     }
 
     /**
@@ -1562,17 +1579,42 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * containing the functionalities to generate html string.
      *
      * @param tagType
-     *
      * @param tagName
      *                    TODO
      * @param base
      *                    TODO
+     *
      * @author WFF
      */
     protected AbstractHtml(final TagType tagType, final String tagName,
             final AbstractHtml base, final AbstractAttribute[] attributes) {
+        this(tagType, tagName, -1, base, attributes);
+    }
+
+    /**
+     * should be invoked to generate opening and closing tag base class
+     * containing the functionalities to generate html string.
+     *
+     * @param tagType
+     * @param tagName
+     *                         TODO
+     * @param tagNameIndex
+     *                         There is an index value for the each tag name in
+     *                         tag registry pass it otherwise pass -1. Never
+     *                         pass an arbitrary value if the tag name has no
+     *                         valid index value in TagRegistry.
+     * @param base
+     *                         TODO
+     *
+     * @author WFF
+     * @since 3.0.3
+     */
+    protected AbstractHtml(final TagType tagType, final String tagName,
+            final int tagNameIndex, final AbstractHtml base,
+            final AbstractAttribute[] attributes) {
         this.tagType = tagType;
         this.tagName = tagName;
+        this.tagNameIndex = tagNameIndex;
         noTagContentTypeHtml = false;
 
         if (base == null) {
@@ -3650,10 +3692,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
                             System.arraycopy(rowNodeNameBytes, 0, nodeNameBytes,
                                     1, rowNodeNameBytes.length);
 
-//                            if (LOGGER.isLoggable(Level.WARNING)) {
-//                                LOGGER.warning(nodeName
-//                                        + " is not indexed, please register it with TagRegistry");
-//                            }
+                            if (LOGGER.isLoggable(Level.WARNING)) {
+                                LOGGER.warning(nodeName
+                                        + " is not indexed, please register it with TagRegistry");
+                            }
 
                         } else {
                             final byte[] optimizedBytesFromInt = WffBinaryMessageUtil

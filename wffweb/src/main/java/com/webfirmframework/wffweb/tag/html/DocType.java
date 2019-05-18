@@ -46,6 +46,19 @@ public abstract class DocType extends AbstractHtml {
         super(tagName, base, attributes);
     }
 
+    /**
+     * should be invoked to generate opening and closing tag
+     *
+     * @param tagName
+     * @param tagNameIndex
+     * @param attributes
+     * @since 3.0.3
+     */
+    protected DocType(final String tagName, final int tagNameIndex,
+            final AbstractHtml base, final AbstractAttribute[] attributes) {
+        super(tagName, tagNameIndex, base, attributes);
+    }
+
     /*
      * (non-Javadoc)
      *

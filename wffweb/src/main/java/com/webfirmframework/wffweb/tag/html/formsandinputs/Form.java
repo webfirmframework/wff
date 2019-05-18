@@ -52,7 +52,6 @@ public class Form extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -67,7 +66,7 @@ public class Form extends AbstractHtml {
      */
     public Form(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.FORM, base, attributes);
+        super(TagNameConstants.FORM, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

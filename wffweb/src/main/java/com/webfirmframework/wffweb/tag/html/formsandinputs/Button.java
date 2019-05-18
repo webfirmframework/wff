@@ -33,7 +33,6 @@ public class Button extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -48,7 +47,7 @@ public class Button extends AbstractHtml {
      */
     public Button(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.BUTTON, base, attributes);
+        super(TagNameConstants.BUTTON, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

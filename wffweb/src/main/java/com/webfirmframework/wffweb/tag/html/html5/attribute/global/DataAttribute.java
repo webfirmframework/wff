@@ -58,6 +58,29 @@ public class DataAttribute extends AbstractAttribute
     }
 
     /**
+     * @param attributeNameExension
+     * @param attrNameIndex
+     *                                  only if there is an index value for this
+     *                                  attribute name (including data-) in
+     *                                  AttributeRegistry. If not pass -1.
+     *                                  Passing incorrect value may cause
+     *                                  strange behavior.
+     * @param value
+     * @since 3.0.3
+     */
+    protected DataAttribute(final String attributeNameExension,
+            final int attrNameIndex, final String value) {
+        if (attributeNameExension == null) {
+            throw new NullValueException(
+                    "attributeNameExension can not be null");
+        }
+        super.setAttributeNameAndIndex(
+                AttributeNameConstants.DATA.concat(attributeNameExension),
+                attrNameIndex);
+        super.setAttributeValue(value);
+    }
+
+    /**
      * invokes only once per object
      *
      * @author WFF

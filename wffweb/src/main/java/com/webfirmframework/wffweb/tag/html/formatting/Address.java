@@ -33,7 +33,6 @@ public class Address extends AbstractHtml implements AddressAttributable {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -48,7 +47,7 @@ public class Address extends AbstractHtml implements AddressAttributable {
      */
     public Address(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.ADDRESS, base, attributes);
+        super(TagNameConstants.ADDRESS, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

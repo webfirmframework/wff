@@ -49,7 +49,6 @@ public class Template extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -63,7 +62,7 @@ public class Template extends AbstractHtml {
      */
     public Template(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.TEMPLATE, base, attributes);
+        super(TagNameConstants.TEMPLATE, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

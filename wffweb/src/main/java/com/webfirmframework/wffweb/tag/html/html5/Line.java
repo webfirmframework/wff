@@ -48,7 +48,6 @@ public class Line extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -62,7 +61,7 @@ public class Line extends AbstractHtml {
      */
     public Line(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.LINE, base, attributes);
+        super(TagNameConstants.LINE, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

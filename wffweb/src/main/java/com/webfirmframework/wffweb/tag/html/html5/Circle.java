@@ -49,7 +49,6 @@ public class Circle extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -63,7 +62,7 @@ public class Circle extends AbstractHtml {
      */
     public Circle(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.CIRCLE, base, attributes);
+        super(TagNameConstants.CIRCLE, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

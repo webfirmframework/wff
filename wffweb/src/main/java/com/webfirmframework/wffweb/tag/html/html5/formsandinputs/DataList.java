@@ -49,7 +49,6 @@ public class DataList extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -64,7 +63,7 @@ public class DataList extends AbstractHtml {
      */
     public DataList(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.DATALIST, base, attributes);
+        super(TagNameConstants.DATALIST, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

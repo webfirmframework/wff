@@ -49,7 +49,6 @@ public class Canvas extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -64,7 +63,7 @@ public class Canvas extends AbstractHtml {
      */
     public Canvas(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.CANVAS, base, attributes);
+        super(TagNameConstants.CANVAS, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

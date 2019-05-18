@@ -32,7 +32,6 @@ public class A extends AbstractHtml implements AAttributable {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -46,7 +45,7 @@ public class A extends AbstractHtml implements AAttributable {
      * @since 1.0.0
      */
     public A(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(TagNameConstants.A, base, attributes);
+        super(TagNameConstants.A, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

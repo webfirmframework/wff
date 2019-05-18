@@ -30,7 +30,6 @@ public class H5 extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -44,7 +43,7 @@ public class H5 extends AbstractHtml {
      * @since 1.0.0
      */
     public H5(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(TagNameConstants.H5, base, attributes);
+        super(TagNameConstants.H5, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

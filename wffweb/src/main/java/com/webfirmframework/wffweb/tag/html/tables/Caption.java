@@ -33,7 +33,6 @@ public class Caption extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -48,7 +47,7 @@ public class Caption extends AbstractHtml {
      */
     public Caption(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.CAPTION, base, attributes);
+        super(TagNameConstants.CAPTION, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

@@ -32,7 +32,6 @@ public class Span extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -47,7 +46,7 @@ public class Span extends AbstractHtml {
      */
     public Span(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.SPAN, base, attributes);
+        super(TagNameConstants.SPAN, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

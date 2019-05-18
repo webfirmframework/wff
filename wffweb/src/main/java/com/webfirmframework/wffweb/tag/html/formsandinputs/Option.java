@@ -33,7 +33,6 @@ public class Option extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -48,7 +47,7 @@ public class Option extends AbstractHtml {
      */
     public Option(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.OPTION, base, attributes);
+        super(TagNameConstants.OPTION, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

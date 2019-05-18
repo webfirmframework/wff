@@ -48,7 +48,6 @@ public class Wbr extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -62,7 +61,7 @@ public class Wbr extends AbstractHtml {
      * @since 1.0.0
      */
     public Wbr(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(TagNameConstants.WBR, base, attributes);
+        super(TagNameConstants.WBR, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

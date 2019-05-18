@@ -49,7 +49,6 @@ public class MenuItem extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -64,7 +63,7 @@ public class MenuItem extends AbstractHtml {
      */
     public MenuItem(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.MENUITEM, base, attributes);
+        super(TagNameConstants.MENUITEM, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

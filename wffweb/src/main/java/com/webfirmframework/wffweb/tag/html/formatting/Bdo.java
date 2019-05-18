@@ -32,7 +32,6 @@ public class Bdo extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -46,7 +45,7 @@ public class Bdo extends AbstractHtml {
      * @since 1.0.0
      */
     public Bdo(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(TagNameConstants.BDO, base, attributes);
+        super(TagNameConstants.BDO, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

@@ -49,7 +49,6 @@ public class Dialog extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -64,7 +63,7 @@ public class Dialog extends AbstractHtml {
      */
     public Dialog(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.DIALOG, base, attributes);
+        super(TagNameConstants.DIALOG, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

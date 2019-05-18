@@ -48,7 +48,6 @@ public class Ruby extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -63,7 +62,7 @@ public class Ruby extends AbstractHtml {
      */
     public Ruby(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.RUBY, base, attributes);
+        super(TagNameConstants.RUBY, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

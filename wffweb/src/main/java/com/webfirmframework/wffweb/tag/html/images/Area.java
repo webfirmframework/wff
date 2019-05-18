@@ -32,7 +32,6 @@ public class Area extends AbstractHtml implements AreaAttributable {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -47,7 +46,7 @@ public class Area extends AbstractHtml implements AreaAttributable {
      */
     public Area(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.AREA, base, attributes);
+        super(TagNameConstants.AREA, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

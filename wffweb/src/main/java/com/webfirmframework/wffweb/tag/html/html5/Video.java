@@ -48,7 +48,6 @@ public class Video extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -62,7 +61,7 @@ public class Video extends AbstractHtml {
      */
     public Video(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.VIDEO, base, attributes);
+        super(TagNameConstants.VIDEO, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

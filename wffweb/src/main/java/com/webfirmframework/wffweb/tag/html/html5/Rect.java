@@ -48,7 +48,6 @@ public class Rect extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -62,7 +61,7 @@ public class Rect extends AbstractHtml {
      */
     public Rect(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.RECT, base, attributes);
+        super(TagNameConstants.RECT, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

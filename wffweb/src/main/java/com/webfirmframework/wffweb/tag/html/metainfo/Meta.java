@@ -34,7 +34,6 @@ public class Meta extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -49,7 +48,7 @@ public class Meta extends AbstractHtml {
      */
     public Meta(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(tagType, TagNameConstants.META, base, attributes);
+        super(tagType, TagNameConstants.META, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

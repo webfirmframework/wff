@@ -312,10 +312,10 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
                 compressedByIndexBytes.write(attributeName.getBytes(charset));
 
-//                if (LOGGER.isLoggable(Level.WARNING)) {
-//                    LOGGER.warning(attributeName
-//                            + " is not indexed, please register it with AttributeRegistry");
-//                }
+                if (LOGGER.isLoggable(Level.WARNING)) {
+                    LOGGER.warning(attributeName
+                            + " is not indexed, please register it with AttributeRegistry");
+                }
             } else {
 
                 final byte[] optimizedBytesFromInt = WffBinaryMessageUtil

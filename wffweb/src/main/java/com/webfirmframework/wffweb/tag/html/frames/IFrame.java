@@ -33,7 +33,6 @@ public class IFrame extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -48,7 +47,7 @@ public class IFrame extends AbstractHtml {
      */
     public IFrame(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.IFRAME, base, attributes);
+        super(TagNameConstants.IFRAME, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

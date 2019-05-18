@@ -32,7 +32,6 @@ public class Dt extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -46,7 +45,7 @@ public class Dt extends AbstractHtml {
      * @since 1.0.0
      */
     public Dt(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(TagNameConstants.DT, base, attributes);
+        super(TagNameConstants.DT, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

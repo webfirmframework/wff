@@ -48,7 +48,6 @@ public class Track extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -62,7 +61,7 @@ public class Track extends AbstractHtml {
      */
     public Track(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.TRACK, base, attributes);
+        super(TagNameConstants.TRACK, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

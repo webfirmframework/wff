@@ -48,7 +48,6 @@ public class Embed extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -63,7 +62,7 @@ public class Embed extends AbstractHtml {
      */
     public Embed(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.EMBED, base, attributes);
+        super(TagNameConstants.EMBED, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

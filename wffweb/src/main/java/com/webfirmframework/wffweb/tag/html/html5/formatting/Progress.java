@@ -49,7 +49,6 @@ public class Progress extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -64,7 +63,7 @@ public class Progress extends AbstractHtml {
      */
     public Progress(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.PROGRESS, base, attributes);
+        super(TagNameConstants.PROGRESS, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

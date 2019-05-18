@@ -49,7 +49,6 @@ public class Footer extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -64,7 +63,7 @@ public class Footer extends AbstractHtml {
      */
     public Footer(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.FOOTER, base, attributes);
+        super(TagNameConstants.FOOTER, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

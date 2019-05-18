@@ -48,7 +48,6 @@ public class Meter extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -63,7 +62,7 @@ public class Meter extends AbstractHtml {
      */
     public Meter(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.METER, base, attributes);
+        super(TagNameConstants.METER, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

@@ -33,7 +33,6 @@ public class FieldSet extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -48,7 +47,7 @@ public class FieldSet extends AbstractHtml {
      */
     public FieldSet(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.FIELDSET, base, attributes);
+        super(TagNameConstants.FIELDSET, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

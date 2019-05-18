@@ -33,7 +33,6 @@ public class ColGroup extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -48,7 +47,7 @@ public class ColGroup extends AbstractHtml {
      */
     public ColGroup(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.COLGROUP, base, attributes);
+        super(TagNameConstants.COLGROUP, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

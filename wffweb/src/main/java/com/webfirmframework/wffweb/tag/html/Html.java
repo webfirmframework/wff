@@ -45,7 +45,6 @@ public class Html extends DocType {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -65,7 +64,7 @@ public class Html extends DocType {
      */
     public Html(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.HTML, base, attributes);
+        super(TagNameConstants.HTML, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }
@@ -96,7 +95,7 @@ public class Html extends DocType {
     public Html(final int id, final AbstractHtml base,
             final AbstractAttribute... attributes) {
         super(Html.class.getSimpleName().toLowerCase() + String.valueOf(id),
-                base, attributes);
+                TAG_NAME_INDEX, base, attributes);
     }
 
     /**

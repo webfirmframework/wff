@@ -33,7 +33,6 @@ public class Legend extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -48,7 +47,7 @@ public class Legend extends AbstractHtml {
      */
     public Legend(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.LEGEND, base, attributes);
+        super(TagNameConstants.LEGEND, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

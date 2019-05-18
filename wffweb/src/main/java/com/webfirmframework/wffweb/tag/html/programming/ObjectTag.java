@@ -35,7 +35,6 @@ public class ObjectTag extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -50,7 +49,7 @@ public class ObjectTag extends AbstractHtml {
      */
     public ObjectTag(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.OBJECT, base, attributes);
+        super(TagNameConstants.OBJECT, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

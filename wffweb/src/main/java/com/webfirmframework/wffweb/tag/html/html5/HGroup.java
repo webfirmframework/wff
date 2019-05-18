@@ -49,7 +49,6 @@ public class HGroup extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -64,7 +63,7 @@ public class HGroup extends AbstractHtml {
      */
     public HGroup(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.HGROUP, base, attributes);
+        super(TagNameConstants.HGROUP, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

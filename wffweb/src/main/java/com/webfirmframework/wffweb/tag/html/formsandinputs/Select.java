@@ -33,7 +33,6 @@ public class Select extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -48,7 +47,7 @@ public class Select extends AbstractHtml {
      */
     public Select(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.SELECT, base, attributes);
+        super(TagNameConstants.SELECT, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

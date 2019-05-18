@@ -32,7 +32,6 @@ public class Abbr extends AbstractHtml implements AbbrAttributable {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -47,7 +46,7 @@ public class Abbr extends AbstractHtml implements AbbrAttributable {
      */
     public Abbr(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.ABBR, base, attributes);
+        super(TagNameConstants.ABBR, TAG_NAME_INDEX, base, attributes);
 
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);

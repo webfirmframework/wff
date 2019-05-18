@@ -50,7 +50,6 @@ public class TextArea extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -65,7 +64,7 @@ public class TextArea extends AbstractHtml {
      */
     public TextArea(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.TEXTAREA, base, attributes);
+        super(TagNameConstants.TEXTAREA, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

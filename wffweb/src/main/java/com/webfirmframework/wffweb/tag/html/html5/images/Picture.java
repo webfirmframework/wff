@@ -48,7 +48,6 @@ public class Picture extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -63,7 +62,7 @@ public class Picture extends AbstractHtml {
      */
     public Picture(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.PICTURE, base, attributes);
+        super(TagNameConstants.PICTURE, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

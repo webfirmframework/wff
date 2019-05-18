@@ -32,7 +32,6 @@ public class Del extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -46,7 +45,7 @@ public class Del extends AbstractHtml {
      * @since 1.0.0
      */
     public Del(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(TagNameConstants.DEL, base, attributes);
+        super(TagNameConstants.DEL, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

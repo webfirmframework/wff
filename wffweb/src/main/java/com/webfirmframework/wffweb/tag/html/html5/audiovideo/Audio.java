@@ -48,7 +48,6 @@ public class Audio extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -63,7 +62,7 @@ public class Audio extends AbstractHtml {
      */
     public Audio(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.AUDIO, base, attributes);
+        super(TagNameConstants.AUDIO, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

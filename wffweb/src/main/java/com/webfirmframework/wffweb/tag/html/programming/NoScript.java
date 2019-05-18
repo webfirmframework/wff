@@ -33,7 +33,6 @@ public class NoScript extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -48,7 +47,7 @@ public class NoScript extends AbstractHtml {
      */
     public NoScript(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.NOSCRIPT, base, attributes);
+        super(TagNameConstants.NOSCRIPT, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

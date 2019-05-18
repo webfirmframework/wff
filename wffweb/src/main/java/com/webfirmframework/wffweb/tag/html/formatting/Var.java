@@ -32,7 +32,6 @@ public class Var extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -46,7 +45,7 @@ public class Var extends AbstractHtml {
      * @since 1.0.0
      */
     public Var(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(TagNameConstants.VAR, base, attributes);
+        super(TagNameConstants.VAR, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

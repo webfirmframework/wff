@@ -48,7 +48,6 @@ public class Text extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -62,7 +61,7 @@ public class Text extends AbstractHtml {
      */
     public Text(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.TEXT, base, attributes);
+        super(TagNameConstants.TEXT, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

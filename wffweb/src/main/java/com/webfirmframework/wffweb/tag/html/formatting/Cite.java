@@ -32,7 +32,6 @@ public class Cite extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -47,7 +46,7 @@ public class Cite extends AbstractHtml {
      */
     public Cite(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.CITE, base, attributes);
+        super(TagNameConstants.CITE, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

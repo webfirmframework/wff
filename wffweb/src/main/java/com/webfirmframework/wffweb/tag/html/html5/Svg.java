@@ -48,7 +48,6 @@ public class Svg extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -61,7 +60,7 @@ public class Svg extends AbstractHtml {
      *
      */
     public Svg(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(TagNameConstants.SVG, base, attributes);
+        super(TagNameConstants.SVG, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

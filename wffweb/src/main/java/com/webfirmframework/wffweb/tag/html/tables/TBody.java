@@ -32,7 +32,6 @@ public class TBody extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -47,7 +46,7 @@ public class TBody extends AbstractHtml {
      */
     public TBody(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.TBODY, base, attributes);
+        super(TagNameConstants.TBODY, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

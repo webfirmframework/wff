@@ -30,7 +30,7 @@ public class Div extends AbstractHtml {
     }
 
     {
-        super.setTagNameIndex(TAG_NAME_INDEX);
+
         init();
     }
 
@@ -44,7 +44,7 @@ public class Div extends AbstractHtml {
      * @since 1.0.0
      */
     public Div(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(TagNameConstants.DIV, base, attributes);
+        super(TagNameConstants.DIV, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

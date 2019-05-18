@@ -33,7 +33,6 @@ public class OptGroup extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -48,7 +47,7 @@ public class OptGroup extends AbstractHtml {
      */
     public OptGroup(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.OPTGROUP, base, attributes);
+        super(TagNameConstants.OPTGROUP, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

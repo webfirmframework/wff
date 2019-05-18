@@ -62,7 +62,7 @@ public class DataWffId extends DataAttribute {
      * @author WFF
      */
     public DataWffId(final String value) {
-        super(ATTRIBUTE_NAME_EXTENSION, value);
+        super(ATTRIBUTE_NAME_EXTENSION, ATTR_NAME_INDEX, value);
         attributeValue = value;
     }
 

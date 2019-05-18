@@ -50,7 +50,6 @@ public class FigCaption extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -65,7 +64,7 @@ public class FigCaption extends AbstractHtml {
      */
     public FigCaption(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.FIGCAPTION, base, attributes);
+        super(TagNameConstants.FIGCAPTION, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

@@ -48,7 +48,7 @@ public class Summary extends AbstractHtml {
     }
 
     {
-        super.setTagNameIndex(TAG_NAME_INDEX);
+
         init();
     }
 
@@ -63,7 +63,7 @@ public class Summary extends AbstractHtml {
      */
     public Summary(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.SUMMARY, base, attributes);
+        super(TagNameConstants.SUMMARY, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

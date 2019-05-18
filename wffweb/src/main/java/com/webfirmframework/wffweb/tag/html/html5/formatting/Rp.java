@@ -48,7 +48,6 @@ public class Rp extends AbstractHtml {
 
     {
 
-        super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
 
@@ -62,7 +61,7 @@ public class Rp extends AbstractHtml {
      * @since 1.0.0
      */
     public Rp(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(TagNameConstants.RP, base, attributes);
+        super(TagNameConstants.RP, TAG_NAME_INDEX, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }
