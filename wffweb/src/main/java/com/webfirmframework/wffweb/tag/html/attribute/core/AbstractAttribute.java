@@ -33,7 +33,6 @@ import java.util.WeakHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.tag.core.AbstractTagBase;
@@ -312,10 +311,13 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
                 compressedByIndexBytes.write(attributeName.getBytes(charset));
 
-                if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.warning(attributeName
-                            + " is not indexed, please register it with AttributeRegistry");
-                }
+                // logging is not required here
+                // as it is not an unusual case
+                // if (LOGGER.isLoggable(Level.WARNING)) {
+                // LOGGER.warning(attributeName
+                // + " is not indexed, please register it with
+                // AttributeRegistry");
+                // }
             } else {
 
                 final byte[] optimizedBytesFromInt = WffBinaryMessageUtil
