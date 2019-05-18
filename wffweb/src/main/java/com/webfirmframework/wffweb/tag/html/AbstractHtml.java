@@ -87,8 +87,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     // TODO remove this logger if toCompressedWffBMBytes is not using it
     // this is declared after 3.0.2
-    public static final Logger LOGGER = Logger
-            .getLogger(AbstractHtml.class.getName());
+//    public static final Logger LOGGER = Logger
+//            .getLogger(AbstractHtml.class.getName());
 
     private static final Security ACCESS_OBJECT;
 
@@ -3650,10 +3650,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
                             System.arraycopy(rowNodeNameBytes, 0, nodeNameBytes,
                                     1, rowNodeNameBytes.length);
 
-                            if (LOGGER.isLoggable(Level.WARNING)) {
-                                LOGGER.warning(nodeName
-                                        + " is not indexed, please register it with TagRegistry");
-                            }
+//                            if (LOGGER.isLoggable(Level.WARNING)) {
+//                                LOGGER.warning(nodeName
+//                                        + " is not indexed, please register it with TagRegistry");
+//                            }
 
                         } else {
                             final byte[] optimizedBytesFromInt = WffBinaryMessageUtil
