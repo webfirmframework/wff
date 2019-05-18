@@ -90,7 +90,8 @@ public enum PreIndexedAttributeName {
 
     MUTED(AttributeNameConstants.MUTED),
 
-    DATA_(AttributeNameConstants.DATA),
+    // not required to index
+    // DATA_(AttributeNameConstants.DATA),
 
     WIDTH(AttributeNameConstants.WIDTH),
 

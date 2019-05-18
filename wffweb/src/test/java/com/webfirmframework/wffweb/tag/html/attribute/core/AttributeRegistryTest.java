@@ -140,10 +140,26 @@ public class AttributeRegistryTest {
     public void testAttrConstantsWithPreIndexedNames() throws Exception {
         for (final Field field : InternalAttrNameConstants.class.getFields()) {
             try {
+                final String fieldName = field.getName();
+                
+                assertNotNull(PreIndexedAttributeName.valueOf(fieldName));
+            } catch (final Exception e) {
+                e.printStackTrace();
+                fail("invalid PreIndexedAttributeName constant");
+            }
+        }
+        for (final Field field : AttributeNameConstants.class.getFields()) {
+            try {
+                final String attrName = field.get(null).toString();
+                if (attrName.endsWith("-")) {
+                    continue;
+                }
+                
                 final String fieldName = field.getName();                
                 assertNotNull(PreIndexedAttributeName.valueOf(fieldName));
             } catch (final Exception e) {
                 e.printStackTrace();
+                fail("invalid PreIndexedAttributeName constant");
             }
         }
     }
@@ -156,9 +172,9 @@ public class AttributeRegistryTest {
         final List<String> attributeNames = AttributeRegistry.getAttributeNames();
         for (String attrName : attributeNames) {
             
-            final String constantName = attrName.replace("-", "_").toUpperCase();
-            System.out.println(constantName + "(AttributeNameConstants."
-                    + constantName + "),\n");
+//            final String constantName = attrName.replace("-", "_").toUpperCase();
+//            System.out.println(constantName + "(AttributeNameConstants."
+//                    + constantName + "),\n");
             
             final int indexByAttributeName = AttributeRegistry.getIndexByAttributeName(attrName);
             

@@ -27,7 +27,9 @@ import org.junit.Test;
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml.TagType;
+import com.webfirmframework.wffweb.tag.html.attribute.InternalAttrNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeRegistry;
+import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
 import com.webfirmframework.wffweb.tag.htmlwff.CustomTag;
@@ -118,11 +120,29 @@ public class TagRegistryTest {
     }
     
     @Test
+    public void testTagConstantsWithPreIndexedNames() throws Exception {
+        for (final Field field : TagNameConstants.class.getFields()) {
+            try {
+                final String fieldName = field.getName().replace("_TAG", "");
+                
+                assertNotNull(PreIndexedTagName.valueOf(fieldName));
+            } catch (final Exception e) {
+                e.printStackTrace();
+                fail("invalid PreIndexedTagName constant");
+            }
+        }
+    }
+    
+    @Test
     public void testGetIndexByTagName() throws Exception {
         
         final List<String> tagNames = TagRegistry.getTagNames();
         for (String tagName : tagNames) {
             final int indexByTagName = TagRegistry.getIndexByTagName(tagName);
+            
+//            final String constantName = tagName.replace("-", "_").toUpperCase();
+//            System.out.println(constantName + "(TagNameConstants."
+//                    + constantName + "),\n");
             
             final String tagNameByIndex = tagNames.get(indexByTagName);
             assertEquals(tagName, tagNameByIndex);

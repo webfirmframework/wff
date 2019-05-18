@@ -6,7 +6,7 @@ import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.core.IndexedTagName;
+import com.webfirmframework.wffweb.tag.html.core.PreIndexedTagName;
 import com.webfirmframework.wffweb.tag.html.identifier.BlockQuoteAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
@@ -23,20 +23,17 @@ public class BlockQuote extends AbstractHtml {
     public static final Logger LOGGER = Logger
             .getLogger(BlockQuote.class.getName());
 
-    private static volatile int TAG_NAME_INDEX = -1;
+    private static final int TAG_NAME_INDEX;
 
     static {
-        final Integer index = IndexedTagName.INSTANCE
-                .getIndexByTagName(TagNameConstants.BLOCKQUOTE);
-        TAG_NAME_INDEX = index != null ? index : -1;
+
+        TAG_NAME_INDEX = PreIndexedTagName
+                .getIndex(PreIndexedTagName.BLOCKQUOTE);
+
     }
 
     {
-        if (TAG_NAME_INDEX == -1) {
-            final Integer index = IndexedTagName.INSTANCE
-                    .getIndexByTagName(TagNameConstants.BLOCKQUOTE);
-            TAG_NAME_INDEX = index != null ? index : -1;
-        }
+
         super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }

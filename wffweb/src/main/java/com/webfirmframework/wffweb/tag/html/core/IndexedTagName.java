@@ -15,18 +15,10 @@
  */
 package com.webfirmframework.wffweb.tag.html.core;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 
 /**
  * @author WFF
@@ -45,40 +37,16 @@ public enum IndexedTagName {
 
     private IndexedTagName() {
 
-        final Field[] fields = TagNameConstants.class.getFields();
+        final PreIndexedTagName[] values = PreIndexedTagName.values();
 
-        int initialCapacity = fields.length;
-
-        final Set<String> tagNamesSet = new HashSet<>(initialCapacity);
-
-        initialCapacity = tagNamesSet.size();
+        final int initialCapacity = values.length;
 
         sortedTagNames = new ArrayList<>(initialCapacity);
         indexedTagNames = new ConcurrentHashMap<>(initialCapacity);
 
-        for (final Field field : fields) {
-            try {
-                final String tagName = field.get(null).toString();
-                tagNamesSet.add(tagName);
-            } catch (final Exception e) {
-                Logger.getLogger(IndexedTagName.class.getName())
-                        .log(Level.SEVERE, e.getMessage(), e);
-            }
-        }
-
-        sortedTagNames.addAll(tagNamesSet);
-        Collections.sort(sortedTagNames, (o1, o2) -> {
-
-            final Integer length1 = o1.length();
-            final Integer length2 = o2.length();
-
-            return length1.compareTo(length2);
-        });
-
-        int index = 0;
-        for (final String tagName : sortedTagNames) {
-            indexedTagNames.put(tagName, index);
-            index++;
+        for (final PreIndexedTagName each : values) {
+            sortedTagNames.add(each.getName());
+            indexedTagNames.put(each.getName(), each.getIndex());
         }
     }
 

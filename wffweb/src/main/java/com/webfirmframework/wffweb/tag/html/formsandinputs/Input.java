@@ -6,7 +6,7 @@ import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.core.IndexedTagName;
+import com.webfirmframework.wffweb.tag.html.core.PreIndexedTagName;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 
@@ -24,20 +24,16 @@ public class Input extends AbstractHtml {
 
     private static TagType tagType = TagType.NON_CLOSING;
 
-    private static volatile int TAG_NAME_INDEX = -1;
+    private static final int TAG_NAME_INDEX;
 
     static {
-        final Integer index = IndexedTagName.INSTANCE
-                .getIndexByTagName(TagNameConstants.INPUT);
-        TAG_NAME_INDEX = index != null ? index : -1;
+
+        TAG_NAME_INDEX = PreIndexedTagName.getIndex(PreIndexedTagName.INPUT);
+
     }
 
     {
-        if (TAG_NAME_INDEX == -1) {
-            final Integer index = IndexedTagName.INSTANCE
-                    .getIndexByTagName(TagNameConstants.INPUT);
-            TAG_NAME_INDEX = index != null ? index : -1;
-        }
+
         super.setTagNameIndex(TAG_NAME_INDEX);
         init();
     }
