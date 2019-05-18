@@ -314,7 +314,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
                 if (LOGGER.isLoggable(Level.WARNING)) {
                     LOGGER.warning(attributeName
-                            + " is not indexed, please register it with AttributeRegistrar");
+                            + " is not indexed, please register it with AttributeRegistry");
                 }
             } else {
 

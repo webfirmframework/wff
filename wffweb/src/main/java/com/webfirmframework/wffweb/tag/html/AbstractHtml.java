@@ -35,6 +35,8 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 import com.webfirmframework.wffweb.InvalidTagException;
@@ -82,6 +84,11 @@ public abstract class AbstractHtml extends AbstractJsObject {
     // updated.
 
     private static final long serialVersionUID = 3_0_1L;
+
+    // TODO remove this logger if toCompressedWffBMBytes is not using it
+    // this is declared after 3.0.2
+    public static final Logger LOGGER = Logger
+            .getLogger(AbstractHtml.class.getName());
 
     private static final Security ACCESS_OBJECT;
 
@@ -3620,13 +3627,18 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                     final String nodeName = tag.getTagName();
 
+                    final AbstractHtml parentLocal = tag.parent;
+
                     if (nodeName != null && !nodeName.isEmpty()) {
 
                         final NameValue nameValue = new NameValue();
 
                         final byte[] nodeNameBytes;
 
-                        if (tag.tagNameIndex == -1) {
+                        // just be initialized as local
+                        final int tagNameIndexLocal = tag.tagNameIndex;
+
+                        if (tagNameIndexLocal == -1) {
                             final byte[] rowNodeNameBytes = nodeName
                                     .getBytes(charset);
                             nodeNameBytes = new byte[rowNodeNameBytes.length
@@ -3637,9 +3649,16 @@ public abstract class AbstractHtml extends AbstractJsObject {
                             nodeNameBytes[0] = 0;
                             System.arraycopy(rowNodeNameBytes, 0, nodeNameBytes,
                                     1, rowNodeNameBytes.length);
+
+                            if (LOGGER.isLoggable(Level.WARNING)) {
+                                LOGGER.warning(nodeName
+                                        + " is not indexed, please register it with TagRegistry");
+                            }
+
                         } else {
                             final byte[] optimizedBytesFromInt = WffBinaryMessageUtil
-                                    .getOptimizedBytesFromInt(tag.tagNameIndex);
+                                    .getOptimizedBytesFromInt(
+                                            tagNameIndexLocal);
                             nodeNameBytes = new byte[optimizedBytesFromInt.length
                                     + 1];
                             nodeNameBytes[0] = (byte) optimizedBytesFromInt.length;
@@ -3652,8 +3671,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
                                 .getAttributeHtmlBytesCompressedByIndex(false,
                                         charset, tag.attributes);
 
-                        final int parentWffSlotIndex = tag.parent == null ? -1
-                                : tag.parent.wffSlotIndex;
+                        final int parentWffSlotIndex = parentLocal == null ? -1
+                                : parentLocal.wffSlotIndex;
                         nameValue.setName(WffBinaryMessageUtil
                                 .getBytesFromInt(parentWffSlotIndex));
 
@@ -3671,8 +3690,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                     } else if (!tag.getClosingTag().isEmpty()) {
 
-                        final int parentWffSlotIndex = tag.parent == null ? -1
-                                : tag.parent.wffSlotIndex;
+                        final int parentWffSlotIndex = parentLocal == null ? -1
+                                : parentLocal.wffSlotIndex;
 
                         final NameValue nameValue = new NameValue();
 
