@@ -1831,7 +1831,7 @@ public class AbstractHtmlTest {
             }
         };
         
-        final int htmlString = html.toHtmlString().length();
+        final int htmlStringLength = html.toHtmlString().length();
         long before = System.nanoTime();
         final int tagWffBMBytesLength = html.toWffBMBytes(StandardCharsets.UTF_8).length;
         long after = System.nanoTime();
@@ -1845,7 +1845,7 @@ public class AbstractHtmlTest {
         long toCompressedWffBMBytesProcessingTime = after - before;
         
         assertTrue(tagCompressedWffBMBytesLength < tagWffBMBytesLength);
-        System.out.println("htmlString: " + htmlString + "\ntagWffBMBytesLength: " + tagWffBMBytesLength
+        System.out.println("htmlStringLength: " + htmlStringLength + "\ntagWffBMBytesLength: " + tagWffBMBytesLength
                 + "\ntagCompressedWffBMBytesLength: "
                 + tagCompressedWffBMBytesLength + "\ntagCompressedWffBMBytesLength saved " + (tagWffBMBytesLength - tagCompressedWffBMBytesLength) + " bytes"
                 + "\ntoWffBMBytesProcessingTime: " + toWffBMBytesProcessingTime + "\ntoCompressedWffBMBytesProcessingTime: " 
