@@ -21,12 +21,14 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
+import com.webfirmframework.wffweb.tag.html.attribute.InternalAttrNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Style;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
 import com.webfirmframework.wffweb.tag.html.core.TagRegistry;
@@ -90,7 +92,7 @@ public class AttributeRegistryTest {
                 assertEquals(entry.getValue(), attr.getClass());
                
                 //just for testing
-//                assertEquals(attr.attrNameIndex, (int) AttributeRegistry.getIndexByAttributeName(attr.getAttributeName()));
+                assertEquals(attr.getAttrNameIndex(), (int) AttributeRegistry.getIndexByAttributeName(attr.getAttributeName()));
 
             }
         }
@@ -135,10 +137,29 @@ public class AttributeRegistryTest {
     }
     
     @Test
+    public void testAttrConstantsWithPreIndexedNames() throws Exception {
+        for (final Field field : InternalAttrNameConstants.class.getFields()) {
+            try {
+                final String fieldName = field.getName();                
+                assertNotNull(PreIndexedAttributeName.valueOf(fieldName));
+            } catch (final Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    @Test
     public void testGetIndexByAttributeName() throws Exception {
+        
+        
         
         final List<String> attributeNames = AttributeRegistry.getAttributeNames();
         for (String attrName : attributeNames) {
+            
+            final String constantName = attrName.replace("-", "_").toUpperCase();
+            System.out.println(constantName + "(AttributeNameConstants."
+                    + constantName + "),\n");
+            
             final int indexByAttributeName = AttributeRegistry.getIndexByAttributeName(attrName);
             
             final String attrNameByIndex = attributeNames.get(indexByAttributeName);

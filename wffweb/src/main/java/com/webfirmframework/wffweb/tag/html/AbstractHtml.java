@@ -4535,4 +4535,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
     protected Lock getWriteLock() {
         return sharedObject.getLock(ACCESS_OBJECT).writeLock();
     }
+
+    // for testing purpose only
+    int getTagNameIndex() {
+        return tagNameIndex;
+    }
 }

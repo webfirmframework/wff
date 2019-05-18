@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -37,6 +39,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.global.ClassAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Style;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
+import com.webfirmframework.wffweb.tag.html.core.TagRegistry;
 import com.webfirmframework.wffweb.tag.html.formatting.B;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Controls;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.Translate;
@@ -1792,6 +1795,23 @@ public class AbstractHtmlTest {
         //with tagIndex impl compressedWffBMBytes.length: 242
 //        System.out.println("wffBMBytes.length: " + wffBMBytes.length + "\ncompressedWffBMBytes.length: " + compressedWffBMBytes.length);
         assertTrue( wffBMBytes.length > compressedWffBMBytes.length);
+    }
+    
+    @Test
+    public void testTagNameIndex() throws Exception {
+        final Map<String, Class<?>> tagClassNameByTagName = TagRegistry
+                .getTagClassByTagName();
+        for (Entry<String, Class<?>> entry : tagClassNameByTagName
+                .entrySet()) {
+            final AbstractHtml tag = TagRegistry
+                    .getNewTagInstance(entry.getKey());
+
+            assertNotNull(tag);
+            assertEquals(entry.getValue(), tag.getClass());
+          //just for testing
+            assertEquals(tag.getTagNameIndex(), (int) TagRegistry.getIndexByTagName(tag.getTagName()));
+
+        }
     }
 
 }

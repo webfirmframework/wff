@@ -80,7 +80,7 @@ public class TagRegistryTest {
                 assertNotNull(tag);
                 assertEquals(entry.getValue(), tag.getClass());
               //just for testing
-//                assertEquals(tag.tagNameIndex, (int) TagRegistry.getIndexByTagName(tag.getTagName()));
+//                assertEquals(tag.getTagNameIndex(), (int) TagRegistry.getIndexByTagName(tag.getTagName()));
 
             }
         }

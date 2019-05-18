@@ -215,7 +215,7 @@ import com.webfirmframework.wffweb.csswff.CustomCssProperty;
 import com.webfirmframework.wffweb.informer.StateChangeInformer;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.attribute.core.IndexedAttributeName;
+import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 import com.webfirmframework.wffweb.util.StringUtil;
 import com.webfirmframework.wffweb.util.TagStringUtil;
@@ -434,12 +434,11 @@ public class Style extends AbstractAttribute
     private final Set<CssProperty> cssProperties = ConcurrentHashMap
             .newKeySet();
 
-    private static volatile int ATTR_NAME_INDEX = -1;
+    private static final int ATTR_NAME_INDEX;
 
     static {
-        final Integer index = IndexedAttributeName.INSTANCE
-                .getIndexByAttributeName(AttributeNameConstants.STYLE);
-        ATTR_NAME_INDEX = index != null ? index : -1;
+        ATTR_NAME_INDEX = PreIndexedAttributeName
+                .getIndex(PreIndexedAttributeName.STYLE);
 
         CSSPROPERTY_CLASSES.put(CssNameConstants.ALIGN_CONTENT,
                 AlignContent.class);
@@ -731,11 +730,7 @@ public class Style extends AbstractAttribute
     }
 
     {
-        if (ATTR_NAME_INDEX == -1) {
-            final Integer index = IndexedAttributeName.INSTANCE
-                    .getIndexByAttributeName(AttributeNameConstants.STYLE);
-            ATTR_NAME_INDEX = index != null ? index : -1;
-        }
+
         super.setAttributeNameIndex(ATTR_NAME_INDEX);
         super.setAttributeName(AttributeNameConstants.STYLE);
         abstractCssPropertyClassObjects = new HashMap<String, AbstractCssProperty<?>>() {

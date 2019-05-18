@@ -17,7 +17,7 @@ package com.webfirmframework.wffweb.tag.html.html5.attribute.global;
 
 import com.webfirmframework.wffweb.WffSecurityException;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
-import com.webfirmframework.wffweb.tag.html.attribute.core.IndexedAttributeName;
+import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 
 public class DataWffId extends DataAttribute {
 
@@ -43,20 +43,16 @@ public class DataWffId extends DataAttribute {
     // must be kept final to provide atomic consistency across multiple threads
     private final String attributeValue;
 
-    private static volatile int ATTR_NAME_INDEX = -1;
+    private static final int ATTR_NAME_INDEX;
 
     static {
-        final Integer index = IndexedAttributeName.INSTANCE
-                .getIndexByAttributeName(ATTRIBUTE_NAME);
-        ATTR_NAME_INDEX = index != null ? index : -1;
+        ATTR_NAME_INDEX = PreIndexedAttributeName
+                .getIndex(PreIndexedAttributeName.DATA_WFF_ID);
+
     }
 
     {
-        if (ATTR_NAME_INDEX == -1) {
-            final Integer index = IndexedAttributeName.INSTANCE
-                    .getIndexByAttributeName(ATTRIBUTE_NAME);
-            ATTR_NAME_INDEX = index != null ? index : -1;
-        }
+
         super.setAttributeNameIndex(ATTR_NAME_INDEX);
     }
 

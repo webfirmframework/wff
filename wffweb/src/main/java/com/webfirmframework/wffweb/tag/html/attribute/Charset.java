@@ -17,7 +17,7 @@
 package com.webfirmframework.wffweb.tag.html.attribute;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.attribute.core.IndexedAttributeName;
+import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
 
 /**
@@ -32,20 +32,16 @@ public class Charset extends AbstractAttribute implements AAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    private static volatile int ATTR_NAME_INDEX = -1;
+    private static final int ATTR_NAME_INDEX;
 
     static {
-        final Integer index = IndexedAttributeName.INSTANCE
-                .getIndexByAttributeName(AttributeNameConstants.CHARSET);
-        ATTR_NAME_INDEX = index != null ? index : -1;
+        ATTR_NAME_INDEX = PreIndexedAttributeName
+                .getIndex(PreIndexedAttributeName.CHARSET);
+
     }
 
     {
-        if (ATTR_NAME_INDEX == -1) {
-            final Integer index = IndexedAttributeName.INSTANCE
-                    .getIndexByAttributeName(AttributeNameConstants.CHARSET);
-            ATTR_NAME_INDEX = index != null ? index : -1;
-        }
+
         super.setAttributeNameIndex(ATTR_NAME_INDEX);
         super.setAttributeName(AttributeNameConstants.CHARSET);
         init();

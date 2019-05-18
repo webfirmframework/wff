@@ -413,8 +413,8 @@ public class TagRegistry {
      * @return
      * @since 3.0.2
      */
-    static Map<String, Class<?>> getTagClassByTagName() {
-        return TAG_CLASS_BY_TAG_NAME;
+    public static Map<String, Class<?>> getTagClassByTagName() {
+        return Collections.unmodifiableMap(TAG_CLASS_BY_TAG_NAME);
     }
 
     /**

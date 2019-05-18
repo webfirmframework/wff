@@ -1440,4 +1440,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         return readLocks;
     }
 
+    // for testing purpose only
+    int getAttrNameIndex() {
+        return attrNameIndex;
+    }
+
 }

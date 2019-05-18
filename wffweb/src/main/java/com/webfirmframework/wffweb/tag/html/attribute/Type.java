@@ -17,7 +17,7 @@
 package com.webfirmframework.wffweb.tag.html.attribute;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.attribute.core.IndexedAttributeName;
+import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.AreaAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
@@ -150,20 +150,16 @@ public class Type extends AbstractAttribute
 
     public static final String TEXT_CSS = "text/css";
 
-    private static volatile int ATTR_NAME_INDEX = -1;
+    private static final int ATTR_NAME_INDEX;
 
     static {
-        final Integer index = IndexedAttributeName.INSTANCE
-                .getIndexByAttributeName(AttributeNameConstants.TYPE);
-        ATTR_NAME_INDEX = index != null ? index : -1;
+        ATTR_NAME_INDEX = PreIndexedAttributeName
+                .getIndex(PreIndexedAttributeName.TYPE);
+
     }
 
     {
-        if (ATTR_NAME_INDEX == -1) {
-            final Integer index = IndexedAttributeName.INSTANCE
-                    .getIndexByAttributeName(AttributeNameConstants.TYPE);
-            ATTR_NAME_INDEX = index != null ? index : -1;
-        }
+
         super.setAttributeNameIndex(ATTR_NAME_INDEX);
         super.setAttributeName(AttributeNameConstants.TYPE);
         init();

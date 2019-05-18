@@ -15,19 +15,10 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute.core;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
-import com.webfirmframework.wffweb.tag.html.attribute.InternalAttrNameConstants;
 
 /**
  * @author WFF
@@ -45,53 +36,17 @@ public enum IndexedAttributeName {
     private final Map<String, Integer> indexedAttrNames;
 
     private IndexedAttributeName() {
-        final Field[] fields = AttributeNameConstants.class.getFields();
+        final PreIndexedAttributeName[] values = PreIndexedAttributeName
+                .values();
 
-        int initialCapacity = fields.length;
-
-        final Set<String> attributeNamesSet = new HashSet<>(initialCapacity);
-        // DataWffId.ATTRIBUTE_NAME should not be referenced, it will cause
-        // class initialization exception
-
-        final Logger logger = Logger
-                .getLogger(IndexedAttributeName.class.getName());
-
-        for (final Field field : InternalAttrNameConstants.class.getFields()) {
-            try {
-                final String attrName = field.get(null).toString();
-                attributeNamesSet.add(attrName);
-            } catch (final Exception e) {
-                logger.log(Level.SEVERE, e.getMessage(), e);
-            }
-        }
-
-        initialCapacity = attributeNamesSet.size();
+        final int initialCapacity = values.length;
 
         sortedAttrNames = new ArrayList<>(initialCapacity);
         indexedAttrNames = new ConcurrentHashMap<>(initialCapacity);
 
-        for (final Field field : fields) {
-            try {
-                final String attrName = field.get(null).toString();
-                attributeNamesSet.add(attrName);
-            } catch (final Exception e) {
-                logger.log(Level.SEVERE, e.getMessage(), e);
-            }
-        }
-
-        sortedAttrNames.addAll(attributeNamesSet);
-        Collections.sort(sortedAttrNames, (o1, o2) -> {
-
-            final Integer length1 = o1.length();
-            final Integer length2 = o2.length();
-
-            return length1.compareTo(length2);
-        });
-
-        int index = 0;
-        for (final String attrName : sortedAttrNames) {
-            indexedAttrNames.put(attrName, index);
-            index++;
+        for (final PreIndexedAttributeName each : values) {
+            sortedAttrNames.add(each.getName());
+            indexedAttrNames.put(each.getName(), each.getIndex());
         }
     }
 
