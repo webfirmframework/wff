@@ -50,8 +50,7 @@ public abstract class DocType extends AbstractHtml {
     /**
      * should be invoked to generate opening and closing tag
      *
-     * @param tagName
-     * @param tagNameIndex
+     * @param preIndexedTagName
      * @param attributes
      * @since 3.0.3
      */
