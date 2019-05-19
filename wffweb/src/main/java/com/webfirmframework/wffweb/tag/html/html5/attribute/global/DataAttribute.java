@@ -61,13 +61,9 @@ public class DataAttribute extends AbstractAttribute
     /**
      * NB: only for internal use
      *
-     * @param attributeNameExension
-     * @param attrNameIndex
-     *                                  only if there is an index value for this
-     *                                  attribute name (including data-) in
-     *                                  AttributeRegistry. If not pass -1.
-     *                                  Passing incorrect value may cause
-     *                                  strange behavior.
+     * @param preIndexAttr
+     *                         only if there is constant for this in
+     *                         PreIndexedAttributeName.
      * @param value
      * @since 3.0.3
      */
