@@ -446,15 +446,11 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * should be invoked to generate opening and closing tag base class
      * containing the functionalities to generate html string.
      *
-     * @param tagName
-     *                         TODO
-     * @param tagNameIndex
-     *                         There is an index value for the each tag name in
-     *                         tag registry pass it otherwise pass -1. Never
-     *                         pass an arbitrary value if the tag name has no
-     *                         valid index value in TagRegistry.
+     * @param preIndexedTagName
+     *                              PreIndexedTagName constant
+     * 
      * @param base
-     *                         TODO
+     *                              TODO
      * @author WFF
      * @since 3.0.3
      */
