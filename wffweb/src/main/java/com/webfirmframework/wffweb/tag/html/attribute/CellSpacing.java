@@ -38,18 +38,16 @@ public class CellSpacing extends AbstractAttribute
 
     private int value;
 
-    private static final int ATTR_NAME_INDEX;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
     static {
-        ATTR_NAME_INDEX = PreIndexedAttributeName
-                .getIndex(PreIndexedAttributeName.CELLSPACING);
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.CELLSPACING);
 
     }
 
     {
 
-        super.setAttributeNameAndIndex(AttributeNameConstants.CELLSPACING,
-                ATTR_NAME_INDEX);
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

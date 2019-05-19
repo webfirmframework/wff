@@ -38,18 +38,16 @@ public class RowSpan extends AbstractAttribute
 
     private int value;
 
-    private static final int ATTR_NAME_INDEX;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
     static {
-        ATTR_NAME_INDEX = PreIndexedAttributeName
-                .getIndex(PreIndexedAttributeName.ROWSPAN);
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.ROWSPAN);
 
     }
 
     {
 
-        super.setAttributeNameAndIndex(AttributeNameConstants.ROWSPAN,
-                ATTR_NAME_INDEX);
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

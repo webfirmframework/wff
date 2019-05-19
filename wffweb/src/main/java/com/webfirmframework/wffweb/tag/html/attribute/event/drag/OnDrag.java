@@ -16,7 +16,6 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute.event.drag;
 
-import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.attribute.event.AbstractEventAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.event.ServerAsyncMethod;
@@ -34,18 +33,16 @@ public class OnDrag extends AbstractEventAttribute {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    private static final int ATTR_NAME_INDEX;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
     static {
-        ATTR_NAME_INDEX = PreIndexedAttributeName
-                .getIndex(PreIndexedAttributeName.ONDRAG);
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.ONDRAG);
 
     }
 
     {
 
-        super.setAttributeNameAndIndex(AttributeNameConstants.ONDRAG,
-                ATTR_NAME_INDEX);
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

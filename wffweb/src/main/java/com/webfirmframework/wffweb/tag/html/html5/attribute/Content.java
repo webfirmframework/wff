@@ -16,7 +16,6 @@
  */
 package com.webfirmframework.wffweb.tag.html.html5.attribute;
 
-import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.identifier.MetaAttributable;
@@ -34,18 +33,16 @@ public class Content extends AbstractAttribute implements MetaAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    private static final int ATTR_NAME_INDEX;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
     static {
-        ATTR_NAME_INDEX = PreIndexedAttributeName
-                .getIndex(PreIndexedAttributeName.CONTENT);
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.CONTENT);
 
     }
 
     {
 
-        super.setAttributeNameAndIndex(AttributeNameConstants.CONTENT,
-                ATTR_NAME_INDEX);
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

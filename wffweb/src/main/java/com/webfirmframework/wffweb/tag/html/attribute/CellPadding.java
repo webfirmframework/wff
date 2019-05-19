@@ -38,18 +38,16 @@ public class CellPadding extends AbstractAttribute
 
     private int value;
 
-    private static final int ATTR_NAME_INDEX;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
     static {
-        ATTR_NAME_INDEX = PreIndexedAttributeName
-                .getIndex(PreIndexedAttributeName.CELLPADDING);
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.CELLPADDING);
 
     }
 
     {
 
-        super.setAttributeNameAndIndex(AttributeNameConstants.CELLPADDING,
-                ATTR_NAME_INDEX);
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

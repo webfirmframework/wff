@@ -123,18 +123,16 @@ public class Rev extends AbstractAttribute implements AAttributable {
 
     public static final String FRIEND = "friend";
 
-    private static final int ATTR_NAME_INDEX;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
     static {
-        ATTR_NAME_INDEX = PreIndexedAttributeName
-                .getIndex(PreIndexedAttributeName.REV);
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.REV);
 
     }
 
     {
 
-        super.setAttributeNameAndIndex(AttributeNameConstants.REV,
-                ATTR_NAME_INDEX);
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

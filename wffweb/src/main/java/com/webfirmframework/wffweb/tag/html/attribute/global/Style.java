@@ -434,11 +434,10 @@ public class Style extends AbstractAttribute
     private final Set<CssProperty> cssProperties = ConcurrentHashMap
             .newKeySet();
 
-    private static final int ATTR_NAME_INDEX;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
     static {
-        ATTR_NAME_INDEX = PreIndexedAttributeName
-                .getIndex(PreIndexedAttributeName.STYLE);
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.STYLE);
 
         CSSPROPERTY_CLASSES.put(CssNameConstants.ALIGN_CONTENT,
                 AlignContent.class);
@@ -731,8 +730,7 @@ public class Style extends AbstractAttribute
 
     {
 
-        super.setAttributeNameAndIndex(AttributeNameConstants.STYLE,
-                ATTR_NAME_INDEX);
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         abstractCssPropertyClassObjects = new HashMap<String, AbstractCssProperty<?>>() {
 
             private static final long serialVersionUID = 1_0_0L;
@@ -1858,6 +1856,6 @@ public class Style extends AbstractAttribute
 
     // for testing
     static int getAttrNameIndex() {
-        return ATTR_NAME_INDEX;
+        return PRE_INDEXED_ATTR_NAME.getIndex();
     }
 }

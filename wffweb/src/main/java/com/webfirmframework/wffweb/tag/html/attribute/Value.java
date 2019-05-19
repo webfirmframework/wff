@@ -32,18 +32,16 @@ public class Value extends AbstractAttribute implements InputAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    private static final int ATTR_NAME_INDEX;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
     static {
-        ATTR_NAME_INDEX = PreIndexedAttributeName
-                .getIndex(PreIndexedAttributeName.VALUE);
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.VALUE);
 
     }
 
     {
 
-        super.setAttributeNameAndIndex(AttributeNameConstants.VALUE,
-                ATTR_NAME_INDEX);
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

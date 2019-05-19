@@ -39,18 +39,16 @@ public class Multiple extends AbstractAttribute
 
     private static final long serialVersionUID = 1_0_0L;
 
-    private static final int ATTR_NAME_INDEX;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
     static {
-        ATTR_NAME_INDEX = PreIndexedAttributeName
-                .getIndex(PreIndexedAttributeName.MULTIPLE);
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.MULTIPLE);
 
     }
 
     {
 
-        super.setAttributeNameAndIndex(AttributeNameConstants.MULTIPLE,
-                ATTR_NAME_INDEX);
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

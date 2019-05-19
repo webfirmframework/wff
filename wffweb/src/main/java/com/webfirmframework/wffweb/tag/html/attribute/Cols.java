@@ -37,18 +37,16 @@ public class Cols extends AbstractAttribute implements TextAreaAttributable {
 
     private int value = 20;
 
-    private static final int ATTR_NAME_INDEX;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
     static {
-        ATTR_NAME_INDEX = PreIndexedAttributeName
-                .getIndex(PreIndexedAttributeName.COLS);
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.COLS);
 
     }
 
     {
 
-        super.setAttributeNameAndIndex(AttributeNameConstants.COLS,
-                ATTR_NAME_INDEX);
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

@@ -66,18 +66,16 @@ public class Shape extends AbstractAttribute
      */
     public static final String poly = "poly";
 
-    private static final int ATTR_NAME_INDEX;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
     static {
-        ATTR_NAME_INDEX = PreIndexedAttributeName
-                .getIndex(PreIndexedAttributeName.SHAPE);
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.SHAPE);
 
     }
 
     {
 
-        super.setAttributeNameAndIndex(AttributeNameConstants.SHAPE,
-                ATTR_NAME_INDEX);
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

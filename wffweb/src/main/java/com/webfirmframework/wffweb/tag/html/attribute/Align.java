@@ -49,18 +49,16 @@ public class Align extends AbstractAttribute implements InputAttributable {
 
     public static final String BOTTOM = "bottom";
 
-    private static final int ATTR_NAME_INDEX;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
     static {
-        ATTR_NAME_INDEX = PreIndexedAttributeName
-                .getIndex(PreIndexedAttributeName.ALIGN);
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.ALIGN);
 
     }
 
     {
 
-        super.setAttributeNameAndIndex(AttributeNameConstants.ALIGN,
-                ATTR_NAME_INDEX);
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

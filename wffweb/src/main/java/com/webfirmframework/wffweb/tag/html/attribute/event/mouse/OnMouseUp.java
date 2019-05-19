@@ -16,7 +16,6 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute.event.mouse;
 
-import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.attribute.event.AbstractEventAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.event.ServerAsyncMethod;
@@ -35,18 +34,16 @@ public class OnMouseUp extends AbstractEventAttribute implements AAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    private static final int ATTR_NAME_INDEX;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
     static {
-        ATTR_NAME_INDEX = PreIndexedAttributeName
-                .getIndex(PreIndexedAttributeName.ONMOUSEUP);
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.ONMOUSEUP);
 
     }
 
     {
 
-        super.setAttributeNameAndIndex(AttributeNameConstants.ONMOUSEUP,
-                ATTR_NAME_INDEX);
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

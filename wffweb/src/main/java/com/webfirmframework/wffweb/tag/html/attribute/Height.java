@@ -25,18 +25,16 @@ public class Height extends AbstractAttribute
     private float value;
     private LengthUnit cssLengthUnit;
 
-    private static final int ATTR_NAME_INDEX;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
     static {
-        ATTR_NAME_INDEX = PreIndexedAttributeName
-                .getIndex(PreIndexedAttributeName.HEIGHT);
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.HEIGHT);
 
     }
 
     {
 
-        super.setAttributeNameAndIndex(AttributeNameConstants.HEIGHT,
-                ATTR_NAME_INDEX);
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

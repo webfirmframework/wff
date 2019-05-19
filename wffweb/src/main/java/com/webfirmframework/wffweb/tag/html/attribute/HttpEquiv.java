@@ -32,18 +32,16 @@ public class HttpEquiv extends AbstractAttribute implements MetaAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    private static final int ATTR_NAME_INDEX;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
     static {
-        ATTR_NAME_INDEX = PreIndexedAttributeName
-                .getIndex(PreIndexedAttributeName.HTTP_EQUIV);
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.HTTP_EQUIV);
 
     }
 
     {
 
-        super.setAttributeNameAndIndex(AttributeNameConstants.HTTP_EQUIV,
-                ATTR_NAME_INDEX);
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

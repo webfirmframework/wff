@@ -43,16 +43,10 @@ public class DataWffId extends DataAttribute {
     // must be kept final to provide atomic consistency across multiple threads
     private final String attributeValue;
 
-    private static final int ATTR_NAME_INDEX;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
     static {
-        ATTR_NAME_INDEX = PreIndexedAttributeName
-                .getIndex(PreIndexedAttributeName.DATA_WFF_ID);
-
-    }
-
-    {
-
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.DATA_WFF_ID);
     }
 
     /**
@@ -62,7 +56,7 @@ public class DataWffId extends DataAttribute {
      * @author WFF
      */
     public DataWffId(final String value) {
-        super(ATTRIBUTE_NAME_EXTENSION, ATTR_NAME_INDEX, value);
+        super(PRE_INDEXED_ATTR_NAME, value);
         attributeValue = value;
     }
 
@@ -134,7 +128,7 @@ public class DataWffId extends DataAttribute {
 
     // for testing
     static int getAttrNameIndex() {
-        return ATTR_NAME_INDEX;
+        return PRE_INDEXED_ATTR_NAME.getIndex();
     }
 
 }

@@ -59,18 +59,16 @@ public class EncType extends AbstractAttribute implements FormAttributable {
      */
     public static final String TEXT_PLAIN = "text/plain";
 
-    private static final int ATTR_NAME_INDEX;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
     static {
-        ATTR_NAME_INDEX = PreIndexedAttributeName
-                .getIndex(PreIndexedAttributeName.ENCTYPE);
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.ENCTYPE);
 
     }
 
     {
 
-        super.setAttributeNameAndIndex(AttributeNameConstants.ENCTYPE,
-                ATTR_NAME_INDEX);
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

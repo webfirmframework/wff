@@ -38,18 +38,16 @@ public class Scope extends AbstractAttribute implements ThAttributable {
 
     public static final String ROWGROUP = "rowgroup";
 
-    private static final int ATTR_NAME_INDEX;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
     static {
-        ATTR_NAME_INDEX = PreIndexedAttributeName
-                .getIndex(PreIndexedAttributeName.SCOPE);
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.SCOPE);
 
     }
 
     {
 
-        super.setAttributeNameAndIndex(AttributeNameConstants.SCOPE,
-                ATTR_NAME_INDEX);
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

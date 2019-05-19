@@ -25,18 +25,16 @@ public class Width extends AbstractAttribute
     private float value;
     private LengthUnit cssLengthUnit;
 
-    private static final int ATTR_NAME_INDEX;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
     static {
-        ATTR_NAME_INDEX = PreIndexedAttributeName
-                .getIndex(PreIndexedAttributeName.WIDTH);
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.WIDTH);
 
     }
 
     {
 
-        super.setAttributeNameAndIndex(AttributeNameConstants.WIDTH,
-                ATTR_NAME_INDEX);
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

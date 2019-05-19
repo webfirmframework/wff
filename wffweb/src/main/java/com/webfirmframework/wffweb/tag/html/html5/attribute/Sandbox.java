@@ -16,7 +16,6 @@
  */
 package com.webfirmframework.wffweb.tag.html.html5.attribute;
 
-import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.identifier.IFrameAttributable;
@@ -62,18 +61,16 @@ public class Sandbox extends AbstractAttribute implements IFrameAttributable {
      */
     public static final String ALLOW_TOP_NAVIGATION = "allow-top-navigation";
 
-    private static final int ATTR_NAME_INDEX;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
     static {
-        ATTR_NAME_INDEX = PreIndexedAttributeName
-                .getIndex(PreIndexedAttributeName.SANDBOX);
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.SANDBOX);
 
     }
 
     {
 
-        super.setAttributeNameAndIndex(AttributeNameConstants.SANDBOX,
-                ATTR_NAME_INDEX);
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

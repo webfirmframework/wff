@@ -38,18 +38,16 @@ public class HrefLang extends AbstractAttribute
 
     private Locale locale;
 
-    private static final int ATTR_NAME_INDEX;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
     static {
-        ATTR_NAME_INDEX = PreIndexedAttributeName
-                .getIndex(PreIndexedAttributeName.HREFLANG);
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.HREFLANG);
 
     }
 
     {
 
-        super.setAttributeNameAndIndex(AttributeNameConstants.HREFLANG,
-                ATTR_NAME_INDEX);
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

@@ -152,11 +152,10 @@ public class Rel extends AbstractValueSetAttribute
      */
     public static final String EXTERNAL = "external";
 
-    private static final int ATTR_NAME_INDEX;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
     static {
-        ATTR_NAME_INDEX = PreIndexedAttributeName
-                .getIndex(PreIndexedAttributeName.REL);
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.REL);
 
     }
 
@@ -165,8 +164,7 @@ public class Rel extends AbstractValueSetAttribute
         // This class may to be re-implemented just like ClassAttribute because
         // this class is also taking multiple values separated by space just as
         // in ClassAttribute so many features can be reused from ClassAttribute.
-        super.setAttributeNameAndIndex(AttributeNameConstants.REL,
-                ATTR_NAME_INDEX);
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

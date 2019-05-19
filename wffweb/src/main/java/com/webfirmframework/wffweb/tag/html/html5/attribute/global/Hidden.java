@@ -46,18 +46,16 @@ public class Hidden extends AbstractAttribute
 
     private Boolean hidden;
 
-    private static final int ATTR_NAME_INDEX;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
     static {
-        ATTR_NAME_INDEX = PreIndexedAttributeName
-                .getIndex(PreIndexedAttributeName.HIDDEN);
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.HIDDEN);
 
     }
 
     {
 
-        super.setAttributeNameAndIndex(AttributeNameConstants.HIDDEN,
-                ATTR_NAME_INDEX);
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

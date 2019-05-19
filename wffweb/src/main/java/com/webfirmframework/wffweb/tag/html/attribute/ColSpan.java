@@ -38,18 +38,16 @@ public class ColSpan extends AbstractAttribute
 
     private int value;
 
-    private static final int ATTR_NAME_INDEX;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
     static {
-        ATTR_NAME_INDEX = PreIndexedAttributeName
-                .getIndex(PreIndexedAttributeName.COLSPAN);
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.COLSPAN);
 
     }
 
     {
 
-        super.setAttributeNameAndIndex(AttributeNameConstants.COLSPAN,
-                ATTR_NAME_INDEX);
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

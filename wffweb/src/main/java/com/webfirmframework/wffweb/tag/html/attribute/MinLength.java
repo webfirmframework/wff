@@ -40,18 +40,16 @@ public class MinLength extends AbstractAttribute implements InputAttributable {
 
     private int value;
 
-    private static final int ATTR_NAME_INDEX;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
     static {
-        ATTR_NAME_INDEX = PreIndexedAttributeName
-                .getIndex(PreIndexedAttributeName.MINLENGTH);
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.MINLENGTH);
 
     }
 
     {
 
-        super.setAttributeNameAndIndex(AttributeNameConstants.MINLENGTH,
-                ATTR_NAME_INDEX);
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

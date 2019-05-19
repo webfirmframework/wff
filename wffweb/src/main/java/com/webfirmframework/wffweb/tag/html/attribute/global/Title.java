@@ -16,7 +16,6 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute.global;
 
-import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
@@ -37,18 +36,16 @@ public class Title extends AbstractAttribute implements GlobalAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    private static final int ATTR_NAME_INDEX;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
     static {
-        ATTR_NAME_INDEX = PreIndexedAttributeName
-                .getIndex(PreIndexedAttributeName.TITLE);
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.TITLE);
 
     }
 
     {
 
-        super.setAttributeNameAndIndex(AttributeNameConstants.TITLE,
-                ATTR_NAME_INDEX);
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

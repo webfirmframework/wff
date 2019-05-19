@@ -37,18 +37,16 @@ public class Rows extends AbstractAttribute implements TextAreaAttributable {
 
     private int value = 2;
 
-    private static final int ATTR_NAME_INDEX;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
     static {
-        ATTR_NAME_INDEX = PreIndexedAttributeName
-                .getIndex(PreIndexedAttributeName.ROWS);
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.ROWS);
 
     }
 
     {
 
-        super.setAttributeNameAndIndex(AttributeNameConstants.ROWS,
-                ATTR_NAME_INDEX);
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

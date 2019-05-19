@@ -150,18 +150,16 @@ public class Type extends AbstractAttribute
 
     public static final String TEXT_CSS = "text/css";
 
-    private static final int ATTR_NAME_INDEX;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
     static {
-        ATTR_NAME_INDEX = PreIndexedAttributeName
-                .getIndex(PreIndexedAttributeName.TYPE);
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.TYPE);
 
     }
 
     {
 
-        super.setAttributeNameAndIndex(AttributeNameConstants.TYPE,
-                ATTR_NAME_INDEX);
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

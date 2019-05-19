@@ -19,6 +19,7 @@ package com.webfirmframework.wffweb.tag.html.html5.attribute.global;
 import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
 /**
@@ -58,6 +59,8 @@ public class DataAttribute extends AbstractAttribute
     }
 
     /**
+     * NB: only for internal use
+     *
      * @param attributeNameExension
      * @param attrNameIndex
      *                                  only if there is an index value for this
@@ -68,15 +71,13 @@ public class DataAttribute extends AbstractAttribute
      * @param value
      * @since 3.0.3
      */
-    protected DataAttribute(final String attributeNameExension,
-            final int attrNameIndex, final String value) {
-        if (attributeNameExension == null) {
+    protected DataAttribute(final PreIndexedAttributeName preIndexAttr,
+            final String value) {
+        if (preIndexAttr == null) {
             throw new NullValueException(
-                    "attributeNameExension can not be null");
+                    "PreIndexedAttributeName can not be null");
         }
-        super.setAttributeNameAndIndex(
-                AttributeNameConstants.DATA.concat(attributeNameExension),
-                attrNameIndex);
+        super.setPreIndexedAttribute(preIndexAttr);
         super.setAttributeValue(value);
     }
 

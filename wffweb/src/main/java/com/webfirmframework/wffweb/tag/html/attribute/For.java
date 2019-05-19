@@ -34,18 +34,16 @@ public class For extends AbstractAttribute implements LabelAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    private static final int ATTR_NAME_INDEX;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
     static {
-        ATTR_NAME_INDEX = PreIndexedAttributeName
-                .getIndex(PreIndexedAttributeName.FOR);
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.FOR);
 
     }
 
     {
 
-        super.setAttributeNameAndIndex(AttributeNameConstants.FOR,
-                ATTR_NAME_INDEX);
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

@@ -16,7 +16,6 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute.event.misc;
 
-import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.attribute.event.AbstractEventAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.event.ServerAsyncMethod;
@@ -34,18 +33,16 @@ public class OnWheel extends AbstractEventAttribute {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    private static final int ATTR_NAME_INDEX;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
     static {
-        ATTR_NAME_INDEX = PreIndexedAttributeName
-                .getIndex(PreIndexedAttributeName.ONWHEEL);
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.ONWHEEL);
 
     }
 
     {
 
-        super.setAttributeNameAndIndex(AttributeNameConstants.ONWHEEL,
-                ATTR_NAME_INDEX);
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

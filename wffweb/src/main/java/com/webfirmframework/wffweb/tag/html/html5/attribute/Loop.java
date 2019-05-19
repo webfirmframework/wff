@@ -17,7 +17,6 @@
 package com.webfirmframework.wffweb.tag.html.html5.attribute;
 
 import com.webfirmframework.wffweb.InvalidValueException;
-import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.html5.identifier.AudioAttributable;
@@ -37,18 +36,16 @@ public class Loop extends AbstractAttribute implements AudioAttributable {
 
     private Boolean loop;
 
-    private static final int ATTR_NAME_INDEX;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
     static {
-        ATTR_NAME_INDEX = PreIndexedAttributeName
-                .getIndex(PreIndexedAttributeName.LOOP);
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.LOOP);
 
     }
 
     {
 
-        super.setAttributeNameAndIndex(AttributeNameConstants.LOOP,
-                ATTR_NAME_INDEX);
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

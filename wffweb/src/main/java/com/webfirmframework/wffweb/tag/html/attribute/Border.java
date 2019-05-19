@@ -37,18 +37,16 @@ public class Border extends AbstractAttribute implements TableAttributable {
 
     private int value;
 
-    private static final int ATTR_NAME_INDEX;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
     static {
-        ATTR_NAME_INDEX = PreIndexedAttributeName
-                .getIndex(PreIndexedAttributeName.BORDER);
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.BORDER);
 
     }
 
     {
 
-        super.setAttributeNameAndIndex(AttributeNameConstants.BORDER,
-                ATTR_NAME_INDEX);
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

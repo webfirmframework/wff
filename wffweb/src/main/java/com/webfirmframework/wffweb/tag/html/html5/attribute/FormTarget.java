@@ -16,7 +16,6 @@
  */
 package com.webfirmframework.wffweb.tag.html.html5.attribute;
 
-import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
@@ -45,18 +44,16 @@ public class FormTarget extends AbstractAttribute implements InputAttributable {
 
     public static final String TOP = "_top";
 
-    private static final int ATTR_NAME_INDEX;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
     static {
-        ATTR_NAME_INDEX = PreIndexedAttributeName
-                .getIndex(PreIndexedAttributeName.FORMTARGET);
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.FORMTARGET);
 
     }
 
     {
 
-        super.setAttributeNameAndIndex(AttributeNameConstants.FORMTARGET,
-                ATTR_NAME_INDEX);
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

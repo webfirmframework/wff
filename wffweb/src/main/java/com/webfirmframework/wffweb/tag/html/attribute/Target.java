@@ -74,18 +74,16 @@ public class Target extends AbstractAttribute
      */
     public static final String TOP = "_top";
 
-    private static final int ATTR_NAME_INDEX;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
     static {
-        ATTR_NAME_INDEX = PreIndexedAttributeName
-                .getIndex(PreIndexedAttributeName.TARGET);
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.TARGET);
 
     }
 
     {
 
-        super.setAttributeNameAndIndex(AttributeNameConstants.TARGET,
-                ATTR_NAME_INDEX);
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

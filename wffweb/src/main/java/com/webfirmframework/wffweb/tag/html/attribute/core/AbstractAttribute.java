@@ -402,17 +402,16 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     /**
      * Set attribute name and index, eg: width, height, name, type etc..
      *
-     * @param attributeName
-     *                          the attributeName to set
-     * @param attrNameIndex
-     *                          if there is index for attribute name in registry
+     * @param preIndexedAttrName
+     *                               PreIndexedAttributeName object
+     *
      * @since 3.0.3
      * @author WFF
      */
-    protected void setAttributeNameAndIndex(final String attributeName,
-            final int attrNameIndex) {
-        this.attributeName = attributeName;
-        this.attrNameIndex = attrNameIndex;
+    protected void setPreIndexedAttribute(
+            final PreIndexedAttributeName preIndexedAttrName) {
+        attributeName = preIndexedAttrName.getName();
+        attrNameIndex = preIndexedAttrName.getIndex();
     }
 
     /*
