@@ -20,6 +20,7 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.core.PreIndexedTagName;
 
 /**
  * @author WFF
@@ -54,9 +55,9 @@ public abstract class DocType extends AbstractHtml {
      * @param attributes
      * @since 3.0.3
      */
-    protected DocType(final String tagName, final int tagNameIndex,
+    protected DocType(final PreIndexedTagName preIndexedTagName,
             final AbstractHtml base, final AbstractAttribute[] attributes) {
-        super(tagName, tagNameIndex, base, attributes);
+        super(preIndexedTagName, base, attributes);
     }
 
     /*

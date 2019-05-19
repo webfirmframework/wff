@@ -37,11 +37,11 @@ public class Br extends AbstractHtml {
 
     private static TagType tagType = TagType.SELF_CLOSING;
 
-    private static final int TAG_NAME_INDEX;
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
 
     static {
 
-        TAG_NAME_INDEX = PreIndexedTagName.getIndex(PreIndexedTagName.BR);
+        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.BR);
 
     }
 
@@ -68,7 +68,7 @@ public class Br extends AbstractHtml {
      * @since 1.0.0
      */
     public Br(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(tagType, TagNameConstants.BR, TAG_NAME_INDEX, base, attributes);
+        super(tagType, PRE_INDEXED_TAG_NAME, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

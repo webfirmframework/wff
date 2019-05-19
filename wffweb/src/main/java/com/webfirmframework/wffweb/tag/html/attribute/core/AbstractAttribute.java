@@ -400,7 +400,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     }
 
     /**
-     * Set attribute name and index, eg: width, height, name, type etc..
+     * Set PreIndexedAttributeName for name and index
      *
      * @param preIndexedAttrName
      *                               PreIndexedAttributeName object

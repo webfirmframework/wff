@@ -35,11 +35,11 @@ public class Html extends DocType {
 
     public static final Logger LOGGER = Logger.getLogger(Html.class.getName());
 
-    private static final int TAG_NAME_INDEX;
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
 
     static {
 
-        TAG_NAME_INDEX = PreIndexedTagName.getIndex(PreIndexedTagName.HTML);
+        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.HTML);
 
     }
 
@@ -64,7 +64,7 @@ public class Html extends DocType {
      */
     public Html(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.HTML, TAG_NAME_INDEX, base, attributes);
+        super(PRE_INDEXED_TAG_NAME, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }
@@ -94,8 +94,9 @@ public class Html extends DocType {
     @Deprecated
     public Html(final int id, final AbstractHtml base,
             final AbstractAttribute... attributes) {
+        // this is just for testing purpose so not indexing
         super(Html.class.getSimpleName().toLowerCase() + String.valueOf(id),
-                TAG_NAME_INDEX, base, attributes);
+                base, attributes);
     }
 
     /**

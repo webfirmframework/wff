@@ -20,11 +20,11 @@ public class Body extends AbstractHtml {
 
     public static final Logger LOGGER = Logger.getLogger(Body.class.getName());
 
-    private static final int TAG_NAME_INDEX;
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
 
     static {
 
-        TAG_NAME_INDEX = PreIndexedTagName.getIndex(PreIndexedTagName.BODY);
+        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.BODY);
 
     }
 
@@ -44,7 +44,7 @@ public class Body extends AbstractHtml {
      */
     public Body(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.BODY, TAG_NAME_INDEX, base, attributes);
+        super(PRE_INDEXED_TAG_NAME, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

@@ -22,11 +22,11 @@ public class Hr extends AbstractHtml {
 
     private static TagType tagType = TagType.NON_CLOSING;
 
-    private static final int TAG_NAME_INDEX;
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
 
     static {
 
-        TAG_NAME_INDEX = PreIndexedTagName.getIndex(PreIndexedTagName.HR);
+        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.HR);
 
     }
 
@@ -45,7 +45,7 @@ public class Hr extends AbstractHtml {
      * @since 1.0.0
      */
     public Hr(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(tagType, TagNameConstants.HR, TAG_NAME_INDEX, base, attributes);
+        super(tagType, PRE_INDEXED_TAG_NAME, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

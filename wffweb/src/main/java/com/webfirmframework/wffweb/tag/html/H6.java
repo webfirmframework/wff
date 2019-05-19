@@ -20,11 +20,11 @@ public class H6 extends AbstractHtml {
 
     public static final Logger LOGGER = Logger.getLogger(H6.class.getName());
 
-    private static final int TAG_NAME_INDEX;
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
 
     static {
 
-        TAG_NAME_INDEX = PreIndexedTagName.getIndex(PreIndexedTagName.H6);
+        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.H6);
 
     }
 
@@ -43,7 +43,7 @@ public class H6 extends AbstractHtml {
      * @since 1.1.3
      */
     public H6(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(TagNameConstants.H6, TAG_NAME_INDEX, base, attributes);
+        super(PRE_INDEXED_TAG_NAME, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

@@ -21,11 +21,11 @@ public class BaseFont extends AbstractHtml {
     public static final Logger LOGGER = Logger
             .getLogger(BaseFont.class.getName());
 
-    private static final int TAG_NAME_INDEX;
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
 
     static {
 
-        TAG_NAME_INDEX = PreIndexedTagName.getIndex(PreIndexedTagName.BASEFONT);
+        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.BASEFONT);
 
     }
 
@@ -45,7 +45,7 @@ public class BaseFont extends AbstractHtml {
      */
     public BaseFont(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.BASEFONT, TAG_NAME_INDEX, base, attributes);
+        super(PRE_INDEXED_TAG_NAME, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

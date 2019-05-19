@@ -42,11 +42,11 @@ public class Form extends AbstractHtml {
 
     public static final Logger LOGGER = Logger.getLogger(Form.class.getName());
 
-    private static final int TAG_NAME_INDEX;
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
 
     static {
 
-        TAG_NAME_INDEX = PreIndexedTagName.getIndex(PreIndexedTagName.FORM);
+        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.FORM);
 
     }
 
@@ -66,7 +66,7 @@ public class Form extends AbstractHtml {
      */
     public Form(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.FORM, TAG_NAME_INDEX, base, attributes);
+        super(PRE_INDEXED_TAG_NAME, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

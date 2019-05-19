@@ -50,6 +50,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeRegistry;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeUtil;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
+import com.webfirmframework.wffweb.tag.html.core.PreIndexedTagName;
 import com.webfirmframework.wffweb.tag.html.core.TagRegistry;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.tag.html.listener.AttributeAddListener;
@@ -439,6 +440,54 @@ public abstract class AbstractHtml extends AbstractJsObject {
     public AbstractHtml(final String tagName, final AbstractHtml base,
             final AbstractAttribute[] attributes) {
         this(tagName, -1, base, attributes);
+    }
+
+    /**
+     * should be invoked to generate opening and closing tag base class
+     * containing the functionalities to generate html string.
+     *
+     * @param tagName
+     *                         TODO
+     * @param tagNameIndex
+     *                         There is an index value for the each tag name in
+     *                         tag registry pass it otherwise pass -1. Never
+     *                         pass an arbitrary value if the tag name has no
+     *                         valid index value in TagRegistry.
+     * @param base
+     *                         TODO
+     * @author WFF
+     * @since 3.0.3
+     */
+    protected AbstractHtml(final PreIndexedTagName preIndexedTagName,
+            final AbstractHtml base, final AbstractAttribute[] attributes) {
+        tagName = preIndexedTagName.getName();
+        tagNameIndex = preIndexedTagName.getIndex();
+        noTagContentTypeHtml = false;
+        if (base == null) {
+            sharedObject = new AbstractHtml5SharedObject(this);
+        }
+
+        initAttributes(attributes);
+
+        initInConstructor();
+
+        markOwnerTag(attributes);
+        buildOpeningTag(false);
+        buildClosingTag();
+        if (base != null) {
+            base.addChild(this);
+            // base.children.add(this);
+            // should not uncomment the below codes as it is handled in the
+            // above add method
+            // parent = base;
+            // sharedObject = base.sharedObject;
+        }
+
+        // else {
+        // sharedObject = new AbstractHtml5SharedObject(this);
+        // }
+
+        // childAppended(parent, this);
     }
 
     /**
@@ -1602,7 +1651,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @author WFF
      * @since 3.0.3
      */
-    protected AbstractHtml(final TagType tagType, final String tagName,
+    private AbstractHtml(final TagType tagType, final String tagName,
             final int tagNameIndex, final AbstractHtml base,
             final AbstractAttribute[] attributes) {
         this.tagType = tagType;
@@ -1637,6 +1686,27 @@ public abstract class AbstractHtml extends AbstractJsObject {
         // else {
         // sharedObject = new AbstractHtml5SharedObject(this);
         // }
+    }
+
+    /**
+     * should be invoked to generate opening and closing tag base class
+     * containing the functionalities to generate html string.
+     *
+     * @param tagType
+     * @param preIndexedTagName
+     *                              PreIndexedTagName constant
+     *
+     * @param base
+     *                              TODO
+     *
+     * @author WFF
+     * @since 3.0.3
+     */
+    protected AbstractHtml(final TagType tagType,
+            final PreIndexedTagName preIndexedTagName, final AbstractHtml base,
+            final AbstractAttribute[] attributes) {
+        this(tagType, preIndexedTagName.getName(), preIndexedTagName.getIndex(),
+                base, attributes);
     }
 
     /**

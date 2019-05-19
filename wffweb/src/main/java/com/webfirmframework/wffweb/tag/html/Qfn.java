@@ -20,11 +20,11 @@ public class Qfn extends AbstractHtml {
 
     public static final Logger LOGGER = Logger.getLogger(Qfn.class.getName());
 
-    private static final int TAG_NAME_INDEX;
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
 
     static {
 
-        TAG_NAME_INDEX = PreIndexedTagName.getIndex(PreIndexedTagName.QFN);
+        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.QFN);
 
     }
 
@@ -43,7 +43,7 @@ public class Qfn extends AbstractHtml {
      * @since 1.0.0
      */
     public Qfn(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(TagNameConstants.QFN, TAG_NAME_INDEX, base, attributes);
+        super(PRE_INDEXED_TAG_NAME, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }
