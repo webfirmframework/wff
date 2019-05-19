@@ -105,18 +105,18 @@ public enum WffJsFile {
         final StringBuilder tagsArraySB = new StringBuilder();
         final List<String> tagNames = TagRegistry.getTagNames();
         for (final String tagName : tagNames) {
-            tagsArraySB.append(",'");
+            tagsArraySB.append(",\"");
             tagsArraySB.append(tagName);
-            tagsArraySB.append('\'');
+            tagsArraySB.append('"');
         }
         NDXD_TGS = "[" + tagsArraySB.substring(1) + "]";
 
         final StringBuilder attrbsArraySB = new StringBuilder();
         final List<String> attrNames = AttributeRegistry.getAttributeNames();
         for (final String attrName : attrNames) {
-            attrbsArraySB.append(",'");
+            attrbsArraySB.append(",\"");
             attrbsArraySB.append(attrName);
-            attrbsArraySB.append('\'');
+            attrbsArraySB.append('"');
         }
         NDXD_ATRBS = "[" + attrbsArraySB.substring(1) + "]";
 
