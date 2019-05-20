@@ -92,17 +92,23 @@ public class PayloadProcessor implements Serializable {
     public void webSocketMessaged(final ByteBuffer messagePart,
             final boolean last) {
 
-        wsMessageChunks.add(messagePart);
-
-        if (last) {
-            final int totalCapacity = wsMessageChunksTotalCapacity.getAndSet(0)
-                    + messagePart.capacity();
-
-            browserPage.webSocketMessaged(
-                    pollAndConvertToByteArray(totalCapacity, wsMessageChunks));
+        if (last && wsMessageChunksTotalCapacity.get() == 0) {
+            browserPage.webSocketMessaged(messagePart.array());
         } else {
-            wsMessageChunksTotalCapacity.addAndGet(messagePart.capacity());
-        }
+            synchronized (this) {
+                if (last) {
+                    wsMessageChunks.add(messagePart);
+                    final int totalCapacity = wsMessageChunksTotalCapacity
+                            .getAndSet(0) + messagePart.capacity();
 
+                    browserPage.webSocketMessaged(pollAndConvertToByteArray(
+                            totalCapacity, wsMessageChunks));
+                } else {
+                    wsMessageChunks.add(messagePart);
+                    wsMessageChunksTotalCapacity
+                            .addAndGet(messagePart.capacity());
+                }
+            }
+        }
     }
 }

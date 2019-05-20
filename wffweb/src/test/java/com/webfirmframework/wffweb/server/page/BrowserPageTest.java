@@ -15,12 +15,14 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -167,6 +169,17 @@ public class BrowserPageTest {
             {
                 Queue<ByteBuffer> queue = new ArrayDeque<>();
                 queue.add(webfirmframework);
+                int totalCapacity = 0;
+                for (ByteBuffer byteBuffer : queue) {
+                    totalCapacity += byteBuffer.array().length;
+                }
+                final byte[] merged = PayloadProcessor.pollAndConvertToByteArray(totalCapacity, queue);
+                assertEquals("webfirmframework", new String(merged, StandardCharsets.UTF_8));
+            }
+            
+            {
+                Queue<ByteBuffer> queue = new ArrayDeque<>();
+                queue.add(webfirmframework);
                 queue.add(wffweb);
                 queue.add(useLatestVersion);
                 int totalCapacity = 0;
@@ -177,6 +190,56 @@ public class BrowserPageTest {
                 assertEquals("webfirmframework-wffweb-use latest version", new String(merged, StandardCharsets.UTF_8));
             }
         }
+    }
+
+    @Test
+    public void testPerformanceOfConcurrentLinkedQueueAndDeque()
+            throws Exception {
+        for (int i = 0; i < 1; i++) {
+            printPerformanceOfConcurrentLinkedQueueAndDeque();
+        }
+    }
+    
+    public void printPerformanceOfConcurrentLinkedQueueAndDeque() throws Exception {
+        Queue<ByteBuffer> concurrentLinkedQueue = new ConcurrentLinkedQueue<>();
+        Queue<ByteBuffer> concurrentLinkedDeque = new ConcurrentLinkedDeque<>();
+        long before = 0;
+        long after = 0;
+        long difference = 0;
+        
+        final ByteBuffer hello = ByteBuffer.wrap("Hello".getBytes(StandardCharsets.UTF_8)); 
+        
+        before = System.nanoTime();
+        
+        for (int i = 0; i < 1000; i++) {
+            concurrentLinkedQueue.add(hello);
+        }
+        while(concurrentLinkedQueue.poll() != null) {
+        }
+        
+        after = System.nanoTime();
+        
+        difference = after - before;
+        
+        System.out.println("concurrentLinkedQueue processing time: " + difference);
+        
+        before = System.nanoTime();
+        
+        for (int i = 0; i < 1000; i++) {
+            concurrentLinkedDeque.add(hello);
+        }
+        while(concurrentLinkedDeque.poll() != null) {
+        }
+        
+        after = System.nanoTime();
+        
+        difference = after - before;
+        
+        System.out.println("concurrentLinkedDeque processing time: " + difference);
+        
+        
+        System.out.println("-----------");
+        
     }
         
 
