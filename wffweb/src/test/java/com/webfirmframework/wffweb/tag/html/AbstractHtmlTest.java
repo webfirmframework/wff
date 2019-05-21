@@ -56,6 +56,7 @@ import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Span;
 import com.webfirmframework.wffweb.tag.htmlwff.CustomTag;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 import com.webfirmframework.wffweb.tag.repository.TagRepository;
+import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 
 @SuppressWarnings("serial")
 public class AbstractHtmlTest {
@@ -1814,7 +1815,8 @@ public class AbstractHtmlTest {
             assertNotNull(tag);
             assertEquals(entry.getValue(), tag.getClass());
           //just for testing
-            assertEquals(tag.getTagNameIndex(), (int) TagRegistry.getIndexByTagName(tag.getTagName()));
+            int tagNameIndex = WffBinaryMessageUtil.getIntFromOptimizedBytes(tag.getTagNameIndex());
+            assertEquals(tagNameIndex, (int) TagRegistry.getIndexByTagName(tag.getTagName()));
 
         }
     }

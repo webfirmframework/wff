@@ -86,8 +86,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     private static final Security ACCESS_OBJECT;
 
-    // initial value must be -1 if not assigning any value
-    private final int tagNameIndex;
+    // initial value must be -1 if not assigning any value if int
+    // or null if byte[]
+    private final byte[] tagNameIndexBytes;
 
     private volatile AbstractHtml parent;
 
@@ -350,7 +351,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     public AbstractHtml(final AbstractHtml base,
             final AbstractHtml... children) {
         tagName = null;
-        tagNameIndex = -1;
+        tagNameIndexBytes = null;
         noTagContentTypeHtml = false;
         if (base == null) {
             sharedObject = new AbstractHtml5SharedObject(this);
@@ -387,7 +388,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             final boolean noTagContentTypeHtml) {
 
         tagName = null;
-        tagNameIndex = -1;
+        tagNameIndexBytes = null;
 
         this.noTagContentTypeHtml = noTagContentTypeHtml;
 
@@ -439,25 +440,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     public AbstractHtml(final String tagName, final AbstractHtml base,
             final AbstractAttribute[] attributes) {
-        this(tagName, -1, base, attributes);
-    }
 
-    /**
-     * should be invoked to generate opening and closing tag base class
-     * containing the functionalities to generate html string.
-     *
-     * @param preIndexedTagName
-     *                              PreIndexedTagName constant
-     *
-     * @param base
-     *                              TODO
-     * @author WFF
-     * @since 3.0.3
-     */
-    protected AbstractHtml(final PreIndexedTagName preIndexedTagName,
-            final AbstractHtml base, final AbstractAttribute[] attributes) {
-        tagName = preIndexedTagName.getName();
-        tagNameIndex = preIndexedTagName.getIndex();
+        this.tagName = tagName;
+        tagNameIndexBytes = null;
         noTagContentTypeHtml = false;
         if (base == null) {
             sharedObject = new AbstractHtml5SharedObject(this);
@@ -490,22 +475,18 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * should be invoked to generate opening and closing tag base class
      * containing the functionalities to generate html string.
      *
-     * @param tagName
-     *                         TODO
-     * @param tagNameIndex
-     *                         There is an index value for the each tag name in
-     *                         tag registry pass it otherwise pass -1. Never
-     *                         pass an arbitrary value if the tag name has no
-     *                         valid index value in TagRegistry.
+     * @param preIndexedTagName
+     *                              PreIndexedTagName constant
+     *
      * @param base
-     *                         TODO
+     *                              TODO
      * @author WFF
      * @since 3.0.3
      */
-    protected AbstractHtml(final String tagName, final int tagNameIndex,
+    protected AbstractHtml(final PreIndexedTagName preIndexedTagName,
             final AbstractHtml base, final AbstractAttribute[] attributes) {
-        this.tagName = tagName;
-        this.tagNameIndex = tagNameIndex;
+        tagName = preIndexedTagName.getName();
+        tagNameIndexBytes = preIndexedTagName.getIndexBytes();
         noTagContentTypeHtml = false;
         if (base == null) {
             sharedObject = new AbstractHtml5SharedObject(this);
@@ -1626,7 +1607,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     protected AbstractHtml(final TagType tagType, final String tagName,
             final AbstractHtml base, final AbstractAttribute[] attributes) {
-        this(tagType, tagName, -1, base, attributes);
+        this(tagType, tagName, null, base, attributes);
     }
 
     /**
@@ -1635,24 +1616,25 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *
      * @param tagType
      * @param tagName
-     *                         TODO
-     * @param tagNameIndex
-     *                         There is an index value for the each tag name in
-     *                         tag registry pass it otherwise pass -1. Never
-     *                         pass an arbitrary value if the tag name has no
-     *                         valid index value in TagRegistry.
+     *                              TODO
+     * @param tagNameIndexBytes
+     *                              There is an index value for the each tag
+     *                              name in tag registry then pass its
+     *                              indexBytes otherwise pass null. Never pass
+     *                              an arbitrary value if the tag name has no
+     *                              valid index value in TagRegistry.
      * @param base
-     *                         TODO
+     *                              TODO
      *
      * @author WFF
      * @since 3.0.3
      */
     private AbstractHtml(final TagType tagType, final String tagName,
-            final int tagNameIndex, final AbstractHtml base,
+            final byte[] tagNameIndexBytes, final AbstractHtml base,
             final AbstractAttribute[] attributes) {
         this.tagType = tagType;
         this.tagName = tagName;
-        this.tagNameIndex = tagNameIndex;
+        this.tagNameIndexBytes = tagNameIndexBytes;
         noTagContentTypeHtml = false;
 
         if (base == null) {
@@ -1701,8 +1683,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
     protected AbstractHtml(final TagType tagType,
             final PreIndexedTagName preIndexedTagName, final AbstractHtml base,
             final AbstractAttribute[] attributes) {
-        this(tagType, preIndexedTagName.getName(), preIndexedTagName.getIndex(),
-                base, attributes);
+        this(tagType, preIndexedTagName.getName(),
+                preIndexedTagName.getIndexBytes(), base, attributes);
     }
 
     /**
@@ -3737,9 +3719,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         final byte[] nodeNameBytes;
 
                         // just be initialized as local
-                        final int tagNameIndexLocal = tag.tagNameIndex;
+                        final byte[] tagNameIndexBytes = tag.tagNameIndexBytes;
 
-                        if (tagNameIndexLocal == -1) {
+                        if (tagNameIndexBytes == null) {
                             final byte[] rowNodeNameBytes = nodeName
                                     .getBytes(charset);
                             nodeNameBytes = new byte[rowNodeNameBytes.length
@@ -3760,15 +3742,12 @@ public abstract class AbstractHtml extends AbstractJsObject {
                             // }
 
                         } else {
-                            final byte[] optimizedBytesFromInt = WffBinaryMessageUtil
-                                    .getOptimizedBytesFromInt(
-                                            tagNameIndexLocal);
-                            nodeNameBytes = new byte[optimizedBytesFromInt.length
+
+                            nodeNameBytes = new byte[tagNameIndexBytes.length
                                     + 1];
-                            nodeNameBytes[0] = (byte) optimizedBytesFromInt.length;
-                            System.arraycopy(optimizedBytesFromInt, 0,
-                                    nodeNameBytes, 1,
-                                    optimizedBytesFromInt.length);
+                            nodeNameBytes[0] = (byte) tagNameIndexBytes.length;
+                            System.arraycopy(tagNameIndexBytes, 0,
+                                    nodeNameBytes, 1, tagNameIndexBytes.length);
                         }
 
                         final byte[][] wffAttributeBytes = AttributeUtil
@@ -4659,8 +4638,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
         return sharedObject.getLock(ACCESS_OBJECT).writeLock();
     }
 
-    // for testing purpose only
-    int getTagNameIndex() {
-        return tagNameIndex;
+    /**
+     * for testing purpose only
+     *
+     * @return
+     * @since 3.0.3
+     */
+    byte[] getTagNameIndex() {
+        return tagNameIndexBytes;
     }
 }

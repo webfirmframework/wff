@@ -16,6 +16,7 @@
 package com.webfirmframework.wffweb.tag.html.core;
 
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
+import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 
 /**
  * @author WFF
@@ -282,6 +283,8 @@ public enum PreIndexedTagName {
 
     private final int index;
 
+    private final byte[] indexBytes;
+
     /**
      * @param tagName
      * @since 3.0.3
@@ -289,6 +292,7 @@ public enum PreIndexedTagName {
     private PreIndexedTagName(final String tagName) {
         this.tagName = tagName;
         index = ordinal();
+        indexBytes = WffBinaryMessageUtil.getOptimizedBytesFromInt(index);
     }
 
     /**
@@ -305,6 +309,14 @@ public enum PreIndexedTagName {
      */
     public int getIndex() {
         return index;
+    }
+
+    /**
+     * @return optimized bytes of index
+     * @since 3.0.3
+     */
+    public byte[] getIndexBytes() {
+        return indexBytes;
     }
 
     /**
