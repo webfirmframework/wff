@@ -17,6 +17,7 @@ package com.webfirmframework.wffweb.tag.html.attribute.core;
 
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.InternalAttrNameConstants;
+import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 
 /**
  * @author WFF
@@ -399,6 +400,8 @@ public enum PreIndexedAttributeName {
 
     private final int index;
 
+    private final byte[] indexBytes;
+
     /**
      * @param attrName
      * @since 3.0.3
@@ -406,6 +409,7 @@ public enum PreIndexedAttributeName {
     private PreIndexedAttributeName(final String attrName) {
         this.attrName = attrName;
         index = ordinal();
+        indexBytes = WffBinaryMessageUtil.getOptimizedBytesFromInt(index);
     }
 
     /**
@@ -422,6 +426,14 @@ public enum PreIndexedAttributeName {
      */
     public int getIndex() {
         return index;
+    }
+
+    /**
+     * @return optimized bytes of index
+     * @since 3.0.3
+     */
+    public byte[] getIndexBytes() {
+        return indexBytes;
     }
 
     /**

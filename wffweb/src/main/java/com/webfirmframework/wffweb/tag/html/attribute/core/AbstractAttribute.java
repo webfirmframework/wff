@@ -41,7 +41,6 @@ import com.webfirmframework.wffweb.tag.html.attribute.listener.AttributeValueCha
 import com.webfirmframework.wffweb.tag.html.listener.PushQueue;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 import com.webfirmframework.wffweb.util.StringBuilderUtil;
-import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 
 public abstract class AbstractAttribute extends AbstractTagBase {
 
@@ -54,8 +53,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
     private String attributeName;
 
-    // initial value must be -1
-    private int attrNameIndex = -1;
+    // initial value must be -1 if integer type
+    // null if byte[]
+    private byte[] attrNameIndexBytes = null;
 
     private volatile String attributeValue;
 
@@ -303,9 +303,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
             // should always use local variable attrNameIndex
             // this.attrNameIndex is eventually consistent
-            final int attrNameIndex = this.attrNameIndex;
+            final byte[] attrNameIndex = attrNameIndexBytes;
 
-            if (attrNameIndex == -1) {
+            if (attrNameIndex == null) {
 
                 compressedBytesBuilder.write(new byte[] { (byte) 0 });
 
@@ -320,15 +320,13 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 // }
             } else {
 
-                final byte[] optimizedBytesFromInt = WffBinaryMessageUtil
-                        .getOptimizedBytesFromInt(attrNameIndex);
-                compressedBytesBuilder.write(
-                        new byte[] { (byte) optimizedBytesFromInt.length });
-                compressedBytesBuilder.write(optimizedBytesFromInt);
+                compressedBytesBuilder
+                        .write(new byte[] { (byte) attrNameIndex.length });
+                compressedBytesBuilder.write(attrNameIndex);
             }
 
             if (attributeValue != null) {
-                if (attrNameIndex == -1) {
+                if (attrNameIndex == null) {
                     compressedBytesBuilder.write("=".getBytes(charset));
                 }
 
@@ -337,7 +335,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             } else if (attributeValueMap != null
                     && attributeValueMap.size() > 0) {
 
-                if (attrNameIndex == -1) {
+                if (attrNameIndex == null) {
                     compressedBytesBuilder.write("=".getBytes(charset));
                 }
 
@@ -356,7 +354,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             } else if (attributeValueSet != null
                     && attributeValueSet.size() > 0) {
 
-                if (attrNameIndex == -1) {
+                if (attrNameIndex == null) {
                     compressedBytesBuilder.write("=".getBytes(charset));
                 }
 
@@ -412,7 +410,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     protected void setPreIndexedAttribute(
             final PreIndexedAttributeName preIndexedAttrName) {
         attributeName = preIndexedAttrName.getName();
-        attrNameIndex = preIndexedAttrName.getIndex();
+        attrNameIndexBytes = preIndexedAttrName.getIndexBytes();
     }
 
     /*
@@ -1448,9 +1446,14 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         return readLocks;
     }
 
-    // for testing purpose only
-    int getAttrNameIndex() {
-        return attrNameIndex;
+    /**
+     * for testing purpose only
+     *
+     * @return
+     * @since 3.0.3
+     */
+    byte[] getAttrNameIndexBytes() {
+        return attrNameIndexBytes;
     }
 
 }
