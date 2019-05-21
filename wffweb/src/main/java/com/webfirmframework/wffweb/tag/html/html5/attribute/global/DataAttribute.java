@@ -59,21 +59,22 @@ public class DataAttribute extends AbstractAttribute
     }
 
     /**
-     * NB: only for internal use
+     * NB: only for internal use. Signature of this constructor may be modified
+     * in future version.
      *
-     * @param preIndexAttr
-     *                         only if there is constant for this in
-     *                         PreIndexedAttributeName.
+     * @param attrNameIndex
+     *                          only if there is constant for this in
+     *                          PreIndexedAttributeName.
      * @param value
      * @since 3.0.3
      */
-    protected DataAttribute(final PreIndexedAttributeName preIndexAttr,
+    protected DataAttribute(final PreIndexedAttributeName attrNameIndex,
             final String value) {
-        if (preIndexAttr == null) {
+        if (attrNameIndex == null) {
             throw new NullValueException(
                     "PreIndexedAttributeName can not be null");
         }
-        super.setPreIndexedAttribute(preIndexAttr);
+        super.setPreIndexedAttribute(attrNameIndex);
         super.setAttributeValue(value);
     }
 
