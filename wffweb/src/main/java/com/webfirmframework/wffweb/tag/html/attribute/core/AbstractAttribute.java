@@ -303,9 +303,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
             // should always use local variable attrNameIndex
             // this.attrNameIndex is eventually consistent
-            final byte[] attrNameIndex = attrNameIndexBytes;
+            final byte[] attrNameIndexBytes = this.attrNameIndexBytes;
 
-            if (attrNameIndex == null) {
+            if (attrNameIndexBytes == null) {
 
                 compressedBytesBuilder.write(new byte[] { (byte) 0 });
 
@@ -321,12 +321,12 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             } else {
 
                 compressedBytesBuilder
-                        .write(new byte[] { (byte) attrNameIndex.length });
-                compressedBytesBuilder.write(attrNameIndex);
+                        .write(new byte[] { (byte) attrNameIndexBytes.length });
+                compressedBytesBuilder.write(attrNameIndexBytes);
             }
 
             if (attributeValue != null) {
-                if (attrNameIndex == null) {
+                if (attrNameIndexBytes == null) {
                     compressedBytesBuilder.write("=".getBytes(charset));
                 }
 
@@ -335,7 +335,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             } else if (attributeValueMap != null
                     && attributeValueMap.size() > 0) {
 
-                if (attrNameIndex == null) {
+                if (attrNameIndexBytes == null) {
                     compressedBytesBuilder.write("=".getBytes(charset));
                 }
 
@@ -354,7 +354,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             } else if (attributeValueSet != null
                     && attributeValueSet.size() > 0) {
 
-                if (attrNameIndex == null) {
+                if (attrNameIndexBytes == null) {
                     compressedBytesBuilder.write("=".getBytes(charset));
                 }
 
