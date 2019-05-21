@@ -34,6 +34,7 @@ import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
 import com.webfirmframework.wffweb.tag.html.core.TagRegistry;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataAttribute;
 import com.webfirmframework.wffweb.tag.htmlwff.CustomTag;
+import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 
 public class AttributeRegistryTest {
 
@@ -92,7 +93,8 @@ public class AttributeRegistryTest {
                 assertEquals(entry.getValue(), attr.getClass());
                
                 //just for testing
-                assertEquals(attr.getAttrNameIndex(), (int) AttributeRegistry.getIndexByAttributeName(attr.getAttributeName()));
+                int attrNameIndex = WffBinaryMessageUtil.getIntFromOptimizedBytes(attr.getAttrNameIndexBytes());
+                assertEquals(attrNameIndex, (int) AttributeRegistry.getIndexByAttributeName(attr.getAttributeName()));
 
             }
         }
