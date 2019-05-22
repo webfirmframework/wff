@@ -1856,6 +1856,6 @@ public class Style extends AbstractAttribute
 
     // for testing
     static int getAttrNameIndex() {
-        return PRE_INDEXED_ATTR_NAME.getIndex();
+        return PRE_INDEXED_ATTR_NAME.index();
     }
 }

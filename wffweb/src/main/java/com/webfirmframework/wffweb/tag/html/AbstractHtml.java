@@ -485,8 +485,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     protected AbstractHtml(final PreIndexedTagName preIndexedTagName,
             final AbstractHtml base, final AbstractAttribute[] attributes) {
-        tagName = preIndexedTagName.getName();
-        tagNameIndexBytes = preIndexedTagName.getIndexBytes();
+        tagName = preIndexedTagName.tagName();
+        tagNameIndexBytes = preIndexedTagName.indexBytes();
         noTagContentTypeHtml = false;
         if (base == null) {
             sharedObject = new AbstractHtml5SharedObject(this);
@@ -1683,8 +1683,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
     protected AbstractHtml(final TagType tagType,
             final PreIndexedTagName preIndexedTagName, final AbstractHtml base,
             final AbstractAttribute[] attributes) {
-        this(tagType, preIndexedTagName.getName(),
-                preIndexedTagName.getIndexBytes(), base, attributes);
+        this(tagType, preIndexedTagName.tagName(),
+                preIndexedTagName.indexBytes(), base, attributes);
     }
 
     /**

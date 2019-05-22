@@ -45,8 +45,8 @@ public enum IndexedTagName {
         indexedTagNames = new ConcurrentHashMap<>(initialCapacity);
 
         for (final PreIndexedTagName each : values) {
-            sortedTagNames.add(each.getName());
-            indexedTagNames.put(each.getName(), each.getIndex());
+            sortedTagNames.add(each.tagName());
+            indexedTagNames.put(each.tagName(), each.index());
         }
     }
 

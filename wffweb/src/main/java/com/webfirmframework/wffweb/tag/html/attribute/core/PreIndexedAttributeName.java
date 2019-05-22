@@ -416,7 +416,7 @@ public enum PreIndexedAttributeName {
      * @return the attribute name
      * @since 3.0.3
      */
-    public String getName() {
+    public String attrName() {
         return attrName;
     }
 
@@ -424,7 +424,7 @@ public enum PreIndexedAttributeName {
      * @return the index
      * @since 3.0.3
      */
-    public int getIndex() {
+    public int index() {
         return index;
     }
 
@@ -432,7 +432,7 @@ public enum PreIndexedAttributeName {
      * @return optimized bytes of index
      * @since 3.0.3
      */
-    public byte[] getIndexBytes() {
+    public byte[] indexBytes() {
         return indexBytes;
     }
 

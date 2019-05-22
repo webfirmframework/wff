@@ -299,7 +299,7 @@ public enum PreIndexedTagName {
      * @return the tag name
      * @since 3.0.3
      */
-    public String getName() {
+    public String tagName() {
         return tagName;
     }
 
@@ -307,7 +307,7 @@ public enum PreIndexedTagName {
      * @return the index
      * @since 3.0.3
      */
-    public int getIndex() {
+    public int index() {
         return index;
     }
 
@@ -315,7 +315,7 @@ public enum PreIndexedTagName {
      * @return optimized bytes of index
      * @since 3.0.3
      */
-    public byte[] getIndexBytes() {
+    public byte[] indexBytes() {
         return indexBytes;
     }
 

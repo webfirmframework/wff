@@ -45,8 +45,8 @@ public enum IndexedAttributeName {
         indexedAttrNames = new ConcurrentHashMap<>(initialCapacity);
 
         for (final PreIndexedAttributeName each : values) {
-            sortedAttrNames.add(each.getName());
-            indexedAttrNames.put(each.getName(), each.getIndex());
+            sortedAttrNames.add(each.attrName());
+            indexedAttrNames.put(each.attrName(), each.index());
         }
     }
 

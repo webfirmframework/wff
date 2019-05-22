@@ -409,8 +409,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected void setPreIndexedAttribute(
             final PreIndexedAttributeName preIndexedAttrName) {
-        attributeName = preIndexedAttrName.getName();
-        attrNameIndexBytes = preIndexedAttrName.getIndexBytes();
+        attributeName = preIndexedAttrName.attrName();
+        attrNameIndexBytes = preIndexedAttrName.indexBytes();
     }
 
     /*
