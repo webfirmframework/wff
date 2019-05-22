@@ -606,7 +606,7 @@ public class AttributeRegistry {
 
         int index = 0;
         for (final String attrName : IndexedAttributeName.INSTANCE
-                .getSortedAttrNames()) {
+                .sortedAttrNames()) {
             final Class<?> attrClass = ATTRIBUTE_CLASS_BY_ATTR_NAME
                     .get(attrName);
             INDEXED_ATTR_CLASSES.add(index, attrClass);
@@ -632,11 +632,11 @@ public class AttributeRegistry {
 
         ATTRIBUTE_NAMES_SET.addAll(tagNamesWithoutDuplicates);
 
-        IndexedAttributeName.INSTANCE.getSortedAttrNames().clear();
-        IndexedAttributeName.INSTANCE.getSortedAttrNames()
+        IndexedAttributeName.INSTANCE.sortedAttrNames().clear();
+        IndexedAttributeName.INSTANCE.sortedAttrNames()
                 .addAll(ATTRIBUTE_NAMES_SET);
 
-        Collections.sort(IndexedAttributeName.INSTANCE.getSortedAttrNames(),
+        Collections.sort(IndexedAttributeName.INSTANCE.sortedAttrNames(),
                 (o1, o2) -> {
 
                     final Integer length1 = o1.length();
@@ -653,8 +653,7 @@ public class AttributeRegistry {
      * @author WFF
      */
     public static List<String> getAttributeNames() {
-        return new ArrayList<>(
-                IndexedAttributeName.INSTANCE.getSortedAttrNames());
+        return new ArrayList<>(IndexedAttributeName.INSTANCE.sortedAttrNames());
     }
 
     /**

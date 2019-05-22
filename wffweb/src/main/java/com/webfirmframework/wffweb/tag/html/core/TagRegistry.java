@@ -342,8 +342,7 @@ public class TagRegistry {
         }
 
         int index = 0;
-        for (final String tagName : IndexedTagName.INSTANCE
-                .getSortedTagNames()) {
+        for (final String tagName : IndexedTagName.INSTANCE.sortedTagNames()) {
             final Class<?> attrClass = TAG_CLASS_BY_TAG_NAME.get(tagName);
             INDEXED_TAG_CLASSES.add(index, attrClass);
 
@@ -357,7 +356,7 @@ public class TagRegistry {
      * @author WFF
      */
     public static List<String> getTagNames() {
-        return new ArrayList<>(IndexedTagName.INSTANCE.getSortedTagNames());
+        return new ArrayList<>(IndexedTagName.INSTANCE.sortedTagNames());
     }
 
     /**
@@ -385,17 +384,16 @@ public class TagRegistry {
 
         TAG_NAMES_SET.addAll(tagNamesWithoutDuplicates);
 
-        IndexedTagName.INSTANCE.getSortedTagNames().clear();
-        IndexedTagName.INSTANCE.getSortedTagNames().addAll(TAG_NAMES_SET);
+        IndexedTagName.INSTANCE.sortedTagNames().clear();
+        IndexedTagName.INSTANCE.sortedTagNames().addAll(TAG_NAMES_SET);
 
-        Collections.sort(IndexedTagName.INSTANCE.getSortedTagNames(),
-                (o1, o2) -> {
+        Collections.sort(IndexedTagName.INSTANCE.sortedTagNames(), (o1, o2) -> {
 
-                    final Integer length1 = o1.length();
-                    final Integer length2 = o2.length();
+            final Integer length1 = o1.length();
+            final Integer length2 = o2.length();
 
-                    return length1.compareTo(length2);
-                });
+            return length1.compareTo(length2);
+        });
 
     }
 

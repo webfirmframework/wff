@@ -50,11 +50,11 @@ public enum IndexedAttributeName {
         }
     }
 
-    List<String> getSortedAttrNames() {
+    List<String> sortedAttrNames() {
         return sortedAttrNames;
     }
 
-    Map<String, Integer> getIndexedAttrNames() {
+    Map<String, Integer> indexedAttrNames() {
         return indexedAttrNames;
     }
 

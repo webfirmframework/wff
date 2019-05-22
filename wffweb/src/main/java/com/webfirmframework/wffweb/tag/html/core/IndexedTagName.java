@@ -50,11 +50,11 @@ public enum IndexedTagName {
         }
     }
 
-    List<String> getSortedTagNames() {
+    List<String> sortedTagNames() {
         return sortedTagNames;
     }
 
-    Map<String, Integer> getIndexedTagNames() {
+    Map<String, Integer> indexedTagNames() {
         return indexedTagNames;
     }
 
