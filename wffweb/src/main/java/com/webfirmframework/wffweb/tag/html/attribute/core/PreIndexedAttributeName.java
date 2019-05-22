@@ -436,12 +436,4 @@ public enum PreIndexedAttributeName {
         return indexBytes;
     }
 
-    /**
-     * @param obj
-     * @return the index
-     * @since 3.0.3
-     */
-    public static int getIndex(final PreIndexedAttributeName obj) {
-        return obj.ordinal();
-    }
 }

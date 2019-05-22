@@ -319,12 +319,4 @@ public enum PreIndexedTagName {
         return indexBytes;
     }
 
-    /**
-     * @param obj
-     * @return the index
-     * @since 3.0.3
-     */
-    public static int getIndex(final PreIndexedTagName obj) {
-        return obj.ordinal();
-    }
 }
