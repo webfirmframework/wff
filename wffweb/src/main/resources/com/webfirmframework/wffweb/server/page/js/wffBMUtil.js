@@ -110,32 +110,27 @@ var wffBMUtil = new function() {
 
 			var nameValue = {};
 
-			var nameLengthBytes = [];
-			concatArrayValuesFromPosition(nameLengthBytes, message,
+			var nameLengthBytes = subarray(message,
 					messageIndex, nameLengthBytesLength);
+			
 
 			messageIndex = messageIndex + nameLengthBytesLength;
 
 			var fromByteArray = getIntFromOptimizedBytes(nameLengthBytes);
-			var nameBytes = [];
-
-			concatArrayValuesFromPosition(nameBytes, message, messageIndex,
+			var nameBytes = subarray(message, messageIndex,
 					fromByteArray);
 
 			messageIndex = messageIndex + nameBytes.length;
 
 			nameValue.name = nameBytes;
 
-			var valueLengthBytes = [];
-			concatArrayValuesFromPosition(valueLengthBytes, message,
+			var valueLengthBytes = subarray(message,
 					messageIndex, valueLengthBytesLength);
 
 			messageIndex = messageIndex + valueLengthBytesLength;
 			fromByteArray = getIntFromOptimizedBytes(valueLengthBytes);
 
-			var valueBytes = [];
-
-			concatArrayValuesFromPosition(valueBytes, message, messageIndex,
+			var valueBytes = subarray(message, messageIndex,
 					fromByteArray);
 
 			messageIndex = messageIndex + valueBytes.length - 1;
@@ -164,16 +159,12 @@ var wffBMUtil = new function() {
 		var values = [];
 
 		for (var i = 0; i < valueBytes.length; i++) {
-			var valueLengthBytes = [];
-
-			concatArrayValuesFromPosition(valueLengthBytes, valueBytes, i,
+			var valueLengthBytes = subarray(valueBytes, i,
 					valueLengthBytesLength);
 
 			var valueLength = getIntFromOptimizedBytes(valueLengthBytes);
 
-			var value = [];
-
-			concatArrayValuesFromPosition(value, valueBytes, i
+			var value = subarray(valueBytes, i
 					+ valueLengthBytesLength, valueLength);
 
 			values.push(value);
@@ -214,6 +205,19 @@ var wffBMUtil = new function() {
 	};
 	
 	this.concatArrayValuesFromPosition = concatArrayValuesFromPosition;
+	
+	var subarray = function(srcAry, pos, len) {
+		var upto = pos + len;
+		if (srcAry.slice) {
+			return srcAry.slice(pos, upto);
+		}
+		var sub = [];		
+		for (var i = pos; i < upto; i++) {
+			sub.push(srcAry[i]);
+		}
+		return sub;	
+	};
+	this.subarray = subarray;
 
 	/**
 	 * @param bytes

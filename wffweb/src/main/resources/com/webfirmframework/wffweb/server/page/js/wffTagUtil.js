@@ -8,6 +8,8 @@ var wffTagUtil = new function() {
 		return decoder.decode(new Uint8Array(utf8Bytes));
 	};
 	
+	var subarray = wffBMUtil.subarray;
+	
 	var getTagNameFromCompressedBytes = function(utf8Bytes) {
 		
 		//# or @ represented for NoTag
@@ -19,15 +21,14 @@ var wffTagUtil = new function() {
 		
 		if (lengOfOptmzdBytsOfTgNam > 0) {
 			
-			var tgNamNdxOptmzdByts = [];
-			wffBMUtil.concatArrayValuesFromPosition(tgNamNdxOptmzdByts, utf8Bytes, 1, lengOfOptmzdBytsOfTgNam);
+			var tgNamNdxOptmzdByts = subarray(utf8Bytes, 1, lengOfOptmzdBytsOfTgNam);
+			
 			var tgNamNdx = wffBMUtil.getIntFromOptimizedBytes(tgNamNdxOptmzdByts);
 			return wffGlobal.NDXD_TGS[tgNamNdx];
 		} else {
 			
-			var tagNameBytes = [];
 			var reqBytsLngth = utf8Bytes.length - 1;
-			wffBMUtil.concatArrayValuesFromPosition(tagNameBytes, utf8Bytes, 1, reqBytsLngth);
+			var tagNameBytes = subarray(utf8Bytes, 1, reqBytsLngth);
 			
 			return getStringFromBytes(tagNameBytes);
 		}	
@@ -37,20 +38,21 @@ var wffTagUtil = new function() {
 		var lengOfOptmzdBytsOfAttrNam = utf8Bytes[0];
 		
 		if(lengOfOptmzdBytsOfAttrNam > 0) {
-			var attrNamNdxOptmzdByts = [];
-			wffBMUtil.concatArrayValuesFromPosition(attrNamNdxOptmzdByts, utf8Bytes, 1, lengOfOptmzdBytsOfAttrNam);
+			var attrNamNdxOptmzdByts = subarray(utf8Bytes, 1, lengOfOptmzdBytsOfAttrNam);
 			
 			var attrNamNdx = wffBMUtil.getIntFromOptimizedBytes(attrNamNdxOptmzdByts);
 			
-			var attrValByts = [];
 			var attrValLen = utf8Bytes.length - (lengOfOptmzdBytsOfAttrNam + 1);
-			wffBMUtil.concatArrayValuesFromPosition(attrValByts, utf8Bytes, lengOfOptmzdBytsOfAttrNam + 1, attrValLen);
+			
+			var attrValByts = subarray(utf8Bytes, lengOfOptmzdBytsOfAttrNam + 1, attrValLen);
+			
 			var attrNamVal = [wffGlobal.NDXD_ATRBS[attrNamNdx], getStringFromBytes(attrValByts)];
 			return attrNamVal;
 		} else {
-			var attrNamByts = [];
 			var reqBytsLngth = utf8Bytes.length - 1;
-			wffBMUtil.concatArrayValuesFromPosition(attrNamByts, utf8Bytes, 1, reqBytsLngth);
+			
+			var attrNamByts = subarray(utf8Bytes, 1, reqBytsLngth);
+			
 			return splitAttrNameValue(getStringFromBytes(attrNamByts));
 		}
 	};
