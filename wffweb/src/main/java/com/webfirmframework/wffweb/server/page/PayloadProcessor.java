@@ -40,8 +40,22 @@ public class PayloadProcessor implements Serializable {
 
     private final BrowserPage browserPage;
 
+    private final boolean singleThreaded;
+
     public PayloadProcessor(final BrowserPage browserPage) {
         this.browserPage = browserPage;
+        singleThreaded = false;
+    }
+
+    /**
+     * @param browserPage
+     * @param singleThreaded
+     * @since 3.0.3
+     */
+    PayloadProcessor(final BrowserPage browserPage,
+            final boolean singleThreaded) {
+        this.browserPage = browserPage;
+        this.singleThreaded = singleThreaded;
     }
 
     /**
@@ -92,17 +106,37 @@ public class PayloadProcessor implements Serializable {
     public void webSocketMessaged(final ByteBuffer messagePart,
             final boolean last) {
 
-        wsMessageChunks.add(messagePart);
+        if (last && wsMessageChunksTotalCapacity.get() == 0) {
+            browserPage.webSocketMessaged(messagePart.array());
+        } else {
+            if (singleThreaded) {
+                transferToBrowserPageWS(messagePart, last);
+            } else {
+                synchronized (this) {
+                    transferToBrowserPageWS(messagePart, last);
+                }
+            }
 
+        }
+    }
+
+    /**
+     * @param messagePart
+     * @param last
+     * @since 3.0.3
+     */
+    private void transferToBrowserPageWS(final ByteBuffer messagePart,
+            final boolean last) {
         if (last) {
+            wsMessageChunks.add(messagePart);
             final int totalCapacity = wsMessageChunksTotalCapacity.getAndSet(0)
                     + messagePart.capacity();
 
             browserPage.webSocketMessaged(
                     pollAndConvertToByteArray(totalCapacity, wsMessageChunks));
         } else {
+            wsMessageChunks.add(messagePart);
             wsMessageChunksTotalCapacity.addAndGet(messagePart.capacity());
         }
-
     }
 }

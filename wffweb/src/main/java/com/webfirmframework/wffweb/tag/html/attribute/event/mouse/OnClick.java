@@ -16,7 +16,7 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute.event.mouse;
 
-import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
+import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.attribute.event.AbstractEventAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.event.ServerAsyncMethod;
 import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
@@ -34,8 +34,16 @@ public class OnClick extends AbstractEventAttribute implements AAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+
+    static {
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.ONCLICK);
+
+    }
+
     {
-        super.setAttributeName(AttributeNameConstants.ONCLICK);
+
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

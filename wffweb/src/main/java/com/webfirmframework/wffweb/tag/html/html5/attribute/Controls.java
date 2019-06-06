@@ -17,8 +17,8 @@
 package com.webfirmframework.wffweb.tag.html.html5.attribute;
 
 import com.webfirmframework.wffweb.InvalidValueException;
-import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.html5.identifier.AudioAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.BooleanAttribute;
 
@@ -39,8 +39,16 @@ public class Controls extends AbstractAttribute
 
     private Boolean controls;
 
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+
+    static {
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.CONTROLS);
+
+    }
+
     {
-        super.setAttributeName(AttributeNameConstants.CONTROLS);
+
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

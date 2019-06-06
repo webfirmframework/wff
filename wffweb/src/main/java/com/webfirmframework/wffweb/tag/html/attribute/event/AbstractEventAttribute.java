@@ -429,7 +429,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
 
                 super.setAttributeValue(
                         new StringBuilder(invokeAsyncWithPreFilterFun)
-                                .append("(event, this,'")
+                                .append("(event,this,'")
                                 .append(getAttributeName()).append("',")
                                 .append(getPreparedJsFunctionBody(
                                         jsPreFunctionBody))
@@ -442,7 +442,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
                     && jsPostFunctionBody != null) {
 
                 super.setAttributeValue(new StringBuilder(invokeAsyncWithPreFun)
-                        .append("(event, this,'").append(getAttributeName())
+                        .append("(event,this,'").append(getAttributeName())
                         .append("',")
                         .append(getPreparedJsFunctionBody(jsPreFunctionBody))
                         .append(')').toString());
@@ -452,7 +452,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
 
                 super.setAttributeValue(
                         new StringBuilder(invokeAsyncWithPreFilterFun)
-                                .append("(event, this,'")
+                                .append("(event,this,'")
                                 .append(getAttributeName()).append("',")
                                 .append(getPreparedJsFunctionBody(
                                         jsPreFunctionBody))
@@ -466,7 +466,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
 
                 super.setAttributeValue(
                         new StringBuilder(invokeAsyncWithFilterFun)
-                                .append("(event, this,'")
+                                .append("(event,this,'")
                                 .append(getAttributeName()).append("',")
                                 .append(getPreparedJsFunctionBody(
                                         jsFilterFunctionBody))
@@ -475,7 +475,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
             } else if (jsPreFunctionBody != null) {
 
                 super.setAttributeValue(new StringBuilder(invokeAsyncWithPreFun)
-                        .append("(event, this,'").append(getAttributeName())
+                        .append("(event,this,'").append(getAttributeName())
                         .append("',")
                         .append(getPreparedJsFunctionBody(jsPreFunctionBody))
                         .append(')').toString());
@@ -484,19 +484,19 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
 
                 super.setAttributeValue(
                         new StringBuilder(invokeAsyncWithFilterFun)
-                                .append("(event, this,'")
+                                .append("(event,this,'")
                                 .append(getAttributeName()).append("',")
                                 .append(getPreparedJsFunctionBody(
                                         jsFilterFunctionBody))
                                 .append(')').toString());
             } else if (jsPostFunctionBody != null) {
                 super.setAttributeValue(new StringBuilder(invokeAsync)
-                        .append("(event, this,'").append(getAttributeName())
+                        .append("(event,this,'").append(getAttributeName())
                         .append("')").toString());
             } else {
 
                 super.setAttributeValue(new StringBuilder(invokeAsync)
-                        .append("(event, this,'").append(getAttributeName())
+                        .append("(event,this,'").append(getAttributeName())
                         .append("')").toString());
             }
 

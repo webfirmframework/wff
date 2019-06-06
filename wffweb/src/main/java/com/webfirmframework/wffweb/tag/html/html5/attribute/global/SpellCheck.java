@@ -17,8 +17,8 @@
 package com.webfirmframework.wffweb.tag.html.html5.attribute.global;
 
 import com.webfirmframework.wffweb.InvalidValueException;
-import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
 /**
@@ -45,8 +45,16 @@ public class SpellCheck extends AbstractAttribute
 
     private boolean check;
 
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+
+    static {
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.SPELLCHECK);
+
+    }
+
     {
-        super.setAttributeName(AttributeNameConstants.SPELLCHECK);
+
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

@@ -9,6 +9,10 @@ window.wffGlobal = new function() {
 		return ++wffId;
 	};
 
+	//COMPRESSED WFF DATA
+	this.CPRSD_DATA = "${CPRSD_DATA}";
+	this.NDXD_TGS = "${NDXD_TGS}";
+	this.NDXD_ATRBS = "${NDXD_ATRBS}";
 	this.taskValues = "${TASK_VALUES}";
 	this.WS_URL = "${WS_URL}";
 	this.INSTANCE_ID = "${INSTANCE_ID}";

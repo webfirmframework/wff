@@ -19,6 +19,7 @@ package com.webfirmframework.wffweb.tag.html.html5.attribute.global;
 import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
 /**
@@ -54,6 +55,26 @@ public class DataAttribute extends AbstractAttribute
         }
         super.setAttributeName(
                 AttributeNameConstants.DATA.concat(attributeNameExension));
+        super.setAttributeValue(value);
+    }
+
+    /**
+     * NB: only for internal use. Signature of this constructor may be modified
+     * in future version.
+     *
+     * @param attrNameIndex
+     *                          only if there is constant for this in
+     *                          PreIndexedAttributeName.
+     * @param value
+     * @since 3.0.3
+     */
+    protected DataAttribute(final PreIndexedAttributeName attrNameIndex,
+            final String value) {
+        if (attrNameIndex == null) {
+            throw new NullValueException(
+                    "PreIndexedAttributeName can not be null");
+        }
+        super.setPreIndexedAttribute(attrNameIndex);
         super.setAttributeValue(value);
     }
 

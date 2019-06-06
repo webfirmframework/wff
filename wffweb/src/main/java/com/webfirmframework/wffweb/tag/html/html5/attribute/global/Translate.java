@@ -17,8 +17,8 @@
 package com.webfirmframework.wffweb.tag.html.html5.attribute.global;
 
 import com.webfirmframework.wffweb.InvalidValueException;
-import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 import com.webfirmframework.wffweb.util.StringUtil;
 
@@ -38,8 +38,16 @@ public class Translate extends AbstractAttribute implements GlobalAttributable {
 
     private boolean translation;
 
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+
+    static {
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.TRANSLATE);
+
+    }
+
     {
-        super.setAttributeName(AttributeNameConstants.TRANSLATE);
+
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

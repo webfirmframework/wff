@@ -215,6 +215,7 @@ import com.webfirmframework.wffweb.csswff.CustomCssProperty;
 import com.webfirmframework.wffweb.informer.StateChangeInformer;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 import com.webfirmframework.wffweb.util.StringUtil;
 import com.webfirmframework.wffweb.util.TagStringUtil;
@@ -433,7 +434,11 @@ public class Style extends AbstractAttribute
     private final Set<CssProperty> cssProperties = ConcurrentHashMap
             .newKeySet();
 
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+
     static {
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.STYLE);
+
         CSSPROPERTY_CLASSES.put(CssNameConstants.ALIGN_CONTENT,
                 AlignContent.class);
         CSSPROPERTY_CLASSES.put(CssNameConstants.ALIGN_ITEMS, AlignItems.class);
@@ -724,7 +729,8 @@ public class Style extends AbstractAttribute
     }
 
     {
-        super.setAttributeName(AttributeNameConstants.STYLE);
+
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         abstractCssPropertyClassObjects = new HashMap<String, AbstractCssProperty<?>>() {
 
             private static final long serialVersionUID = 1_0_0L;
@@ -1846,5 +1852,10 @@ public class Style extends AbstractAttribute
             lock.unlockRead(stamp);
         }
         return "";
+    }
+
+    // for testing
+    static int getAttrNameIndex() {
+        return PRE_INDEXED_ATTR_NAME.index();
     }
 }

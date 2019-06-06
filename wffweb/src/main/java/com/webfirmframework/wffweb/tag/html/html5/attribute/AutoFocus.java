@@ -16,8 +16,8 @@
  */
 package com.webfirmframework.wffweb.tag.html.html5.attribute;
 
-import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 
 /**
@@ -39,8 +39,16 @@ public class AutoFocus extends AbstractAttribute implements InputAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+
+    static {
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.AUTOFOCUS);
+
+    }
+
     {
-        super.setAttributeName(AttributeNameConstants.AUTOFOCUS);
+
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

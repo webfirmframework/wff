@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.core.PreIndexedTagName;
 import com.webfirmframework.wffweb.tag.html.identifier.BaseAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
@@ -36,7 +37,16 @@ public class Br extends AbstractHtml {
 
     private static TagType tagType = TagType.SELF_CLOSING;
 
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
+
+    static {
+
+        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.BR);
+
+    }
+
     {
+
         init();
     }
 
@@ -58,7 +68,7 @@ public class Br extends AbstractHtml {
      * @since 1.0.0
      */
     public Br(final AbstractHtml base, final AbstractAttribute... attributes) {
-        super(tagType, TagNameConstants.BR, base, attributes);
+        super(tagType, PRE_INDEXED_TAG_NAME, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

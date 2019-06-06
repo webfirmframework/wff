@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.core.PreIndexedTagName;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.HtmlAttributable;
 
@@ -34,7 +35,16 @@ public class Html extends DocType {
 
     public static final Logger LOGGER = Logger.getLogger(Html.class.getName());
 
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
+
+    static {
+
+        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.HTML);
+
+    }
+
     {
+
         init();
     }
 
@@ -54,7 +64,7 @@ public class Html extends DocType {
      */
     public Html(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.HTML, base, attributes);
+        super(PRE_INDEXED_TAG_NAME, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }
@@ -84,6 +94,7 @@ public class Html extends DocType {
     @Deprecated
     public Html(final int id, final AbstractHtml base,
             final AbstractAttribute... attributes) {
+        // this is just for testing purpose so not indexing
         super(Html.class.getSimpleName().toLowerCase() + String.valueOf(id),
                 base, attributes);
     }

@@ -20,8 +20,8 @@ import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
-import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.core.PreIndexedTagName;
 import com.webfirmframework.wffweb.tag.html.html5.identifier.PolylineAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
@@ -38,7 +38,16 @@ public class Polyline extends AbstractHtml {
     public static final Logger LOGGER = Logger
             .getLogger(Polyline.class.getName());
 
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
+
+    static {
+
+        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.POLYLINE);
+
+    }
+
     {
+
         init();
     }
 
@@ -52,7 +61,7 @@ public class Polyline extends AbstractHtml {
      */
     public Polyline(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.POLYLINE, base, attributes);
+        super(PRE_INDEXED_TAG_NAME, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

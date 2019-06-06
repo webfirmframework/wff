@@ -146,6 +146,7 @@ import com.webfirmframework.wffweb.tag.html.formsandinputs.FormTest;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.InputTest;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.TextAreaTest;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.AutoCompleteTest;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffIdTest;
 import com.webfirmframework.wffweb.tag.html.images.ImgTest;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObjectTest;
 import com.webfirmframework.wffweb.tag.htmlwff.BlankTest;
@@ -222,7 +223,7 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObjectArrayTest;
         AutoCompleteTest.class, AbstractHtmlRepositoryTest.class,
         CodePerformanceTest.class, HashUtilTest.class,
         AbstractHtml5SharedObjectTest.class, ByteBufferUtilTest.class,
-        UnicodeRangeTest.class })
+        UnicodeRangeTest.class, DataWffIdTest.class })
 public class AllTests {
 
 }

@@ -17,6 +17,7 @@
 package com.webfirmframework.wffweb.tag.html.attribute;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.identifier.AreaAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 
@@ -38,8 +39,16 @@ public class Alt extends AbstractAttribute
 
     private static final long serialVersionUID = 1_0_0L;
 
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+
+    static {
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.ALT);
+
+    }
+
     {
-        super.setAttributeName(AttributeNameConstants.ALT);
+
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

@@ -50,6 +50,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeRegistry;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeUtil;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
+import com.webfirmframework.wffweb.tag.html.core.PreIndexedTagName;
 import com.webfirmframework.wffweb.tag.html.core.TagRegistry;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.tag.html.listener.AttributeAddListener;
@@ -85,7 +86,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     private static final Security ACCESS_OBJECT;
 
-    protected static int tagNameIndex;
+    // initial value must be -1 if not assigning any value if int
+    // or null if byte[]
+    private final byte[] tagNameIndexBytes;
 
     private volatile AbstractHtml parent;
 
@@ -110,7 +113,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     private StringBuilder htmlEndSB;
 
-    private String tagName;
+    private final String tagName;
 
     private StringBuilder tagBuilder;
 
@@ -118,7 +121,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     private volatile Map<String, AbstractAttribute> attributesMap;
 
-    private AbstractHtml5SharedObject sharedObject;
+    private volatile AbstractHtml5SharedObject sharedObject;
 
     private boolean htmlStartSBAsFirst;
 
@@ -347,6 +350,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     public AbstractHtml(final AbstractHtml base,
             final AbstractHtml... children) {
+        tagName = null;
+        tagNameIndexBytes = null;
         noTagContentTypeHtml = false;
         if (base == null) {
             sharedObject = new AbstractHtml5SharedObject(this);
@@ -381,6 +386,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     protected AbstractHtml(final AbstractHtml base, final String childContent,
             final boolean noTagContentTypeHtml) {
+
+        tagName = null;
+        tagNameIndexBytes = null;
 
         this.noTagContentTypeHtml = noTagContentTypeHtml;
 
@@ -432,7 +440,53 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     public AbstractHtml(final String tagName, final AbstractHtml base,
             final AbstractAttribute[] attributes) {
+
         this.tagName = tagName;
+        tagNameIndexBytes = null;
+        noTagContentTypeHtml = false;
+        if (base == null) {
+            sharedObject = new AbstractHtml5SharedObject(this);
+        }
+
+        initAttributes(attributes);
+
+        initInConstructor();
+
+        markOwnerTag(attributes);
+        buildOpeningTag(false);
+        buildClosingTag();
+        if (base != null) {
+            base.addChild(this);
+            // base.children.add(this);
+            // should not uncomment the below codes as it is handled in the
+            // above add method
+            // parent = base;
+            // sharedObject = base.sharedObject;
+        }
+
+        // else {
+        // sharedObject = new AbstractHtml5SharedObject(this);
+        // }
+
+        // childAppended(parent, this);
+    }
+
+    /**
+     * should be invoked to generate opening and closing tag base class
+     * containing the functionalities to generate html string.
+     *
+     * @param preIndexedTagName
+     *                              PreIndexedTagName constant
+     *
+     * @param base
+     *                              TODO
+     * @author WFF
+     * @since 3.0.3
+     */
+    protected AbstractHtml(final PreIndexedTagName preIndexedTagName,
+            final AbstractHtml base, final AbstractAttribute[] attributes) {
+        tagName = preIndexedTagName.tagName();
+        tagNameIndexBytes = preIndexedTagName.indexBytes();
         noTagContentTypeHtml = false;
         if (base == null) {
             sharedObject = new AbstractHtml5SharedObject(this);
@@ -1544,17 +1598,43 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * containing the functionalities to generate html string.
      *
      * @param tagType
-     *
      * @param tagName
      *                    TODO
      * @param base
      *                    TODO
+     *
      * @author WFF
      */
     protected AbstractHtml(final TagType tagType, final String tagName,
             final AbstractHtml base, final AbstractAttribute[] attributes) {
+        this(tagType, tagName, null, base, attributes);
+    }
+
+    /**
+     * should be invoked to generate opening and closing tag base class
+     * containing the functionalities to generate html string.
+     *
+     * @param tagType
+     * @param tagName
+     *                              TODO
+     * @param tagNameIndexBytes
+     *                              There is an index value for the each tag
+     *                              name in tag registry then pass its
+     *                              indexBytes otherwise pass null. Never pass
+     *                              an arbitrary value if the tag name has no
+     *                              valid index value in TagRegistry.
+     * @param base
+     *                              TODO
+     *
+     * @author WFF
+     * @since 3.0.3
+     */
+    private AbstractHtml(final TagType tagType, final String tagName,
+            final byte[] tagNameIndexBytes, final AbstractHtml base,
+            final AbstractAttribute[] attributes) {
         this.tagType = tagType;
         this.tagName = tagName;
+        this.tagNameIndexBytes = tagNameIndexBytes;
         noTagContentTypeHtml = false;
 
         if (base == null) {
@@ -1584,6 +1664,27 @@ public abstract class AbstractHtml extends AbstractJsObject {
         // else {
         // sharedObject = new AbstractHtml5SharedObject(this);
         // }
+    }
+
+    /**
+     * should be invoked to generate opening and closing tag base class
+     * containing the functionalities to generate html string.
+     *
+     * @param tagType
+     * @param preIndexedTagName
+     *                              PreIndexedTagName constant
+     *
+     * @param base
+     *                              TODO
+     *
+     * @author WFF
+     * @since 3.0.3
+     */
+    protected AbstractHtml(final TagType tagType,
+            final PreIndexedTagName preIndexedTagName, final AbstractHtml base,
+            final AbstractAttribute[] attributes) {
+        this(tagType, preIndexedTagName.tagName(),
+                preIndexedTagName.indexBytes(), base, attributes);
     }
 
     /**
@@ -3576,6 +3677,154 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
+     * @param charset
+     * @return the Wff Binary Message bytes of this tag containing indexed tag
+     *         name and attribute name
+     * @author WFF
+     * @throws InvalidTagException
+     * @version algorithm version 1.0
+     * @since 3.0.3
+     */
+    public byte[] toCompressedWffBMBytes(final Charset charset) {
+
+        final byte[] encodedBytesForAtChar = "@".getBytes(charset);
+        final byte[] encodedByesForHashChar = "#".getBytes(charset);
+
+        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
+        try {
+            lock.lock();
+
+            final Deque<NameValue> nameValues = new ArrayDeque<>();
+
+            // ArrayDeque give better performance than Stack, LinkedList
+            final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
+            // passed 2 instead of 1 because the load factor is 0.75f
+            final HashSet<AbstractHtml> initialSet = new HashSet<>(2);
+            initialSet.add(this);
+            childrenStack.push(initialSet);
+
+            Set<AbstractHtml> children;
+            while ((children = childrenStack.poll()) != null) {
+
+                for (final AbstractHtml tag : children) {
+
+                    final String nodeName = tag.getTagName();
+
+                    final AbstractHtml parentLocal = tag.parent;
+
+                    if (nodeName != null && !nodeName.isEmpty()) {
+
+                        final NameValue nameValue = new NameValue();
+
+                        final byte[] nodeNameBytes;
+
+                        // just be initialized as local
+                        final byte[] tagNameIndexBytes = tag.tagNameIndexBytes;
+
+                        if (tagNameIndexBytes == null) {
+                            final byte[] rowNodeNameBytes = nodeName
+                                    .getBytes(charset);
+                            nodeNameBytes = new byte[rowNodeNameBytes.length
+                                    + 1];
+                            // if zero there is no optimized int bytes for index
+                            // because there is no tagNameIndex. second byte
+                            // onwards the bytes of tag name
+                            nodeNameBytes[0] = 0;
+                            System.arraycopy(rowNodeNameBytes, 0, nodeNameBytes,
+                                    1, rowNodeNameBytes.length);
+
+                            // logging is not required here
+                            // it is not an unusual case
+                            // if (LOGGER.isLoggable(Level.WARNING)) {
+                            // LOGGER.warning(nodeName
+                            // + " is not indexed, please register it with
+                            // TagRegistry");
+                            // }
+
+                        } else {
+
+                            nodeNameBytes = new byte[tagNameIndexBytes.length
+                                    + 1];
+                            nodeNameBytes[0] = (byte) tagNameIndexBytes.length;
+                            System.arraycopy(tagNameIndexBytes, 0,
+                                    nodeNameBytes, 1, tagNameIndexBytes.length);
+                        }
+
+                        final byte[][] wffAttributeBytes = AttributeUtil
+                                .getAttributeHtmlBytesCompressedByIndex(false,
+                                        charset, tag.attributes);
+
+                        final int parentWffSlotIndex = parentLocal == null ? -1
+                                : parentLocal.wffSlotIndex;
+                        nameValue.setName(WffBinaryMessageUtil
+                                .getBytesFromInt(parentWffSlotIndex));
+
+                        final byte[][] values = new byte[wffAttributeBytes.length
+                                + 1][0];
+
+                        values[0] = nodeNameBytes;
+
+                        System.arraycopy(wffAttributeBytes, 0, values, 1,
+                                wffAttributeBytes.length);
+
+                        nameValue.setValues(values);
+                        tag.wffSlotIndex = nameValues.size();
+                        nameValues.add(nameValue);
+
+                    } else if (!tag.getClosingTag().isEmpty()) {
+
+                        final int parentWffSlotIndex = parentLocal == null ? -1
+                                : parentLocal.wffSlotIndex;
+
+                        final NameValue nameValue = new NameValue();
+
+                        // # short for #text
+                        // @ short for html content
+                        final byte[] nodeNameBytes = tag.noTagContentTypeHtml
+                                ? encodedBytesForAtChar
+                                : encodedByesForHashChar;
+
+                        nameValue.setName(WffBinaryMessageUtil
+                                .getBytesFromInt(parentWffSlotIndex));
+
+                        final byte[][] values = new byte[2][0];
+
+                        values[0] = nodeNameBytes;
+                        values[1] = tag.getClosingTag().getBytes(charset);
+
+                        nameValue.setValues(values);
+
+                        tag.wffSlotIndex = nameValues.size();
+                        nameValues.add(nameValue);
+                    }
+
+                    final Set<AbstractHtml> subChildren = tag.children;
+
+                    if (subChildren != null && subChildren.size() > 0) {
+                        childrenStack.push(subChildren);
+                    }
+
+                }
+
+            }
+
+            final NameValue nameValue = nameValues.getFirst();
+            nameValue.setName(new byte[] {});
+
+            return WffBinaryMessageUtil.VERSION_1
+                    .getWffBinaryMessageBytes(nameValues);
+        } catch (final NoSuchElementException e) {
+            throw new InvalidTagException(
+                    "Not possible to build wff bm bytes on this tag.\nDon't use an empty new NoTag(null, \"\") or new Blank(null, \"\")",
+                    e);
+        } catch (final Exception e) {
+            throw new WffRuntimeException(e.getMessage(), e);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
      * @param bmMessageBytes
      * @return the AbstractHtml instance from the given Wff BM bytes. It uses
      *         system default charset.
@@ -4387,5 +4636,15 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     protected Lock getWriteLock() {
         return sharedObject.getLock(ACCESS_OBJECT).writeLock();
+    }
+
+    /**
+     * for testing purpose only
+     *
+     * @return
+     * @since 3.0.3
+     */
+    byte[] getTagNameIndex() {
+        return tagNameIndexBytes;
     }
 }

@@ -20,6 +20,7 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.core.PreIndexedTagName;
 
 /**
  * @author WFF
@@ -44,6 +45,18 @@ public abstract class DocType extends AbstractHtml {
     public DocType(final String tagName, final AbstractHtml base,
             final AbstractAttribute[] attributes) {
         super(tagName, base, attributes);
+    }
+
+    /**
+     * should be invoked to generate opening and closing tag
+     *
+     * @param preIndexedTagName
+     * @param attributes
+     * @since 3.0.3
+     */
+    protected DocType(final PreIndexedTagName preIndexedTagName,
+            final AbstractHtml base, final AbstractAttribute[] attributes) {
+        super(preIndexedTagName, base, attributes);
     }
 
     /*

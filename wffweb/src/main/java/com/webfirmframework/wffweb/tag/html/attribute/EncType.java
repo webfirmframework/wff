@@ -17,6 +17,7 @@
 package com.webfirmframework.wffweb.tag.html.attribute;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.identifier.FormAttributable;
 
 /**
@@ -58,8 +59,16 @@ public class EncType extends AbstractAttribute implements FormAttributable {
      */
     public static final String TEXT_PLAIN = "text/plain";
 
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+
+    static {
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.ENCTYPE);
+
+    }
+
     {
-        super.setAttributeName(AttributeNameConstants.ENCTYPE);
+
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

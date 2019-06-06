@@ -15,13 +15,18 @@
  */
 package com.webfirmframework.wffweb.tag.html;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -33,11 +38,15 @@ import com.webfirmframework.wffweb.server.page.BrowserPage;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.MaxLength;
 import com.webfirmframework.wffweb.tag.html.attribute.Name;
+import com.webfirmframework.wffweb.tag.html.attribute.Type;
+import com.webfirmframework.wffweb.tag.html.attribute.Value;
 import com.webfirmframework.wffweb.tag.html.attribute.global.ClassAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Style;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
+import com.webfirmframework.wffweb.tag.html.core.TagRegistry;
 import com.webfirmframework.wffweb.tag.html.formatting.B;
+import com.webfirmframework.wffweb.tag.html.formsandinputs.Input;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Controls;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.Translate;
 import com.webfirmframework.wffweb.tag.html.links.A;
@@ -47,6 +56,7 @@ import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Span;
 import com.webfirmframework.wffweb.tag.htmlwff.CustomTag;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 import com.webfirmframework.wffweb.tag.repository.TagRepository;
+import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 
 @SuppressWarnings("serial")
 public class AbstractHtmlTest {
@@ -59,7 +69,6 @@ public class AbstractHtmlTest {
         Html html = new Html(null, new Id("id1")) {
             {
                 for (int i = 0; i < 100; i++) {
-
                     new Div(this, new Id("id2 " + i));
                 }
             }
@@ -1763,6 +1772,90 @@ public class AbstractHtmlTest {
                 .getExactTagFromWffBMBytes(wffBMBytes, StandardCharsets.UTF_8);
 
         assertEquals(html.toHtmlString(), tagFromWffBMBytes.toHtmlString());
+    }
+    @Test
+    public void testToCompressedWffBMBytesCharset() throws Exception {
+        final Html html = new Html(null) {
+            {
+                new Div(this, new Id("one")) {
+                    {
+                        new Span(this, new Id("two"), new Style("color:green"), new ClassAttribute("cls1 cls2"), new Controls(), new ClassAttribute("cls1 cls2"), new Controls(), new CustomAttribute("custom-attr1", "value"), new CustomAttribute("custom-attr2", ""), new CustomAttribute("custom-attr3", null)) {
+                            {
+                                new H1(this, new Id("three"), new Translate(), new MaxLength(), new Controls("true"));
+                                new H2(this, new Id("three"), new Translate(false), new Controls(true));
+                                new H3(this, new Id("three"), new Translate("yes"));
+                                new NoTag(this, "something");
+                            }
+                        };
+                        
+                        new H3(this, new Name("name1"));
+                    }
+                };
+            }
+        };
+        
+        final byte[] wffBMBytes = html.toWffBMBytes(StandardCharsets.UTF_8);
+        final byte[] compressedWffBMBytes = html.toCompressedWffBMBytes(StandardCharsets.UTF_8);
+        
+        //without tagIndex impl: wffBMBytes.length: 311 compressedWffBMBytes.length: 247
+        //with tagIndex impl compressedWffBMBytes.length: 242
+//        System.out.println("wffBMBytes.length: " + wffBMBytes.length + "\ncompressedWffBMBytes.length: " + compressedWffBMBytes.length);
+        assertTrue( wffBMBytes.length > compressedWffBMBytes.length);
+    }
+    
+    @Test
+    public void testTagNameIndex() throws Exception {
+        final Map<String, Class<?>> tagClassNameByTagName = TagRegistry
+                .getTagClassByTagName();
+        for (Entry<String, Class<?>> entry : tagClassNameByTagName
+                .entrySet()) {
+            final AbstractHtml tag = TagRegistry
+                    .getNewTagInstance(entry.getKey());
+
+            assertNotNull(tag);
+            assertEquals(entry.getValue(), tag.getClass());
+          //just for testing
+            int tagNameIndex = WffBinaryMessageUtil.getIntFromOptimizedBytes(tag.getTagNameIndex());
+            assertEquals(tagNameIndex, (int) TagRegistry.getIndexByTagName(tag.getTagName()));
+
+        }
+    }
+    
+    @Test
+    public void testCompareSizeOfToWffBMBytesAndToCompressedWffBMBytes() throws Exception {
+        Html html = new Html(null, new Id("id1")) {
+            {
+                for (int i = 0; i < 50; i++) {
+                    new Div(this, new Id("id2 " + i)) {{
+                      new Input(this, new Type(Type.TEXT), new Name("uname"), new Value("uname"));  
+                    }};
+                }
+            }
+        };
+        
+        final int htmlStringLength = html.toHtmlString().length();
+        long before = System.nanoTime();
+        final int tagWffBMBytesLength = html.toWffBMBytes(StandardCharsets.UTF_8).length;
+        long after = System.nanoTime();
+        
+        long toWffBMBytesProcessingTime = after - before;
+        
+        before = System.nanoTime();
+        final int tagCompressedWffBMBytesLength = html.toCompressedWffBMBytes(StandardCharsets.UTF_8).length;
+        after = System.nanoTime();
+        
+        long toCompressedWffBMBytesProcessingTime = after - before;
+        
+        assertTrue(tagCompressedWffBMBytesLength < tagWffBMBytesLength);
+        System.out.println("htmlStringLength: " + htmlStringLength + "\ntagWffBMBytesLength: " + tagWffBMBytesLength
+                + "\ntagCompressedWffBMBytesLength: "
+                + tagCompressedWffBMBytesLength + "\ntagCompressedWffBMBytesLength saved " + (tagWffBMBytesLength - tagCompressedWffBMBytesLength) + " bytes"
+                + "\ntoWffBMBytesProcessingTime: " + toWffBMBytesProcessingTime + "\ntoCompressedWffBMBytesProcessingTime: " 
+                + toCompressedWffBMBytesProcessingTime);
+        
+//        assertTrue(toCompressedWffBMBytesProcessingTime < toWffBMBytesProcessingTime);
+        
+        
     }
 
 }

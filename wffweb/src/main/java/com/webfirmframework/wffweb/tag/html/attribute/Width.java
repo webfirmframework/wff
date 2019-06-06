@@ -4,6 +4,7 @@ import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.css.CssLengthUnit;
 import com.webfirmframework.wffweb.css.core.LengthUnit;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.html5.identifier.RectAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 import com.webfirmframework.wffweb.util.CssLengthUtil;
@@ -24,8 +25,16 @@ public class Width extends AbstractAttribute
     private float value;
     private LengthUnit cssLengthUnit;
 
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+
+    static {
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.WIDTH);
+
+    }
+
     {
-        super.setAttributeName(AttributeNameConstants.WIDTH);
+
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

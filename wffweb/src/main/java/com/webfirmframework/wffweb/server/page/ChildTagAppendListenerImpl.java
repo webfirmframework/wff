@@ -29,6 +29,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.InvalidTagException;
+import com.webfirmframework.wffweb.server.page.js.WffJsFile;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.tag.html.listener.ChildTagAppendListener;
@@ -120,8 +121,13 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
 
             final byte[] parentTagName = tagNameAndWffId[0];
 
-            nameValue.setValues(parentTagName,
-                    appendedChildTag.toWffBMBytes(StandardCharsets.UTF_8));
+            if (WffJsFile.COMPRESSED_WFF_DATA) {
+                nameValue.setValues(parentTagName, appendedChildTag
+                        .toCompressedWffBMBytes(StandardCharsets.UTF_8));
+            } else {
+                nameValue.setValues(parentTagName,
+                        appendedChildTag.toWffBMBytes(StandardCharsets.UTF_8));
+            }
 
             browserPage.push(task, nameValue);
 
@@ -207,8 +213,15 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
                 final byte[] parentTagName = tagNameAndWffId[0];
 
                 try {
-                    nameValue.setValues(parentTagName, appendedChildTag
-                            .toWffBMBytes(StandardCharsets.UTF_8));
+                    if (WffJsFile.COMPRESSED_WFF_DATA) {
+                        nameValue.setValues(parentTagName,
+                                appendedChildTag.toCompressedWffBMBytes(
+                                        StandardCharsets.UTF_8));
+                    } else {
+                        nameValue.setValues(parentTagName, appendedChildTag
+                                .toWffBMBytes(StandardCharsets.UTF_8));
+                    }
+
                 } catch (final InvalidTagException e) {
                     if (LOGGER.isLoggable(Level.WARNING)) {
                         LOGGER.log(Level.WARNING,
@@ -386,10 +399,18 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
                             // if the previousParentTag is null it means it's a
                             // new
                             // tag
-                            nameValue.setValues(currentTagName,
-                                    movedChildWffIdBytes, movedChildTagName,
-                                    movedChildTag.toWffBMBytes(
-                                            StandardCharsets.UTF_8));
+                            if (WffJsFile.COMPRESSED_WFF_DATA) {
+                                nameValue.setValues(currentTagName,
+                                        movedChildWffIdBytes, movedChildTagName,
+                                        movedChildTag.toCompressedWffBMBytes(
+                                                StandardCharsets.UTF_8));
+                            } else {
+                                nameValue.setValues(currentTagName,
+                                        movedChildWffIdBytes, movedChildTagName,
+                                        movedChildTag.toWffBMBytes(
+                                                StandardCharsets.UTF_8));
+                            }
+
                         } catch (final InvalidTagException e) {
                             if (LOGGER.isLoggable(Level.WARNING)) {
                                 LOGGER.log(Level.WARNING,

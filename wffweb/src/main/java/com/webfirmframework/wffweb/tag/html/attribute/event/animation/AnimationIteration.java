@@ -16,7 +16,7 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute.event.animation;
 
-import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
+import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.attribute.event.AbstractEventAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.event.ServerAsyncMethod;
 
@@ -33,8 +33,15 @@ public class AnimationIteration extends AbstractEventAttribute {
 
     private static final long serialVersionUID = 1_0_0L;
 
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+
+    static {
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.ANIMATIONITERATION);
+
+    }
+
     {
-        super.setAttributeName(AttributeNameConstants.ANIMATIONITERATION);
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

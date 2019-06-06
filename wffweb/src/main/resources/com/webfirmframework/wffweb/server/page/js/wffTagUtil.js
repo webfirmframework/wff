@@ -8,6 +8,55 @@ var wffTagUtil = new function() {
 		return decoder.decode(new Uint8Array(utf8Bytes));
 	};
 	
+	var subarray = wffBMUtil.subarray;
+	
+	var getTagNameFromCompressedBytes = function(utf8Bytes) {
+		
+		//# or @ represented for NoTag
+		if (utf8Bytes.length == 1) {
+			return getStringFromBytes(utf8Bytes);
+		}
+		
+		var lengOfOptmzdBytsOfTgNam = utf8Bytes[0];
+		
+		if (lengOfOptmzdBytsOfTgNam > 0) {
+			
+			var tgNamNdxOptmzdByts = subarray(utf8Bytes, 1, lengOfOptmzdBytsOfTgNam);
+			
+			var tgNamNdx = wffBMUtil.getIntFromOptimizedBytes(tgNamNdxOptmzdByts);
+			return wffGlobal.NDXD_TGS[tgNamNdx];
+		} else {
+			
+			var reqBytsLngth = utf8Bytes.length - 1;
+			var tagNameBytes = subarray(utf8Bytes, 1, reqBytsLngth);
+			
+			return getStringFromBytes(tagNameBytes);
+		}	
+		
+	};
+	var getAttrNameValueFromCompressedBytes = function(utf8Bytes) {
+		var lengOfOptmzdBytsOfAttrNam = utf8Bytes[0];
+		
+		if(lengOfOptmzdBytsOfAttrNam > 0) {
+			var attrNamNdxOptmzdByts = subarray(utf8Bytes, 1, lengOfOptmzdBytsOfAttrNam);
+			
+			var attrNamNdx = wffBMUtil.getIntFromOptimizedBytes(attrNamNdxOptmzdByts);
+			
+			var attrValLen = utf8Bytes.length - (lengOfOptmzdBytsOfAttrNam + 1);
+			
+			var attrValByts = subarray(utf8Bytes, lengOfOptmzdBytsOfAttrNam + 1, attrValLen);
+			
+			var attrNamVal = [wffGlobal.NDXD_ATRBS[attrNamNdx], getStringFromBytes(attrValByts)];
+			return attrNamVal;
+		} else {
+			var reqBytsLngth = utf8Bytes.length - 1;
+			
+			var attrNamByts = subarray(utf8Bytes, 1, reqBytsLngth);
+			
+			return splitAttrNameValue(getStringFromBytes(attrNamByts));
+		}
+	};
+	
 	var appendHtmlAsChildren = function(tag, htmlString) {
 		var tmpDv = document.createElement('div');
 		tmpDv.innerHTML = htmlString;
@@ -58,7 +107,7 @@ var wffTagUtil = new function() {
 	 */
 	this.getWffIdFromWffIdBytes = function(wffIdBytes) {
 
-		var sOrC = decoder.decode(new Uint8Array([ wffIdBytes[0] ]));
+		var sOrC = getStringFromBytes([ wffIdBytes[0] ]);
 		var intBytes = [];
 		for (var i = 1; i < wffIdBytes.length; i++) {
 			intBytes.push(wffIdBytes[i]);
@@ -195,5 +244,83 @@ var wffTagUtil = new function() {
 
 		return parent;
 	};
+	
+	this.createTagFromCompressedWffBMBytes = function(bytes) {
+		var nameValues = wffBMUtil.parseWffBinaryMessageBytes(bytes);
+
+		var superParentNameValue = nameValues[0];
+		var superParentValues = superParentNameValue.values;
+
+		var allTags = [];
+
+		var parent;
+		var parentTagName = getTagNameFromCompressedBytes(superParentValues[0]);
+		
+		if (parentTagName === '#') {
+			var text = getStringFromBytes(superParentValues[1]);
+			parent = document.createDocumentFragment();
+			parent.appendChild(document.createTextNode(text));
+		} else if (parentTagName === '@') {
+			// @ short for html content
+			var text = getStringFromBytes(superParentValues[1]);
+			parent = document.createDocumentFragment();			
+			appendHtmlAsChildren(parent, text);
+			
+		} else {
+
+			parent = document.createElement(parentTagName);
+
+			for (var i = 1; i < superParentValues.length; i++) {
+				var attrNameValue = getAttrNameValueFromCompressedBytes(superParentValues[i]);
+				//value attribute doesn't work with setAttribute method
+				//should be called before setAttribute method
+				parent[attrNameValue[0]] = attrNameValue[1];
+				parent.setAttribute(attrNameValue[0], attrNameValue[1]);
+			}
+		}
+
+		allTags.push(parent);
+
+		for (var i = 1; i < nameValues.length; i++) {
+			var name = nameValues[i].name;
+			var values = nameValues[i].values;
+
+			var tagName = getTagNameFromCompressedBytes(values[0]);
+
+			var child;
+
+			if (tagName === '#') {
+				var text = getStringFromBytes(values[1]);
+				child = document.createDocumentFragment();
+				child.appendChild(document.createTextNode(text));
+			} else if (tagName === '@') {
+				// @ short for html content
+				var text = getStringFromBytes(values[1]);
+				child = document.createDocumentFragment();				
+				appendHtmlAsChildren(child, text);
+			} else {
+				child = document.createElement(tagName);
+
+				for (var j = 1; j < values.length; j++) {
+					var attrNameValue = getAttrNameValueFromCompressedBytes(values[j]);
+					//value attribute doesn't work with setAttribute method
+					//should be called before setAttribute method
+					child[attrNameValue[0]] = attrNameValue[1];
+					child.setAttribute(attrNameValue[0], attrNameValue[1]);
+				}
+			}
+
+			allTags.push(child);
+
+			var parentIndex = wffBMUtil.getIntFromOptimizedBytes(name);
+			allTags[parentIndex].appendChild(child);
+		}
+
+		return parent;
+	};
+	
+	if(wffGlobal.CPRSD_DATA) {
+		this.createTagFromWffBMBytes = this.createTagFromCompressedWffBMBytes;
+	}
 
 };

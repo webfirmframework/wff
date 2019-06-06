@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractValueSetAttribute;
+import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.identifier.TdAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.ThAttributable;
 
@@ -35,8 +36,16 @@ public class Headers extends AbstractValueSetAttribute
      */
     private static final long serialVersionUID = 1_0_0L;
 
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+
+    static {
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.HEADERS);
+
+    }
+
     {
-        super.setAttributeName(AttributeNameConstants.HEADERS);
+
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

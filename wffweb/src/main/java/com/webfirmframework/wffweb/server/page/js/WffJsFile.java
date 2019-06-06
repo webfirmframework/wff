@@ -20,12 +20,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.server.page.Task;
+import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeRegistry;
+import com.webfirmframework.wffweb.tag.html.core.TagRegistry;
 import com.webfirmframework.wffweb.util.StringBuilderUtil;
 import com.webfirmframework.wffweb.util.StringUtil;
 
@@ -70,6 +73,8 @@ public enum WffJsFile {
     // should be static final
     public static final boolean PRODUCTION_MODE = true;
 
+    public static final boolean COMPRESSED_WFF_DATA = true;
+
     private static String allOptimizedContent;
 
     private String filename;
@@ -89,7 +94,31 @@ public enum WffJsFile {
 
     private static final String HEART_BEAT_JS = "setInterval(function(){try{wffWS.send([]);}catch(e){wffWS.closeSocket();}},\"${HEARTBEAT_INTERVAL}\");";
 
+    /**
+     * INDEXED_TAGS_ARRAY
+     */
+    private static final String NDXD_TGS;
+    private static final String NDXD_ATRBS;
+
     static {
+
+        final StringBuilder tagsArraySB = new StringBuilder();
+        final List<String> tagNames = TagRegistry.getTagNames();
+        for (final String tagName : tagNames) {
+            tagsArraySB.append(",\"");
+            tagsArraySB.append(tagName);
+            tagsArraySB.append('"');
+        }
+        NDXD_TGS = "[" + tagsArraySB.substring(1) + "]";
+
+        final StringBuilder attrbsArraySB = new StringBuilder();
+        final List<String> attrNames = AttributeRegistry.getAttributeNames();
+        for (final String attrName : attrNames) {
+            attrbsArraySB.append(",\"");
+            attrbsArraySB.append(attrName);
+            attrbsArraySB.append('"');
+        }
+        NDXD_ATRBS = "[" + attrbsArraySB.substring(1) + "]";
 
         if (PRODUCTION_MODE) {
 
@@ -109,8 +138,11 @@ public enum WffJsFile {
 
             // should be in descending order of the value length
 
+            functionNames.add("getAttrNameValueFromCompressedBytes");
+            functionNames.add("createTagFromCompressedWffBMBytes");
             functionNames.add("getLengthOfOptimizedBytesFromInt");
             functionNames.add("concatArrayValuesFromPosition");
+            functionNames.add("getTagNameFromCompressedBytes");
             functionNames.add("extractValuesFromValueBytes");
             functionNames.add("getDoubleFromOptimizedBytes");
             functionNames.add("parseWffBinaryMessageBytes");
@@ -155,7 +187,9 @@ public enum WffJsFile {
             variableNames.add("totalNoOfBytesForAllValues");
             variableNames.add("maxBytesLengthForAllValues");
             variableNames.add("totalNoOfBytesForAllValues");
+            variableNames.add("lengOfOptmzdBytsOfAttrNam");
             variableNames.add("indexInWffBinaryMessage");
+            variableNames.add("lengOfOptmzdBytsOfTgNam");
             variableNames.add("valueLengthBytesLength");
             variableNames.add("nameLengthBytesLength");
             variableNames.add("wffBinaryMessageBytes");
@@ -170,11 +204,14 @@ public enum WffJsFile {
             variableNames.add("currentParentTagName");
             variableNames.add("maxValuesBytesLength");
             variableNames.add("maxNoNameLengthBytes");
+            variableNames.add("attrNamNdxOptmzdByts");
             variableNames.add("parentOfExistingTag");
             variableNames.add("maxNoOfValuesBytes");
             variableNames.add("wffInstanceIdBytes");
             variableNames.add("attrNameValueBytes");
             variableNames.add("currentParentWffId");
+            variableNames.add("tgNamNdxOptmzdByts");
+            variableNames.add("tgNamNdxOptmzdByts");
             variableNames.add("callbackFunctions");
             variableNames.add("attrNameValueArry");
             variableNames.add("superParentValues");
@@ -206,6 +243,9 @@ public enum WffJsFile {
             variableNames.add("attrNameValue");
             variableNames.add("messageIndex");
             variableNames.add("childTagName");
+            variableNames.add("tagNameBytes");
+            variableNames.add("reqBytsLngth");
+            variableNames.add("reqBytsLngth");
             variableNames.add("parentIndex");
             variableNames.add("doubleValue");
             variableNames.add("tagToRemove");
@@ -213,6 +253,8 @@ public enum WffJsFile {
             variableNames.add("zerothIndex");
             variableNames.add("valueLength");
             variableNames.add("secondIndex");
+            variableNames.add("attrValByts");
+            variableNames.add("attrNamByts");
             variableNames.add("thirdIndex");
             variableNames.add("valueLegth");
             variableNames.add("childWffId");
@@ -224,6 +266,8 @@ public enum WffJsFile {
             variableNames.add("wffBMBytes");
             variableNames.add("firstIndex");
             variableNames.add("methodName");
+            variableNames.add("attrNamNdx");
+            variableNames.add("attrValLen");
             variableNames.add("nameValue");
             variableNames.add("nameBytes");
             variableNames.add("beforeTag");
@@ -235,6 +279,7 @@ public enum WffJsFile {
             variableNames.add("childTag");
             variableNames.add("nameByte");
             variableNames.add("argBytes");
+            variableNames.add("tgNamNdx");
             variableNames.add("allTags");
             variableNames.add("allTags");
             variableNames.add("wffIds");
@@ -515,20 +560,33 @@ public enum WffJsFile {
             final boolean removePrevBPOnInitTab,
             final boolean removePrevBPOnClosetTab,
             final int wsReconnectInterval) {
-        return new StringBuilder("var wffLog = console.log;")
-                .append(JS_WORK_AROUND.optimizedFileContent)
-                .append(WFF_GLOBAL.optimizedFileContent
-                        .replace("${WS_URL}", wsUrl)
-                        .replace("${INSTANCE_ID}", instanceId)
-                        .replace("\"${REMOVE_PREV_BP_ON_TABCLOSE}\"",
-                                String.valueOf(removePrevBPOnClosetTab))
-                        .replace("\"${REMOVE_PREV_BP_ON_INITTAB}\"",
-                                String.valueOf(removePrevBPOnInitTab))
-                        .replace("\"${TASK_VALUES}\"", Task.getJsObjectString())
-                        .replace("\"${WS_RECON}\"",
-                                String.valueOf(wsReconnectInterval))
+        return new StringBuilder(
+                "var wffLog = console.log;")
+                        .append(JS_WORK_AROUND.optimizedFileContent).append(
+                                WFF_GLOBAL.optimizedFileContent
+                                        .replace("\"${CPRSD_DATA}\"",
+                                                String.valueOf(
+                                                        COMPRESSED_WFF_DATA))
+                                        .replace("\"${NDXD_TGS}\"", NDXD_TGS)
+                                        .replace("\"${NDXD_ATRBS}\"",
+                                                NDXD_ATRBS)
+                                        .replace("${WS_URL}",
+                                                wsUrl)
+                                        .replace("${INSTANCE_ID}", instanceId)
+                                        .replace(
+                                                "\"${REMOVE_PREV_BP_ON_TABCLOSE}\"",
+                                                String.valueOf(
+                                                        removePrevBPOnClosetTab))
+                                        .replace(
+                                                "\"${REMOVE_PREV_BP_ON_INITTAB}\"",
+                                                String.valueOf(
+                                                        removePrevBPOnInitTab))
+                                        .replace("\"${TASK_VALUES}\"",
+                                                Task.getJsObjectString())
+                                        .replace("\"${WS_RECON}\"", String
+                                                .valueOf(wsReconnectInterval))
 
-                ).append(allOptimizedContent);
+                        ).append(allOptimizedContent);
     }
 
 }

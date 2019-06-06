@@ -16,7 +16,7 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute.event.clipboard;
 
-import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
+import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.attribute.event.AbstractEventAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.event.ServerAsyncMethod;
 
@@ -33,8 +33,16 @@ public class OnPaste extends AbstractEventAttribute {
 
     private static final long serialVersionUID = 1_0_0L;
 
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+
+    static {
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.ONPASTE);
+
+    }
+
     {
-        super.setAttributeName(AttributeNameConstants.ONPASTE);
+
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

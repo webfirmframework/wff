@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.InvalidTagException;
+import com.webfirmframework.wffweb.server.page.js.WffJsFile;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
@@ -143,8 +144,14 @@ class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
                 final NameValue nameValue = new NameValue();
 
                 try {
-                    nameValue.setName(
-                            innerHtmlTag.toWffBMBytes(StandardCharsets.UTF_8));
+                    if (WffJsFile.COMPRESSED_WFF_DATA) {
+                        nameValue.setName(innerHtmlTag.toCompressedWffBMBytes(
+                                StandardCharsets.UTF_8));
+                    } else {
+                        nameValue.setName(innerHtmlTag
+                                .toWffBMBytes(StandardCharsets.UTF_8));
+                    }
+
                 } catch (final InvalidTagException e) {
                     if (LOGGER.isLoggable(Level.WARNING)) {
                         LOGGER.log(Level.WARNING,

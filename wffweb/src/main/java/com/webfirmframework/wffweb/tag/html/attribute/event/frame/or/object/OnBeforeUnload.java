@@ -16,7 +16,7 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute.event.frame.or.object;
 
-import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
+import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.attribute.event.AbstractEventAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.event.ServerAsyncMethod;
 import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
@@ -36,8 +36,16 @@ public class OnBeforeUnload extends AbstractEventAttribute
 
     private static final long serialVersionUID = 1_0_0L;
 
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+
+    static {
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.ONBEFOREUNLOAD);
+
+    }
+
     {
-        super.setAttributeName(AttributeNameConstants.ONBEFOREUNLOAD);
+
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

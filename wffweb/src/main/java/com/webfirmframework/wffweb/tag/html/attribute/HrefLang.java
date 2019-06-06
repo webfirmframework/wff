@@ -19,6 +19,7 @@ package com.webfirmframework.wffweb.tag.html.attribute;
 import java.util.Locale;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.AreaAttributable;
 
@@ -37,8 +38,16 @@ public class HrefLang extends AbstractAttribute
 
     private Locale locale;
 
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+
+    static {
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.HREFLANG);
+
+    }
+
     {
-        super.setAttributeName(AttributeNameConstants.HREFLANG);
+
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

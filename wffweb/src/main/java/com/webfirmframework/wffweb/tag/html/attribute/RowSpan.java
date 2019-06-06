@@ -17,6 +17,7 @@
 package com.webfirmframework.wffweb.tag.html.attribute;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.identifier.TdAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.ThAttributable;
 
@@ -37,8 +38,16 @@ public class RowSpan extends AbstractAttribute
 
     private int value;
 
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+
+    static {
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.ROWSPAN);
+
+    }
+
     {
-        super.setAttributeName(AttributeNameConstants.ROWSPAN);
+
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

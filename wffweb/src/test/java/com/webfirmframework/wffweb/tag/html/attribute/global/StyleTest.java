@@ -19,6 +19,7 @@ package com.webfirmframework.wffweb.tag.html.attribute.global;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -39,6 +40,10 @@ import com.webfirmframework.wffweb.css.css3.AlignContent;
 import com.webfirmframework.wffweb.css.css3.AlignItems;
 import com.webfirmframework.wffweb.css.css3.BackfaceVisibility;
 import com.webfirmframework.wffweb.csswff.CustomCssProperty;
+import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
+import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeRegistry;
+import com.webfirmframework.wffweb.tag.html.attribute.core.IndexedAttributeName;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 
 /**
  * 
@@ -619,6 +624,19 @@ public class StyleTest {
     @Test
     public void testGetAttributeValue() {
         Assert.assertEquals("color:green;background:yellow;", new Style("color:green;background:yellow").getAttributeValue());
+    }
+    
+    @Test
+    public void testGetAttrNameIndex() {
+        
+        {
+            Style style = new Style("background:green");
+            final int indexByAttributeName = (int) IndexedAttributeName.INSTANCE.getIndexByAttributeName(AttributeNameConstants.STYLE);
+            assertEquals(indexByAttributeName, style.getAttrNameIndex());
+            assertNotEquals(-1, indexByAttributeName);
+            assertNotEquals(-1, style.getAttrNameIndex());
+            assertNotEquals(-1, Style.getAttrNameIndex());
+        }
     }
 
 }

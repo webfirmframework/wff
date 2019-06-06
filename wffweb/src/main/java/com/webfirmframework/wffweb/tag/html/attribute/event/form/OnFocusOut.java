@@ -16,7 +16,7 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute.event.form;
 
-import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
+import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.attribute.event.AbstractEventAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.event.ServerAsyncMethod;
 import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
@@ -35,8 +35,16 @@ public class OnFocusOut extends AbstractEventAttribute
 
     private static final long serialVersionUID = 1_0_0L;
 
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+
+    static {
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.ONFOCUSOUT);
+
+    }
+
     {
-        super.setAttributeName(AttributeNameConstants.ONFOCUSOUT);
+
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

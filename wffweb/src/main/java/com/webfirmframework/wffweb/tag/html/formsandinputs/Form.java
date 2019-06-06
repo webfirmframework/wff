@@ -26,6 +26,7 @@ import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.Type;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.core.PreIndexedTagName;
 import com.webfirmframework.wffweb.tag.html.identifier.FormAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
@@ -41,7 +42,16 @@ public class Form extends AbstractHtml {
 
     public static final Logger LOGGER = Logger.getLogger(Form.class.getName());
 
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
+
+    static {
+
+        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.FORM);
+
+    }
+
     {
+
         init();
     }
 
@@ -56,7 +66,7 @@ public class Form extends AbstractHtml {
      */
     public Form(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.FORM, base, attributes);
+        super(PRE_INDEXED_TAG_NAME, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }

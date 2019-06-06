@@ -159,7 +159,7 @@ public abstract class BrowserPage implements Serializable {
 
     // inline initialization is better because object creation is not heavy.
     private final ThreadLocal<PayloadProcessor> PALYLOAD_PROCESSOR_TL = ThreadLocal
-            .withInitial(() -> new PayloadProcessor(this));
+            .withInitial(() -> new PayloadProcessor(this, true));
 
     // for security purpose, the class name should not be modified
     private static final class Security implements Serializable {

@@ -207,6 +207,7 @@ import com.webfirmframework.wffweb.tag.html.html5.attribute.Wrap;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.ContentEditable;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.ContextMenu;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataAttribute;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.Draggable;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.Dropzone;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.Hidden;
@@ -218,13 +219,13 @@ public class AttributeRegistry {
     public static final Logger LOGGER = Logger
             .getLogger(AttributeRegistry.class.getName());
 
-    private static List<String> attributeNames;
-
     private static final Set<String> ATTRIBUTE_NAMES_SET;
 
     private static final Map<String, String> ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME;
 
     private static final Map<String, Class<?>> ATTRIBUTE_CLASS_BY_ATTR_NAME;
+
+    private static final List<Class<?>> INDEXED_ATTR_CLASSES = new ArrayList<>();
 
     private static Map<String, Class<?>> attributeClassByAttrNameTmp;
 
@@ -239,6 +240,8 @@ public class AttributeRegistry {
                 initialCapacity);
         attributeClassByAttrNameTmp = new ConcurrentHashMap<>(initialCapacity);
         attributeClassByAttrName = new ConcurrentHashMap<>(initialCapacity);
+
+        attributeClassByAttrName.put(DataWffId.ATTRIBUTE_NAME, DataWffId.class);
 
         attributeClassByAttrName.put(AttributeNameConstants.ACCEPT,
                 Accept.class);
@@ -586,11 +589,9 @@ public class AttributeRegistry {
                     entry.getValue().getSimpleName());
         }
 
-        attributeNames = new ArrayList<>(initialCapacity);
         ATTRIBUTE_NAMES_SET = new HashSet<>(initialCapacity);
 
         ATTRIBUTE_NAMES_SET.addAll(ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.keySet());
-        attributeNames.addAll(ATTRIBUTE_NAMES_SET);
 
         for (final Field field : fields) {
             try {
@@ -603,14 +604,15 @@ public class AttributeRegistry {
             }
         }
 
-        attributeNames.addAll(ATTRIBUTE_NAMES_SET);
-        Collections.sort(attributeNames, (o1, o2) -> {
+        int index = 0;
+        for (final String attrName : IndexedAttributeName.INSTANCE
+                .sortedAttrNames()) {
+            final Class<?> attrClass = ATTRIBUTE_CLASS_BY_ATTR_NAME
+                    .get(attrName);
+            INDEXED_ATTR_CLASSES.add(index, attrClass);
 
-            final Integer length1 = o1.length();
-            final Integer length2 = o2.length();
-
-            return length1.compareTo(length2);
-        });
+            index++;
+        }
     }
 
     /**
@@ -630,16 +632,18 @@ public class AttributeRegistry {
 
         ATTRIBUTE_NAMES_SET.addAll(tagNamesWithoutDuplicates);
 
-        attributeNames.clear();
-        attributeNames.addAll(ATTRIBUTE_NAMES_SET);
+        IndexedAttributeName.INSTANCE.sortedAttrNames().clear();
+        IndexedAttributeName.INSTANCE.sortedAttrNames()
+                .addAll(ATTRIBUTE_NAMES_SET);
 
-        Collections.sort(attributeNames, (o1, o2) -> {
+        Collections.sort(IndexedAttributeName.INSTANCE.sortedAttrNames(),
+                (o1, o2) -> {
 
-            final Integer length1 = o1.length();
-            final Integer length2 = o2.length();
+                    final Integer length1 = o1.length();
+                    final Integer length2 = o2.length();
 
-            return length1.compareTo(length2);
-        });
+                    return length1.compareTo(length2);
+                });
     }
 
     /**
@@ -649,7 +653,17 @@ public class AttributeRegistry {
      * @author WFF
      */
     public static List<String> getAttributeNames() {
-        return new ArrayList<>(attributeNames);
+        return new ArrayList<>(IndexedAttributeName.INSTANCE.sortedAttrNames());
+    }
+
+    /**
+     * @param attributeName
+     * @return the index of attribute name
+     * @since 3.0.3
+     */
+    public static Integer getIndexByAttributeName(final String attributeName) {
+        return IndexedAttributeName.INSTANCE
+                .getIndexByAttributeName(attributeName);
     }
 
     /**
@@ -763,6 +777,43 @@ public class AttributeRegistry {
 
         final Class<?> attrClass = ATTRIBUTE_CLASS_BY_ATTR_NAME
                 .get(attributeName);
+
+        if (attrClass == null) {
+            return null;
+        }
+
+        try {
+
+            if (attributeValue == null) {
+                final AbstractAttribute newInstance = (AbstractAttribute) attrClass
+                        .getConstructor().newInstance();
+                return newInstance;
+            }
+
+            final AbstractAttribute newInstance = (AbstractAttribute) attrClass
+                    .getConstructor(String.class).newInstance(attributeValue);
+
+            return newInstance;
+        } catch (InstantiationException | IllegalAccessException
+                | IllegalArgumentException | InvocationTargetException
+                | NoSuchMethodException | SecurityException e) {
+            // NOP
+        }
+
+        return null;
+    }
+
+    /**
+     * @param attributeNameIndex
+     *                               index
+     * @param attributeValue
+     * @return new instance or null if failed
+     * @since 3.0.3
+     */
+    public static AbstractAttribute getNewAttributeInstanceOrNullIfFailed(
+            final int attributeNameIndex, final String attributeValue) {
+
+        final Class<?> attrClass = INDEXED_ATTR_CLASSES.get(attributeNameIndex);
 
         if (attrClass == null) {
             return null;

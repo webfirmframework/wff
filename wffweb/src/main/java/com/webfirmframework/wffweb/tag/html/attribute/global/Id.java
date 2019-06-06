@@ -18,8 +18,8 @@ package com.webfirmframework.wffweb.tag.html.attribute.global;
 
 import java.util.UUID;
 
-import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
 /**
@@ -32,8 +32,16 @@ public class Id extends AbstractAttribute implements GlobalAttributable {
 
     private UUID uuid;
 
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+
+    static {
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.ID);
+
+    }
+
     {
-        super.setAttributeName(AttributeNameConstants.ID);
+
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

@@ -26,6 +26,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.InvalidTagException;
+import com.webfirmframework.wffweb.server.page.js.WffJsFile;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.tag.html.listener.InsertBeforeListener;
@@ -144,17 +145,37 @@ class InsertBeforeListenerImpl implements InsertBeforeListener {
 
                     try {
                         if (previousParentTag != null) {
-                            nameValue.setValues(parentTagName,
-                                    insertedTag.toWffBMBytes(
-                                            StandardCharsets.UTF_8),
-                                    beforeTagNameAndWffId[0],
-                                    beforeTagNameAndWffId[1], new byte[] { 1 });
+                            if (WffJsFile.COMPRESSED_WFF_DATA) {
+                                nameValue.setValues(parentTagName,
+                                        insertedTag.toCompressedWffBMBytes(
+                                                StandardCharsets.UTF_8),
+                                        beforeTagNameAndWffId[0],
+                                        beforeTagNameAndWffId[1],
+                                        new byte[] { 1 });
+                            } else {
+                                nameValue.setValues(parentTagName,
+                                        insertedTag.toWffBMBytes(
+                                                StandardCharsets.UTF_8),
+                                        beforeTagNameAndWffId[0],
+                                        beforeTagNameAndWffId[1],
+                                        new byte[] { 1 });
+                            }
+
                         } else {
-                            nameValue.setValues(parentTagName,
-                                    insertedTag.toWffBMBytes(
-                                            StandardCharsets.UTF_8),
-                                    beforeTagNameAndWffId[0],
-                                    beforeTagNameAndWffId[1]);
+                            if (WffJsFile.COMPRESSED_WFF_DATA) {
+                                nameValue.setValues(parentTagName,
+                                        insertedTag.toCompressedWffBMBytes(
+                                                StandardCharsets.UTF_8),
+                                        beforeTagNameAndWffId[0],
+                                        beforeTagNameAndWffId[1]);
+                            } else {
+                                nameValue.setValues(parentTagName,
+                                        insertedTag.toWffBMBytes(
+                                                StandardCharsets.UTF_8),
+                                        beforeTagNameAndWffId[0],
+                                        beforeTagNameAndWffId[1]);
+                            }
+
                         }
                     } catch (final InvalidTagException e) {
                         if (LOGGER.isLoggable(Level.WARNING)) {

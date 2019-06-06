@@ -20,8 +20,8 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractValueSetAttribute;
+import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 
 /**
@@ -304,8 +304,16 @@ public class AutoComplete extends AbstractValueSetAttribute
 
     private static final long serialVersionUID = 1_0_0L;
 
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+
+    static {
+        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.AUTOCOMPLETE);
+
+    }
+
     {
-        super.setAttributeName(AttributeNameConstants.AUTOCOMPLETE);
+
+        super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
 

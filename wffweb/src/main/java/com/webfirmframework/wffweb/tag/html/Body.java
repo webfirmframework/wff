@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.core.PreIndexedTagName;
 import com.webfirmframework.wffweb.tag.html.identifier.BrAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
 
@@ -19,7 +20,16 @@ public class Body extends AbstractHtml {
 
     public static final Logger LOGGER = Logger.getLogger(Body.class.getName());
 
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
+
+    static {
+
+        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.BODY);
+
+    }
+
     {
+
         init();
     }
 
@@ -34,7 +44,7 @@ public class Body extends AbstractHtml {
      */
     public Body(final AbstractHtml base,
             final AbstractAttribute... attributes) {
-        super(TagNameConstants.BODY, base, attributes);
+        super(PRE_INDEXED_TAG_NAME, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }
