@@ -4308,14 +4308,12 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                     if (i < (childrenOfParent.length - 1)) {
 
-                        return childrenOfParent[i + 1]
+                        result = childrenOfParent[i + 1]
                                 .insertBefore(childrenOfParent, abstractHtmls);
-
+                        break;
                     } else {
                         parent.appendChildrenLockless(abstractHtmls);
                     }
-
-                    result = true;
                 }
 
             }
