@@ -638,5 +638,19 @@ public class StyleTest {
             assertNotEquals(-1, Style.getAttrNameIndex());
         }
     }
+    
+    @Test
+    public void testConstructorStyleString() {
+        {
+            final Style style1 = new Style("font-size:22px; font-weight: 200;");
+            Assert.assertEquals("font-size:22px;font-weight:200;", style1.getAttributeValue());
+        }
+        {
+            final Style style1 = new Style("font-family: \"Times New Roman\", Times, serif;");
+            Assert.assertEquals("font-family:\"Times New Roman\", Times, serif;", style1.getAttributeValue());
+            Assert.assertEquals("font-family:\"Times New Roman\", Times, serif;", style1.getAttributeValue());
+            Assert.assertEquals("font-family: \"Times New Roman\", Times, serif", style1.getCssProperty("font-family").toString());
+        }
+    }
 
 }
