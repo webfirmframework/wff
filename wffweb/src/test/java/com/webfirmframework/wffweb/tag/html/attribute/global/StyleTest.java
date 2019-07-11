@@ -33,6 +33,7 @@ import org.junit.Test;
 
 import com.webfirmframework.wffweb.css.CssNameConstants;
 import com.webfirmframework.wffweb.css.Cursor;
+import com.webfirmframework.wffweb.css.FontWeight;
 import com.webfirmframework.wffweb.css.HeightCss;
 import com.webfirmframework.wffweb.css.WidthCss;
 import com.webfirmframework.wffweb.css.core.CssProperty;
@@ -651,6 +652,19 @@ public class StyleTest {
             Assert.assertEquals("font-family:\"Times New Roman\", Times, serif;", style1.getAttributeValue());
             Assert.assertEquals("font-family: \"Times New Roman\", Times, serif", style1.getCssProperty("font-family").toString());
         }
+        {
+            final Style style1 = new Style("font-size:22px; font-weight: 200;");
+            final FontWeight fontWeight = (FontWeight) style1.getCssProperty("font-weight");
+            Assert.assertEquals("_200", fontWeight.name());
+            
+        }
+        
+        
+//        {
+            //TODO check later throwing InvalidValueException for left:0.
+//            final Style style1 = new Style("position:relative; left: 0; top:0; width: 96%; margin-left:2%");
+//            Assert.assertEquals("position:relative; left: 0; top:0; width: 96%; margin-left:2%", style1.getAttributeValue());
+//        }
     }
 
 }

@@ -1708,11 +1708,20 @@ public class Style extends AbstractAttribute
                     .replace('-', '_'));
 
             try {
+                if (Character.isDigit(tempValue.charAt(0))) {
+                    final CssProperty cssProperty = (CssProperty) Enum
+                            .valueOf(classClass, "_" + tempValue);
+                    value = tempValue;
+                    cssProperties.add(cssProperty);
+                    return cssProperty;
+                }
+
                 final CssProperty cssProperty = (CssProperty) Enum
                         .valueOf(classClass, tempValue);
                 value = tempValue;
                 cssProperties.add(cssProperty);
                 return cssProperty;
+
             } catch (final IllegalArgumentException e) {
 
                 // .toLowerCase() is removed, it could become a bug

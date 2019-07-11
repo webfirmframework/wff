@@ -41,13 +41,99 @@ public enum FontWeight implements CssProperty {
 
     NORMAL("normal"), BOLD("bold"), BOLDER("bolder"), LIGHTER("lighter"),
 
-    ONE_HUNDRED("100"), TWO_HUNDRED("200"), THREE_HUNDRED("300"),
+    /**
+     * use _100 instead of it
+     *
+     * @deprecated
+     */
+    @Deprecated
+    ONE_HUNDRED("100"),
 
-    FOUR_HUNDRED("400"), FIVE_HUNDRED("500"), SIX_HUNDRED("600"),
+    /**
+     * use _200 instead of it
+     *
+     * @deprecated
+     */
+    @Deprecated
+    TWO_HUNDRED("200"),
 
-    SEVEN_HUNDRED("700"), EIGHT_HUNDRED("800"), NINE_HUNDRED("900"),
+    /**
+     * use _300 instead of it
+     *
+     * @deprecated
+     */
+    @Deprecated
+    THREE_HUNDRED("300"),
 
-    INITIAL("initial"), INHERIT("inherit");
+    /**
+     * use _400 instead of it
+     *
+     * @deprecated
+     */
+    @Deprecated
+    FOUR_HUNDRED("400"),
+
+    /**
+     * use _500 instead of it
+     *
+     * @deprecated
+     */
+    @Deprecated
+    FIVE_HUNDRED("500"),
+
+    /**
+     * use _600 instead of it
+     *
+     * @deprecated
+     */
+    @Deprecated
+    SIX_HUNDRED("600"),
+
+    /**
+     * use _700 instead of it
+     *
+     * @deprecated
+     */
+    @Deprecated
+    SEVEN_HUNDRED("700"),
+
+    /**
+     * use _800 instead of it
+     *
+     * @deprecated
+     */
+    @Deprecated
+    EIGHT_HUNDRED("800"),
+
+    /**
+     * use _900 instead of it
+     *
+     * @deprecated
+     */
+    @Deprecated
+    NINE_HUNDRED("900"),
+
+    INITIAL("initial"),
+
+    INHERIT("inherit"),
+
+    _100("100"),
+
+    _200("200"),
+
+    _300("300"),
+
+    _400("400"),
+
+    _500("500"),
+
+    _600("600"),
+
+    _700("700"),
+
+    _800("800"),
+
+    _900("900");
 
     private final String toString;
 
