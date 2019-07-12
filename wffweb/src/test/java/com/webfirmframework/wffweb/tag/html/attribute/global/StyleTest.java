@@ -659,12 +659,14 @@ public class StyleTest {
             
         }
         
-        
-//        {
-            //TODO check later throwing InvalidValueException for left:0.
-//            final Style style1 = new Style("position:relative; left: 0; top:0; width: 96%; margin-left:2%");
-//            Assert.assertEquals("position:relative; left: 0; top:0; width: 96%; margin-left:2%", style1.getAttributeValue());
-//        }
+        {
+          final Style style1 = new Style("left: 0; top:0; bottom:0; right:0;");
+          Assert.assertEquals("left:0;top:0;bottom:0;right:0;", style1.getAttributeValue());
+        }
+        {
+            final Style style1 = new Style("position:relative; left: 0; top:0; bottom:0; right:0; width: 96%; margin-left:2%");
+            Assert.assertEquals("position:relative;left:0;top:0;bottom:0;right:0;width:96%;margin-left:2%;", style1.getAttributeValue());
+        }
     }
 
 }

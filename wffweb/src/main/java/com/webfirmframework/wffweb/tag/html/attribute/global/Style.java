@@ -1778,6 +1778,21 @@ public class Style extends AbstractAttribute
 
                 cssProperties.add(abstractCssProperty);
                 return abstractCssProperty;
+            } catch (final InvalidValueException e) {
+
+                final CustomCssProperty customCssProperty = new CustomCssProperty(
+                        cssName, value);
+
+                abstractCssPropertyClassObjects.put(cssName, customCssProperty);
+
+                // below two methods are called in
+                // abstractCssPropertyClassObjects
+                // customCssProperty.setAlreadyInUse(true);
+                // customCssProperty.setStateChangeInformer(this);
+
+                cssProperties.add(customCssProperty);
+                return customCssProperty;
+
             } catch (InstantiationException | IllegalAccessException e) {
                 LOGGER.severe(String.valueOf(e));
             }
