@@ -662,6 +662,10 @@ public class StyleTest {
         {
           final Style style1 = new Style("left: 0; top:0; bottom:0; right:0;");
           Assert.assertEquals("left:0;top:0;bottom:0;right:0;", style1.getAttributeValue());
+          Assert.assertEquals(CustomCssProperty.class, style1.getCssProperty("left").getClass());
+          Assert.assertEquals(CustomCssProperty.class, style1.getCssProperty("top").getClass());
+          Assert.assertEquals(CustomCssProperty.class, style1.getCssProperty("bottom").getClass());
+          Assert.assertEquals(CustomCssProperty.class, style1.getCssProperty("right").getClass());
         }
         {
             final Style style1 = new Style("position:relative; left: 0; top:0; bottom:0; right:0; width: 96%; margin-left:2%");
