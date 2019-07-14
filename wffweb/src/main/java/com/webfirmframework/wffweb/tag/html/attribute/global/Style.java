@@ -1703,18 +1703,57 @@ public class Style extends AbstractAttribute
                 && (value = super.getAttributeValueMap()
                         .get(cssName)) != null) {
 
-            value = StringUtil.strip(TagStringUtil.toUpperCase(value)
-                    .replace(IMPORTANT_UPPERCASE, "").replace('-', '_'));
+            final String tempValue = StringUtil.strip(TagStringUtil
+                    .toUpperCase(value).replace(IMPORTANT_UPPERCASE, "")
+                    .replace('-', '_'));
 
-            final CssProperty cssProperty = (CssProperty) Enum
-                    .valueOf(classClass, value);
-            cssProperties.add(cssProperty);
-            return cssProperty;
+            try {
+                if (Character.isDigit(tempValue.charAt(0))) {
+                    final CssProperty cssProperty = (CssProperty) Enum
+                            .valueOf(classClass, "_" + tempValue);
+                    value = tempValue;
+                    cssProperties.add(cssProperty);
+                    return cssProperty;
+                }
+
+                final CssProperty cssProperty = (CssProperty) Enum
+                        .valueOf(classClass, tempValue);
+                value = tempValue;
+                cssProperties.add(cssProperty);
+                return cssProperty;
+
+            } catch (final IllegalArgumentException e) {
+
+                // .toLowerCase() is removed, it could become a bug
+                value = value.replace(IMPORTANT, "");
+
+                final AbstractCssProperty<?> abstractCssProperty = abstractCssPropertyClassObjects
+                        .get(cssName);
+                if (abstractCssProperty != null) {
+                    return abstractCssProperty;
+                }
+
+                final CustomCssProperty customCssProperty = new CustomCssProperty(
+                        cssName, value);
+
+                abstractCssPropertyClassObjects.put(cssName, customCssProperty);
+
+                // below two methods are called in
+                // abstractCssPropertyClassObjects
+                // customCssProperty.setAlreadyInUse(true);
+                // customCssProperty.setStateChangeInformer(this);
+
+                cssProperties.add(customCssProperty);
+                return customCssProperty;
+            }
+
             // given priority for optimization rather than coding standard.
         } else if (classClass != null && (value = super.getAttributeValueMap()
                 .get(cssName)) != null) {
 
-            value = value.toLowerCase().replace(IMPORTANT, "");
+            // .toLowerCase() is removed, it could become a bug
+            // eg: font-family: "Times New Roman", Times, serif
+            value = value.replace(IMPORTANT, "");
 
             try {
                 AbstractCssProperty<?> abstractCssProperty = abstractCssPropertyClassObjects
@@ -1739,12 +1778,30 @@ public class Style extends AbstractAttribute
 
                 cssProperties.add(abstractCssProperty);
                 return abstractCssProperty;
+            } catch (final InvalidValueException e) {
+
+                final CustomCssProperty customCssProperty = new CustomCssProperty(
+                        cssName, value);
+
+                abstractCssPropertyClassObjects.put(cssName, customCssProperty);
+
+                // below two methods are called in
+                // abstractCssPropertyClassObjects
+                // customCssProperty.setAlreadyInUse(true);
+                // customCssProperty.setStateChangeInformer(this);
+
+                cssProperties.add(customCssProperty);
+                return customCssProperty;
+
             } catch (InstantiationException | IllegalAccessException e) {
                 LOGGER.severe(String.valueOf(e));
             }
         } else if ((value = super.getAttributeValueMap()
                 .get(cssName)) != null) {
-            value = value.toLowerCase().replace(IMPORTANT, "");
+            // .toLowerCase() is removed, it seems could become a bug
+            // eg: another new property similar to
+            // font-family: "Times New Roman", Times, serif
+            value = value.replace(IMPORTANT, "");
 
             final AbstractCssProperty<?> abstractCssProperty = abstractCssPropertyClassObjects
                     .get(cssName);

@@ -33,6 +33,7 @@ import org.junit.Test;
 
 import com.webfirmframework.wffweb.css.CssNameConstants;
 import com.webfirmframework.wffweb.css.Cursor;
+import com.webfirmframework.wffweb.css.FontWeight;
 import com.webfirmframework.wffweb.css.HeightCss;
 import com.webfirmframework.wffweb.css.WidthCss;
 import com.webfirmframework.wffweb.css.core.CssProperty;
@@ -636,6 +637,39 @@ public class StyleTest {
             assertNotEquals(-1, indexByAttributeName);
             assertNotEquals(-1, style.getAttrNameIndex());
             assertNotEquals(-1, Style.getAttrNameIndex());
+        }
+    }
+    
+    @Test
+    public void testConstructorStyleString() {
+        {
+            final Style style1 = new Style("font-size:22px; font-weight: 200;");
+            Assert.assertEquals("font-size:22px;font-weight:200;", style1.getAttributeValue());
+        }
+        {
+            final Style style1 = new Style("font-family: \"Times New Roman\", Times, serif;");
+            Assert.assertEquals("font-family:\"Times New Roman\", Times, serif;", style1.getAttributeValue());
+            Assert.assertEquals("font-family:\"Times New Roman\", Times, serif;", style1.getAttributeValue());
+            Assert.assertEquals("font-family: \"Times New Roman\", Times, serif", style1.getCssProperty("font-family").toString());
+        }
+        {
+            final Style style1 = new Style("font-size:22px; font-weight: 200;");
+            final FontWeight fontWeight = (FontWeight) style1.getCssProperty("font-weight");
+            Assert.assertEquals("_200", fontWeight.name());
+            
+        }
+        
+        {
+          final Style style1 = new Style("left: 0; top:0; bottom:0; right:0;");
+          Assert.assertEquals("left:0;top:0;bottom:0;right:0;", style1.getAttributeValue());
+          Assert.assertEquals(CustomCssProperty.class, style1.getCssProperty("left").getClass());
+          Assert.assertEquals(CustomCssProperty.class, style1.getCssProperty("top").getClass());
+          Assert.assertEquals(CustomCssProperty.class, style1.getCssProperty("bottom").getClass());
+          Assert.assertEquals(CustomCssProperty.class, style1.getCssProperty("right").getClass());
+        }
+        {
+            final Style style1 = new Style("position:relative; left: 0; top:0; bottom:0; right:0; width: 96%; margin-left:2%");
+            Assert.assertEquals("position:relative;left:0;top:0;bottom:0;right:0;width:96%;margin-left:2%;", style1.getAttributeValue());
         }
     }
 

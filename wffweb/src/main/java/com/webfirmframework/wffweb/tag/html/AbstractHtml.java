@@ -1074,7 +1074,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
         final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
 
-        boolean listenerInvoked = false;
+        // inserted, listener invoked
+        boolean[] results = { false, false };
 
         try {
             lock.lock();
@@ -1086,16 +1087,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 final AbstractHtml[] removedParentChildren = this.children
                         .toArray(new AbstractHtml[this.children.size()]);
 
-                listenerInvoked = firstChild.insertBefore(removedParentChildren,
+                results = firstChild.insertBefore(removedParentChildren,
                         children);
-
-                if (listenerInvoked) {
-                    final InsertBeforeListener insertBeforeListener = sharedObject
-                            .getInsertBeforeListener(ACCESS_OBJECT);
-                    if (insertBeforeListener == null) {
-                        listenerInvoked = false;
-                    }
-                }
 
             } else {
 
@@ -1120,7 +1113,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         .getChildTagAppendListener(ACCESS_OBJECT);
                 if (listener != null) {
                     listener.childrendAppendedOrMoved(movedOrAppended);
-                    listenerInvoked = true;
+                    results[1] = true;
                 }
 
             }
@@ -1128,7 +1121,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             lock.unlock();
         }
 
-        if (listenerInvoked) {
+        if (results[1]) {
             final PushQueue pushQueue = sharedObject
                     .getPushQueue(ACCESS_OBJECT);
             if (pushQueue != null) {
@@ -1148,12 +1141,17 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *                     children to append in this object's existing
      *                     children.
      * @author WFF
+     * @return in zeroth index: true if inserted otherwise false. in first
+     *         index: true if listener invoked otherwise false.
      * @since 3.0.1
      */
-    private void appendChildrenLockless(final AbstractHtml... children) {
+    private boolean[] appendChildrenLockless(final AbstractHtml... children) {
 
         // any changes to this method should also be applied in
         // appendChildren(AbstractHtml... children)
+
+        // inserted, listener invoked
+        final boolean[] results = { false, false };
 
         final Collection<ChildMovedEvent> movedOrAppended = new ArrayDeque<>(
                 children.length);
@@ -1161,7 +1159,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
         for (final AbstractHtml child : children) {
             final AbstractHtml previousParent = child.parent;
 
-            addChild(child, false);
+            if (addChild(child, false)) {
+                results[0] = true;
+            }
 
             final ChildMovedEvent event = new ChildMovedEvent(previousParent,
                     this, child);
@@ -1173,8 +1173,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 .getChildTagAppendListener(ACCESS_OBJECT);
         if (listener != null) {
             listener.childrendAppendedOrMoved(movedOrAppended);
+            results[1] = true;
         }
 
+        return results;
     }
 
     /**
@@ -4177,22 +4179,28 @@ public abstract class AbstractHtml extends AbstractJsObject {
         }
 
         final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
-        boolean result = false;
+        // inserted, listener invoked
+        boolean[] results = { false, false };
         try {
             lock.lock();
 
             final AbstractHtml[] removedParentChildren = parent.children
                     .toArray(new AbstractHtml[parent.children.size()]);
 
-            result = insertBefore(removedParentChildren, abstractHtmls);
+            results = insertBefore(removedParentChildren, abstractHtmls);
         } finally {
             lock.unlock();
         }
-        final PushQueue pushQueue = sharedObject.getPushQueue(ACCESS_OBJECT);
-        if (pushQueue != null) {
-            pushQueue.push();
+
+        if (results[1]) {
+            final PushQueue pushQueue = sharedObject
+                    .getPushQueue(ACCESS_OBJECT);
+            if (pushQueue != null) {
+                pushQueue.push();
+            }
         }
-        return result;
+
+        return results[0];
     }
 
     /**
@@ -4204,12 +4212,16 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *                                  to remove it from parent. It's removing
      *                                  by parent.children.clear();
      * @param abstractHtmls
-     * @return true if inserted otherwise false.
+     * @return in zeroth index: true if inserted otherwise false. in first
+     *         index: true if listener invoked otherwise false.
      * @since 2.1.6
      * @author WFF
      */
-    private boolean insertBefore(final AbstractHtml[] removedParentChildren,
+    private boolean[] insertBefore(final AbstractHtml[] removedParentChildren,
             final AbstractHtml[] abstractHtmls) {
+
+        // inserted, listener invoked
+        final boolean[] results = { false, false };
 
         final int parentChildrenSize = parent.children.size();
         if (parentChildrenSize > 0) {
@@ -4267,12 +4279,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
             if (insertBeforeListener != null) {
                 insertBeforeListener.insertedBefore(events);
+                results[1] = true;
             }
 
-            return true;
+            results[0] = true;
 
         }
-        return false;
+        return results;
     }
 
     /**
@@ -4295,7 +4308,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
         }
 
         final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
-        boolean result = false;
+
+        // inserted, listener invoked
+        boolean[] results = { false, false };
         try {
             lock.lock();
 
@@ -4308,14 +4323,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                     if (i < (childrenOfParent.length - 1)) {
 
-                        return childrenOfParent[i + 1]
+                        results = childrenOfParent[i + 1]
                                 .insertBefore(childrenOfParent, abstractHtmls);
 
+                        break;
                     } else {
-                        parent.appendChildrenLockless(abstractHtmls);
+                        results = parent.appendChildrenLockless(abstractHtmls);
                     }
-
-                    result = true;
                 }
 
             }
@@ -4323,11 +4337,14 @@ public abstract class AbstractHtml extends AbstractJsObject {
         } finally {
             lock.unlock();
         }
-        final PushQueue pushQueue = sharedObject.getPushQueue(ACCESS_OBJECT);
-        if (pushQueue != null) {
-            pushQueue.push();
+        if (results[1]) {
+            final PushQueue pushQueue = sharedObject
+                    .getPushQueue(ACCESS_OBJECT);
+            if (pushQueue != null) {
+                pushQueue.push();
+            }
         }
-        return result;
+        return results[0];
     }
 
     /**
