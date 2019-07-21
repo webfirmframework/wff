@@ -26,6 +26,16 @@ public enum PreIndexedTagName {
 
     // NB: order should not be changed it is ordered by length
 
+    /**
+     * not a tag name. For internal purpose only
+     */
+    HASH("#"),
+
+    /**
+     * not a tag name. For internal purpose only
+     */
+    AT("@"),
+
     A(TagNameConstants.A),
 
     B(TagNameConstants.B),

@@ -12,9 +12,11 @@ var wffTagUtil = new function() {
 	
 	var getTagNameFromCompressedBytes = function(utf8Bytes) {
 		
-		//# or @ represented for NoTag
+//		if length is 1 then it contain only optimized byte of index
 		if (utf8Bytes.length == 1) {
-			return getStringFromBytes(utf8Bytes);
+			var tgNamNdx = wffBMUtil.getIntFromOptimizedBytes(utf8Bytes);
+			//it includes # and @ represented for NoTag
+			return wffGlobal.NDXD_TGS[tgNamNdx];
 		}
 		
 		var lengOfOptmzdBytsOfTgNam = utf8Bytes[0];

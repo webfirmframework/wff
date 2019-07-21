@@ -145,8 +145,9 @@ class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
 
                 try {
                     if (WffJsFile.COMPRESSED_WFF_DATA) {
-                        nameValue.setName(innerHtmlTag.toCompressedWffBMBytes(
-                                StandardCharsets.UTF_8));
+                        nameValue.setName(
+                                innerHtmlTag.toCompressedWffBMBytesV1_1(
+                                        StandardCharsets.UTF_8));
                     } else {
                         nameValue.setName(innerHtmlTag
                                 .toWffBMBytes(StandardCharsets.UTF_8));
