@@ -3832,10 +3832,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *         name and attribute name
      * @author WFF
      * @throws InvalidTagException
-     * @version algorithm version 1.1
+     * @version algorithm version 2
      * @since 3.0.6
      */
-    public byte[] toCompressedWffBMBytesV1_1(final Charset charset) {
+    public byte[] toCompressedWffBMBytesV2(final Charset charset) {
 
         // final byte[] encodedBytesForAtChar = "@".getBytes(charset);
         // final byte[] encodedByesForHashChar = "#".getBytes(charset);

@@ -1795,7 +1795,7 @@ public class AbstractHtmlTest {
         };
         
         final byte[] wffBMBytes = html.toWffBMBytes(StandardCharsets.UTF_8);
-        final byte[] compressedWffBMBytes = html.toCompressedWffBMBytesV1_1(StandardCharsets.UTF_8);
+        final byte[] compressedWffBMBytes = html.toCompressedWffBMBytesV2(StandardCharsets.UTF_8);
         
         //without tagIndex impl: wffBMBytes.length: 311 compressedWffBMBytes.length: 247
         //with tagIndex impl compressedWffBMBytes.length: 242
@@ -1841,7 +1841,7 @@ public class AbstractHtmlTest {
         long toWffBMBytesProcessingTime = after - before;
         
         before = System.nanoTime();
-        final int tagCompressedWffBMBytesLength = html.toCompressedWffBMBytesV1_1(StandardCharsets.UTF_8).length;
+        final int tagCompressedWffBMBytesLength = html.toCompressedWffBMBytesV2(StandardCharsets.UTF_8).length;
         after = System.nanoTime();
         
         long toCompressedWffBMBytesProcessingTime = after - before;
