@@ -3687,7 +3687,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @version algorithm version 1.0
      * @since 3.0.3
      */
-    public byte[] toCompressedWffBMBytesV1(final Charset charset) {
+    public byte[] toCompressedWffBMBytes(final Charset charset) {
 
         final byte[] encodedBytesForAtChar = "@".getBytes(charset);
         final byte[] encodedByesForHashChar = "#".getBytes(charset);
