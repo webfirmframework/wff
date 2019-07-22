@@ -410,7 +410,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     protected void setPreIndexedAttribute(
             final PreIndexedAttributeName preIndexedAttrName) {
         attributeName = preIndexedAttrName.attrName();
-        attrNameIndexBytes = preIndexedAttrName.indexBytes();
+        attrNameIndexBytes = preIndexedAttrName.internalIndexBytes();
     }
 
     /*

@@ -90,14 +90,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
     // or null if byte[]
     private final byte[] tagNameIndexBytes;
 
-    // its length will be always 1
-    private static final byte[] INDEXED_AT_CHAR_BYTES = PreIndexedTagName.AT
-            .indexBytes();
-
-    // its length will be always 1
-    private static final byte[] INDEXED_HASH_CHAR_BYTES = PreIndexedTagName.HASH
-            .indexBytes();
-
     private volatile AbstractHtml parent;
 
     /**
@@ -166,6 +158,14 @@ public abstract class AbstractHtml extends AbstractJsObject {
     static {
         ACCESS_OBJECT = new Security();
     }
+
+    // its length will be always 1
+    private static final byte[] INDEXED_AT_CHAR_BYTES = PreIndexedTagName.AT
+            .internalIndexBytes(ACCESS_OBJECT);
+
+    // its length will be always 1
+    private static final byte[] INDEXED_HASH_CHAR_BYTES = PreIndexedTagName.HASH
+            .internalIndexBytes(ACCESS_OBJECT);
 
     {
         // NB: iterator in this children is not synchronized
@@ -494,7 +494,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     protected AbstractHtml(final PreIndexedTagName preIndexedTagName,
             final AbstractHtml base, final AbstractAttribute[] attributes) {
         tagName = preIndexedTagName.tagName();
-        tagNameIndexBytes = preIndexedTagName.indexBytes();
+        tagNameIndexBytes = preIndexedTagName.internalIndexBytes(ACCESS_OBJECT);
         noTagContentTypeHtml = false;
         if (base == null) {
             sharedObject = new AbstractHtml5SharedObject(this);
@@ -1694,7 +1694,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
             final PreIndexedTagName preIndexedTagName, final AbstractHtml base,
             final AbstractAttribute[] attributes) {
         this(tagType, preIndexedTagName.tagName(),
-                preIndexedTagName.indexBytes(), base, attributes);
+                preIndexedTagName.internalIndexBytes(ACCESS_OBJECT), base,
+                attributes);
     }
 
     /**

@@ -17,6 +17,8 @@ package com.webfirmframework.wffweb.tag.html.core;
 
 import java.util.Arrays;
 
+import com.webfirmframework.wffweb.WffSecurityException;
+import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 
@@ -339,6 +341,21 @@ public enum PreIndexedTagName {
                     indexBytes[3] };
         }
         return Arrays.copyOf(indexBytes, indexBytes.length);
+    }
+
+    /**
+     * Only for internal purpose
+     *
+     * @return optimized bytes of index
+     * @since 3.0.6
+     */
+    public byte[] internalIndexBytes(final Object accessObject) {
+        if (accessObject == null || !((SecurityClassConstants.ABSTRACT_HTML
+                .equals(accessObject.getClass().getName())))) {
+            throw new WffSecurityException(
+                    "Not allowed to consume this method. This method is for internal use.");
+        }
+        return indexBytes;
     }
 
 }

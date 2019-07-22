@@ -448,4 +448,14 @@ public enum PreIndexedAttributeName {
         return Arrays.copyOf(indexBytes, indexBytes.length);
     }
 
+    /**
+     * Only for internal purpose
+     *
+     * @return optimized bytes of index
+     * @since 3.0.6
+     */
+    byte[] internalIndexBytes() {
+        return indexBytes;
+    }
+
 }
