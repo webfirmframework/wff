@@ -15,6 +15,8 @@
  */
 package com.webfirmframework.wffweb.tag.html.core;
 
+import java.util.Arrays;
+
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 
@@ -326,7 +328,17 @@ public enum PreIndexedTagName {
      * @since 3.0.3
      */
     public byte[] indexBytes() {
-        return indexBytes;
+        if (indexBytes.length == 1) {
+            return new byte[] { indexBytes[0] };
+        } else if (indexBytes.length == 2) {
+            return new byte[] { indexBytes[0], indexBytes[1] };
+        } else if (indexBytes.length == 3) {
+            return new byte[] { indexBytes[0], indexBytes[1], indexBytes[2] };
+        } else if (indexBytes.length == 4) {
+            return new byte[] { indexBytes[0], indexBytes[1], indexBytes[2],
+                    indexBytes[3] };
+        }
+        return Arrays.copyOf(indexBytes, indexBytes.length);
     }
 
 }

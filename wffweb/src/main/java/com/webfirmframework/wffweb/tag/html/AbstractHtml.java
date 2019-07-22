@@ -90,6 +90,14 @@ public abstract class AbstractHtml extends AbstractJsObject {
     // or null if byte[]
     private final byte[] tagNameIndexBytes;
 
+    // its length will be always 1
+    private static final byte[] INDEXED_AT_CHAR_BYTES = PreIndexedTagName.AT
+            .indexBytes();
+
+    // its length will be always 1
+    private static final byte[] INDEXED_HASH_CHAR_BYTES = PreIndexedTagName.HASH
+            .indexBytes();
+
     private volatile AbstractHtml parent;
 
     /**
@@ -3690,7 +3698,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     public byte[] toCompressedWffBMBytes(final Charset charset) {
 
         final byte[] encodedBytesForAtChar = "@".getBytes(charset);
-        final byte[] encodedByesForHashChar = "#".getBytes(charset);
+        final byte[] encodedBytesForHashChar = "#".getBytes(charset);
 
         final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
         try {
@@ -3784,7 +3792,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         // @ short for html content
                         final byte[] nodeNameBytes = tag.noTagContentTypeHtml
                                 ? encodedBytesForAtChar
-                                : encodedByesForHashChar;
+                                : encodedBytesForHashChar;
 
                         nameValue.setName(WffBinaryMessageUtil
                                 .getBytesFromInt(parentWffSlotIndex));
@@ -3837,17 +3845,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     public byte[] toCompressedWffBMBytesV2(final Charset charset) {
 
-        // final byte[] encodedBytesForAtChar = "@".getBytes(charset);
-        // final byte[] encodedByesForHashChar = "#".getBytes(charset);
-
-        // its length will be always 1
-        final byte[] encodedBytesForAtChar = {
-                PreIndexedTagName.AT.indexBytes()[0] };
-        // its length will be always 1
-        final byte[] encodedByesForHashChar = {
-                PreIndexedTagName.HASH.indexBytes()[0] };
-
         final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
+
         try {
             lock.lock();
 
@@ -3901,10 +3900,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         } else {
 
                             if (tagNameIndexBytes.length == 1) {
-                                nodeNameBytes = new byte[tagNameIndexBytes.length];
-                                System.arraycopy(tagNameIndexBytes, 0,
-                                        nodeNameBytes, 0,
-                                        tagNameIndexBytes.length);
+                                nodeNameBytes = tagNameIndexBytes;
                             } else {
                                 nodeNameBytes = new byte[tagNameIndexBytes.length
                                         + 1];
@@ -3951,8 +3947,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         // : encodedByesForHashChar;
 
                         final byte[] nodeNameBytes = tag.noTagContentTypeHtml
-                                ? encodedBytesForAtChar
-                                : encodedByesForHashChar;
+                                ? INDEXED_AT_CHAR_BYTES
+                                : INDEXED_HASH_CHAR_BYTES;
 
                         nameValue.setName(WffBinaryMessageUtil
                                 .getBytesFromInt(parentWffSlotIndex));
