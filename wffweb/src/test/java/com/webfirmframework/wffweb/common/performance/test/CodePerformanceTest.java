@@ -186,6 +186,9 @@ public class CodePerformanceTest {
             before = System.nanoTime();
             for (int i = 0; i < 10000; i++) {
                 copied[0] = indexBytes[0];    
+                copied[1] = indexBytes[1];    
+                copied[2] = indexBytes[2];    
+                copied[3] = indexBytes[3];    
             }  
             after = System.nanoTime();
             
@@ -212,7 +215,7 @@ public class CodePerformanceTest {
             
             before = System.nanoTime();
             for (int i = 0; i < 10000; i++) {
-                byte[] copied = {indexBytes[0]};    
+                byte[] copied = {indexBytes[0], indexBytes[1], indexBytes[2], indexBytes[3]};    
             }  
             after = System.nanoTime();
             
