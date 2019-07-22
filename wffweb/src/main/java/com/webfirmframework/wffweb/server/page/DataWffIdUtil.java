@@ -21,6 +21,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.TagUtil;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 
@@ -33,16 +34,9 @@ final class DataWffIdUtil {
     /**
      * @param dataWffId
      * @return bytes of data wff id
-     * @throws UnsupportedEncodingException
-     *                                          throwing this exception will be
-     *                                          removed in future version
-     *                                          because its internal
-     *                                          implementation will never make
-     *                                          this exception due to the code
-     *                                          changes since 3.0.1.
+     *
      */
-    static byte[] getDataWffIdBytes(final String dataWffId)
-            throws UnsupportedEncodingException {
+    static byte[] getDataWffIdBytes(final String dataWffId) {
 
         // the first byte represents C for Client and S for Server and the
         // remaining string is an integer value
@@ -59,6 +53,8 @@ final class DataWffIdUtil {
     }
 
     /**
+     * @param accessObject
+     *                         TODO
      * @param abstractHtml
      * @return array containing tagName bytes and dataWffIdBytes of the given
      *         argument or its parent.
@@ -71,7 +67,9 @@ final class DataWffIdUtil {
      *                                          changes since 3.0.1.
      * @since 2.0.0
      * @author WFF
+     * @deprecated this method will be removed in future
      */
+    @Deprecated
     static byte[][] getTagNameAndWffId(final AbstractHtml abstractHtml)
             throws UnsupportedEncodingException {
 
@@ -90,6 +88,47 @@ final class DataWffIdUtil {
                 return new byte[][] {
                         parent.getTagName().getBytes(StandardCharsets.UTF_8),
                         dataWffIdBytes };
+            }
+
+            final AbstractHtml parentOfParent = parent.getParent();
+            if (parentOfParent != null) {
+
+                parentStack.push(parentOfParent);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param accessObject
+     *                         TODO
+     * @param abstractHtml
+     * @return array containing tagName bytes and dataWffIdBytes of the given
+     *         argument or its parent.
+     * @since 3.0.6 contains TagNameBytesCompressedByIndex
+     * @author WFF
+     */
+    static byte[][] getIndexedTagNameAndWffId(final Object accessObject,
+            final AbstractHtml abstractHtml) {
+
+        final Deque<AbstractHtml> parentStack = new ArrayDeque<>();
+        parentStack.push(abstractHtml);
+
+        AbstractHtml parent;
+        while ((parent = parentStack.poll()) != null) {
+
+            if (parent.getTagName() != null && !parent.getTagName().isEmpty()) {
+                final DataWffId dataWffId = parent.getDataWffId();
+
+                final byte[] dataWffIdBytes = DataWffIdUtil
+                        .getDataWffIdBytes(dataWffId.getValue());
+
+                final byte[] wffTagNameBytes = TagUtil
+                        .getTagNameBytesCompressedByIndex(accessObject, parent,
+                                StandardCharsets.UTF_8);
+
+                return new byte[][] { wffTagNameBytes, dataWffIdBytes };
             }
 
             final AbstractHtml parentOfParent = parent.getParent();

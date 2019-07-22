@@ -31,9 +31,11 @@ public class AttributeRemoveListenerImpl implements AttributeRemoveListener {
     public static final Logger LOGGER = Logger
             .getLogger(AttributeRemoveListenerImpl.class.getName());
 
-    private BrowserPage browserPage;
+    private final BrowserPage browserPage;
 
-    private Map<String, AbstractHtml> tagByWffId;
+    private final Map<String, AbstractHtml> tagByWffId;
+
+    private final Object accessObject;
 
     @SuppressWarnings("unused")
     private AttributeRemoveListenerImpl() {
@@ -41,8 +43,10 @@ public class AttributeRemoveListenerImpl implements AttributeRemoveListener {
     }
 
     AttributeRemoveListenerImpl(final BrowserPage browserPage,
+            final Object accessObject,
             final Map<String, AbstractHtml> tagByWffId) {
         this.browserPage = browserPage;
+        this.accessObject = accessObject;
         this.tagByWffId = tagByWffId;
     }
 
@@ -60,7 +64,7 @@ public class AttributeRemoveListenerImpl implements AttributeRemoveListener {
 
             //@formatter:off
             // removed attribute task format :-
-            // { "name": task_byte, "values" : [ADDED_ATTRIBUTES_byte_from_Task_enum]}, { "name": MANY_TO_ONE_byte, "values" : [ tagName, its_data-wff-id, attribute_name1, attribute_name2 ]}
+            // { "name": task_byte, "values" : [REMOVED_ATTRIBUTES_byte_from_Task_enum]}, { "name": MANY_TO_ONE_byte, "values" : [ tagName, its_data-wff-id, attribute_name1, attribute_name2 ]}
             // { "name": 2, "values" : [[1]]}, { "name":[2], "values" : ["div", "C55", "style", "name"]}
             //@formatter:on
 
@@ -71,7 +75,7 @@ public class AttributeRemoveListenerImpl implements AttributeRemoveListener {
             nameValue.setName(Task.MANY_TO_ONE.getValueByte());
 
             final byte[][] tagNameAndWffId = DataWffIdUtil
-                    .getTagNameAndWffId(removedFromTag);
+                    .getIndexedTagNameAndWffId(accessObject, removedFromTag);
 
             final String[] removedAttributes = event.getRemovedAttributeNames();
 

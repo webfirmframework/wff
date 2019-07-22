@@ -36,6 +36,9 @@ var wffTagUtil = new function() {
 		}	
 		
 	};
+	
+	this.getTagNameFromCompressedBytes = getTagNameFromCompressedBytes;
+	
 	var getAttrNameValueFromCompressedBytes = function(utf8Bytes) {
 		var lengOfOptmzdBytsOfAttrNam = utf8Bytes[0];
 		

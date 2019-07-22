@@ -88,7 +88,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     // initial value must be -1 if not assigning any value if int
     // or null if byte[]
-    private final byte[] tagNameIndexBytes;
+    final byte[] tagNameIndexBytes;
 
     // its length will be always 1
     private static final byte[] INDEXED_AT_CHAR_BYTES;

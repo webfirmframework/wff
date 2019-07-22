@@ -15,13 +15,11 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
@@ -36,11 +34,11 @@ class ChildTagRemoveListenerImpl implements ChildTagRemoveListener {
     public static final Logger LOGGER = Logger
             .getLogger(ChildTagRemoveListenerImpl.class.getName());
 
-    private BrowserPage browserPage;
+    private final BrowserPage browserPage;
 
-    private Object accessObject;
+    private final Object accessObject;
 
-    private Map<String, AbstractHtml> tagByWffId;
+    private final Map<String, AbstractHtml> tagByWffId;
 
     @SuppressWarnings("unused")
     private ChildTagRemoveListenerImpl() {
@@ -93,58 +91,51 @@ class ChildTagRemoveListenerImpl implements ChildTagRemoveListener {
 
     private void removeChildren(final AbstractHtml[] removedChildrenTags) {
 
-        try {
-
-            //@formatter:off
+        //@formatter:off
             // removed child task format :-
             // { "name": task_byte, "values" : [REMOVED_TAGS_byte_from_Task_enum]}, { "name": data-wff-id, "values" : [ parent_tag_name, html_string ]}
             // { "name": 2, "values" : [[3]]}, { "name":"C55", "values" : ["div"]}
             //@formatter:on
 
-            final NameValue task = Task.REMOVED_TAGS.getTaskNameValue();
+        final NameValue task = Task.REMOVED_TAGS.getTaskNameValue();
 
-            final Deque<NameValue> nameValues = new ArrayDeque<>();
-            nameValues.add(task);
+        final Deque<NameValue> nameValues = new ArrayDeque<>();
+        nameValues.add(task);
 
-            for (final AbstractHtml removedChildTag : removedChildrenTags) {
+        for (final AbstractHtml removedChildTag : removedChildrenTags) {
 
-                final DataWffId dataWffId = removedChildTag.getDataWffId();
+            final DataWffId dataWffId = removedChildTag.getDataWffId();
 
-                if (dataWffId != null) {
+            if (dataWffId != null) {
 
-                    final NameValue nameValue = new NameValue();
+                final NameValue nameValue = new NameValue();
 
-                    final byte[][] tagNameAndWffId = DataWffIdUtil
-                            .getTagNameAndWffId(removedChildTag);
+                final byte[][] tagNameAndWffId = DataWffIdUtil
+                        .getIndexedTagNameAndWffId(accessObject,
+                                removedChildTag);
 
-                    final byte[] parentWffIdBytes = tagNameAndWffId[1];
+                final byte[] parentWffIdBytes = tagNameAndWffId[1];
 
-                    nameValue.setName(parentWffIdBytes);
+                nameValue.setName(parentWffIdBytes);
 
-                    final byte[] parentTagName = tagNameAndWffId[0];
+                final byte[] parentTagName = tagNameAndWffId[0];
 
-                    nameValue.setValues(parentTagName);
+                nameValue.setValues(parentTagName);
 
-                    nameValues.add(nameValue);
+                nameValues.add(nameValue);
 
-                } else {
-                    LOGGER.severe("Could not find data-wff-id from owner tag");
-                }
-
+            } else {
+                LOGGER.severe("Could not find data-wff-id from owner tag");
             }
 
-            browserPage
-                    .push(nameValues.toArray(new NameValue[nameValues.size()]));
-
-            for (final AbstractHtml removedChildTag : removedChildrenTags) {
-                removeFromTagByWffIdMap(removedChildTag);
-            }
-
-        } catch (final UnsupportedEncodingException e) {
-            if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
-            }
         }
+
+        browserPage.push(nameValues.toArray(new NameValue[nameValues.size()]));
+
+        for (final AbstractHtml removedChildTag : removedChildrenTags) {
+            removeFromTagByWffIdMap(removedChildTag);
+        }
+
     }
 
     @Override
@@ -163,43 +154,37 @@ class ChildTagRemoveListenerImpl implements ChildTagRemoveListener {
         // { "name": 2, "values" : [[3]]}, { "name":"C55", "values" : ["div"]}
         //@formatter:on
 
-        try {
-            final NameValue task = Task.REMOVED_ALL_CHILDREN_TAGS
-                    .getTaskNameValue();
+        final NameValue task = Task.REMOVED_ALL_CHILDREN_TAGS
+                .getTaskNameValue();
 
-            final DataWffId dataWffId = parentTag.getDataWffId();
+        final DataWffId dataWffId = parentTag.getDataWffId();
 
-            if (dataWffId != null) {
+        if (dataWffId != null) {
 
-                final NameValue nameValue = new NameValue();
+            final NameValue nameValue = new NameValue();
 
-                final byte[][] tagNameAndWffId = DataWffIdUtil
-                        .getTagNameAndWffId(parentTag);
+            final byte[][] tagNameAndWffId = DataWffIdUtil
+                    .getIndexedTagNameAndWffId(accessObject, parentTag);
 
-                final byte[] parentWffIdBytes = tagNameAndWffId[1];
+            final byte[] parentWffIdBytes = tagNameAndWffId[1];
 
-                nameValue.setName(parentWffIdBytes);
+            nameValue.setName(parentWffIdBytes);
 
-                final byte[] parentTagName = tagNameAndWffId[0];
+            final byte[] parentTagName = tagNameAndWffId[0];
 
-                nameValue.setValues(parentTagName);
+            nameValue.setValues(parentTagName);
 
-                browserPage.push(task, nameValue);
+            browserPage.push(task, nameValue);
 
-                final Set<AbstractHtml> children = parentTag
-                        .getChildren(accessObject);
-                if (children != null) {
-                    for (final AbstractHtml each : children) {
-                        removeFromTagByWffIdMap(each);
-                    }
+            final Set<AbstractHtml> children = parentTag
+                    .getChildren(accessObject);
+            if (children != null) {
+                for (final AbstractHtml each : children) {
+                    removeFromTagByWffIdMap(each);
                 }
-            } else {
-                LOGGER.severe("Could not find data-wff-id from owner tag");
             }
-        } catch (final UnsupportedEncodingException e) {
-            if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
-            }
+        } else {
+            LOGGER.severe("Could not find data-wff-id from owner tag");
         }
 
     }

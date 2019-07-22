@@ -899,12 +899,14 @@ public abstract class BrowserPage implements Serializable {
 
     private void addAttributeAddListener(final AbstractHtml abstractHtml) {
         abstractHtml.getSharedObject().setAttributeAddListener(
-                new AttributeAddListenerImpl(this), ACCESS_OBJECT);
+                new AttributeAddListenerImpl(this, ACCESS_OBJECT),
+                ACCESS_OBJECT);
     }
 
     private void addAttributeRemoveListener(final AbstractHtml abstractHtml) {
         abstractHtml.getSharedObject().setAttributeRemoveListener(
-                new AttributeRemoveListenerImpl(this, tagByWffId),
+                new AttributeRemoveListenerImpl(this, ACCESS_OBJECT,
+                        tagByWffId),
                 ACCESS_OBJECT);
     }
 
@@ -922,12 +924,14 @@ public abstract class BrowserPage implements Serializable {
 
     private void addWffBMDataUpdateListener(final AbstractHtml abstractHtml) {
         abstractHtml.getSharedObject().setWffBMDataUpdateListener(
-                new WffBMDataUpdateListenerImpl(this), ACCESS_OBJECT);
+                new WffBMDataUpdateListenerImpl(this, ACCESS_OBJECT),
+                ACCESS_OBJECT);
     }
 
     private void addWffBMDataDeleteListener(final AbstractHtml abstractHtml) {
         abstractHtml.getSharedObject().setWffBMDataDeleteListener(
-                new WffBMDataDeleteListenerImpl(this), ACCESS_OBJECT);
+                new WffBMDataDeleteListenerImpl(this, ACCESS_OBJECT),
+                ACCESS_OBJECT);
     }
 
     private void addPushQueue(final AbstractHtml rootTag) {

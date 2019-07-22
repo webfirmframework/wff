@@ -31,15 +31,19 @@ public class AttributeAddListenerImpl implements AttributeAddListener {
     private static final Logger LOGGER = Logger
             .getLogger(AttributeAddListenerImpl.class.getName());
 
-    private BrowserPage browserPage;
+    private final BrowserPage browserPage;
+
+    private final Object accessObject;
 
     @SuppressWarnings("unused")
     private AttributeAddListenerImpl() {
         throw new AssertionError();
     }
 
-    AttributeAddListenerImpl(final BrowserPage browserPage) {
+    AttributeAddListenerImpl(final BrowserPage browserPage,
+            final Object accessObject) {
         this.browserPage = browserPage;
+        this.accessObject = accessObject;
     }
 
     @Override
@@ -61,7 +65,7 @@ public class AttributeAddListenerImpl implements AttributeAddListener {
 
             final AbstractHtml addedToTag = event.getAddedToTag();
             final byte[][] tagNameAndWffId = DataWffIdUtil
-                    .getTagNameAndWffId(addedToTag);
+                    .getIndexedTagNameAndWffId(accessObject, addedToTag);
 
             final AbstractAttribute[] addedAttributes = event
                     .getAddedAttributes();
