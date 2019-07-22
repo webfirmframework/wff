@@ -4,8 +4,7 @@
 // @formatter:off
 /*
  *
- * {@link http://www.w3schools.com/cssref/css3_pr_align-content.asp}
- * <br>
+ *
  *CSS Properties :-<br>
  *+ align-content: stretch|center|flex-start|flex-end|space-between|space-around|initial|inherit;<br>
  *+ align-items: stretch|center|flex-start|flex-end|baseline|initial|inherit;<br>
