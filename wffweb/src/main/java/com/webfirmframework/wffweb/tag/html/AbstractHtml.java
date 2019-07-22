@@ -90,6 +90,12 @@ public abstract class AbstractHtml extends AbstractJsObject {
     // or null if byte[]
     private final byte[] tagNameIndexBytes;
 
+    // its length will be always 1
+    private static final byte[] INDEXED_AT_CHAR_BYTES;
+
+    // its length will be always 1
+    private static final byte[] INDEXED_HASH_CHAR_BYTES;
+
     private volatile AbstractHtml parent;
 
     /**
@@ -157,15 +163,16 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     static {
         ACCESS_OBJECT = new Security();
+
+        // its length will be always 1
+        INDEXED_AT_CHAR_BYTES = PreIndexedTagName.AT
+                .internalIndexBytes(ACCESS_OBJECT);
+
+        // its length will be always 1
+        INDEXED_HASH_CHAR_BYTES = PreIndexedTagName.HASH
+                .internalIndexBytes(ACCESS_OBJECT);
+
     }
-
-    // its length will be always 1
-    private static final byte[] INDEXED_AT_CHAR_BYTES = PreIndexedTagName.AT
-            .internalIndexBytes(ACCESS_OBJECT);
-
-    // its length will be always 1
-    private static final byte[] INDEXED_HASH_CHAR_BYTES = PreIndexedTagName.HASH
-            .internalIndexBytes(ACCESS_OBJECT);
 
     {
         // NB: iterator in this children is not synchronized
