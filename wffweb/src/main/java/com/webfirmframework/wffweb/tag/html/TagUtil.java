@@ -79,7 +79,7 @@ public final class TagUtil {
 
         }
 
-        byte[] wffTagNameBytes;
+        final byte[] wffTagNameBytes;
         if (tagNameIndexBytes.length == 1) {
             wffTagNameBytes = tagNameIndexBytes;
         } else {
