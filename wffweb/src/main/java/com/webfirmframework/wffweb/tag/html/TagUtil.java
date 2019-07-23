@@ -32,6 +32,15 @@ public final class TagUtil {
         throw new AssertionError();
     }
 
+    /**
+     * NB: Only for internal use
+     *
+     * @param accessObject
+     * @param tag
+     * @param charset
+     * @return bytes
+     * @since 3.0.6
+     */
     public static byte[] getTagNameBytesCompressedByIndex(
             final Object accessObject, final AbstractHtml tag,
             final Charset charset) {
@@ -43,7 +52,7 @@ public final class TagUtil {
         }
 
         // just be initialized as local
-        final byte[] tagNameIndexBytes = tag.tagNameIndexBytes;
+        final byte[] tagNameIndexBytes = tag.getTagNameIndexBytes();
 
         final String tagName = tag.getTagName();
 

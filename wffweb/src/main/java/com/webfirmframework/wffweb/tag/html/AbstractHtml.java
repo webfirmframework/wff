@@ -88,7 +88,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     // initial value must be -1 if not assigning any value if int
     // or null if byte[]
-    final byte[] tagNameIndexBytes;
+    private final byte[] tagNameIndexBytes;
 
     // its length will be always 1
     private static final byte[] INDEXED_AT_CHAR_BYTES;
@@ -1443,7 +1443,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 return false;
             }
 
-            final Deque<String> removedAttributeNames = new ArrayDeque<>(
+            final List<AbstractAttribute> removedAttributes = new ArrayList<>(
                     attributes.length);
 
             for (final AbstractAttribute attribute : attributes) {
@@ -1452,7 +1452,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                     final String attributeName = attribute.getAttributeName();
                     attributesMap.remove(attributeName);
                     removed = true;
-                    removedAttributeNames.add(attributeName);
+                    removedAttributes.add(attribute);
                 }
 
             }
@@ -1469,10 +1469,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                             .getAttributeRemoveListener(ACCESS_OBJECT);
                     if (listener != null) {
                         final AttributeRemoveListener.RemovedEvent event = new AttributeRemoveListener.RemovedEvent(
-                                this,
-                                removedAttributeNames.toArray(
-                                        new String[removedAttributeNames
-                                                .size()]));
+                                this, removedAttributes);
 
                         listener.removedAttributes(event);
                         listenerInvoked = true;
@@ -4828,12 +4825,12 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * for testing purpose only
+     * for internal purpose only
      *
      * @return
-     * @since 3.0.3
+     * @since 3.0.6
      */
-    byte[] getTagNameIndex() {
+    byte[] getTagNameIndexBytes() {
         return tagNameIndexBytes;
     }
 }

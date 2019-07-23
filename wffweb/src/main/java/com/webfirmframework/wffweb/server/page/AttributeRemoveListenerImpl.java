@@ -16,11 +16,14 @@
 package com.webfirmframework.wffweb.server.page;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeUtil;
 import com.webfirmframework.wffweb.tag.html.listener.AttributeRemoveListener;
 import com.webfirmframework.wffweb.util.data.NameValue;
 
@@ -77,24 +80,55 @@ public class AttributeRemoveListenerImpl implements AttributeRemoveListener {
             final byte[][] tagNameAndWffId = DataWffIdUtil
                     .getIndexedTagNameAndWffId(accessObject, removedFromTag);
 
-            final String[] removedAttributes = event.getRemovedAttributeNames();
+            final List<AbstractAttribute> removedAttributes = event
+                    .getRemovedAttributes();
 
-            final int totalValues = removedAttributes.length + 2;
+            if (removedAttributes != null) {
 
-            final byte[][] values = new byte[totalValues][0];
+                final int totalValues = removedAttributes.size() + 2;
 
-            values[0] = tagNameAndWffId[0];
-            values[1] = tagNameAndWffId[1];
+                final byte[][] values = new byte[totalValues][0];
 
-            for (int i = 2; i < totalValues; i++) {
-                // should be just name
-                final byte[] attrNameBytes = removedAttributes[i - 2]
-                        .getBytes(StandardCharsets.UTF_8);
+                values[0] = tagNameAndWffId[0];
+                values[1] = tagNameAndWffId[1];
 
-                values[i] = attrNameBytes;
+                for (int i = 2; i < totalValues; i++) {
+                    // should be just name
+                    // final byte[] attrNameBytes = removedAttributes[i - 2]
+                    // .getBytes(StandardCharsets.UTF_8);
+                    // values[i] = attrNameBytes;
+
+                    values[i] = AttributeUtil.getAttrNameBytesCompressedByIndex(
+                            accessObject, removedAttributes.get(i - 2),
+                            StandardCharsets.UTF_8);
+                }
+
+                nameValue.setValues(values);
+
+            } else {
+                final String[] removedAttributeNames = event
+                        .getRemovedAttributeNames();
+
+                final int totalValues = removedAttributeNames.length + 2;
+
+                final byte[][] values = new byte[totalValues][0];
+
+                values[0] = tagNameAndWffId[0];
+                values[1] = tagNameAndWffId[1];
+
+                for (int i = 2; i < totalValues; i++) {
+                    // should be just name
+                    // final byte[] attrNameBytes = removedAttributes[i - 2]
+                    // .getBytes(StandardCharsets.UTF_8);
+                    // values[i] = attrNameBytes;
+
+                    values[i] = AttributeUtil.getAttrNameBytesCompressedByIndex(
+                            accessObject, removedAttributeNames[i - 2],
+                            StandardCharsets.UTF_8);
+                }
+
+                nameValue.setValues(values);
             }
-
-            nameValue.setValues(values);
 
             browserPage.push(task, nameValue);
 

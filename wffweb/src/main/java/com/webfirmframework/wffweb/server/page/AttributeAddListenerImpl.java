@@ -79,16 +79,18 @@ public class AttributeAddListenerImpl implements AttributeAddListener {
 
             for (int i = 2; i < totalValues; i++) {
                 // should be name=somevalue
-                String attrNameValue = addedAttributes[i - 2]
-                        .toHtmlString(StandardCharsets.UTF_8)
-                        .replaceFirst("[=][\"]", "=");
+                // String attrNameValue = addedAttributes[i - 2]
+                // .toHtmlString(StandardCharsets.UTF_8)
+                // .replaceFirst("[=][\"]", "=");
+                // if (attrNameValue.charAt(attrNameValue.length() - 1) == '"')
+                // {
+                // attrNameValue = attrNameValue.substring(0,
+                // attrNameValue.length() - 1);
+                // }
+                // values[i] = attrNameValue.getBytes(StandardCharsets.UTF_8);
 
-                if (attrNameValue.charAt(attrNameValue.length() - 1) == '"') {
-                    attrNameValue = attrNameValue.substring(0,
-                            attrNameValue.length() - 1);
-                }
-
-                values[i] = attrNameValue.getBytes(StandardCharsets.UTF_8);
+                values[i] = addedAttributes[i - 2].toCompressedBytesByIndex(
+                        false, StandardCharsets.UTF_8);
             }
 
             nameValue.setValues(values);

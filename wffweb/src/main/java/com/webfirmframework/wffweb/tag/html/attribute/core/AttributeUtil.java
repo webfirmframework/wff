@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
+import com.webfirmframework.wffweb.WffSecurityException;
+import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 
@@ -250,6 +252,105 @@ public final class AttributeUtil {
             index++;
         }
         return attributes;
+    }
+
+    /**
+     * NB: for internal purpose only
+     *
+     * @param accessObject
+     * @param attrName
+     * @param attrNameIndexBytes
+     * @param charset
+     * @return
+     * @since 3.0.6
+     */
+    private static byte[] getAttrNameBytesCompressedByIndex(
+            final Object accessObject, final String attrName,
+            final byte[] attrNameIndexBytes, final Charset charset) {
+
+        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE
+                .equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException(
+                    "Not allowed to consume this method. This method is for internal use.");
+        }
+
+        if (attrNameIndexBytes == null) {
+            final byte[] rowNodeNameBytes = attrName.getBytes(charset);
+            final byte[] wffAttrNameBytes = new byte[rowNodeNameBytes.length
+                    + 1];
+            // if zero there is no optimized int bytes for index
+            // because there is no tagNameIndex. second byte
+            // onwards the bytes of tag name
+            wffAttrNameBytes[0] = 0;
+            System.arraycopy(rowNodeNameBytes, 0, wffAttrNameBytes, 1,
+                    rowNodeNameBytes.length);
+
+            return wffAttrNameBytes;
+
+            // logging is not required here
+            // it is not an unusual case
+            // if (LOGGER.isLoggable(Level.WARNING)) {
+            // LOGGER.warning(nodeName
+            // + " is not indexed, please register it with
+            // TagRegistry");
+            // }
+
+        }
+
+        byte[] wffAttrNameBytes;
+        if (attrNameIndexBytes.length == 1) {
+            wffAttrNameBytes = attrNameIndexBytes;
+        } else {
+            wffAttrNameBytes = new byte[attrNameIndexBytes.length + 1];
+            wffAttrNameBytes[0] = (byte) attrNameIndexBytes.length;
+            System.arraycopy(attrNameIndexBytes, 0, wffAttrNameBytes, 1,
+                    attrNameIndexBytes.length);
+        }
+
+        return wffAttrNameBytes;
+    }
+
+    /**
+     * NB: for internal purpose only
+     *
+     * @param accessObject
+     * @param attrName
+     * @param charset
+     * @return
+     * @since 3.0.6
+     */
+    public static byte[] getAttrNameBytesCompressedByIndex(
+            final Object accessObject, final String attrName,
+            final Charset charset) {
+
+        final String attrNameEN = attrName.toUpperCase().replace('-', '_');
+        byte[] attrNameIndexBytes = null;
+        try {
+            final PreIndexedAttributeName attr = PreIndexedAttributeName
+                    .valueOf(attrNameEN);
+            attrNameIndexBytes = attr.internalIndexBytes();
+        } catch (final IllegalArgumentException e) {
+            // NOP
+        }
+
+        return getAttrNameBytesCompressedByIndex(accessObject, attrName,
+                attrNameIndexBytes, charset);
+    }
+
+    /**
+     * NB: for internal purpose only
+     *
+     * @param accessObject
+     * @param attr
+     * @param charset
+     * @return
+     * @since 3.0.6
+     */
+    public static byte[] getAttrNameBytesCompressedByIndex(
+            final Object accessObject, final AbstractAttribute attr,
+            final Charset charset) {
+        return getAttrNameBytesCompressedByIndex(accessObject,
+                attr.getAttributeName(), attr.getAttrNameIndexBytes(), charset);
     }
 
 }

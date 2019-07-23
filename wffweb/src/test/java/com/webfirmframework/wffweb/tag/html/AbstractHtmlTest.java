@@ -1815,7 +1815,7 @@ public class AbstractHtmlTest {
             assertNotNull(tag);
             assertEquals(entry.getValue(), tag.getClass());
           //just for testing
-            int tagNameIndex = WffBinaryMessageUtil.getIntFromOptimizedBytes(tag.getTagNameIndex());
+            int tagNameIndex = WffBinaryMessageUtil.getIntFromOptimizedBytes(tag.getTagNameIndexBytes());
             assertEquals(tagNameIndex, (int) TagRegistry.getIndexByTagName(tag.getTagName()));
 
         }

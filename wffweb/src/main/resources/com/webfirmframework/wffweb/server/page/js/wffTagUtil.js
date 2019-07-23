@@ -39,6 +39,36 @@ var wffTagUtil = new function() {
 	
 	this.getTagNameFromCompressedBytes = getTagNameFromCompressedBytes;
 	
+	var getAttrNameFromCompressedBytes = function(utf8Bytes) {
+		
+//		if length is 1 then it contain only optimized byte of index
+		if (utf8Bytes.length == 1) {
+			var attrNamNdx = wffBMUtil.getIntFromOptimizedBytes(utf8Bytes);
+			//it includes # and @ represented for NoTag
+			return wffGlobal.NDXD_ATRBS[attrNamNdx];
+		}
+		
+		var lengOfOptmzdBytsOfAttrNam = utf8Bytes[0];
+		
+		if (lengOfOptmzdBytsOfAttrNam > 0) {
+			
+			var attrNamNdxOptmzdByts = subarray(utf8Bytes, 1, lengOfOptmzdBytsOfAttrNam);
+			
+			var attrNamNdx = wffBMUtil.getIntFromOptimizedBytes(attrNamNdxOptmzdByts);
+			return wffGlobal.NDXD_ATRBS[attrNamNdx];
+		} else {
+			
+			var reqBytsLngth = utf8Bytes.length - 1;
+			var attrNameBytes = subarray(utf8Bytes, 1, reqBytsLngth);
+			
+			return getStringFromBytes(attrNameBytes);
+		}	
+		
+	};
+	
+	this.getAttrNameFromCompressedBytes = getAttrNameFromCompressedBytes;
+	
+	
 	var getAttrNameValueFromCompressedBytes = function(utf8Bytes) {
 		var lengOfOptmzdBytsOfAttrNam = utf8Bytes[0];
 		
@@ -61,6 +91,8 @@ var wffTagUtil = new function() {
 			return splitAttrNameValue(getStringFromBytes(attrNamByts));
 		}
 	};
+	
+	this.getAttrNameValueFromCompressedBytes = getAttrNameValueFromCompressedBytes;
 	
 	var appendHtmlAsChildren = function(tag, htmlString) {
 		var tmpDv = document.createElement('div');
