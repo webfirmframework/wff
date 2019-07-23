@@ -297,7 +297,7 @@ public final class AttributeUtil {
 
         }
 
-        byte[] wffAttrNameBytes;
+        final byte[] wffAttrNameBytes;
         if (attrNameIndexBytes.length == 1) {
             wffAttrNameBytes = attrNameIndexBytes;
         } else {
