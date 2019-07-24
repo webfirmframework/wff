@@ -28,6 +28,7 @@ public interface AttributeRemoveListener extends Serializable {
         private AbstractHtml removedFromTag;
 
         private String[] removedAttributeNames;
+
         private List<AbstractAttribute> removedAttributes;
 
         public RemovedEvent() {

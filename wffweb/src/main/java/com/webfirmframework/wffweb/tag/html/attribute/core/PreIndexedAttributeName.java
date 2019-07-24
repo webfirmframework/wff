@@ -16,6 +16,8 @@
 package com.webfirmframework.wffweb.tag.html.attribute.core;
 
 import java.util.Arrays;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.InternalAttrNameConstants;
@@ -404,6 +406,17 @@ public enum PreIndexedAttributeName {
 
     private final byte[] indexBytes;
 
+    private static final Map<String, PreIndexedAttributeName> OBJ_BY_ATTR_NAME;
+
+    static {
+        final PreIndexedAttributeName[] objects = PreIndexedAttributeName
+                .values();
+        OBJ_BY_ATTR_NAME = new ConcurrentHashMap<>(objects.length, 1F, 1);
+        for (final PreIndexedAttributeName each : objects) {
+            OBJ_BY_ATTR_NAME.put(each.attrName, each);
+        }
+    }
+
     /**
      * @param attrName
      * @since 3.0.3
@@ -456,6 +469,15 @@ public enum PreIndexedAttributeName {
      */
     byte[] internalIndexBytes() {
         return indexBytes;
+    }
+
+    /**
+     * @param attrName
+     * @return the enum object
+     * @since 3.0.6
+     */
+    static PreIndexedAttributeName forAttrName(final String attrName) {
+        return OBJ_BY_ATTR_NAME.get(attrName);
     }
 
 }

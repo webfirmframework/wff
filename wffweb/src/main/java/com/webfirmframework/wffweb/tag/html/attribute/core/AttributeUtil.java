@@ -323,14 +323,14 @@ public final class AttributeUtil {
             final Object accessObject, final String attrName,
             final Charset charset) {
 
-        final String attrNameEN = attrName.toUpperCase().replace('-', '_');
-        byte[] attrNameIndexBytes = null;
-        try {
-            final PreIndexedAttributeName attr = PreIndexedAttributeName
-                    .valueOf(attrNameEN);
+        final PreIndexedAttributeName attr = PreIndexedAttributeName
+                .forAttrName(attrName);
+
+        final byte[] attrNameIndexBytes;
+        if (attr != null) {
             attrNameIndexBytes = attr.internalIndexBytes();
-        } catch (final IllegalArgumentException e) {
-            // NOP
+        } else {
+            attrNameIndexBytes = null;
         }
 
         return getAttrNameBytesCompressedByIndex(accessObject, attrName,
