@@ -411,7 +411,9 @@ public enum PreIndexedAttributeName {
     static {
         final PreIndexedAttributeName[] objects = PreIndexedAttributeName
                 .values();
-        OBJ_BY_ATTR_NAME = new ConcurrentHashMap<>(objects.length, 1F, 1);
+        final float lf = 0.75F;
+        final int capacity = (int) (objects.length / lf) + 1;
+        OBJ_BY_ATTR_NAME = new ConcurrentHashMap<>(capacity, lf, 1);
         for (final PreIndexedAttributeName each : objects) {
             OBJ_BY_ATTR_NAME.put(each.attrName, each);
         }
