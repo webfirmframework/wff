@@ -780,6 +780,11 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     /**
      * @param sharedTagContent
+     *                             the shared content to be inserted as inner
+     *                             content. Any changes of content in the
+     *                             sharedTagContent will be reflected in this
+     *                             tag and all other consuming tags of this
+     *                             sharedTagContent object.
      * @since 3.0.6
      */
     public void addInnerHtml(final SharedTagContent sharedTagContent) {
@@ -793,9 +798,14 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *                             will be ignored if there is no client browser
      *                             page.
      * @param sharedTagContent
+     *                             the shared content to be inserted as inner
+     *                             content. Any changes of content in the
+     *                             sharedTagContent will be reflected in this
+     *                             tag and all other consuming tags of this
+     *                             sharedTagContent object.
      * @since 3.0.6
      */
-    public void addInnerHtml(final boolean updateClient,
+    private void addInnerHtml(final boolean updateClient,
             final SharedTagContent sharedTagContent) {
 
         if (sharedTagContentRef == null || !Objects
@@ -820,7 +830,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     /**
      * @return the object of SharedTagContent which created the NoTag in the
-     *         child.
+     *         child or null if the child NoTag is not created by any
+     *         SharedTagContent object.
      * @since 3.0.6
      */
     public SharedTagContent getSharedTagContent() {

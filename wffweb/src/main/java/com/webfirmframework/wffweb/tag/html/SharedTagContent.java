@@ -27,11 +27,12 @@ import java.util.WeakHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.StampedLock;
 
-import com.webfirmframework.wffweb.tag.html.listener.InnerHtmlAddListener;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 
 /**
+ * Changing the content of this object will be reflected in all consuming tags.
+ *
  * @author WFF
  * @since 3.0.6
  *
@@ -41,14 +42,16 @@ public class SharedTagContent {
     private final StampedLock lock = new StampedLock();
 
     private final Set<NoTag> insertedTags = Collections
-            .newSetFromMap(new WeakHashMap<NoTag, Boolean>(2));
+            .newSetFromMap(new WeakHashMap<NoTag, Boolean>(4, 0.75F));
 
-    private String content;
+    private volatile String content;
 
-    private boolean contentTypeHtml;
+    private volatile boolean contentTypeHtml;
 
     /**
      * @param content
+     *                    the content its content type will be considered as
+     *                    plain text, i.e. contentTypeHtml will be false.
      * @since 3.0.6
      */
     public SharedTagContent(final String content) {
@@ -81,7 +84,7 @@ public class SharedTagContent {
     }
 
     /**
-     * @return true if content type is html
+     * @return true if content type is HTML
      * @since 3.0.6
      */
     public boolean isContentTypeHtml() {
@@ -110,12 +113,20 @@ public class SharedTagContent {
 
     /**
      * @param content
+     *                    content to be reflected in all consuming tags.
      * @since 3.0.6
      */
     public void setContent(final String content) {
         setContent(true, content, contentTypeHtml);
     }
 
+    /**
+     * @param content
+     *                            content to be reflected in all consuming tags
+     * @param contentTypeHtml
+     *                            true if the content type is HTML or false if
+     *                            plain text
+     */
     public void setContent(final String content,
             final boolean contentTypeHtml) {
         setContent(true, content, contentTypeHtml);
@@ -127,7 +138,7 @@ public class SharedTagContent {
      * @param contentTypeHtml
      * @since 3.0.6
      */
-    public void setContent(final boolean updateClient, final String content,
+    private void setContent(final boolean updateClient, final String content,
             final boolean contentTypeHtml) {
 
         final long stamp = lock.writeLock();
@@ -251,11 +262,9 @@ public class SharedTagContent {
                     .addInnerHtmlsAndGetEventsLockless(updateClient, noTag);
 
             if (listenerData != null) {
-                final InnerHtmlAddListener listener = listenerData
-                        .getListener();
                 // TODO declare new innerHtmlsAdded for multiple parents after
                 // verifying feasibility of considering rich notag content
-                listener.innerHtmlsAdded(applicableTag,
+                listenerData.getListener().innerHtmlsAdded(applicableTag,
                         listenerData.getEvents());
             }
 
