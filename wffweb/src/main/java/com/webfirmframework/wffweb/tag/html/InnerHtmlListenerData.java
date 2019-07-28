@@ -19,7 +19,7 @@ import com.webfirmframework.wffweb.tag.html.listener.InnerHtmlAddListener;
 import com.webfirmframework.wffweb.tag.html.listener.InnerHtmlAddListener.Event;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 
-public class InnerHtmlListenerData {
+class InnerHtmlListenerData {
 
     private final AbstractHtml5SharedObject sharedObject;
 
@@ -27,7 +27,7 @@ public class InnerHtmlListenerData {
 
     private final InnerHtmlAddListener listener;
 
-    public InnerHtmlListenerData(final AbstractHtml5SharedObject sharedObject,
+    InnerHtmlListenerData(final AbstractHtml5SharedObject sharedObject,
             final InnerHtmlAddListener listener, final Event[] events) {
         super();
         this.sharedObject = sharedObject;
@@ -35,15 +35,15 @@ public class InnerHtmlListenerData {
         this.events = events;
     }
 
-    public AbstractHtml5SharedObject getSharedObject() {
+    AbstractHtml5SharedObject getSharedObject() {
         return sharedObject;
     }
 
-    public InnerHtmlAddListener.Event[] getEvents() {
+    InnerHtmlAddListener.Event[] getEvents() {
         return events;
     }
 
-    public InnerHtmlAddListener getListener() {
+    InnerHtmlAddListener getListener() {
         return listener;
     }
 
