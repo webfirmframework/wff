@@ -19,6 +19,7 @@ package com.webfirmframework.wffweb.tag.html;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.lang.ref.WeakReference;
 import java.nio.charset.Charset;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -32,8 +33,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.stream.Stream;
 
@@ -98,6 +101,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     private volatile AbstractHtml parent;
 
+    private volatile AtomicInteger parentNullifiedCount = new AtomicInteger(0);
+
     /**
      * NB: iterator in this children is not synchronized so for-each loop may
      * make ConcurrentModificationException if the children object is not used
@@ -144,6 +149,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
     private TagType tagType = TagType.OPENING_CLOSING;
 
     protected final boolean noTagContentTypeHtml;
+
+    private volatile WeakReference<SharedTagContent> sharedTagContentRef;
 
     public static enum TagType {
         OPENING_CLOSING, SELF_CLOSING, NON_CLOSING;
@@ -692,6 +699,159 @@ public abstract class AbstractHtml extends AbstractJsObject {
             }
         }
 
+    }
+
+    /**
+     * @since 3.0.6
+     */
+    void pushQueue() {
+        final PushQueue pushQueue = sharedObject.getPushQueue(ACCESS_OBJECT);
+        if (pushQueue != null) {
+            pushQueue.push();
+        }
+    }
+
+    /**
+     * @return
+     * @since 3.0.6
+     */
+    int getParentNullifiedCount() {
+        return parentNullifiedCount.get();
+    }
+
+    /**
+     * @param updateClient
+     *                         true to update client browser page if it is
+     *                         available. The default value is true but it will
+     *                         be ignored if there is no client browser page.
+     * @param innerHtmls
+     * @return
+     * @since 3.0.6
+     */
+    InnerHtmlListenerData addInnerHtmlsAndGetEventsLockless(
+            final boolean updateClient, final AbstractHtml... innerHtmls) {
+
+        InnerHtmlListenerData innerHtmlListenerData = null;
+        final AbstractHtml[] removedAbstractHtmls = children
+                .toArray(new AbstractHtml[children.size()]);
+        children.clear();
+
+        initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(
+                removedAbstractHtmls);
+
+        final InnerHtmlAddListener listener = sharedObject
+                .getInnerHtmlAddListener(ACCESS_OBJECT);
+
+        if (listener != null && updateClient) {
+
+            final InnerHtmlAddListener.Event[] events = new InnerHtmlAddListener.Event[innerHtmls.length];
+
+            int index = 0;
+
+            for (final AbstractHtml innerHtml : innerHtmls) {
+
+                AbstractHtml previousParentTag = null;
+
+                if (innerHtml.parent != null
+                        && innerHtml.parent.sharedObject == sharedObject) {
+                    previousParentTag = innerHtml.parent;
+                }
+
+                addChild(innerHtml, false);
+
+                events[index] = new InnerHtmlAddListener.Event(this, innerHtml,
+                        previousParentTag);
+                index++;
+
+            }
+
+            innerHtmlListenerData = new InnerHtmlListenerData(sharedObject,
+                    listener, events);
+
+        } else {
+            for (final AbstractHtml innerHtml : innerHtmls) {
+                addChild(innerHtml, false);
+            }
+        }
+
+        return innerHtmlListenerData;
+
+    }
+
+    /**
+     * @param sharedTagContent
+     * @since 3.0.6
+     */
+    public void addInnerHtml(final SharedTagContent sharedTagContent) {
+        addInnerHtml(true, sharedTagContent);
+    }
+
+    /**
+     * @param updateClient
+     *                             true to update client browser page if it is
+     *                             available. The default value is true but it
+     *                             will be ignored if there is no client browser
+     *                             page.
+     * @param sharedTagContent
+     * @since 3.0.6
+     */
+    public void addInnerHtml(final boolean updateClient,
+            final SharedTagContent sharedTagContent) {
+
+        if (sharedTagContentRef == null || !Objects
+                .equals(sharedTagContentRef.get(), sharedTagContent)) {
+
+            final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+            lock.lock();
+            try {
+                if (sharedTagContent != null) {
+                    sharedTagContent.addInnerHtml(updateClient, this);
+                    sharedTagContentRef = new WeakReference<>(sharedTagContent);
+                } else {
+                    sharedTagContentRef = null;
+                }
+            } finally {
+                lock.unlock();
+            }
+
+        }
+
+    }
+
+    /**
+     * @return the object of SharedTagContent which created the NoTag in the
+     *         child.
+     * @since 3.0.6
+     */
+    public SharedTagContent getSharedTagContent() {
+        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
+        lock.lock();
+        try {
+            if (sharedTagContentRef != null) {
+                final SharedTagContent sharedTagContent = sharedTagContentRef
+                        .get();
+                if (sharedTagContent != null && children.size() == 1) {
+                    final Iterator<AbstractHtml> iterator = children.iterator();
+                    if (iterator.hasNext()) {
+                        final AbstractHtml firstChild = iterator.next();
+                        if (firstChild != null) {
+                            if (firstChild instanceof NoTag
+                                    && firstChild.parentNullifiedCount
+                                            .get() == 0
+                                    && sharedTagContent.contains(firstChild)) {
+                                return sharedTagContent;
+                            }
+                        }
+
+                    }
+
+                }
+            }
+        } finally {
+            lock.unlock();
+        }
+
+        return null;
     }
 
     /**
@@ -1885,6 +2045,18 @@ public abstract class AbstractHtml extends AbstractJsObject {
         } finally {
             lock.unlock();
         }
+    }
+
+    /**
+     * Gets the number of children in this tag. An efficient way to find the
+     * size of children.
+     *
+     * @return the size of children.
+     * @since 3.0.6
+     * @author WFF
+     */
+    int getChildrenSizeLockless() {
+        return children.size();
     }
 
     /**
@@ -3521,7 +3693,11 @@ public abstract class AbstractHtml extends AbstractJsObject {
     private void initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(
             final AbstractHtml abstractHtml) {
 
-        abstractHtml.parent = null;
+        if (abstractHtml.parent != null) {
+            abstractHtml.parent = null;
+            abstractHtml.parentNullifiedCount.incrementAndGet();
+        }
+
         abstractHtml.sharedObject = new AbstractHtml5SharedObject(abstractHtml);
 
         final Deque<Set<AbstractHtml>> removedTagsStack = new ArrayDeque<>();
