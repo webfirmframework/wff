@@ -187,6 +187,8 @@ public class SharedTagContent {
 
             insertedTags.clear();
 
+            final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>();
+
             for (final Entry<AbstractHtml5SharedObject, List<ParentNoTagData>> entry : tagsGroupedBySharedObject
                     .entrySet()) {
 
@@ -247,6 +249,9 @@ public class SharedTagContent {
                                         parentNoTagData.getParent(),
                                         listenerData.getEvents());
 
+                                // push is require only if listener invoked
+                                sharedObjects.add(sharedObject);
+
                                 // TODO do final verification of this code
                             }
                         }
@@ -255,15 +260,28 @@ public class SharedTagContent {
                 } finally {
                     parentLock.unlock();
                 }
-
-                pushQueue(sharedObject);
-
             }
+
+            pushQueue(sharedObjects);
 
         } finally {
             lock.unlockWrite(stamp);
         }
 
+    }
+
+    /**
+     * @since 3.0.6
+     */
+    private void pushQueue(
+            final List<AbstractHtml5SharedObject> sharedObjects) {
+        for (final AbstractHtml5SharedObject sharedObject : sharedObjects) {
+            final PushQueue pushQueue = sharedObject
+                    .getPushQueue(ACCESS_OBJECT);
+            if (pushQueue != null) {
+                pushQueue.push();
+            }
+        }
     }
 
     /**
@@ -288,6 +306,8 @@ public class SharedTagContent {
         final AbstractHtml5SharedObject sharedObject = applicableTag
                 .getSharedObject();
 
+        boolean listenerInvoked = false;
+
         try {
 
             final NoTag noTag = new NoTag(null, content, contentTypeHtml);
@@ -299,6 +319,7 @@ public class SharedTagContent {
                 // verifying feasibility of considering rich notag content
                 listenerData.getListener().innerHtmlsAdded(applicableTag,
                         listenerData.getEvents());
+                listenerInvoked = true;
             }
 
             insertedTags.add(noTag);
@@ -306,7 +327,9 @@ public class SharedTagContent {
         } finally {
             lock.unlockWrite(stamp);
         }
-        pushQueue(sharedObject);
+        if (listenerInvoked) {
+            pushQueue(sharedObject);
+        }
 
     }
 

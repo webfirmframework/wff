@@ -307,7 +307,8 @@ public abstract class BrowserPage implements Serializable {
                                 }
 
                                 break;
-                            } catch (final NullPointerException e) {
+                            } catch (final IllegalStateException
+                                    | NullPointerException e) {
                                 if (wffBMBytesQueue.offerFirst(byteBuffer)) {
                                     pushQueueSize.increment();
                                 }
