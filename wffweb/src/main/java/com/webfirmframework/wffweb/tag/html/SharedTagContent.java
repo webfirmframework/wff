@@ -157,10 +157,10 @@ public class SharedTagContent {
                 }
 
                 final AbstractHtml prevNoTagAsBase = prevNoTag;
-                // prevNoTagAsBase.getParentNullifiedCount() > 0
+                // noTagAsBase.isParentNullifiedOnce() == true
                 // means the parent of this tag has already been changed
                 // at least once
-                if (prevNoTagAsBase.getParentNullifiedCount() > 0) {
+                if (prevNoTagAsBase.isParentNullifiedOnce()) {
                     continue;
                 }
 
@@ -201,14 +201,14 @@ public class SharedTagContent {
                         // NoTag exists but aslo appended/prepended another
                         // child/children to it.
 
-                        // parentNoTagData.parent.getParentNullifiedCount() > 0
+                        // noTagAsBase.isParentNullifiedOnce() == true
                         // means the parent of this tag has already been changed
                         // at least once
                         final AbstractHtml noTagAsBase = parentNoTagData
                                 .getNoTag();
                         if (parentNoTagData.getParent()
                                 .getChildrenSizeLockless() == 1
-                                && noTagAsBase.getParentNullifiedCount() == 0) {
+                                && !noTagAsBase.isParentNullifiedOnce()) {
 
                             insertedTags.add(parentNoTagData.getNoTag());
 

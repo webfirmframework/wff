@@ -36,7 +36,6 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.stream.Stream;
 
@@ -101,7 +100,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     private volatile AbstractHtml parent;
 
-    private volatile AtomicInteger parentNullifiedCount = new AtomicInteger(0);
+    private volatile boolean parentNullifiedOnce;
 
     /**
      * NB: iterator in this children is not synchronized so for-each loop may
@@ -712,11 +711,11 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * @return
+     * @return true if the parent is nullified at least once
      * @since 3.0.6
      */
-    int getParentNullifiedCount() {
-        return parentNullifiedCount.get();
+    boolean isParentNullifiedOnce() {
+        return parentNullifiedOnce;
     }
 
     /**
@@ -847,8 +846,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         final AbstractHtml firstChild = iterator.next();
                         if (firstChild != null) {
                             if (firstChild instanceof NoTag
-                                    && firstChild.parentNullifiedCount
-                                            .get() == 0
+                                    && !firstChild.parentNullifiedOnce
                                     && sharedTagContent.contains(firstChild)) {
                                 return sharedTagContent;
                             }
@@ -3706,7 +3704,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
         if (abstractHtml.parent != null) {
             abstractHtml.parent = null;
-            abstractHtml.parentNullifiedCount.incrementAndGet();
+            abstractHtml.parentNullifiedOnce = true;
         }
 
         abstractHtml.sharedObject = new AbstractHtml5SharedObject(abstractHtml);
