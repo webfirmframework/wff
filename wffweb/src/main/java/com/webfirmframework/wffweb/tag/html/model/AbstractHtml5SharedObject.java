@@ -181,6 +181,8 @@ public class AbstractHtml5SharedObject implements Serializable {
         if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML
                 .equals(accessObject.getClass().getName())
                 || SecurityClassConstants.ABSTRACT_ATTRIBUTE
+                        .equals(accessObject.getClass().getName())
+                || SecurityClassConstants.SHARED_TAG_CONTENT
                         .equals(accessObject.getClass().getName()))) {
             throw new WffSecurityException(
                     "Not allowed to consume this method. This method is for internal use.");
@@ -660,6 +662,8 @@ public class AbstractHtml5SharedObject implements Serializable {
                 || SecurityClassConstants.ABSTRACT_ATTRIBUTE
                         .equals(accessObject.getClass().getName())
                 || SecurityClassConstants.ABSTRACT_JS_OBJECT
+                        .equals(accessObject.getClass().getName())
+                || SecurityClassConstants.SHARED_TAG_CONTENT
                         .equals(accessObject.getClass().getName()))) {
             throw new WffSecurityException(
                     "Not allowed to consume this method. This method is for internal use.");

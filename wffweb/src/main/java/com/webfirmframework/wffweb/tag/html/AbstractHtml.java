@@ -701,16 +701,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * @since 3.0.6
-     */
-    void pushQueue() {
-        final PushQueue pushQueue = sharedObject.getPushQueue(ACCESS_OBJECT);
-        if (pushQueue != null) {
-            pushQueue.push();
-        }
-    }
-
-    /**
      * @return true if the parent is nullified at least once
      * @since 3.0.6
      */

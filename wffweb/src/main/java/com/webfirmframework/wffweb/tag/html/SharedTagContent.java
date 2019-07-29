@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.tag.html;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,6 +28,7 @@ import java.util.WeakHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.StampedLock;
 
+import com.webfirmframework.wffweb.tag.html.listener.PushQueue;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 
@@ -39,6 +41,8 @@ import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
  */
 public class SharedTagContent {
 
+    private static final Security ACCESS_OBJECT;
+
     private final StampedLock lock = new StampedLock();
 
     private final Set<NoTag> insertedTags = Collections
@@ -47,6 +51,19 @@ public class SharedTagContent {
     private volatile String content;
 
     private volatile boolean contentTypeHtml;
+
+    // for security purpose, the class name should not be modified
+    private static final class Security implements Serializable {
+
+        private static final long serialVersionUID = 1L;
+
+        private Security() {
+        }
+    }
+
+    static {
+        ACCESS_OBJECT = new Security();
+    }
 
     /**
      * @param content
@@ -75,12 +92,7 @@ public class SharedTagContent {
      * @since 3.0.6
      */
     public String getContent() {
-        final long stamp = lock.readLock();
-        try {
-            return content;
-        } finally {
-            lock.unlockRead(stamp);
-        }
+        return content;
     }
 
     /**
@@ -88,12 +100,7 @@ public class SharedTagContent {
      * @since 3.0.6
      */
     public boolean isContentTypeHtml() {
-        final long stamp = lock.readLock();
-        try {
-            return contentTypeHtml;
-        } finally {
-            lock.unlockRead(stamp);
-        }
+        return contentTypeHtml;
     }
 
     /**
@@ -183,16 +190,27 @@ public class SharedTagContent {
             for (final Entry<AbstractHtml5SharedObject, List<ParentNoTagData>> entry : tagsGroupedBySharedObject
                     .entrySet()) {
 
+                final AbstractHtml5SharedObject sharedObject = entry.getKey();
+
                 final List<ParentNoTagData> parentNoTagDatas = entry.getValue();
 
-                final AbstractHtml firstParent = parentNoTagDatas.get(0)
-                        .getParent();
-                final Lock parentLock = firstParent.getWriteLock();
+                // pushing using first parent object makes bug (got bug when
+                // singleton SharedTagContent object is used under multiple
+                // BrowserPage instances)
+                // may be because the sharedObject in the parent can be changed
+                // before lock
+
+                final Lock parentLock = sharedObject.getLock(ACCESS_OBJECT)
+                        .writeLock();
                 parentLock.lock();
 
                 try {
 
                     for (final ParentNoTagData parentNoTagData : parentNoTagDatas) {
+
+                        // parentNoTagData.getParent().getSharedObject().equals(sharedObject)
+                        // is important here as it could be change just before
+                        // locking
 
                         // if parentNoTagData.parent == 0 means the previous
                         // NoTag was already removed
@@ -206,8 +224,11 @@ public class SharedTagContent {
                         // at least once
                         final AbstractHtml noTagAsBase = parentNoTagData
                                 .getNoTag();
-                        if (parentNoTagData.getParent()
-                                .getChildrenSizeLockless() == 1
+
+                        if (parentNoTagData.getParent().getSharedObject()
+                                .equals(sharedObject)
+                                && parentNoTagData.getParent()
+                                        .getChildrenSizeLockless() == 1
                                 && !noTagAsBase.isParentNullifiedOnce()) {
 
                             insertedTags.add(parentNoTagData.getNoTag());
@@ -235,7 +256,7 @@ public class SharedTagContent {
                     parentLock.unlock();
                 }
 
-                firstParent.pushQueue();
+                pushQueue(sharedObject);
 
             }
 
@@ -243,6 +264,16 @@ public class SharedTagContent {
             lock.unlockWrite(stamp);
         }
 
+    }
+
+    /**
+     * @since 3.0.6
+     */
+    private void pushQueue(final AbstractHtml5SharedObject sharedObject) {
+        final PushQueue pushQueue = sharedObject.getPushQueue(ACCESS_OBJECT);
+        if (pushQueue != null) {
+            pushQueue.push();
+        }
     }
 
     /**
@@ -254,6 +285,8 @@ public class SharedTagContent {
             final AbstractHtml applicableTag) {
 
         final long stamp = lock.writeLock();
+        final AbstractHtml5SharedObject sharedObject = applicableTag
+                .getSharedObject();
 
         try {
 
@@ -273,7 +306,7 @@ public class SharedTagContent {
         } finally {
             lock.unlockWrite(stamp);
         }
-        applicableTag.pushQueue();
+        pushQueue(sharedObject);
 
     }
 

@@ -19,6 +19,11 @@ import com.webfirmframework.wffweb.tag.html.listener.InnerHtmlAddListener;
 import com.webfirmframework.wffweb.tag.html.listener.InnerHtmlAddListener.Event;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 
+/**
+ * @author WFF
+ * @since 3.0.6
+ *
+ */
 class InnerHtmlListenerData {
 
     private final AbstractHtml5SharedObject sharedObject;

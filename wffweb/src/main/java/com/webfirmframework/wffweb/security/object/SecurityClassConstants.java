@@ -31,6 +31,8 @@ public final class SecurityClassConstants {
 
     public static final String ABSTRACT_ATTRIBUTE = "com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute$Security";
 
+    public static final String SHARED_TAG_CONTENT = "com.webfirmframework.wffweb.tag.html.SharedTagContent$Security";
+
     public SecurityClassConstants() {
         throw new AssertionError();
     }
