@@ -92,7 +92,12 @@ public class SharedTagContent {
      * @since 3.0.6
      */
     public String getContent() {
-        return content;
+        final long stamp = lock.readLock();
+        try {
+            return content;
+        } finally {
+            lock.unlockRead(stamp);
+        }
     }
 
     /**
@@ -100,7 +105,12 @@ public class SharedTagContent {
      * @since 3.0.6
      */
     public boolean isContentTypeHtml() {
-        return contentTypeHtml;
+        final long stamp = lock.readLock();
+        try {
+            return contentTypeHtml;
+        } finally {
+            lock.unlockRead(stamp);
+        }
     }
 
     /**
