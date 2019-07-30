@@ -154,6 +154,12 @@ public class SharedTagContent {
         }
     }
 
+    /**
+     * @return true if parallel operation allowed. Refer
+     *         {@link SharedTagContent#setAllowParallel(boolean)} for more
+     *         details
+     * @since 3.0.6
+     */
     public boolean isAllowParallel() {
         final long stamp = lock.readLock();
         try {
@@ -170,13 +176,16 @@ public class SharedTagContent {
      *                          tags from multiple BrowserPage instances.
      *                          Parallel operation will be applied only if
      *                          appropriate.
+     * @since 3.0.6
      */
     public void setAllowParallel(final boolean allowParallel) {
-        final long stamp = lock.writeLock();
-        try {
-            this.allowParallel = allowParallel;
-        } finally {
-            lock.unlockWrite(stamp);
+        if (this.allowParallel != allowParallel) {
+            final long stamp = lock.writeLock();
+            try {
+                this.allowParallel = allowParallel;
+            } finally {
+                lock.unlockWrite(stamp);
+            }
         }
     }
 
