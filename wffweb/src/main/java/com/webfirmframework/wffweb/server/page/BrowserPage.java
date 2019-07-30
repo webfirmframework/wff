@@ -97,7 +97,7 @@ public abstract class BrowserPage implements Serializable {
 
     private final Map<String, WebSocketPushListener> sessionIdWsListeners = new ConcurrentHashMap<>();
 
-    private final Queue<WebSocketPushListener> wsListeners = new ConcurrentLinkedQueue<>();
+    private final Deque<WebSocketPushListener> wsListeners = new ConcurrentLinkedDeque<>();
 
     private volatile WebSocketPushListener wsListener;
 
@@ -221,8 +221,9 @@ public abstract class BrowserPage implements Serializable {
 
         sessionIdWsListeners.put(sessionId, wsListener);
 
-        // add method internally calls offer method in ConcurrentLinkedQueue
-        wsListeners.offer(wsListener);
+        // should be in the first of this queue as it could provide the latest
+        // reliable ws connection
+        wsListeners.push(wsListener);
 
         this.wsListener = wsListener;
 
