@@ -97,9 +97,9 @@ public abstract class BrowserPage implements Serializable {
 
     private final Map<String, WebSocketPushListener> sessionIdWsListeners = new ConcurrentHashMap<>();
 
-    private final Deque<WebSocketPushListener> wsListeners = new ArrayDeque<>();
+    private final Queue<WebSocketPushListener> wsListeners = new ConcurrentLinkedQueue<>();
 
-    private WebSocketPushListener wsListener;
+    private volatile WebSocketPushListener wsListener;
 
     private DataWffId wffScriptTagId;
 
@@ -220,7 +220,9 @@ public abstract class BrowserPage implements Serializable {
             final WebSocketPushListener wsListener) {
 
         sessionIdWsListeners.put(sessionId, wsListener);
-        wsListeners.push(wsListener);
+
+        // add method internally calls offer method in ConcurrentLinkedQueue
+        wsListeners.offer(wsListener);
 
         this.wsListener = wsListener;
 
@@ -242,7 +244,13 @@ public abstract class BrowserPage implements Serializable {
 
         final WebSocketPushListener removed = sessionIdWsListeners
                 .remove(sessionId);
-        wsListeners.remove(removed);
+        if (!wsListeners.remove(removed)) {
+            if (LOGGER.isLoggable(Level.WARNING) && !wsWarningDisabled) {
+                LOGGER.warning(
+                        "WebSocketPushListener doesn't exist in queue for sessionId: "
+                                + sessionId);
+            }
+        }
         wsListener = wsListeners.peek();
     }
 
@@ -297,7 +305,6 @@ public abstract class BrowserPage implements Serializable {
                         final Thread currentThread = Thread.currentThread();
                         do {
                             pushQueueSize.decrement();
-
                             try {
                                 wsListener.push(byteBuffer);
                             } catch (final PushFailedException e) {
