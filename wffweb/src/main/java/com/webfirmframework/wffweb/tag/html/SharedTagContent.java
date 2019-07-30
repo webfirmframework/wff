@@ -52,6 +52,8 @@ public class SharedTagContent {
 
     private volatile boolean contentTypeHtml;
 
+    private volatile boolean allowParallel = true;
+
     // for security purpose, the class name should not be modified
     private static final class Security implements Serializable {
 
@@ -66,6 +68,8 @@ public class SharedTagContent {
     }
 
     /**
+     * plain text content with allowParallel true.
+     *
      * @param content
      *                    the content its content type will be considered as
      *                    plain text, i.e. contentTypeHtml will be false.
@@ -74,15 +78,52 @@ public class SharedTagContent {
     public SharedTagContent(final String content) {
         this.content = content;
         contentTypeHtml = false;
+        allowParallel = true;
     }
 
     /**
+     * @param allowParallel
+     *                          allows parallel operation if this
+     *                          SharedTagContent object has to update content of
+     *                          tags from multiple BrowserPage instances.
+     * @param content
+     *                          the content its content type will be considered
+     *                          as plain text, i.e. contentTypeHtml will be
+     *                          false.
+     * @since 3.0.6
+     */
+    public SharedTagContent(final boolean allowParallel, final String content) {
+        this.allowParallel = allowParallel;
+        this.content = content;
+        contentTypeHtml = false;
+    }
+
+    /**
+     * The default value of allowParallel is true.
+     *
      * @param content
      * @param contentTypeHtml
      * @since 3.0.6
      */
     public SharedTagContent(final String content,
             final boolean contentTypeHtml) {
+        this.content = content;
+        this.contentTypeHtml = contentTypeHtml;
+        allowParallel = true;
+    }
+
+    /**
+     * @param allowParallel
+     *                            allows parallel operation if this
+     *                            SharedTagContent object has to update content
+     *                            of tags from multiple BrowserPage instances.
+     * @param content
+     * @param contentTypeHtml
+     * @since 3.0.6
+     */
+    public SharedTagContent(final boolean allowParallel, final String content,
+            final boolean contentTypeHtml) {
+        this.allowParallel = allowParallel;
         this.content = content;
         this.contentTypeHtml = contentTypeHtml;
     }
@@ -113,6 +154,32 @@ public class SharedTagContent {
         }
     }
 
+    public boolean isAllowParallel() {
+        final long stamp = lock.readLock();
+        try {
+            return allowParallel;
+        } finally {
+            lock.unlockRead(stamp);
+        }
+    }
+
+    /**
+     * @param allowParallel
+     *                          allows parallel operation if this
+     *                          SharedTagContent object has to update content of
+     *                          tags from multiple BrowserPage instances.
+     *                          Parallel operation will be applied only if
+     *                          appropriate.
+     */
+    public void setAllowParallel(final boolean allowParallel) {
+        final long stamp = lock.writeLock();
+        try {
+            this.allowParallel = allowParallel;
+        } finally {
+            lock.unlockWrite(stamp);
+        }
+    }
+
     /**
      * @param noTag
      * @return true if the object just exists in the set but it doesn't mean the
@@ -134,7 +201,20 @@ public class SharedTagContent {
      * @since 3.0.6
      */
     public void setContent(final String content) {
-        setContent(true, content, contentTypeHtml);
+        setContent(true, allowParallel, content, contentTypeHtml);
+    }
+
+    /**
+     * @param allowParallel
+     *                          allows parallel operation if this
+     *                          SharedTagContent object has to update content of
+     *                          tags from multiple BrowserPage instances.
+     * @param content
+     *                          content to be reflected in all consuming tags.
+     * @since 3.0.6
+     */
+    public void setContent(final boolean allowParallel, final String content) {
+        setContent(true, allowParallel, content, contentTypeHtml);
     }
 
     /**
@@ -143,10 +223,28 @@ public class SharedTagContent {
      * @param contentTypeHtml
      *                            true if the content type is HTML or false if
      *                            plain text
+     * @since 3.0.6
      */
     public void setContent(final String content,
             final boolean contentTypeHtml) {
-        setContent(true, content, contentTypeHtml);
+        setContent(true, allowParallel, content, contentTypeHtml);
+    }
+
+    /**
+     * @param allowParallel
+     *                            allows parallel operation if this
+     *                            SharedTagContent object has to update content
+     *                            of tags from multiple BrowserPage instances.
+     * @param content
+     *                            content to be reflected in all consuming tags
+     * @param contentTypeHtml
+     *                            true if the content type is HTML or false if
+     *                            plain text
+     * @since 3.0.6
+     */
+    public void setContent(final boolean allowParallel, final String content,
+            final boolean contentTypeHtml) {
+        setContent(true, allowParallel, content, contentTypeHtml);
     }
 
     /**
@@ -155,13 +253,15 @@ public class SharedTagContent {
      * @param contentTypeHtml
      * @since 3.0.6
      */
-    private void setContent(final boolean updateClient, final String content,
+    private void setContent(final boolean updateClient,
+            final boolean allowParallel, final String content,
             final boolean contentTypeHtml) {
 
         final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>();
         final long stamp = lock.writeLock();
         try {
 
+            this.allowParallel = allowParallel;
             this.content = content;
             this.contentTypeHtml = contentTypeHtml;
 
@@ -274,19 +374,33 @@ public class SharedTagContent {
         } finally {
             lock.unlockWrite(stamp);
         }
-        pushQueue(sharedObjects);
+        pushQueue(allowParallel, sharedObjects);
     }
 
     /**
+     * @param allowParallel
+     * @param sharedObjects
+     *
      * @since 3.0.6
      */
-    private void pushQueue(
+    private void pushQueue(final boolean allowParallel,
             final List<AbstractHtml5SharedObject> sharedObjects) {
-        for (final AbstractHtml5SharedObject sharedObject : sharedObjects) {
-            final PushQueue pushQueue = sharedObject
-                    .getPushQueue(ACCESS_OBJECT);
-            if (pushQueue != null) {
-                pushQueue.push();
+
+        if (allowParallel && sharedObjects.size() > 1) {
+            sharedObjects.parallelStream().forEach((sharedObject) -> {
+                final PushQueue pushQueue = sharedObject
+                        .getPushQueue(ACCESS_OBJECT);
+                if (pushQueue != null) {
+                    pushQueue.push();
+                }
+            });
+        } else {
+            for (final AbstractHtml5SharedObject sharedObject : sharedObjects) {
+                final PushQueue pushQueue = sharedObject
+                        .getPushQueue(ACCESS_OBJECT);
+                if (pushQueue != null) {
+                    pushQueue.push();
+                }
             }
         }
     }
