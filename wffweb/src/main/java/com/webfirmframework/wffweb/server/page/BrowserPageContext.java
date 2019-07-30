@@ -40,10 +40,16 @@ public enum BrowserPageContext {
     private final Map<String, Map<String, BrowserPage>> httpSessionIdBrowserPages;
 
     /**
-     * key:- unique id for AbstractBrowserPage (AKA wff instance id in terms of
-     * wff) value:- AbstractBrowserPage
+     * key:- unique id for BrowserPage (AKA wff instance id in terms of wff)
+     * value:- BrowserPage
      */
     private final Map<String, BrowserPage> instanceIdBrowserPage;
+
+    /**
+     * key:- unique id for BrowserPage (AKA wff instance id in terms of wff)
+     * value:- BrowserPage this is only for websocket open close handling
+     */
+    private final Map<String, BrowserPage> instanceIdBPForWS;
 
     /**
      * key:- unique id for AbstractBrowserPage (AKA wff instance id in terms of
@@ -54,6 +60,7 @@ public enum BrowserPageContext {
     private BrowserPageContext() {
         httpSessionIdBrowserPages = new ConcurrentHashMap<>();
         instanceIdBrowserPage = new ConcurrentHashMap<>();
+        instanceIdBPForWS = new ConcurrentHashMap<>();
         instanceIdHttpSessionId = new ConcurrentHashMap<>();
     }
 
@@ -160,8 +167,9 @@ public enum BrowserPageContext {
             for (final BrowserPage browserPage : httpSessionIdBrowserPage
                     .values()) {
                 instanceIdHttpSessionId.remove(browserPage.getInstanceId());
-                instanceIdBrowserPage.remove(browserPage.getInstanceId());
-                if (browserPage != null) {
+                final BrowserPage removedBP = instanceIdBrowserPage
+                        .remove(browserPage.getInstanceId());
+                if (removedBP != null) {
                     try {
                         browserPage.removedFromContext();
                     } catch (final Throwable e) {
@@ -199,7 +207,12 @@ public enum BrowserPageContext {
             final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages
                     .get(httpSessionId);
             if (browserPages != null) {
-                return browserPages.get(wffInstanceId);
+                final BrowserPage browserPage = browserPages.get(wffInstanceId);
+                if (browserPage != null) {
+                    instanceIdBPForWS.put(browserPage.getInstanceId(),
+                            browserPage);
+                }
+                return browserPage;
             }
         }
 
@@ -238,12 +251,15 @@ public enum BrowserPageContext {
      */
     public BrowserPage webSocketClosed(final String wffInstanceId,
             final String sessionId) {
-        final BrowserPage browserPage = instanceIdBrowserPage
-                .get(wffInstanceId);
-        if (browserPage != null) {
-            browserPage.removeWebSocketPushListener(sessionId);
+        final BrowserPage bp = instanceIdBPForWS.get(wffInstanceId);
+        if (bp != null) {
+            bp.removeWebSocketPushListener(sessionId);
+            if (bp.getWsListener() == null) {
+                instanceIdBPForWS.remove(wffInstanceId);
+            }
         }
-        return browserPage;
+
+        return bp;
     }
 
     /**
@@ -266,6 +282,7 @@ public enum BrowserPageContext {
                     final BrowserPage removedBrowserPage = instanceIdBrowserPage
                             .remove(instanceId);
                     if (removedBrowserPage != null) {
+
                         try {
                             removedBrowserPage.removedFromContext();
                         } catch (final Throwable e) {
