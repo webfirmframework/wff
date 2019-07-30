@@ -243,15 +243,12 @@ public abstract class BrowserPage implements Serializable {
      */
     public final void removeWebSocketPushListener(final String sessionId) {
 
-        final WebSocketPushListener removed = sessionIdWsListeners
+        final WebSocketPushListener removedListener = sessionIdWsListeners
                 .remove(sessionId);
-        if (!wsListeners.remove(removed)) {
-            if (LOGGER.isLoggable(Level.WARNING) && !wsWarningDisabled) {
-                LOGGER.warning(
-                        "WebSocketPushListener doesn't exist in queue for sessionId: "
-                                + sessionId);
-            }
+        // remove all
+        while (wsListeners.remove(removedListener)) {
         }
+
         wsListener = wsListeners.peek();
     }
 
