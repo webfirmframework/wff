@@ -158,6 +158,7 @@ public class SharedTagContent {
     private void setContent(final boolean updateClient, final String content,
             final boolean contentTypeHtml) {
 
+        final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>();
         final long stamp = lock.writeLock();
         try {
 
@@ -196,8 +197,6 @@ public class SharedTagContent {
             }
 
             insertedTags.clear();
-
-            final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>();
 
             for (final Entry<AbstractHtml5SharedObject, List<ParentNoTagData>> entry : tagsGroupedBySharedObject
                     .entrySet()) {
@@ -272,12 +271,10 @@ public class SharedTagContent {
                 }
             }
 
-            pushQueue(sharedObjects);
-
         } finally {
             lock.unlockWrite(stamp);
         }
-
+        pushQueue(sharedObjects);
     }
 
     /**
