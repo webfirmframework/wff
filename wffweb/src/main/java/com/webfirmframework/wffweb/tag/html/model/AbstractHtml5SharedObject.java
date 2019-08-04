@@ -23,7 +23,7 @@ import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -83,9 +83,10 @@ public class AbstractHtml5SharedObject implements Serializable {
     private PushQueue pushQueue;
 
     /**
-     * no need to make it volatile
+     * no need to make it volatile declared as long to avoid maximum id
+     * collision
      */
-    private final AtomicInteger dataWffId = new AtomicInteger(-1);
+    private final AtomicLong dataWffId = new AtomicLong(-1);
 
     private final AtomicBoolean dataWffIdSecondCycle = new AtomicBoolean(false);
 
@@ -138,14 +139,14 @@ public class AbstractHtml5SharedObject implements Serializable {
 
         while (tagByWffId.size() < Integer.MAX_VALUE) {
 
-            final int incrementedDataWffId = dataWffId.incrementAndGet();
+            final long incrementedDataWffId = dataWffId.incrementAndGet();
 
             if (incrementedDataWffId < 0 || dataWffIdSecondCycle.get()) {
 
                 dataWffIdSecondCycle.compareAndSet(false, true);
 
-                int newDataWffId = incrementedDataWffId < 0
-                        ? ((incrementedDataWffId - Integer.MAX_VALUE) - 1)
+                long newDataWffId = incrementedDataWffId < 0
+                        ? ((incrementedDataWffId - Long.MAX_VALUE) - 1)
                         : incrementedDataWffId;
 
                 String id = "S" + (newDataWffId);
@@ -153,7 +154,7 @@ public class AbstractHtml5SharedObject implements Serializable {
                 while (tagByWffId.containsKey(id)) {
                     newDataWffId++;
                     if (newDataWffId < 0) {
-                        newDataWffId = (newDataWffId - Integer.MAX_VALUE) - 1;
+                        newDataWffId = (newDataWffId - Long.MAX_VALUE) - 1;
                     }
                     id = "S" + newDataWffId;
                 }
@@ -190,7 +191,7 @@ public class AbstractHtml5SharedObject implements Serializable {
         return lock;
     }
 
-    public int getLastDataWffId(final Object accessObject) {
+    public long getLastDataWffId(final Object accessObject) {
 
         if (accessObject == null || !((SecurityClassConstants.ABSTRACT_HTML
                 .equals(accessObject.getClass().getName())))) {
