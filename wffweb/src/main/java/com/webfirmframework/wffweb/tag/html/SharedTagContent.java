@@ -437,9 +437,10 @@ public class SharedTagContent {
                 }
             }
 
-            if (contentChangeListeners != null) {
+            final Map<AbstractHtml, Set<ContentChangeListener>> listenersMap = contentChangeListeners;
+            if (listenersMap != null) {
                 for (final AbstractHtml modifiedParent : modifiedParents) {
-                    final Set<ContentChangeListener> listeners = contentChangeListeners
+                    final Set<ContentChangeListener> listeners = listenersMap
                             .get(modifiedParent);
                     if (listeners != null) {
                         for (final ContentChangeListener listener : listeners) {
@@ -633,8 +634,9 @@ public class SharedTagContent {
         final long stamp = lock.writeLock();
 
         try {
-            if (contentChangeListeners != null) {
-                contentChangeListeners.remove(tag);
+            final Map<AbstractHtml, Set<ContentChangeListener>> listenersMap = contentChangeListeners;
+            if (listenersMap != null) {
+                listenersMap.remove(tag);
             }
 
         } finally {
