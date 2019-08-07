@@ -99,6 +99,7 @@ public class SharedTagContent {
 
     }
 
+    @FunctionalInterface
     public static interface ContentChangeListener {
         public abstract void contentChanged(Event event);
     }
@@ -437,10 +438,9 @@ public class SharedTagContent {
                 }
             }
 
-            final Map<AbstractHtml, Set<ContentChangeListener>> listenersMap = contentChangeListeners;
-            if (listenersMap != null) {
+            if (contentChangeListeners != null) {
                 for (final AbstractHtml modifiedParent : modifiedParents) {
-                    final Set<ContentChangeListener> listeners = listenersMap
+                    final Set<ContentChangeListener> listeners = contentChangeListeners
                             .get(modifiedParent);
                     if (listeners != null) {
                         for (final ContentChangeListener listener : listeners) {
@@ -607,10 +607,9 @@ public class SharedTagContent {
         final long stamp = lock.writeLock();
 
         try {
-            final Map<AbstractHtml, Set<ContentChangeListener>> thisListenersMap = this.contentChangeListeners;
-            if (thisListenersMap != null) {
+            if (this.contentChangeListeners != null) {
 
-                final Set<ContentChangeListener> listeners = thisListenersMap
+                final Set<ContentChangeListener> listeners = this.contentChangeListeners
                         .get(tag);
 
                 if (listeners != null) {
@@ -634,9 +633,8 @@ public class SharedTagContent {
         final long stamp = lock.writeLock();
 
         try {
-            final Map<AbstractHtml, Set<ContentChangeListener>> listenersMap = contentChangeListeners;
-            if (listenersMap != null) {
-                listenersMap.remove(tag);
+            if (contentChangeListeners != null) {
+                contentChangeListeners.remove(tag);
             }
 
         } finally {
