@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -48,11 +49,59 @@ public class SharedTagContent {
     private final Set<NoTag> insertedTags = Collections
             .newSetFromMap(new WeakHashMap<NoTag, Boolean>(4, 0.75F));
 
+    private volatile Map<AbstractHtml, Set<ContentChangeListener>> contentChangeListeners;
+
     private volatile String content;
 
     private volatile boolean contentTypeHtml;
 
     private volatile boolean allowParallel = true;
+
+    public static final class Content {
+
+        private final String content;
+        private final boolean contentTypeHtml;
+
+        private Content(final String content, final boolean contentTypeHtml) {
+            super();
+            this.content = content;
+            this.contentTypeHtml = contentTypeHtml;
+        }
+
+        public String getContent() {
+            return content;
+        }
+
+        public boolean isContentTypeHtml() {
+            return contentTypeHtml;
+        }
+
+    }
+
+    public static final class Event {
+
+        private final Content contentBefore;
+        private final Content contentAfter;
+
+        private Event(final Content contentBefore, final Content contentAfter) {
+            super();
+            this.contentBefore = contentBefore;
+            this.contentAfter = contentAfter;
+        }
+
+        public Content getContentBefore() {
+            return contentBefore;
+        }
+
+        public Content getContentAfter() {
+            return contentAfter;
+        }
+
+    }
+
+    public static interface ContentChangeListener {
+        public abstract void contentChanged(Event event);
+    }
 
     // for security purpose, the class name should not be modified
     private static final class Security implements Serializable {
@@ -266,9 +315,14 @@ public class SharedTagContent {
             final boolean allowParallel, final String content,
             final boolean contentTypeHtml) {
 
-        final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>();
+        final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(
+                4);
         final long stamp = lock.writeLock();
         try {
+
+            final Content contentBefore = new Content(this.content,
+                    this.contentTypeHtml);
+            final Content contentAfter = new Content(content, contentTypeHtml);
 
             this.allowParallel = allowParallel;
             this.content = content;
@@ -295,7 +349,7 @@ public class SharedTagContent {
                         .get(parentTag.getSharedObject());
 
                 if (dataList == null) {
-                    dataList = new ArrayList<>();
+                    dataList = new ArrayList<>(4);
                     tagsGroupedBySharedObject.put(parentTag.getSharedObject(),
                             dataList);
                 }
@@ -306,6 +360,8 @@ public class SharedTagContent {
             }
 
             insertedTags.clear();
+
+            final List<AbstractHtml> modifiedParents = new ArrayList<>(4);
 
             for (final Entry<AbstractHtml5SharedObject, List<ParentNoTagData>> entry : tagsGroupedBySharedObject
                     .entrySet()) {
@@ -352,6 +408,7 @@ public class SharedTagContent {
                                 && !noTagAsBase.isParentNullifiedOnce()) {
 
                             insertedTags.add(parentNoTagData.getNoTag());
+                            modifiedParents.add(parentNoTagData.getParent());
 
                             final InnerHtmlListenerData listenerData = parentNoTagData
                                     .getParent()
@@ -380,6 +437,20 @@ public class SharedTagContent {
                 }
             }
 
+            if (contentChangeListeners != null) {
+                for (final AbstractHtml modifiedParent : modifiedParents) {
+                    final Set<ContentChangeListener> listeners = contentChangeListeners
+                            .get(modifiedParent);
+                    if (listeners != null) {
+                        for (final ContentChangeListener listener : listeners) {
+                            final Event event = new Event(contentBefore,
+                                    contentAfter);
+                            listener.contentChanged(event);
+                        }
+                    }
+                }
+
+            }
         } finally {
             lock.unlockWrite(stamp);
         }
@@ -461,6 +532,114 @@ public class SharedTagContent {
             pushQueue(sharedObject);
         }
 
+    }
+
+    /**
+     * @param tag
+     *                                  the tag on which the content change to
+     *                                  be listened
+     * @param contentChangeListener
+     *                                  to be added
+     * @since 3.0.6
+     */
+    public void addContentChangeListener(final AbstractHtml tag,
+            final ContentChangeListener contentChangeListener) {
+        final long stamp = lock.writeLock();
+
+        try {
+            Set<ContentChangeListener> listeners;
+            if (contentChangeListeners == null) {
+                contentChangeListeners = new WeakHashMap<>(4, 0.75F);
+                listeners = new LinkedHashSet<>(4);
+                contentChangeListeners.put(tag, listeners);
+            } else {
+                listeners = contentChangeListeners.get(tag);
+            }
+
+            if (listeners == null) {
+                listeners = new LinkedHashSet<>(4);
+                contentChangeListeners.put(tag, listeners);
+            }
+            listeners.add(contentChangeListener);
+        } finally {
+            lock.unlockWrite(stamp);
+        }
+    }
+
+    /**
+     * @param tag
+     *                                  the tag from which the listener to be
+     *                                  removed
+     * @param contentChangeListener
+     *                                  to be removed
+     * @since 3.0.6
+     */
+    public void removeContentChangeListener(final AbstractHtml tag,
+            final ContentChangeListener contentChangeListener) {
+        final long stamp = lock.writeLock();
+
+        try {
+            if (contentChangeListeners != null) {
+                final Set<ContentChangeListener> listeners = contentChangeListeners
+                        .get(tag);
+                if (listeners != null) {
+                    listeners.remove(contentChangeListener);
+                }
+            }
+
+        } finally {
+            lock.unlockWrite(stamp);
+        }
+    }
+
+    /**
+     * @param tag
+     *                                   the tag from which the listener to be
+     *                                   removed
+     * @param contentChangeListeners
+     *                                   to be removed
+     * @since 3.0.6
+     */
+    public void removeContentChangeListeners(final AbstractHtml tag,
+            final ContentChangeListener... contentChangeListeners) {
+
+        final long stamp = lock.writeLock();
+
+        try {
+            final Map<AbstractHtml, Set<ContentChangeListener>> thisListenersMap = this.contentChangeListeners;
+            if (thisListenersMap != null) {
+
+                final Set<ContentChangeListener> listeners = thisListenersMap
+                        .get(tag);
+
+                if (listeners != null) {
+                    for (final ContentChangeListener contentChangeListener : contentChangeListeners) {
+                        listeners.remove(contentChangeListener);
+                    }
+                }
+            }
+
+        } finally {
+            lock.unlockWrite(stamp);
+        }
+    }
+
+    /**
+     * @param tag
+     *                the tag from which all listeners to be removed
+     * @since 3.0.6
+     */
+    public void removeAllContentChangeListeners(final AbstractHtml tag) {
+        final long stamp = lock.writeLock();
+
+        try {
+            if (contentChangeListeners != null) {
+                contentChangeListeners.remove(tag);
+            }
+
+        } finally {
+            lock.unlockWrite(stamp);
+        }
     }
 
 }
