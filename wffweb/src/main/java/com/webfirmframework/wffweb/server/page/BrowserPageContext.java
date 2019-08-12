@@ -74,19 +74,11 @@ public enum BrowserPageContext {
     public String addBrowserPage(final String httpSessionId,
             final BrowserPage browserPage) {
 
-        Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages
-                .get(httpSessionId);
+        // passed 4 instead of 1 because the load factor is 0.75f
 
-        if (browserPages == null) {
-            // passed 2 instead of 1 because the load factor is 0.75f
-            browserPages = new ConcurrentHashMap<>(2);
-            final Map<String, BrowserPage> existingBrowserPages = httpSessionIdBrowserPages
-                    .putIfAbsent(httpSessionId, browserPages);
-
-            if (existingBrowserPages != null) {
-                browserPages = existingBrowserPages;
-            }
-        }
+        final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages
+                .computeIfAbsent(httpSessionId,
+                        key -> new ConcurrentHashMap<>(4));
 
         browserPages.put(browserPage.getInstanceId(), browserPage);
 
