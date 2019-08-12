@@ -57,6 +57,8 @@ public class SharedTagContent {
 
     private volatile boolean allowParallel = true;
 
+    private volatile boolean updateClient = true;
+
     public static final class Content {
 
         private final String content;
@@ -240,6 +242,39 @@ public class SharedTagContent {
     }
 
     /**
+     * its default value is true if not explicitly set
+     *
+     * @return true if updating client browser page is turned off
+     * @since 3.0.6
+     */
+    public boolean isUpdateClient() {
+        final long stamp = lock.readLock();
+        try {
+            return updateClient;
+        } finally {
+            lock.unlockRead(stamp);
+        }
+    }
+
+    /**
+     * @param updateClient
+     *                         true to turn on updating client browser page. By
+     *                         default it is true.
+     * @since 3.0.6
+     */
+    public void setUpdateClient(final boolean updateClient) {
+        if (this.updateClient != updateClient) {
+            final long stamp = lock.writeLock();
+            try {
+                this.updateClient = updateClient;
+            } finally {
+                lock.unlockWrite(stamp);
+            }
+        }
+
+    }
+
+    /**
      * @param noTag
      * @return true if the object just exists in the set but it doesn't mean the
      *         NoTag is not changed from parent or parent is modified.
@@ -260,7 +295,7 @@ public class SharedTagContent {
      * @since 3.0.6
      */
     public void setContent(final String content) {
-        setContent(true, allowParallel, content, contentTypeHtml);
+        setContent(updateClient, null, allowParallel, content, contentTypeHtml);
     }
 
     /**
@@ -273,7 +308,7 @@ public class SharedTagContent {
      * @since 3.0.6
      */
     public void setContent(final boolean allowParallel, final String content) {
-        setContent(true, allowParallel, content, contentTypeHtml);
+        setContent(updateClient, null, allowParallel, content, contentTypeHtml);
     }
 
     /**
@@ -286,7 +321,7 @@ public class SharedTagContent {
      */
     public void setContent(final String content,
             final boolean contentTypeHtml) {
-        setContent(true, allowParallel, content, contentTypeHtml);
+        setContent(updateClient, null, allowParallel, content, contentTypeHtml);
     }
 
     /**
@@ -303,18 +338,45 @@ public class SharedTagContent {
      */
     public void setContent(final boolean allowParallel, final String content,
             final boolean contentTypeHtml) {
-        setContent(true, allowParallel, content, contentTypeHtml);
+        setContent(updateClient, null, allowParallel, content, contentTypeHtml);
+    }
+
+    /**
+     * @param exclusionTags
+     *                          these tags will be excluded for client update
+     * @param content
+     * @since 3.0.6
+     */
+    public void setContent(final Set<AbstractHtml> exclusionTags,
+            final String content) {
+        setContent(updateClient, exclusionTags, allowParallel, content,
+                contentTypeHtml);
+    }
+
+    /**
+     * @param exclusionTags
+     *                            these tags will be excluded for client update
+     * @param content
+     * @param contentTypeHtml
+     * @since 3.0.6
+     */
+    public void setContent(final Set<AbstractHtml> exclusionTags,
+            final String content, final boolean contentTypeHtml) {
+        setContent(updateClient, exclusionTags, allowParallel, content,
+                contentTypeHtml);
     }
 
     /**
      * @param updateClient
+     * @param exclusionTags
+     *                            these tags will be excluded for client update
      * @param content
      * @param contentTypeHtml
      * @since 3.0.6
      */
     private void setContent(final boolean updateClient,
-            final boolean allowParallel, final String content,
-            final boolean contentTypeHtml) {
+            final Set<AbstractHtml> exclusionTags, final boolean allowParallel,
+            final String content, final boolean contentTypeHtml) {
 
         final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(
                 4);
@@ -411,10 +473,17 @@ public class SharedTagContent {
                             insertedTags.add(parentNoTagData.getNoTag());
                             modifiedParents.add(parentNoTagData.getParent());
 
+                            boolean updateClientTagSpecific = updateClient;
+                            if (updateClient && exclusionTags != null
+                                    && exclusionTags.contains(
+                                            parentNoTagData.getParent())) {
+                                updateClientTagSpecific = false;
+                            }
+
                             final InnerHtmlListenerData listenerData = parentNoTagData
                                     .getParent()
                                     .addInnerHtmlsAndGetEventsLockless(
-                                            updateClient,
+                                            updateClientTagSpecific,
                                             parentNoTagData.getNoTag());
 
                             if (listenerData != null) {
