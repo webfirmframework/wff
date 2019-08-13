@@ -784,7 +784,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *                             true to update client browser page if it is
      *                             available. The default value is true but it
      *                             will be ignored if there is no client browser
-     *                             page.
+     *                             page. false will skip updating client browser
+     *                             page only when this method call.
      * @param sharedTagContent
      *                             the shared content to be inserted as inner
      *                             content. Any changes of content in the
