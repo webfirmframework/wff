@@ -4511,8 +4511,17 @@ public abstract class AbstractHtml extends AbstractJsObject {
         if (this.dataWffId == null) {
             synchronized (this) {
                 if (this.dataWffId == null) {
-                    addAttributes(false, dataWffId);
-                    this.dataWffId = dataWffId;
+
+                    final Lock lock = sharedObject.getLock(ACCESS_OBJECT)
+                            .writeLock();
+                    try {
+                        lock.lock();
+                        addAttributesLockless(false, dataWffId);
+                        this.dataWffId = dataWffId;
+                    } finally {
+                        lock.unlock();
+                    }
+
                 }
             }
         } else {
