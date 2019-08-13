@@ -568,9 +568,10 @@ public class SharedTagContent {
     /**
      * @param updateClient
      * @param applicableTag
+     * @return the NoTag inserted
      * @since 3.0.6
      */
-    void addInnerHtml(final boolean updateClient,
+    AbstractHtml addInnerHtml(final boolean updateClient,
             final AbstractHtml applicableTag) {
 
         final long stamp = lock.writeLock();
@@ -578,12 +579,15 @@ public class SharedTagContent {
                 .getSharedObject();
 
         boolean listenerInvoked = false;
-
+        NoTag noTagInserted = null;
         try {
 
             final NoTag noTag = new NoTag(null, content, contentTypeHtml);
             final InnerHtmlListenerData listenerData = applicableTag
                     .addInnerHtmlsAndGetEventsLockless(updateClient, noTag);
+
+            noTagInserted = noTag;
+            insertedTags.add(noTag);
 
             if (listenerData != null) {
                 // TODO declare new innerHtmlsAdded for multiple parents after
@@ -593,8 +597,6 @@ public class SharedTagContent {
                 listenerInvoked = true;
             }
 
-            insertedTags.add(noTag);
-
         } finally {
             lock.unlockWrite(stamp);
         }
@@ -602,6 +604,7 @@ public class SharedTagContent {
             pushQueue(sharedObject);
         }
 
+        return noTagInserted;
     }
 
     /**

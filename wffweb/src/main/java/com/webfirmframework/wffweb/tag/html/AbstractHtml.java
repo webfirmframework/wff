@@ -19,7 +19,6 @@ package com.webfirmframework.wffweb.tag.html;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
-import java.lang.ref.WeakReference;
 import java.nio.charset.Charset;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -149,7 +148,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     protected final boolean noTagContentTypeHtml;
 
-    private volatile WeakReference<SharedTagContent> sharedTagContentRef;
+    private volatile SharedTagContent sharedTagContent;
 
     public static enum TagType {
         OPENING_CLOSING, SELF_CLOSING, NON_CLOSING;
@@ -794,20 +793,37 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *                             sharedTagContent object.
      * @since 3.0.6
      */
-    private void addInnerHtml(final boolean updateClient,
+    public void addInnerHtml(final boolean updateClient,
             final SharedTagContent sharedTagContent) {
 
-        if (sharedTagContentRef == null || !Objects
-                .equals(sharedTagContentRef.get(), sharedTagContent)) {
+        if (this.sharedTagContent == null
+                || !Objects.equals(this.sharedTagContent, sharedTagContent)) {
 
             final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
             lock.lock();
             try {
                 if (sharedTagContent != null) {
-                    sharedTagContent.addInnerHtml(updateClient, this);
-                    sharedTagContentRef = new WeakReference<>(sharedTagContent);
+                    final AbstractHtml noTagInserted = sharedTagContent
+                            .addInnerHtml(updateClient, this);
+                    noTagInserted.sharedTagContent = sharedTagContent;
                 } else {
-                    sharedTagContentRef = null;
+                    if (children.size() == 1) {
+                        final Iterator<AbstractHtml> iterator = children
+                                .iterator();
+                        if (iterator.hasNext()) {
+                            final AbstractHtml firstChild = iterator.next();
+                            if (firstChild != null) {
+                                if (firstChild instanceof NoTag
+                                        && !firstChild.parentNullifiedOnce
+                                        && firstChild.sharedTagContent
+                                                .contains(firstChild)) {
+                                    firstChild.sharedTagContent = null;
+                                }
+                            }
+
+                        }
+
+                    }
                 }
             } finally {
                 lock.unlock();
@@ -827,24 +843,21 @@ public abstract class AbstractHtml extends AbstractJsObject {
         final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
         lock.lock();
         try {
-            if (sharedTagContentRef != null) {
-                final SharedTagContent sharedTagContent = sharedTagContentRef
-                        .get();
-                if (sharedTagContent != null && children.size() == 1) {
-                    final Iterator<AbstractHtml> iterator = children.iterator();
-                    if (iterator.hasNext()) {
-                        final AbstractHtml firstChild = iterator.next();
-                        if (firstChild != null) {
-                            if (firstChild instanceof NoTag
-                                    && !firstChild.parentNullifiedOnce
-                                    && sharedTagContent.contains(firstChild)) {
-                                return sharedTagContent;
-                            }
+            if (children.size() == 1) {
+                final Iterator<AbstractHtml> iterator = children.iterator();
+                if (iterator.hasNext()) {
+                    final AbstractHtml firstChild = iterator.next();
+                    if (firstChild != null) {
+                        if (firstChild instanceof NoTag
+                                && !firstChild.parentNullifiedOnce
+                                && firstChild.sharedTagContent
+                                        .contains(firstChild)) {
+                            return firstChild.sharedTagContent;
                         }
-
                     }
 
                 }
+
             }
         } finally {
             lock.unlock();
