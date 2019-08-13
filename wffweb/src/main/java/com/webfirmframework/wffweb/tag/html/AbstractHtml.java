@@ -1095,7 +1095,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 // no need to add data-wff-id if the tag is not rendered by
                 // BrowserPage (if it is rended by BrowserPage then
                 // getLastDataWffId will not be -1)
-                if (sharedObject.getLastDataWffId(ACCESS_OBJECT) != -1L
+                if (sharedObject.getLastDataWffId(ACCESS_OBJECT) != -1
                         && eachChild.getDataWffId() == null
                         && eachChild.getTagName() != null
                         && !eachChild.getTagName().isEmpty()) {

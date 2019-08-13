@@ -446,11 +446,31 @@ public class WffBinaryMessageUtilTest {
     
     @Test
     public void testGetOptimizedBytesFromIntAndGetIntFromOptimizedBytes() {
-        for (int i = 0; i <= 513; i++) {
-            byte[] optimizedBytesFromInt = WffBinaryMessageUtil.getOptimizedBytesFromInt((int) i);
+        for (int i = 0; i < 512; i++) {
+            byte[] optimizedBytesFromInt = WffBinaryMessageUtil.getOptimizedBytesFromInt(i);
             int intFromOptimizedBytes = WffBinaryMessageUtil.getIntFromOptimizedBytes(optimizedBytesFromInt);
             assertEquals(i, intFromOptimizedBytes);
         }
+    }
+    
+    @Test
+    public void testGetOptimizedBytesFromLongAndGetLongFromOptimizedBytes() {
+        {
+            byte[] optimizedBytesFromLong = WffBinaryMessageUtil.getOptimizedBytesFromLong( Long.MAX_VALUE);
+            long longFromOptimizedBytes = WffBinaryMessageUtil.getLongFromOptimizedBytes(optimizedBytesFromLong);
+            assertEquals(Long.MAX_VALUE, longFromOptimizedBytes);
+        }
+        for (long i = Integer.MAX_VALUE; i < Integer.MAX_VALUE + 512; i++) {
+            byte[] optimizedBytesFromLong = WffBinaryMessageUtil.getOptimizedBytesFromLong( i);
+            long longFromOptimizedBytes = WffBinaryMessageUtil.getLongFromOptimizedBytes(optimizedBytesFromLong);
+            assertEquals(i, longFromOptimizedBytes);
+        }
+//        for (long i = Long.MAX_VALUE; i > Long.MAX_VALUE - Integer.MAX_VALUE; i--) {
+//            byte[] optimizedBytesFromLong = WffBinaryMessageUtil.getOptimizedBytesFromLong( i);
+//            long longFromOptimizedBytes = WffBinaryMessageUtil.getLongFromOptimizedBytes(optimizedBytesFromLong);
+//            assertEquals(i, longFromOptimizedBytes);
+//        }
+//        System.out.println("Long.MAX_VALUE to Integer.MAX_VALUE success");
     }
     
     @Test
