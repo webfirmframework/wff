@@ -785,7 +785,7 @@ public class SharedTagContent {
                                 boolean updateClientTagSpecific = updateClient;
                                 if (updateClient
                                         && exclusionClientUpdateTags != null
-                                        && !exclusionClientUpdateTags.contains(
+                                        && exclusionClientUpdateTags.contains(
                                                 parentNoTagData.getParent())) {
                                     updateClientTagSpecific = false;
                                 }
