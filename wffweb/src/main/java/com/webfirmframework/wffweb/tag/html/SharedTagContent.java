@@ -84,14 +84,20 @@ public class SharedTagContent {
 
     public static final class ChangeEvent {
 
+        private final AbstractHtml sourceTag;
         private final Content contentBefore;
         private final Content contentAfter;
 
-        private ChangeEvent(final Content contentBefore,
-                final Content contentAfter) {
+        private ChangeEvent(final AbstractHtml sourceTag,
+                final Content contentBefore, final Content contentAfter) {
             super();
+            this.sourceTag = sourceTag;
             this.contentBefore = contentBefore;
             this.contentAfter = contentAfter;
+        }
+
+        public AbstractHtml getSourceTag() {
+            return sourceTag;
         }
 
         public Content getContentBefore() {
@@ -111,17 +117,23 @@ public class SharedTagContent {
 
     public static final class DetachEvent {
 
+        private final AbstractHtml sourceTag;
         private final Content content;
 
-        private DetachEvent(final Content content) {
+        private DetachEvent(final AbstractHtml sourceTag,
+                final Content content) {
             super();
             this.content = content;
+            this.sourceTag = sourceTag;
+        }
+
+        public AbstractHtml getSourceTag() {
+            return sourceTag;
         }
 
         public Content getContent() {
             return content;
         }
-
     }
 
     @FunctionalInterface
@@ -537,7 +549,8 @@ public class SharedTagContent {
                     if (listeners != null) {
                         for (final ContentChangeListener listener : listeners) {
                             final ChangeEvent changeEvent = new ChangeEvent(
-                                    contentBefore, contentAfter);
+                                    modifiedParent, contentBefore,
+                                    contentAfter);
                             listener.contentChanged(changeEvent);
                         }
                     }
@@ -834,7 +847,7 @@ public class SharedTagContent {
                     if (listeners != null) {
                         for (final DetachListener listener : listeners) {
                             final DetachEvent detachEvent = new DetachEvent(
-                                    contentBefore);
+                                    modifiedParent, contentBefore);
                             listener.detached(detachEvent);
                         }
                     }
