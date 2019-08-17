@@ -28,14 +28,22 @@ class ParentNoTagData {
 
     private final NoTag noTag;
 
-    ParentNoTagData(final AbstractHtml parent, final NoTag noTag) {
+    private final NoTag previousNoTag;
+
+    ParentNoTagData(final NoTag previousNoTag, final AbstractHtml parent,
+            final NoTag noTag) {
         super();
+        this.previousNoTag = previousNoTag;
         this.parent = parent;
         this.noTag = noTag;
     }
 
     AbstractHtml getParent() {
         return parent;
+    }
+
+    public NoTag getPreviousNoTag() {
+        return previousNoTag;
     }
 
     NoTag getNoTag() {

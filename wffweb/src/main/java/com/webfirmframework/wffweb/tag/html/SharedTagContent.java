@@ -51,6 +51,8 @@ public class SharedTagContent {
 
     private volatile Map<AbstractHtml, Set<ContentChangeListener>> contentChangeListeners;
 
+    private volatile Map<AbstractHtml, Set<DetachListener>> detachListeners;
+
     private volatile String content;
 
     private volatile boolean contentTypeHtml;
@@ -80,12 +82,13 @@ public class SharedTagContent {
 
     }
 
-    public static final class Event {
+    public static final class ChangeEvent {
 
         private final Content contentBefore;
         private final Content contentAfter;
 
-        private Event(final Content contentBefore, final Content contentAfter) {
+        private ChangeEvent(final Content contentBefore,
+                final Content contentAfter) {
             super();
             this.contentBefore = contentBefore;
             this.contentAfter = contentAfter;
@@ -103,7 +106,27 @@ public class SharedTagContent {
 
     @FunctionalInterface
     public static interface ContentChangeListener {
-        public abstract void contentChanged(Event event);
+        public abstract void contentChanged(ChangeEvent changeEvent);
+    }
+
+    public static final class DetachEvent {
+
+        private final Content content;
+
+        private DetachEvent(final Content content) {
+            super();
+            this.content = content;
+        }
+
+        public Content getContent() {
+            return content;
+        }
+
+    }
+
+    @FunctionalInterface
+    public static interface DetachListener {
+        public abstract void detached(DetachEvent detachEvent);
     }
 
     // for security purpose, the class name should not be modified
@@ -418,7 +441,7 @@ public class SharedTagContent {
                 }
 
                 final NoTag noTag = new NoTag(null, content, contentTypeHtml);
-                dataList.add(new ParentNoTagData(parentTag, noTag));
+                dataList.add(new ParentNoTagData(prevNoTag, parentTag, noTag));
 
             }
 
@@ -461,14 +484,14 @@ public class SharedTagContent {
                         // noTagAsBase.isParentNullifiedOnce() == true
                         // means the parent of this tag has already been changed
                         // at least once
-                        final AbstractHtml noTagAsBase = parentNoTagData
-                                .getNoTag();
+                        final AbstractHtml previousNoTag = parentNoTagData
+                                .getPreviousNoTag();
 
                         if (parentNoTagData.getParent().getSharedObject()
                                 .equals(sharedObject)
                                 && parentNoTagData.getParent()
                                         .getChildrenSizeLockless() == 1
-                                && !noTagAsBase.isParentNullifiedOnce()) {
+                                && !previousNoTag.isParentNullifiedOnce()) {
 
                             insertedTags.add(parentNoTagData.getNoTag());
                             modifiedParents.add(parentNoTagData.getParent());
@@ -513,9 +536,9 @@ public class SharedTagContent {
                             .get(modifiedParent);
                     if (listeners != null) {
                         for (final ContentChangeListener listener : listeners) {
-                            final Event event = new Event(contentBefore,
-                                    contentAfter);
-                            listener.contentChanged(event);
+                            final ChangeEvent changeEvent = new ChangeEvent(
+                                    contentBefore, contentAfter);
+                            listener.contentChanged(changeEvent);
                         }
                     }
                 }
@@ -608,6 +631,224 @@ public class SharedTagContent {
     }
 
     /**
+     * Detaches without removing contents from consuming tags.
+     *
+     * @param exclusionTags
+     *                          excluded tags from detachment of this
+     *                          SharedTagConent object
+     *
+     * @since 3.0.6
+     */
+    public void detach(final Set<AbstractHtml> exclusionTags) {
+        detach(false, exclusionTags, null);
+    }
+
+    /**
+     * @param removeContent
+     *                          true to remove content from the attached tags or
+     *                          false not to remove but will detach
+     *
+     *
+     * @since 3.0.6
+     */
+    public void detach(final boolean removeContent) {
+        detach(removeContent, null, null);
+    }
+
+    /**
+     * @param removeContent
+     *                          true to remove content from the attached tags or
+     *                          false not to remove but will detach
+     * @param exclusionTags
+     *                          excluded tags from detachment of this
+     *                          SharedTagConent object
+     *
+     * @since 3.0.6
+     */
+    public void detach(final boolean removeContent,
+            final Set<AbstractHtml> exclusionTags) {
+        detach(removeContent, exclusionTags, null);
+    }
+
+    /**
+     * @param removeContent
+     *                                      true to remove content from the
+     *                                      attached tags or false not to remove
+     *                                      but will detach
+     * @param exclusionTags
+     *                                      excluded tags from detachment of
+     *                                      this SharedTagConent object
+     * @param exclusionClientUpdateTags
+     *                                      these tags will be excluded for
+     *                                      client update
+     * @since 3.0.6
+     */
+    public void detach(final boolean removeContent,
+            final Set<AbstractHtml> exclusionTags,
+            final Set<AbstractHtml> exclusionClientUpdateTags) {
+
+        final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(
+                4);
+        final long stamp = lock.writeLock();
+        try {
+
+            final Content contentBefore = new Content(content, contentTypeHtml);
+
+            final Map<AbstractHtml5SharedObject, List<ParentNoTagData>> tagsGroupedBySharedObject = new HashMap<>();
+
+            for (final NoTag prevNoTag : insertedTags) {
+                final AbstractHtml parentTag = prevNoTag.getParent();
+
+                if (parentTag == null) {
+                    continue;
+                }
+
+                final AbstractHtml prevNoTagAsBase = prevNoTag;
+                // noTagAsBase.isParentNullifiedOnce() == true
+                // means the parent of this tag has already been changed
+                // at least once
+                if (prevNoTagAsBase.isParentNullifiedOnce()) {
+                    continue;
+                }
+
+                List<ParentNoTagData> dataList = tagsGroupedBySharedObject
+                        .get(parentTag.getSharedObject());
+
+                if (dataList == null) {
+                    dataList = new ArrayList<>(4);
+                    tagsGroupedBySharedObject.put(parentTag.getSharedObject(),
+                            dataList);
+                }
+
+                // final NoTag noTag = new NoTag(null, content,
+                // contentTypeHtml);
+
+                dataList.add(new ParentNoTagData(prevNoTag, parentTag, null));
+            }
+
+            insertedTags.clear();
+
+            final List<AbstractHtml> modifiedParents = new ArrayList<>(4);
+
+            for (final Entry<AbstractHtml5SharedObject, List<ParentNoTagData>> entry : tagsGroupedBySharedObject
+                    .entrySet()) {
+
+                final AbstractHtml5SharedObject sharedObject = entry.getKey();
+
+                final List<ParentNoTagData> parentNoTagDatas = entry.getValue();
+
+                // pushing using first parent object makes bug (got bug when
+                // singleton SharedTagContent object is used under multiple
+                // BrowserPage instances)
+                // may be because the sharedObject in the parent can be changed
+                // before lock
+
+                final Lock parentLock = sharedObject.getLock(ACCESS_OBJECT)
+                        .writeLock();
+                parentLock.lock();
+
+                try {
+
+                    for (final ParentNoTagData parentNoTagData : parentNoTagDatas) {
+
+                        // parentNoTagData.getParent().getSharedObject().equals(sharedObject)
+                        // is important here as it could be change just before
+                        // locking
+
+                        // if parentNoTagData.parent == 0 means the previous
+                        // NoTag was already removed
+                        // if parentNoTagData.parent > 1 means the previous
+                        // NoTag was replaced by other children or the previous
+                        // NoTag exists but aslo appended/prepended another
+                        // child/children to it.
+
+                        // noTagAsBase.isParentNullifiedOnce() == true
+                        // means the parent of this tag has already been changed
+                        // at least once
+                        final AbstractHtml previousNoTag = parentNoTagData
+                                .getPreviousNoTag();
+
+                        if (parentNoTagData.getParent().getSharedObject()
+                                .equals(sharedObject)
+                                && parentNoTagData.getParent()
+                                        .getChildrenSizeLockless() == 1
+                                && !previousNoTag.isParentNullifiedOnce()) {
+
+                            if (exclusionTags != null && exclusionTags
+                                    .contains(parentNoTagData.getParent())) {
+                                insertedTags.add(
+                                        parentNoTagData.getPreviousNoTag());
+                            } else {
+                                modifiedParents
+                                        .add(parentNoTagData.getParent());
+
+                                boolean updateClientTagSpecific = updateClient;
+                                if (updateClient
+                                        && exclusionClientUpdateTags != null
+                                        && !exclusionClientUpdateTags.contains(
+                                                parentNoTagData.getParent())) {
+                                    updateClientTagSpecific = false;
+                                }
+
+                                if (removeContent) {
+
+                                    final ChildTagRemoveListenerData listenerData = parentNoTagData
+                                            .getParent()
+                                            .removeAllChildrenAndGetEventsLockless(
+                                                    updateClientTagSpecific);
+
+                                    if (listenerData != null) {
+                                        // TODO declare new innerHtmlsAdded for
+                                        // multiple
+                                        // parents after verifying feasibility
+                                        // of
+                                        // considering rich notag content
+                                        listenerData.getListener()
+                                                .allChildrenRemoved(listenerData
+                                                        .getEvent());
+
+                                        // push is require only if listener
+                                        // invoked
+                                        sharedObjects.add(sharedObject);
+
+                                        // TODO do final verification of this
+                                        // code
+                                    }
+                                } else {
+                                    previousNoTag.setSharedTagContent(null);
+                                }
+                            }
+
+                        }
+
+                    }
+                } finally {
+                    parentLock.unlock();
+                }
+            }
+
+            if (detachListeners != null) {
+                for (final AbstractHtml modifiedParent : modifiedParents) {
+                    final Set<DetachListener> listeners = detachListeners
+                            .get(modifiedParent);
+                    if (listeners != null) {
+                        for (final DetachListener listener : listeners) {
+                            final DetachEvent detachEvent = new DetachEvent(
+                                    contentBefore);
+                            listener.detached(detachEvent);
+                        }
+                    }
+                }
+
+            }
+        } finally {
+            lock.unlockWrite(stamp);
+        }
+        pushQueue(allowParallel, sharedObjects);
+
+    }
+
+    /**
      * @param tag
      *                                  the tag on which the content change to
      *                                  be listened
@@ -626,14 +867,37 @@ public class SharedTagContent {
                 listeners = new LinkedHashSet<>(4);
                 contentChangeListeners.put(tag, listeners);
             } else {
-                listeners = contentChangeListeners.get(tag);
+                listeners = contentChangeListeners.computeIfAbsent(tag,
+                        k -> new LinkedHashSet<>(4));
             }
 
-            if (listeners == null) {
-                listeners = new LinkedHashSet<>(4);
-                contentChangeListeners.put(tag, listeners);
-            }
             listeners.add(contentChangeListener);
+        } finally {
+            lock.unlockWrite(stamp);
+        }
+    }
+
+    /**
+     * @param tag
+     * @param detachListener
+     * @since 3.0.6
+     */
+    public void addDetachListener(final AbstractHtml tag,
+            final DetachListener detachListener) {
+        final long stamp = lock.writeLock();
+
+        try {
+            Set<DetachListener> listeners;
+            if (detachListeners == null) {
+                detachListeners = new WeakHashMap<>(4, 0.75F);
+                listeners = new LinkedHashSet<>(4);
+                detachListeners.put(tag, listeners);
+            } else {
+                listeners = detachListeners.computeIfAbsent(tag,
+                        k -> new LinkedHashSet<>(4));
+            }
+
+            listeners.add(detachListener);
         } finally {
             lock.unlockWrite(stamp);
         }
@@ -667,6 +931,28 @@ public class SharedTagContent {
 
     /**
      * @param tag
+     * @param detachListener
+     * @since 3.0.6
+     */
+    public void removeDetachListener(final AbstractHtml tag,
+            final DetachListener detachListener) {
+        final long stamp = lock.writeLock();
+
+        try {
+            if (detachListeners != null) {
+                final Set<DetachListener> listeners = detachListeners.get(tag);
+                if (listeners != null) {
+                    listeners.remove(detachListener);
+                }
+            }
+
+        } finally {
+            lock.unlockWrite(stamp);
+        }
+    }
+
+    /**
+     * @param tag
      *                                   the tag from which the listener to be
      *                                   removed
      * @param contentChangeListeners
@@ -685,8 +971,36 @@ public class SharedTagContent {
                         .get(tag);
 
                 if (listeners != null) {
-                    for (final ContentChangeListener contentChangeListener : contentChangeListeners) {
-                        listeners.remove(contentChangeListener);
+                    for (final ContentChangeListener each : contentChangeListeners) {
+                        listeners.remove(each);
+                    }
+                }
+            }
+
+        } finally {
+            lock.unlockWrite(stamp);
+        }
+    }
+
+    /**
+     * @param tag
+     * @param detachListeners
+     * @since 3.0.6
+     */
+    public void removeDetachListeners(final AbstractHtml tag,
+            final DetachListener... detachListeners) {
+
+        final long stamp = lock.writeLock();
+
+        try {
+            if (this.detachListeners != null) {
+
+                final Set<DetachListener> listeners = this.detachListeners
+                        .get(tag);
+
+                if (listeners != null) {
+                    for (final DetachListener each : detachListeners) {
+                        listeners.remove(each);
                     }
                 }
             }

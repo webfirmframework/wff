@@ -52,6 +52,41 @@ final class DataWffIdUtil {
         return dataWffIdBytes;
     }
 
+    // for future development to handle long id
+    // static byte[] getDataWffIdBytes(final String dataWffId) {
+    //
+    // //TODO getWffIdFromWffIdBytes and may be getWffIdBytesFromTag
+    // //to be modified in js
+    //
+    // final byte[] valueUtf8Bytes = dataWffId
+    // .getBytes(StandardCharsets.UTF_8);
+    // // the first byte represents C for Client and S for Server and the
+    // // remaining string is an integer value
+    // final byte sOrC = valueUtf8Bytes[0];
+    //
+    // final long id = Long.parseLong(dataWffId.substring(1));
+    //
+    // if (id < Integer.MAX_VALUE) {
+    // final byte[] intBytes = WffBinaryMessageUtil
+    // .getOptimizedBytesFromLong(id);
+    // final byte[] dataWffIdBytes = new byte[2 + intBytes.length];
+    // // 0 means contains optimized int bytes
+    // dataWffIdBytes[0] = 0;
+    // dataWffIdBytes[1] = sOrC;
+    // System.arraycopy(intBytes, 0, dataWffIdBytes, 2, intBytes.length);
+    //
+    // return dataWffIdBytes;
+    // }
+    //
+    // final byte[] dataWffIdBytes = new byte[1 + valueUtf8Bytes.length];
+    // // 1 means the rest of the bytes are utf-8 bytes
+    // dataWffIdBytes[0] = 1;
+    //
+    // System.arraycopy(valueUtf8Bytes, 0, dataWffIdBytes, 1,
+    // valueUtf8Bytes.length);
+    // return dataWffIdBytes;
+    // }
+
     /**
      * @param accessObject
      *                         TODO

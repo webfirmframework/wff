@@ -600,6 +600,39 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
+     * Removes all children from this tag.
+     *
+     * @param updateClient
+     * @return
+     * @since 3.0.6
+     */
+    ChildTagRemoveListenerData removeAllChildrenAndGetEventsLockless(
+            final boolean updateClient) {
+
+        final AbstractHtml[] removedAbstractHtmls = children
+                .toArray(new AbstractHtml[children.size()]);
+        children.clear();
+
+        initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(
+                removedAbstractHtmls);
+
+        if (updateClient) {
+            final ChildTagRemoveListener listener = sharedObject
+                    .getChildTagRemoveListener(ACCESS_OBJECT);
+            if (listener != null) {
+
+                final ChildTagRemoveListenerData listenerData = new ChildTagRemoveListenerData(
+                        sharedObject, listener,
+                        new ChildTagRemoveListener.Event(this,
+                                removedAbstractHtmls));
+                return listenerData;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * removes all children and adds the given tag
      *
      * @param innerHtml
@@ -832,6 +865,14 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
         }
 
+    }
+
+    /**
+     * @param sharedTagContent
+     * @since 3.0.6
+     */
+    void setSharedTagContent(final SharedTagContent sharedTagContent) {
+        this.sharedTagContent = sharedTagContent;
     }
 
     /**
