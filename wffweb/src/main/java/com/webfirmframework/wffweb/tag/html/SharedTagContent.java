@@ -917,6 +917,34 @@ public class SharedTagContent {
     }
 
     /**
+     * NB: this method will traverse through all consumer tags of this
+     * SharedTagContent instance.
+     *
+     * @param contentChangeListener
+     *                                  to be removed from all linked tags
+     * @since 3.0.6
+     */
+    public void removeContentChangeListener(
+            final ContentChangeListener contentChangeListener) {
+        final long stamp = lock.writeLock();
+
+        try {
+            if (contentChangeListeners != null) {
+
+                for (final Set<ContentChangeListener> listeners : contentChangeListeners
+                        .values()) {
+                    if (listeners != null) {
+                        listeners.remove(contentChangeListener);
+                    }
+                }
+            }
+
+        } finally {
+            lock.unlockWrite(stamp);
+        }
+    }
+
+    /**
      * @param tag
      *                                  the tag from which the listener to be
      *                                  removed
@@ -934,6 +962,33 @@ public class SharedTagContent {
                         .get(tag);
                 if (listeners != null) {
                     listeners.remove(contentChangeListener);
+                }
+            }
+
+        } finally {
+            lock.unlockWrite(stamp);
+        }
+    }
+
+    /**
+     * NB: this method will traverse through all consumer tags of this
+     * SharedTagContent instance.
+     *
+     * @param detachListener
+     *                           to be removed from all linked tags
+     * @since 3.0.6
+     */
+    public void removeDetachListener(final DetachListener detachListener) {
+        final long stamp = lock.writeLock();
+
+        try {
+            if (detachListeners != null) {
+
+                for (final Set<DetachListener> listeners : detachListeners
+                        .values()) {
+                    if (listeners != null) {
+                        listeners.remove(detachListener);
+                    }
                 }
             }
 
