@@ -874,10 +874,10 @@ public class SharedTagContent {
         final long stamp = lock.writeLock();
 
         try {
-            Set<ContentChangeListener> listeners;
+            final Set<ContentChangeListener> listeners;
             if (contentChangeListeners == null) {
-                contentChangeListeners = new WeakHashMap<>(4, 0.75F);
                 listeners = new LinkedHashSet<>(4);
+                contentChangeListeners = new WeakHashMap<>(4, 0.75F);
                 contentChangeListeners.put(tag, listeners);
             } else {
                 listeners = contentChangeListeners.computeIfAbsent(tag,
@@ -900,10 +900,10 @@ public class SharedTagContent {
         final long stamp = lock.writeLock();
 
         try {
-            Set<DetachListener> listeners;
+            final Set<DetachListener> listeners;
             if (detachListeners == null) {
-                detachListeners = new WeakHashMap<>(4, 0.75F);
                 listeners = new LinkedHashSet<>(4);
+                detachListeners = new WeakHashMap<>(4, 0.75F);
                 detachListeners.put(tag, listeners);
             } else {
                 listeners = detachListeners.computeIfAbsent(tag,
