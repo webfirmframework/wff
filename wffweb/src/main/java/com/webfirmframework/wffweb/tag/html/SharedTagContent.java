@@ -1097,6 +1097,24 @@ public class SharedTagContent {
     }
 
     /**
+     * all listeners will be removed from all tags
+     *
+     * @since 3.0.6
+     */
+    public void removeAllContentChangeListeners() {
+        final long stamp = lock.writeLock();
+
+        try {
+            if (contentChangeListeners != null) {
+                contentChangeListeners.clear();
+            }
+
+        } finally {
+            lock.unlockWrite(stamp);
+        }
+    }
+
+    /**
      * @param tag
      *                the tag from which all listeners to be removed
      * @since 3.0.6
@@ -1107,6 +1125,24 @@ public class SharedTagContent {
         try {
             if (detachListeners != null) {
                 detachListeners.remove(tag);
+            }
+
+        } finally {
+            lock.unlockWrite(stamp);
+        }
+    }
+
+    /**
+     * all listeners will be removed from all tags
+     *
+     * @since 3.0.6
+     */
+    public void removeAllDetachListeners() {
+        final long stamp = lock.writeLock();
+
+        try {
+            if (detachListeners != null) {
+                detachListeners.clear();
             }
 
         } finally {
