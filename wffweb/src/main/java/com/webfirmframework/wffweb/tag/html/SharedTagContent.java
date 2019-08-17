@@ -1041,4 +1041,22 @@ public class SharedTagContent {
         }
     }
 
+    /**
+     * @param tag
+     *                the tag from which all listeners to be removed
+     * @since 3.0.6
+     */
+    public void removeAllDetachListeners(final AbstractHtml tag) {
+        final long stamp = lock.writeLock();
+
+        try {
+            if (detachListeners != null) {
+                detachListeners.remove(tag);
+            }
+
+        } finally {
+            lock.unlockWrite(stamp);
+        }
+    }
+
 }
