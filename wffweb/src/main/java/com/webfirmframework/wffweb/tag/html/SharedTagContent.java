@@ -681,11 +681,9 @@ public class SharedTagContent {
         if (pushQueues.size() > 1) {
             if (UpdateClientNature.ALLOW_ASYNC_PARALLEL
                     .equals(updateClientNature)) {
-                CompletableFuture.runAsync(() -> {
-                    for (final PushQueue pushQueue : pushQueues) {
-                        pushQueue.push();
-                    }
-                });
+                for (final PushQueue pushQueue : pushQueues) {
+                    CompletableFuture.runAsync(() -> pushQueue.push());
+                }
             } else if (UpdateClientNature.ALLOW_PARALLEL
                     .equals(updateClientNature)) {
                 pushQueues.parallelStream().forEach((pushQueue) -> {
