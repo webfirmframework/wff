@@ -28,8 +28,7 @@ import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.StampedLock;
 
 import com.webfirmframework.wffweb.tag.html.listener.PushQueue;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
@@ -46,7 +45,9 @@ public class SharedTagContent {
 
     private static final Security ACCESS_OBJECT;
 
-    private final ReadWriteLock lock = new ReentrantReadWriteLock(true);
+    // NB Using ReentrantReadWriteLock causes
+    // java.lang.IllegalMonitorStateException in production app
+    private final StampedLock lock = new StampedLock();
 
     private final Set<NoTag> insertedTags = Collections
             .newSetFromMap(new WeakHashMap<NoTag, Boolean>(4, 0.75F));
@@ -255,11 +256,11 @@ public class SharedTagContent {
      * @since 3.0.6
      */
     public String getContent() {
-        final Lock readLock = lock.readLock();
+        final long stamp = lock.readLock();
         try {
             return content;
         } finally {
-            readLock.unlock();
+            lock.unlockRead(stamp);
         }
     }
 
@@ -268,11 +269,11 @@ public class SharedTagContent {
      * @since 3.0.6
      */
     public boolean isContentTypeHtml() {
-        final Lock readLock = lock.readLock();
+        final long stamp = lock.readLock();
         try {
             return contentTypeHtml;
         } finally {
-            readLock.unlock();
+            lock.unlockRead(stamp);
         }
     }
 
@@ -285,11 +286,11 @@ public class SharedTagContent {
      * @since 3.0.6
      */
     public UpdateClientNature getUpdateClientNature() {
-        final Lock readLock = lock.readLock();
+        final long stamp = lock.readLock();
         try {
             return updateClientNature;
         } finally {
-            readLock.unlock();
+            lock.unlockRead(stamp);
         }
 
     }
@@ -317,11 +318,11 @@ public class SharedTagContent {
 
         if (updateClientNature != null
                 && !updateClientNature.equals(this.updateClientNature)) {
-            final Lock writeLock = lock.writeLock();
+            final long stamp = lock.writeLock();
             try {
                 this.updateClientNature = updateClientNature;
             } finally {
-                writeLock.unlock();
+                lock.unlockWrite(stamp);
             }
         }
     }
@@ -333,11 +334,11 @@ public class SharedTagContent {
      * @since 3.0.6
      */
     public boolean isUpdateClient() {
-        final Lock readLock = lock.readLock();
+        final long stamp = lock.readLock();
         try {
             return updateClient;
         } finally {
-            readLock.unlock();
+            lock.unlockRead(stamp);
         }
     }
 
@@ -349,11 +350,11 @@ public class SharedTagContent {
      */
     public void setUpdateClient(final boolean updateClient) {
         if (this.updateClient != updateClient) {
-            final Lock writeLock = lock.writeLock();
+            final long stamp = lock.writeLock();
             try {
                 this.updateClient = updateClient;
             } finally {
-                writeLock.unlock();
+                lock.unlockWrite(stamp);
             }
         }
 
@@ -366,11 +367,11 @@ public class SharedTagContent {
      * @since 3.0.6
      */
     boolean contains(final AbstractHtml noTag) {
-        final Lock readLock = lock.readLock();
+        final long stamp = lock.readLock();
         try {
             return insertedTags.contains(noTag);
         } finally {
-            readLock.unlock();
+            lock.unlockRead(stamp);
         }
     }
 
@@ -512,7 +513,7 @@ public class SharedTagContent {
 
         final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(
                 4);
-        final Lock writeLock = lock.writeLock();
+        final long stamp = lock.writeLock();
         try {
 
             final Content contentBefore = new Content(this.content,
@@ -655,7 +656,7 @@ public class SharedTagContent {
 
             }
         } finally {
-            writeLock.unlock();
+            lock.unlockWrite(stamp);
         }
         pushQueue(updateClientNature, sharedObjects);
     }
@@ -723,7 +724,7 @@ public class SharedTagContent {
     AbstractHtml addInnerHtml(final boolean updateClient,
             final AbstractHtml applicableTag) {
 
-        final Lock writeLock = lock.writeLock();
+        final long stamp = lock.writeLock();
         final AbstractHtml5SharedObject sharedObject = applicableTag
                 .getSharedObject();
 
@@ -747,7 +748,7 @@ public class SharedTagContent {
             }
 
         } finally {
-            writeLock.unlock();
+            lock.unlockWrite(stamp);
         }
         if (listenerInvoked) {
             pushQueue(sharedObject);
@@ -815,7 +816,7 @@ public class SharedTagContent {
 
         final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(
                 4);
-        final Lock writeLock = lock.writeLock();
+        final long stamp = lock.writeLock();
         try {
 
             final Content contentBefore = new Content(content, contentTypeHtml);
@@ -968,7 +969,7 @@ public class SharedTagContent {
 
             }
         } finally {
-            writeLock.unlock();
+            lock.unlockWrite(stamp);
         }
         pushQueue(updateClientNature, sharedObjects);
 
@@ -984,7 +985,7 @@ public class SharedTagContent {
      */
     public void addContentChangeListener(final AbstractHtml tag,
             final ContentChangeListener contentChangeListener) {
-        final Lock writeLock = lock.writeLock();
+        final long stamp = lock.writeLock();
 
         try {
             final Set<ContentChangeListener> listeners;
@@ -999,7 +1000,7 @@ public class SharedTagContent {
 
             listeners.add(contentChangeListener);
         } finally {
-            writeLock.unlock();
+            lock.unlockWrite(stamp);
         }
     }
 
@@ -1010,7 +1011,7 @@ public class SharedTagContent {
      */
     public void addDetachListener(final AbstractHtml tag,
             final DetachListener detachListener) {
-        final Lock writeLock = lock.writeLock();
+        final long stamp = lock.writeLock();
 
         try {
             final Set<DetachListener> listeners;
@@ -1025,7 +1026,7 @@ public class SharedTagContent {
 
             listeners.add(detachListener);
         } finally {
-            writeLock.unlock();
+            lock.unlockWrite(stamp);
         }
     }
 
@@ -1039,7 +1040,7 @@ public class SharedTagContent {
      */
     public void removeContentChangeListener(
             final ContentChangeListener contentChangeListener) {
-        final Lock writeLock = lock.writeLock();
+        final long stamp = lock.writeLock();
 
         try {
             if (contentChangeListeners != null) {
@@ -1053,7 +1054,7 @@ public class SharedTagContent {
             }
 
         } finally {
-            writeLock.unlock();
+            lock.unlockWrite(stamp);
         }
     }
 
@@ -1067,7 +1068,7 @@ public class SharedTagContent {
      */
     public void removeContentChangeListener(final AbstractHtml tag,
             final ContentChangeListener contentChangeListener) {
-        final Lock writeLock = lock.writeLock();
+        final long stamp = lock.writeLock();
 
         try {
             if (contentChangeListeners != null) {
@@ -1079,7 +1080,7 @@ public class SharedTagContent {
             }
 
         } finally {
-            writeLock.unlock();
+            lock.unlockWrite(stamp);
         }
     }
 
@@ -1092,7 +1093,7 @@ public class SharedTagContent {
      * @since 3.0.6
      */
     public void removeDetachListener(final DetachListener detachListener) {
-        final Lock writeLock = lock.writeLock();
+        final long stamp = lock.writeLock();
 
         try {
             if (detachListeners != null) {
@@ -1106,7 +1107,7 @@ public class SharedTagContent {
             }
 
         } finally {
-            writeLock.unlock();
+            lock.unlockWrite(stamp);
         }
     }
 
@@ -1117,7 +1118,7 @@ public class SharedTagContent {
      */
     public void removeDetachListener(final AbstractHtml tag,
             final DetachListener detachListener) {
-        final Lock writeLock = lock.writeLock();
+        final long stamp = lock.writeLock();
 
         try {
             if (detachListeners != null) {
@@ -1128,7 +1129,7 @@ public class SharedTagContent {
             }
 
         } finally {
-            writeLock.unlock();
+            lock.unlockWrite(stamp);
         }
     }
 
@@ -1143,7 +1144,7 @@ public class SharedTagContent {
     public void removeContentChangeListeners(final AbstractHtml tag,
             final ContentChangeListener... contentChangeListeners) {
 
-        final Lock writeLock = lock.writeLock();
+        final long stamp = lock.writeLock();
 
         try {
             if (this.contentChangeListeners != null) {
@@ -1159,7 +1160,7 @@ public class SharedTagContent {
             }
 
         } finally {
-            writeLock.unlock();
+            lock.unlockWrite(stamp);
         }
     }
 
@@ -1171,7 +1172,7 @@ public class SharedTagContent {
     public void removeDetachListeners(final AbstractHtml tag,
             final DetachListener... detachListeners) {
 
-        final Lock writeLock = lock.writeLock();
+        final long stamp = lock.writeLock();
 
         try {
             if (this.detachListeners != null) {
@@ -1187,7 +1188,7 @@ public class SharedTagContent {
             }
 
         } finally {
-            writeLock.unlock();
+            lock.unlockWrite(stamp);
         }
     }
 
@@ -1197,7 +1198,7 @@ public class SharedTagContent {
      * @since 3.0.6
      */
     public void removeAllContentChangeListeners(final AbstractHtml tag) {
-        final Lock writeLock = lock.writeLock();
+        final long stamp = lock.writeLock();
 
         try {
             if (contentChangeListeners != null) {
@@ -1205,7 +1206,7 @@ public class SharedTagContent {
             }
 
         } finally {
-            writeLock.unlock();
+            lock.unlockWrite(stamp);
         }
     }
 
@@ -1215,7 +1216,7 @@ public class SharedTagContent {
      * @since 3.0.6
      */
     public void removeAllContentChangeListeners() {
-        final Lock writeLock = lock.writeLock();
+        final long stamp = lock.writeLock();
 
         try {
             if (contentChangeListeners != null) {
@@ -1223,7 +1224,7 @@ public class SharedTagContent {
             }
 
         } finally {
-            writeLock.unlock();
+            lock.unlockWrite(stamp);
         }
     }
 
@@ -1233,7 +1234,7 @@ public class SharedTagContent {
      * @since 3.0.6
      */
     public void removeAllDetachListeners(final AbstractHtml tag) {
-        final Lock writeLock = lock.writeLock();
+        final long stamp = lock.writeLock();
 
         try {
             if (detachListeners != null) {
@@ -1241,7 +1242,7 @@ public class SharedTagContent {
             }
 
         } finally {
-            writeLock.unlock();
+            lock.unlockWrite(stamp);
         }
     }
 
@@ -1251,7 +1252,7 @@ public class SharedTagContent {
      * @since 3.0.6
      */
     public void removeAllDetachListeners() {
-        final Lock writeLock = lock.writeLock();
+        final long stamp = lock.writeLock();
 
         try {
             if (detachListeners != null) {
@@ -1259,7 +1260,7 @@ public class SharedTagContent {
             }
 
         } finally {
-            writeLock.unlock();
+            lock.unlockWrite(stamp);
         }
     }
 
