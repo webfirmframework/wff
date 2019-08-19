@@ -121,7 +121,11 @@ public class SharedTagContent {
 
     @FunctionalInterface
     public static interface ContentChangeListener {
-        public abstract void contentChanged(ChangeEvent changeEvent);
+        /**
+         * @param changeEvent
+         * @return true to remove this listener
+         */
+        public abstract boolean contentChanged(ChangeEvent changeEvent);
     }
 
     public static final class DetachEvent {
@@ -147,7 +151,11 @@ public class SharedTagContent {
 
     @FunctionalInterface
     public static interface DetachListener {
-        public abstract void detached(DetachEvent detachEvent);
+        /**
+         * @param detachEvent
+         * @return true to remove this listener
+         */
+        public abstract boolean detached(DetachEvent detachEvent);
     }
 
     // for security purpose, the class name should not be modified
@@ -645,11 +653,20 @@ public class SharedTagContent {
                     final Set<ContentChangeListener> listeners = contentChangeListeners
                             .get(modifiedParent);
                     if (listeners != null) {
+                        final List<ContentChangeListener> listenersToRemove = new ArrayList<>(
+                                listeners.size());
                         for (final ContentChangeListener listener : listeners) {
                             final ChangeEvent changeEvent = new ChangeEvent(
                                     modifiedParent, contentBefore,
                                     contentAfter);
-                            listener.contentChanged(changeEvent);
+                            final boolean removeListener = listener
+                                    .contentChanged(changeEvent);
+                            if (removeListener) {
+                                listenersToRemove.add(listener);
+                            }
+                        }
+                        for (final ContentChangeListener listener : listenersToRemove) {
+                            listeners.remove(listener);
                         }
                     }
                 }
@@ -959,10 +976,19 @@ public class SharedTagContent {
                     final Set<DetachListener> listeners = detachListeners
                             .get(modifiedParent);
                     if (listeners != null) {
+                        final List<DetachListener> listenersToRemove = new ArrayList<>(
+                                listeners.size());
                         for (final DetachListener listener : listeners) {
                             final DetachEvent detachEvent = new DetachEvent(
                                     modifiedParent, contentBefore);
-                            listener.detached(detachEvent);
+                            final boolean removeListener = listener
+                                    .detached(detachEvent);
+                            if (removeListener) {
+                                listenersToRemove.add(listener);
+                            }
+                        }
+                        for (final DetachListener listener : listenersToRemove) {
+                            listeners.remove(listener);
                         }
                     }
                 }
