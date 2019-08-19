@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.StampedLock;
 
@@ -57,9 +58,15 @@ public class SharedTagContent {
 
     private volatile boolean contentTypeHtml;
 
-    private volatile boolean allowParallel = true;
+    private volatile UpdateClientNature updateClientNature = UpdateClientNature.ALLOW_ASYNC_PARALLEL;
 
     private volatile boolean updateClient = true;
+
+    public static enum UpdateClientNature {
+        ALLOW_ASYNC_PARALLEL, ALLOW_PARALLEL, SEQUENTIAL;
+        private UpdateClientNature() {
+        }
+    }
 
     public static final class Content {
 
@@ -155,7 +162,8 @@ public class SharedTagContent {
     }
 
     /**
-     * plain text content with allowParallel true.
+     * plain text content with updateClientNature as
+     * UpdateClientNature.ALLOW_ASYNC_PARALLEL.
      *
      * @param content
      *                    the content its content type will be considered as
@@ -165,28 +173,42 @@ public class SharedTagContent {
     public SharedTagContent(final String content) {
         this.content = content;
         contentTypeHtml = false;
-        allowParallel = true;
     }
 
     /**
-     * @param allowParallel
-     *                          allows parallel operation if this
-     *                          SharedTagContent object has to update content of
-     *                          tags from multiple BrowserPage instances.
+     * @param updateClientNature
+     *
+     *                               If this SharedTagContent object has to
+     *                               update content of tags from multiple
+     *                               BrowserPage instances,
+     *                               UpdateClientNature.ALLOW_ASYNC_PARALLEL
+     *                               will allow parallel operation in the
+     *                               background for pushing changes to client
+     *                               browser page and
+     *                               UpdateClientNature.ALLOW_PARALLEL will
+     *                               allow parallel operation but will wait for
+     *                               the push to finish to exit the setContent
+     *                               method. UpdateClientNature.SEQUENTIAL will
+     *                               sequentially do each browser page push
+     *                               operation.
      * @param content
-     *                          the content its content type will be considered
-     *                          as plain text, i.e. contentTypeHtml will be
-     *                          false.
+     *                               the content its content type will be
+     *                               considered as plain text, i.e.
+     *                               contentTypeHtml will be false.
      * @since 3.0.6
      */
-    public SharedTagContent(final boolean allowParallel, final String content) {
-        this.allowParallel = allowParallel;
+    public SharedTagContent(final UpdateClientNature updateClientNature,
+            final String content) {
+        if (updateClientNature != null) {
+            this.updateClientNature = updateClientNature;
+        }
         this.content = content;
         contentTypeHtml = false;
     }
 
     /**
-     * The default value of allowParallel is true.
+     * The default value of updateClientNature is
+     * UpdateClientNature.ALLOW_ASYNC_PARALLEL.
      *
      * @param content
      * @param contentTypeHtml
@@ -196,21 +218,33 @@ public class SharedTagContent {
             final boolean contentTypeHtml) {
         this.content = content;
         this.contentTypeHtml = contentTypeHtml;
-        allowParallel = true;
     }
 
     /**
-     * @param allowParallel
-     *                            allows parallel operation if this
-     *                            SharedTagContent object has to update content
-     *                            of tags from multiple BrowserPage instances.
+     * @param updateClientNature
+     *
+     *                               If this SharedTagContent object has to
+     *                               update content of tags from multiple
+     *                               BrowserPage instances,
+     *                               UpdateClientNature.ALLOW_ASYNC_PARALLEL
+     *                               will allow parallel operation in the
+     *                               background for pushing changes to client
+     *                               browser page and
+     *                               UpdateClientNature.ALLOW_PARALLEL will
+     *                               allow parallel operation but will wait for
+     *                               the push to finish to exit the setContent
+     *                               method. UpdateClientNature.SEQUENTIAL will
+     *                               sequentially do each browser page push
+     *                               operation.
      * @param content
      * @param contentTypeHtml
      * @since 3.0.6
      */
-    public SharedTagContent(final boolean allowParallel, final String content,
-            final boolean contentTypeHtml) {
-        this.allowParallel = allowParallel;
+    public SharedTagContent(final UpdateClientNature updateClientNature,
+            final String content, final boolean contentTypeHtml) {
+        if (updateClientNature != null) {
+            this.updateClientNature = updateClientNature;
+        }
         this.content = content;
         this.contentTypeHtml = contentTypeHtml;
     }
@@ -242,34 +276,49 @@ public class SharedTagContent {
     }
 
     /**
-     * @return true if parallel operation allowed. Refer
-     *         {@link SharedTagContent#setAllowParallel(boolean)} for more
-     *         details
+     *
+     * Refer {@link #setUpdateClientNature(UpdateClientNature)} for more
+     * details.
+     *
+     * @return UpdateClientNature which specifies the nature.
      * @since 3.0.6
      */
-    public boolean isAllowParallel() {
+    public UpdateClientNature getUpdateClientNature() {
         final long stamp = lock.readLock();
         try {
-            return allowParallel;
+            return updateClientNature;
         } finally {
             lock.unlockRead(stamp);
         }
+
     }
 
     /**
-     * @param allowParallel
-     *                          allows parallel operation if this
-     *                          SharedTagContent object has to update content of
-     *                          tags from multiple BrowserPage instances.
-     *                          Parallel operation will be applied only if
-     *                          appropriate.
+     * @param updateClientNature
+     *
+     *                               If this SharedTagContent object has to
+     *                               update content of tags from multiple
+     *                               BrowserPage instances,
+     *                               UpdateClientNature.ALLOW_ASYNC_PARALLEL
+     *                               will allow parallel operation in the
+     *                               background for pushing changes to client
+     *                               browser page and
+     *                               UpdateClientNature.ALLOW_PARALLEL will
+     *                               allow parallel operation but will wait for
+     *                               the push to finish to exit the setContent
+     *                               method. UpdateClientNature.SEQUENTIAL will
+     *                               sequentially do each browser page push
+     *                               operation.
      * @since 3.0.6
      */
-    public void setAllowParallel(final boolean allowParallel) {
-        if (this.allowParallel != allowParallel) {
+    public void setUpdateClientNature(
+            final UpdateClientNature updateClientNature) {
+
+        if (updateClientNature != null
+                && !updateClientNature.equals(this.updateClientNature)) {
             final long stamp = lock.writeLock();
             try {
-                this.allowParallel = allowParallel;
+                this.updateClientNature = updateClientNature;
             } finally {
                 lock.unlockWrite(stamp);
             }
@@ -330,20 +379,37 @@ public class SharedTagContent {
      * @since 3.0.6
      */
     public void setContent(final String content) {
-        setContent(updateClient, null, allowParallel, content, contentTypeHtml);
+        setContent(updateClient, updateClientNature, null, content,
+                contentTypeHtml);
     }
 
     /**
-     * @param allowParallel
-     *                          allows parallel operation if this
-     *                          SharedTagContent object has to update content of
-     *                          tags from multiple BrowserPage instances.
+     * @param updateClientNature
+     *
+     *                               If this SharedTagContent object has to
+     *                               update content of tags from multiple
+     *                               BrowserPage instances,
+     *                               UpdateClientNature.ALLOW_ASYNC_PARALLEL
+     *                               will allow parallel operation in the
+     *                               background for pushing changes to client
+     *                               browser page and
+     *                               UpdateClientNature.ALLOW_PARALLEL will
+     *                               allow parallel operation but will wait for
+     *                               the push to finish to exit the setContent
+     *                               method. UpdateClientNature.SEQUENTIAL will
+     *                               sequentially do each browser page push
+     *                               operation.
      * @param content
-     *                          content to be reflected in all consuming tags.
+     *                               content to be reflected in all consuming
+     *                               tags.
      * @since 3.0.6
      */
-    public void setContent(final boolean allowParallel, final String content) {
-        setContent(updateClient, null, allowParallel, content, contentTypeHtml);
+    public void setContent(final UpdateClientNature updateClientNature,
+            final String content) {
+        setContent(updateClient,
+                (updateClientNature != null ? updateClientNature
+                        : this.updateClientNature),
+                null, content, contentTypeHtml);
     }
 
     /**
@@ -356,24 +422,40 @@ public class SharedTagContent {
      */
     public void setContent(final String content,
             final boolean contentTypeHtml) {
-        setContent(updateClient, null, allowParallel, content, contentTypeHtml);
+        setContent(updateClient, updateClientNature, null, content,
+                contentTypeHtml);
     }
 
     /**
-     * @param allowParallel
-     *                            allows parallel operation if this
-     *                            SharedTagContent object has to update content
-     *                            of tags from multiple BrowserPage instances.
+     * @param updateClientNature
+     *
+     *                               If this SharedTagContent object has to
+     *                               update content of tags from multiple
+     *                               BrowserPage instances,
+     *                               UpdateClientNature.ALLOW_ASYNC_PARALLEL
+     *                               will allow parallel operation in the
+     *                               background for pushing changes to client
+     *                               browser page and
+     *                               UpdateClientNature.ALLOW_PARALLEL will
+     *                               allow parallel operation but will wait for
+     *                               the push to finish to exit the setContent
+     *                               method. UpdateClientNature.SEQUENTIAL will
+     *                               sequentially do each browser page push
+     *                               operation.
      * @param content
-     *                            content to be reflected in all consuming tags
+     *                               content to be reflected in all consuming
+     *                               tags
      * @param contentTypeHtml
-     *                            true if the content type is HTML or false if
-     *                            plain text
+     *                               true if the content type is HTML or false
+     *                               if plain text
      * @since 3.0.6
      */
-    public void setContent(final boolean allowParallel, final String content,
-            final boolean contentTypeHtml) {
-        setContent(updateClient, null, allowParallel, content, contentTypeHtml);
+    public void setContent(final UpdateClientNature updateClientNature,
+            final String content, final boolean contentTypeHtml) {
+        setContent(updateClient,
+                (updateClientNature != null ? updateClientNature
+                        : this.updateClientNature),
+                null, content, contentTypeHtml);
     }
 
     /**
@@ -384,7 +466,7 @@ public class SharedTagContent {
      */
     public void setContent(final Set<AbstractHtml> exclusionTags,
             final String content) {
-        setContent(updateClient, exclusionTags, allowParallel, content,
+        setContent(updateClient, updateClientNature, exclusionTags, content,
                 contentTypeHtml);
     }
 
@@ -397,21 +479,35 @@ public class SharedTagContent {
      */
     public void setContent(final Set<AbstractHtml> exclusionTags,
             final String content, final boolean contentTypeHtml) {
-        setContent(updateClient, exclusionTags, allowParallel, content,
+        setContent(updateClient, updateClientNature, exclusionTags, content,
                 contentTypeHtml);
     }
 
     /**
      * @param updateClient
+     * @param updateClientNature
+     *
+     *                               If this SharedTagContent object has to
+     *                               update content of tags from multiple
+     *                               BrowserPage instances,
+     *                               UpdateClientNature.ALLOW_ASYNC_PARALLEL
+     *                               will allow parallel operation in the
+     *                               background for pushing changes to client
+     *                               browser page and
+     *                               UpdateClientNature.ALLOW_PARALLEL will
+     *                               allow parallel operation but will wait for
+     *                               the push to finish to exit the setContent
+     *                               method. UpdateClientNature.SEQUENTIAL will
+     *                               sequentially do each browser page push
+     *                               operation.
      * @param exclusionTags
-     *                            these tags will be excluded for client update
      * @param content
      * @param contentTypeHtml
-     * @since 3.0.6
      */
     private void setContent(final boolean updateClient,
-            final Set<AbstractHtml> exclusionTags, final boolean allowParallel,
-            final String content, final boolean contentTypeHtml) {
+            final UpdateClientNature updateClientNature,
+            final Set<AbstractHtml> exclusionTags, final String content,
+            final boolean contentTypeHtml) {
 
         final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(
                 4);
@@ -422,7 +518,7 @@ public class SharedTagContent {
                     this.contentTypeHtml);
             final Content contentAfter = new Content(content, contentTypeHtml);
 
-            this.allowParallel = allowParallel;
+            this.updateClientNature = updateClientNature;
             this.content = content;
             this.contentTypeHtml = contentTypeHtml;
 
@@ -560,35 +656,52 @@ public class SharedTagContent {
         } finally {
             lock.unlockWrite(stamp);
         }
-        pushQueue(allowParallel, sharedObjects);
+        pushQueue(updateClientNature, sharedObjects);
     }
 
     /**
-     * @param allowParallel
+     * @param updateClientNature
      * @param sharedObjects
      *
      * @since 3.0.6
      */
-    private void pushQueue(final boolean allowParallel,
+    private void pushQueue(final UpdateClientNature updateClientNature,
             final List<AbstractHtml5SharedObject> sharedObjects) {
 
-        if (allowParallel && sharedObjects.size() > 1) {
-            sharedObjects.parallelStream().forEach((sharedObject) -> {
-                final PushQueue pushQueue = sharedObject
-                        .getPushQueue(ACCESS_OBJECT);
-                if (pushQueue != null) {
+        final List<PushQueue> pushQueues = new ArrayList<>(
+                sharedObjects.size());
+        for (final AbstractHtml5SharedObject sharedObject : sharedObjects) {
+            final PushQueue pushQueue = sharedObject
+                    .getPushQueue(ACCESS_OBJECT);
+            if (pushQueue != null) {
+                pushQueues.add(pushQueue);
+            }
+        }
+
+        if (pushQueues.size() > 1) {
+            if (UpdateClientNature.ALLOW_ASYNC_PARALLEL
+                    .equals(updateClientNature)) {
+                CompletableFuture.runAsync(() -> {
+                    for (final PushQueue pushQueue : pushQueues) {
+                        pushQueue.push();
+                    }
+                });
+            } else if (UpdateClientNature.ALLOW_PARALLEL
+                    .equals(updateClientNature)) {
+                pushQueues.parallelStream().forEach((pushQueue) -> {
                     pushQueue.push();
-                }
-            });
-        } else {
-            for (final AbstractHtml5SharedObject sharedObject : sharedObjects) {
-                final PushQueue pushQueue = sharedObject
-                        .getPushQueue(ACCESS_OBJECT);
-                if (pushQueue != null) {
+                });
+            } else {
+                for (final PushQueue pushQueue : pushQueues) {
                     pushQueue.push();
                 }
             }
+        } else {
+            for (final PushQueue pushQueue : pushQueues) {
+                pushQueue.push();
+            }
         }
+
     }
 
     /**
@@ -857,7 +970,7 @@ public class SharedTagContent {
         } finally {
             lock.unlockWrite(stamp);
         }
-        pushQueue(allowParallel, sharedObjects);
+        pushQueue(updateClientNature, sharedObjects);
 
     }
 
