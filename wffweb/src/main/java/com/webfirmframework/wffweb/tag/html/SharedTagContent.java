@@ -689,15 +689,11 @@ public class SharedTagContent {
                 pushQueues.parallelStream().forEach((pushQueue) -> {
                     pushQueue.push();
                 });
-            } else if (UpdateClientNature.SEQUENTIAL
-                    .equals(updateClientNature)) {
+            } else {
+                // UpdateClientNature.SEQUENTIAL.equals(updateClientNature)
                 for (final PushQueue pushQueue : pushQueues) {
                     pushQueue.push();
                 }
-            } else {
-                throw new IllegalArgumentException(
-                        "This is method doesn't contain implementation for updateClientNature "
-                                + updateClientNature);
             }
         } else {
             for (final PushQueue pushQueue : pushQueues) {
