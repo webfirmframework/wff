@@ -94,19 +94,26 @@ public class SharedTagContent {
     public static final class ChangeEvent {
 
         private final AbstractHtml sourceTag;
+        private final ContentChangeListener sourceListener;
         private final Content contentBefore;
         private final Content contentAfter;
 
         private ChangeEvent(final AbstractHtml sourceTag,
+                final ContentChangeListener sourceListener,
                 final Content contentBefore, final Content contentAfter) {
             super();
             this.sourceTag = sourceTag;
+            this.sourceListener = sourceListener;
             this.contentBefore = contentBefore;
             this.contentAfter = contentAfter;
         }
 
         public AbstractHtml getSourceTag() {
             return sourceTag;
+        }
+
+        public ContentChangeListener getSourceListener() {
+            return sourceListener;
         }
 
         public Content getContentBefore() {
@@ -145,17 +152,23 @@ public class SharedTagContent {
     public static final class DetachEvent {
 
         private final AbstractHtml sourceTag;
+        private final DetachListener sourceListener;
         private final Content content;
 
         private DetachEvent(final AbstractHtml sourceTag,
-                final Content content) {
+                final DetachListener sourceListener, final Content content) {
             super();
-            this.content = content;
+            this.sourceListener = sourceListener;
             this.sourceTag = sourceTag;
+            this.content = content;
         }
 
         public AbstractHtml getSourceTag() {
             return sourceTag;
+        }
+
+        public DetachListener getSourceListener() {
+            return sourceListener;
         }
 
         public Content getContent() {
@@ -684,7 +697,7 @@ public class SharedTagContent {
                         runnables = new ArrayList<>(listeners.size());
                         for (final ContentChangeListener listener : listeners) {
                             final ChangeEvent changeEvent = new ChangeEvent(
-                                    modifiedParent, contentBefore,
+                                    modifiedParent, listener, contentBefore,
                                     contentAfter);
                             final Runnable runnable = listener
                                     .contentChanged(changeEvent);
@@ -1011,7 +1024,7 @@ public class SharedTagContent {
                         runnables = new ArrayList<>(listeners.size());
                         for (final DetachListener listener : listeners) {
                             final DetachEvent detachEvent = new DetachEvent(
-                                    modifiedParent, contentBefore);
+                                    modifiedParent, listener, contentBefore);
                             final Runnable runnable = listener
                                     .detached(detachEvent);
                             if (runnable != null) {
