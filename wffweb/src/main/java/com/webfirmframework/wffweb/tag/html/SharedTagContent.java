@@ -123,9 +123,12 @@ public class SharedTagContent {
     public static interface ContentChangeListener {
         /**
          * @param changeEvent
-         * @return true to remove this listener
+         * @return Write code to run after contentChanged invoked. It doen't
+         *         guarantee the order of execution as the order of
+         *         contentChanged method execution. This is just like a post
+         *         function for this method.
          */
-        public abstract boolean contentChanged(ChangeEvent changeEvent);
+        public abstract Runnable contentChanged(ChangeEvent changeEvent);
     }
 
     public static final class DetachEvent {
@@ -153,9 +156,11 @@ public class SharedTagContent {
     public static interface DetachListener {
         /**
          * @param detachEvent
-         * @return true to remove this listener
+         * @return Write code to run after detached invoked. It doen't guarantee
+         *         the order of execution as the order of detached method
+         *         execution. This is just like a post function for this method.
          */
-        public abstract boolean detached(DetachEvent detachEvent);
+        public abstract Runnable detached(DetachEvent detachEvent);
     }
 
     // for security purpose, the class name should not be modified
@@ -521,6 +526,7 @@ public class SharedTagContent {
 
         final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(
                 4);
+        List<Runnable> runnables = null;
         final long stamp = lock.writeLock();
         try {
 
@@ -653,20 +659,16 @@ public class SharedTagContent {
                     final Set<ContentChangeListener> listeners = contentChangeListeners
                             .get(modifiedParent);
                     if (listeners != null) {
-                        final List<ContentChangeListener> listenersToRemove = new ArrayList<>(
-                                listeners.size());
+                        runnables = new ArrayList<>(listeners.size());
                         for (final ContentChangeListener listener : listeners) {
                             final ChangeEvent changeEvent = new ChangeEvent(
                                     modifiedParent, contentBefore,
                                     contentAfter);
-                            final boolean removeListener = listener
+                            final Runnable runnable = listener
                                     .contentChanged(changeEvent);
-                            if (removeListener) {
-                                listenersToRemove.add(listener);
+                            if (runnable != null) {
+                                runnables.add(runnable);
                             }
-                        }
-                        for (final ContentChangeListener listener : listenersToRemove) {
-                            listeners.remove(listener);
                         }
                     }
                 }
@@ -676,6 +678,9 @@ public class SharedTagContent {
             lock.unlockWrite(stamp);
         }
         pushQueue(updateClientNature, sharedObjects);
+        for (final Runnable runnable : runnables) {
+            runnable.run();
+        }
     }
 
     /**
@@ -833,6 +838,8 @@ public class SharedTagContent {
 
         final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(
                 4);
+        List<Runnable> runnables = null;
+
         final long stamp = lock.writeLock();
         try {
 
@@ -976,20 +983,17 @@ public class SharedTagContent {
                     final Set<DetachListener> listeners = detachListeners
                             .get(modifiedParent);
                     if (listeners != null) {
-                        final List<DetachListener> listenersToRemove = new ArrayList<>(
-                                listeners.size());
+                        runnables = new ArrayList<>(listeners.size());
                         for (final DetachListener listener : listeners) {
                             final DetachEvent detachEvent = new DetachEvent(
                                     modifiedParent, contentBefore);
-                            final boolean removeListener = listener
+                            final Runnable runnable = listener
                                     .detached(detachEvent);
-                            if (removeListener) {
-                                listenersToRemove.add(listener);
+                            if (runnable != null) {
+                                runnables.add(runnable);
                             }
                         }
-                        for (final DetachListener listener : listenersToRemove) {
-                            listeners.remove(listener);
-                        }
+
                     }
                 }
 
@@ -998,6 +1002,9 @@ public class SharedTagContent {
             lock.unlockWrite(stamp);
         }
         pushQueue(updateClientNature, sharedObjects);
+        for (final Runnable runnable : runnables) {
+            runnable.run();
+        }
 
     }
 
