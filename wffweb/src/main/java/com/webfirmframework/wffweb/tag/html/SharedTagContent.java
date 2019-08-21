@@ -29,6 +29,8 @@ import java.util.WeakHashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.StampedLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.tag.html.listener.PushQueue;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
@@ -42,6 +44,9 @@ import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
  *
  */
 public class SharedTagContent {
+
+    private static final Logger LOGGER = Logger
+            .getLogger(SharedTagContent.class.getName());
 
     private static final Security ACCESS_OBJECT;
 
@@ -699,10 +704,16 @@ public class SharedTagContent {
                             final ChangeEvent changeEvent = new ChangeEvent(
                                     modifiedParent, listener, contentBefore,
                                     contentAfter);
-                            final Runnable runnable = listener
-                                    .contentChanged(changeEvent);
-                            if (runnable != null) {
-                                runnables.add(runnable);
+                            try {
+                                final Runnable runnable = listener
+                                        .contentChanged(changeEvent);
+                                if (runnable != null) {
+                                    runnables.add(runnable);
+                                }
+                            } catch (final RuntimeException e) {
+                                LOGGER.log(Level.SEVERE,
+                                        "Exception while ContentChangeListener.contentChanged",
+                                        e);
                             }
                         }
                     }
@@ -712,10 +723,18 @@ public class SharedTagContent {
         } finally {
             lock.unlockWrite(stamp);
         }
+
         pushQueue(updateClientNature, sharedObjects);
+
         if (runnables != null) {
             for (final Runnable runnable : runnables) {
-                runnable.run();
+                try {
+                    runnable.run();
+                } catch (final RuntimeException e) {
+                    LOGGER.log(Level.SEVERE,
+                            "Exception while Runnable.run returned by ContentChangeListener.contentChanged",
+                            e);
+                }
             }
         }
 
@@ -1025,10 +1044,16 @@ public class SharedTagContent {
                         for (final DetachListener listener : listeners) {
                             final DetachEvent detachEvent = new DetachEvent(
                                     modifiedParent, listener, contentBefore);
-                            final Runnable runnable = listener
-                                    .detached(detachEvent);
-                            if (runnable != null) {
-                                runnables.add(runnable);
+                            try {
+                                final Runnable runnable = listener
+                                        .detached(detachEvent);
+                                if (runnable != null) {
+                                    runnables.add(runnable);
+                                }
+                            } catch (final RuntimeException e) {
+                                LOGGER.log(Level.SEVERE,
+                                        "Exception while DetachListener.detached",
+                                        e);
                             }
                         }
 
@@ -1039,10 +1064,18 @@ public class SharedTagContent {
         } finally {
             lock.unlockWrite(stamp);
         }
+
         pushQueue(updateClientNature, sharedObjects);
+
         if (runnables != null) {
             for (final Runnable runnable : runnables) {
-                runnable.run();
+                try {
+                    runnable.run();
+                } catch (final RuntimeException e) {
+                    LOGGER.log(Level.SEVERE,
+                            "Exception while Runnable.run returned by DetachListener.detached",
+                            e);
+                }
             }
         }
 
