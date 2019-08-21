@@ -678,9 +678,12 @@ public class SharedTagContent {
             lock.unlockWrite(stamp);
         }
         pushQueue(updateClientNature, sharedObjects);
-        for (final Runnable runnable : runnables) {
-            runnable.run();
+        if (runnables != null) {
+            for (final Runnable runnable : runnables) {
+                runnable.run();
+            }
         }
+
     }
 
     /**
@@ -1002,8 +1005,10 @@ public class SharedTagContent {
             lock.unlockWrite(stamp);
         }
         pushQueue(updateClientNature, sharedObjects);
-        for (final Runnable runnable : runnables) {
-            runnable.run();
+        if (runnables != null) {
+            for (final Runnable runnable : runnables) {
+                runnable.run();
+            }
         }
 
     }
