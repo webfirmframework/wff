@@ -119,14 +119,25 @@ public class SharedTagContent {
 
     }
 
+    /**
+     * @author WFF
+     * @since 3.0.6
+     *
+     */
     @FunctionalInterface
     public static interface ContentChangeListener {
         /**
+         * NB: Do not call any methods of this SharedTagContent inside
+         * contentChanged method, instead write it inside the returning Runnable
+         * object (Runnable.run).
+         *
          * @param changeEvent
-         * @return Write code to run after contentChanged invoked. It doen't
+         * @return Write code to run after contentChanged invoked. It doesn't
          *         guarantee the order of execution as the order of
          *         contentChanged method execution. This is just like a post
-         *         function for this method.
+         *         function for this method. If any methods of this
+         *         SharedTagContent object to be called it must be written
+         *         inside this returning Runnable object (Runnable.run).
          */
         public abstract Runnable contentChanged(ChangeEvent changeEvent);
     }
@@ -152,13 +163,24 @@ public class SharedTagContent {
         }
     }
 
+    /**
+     * @author WFF
+     * @since 3.0.6
+     *
+     */
     @FunctionalInterface
     public static interface DetachListener {
         /**
+         * NB: Do not call any methods of this SharedTagContent inside detached,
+         * instead write it inside the returning Runnable object (Runnable.run).
+         *
          * @param detachEvent
          * @return Write code to run after detached invoked. It doen't guarantee
          *         the order of execution as the order of detached method
          *         execution. This is just like a post function for this method.
+         *         If any methods of this SharedTagContent object to be called
+         *         it must be written inside this returning Runnable object
+         *         (Runnable.run).
          */
         public abstract Runnable detached(DetachEvent detachEvent);
     }
