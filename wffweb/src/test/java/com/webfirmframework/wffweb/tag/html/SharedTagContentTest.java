@@ -1046,6 +1046,33 @@ public class SharedTagContentTest {
         span2.addInnerHtml(stc);
         
         AtomicBoolean listenerInvoked = new AtomicBoolean();
+        final SharedTagContent.DetachListener detachListener = new SharedTagContent.DetachListener() {
+            
+            @Override
+            public Runnable detached(DetachEvent detachEvent) {
+                listenerInvoked.set(true);
+                return null;
+            }
+        };
+        stc.addDetachListener(span2, detachListener);
+        
+        stc.removeDetachListeners(span2, detachListener);
+        stc.detach(true);
+        
+        assertFalse(listenerInvoked.get());
+    }
+
+    @Test
+    public void testRemoveAllContentChangeListenersAbstractHtml() {
+
+        SharedTagContent stc = new SharedTagContent(UpdateClientNature.ALLOW_PARALLEL, "Test content", true);
+        Div div = new Div(null);
+        Span span1 = new Span(div);
+        span1.addInnerHtml(stc);
+        Span span2 = new Span(div);
+        span2.addInnerHtml(stc);
+        
+        AtomicBoolean listenerInvoked = new AtomicBoolean();
         final SharedTagContent.ContentChangeListener contentChangeListener = new SharedTagContent.ContentChangeListener() {
             
             @Override
@@ -1056,30 +1083,89 @@ public class SharedTagContentTest {
         };
         stc.addContentChangeListener(span2, contentChangeListener);
         
-        stc.removeContentChangeListeners(span2, contentChangeListener);
+        stc.removeAllContentChangeListeners(span2);
         stc.setContent("Changed Content");
         
         assertFalse(listenerInvoked.get());
     }
 
     @Test
-    public void testRemoveAllContentChangeListenersAbstractHtml() {
-//        fail("Not yet implemented");
-    }
-
-    @Test
     public void testRemoveAllContentChangeListeners() {
-//        fail("Not yet implemented");
+        SharedTagContent stc = new SharedTagContent(UpdateClientNature.ALLOW_PARALLEL, "Test content", true);
+        Div div = new Div(null);
+        Span span1 = new Span(div);
+        span1.addInnerHtml(stc);
+        Span span2 = new Span(div);
+        span2.addInnerHtml(stc);
+        
+        AtomicBoolean listenerInvoked = new AtomicBoolean();
+        final SharedTagContent.ContentChangeListener contentChangeListener = new SharedTagContent.ContentChangeListener() {
+            
+            @Override
+            public Runnable contentChanged(ChangeEvent changeEvent) {
+                listenerInvoked.set(true);
+                return null;
+            }
+        };
+        stc.addContentChangeListener(span2, contentChangeListener);
+        
+        stc.removeAllContentChangeListeners();
+        stc.setContent("Changed Content");
+        
+        assertFalse(listenerInvoked.get());
     }
 
     @Test
     public void testRemoveAllDetachListenersAbstractHtml() {
-//        fail("Not yet implemented");
+        SharedTagContent stc = new SharedTagContent(UpdateClientNature.ALLOW_PARALLEL, "Test content", true);
+        Div div = new Div(null);
+        Span span1 = new Span(div);
+        span1.addInnerHtml(stc);
+        Span span2 = new Span(div);
+        span2.addInnerHtml(stc);
+        
+        AtomicBoolean listenerInvoked = new AtomicBoolean();
+        final SharedTagContent.DetachListener detachListener = new SharedTagContent.DetachListener() {
+            
+            @Override
+            public Runnable detached(DetachEvent detachEvent) {
+                listenerInvoked.set(true);
+                return null;
+            }
+        };
+        stc.addDetachListener(span2, detachListener);
+        
+        stc.removeAllDetachListeners(span2);
+        stc.detach(true);
+        
+        assertFalse(listenerInvoked.get());
     }
 
     @Test
     public void testRemoveAllDetachListeners() {
-//        fail("Not yet implemented");
+
+        SharedTagContent stc = new SharedTagContent(UpdateClientNature.ALLOW_PARALLEL, "Test content", true);
+        Div div = new Div(null);
+        Span span1 = new Span(div);
+        span1.addInnerHtml(stc);
+        Span span2 = new Span(div);
+        span2.addInnerHtml(stc);
+        
+        AtomicBoolean listenerInvoked = new AtomicBoolean();
+        final SharedTagContent.DetachListener detachListener = new SharedTagContent.DetachListener() {
+            
+            @Override
+            public Runnable detached(DetachEvent detachEvent) {
+                listenerInvoked.set(true);
+                return null;
+            }
+        };
+        stc.addDetachListener(span2, detachListener);
+        
+        stc.removeAllDetachListeners(span2);
+        stc.detach(true);
+        
+        assertFalse(listenerInvoked.get());
     }
 
 }
