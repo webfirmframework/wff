@@ -1012,12 +1012,54 @@ public class SharedTagContentTest {
 
     @Test
     public void testRemoveContentChangeListeners() {
-//        fail("Not yet implemented");
+        SharedTagContent stc = new SharedTagContent(UpdateClientNature.ALLOW_PARALLEL, "Test content", true);
+        Div div = new Div(null);
+        Span span1 = new Span(div);
+        span1.addInnerHtml(stc);
+        Span span2 = new Span(div);
+        span2.addInnerHtml(stc);
+        
+        AtomicBoolean listenerInvoked = new AtomicBoolean();
+        final SharedTagContent.ContentChangeListener contentChangeListener = new SharedTagContent.ContentChangeListener() {
+            
+            @Override
+            public Runnable contentChanged(ChangeEvent changeEvent) {
+                listenerInvoked.set(true);
+                return null;
+            }
+        };
+        stc.addContentChangeListener(span2, contentChangeListener);
+        
+        stc.removeContentChangeListeners(span2, contentChangeListener);
+        stc.setContent("Changed Content");
+        
+        assertFalse(listenerInvoked.get());
     }
 
     @Test
     public void testRemoveDetachListeners() {
-//        fail("Not yet implemented");
+        SharedTagContent stc = new SharedTagContent(UpdateClientNature.ALLOW_PARALLEL, "Test content", true);
+        Div div = new Div(null);
+        Span span1 = new Span(div);
+        span1.addInnerHtml(stc);
+        Span span2 = new Span(div);
+        span2.addInnerHtml(stc);
+        
+        AtomicBoolean listenerInvoked = new AtomicBoolean();
+        final SharedTagContent.ContentChangeListener contentChangeListener = new SharedTagContent.ContentChangeListener() {
+            
+            @Override
+            public Runnable contentChanged(ChangeEvent changeEvent) {
+                listenerInvoked.set(true);
+                return null;
+            }
+        };
+        stc.addContentChangeListener(span2, contentChangeListener);
+        
+        stc.removeContentChangeListeners(span2, contentChangeListener);
+        stc.setContent("Changed Content");
+        
+        assertFalse(listenerInvoked.get());
     }
 
     @Test
