@@ -653,6 +653,12 @@ public class SharedTagContent {
                         final AbstractHtml previousNoTag = parentNoTagData
                                 .getPreviousNoTag();
 
+                        // to get safety of lock it is executed before
+                        // addInnerHtmlsAndGetEventsLockless
+                        // However lock safety is irrelevant here as the
+                        // SharedTagContent will not reuse the same NoTag
+                        previousNoTag.setSharedTagContent(null);
+
                         if (parentNoTagData.getParent().getSharedObject()
                                 .equals(sharedObject)
                                 && parentNoTagData.getParent()
@@ -1000,8 +1006,14 @@ public class SharedTagContent {
                                     updateClientTagSpecific = false;
                                 }
 
-                                if (removeContent) {
+                                // to get safety of lock it is executed before
+                                // removeAllChildrenAndGetEventsLockless
+                                // However lock safety is irrelevant here as the
+                                // SharedTagContent will not reuse the same
+                                // NoTag
+                                previousNoTag.setSharedTagContent(null);
 
+                                if (removeContent) {
                                     final ChildTagRemoveListenerData listenerData = parentNoTagData
                                             .getParent()
                                             .removeAllChildrenAndGetEventsLockless(
@@ -1024,9 +1036,8 @@ public class SharedTagContent {
                                         // TODO do final verification of this
                                         // code
                                     }
-                                } else {
-                                    previousNoTag.setSharedTagContent(null);
                                 }
+
                             }
 
                         }
