@@ -605,6 +605,8 @@ public class SharedTagContent {
                 }
 
                 final NoTag noTag = new NoTag(null, content, contentTypeHtml);
+                final AbstractHtml noTagAsBase = noTag;
+                noTagAsBase.setSharedTagContent(this);
                 dataList.add(new ParentNoTagData(prevNoTag, parentTag, noTag));
 
             }
