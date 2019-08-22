@@ -4,9 +4,13 @@ import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.Test;
 
+import com.webfirmframework.wffweb.tag.html.SharedTagContent.ChangeEvent;
+import com.webfirmframework.wffweb.tag.html.SharedTagContent.DetachEvent;
 import com.webfirmframework.wffweb.tag.html.SharedTagContent.UpdateClientNature;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Span;
@@ -762,12 +766,141 @@ public class SharedTagContentTest {
 
     @Test
     public void testAddContentChangeListener() {
-//        fail("Not yet implemented");
+
+        {
+            SharedTagContent stc = new SharedTagContent(UpdateClientNature.ALLOW_PARALLEL, "Test content", true);
+            Div div = new Div(null);
+            Span span1 = new Span(div);
+            span1.addInnerHtml(stc);
+            Span span2 = new Span(div);
+            span2.addInnerHtml(stc);
+            
+            AtomicBoolean listenerInvoked = new AtomicBoolean();
+            stc.addContentChangeListener(span2, new SharedTagContent.ContentChangeListener() {
+                
+                @Override
+                public Runnable contentChanged(ChangeEvent changeEvent) {
+                    listenerInvoked.set(true);
+                    assertEquals("Test content", changeEvent.getContentBefore().getContent());
+                    assertEquals("Content Changed", changeEvent.getContentAfter().getContent());
+                    CompletableFuture.runAsync(() -> {assertEquals("Content Changed", stc.getContent());});
+                    return () -> { assertEquals("Content Changed", stc.getContent());};
+                }
+            });
+            
+            
+            assertEquals("Test content", stc.getContent());
+            assertEquals("<div><span>Test content</span><span>Test content</span></div>", div.toHtmlString());
+            stc.setContent("Content Changed");
+            assertEquals("Content Changed", stc.getContent());
+            assertEquals("<div><span>Content Changed</span><span>Content Changed</span></div>", div.toHtmlString());
+            assertTrue(stc.isContentTypeHtml());
+            assertEquals(UpdateClientNature.ALLOW_PARALLEL, stc.getUpdateClientNature());
+            
+            assertTrue(listenerInvoked.get());
+        }
     }
 
     @Test
     public void testAddDetachListener() {
-//        fail("Not yet implemented");
+        
+        
+        {
+            SharedTagContent stc = new SharedTagContent(UpdateClientNature.SEQUENTIAL, "Test content", true);
+            Div div = new Div(null);
+            Span spanChild1 = new Span(div);
+            spanChild1.addInnerHtml(stc);
+            P pChild2 = new P(div);
+            pChild2.addInnerHtml(stc);
+            
+            AtomicBoolean listenerInvoked = new AtomicBoolean();
+            stc.addDetachListener(pChild2, new SharedTagContent.DetachListener() {
+                
+                @Override
+                public Runnable detached(DetachEvent detachEvent) {
+                    listenerInvoked.set(true);
+                    assertEquals("Test content", detachEvent.getContent().getContent());
+                    
+                    return () -> { assertEquals("Test content", stc.getContent());};
+                }
+            });
+            
+            
+            assertTrue(stc.isContentTypeHtml());
+            
+            assertEquals("Test content", stc.getContent());
+            assertEquals("<div><span>Test content</span><p>Test content</p></div>", div.toHtmlString());
+            
+            Div div2 = new Div(null);
+            div2.addInnerHtml(stc);
+            assertEquals("<div>Test content</div>", div2.toHtmlString());
+            
+            stc.detach(false);
+            
+            stc.setContent("Content Changed", false);
+            
+            assertFalse(stc.isContentTypeHtml());
+            assertEquals(UpdateClientNature.SEQUENTIAL, stc.getUpdateClientNature());
+            
+            assertEquals("Content Changed", stc.getContent());
+            
+           
+            assertEquals("<div><span>Test content</span><p>Test content</p></div>", div.toHtmlString());
+            assertEquals("<div>Test content</div>", div2.toHtmlString());
+            
+            stc.setContent(new HashSet<>(Arrays.asList(spanChild1)), "Content Changed", true);
+            assertTrue(stc.isContentTypeHtml());
+            assertEquals(UpdateClientNature.SEQUENTIAL, stc.getUpdateClientNature());
+            
+        }
+        
+        {
+            SharedTagContent stc = new SharedTagContent(UpdateClientNature.SEQUENTIAL, "Test content", true);
+            Div div = new Div(null);
+            Span spanChild1 = new Span(div);
+            spanChild1.addInnerHtml(stc);
+            P pChild2 = new P(div);
+            pChild2.addInnerHtml(stc);
+            
+            AtomicBoolean listenerInvoked = new AtomicBoolean();
+            stc.addDetachListener(pChild2, new SharedTagContent.DetachListener() {
+                
+                @Override
+                public Runnable detached(DetachEvent detachEvent) {
+                    listenerInvoked.set(true);
+                    assertEquals("Test content", detachEvent.getContent().getContent());
+                    
+                    return () -> { assertEquals("Test content", stc.getContent());};
+                }
+            });
+            
+            assertTrue(stc.isContentTypeHtml());
+            
+            assertEquals("Test content", stc.getContent());
+            assertEquals("<div><span>Test content</span><p>Test content</p></div>", div.toHtmlString());
+            
+            Div div2 = new Div(null);
+            div2.addInnerHtml(stc);
+            assertEquals("<div>Test content</div>", div2.toHtmlString());
+            
+            stc.detach(true);
+            
+            stc.setContent("Content Changed", false);
+            
+            assertFalse(stc.isContentTypeHtml());
+            assertEquals(UpdateClientNature.SEQUENTIAL, stc.getUpdateClientNature());
+            
+            assertEquals("Content Changed", stc.getContent());
+            
+           
+            assertEquals("<div><span></span><p></p></div>", div.toHtmlString());
+            assertEquals("<div></div>", div2.toHtmlString());
+            
+            stc.setContent(new HashSet<>(Arrays.asList(spanChild1)), "Content Changed", true);
+            assertTrue(stc.isContentTypeHtml());
+            assertEquals(UpdateClientNature.SEQUENTIAL, stc.getUpdateClientNature());
+            
+        }
     }
 
     @Test
