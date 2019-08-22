@@ -905,22 +905,109 @@ public class SharedTagContentTest {
 
     @Test
     public void testRemoveContentChangeListenerContentChangeListener() {
-//        fail("Not yet implemented");
+
+        SharedTagContent stc = new SharedTagContent(UpdateClientNature.ALLOW_PARALLEL, "Test content", true);
+        Div div = new Div(null);
+        Span span1 = new Span(div);
+        span1.addInnerHtml(stc);
+        Span span2 = new Span(div);
+        span2.addInnerHtml(stc);
+        
+        AtomicBoolean listenerInvoked = new AtomicBoolean();
+        final SharedTagContent.ContentChangeListener contentChangeListener = new SharedTagContent.ContentChangeListener() {
+            
+            @Override
+            public Runnable contentChanged(ChangeEvent changeEvent) {
+                listenerInvoked.set(true);
+                return null;
+            }
+        };
+        stc.addContentChangeListener(span2, contentChangeListener);
+        
+        stc.removeContentChangeListener(contentChangeListener);
+        stc.setContent("Changed Content");
+        
+        assertFalse(listenerInvoked.get());
     }
 
     @Test
     public void testRemoveContentChangeListenerAbstractHtmlContentChangeListener() {
-//        fail("Not yet implemented");
+        SharedTagContent stc = new SharedTagContent(UpdateClientNature.ALLOW_PARALLEL, "Test content", true);
+        Div div = new Div(null);
+        Span span1 = new Span(div);
+        span1.addInnerHtml(stc);
+        Span span2 = new Span(div);
+        span2.addInnerHtml(stc);
+        
+        AtomicBoolean listenerInvoked = new AtomicBoolean();
+        final SharedTagContent.ContentChangeListener contentChangeListener = new SharedTagContent.ContentChangeListener() {
+            
+            @Override
+            public Runnable contentChanged(ChangeEvent changeEvent) {
+                listenerInvoked.set(true);
+                return null;
+            }
+        };
+        stc.addContentChangeListener(span2, contentChangeListener);
+        
+        stc.removeContentChangeListener(span2, contentChangeListener);
+        stc.setContent("Changed Content");
+        
+        assertFalse(listenerInvoked.get());
     }
 
     @Test
     public void testRemoveDetachListenerDetachListener() {
-//        fail("Not yet implemented");
+
+        SharedTagContent stc = new SharedTagContent(UpdateClientNature.ALLOW_PARALLEL, "Test content", true);
+        Div div = new Div(null);
+        Span span1 = new Span(div);
+        span1.addInnerHtml(stc);
+        Span span2 = new Span(div);
+        span2.addInnerHtml(stc);
+        
+        AtomicBoolean listenerInvoked = new AtomicBoolean();
+        final SharedTagContent.DetachListener detachListener = new SharedTagContent.DetachListener() {
+            
+            @Override
+            public Runnable detached(DetachEvent detachEvent) {
+                listenerInvoked.set(true);
+                return null;
+            }
+        };
+        stc.addDetachListener(span2, detachListener);
+        
+        stc.removeDetachListener(detachListener);
+        stc.detach(true);
+        
+        assertFalse(listenerInvoked.get());
     }
 
     @Test
     public void testRemoveDetachListenerAbstractHtmlDetachListener() {
-//        fail("Not yet implemented");
+
+        SharedTagContent stc = new SharedTagContent(UpdateClientNature.ALLOW_PARALLEL, "Test content", true);
+        Div div = new Div(null);
+        Span span1 = new Span(div);
+        span1.addInnerHtml(stc);
+        Span span2 = new Span(div);
+        span2.addInnerHtml(stc);
+        
+        AtomicBoolean listenerInvoked = new AtomicBoolean();
+        final SharedTagContent.DetachListener detachListener = new SharedTagContent.DetachListener() {
+            
+            @Override
+            public Runnable detached(DetachEvent detachEvent) {
+                listenerInvoked.set(true);
+                return null;
+            }
+        };
+        stc.addDetachListener(span2, detachListener);
+        
+        stc.removeDetachListener(span2, detachListener);
+        stc.detach(true);
+        
+        assertFalse(listenerInvoked.get());
     }
 
     @Test
