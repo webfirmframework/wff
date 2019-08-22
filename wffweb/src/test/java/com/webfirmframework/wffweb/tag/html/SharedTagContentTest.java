@@ -2,6 +2,9 @@ package com.webfirmframework.wffweb.tag.html;
 
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.tag.html.SharedTagContent.UpdateClientNature;
@@ -353,17 +356,101 @@ public class SharedTagContentTest {
 
     @Test
     public void testSetContentUpdateClientNatureStringBoolean() {
-//        fail("Not yet implemented");
+        
+        {
+            SharedTagContent stc = new SharedTagContent(UpdateClientNature.SEQUENTIAL, "Test content", true);
+            Div div = new Div(null);
+            Span span1 = new Span(div);
+            span1.addInnerHtml(stc);
+            Span span2 = new Span(div);
+            span2.addInnerHtml(stc);
+            
+            assertTrue(stc.isContentTypeHtml());
+            
+            assertEquals("Test content", stc.getContent());
+            assertEquals("<div><span>Test content</span><span>Test content</span></div>", div.toHtmlString());
+            
+            stc.setContent(UpdateClientNature.ALLOW_PARALLEL, "Content Changed", false);
+            assertFalse(stc.isContentTypeHtml());
+            assertEquals(UpdateClientNature.ALLOW_PARALLEL, stc.getUpdateClientNature());
+            
+            assertEquals("Content Changed", stc.getContent());
+            assertEquals("<div><span>Content Changed</span><span>Content Changed</span></div>", div.toHtmlString());
+            
+            stc.setContent(UpdateClientNature.ALLOW_ASYNC_PARALLEL, "Content Changed", true);
+            assertTrue(stc.isContentTypeHtml());
+            assertEquals(UpdateClientNature.ALLOW_ASYNC_PARALLEL, stc.getUpdateClientNature());
+            
+        }
     }
 
     @Test
     public void testSetContentSetOfAbstractHtmlString() {
-//        fail("Not yet implemented");
+        
+        {
+            SharedTagContent stc = new SharedTagContent(UpdateClientNature.SEQUENTIAL, "Test content", true);
+            Div div = new Div(null);
+            Span spanChild1 = new Span(div);
+            spanChild1.addInnerHtml(stc);
+            P pChild2 = new P(div);
+            pChild2.addInnerHtml(stc);
+            
+            assertTrue(stc.isContentTypeHtml());
+            
+            assertEquals("Test content", stc.getContent());
+            assertEquals("<div><span>Test content</span><p>Test content</p></div>", div.toHtmlString());
+            
+            //div.toHtmlString will contain all tags updated even after this call because it is ignoring only for update client push
+            stc.setContent(new HashSet<>(Arrays.asList(spanChild1)), "Content Changed");
+            
+            assertTrue(stc.isContentTypeHtml());
+            assertEquals(UpdateClientNature.SEQUENTIAL, stc.getUpdateClientNature());
+            
+            assertEquals("Content Changed", stc.getContent());
+            
+           
+            assertEquals("<div><span>Content Changed</span><p>Content Changed</p></div>", div.toHtmlString());
+            
+            stc.setContent(UpdateClientNature.ALLOW_ASYNC_PARALLEL, "Content Changed", true);
+            assertTrue(stc.isContentTypeHtml());
+            assertEquals(UpdateClientNature.ALLOW_ASYNC_PARALLEL, stc.getUpdateClientNature());
+            
+        }
+        
     }
 
     @Test
     public void testSetContentSetOfAbstractHtmlStringBoolean() {
-//        fail("Not yet implemented");
+
+        {
+            SharedTagContent stc = new SharedTagContent(UpdateClientNature.SEQUENTIAL, "Test content", true);
+            Div div = new Div(null);
+            Span spanChild1 = new Span(div);
+            spanChild1.addInnerHtml(stc);
+            P pChild2 = new P(div);
+            pChild2.addInnerHtml(stc);
+            
+            assertTrue(stc.isContentTypeHtml());
+            
+            assertEquals("Test content", stc.getContent());
+            assertEquals("<div><span>Test content</span><p>Test content</p></div>", div.toHtmlString());
+            
+            //div.toHtmlString will contain all tags updated even after this call because it is ignoring only for update client push
+            stc.setContent(new HashSet<>(Arrays.asList(spanChild1)), "Content Changed", false);
+            
+            assertFalse(stc.isContentTypeHtml());
+            assertEquals(UpdateClientNature.SEQUENTIAL, stc.getUpdateClientNature());
+            
+            assertEquals("Content Changed", stc.getContent());
+            
+           
+            assertEquals("<div><span>Content Changed</span><p>Content Changed</p></div>", div.toHtmlString());
+            
+            stc.setContent(new HashSet<>(Arrays.asList(spanChild1)), "Content Changed", true);
+            assertTrue(stc.isContentTypeHtml());
+            assertEquals(UpdateClientNature.SEQUENTIAL, stc.getUpdateClientNature());
+            
+        }
     }
 
     @Test
