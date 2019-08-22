@@ -889,13 +889,12 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 final Iterator<AbstractHtml> iterator = children.iterator();
                 if (iterator.hasNext()) {
                     final AbstractHtml firstChild = iterator.next();
-                    if (firstChild != null) {
-                        if (firstChild instanceof NoTag
-                                && !firstChild.parentNullifiedOnce
-                                && firstChild.sharedTagContent
-                                        .contains(firstChild)) {
-                            return firstChild.sharedTagContent;
-                        }
+                    if (firstChild != null && !firstChild.parentNullifiedOnce
+                            && firstChild.sharedTagContent != null
+                            && firstChild instanceof NoTag
+                            && firstChild.sharedTagContent
+                                    .contains(firstChild)) {
+                        return firstChild.sharedTagContent;
                     }
 
                 }
