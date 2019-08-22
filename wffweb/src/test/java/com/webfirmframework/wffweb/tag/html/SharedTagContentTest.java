@@ -493,12 +493,120 @@ public class SharedTagContentTest {
 
     @Test
     public void testDetachSetOfAbstractHtml() {
-//        fail("Not yet implemented");
+        
+        {
+            SharedTagContent stc = new SharedTagContent(UpdateClientNature.SEQUENTIAL, "Test content", true);
+            Div div = new Div(null);
+            Span spanChild1 = new Span(div);
+            spanChild1.addInnerHtml(stc);
+            P pChild2 = new P(div);
+            pChild2.addInnerHtml(stc);
+            
+            assertTrue(stc.isContentTypeHtml());
+            
+            assertEquals("Test content", stc.getContent());
+            assertEquals("<div><span>Test content</span><p>Test content</p></div>", div.toHtmlString());
+            
+            Div div2 = new Div(null);
+            div2.addInnerHtml(stc);
+            assertEquals("<div>Test content</div>", div2.toHtmlString());
+            
+            stc.detach(new HashSet<>(Arrays.asList(div2)));
+            
+            stc.setContent("Content Changed", false);
+            
+            assertFalse(stc.isContentTypeHtml());
+            assertEquals(UpdateClientNature.SEQUENTIAL, stc.getUpdateClientNature());
+            
+            assertEquals("Content Changed", stc.getContent());
+            
+           
+            assertEquals("<div><span>Test content</span><p>Test content</p></div>", div.toHtmlString());
+            assertEquals("<div>Content Changed</div>", div2.toHtmlString());
+            
+            stc.setContent(new HashSet<>(Arrays.asList(spanChild1)), "Content Changed", true);
+            assertTrue(stc.isContentTypeHtml());
+            assertEquals(UpdateClientNature.SEQUENTIAL, stc.getUpdateClientNature());
+            
+        }
+
     }
 
     @Test
     public void testDetachBoolean() {
-//        fail("Not yet implemented");
+
+        {
+            SharedTagContent stc = new SharedTagContent(UpdateClientNature.SEQUENTIAL, "Test content", true);
+            Div div = new Div(null);
+            Span spanChild1 = new Span(div);
+            spanChild1.addInnerHtml(stc);
+            P pChild2 = new P(div);
+            pChild2.addInnerHtml(stc);
+            
+            assertTrue(stc.isContentTypeHtml());
+            
+            assertEquals("Test content", stc.getContent());
+            assertEquals("<div><span>Test content</span><p>Test content</p></div>", div.toHtmlString());
+            
+            Div div2 = new Div(null);
+            div2.addInnerHtml(stc);
+            assertEquals("<div>Test content</div>", div2.toHtmlString());
+            
+            stc.detach(false);
+            
+            stc.setContent("Content Changed", false);
+            
+            assertFalse(stc.isContentTypeHtml());
+            assertEquals(UpdateClientNature.SEQUENTIAL, stc.getUpdateClientNature());
+            
+            assertEquals("Content Changed", stc.getContent());
+            
+           
+            assertEquals("<div><span>Test content</span><p>Test content</p></div>", div.toHtmlString());
+            assertEquals("<div>Test content</div>", div2.toHtmlString());
+            
+            stc.setContent(new HashSet<>(Arrays.asList(spanChild1)), "Content Changed", true);
+            assertTrue(stc.isContentTypeHtml());
+            assertEquals(UpdateClientNature.SEQUENTIAL, stc.getUpdateClientNature());
+            
+        }
+        
+        {
+            SharedTagContent stc = new SharedTagContent(UpdateClientNature.SEQUENTIAL, "Test content", true);
+            Div div = new Div(null);
+            Span spanChild1 = new Span(div);
+            spanChild1.addInnerHtml(stc);
+            P pChild2 = new P(div);
+            pChild2.addInnerHtml(stc);
+            
+            assertTrue(stc.isContentTypeHtml());
+            
+            assertEquals("Test content", stc.getContent());
+            assertEquals("<div><span>Test content</span><p>Test content</p></div>", div.toHtmlString());
+            
+            Div div2 = new Div(null);
+            div2.addInnerHtml(stc);
+            assertEquals("<div>Test content</div>", div2.toHtmlString());
+            
+            stc.detach(true);
+            
+            stc.setContent("Content Changed", false);
+            
+            assertFalse(stc.isContentTypeHtml());
+            assertEquals(UpdateClientNature.SEQUENTIAL, stc.getUpdateClientNature());
+            
+            assertEquals("Content Changed", stc.getContent());
+            
+           
+            assertEquals("<div><span></span><p></p></div>", div.toHtmlString());
+            assertEquals("<div></div>", div2.toHtmlString());
+            
+            stc.setContent(new HashSet<>(Arrays.asList(spanChild1)), "Content Changed", true);
+            assertTrue(stc.isContentTypeHtml());
+            assertEquals(UpdateClientNature.SEQUENTIAL, stc.getUpdateClientNature());
+            
+        }
+        
     }
 
     @Test
