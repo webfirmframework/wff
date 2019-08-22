@@ -14,6 +14,7 @@ import com.webfirmframework.wffweb.tag.html.SharedTagContent.DetachEvent;
 import com.webfirmframework.wffweb.tag.html.SharedTagContent.UpdateClientNature;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Span;
+import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 
 public class SharedTagContentTest {
 
@@ -1166,6 +1167,58 @@ public class SharedTagContentTest {
         stc.detach(true);
         
         assertFalse(listenerInvoked.get());
+    }
+    @Test
+    public void testAbstractHtmlGetSharedTagContent() throws Exception {
+        SharedTagContent stc = new SharedTagContent(UpdateClientNature.SEQUENTIAL, "Test content", true);
+        Div div = new Div(null);
+        Span spanChild1 = new Span(div);
+        spanChild1.addInnerHtml(stc);
+        P pChild2 = new P(div);
+        pChild2.addInnerHtml(stc);
+        
+        assertEquals(stc, spanChild1.getSharedTagContent());
+        assertEquals(stc, pChild2.getSharedTagContent());
+        
+        spanChild1.removeAllChildren();
+        pChild2.removeAllChildren();
+        assertNull(spanChild1.getSharedTagContent());
+        assertNull(pChild2.getSharedTagContent());
+        
+        spanChild1.addInnerHtml(stc);
+        pChild2.addInnerHtml(stc);
+        assertEquals(stc, spanChild1.getSharedTagContent());
+        assertEquals(stc, pChild2.getSharedTagContent());
+        
+        spanChild1.addInnerHtml(new NoTag(null, "Changed Content"));
+        pChild2.addInnerHtml(new NoTag(null, "Changed Content"));
+        assertNull(spanChild1.getSharedTagContent());
+        assertNull(pChild2.getSharedTagContent());
+        
+        spanChild1.addInnerHtml(stc);
+        pChild2.addInnerHtml(stc);
+        assertEquals(stc, spanChild1.getSharedTagContent());
+        assertEquals(stc, pChild2.getSharedTagContent());
+        
+        spanChild1.addInnerHtml(spanChild1.getFirstChild());
+        pChild2.addInnerHtml(pChild2.getFirstChild());
+        assertNull(spanChild1.getSharedTagContent());
+        assertNull(pChild2.getSharedTagContent());
+        
+        spanChild1.addInnerHtml(stc);
+        pChild2.addInnerHtml(stc);
+        assertEquals(stc, spanChild1.getSharedTagContent());
+        assertEquals(stc, pChild2.getSharedTagContent());
+        
+        spanChild1.appendChild(new NoTag(null, "Changed Content"));
+        pChild2.appendChild(new NoTag(null, "Changed Content"));
+        assertNull(spanChild1.getSharedTagContent());
+        assertNull(pChild2.getSharedTagContent());
+        
+        spanChild1.addInnerHtml(stc);
+        pChild2.addInnerHtml(stc);
+        assertEquals(stc, spanChild1.getSharedTagContent());
+        assertEquals(stc, pChild2.getSharedTagContent());
     }
 
 }
