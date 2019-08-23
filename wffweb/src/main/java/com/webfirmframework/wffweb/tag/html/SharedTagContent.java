@@ -614,26 +614,22 @@ public class SharedTagContent {
                     tagsGroupedBySharedObject.put(parentTag.getSharedObject(),
                             dataList);
                 }
-
+                NoTag noTag;
                 try {
                     final Content formattedContent = formatter
                             .format(contentAfter);
-                    final NoTag noTag = new NoTag(null,
-                            formattedContent.getContent(),
+                    noTag = new NoTag(null, formattedContent.getContent(),
                             formattedContent.isContentTypeHtml());
-                    final AbstractHtml noTagAsBase = noTag;
-                    noTagAsBase.setSharedTagContent(this);
-                    dataList.add(new ParentNoTagData(prevNoTag, parentTag,
-                            noTag, formatter));
+
                 } catch (final RuntimeException e) {
-                    final NoTag noTag = new NoTag(null, null, contentTypeHtml);
-                    final AbstractHtml noTagAsBase = noTag;
-                    noTagAsBase.setSharedTagContent(this);
-                    dataList.add(new ParentNoTagData(prevNoTag, parentTag,
-                            noTag, formatter));
+                    noTag = new NoTag(null, "", false);
                     LOGGER.log(Level.SEVERE,
                             "Exception while ContentFormatter.format", e);
                 }
+                final AbstractHtml noTagAsBase = noTag;
+                noTagAsBase.setSharedTagContent(this);
+                dataList.add(new ParentNoTagData(prevNoTag, parentTag, noTag,
+                        formatter));
 
             }
 
@@ -853,9 +849,19 @@ public class SharedTagContent {
         try {
 
             final Content contentLocal = new Content(content, contentTypeHtml);
-            final Content formattedContent = cFormatter.format(contentLocal);
-            final NoTag noTag = new NoTag(null, formattedContent.getContent(),
-                    contentLocal.isContentTypeHtml());
+
+            NoTag noTag;
+            try {
+                final Content formattedContent = cFormatter
+                        .format(contentLocal);
+                noTag = new NoTag(null, formattedContent.getContent(),
+                        contentLocal.isContentTypeHtml());
+            } catch (final RuntimeException e) {
+                noTag = new NoTag(null, "", false);
+                LOGGER.log(Level.SEVERE,
+                        "Exception while ContentFormatter.format", e);
+            }
+
             final InnerHtmlListenerData listenerData = applicableTag
                     .addInnerHtmlsAndGetEventsLockless(updateClient, noTag);
 

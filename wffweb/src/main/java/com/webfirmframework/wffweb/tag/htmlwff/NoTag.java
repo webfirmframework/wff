@@ -181,7 +181,7 @@ public class NoTag extends AbstractHtml {
     }
 
     /**
-     * adds {@code AbstractHtml}s as children.
+     * gets child content
      *
      * @return
      * @since 1.0.0
