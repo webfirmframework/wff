@@ -19,7 +19,9 @@ package com.webfirmframework.wffweb.tag.htmlwff;
 import java.util.Collection;
 import java.util.List;
 
+import com.webfirmframework.wffweb.MethodNotImplementedException;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.SharedTagContent;
 
 /**
  * It's a tag which makes child content without any opening closing tag. <br>
@@ -194,5 +196,11 @@ public class NoTag extends AbstractHtml {
      */
     public boolean isChildContentTypeHtml() {
         return noTagContentTypeHtml;
+    }
+
+    @Override
+    public void addInnerHtml(final SharedTagContent sharedTagContent) {
+        throw new MethodNotImplementedException(
+                "sharedTagContent is not allowed to apply in NoTag or Blank tag");
     }
 }
