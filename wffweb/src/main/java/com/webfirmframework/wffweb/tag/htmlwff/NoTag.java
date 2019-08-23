@@ -22,6 +22,7 @@ import java.util.List;
 import com.webfirmframework.wffweb.MethodNotImplementedException;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.SharedTagContent;
+import com.webfirmframework.wffweb.tag.html.SharedTagContent.ContentFormatter;
 
 /**
  * It's a tag which makes child content without any opening closing tag. <br>
@@ -200,6 +201,19 @@ public class NoTag extends AbstractHtml {
 
     @Override
     public void addInnerHtml(final SharedTagContent sharedTagContent) {
+        this.addInnerHtml(false, sharedTagContent, null);
+    }
+
+    @Override
+    public void addInnerHtml(final boolean updateClient,
+            final SharedTagContent sharedTagContent) {
+        this.addInnerHtml(updateClient, sharedTagContent, null);
+    }
+
+    @Override
+    public void addInnerHtml(final boolean updateClient,
+            final SharedTagContent sharedTagContent,
+            final ContentFormatter formatter) {
         throw new MethodNotImplementedException(
                 "sharedTagContent is not allowed to apply in NoTag or Blank tag");
     }

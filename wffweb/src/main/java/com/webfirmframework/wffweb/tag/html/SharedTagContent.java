@@ -18,7 +18,6 @@ package com.webfirmframework.wffweb.tag.html;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -50,12 +49,15 @@ public class SharedTagContent {
 
     private static final Security ACCESS_OBJECT;
 
+    private static final ContentFormatter DEFAULT_CONTENT_FORMATTER = content -> content
+            .getContent();
+
     // NB Using ReentrantReadWriteLock causes
     // java.lang.IllegalMonitorStateException in production app
     private final StampedLock lock = new StampedLock();
 
-    private final Set<NoTag> insertedTags = Collections
-            .newSetFromMap(new WeakHashMap<NoTag, Boolean>(4, 0.75F));
+    private final Map<NoTag, ContentFormatter> insertedTags = new WeakHashMap<>(
+            4, 0.75F);
 
     private volatile Map<AbstractHtml, Set<ContentChangeListener>> contentChangeListeners;
 
@@ -94,6 +96,11 @@ public class SharedTagContent {
             return contentTypeHtml;
         }
 
+    }
+
+    @FunctionalInterface
+    public static interface ContentFormatter {
+        public abstract String format(Content content);
     }
 
     public static final class ChangeEvent {
@@ -422,7 +429,7 @@ public class SharedTagContent {
     boolean contains(final AbstractHtml noTag) {
         final long stamp = lock.readLock();
         try {
-            return insertedTags.contains(noTag);
+            return insertedTags.containsKey(noTag);
         } finally {
             lock.unlockRead(stamp);
         }
@@ -580,7 +587,12 @@ public class SharedTagContent {
 
             final Map<AbstractHtml5SharedObject, List<ParentNoTagData>> tagsGroupedBySharedObject = new HashMap<>();
 
-            for (final NoTag prevNoTag : insertedTags) {
+            for (final Entry<NoTag, ContentFormatter> entry : insertedTags
+                    .entrySet()) {
+
+                final NoTag prevNoTag = entry.getKey();
+                final ContentFormatter formatter = entry.getValue();
+
                 final AbstractHtml parentTag = prevNoTag.getParent();
 
                 if (parentTag == null) {
@@ -604,10 +616,22 @@ public class SharedTagContent {
                             dataList);
                 }
 
-                final NoTag noTag = new NoTag(null, content, contentTypeHtml);
-                final AbstractHtml noTagAsBase = noTag;
-                noTagAsBase.setSharedTagContent(this);
-                dataList.add(new ParentNoTagData(prevNoTag, parentTag, noTag));
+                try {
+                    final NoTag noTag = new NoTag(null,
+                            formatter.format(contentAfter), contentTypeHtml);
+                    final AbstractHtml noTagAsBase = noTag;
+                    noTagAsBase.setSharedTagContent(this);
+                    dataList.add(new ParentNoTagData(prevNoTag, parentTag,
+                            noTag, formatter));
+                } catch (final RuntimeException e) {
+                    final NoTag noTag = new NoTag(null, null, contentTypeHtml);
+                    final AbstractHtml noTagAsBase = noTag;
+                    noTagAsBase.setSharedTagContent(this);
+                    dataList.add(new ParentNoTagData(prevNoTag, parentTag,
+                            noTag, formatter));
+                    LOGGER.log(Level.SEVERE,
+                            "Exception while ContentFormatter.format", e);
+                }
 
             }
 
@@ -665,7 +689,9 @@ public class SharedTagContent {
                                         .getChildrenSizeLockless() == 1
                                 && !previousNoTag.isParentNullifiedOnce()) {
 
-                            insertedTags.add(parentNoTagData.getNoTag());
+                            insertedTags.put(parentNoTagData.getNoTag(),
+                                    parentNoTagData.getFormatter());
+
                             modifiedParents.add(parentNoTagData.getParent());
 
                             boolean updateClientTagSpecific = updateClient;
@@ -805,11 +831,13 @@ public class SharedTagContent {
     /**
      * @param updateClient
      * @param applicableTag
+     * @param formatter
      * @return the NoTag inserted
      * @since 3.0.6
      */
     AbstractHtml addInnerHtml(final boolean updateClient,
-            final AbstractHtml applicableTag) {
+            final AbstractHtml applicableTag,
+            final ContentFormatter formatter) {
 
         final long stamp = lock.writeLock();
         final AbstractHtml5SharedObject sharedObject = applicableTag
@@ -824,7 +852,8 @@ public class SharedTagContent {
                     .addInnerHtmlsAndGetEventsLockless(updateClient, noTag);
 
             noTagInserted = noTag;
-            insertedTags.add(noTag);
+            insertedTags.put(noTag,
+                    formatter != null ? formatter : DEFAULT_CONTENT_FORMATTER);
 
             if (listenerData != null) {
                 // TODO declare new innerHtmlsAdded for multiple parents after
@@ -912,7 +941,10 @@ public class SharedTagContent {
 
             final Map<AbstractHtml5SharedObject, List<ParentNoTagData>> tagsGroupedBySharedObject = new HashMap<>();
 
-            for (final NoTag prevNoTag : insertedTags) {
+            for (final Entry<NoTag, ContentFormatter> entry : insertedTags
+                    .entrySet()) {
+                final NoTag prevNoTag = entry.getKey();
+                final ContentFormatter formatter = entry.getValue();
                 final AbstractHtml parentTag = prevNoTag.getParent();
 
                 if (parentTag == null) {
@@ -939,7 +971,8 @@ public class SharedTagContent {
                 // final NoTag noTag = new NoTag(null, content,
                 // contentTypeHtml);
 
-                dataList.add(new ParentNoTagData(prevNoTag, parentTag, null));
+                dataList.add(new ParentNoTagData(prevNoTag, parentTag, null,
+                        formatter));
             }
 
             insertedTags.clear();
@@ -992,8 +1025,9 @@ public class SharedTagContent {
 
                             if (exclusionTags != null && exclusionTags
                                     .contains(parentNoTagData.getParent())) {
-                                insertedTags.add(
-                                        parentNoTagData.getPreviousNoTag());
+                                insertedTags.put(
+                                        parentNoTagData.getPreviousNoTag(),
+                                        parentNoTagData.getFormatter());
                             } else {
                                 modifiedParents
                                         .add(parentNoTagData.getParent());

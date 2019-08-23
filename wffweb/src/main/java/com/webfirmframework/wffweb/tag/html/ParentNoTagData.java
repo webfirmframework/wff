@@ -30,24 +30,32 @@ class ParentNoTagData {
 
     private final NoTag previousNoTag;
 
+    private final SharedTagContent.ContentFormatter formatter;
+
     ParentNoTagData(final NoTag previousNoTag, final AbstractHtml parent,
-            final NoTag noTag) {
+            final NoTag noTag,
+            final SharedTagContent.ContentFormatter formatter) {
         super();
         this.previousNoTag = previousNoTag;
         this.parent = parent;
         this.noTag = noTag;
+        this.formatter = formatter;
     }
 
     AbstractHtml getParent() {
         return parent;
     }
 
-    public NoTag getPreviousNoTag() {
+    NoTag getPreviousNoTag() {
         return previousNoTag;
     }
 
     NoTag getNoTag() {
         return noTag;
+    }
+
+    SharedTagContent.ContentFormatter getFormatter() {
+        return formatter;
     }
 
 }
