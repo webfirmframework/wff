@@ -863,7 +863,7 @@ public class SharedTagContent<T> {
                         .format(contentLocal);
                 noTag = new NoTag(null,
                         String.valueOf(formattedContent.getContent()),
-                        contentLocal.isContentTypeHtml());
+                        formattedContent.isContentTypeHtml());
             } catch (final RuntimeException e) {
                 noTag = new NoTag(null, "", false);
                 LOGGER.log(Level.SEVERE,

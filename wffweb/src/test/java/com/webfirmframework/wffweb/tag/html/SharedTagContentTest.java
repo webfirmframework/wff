@@ -1270,6 +1270,30 @@ public class SharedTagContentTest {
         assertEquals("<p>Formatted2 Content</p>", pChild2.toHtmlString());        
         assertEquals("<div><span>Formatted1 Content</span><p>Formatted2 Content</p></div>", div.toHtmlString());
         
+        assertTrue(((NoTag)spanChild1.getFirstChild()).isChildContentTypeHtml());
+        assertTrue(((NoTag)pChild2.getFirstChild()).isChildContentTypeHtml());
+        
+        spanChild1.addInnerHtml(stc, new SharedTagContent.ContentFormatter<String>() {
+            
+            @Override
+            public SharedTagContent.Content<String> format(SharedTagContent.Content<String> content) {
+                assertEquals("Test Content", content.getContent());
+                return new SharedTagContent.Content<>("Formatted1 Content", false);
+            }
+        });
+        
+        pChild2.addInnerHtml(stc, new SharedTagContent.ContentFormatter<String>() {
+            
+            @Override
+            public SharedTagContent.Content<String> format(SharedTagContent.Content<String> content) {
+                assertEquals("Test Content", content.getContent());
+                return new SharedTagContent.Content<>("Formatted2 Content", false);
+            }
+        });
+        
+        assertFalse(((NoTag)spanChild1.getFirstChild()).isChildContentTypeHtml());
+        assertFalse(((NoTag)pChild2.getFirstChild()).isChildContentTypeHtml());
+        
     }
 
 }
