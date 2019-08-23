@@ -52,7 +52,8 @@ public class SharedTagContent<T> {
 
     private static final Security ACCESS_OBJECT;
 
-    private final ContentFormatter<T> DEFAULT_CONTENT_FORMATTER = content -> content;
+    private final ContentFormatter<T> DEFAULT_CONTENT_FORMATTER = content -> new Content<>(
+            String.valueOf(content.content), content.contentTypeHtml);
 
     // NB Using ReentrantReadWriteLock causes
     // java.lang.IllegalMonitorStateException in production app
@@ -102,7 +103,7 @@ public class SharedTagContent<T> {
 
     @FunctionalInterface
     public static interface ContentFormatter<T> {
-        public abstract Content<T> format(final Content<T> content);
+        public abstract Content<String> format(final Content<T> content);
     }
 
     public static final class ChangeEvent<T> {
@@ -620,10 +621,9 @@ public class SharedTagContent<T> {
                 }
                 NoTag noTag;
                 try {
-                    final Content<T> formattedContent = formatter
+                    final Content<String> formattedContent = formatter
                             .format(contentAfter);
-                    noTag = new NoTag(null,
-                            String.valueOf(formattedContent.getContent()),
+                    noTag = new NoTag(null, formattedContent.getContent(),
                             formattedContent.isContentTypeHtml());
 
                 } catch (final RuntimeException e) {
@@ -859,10 +859,9 @@ public class SharedTagContent<T> {
 
             NoTag noTag;
             try {
-                final Content<T> formattedContent = cFormatter
+                final Content<String> formattedContent = cFormatter
                         .format(contentLocal);
-                noTag = new NoTag(null,
-                        String.valueOf(formattedContent.getContent()),
+                noTag = new NoTag(null, formattedContent.getContent(),
                         formattedContent.isContentTypeHtml());
             } catch (final RuntimeException e) {
                 noTag = new NoTag(null, "", false);
