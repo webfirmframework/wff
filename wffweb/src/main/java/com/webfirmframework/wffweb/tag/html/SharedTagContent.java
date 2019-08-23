@@ -623,8 +623,13 @@ public class SharedTagContent<T> {
                 try {
                     final Content<String> formattedContent = formatter
                             .format(contentAfter);
-                    noTag = new NoTag(null, formattedContent.getContent(),
-                            formattedContent.isContentTypeHtml());
+                    if (formattedContent != null) {
+                        noTag = new NoTag(null, formattedContent.getContent(),
+                                formattedContent.isContentTypeHtml());
+                    } else {
+                        noTag = new NoTag(null, prevNoTag.getChildContent(),
+                                prevNoTag.isChildContentTypeHtml());
+                    }
 
                 } catch (final RuntimeException e) {
                     noTag = new NoTag(null, "", false);

@@ -1277,7 +1277,12 @@ public class SharedTagContentTest {
             
             @Override
             public SharedTagContent.Content<String> format(SharedTagContent.Content<String> content) {
-                assertEquals("Test Content", content.getContent());
+                
+                if ("return null".equals(content.getContent())) {
+                    return null;
+                } else {
+                    assertEquals("Test Content", content.getContent());
+                }
                 return new SharedTagContent.Content<>("Formatted1 Content", false);
             }
         });
@@ -1286,10 +1291,50 @@ public class SharedTagContentTest {
             
             @Override
             public SharedTagContent.Content<String> format(SharedTagContent.Content<String> content) {
-                assertEquals("Test Content", content.getContent());
+                
+                if ("return null".equals(content.getContent())) {
+                    return null;
+                } else {
+                    assertEquals("Test Content", content.getContent());    
+                }
                 return new SharedTagContent.Content<>("Formatted2 Content", false);
             }
         });
+        
+        assertEquals("Formatted1 Content", ((NoTag)spanChild1.getFirstChild()).getChildContent());
+        assertEquals("Formatted2 Content", ((NoTag)pChild2.getFirstChild()).getChildContent());
+        
+        assertFalse(((NoTag)spanChild1.getFirstChild()).isChildContentTypeHtml());
+        assertFalse(((NoTag)pChild2.getFirstChild()).isChildContentTypeHtml());
+        
+        stc.setContent("return null", true);
+        
+        assertEquals("Formatted1 Content", ((NoTag)spanChild1.getFirstChild()).getChildContent());
+        assertEquals("Formatted2 Content", ((NoTag)pChild2.getFirstChild()).getChildContent());
+        
+        assertFalse(((NoTag)spanChild1.getFirstChild()).isChildContentTypeHtml());
+        assertFalse(((NoTag)pChild2.getFirstChild()).isChildContentTypeHtml());
+        
+        spanChild1.addInnerHtml(stc, new SharedTagContent.ContentFormatter<String>() {
+            
+            @Override
+            public SharedTagContent.Content<String> format(SharedTagContent.Content<String> content) {
+                assertEquals("return null", content.getContent());
+                return null;
+            }
+        });
+        
+        pChild2.addInnerHtml(stc, new SharedTagContent.ContentFormatter<String>() {
+            
+            @Override
+            public SharedTagContent.Content<String> format(SharedTagContent.Content<String> content) {
+                assertEquals("return null", content.getContent());
+                return null;
+            }
+        });
+        
+        assertEquals("", ((NoTag)spanChild1.getFirstChild()).getChildContent());
+        assertEquals("", ((NoTag)pChild2.getFirstChild()).getChildContent());
         
         assertFalse(((NoTag)spanChild1.getFirstChild()).isChildContentTypeHtml());
         assertFalse(((NoTag)pChild2.getFirstChild()).isChildContentTypeHtml());
