@@ -49,8 +49,7 @@ public class SharedTagContent {
 
     private static final Security ACCESS_OBJECT;
 
-    private static final ContentFormatter DEFAULT_CONTENT_FORMATTER = content -> content
-            .getContent();
+    private static final ContentFormatter DEFAULT_CONTENT_FORMATTER = content -> content;
 
     // NB Using ReentrantReadWriteLock causes
     // java.lang.IllegalMonitorStateException in production app
@@ -82,7 +81,7 @@ public class SharedTagContent {
         private final String content;
         private final boolean contentTypeHtml;
 
-        private Content(final String content, final boolean contentTypeHtml) {
+        public Content(final String content, final boolean contentTypeHtml) {
             super();
             this.content = content;
             this.contentTypeHtml = contentTypeHtml;
@@ -100,7 +99,7 @@ public class SharedTagContent {
 
     @FunctionalInterface
     public static interface ContentFormatter {
-        public abstract String format(final Content content);
+        public abstract Content format(final Content content);
     }
 
     public static final class ChangeEvent {
@@ -617,8 +616,11 @@ public class SharedTagContent {
                 }
 
                 try {
+                    final Content formattedContent = formatter
+                            .format(contentAfter);
                     final NoTag noTag = new NoTag(null,
-                            formatter.format(contentAfter), contentTypeHtml);
+                            formattedContent.getContent(),
+                            formattedContent.isContentTypeHtml());
                     final AbstractHtml noTagAsBase = noTag;
                     noTagAsBase.setSharedTagContent(this);
                     dataList.add(new ParentNoTagData(prevNoTag, parentTag,
@@ -851,7 +853,8 @@ public class SharedTagContent {
         try {
 
             final Content contentLocal = new Content(content, contentTypeHtml);
-            final NoTag noTag = new NoTag(null, cFormatter.format(contentLocal),
+            final Content formattedContent = cFormatter.format(contentLocal);
+            final NoTag noTag = new NoTag(null, formattedContent.getContent(),
                     contentLocal.isContentTypeHtml());
             final InnerHtmlListenerData listenerData = applicableTag
                     .addInnerHtmlsAndGetEventsLockless(updateClient, noTag);

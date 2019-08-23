@@ -1219,17 +1219,17 @@ public class SharedTagContentTest {
         spanChild1.addInnerHtml(stc, new SharedTagContent.ContentFormatter() {
             
             @Override
-            public String format(SharedTagContent.Content content) {
+            public SharedTagContent.Content format(SharedTagContent.Content content) {
                 assertEquals("Test Content", content.getContent());
-                return "Formatted content";
+                return new SharedTagContent.Content("Formatted content", content.isContentTypeHtml());
             }
         });
         pChild2.addInnerHtml(stc, new SharedTagContent.ContentFormatter() {
             
             @Override
-            public String format(SharedTagContent.Content content) {
+            public SharedTagContent.Content format(SharedTagContent.Content content) {
                 assertEquals("Test Content", content.getContent());
-                return "Formatted content";
+                return new SharedTagContent.Content("Formatted content", content.isContentTypeHtml());
             }
         });
         assertEquals(stc, spanChild1.getSharedTagContent());
@@ -1249,18 +1249,18 @@ public class SharedTagContentTest {
         spanChild1.addInnerHtml(stc, new SharedTagContent.ContentFormatter() {
             
             @Override
-            public String format(SharedTagContent.Content content) {
+            public SharedTagContent.Content format(SharedTagContent.Content content) {
                 assertEquals("Test Content", content.getContent());
-                return "Formatted1 Content";
+                return new SharedTagContent.Content("Formatted1 Content", content.isContentTypeHtml());
             }
         });
         
         pChild2.addInnerHtml(stc, new SharedTagContent.ContentFormatter() {
             
             @Override
-            public String format(SharedTagContent.Content content) {
+            public SharedTagContent.Content format(SharedTagContent.Content content) {
                 assertEquals("Test Content", content.getContent());
-                return "Formatted2 Content";
+                return new SharedTagContent.Content("Formatted2 Content", content.isContentTypeHtml());
             }
         });
         assertEquals(stc, spanChild1.getSharedTagContent());
