@@ -21,7 +21,7 @@ public class SharedTagContentTest {
     @Test
     public void testSharedTagContentString() {
 //        fail("Not yet implemented");
-        SharedTagContent stc = new SharedTagContent("Test content");
+        SharedTagContent<String> stc = new SharedTagContent<>("Test content");
         Div div = new Div(null);
         Span span = new Span(div);
         span.addInnerHtml(stc);
@@ -33,7 +33,7 @@ public class SharedTagContentTest {
     @Test
     public void testSharedTagContentUpdateClientNatureString() {
         {
-            SharedTagContent stc = new SharedTagContent(UpdateClientNature.ALLOW_ASYNC_PARALLEL, "Test content");
+            SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.ALLOW_ASYNC_PARALLEL, "Test content");
             Div div = new Div(null);
             Span span = new Span(div);
             span.addInnerHtml(stc);
@@ -42,7 +42,7 @@ public class SharedTagContentTest {
             assertEquals(UpdateClientNature.ALLOW_ASYNC_PARALLEL, stc.getUpdateClientNature());
         }
         {
-            SharedTagContent stc = new SharedTagContent(UpdateClientNature.ALLOW_PARALLEL, "Test content");
+            SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.ALLOW_PARALLEL, "Test content");
             Div div = new Div(null);
             Span span = new Span(div);
             span.addInnerHtml(stc);
@@ -51,7 +51,7 @@ public class SharedTagContentTest {
             assertEquals(UpdateClientNature.ALLOW_PARALLEL, stc.getUpdateClientNature());
         }
         {
-            SharedTagContent stc = new SharedTagContent(UpdateClientNature.SEQUENTIAL, "Test content");
+            SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.SEQUENTIAL, "Test content");
             Div div = new Div(null);
             Span span = new Span(div);
             span.addInnerHtml(stc);
@@ -64,7 +64,7 @@ public class SharedTagContentTest {
     @Test
     public void testSharedTagContentStringBoolean() {
         {
-            SharedTagContent stc = new SharedTagContent("Test content", true);
+            SharedTagContent<String> stc = new SharedTagContent<>("Test content", true);
             Div div = new Div(null);
             Span span = new Span(div);
             span.addInnerHtml(stc);
@@ -74,7 +74,7 @@ public class SharedTagContentTest {
             assertEquals(UpdateClientNature.ALLOW_ASYNC_PARALLEL, stc.getUpdateClientNature());
         }
         {
-            SharedTagContent stc = new SharedTagContent("Test content", false);
+            SharedTagContent<String> stc = new SharedTagContent<>("Test content", false);
             Div div = new Div(null);
             Span span = new Span(div);
             span.addInnerHtml(stc);
@@ -88,7 +88,7 @@ public class SharedTagContentTest {
     @Test
     public void testSharedTagContentUpdateClientNatureStringBoolean() {
         {
-            SharedTagContent stc = new SharedTagContent(UpdateClientNature.ALLOW_ASYNC_PARALLEL, "Test content", true);
+            SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.ALLOW_ASYNC_PARALLEL, "Test content", true);
             Div div = new Div(null);
             Span span = new Span(div);
             span.addInnerHtml(stc);
@@ -98,7 +98,7 @@ public class SharedTagContentTest {
             assertEquals(UpdateClientNature.ALLOW_ASYNC_PARALLEL, stc.getUpdateClientNature());
         }
         {
-            SharedTagContent stc = new SharedTagContent(UpdateClientNature.ALLOW_ASYNC_PARALLEL, "Test content", false);
+            SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.ALLOW_ASYNC_PARALLEL, "Test content", false);
             Div div = new Div(null);
             Span span = new Span(div);
             span.addInnerHtml(stc);
@@ -108,7 +108,7 @@ public class SharedTagContentTest {
             assertEquals(UpdateClientNature.ALLOW_ASYNC_PARALLEL, stc.getUpdateClientNature());
         }
         {
-            SharedTagContent stc = new SharedTagContent(UpdateClientNature.ALLOW_PARALLEL, "Test content", true);
+            SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.ALLOW_PARALLEL, "Test content", true);
             Div div = new Div(null);
             Span span = new Span(div);
             span.addInnerHtml(stc);
@@ -118,7 +118,7 @@ public class SharedTagContentTest {
             assertEquals(UpdateClientNature.ALLOW_PARALLEL, stc.getUpdateClientNature());
         }
         {
-            SharedTagContent stc = new SharedTagContent(UpdateClientNature.ALLOW_PARALLEL, "Test content", false);
+            SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.ALLOW_PARALLEL, "Test content", false);
             Div div = new Div(null);
             Span span = new Span(div);
             span.addInnerHtml(stc);
@@ -128,7 +128,7 @@ public class SharedTagContentTest {
             assertEquals(UpdateClientNature.ALLOW_PARALLEL, stc.getUpdateClientNature());
         }
         {
-            SharedTagContent stc = new SharedTagContent(UpdateClientNature.SEQUENTIAL, "Test content", true);
+            SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.SEQUENTIAL, "Test content", true);
             Div div = new Div(null);
             Span span = new Span(div);
             span.addInnerHtml(stc);
@@ -138,7 +138,7 @@ public class SharedTagContentTest {
             assertEquals(UpdateClientNature.SEQUENTIAL, stc.getUpdateClientNature());
         }
         {
-            SharedTagContent stc = new SharedTagContent(UpdateClientNature.SEQUENTIAL, "Test content", false);
+            SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.SEQUENTIAL, "Test content", false);
             Div div = new Div(null);
             Span span = new Span(div);
             span.addInnerHtml(stc);
@@ -152,7 +152,7 @@ public class SharedTagContentTest {
     @Test
     public void testGetContent() {
         {
-            SharedTagContent stc = new SharedTagContent(UpdateClientNature.ALLOW_ASYNC_PARALLEL, "Test content", true);
+            SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.ALLOW_ASYNC_PARALLEL, "Test content", true);
             Div div = new Div(null);
             Span span = new Span(div);
             span.addInnerHtml(stc);
@@ -163,7 +163,7 @@ public class SharedTagContentTest {
             assertEquals(UpdateClientNature.ALLOW_ASYNC_PARALLEL, stc.getUpdateClientNature());
         }
         {
-            SharedTagContent stc = new SharedTagContent(UpdateClientNature.ALLOW_ASYNC_PARALLEL, "Test content", true);
+            SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.ALLOW_ASYNC_PARALLEL, "Test content", true);
             Div div = new Div(null);
             Span span1 = new Span(div);
             span1.addInnerHtml(stc);
@@ -184,7 +184,7 @@ public class SharedTagContentTest {
     @Test
     public void testIsContentTypeHtml() {
         {
-            SharedTagContent stc = new SharedTagContent(UpdateClientNature.ALLOW_ASYNC_PARALLEL, "Test content", true);
+            SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.ALLOW_ASYNC_PARALLEL, "Test content", true);
             Div div = new Div(null);
             Span span1 = new Span(div);
             span1.addInnerHtml(stc);
@@ -205,7 +205,7 @@ public class SharedTagContentTest {
 
     @Test
     public void testGetUpdateClientNature() {
-        SharedTagContent stc = new SharedTagContent(UpdateClientNature.SEQUENTIAL, "Test content", true);
+        SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.SEQUENTIAL, "Test content", true);
         Div div = new Div(null);
         Span span = new Span(div);
         span.addInnerHtml(stc);
@@ -224,7 +224,7 @@ public class SharedTagContentTest {
 
     @Test
     public void testSetUpdateClientNature() {
-        SharedTagContent stc = new SharedTagContent(UpdateClientNature.SEQUENTIAL, "Test content", true);
+        SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.SEQUENTIAL, "Test content", true);
         Div div = new Div(null);
         Span span = new Span(div);
         span.addInnerHtml(stc);
@@ -243,7 +243,7 @@ public class SharedTagContentTest {
 
     @Test
     public void testIsUpdateClient() {
-        SharedTagContent stc = new SharedTagContent(UpdateClientNature.SEQUENTIAL, "Test content", true);
+        SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.SEQUENTIAL, "Test content", true);
         Div div = new Div(null);
         Span span = new Span(div);
         span.addInnerHtml(stc);
@@ -259,7 +259,7 @@ public class SharedTagContentTest {
 
     @Test
     public void testSetUpdateClient() {
-        SharedTagContent stc = new SharedTagContent("Test content", true);
+        SharedTagContent<String> stc = new SharedTagContent<>("Test content", true);
         Div div = new Div(null);
         Span span = new Span(div);
         span.addInnerHtml(stc);
@@ -275,7 +275,7 @@ public class SharedTagContentTest {
 
     @Test
     public void testContains() {
-        SharedTagContent stc = new SharedTagContent("Test content", true);
+        SharedTagContent<String> stc = new SharedTagContent<>("Test content", true);
         Div div = new Div(null);
         Span span = new Span(div);
         span.addInnerHtml(stc);
@@ -288,7 +288,7 @@ public class SharedTagContentTest {
     public void testSetContentString() {
         
         {
-            SharedTagContent stc = new SharedTagContent(UpdateClientNature.ALLOW_ASYNC_PARALLEL, "Test content", true);
+            SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.ALLOW_ASYNC_PARALLEL, "Test content", true);
             Div div = new Div(null);
             Span span1 = new Span(div);
             span1.addInnerHtml(stc);
@@ -310,7 +310,7 @@ public class SharedTagContentTest {
     public void testSetContentUpdateClientNatureString() {
         
         {
-            SharedTagContent stc = new SharedTagContent(UpdateClientNature.SEQUENTIAL, "Test content", true);
+            SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.SEQUENTIAL, "Test content", true);
             Div div = new Div(null);
             Span span1 = new Span(div);
             span1.addInnerHtml(stc);
@@ -335,7 +335,7 @@ public class SharedTagContentTest {
     @Test
     public void testSetContentStringBoolean() {
         {
-            SharedTagContent stc = new SharedTagContent(UpdateClientNature.SEQUENTIAL, "Test content", true);
+            SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.SEQUENTIAL, "Test content", true);
             Div div = new Div(null);
             Span span1 = new Span(div);
             span1.addInnerHtml(stc);
@@ -363,7 +363,7 @@ public class SharedTagContentTest {
     public void testSetContentUpdateClientNatureStringBoolean() {
         
         {
-            SharedTagContent stc = new SharedTagContent(UpdateClientNature.SEQUENTIAL, "Test content", true);
+            SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.SEQUENTIAL, "Test content", true);
             Div div = new Div(null);
             Span span1 = new Span(div);
             span1.addInnerHtml(stc);
@@ -393,7 +393,7 @@ public class SharedTagContentTest {
     public void testSetContentSetOfAbstractHtmlString() {
         
         {
-            SharedTagContent stc = new SharedTagContent(UpdateClientNature.SEQUENTIAL, "Test content", true);
+            SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.SEQUENTIAL, "Test content", true);
             Div div = new Div(null);
             Span spanChild1 = new Span(div);
             spanChild1.addInnerHtml(stc);
@@ -428,7 +428,7 @@ public class SharedTagContentTest {
     public void testSetContentSetOfAbstractHtmlStringBoolean() {
 
         {
-            SharedTagContent stc = new SharedTagContent(UpdateClientNature.SEQUENTIAL, "Test content", true);
+            SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.SEQUENTIAL, "Test content", true);
             Div div = new Div(null);
             Span spanChild1 = new Span(div);
             spanChild1.addInnerHtml(stc);
@@ -461,7 +461,7 @@ public class SharedTagContentTest {
     @Test
     public void testAddInnerHtml() {
         {
-            SharedTagContent stc = new SharedTagContent(UpdateClientNature.SEQUENTIAL, "Test content", true);
+            SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.SEQUENTIAL, "Test content", true);
             Div div = new Div(null);
             Span spanChild1 = new Span(div);
             spanChild1.addInnerHtml(stc);
@@ -500,7 +500,7 @@ public class SharedTagContentTest {
     public void testDetachSetOfAbstractHtml() {
         
         {
-            SharedTagContent stc = new SharedTagContent(UpdateClientNature.SEQUENTIAL, "Test content", true);
+            SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.SEQUENTIAL, "Test content", true);
             Div div = new Div(null);
             Span spanChild1 = new Span(div);
             spanChild1.addInnerHtml(stc);
@@ -541,7 +541,7 @@ public class SharedTagContentTest {
     public void testDetachBoolean() {
 
         {
-            SharedTagContent stc = new SharedTagContent(UpdateClientNature.SEQUENTIAL, "Test content", true);
+            SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.SEQUENTIAL, "Test content", true);
             Div div = new Div(null);
             Span spanChild1 = new Span(div);
             spanChild1.addInnerHtml(stc);
@@ -577,7 +577,7 @@ public class SharedTagContentTest {
         }
         
         {
-            SharedTagContent stc = new SharedTagContent(UpdateClientNature.SEQUENTIAL, "Test content", true);
+            SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.SEQUENTIAL, "Test content", true);
             Div div = new Div(null);
             Span spanChild1 = new Span(div);
             spanChild1.addInnerHtml(stc);
@@ -618,7 +618,7 @@ public class SharedTagContentTest {
     public void testDetachBooleanSetOfAbstractHtml() {
 
         {
-            SharedTagContent stc = new SharedTagContent(UpdateClientNature.SEQUENTIAL, "Test content", true);
+            SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.SEQUENTIAL, "Test content", true);
             Div div = new Div(null);
             Span spanChild1 = new Span(div);
             spanChild1.addInnerHtml(stc);
@@ -653,7 +653,7 @@ public class SharedTagContentTest {
             
         }
         {
-            SharedTagContent stc = new SharedTagContent(UpdateClientNature.SEQUENTIAL, "Test content", true);
+            SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.SEQUENTIAL, "Test content", true);
             Div div = new Div(null);
             Span spanChild1 = new Span(div);
             spanChild1.addInnerHtml(stc);
@@ -692,7 +692,7 @@ public class SharedTagContentTest {
     @Test
     public void testDetachBooleanSetOfAbstractHtmlSetOfAbstractHtml() {
         {
-            SharedTagContent stc = new SharedTagContent(UpdateClientNature.SEQUENTIAL, "Test content", true);
+            SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.SEQUENTIAL, "Test content", true);
             Div div = new Div(null);
             Span spanChild1 = new Span(div);
             spanChild1.addInnerHtml(stc);
@@ -728,7 +728,7 @@ public class SharedTagContentTest {
             
         }
         {
-            SharedTagContent stc = new SharedTagContent(UpdateClientNature.SEQUENTIAL, "Test content", true);
+            SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.SEQUENTIAL, "Test content", true);
             Div div = new Div(null);
             Span spanChild1 = new Span(div);
             spanChild1.addInnerHtml(stc);
@@ -769,7 +769,7 @@ public class SharedTagContentTest {
     public void testAddContentChangeListener() {
 
         {
-            SharedTagContent stc = new SharedTagContent(UpdateClientNature.ALLOW_PARALLEL, "Test content", true);
+            SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.ALLOW_PARALLEL, "Test content", true);
             Div div = new Div(null);
             Span span1 = new Span(div);
             span1.addInnerHtml(stc);
@@ -777,10 +777,10 @@ public class SharedTagContentTest {
             span2.addInnerHtml(stc);
             
             AtomicBoolean listenerInvoked = new AtomicBoolean();
-            stc.addContentChangeListener(span2, new SharedTagContent.ContentChangeListener() {
+            stc.addContentChangeListener(span2, new SharedTagContent.ContentChangeListener<String>() {
                 
                 @Override
-                public Runnable contentChanged(ChangeEvent changeEvent) {
+                public Runnable contentChanged(ChangeEvent<String> changeEvent) {
                     listenerInvoked.set(true);
                     assertEquals("Test content", changeEvent.getContentBefore().getContent());
                     assertEquals("Content Changed", changeEvent.getContentAfter().getContent());
@@ -807,7 +807,7 @@ public class SharedTagContentTest {
         
         
         {
-            SharedTagContent stc = new SharedTagContent(UpdateClientNature.SEQUENTIAL, "Test content", true);
+            SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.SEQUENTIAL, "Test content", true);
             Div div = new Div(null);
             Span spanChild1 = new Span(div);
             spanChild1.addInnerHtml(stc);
@@ -815,10 +815,10 @@ public class SharedTagContentTest {
             pChild2.addInnerHtml(stc);
             
             AtomicBoolean listenerInvoked = new AtomicBoolean();
-            stc.addDetachListener(pChild2, new SharedTagContent.DetachListener() {
+            stc.addDetachListener(pChild2, new SharedTagContent.DetachListener<String>() {
                 
                 @Override
-                public Runnable detached(DetachEvent detachEvent) {
+                public Runnable detached(DetachEvent<String> detachEvent) {
                     listenerInvoked.set(true);
                     assertEquals("Test content", detachEvent.getContent().getContent());
                     
@@ -856,7 +856,7 @@ public class SharedTagContentTest {
         }
         
         {
-            SharedTagContent stc = new SharedTagContent(UpdateClientNature.SEQUENTIAL, "Test content", true);
+            SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.SEQUENTIAL, "Test content", true);
             Div div = new Div(null);
             Span spanChild1 = new Span(div);
             spanChild1.addInnerHtml(stc);
@@ -864,10 +864,10 @@ public class SharedTagContentTest {
             pChild2.addInnerHtml(stc);
             
             AtomicBoolean listenerInvoked = new AtomicBoolean();
-            stc.addDetachListener(pChild2, new SharedTagContent.DetachListener() {
+            stc.addDetachListener(pChild2, new SharedTagContent.DetachListener<String>() {
                 
                 @Override
-                public Runnable detached(DetachEvent detachEvent) {
+                public Runnable detached(DetachEvent<String> detachEvent) {
                     listenerInvoked.set(true);
                     assertEquals("Test content", detachEvent.getContent().getContent());
                     
@@ -907,7 +907,7 @@ public class SharedTagContentTest {
     @Test
     public void testRemoveContentChangeListenerContentChangeListener() {
 
-        SharedTagContent stc = new SharedTagContent(UpdateClientNature.ALLOW_PARALLEL, "Test content", true);
+        SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.ALLOW_PARALLEL, "Test content", true);
         Div div = new Div(null);
         Span span1 = new Span(div);
         span1.addInnerHtml(stc);
@@ -915,10 +915,10 @@ public class SharedTagContentTest {
         span2.addInnerHtml(stc);
         
         AtomicBoolean listenerInvoked = new AtomicBoolean();
-        final SharedTagContent.ContentChangeListener contentChangeListener = new SharedTagContent.ContentChangeListener() {
+        final SharedTagContent.ContentChangeListener<String> contentChangeListener = new SharedTagContent.ContentChangeListener<String>() {
             
             @Override
-            public Runnable contentChanged(ChangeEvent changeEvent) {
+            public Runnable contentChanged(ChangeEvent<String> changeEvent) {
                 listenerInvoked.set(true);
                 return null;
             }
@@ -933,7 +933,7 @@ public class SharedTagContentTest {
 
     @Test
     public void testRemoveContentChangeListenerAbstractHtmlContentChangeListener() {
-        SharedTagContent stc = new SharedTagContent(UpdateClientNature.ALLOW_PARALLEL, "Test content", true);
+        SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.ALLOW_PARALLEL, "Test content", true);
         Div div = new Div(null);
         Span span1 = new Span(div);
         span1.addInnerHtml(stc);
@@ -941,10 +941,10 @@ public class SharedTagContentTest {
         span2.addInnerHtml(stc);
         
         AtomicBoolean listenerInvoked = new AtomicBoolean();
-        final SharedTagContent.ContentChangeListener contentChangeListener = new SharedTagContent.ContentChangeListener() {
+        final SharedTagContent.ContentChangeListener<String> contentChangeListener = new SharedTagContent.ContentChangeListener<String>() {
             
             @Override
-            public Runnable contentChanged(ChangeEvent changeEvent) {
+            public Runnable contentChanged(ChangeEvent<String> changeEvent) {
                 listenerInvoked.set(true);
                 return null;
             }
@@ -960,7 +960,7 @@ public class SharedTagContentTest {
     @Test
     public void testRemoveDetachListenerDetachListener() {
 
-        SharedTagContent stc = new SharedTagContent(UpdateClientNature.ALLOW_PARALLEL, "Test content", true);
+        SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.ALLOW_PARALLEL, "Test content", true);
         Div div = new Div(null);
         Span span1 = new Span(div);
         span1.addInnerHtml(stc);
@@ -968,10 +968,10 @@ public class SharedTagContentTest {
         span2.addInnerHtml(stc);
         
         AtomicBoolean listenerInvoked = new AtomicBoolean();
-        final SharedTagContent.DetachListener detachListener = new SharedTagContent.DetachListener() {
+        final SharedTagContent.DetachListener<String> detachListener = new SharedTagContent.DetachListener<String>() {
             
             @Override
-            public Runnable detached(DetachEvent detachEvent) {
+            public Runnable detached(DetachEvent<String> detachEvent) {
                 listenerInvoked.set(true);
                 return null;
             }
@@ -987,7 +987,7 @@ public class SharedTagContentTest {
     @Test
     public void testRemoveDetachListenerAbstractHtmlDetachListener() {
 
-        SharedTagContent stc = new SharedTagContent(UpdateClientNature.ALLOW_PARALLEL, "Test content", true);
+        SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.ALLOW_PARALLEL, "Test content", true);
         Div div = new Div(null);
         Span span1 = new Span(div);
         span1.addInnerHtml(stc);
@@ -995,10 +995,10 @@ public class SharedTagContentTest {
         span2.addInnerHtml(stc);
         
         AtomicBoolean listenerInvoked = new AtomicBoolean();
-        final SharedTagContent.DetachListener detachListener = new SharedTagContent.DetachListener() {
+        final SharedTagContent.DetachListener<String> detachListener = new SharedTagContent.DetachListener<String>() {
             
             @Override
-            public Runnable detached(DetachEvent detachEvent) {
+            public Runnable detached(DetachEvent<String> detachEvent) {
                 listenerInvoked.set(true);
                 return null;
             }
@@ -1013,7 +1013,7 @@ public class SharedTagContentTest {
 
     @Test
     public void testRemoveContentChangeListeners() {
-        SharedTagContent stc = new SharedTagContent(UpdateClientNature.ALLOW_PARALLEL, "Test content", true);
+        SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.ALLOW_PARALLEL, "Test content", true);
         Div div = new Div(null);
         Span span1 = new Span(div);
         span1.addInnerHtml(stc);
@@ -1021,17 +1021,17 @@ public class SharedTagContentTest {
         span2.addInnerHtml(stc);
         
         AtomicBoolean listenerInvoked = new AtomicBoolean();
-        final SharedTagContent.ContentChangeListener contentChangeListener = new SharedTagContent.ContentChangeListener() {
+        final SharedTagContent.ContentChangeListener<String> contentChangeListener = new SharedTagContent.ContentChangeListener<String>() {
             
             @Override
-            public Runnable contentChanged(ChangeEvent changeEvent) {
+            public Runnable contentChanged(ChangeEvent<String> changeEvent) {
                 listenerInvoked.set(true);
                 return null;
             }
         };
         stc.addContentChangeListener(span2, contentChangeListener);
         
-        stc.removeContentChangeListeners(span2, contentChangeListener);
+        stc.removeContentChangeListeners(span2, Arrays.asList(contentChangeListener));
         stc.setContent("Changed Content");
         
         assertFalse(listenerInvoked.get());
@@ -1039,7 +1039,7 @@ public class SharedTagContentTest {
 
     @Test
     public void testRemoveDetachListeners() {
-        SharedTagContent stc = new SharedTagContent(UpdateClientNature.ALLOW_PARALLEL, "Test content", true);
+        SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.ALLOW_PARALLEL, "Test content", true);
         Div div = new Div(null);
         Span span1 = new Span(div);
         span1.addInnerHtml(stc);
@@ -1047,17 +1047,17 @@ public class SharedTagContentTest {
         span2.addInnerHtml(stc);
         
         AtomicBoolean listenerInvoked = new AtomicBoolean();
-        final SharedTagContent.DetachListener detachListener = new SharedTagContent.DetachListener() {
+        final SharedTagContent.DetachListener<String> detachListener = new SharedTagContent.DetachListener<String>() {
             
             @Override
-            public Runnable detached(DetachEvent detachEvent) {
+            public Runnable detached(DetachEvent<String> detachEvent) {
                 listenerInvoked.set(true);
                 return null;
             }
         };
         stc.addDetachListener(span2, detachListener);
         
-        stc.removeDetachListeners(span2, detachListener);
+        stc.removeDetachListeners(span2, Arrays.asList(detachListener));
         stc.detach(true);
         
         assertFalse(listenerInvoked.get());
@@ -1066,7 +1066,7 @@ public class SharedTagContentTest {
     @Test
     public void testRemoveAllContentChangeListenersAbstractHtml() {
 
-        SharedTagContent stc = new SharedTagContent(UpdateClientNature.ALLOW_PARALLEL, "Test content", true);
+        SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.ALLOW_PARALLEL, "Test content", true);
         Div div = new Div(null);
         Span span1 = new Span(div);
         span1.addInnerHtml(stc);
@@ -1074,10 +1074,10 @@ public class SharedTagContentTest {
         span2.addInnerHtml(stc);
         
         AtomicBoolean listenerInvoked = new AtomicBoolean();
-        final SharedTagContent.ContentChangeListener contentChangeListener = new SharedTagContent.ContentChangeListener() {
+        final SharedTagContent.ContentChangeListener<String> contentChangeListener = new SharedTagContent.ContentChangeListener<String>() {
             
             @Override
-            public Runnable contentChanged(ChangeEvent changeEvent) {
+            public Runnable contentChanged(ChangeEvent<String> changeEvent) {
                 listenerInvoked.set(true);
                 return null;
             }
@@ -1092,7 +1092,7 @@ public class SharedTagContentTest {
 
     @Test
     public void testRemoveAllContentChangeListeners() {
-        SharedTagContent stc = new SharedTagContent(UpdateClientNature.ALLOW_PARALLEL, "Test content", true);
+        SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.ALLOW_PARALLEL, "Test content", true);
         Div div = new Div(null);
         Span span1 = new Span(div);
         span1.addInnerHtml(stc);
@@ -1100,10 +1100,10 @@ public class SharedTagContentTest {
         span2.addInnerHtml(stc);
         
         AtomicBoolean listenerInvoked = new AtomicBoolean();
-        final SharedTagContent.ContentChangeListener contentChangeListener = new SharedTagContent.ContentChangeListener() {
+        final SharedTagContent.ContentChangeListener<String> contentChangeListener = new SharedTagContent.ContentChangeListener<String>() {
             
             @Override
-            public Runnable contentChanged(ChangeEvent changeEvent) {
+            public Runnable contentChanged(ChangeEvent<String> changeEvent) {
                 listenerInvoked.set(true);
                 return null;
             }
@@ -1118,7 +1118,7 @@ public class SharedTagContentTest {
 
     @Test
     public void testRemoveAllDetachListenersAbstractHtml() {
-        SharedTagContent stc = new SharedTagContent(UpdateClientNature.ALLOW_PARALLEL, "Test content", true);
+        SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.ALLOW_PARALLEL, "Test content", true);
         Div div = new Div(null);
         Span span1 = new Span(div);
         span1.addInnerHtml(stc);
@@ -1126,10 +1126,10 @@ public class SharedTagContentTest {
         span2.addInnerHtml(stc);
         
         AtomicBoolean listenerInvoked = new AtomicBoolean();
-        final SharedTagContent.DetachListener detachListener = new SharedTagContent.DetachListener() {
+        final SharedTagContent.DetachListener<String> detachListener = new SharedTagContent.DetachListener<String>() {
             
             @Override
-            public Runnable detached(DetachEvent detachEvent) {
+            public Runnable detached(DetachEvent<String> detachEvent) {
                 listenerInvoked.set(true);
                 return null;
             }
@@ -1145,7 +1145,7 @@ public class SharedTagContentTest {
     @Test
     public void testRemoveAllDetachListeners() {
 
-        SharedTagContent stc = new SharedTagContent(UpdateClientNature.ALLOW_PARALLEL, "Test content", true);
+        SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.ALLOW_PARALLEL, "Test content", true);
         Div div = new Div(null);
         Span span1 = new Span(div);
         span1.addInnerHtml(stc);
@@ -1153,10 +1153,10 @@ public class SharedTagContentTest {
         span2.addInnerHtml(stc);
         
         AtomicBoolean listenerInvoked = new AtomicBoolean();
-        final SharedTagContent.DetachListener detachListener = new SharedTagContent.DetachListener() {
+        final SharedTagContent.DetachListener<String> detachListener = new SharedTagContent.DetachListener<String>() {
             
             @Override
-            public Runnable detached(DetachEvent detachEvent) {
+            public Runnable detached(DetachEvent<String> detachEvent) {
                 listenerInvoked.set(true);
                 return null;
             }
@@ -1171,7 +1171,7 @@ public class SharedTagContentTest {
     
     @Test
     public void testAbstractHtmlGetSharedTagContent() throws Exception {
-        SharedTagContent stc = new SharedTagContent(UpdateClientNature.SEQUENTIAL, "Test Content", true);
+        SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.SEQUENTIAL, "Test Content", true);
         Div div = new Div(null);
         Span spanChild1 = new Span(div);
         spanChild1.addInnerHtml(stc);
@@ -1216,20 +1216,20 @@ public class SharedTagContentTest {
         assertNull(spanChild1.getSharedTagContent());
         assertNull(pChild2.getSharedTagContent());
         
-        spanChild1.addInnerHtml(stc, new SharedTagContent.ContentFormatter() {
+        spanChild1.addInnerHtml(stc, new SharedTagContent.ContentFormatter<String>() {
             
             @Override
-            public SharedTagContent.Content format(SharedTagContent.Content content) {
+            public SharedTagContent.Content<String> format(SharedTagContent.Content<String> content) {
                 assertEquals("Test Content", content.getContent());
-                return new SharedTagContent.Content("Formatted content", content.isContentTypeHtml());
+                return new SharedTagContent.Content<>("Formatted content", content.isContentTypeHtml());
             }
         });
-        pChild2.addInnerHtml(stc, new SharedTagContent.ContentFormatter() {
+        pChild2.addInnerHtml(stc, new SharedTagContent.ContentFormatter<String>() {
             
             @Override
-            public SharedTagContent.Content format(SharedTagContent.Content content) {
+            public SharedTagContent.Content<String> format(SharedTagContent.Content<String> content) {
                 assertEquals("Test Content", content.getContent());
-                return new SharedTagContent.Content("Formatted content", content.isContentTypeHtml());
+                return new SharedTagContent.Content<>("Formatted content", content.isContentTypeHtml());
             }
         });
         assertEquals(stc, spanChild1.getSharedTagContent());
@@ -1239,28 +1239,28 @@ public class SharedTagContentTest {
     @Test
     public void testContentFormatter() throws Exception {
         
-        SharedTagContent stc = new SharedTagContent(UpdateClientNature.SEQUENTIAL, "Test Content", true);
+        SharedTagContent<String> stc = new SharedTagContent<>(UpdateClientNature.SEQUENTIAL, "Test Content", true);
         Div div = new Div(null);
         Span spanChild1 = new Span(div);
         spanChild1.addInnerHtml(stc);
         P pChild2 = new P(div);
         pChild2.addInnerHtml(stc);
         
-        spanChild1.addInnerHtml(stc, new SharedTagContent.ContentFormatter() {
+        spanChild1.addInnerHtml(stc, new SharedTagContent.ContentFormatter<String>() {
             
             @Override
-            public SharedTagContent.Content format(SharedTagContent.Content content) {
+            public SharedTagContent.Content<String> format(SharedTagContent.Content<String> content) {
                 assertEquals("Test Content", content.getContent());
-                return new SharedTagContent.Content("Formatted1 Content", content.isContentTypeHtml());
+                return new SharedTagContent.Content<>("Formatted1 Content", content.isContentTypeHtml());
             }
         });
         
-        pChild2.addInnerHtml(stc, new SharedTagContent.ContentFormatter() {
+        pChild2.addInnerHtml(stc, new SharedTagContent.ContentFormatter<String>() {
             
             @Override
-            public SharedTagContent.Content format(SharedTagContent.Content content) {
+            public SharedTagContent.Content<String> format(SharedTagContent.Content<String> content) {
                 assertEquals("Test Content", content.getContent());
-                return new SharedTagContent.Content("Formatted2 Content", content.isContentTypeHtml());
+                return new SharedTagContent.Content<>("Formatted2 Content", content.isContentTypeHtml());
             }
         });
         assertEquals(stc, spanChild1.getSharedTagContent());

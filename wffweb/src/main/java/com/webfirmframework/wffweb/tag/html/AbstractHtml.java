@@ -148,6 +148,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     protected final boolean noTagContentTypeHtml;
 
+    @SuppressWarnings("rawtypes")
     private volatile SharedTagContent sharedTagContent;
 
     public static enum TagType {
@@ -808,7 +809,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *                             sharedTagContent object.
      * @since 3.0.6
      */
-    public void addInnerHtml(final SharedTagContent sharedTagContent) {
+    public <T> void addInnerHtml(final SharedTagContent<T> sharedTagContent) {
         addInnerHtml(true, sharedTagContent, null);
     }
 
@@ -824,8 +825,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *                             before it is embedded in this tag.
      * @since 3.0.6
      */
-    public void addInnerHtml(final SharedTagContent sharedTagContent,
-            final SharedTagContent.ContentFormatter formatter) {
+    public <T> void addInnerHtml(final SharedTagContent<T> sharedTagContent,
+            final SharedTagContent.ContentFormatter<T> formatter) {
         addInnerHtml(true, sharedTagContent, formatter);
     }
 
@@ -844,8 +845,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *                             sharedTagContent object.
      * @since 3.0.6
      */
-    public void addInnerHtml(final boolean updateClient,
-            final SharedTagContent sharedTagContent) {
+    public <T> void addInnerHtml(final boolean updateClient,
+            final SharedTagContent<T> sharedTagContent) {
         addInnerHtml(updateClient, sharedTagContent, null);
     }
 
@@ -867,9 +868,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *                             before it is embedded in this tag.
      * @since 3.0.6
      */
-    public void addInnerHtml(final boolean updateClient,
-            final SharedTagContent sharedTagContent,
-            final SharedTagContent.ContentFormatter formatter) {
+    public <T> void addInnerHtml(final boolean updateClient,
+            final SharedTagContent<T> sharedTagContent,
+            final SharedTagContent.ContentFormatter<T> formatter) {
 
         if (this.sharedTagContent == null
                 || !Objects.equals(this.sharedTagContent, sharedTagContent)) {
@@ -912,7 +913,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param sharedTagContent
      * @since 3.0.6
      */
-    void setSharedTagContent(final SharedTagContent sharedTagContent) {
+    <T> void setSharedTagContent(final SharedTagContent<T> sharedTagContent) {
         this.sharedTagContent = sharedTagContent;
     }
 
@@ -922,7 +923,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *         SharedTagContent object.
      * @since 3.0.6
      */
-    public SharedTagContent getSharedTagContent() {
+    @SuppressWarnings("unchecked")
+    public <T> SharedTagContent<T> getSharedTagContent() {
         final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
         lock.lock();
         try {

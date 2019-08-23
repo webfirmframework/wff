@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.tag.html;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -38,31 +39,33 @@ import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 /**
  * Changing the content of this object will be reflected in all consuming tags.
  *
+ * @param <T>
+ *            class type of content in this SharedTagContent object
  * @author WFF
  * @since 3.0.6
  *
  */
-public class SharedTagContent {
+public class SharedTagContent<T> {
 
     private static final Logger LOGGER = Logger
             .getLogger(SharedTagContent.class.getName());
 
     private static final Security ACCESS_OBJECT;
 
-    private static final ContentFormatter DEFAULT_CONTENT_FORMATTER = content -> content;
+    private final ContentFormatter<T> DEFAULT_CONTENT_FORMATTER = content -> content;
 
     // NB Using ReentrantReadWriteLock causes
     // java.lang.IllegalMonitorStateException in production app
     private final StampedLock lock = new StampedLock();
 
-    private final Map<NoTag, ContentFormatter> insertedTags = new WeakHashMap<>(
+    private final Map<NoTag, ContentFormatter<T>> insertedTags = new WeakHashMap<>(
             4, 0.75F);
 
-    private volatile Map<AbstractHtml, Set<ContentChangeListener>> contentChangeListeners;
+    private volatile Map<AbstractHtml, Set<ContentChangeListener<T>>> contentChangeListeners;
 
-    private volatile Map<AbstractHtml, Set<DetachListener>> detachListeners;
+    private volatile Map<AbstractHtml, Set<DetachListener<T>>> detachListeners;
 
-    private volatile String content;
+    private volatile T content;
 
     private volatile boolean contentTypeHtml;
 
@@ -76,18 +79,18 @@ public class SharedTagContent {
         }
     }
 
-    public static final class Content {
+    public static final class Content<T> {
 
-        private final String content;
+        private final T content;
         private final boolean contentTypeHtml;
 
-        public Content(final String content, final boolean contentTypeHtml) {
+        public Content(final T content, final boolean contentTypeHtml) {
             super();
             this.content = content;
             this.contentTypeHtml = contentTypeHtml;
         }
 
-        public String getContent() {
+        public T getContent() {
             return content;
         }
 
@@ -98,20 +101,20 @@ public class SharedTagContent {
     }
 
     @FunctionalInterface
-    public static interface ContentFormatter {
-        public abstract Content format(final Content content);
+    public static interface ContentFormatter<T> {
+        public abstract Content<T> format(final Content<T> content);
     }
 
-    public static final class ChangeEvent {
+    public static final class ChangeEvent<T> {
 
         private final AbstractHtml sourceTag;
-        private final ContentChangeListener sourceListener;
-        private final Content contentBefore;
-        private final Content contentAfter;
+        private final ContentChangeListener<T> sourceListener;
+        private final Content<T> contentBefore;
+        private final Content<T> contentAfter;
 
         private ChangeEvent(final AbstractHtml sourceTag,
-                final ContentChangeListener sourceListener,
-                final Content contentBefore, final Content contentAfter) {
+                final ContentChangeListener<T> sourceListener,
+                final Content<T> contentBefore, final Content<T> contentAfter) {
             super();
             this.sourceTag = sourceTag;
             this.sourceListener = sourceListener;
@@ -123,15 +126,15 @@ public class SharedTagContent {
             return sourceTag;
         }
 
-        public ContentChangeListener getSourceListener() {
+        public ContentChangeListener<T> getSourceListener() {
             return sourceListener;
         }
 
-        public Content getContentBefore() {
+        public Content<T> getContentBefore() {
             return contentBefore;
         }
 
-        public Content getContentAfter() {
+        public Content<T> getContentAfter() {
             return contentAfter;
         }
 
@@ -143,7 +146,7 @@ public class SharedTagContent {
      *
      */
     @FunctionalInterface
-    public static interface ContentChangeListener {
+    public static interface ContentChangeListener<T> {
         /**
          * NB: Do not call any methods of this SharedTagContent inside
          * contentChanged method, instead write it inside the returning Runnable
@@ -157,17 +160,19 @@ public class SharedTagContent {
          *         SharedTagContent object to be called it must be written
          *         inside this returning Runnable object (Runnable.run).
          */
-        public abstract Runnable contentChanged(final ChangeEvent changeEvent);
+        public abstract Runnable contentChanged(
+                final ChangeEvent<T> changeEvent);
     }
 
-    public static final class DetachEvent {
+    public static final class DetachEvent<T> {
 
         private final AbstractHtml sourceTag;
-        private final DetachListener sourceListener;
-        private final Content content;
+        private final DetachListener<T> sourceListener;
+        private final Content<T> content;
 
         private DetachEvent(final AbstractHtml sourceTag,
-                final DetachListener sourceListener, final Content content) {
+                final DetachListener<T> sourceListener,
+                final Content<T> content) {
             super();
             this.sourceListener = sourceListener;
             this.sourceTag = sourceTag;
@@ -178,11 +183,11 @@ public class SharedTagContent {
             return sourceTag;
         }
 
-        public DetachListener getSourceListener() {
+        public DetachListener<T> getSourceListener() {
             return sourceListener;
         }
 
-        public Content getContent() {
+        public Content<T> getContent() {
             return content;
         }
     }
@@ -193,7 +198,7 @@ public class SharedTagContent {
      *
      */
     @FunctionalInterface
-    public static interface DetachListener {
+    public static interface DetachListener<T> {
         /**
          * NB: Do not call any methods of this SharedTagContent inside detached,
          * instead write it inside the returning Runnable object (Runnable.run).
@@ -206,7 +211,7 @@ public class SharedTagContent {
          *         it must be written inside this returning Runnable object
          *         (Runnable.run).
          */
-        public abstract Runnable detached(final DetachEvent detachEvent);
+        public abstract Runnable detached(final DetachEvent<T> detachEvent);
     }
 
     // for security purpose, the class name should not be modified
@@ -231,7 +236,7 @@ public class SharedTagContent {
      *                    plain text, i.e. contentTypeHtml will be false.
      * @since 3.0.6
      */
-    public SharedTagContent(final String content) {
+    public SharedTagContent(final T content) {
         this.content = content;
         contentTypeHtml = false;
     }
@@ -259,7 +264,7 @@ public class SharedTagContent {
      * @since 3.0.6
      */
     public SharedTagContent(final UpdateClientNature updateClientNature,
-            final String content) {
+            final T content) {
         if (updateClientNature != null) {
             this.updateClientNature = updateClientNature;
         }
@@ -275,8 +280,7 @@ public class SharedTagContent {
      * @param contentTypeHtml
      * @since 3.0.6
      */
-    public SharedTagContent(final String content,
-            final boolean contentTypeHtml) {
+    public SharedTagContent(final T content, final boolean contentTypeHtml) {
         this.content = content;
         this.contentTypeHtml = contentTypeHtml;
     }
@@ -302,7 +306,7 @@ public class SharedTagContent {
      * @since 3.0.6
      */
     public SharedTagContent(final UpdateClientNature updateClientNature,
-            final String content, final boolean contentTypeHtml) {
+            final T content, final boolean contentTypeHtml) {
         if (updateClientNature != null) {
             this.updateClientNature = updateClientNature;
         }
@@ -314,7 +318,7 @@ public class SharedTagContent {
      * @return the content
      * @since 3.0.6
      */
-    public String getContent() {
+    public T getContent() {
         final long stamp = lock.readLock();
         try {
             return content;
@@ -439,7 +443,7 @@ public class SharedTagContent {
      *                    content to be reflected in all consuming tags.
      * @since 3.0.6
      */
-    public void setContent(final String content) {
+    public void setContent(final T content) {
         setContent(updateClient, updateClientNature, null, content,
                 contentTypeHtml);
     }
@@ -466,7 +470,7 @@ public class SharedTagContent {
      * @since 3.0.6
      */
     public void setContent(final UpdateClientNature updateClientNature,
-            final String content) {
+            final T content) {
         setContent(updateClient,
                 (updateClientNature != null ? updateClientNature
                         : this.updateClientNature),
@@ -481,8 +485,7 @@ public class SharedTagContent {
      *                            plain text
      * @since 3.0.6
      */
-    public void setContent(final String content,
-            final boolean contentTypeHtml) {
+    public void setContent(final T content, final boolean contentTypeHtml) {
         setContent(updateClient, updateClientNature, null, content,
                 contentTypeHtml);
     }
@@ -512,7 +515,7 @@ public class SharedTagContent {
      * @since 3.0.6
      */
     public void setContent(final UpdateClientNature updateClientNature,
-            final String content, final boolean contentTypeHtml) {
+            final T content, final boolean contentTypeHtml) {
         setContent(updateClient,
                 (updateClientNature != null ? updateClientNature
                         : this.updateClientNature),
@@ -526,7 +529,7 @@ public class SharedTagContent {
      * @since 3.0.6
      */
     public void setContent(final Set<AbstractHtml> exclusionTags,
-            final String content) {
+            final T content) {
         setContent(updateClient, updateClientNature, exclusionTags, content,
                 contentTypeHtml);
     }
@@ -539,7 +542,7 @@ public class SharedTagContent {
      * @since 3.0.6
      */
     public void setContent(final Set<AbstractHtml> exclusionTags,
-            final String content, final boolean contentTypeHtml) {
+            final T content, final boolean contentTypeHtml) {
         setContent(updateClient, updateClientNature, exclusionTags, content,
                 contentTypeHtml);
     }
@@ -567,7 +570,7 @@ public class SharedTagContent {
      */
     private void setContent(final boolean updateClient,
             final UpdateClientNature updateClientNature,
-            final Set<AbstractHtml> exclusionTags, final String content,
+            final Set<AbstractHtml> exclusionTags, final T content,
             final boolean contentTypeHtml) {
 
         final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(
@@ -576,21 +579,22 @@ public class SharedTagContent {
         final long stamp = lock.writeLock();
         try {
 
-            final Content contentBefore = new Content(this.content,
+            final Content<T> contentBefore = new Content<>(this.content,
                     this.contentTypeHtml);
-            final Content contentAfter = new Content(content, contentTypeHtml);
+            final Content<T> contentAfter = new Content<>(content,
+                    contentTypeHtml);
 
             this.updateClientNature = updateClientNature;
             this.content = content;
             this.contentTypeHtml = contentTypeHtml;
 
-            final Map<AbstractHtml5SharedObject, List<ParentNoTagData>> tagsGroupedBySharedObject = new HashMap<>();
+            final Map<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> tagsGroupedBySharedObject = new HashMap<>();
 
-            for (final Entry<NoTag, ContentFormatter> entry : insertedTags
+            for (final Entry<NoTag, ContentFormatter<T>> entry : insertedTags
                     .entrySet()) {
 
                 final NoTag prevNoTag = entry.getKey();
-                final ContentFormatter formatter = entry.getValue();
+                final ContentFormatter<T> formatter = entry.getValue();
 
                 final AbstractHtml parentTag = prevNoTag.getParent();
 
@@ -606,7 +610,7 @@ public class SharedTagContent {
                     continue;
                 }
 
-                List<ParentNoTagData> dataList = tagsGroupedBySharedObject
+                List<ParentNoTagData<T>> dataList = tagsGroupedBySharedObject
                         .get(parentTag.getSharedObject());
 
                 if (dataList == null) {
@@ -616,9 +620,10 @@ public class SharedTagContent {
                 }
                 NoTag noTag;
                 try {
-                    final Content formattedContent = formatter
+                    final Content<T> formattedContent = formatter
                             .format(contentAfter);
-                    noTag = new NoTag(null, formattedContent.getContent(),
+                    noTag = new NoTag(null,
+                            String.valueOf(formattedContent.getContent()),
                             formattedContent.isContentTypeHtml());
 
                 } catch (final RuntimeException e) {
@@ -628,7 +633,7 @@ public class SharedTagContent {
                 }
                 final AbstractHtml noTagAsBase = noTag;
                 noTagAsBase.setSharedTagContent(this);
-                dataList.add(new ParentNoTagData(prevNoTag, parentTag, noTag,
+                dataList.add(new ParentNoTagData<>(prevNoTag, parentTag, noTag,
                         formatter));
 
             }
@@ -637,12 +642,13 @@ public class SharedTagContent {
 
             final List<AbstractHtml> modifiedParents = new ArrayList<>(4);
 
-            for (final Entry<AbstractHtml5SharedObject, List<ParentNoTagData>> entry : tagsGroupedBySharedObject
+            for (final Entry<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> entry : tagsGroupedBySharedObject
                     .entrySet()) {
 
                 final AbstractHtml5SharedObject sharedObject = entry.getKey();
 
-                final List<ParentNoTagData> parentNoTagDatas = entry.getValue();
+                final List<ParentNoTagData<T>> parentNoTagDatas = entry
+                        .getValue();
 
                 // pushing using first parent object makes bug (got bug when
                 // singleton SharedTagContent object is used under multiple
@@ -656,7 +662,7 @@ public class SharedTagContent {
 
                 try {
 
-                    for (final ParentNoTagData parentNoTagData : parentNoTagDatas) {
+                    for (final ParentNoTagData<T> parentNoTagData : parentNoTagDatas) {
 
                         // parentNoTagData.getParent().getSharedObject().equals(sharedObject)
                         // is important here as it could be change just before
@@ -728,12 +734,12 @@ public class SharedTagContent {
 
             if (contentChangeListeners != null) {
                 for (final AbstractHtml modifiedParent : modifiedParents) {
-                    final Set<ContentChangeListener> listeners = contentChangeListeners
+                    final Set<ContentChangeListener<T>> listeners = contentChangeListeners
                             .get(modifiedParent);
                     if (listeners != null) {
                         runnables = new ArrayList<>(listeners.size());
-                        for (final ContentChangeListener listener : listeners) {
-                            final ChangeEvent changeEvent = new ChangeEvent(
+                        for (final ContentChangeListener<T> listener : listeners) {
+                            final ChangeEvent<T> changeEvent = new ChangeEvent<>(
                                     modifiedParent, listener, contentBefore,
                                     contentAfter);
                             try {
@@ -835,9 +841,9 @@ public class SharedTagContent {
      */
     AbstractHtml addInnerHtml(final boolean updateClient,
             final AbstractHtml applicableTag,
-            final ContentFormatter formatter) {
+            final ContentFormatter<T> formatter) {
 
-        final ContentFormatter cFormatter = formatter != null ? formatter
+        final ContentFormatter<T> cFormatter = formatter != null ? formatter
                 : DEFAULT_CONTENT_FORMATTER;
 
         final long stamp = lock.writeLock();
@@ -848,13 +854,15 @@ public class SharedTagContent {
         NoTag noTagInserted = null;
         try {
 
-            final Content contentLocal = new Content(content, contentTypeHtml);
+            final Content<T> contentLocal = new Content<>(content,
+                    contentTypeHtml);
 
             NoTag noTag;
             try {
-                final Content formattedContent = cFormatter
+                final Content<T> formattedContent = cFormatter
                         .format(contentLocal);
-                noTag = new NoTag(null, formattedContent.getContent(),
+                noTag = new NoTag(null,
+                        String.valueOf(formattedContent.getContent()),
                         contentLocal.isContentTypeHtml());
             } catch (final RuntimeException e) {
                 noTag = new NoTag(null, "", false);
@@ -951,14 +959,15 @@ public class SharedTagContent {
         final long stamp = lock.writeLock();
         try {
 
-            final Content contentBefore = new Content(content, contentTypeHtml);
+            final Content<T> contentBefore = new Content<>(content,
+                    contentTypeHtml);
 
-            final Map<AbstractHtml5SharedObject, List<ParentNoTagData>> tagsGroupedBySharedObject = new HashMap<>();
+            final Map<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> tagsGroupedBySharedObject = new HashMap<>();
 
-            for (final Entry<NoTag, ContentFormatter> entry : insertedTags
+            for (final Entry<NoTag, ContentFormatter<T>> entry : insertedTags
                     .entrySet()) {
                 final NoTag prevNoTag = entry.getKey();
-                final ContentFormatter formatter = entry.getValue();
+                final ContentFormatter<T> formatter = entry.getValue();
                 final AbstractHtml parentTag = prevNoTag.getParent();
 
                 if (parentTag == null) {
@@ -973,7 +982,7 @@ public class SharedTagContent {
                     continue;
                 }
 
-                List<ParentNoTagData> dataList = tagsGroupedBySharedObject
+                List<ParentNoTagData<T>> dataList = tagsGroupedBySharedObject
                         .get(parentTag.getSharedObject());
 
                 if (dataList == null) {
@@ -985,7 +994,7 @@ public class SharedTagContent {
                 // final NoTag noTag = new NoTag(null, content,
                 // contentTypeHtml);
 
-                dataList.add(new ParentNoTagData(prevNoTag, parentTag, null,
+                dataList.add(new ParentNoTagData<>(prevNoTag, parentTag, null,
                         formatter));
             }
 
@@ -993,12 +1002,13 @@ public class SharedTagContent {
 
             final List<AbstractHtml> modifiedParents = new ArrayList<>(4);
 
-            for (final Entry<AbstractHtml5SharedObject, List<ParentNoTagData>> entry : tagsGroupedBySharedObject
+            for (final Entry<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> entry : tagsGroupedBySharedObject
                     .entrySet()) {
 
                 final AbstractHtml5SharedObject sharedObject = entry.getKey();
 
-                final List<ParentNoTagData> parentNoTagDatas = entry.getValue();
+                final List<ParentNoTagData<T>> parentNoTagDatas = entry
+                        .getValue();
 
                 // pushing using first parent object makes bug (got bug when
                 // singleton SharedTagContent object is used under multiple
@@ -1012,7 +1022,7 @@ public class SharedTagContent {
 
                 try {
 
-                    for (final ParentNoTagData parentNoTagData : parentNoTagDatas) {
+                    for (final ParentNoTagData<T> parentNoTagData : parentNoTagDatas) {
 
                         // parentNoTagData.getParent().getSharedObject().equals(sharedObject)
                         // is important here as it could be change just before
@@ -1098,12 +1108,12 @@ public class SharedTagContent {
 
             if (detachListeners != null) {
                 for (final AbstractHtml modifiedParent : modifiedParents) {
-                    final Set<DetachListener> listeners = detachListeners
+                    final Set<DetachListener<T>> listeners = detachListeners
                             .get(modifiedParent);
                     if (listeners != null) {
                         runnables = new ArrayList<>(listeners.size());
-                        for (final DetachListener listener : listeners) {
-                            final DetachEvent detachEvent = new DetachEvent(
+                        for (final DetachListener<T> listener : listeners) {
+                            final DetachEvent<T> detachEvent = new DetachEvent<>(
                                     modifiedParent, listener, contentBefore);
                             try {
                                 final Runnable runnable = listener
@@ -1151,11 +1161,11 @@ public class SharedTagContent {
      * @since 3.0.6
      */
     public void addContentChangeListener(final AbstractHtml tag,
-            final ContentChangeListener contentChangeListener) {
+            final ContentChangeListener<T> contentChangeListener) {
         final long stamp = lock.writeLock();
 
         try {
-            final Set<ContentChangeListener> listeners;
+            final Set<ContentChangeListener<T>> listeners;
             if (contentChangeListeners == null) {
                 listeners = new LinkedHashSet<>(4);
                 contentChangeListeners = new WeakHashMap<>(4, 0.75F);
@@ -1177,11 +1187,11 @@ public class SharedTagContent {
      * @since 3.0.6
      */
     public void addDetachListener(final AbstractHtml tag,
-            final DetachListener detachListener) {
+            final DetachListener<T> detachListener) {
         final long stamp = lock.writeLock();
 
         try {
-            final Set<DetachListener> listeners;
+            final Set<DetachListener<T>> listeners;
             if (detachListeners == null) {
                 listeners = new LinkedHashSet<>(4);
                 detachListeners = new WeakHashMap<>(4, 0.75F);
@@ -1206,13 +1216,13 @@ public class SharedTagContent {
      * @since 3.0.6
      */
     public void removeContentChangeListener(
-            final ContentChangeListener contentChangeListener) {
+            final ContentChangeListener<T> contentChangeListener) {
         final long stamp = lock.writeLock();
 
         try {
             if (contentChangeListeners != null) {
 
-                for (final Set<ContentChangeListener> listeners : contentChangeListeners
+                for (final Set<ContentChangeListener<T>> listeners : contentChangeListeners
                         .values()) {
                     if (listeners != null) {
                         listeners.remove(contentChangeListener);
@@ -1234,12 +1244,12 @@ public class SharedTagContent {
      * @since 3.0.6
      */
     public void removeContentChangeListener(final AbstractHtml tag,
-            final ContentChangeListener contentChangeListener) {
+            final ContentChangeListener<T> contentChangeListener) {
         final long stamp = lock.writeLock();
 
         try {
             if (contentChangeListeners != null) {
-                final Set<ContentChangeListener> listeners = contentChangeListeners
+                final Set<ContentChangeListener<T>> listeners = contentChangeListeners
                         .get(tag);
                 if (listeners != null) {
                     listeners.remove(contentChangeListener);
@@ -1259,13 +1269,13 @@ public class SharedTagContent {
      *                           to be removed from all linked tags
      * @since 3.0.6
      */
-    public void removeDetachListener(final DetachListener detachListener) {
+    public void removeDetachListener(final DetachListener<T> detachListener) {
         final long stamp = lock.writeLock();
 
         try {
             if (detachListeners != null) {
 
-                for (final Set<DetachListener> listeners : detachListeners
+                for (final Set<DetachListener<T>> listeners : detachListeners
                         .values()) {
                     if (listeners != null) {
                         listeners.remove(detachListener);
@@ -1284,12 +1294,13 @@ public class SharedTagContent {
      * @since 3.0.6
      */
     public void removeDetachListener(final AbstractHtml tag,
-            final DetachListener detachListener) {
+            final DetachListener<T> detachListener) {
         final long stamp = lock.writeLock();
 
         try {
             if (detachListeners != null) {
-                final Set<DetachListener> listeners = detachListeners.get(tag);
+                final Set<DetachListener<T>> listeners = detachListeners
+                        .get(tag);
                 if (listeners != null) {
                     listeners.remove(detachListener);
                 }
@@ -1309,18 +1320,18 @@ public class SharedTagContent {
      * @since 3.0.6
      */
     public void removeContentChangeListeners(final AbstractHtml tag,
-            final ContentChangeListener... contentChangeListeners) {
+            final Collection<ContentChangeListener<T>> contentChangeListeners) {
 
         final long stamp = lock.writeLock();
 
         try {
             if (this.contentChangeListeners != null) {
 
-                final Set<ContentChangeListener> listeners = this.contentChangeListeners
+                final Set<ContentChangeListener<T>> listeners = this.contentChangeListeners
                         .get(tag);
 
                 if (listeners != null) {
-                    for (final ContentChangeListener each : contentChangeListeners) {
+                    for (final ContentChangeListener<T> each : contentChangeListeners) {
                         listeners.remove(each);
                     }
                 }
@@ -1337,18 +1348,18 @@ public class SharedTagContent {
      * @since 3.0.6
      */
     public void removeDetachListeners(final AbstractHtml tag,
-            final DetachListener... detachListeners) {
+            final Collection<DetachListener<T>> detachListeners) {
 
         final long stamp = lock.writeLock();
 
         try {
             if (this.detachListeners != null) {
 
-                final Set<DetachListener> listeners = this.detachListeners
+                final Set<DetachListener<T>> listeners = this.detachListeners
                         .get(tag);
 
                 if (listeners != null) {
-                    for (final DetachListener each : detachListeners) {
+                    for (final DetachListener<T> each : detachListeners) {
                         listeners.remove(each);
                     }
                 }

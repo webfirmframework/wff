@@ -22,7 +22,7 @@ import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
  * @since 3.0.6
  *
  */
-class ParentNoTagData {
+class ParentNoTagData<T> {
 
     private final AbstractHtml parent;
 
@@ -30,11 +30,11 @@ class ParentNoTagData {
 
     private final NoTag previousNoTag;
 
-    private final SharedTagContent.ContentFormatter formatter;
+    private final SharedTagContent.ContentFormatter<T> formatter;
 
     ParentNoTagData(final NoTag previousNoTag, final AbstractHtml parent,
             final NoTag noTag,
-            final SharedTagContent.ContentFormatter formatter) {
+            final SharedTagContent.ContentFormatter<T> formatter) {
         super();
         this.previousNoTag = previousNoTag;
         this.parent = parent;
@@ -54,7 +54,7 @@ class ParentNoTagData {
         return noTag;
     }
 
-    SharedTagContent.ContentFormatter getFormatter() {
+    SharedTagContent.ContentFormatter<T> getFormatter() {
         return formatter;
     }
 
