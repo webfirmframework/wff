@@ -100,7 +100,7 @@ public class SharedTagContent {
 
     @FunctionalInterface
     public static interface ContentFormatter {
-        public abstract String format(Content content);
+        public abstract String format(final Content content);
     }
 
     public static final class ChangeEvent {
@@ -158,7 +158,7 @@ public class SharedTagContent {
          *         SharedTagContent object to be called it must be written
          *         inside this returning Runnable object (Runnable.run).
          */
-        public abstract Runnable contentChanged(ChangeEvent changeEvent);
+        public abstract Runnable contentChanged(final ChangeEvent changeEvent);
     }
 
     public static final class DetachEvent {
@@ -207,7 +207,7 @@ public class SharedTagContent {
          *         it must be written inside this returning Runnable object
          *         (Runnable.run).
          */
-        public abstract Runnable detached(DetachEvent detachEvent);
+        public abstract Runnable detached(final DetachEvent detachEvent);
     }
 
     // for security purpose, the class name should not be modified
@@ -839,6 +839,9 @@ public class SharedTagContent {
             final AbstractHtml applicableTag,
             final ContentFormatter formatter) {
 
+        final ContentFormatter cFormatter = formatter != null ? formatter
+                : DEFAULT_CONTENT_FORMATTER;
+
         final long stamp = lock.writeLock();
         final AbstractHtml5SharedObject sharedObject = applicableTag
                 .getSharedObject();
@@ -847,13 +850,15 @@ public class SharedTagContent {
         NoTag noTagInserted = null;
         try {
 
-            final NoTag noTag = new NoTag(null, content, contentTypeHtml);
+            final Content contentLocal = new Content(content, contentTypeHtml);
+            final NoTag noTag = new NoTag(null, cFormatter.format(contentLocal),
+                    contentLocal.isContentTypeHtml());
             final InnerHtmlListenerData listenerData = applicableTag
                     .addInnerHtmlsAndGetEventsLockless(updateClient, noTag);
 
             noTagInserted = noTag;
-            insertedTags.put(noTag,
-                    formatter != null ? formatter : DEFAULT_CONTENT_FORMATTER);
+
+            insertedTags.put(noTag, cFormatter);
 
             if (listenerData != null) {
                 // TODO declare new innerHtmlsAdded for multiple parents after

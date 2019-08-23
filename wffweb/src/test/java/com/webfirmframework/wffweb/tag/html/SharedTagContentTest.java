@@ -1168,9 +1168,10 @@ public class SharedTagContentTest {
         
         assertFalse(listenerInvoked.get());
     }
+    
     @Test
     public void testAbstractHtmlGetSharedTagContent() throws Exception {
-        SharedTagContent stc = new SharedTagContent(UpdateClientNature.SEQUENTIAL, "Test content", true);
+        SharedTagContent stc = new SharedTagContent(UpdateClientNature.SEQUENTIAL, "Test Content", true);
         Div div = new Div(null);
         Span spanChild1 = new Span(div);
         spanChild1.addInnerHtml(stc);
@@ -1215,10 +1216,60 @@ public class SharedTagContentTest {
         assertNull(spanChild1.getSharedTagContent());
         assertNull(pChild2.getSharedTagContent());
         
-        spanChild1.addInnerHtml(stc);
-        pChild2.addInnerHtml(stc);
+        spanChild1.addInnerHtml(stc, new SharedTagContent.ContentFormatter() {
+            
+            @Override
+            public String format(SharedTagContent.Content content) {
+                assertEquals("Test Content", content.getContent());
+                return "Formatted content";
+            }
+        });
+        pChild2.addInnerHtml(stc, new SharedTagContent.ContentFormatter() {
+            
+            @Override
+            public String format(SharedTagContent.Content content) {
+                assertEquals("Test Content", content.getContent());
+                return "Formatted content";
+            }
+        });
         assertEquals(stc, spanChild1.getSharedTagContent());
         assertEquals(stc, pChild2.getSharedTagContent());
+    }
+    
+    @Test
+    public void testContentFormatter() throws Exception {
+        
+        SharedTagContent stc = new SharedTagContent(UpdateClientNature.SEQUENTIAL, "Test Content", true);
+        Div div = new Div(null);
+        Span spanChild1 = new Span(div);
+        spanChild1.addInnerHtml(stc);
+        P pChild2 = new P(div);
+        pChild2.addInnerHtml(stc);
+        
+        spanChild1.addInnerHtml(stc, new SharedTagContent.ContentFormatter() {
+            
+            @Override
+            public String format(SharedTagContent.Content content) {
+                assertEquals("Test Content", content.getContent());
+                return "Formatted1 Content";
+            }
+        });
+        
+        pChild2.addInnerHtml(stc, new SharedTagContent.ContentFormatter() {
+            
+            @Override
+            public String format(SharedTagContent.Content content) {
+                assertEquals("Test Content", content.getContent());
+                return "Formatted2 Content";
+            }
+        });
+        assertEquals(stc, spanChild1.getSharedTagContent());
+        assertEquals(stc, pChild2.getSharedTagContent());
+        
+        assertEquals("<span>Formatted1 Content</span>", spanChild1.toHtmlString());
+        assertEquals("<p>Formatted2 Content</p>", pChild2.toHtmlString());        
+        assertEquals("<div><span>Formatted1 Content</span><p>Formatted2 Content</p></div>", div.toHtmlString());
+        
     }
 
 }

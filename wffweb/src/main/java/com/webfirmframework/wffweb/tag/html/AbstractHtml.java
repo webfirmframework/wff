@@ -813,6 +813,23 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
+     * @param sharedTagContent
+     *                             the shared content to be inserted as inner
+     *                             content. Any changes of content in the
+     *                             sharedTagContent will be reflected in this
+     *                             tag and all other consuming tags of this
+     *                             sharedTagContent object.
+     * @param formatter
+     *                             content to be formatted using this formatter
+     *                             before it is embedded in this tag.
+     * @since 3.0.6
+     */
+    public void addInnerHtml(final SharedTagContent sharedTagContent,
+            final SharedTagContent.ContentFormatter formatter) {
+        addInnerHtml(true, sharedTagContent, formatter);
+    }
+
+    /**
      * @param updateClient
      *                             true to update client browser page if it is
      *                             available. The default value is true but it
