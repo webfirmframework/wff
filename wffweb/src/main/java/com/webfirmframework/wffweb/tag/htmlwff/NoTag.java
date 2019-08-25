@@ -200,14 +200,11 @@ public class NoTag extends AbstractHtml {
     }
 
     @Override
-    public <T> void addInnerHtml(final SharedTagContent<T> sharedTagContent) {
-        this.addInnerHtml(false, sharedTagContent, null);
-    }
-
-    @Override
-    public <T> void addInnerHtml(final boolean updateClient,
-            final SharedTagContent<T> sharedTagContent) {
-        this.addInnerHtml(updateClient, sharedTagContent, null);
+    public <T> void subscribeTo(final boolean updateClient,
+            final SharedTagContent<T> sharedTagContent,
+            final ContentFormatter<T> formatter) {
+        throw new MethodNotImplementedException(
+                "sharedTagContent is not allowed to apply in NoTag or Blank tag");
     }
 
     @Override
