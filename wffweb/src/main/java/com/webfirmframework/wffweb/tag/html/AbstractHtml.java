@@ -987,7 +987,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
             try {
                 if (sharedTagContent != null) {
                     final AbstractHtml noTagInserted = sharedTagContent
-                            .addInnerHtml(updateClient, this, formatter, false);
+                            .addInnerHtml(updateClient, this, formatter,
+                                    subscribe);
                     noTagInserted.sharedTagContent = sharedTagContent;
                 } else {
                     if (children.size() == 1) {
