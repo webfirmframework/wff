@@ -18,8 +18,11 @@ package com.webfirmframework.wffweb.tag.html;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 
 /**
+ * NB: only for internal use
+ *
  * @author WFF
  * @since 3.0.6
+ *
  *
  */
 class ParentNoTagData<T> {
@@ -32,21 +35,35 @@ class ParentNoTagData<T> {
 
     private final SharedTagContent.ContentFormatter<T> formatter;
 
+    private final SharedTagContent.Content<String> contentApplied;
+
+    ParentNoTagData(final NoTag previousNoTag, final AbstractHtml parent,
+            final SharedTagContent.ContentFormatter<T> formatter) {
+        super();
+        this.previousNoTag = previousNoTag;
+        this.parent = parent;
+        this.noTag = null;
+        this.formatter = formatter;
+        this.contentApplied = null;
+    }
+
     ParentNoTagData(final NoTag previousNoTag, final AbstractHtml parent,
             final NoTag noTag,
-            final SharedTagContent.ContentFormatter<T> formatter) {
+            final SharedTagContent.ContentFormatter<T> formatter,
+            final SharedTagContent.Content<String> contentApplied) {
         super();
         this.previousNoTag = previousNoTag;
         this.parent = parent;
         this.noTag = noTag;
         this.formatter = formatter;
+        this.contentApplied = contentApplied;
     }
 
-    AbstractHtml getParent() {
+    AbstractHtml parent() {
         return parent;
     }
 
-    NoTag getPreviousNoTag() {
+    NoTag previousNoTag() {
         return previousNoTag;
     }
 
@@ -54,8 +71,12 @@ class ParentNoTagData<T> {
         return noTag;
     }
 
-    SharedTagContent.ContentFormatter<T> getFormatter() {
+    SharedTagContent.ContentFormatter<T> formatter() {
         return formatter;
+    }
+
+    SharedTagContent.Content<String> contentApplied() {
+        return contentApplied;
     }
 
 }

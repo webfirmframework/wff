@@ -20,6 +20,8 @@ import com.webfirmframework.wffweb.tag.html.listener.InnerHtmlAddListener.Event;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 
 /**
+ * NB: only for internal use
+ *
  * @author WFF
  * @since 3.0.6
  *
@@ -40,15 +42,15 @@ class InnerHtmlListenerData {
         this.events = events;
     }
 
-    AbstractHtml5SharedObject getSharedObject() {
+    AbstractHtml5SharedObject sharedObject() {
         return sharedObject;
     }
 
-    InnerHtmlAddListener.Event[] getEvents() {
+    InnerHtmlAddListener.Event[] events() {
         return events;
     }
 
-    InnerHtmlAddListener getListener() {
+    InnerHtmlAddListener listener() {
         return listener;
     }
 

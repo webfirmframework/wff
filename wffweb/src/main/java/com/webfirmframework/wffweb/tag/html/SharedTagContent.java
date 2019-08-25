@@ -112,15 +112,21 @@ public class SharedTagContent<T> {
         private final ContentChangeListener<T> sourceListener;
         private final Content<T> contentBefore;
         private final Content<T> contentAfter;
+        private final Content<String> contentApplied;
+        private final ContentFormatter<T> formatter;
 
         private ChangeEvent(final AbstractHtml sourceTag,
                 final ContentChangeListener<T> sourceListener,
-                final Content<T> contentBefore, final Content<T> contentAfter) {
+                final Content<T> contentBefore, final Content<T> contentAfter,
+                final Content<String> contentApplied,
+                final ContentFormatter<T> formatter) {
             super();
             this.sourceTag = sourceTag;
             this.sourceListener = sourceListener;
             this.contentBefore = contentBefore;
             this.contentAfter = contentAfter;
+            this.contentApplied = contentApplied;
+            this.formatter = formatter;
         }
 
         public AbstractHtml getSourceTag() {
@@ -137,6 +143,14 @@ public class SharedTagContent<T> {
 
         public Content<T> getContentAfter() {
             return contentAfter;
+        }
+
+        public Content<String> getContentApplied() {
+            return contentApplied;
+        }
+
+        public ContentFormatter<T> getFormatter() {
+            return formatter;
         }
 
     }
@@ -620,32 +634,34 @@ public class SharedTagContent<T> {
                             dataList);
                 }
                 NoTag noTag;
+                Content<String> contentApplied;
                 try {
-                    final Content<String> formattedContent = formatter
-                            .format(contentAfter);
-                    if (formattedContent != null) {
-                        noTag = new NoTag(null, formattedContent.getContent(),
-                                formattedContent.isContentTypeHtml());
-                    } else {
-                        noTag = new NoTag(null, prevNoTag.getChildContent(),
+                    contentApplied = formatter.format(contentAfter);
+                    if (contentApplied == null) {
+                        contentApplied = new Content<>(
+                                prevNoTag.getChildContent(),
                                 prevNoTag.isChildContentTypeHtml());
                     }
-
                 } catch (final RuntimeException e) {
-                    noTag = new NoTag(null, "", false);
+                    contentApplied = new Content<>("", false);
                     LOGGER.log(Level.SEVERE,
                             "Exception while ContentFormatter.format", e);
                 }
+
+                noTag = new NoTag(null, contentApplied.getContent(),
+                        contentApplied.isContentTypeHtml());
+
                 final AbstractHtml noTagAsBase = noTag;
                 noTagAsBase.setSharedTagContent(this);
                 dataList.add(new ParentNoTagData<>(prevNoTag, parentTag, noTag,
-                        formatter));
+                        formatter, contentApplied));
 
             }
 
             insertedTags.clear();
 
-            final List<AbstractHtml> modifiedParents = new ArrayList<>(4);
+            final List<ModifiedParentData<T>> modifiedParents = new ArrayList<>(
+                    4);
 
             for (final Entry<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> entry : tagsGroupedBySharedObject
                     .entrySet()) {
@@ -684,7 +700,7 @@ public class SharedTagContent<T> {
                         // means the parent of this tag has already been changed
                         // at least once
                         final AbstractHtml previousNoTag = parentNoTagData
-                                .getPreviousNoTag();
+                                .previousNoTag();
 
                         // to get safety of lock it is executed before
                         // addInnerHtmlsAndGetEventsLockless
@@ -692,27 +708,29 @@ public class SharedTagContent<T> {
                         // SharedTagContent will not reuse the same NoTag
                         previousNoTag.setSharedTagContent(null);
 
-                        if (parentNoTagData.getParent().getSharedObject()
+                        if (parentNoTagData.parent().getSharedObject()
                                 .equals(sharedObject)
-                                && parentNoTagData.getParent()
+                                && parentNoTagData.parent()
                                         .getChildrenSizeLockless() == 1
                                 && !previousNoTag.isParentNullifiedOnce()) {
 
                             insertedTags.put(parentNoTagData.getNoTag(),
-                                    parentNoTagData.getFormatter());
+                                    parentNoTagData.formatter());
 
-                            modifiedParents.add(parentNoTagData.getParent());
+                            modifiedParents.add(new ModifiedParentData<>(
+                                    parentNoTagData.parent(),
+                                    parentNoTagData.contentApplied(),
+                                    parentNoTagData.formatter()));
 
                             boolean updateClientTagSpecific = updateClient;
                             if (updateClient && exclusionTags != null
                                     && exclusionTags.contains(
-                                            parentNoTagData.getParent())) {
+                                            parentNoTagData.parent())) {
                                 updateClientTagSpecific = false;
                             }
 
                             final InnerHtmlListenerData listenerData = parentNoTagData
-                                    .getParent()
-                                    .addInnerHtmlsAndGetEventsLockless(
+                                    .parent().addInnerHtmlsAndGetEventsLockless(
                                             updateClientTagSpecific,
                                             parentNoTagData.getNoTag());
 
@@ -720,9 +738,9 @@ public class SharedTagContent<T> {
                                 // TODO declare new innerHtmlsAdded for multiple
                                 // parents after verifying feasibility of
                                 // considering rich notag content
-                                listenerData.getListener().innerHtmlsAdded(
-                                        parentNoTagData.getParent(),
-                                        listenerData.getEvents());
+                                listenerData.listener().innerHtmlsAdded(
+                                        parentNoTagData.parent(),
+                                        listenerData.events());
 
                                 // push is require only if listener invoked
                                 sharedObjects.add(sharedObject);
@@ -738,7 +756,9 @@ public class SharedTagContent<T> {
             }
 
             if (contentChangeListeners != null) {
-                for (final AbstractHtml modifiedParent : modifiedParents) {
+                for (final ModifiedParentData<T> modifiedParentData : modifiedParents) {
+                    final AbstractHtml modifiedParent = modifiedParentData
+                            .parent();
                     final Set<ContentChangeListener<T>> listeners = contentChangeListeners
                             .get(modifiedParent);
                     if (listeners != null) {
@@ -746,7 +766,9 @@ public class SharedTagContent<T> {
                         for (final ContentChangeListener<T> listener : listeners) {
                             final ChangeEvent<T> changeEvent = new ChangeEvent<>(
                                     modifiedParent, listener, contentBefore,
-                                    contentAfter);
+                                    contentAfter,
+                                    modifiedParentData.contentApplied(),
+                                    modifiedParentData.formatter());
                             try {
                                 final Runnable runnable = listener
                                         .contentChanged(changeEvent);
@@ -884,8 +906,8 @@ public class SharedTagContent<T> {
             if (listenerData != null) {
                 // TODO declare new innerHtmlsAdded for multiple parents after
                 // verifying feasibility of considering rich notag content
-                listenerData.getListener().innerHtmlsAdded(applicableTag,
-                        listenerData.getEvents());
+                listenerData.listener().innerHtmlsAdded(applicableTag,
+                        listenerData.events());
                 listenerInvoked = true;
             }
 
@@ -997,9 +1019,10 @@ public class SharedTagContent<T> {
 
                 // final NoTag noTag = new NoTag(null, content,
                 // contentTypeHtml);
+                // not inserting NoTag so need not pass
 
-                dataList.add(new ParentNoTagData<>(prevNoTag, parentTag, null,
-                        formatter));
+                dataList.add(
+                        new ParentNoTagData<>(prevNoTag, parentTag, formatter));
             }
 
             insertedTags.clear();
@@ -1043,28 +1066,27 @@ public class SharedTagContent<T> {
                         // means the parent of this tag has already been changed
                         // at least once
                         final AbstractHtml previousNoTag = parentNoTagData
-                                .getPreviousNoTag();
+                                .previousNoTag();
 
-                        if (parentNoTagData.getParent().getSharedObject()
+                        if (parentNoTagData.parent().getSharedObject()
                                 .equals(sharedObject)
-                                && parentNoTagData.getParent()
+                                && parentNoTagData.parent()
                                         .getChildrenSizeLockless() == 1
                                 && !previousNoTag.isParentNullifiedOnce()) {
 
                             if (exclusionTags != null && exclusionTags
-                                    .contains(parentNoTagData.getParent())) {
+                                    .contains(parentNoTagData.parent())) {
                                 insertedTags.put(
-                                        parentNoTagData.getPreviousNoTag(),
-                                        parentNoTagData.getFormatter());
+                                        parentNoTagData.previousNoTag(),
+                                        parentNoTagData.formatter());
                             } else {
-                                modifiedParents
-                                        .add(parentNoTagData.getParent());
+                                modifiedParents.add(parentNoTagData.parent());
 
                                 boolean updateClientTagSpecific = updateClient;
                                 if (updateClient
                                         && exclusionClientUpdateTags != null
                                         && exclusionClientUpdateTags.contains(
-                                                parentNoTagData.getParent())) {
+                                                parentNoTagData.parent())) {
                                     updateClientTagSpecific = false;
                                 }
 
@@ -1077,7 +1099,7 @@ public class SharedTagContent<T> {
 
                                 if (removeContent) {
                                     final ChildTagRemoveListenerData listenerData = parentNoTagData
-                                            .getParent()
+                                            .parent()
                                             .removeAllChildrenAndGetEventsLockless(
                                                     updateClientTagSpecific);
 
