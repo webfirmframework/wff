@@ -879,7 +879,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * Subscribes to the given SharedTagContent and listens to its content
      * updates but pushes updates of this tag to client browser page only if
      * there is an active WebSocket connection between server and client browser
-     * page.
+     * page and if there is no active WebSocket connection that changes will not
+     * be cached for later push.
      *
      *
      * @param sharedTagContent
@@ -899,7 +900,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * Subscribes to the given SharedTagContent and listens to its content
      * updates but pushes updates of this tag to client browser page only if
      * there is an active WebSocket connection between server and client browser
-     * page.
+     * page and if there is no active WebSocket connection that changes will not
+     * be cached for later push.
      *
      *
      * @param sharedTagContent
@@ -923,7 +925,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * Subscribes to the given SharedTagContent and listens to its content
      * updates but pushes updates of this tag to client browser page only if
      * there is an active WebSocket connection between server and client browser
-     * page.
+     * page and if there is no active WebSocket connection that changes will not
+     * be cached for later push.
      *
      * @param updateClient
      *                             true to update client browser page if it is
@@ -1052,6 +1055,37 @@ public abstract class AbstractHtml extends AbstractJsObject {
         }
 
         return null;
+    }
+
+    /**
+     * @return true if this tag is subscribed to any SharedTagContent object
+     *         otherwise false.
+     * @since 3.0.6
+     */
+    public boolean isSubscribedToSharedTagContent() {
+
+        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
+        lock.lock();
+        try {
+            if (children.size() == 1) {
+                final Iterator<AbstractHtml> iterator = children.iterator();
+                if (iterator.hasNext()) {
+                    final AbstractHtml firstChild = iterator.next();
+                    if (firstChild != null && !firstChild.parentNullifiedOnce
+                            && firstChild.sharedTagContent != null
+                            && firstChild instanceof NoTag) {
+                        return firstChild.sharedTagContent
+                                .isSubscribed(firstChild);
+                    }
+
+                }
+
+            }
+        } finally {
+            lock.unlock();
+        }
+
+        return false;
     }
 
     /**

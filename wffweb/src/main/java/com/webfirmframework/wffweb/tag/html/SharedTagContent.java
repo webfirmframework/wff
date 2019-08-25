@@ -953,6 +953,23 @@ public class SharedTagContent<T> {
     }
 
     /**
+     * @param noTag
+     * @return true if the parent of this NoTag was added by
+     *         AbstractHtml.subscribedTo method but it doesn't mean the NoTag is
+     *         not changed from parent or parent is modified.
+     * @since 3.0.6
+     */
+    boolean isSubscribed(final AbstractHtml noTag) {
+        final long stamp = lock.readLock();
+        try {
+            final InsertedTagData<T> insertedTagData = insertedTags.get(noTag);
+            return insertedTagData != null && insertedTagData.subscribed();
+        } finally {
+            lock.unlockRead(stamp);
+        }
+    }
+
+    /**
      * Detaches without removing contents from consuming tags.
      *
      * @param exclusionTags
