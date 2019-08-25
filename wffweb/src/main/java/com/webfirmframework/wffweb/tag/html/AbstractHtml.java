@@ -866,11 +866,115 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param formatter
      *                             content to be formatted using this formatter
      *                             before it is embedded in this tag.
+     *
      * @since 3.0.6
      */
     public <T> void addInnerHtml(final boolean updateClient,
             final SharedTagContent<T> sharedTagContent,
             final SharedTagContent.ContentFormatter<T> formatter) {
+        addInnerHtml(updateClient, sharedTagContent, formatter, false);
+    }
+
+    /**
+     * Subscribes to the given SharedTagContent and listens to its content
+     * updates but pushes updates of this tag to client browser page only if
+     * there is an active WebSocket connection between server and client browser
+     * page.
+     *
+     *
+     * @param sharedTagContent
+     *                             the shared content to be inserted as inner
+     *                             content. Any changes of content in the
+     *                             sharedTagContent will be reflected in this
+     *                             tag and all other consuming tags of this
+     *                             sharedTagContent object.
+     *
+     * @since 3.0.6
+     */
+    public <T> void subscribeTo(final SharedTagContent<T> sharedTagContent) {
+        addInnerHtml(true, sharedTagContent, null, true);
+    }
+
+    /**
+     * Subscribes to the given SharedTagContent and listens to its content
+     * updates but pushes updates of this tag to client browser page only if
+     * there is an active WebSocket connection between server and client browser
+     * page.
+     *
+     *
+     * @param sharedTagContent
+     *                             the shared content to be inserted as inner
+     *                             content. Any changes of content in the
+     *                             sharedTagContent will be reflected in this
+     *                             tag and all other consuming tags of this
+     *                             sharedTagContent object.
+     * @param formatter
+     *                             content to be formatted using this formatter
+     *                             before it is embedded in this tag.
+     *
+     * @since 3.0.6
+     */
+    public <T> void subscribeTo(final SharedTagContent<T> sharedTagContent,
+            final SharedTagContent.ContentFormatter<T> formatter) {
+        addInnerHtml(true, sharedTagContent, formatter, true);
+    }
+
+    /**
+     * Subscribes to the given SharedTagContent and listens to its content
+     * updates but pushes updates of this tag to client browser page only if
+     * there is an active WebSocket connection between server and client browser
+     * page.
+     *
+     * @param updateClient
+     *                             true to update client browser page if it is
+     *                             available. The default value is true but it
+     *                             will be ignored if there is no client browser
+     *                             page. false will skip updating client browser
+     *                             page only when this method call.
+     * @param sharedTagContent
+     *                             the shared content to be inserted as inner
+     *                             content. Any changes of content in the
+     *                             sharedTagContent will be reflected in this
+     *                             tag and all other consuming tags of this
+     *                             sharedTagContent object.
+     * @param formatter
+     *                             content to be formatted using this formatter
+     *                             before it is embedded in this tag.
+     *
+     * @since 3.0.6
+     */
+    public <T> void subscribeTo(final boolean updateClient,
+            final SharedTagContent<T> sharedTagContent,
+            final SharedTagContent.ContentFormatter<T> formatter) {
+        addInnerHtml(updateClient, sharedTagContent, formatter, true);
+    }
+
+    /**
+     * @param updateClient
+     *                             true to update client browser page if it is
+     *                             available. The default value is true but it
+     *                             will be ignored if there is no client browser
+     *                             page. false will skip updating client browser
+     *                             page only when this method call.
+     * @param sharedTagContent
+     *                             the shared content to be inserted as inner
+     *                             content. Any changes of content in the
+     *                             sharedTagContent will be reflected in this
+     *                             tag and all other consuming tags of this
+     *                             sharedTagContent object.
+     * @param formatter
+     *                             content to be formatted using this formatter
+     *                             before it is embedded in this tag.
+     * @param subscribe
+     *                             updateClient will be true only if there is an
+     *                             active wsListener otherwise updateClient will
+     *                             be false.
+     * @since 3.0.6
+     */
+    private <T> void addInnerHtml(final boolean updateClient,
+            final SharedTagContent<T> sharedTagContent,
+            final SharedTagContent.ContentFormatter<T> formatter,
+            final boolean subscribe) {
 
         if (this.sharedTagContent == null
                 || !Objects.equals(this.sharedTagContent, sharedTagContent)) {
@@ -880,7 +984,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             try {
                 if (sharedTagContent != null) {
                     final AbstractHtml noTagInserted = sharedTagContent
-                            .addInnerHtml(updateClient, this, formatter);
+                            .addInnerHtml(updateClient, this, formatter, false);
                     noTagInserted.sharedTagContent = sharedTagContent;
                 } else {
                     if (children.size() == 1) {

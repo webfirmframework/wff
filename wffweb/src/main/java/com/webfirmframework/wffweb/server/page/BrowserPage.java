@@ -202,6 +202,10 @@ public abstract class BrowserPage implements Serializable {
     public final void setWebSocketPushListener(
             final WebSocketPushListener wsListener) {
         this.wsListener = wsListener;
+        if (rootTag != null) {
+            rootTag.getSharedObject().setActiveWSListener(wsListener != null,
+                    ACCESS_OBJECT);
+        }
         if (pushQueueOnNewWebSocketListener) {
             pushWffBMBytesQueue();
         }
@@ -226,6 +230,10 @@ public abstract class BrowserPage implements Serializable {
         wsListeners.push(wsListener);
 
         this.wsListener = wsListener;
+        if (rootTag != null) {
+            rootTag.getSharedObject().setActiveWSListener(wsListener != null,
+                    ACCESS_OBJECT);
+        }
 
         if (pushQueueOnNewWebSocketListener) {
             pushWffBMBytesQueue();
@@ -250,6 +258,10 @@ public abstract class BrowserPage implements Serializable {
         }
 
         wsListener = wsListeners.peek();
+        if (rootTag != null) {
+            rootTag.getSharedObject().setActiveWSListener(wsListener != null,
+                    ACCESS_OBJECT);
+        }
     }
 
     public final WebSocketPushListener getWsListener() {

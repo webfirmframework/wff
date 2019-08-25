@@ -59,7 +59,7 @@ public class SharedTagContent<T> {
     // java.lang.IllegalMonitorStateException in production app
     private final StampedLock lock = new StampedLock();
 
-    private final Map<NoTag, ContentFormatter<T>> insertedTags = new WeakHashMap<>(
+    private final Map<NoTag, InsertedTagData<T>> insertedTags = new WeakHashMap<>(
             4, 0.75F);
 
     private volatile Map<AbstractHtml, Set<ContentChangeListener<T>>> contentChangeListeners;
@@ -605,11 +605,13 @@ public class SharedTagContent<T> {
 
             final Map<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> tagsGroupedBySharedObject = new HashMap<>();
 
-            for (final Entry<NoTag, ContentFormatter<T>> entry : insertedTags
+            for (final Entry<NoTag, InsertedTagData<T>> entry : insertedTags
                     .entrySet()) {
 
                 final NoTag prevNoTag = entry.getKey();
-                final ContentFormatter<T> formatter = entry.getValue();
+                final InsertedTagData<T> insertedTagData = entry.getValue();
+                final ContentFormatter<T> formatter = insertedTagData
+                        .formatter();
 
                 final AbstractHtml parentTag = prevNoTag.getParent();
 
@@ -654,7 +656,7 @@ public class SharedTagContent<T> {
                 final AbstractHtml noTagAsBase = noTag;
                 noTagAsBase.setSharedTagContent(this);
                 dataList.add(new ParentNoTagData<>(prevNoTag, parentTag, noTag,
-                        formatter, contentApplied));
+                        insertedTagData, contentApplied));
 
             }
 
@@ -715,12 +717,13 @@ public class SharedTagContent<T> {
                                 && !previousNoTag.isParentNullifiedOnce()) {
 
                             insertedTags.put(parentNoTagData.getNoTag(),
-                                    parentNoTagData.formatter());
+                                    parentNoTagData.insertedTagData());
 
                             modifiedParents.add(new ModifiedParentData<>(
                                     parentNoTagData.parent(),
                                     parentNoTagData.contentApplied(),
-                                    parentNoTagData.formatter()));
+                                    parentNoTagData.insertedTagData()
+                                            .formatter()));
 
                             boolean updateClientTagSpecific = updateClient;
                             if (updateClient && exclusionTags != null
@@ -728,6 +731,11 @@ public class SharedTagContent<T> {
                                             parentNoTagData.parent())) {
                                 updateClientTagSpecific = false;
                             }
+
+                            updateClientTagSpecific = isUpdateClientApplicable(
+                                    sharedObject, updateClientTagSpecific,
+                                    parentNoTagData.insertedTagData()
+                                            .subscribed());
 
                             final InnerHtmlListenerData listenerData = parentNoTagData
                                     .parent().addInnerHtmlsAndGetEventsLockless(
@@ -863,12 +871,16 @@ public class SharedTagContent<T> {
      * @param updateClient
      * @param applicableTag
      * @param formatter
+     * @param subscribe
+     *                          if true then updateClient will be true only if
+     *                          activeWSListener is true otherwise updateClient
+     *                          will be false at the time of content update.
      * @return the NoTag inserted
      * @since 3.0.6
      */
     AbstractHtml addInnerHtml(final boolean updateClient,
             final AbstractHtml applicableTag,
-            final ContentFormatter<T> formatter) {
+            final ContentFormatter<T> formatter, final boolean subscribe) {
 
         final ContentFormatter<T> cFormatter = formatter != null ? formatter
                 : DEFAULT_CONTENT_FORMATTER;
@@ -888,8 +900,13 @@ public class SharedTagContent<T> {
             try {
                 final Content<String> formattedContent = cFormatter
                         .format(contentLocal);
-                noTag = new NoTag(null, formattedContent.getContent(),
-                        formattedContent.isContentTypeHtml());
+                if (formattedContent != null) {
+                    noTag = new NoTag(null, formattedContent.getContent(),
+                            formattedContent.isContentTypeHtml());
+                } else {
+                    noTag = new NoTag(null, "", false);
+                }
+
             } catch (final RuntimeException e) {
                 noTag = new NoTag(null, "", false);
                 LOGGER.log(Level.SEVERE,
@@ -897,11 +914,13 @@ public class SharedTagContent<T> {
             }
 
             final InnerHtmlListenerData listenerData = applicableTag
-                    .addInnerHtmlsAndGetEventsLockless(updateClient, noTag);
+                    .addInnerHtmlsAndGetEventsLockless(isUpdateClientApplicable(
+                            sharedObject, updateClient, subscribe), noTag);
 
             noTagInserted = noTag;
 
-            insertedTags.put(noTag, cFormatter);
+            insertedTags.put(noTag,
+                    new InsertedTagData<>(cFormatter, subscribe));
 
             if (listenerData != null) {
                 // TODO declare new innerHtmlsAdded for multiple parents after
@@ -919,6 +938,18 @@ public class SharedTagContent<T> {
         }
 
         return noTagInserted;
+    }
+
+    private boolean isUpdateClientApplicable(
+            final AbstractHtml5SharedObject sharedObject,
+            final boolean updateClient, final boolean subscribe) {
+        if (updateClient) {
+            if (subscribe) {
+                return sharedObject.isActiveWSListener();
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -990,10 +1021,10 @@ public class SharedTagContent<T> {
 
             final Map<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> tagsGroupedBySharedObject = new HashMap<>();
 
-            for (final Entry<NoTag, ContentFormatter<T>> entry : insertedTags
+            for (final Entry<NoTag, InsertedTagData<T>> entry : insertedTags
                     .entrySet()) {
                 final NoTag prevNoTag = entry.getKey();
-                final ContentFormatter<T> formatter = entry.getValue();
+                final InsertedTagData<T> insertedTagData = entry.getValue();
                 final AbstractHtml parentTag = prevNoTag.getParent();
 
                 if (parentTag == null) {
@@ -1021,8 +1052,8 @@ public class SharedTagContent<T> {
                 // contentTypeHtml);
                 // not inserting NoTag so need not pass
 
-                dataList.add(
-                        new ParentNoTagData<>(prevNoTag, parentTag, formatter));
+                dataList.add(new ParentNoTagData<>(prevNoTag, parentTag,
+                        insertedTagData));
             }
 
             insertedTags.clear();
@@ -1078,7 +1109,7 @@ public class SharedTagContent<T> {
                                     .contains(parentNoTagData.parent())) {
                                 insertedTags.put(
                                         parentNoTagData.previousNoTag(),
-                                        parentNoTagData.formatter());
+                                        parentNoTagData.insertedTagData());
                             } else {
                                 modifiedParents.add(parentNoTagData.parent());
 

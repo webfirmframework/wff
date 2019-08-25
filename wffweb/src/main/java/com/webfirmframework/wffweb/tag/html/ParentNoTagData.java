@@ -33,29 +33,28 @@ class ParentNoTagData<T> {
 
     private final NoTag previousNoTag;
 
-    private final SharedTagContent.ContentFormatter<T> formatter;
+    private final InsertedTagData<T> insertedTagData;
 
     private final SharedTagContent.Content<String> contentApplied;
 
     ParentNoTagData(final NoTag previousNoTag, final AbstractHtml parent,
-            final SharedTagContent.ContentFormatter<T> formatter) {
+            final InsertedTagData<T> insertedTagData) {
         super();
         this.previousNoTag = previousNoTag;
         this.parent = parent;
         this.noTag = null;
-        this.formatter = formatter;
+        this.insertedTagData = insertedTagData;
         this.contentApplied = null;
     }
 
     ParentNoTagData(final NoTag previousNoTag, final AbstractHtml parent,
-            final NoTag noTag,
-            final SharedTagContent.ContentFormatter<T> formatter,
+            final NoTag noTag, final InsertedTagData<T> insertedTagData,
             final SharedTagContent.Content<String> contentApplied) {
         super();
         this.previousNoTag = previousNoTag;
         this.parent = parent;
         this.noTag = noTag;
-        this.formatter = formatter;
+        this.insertedTagData = insertedTagData;
         this.contentApplied = contentApplied;
     }
 
@@ -71,8 +70,8 @@ class ParentNoTagData<T> {
         return noTag;
     }
 
-    SharedTagContent.ContentFormatter<T> formatter() {
-        return formatter;
+    InsertedTagData<T> insertedTagData() {
+        return insertedTagData;
     }
 
     SharedTagContent.Content<String> contentApplied() {

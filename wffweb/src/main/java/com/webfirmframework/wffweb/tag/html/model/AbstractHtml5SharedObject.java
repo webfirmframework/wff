@@ -117,11 +117,14 @@ public class AbstractHtml5SharedObject implements Serializable {
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock(
             true);
 
+    private volatile boolean activeWSListener;
+
     public AbstractHtml5SharedObject(final AbstractHtml rootTag) {
         this.rootTag = rootTag;
     }
 
     /**
+     * @param accessObject
      * @return unique data-wff-id attribute
      * @since 2.0.0
      * @author WFF
@@ -229,6 +232,7 @@ public class AbstractHtml5SharedObject implements Serializable {
      * its {@code AbstractTagBase} method. NB:- only for internal use. currently
      * it's not used anywhere
      *
+     * @param accessObject
      * @return the rebuiltTags
      * @since 1.0.0
      * @author WFF
@@ -259,6 +263,7 @@ public class AbstractHtml5SharedObject implements Serializable {
     /**
      * NB:- This method is for only for internal use
      *
+     * @param accessObject
      * @return the childTagAppendListener
      */
     public ChildTagAppendListener getChildTagAppendListener(
@@ -276,6 +281,7 @@ public class AbstractHtml5SharedObject implements Serializable {
      *
      * @param childTagAppendListener
      *                                   the childTagAppendListener to set
+     * @param accessObject
      */
     public void setChildTagAppendListener(
             final ChildTagAppendListener childTagAppendListener,
@@ -291,6 +297,7 @@ public class AbstractHtml5SharedObject implements Serializable {
     /**
      * NB:- This method is for only for internal use
      *
+     * @param accessObject
      * @return the childTagRemoveListener
      */
     public ChildTagRemoveListener getChildTagRemoveListener(
@@ -308,6 +315,7 @@ public class AbstractHtml5SharedObject implements Serializable {
      *
      * @param childTagRemoveListener
      *                                   the childTagRemoveListener to set
+     * @param accessObject
      */
     public void setChildTagRemoveListener(
             final ChildTagRemoveListener childTagRemoveListener,
@@ -321,6 +329,7 @@ public class AbstractHtml5SharedObject implements Serializable {
     }
 
     /**
+     * @param accessObject
      * @return the attributeAddListener
      */
     public AttributeAddListener getAttributeAddListener(
@@ -336,6 +345,7 @@ public class AbstractHtml5SharedObject implements Serializable {
     /**
      * @param attributeAddListener
      *                                 the attributeAddListener to set
+     * @param accessObject
      */
     public void setAttributeAddListener(
             final AttributeAddListener attributeAddListener,
@@ -349,6 +359,7 @@ public class AbstractHtml5SharedObject implements Serializable {
     }
 
     /**
+     * @param accessObject
      * @return the attributeRemoveListener
      */
     public AttributeRemoveListener getAttributeRemoveListener(
@@ -364,6 +375,7 @@ public class AbstractHtml5SharedObject implements Serializable {
     /**
      * @param attributeRemoveListener
      *                                    the attributeRemoveListener to set
+     * @param accessObject
      */
     public void setAttributeRemoveListener(
             final AttributeRemoveListener attributeRemoveListener,
@@ -377,6 +389,7 @@ public class AbstractHtml5SharedObject implements Serializable {
     }
 
     /**
+     * @param accessObject
      * @return the innerHtmlAddListener
      */
     public InnerHtmlAddListener getInnerHtmlAddListener(
@@ -392,6 +405,7 @@ public class AbstractHtml5SharedObject implements Serializable {
     /**
      * @param innerHtmlAddListener
      *                                 the innerHtmlAddListener to set
+     * @param accessObject
      */
     public void setInnerHtmlAddListener(
             final InnerHtmlAddListener innerHtmlAddListener,
@@ -481,6 +495,7 @@ public class AbstractHtml5SharedObject implements Serializable {
     /**
      * NB:- This method is for only for internal use
      *
+     * @param accessObject
      * @return the insertBeforeListener
      *
      * @since 2.1.1
@@ -502,6 +517,7 @@ public class AbstractHtml5SharedObject implements Serializable {
      *
      * @param insertBeforeListener
      *                                 the insertBeforeListener to set
+     * @param accessObject
      * @since 2.1.1
      */
     public void setInsertBeforeListener(
@@ -522,6 +538,7 @@ public class AbstractHtml5SharedObject implements Serializable {
      *
      * @param wffBMDataDeleteListener
      *                                    the wffDataDeleteListener to set
+     * @param accessObject
      * @since 2.1.8
      */
     public void setWffBMDataDeleteListener(
@@ -540,6 +557,7 @@ public class AbstractHtml5SharedObject implements Serializable {
      *
      * @param wffBMDataUpdateListener
      *                                    the wffDataUpdateListener to set
+     * @param accessObject
      * @since 2.1.8
      */
     public void setWffBMDataUpdateListener(
@@ -556,6 +574,7 @@ public class AbstractHtml5SharedObject implements Serializable {
     /**
      * NB:- This method is for only for internal use
      *
+     * @param accessObject
      * @return the insertBeforeListener
      *
      * @since 2.1.8
@@ -575,6 +594,7 @@ public class AbstractHtml5SharedObject implements Serializable {
     /**
      * NB:- This method is for only for internal use
      *
+     * @param accessObject
      * @return the insertBeforeListener
      *
      * @since 2.1.8
@@ -641,7 +661,8 @@ public class AbstractHtml5SharedObject implements Serializable {
      * NB:- This method is for only for internal use
      *
      * @param pushQueue
-     *                      the BrowserPage push queue to set
+     *                         the BrowserPage push queue to set
+     * @param accessObject
      */
     public void setPushQueue(final PushQueue pushQueue,
             final Object accessObject) {
@@ -671,6 +692,33 @@ public class AbstractHtml5SharedObject implements Serializable {
                     "Not allowed to consume this method. This method is for internal use.");
         }
         return pushQueue;
+    }
+
+    /**
+     * NB:- This method is for only for internal use
+     *
+     * @param activeWSListener
+     *                             true if BrowserPage.wsListener != null
+     *                             otherwise false
+     * @param accessObject
+     */
+    public void setActiveWSListener(final boolean activeWSListener,
+            final Object accessObject) {
+        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE
+                .equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException(
+                    "Not allowed to consume this method. This method is for internal use.");
+        }
+        this.activeWSListener = activeWSListener;
+    }
+
+    /**
+     * NB:- This method is for only for internal use
+     *
+     * @return true if BrowserPage.wsListener != null otherwise false
+     */
+    public boolean isActiveWSListener() {
+        return activeWSListener;
     }
 
 }
