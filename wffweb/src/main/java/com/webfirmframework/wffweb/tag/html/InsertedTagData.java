@@ -15,6 +15,9 @@
  */
 package com.webfirmframework.wffweb.tag.html;
 
+import java.lang.ref.WeakReference;
+
+import com.webfirmframework.wffweb.server.page.ClientTasksWrapper;
 import com.webfirmframework.wffweb.tag.html.SharedTagContent.ContentFormatter;
 
 /**
@@ -33,6 +36,8 @@ class InsertedTagData<T> {
      */
     private final boolean subscribed;
 
+    private volatile WeakReference<ClientTasksWrapper> lastClientTaskRef;
+
     InsertedTagData(final ContentFormatter<T> formatter,
             final boolean subscribed) {
         super();
@@ -46,6 +51,24 @@ class InsertedTagData<T> {
 
     boolean subscribed() {
         return subscribed;
+    }
+
+    /**
+     * @return the lastClientTask
+     */
+    ClientTasksWrapper lastClientTask() {
+        if (lastClientTaskRef != null) {
+            return lastClientTaskRef.get();
+        }
+        return null;
+    }
+
+    /**
+     * @param lastClientTask
+     *                           the lastClientTask to set
+     */
+    void lastClientTask(final ClientTasksWrapper lastClientTask) {
+        lastClientTaskRef = new WeakReference<>(lastClientTask);
     }
 
 }

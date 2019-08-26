@@ -17,6 +17,7 @@ package com.webfirmframework.wffweb.tag.html.listener;
 
 import java.io.Serializable;
 
+import com.webfirmframework.wffweb.server.page.ClientTasksWrapper;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 
 public interface InnerHtmlAddListener extends Serializable {
@@ -81,6 +82,7 @@ public interface InnerHtmlAddListener extends Serializable {
 
     public void innerHtmlAdded(Event event);
 
-    public void innerHtmlsAdded(AbstractHtml parentTag, Event... events);
+    public ClientTasksWrapper innerHtmlsAdded(AbstractHtml parentTag,
+            Event... events);
 
 }

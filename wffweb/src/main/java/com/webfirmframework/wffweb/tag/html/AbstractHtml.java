@@ -880,7 +880,22 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * updates but pushes updates of this tag to client browser page only if
      * there is an active WebSocket connection between server and client browser
      * page and if there is no active WebSocket connection that changes will not
-     * be cached for later push.
+     * be cached for later push. However, it will try to keep the change of this
+     * tag (server object) up to date with client browser page. The difference
+     * of this method with {@link AbstractHtml#addInnerHtml(SharedTagContent)}
+     * is that addInnerHtml(SharedTagContent) will push all changes of this tag
+     * (server side object) to client browser page and if push is failed it will
+     * be cached for retry. {@link AbstractHtml#addInnerHtml(SharedTagContent)}
+     * will reliably deliver each and every change to client browser page. There
+     * are cases where it is discouraged,
+     *
+     * <br>
+     * <br>
+     * Eg:- printing current time in realtime. Imagine, while printing the time
+     * in realtime the websocket communication between the client and server is
+     * lost and reconnected after few seconds. In that case we don't have to
+     * push the out dated data (time). In such cases
+     * {@link AbstractHtml#subscribeTo(SharedTagContent)} is more appropriate.
      *
      *
      * @param sharedTagContent
@@ -901,8 +916,22 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * updates but pushes updates of this tag to client browser page only if
      * there is an active WebSocket connection between server and client browser
      * page and if there is no active WebSocket connection that changes will not
-     * be cached for later push.
+     * be cached for later push. However, it will try to keep the change of this
+     * tag (server object) up to date with client browser page. The difference
+     * of this method with {@link AbstractHtml#addInnerHtml(SharedTagContent)}
+     * is that addInnerHtml(SharedTagContent) will push all changes of this tag
+     * (server side object) to client browser page and if push is failed it will
+     * be cached for retry. {@link AbstractHtml#addInnerHtml(SharedTagContent)}
+     * will reliably deliver each and every change to client browser page. There
+     * are cases where it is discouraged,
      *
+     * <br>
+     * <br>
+     * Eg:- printing current time in realtime. Imagine, while printing the time
+     * in realtime the websocket communication between the client and server is
+     * lost and reconnected after few seconds. In that case we don't have to
+     * push the out dated data (time). In such cases
+     * {@link AbstractHtml#subscribeTo(SharedTagContent)} is more appropriate.
      *
      * @param sharedTagContent
      *                             the shared content to be inserted as inner
@@ -926,7 +955,22 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * updates but pushes updates of this tag to client browser page only if
      * there is an active WebSocket connection between server and client browser
      * page and if there is no active WebSocket connection that changes will not
-     * be cached for later push.
+     * be cached for later push. However, it will try to keep the change of this
+     * tag (server object) up to date with client browser page. The difference
+     * of this method with {@link AbstractHtml#addInnerHtml(SharedTagContent)}
+     * is that addInnerHtml(SharedTagContent) will push all changes of this tag
+     * (server side object) to client browser page and if push is failed it will
+     * be cached for retry. {@link AbstractHtml#addInnerHtml(SharedTagContent)}
+     * will reliably deliver each and every change to client browser page. There
+     * are cases where it is discouraged,
+     *
+     * <br>
+     * <br>
+     * Eg:- printing current time in realtime. Imagine, while printing the time
+     * in realtime the websocket communication between the client and server is
+     * lost and reconnected after few seconds. In that case we don't have to
+     * push the out dated data (time). In such cases
+     * {@link AbstractHtml#subscribeTo(SharedTagContent)} is more appropriate.
      *
      * @param updateClient
      *                             true to update client browser page if it is

@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -97,7 +98,7 @@ class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
     }
 
     @Override
-    public void innerHtmlsAdded(final AbstractHtml parentTag,
+    public ClientTasksWrapper innerHtmlsAdded(final AbstractHtml parentTag,
             final Event... events) {
 
         //@formatter:off
@@ -117,7 +118,7 @@ class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
         if (dataWffId == null) {
 
             LOGGER.severe("Could not find data-wff-id from owner tag");
-            return;
+            return null;
         }
 
         final byte[][] tagNameAndWffId = DataWffIdUtil
@@ -170,7 +171,11 @@ class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
 
         }
 
-        browserPage.push(nameValues.toArray(new NameValue[nameValues.size()]));
+        // browserPage.push(nameValues.toArray(new
+        // NameValue[nameValues.size()]));
+
+        final Queue<Collection<NameValue>> multiTasks = new ArrayDeque<>(2);
+        multiTasks.add(nameValues);
 
         final String parentTagNameString = new String(parentTagName,
                 StandardCharsets.UTF_8);
@@ -182,9 +187,16 @@ class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
             final NameValue copyInnerTexToValueTask = Task.COPY_INNER_TEXT_TO_VALUE
                     .getTaskNameValue();
 
-            browserPage.push(copyInnerTexToValueTask, parentTagNameValue);
+            // browserPage.push(copyInnerTexToValueTask, parentTagNameValue);
+
+            final Queue<NameValue> task2NameValues = new ArrayDeque<>(2);
+            task2NameValues.add(copyInnerTexToValueTask);
+            task2NameValues.add(parentTagNameValue);
+
+            multiTasks.add(task2NameValues);
         }
 
+        return browserPage.pushAndGetWrapper(multiTasks);
     }
 
     @Override

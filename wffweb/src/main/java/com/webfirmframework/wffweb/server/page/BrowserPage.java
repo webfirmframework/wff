@@ -24,6 +24,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayDeque;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -36,6 +37,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.atomic.AtomicReferenceArray;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
@@ -116,11 +118,11 @@ public abstract class BrowserPage implements Serializable {
 
     // ConcurrentLinkedQueue give better performance than ConcurrentLinkedDeque
     // on benchmark
-    private final Deque<ByteBuffer> wffBMBytesQueue = new ConcurrentLinkedDeque<>();
+    private final Deque<ClientTasksWrapper> wffBMBytesQueue = new ConcurrentLinkedDeque<>();
 
     // ConcurrentLinkedQueue give better performance than ConcurrentLinkedDeque
     // on benchmark
-    private final Queue<ByteBuffer> wffBMBytesHoldPushQueue = new ConcurrentLinkedQueue<>();
+    private final Queue<ClientTasksWrapper> wffBMBytesHoldPushQueue = new ConcurrentLinkedQueue<>();
 
     private static final Security ACCESS_OBJECT = new Security();
 
@@ -269,20 +271,48 @@ public abstract class BrowserPage implements Serializable {
     }
 
     final void push(final NameValue... nameValues) {
-        push(ByteBuffer.wrap(WffBinaryMessageUtil.VERSION_1
-                .getWffBinaryMessageBytes(nameValues)));
+        push(new ClientTasksWrapper(
+                ByteBuffer.wrap(WffBinaryMessageUtil.VERSION_1
+                        .getWffBinaryMessageBytes(nameValues))));
     }
 
-    private void push(final ByteBuffer wffBM) {
+    /**
+     * @param multiTasks
+     * @return the wrapper class holding the byteBuffers of multiple tasks
+     */
+    final ClientTasksWrapper pushAndGetWrapper(
+            final Queue<Collection<NameValue>> multiTasks) {
+
+        final ByteBuffer[] tasks = new ByteBuffer[multiTasks.size()];
+        int index = 0;
+
+        Collection<NameValue> taskNameValues;
+        while ((taskNameValues = multiTasks.poll()) != null) {
+            final NameValue[] nameValues = taskNameValues
+                    .toArray(new NameValue[taskNameValues.size()]);
+
+            final ByteBuffer byteBuffer = ByteBuffer
+                    .wrap(WffBinaryMessageUtil.VERSION_1
+                            .getWffBinaryMessageBytes(nameValues));
+            tasks[index] = byteBuffer;
+            index++;
+        }
+
+        final ClientTasksWrapper clientTasks = new ClientTasksWrapper(tasks);
+        push(clientTasks);
+        return clientTasks;
+    }
+
+    private void push(final ClientTasksWrapper clientTasks) {
 
         if (holdPush.get() > 0) {
             // add method internally calls offer method in ConcurrentLinkedQueue
-            wffBMBytesHoldPushQueue.offer(wffBM);
+            wffBMBytesHoldPushQueue.offer(clientTasks);
         } else {
             // add method internally calls offer which internally
             // calls offerLast method in ConcurrentLinkedQueue
 
-            if (wffBMBytesQueue.offerLast(wffBM)) {
+            if (wffBMBytesQueue.offerLast(clientTasks)) {
                 pushQueueSize.increment();
             }
         }
@@ -308,25 +338,41 @@ public abstract class BrowserPage implements Serializable {
                     // order of
                     // push
 
-                    ByteBuffer byteBuffer = wffBMBytesQueue.poll();
+                    ClientTasksWrapper clientTask = wffBMBytesQueue.poll();
 
-                    if (byteBuffer != null) {
+                    if (clientTask != null) {
+
+                        AtomicReferenceArray<ByteBuffer> byteBuffers;
 
                         final Thread currentThread = Thread.currentThread();
                         do {
                             pushQueueSize.decrement();
                             try {
-                                wsListener.push(byteBuffer);
+
+                                byteBuffers = clientTask.tasks();
+                                if (byteBuffers != null) {
+                                    final int length = byteBuffers.length();
+                                    for (int i = 0; i < length; i++) {
+                                        final ByteBuffer byteBuffer = byteBuffers
+                                                .get(i);
+                                        if (byteBuffer != null) {
+                                            wsListener.push(byteBuffer);
+                                        }
+                                        byteBuffers.set(i, null);
+                                    }
+                                    clientTask.nullifyTasks();
+                                }
+
                             } catch (final PushFailedException e) {
                                 if (pushQueueEnabled && wffBMBytesQueue
-                                        .offerFirst(byteBuffer)) {
+                                        .offerFirst(clientTask)) {
                                     pushQueueSize.increment();
                                 }
 
                                 break;
                             } catch (final IllegalStateException
                                     | NullPointerException e) {
-                                if (wffBMBytesQueue.offerFirst(byteBuffer)) {
+                                if (wffBMBytesQueue.offerFirst(clientTask)) {
                                     pushQueueSize.increment();
                                 }
                                 break;
@@ -339,9 +385,9 @@ public abstract class BrowserPage implements Serializable {
                                 break;
                             }
 
-                            byteBuffer = wffBMBytesQueue.poll();
+                            clientTask = wffBMBytesQueue.poll();
 
-                        } while (byteBuffer != null);
+                        } while (clientTask != null);
                     }
 
                 } finally {
@@ -1420,7 +1466,7 @@ public abstract class BrowserPage implements Serializable {
      */
     public final void performBrowserPageAction(
             final ByteBuffer actionByteBuffer) {
-        push(actionByteBuffer);
+        push(new ClientTasksWrapper(actionByteBuffer));
         if (holdPush.get() == 0) {
             pushWffBMBytesQueue();
         }
@@ -1511,9 +1557,9 @@ public abstract class BrowserPage implements Serializable {
 
                 holdPush.decrementAndGet();
 
-                ByteBuffer wffBM = wffBMBytesHoldPushQueue.poll();
+                ClientTasksWrapper clientTask = wffBMBytesHoldPushQueue.poll();
 
-                if (wffBM != null) {
+                if (clientTask != null) {
 
                     final NameValue invokeMultipleTasks = Task
                             .getTaskOfTasksNameValue();
@@ -1521,12 +1567,24 @@ public abstract class BrowserPage implements Serializable {
                     final Deque<ByteBuffer> wffBMs = new ArrayDeque<>(
                             wffBMBytesHoldPushQueue.size() + 1);
 
+                    AtomicReferenceArray<ByteBuffer> byteBuffers;
                     do {
 
-                        wffBMs.add(wffBM);
+                        byteBuffers = clientTask.tasks();
+                        if (byteBuffers != null) {
+                            final int length = byteBuffers.length();
+                            for (int i = 0; i < length; i++) {
+                                final ByteBuffer wffBM = byteBuffers.get(i);
+                                if (wffBM != null) {
+                                    wffBMs.add(wffBM);
+                                }
+                                byteBuffers.set(i, null);
+                            }
+                            clientTask.nullifyTasks();
+                        }
 
-                        wffBM = wffBMBytesHoldPushQueue.poll();
-                    } while (wffBM != null);
+                        clientTask = wffBMBytesHoldPushQueue.poll();
+                    } while (clientTask != null);
 
                     final byte[][] values = new byte[wffBMs.size()][0];
 
@@ -1538,10 +1596,10 @@ public abstract class BrowserPage implements Serializable {
 
                     invokeMultipleTasks.setValues(values);
 
-                    wffBMBytesQueue
-                            .add(ByteBuffer.wrap(WffBinaryMessageUtil.VERSION_1
+                    wffBMBytesQueue.add(new ClientTasksWrapper(
+                            ByteBuffer.wrap(WffBinaryMessageUtil.VERSION_1
                                     .getWffBinaryMessageBytes(
-                                            invokeMultipleTasks)));
+                                            invokeMultipleTasks))));
                     pushQueueSize.increment();
 
                     pushWffBMBytesQueue();
