@@ -640,19 +640,21 @@ public class SharedTagContent<T> {
                 Content<String> contentApplied;
                 try {
                     contentApplied = formatter.format(contentAfter);
-                    if (contentApplied == null) {
-                        contentApplied = new Content<>(
-                                prevNoTag.getChildContent(),
-                                prevNoTag.isChildContentTypeHtml());
+                    if (contentApplied != null) {
+                        noTag = new NoTag(null, contentApplied.getContent(),
+                                contentApplied.isContentTypeHtml());
+
+                    } else {
+                        noTag = prevNoTag;
+                        contentApplied = null;
                     }
                 } catch (final RuntimeException e) {
                     contentApplied = new Content<>("", false);
+                    noTag = new NoTag(null, contentApplied.getContent(),
+                            contentApplied.isContentTypeHtml());
                     LOGGER.log(Level.SEVERE,
                             "Exception while ContentFormatter.format", e);
                 }
-
-                noTag = new NoTag(null, contentApplied.getContent(),
-                        contentApplied.isContentTypeHtml());
 
                 final AbstractHtml noTagAsBase = noTag;
                 noTagAsBase.setSharedTagContent(this);
@@ -717,54 +719,64 @@ public class SharedTagContent<T> {
                                         .getChildrenSizeLockless() == 1
                                 && !previousNoTag.isParentNullifiedOnce()) {
 
-                            insertedTags.put(parentNoTagData.getNoTag(),
-                                    parentNoTagData.insertedTagData());
+                            if (parentNoTagData.contentApplied() != null) {
 
-                            modifiedParents.add(new ModifiedParentData<>(
-                                    parentNoTagData.parent(),
-                                    parentNoTagData.contentApplied(),
-                                    parentNoTagData.insertedTagData()
-                                            .formatter()));
+                                insertedTags.put(parentNoTagData.getNoTag(),
+                                        parentNoTagData.insertedTagData());
 
-                            boolean updateClientTagSpecific = updateClient;
-                            if (updateClient && exclusionTags != null
-                                    && exclusionTags.contains(
-                                            parentNoTagData.parent())) {
-                                updateClientTagSpecific = false;
-                            }
+                                modifiedParents.add(new ModifiedParentData<>(
+                                        parentNoTagData.parent(),
+                                        parentNoTagData.contentApplied(),
+                                        parentNoTagData.insertedTagData()
+                                                .formatter()));
 
-                            final InnerHtmlListenerData listenerData = parentNoTagData
-                                    .parent().addInnerHtmlsAndGetEventsLockless(
-                                            updateClientTagSpecific,
-                                            parentNoTagData.getNoTag());
-
-                            // subscribed and offline
-                            if (parentNoTagData.insertedTagData().subscribed()
-                                    && !sharedObject.isActiveWSListener()) {
-                                final ClientTasksWrapper lastClientTask = parentNoTagData
-                                        .insertedTagData().lastClientTask();
-                                if (lastClientTask != null) {
-                                    lastClientTask.nullifyTasks();
+                                boolean updateClientTagSpecific = updateClient;
+                                if (updateClient && exclusionTags != null
+                                        && exclusionTags.contains(
+                                                parentNoTagData.parent())) {
+                                    updateClientTagSpecific = false;
                                 }
-                            }
 
-                            if (listenerData != null) {
+                                final InnerHtmlListenerData listenerData = parentNoTagData
+                                        .parent()
+                                        .addInnerHtmlsAndGetEventsLockless(
+                                                updateClientTagSpecific,
+                                                parentNoTagData.getNoTag());
 
-                                // TODO declare new innerHtmlsAdded for multiple
-                                // parents after verifying feasibility of
-                                // considering rich notag content
-                                final ClientTasksWrapper clientTask = listenerData
-                                        .listener().innerHtmlsAdded(
-                                                parentNoTagData.parent(),
-                                                listenerData.events());
+                                // subscribed and offline
+                                if (parentNoTagData.insertedTagData()
+                                        .subscribed()
+                                        && !sharedObject.isActiveWSListener()) {
+                                    final ClientTasksWrapper lastClientTask = parentNoTagData
+                                            .insertedTagData().lastClientTask();
+                                    if (lastClientTask != null) {
+                                        lastClientTask.nullifyTasks();
+                                    }
+                                }
 
-                                parentNoTagData.insertedTagData()
-                                        .lastClientTask(clientTask);
+                                if (listenerData != null) {
 
-                                // push is require only if listener invoked
-                                sharedObjects.add(sharedObject);
+                                    // TODO declare new innerHtmlsAdded for
+                                    // multiple
+                                    // parents after verifying feasibility of
+                                    // considering rich notag content
+                                    final ClientTasksWrapper clientTask = listenerData
+                                            .listener().innerHtmlsAdded(
+                                                    parentNoTagData.parent(),
+                                                    listenerData.events());
 
-                                // TODO do final verification of this code
+                                    parentNoTagData.insertedTagData()
+                                            .lastClientTask(clientTask);
+
+                                    // push is require only if listener invoked
+                                    sharedObjects.add(sharedObject);
+
+                                    // TODO do final verification of this code
+                                }
+
+                            } else {
+                                insertedTags.put(parentNoTagData.getNoTag(),
+                                        parentNoTagData.insertedTagData());
                             }
                         }
 
