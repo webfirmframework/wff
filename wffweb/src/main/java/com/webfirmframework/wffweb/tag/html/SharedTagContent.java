@@ -777,6 +777,12 @@ public class SharedTagContent<T> {
                             } else {
                                 insertedTags.put(parentNoTagData.getNoTag(),
                                         parentNoTagData.insertedTagData());
+
+                                modifiedParents.add(new ModifiedParentData<>(
+                                        parentNoTagData.parent(),
+                                        parentNoTagData.contentApplied(),
+                                        parentNoTagData.insertedTagData()
+                                                .formatter()));
                             }
                         }
 
