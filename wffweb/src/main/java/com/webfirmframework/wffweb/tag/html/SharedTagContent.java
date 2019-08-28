@@ -71,6 +71,8 @@ public class SharedTagContent<T> {
 
     private volatile boolean contentTypeHtml;
 
+    private volatile boolean shared = true;
+
     private volatile UpdateClientNature updateClientNature = UpdateClientNature.ALLOW_ASYNC_PARALLEL;
 
     private volatile boolean updateClient = true;
@@ -331,6 +333,34 @@ public class SharedTagContent<T> {
     }
 
     /**
+     * @param shared
+     *                            true to share its content across all consuming
+     *                            tags when {@link SharedTagContent#setContent}
+     *                            is called.
+     * @param content
+     * @param contentTypeHtml
+     * @since 3.0.6
+     */
+    public SharedTagContent(final boolean shared, final T content,
+            final boolean contentTypeHtml) {
+        this.shared = shared;
+        this.content = content;
+        this.contentTypeHtml = contentTypeHtml;
+    }
+
+    /**
+     * @param shared
+     *                    true to share its content across all consuming tags
+     *                    when {@link SharedTagContent#setContent} is called.
+     * @param content
+     * @since 3.0.6
+     */
+    public SharedTagContent(final boolean shared, final T content) {
+        this.shared = shared;
+        this.content = content;
+    }
+
+    /**
      * @return the content
      * @since 3.0.6
      */
@@ -351,6 +381,19 @@ public class SharedTagContent<T> {
         final long stamp = lock.readLock();
         try {
             return contentTypeHtml;
+        } finally {
+            lock.unlockRead(stamp);
+        }
+    }
+
+    /**
+     * @return true if its content is shared across all consuming tags.
+     * @since 3.0.6
+     */
+    public boolean isShared() {
+        final long stamp = lock.readLock();
+        try {
+            return shared;
         } finally {
             lock.unlockRead(stamp);
         }
@@ -432,6 +475,25 @@ public class SharedTagContent<T> {
             final long stamp = lock.writeLock();
             try {
                 this.updateClient = updateClient;
+            } finally {
+                lock.unlockWrite(stamp);
+            }
+        }
+
+    }
+
+    /**
+     * @param shared
+     *                   true to make content of this SharedTagContent object
+     *                   across all consuming tags while
+     *                   {@link SharedTagContent#setContent(Object)} is called.
+     * @since 3.0.6
+     */
+    public void setShared(final boolean shared) {
+        if (this.shared = shared) {
+            final long stamp = lock.writeLock();
+            try {
+                this.shared = shared;
             } finally {
                 lock.unlockWrite(stamp);
             }
@@ -588,258 +650,319 @@ public class SharedTagContent<T> {
             final UpdateClientNature updateClientNature,
             final Set<AbstractHtml> exclusionTags, final T content,
             final boolean contentTypeHtml) {
+        setContent(updateClient, updateClientNature, exclusionTags, content,
+                contentTypeHtml, shared);
+    }
 
-        final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(
-                4);
-        List<Runnable> runnables = null;
-        final long stamp = lock.writeLock();
-        try {
+    /**
+     * @param updateClient
+     * @param updateClientNature
+     *
+     *                               If this SharedTagContent object has to
+     *                               update content of tags from multiple
+     *                               BrowserPage instances,
+     *                               UpdateClientNature.ALLOW_ASYNC_PARALLEL
+     *                               will allow parallel operation in the
+     *                               background for pushing changes to client
+     *                               browser page and
+     *                               UpdateClientNature.ALLOW_PARALLEL will
+     *                               allow parallel operation but will wait for
+     *                               the push to finish to exit the setContent
+     *                               method. UpdateClientNature.SEQUENTIAL will
+     *                               sequentially do each browser page push
+     *                               operation.
+     * @param exclusionTags
+     * @param content
+     * @param contentTypeHtml
+     * @param shared
+     */
+    private void setContent(final boolean updateClient,
+            final UpdateClientNature updateClientNature,
+            final Set<AbstractHtml> exclusionTags, final T content,
+            final boolean contentTypeHtml, final boolean shared) {
 
-            final Content<T> contentBefore = new Content<>(this.content,
-                    this.contentTypeHtml);
-            final Content<T> contentAfter = new Content<>(content,
-                    contentTypeHtml);
+        if (shared) {
 
-            this.updateClientNature = updateClientNature;
-            this.content = content;
-            this.contentTypeHtml = contentTypeHtml;
+            final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(
+                    4);
+            List<Runnable> runnables = null;
+            final long stamp = lock.writeLock();
+            try {
 
-            final Map<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> tagsGroupedBySharedObject = new HashMap<>();
+                final Content<T> contentBefore = new Content<>(this.content,
+                        this.contentTypeHtml);
+                final Content<T> contentAfter = new Content<>(content,
+                        contentTypeHtml);
 
-            for (final Entry<NoTag, InsertedTagData<T>> entry : insertedTags
-                    .entrySet()) {
+                this.updateClientNature = updateClientNature;
+                this.content = content;
+                this.contentTypeHtml = contentTypeHtml;
+                this.shared = shared;
 
-                final NoTag prevNoTag = entry.getKey();
-                final InsertedTagData<T> insertedTagData = entry.getValue();
-                final ContentFormatter<T> formatter = insertedTagData
-                        .formatter();
+                final Map<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> tagsGroupedBySharedObject = new HashMap<>();
 
-                final AbstractHtml parentTag = prevNoTag.getParent();
+                for (final Entry<NoTag, InsertedTagData<T>> entry : insertedTags
+                        .entrySet()) {
 
-                if (parentTag == null) {
-                    continue;
-                }
+                    final NoTag prevNoTag = entry.getKey();
+                    final InsertedTagData<T> insertedTagData = entry.getValue();
+                    final ContentFormatter<T> formatter = insertedTagData
+                            .formatter();
 
-                final AbstractHtml prevNoTagAsBase = prevNoTag;
-                // noTagAsBase.isParentNullifiedOnce() == true
-                // means the parent of this tag has already been changed
-                // at least once
-                if (prevNoTagAsBase.isParentNullifiedOnce()) {
-                    continue;
-                }
+                    final AbstractHtml parentTag = prevNoTag.getParent();
 
-                List<ParentNoTagData<T>> dataList = tagsGroupedBySharedObject
-                        .get(parentTag.getSharedObject());
+                    if (parentTag == null) {
+                        continue;
+                    }
 
-                if (dataList == null) {
-                    dataList = new ArrayList<>(4);
-                    tagsGroupedBySharedObject.put(parentTag.getSharedObject(),
-                            dataList);
-                }
-                NoTag noTag;
-                Content<String> contentApplied;
-                try {
-                    contentApplied = formatter.format(contentAfter);
-                    if (contentApplied != null) {
+                    final AbstractHtml prevNoTagAsBase = prevNoTag;
+                    // noTagAsBase.isParentNullifiedOnce() == true
+                    // means the parent of this tag has already been changed
+                    // at least once
+                    if (prevNoTagAsBase.isParentNullifiedOnce()) {
+                        continue;
+                    }
+
+                    List<ParentNoTagData<T>> dataList = tagsGroupedBySharedObject
+                            .get(parentTag.getSharedObject());
+
+                    if (dataList == null) {
+                        dataList = new ArrayList<>(4);
+                        tagsGroupedBySharedObject
+                                .put(parentTag.getSharedObject(), dataList);
+                    }
+                    NoTag noTag;
+                    Content<String> contentApplied;
+                    try {
+                        contentApplied = formatter.format(contentAfter);
+                        if (contentApplied != null) {
+                            noTag = new NoTag(null, contentApplied.getContent(),
+                                    contentApplied.isContentTypeHtml());
+
+                        } else {
+                            noTag = prevNoTag;
+                            contentApplied = null;
+                        }
+                    } catch (final RuntimeException e) {
+                        contentApplied = new Content<>("", false);
                         noTag = new NoTag(null, contentApplied.getContent(),
                                 contentApplied.isContentTypeHtml());
-
-                    } else {
-                        noTag = prevNoTag;
-                        contentApplied = null;
+                        LOGGER.log(Level.SEVERE,
+                                "Exception while ContentFormatter.format", e);
                     }
-                } catch (final RuntimeException e) {
-                    contentApplied = new Content<>("", false);
-                    noTag = new NoTag(null, contentApplied.getContent(),
-                            contentApplied.isContentTypeHtml());
-                    LOGGER.log(Level.SEVERE,
-                            "Exception while ContentFormatter.format", e);
+
+                    final AbstractHtml noTagAsBase = noTag;
+                    noTagAsBase.setSharedTagContent(this);
+                    dataList.add(new ParentNoTagData<>(prevNoTag, parentTag,
+                            noTag, insertedTagData, contentApplied));
+
                 }
 
-                final AbstractHtml noTagAsBase = noTag;
-                noTagAsBase.setSharedTagContent(this);
-                dataList.add(new ParentNoTagData<>(prevNoTag, parentTag, noTag,
-                        insertedTagData, contentApplied));
+                insertedTags.clear();
 
-            }
+                final List<ModifiedParentData<T>> modifiedParents = new ArrayList<>(
+                        4);
 
-            insertedTags.clear();
+                for (final Entry<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> entry : tagsGroupedBySharedObject
+                        .entrySet()) {
 
-            final List<ModifiedParentData<T>> modifiedParents = new ArrayList<>(
-                    4);
+                    final AbstractHtml5SharedObject sharedObject = entry
+                            .getKey();
 
-            for (final Entry<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> entry : tagsGroupedBySharedObject
-                    .entrySet()) {
+                    final List<ParentNoTagData<T>> parentNoTagDatas = entry
+                            .getValue();
 
-                final AbstractHtml5SharedObject sharedObject = entry.getKey();
+                    // pushing using first parent object makes bug (got bug when
+                    // singleton SharedTagContent object is used under multiple
+                    // BrowserPage instances)
+                    // may be because the sharedObject in the parent can be
+                    // changed
+                    // before lock
 
-                final List<ParentNoTagData<T>> parentNoTagDatas = entry
-                        .getValue();
+                    final Lock parentLock = sharedObject.getLock(ACCESS_OBJECT)
+                            .writeLock();
+                    parentLock.lock();
 
-                // pushing using first parent object makes bug (got bug when
-                // singleton SharedTagContent object is used under multiple
-                // BrowserPage instances)
-                // may be because the sharedObject in the parent can be changed
-                // before lock
+                    try {
 
-                final Lock parentLock = sharedObject.getLock(ACCESS_OBJECT)
-                        .writeLock();
-                parentLock.lock();
+                        for (final ParentNoTagData<T> parentNoTagData : parentNoTagDatas) {
 
-                try {
+                            // parentNoTagData.getParent().getSharedObject().equals(sharedObject)
+                            // is important here as it could be change just
+                            // before
+                            // locking
 
-                    for (final ParentNoTagData<T> parentNoTagData : parentNoTagDatas) {
+                            // if parentNoTagData.parent == 0 means the previous
+                            // NoTag was already removed
+                            // if parentNoTagData.parent > 1 means the previous
+                            // NoTag was replaced by other children or the
+                            // previous
+                            // NoTag exists but aslo appended/prepended another
+                            // child/children to it.
 
-                        // parentNoTagData.getParent().getSharedObject().equals(sharedObject)
-                        // is important here as it could be change just before
-                        // locking
+                            // noTagAsBase.isParentNullifiedOnce() == true
+                            // means the parent of this tag has already been
+                            // changed
+                            // at least once
+                            final AbstractHtml previousNoTag = parentNoTagData
+                                    .previousNoTag();
 
-                        // if parentNoTagData.parent == 0 means the previous
-                        // NoTag was already removed
-                        // if parentNoTagData.parent > 1 means the previous
-                        // NoTag was replaced by other children or the previous
-                        // NoTag exists but aslo appended/prepended another
-                        // child/children to it.
+                            // to get safety of lock it is executed before
+                            // addInnerHtmlsAndGetEventsLockless
+                            // However lock safety is irrelevant here as the
+                            // SharedTagContent will not reuse the same NoTag
+                            previousNoTag.setSharedTagContent(null);
 
-                        // noTagAsBase.isParentNullifiedOnce() == true
-                        // means the parent of this tag has already been changed
-                        // at least once
-                        final AbstractHtml previousNoTag = parentNoTagData
-                                .previousNoTag();
+                            if (parentNoTagData.parent().getSharedObject()
+                                    .equals(sharedObject)
+                                    && parentNoTagData.parent()
+                                            .getChildrenSizeLockless() == 1
+                                    && !previousNoTag.isParentNullifiedOnce()) {
 
-                        // to get safety of lock it is executed before
-                        // addInnerHtmlsAndGetEventsLockless
-                        // However lock safety is irrelevant here as the
-                        // SharedTagContent will not reuse the same NoTag
-                        previousNoTag.setSharedTagContent(null);
+                                if (parentNoTagData.contentApplied() != null) {
 
-                        if (parentNoTagData.parent().getSharedObject()
-                                .equals(sharedObject)
-                                && parentNoTagData.parent()
-                                        .getChildrenSizeLockless() == 1
-                                && !previousNoTag.isParentNullifiedOnce()) {
+                                    insertedTags.put(parentNoTagData.getNoTag(),
+                                            parentNoTagData.insertedTagData());
 
-                            if (parentNoTagData.contentApplied() != null) {
-
-                                insertedTags.put(parentNoTagData.getNoTag(),
-                                        parentNoTagData.insertedTagData());
-
-                                modifiedParents.add(new ModifiedParentData<>(
-                                        parentNoTagData.parent(),
-                                        parentNoTagData.contentApplied(),
-                                        parentNoTagData.insertedTagData()
-                                                .formatter()));
-
-                                boolean updateClientTagSpecific = updateClient;
-                                if (updateClient && exclusionTags != null
-                                        && exclusionTags.contains(
-                                                parentNoTagData.parent())) {
-                                    updateClientTagSpecific = false;
-                                }
-
-                                final InnerHtmlListenerData listenerData = parentNoTagData
-                                        .parent()
-                                        .addInnerHtmlsAndGetEventsLockless(
-                                                updateClientTagSpecific,
-                                                parentNoTagData.getNoTag());
-
-                                // subscribed and offline
-                                if (parentNoTagData.insertedTagData()
-                                        .subscribed()
-                                        && !sharedObject.isActiveWSListener()) {
-                                    final ClientTasksWrapper lastClientTask = parentNoTagData
-                                            .insertedTagData().lastClientTask();
-                                    if (lastClientTask != null) {
-                                        lastClientTask.nullifyTasks();
-                                    }
-                                }
-
-                                if (listenerData != null) {
-
-                                    // TODO declare new innerHtmlsAdded for
-                                    // multiple
-                                    // parents after verifying feasibility of
-                                    // considering rich notag content
-                                    final ClientTasksWrapper clientTask = listenerData
-                                            .listener().innerHtmlsAdded(
+                                    modifiedParents
+                                            .add(new ModifiedParentData<>(
                                                     parentNoTagData.parent(),
-                                                    listenerData.events());
+                                                    parentNoTagData
+                                                            .contentApplied(),
+                                                    parentNoTagData
+                                                            .insertedTagData()
+                                                            .formatter()));
 
-                                    parentNoTagData.insertedTagData()
-                                            .lastClientTask(clientTask);
+                                    boolean updateClientTagSpecific = updateClient;
+                                    if (updateClient && exclusionTags != null
+                                            && exclusionTags.contains(
+                                                    parentNoTagData.parent())) {
+                                        updateClientTagSpecific = false;
+                                    }
 
-                                    // push is require only if listener invoked
-                                    sharedObjects.add(sharedObject);
+                                    final InnerHtmlListenerData listenerData = parentNoTagData
+                                            .parent()
+                                            .addInnerHtmlsAndGetEventsLockless(
+                                                    updateClientTagSpecific,
+                                                    parentNoTagData.getNoTag());
 
-                                    // TODO do final verification of this code
-                                }
+                                    // subscribed and offline
+                                    if (parentNoTagData.insertedTagData()
+                                            .subscribed()
+                                            && !sharedObject
+                                                    .isActiveWSListener()) {
+                                        final ClientTasksWrapper lastClientTask = parentNoTagData
+                                                .insertedTagData()
+                                                .lastClientTask();
+                                        if (lastClientTask != null) {
+                                            lastClientTask.nullifyTasks();
+                                        }
+                                    }
 
-                            } else {
-                                insertedTags.put(parentNoTagData.getNoTag(),
-                                        parentNoTagData.insertedTagData());
+                                    if (listenerData != null) {
 
-                                modifiedParents.add(new ModifiedParentData<>(
-                                        parentNoTagData.parent(),
-                                        parentNoTagData.contentApplied(),
+                                        // TODO declare new innerHtmlsAdded for
+                                        // multiple
+                                        // parents after verifying feasibility
+                                        // of
+                                        // considering rich notag content
+                                        final ClientTasksWrapper clientTask = listenerData
+                                                .listener().innerHtmlsAdded(
+                                                        parentNoTagData
+                                                                .parent(),
+                                                        listenerData.events());
+
                                         parentNoTagData.insertedTagData()
-                                                .formatter()));
-                            }
-                        }
+                                                .lastClientTask(clientTask);
 
-                    }
-                } finally {
-                    parentLock.unlock();
-                }
-            }
+                                        // push is require only if listener
+                                        // invoked
+                                        sharedObjects.add(sharedObject);
 
-            if (contentChangeListeners != null) {
-                for (final ModifiedParentData<T> modifiedParentData : modifiedParents) {
-                    final AbstractHtml modifiedParent = modifiedParentData
-                            .parent();
-                    final Set<ContentChangeListener<T>> listeners = contentChangeListeners
-                            .get(modifiedParent);
-                    if (listeners != null) {
-                        runnables = new ArrayList<>(listeners.size());
-                        for (final ContentChangeListener<T> listener : listeners) {
-                            final ChangeEvent<T> changeEvent = new ChangeEvent<>(
-                                    modifiedParent, listener, contentBefore,
-                                    contentAfter,
-                                    modifiedParentData.contentApplied(),
-                                    modifiedParentData.formatter());
-                            try {
-                                final Runnable runnable = listener
-                                        .contentChanged(changeEvent);
-                                if (runnable != null) {
-                                    runnables.add(runnable);
+                                        // TODO do final verification of this
+                                        // code
+                                    }
+
+                                } else {
+                                    insertedTags.put(parentNoTagData.getNoTag(),
+                                            parentNoTagData.insertedTagData());
+
+                                    modifiedParents
+                                            .add(new ModifiedParentData<>(
+                                                    parentNoTagData.parent(),
+                                                    parentNoTagData
+                                                            .contentApplied(),
+                                                    parentNoTagData
+                                                            .insertedTagData()
+                                                            .formatter()));
                                 }
-                            } catch (final RuntimeException e) {
-                                LOGGER.log(Level.SEVERE,
-                                        "Exception while ContentChangeListener.contentChanged",
-                                        e);
                             }
+
                         }
+                    } finally {
+                        parentLock.unlock();
                     }
                 }
 
+                if (contentChangeListeners != null) {
+                    for (final ModifiedParentData<T> modifiedParentData : modifiedParents) {
+                        final AbstractHtml modifiedParent = modifiedParentData
+                                .parent();
+                        final Set<ContentChangeListener<T>> listeners = contentChangeListeners
+                                .get(modifiedParent);
+                        if (listeners != null) {
+                            runnables = new ArrayList<>(listeners.size());
+                            for (final ContentChangeListener<T> listener : listeners) {
+                                final ChangeEvent<T> changeEvent = new ChangeEvent<>(
+                                        modifiedParent, listener, contentBefore,
+                                        contentAfter,
+                                        modifiedParentData.contentApplied(),
+                                        modifiedParentData.formatter());
+                                try {
+                                    final Runnable runnable = listener
+                                            .contentChanged(changeEvent);
+                                    if (runnable != null) {
+                                        runnables.add(runnable);
+                                    }
+                                } catch (final RuntimeException e) {
+                                    LOGGER.log(Level.SEVERE,
+                                            "Exception while ContentChangeListener.contentChanged",
+                                            e);
+                                }
+                            }
+                        }
+                    }
+
+                }
+            } finally {
+                lock.unlockWrite(stamp);
             }
-        } finally {
-            lock.unlockWrite(stamp);
-        }
 
-        pushQueue(updateClientNature, sharedObjects);
+            pushQueue(updateClientNature, sharedObjects);
 
-        if (runnables != null) {
-            for (final Runnable runnable : runnables) {
-                try {
-                    runnable.run();
-                } catch (final RuntimeException e) {
-                    LOGGER.log(Level.SEVERE,
-                            "Exception while Runnable.run returned by ContentChangeListener.contentChanged",
-                            e);
+            if (runnables != null) {
+                for (final Runnable runnable : runnables) {
+                    try {
+                        runnable.run();
+                    } catch (final RuntimeException e) {
+                        LOGGER.log(Level.SEVERE,
+                                "Exception while Runnable.run returned by ContentChangeListener.contentChanged",
+                                e);
+                    }
                 }
             }
-        }
 
+        } else {
+            final long stamp = lock.writeLock();
+            try {
+                this.updateClientNature = updateClientNature;
+                this.content = content;
+                this.contentTypeHtml = contentTypeHtml;
+                this.shared = shared;
+            } finally {
+                lock.unlockWrite(stamp);
+            }
+        }
     }
 
     /**

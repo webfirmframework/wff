@@ -1340,5 +1340,89 @@ public class SharedTagContentTest {
         assertFalse(((NoTag)pChild2.getFirstChild()).isChildContentTypeHtml());
         
     }
+    
+    @Test
+    public void testSharedProperty() throws Exception {
+        SharedTagContent<String> stc = new SharedTagContent<>(false, "Test Content", false);
+        
+        Div div = new Div(null);
+        Span span1 = new Span(div);
+        span1.addInnerHtml(stc);
+        Span span2 = new Span(div);
+        span2.addInnerHtml(stc);
+        
+        
+        assertEquals("Test Content", stc.getContent());
+        assertEquals("<div><span>Test Content</span><span>Test Content</span></div>", div.toHtmlString());
+        assertFalse(stc.isShared());
+        stc.setContent("Content Changed");
+        assertEquals("Content Changed", stc.getContent());
+        assertEquals("<div><span>Test Content</span><span>Test Content</span></div>", div.toHtmlString());
+        assertFalse(stc.isContentTypeHtml());
+        
+        stc.setShared(true);
+        assertTrue(stc.isShared());
+        stc.setContent("Content Changed2");
+        assertEquals("Content Changed2", stc.getContent());
+        assertEquals("<div><span>Content Changed2</span><span>Content Changed2</span></div>", div.toHtmlString());
+        assertFalse(stc.isContentTypeHtml());
+    }
+    
+//for dev test purpose
+//    @Test testAbstractHtmlSubscribeTo
+//    public static void main(String args[]) {
+//        BrowserPage browserPage = new BrowserPage() {
+//            
+//            private BrowserPage current = this;
+//            
+//            @Override
+//            public String webSocketUrl() {
+//                // TODO Auto-generated method stub
+//                return "wss://webfirmframework.com/wsforwffweb";
+//            }
+//            
+//            @Override
+//            public AbstractHtml render() {
+//                Html html = new Html(null) {
+//                    {
+//                        new Head(this);
+//                        new Body(this) {{
+//                            final Div div = new Div(this, new Id("mainDivId"));
+//                            
+//                            SharedTagContent<String> stc = new SharedTagContent<String>("initial");
+//                            div.subscribeTo(stc);
+//                            final Thread thread = new Thread(new Runnable() {
+//                                
+//                                @Override
+//                                public void run() {
+//                                    try {
+//                                        Thread.sleep(5000);
+//                                    } catch (InterruptedException e) {
+//                                        // TODO Auto-generated catch block
+//                                        e.printStackTrace();
+//                                    }
+//                                    for (int i = 0; i < 10; i++) {
+//                                        stc.setContent("changed value time " + i);
+//                                        System.out.println("BrowserPage " + current.getPushQueueSize());
+//                                    }
+//                                    
+//                                }
+//                            });
+//                            thread.start();
+//                        }};
+//                        
+//                    }
+//                };
+//                return html;
+//            }
+//        };
+//        
+//        final String htmlString = browserPage.toHtmlString();
+//        
+//        
+//        final AbstractHtml div = browserPage.getTagRepository().findTagById("mainDivId");
+//        assertNotNull(div);
+//    }
+            
 
 }
