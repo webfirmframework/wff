@@ -31,7 +31,7 @@ public enum BrowserPageContext {
 
     INSTANCE;
 
-    public static final Logger LOGGER = Logger
+    private static final Logger LOGGER = Logger
             .getLogger(BrowserPageContext.class.getName());
 
     /**

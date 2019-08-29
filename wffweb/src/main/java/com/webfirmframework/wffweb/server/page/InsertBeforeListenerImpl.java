@@ -39,7 +39,7 @@ class InsertBeforeListenerImpl implements InsertBeforeListener {
 
     private static final long serialVersionUID = 1L;
 
-    public static final Logger LOGGER = Logger
+    private static final Logger LOGGER = Logger
             .getLogger(InsertBeforeListenerImpl.class.getName());
 
     private final BrowserPage browserPage;

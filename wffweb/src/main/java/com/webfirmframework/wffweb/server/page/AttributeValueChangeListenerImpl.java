@@ -32,7 +32,7 @@ class AttributeValueChangeListenerImpl implements AttributeValueChangeListener {
 
     private static final long serialVersionUID = 1L;
 
-    public static final Logger LOGGER = Logger
+    private static final Logger LOGGER = Logger
             .getLogger(AttributeValueChangeListenerImpl.class.getName());
 
     private BrowserPage browserPage;

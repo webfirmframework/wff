@@ -413,7 +413,8 @@ public class Style extends AbstractAttribute
 
     private static final long serialVersionUID = 1_0_1L;
 
-    public static final Logger LOGGER = Logger.getLogger(Style.class.getName());
+    private static final Logger LOGGER = Logger
+            .getLogger(Style.class.getName());
 
     /**
      * key as style name, and value as class which extends or value as enum

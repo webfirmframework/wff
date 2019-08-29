@@ -16,8 +16,6 @@
  */
 package com.webfirmframework.wffweb.css;
 
-import java.util.logging.Logger;
-
 import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.css.core.AbstractCssProperty;
 import com.webfirmframework.wffweb.util.StringUtil;
@@ -37,8 +35,6 @@ import com.webfirmframework.wffweb.util.StringUtil;
 public class Src extends AbstractCssProperty<Src> {
 
     private static final long serialVersionUID = 1_0_0L;
-
-    public static final Logger LOGGER = Logger.getLogger(Src.class.getName());
 
     private String cssValue;
 

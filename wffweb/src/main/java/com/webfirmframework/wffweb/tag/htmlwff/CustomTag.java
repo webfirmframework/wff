@@ -19,7 +19,7 @@ public class CustomTag extends AbstractHtml {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final Logger LOGGER = Logger
+    private static final Logger LOGGER = Logger
             .getLogger(CustomTag.class.getName());
 
     private TagType tagType = TagType.OPENING_CLOSING;

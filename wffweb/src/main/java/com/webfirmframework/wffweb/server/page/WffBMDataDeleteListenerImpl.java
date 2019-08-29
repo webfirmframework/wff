@@ -32,7 +32,7 @@ class WffBMDataDeleteListenerImpl implements WffBMDataDeleteListener {
 
     private static final long serialVersionUID = 1L;
 
-    public static final Logger LOGGER = Logger
+    private static final Logger LOGGER = Logger
             .getLogger(WffBMDataDeleteListenerImpl.class.getName());
 
     private final BrowserPage browserPage;

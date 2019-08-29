@@ -35,7 +35,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final Logger LOGGER = Logger
+    private static final Logger LOGGER = Logger
             .getLogger(AbstractEventAttribute.class.getName());
 
     private ServerAsyncMethod serverAsyncMethod;

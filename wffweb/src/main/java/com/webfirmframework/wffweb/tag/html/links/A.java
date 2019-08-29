@@ -19,7 +19,7 @@ public class A extends AbstractHtml implements AAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final Logger LOGGER = Logger.getLogger(A.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(A.class.getName());
 
     private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
 

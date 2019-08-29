@@ -38,7 +38,7 @@ class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
 
     private static final long serialVersionUID = 1L;
 
-    public static final Logger LOGGER = Logger
+    private static final Logger LOGGER = Logger
             .getLogger(InnerHtmlAddListenerImpl.class.getName());
 
     private final BrowserPage browserPage;

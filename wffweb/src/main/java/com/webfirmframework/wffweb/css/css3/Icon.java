@@ -64,7 +64,7 @@ public class Icon extends AbstractCssProperty<Icon>
     private static final List<String> PREDEFINED_CONSTANTS = Arrays
             .asList(INITIAL, INHERIT, NONE);
 
-    public static final Logger LOGGER = Logger.getLogger(Icon.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Icon.class.getName());
 
     private String cssValue;
 

@@ -33,7 +33,6 @@ import java.util.WeakHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
-import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.tag.core.AbstractTagBase;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
@@ -45,9 +44,6 @@ import com.webfirmframework.wffweb.util.StringBuilderUtil;
 public abstract class AbstractAttribute extends AbstractTagBase {
 
     private static final long serialVersionUID = 1_1_1L;
-
-    public static final Logger LOGGER = Logger
-            .getLogger(AbstractAttribute.class.getName());
 
     private static final Security ACCESS_OBJECT;
 

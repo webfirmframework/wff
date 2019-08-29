@@ -39,7 +39,7 @@ public class BorderColorCssValues extends AbstractBean<BorderColorCssValues>
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final Logger LOGGER = Logger
+    private static final Logger LOGGER = Logger
             .getLogger(BorderColorCssValues.class.getName());
 
     public static final String TRANSPARENT = "transparent";

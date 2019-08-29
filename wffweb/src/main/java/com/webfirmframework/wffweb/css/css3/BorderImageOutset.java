@@ -19,7 +19,6 @@ package com.webfirmframework.wffweb.css.css3;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.NullValueException;
@@ -75,9 +74,6 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
 public class BorderImageOutset extends AbstractCssProperty<BorderImageOutset> {
 
     private static final long serialVersionUID = 1_0_0L;
-
-    public static final Logger LOGGER = Logger
-            .getLogger(BorderImageOutset.class.getName());
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";

@@ -54,7 +54,7 @@ public class BorderTopColor extends AbstractCssProperty<BorderTopColor>
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final Logger LOGGER = Logger
+    private static final Logger LOGGER = Logger
             .getLogger(BorderTopColor.class.getName());
 
     public static final String INITIAL = "initial";

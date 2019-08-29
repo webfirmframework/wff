@@ -39,7 +39,7 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
 
     private static final long serialVersionUID = 1L;
 
-    public static final Logger LOGGER = Logger
+    private static final Logger LOGGER = Logger
             .getLogger(ChildTagRemoveListenerImpl.class.getName());
 
     private final Object accessObject;

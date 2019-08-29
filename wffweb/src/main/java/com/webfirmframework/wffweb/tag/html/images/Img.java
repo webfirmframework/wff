@@ -19,7 +19,7 @@ public class Img extends AbstractHtml {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final Logger LOGGER = Logger.getLogger(Img.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Img.class.getName());
 
     private static TagType tagType = TagType.NON_CLOSING;
 

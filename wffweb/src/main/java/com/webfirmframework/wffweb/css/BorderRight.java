@@ -54,7 +54,7 @@ public class BorderRight extends AbstractCssProperty<BorderRight>
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final Logger LOGGER = Logger
+    private static final Logger LOGGER = Logger
             .getLogger(BorderRight.class.getName());
 
     public static final String INITIAL = "initial";

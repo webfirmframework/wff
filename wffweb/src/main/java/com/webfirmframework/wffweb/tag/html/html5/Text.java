@@ -35,7 +35,7 @@ public class Text extends AbstractHtml {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final Logger LOGGER = Logger.getLogger(Text.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Text.class.getName());
 
     private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
 

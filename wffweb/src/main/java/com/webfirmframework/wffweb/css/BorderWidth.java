@@ -67,7 +67,7 @@ public class BorderWidth extends AbstractCssProperty<BorderWidth>
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final Logger LOGGER = Logger
+    private static final Logger LOGGER = Logger
             .getLogger(BorderWidth.class.getName());
 
     public static final String MEDIUM = "medium";

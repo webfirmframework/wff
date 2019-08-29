@@ -68,7 +68,7 @@ public class BorderImageSource extends AbstractCssProperty<BorderImageSource>
     private static final List<String> PREDEFINED_CONSTANTS = Arrays
             .asList(INITIAL, INHERIT, NONE);
 
-    public static final Logger LOGGER = Logger
+    private static final Logger LOGGER = Logger
             .getLogger(BorderImageSource.class.getName());
 
     private String cssValue;

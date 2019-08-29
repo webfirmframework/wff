@@ -161,7 +161,7 @@ import com.webfirmframework.wffweb.tag.html.tables.Tr;
 
 public class TagRegistry {
 
-    public static final Logger LOGGER = Logger
+    private static final Logger LOGGER = Logger
             .getLogger(TagRegistry.class.getName());
 
     private static final Set<String> TAG_NAMES_SET;

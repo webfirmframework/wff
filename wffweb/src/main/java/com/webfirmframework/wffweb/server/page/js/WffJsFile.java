@@ -67,7 +67,7 @@ public enum WffJsFile {
 
     private static final String AUTOREMOVE_PARENT_SCRIPT = "document.currentScript.parentNode.removeChild(document.currentScript);";
 
-    public static final Logger LOGGER = Logger
+    private static final Logger LOGGER = Logger
             .getLogger(WffJsFile.class.getName());
 
     // should be static final

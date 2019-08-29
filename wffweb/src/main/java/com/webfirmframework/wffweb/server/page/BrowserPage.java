@@ -80,7 +80,7 @@ public abstract class BrowserPage implements Serializable {
 
     private static final long serialVersionUID = 1_0_1L;
 
-    public static final Logger LOGGER = Logger
+    private static final Logger LOGGER = Logger
             .getLogger(BrowserPage.class.getName());
 
     public static final String WFF_INSTANCE_ID = "wffInstanceId";
