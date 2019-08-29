@@ -200,6 +200,12 @@ public class NoTag extends AbstractHtml {
     }
 
     @Override
+    public boolean removeSharedTagContent(final boolean removeContent) {
+        throw new MethodNotImplementedException(
+                "sharedTagContent is not allowed in NoTag or Blank tag so calling removeSharedTagContent is invalid");
+    }
+
+    @Override
     public <T> void subscribeTo(final boolean updateClient,
             final SharedTagContent<T> sharedTagContent,
             final ContentFormatter<T> formatter) {

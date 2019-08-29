@@ -1094,6 +1094,21 @@ public class SharedTagContent<T> {
     }
 
     /**
+     * @param insertedTag
+     *                        instance of NoTag
+     * @return true if removed otherwise false
+     * @since 3.0.6
+     */
+    boolean remove(final AbstractHtml insertedTag) {
+        final long stamp = lock.writeLock();
+        try {
+            return insertedTags.remove(insertedTag) != null;
+        } finally {
+            lock.unlockWrite(stamp);
+        }
+    }
+
+    /**
      * @param noTag
      * @return true if the parent of this NoTag was added by
      *         AbstractHtml.subscribedTo method but it doesn't mean the NoTag is

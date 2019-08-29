@@ -1368,6 +1368,40 @@ public class SharedTagContentTest {
         assertFalse(stc.isContentTypeHtml());
     }
     
+    @Test
+    public void testAbstractHtmlRemoveSharedTagContent() throws Exception {
+        SharedTagContent<String> stc = new SharedTagContent<>(true, "Test Content", false);
+        
+        Div div = new Div(null);
+        Span span1 = new Span(div);
+        span1.addInnerHtml(stc);
+        Span span2 = new Span(div);
+        span2.addInnerHtml(stc);
+        
+        
+        assertEquals("Test Content", stc.getContent());
+        assertEquals("<div><span>Test Content</span><span>Test Content</span></div>", div.toHtmlString());
+        assertTrue(span2.removeSharedTagContent(false));
+        stc.setContent("Content Changed");
+        assertEquals("Content Changed", stc.getContent());
+        assertEquals("<div><span>Content Changed</span><span>Test Content</span></div>", div.toHtmlString());
+
+
+        span2.addInnerHtml(stc);
+        
+        stc.setContent("Content Changed2");
+        assertEquals("Content Changed2", stc.getContent());
+        assertEquals("<div><span>Content Changed2</span><span>Content Changed2</span></div>", div.toHtmlString());
+        
+        assertTrue(span2.removeSharedTagContent(true));
+        stc.setContent("Content Changed3");
+        assertEquals("Content Changed3", stc.getContent());
+        assertEquals("<div><span>Content Changed3</span><span></span></div>", div.toHtmlString());
+
+        assertFalse(span2.removeSharedTagContent(false));
+        assertFalse(span2.removeSharedTagContent(true));
+    }
+    
 //for dev test purpose
 //    @Test testAbstractHtmlSubscribeTo
 //    public static void main(String args[]) {

@@ -1134,6 +1134,72 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
+     * @param removeContent
+     *                          true to remove the inner content of this tag
+     *                          otherwise false. The inner content will be
+     *                          removed only if it contains a ShareTagContent
+     *                          object.
+     * @return true if any SharedTagContent object is removed from this tag
+     *         otherwise false.
+     * @since 3.0.6
+     */
+    public boolean removeSharedTagContent(final boolean removeContent) {
+
+        boolean listenerInvoked = false;
+        boolean removed = false;
+        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
+        lock.lock();
+        try {
+            if (children.size() == 1) {
+                final Iterator<AbstractHtml> iterator = children.iterator();
+                if (iterator.hasNext()) {
+                    final AbstractHtml firstChild = iterator.next();
+                    if (firstChild != null && !firstChild.parentNullifiedOnce
+                            && firstChild.sharedTagContent != null
+                            && firstChild instanceof NoTag) {
+
+                        removed = firstChild.sharedTagContent
+                                .remove(firstChild);
+
+                        if (removed && removeContent) {
+
+                            final AbstractHtml[] removedAbstractHtmls = children
+                                    .toArray(new AbstractHtml[children.size()]);
+                            children.clear();
+
+                            initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(
+                                    removedAbstractHtmls);
+                            final ChildTagRemoveListener listener = sharedObject
+                                    .getChildTagRemoveListener(ACCESS_OBJECT);
+                            if (listener != null) {
+                                listener.allChildrenRemoved(
+                                        new ChildTagRemoveListener.Event(this,
+                                                removedAbstractHtmls));
+                                listenerInvoked = true;
+                            }
+                        }
+
+                    }
+
+                }
+
+            }
+        } finally {
+            lock.unlock();
+        }
+
+        if (listenerInvoked) {
+            final PushQueue pushQueue = sharedObject
+                    .getPushQueue(ACCESS_OBJECT);
+            if (pushQueue != null) {
+                pushQueue.push();
+            }
+        }
+
+        return removed;
+    }
+
+    /**
      * Removes the given tags from its children tags.
      *
      * @param children
