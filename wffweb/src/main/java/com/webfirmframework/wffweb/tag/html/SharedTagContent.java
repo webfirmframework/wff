@@ -47,7 +47,7 @@ import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
  * Usage Eg:-<br>
  *
  * <pre>
- * SharedTagContent<String> stc = new SharedTagContent<>("Initial Content");
+ * SharedTagContent&lt;String&gt; stc = new SharedTagContent&lt;&gt;("Initial Content");
  *
  * Div div = new Div(null);
  *
