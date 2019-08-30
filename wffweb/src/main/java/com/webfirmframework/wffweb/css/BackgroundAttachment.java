@@ -95,6 +95,7 @@ public enum BackgroundAttachment implements CssProperty {
      * property, i.e. whether it can have a corresponding object from it.
      *
      * @param cssValue
+     *                     the css value
      * @return true if the given {@code cssValue} has a corresponding object.
      * @since 1.0.0
      * @author WFF
