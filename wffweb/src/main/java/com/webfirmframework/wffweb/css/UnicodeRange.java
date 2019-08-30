@@ -16,8 +16,6 @@
  */
 package com.webfirmframework.wffweb.css;
 
-import java.util.logging.Logger;
-
 import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.css.core.AbstractCssProperty;
 import com.webfirmframework.wffweb.util.StringBuilderUtil;
@@ -38,9 +36,6 @@ import com.webfirmframework.wffweb.util.StringUtil;
 public class UnicodeRange extends AbstractCssProperty<UnicodeRange> {
 
     private static final long serialVersionUID = 1_0_0L;
-
-    public static final Logger LOGGER = Logger
-            .getLogger(UnicodeRange.class.getName());
 
     public static final String DEFAULT_VALUE = "U+0-10FFFF";
 

@@ -32,6 +32,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
@@ -90,7 +91,15 @@ public abstract class AbstractHtml extends AbstractJsObject {
     // or null if byte[]
     private final byte[] tagNameIndexBytes;
 
+    // its length will be always 1
+    private static final byte[] INDEXED_AT_CHAR_BYTES;
+
+    // its length will be always 1
+    private static final byte[] INDEXED_HASH_CHAR_BYTES;
+
     private volatile AbstractHtml parent;
+
+    private volatile boolean parentNullifiedOnce;
 
     /**
      * NB: iterator in this children is not synchronized so for-each loop may
@@ -139,6 +148,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     protected final boolean noTagContentTypeHtml;
 
+    @SuppressWarnings("rawtypes")
+    private volatile SharedTagContent sharedTagContent;
+
     public static enum TagType {
         OPENING_CLOSING, SELF_CLOSING, NON_CLOSING;
 
@@ -157,6 +169,15 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     static {
         ACCESS_OBJECT = new Security();
+
+        // its length will be always 1
+        INDEXED_AT_CHAR_BYTES = PreIndexedTagName.AT
+                .internalIndexBytes(ACCESS_OBJECT);
+
+        // its length will be always 1
+        INDEXED_HASH_CHAR_BYTES = PreIndexedTagName.HASH
+                .internalIndexBytes(ACCESS_OBJECT);
+
     }
 
     {
@@ -486,7 +507,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     protected AbstractHtml(final PreIndexedTagName preIndexedTagName,
             final AbstractHtml base, final AbstractAttribute[] attributes) {
         tagName = preIndexedTagName.tagName();
-        tagNameIndexBytes = preIndexedTagName.indexBytes();
+        tagNameIndexBytes = preIndexedTagName.internalIndexBytes(ACCESS_OBJECT);
         noTagContentTypeHtml = false;
         if (base == null) {
             sharedObject = new AbstractHtml5SharedObject(this);
@@ -577,6 +598,39 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 pushQueue.push();
             }
         }
+    }
+
+    /**
+     * Removes all children from this tag.
+     *
+     * @param updateClient
+     * @return
+     * @since 3.0.6
+     */
+    ChildTagRemoveListenerData removeAllChildrenAndGetEventsLockless(
+            final boolean updateClient) {
+
+        final AbstractHtml[] removedAbstractHtmls = children
+                .toArray(new AbstractHtml[children.size()]);
+        children.clear();
+
+        initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(
+                removedAbstractHtmls);
+
+        if (updateClient) {
+            final ChildTagRemoveListener listener = sharedObject
+                    .getChildTagRemoveListener(ACCESS_OBJECT);
+            if (listener != null) {
+
+                final ChildTagRemoveListenerData listenerData = new ChildTagRemoveListenerData(
+                        sharedObject, listener,
+                        new ChildTagRemoveListener.Event(this,
+                                removedAbstractHtmls));
+                return listenerData;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -677,6 +731,472 @@ public abstract class AbstractHtml extends AbstractJsObject {
             }
         }
 
+    }
+
+    /**
+     * @return true if the parent is nullified at least once
+     * @since 3.0.6
+     */
+    boolean isParentNullifiedOnce() {
+        return parentNullifiedOnce;
+    }
+
+    /**
+     * @param updateClient
+     *                         true to update client browser page if it is
+     *                         available. The default value is true but it will
+     *                         be ignored if there is no client browser page.
+     * @param innerHtmls
+     * @return
+     * @since 3.0.6
+     */
+    InnerHtmlListenerData addInnerHtmlsAndGetEventsLockless(
+            final boolean updateClient, final AbstractHtml... innerHtmls) {
+
+        InnerHtmlListenerData innerHtmlListenerData = null;
+        final AbstractHtml[] removedAbstractHtmls = children
+                .toArray(new AbstractHtml[children.size()]);
+        children.clear();
+
+        initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(
+                removedAbstractHtmls);
+
+        final InnerHtmlAddListener listener = sharedObject
+                .getInnerHtmlAddListener(ACCESS_OBJECT);
+
+        if (listener != null && updateClient) {
+
+            final InnerHtmlAddListener.Event[] events = new InnerHtmlAddListener.Event[innerHtmls.length];
+
+            int index = 0;
+
+            for (final AbstractHtml innerHtml : innerHtmls) {
+
+                AbstractHtml previousParentTag = null;
+
+                if (innerHtml.parent != null
+                        && innerHtml.parent.sharedObject == sharedObject) {
+                    previousParentTag = innerHtml.parent;
+                }
+
+                addChild(innerHtml, false);
+
+                events[index] = new InnerHtmlAddListener.Event(this, innerHtml,
+                        previousParentTag);
+                index++;
+
+            }
+
+            innerHtmlListenerData = new InnerHtmlListenerData(sharedObject,
+                    listener, events);
+
+        } else {
+            for (final AbstractHtml innerHtml : innerHtmls) {
+                addChild(innerHtml, false);
+            }
+        }
+
+        return innerHtmlListenerData;
+
+    }
+
+    /**
+     * @param sharedTagContent
+     *                             the shared content to be inserted as inner
+     *                             content. Any changes of content in the
+     *                             sharedTagContent will be reflected in this
+     *                             tag and all other consuming tags of this
+     *                             sharedTagContent object.
+     * @since 3.0.6
+     */
+    public <T> void addInnerHtml(final SharedTagContent<T> sharedTagContent) {
+        addInnerHtml(true, sharedTagContent, null);
+    }
+
+    /**
+     * @param sharedTagContent
+     *                             the shared content to be inserted as inner
+     *                             content. Any changes of content in the
+     *                             sharedTagContent will be reflected in this
+     *                             tag and all other consuming tags of this
+     *                             sharedTagContent object.
+     * @param formatter
+     *                             content to be formatted using this formatter
+     *                             before it is embedded in this tag.
+     * @since 3.0.6
+     */
+    public <T> void addInnerHtml(final SharedTagContent<T> sharedTagContent,
+            final SharedTagContent.ContentFormatter<T> formatter) {
+        addInnerHtml(true, sharedTagContent, formatter);
+    }
+
+    /**
+     * @param updateClient
+     *                             true to update client browser page if it is
+     *                             available. The default value is true but it
+     *                             will be ignored if there is no client browser
+     *                             page. false will skip updating client browser
+     *                             page only when this method call.
+     * @param sharedTagContent
+     *                             the shared content to be inserted as inner
+     *                             content. Any changes of content in the
+     *                             sharedTagContent will be reflected in this
+     *                             tag and all other consuming tags of this
+     *                             sharedTagContent object.
+     * @since 3.0.6
+     */
+    public <T> void addInnerHtml(final boolean updateClient,
+            final SharedTagContent<T> sharedTagContent) {
+        addInnerHtml(updateClient, sharedTagContent, null);
+    }
+
+    /**
+     * @param updateClient
+     *                             true to update client browser page if it is
+     *                             available. The default value is true but it
+     *                             will be ignored if there is no client browser
+     *                             page. false will skip updating client browser
+     *                             page only when this method call.
+     * @param sharedTagContent
+     *                             the shared content to be inserted as inner
+     *                             content. Any changes of content in the
+     *                             sharedTagContent will be reflected in this
+     *                             tag and all other consuming tags of this
+     *                             sharedTagContent object.
+     * @param formatter
+     *                             content to be formatted using this formatter
+     *                             before it is embedded in this tag.
+     *
+     * @since 3.0.6
+     */
+    public <T> void addInnerHtml(final boolean updateClient,
+            final SharedTagContent<T> sharedTagContent,
+            final SharedTagContent.ContentFormatter<T> formatter) {
+        addInnerHtml(updateClient, sharedTagContent, formatter, false);
+    }
+
+    /**
+     * Subscribes to the given SharedTagContent and listens to its content
+     * updates but pushes updates of this tag to client browser page only if
+     * there is an active WebSocket connection between server and client browser
+     * page and if there is no active WebSocket connection that changes will not
+     * be cached for later push. However, it will try to keep the change of this
+     * tag (server object) up to date with client browser page. The difference
+     * of this method with {@link AbstractHtml#addInnerHtml(SharedTagContent)}
+     * is that addInnerHtml(SharedTagContent) will push all changes of this tag
+     * (server side object) to client browser page and if push is failed it will
+     * be cached for retry. {@link AbstractHtml#addInnerHtml(SharedTagContent)}
+     * will reliably deliver each and every change to client browser page. There
+     * are cases where it is discouraged,
+     *
+     * <br>
+     * <br>
+     * Eg:- printing current time in realtime. Imagine, while printing the time
+     * in realtime the websocket communication between the client and server is
+     * lost and reconnected after few seconds. In that case we don't have to
+     * push the out dated data (time). In such cases
+     * {@link AbstractHtml#subscribeTo(SharedTagContent)} is more appropriate.
+     *
+     *
+     * @param sharedTagContent
+     *                             the shared content to be inserted as inner
+     *                             content. Any changes of content in the
+     *                             sharedTagContent will be reflected in this
+     *                             tag and all other consuming tags of this
+     *                             sharedTagContent object.
+     *
+     * @since 3.0.6
+     */
+    public <T> void subscribeTo(final SharedTagContent<T> sharedTagContent) {
+        addInnerHtml(true, sharedTagContent, null, true);
+    }
+
+    /**
+     * Subscribes to the given SharedTagContent and listens to its content
+     * updates but pushes updates of this tag to client browser page only if
+     * there is an active WebSocket connection between server and client browser
+     * page and if there is no active WebSocket connection that changes will not
+     * be cached for later push. However, it will try to keep the change of this
+     * tag (server object) up to date with client browser page. The difference
+     * of this method with {@link AbstractHtml#addInnerHtml(SharedTagContent)}
+     * is that addInnerHtml(SharedTagContent) will push all changes of this tag
+     * (server side object) to client browser page and if push is failed it will
+     * be cached for retry. {@link AbstractHtml#addInnerHtml(SharedTagContent)}
+     * will reliably deliver each and every change to client browser page. There
+     * are cases where it is discouraged,
+     *
+     * <br>
+     * <br>
+     * Eg:- printing current time in realtime. Imagine, while printing the time
+     * in realtime the websocket communication between the client and server is
+     * lost and reconnected after few seconds. In that case we don't have to
+     * push the out dated data (time). In such cases
+     * {@link AbstractHtml#subscribeTo(SharedTagContent)} is more appropriate.
+     *
+     * @param sharedTagContent
+     *                             the shared content to be inserted as inner
+     *                             content. Any changes of content in the
+     *                             sharedTagContent will be reflected in this
+     *                             tag and all other consuming tags of this
+     *                             sharedTagContent object.
+     * @param formatter
+     *                             content to be formatted using this formatter
+     *                             before it is embedded in this tag.
+     *
+     * @since 3.0.6
+     */
+    public <T> void subscribeTo(final SharedTagContent<T> sharedTagContent,
+            final SharedTagContent.ContentFormatter<T> formatter) {
+        addInnerHtml(true, sharedTagContent, formatter, true);
+    }
+
+    /**
+     * Subscribes to the given SharedTagContent and listens to its content
+     * updates but pushes updates of this tag to client browser page only if
+     * there is an active WebSocket connection between server and client browser
+     * page and if there is no active WebSocket connection that changes will not
+     * be cached for later push. However, it will try to keep the change of this
+     * tag (server object) up to date with client browser page. The difference
+     * of this method with {@link AbstractHtml#addInnerHtml(SharedTagContent)}
+     * is that addInnerHtml(SharedTagContent) will push all changes of this tag
+     * (server side object) to client browser page and if push is failed it will
+     * be cached for retry. {@link AbstractHtml#addInnerHtml(SharedTagContent)}
+     * will reliably deliver each and every change to client browser page. There
+     * are cases where it is discouraged,
+     *
+     * <br>
+     * <br>
+     * Eg:- printing current time in realtime. Imagine, while printing the time
+     * in realtime the websocket communication between the client and server is
+     * lost and reconnected after few seconds. In that case we don't have to
+     * push the out dated data (time). In such cases
+     * {@link AbstractHtml#subscribeTo(SharedTagContent)} is more appropriate.
+     *
+     * @param updateClient
+     *                             true to update client browser page if it is
+     *                             available. The default value is true but it
+     *                             will be ignored if there is no client browser
+     *                             page. false will skip updating client browser
+     *                             page only when this method call.
+     * @param sharedTagContent
+     *                             the shared content to be inserted as inner
+     *                             content. Any changes of content in the
+     *                             sharedTagContent will be reflected in this
+     *                             tag and all other consuming tags of this
+     *                             sharedTagContent object.
+     * @param formatter
+     *                             content to be formatted using this formatter
+     *                             before it is embedded in this tag.
+     *
+     * @since 3.0.6
+     */
+    public <T> void subscribeTo(final boolean updateClient,
+            final SharedTagContent<T> sharedTagContent,
+            final SharedTagContent.ContentFormatter<T> formatter) {
+        addInnerHtml(updateClient, sharedTagContent, formatter, true);
+    }
+
+    /**
+     * @param updateClient
+     *                             true to update client browser page if it is
+     *                             available. The default value is true but it
+     *                             will be ignored if there is no client browser
+     *                             page. false will skip updating client browser
+     *                             page only when this method call.
+     * @param sharedTagContent
+     *                             the shared content to be inserted as inner
+     *                             content. Any changes of content in the
+     *                             sharedTagContent will be reflected in this
+     *                             tag and all other consuming tags of this
+     *                             sharedTagContent object.
+     * @param formatter
+     *                             content to be formatted using this formatter
+     *                             before it is embedded in this tag.
+     * @param subscribe
+     *                             updateClient will be true only if there is an
+     *                             active wsListener otherwise updateClient will
+     *                             be false.
+     * @since 3.0.6
+     */
+    private <T> void addInnerHtml(final boolean updateClient,
+            final SharedTagContent<T> sharedTagContent,
+            final SharedTagContent.ContentFormatter<T> formatter,
+            final boolean subscribe) {
+
+        if (this.sharedTagContent == null
+                || !Objects.equals(this.sharedTagContent, sharedTagContent)) {
+
+            final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+            lock.lock();
+            try {
+                if (sharedTagContent != null) {
+                    final AbstractHtml noTagInserted = sharedTagContent
+                            .addInnerHtml(updateClient, this, formatter,
+                                    subscribe);
+                    noTagInserted.sharedTagContent = sharedTagContent;
+                } else {
+                    if (children.size() == 1) {
+                        final Iterator<AbstractHtml> iterator = children
+                                .iterator();
+                        if (iterator.hasNext()) {
+                            final AbstractHtml firstChild = iterator.next();
+                            if (firstChild != null) {
+                                if (firstChild instanceof NoTag
+                                        && !firstChild.parentNullifiedOnce
+                                        && firstChild.sharedTagContent
+                                                .contains(firstChild)) {
+                                    firstChild.sharedTagContent = null;
+                                }
+                            }
+
+                        }
+
+                    }
+                }
+            } finally {
+                lock.unlock();
+            }
+
+        }
+
+    }
+
+    /**
+     * @param sharedTagContent
+     * @since 3.0.6
+     */
+    <T> void setSharedTagContent(final SharedTagContent<T> sharedTagContent) {
+        this.sharedTagContent = sharedTagContent;
+    }
+
+    /**
+     * @return the object of SharedTagContent which created the NoTag in the
+     *         child or null if the child NoTag is not created by any
+     *         SharedTagContent object.
+     * @since 3.0.6
+     */
+    @SuppressWarnings("unchecked")
+    public <T> SharedTagContent<T> getSharedTagContent() {
+        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
+        lock.lock();
+        try {
+            if (children.size() == 1) {
+                final Iterator<AbstractHtml> iterator = children.iterator();
+                if (iterator.hasNext()) {
+                    final AbstractHtml firstChild = iterator.next();
+                    if (firstChild != null && !firstChild.parentNullifiedOnce
+                            && firstChild.sharedTagContent != null
+                            && firstChild instanceof NoTag
+                            && firstChild.sharedTagContent
+                                    .contains(firstChild)) {
+                        return firstChild.sharedTagContent;
+                    }
+
+                }
+
+            }
+        } finally {
+            lock.unlock();
+        }
+
+        return null;
+    }
+
+    /**
+     * @return true if this tag is subscribed to any SharedTagContent object
+     *         otherwise false.
+     * @since 3.0.6
+     */
+    public boolean isSubscribedToSharedTagContent() {
+
+        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
+        lock.lock();
+        try {
+            if (children.size() == 1) {
+                final Iterator<AbstractHtml> iterator = children.iterator();
+                if (iterator.hasNext()) {
+                    final AbstractHtml firstChild = iterator.next();
+                    if (firstChild != null && !firstChild.parentNullifiedOnce
+                            && firstChild.sharedTagContent != null
+                            && firstChild instanceof NoTag) {
+                        return firstChild.sharedTagContent
+                                .isSubscribed(firstChild);
+                    }
+
+                }
+
+            }
+        } finally {
+            lock.unlock();
+        }
+
+        return false;
+    }
+
+    /**
+     * @param removeContent
+     *                          true to remove the inner content of this tag
+     *                          otherwise false. The inner content will be
+     *                          removed only if it contains a ShareTagContent
+     *                          object.
+     * @return true if any SharedTagContent object is removed from this tag
+     *         otherwise false.
+     * @since 3.0.6
+     */
+    public boolean removeSharedTagContent(final boolean removeContent) {
+
+        boolean listenerInvoked = false;
+        boolean removed = false;
+        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
+        lock.lock();
+        try {
+            if (children.size() == 1) {
+                final Iterator<AbstractHtml> iterator = children.iterator();
+                if (iterator.hasNext()) {
+                    final AbstractHtml firstChild = iterator.next();
+                    if (firstChild != null && !firstChild.parentNullifiedOnce
+                            && firstChild.sharedTagContent != null
+                            && firstChild instanceof NoTag) {
+
+                        removed = firstChild.sharedTagContent
+                                .remove(firstChild);
+
+                        if (removed && removeContent) {
+
+                            final AbstractHtml[] removedAbstractHtmls = children
+                                    .toArray(new AbstractHtml[children.size()]);
+                            children.clear();
+
+                            initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(
+                                    removedAbstractHtmls);
+                            final ChildTagRemoveListener listener = sharedObject
+                                    .getChildTagRemoveListener(ACCESS_OBJECT);
+                            if (listener != null) {
+                                listener.allChildrenRemoved(
+                                        new ChildTagRemoveListener.Event(this,
+                                                removedAbstractHtmls));
+                                listenerInvoked = true;
+                            }
+                        }
+
+                    }
+
+                }
+
+            }
+        } finally {
+            lock.unlock();
+        }
+
+        if (listenerInvoked) {
+            final PushQueue pushQueue = sharedObject
+                    .getPushQueue(ACCESS_OBJECT);
+            if (pushQueue != null) {
+                pushQueue.push();
+            }
+        }
+
+        return removed;
     }
 
     /**
@@ -1428,7 +1948,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 return false;
             }
 
-            final Deque<String> removedAttributeNames = new ArrayDeque<>(
+            final List<AbstractAttribute> removedAttributes = new ArrayList<>(
                     attributes.length);
 
             for (final AbstractAttribute attribute : attributes) {
@@ -1437,7 +1957,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                     final String attributeName = attribute.getAttributeName();
                     attributesMap.remove(attributeName);
                     removed = true;
-                    removedAttributeNames.add(attributeName);
+                    removedAttributes.add(attribute);
                 }
 
             }
@@ -1454,10 +1974,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                             .getAttributeRemoveListener(ACCESS_OBJECT);
                     if (listener != null) {
                         final AttributeRemoveListener.RemovedEvent event = new AttributeRemoveListener.RemovedEvent(
-                                this,
-                                removedAttributeNames.toArray(
-                                        new String[removedAttributeNames
-                                                .size()]));
+                                this, removedAttributes);
 
                         listener.removedAttributes(event);
                         listenerInvoked = true;
@@ -1686,7 +2203,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
             final PreIndexedTagName preIndexedTagName, final AbstractHtml base,
             final AbstractAttribute[] attributes) {
         this(tagType, preIndexedTagName.tagName(),
-                preIndexedTagName.indexBytes(), base, attributes);
+                preIndexedTagName.internalIndexBytes(ACCESS_OBJECT), base,
+                attributes);
     }
 
     /**
@@ -1872,6 +2390,18 @@ public abstract class AbstractHtml extends AbstractJsObject {
         } finally {
             lock.unlock();
         }
+    }
+
+    /**
+     * Gets the number of children in this tag. An efficient way to find the
+     * size of children.
+     *
+     * @return the size of children.
+     * @since 3.0.6
+     * @author WFF
+     */
+    int getChildrenSizeLockless() {
+        return children.size();
     }
 
     /**
@@ -3508,7 +4038,11 @@ public abstract class AbstractHtml extends AbstractJsObject {
     private void initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(
             final AbstractHtml abstractHtml) {
 
-        abstractHtml.parent = null;
+        if (abstractHtml.parent != null) {
+            abstractHtml.parent = null;
+            abstractHtml.parentNullifiedOnce = true;
+        }
+
         abstractHtml.sharedObject = new AbstractHtml5SharedObject(abstractHtml);
 
         final Deque<Set<AbstractHtml>> removedTagsStack = new ArrayDeque<>();
@@ -3690,7 +4224,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     public byte[] toCompressedWffBMBytes(final Charset charset) {
 
         final byte[] encodedBytesForAtChar = "@".getBytes(charset);
-        final byte[] encodedByesForHashChar = "#".getBytes(charset);
+        final byte[] encodedBytesForHashChar = "#".getBytes(charset);
 
         final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
         try {
@@ -3784,7 +4318,163 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         // @ short for html content
                         final byte[] nodeNameBytes = tag.noTagContentTypeHtml
                                 ? encodedBytesForAtChar
-                                : encodedByesForHashChar;
+                                : encodedBytesForHashChar;
+
+                        nameValue.setName(WffBinaryMessageUtil
+                                .getBytesFromInt(parentWffSlotIndex));
+
+                        final byte[][] values = new byte[2][0];
+
+                        values[0] = nodeNameBytes;
+                        values[1] = tag.getClosingTag().getBytes(charset);
+
+                        nameValue.setValues(values);
+
+                        tag.wffSlotIndex = nameValues.size();
+                        nameValues.add(nameValue);
+                    }
+
+                    final Set<AbstractHtml> subChildren = tag.children;
+
+                    if (subChildren != null && subChildren.size() > 0) {
+                        childrenStack.push(subChildren);
+                    }
+
+                }
+
+            }
+
+            final NameValue nameValue = nameValues.getFirst();
+            nameValue.setName(new byte[] {});
+
+            return WffBinaryMessageUtil.VERSION_1
+                    .getWffBinaryMessageBytes(nameValues);
+        } catch (final NoSuchElementException e) {
+            throw new InvalidTagException(
+                    "Not possible to build wff bm bytes on this tag.\nDon't use an empty new NoTag(null, \"\") or new Blank(null, \"\")",
+                    e);
+        } catch (final Exception e) {
+            throw new WffRuntimeException(e.getMessage(), e);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * @param charset
+     * @return the Wff Binary Message bytes of this tag containing indexed tag
+     *         name and attribute name
+     * @author WFF
+     * @throws InvalidTagException
+     * @version algorithm version 2
+     * @since 3.0.6
+     */
+    public byte[] toCompressedWffBMBytesV2(final Charset charset) {
+
+        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
+
+        try {
+            lock.lock();
+
+            final Deque<NameValue> nameValues = new ArrayDeque<>();
+
+            // ArrayDeque give better performance than Stack, LinkedList
+            final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
+            // passed 2 instead of 1 because the load factor is 0.75f
+            final HashSet<AbstractHtml> initialSet = new HashSet<>(2);
+            initialSet.add(this);
+            childrenStack.push(initialSet);
+
+            Set<AbstractHtml> children;
+            while ((children = childrenStack.poll()) != null) {
+
+                for (final AbstractHtml tag : children) {
+
+                    final String nodeName = tag.getTagName();
+
+                    final AbstractHtml parentLocal = tag.parent;
+
+                    if (nodeName != null && !nodeName.isEmpty()) {
+
+                        final NameValue nameValue = new NameValue();
+
+                        final byte[] nodeNameBytes;
+
+                        // just be initialized as local
+                        final byte[] tagNameIndexBytes = tag.tagNameIndexBytes;
+
+                        if (tagNameIndexBytes == null) {
+                            final byte[] rowNodeNameBytes = nodeName
+                                    .getBytes(charset);
+                            nodeNameBytes = new byte[rowNodeNameBytes.length
+                                    + 1];
+                            // if zero there is no optimized int bytes for index
+                            // because there is no tagNameIndex. second byte
+                            // onwards the bytes of tag name
+                            nodeNameBytes[0] = 0;
+                            System.arraycopy(rowNodeNameBytes, 0, nodeNameBytes,
+                                    1, rowNodeNameBytes.length);
+
+                            // logging is not required here
+                            // it is not an unusual case
+                            // if (LOGGER.isLoggable(Level.WARNING)) {
+                            // LOGGER.warning(nodeName
+                            // + " is not indexed, please register it with
+                            // TagRegistry");
+                            // }
+
+                        } else {
+
+                            if (tagNameIndexBytes.length == 1) {
+                                nodeNameBytes = tagNameIndexBytes;
+                            } else {
+                                nodeNameBytes = new byte[tagNameIndexBytes.length
+                                        + 1];
+                                nodeNameBytes[0] = (byte) tagNameIndexBytes.length;
+                                System.arraycopy(tagNameIndexBytes, 0,
+                                        nodeNameBytes, 1,
+                                        tagNameIndexBytes.length);
+                            }
+
+                        }
+
+                        final byte[][] wffAttributeBytes = AttributeUtil
+                                .getAttributeHtmlBytesCompressedByIndex(false,
+                                        charset, tag.attributes);
+
+                        final int parentWffSlotIndex = parentLocal == null ? -1
+                                : parentLocal.wffSlotIndex;
+                        nameValue.setName(WffBinaryMessageUtil
+                                .getBytesFromInt(parentWffSlotIndex));
+
+                        final byte[][] values = new byte[wffAttributeBytes.length
+                                + 1][0];
+
+                        values[0] = nodeNameBytes;
+
+                        System.arraycopy(wffAttributeBytes, 0, values, 1,
+                                wffAttributeBytes.length);
+
+                        nameValue.setValues(values);
+                        tag.wffSlotIndex = nameValues.size();
+                        nameValues.add(nameValue);
+
+                    } else if (!tag.getClosingTag().isEmpty()) {
+
+                        final int parentWffSlotIndex = parentLocal == null ? -1
+                                : parentLocal.wffSlotIndex;
+
+                        final NameValue nameValue = new NameValue();
+
+                        // # short for #text
+                        // @ short for html content
+                        // final byte[] nodeNameBytes = tag.noTagContentTypeHtml
+                        // ? encodedBytesForAtChar
+                        // : encodedByesForHashChar;
+
+                        final byte[] nodeNameBytes = tag.noTagContentTypeHtml
+                                ? INDEXED_AT_CHAR_BYTES
+                                : INDEXED_HASH_CHAR_BYTES;
 
                         nameValue.setName(WffBinaryMessageUtil
                                 .getBytesFromInt(parentWffSlotIndex));
@@ -4153,8 +4843,17 @@ public abstract class AbstractHtml extends AbstractJsObject {
         if (this.dataWffId == null) {
             synchronized (this) {
                 if (this.dataWffId == null) {
-                    addAttributes(false, dataWffId);
-                    this.dataWffId = dataWffId;
+
+                    final Lock lock = sharedObject.getLock(ACCESS_OBJECT)
+                            .writeLock();
+                    try {
+                        lock.lock();
+                        addAttributesLockless(false, dataWffId);
+                        this.dataWffId = dataWffId;
+                    } finally {
+                        lock.unlock();
+                    }
+
                 }
             }
         } else {
@@ -4656,12 +5355,12 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * for testing purpose only
+     * for internal purpose only
      *
      * @return
-     * @since 3.0.3
+     * @since 3.0.6
      */
-    byte[] getTagNameIndex() {
+    byte[] getTagNameIndexBytes() {
         return tagNameIndexBytes;
     }
 }

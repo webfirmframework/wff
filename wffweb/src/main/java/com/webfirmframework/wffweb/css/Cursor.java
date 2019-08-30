@@ -89,7 +89,7 @@ public class Cursor extends AbstractCssProperty<Cursor>
 
     private static final List<String> ALL_CURSORTYPES;
 
-    public static final Logger LOGGER = Logger
+    private static final Logger LOGGER = Logger
             .getLogger(Cursor.class.getName());
 
     static {

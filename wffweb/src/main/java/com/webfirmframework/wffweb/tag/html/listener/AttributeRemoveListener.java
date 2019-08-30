@@ -16,8 +16,10 @@
 package com.webfirmframework.wffweb.tag.html.listener;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 
 public interface AttributeRemoveListener extends Serializable {
 
@@ -27,6 +29,8 @@ public interface AttributeRemoveListener extends Serializable {
 
         private String[] removedAttributeNames;
 
+        private List<AbstractAttribute> removedAttributes;
+
         public RemovedEvent() {
         }
 
@@ -35,6 +39,18 @@ public interface AttributeRemoveListener extends Serializable {
             super();
             this.removedFromTag = removedFromTag;
             this.removedAttributeNames = removedAttributeNames;
+        }
+
+        /**
+         * @param removedFromTag
+         * @param removedAttributes
+         * @since 3.0.6
+         */
+        public RemovedEvent(final AbstractHtml removedFromTag,
+                final List<AbstractAttribute> removedAttributes) {
+            super();
+            this.removedFromTag = removedFromTag;
+            this.removedAttributes = removedAttributes;
         }
 
         public AbstractHtml getRemovedFromTag() {
@@ -52,6 +68,10 @@ public interface AttributeRemoveListener extends Serializable {
         public void setRemovedAttributeNames(
                 final String[] removedAttributeNames) {
             this.removedAttributeNames = removedAttributeNames;
+        }
+
+        public List<AbstractAttribute> getRemovedAttributes() {
+            return removedAttributes;
         }
 
     }

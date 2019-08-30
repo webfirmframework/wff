@@ -60,7 +60,7 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final Logger LOGGER = Logger
+    private static final Logger LOGGER = Logger
             .getLogger(MsFlex.class.getName());
 
     public static final String INITIAL = "initial";

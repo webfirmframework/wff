@@ -26,14 +26,9 @@ var wffClientCRUDUtil = new function() {
 				console.log('i', i);
 				console.log('nameValues[i].values', nameValues[i].values);
 
-				var attrNameValue = getStringFromBytes(nameValues[i].name);
-				console.log('attrNameValue', attrNameValue);
-				var indexOfSeparator = attrNameValue.indexOf('=');
-
-				var attrNameValueArry = wffTagUtil
-						.splitAttrNameValue(attrNameValue);
-				var attrName = attrNameValueArry[0];
-				var attrValue = attrNameValueArry[1];
+				var attrNameValue = wffTagUtil.getAttrNameValueFromCompressedBytes(nameValues[i].name);
+				var attrName = attrNameValue[0];
+				var attrValue = attrNameValue[1];
 
 				// if (indexOfSeparator != -1) {
 				// attrName = attrNameValue.substring(0, indexOfSeparator);
@@ -59,60 +54,67 @@ var wffClientCRUDUtil = new function() {
 
 					var applicableTag = wffTagUtil.getTagByWffId(wffId);
 
-					if (indexOfSeparator != -1) {
-						//value attribute doesn't work with setAttribute method
-						//should be called before setAttribute method
-						applicableTag[attrName] = attrValue;
-						applicableTag.setAttribute(attrName, attrValue);
-					} else {
-						//value attribute doesn't work with setAttribute method
-						//should be called before setAttribute method
-						applicableTag[attrName] = "";
-						applicableTag.setAttribute(attrName, "");
-					}
+//					if (indexOfSeparator != -1) {
+//						//value attribute doesn't work with setAttribute method
+//						//should be called before setAttribute method
+//						applicableTag[attrName] = attrValue;
+//						applicableTag.setAttribute(attrName, attrValue);
+//					} else {
+//						//value attribute doesn't work with setAttribute method
+//						//should be called before setAttribute method
+//						applicableTag[attrName] = "";
+//						applicableTag.setAttribute(attrName, "");
+//					}
+					
+					applicableTag[attrName] = attrValue;
+					applicableTag.setAttribute(attrName, attrValue);
 				}
 
 			}
 
-		} else if (taskValue == wffGlobal.taskValues.REMOVED_ATTRIBUTE) {
-			console.log('taskValue == "REMOVED_ATTRIBUTE"');
-
-			for (var i = 1; i < nameValues.length; i++) {
-
-				console.log('i', i);
-				console.log('nameValues[i].values', nameValues[i].values);
-
-				var attrName = getStringFromBytes(nameValues[i].name);
-
-				console.log('attrName', attrName);
-
-				// var tagId = wffBMUtil
-				// .getIntFromOptimizedBytes(nameValues[i].name);
-				var wffIds = nameValues[i].values;
-
-				// var tagName = getStringFromBytes(wffIds[0]);
-
-				for (var j = 0; j < wffIds.length; j++) {
-					console.log('j', j);
-
-					var wffId = wffTagUtil.getWffIdFromWffIdBytes(wffIds[j]);
-
-					var applicableTag = wffTagUtil.getTagByWffId(wffId);
-
-					applicableTag.removeAttribute(attrName);
-
-				}
-
-			}
-
-		} else if (taskValue == wffGlobal.taskValues.APPENDED_CHILD_TAG
+		} 
+		
+//		else if (taskValue == wffGlobal.taskValues.REMOVED_ATTRIBUTE) {
+//			console.log('taskValue == "REMOVED_ATTRIBUTE"');
+//
+//			for (var i = 1; i < nameValues.length; i++) {
+//
+//				console.log('i', i);
+//				console.log('nameValues[i].values', nameValues[i].values);
+//
+//				var attrName = getStringFromBytes(nameValues[i].name);
+//
+//				console.log('attrName', attrName);
+//
+//				// var tagId = wffBMUtil
+//				// .getIntFromOptimizedBytes(nameValues[i].name);
+//				var wffIds = nameValues[i].values;
+//
+//				// var tagName = getStringFromBytes(wffIds[0]);
+//
+//				for (var j = 0; j < wffIds.length; j++) {
+//					console.log('j', j);
+//
+//					var wffId = wffTagUtil.getWffIdFromWffIdBytes(wffIds[j]);
+//
+//					var applicableTag = wffTagUtil.getTagByWffId(wffId);
+//
+//					applicableTag.removeAttribute(attrName);
+//
+//				}
+//
+//			}
+//
+//		} 
+		
+		else if (taskValue == wffGlobal.taskValues.APPENDED_CHILD_TAG
 				|| taskValue == wffGlobal.taskValues.APPENDED_CHILDREN_TAGS) {
 
 			for (var i = 1; i < nameValues.length; i++) {
 				var wffId = wffTagUtil
 						.getWffIdFromWffIdBytes(nameValues[i].name);
 				var values = nameValues[i].values;
-				var tagName = getStringFromBytes(values[0]);
+				var tagName = wffTagUtil.getTagNameFromCompressedBytes(values[0]);
 
 				var parent = wffTagUtil.getTagByTagNameAndWffId(tagName, wffId);
 
@@ -138,7 +140,7 @@ var wffClientCRUDUtil = new function() {
 				var wffId = wffTagUtil
 						.getWffIdFromWffIdBytes(nameValues[i].name);
 				var values = nameValues[i].values;
-				var tagName = getStringFromBytes(values[0]);
+				var tagName = wffTagUtil.getTagNameFromCompressedBytes(values[0]);
 
 				var tagToRemove = wffTagUtil.getTagByTagNameAndWffId(tagName,
 						wffId);
@@ -158,7 +160,7 @@ var wffClientCRUDUtil = new function() {
 				var wffId = wffTagUtil
 						.getWffIdFromWffIdBytes(nameValues[i].name);
 				var values = nameValues[i].values;
-				var tagName = getStringFromBytes(values[0]);
+				var tagName = wffTagUtil.getTagNameFromCompressedBytes(values[0]);
 
 				var parentTag = wffTagUtil.getTagByTagNameAndWffId(tagName,
 						wffId);
@@ -178,7 +180,7 @@ var wffClientCRUDUtil = new function() {
 						.getWffIdFromWffIdBytes(nameValues[i].name);
 				var values = nameValues[i].values;				
 				
-				var currentParentTagName = getStringFromBytes(values[0]);
+				var currentParentTagName = wffTagUtil.getTagNameFromCompressedBytes(values[0]);
 
 				var currentParentTag = wffTagUtil.getTagByTagNameAndWffId(
 						currentParentTagName, currentParentWffId);
@@ -188,7 +190,7 @@ var wffClientCRUDUtil = new function() {
 				if (values[2].length == 0) {
 					childTag = wffTagUtil.createTagFromWffBMBytes(values[3]);
 				} else {
-					var childTagName = getStringFromBytes(values[2]);
+					var childTagName = wffTagUtil.getTagNameFromCompressedBytes(values[2]);
 					var childWffId = wffTagUtil.getWffIdFromWffIdBytes(values[1]);
 					
 					childTag = wffTagUtil.getTagByTagNameAndWffId(childTagName,
@@ -215,7 +217,7 @@ var wffClientCRUDUtil = new function() {
 
 				var nameValue = nameValues[i];
 				if (nameValue.name[0] == wffGlobal.taskValues.MANY_TO_ONE) {
-					var tagName = getStringFromBytes(nameValue.values[0]);
+					var tagName = wffTagUtil.getTagNameFromCompressedBytes(nameValue.values[0]);
 					var wffId = wffTagUtil
 							.getWffIdFromWffIdBytes(nameValue.values[1]);
 
@@ -224,12 +226,10 @@ var wffClientCRUDUtil = new function() {
 
 					for (var j = 2; j < nameValue.values.length; j++) {
 
-						var attrNameValue = getStringFromBytes(nameValue.values[j]);
-
-						var attrNameValueArry = wffTagUtil
-								.splitAttrNameValue(attrNameValue);
-						var attrName = attrNameValueArry[0];
-						var attrValue = attrNameValueArry[1];
+						var attrNameValue = wffTagUtil.getAttrNameValueFromCompressedBytes(nameValue.values[j]);
+						
+						var attrName = attrNameValue[0];
+						var attrValue = attrNameValue[1];
 						//value attribute doesn't work with setAttribute method
 						//should be called before setAttribute method
 						applicableTag[attrName] = attrValue;
@@ -246,7 +246,7 @@ var wffClientCRUDUtil = new function() {
 
 				var nameValue = nameValues[i];
 				if (nameValue.name[0] == wffGlobal.taskValues.MANY_TO_ONE) {
-					var tagName = getStringFromBytes(nameValue.values[0]);
+					var tagName = wffTagUtil.getTagNameFromCompressedBytes(nameValue.values[0]);
 					var wffId = wffTagUtil
 							.getWffIdFromWffIdBytes(nameValue.values[1]);
 
@@ -255,7 +255,7 @@ var wffClientCRUDUtil = new function() {
 
 					for (var j = 2; j < nameValue.values.length; j++) {
 
-						var attrName = getStringFromBytes(nameValue.values[j]);
+						var attrName = wffTagUtil.getAttrNameFromCompressedBytes(nameValue.values[j]);
 
 						applicableTag.removeAttribute(attrName);
 					}
@@ -267,7 +267,7 @@ var wffClientCRUDUtil = new function() {
 
 			console.log('wffGlobal.taskValues.ADDED_INNER_HTML');
 			
-			var tagName = getStringFromBytes(nameValues[1].name);
+			var tagName = wffTagUtil.getTagNameFromCompressedBytes(nameValues[1].name);
 			
 			var wffId = wffTagUtil
 					.getWffIdFromWffIdBytes(nameValues[1].values[0]);
@@ -313,7 +313,7 @@ var wffClientCRUDUtil = new function() {
 				var wffId = wffTagUtil
 						.getWffIdFromWffIdBytes(nameValues[i].name);
 				var values = nameValues[i].values;
-				var tagName = getStringFromBytes(values[0]);
+				var tagName = wffTagUtil.getTagNameFromCompressedBytes(values[0]);
 				// var innerHtml = getStringFromBytes(values[1]);
 
 				// console.log('innerHtml', innerHtml);
@@ -321,7 +321,7 @@ var wffClientCRUDUtil = new function() {
 				var parentTag = wffTagUtil.getTagByTagNameAndWffId(tagName,
 						wffId);
 				
-				var beforeTagName = getStringFromBytes(values[2]);
+				var beforeTagName = wffTagUtil.getTagNameFromCompressedBytes(values[2]);
 				var beforeTagWffId = wffTagUtil.getWffIdFromWffIdBytes(values[3]);
 				
 				var beforeTag = wffTagUtil.getTagByTagNameAndWffId(beforeTagName,
@@ -362,7 +362,7 @@ var wffClientCRUDUtil = new function() {
 			
 			console.log('wffGlobal.taskValues.COPY_INNER_TEXT_TO_VALUE');
 			
-			var tagName = getStringFromBytes(nameValues[1].name);
+			var tagName = wffTagUtil.getTagNameFromCompressedBytes(nameValues[1].name);
 			
 			var wffId = wffTagUtil
 					.getWffIdFromWffIdBytes(nameValues[1].values[0]);
@@ -376,7 +376,7 @@ var wffClientCRUDUtil = new function() {
 		} else if (taskValue == wffGlobal.taskValues.SET_BM_OBJ_ON_TAG
 				|| taskValue == wffGlobal.taskValues.SET_BM_ARR_ON_TAG) {
 			
-			var tagName = getStringFromBytes(nameValues[1].name);
+			var tagName = wffTagUtil.getTagNameFromCompressedBytes(nameValues[1].name);
 			
 			var wffId = wffTagUtil
 							.getWffIdFromWffIdBytes(nameValues[1].values[0]);
@@ -405,7 +405,7 @@ var wffClientCRUDUtil = new function() {
 			wffObjects[ky] = jsObjOrArr;
 			
 		} else if (taskValue == wffGlobal.taskValues.DEL_BM_OBJ_OR_ARR_FROM_TAG) {
-			var tagName = getStringFromBytes(nameValues[1].name);
+			var tagName = wffTagUtil.getTagNameFromCompressedBytes(nameValues[1].name);
 			var wffId = wffTagUtil
 					.getWffIdFromWffIdBytes(nameValues[1].values[0]);
 			

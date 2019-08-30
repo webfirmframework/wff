@@ -59,7 +59,7 @@ public class Flex extends AbstractCssProperty<Flex>
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final Logger LOGGER = Logger.getLogger(Flex.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Flex.class.getName());
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";

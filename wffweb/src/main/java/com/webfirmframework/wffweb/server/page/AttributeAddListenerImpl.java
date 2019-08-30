@@ -31,15 +31,19 @@ public class AttributeAddListenerImpl implements AttributeAddListener {
     private static final Logger LOGGER = Logger
             .getLogger(AttributeAddListenerImpl.class.getName());
 
-    private BrowserPage browserPage;
+    private final BrowserPage browserPage;
+
+    private final Object accessObject;
 
     @SuppressWarnings("unused")
     private AttributeAddListenerImpl() {
         throw new AssertionError();
     }
 
-    AttributeAddListenerImpl(final BrowserPage browserPage) {
+    AttributeAddListenerImpl(final BrowserPage browserPage,
+            final Object accessObject) {
         this.browserPage = browserPage;
+        this.accessObject = accessObject;
     }
 
     @Override
@@ -61,7 +65,7 @@ public class AttributeAddListenerImpl implements AttributeAddListener {
 
             final AbstractHtml addedToTag = event.getAddedToTag();
             final byte[][] tagNameAndWffId = DataWffIdUtil
-                    .getTagNameAndWffId(addedToTag);
+                    .getIndexedTagNameAndWffId(accessObject, addedToTag);
 
             final AbstractAttribute[] addedAttributes = event
                     .getAddedAttributes();
@@ -75,16 +79,18 @@ public class AttributeAddListenerImpl implements AttributeAddListener {
 
             for (int i = 2; i < totalValues; i++) {
                 // should be name=somevalue
-                String attrNameValue = addedAttributes[i - 2]
-                        .toHtmlString(StandardCharsets.UTF_8)
-                        .replaceFirst("[=][\"]", "=");
+                // String attrNameValue = addedAttributes[i - 2]
+                // .toHtmlString(StandardCharsets.UTF_8)
+                // .replaceFirst("[=][\"]", "=");
+                // if (attrNameValue.charAt(attrNameValue.length() - 1) == '"')
+                // {
+                // attrNameValue = attrNameValue.substring(0,
+                // attrNameValue.length() - 1);
+                // }
+                // values[i] = attrNameValue.getBytes(StandardCharsets.UTF_8);
 
-                if (attrNameValue.charAt(attrNameValue.length() - 1) == '"') {
-                    attrNameValue = attrNameValue.substring(0,
-                            attrNameValue.length() - 1);
-                }
-
-                values[i] = attrNameValue.getBytes(StandardCharsets.UTF_8);
+                values[i] = addedAttributes[i - 2].toCompressedBytesByIndex(
+                        false, StandardCharsets.UTF_8);
             }
 
             nameValue.setValues(values);

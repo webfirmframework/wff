@@ -55,7 +55,7 @@ public class BackgroundColor extends AbstractCssProperty<BackgroundColor>
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final Logger LOGGER = Logger
+    private static final Logger LOGGER = Logger
             .getLogger(BackgroundColor.class.getName());
 
     public static final String INITIAL = "initial";

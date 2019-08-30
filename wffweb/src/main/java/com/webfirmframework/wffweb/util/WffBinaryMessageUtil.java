@@ -407,6 +407,190 @@ public enum WffBinaryMessageUtil {
     }
 
     /**
+     * NB: not fully tested yet
+     *
+     * @param bytes
+     *                  the optimized bytes from which the long value will be
+     *                  obtained
+     * @return the long value from the given bytes
+     * @since 3.0.6
+     * @author WFF
+     */
+    public static long getLongFromOptimizedBytes(final byte[] bytes) {
+
+        // makes java.nio.BufferUnderflowException
+        // return ByteBuffer.wrap(bytes).getLong();
+
+        // incorrect value for optimized bytes
+        // return new BigInteger(bytes).longValue();
+
+        // TODO test and verify before use
+        return longFromOptimizedBytes(bytes);
+    }
+
+    /**
+     * NB: DO NOT use this method TODO There could be bug. Test and verify also
+     * check performance
+     *
+     * @param bytes
+     * @return
+     */
+    private static long longFromOptimizedBytes(final byte[] bytes) {
+        if (bytes.length == 1) {
+            final long i0 = bytes[0] & 0xFF;
+            return i0;
+        } else if (bytes.length == 2) {
+            final long i0 = bytes[0] & 0xFF;
+            final long i1 = bytes[1] & 0xFF;
+            return i0 << 8 | i1;
+        } else if (bytes.length == 3) {
+            final long i0 = bytes[0] & 0xFF;
+            final long i1 = bytes[1] & 0xFF;
+            final long i2 = bytes[2] & 0xFF;
+            return i0 << 16 | i1 << 8 | i2;
+        } else if (bytes.length == 4) {
+            final long i0 = bytes[0] & 0xFF;
+            final long i1 = bytes[1] & 0xFF;
+            final long i2 = bytes[2] & 0xFF;
+            final long i3 = bytes[3] & 0xFF;
+            return i0 << 24 | i1 << 16 | i2 << 8 | i3;
+        } else if (bytes.length == 5) {
+            final long i0 = bytes[0] & 0xFF;
+            final long i1 = bytes[1] & 0xFF;
+            final long i2 = bytes[2] & 0xFF;
+            final long i3 = bytes[3] & 0xFF;
+            final long i4 = bytes[4] & 0xFF;
+            return i0 << 32 | i1 << 24 | i2 << 16 | i3 << 8 | i4;
+        } else if (bytes.length == 6) {
+            final long i0 = bytes[0] & 0xFF;
+            final long i1 = bytes[1] & 0xFF;
+            final long i2 = bytes[2] & 0xFF;
+            final long i3 = bytes[3] & 0xFF;
+            final long i4 = bytes[4] & 0xFF;
+            final long i5 = bytes[5] & 0xFF;
+            return i0 << 40 | i1 << 32 | i2 << 24 | i3 << 16 | i4 << 8 | i5;
+        } else if (bytes.length == 7) {
+            final long i0 = bytes[0] & 0xFF;
+            final long i1 = bytes[1] & 0xFF;
+            final long i2 = bytes[2] & 0xFF;
+            final long i3 = bytes[3] & 0xFF;
+            final long i4 = bytes[4] & 0xFF;
+            final long i5 = bytes[5] & 0xFF;
+            final long i6 = bytes[6] & 0xFF;
+            return i0 << 48 | i1 << 40 | i2 << 32 | i3 << 24 | i4 << 16
+                    | i5 << 8 | i6;
+        } else if (bytes.length == 8) {
+            final long i0 = bytes[0];
+            final long i1 = bytes[1] & 0xFF;
+            final long i2 = bytes[2] & 0xFF;
+            final long i3 = bytes[3] & 0xFF;
+            final long i4 = bytes[4] & 0xFF;
+            final long i5 = bytes[5] & 0xFF;
+            final long i6 = bytes[6] & 0xFF;
+            final long i7 = bytes[7] & 0xFF;
+            return i0 << 56 | i1 << 48 | i2 << 40 | i3 << 32 | i4 << 24
+                    | i5 << 16 | i6 << 8 | i7;
+        }
+
+        final long i0 = bytes[0];
+        final long i1 = bytes[1] & 0xFF;
+        final long i2 = bytes[2] & 0xFF;
+        final long i3 = bytes[3] & 0xFF;
+        final long i4 = bytes[4] & 0xFF;
+        final long i5 = bytes[5] & 0xFF;
+        final long i6 = bytes[6] & 0xFF;
+        final long i7 = bytes[7] & 0xFF;
+        return i0 << 56 | i1 << 48 | i2 << 40 | i3 << 32 | i4 << 24 | i5 << 16
+                | i6 << 8 | i7;
+    }
+
+    /**
+     * NB: not fully tested yet
+     *
+     * @param bytes
+     *                  the optimized bytes from which the long value will be
+     *                  obtained
+     * @return the long value from the given bytes
+     * @since 3.0.6
+     * @author WFF
+     */
+    public static long getLongFrom56bitOptimizedBytes(final byte[] bytes) {
+
+        // makes java.nio.BufferUnderflowException
+        // return ByteBuffer.wrap(bytes).getLong();
+
+        // incorrect value for optimized bytes
+        // return new BigInteger(bytes).longValue();
+
+        // TODO test and verify before use
+        return longFrom56bitOptimizedBytes(bytes);
+    }
+
+    /**
+     * NB: DO NOT use this method TODO There could be bug. Test and verify also
+     * check performance
+     *
+     * @param bytes
+     * @return
+     */
+    private static long longFrom56bitOptimizedBytes(final byte[] bytes) {
+        if (bytes.length == 1) {
+            final long i0 = bytes[0] & 0xFF;
+            return i0;
+        } else if (bytes.length == 2) {
+            final long i0 = bytes[0] & 0xFF;
+            final long i1 = bytes[1] & 0xFF;
+            return i0 << 8 | i1;
+        } else if (bytes.length == 3) {
+            final long i0 = bytes[0] & 0xFF;
+            final long i1 = bytes[1] & 0xFF;
+            final long i2 = bytes[2] & 0xFF;
+            return i0 << 16 | i1 << 8 | i2;
+        } else if (bytes.length == 4) {
+            final long i0 = bytes[0] & 0xFF;
+            final long i1 = bytes[1] & 0xFF;
+            final long i2 = bytes[2] & 0xFF;
+            final long i3 = bytes[3] & 0xFF;
+            return i0 << 24 | i1 << 16 | i2 << 8 | i3;
+        } else if (bytes.length == 5) {
+            final long i0 = bytes[0] & 0xFF;
+            final long i1 = bytes[1] & 0xFF;
+            final long i2 = bytes[2] & 0xFF;
+            final long i3 = bytes[3] & 0xFF;
+            final long i4 = bytes[4] & 0xFF;
+            return i0 << 32 | i1 << 24 | i2 << 16 | i3 << 8 | i4;
+        } else if (bytes.length == 6) {
+            final long i0 = bytes[0] & 0xFF;
+            final long i1 = bytes[1] & 0xFF;
+            final long i2 = bytes[2] & 0xFF;
+            final long i3 = bytes[3] & 0xFF;
+            final long i4 = bytes[4] & 0xFF;
+            final long i5 = bytes[5] & 0xFF;
+            return i0 << 40 | i1 << 32 | i2 << 24 | i3 << 16 | i4 << 8 | i5;
+        } else if (bytes.length == 7) {
+            final long i0 = bytes[0];
+            final long i1 = bytes[1] & 0xFF;
+            final long i2 = bytes[2] & 0xFF;
+            final long i3 = bytes[3] & 0xFF;
+            final long i4 = bytes[4] & 0xFF;
+            final long i5 = bytes[5] & 0xFF;
+            final long i6 = bytes[6] & 0xFF;
+            return i0 << 48 | i1 << 40 | i2 << 32 | i3 << 24 | i4 << 16
+                    | i5 << 8 | i6;
+        }
+
+        final long i0 = bytes[0];
+        final long i1 = bytes[1] & 0xFF;
+        final long i2 = bytes[2] & 0xFF;
+        final long i3 = bytes[3] & 0xFF;
+        final long i4 = bytes[4] & 0xFF;
+        final long i5 = bytes[5] & 0xFF;
+        final long i6 = bytes[6] & 0xFF;
+        return i0 << 48 | i1 << 40 | i2 << 32 | i3 << 24 | i4 << 16 | i5 << 8
+                | i6;
+    }
+
+    /**
      * @param value
      * @return the bytes for the given double value in the IEEE 754 Standard
      * @since 2.0.0
@@ -473,6 +657,60 @@ public enum WffBinaryMessageUtil {
 
         return new byte[] { zerothIndex, firstIndex, secondIndex, thirdIndex,
                 fourthIndex, fifthIndex, sixthIndex, seventhIndex };
+    }
+
+    /**
+     * handles long upto (long) Math.pow(2, 55) - 1
+     *
+     * @param value
+     * @return the bytes for the given long value
+     * @since 3.0.6
+     * @author WFF
+     */
+    public static byte[] getOptimizedBytesFromInt56bit(final long value) {
+
+        final byte zerothIndex = (byte) (value >> 48L);
+        final byte firstIndex = (byte) (value >> 40L);
+        final byte secondIndex = (byte) (value >> 32L);
+        final byte thirdIndex = (byte) (value >> 24L);
+        final byte fourthIndex = (byte) (value >> 16L);
+        final byte fifthIndex = (byte) (value >> 8L);
+        final byte sixthIndex = (byte) value;
+
+        if (zerothIndex == 0) {
+
+            if (firstIndex == 0) {
+
+                if (secondIndex == 0) {
+
+                    if (thirdIndex == 0) {
+
+                        if (fourthIndex == 0) {
+
+                            if (fifthIndex == 0) {
+
+                                return new byte[] { sixthIndex };
+                            }
+                            return new byte[] { fifthIndex, sixthIndex };
+                        }
+                        return new byte[] { fourthIndex, fifthIndex,
+                                sixthIndex };
+                    }
+
+                    return new byte[] { thirdIndex, fourthIndex, fifthIndex,
+                            sixthIndex };
+                }
+
+                return new byte[] { secondIndex, thirdIndex, fourthIndex,
+                        fifthIndex, sixthIndex };
+            }
+
+            return new byte[] { firstIndex, secondIndex, thirdIndex,
+                    fourthIndex, fifthIndex, sixthIndex };
+        }
+
+        return new byte[] { zerothIndex, firstIndex, secondIndex, thirdIndex,
+                fourthIndex, fifthIndex, sixthIndex };
     }
 
     /**

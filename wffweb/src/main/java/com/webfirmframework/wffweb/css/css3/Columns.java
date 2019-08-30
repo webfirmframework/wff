@@ -50,7 +50,7 @@ public class Columns extends AbstractCssProperty<Columns>
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final Logger LOGGER = Logger
+    private static final Logger LOGGER = Logger
             .getLogger(Columns.class.getName());
 
     public static final String INITIAL = "initial";

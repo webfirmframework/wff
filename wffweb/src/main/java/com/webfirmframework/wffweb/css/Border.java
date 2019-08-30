@@ -52,7 +52,7 @@ public class Border extends AbstractCssProperty<Border>
 
     private static final long serialVersionUID = 1_0_0L;
 
-    public static final Logger LOGGER = Logger
+    private static final Logger LOGGER = Logger
             .getLogger(Border.class.getName());
 
     public static final String INITIAL = "initial";

@@ -19,7 +19,10 @@ package com.webfirmframework.wffweb.tag.htmlwff;
 import java.util.Collection;
 import java.util.List;
 
+import com.webfirmframework.wffweb.MethodNotImplementedException;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.SharedTagContent;
+import com.webfirmframework.wffweb.tag.html.SharedTagContent.ContentFormatter;
 
 /**
  * It's a tag which makes child content without any opening closing tag. <br>
@@ -178,7 +181,7 @@ public class NoTag extends AbstractHtml {
     }
 
     /**
-     * adds {@code AbstractHtml}s as children.
+     * gets child content
      *
      * @return
      * @since 1.0.0
@@ -194,5 +197,27 @@ public class NoTag extends AbstractHtml {
      */
     public boolean isChildContentTypeHtml() {
         return noTagContentTypeHtml;
+    }
+
+    @Override
+    public boolean removeSharedTagContent(final boolean removeContent) {
+        throw new MethodNotImplementedException(
+                "sharedTagContent is not allowed in NoTag or Blank tag so calling removeSharedTagContent is invalid");
+    }
+
+    @Override
+    public <T> void subscribeTo(final boolean updateClient,
+            final SharedTagContent<T> sharedTagContent,
+            final ContentFormatter<T> formatter) {
+        throw new MethodNotImplementedException(
+                "sharedTagContent is not allowed to apply in NoTag or Blank tag");
+    }
+
+    @Override
+    public <T> void addInnerHtml(final boolean updateClient,
+            final SharedTagContent<T> sharedTagContent,
+            final ContentFormatter<T> formatter) {
+        throw new MethodNotImplementedException(
+                "sharedTagContent is not allowed to apply in NoTag or Blank tag");
     }
 }

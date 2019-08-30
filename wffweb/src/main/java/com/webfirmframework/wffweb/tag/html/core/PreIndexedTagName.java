@@ -15,6 +15,10 @@
  */
 package com.webfirmframework.wffweb.tag.html.core;
 
+import java.util.Arrays;
+
+import com.webfirmframework.wffweb.WffSecurityException;
+import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 
@@ -25,6 +29,16 @@ import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 public enum PreIndexedTagName {
 
     // NB: order should not be changed it is ordered by length
+
+    /**
+     * not a tag name. For internal purpose only
+     */
+    HASH("#"),
+
+    /**
+     * not a tag name. For internal purpose only
+     */
+    AT("@"),
 
     A(TagNameConstants.A),
 
@@ -316,6 +330,31 @@ public enum PreIndexedTagName {
      * @since 3.0.3
      */
     public byte[] indexBytes() {
+        if (indexBytes.length == 1) {
+            return new byte[] { indexBytes[0] };
+        } else if (indexBytes.length == 2) {
+            return new byte[] { indexBytes[0], indexBytes[1] };
+        } else if (indexBytes.length == 3) {
+            return new byte[] { indexBytes[0], indexBytes[1], indexBytes[2] };
+        } else if (indexBytes.length == 4) {
+            return new byte[] { indexBytes[0], indexBytes[1], indexBytes[2],
+                    indexBytes[3] };
+        }
+        return Arrays.copyOf(indexBytes, indexBytes.length);
+    }
+
+    /**
+     * Only for internal purpose
+     *
+     * @return optimized bytes of index
+     * @since 3.0.6
+     */
+    public byte[] internalIndexBytes(final Object accessObject) {
+        if (accessObject == null || !((SecurityClassConstants.ABSTRACT_HTML
+                .equals(accessObject.getClass().getName())))) {
+            throw new WffSecurityException(
+                    "Not allowed to consume this method. This method is for internal use.");
+        }
         return indexBytes;
     }
 

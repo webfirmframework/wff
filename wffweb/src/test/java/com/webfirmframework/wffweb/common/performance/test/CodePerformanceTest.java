@@ -150,5 +150,90 @@ public class CodePerformanceTest {
         }
         System.out.println("Additional ns taken by LinkedList than ArrayDeque: " + (difference1 - difference2));
     }
+    
+    @Test
+    public void testPerformanceOfSmallByteArrayCopy() throws Exception {
+        {
+            final byte[] indexBytes = {1, 2, 3, 4};
+            
+            byte[] copied = new byte[indexBytes.length];
+            
+            long before = System.nanoTime();
+            for (int i = 0; i < 10000; i++) {
+                System.arraycopy(indexBytes, 0, copied, 0, indexBytes.length);    
+            }       
+            
+            long after = System.nanoTime();
+            
+            System.out.println("time taken for System.arraycopy " + (after - before) + "ns");
+            
+            before = System.nanoTime();
+            for (int i = 0; i < 10000; i++) {
+                copied[0] = indexBytes[0];    
+            }  
+            after = System.nanoTime();
+            
+            System.out.println("time taken for init array copy  " + (after - before) + "ns");
+        }
+        System.out.println("-------------");
+        {
+            final byte[] indexBytes = {1, 2, 3, 4};
+            
+            byte[] copied = new byte[indexBytes.length];
+            long before ;
+            long after ;
+            
+            before = System.nanoTime();
+            for (int i = 0; i < 10000; i++) {
+                copied[0] = indexBytes[0];    
+                copied[1] = indexBytes[1];    
+                copied[2] = indexBytes[2];    
+                copied[3] = indexBytes[3];    
+            }  
+            after = System.nanoTime();
+            
+            System.out.println("time taken for init array copy  " + (after - before) + "ns");
+            
+            before = System.nanoTime();
+            for (int i = 0; i < 10000; i++) {
+                System.arraycopy(indexBytes, 0, copied, 0, indexBytes.length);    
+            }       
+            
+            after = System.nanoTime();
+            
+            System.out.println("time taken for System.arraycopy " + (after - before) + "ns");
+            
+            
+        }
+        System.out.println("-------------");
+        {
+            final byte[] indexBytes = {1, 2, 3, 4};
+            
+           
+            long before ;
+            long after ;
+            
+            before = System.nanoTime();
+            for (int i = 0; i < 10000; i++) {
+                byte[] copied = {indexBytes[0], indexBytes[1], indexBytes[2], indexBytes[3]};    
+            }  
+            after = System.nanoTime();
+            
+            System.out.println("time taken for declare init array copy " + (after - before) + "ns");
+            
+            before = System.nanoTime();
+            
+            for (int i = 0; i < 10000; i++) {
+                byte[] copied = new byte[indexBytes.length];
+                System.arraycopy(indexBytes, 0, copied, 0, indexBytes.length);    
+            }       
+            
+            after = System.nanoTime();
+            
+            System.out.println("time taken for System.arraycopy        " + (after - before) + "ns");
+            
+            
+        }
+    }
 
 }

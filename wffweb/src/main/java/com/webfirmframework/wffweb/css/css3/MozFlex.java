@@ -63,7 +63,7 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
     // NB : it should not override equals and hashcode methods as its objects
     // are equalized by Objects.equals(obj1, obj2) method in some places.
 
-    public static final Logger LOGGER = Logger
+    private static final Logger LOGGER = Logger
             .getLogger(MozFlex.class.getName());
 
     public static final String INITIAL = "initial";

@@ -15,13 +15,13 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,14 +38,14 @@ class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
 
     private static final long serialVersionUID = 1L;
 
-    public static final Logger LOGGER = Logger
+    private static final Logger LOGGER = Logger
             .getLogger(InnerHtmlAddListenerImpl.class.getName());
 
-    private BrowserPage browserPage;
+    private final BrowserPage browserPage;
 
-    private Object accessObject;
+    private final Object accessObject;
 
-    private Map<String, AbstractHtml> tagByWffId;
+    private final Map<String, AbstractHtml> tagByWffId;
 
     @SuppressWarnings("unused")
     private InnerHtmlAddListenerImpl() {
@@ -98,7 +98,7 @@ class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
     }
 
     @Override
-    public void innerHtmlsAdded(final AbstractHtml parentTag,
+    public ClientTasksWrapper innerHtmlsAdded(final AbstractHtml parentTag,
             final Event... events) {
 
         //@formatter:off
@@ -113,89 +113,90 @@ class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
         final NameValue task = Task.ADDED_INNER_HTML.getTaskNameValue();
         nameValues.add(task);
 
-        try {
+        final DataWffId dataWffId = parentTag.getDataWffId();
 
-            final DataWffId dataWffId = parentTag.getDataWffId();
+        if (dataWffId == null) {
 
-            if (dataWffId == null) {
+            LOGGER.severe("Could not find data-wff-id from owner tag");
+            return null;
+        }
 
-                LOGGER.severe("Could not find data-wff-id from owner tag");
-                return;
-            }
+        final byte[][] tagNameAndWffId = DataWffIdUtil
+                .getIndexedTagNameAndWffId(accessObject, parentTag);
 
-            final byte[][] tagNameAndWffId = DataWffIdUtil
-                    .getTagNameAndWffId(parentTag);
+        final byte[] parentTagName = tagNameAndWffId[0];
 
-            final byte[] parentTagName = tagNameAndWffId[0];
+        final byte[] parentWffIdBytes = tagNameAndWffId[1];
 
-            final byte[] parentWffIdBytes = tagNameAndWffId[1];
+        final NameValue parentTagNameValue = new NameValue(parentTagName,
+                new byte[][] { parentWffIdBytes });
 
-            final NameValue parentTagNameValue = new NameValue(parentTagName,
-                    new byte[][] { parentWffIdBytes });
+        nameValues.add(parentTagNameValue);
 
-            nameValues.add(parentTagNameValue);
+        for (final Event event : events) {
 
-            for (final Event event : events) {
+            final AbstractHtml innerHtmlTag = event.getInnerHtmlTag();
+            final AbstractHtml previousParentTag = event.getPreviousParentTag();
 
-                final AbstractHtml innerHtmlTag = event.getInnerHtmlTag();
-                final AbstractHtml previousParentTag = event
-                        .getPreviousParentTag();
+            final NameValue nameValue = new NameValue();
 
-                final NameValue nameValue = new NameValue();
-
-                try {
-                    if (WffJsFile.COMPRESSED_WFF_DATA) {
-                        nameValue.setName(innerHtmlTag.toCompressedWffBMBytes(
-                                StandardCharsets.UTF_8));
-                    } else {
-                        nameValue.setName(innerHtmlTag
-                                .toWffBMBytes(StandardCharsets.UTF_8));
-                    }
-
-                } catch (final InvalidTagException e) {
-                    if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.log(Level.WARNING,
-                                "Do not append/add an empty NoTag as child tag, eg: new NoTag(null, \"\").\n"
-                                        .concat("To make a tag's children as empty then invoke removeAllChildren() method in it."),
-                                e);
-                    }
-                    continue;
-                }
-
-                if (previousParentTag != null) {
-                    nameValue.setValues(new byte[] { 1 });
+            try {
+                if (WffJsFile.COMPRESSED_WFF_DATA) {
+                    nameValue.setName(innerHtmlTag
+                            .toCompressedWffBMBytesV2(StandardCharsets.UTF_8));
                 } else {
-                    nameValue.setValues(new byte[0][0]);
+                    nameValue.setName(
+                            innerHtmlTag.toWffBMBytes(StandardCharsets.UTF_8));
                 }
 
-                addInWffIdMap(innerHtmlTag);
-
-                nameValues.add(nameValue);
-
+            } catch (final InvalidTagException e) {
+                if (LOGGER.isLoggable(Level.WARNING)) {
+                    LOGGER.log(Level.WARNING,
+                            "Do not append/add an empty NoTag as child tag, eg: new NoTag(null, \"\").\n"
+                                    .concat("To make a tag's children as empty then invoke removeAllChildren() method in it."),
+                            e);
+                }
+                continue;
             }
 
-            browserPage
-                    .push(nameValues.toArray(new NameValue[nameValues.size()]));
+            if (previousParentTag != null) {
+                nameValue.setValues(new byte[] { 1 });
+            } else {
+                nameValue.setValues(new byte[0][0]);
+            }
 
-            final String parentTagNameString = new String(parentTagName,
-                    StandardCharsets.UTF_8);
-            if (TagNameConstants.TEXTAREA.equals(parentTagNameString)) {
-                //@formatter:off
+            addInWffIdMap(innerHtmlTag);
+
+            nameValues.add(nameValue);
+
+        }
+
+        // browserPage.push(nameValues.toArray(new
+        // NameValue[nameValues.size()]));
+
+        final Queue<Collection<NameValue>> multiTasks = new ArrayDeque<>(2);
+        multiTasks.add(nameValues);
+
+        final String parentTagNameString = new String(parentTagName,
+                StandardCharsets.UTF_8);
+        if (TagNameConstants.TEXTAREA.equals(parentTagNameString)) {
+            //@formatter:off
                 // removed all children tags task format :-
                 // { "name": task_byte, "values" : [COPY_INNER_TEXT_TO_VALUE_byte_from_Task_enum]}, { "name": parent_tag_name, "values" : [ data-wff-id ] }
                 //@formatter:on
-                final NameValue copyInnerTexToValueTask = Task.COPY_INNER_TEXT_TO_VALUE
-                        .getTaskNameValue();
+            final NameValue copyInnerTexToValueTask = Task.COPY_INNER_TEXT_TO_VALUE
+                    .getTaskNameValue();
 
-                browserPage.push(copyInnerTexToValueTask, parentTagNameValue);
-            }
+            // browserPage.push(copyInnerTexToValueTask, parentTagNameValue);
 
-        } catch (final UnsupportedEncodingException e) {
-            if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
-            }
+            final Queue<NameValue> task2NameValues = new ArrayDeque<>(2);
+            task2NameValues.add(copyInnerTexToValueTask);
+            task2NameValues.add(parentTagNameValue);
+
+            multiTasks.add(task2NameValues);
         }
 
+        return browserPage.pushAndGetWrapper(multiTasks);
     }
 
     @Override

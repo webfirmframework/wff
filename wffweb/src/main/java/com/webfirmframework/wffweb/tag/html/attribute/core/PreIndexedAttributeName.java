@@ -15,6 +15,10 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute.core;
 
+import java.util.Arrays;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.InternalAttrNameConstants;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
@@ -402,6 +406,19 @@ public enum PreIndexedAttributeName {
 
     private final byte[] indexBytes;
 
+    private static final Map<String, PreIndexedAttributeName> OBJ_BY_ATTR_NAME;
+
+    static {
+        final PreIndexedAttributeName[] objects = PreIndexedAttributeName
+                .values();
+        final float lf = 0.75F;
+        final int capacity = (int) (objects.length / lf) + 1;
+        OBJ_BY_ATTR_NAME = new ConcurrentHashMap<>(capacity, lf, 1);
+        for (final PreIndexedAttributeName each : objects) {
+            OBJ_BY_ATTR_NAME.put(each.attrName, each);
+        }
+    }
+
     /**
      * @param attrName
      * @since 3.0.3
@@ -433,7 +450,36 @@ public enum PreIndexedAttributeName {
      * @since 3.0.3
      */
     public byte[] indexBytes() {
+        if (indexBytes.length == 1) {
+            return new byte[] { indexBytes[0] };
+        } else if (indexBytes.length == 2) {
+            return new byte[] { indexBytes[0], indexBytes[1] };
+        } else if (indexBytes.length == 3) {
+            return new byte[] { indexBytes[0], indexBytes[1], indexBytes[2] };
+        } else if (indexBytes.length == 4) {
+            return new byte[] { indexBytes[0], indexBytes[1], indexBytes[2],
+                    indexBytes[3] };
+        }
+        return Arrays.copyOf(indexBytes, indexBytes.length);
+    }
+
+    /**
+     * Only for internal purpose
+     *
+     * @return optimized bytes of index
+     * @since 3.0.6
+     */
+    byte[] internalIndexBytes() {
         return indexBytes;
+    }
+
+    /**
+     * @param attrName
+     * @return the enum object
+     * @since 3.0.6
+     */
+    static PreIndexedAttributeName forAttrName(final String attrName) {
+        return OBJ_BY_ATTR_NAME.get(attrName);
     }
 
 }

@@ -32,7 +32,7 @@ class AttributeValueChangeListenerImpl implements AttributeValueChangeListener {
 
     private static final long serialVersionUID = 1L;
 
-    public static final Logger LOGGER = Logger
+    private static final Logger LOGGER = Logger
             .getLogger(AttributeValueChangeListenerImpl.class.getName());
 
     private BrowserPage browserPage;
@@ -66,16 +66,17 @@ class AttributeValueChangeListenerImpl implements AttributeValueChangeListener {
             final NameValue nameValue = new NameValue();
 
             // should be name=somevalue
-            String attrNameValue = event.getSourceAttribute()
-                    .toHtmlString(StandardCharsets.UTF_8)
-                    .replaceFirst("[=][\"]", "=");
+            // String attrNameValue = event.getSourceAttribute()
+            // .toHtmlString(StandardCharsets.UTF_8)
+            // .replaceFirst("[=][\"]", "=");
+            // if (attrNameValue.charAt(attrNameValue.length() - 1) == '"') {
+            // attrNameValue = attrNameValue.substring(0,
+            // attrNameValue.length() - 1);
+            // }
+            // nameValue.setName(attrNameValue.getBytes(StandardCharsets.UTF_8));
 
-            if (attrNameValue.charAt(attrNameValue.length() - 1) == '"') {
-                attrNameValue = attrNameValue.substring(0,
-                        attrNameValue.length() - 1);
-            }
-
-            nameValue.setName(attrNameValue.getBytes(StandardCharsets.UTF_8));
+            nameValue.setName(event.getSourceAttribute()
+                    .toCompressedBytesByIndex(false, StandardCharsets.UTF_8));
 
             final Set<AbstractHtml> ownerTags = new HashSet<>(
                     event.getOwnerTags());

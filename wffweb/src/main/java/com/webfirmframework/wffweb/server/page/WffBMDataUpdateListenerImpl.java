@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.TagUtil;
 import com.webfirmframework.wffweb.tag.html.listener.WffBMDataUpdateListener;
 import com.webfirmframework.wffweb.util.data.NameValue;
 import com.webfirmframework.wffweb.wffbm.data.BMType;
@@ -33,18 +34,22 @@ class WffBMDataUpdateListenerImpl implements WffBMDataUpdateListener {
 
     private static final long serialVersionUID = 1L;
 
-    public static final Logger LOGGER = Logger
+    private static final Logger LOGGER = Logger
             .getLogger(WffBMDataUpdateListenerImpl.class.getName());
 
-    private BrowserPage browserPage;
+    private final BrowserPage browserPage;
+
+    private final Object accessObject;
 
     @SuppressWarnings("unused")
     private WffBMDataUpdateListenerImpl() {
         throw new AssertionError();
     }
 
-    WffBMDataUpdateListenerImpl(final BrowserPage browserPage) {
+    WffBMDataUpdateListenerImpl(final BrowserPage browserPage,
+            final Object accessObject) {
         this.browserPage = browserPage;
+        this.accessObject = accessObject;
     }
 
     @Override
@@ -74,8 +79,10 @@ class WffBMDataUpdateListenerImpl implements WffBMDataUpdateListener {
 
             final NameValue[] nameValues = { task, nameValue };
 
-            nameValue
-                    .setName(tag.getTagName().getBytes(StandardCharsets.UTF_8));
+            final byte[] wffTagNameBytes = TagUtil
+                    .getTagNameBytesCompressedByIndex(accessObject, tag,
+                            StandardCharsets.UTF_8);
+            nameValue.setName(wffTagNameBytes);
 
             final byte[] dataWffIdBytes = DataWffIdUtil
                     .getDataWffIdBytes(tag.getDataWffId().getValue());

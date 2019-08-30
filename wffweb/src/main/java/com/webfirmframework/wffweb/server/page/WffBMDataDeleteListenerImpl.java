@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.TagUtil;
 import com.webfirmframework.wffweb.tag.html.listener.WffBMDataDeleteListener;
 import com.webfirmframework.wffweb.util.data.NameValue;
 
@@ -31,18 +32,22 @@ class WffBMDataDeleteListenerImpl implements WffBMDataDeleteListener {
 
     private static final long serialVersionUID = 1L;
 
-    public static final Logger LOGGER = Logger
+    private static final Logger LOGGER = Logger
             .getLogger(WffBMDataDeleteListenerImpl.class.getName());
 
-    private BrowserPage browserPage;
+    private final BrowserPage browserPage;
+
+    private final Object accessObject;
 
     @SuppressWarnings("unused")
     private WffBMDataDeleteListenerImpl() {
         throw new AssertionError();
     }
 
-    WffBMDataDeleteListenerImpl(final BrowserPage browserPage) {
+    WffBMDataDeleteListenerImpl(final BrowserPage browserPage,
+            final Object accessObject) {
         this.browserPage = browserPage;
+        this.accessObject = accessObject;
 
     }
 
@@ -64,8 +69,10 @@ class WffBMDataDeleteListenerImpl implements WffBMDataDeleteListener {
 
             final NameValue[] nameValues = { task, nameValue };
 
-            nameValue
-                    .setName(tag.getTagName().getBytes(StandardCharsets.UTF_8));
+            final byte[] wffTagNameBytes = TagUtil
+                    .getTagNameBytesCompressedByIndex(accessObject, tag,
+                            StandardCharsets.UTF_8);
+            nameValue.setName(wffTagNameBytes);
 
             final byte[] dataWffIdBytes = DataWffIdUtil
                     .getDataWffIdBytes(tag.getDataWffId().getValue());
