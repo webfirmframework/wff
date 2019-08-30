@@ -22,6 +22,8 @@ import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,6 +40,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.webfirmframework.wffweb.util.data.NameValue;
 
 import de.undercouch.bson4jackson.BsonFactory;
+import org.junit.Assert;
 
 public class WffBinaryMessageUtilTest {
 
@@ -451,6 +454,89 @@ public class WffBinaryMessageUtilTest {
             int intFromOptimizedBytes = WffBinaryMessageUtil.getIntFromOptimizedBytes(optimizedBytesFromInt);
             assertEquals(i, intFromOptimizedBytes);
         }
+        //init i with zero when required
+        for (int i = Integer.MAX_VALUE - 512; i < Integer.MAX_VALUE; i++) {
+            byte[] optimizedBytesFromInt = WffBinaryMessageUtil.getOptimizedBytesFromInt(i);
+            byte[] optimizedBytesFromLong = WffBinaryMessageUtil.getOptimizedBytesFromLong(i);
+            assertArrayEquals(optimizedBytesFromInt, optimizedBytesFromLong);
+        }
+        
+        byte[] optimizedBytesFromInt = WffBinaryMessageUtil.getOptimizedBytesFromInt(Integer.MAX_VALUE);
+        byte[] optimizedBytesFromLong = WffBinaryMessageUtil.getOptimizedBytesFromLong(Integer.MAX_VALUE);
+        assertArrayEquals(optimizedBytesFromInt, optimizedBytesFromLong);
+    }
+    
+    //for future development
+//    @Test
+    @SuppressWarnings("unused")
+    private void testGet56bitOptimizedBytesFromLongAndGetLongFrom56bitOptimizedBytes() {
+        
+        //2^64 = 9223372036854775807 
+        //2^56 = 72057594037927936
+        
+        //(2^55) - 1 = 36028797018963967
+        //(2^53) - 1 = 9007199254740991
+        
+        System.out.println((long) Math.pow(2, 55) - 1);
+        System.out.println((long) Math.pow(2, 55) - 1);
+        final long jsNumber_MAX_SAFE_INTEGER = 9007199254740991L;
+        
+        long int54Signed = (long) Math.pow(2, 53) - 1;
+        
+        final long int56Signed = (long) Math.pow(2, 55) - 1;
+        
+        //even if we do (long) Math.pow(2, 64) it can hold max of Long.MAX_VALUE
+        
+        final BigInteger int64Signed = new BigInteger("2").pow(63).subtract(new BigInteger("1")); 
+        
+        
+        Assert.assertEquals(jsNumber_MAX_SAFE_INTEGER, int54Signed);
+        Assert.assertEquals(new BigInteger(String.valueOf(Long.MAX_VALUE)), int64Signed);
+        
+        //Number.MAX_SAFE_INTEGER is the maximum safe value of integer
+        //i.e. (2^53)-1
+        
+        
+        
+        {
+            byte[] optimizedBytesFromLong = WffBinaryMessageUtil.getOptimizedBytesFromLong( jsNumber_MAX_SAFE_INTEGER);
+            long longFromOptimizedBytes = WffBinaryMessageUtil.getLongFrom56bitOptimizedBytes(optimizedBytesFromLong);
+            assertEquals(jsNumber_MAX_SAFE_INTEGER, longFromOptimizedBytes);
+        }
+        
+        {
+            byte[] optimizedBytesFromLong = WffBinaryMessageUtil.getOptimizedBytesFromInt56bit(int56Signed);
+            assertEquals(7, optimizedBytesFromLong.length);
+            long longFromOptimizedBytes = WffBinaryMessageUtil.getLongFrom56bitOptimizedBytes(optimizedBytesFromLong);
+            assertEquals(int56Signed, longFromOptimizedBytes);
+        }
+        
+        {
+            byte[] optimizedBytesFromLong = WffBinaryMessageUtil.getOptimizedBytesFromInt56bit(int54Signed);
+            assertEquals(7, optimizedBytesFromLong.length);
+            long longFromOptimizedBytes = WffBinaryMessageUtil.getLongFrom56bitOptimizedBytes(optimizedBytesFromLong);
+            assertEquals(int54Signed, longFromOptimizedBytes);
+        }
+        
+        {
+            byte[] optimizedBytesFromLong = WffBinaryMessageUtil.getOptimizedBytesFromInt56bit( jsNumber_MAX_SAFE_INTEGER);
+            long longFromOptimizedBytes = WffBinaryMessageUtil.getLongFrom56bitOptimizedBytes(optimizedBytesFromLong);
+            System.out.println(Arrays.toString(optimizedBytesFromLong));
+            assertEquals(7, optimizedBytesFromLong.length);
+            assertEquals(jsNumber_MAX_SAFE_INTEGER, longFromOptimizedBytes);
+        }
+        
+//        for (long i = Integer.MAX_VALUE; i < Integer.MAX_VALUE + 512; i++) {
+//            byte[] optimizedBytesFromLong = WffBinaryMessageUtil.getOptimizedBytesFromLong( i);
+//            long longFromOptimizedBytes = WffBinaryMessageUtil.getLongFrom56bitOptimizedBytes(optimizedBytesFromLong);
+//            assertEquals(i, longFromOptimizedBytes);
+//        }
+//        for (long i = Long.MAX_VALUE; i > Long.MAX_VALUE - Integer.MAX_VALUE; i--) {
+//            byte[] optimizedBytesFromLong = WffBinaryMessageUtil.getOptimizedBytesFromLong( i);
+//            long longFromOptimizedBytes = WffBinaryMessageUtil.getLongFromOptimizedBytes(optimizedBytesFromLong);
+//            assertEquals(i, longFromOptimizedBytes);
+//        }
+//        System.out.println("Long.MAX_VALUE to Integer.MAX_VALUE success");
     }
     
     @Test
