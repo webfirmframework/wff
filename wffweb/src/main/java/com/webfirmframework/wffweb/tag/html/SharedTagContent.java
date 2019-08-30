@@ -38,7 +38,37 @@ import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 
 /**
- * Changing the content of this object will be reflected in all consuming tags.
+ * This class is highly thread-safe so you can even declare a static object to
+ * use under multiple threads. Changing the content of this object will be
+ * reflected in all consuming tags if shared property of this object is true.
+ * The shared property can be set as by passing constructor argument or by
+ * setter method. Its default value is true if not explicitly specified.<br>
+ * <br>
+ * Usage Eg:-<br>
+ *
+ * <pre>
+ * SharedTagContent<String> stc = new SharedTagContent<>("Initial Content");
+ *
+ * Div div = new Div(null);
+ *
+ * Span span1 = new Span(div);
+ * span1.subscribeTo(stc);
+ *
+ * Span span2 = new Span(div);
+ * span2.addInnerHtml(stc);
+ *
+ * System.out.println(div.toHtmlString());
+ * stc.setContent("Content Changed");
+ * System.out.println(div.toHtmlString());
+ * </pre>
+ *
+ * prints
+ *
+ * <pre>
+ * &lt;div&gt;&lt;span&gt;Initial Content&lt;/span&gt;&lt;span&gt;Initial Content&lt;/span&gt;&lt;/div&gt;
+ *
+ * &lt;div&gt;&lt;span&gt;Content Changed&lt;/span&gt;&lt;span&gt;Content Changed&lt;/span&gt;&lt;/div&gt;
+ * </pre>
  *
  * @param <T>
  *            class type of content in this SharedTagContent object
