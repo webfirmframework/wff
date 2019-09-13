@@ -155,6 +155,10 @@ public abstract class BrowserPage implements Serializable {
     private final ReentrantLock pushWffBMBytesQueueLock = new ReentrantLock(
             false);
 
+    // there will be only one thread waiting for the lock so fairness must be
+    // false and fairness may decrease the lock time
+    private final ReentrantLock holdUnholdPushLock = new ReentrantLock(false);
+
     private final AtomicReference<Thread> waitingThreadRef = new AtomicReference<>();
 
     private volatile TagRepository tagRepository;
@@ -1356,17 +1360,23 @@ public abstract class BrowserPage implements Serializable {
                     afterRender(rootTag);
                     wsWarningDisabled = false;
                 } else {
-                    synchronized (wffBMBytesQueue) {
+                    holdUnholdPushLock.lock();
+                    try {
                         wffBMBytesQueue.clear();
                         pushQueueSize.reset();
+                    } finally {
+                        holdUnholdPushLock.unlock();
                     }
                 }
             }
 
         } else {
-            synchronized (wffBMBytesQueue) {
+            holdUnholdPushLock.lock();
+            try {
                 wffBMBytesQueue.clear();
                 pushQueueSize.reset();
+            } finally {
+                holdUnholdPushLock.unlock();
             }
         }
 
@@ -1553,9 +1563,8 @@ public abstract class BrowserPage implements Serializable {
 
         if (holdPush.get() > 0) {
 
-            synchronized (wffBMBytesQueue) {
-
-                holdPush.decrementAndGet();
+            holdUnholdPushLock.lock();
+            try {
 
                 ClientTasksWrapper clientTask = wffBMBytesHoldPushQueue.poll();
 
@@ -1605,7 +1614,11 @@ public abstract class BrowserPage implements Serializable {
                     pushWffBMBytesQueue();
                 }
 
+            } finally {
+                holdUnholdPushLock.unlock();
+                holdPush.decrementAndGet();
             }
+
         }
 
     }
