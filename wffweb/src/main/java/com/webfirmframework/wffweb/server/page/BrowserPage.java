@@ -157,7 +157,7 @@ public abstract class BrowserPage implements Serializable {
 
     // there will be only one thread waiting for the lock so fairness must be
     // false and fairness may decrease the lock time
-    private final ReentrantLock holdUnholdPushLock = new ReentrantLock(false);
+    private final ReentrantLock unholdPushLock = new ReentrantLock(false);
 
     private final AtomicReference<Thread> waitingThreadRef = new AtomicReference<>();
 
@@ -1360,23 +1360,23 @@ public abstract class BrowserPage implements Serializable {
                     afterRender(rootTag);
                     wsWarningDisabled = false;
                 } else {
-                    holdUnholdPushLock.lock();
+                    unholdPushLock.lock();
                     try {
                         wffBMBytesQueue.clear();
                         pushQueueSize.reset();
                     } finally {
-                        holdUnholdPushLock.unlock();
+                        unholdPushLock.unlock();
                     }
                 }
             }
 
         } else {
-            holdUnholdPushLock.lock();
+            unholdPushLock.lock();
             try {
                 wffBMBytesQueue.clear();
                 pushQueueSize.reset();
             } finally {
-                holdUnholdPushLock.unlock();
+                unholdPushLock.unlock();
             }
         }
 
@@ -1563,7 +1563,7 @@ public abstract class BrowserPage implements Serializable {
 
         if (holdPush.get() > 0) {
 
-            holdUnholdPushLock.lock();
+            unholdPushLock.lock();
             try {
 
                 ClientTasksWrapper clientTask = wffBMBytesHoldPushQueue.poll();
@@ -1615,7 +1615,7 @@ public abstract class BrowserPage implements Serializable {
                 }
 
             } finally {
-                holdUnholdPushLock.unlock();
+                unholdPushLock.unlock();
                 holdPush.decrementAndGet();
             }
 
