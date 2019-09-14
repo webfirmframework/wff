@@ -16,12 +16,11 @@
  */
 package com.webfirmframework.wffweb.css.file;
 
-import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
 
 import com.webfirmframework.wffweb.clone.CloneUtil;
 import com.webfirmframework.wffweb.css.core.CssProperty;
@@ -35,7 +34,7 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    private final Set<CssProperty> cssProperties;
+    private final CssPropertySet cssProperties;
 
     private final Map<String, CssProperty> cssPropertiesAsMap;
 
@@ -49,9 +48,7 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
 
     private boolean excludeCssBlock;
 
-    // there could be only one thread waiting for the lock so fairness must be
-    // false and fairness may decrease the lock time
-    private final ReentrantLock lock = new ReentrantLock(false);
+    private final ReadWriteLock lock;
 
     @SuppressWarnings("unused")
     private AbstractCssFileBlock() {
@@ -62,95 +59,11 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
     }
 
     {
+        cssProperties = new CssPropertySet(this);
+        cssPropertiesAsMap = cssProperties.getCssPropertiesAsMap();
+        lock = cssProperties.getLock();
+
         cssFiles = new LinkedHashSet<>();
-
-        cssPropertiesAsMap = new LinkedHashMap<>();
-
-        cssProperties = new LinkedHashSet<CssProperty>() {
-
-            private static final long serialVersionUID = 1_0_0L;
-
-            private volatile String toString = "";
-
-            @Override
-            public boolean add(final CssProperty cssProperty) {
-                final boolean added = super.add(cssProperty);
-                if (added) {
-                    setModified(added);
-                    cssPropertiesAsMap.put(cssProperty.getCssName(),
-                            cssProperty);
-                }
-                return added;
-            }
-
-            @Override
-            public boolean addAll(
-                    final Collection<? extends CssProperty> cssProperties) {
-                final boolean addedAll = super.addAll(cssProperties);
-                if (addedAll) {
-                    setModified(addedAll);
-                    for (final CssProperty cssProperty : cssProperties) {
-                        cssPropertiesAsMap.put(cssProperty.getCssName(),
-                                cssProperty);
-                    }
-                }
-                return addedAll;
-            }
-
-            @Override
-            public boolean remove(final Object o) {
-                final boolean removed = super.remove(o);
-                if (removed) {
-                    setModified(removed);
-                    if (o instanceof CssProperty) {
-                        cssPropertiesAsMap
-                                .remove(((CssProperty) o).getCssName());
-                    }
-                }
-                return removed;
-            }
-
-            @Override
-            public boolean removeAll(final Collection<?> c) {
-                final boolean removedAll = super.removeAll(c);
-                if (removedAll) {
-                    setModified(removedAll);
-                    for (final Object object : c) {
-                        if (object instanceof CssProperty) {
-                            cssPropertiesAsMap.remove(
-                                    ((CssProperty) object).getCssName());
-                        }
-                    }
-                }
-                return removedAll;
-            }
-
-            @Override
-            public void clear() {
-                setModified(true);
-                super.clear();
-                cssPropertiesAsMap.clear();
-            }
-
-            @Override
-            public String toString() {
-                final int length = toString.length();
-                final StringBuilder toStringBuilder = new StringBuilder(
-                        length > 0 ? length : 16);
-                if (modified) {
-                    toStringBuilder.delete(0, toStringBuilder.length());
-                    for (final CssProperty cssProperty : this) {
-                        toStringBuilder.append(cssProperty.getCssName())
-                                .append(':').append(cssProperty.getCssValue())
-                                .append(';');
-                    }
-                    setModified(false);
-                    toString = toStringBuilder.toString();
-                }
-                return toString;
-            }
-        };
-
     }
 
     protected abstract void load(Set<CssProperty> cssProperties);
@@ -175,21 +88,23 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
      */
     public String toCssString() {
         if (!loadedOnce) {
-            lock.lock();
+            final Lock writeLock = lock.writeLock();
+            writeLock.lock();
+
             try {
                 if (!loadedOnce) {
-                    cssProperties.clear();
+                    cssProperties.clearLockless();
                     load(cssProperties);
                     loadedOnce = true;
                     setModified(true);
-                    return selectors + "{" + cssProperties.toString() + "}";
+                    return selectors + "{" + cssProperties.toCssString() + "}";
                 }
 
             } finally {
-                lock.unlock();
+                writeLock.unlock();
             }
         }
-        return selectors + "{" + cssProperties.toString() + "}";
+        return selectors + "{" + cssProperties.toCssString() + "}";
     }
 
     /**
@@ -200,20 +115,46 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
      */
     public String toCssString(final boolean rebuild) {
         if (rebuild || !loadedOnce) {
-            lock.lock();
+            final Lock writeLock = lock.writeLock();
+            writeLock.lock();
             try {
                 if (rebuild || !loadedOnce) {
-                    cssProperties.clear();
+                    cssProperties.clearLockless();
                     load(cssProperties);
                     loadedOnce = true;
                     setModified(true);
-                    return selectors + "{" + cssProperties.toString() + "}";
+                    return selectors + "{" + cssProperties.toCssString() + "}";
                 }
             } finally {
-                lock.unlock();
+                writeLock.unlock();
             }
         }
-        return selectors + "{" + cssProperties.toString() + "}";
+        return selectors + "{" + cssProperties.toCssString() + "}";
+    }
+
+    /**
+     * @param rebuild
+     * @return the css string without selector.
+     * @since 3.0.7
+     * @author WFF
+     */
+    public String toCssStringNoSelector(final boolean rebuild) {
+        if (rebuild || !loadedOnce) {
+            final Lock writeLock = lock.writeLock();
+            writeLock.lock();
+            try {
+                if (rebuild || !loadedOnce) {
+                    cssProperties.clearLockless();
+                    load(cssProperties);
+                    loadedOnce = true;
+                    setModified(true);
+                    return cssProperties.toCssString();
+                }
+            } finally {
+                writeLock.unlock();
+            }
+        }
+        return cssProperties.toCssString();
     }
 
     @Override
@@ -228,16 +169,17 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
      */
     public Set<CssProperty> getCssProperties() {
         if (!loadedOnce) {
-            lock.lock();
+            final Lock writeLock = lock.writeLock();
+            writeLock.lock();
             try {
                 if (!loadedOnce) {
-                    cssProperties.clear();
+                    cssProperties.clearLockless();
                     load(cssProperties);
                     loadedOnce = true;
                     setModified(true);
                 }
             } finally {
-                lock.unlock();
+                writeLock.unlock();
             }
         }
         return cssProperties;
@@ -249,13 +191,21 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
      * @since 1.0.0
      * @author WFF
      */
-    private void setModified(final boolean modified) {
+    void setModified(final boolean modified) {
         if (modified) {
             for (final CssFile cssFile : cssFiles) {
                 cssFile.setModified(true);
             }
         }
         this.modified = modified;
+    }
+
+    /**
+     * @return true if modified otherwise false
+     * @since 3.0.7
+     */
+    boolean isModified() {
+        return modified;
     }
 
     /**
@@ -276,17 +226,23 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
      * @author WFF
      */
     Map<String, CssProperty> getCssPropertiesAsMap(final boolean rebuild) {
+        // NB: if this method is made public or the returned map is modified,
+        // locking mechanism should also be implemented in cssPropertiesAsMap.
+        // i.e. may need to implement custom map.
+
         if (rebuild || !loadedOnce) {
-            lock.lock();
+            final Lock writeLock = lock.writeLock();
+            writeLock.lock();
             try {
                 if (rebuild || !loadedOnce) {
-                    cssProperties.clear();
+                    cssProperties.clearLockless();
                     load(cssProperties);
                     loadedOnce = true;
                     setModified(true);
                 }
             } finally {
-                lock.unlock();
+                writeLock.unlock();
+
             }
         }
         return cssPropertiesAsMap;
