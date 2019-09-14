@@ -21,6 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.locks.ReentrantLock;
 
 import com.webfirmframework.wffweb.clone.CloneUtil;
 import com.webfirmframework.wffweb.css.core.CssProperty;
@@ -48,6 +49,10 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
 
     private boolean excludeCssBlock;
 
+    // there could be only one thread waiting for the lock so fairness must be
+    // false and fairness may decrease the lock time
+    private final ReentrantLock lock = new ReentrantLock(false);
+
     @SuppressWarnings("unused")
     private AbstractCssFileBlock() {
     }
@@ -65,11 +70,7 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
 
             private static final long serialVersionUID = 1_0_0L;
 
-            private StringBuilder toStringBuilder;
-
-            {
-                toStringBuilder = new StringBuilder();
-            }
+            private volatile String toString = "";
 
             @Override
             public boolean add(final CssProperty cssProperty) {
@@ -133,21 +134,20 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
 
             @Override
             public String toString() {
+                final int length = toString.length();
+                final StringBuilder toStringBuilder = new StringBuilder(
+                        length > 0 ? length : 16);
                 if (modified) {
-                    synchronized (toStringBuilder) {
-                        if (modified) {
-                            toStringBuilder.delete(0, toStringBuilder.length());
-                            for (final CssProperty cssProperty : this) {
-                                toStringBuilder.append(cssProperty.getCssName())
-                                        .append(':')
-                                        .append(cssProperty.getCssValue())
-                                        .append(';');
-                            }
-                            setModified(false);
-                        }
+                    toStringBuilder.delete(0, toStringBuilder.length());
+                    for (final CssProperty cssProperty : this) {
+                        toStringBuilder.append(cssProperty.getCssName())
+                                .append(':').append(cssProperty.getCssValue())
+                                .append(';');
                     }
+                    setModified(false);
+                    toString = toStringBuilder.toString();
                 }
-                return toStringBuilder.toString();
+                return toString;
             }
         };
 
@@ -175,13 +175,18 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
      */
     public String toCssString() {
         if (!loadedOnce) {
-            synchronized (cssProperties) {
+            lock.lock();
+            try {
                 if (!loadedOnce) {
                     cssProperties.clear();
                     load(cssProperties);
                     loadedOnce = true;
                     setModified(true);
+                    return selectors + "{" + cssProperties.toString() + "}";
                 }
+
+            } finally {
+                lock.unlock();
             }
         }
         return selectors + "{" + cssProperties.toString() + "}";
@@ -195,13 +200,17 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
      */
     public String toCssString(final boolean rebuild) {
         if (rebuild || !loadedOnce) {
-            synchronized (cssProperties) {
+            lock.lock();
+            try {
                 if (rebuild || !loadedOnce) {
                     cssProperties.clear();
                     load(cssProperties);
                     loadedOnce = true;
                     setModified(true);
+                    return selectors + "{" + cssProperties.toString() + "}";
                 }
+            } finally {
+                lock.unlock();
             }
         }
         return selectors + "{" + cssProperties.toString() + "}";
@@ -219,13 +228,16 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
      */
     public Set<CssProperty> getCssProperties() {
         if (!loadedOnce) {
-            synchronized (cssProperties) {
+            lock.lock();
+            try {
                 if (!loadedOnce) {
                     cssProperties.clear();
                     load(cssProperties);
                     loadedOnce = true;
                     setModified(true);
                 }
+            } finally {
+                lock.unlock();
             }
         }
         return cssProperties;
@@ -265,13 +277,16 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
      */
     Map<String, CssProperty> getCssPropertiesAsMap(final boolean rebuild) {
         if (rebuild || !loadedOnce) {
-            synchronized (cssProperties) {
+            lock.lock();
+            try {
                 if (rebuild || !loadedOnce) {
                     cssProperties.clear();
                     load(cssProperties);
                     loadedOnce = true;
                     setModified(true);
                 }
+            } finally {
+                lock.unlock();
             }
         }
         return cssPropertiesAsMap;
