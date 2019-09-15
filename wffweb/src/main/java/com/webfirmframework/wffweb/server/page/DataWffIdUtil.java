@@ -22,7 +22,9 @@ import java.util.Deque;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.TagUtil;
+import com.webfirmframework.wffweb.tag.html.core.PreIndexedTagName;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
+import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 
 final class DataWffIdUtil {
@@ -136,19 +138,37 @@ final class DataWffIdUtil {
     }
 
     /**
+     * @param childIndex
+     * @return { PreIndexedTagName.HASH.indexBytes(), childIndexBytes }
+     * @since 3.0.7
+     */
+    static byte[][] getIndexedTagNameAndChildIndexForNoTag(
+            final Object accessObject, final NoTag noTag) {
+
+        final int childIndex = noTag.getParent().getIndexByChild(accessObject,
+                noTag);
+
+        final byte[] intBytes = WffBinaryMessageUtil
+                .getOptimizedBytesFromInt(childIndex);
+
+        // # represents NoTag, as tag name
+        return new byte[][] { PreIndexedTagName.HASH.indexBytes(), intBytes };
+    }
+
+    /**
      * @param accessObject
      *                         TODO
-     * @param abstractHtml
+     * @param tag
      * @return array containing tagName bytes and dataWffIdBytes of the given
      *         argument or its parent.
      * @since 3.0.6 contains TagNameBytesCompressedByIndex
      * @author WFF
      */
     static byte[][] getIndexedTagNameAndWffId(final Object accessObject,
-            final AbstractHtml abstractHtml) {
+            final AbstractHtml tag) {
 
         final Deque<AbstractHtml> parentStack = new ArrayDeque<>();
-        parentStack.push(abstractHtml);
+        parentStack.push(tag);
 
         AbstractHtml parent;
         while ((parent = parentStack.poll()) != null) {

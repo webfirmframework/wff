@@ -322,11 +322,18 @@ var wffClientCRUDUtil = new function() {
 						wffId);
 				
 				var beforeTagName = wffTagUtil.getTagNameFromCompressedBytes(values[2]);
-				var beforeTagWffId = wffTagUtil.getWffIdFromWffIdBytes(values[3]);
 				
-				var beforeTag = wffTagUtil.getTagByTagNameAndWffId(beforeTagName,
-						beforeTagWffId);
+				var beforeTag;
 				
+				//# means NoTag
+				if (beforeTagName === '#') {
+					var chldNdxOptmzdIntByts = values[3];
+					beforeTag = wffTagUtil.getChildByNthIndexBytes(parentTag, chldNdxOptmzdIntByts);				
+				} else {
+					var beforeTagWffId = wffTagUtil.getWffIdFromWffIdBytes(values[3]);					
+					beforeTag = wffTagUtil.getTagByTagNameAndWffId(beforeTagName,
+							beforeTagWffId);
+				}
 				
 				var htmlNodes = wffTagUtil.createTagFromWffBMBytes(values[1]);
 				

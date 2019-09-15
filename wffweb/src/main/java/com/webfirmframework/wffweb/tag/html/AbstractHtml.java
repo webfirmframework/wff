@@ -2429,6 +2429,76 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
+     * Gets the nth index of the given tag in this tag's children.
+     *
+     * @param child
+     * @return the index of this child in this tag's children. If the given tag
+     *         is not a child in this tag's children then -1 will be returned.
+     * @since 3.0.7
+     */
+    public int getIndexByChild(final AbstractHtml child) {
+        // NB: this logic may be improved by declaring a childIndex variable in
+        // tag so when the tag is added as a child in any tag childIndex needs
+        // to be updated. Removing/adding another tag can also affect the
+        // childIndex of that tag so that needs to be handled.
+
+        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
+        try {
+            lock.lock();
+            final Iterator<AbstractHtml> iterator = children.iterator();
+            int index = 0;
+            while (iterator.hasNext()) {
+                if (iterator.next().equals(child)) {
+                    return index;
+                }
+                index++;
+            }
+        } finally {
+            lock.unlock();
+        }
+        return -1;
+    }
+
+    /**
+     * NB: only for internal use. Use getIndexByChild(AbstractHtml).<br>
+     * <br>
+     *
+     * Gets the nth index of the given tag in this tag's children.
+     *
+     * @param accessObject
+     * @param child
+     * @return the index of this child in this tag's children. If the given tag
+     *         is not a child in this tag's children then -1 will be returned.
+     * @since 3.0.7
+     */
+    public int getIndexByChild(final Object accessObject,
+            final AbstractHtml child) {
+
+        // Lockless method to get child index
+
+        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE
+                .equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException(
+                    "Not allowed to consume this method. This method is for internal use.");
+        }
+
+        // NB: this logic may be improved by declaring a childIndex variable in
+        // tag so when the tag is added as a child in any tag childIndex needs
+        // to be updated. Removing/adding another tag can also affect the
+        // childIndex of that tag so that needs to be handled.
+
+        final Iterator<AbstractHtml> iterator = children.iterator();
+        int index = 0;
+        while (iterator.hasNext()) {
+            if (iterator.next().equals(child)) {
+                return index;
+            }
+            index++;
+        }
+        return -1;
+    }
+
+    /**
      * Checks whether a tag is contained in its direct children. An efficient
      * way to check if the given tag is a direct child of this tag.
      *
@@ -4948,6 +5018,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                                     && abstractHtmlToInsert.parent.sharedObject == sharedObject) {
                                 previousParent = abstractHtmlToInsert.parent;
                             }
+
                             final InsertBeforeListener.Event event = new InsertBeforeListener.Event(
                                     parent, abstractHtmlToInsert, this,
                                     previousParent);

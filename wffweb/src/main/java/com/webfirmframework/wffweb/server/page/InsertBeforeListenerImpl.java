@@ -29,6 +29,7 @@ import com.webfirmframework.wffweb.server.page.js.WffJsFile;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.tag.html.listener.InsertBeforeListener;
+import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 import com.webfirmframework.wffweb.util.data.NameValue;
 
 /**
@@ -137,8 +138,16 @@ class InsertBeforeListenerImpl implements InsertBeforeListener {
 
                 final byte[] parentTagName = parentTagNameAndWffId[0];
 
-                final byte[][] beforeTagNameAndWffId = DataWffIdUtil
-                        .getIndexedTagNameAndWffId(accessObject, beforeTag);
+                final byte[][] beforeTagNameAndWffId;
+
+                if (beforeTag instanceof NoTag) {
+                    beforeTagNameAndWffId = DataWffIdUtil
+                            .getIndexedTagNameAndChildIndexForNoTag(
+                                    accessObject, (NoTag) beforeTag);
+                } else {
+                    beforeTagNameAndWffId = DataWffIdUtil
+                            .getIndexedTagNameAndWffId(accessObject, beforeTag);
+                }
 
                 try {
                     if (previousParentTag != null) {
