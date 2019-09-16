@@ -715,10 +715,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
             if (listener != null && updateClient) {
 
-                for (final AbstractHtml removedTag : removedTags) {
-                    removeFromTagByWffIdMap(sharedObject, removedTag);
-                }
-
                 final InnerHtmlAddListener.Event[] events = new InnerHtmlAddListener.Event[innerHtmls.length];
 
                 int index = 0;
@@ -760,39 +756,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
             }
         }
 
-    }
-
-    private void removeFromTagByWffIdMap(
-            final AbstractHtml5SharedObject sharedObject,
-            final AbstractHtml tag) {
-
-        final Map<String, AbstractHtml> tagByWffId = sharedObject
-                .initTagByWffId(ACCESS_OBJECT);
-
-        if (tagByWffId != null) {
-            final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
-            // passed 2 instead of 1 because the load factor is 0.75f
-            final Set<AbstractHtml> initialSet = new HashSet<>(2);
-            initialSet.add(tag);
-            childrenStack.push(initialSet);
-
-            Set<AbstractHtml> children;
-            while ((children = childrenStack.poll()) != null) {
-                for (final AbstractHtml child : children) {
-
-                    final DataWffId dataWffId = child.dataWffId;
-                    if (dataWffId != null) {
-                        tagByWffId.remove(dataWffId.getValue());
-                    }
-
-                    final Set<AbstractHtml> subChildren = child.children;
-                    if (subChildren != null && subChildren.size() > 0) {
-                        childrenStack.push(subChildren);
-                    }
-
-                }
-            }
-        }
     }
 
     /**
