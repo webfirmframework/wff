@@ -220,10 +220,23 @@ public abstract class AbstractHtml extends AbstractJsObject {
             @Override
             public boolean removeAll(final Collection<?> children) {
 
-                final AbstractHtml[] removedAbstractHtmls = children
-                        .toArray(new AbstractHtml[children.size()]);
+                // NB: must be LinkedHashSet to keep order of removal
+                final Set<Object> validChildren = new LinkedHashSet<>(
+                        calcCapacity(children.size()));
 
-                final boolean removedAll = super.removeAll(children);
+                for (final Object each : children) {
+                    if (each instanceof AbstractHtml) {
+                        final AbstractHtml child = (AbstractHtml) each;
+                        if (AbstractHtml.this.equals(child.parent)) {
+                            validChildren.add(child);
+                        }
+                    }
+                }
+
+                final AbstractHtml[] removedAbstractHtmls = validChildren
+                        .toArray(new AbstractHtml[validChildren.size()]);
+
+                final boolean removedAll = super.removeAll(validChildren);
                 if (removedAll) {
 
                     initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(
@@ -539,6 +552,18 @@ public abstract class AbstractHtml extends AbstractJsObject {
     private void init() {
         tagBuilder = new StringBuilder();
         setRebuild(true);
+    }
+
+    /**
+     * Calculates capacity for the default load factor
+     *
+     * @param size
+     * @return the calculated capacity
+     * @since 3.0.7
+     */
+    private static int calcCapacity(final int size) {
+        // length/load factor + 1
+        return (int) (size / 0.75F) + 1;
     }
 
     /**
