@@ -176,12 +176,8 @@ class ChildTagRemoveListenerImpl implements ChildTagRemoveListener {
 
             browserPage.push(task, nameValue);
 
-            final Set<AbstractHtml> children = parentTag
-                    .getChildren(accessObject);
-            if (children != null) {
-                for (final AbstractHtml each : children) {
-                    removeFromTagByWffIdMap(each);
-                }
+            for (final AbstractHtml each : event.getRemovedChildrenTags()) {
+                removeFromTagByWffIdMap(each);
             }
         } else {
             LOGGER.severe("Could not find data-wff-id from owner tag");
