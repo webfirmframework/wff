@@ -237,8 +237,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         .toArray(new AbstractHtml[validChildren.size()]);
 
                 final boolean removedAll = super.removeAll(validChildren);
-                if (removedAll) {
 
+                if (removedAll) {
                     initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(
                             removedAbstractHtmls);
 
