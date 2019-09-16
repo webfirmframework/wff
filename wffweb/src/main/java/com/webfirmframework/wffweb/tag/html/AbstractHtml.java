@@ -703,17 +703,21 @@ public abstract class AbstractHtml extends AbstractJsObject {
         try {
             lock.lock();
 
-            final AbstractHtml[] removedAbstractHtmls = children
+            final AbstractHtml[] removedTags = children
                     .toArray(new AbstractHtml[children.size()]);
             children.clear();
 
             initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(
-                    removedAbstractHtmls);
+                    removedTags);
 
             final InnerHtmlAddListener listener = sharedObject
                     .getInnerHtmlAddListener(ACCESS_OBJECT);
 
             if (listener != null && updateClient) {
+
+                for (final AbstractHtml removedTag : removedTags) {
+                    removeFromTagByWffIdMap(sharedObject, removedTag);
+                }
 
                 final InnerHtmlAddListener.Event[] events = new InnerHtmlAddListener.Event[innerHtmls.length];
 
@@ -756,6 +760,39 @@ public abstract class AbstractHtml extends AbstractJsObject {
             }
         }
 
+    }
+
+    private void removeFromTagByWffIdMap(
+            final AbstractHtml5SharedObject sharedObject,
+            final AbstractHtml tag) {
+
+        final Map<String, AbstractHtml> tagByWffId = sharedObject
+                .initTagByWffId(ACCESS_OBJECT);
+
+        if (tagByWffId != null) {
+            final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
+            // passed 2 instead of 1 because the load factor is 0.75f
+            final Set<AbstractHtml> initialSet = new HashSet<>(2);
+            initialSet.add(tag);
+            childrenStack.push(initialSet);
+
+            Set<AbstractHtml> children;
+            while ((children = childrenStack.poll()) != null) {
+                for (final AbstractHtml child : children) {
+
+                    final DataWffId dataWffId = child.dataWffId;
+                    if (dataWffId != null) {
+                        tagByWffId.remove(dataWffId.getValue());
+                    }
+
+                    final Set<AbstractHtml> subChildren = child.children;
+                    if (subChildren != null && subChildren.size() > 0) {
+                        childrenStack.push(subChildren);
+                    }
+
+                }
+            }
+        }
     }
 
     /**
