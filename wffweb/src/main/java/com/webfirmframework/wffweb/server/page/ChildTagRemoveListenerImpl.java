@@ -55,29 +55,38 @@ class ChildTagRemoveListenerImpl implements ChildTagRemoveListener {
 
     private void removeFromTagByWffIdMap(final AbstractHtml tag) {
 
-        final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
-        // passed 2 instead of 1 because the load factor is 0.75f
-        final Set<AbstractHtml> initialSet = new HashSet<>(2);
-        initialSet.add(tag);
-        childrenStack.push(initialSet);
+        if (!tagByWffId.isEmpty()) {
+            final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
+            // passed 2 instead of 1 because the load factor is 0.75f
+            final Set<AbstractHtml> initialSet = new HashSet<>(2);
+            initialSet.add(tag);
+            childrenStack.push(initialSet);
 
-        Set<AbstractHtml> children;
-        while ((children = childrenStack.poll()) != null) {
-            for (final AbstractHtml child : children) {
+            Set<AbstractHtml> children;
+            while ((children = childrenStack.poll()) != null) {
+                for (final AbstractHtml child : children) {
 
-                final DataWffId dataWffId = child.getDataWffId();
-                if (dataWffId != null) {
-                    tagByWffId.remove(dataWffId.getValue());
+                    final DataWffId dataWffId = child.getDataWffId();
+                    if (dataWffId != null) {
+                        tagByWffId.computeIfPresent(dataWffId.getValue(),
+                                (k, v) -> {
+                                    if (child.equals(v)) {
+                                        return null;
+                                    }
+                                    return v;
+                                });
+                    }
+
+                    final Set<AbstractHtml> subChildren = child
+                            .getChildren(accessObject);
+                    if (subChildren != null && subChildren.size() > 0) {
+                        childrenStack.push(subChildren);
+                    }
+
                 }
-
-                final Set<AbstractHtml> subChildren = child
-                        .getChildren(accessObject);
-                if (subChildren != null && subChildren.size() > 0) {
-                    childrenStack.push(subChildren);
-                }
-
             }
         }
+
     }
 
     @Override

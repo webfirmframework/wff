@@ -721,11 +721,17 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                 for (final AbstractHtml innerHtml : innerHtmls) {
 
+                    final boolean alreadyHasParent = innerHtml.parent != null;
                     AbstractHtml previousParentTag = null;
 
-                    if (innerHtml.parent != null
-                            && innerHtml.parent.sharedObject == sharedObject) {
-                        previousParentTag = innerHtml.parent;
+                    if (alreadyHasParent) {
+                        if (innerHtml.parent.sharedObject == sharedObject) {
+                            previousParentTag = innerHtml.parent;
+                        } else {
+                            removeFromTagByWffIdMap(innerHtml,
+                                    innerHtml.parent.sharedObject
+                                            .getTagByWffId(ACCESS_OBJECT));
+                        }
                     }
 
                     addChild(innerHtml, false);
@@ -797,11 +803,17 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
             for (final AbstractHtml innerHtml : innerHtmls) {
 
+                final boolean alreadyHasParent = innerHtml.parent != null;
                 AbstractHtml previousParentTag = null;
 
-                if (innerHtml.parent != null
-                        && innerHtml.parent.sharedObject == sharedObject) {
-                    previousParentTag = innerHtml.parent;
+                if (alreadyHasParent) {
+                    if (innerHtml.parent.sharedObject == sharedObject) {
+                        previousParentTag = innerHtml.parent;
+                    } else {
+                        removeFromTagByWffIdMap(innerHtml,
+                                innerHtml.parent.sharedObject
+                                        .getTagByWffId(ACCESS_OBJECT));
+                    }
                 }
 
                 addChild(innerHtml, false);
@@ -1394,6 +1406,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
             if (alreadyHasParent) {
                 child.parent.children.remove(child);
+                if (child.parent.sharedObject != sharedObject) {
+                    removeFromTagByWffIdMap(child, child.parent.sharedObject
+                            .getTagByWffId(ACCESS_OBJECT));
+                }
             }
 
             initParentAndSharedObject(child);
@@ -1425,6 +1441,46 @@ public abstract class AbstractHtml extends AbstractJsObject {
         }
         return added;
 
+    }
+
+    /**
+     * @param tagByWffId
+     * @param tag
+     * @since 3.0.7
+     */
+    private static void removeFromTagByWffIdMap(final AbstractHtml tag,
+            final Map<String, AbstractHtml> tagByWffId) {
+
+        if (!tagByWffId.isEmpty()) {
+            final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
+            // passed 2 instead of 1 because the load factor is 0.75f
+            final Set<AbstractHtml> initialSet = new HashSet<>(2);
+            initialSet.add(tag);
+            childrenStack.push(initialSet);
+
+            Set<AbstractHtml> children;
+            while ((children = childrenStack.poll()) != null) {
+                for (final AbstractHtml child : children) {
+
+                    final DataWffId dataWffId = child.getDataWffId();
+                    if (dataWffId != null) {
+                        tagByWffId.computeIfPresent(dataWffId.getValue(),
+                                (k, v) -> {
+                                    if (child.equals(v)) {
+                                        return null;
+                                    }
+                                    return v;
+                                });
+                    }
+
+                    final Set<AbstractHtml> subChildren = child.children;
+                    if (subChildren != null && subChildren.size() > 0) {
+                        childrenStack.push(subChildren);
+                    }
+
+                }
+            }
+        }
     }
 
     private void initParentAndSharedObject(final AbstractHtml child) {
@@ -4138,6 +4194,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
             abstractHtml.parentNullifiedOnce = true;
         }
 
+        final Map<String, AbstractHtml> tagByWffId = sharedObject
+                .getTagByWffId(ACCESS_OBJECT);
+
         abstractHtml.sharedObject = new AbstractHtml5SharedObject(abstractHtml);
 
         final Deque<Set<AbstractHtml>> removedTagsStack = new ArrayDeque<>();
@@ -4153,8 +4212,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                 final DataWffId dataWffId = stackChild.getDataWffId();
                 if (dataWffId != null) {
-                    sharedObject.getTagByWffId(ACCESS_OBJECT)
-                            .remove(dataWffId.getValue());
+                    tagByWffId.computeIfPresent(dataWffId.getValue(),
+                            (k, v) -> {
+                                if (stackChild.equals(v)) {
+                                    return null;
+                                }
+                                return v;
+                            });
                 }
 
                 stackChild.sharedObject = abstractHtml.sharedObject;
@@ -5033,20 +5097,27 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                 if (equals(parentChild)) {
 
-                    for (final AbstractHtml abstractHtmlToInsert : abstractHtmls) {
+                    for (final AbstractHtml tagToInsert : abstractHtmls) {
 
-                        final boolean alreadyHasParent = abstractHtmlToInsert.parent != null;
+                        final boolean alreadyHasParent = tagToInsert.parent != null;
 
                         if (insertBeforeListener != null) {
                             AbstractHtml previousParent = null;
-                            if (abstractHtmlToInsert.parent != null
-                                    && abstractHtmlToInsert.parent.sharedObject == sharedObject) {
-                                previousParent = abstractHtmlToInsert.parent;
+
+                            if (alreadyHasParent) {
+                                if (tagToInsert.parent.sharedObject == sharedObject) {
+                                    previousParent = tagToInsert.parent;
+                                } else {
+                                    removeFromTagByWffIdMap(tagToInsert,
+                                            tagToInsert.parent.sharedObject
+                                                    .getTagByWffId(
+                                                            ACCESS_OBJECT));
+                                }
+
                             }
 
                             final InsertBeforeListener.Event event = new InsertBeforeListener.Event(
-                                    parent, abstractHtmlToInsert, this,
-                                    previousParent);
+                                    parent, tagToInsert, this, previousParent);
                             events[count] = event;
                             count++;
                         }
@@ -5056,15 +5127,14 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         // moving from one tag to another.
 
                         if (alreadyHasParent) {
-                            abstractHtmlToInsert.parent.children
-                                    .remove(abstractHtmlToInsert);
+                            tagToInsert.parent.children.remove(tagToInsert);
                         }
 
-                        initSharedObject(abstractHtmlToInsert);
+                        initSharedObject(tagToInsert);
 
-                        abstractHtmlToInsert.parent = parent;
+                        tagToInsert.parent = parent;
 
-                        parent.children.add(abstractHtmlToInsert);
+                        parent.children.add(tagToInsert);
                     }
 
                 }
