@@ -31,6 +31,7 @@ import java.util.logging.Logger;
 import com.webfirmframework.wffweb.InvalidTagException;
 import com.webfirmframework.wffweb.server.page.js.WffJsFile;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.TagUtil;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.tag.html.listener.ChildTagAppendListener;
 import com.webfirmframework.wffweb.util.data.NameValue;
@@ -80,11 +81,12 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
             while ((children = childrenStack.poll()) != null) {
                 for (final AbstractHtml child : children) {
 
-                    if (child.getDataWffId() == null) {
-                        child.setDataWffId(browserPage.getNewDataWffId());
+                    if (TagUtil.isTagged(child)) {
+                        if (child.getDataWffId() == null) {
+                            child.setDataWffId(browserPage.getNewDataWffId());
+                        }
+                        tagByWffId.put(child.getDataWffId().getValue(), child);
                     }
-
-                    tagByWffId.put(child.getDataWffId().getValue(), child);
 
                     final Set<AbstractHtml> subChildren = child
                             .getChildren(accessObject);
@@ -157,11 +159,12 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
         while ((children = childrenStack.poll()) != null) {
             for (final AbstractHtml child : children) {
 
-                if (child.getDataWffId() == null) {
-                    child.setDataWffId(browserPage.getNewDataWffId());
+                if (TagUtil.isTagged(child)) {
+                    if (child.getDataWffId() == null) {
+                        child.setDataWffId(browserPage.getNewDataWffId());
+                    }
+                    tagByWffId.put(child.getDataWffId().getValue(), child);
                 }
-
-                tagByWffId.put(child.getDataWffId().getValue(), child);
 
                 final Set<AbstractHtml> subChildren = child
                         .getChildren(accessObject);
@@ -248,10 +251,12 @@ class ChildTagAppendListenerImpl implements ChildTagAppendListener {
         while ((children = childrenStack.poll()) != null) {
             for (final AbstractHtml child : children) {
 
-                final DataWffId wffIdAttr = child.getDataWffId();
+                if (TagUtil.isTagged(child)) {
+                    final DataWffId wffIdAttr = child.getDataWffId();
 
-                if (wffIdAttr != null) {
-                    tagByWffId.put(wffIdAttr.getValue(), child);
+                    if (wffIdAttr != null) {
+                        tagByWffId.put(wffIdAttr.getValue(), child);
+                    }
                 }
 
                 final Set<AbstractHtml> subChildren = child

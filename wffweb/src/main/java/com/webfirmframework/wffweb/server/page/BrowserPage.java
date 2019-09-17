@@ -52,6 +52,7 @@ import com.webfirmframework.wffweb.server.page.js.WffJsFile;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.Html;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
+import com.webfirmframework.wffweb.tag.html.TagUtil;
 import com.webfirmframework.wffweb.tag.html.attribute.Defer;
 import com.webfirmframework.wffweb.tag.html.attribute.Nonce;
 import com.webfirmframework.wffweb.tag.html.attribute.Src;
@@ -810,11 +811,12 @@ public abstract class BrowserPage implements Serializable {
 
             for (final AbstractHtml child : children) {
 
-                if (child.getDataWffId() == null) {
-                    child.setDataWffId(getNewDataWffId());
+                if (TagUtil.isTagged(child)) {
+                    if (child.getDataWffId() == null) {
+                        child.setDataWffId(getNewDataWffId());
+                    }
+                    tagByWffId.put(child.getDataWffId().getValue(), child);
                 }
-
-                tagByWffId.put(child.getDataWffId().getValue(), child);
 
                 final Set<AbstractHtml> subChildren = child
                         .getChildren(ACCESS_OBJECT);

@@ -83,10 +83,11 @@ class InsertBeforeListenerImpl implements InsertBeforeListener {
         while ((children = childrenStack.poll()) != null) {
             for (final AbstractHtml child : children) {
 
-                final DataWffId wffIdAttr = child.getDataWffId();
-
-                if (wffIdAttr != null) {
-                    tagByWffId.put(wffIdAttr.getValue(), child);
+                if (TagUtil.isTagged(child)) {
+                    final DataWffId wffIdAttr = child.getDataWffId();
+                    if (wffIdAttr != null) {
+                        tagByWffId.put(wffIdAttr.getValue(), child);
+                    }
                 }
 
                 final Set<AbstractHtml> subChildren = child
