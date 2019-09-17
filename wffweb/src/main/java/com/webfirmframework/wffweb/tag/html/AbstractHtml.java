@@ -1510,8 +1510,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 // getLastDataWffId will not be -1)
                 if (sharedObject.getLastDataWffId(ACCESS_OBJECT) != -1
                         && eachChild.getDataWffId() == null
-                        && eachChild.getTagName() != null
-                        && !eachChild.getTagName().isEmpty()) {
+                        && eachChild.tagName != null
+                        && !eachChild.tagName.isEmpty()) {
 
                     eachChild.initDataWffId(sharedObject);
 
@@ -4403,7 +4403,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                 for (final AbstractHtml tag : children) {
 
-                    final String nodeName = tag.getTagName();
+                    final String nodeName = tag.tagName;
 
                     final AbstractHtml parentLocal = tag.parent;
 
@@ -4549,7 +4549,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                 for (final AbstractHtml tag : children) {
 
-                    final String nodeName = tag.getTagName();
+                    final String nodeName = tag.tagName;
 
                     final AbstractHtml parentLocal = tag.parent;
 
