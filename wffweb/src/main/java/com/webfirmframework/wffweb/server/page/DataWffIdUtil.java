@@ -116,7 +116,7 @@ final class DataWffIdUtil {
         AbstractHtml parent;
         while ((parent = parentStack.poll()) != null) {
 
-            if (parent.getTagName() != null && !parent.getTagName().isEmpty()) {
+            if (TagUtil.isTagged(parent)) {
                 final DataWffId dataWffId = parent.getDataWffId();
 
                 final byte[] dataWffIdBytes = DataWffIdUtil
@@ -173,7 +173,7 @@ final class DataWffIdUtil {
         AbstractHtml parent;
         while ((parent = parentStack.poll()) != null) {
 
-            if (parent.getTagName() != null && !parent.getTagName().isEmpty()) {
+            if (TagUtil.isTagged(parent)) {
                 final DataWffId dataWffId = parent.getDataWffId();
 
                 final byte[] dataWffIdBytes = DataWffIdUtil

@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 import com.webfirmframework.wffweb.InvalidTagException;
 import com.webfirmframework.wffweb.server.page.js.WffJsFile;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.TagUtil;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.tag.html.listener.InsertBeforeListener;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
@@ -140,7 +141,7 @@ class InsertBeforeListenerImpl implements InsertBeforeListener {
 
                 final byte[][] beforeTagNameAndWffId;
 
-                if (beforeTag instanceof NoTag) {
+                if (TagUtil.isTagless(beforeTag)) {
                     beforeTagNameAndWffId = DataWffIdUtil
                             .getIndexedTagNameAndChildIndexForNoTag(
                                     accessObject, (NoTag) beforeTag);
