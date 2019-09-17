@@ -3430,7 +3430,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 NameValue nameValue = new NameValue();
 
                 final int tagNameIndex = TagRegistry.getTagNames()
-                        .indexOf(child.getTagName());
+                        .indexOf(child.tagName);
 
                 // if the tag index is -1 i.e. it's not indexed then the tag
                 // name prepended with 0 value byte should be set.
@@ -3441,8 +3441,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 byte[] closingTagNameConvertedBytes = null;
                 if (tagNameIndex == -1) {
 
-                    final byte[] tagNameBytes = child.getTagName()
-                            .getBytes(charset);
+                    final byte[] tagNameBytes = child.tagName.getBytes(charset);
 
                     byte[] nameBytes = new byte[tagNameBytes.length + 1];
 
@@ -4291,7 +4290,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                 for (final AbstractHtml tag : children) {
 
-                    final String nodeName = tag.getTagName();
+                    final String nodeName = tag.tagName;
 
                     if (nodeName != null && !nodeName.isEmpty()) {
 
