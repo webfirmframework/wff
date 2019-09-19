@@ -5259,6 +5259,12 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                             }
 
+                            // if parentChild == tagToInsert then
+                            // tagToInsert.parent i.e. previousParent
+                            // will be null (because we are calling
+                            // initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(parentChild))
+                            // that is useful for not removing it
+                            // from the browser UI.
                             final ReplaceListener.Event event = new ReplaceListener.Event(
                                     tagToInsert, previousParent);
                             events[count] = event;
