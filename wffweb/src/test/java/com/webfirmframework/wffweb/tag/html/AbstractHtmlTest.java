@@ -405,6 +405,28 @@ public class AbstractHtmlTest {
         }
 
     }
+    
+    @Test
+    public void testReplaceWith2() {
+        
+        {
+            Div parentDiv = new Div(null, new Id("parentDivId"));
+            Div childDiv1 = new Div(parentDiv, new Id("child1"));
+            Div childDiv2 = new Div(parentDiv, new Id("child2"));
+            Div childDiv3 = new Div(parentDiv, new Id("child3"));
+            
+            assertEquals(
+                    "<div id=\"parentDivId\"><div id=\"child1\"></div><div id=\"child2\"></div><div id=\"child3\"></div></div>",
+                    parentDiv.toHtmlString());
+            
+            childDiv3.replaceWith(childDiv2);
+            
+            assertEquals(
+                    "<div id=\"parentDivId\"><div id=\"child1\"></div><div id=\"child2\"></div></div>",
+                    parentDiv.toHtmlString());
+        }
+
+    }
 
     @Test(expected = NoParentException.class)
     public void testInsertAfterWithNoParentException() {
