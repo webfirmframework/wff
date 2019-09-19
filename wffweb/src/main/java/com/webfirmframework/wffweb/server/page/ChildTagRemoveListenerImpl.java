@@ -27,7 +27,7 @@ import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.tag.html.listener.ChildTagRemoveListener;
 import com.webfirmframework.wffweb.util.data.NameValue;
 
-class ChildTagRemoveListenerImpl implements ChildTagRemoveListener {
+final class ChildTagRemoveListenerImpl implements ChildTagRemoveListener {
 
     private static final long serialVersionUID = 1L;
 

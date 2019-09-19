@@ -41,6 +41,7 @@ import com.webfirmframework.wffweb.tag.html.listener.ChildTagRemoveListener;
 import com.webfirmframework.wffweb.tag.html.listener.InnerHtmlAddListener;
 import com.webfirmframework.wffweb.tag.html.listener.InsertBeforeListener;
 import com.webfirmframework.wffweb.tag.html.listener.PushQueue;
+import com.webfirmframework.wffweb.tag.html.listener.ReplaceListener;
 import com.webfirmframework.wffweb.tag.html.listener.WffBMDataDeleteListener;
 import com.webfirmframework.wffweb.tag.html.listener.WffBMDataUpdateListener;
 
@@ -75,6 +76,8 @@ public class AbstractHtml5SharedObject implements Serializable {
     private AttributeValueChangeListener valueChangeListener;
 
     private InsertBeforeListener insertBeforeListener;
+
+    private ReplaceListener replaceListener;
 
     private WffBMDataDeleteListener wffBMDataDeleteListener;
 
@@ -536,6 +539,45 @@ public class AbstractHtml5SharedObject implements Serializable {
     /**
      * NB:- This method is for only for internal use
      *
+     * @param accessObject
+     * @return the replaceListener
+     *
+     * @since 3.0.7
+     */
+    public ReplaceListener getReplaceListener(final Object accessObject) {
+
+        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML
+                .equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException(
+                    "Not allowed to consume this method. This method is for internal use.");
+        }
+
+        return replaceListener;
+    }
+
+    /**
+     * NB:- This method is for only for internal use
+     *
+     * @param replaceListener
+     *                            the replaceListener to set
+     * @param accessObject
+     * @since 3.0.7
+     */
+    public void setReplaceListener(final ReplaceListener replaceListener,
+            final Object accessObject) {
+
+        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE
+                .equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException(
+                    "Not allowed to consume this method. This method is for internal use.");
+        }
+
+        this.replaceListener = replaceListener;
+    }
+
+    /**
+     * NB:- This method is for only for internal use
+     *
      * @param wffBMDataDeleteListener
      *                                    the wffDataDeleteListener to set
      * @param accessObject
@@ -595,7 +637,7 @@ public class AbstractHtml5SharedObject implements Serializable {
      * NB:- This method is for only for internal use
      *
      * @param accessObject
-     * @return the insertBeforeListener
+     * @return the wffBMDataUpdateListener
      *
      * @since 2.1.8
      */

@@ -996,6 +996,12 @@ public abstract class BrowserPage implements Serializable {
                 ACCESS_OBJECT);
     }
 
+    private void addReplaceListener(final AbstractHtml abstractHtml) {
+        abstractHtml.getSharedObject().setReplaceListener(
+                new ReplaceListenerImpl(this, ACCESS_OBJECT, tagByWffId),
+                ACCESS_OBJECT);
+    }
+
     private void addWffBMDataUpdateListener(final AbstractHtml abstractHtml) {
         abstractHtml.getSharedObject().setWffBMDataUpdateListener(
                 new WffBMDataUpdateListenerImpl(this, ACCESS_OBJECT),
@@ -1358,6 +1364,7 @@ public abstract class BrowserPage implements Serializable {
                     addAttributeRemoveListener(rootTag);
                     addInnerHtmlAddListener(rootTag);
                     addInsertBeforeListener(rootTag);
+                    addReplaceListener(rootTag);
                     addWffBMDataUpdateListener(rootTag);
                     addWffBMDataDeleteListener(rootTag);
                     addPushQueue(rootTag);

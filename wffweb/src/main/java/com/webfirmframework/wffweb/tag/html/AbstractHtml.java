@@ -62,6 +62,7 @@ import com.webfirmframework.wffweb.tag.html.listener.ChildTagRemoveListener;
 import com.webfirmframework.wffweb.tag.html.listener.InnerHtmlAddListener;
 import com.webfirmframework.wffweb.tag.html.listener.InsertBeforeListener;
 import com.webfirmframework.wffweb.tag.html.listener.PushQueue;
+import com.webfirmframework.wffweb.tag.html.listener.ReplaceListener;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 import com.webfirmframework.wffweb.tag.htmlwff.CustomTag;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
@@ -5061,6 +5062,47 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
+     * Replaces this tag with the given tags. There must be a parent for this
+     * method tag. Obviously, this tag will be removed from its parent if this
+     * method is called.
+     *
+     * @param tags
+     *                 tags for the replacement of this tag
+     * @return true if replace otherwise false.
+     * @since 3.0.7
+     */
+    public boolean replaceWith(final AbstractHtml... tags) {
+
+        if (parent == null) {
+            throw new NoParentException("There must be a parent for this tag.");
+        }
+
+        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+        // inserted, listener invoked
+        boolean[] results = { false, false };
+        try {
+            lock.lock();
+
+            final AbstractHtml[] removedParentChildren = parent.children
+                    .toArray(new AbstractHtml[parent.children.size()]);
+
+            results = replaceWith(removedParentChildren, tags);
+        } finally {
+            lock.unlock();
+        }
+
+        if (results[1]) {
+            final PushQueue pushQueue = sharedObject
+                    .getPushQueue(ACCESS_OBJECT);
+            if (pushQueue != null) {
+                pushQueue.push();
+            }
+        }
+
+        return results[0];
+    }
+
+    /**
      * should be used inside a synchronized block. NB:- It's removing
      * removedParentChildren by parent.children.clear(); in this method.
      *
@@ -5143,6 +5185,109 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
             if (insertBeforeListener != null) {
                 insertBeforeListener.insertedBefore(events);
+                results[1] = true;
+            }
+
+            results[0] = true;
+
+        }
+        return results;
+    }
+
+    /**
+     * should be used inside a synchronized block. NB:- It's removing
+     * removedParentChildren by parent.children.clear(); in this method.
+     *
+     * @param removedParentChildren
+     *                                  just pass the parent children, no need
+     *                                  to remove it from parent. It's removing
+     *                                  by parent.children.clear();
+     * @param abstractHtmls
+     * @return in zeroth index: true if inserted otherwise false. in first
+     *         index: true if listener invoked otherwise false.
+     * @since 3.0.7
+     * @author WFF
+     */
+    private boolean[] replaceWith(final AbstractHtml[] removedParentChildren,
+            final AbstractHtml[] abstractHtmls) {
+
+        // inserted, listener invoked
+        final boolean[] results = { false, false };
+
+        final int parentChildrenSize = parent.children.size();
+        if (parentChildrenSize > 0) {
+
+            final ReplaceListener replaceListener = sharedObject
+                    .getReplaceListener(ACCESS_OBJECT);
+
+            // this.parent will be nullified in
+            // initNewSharedObjectInAllNestedTagsAndSetSuperParentNull so kept a
+            // local copy
+            final AbstractHtml thisParent = parent;
+
+            thisParent.children.clear();
+
+            final ReplaceListener.Event[] events = new ReplaceListener.Event[abstractHtmls.length];
+
+            int count = 0;
+
+            for (final AbstractHtml parentChild : removedParentChildren) {
+
+                if (equals(parentChild)) {
+
+                    // must be the first statement, the replacing tag and
+                    // replacement tag could be same
+                    initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(
+                            parentChild);
+
+                    for (final AbstractHtml tagToInsert : abstractHtmls) {
+
+                        final boolean alreadyHasParent = tagToInsert.parent != null;
+
+                        if (replaceListener != null) {
+                            AbstractHtml previousParent = null;
+
+                            if (alreadyHasParent) {
+                                if (tagToInsert.parent.sharedObject == sharedObject) {
+                                    previousParent = tagToInsert.parent;
+                                } else {
+                                    removeFromTagByWffIdMap(tagToInsert,
+                                            tagToInsert.parent.sharedObject
+                                                    .getTagByWffId(
+                                                            ACCESS_OBJECT));
+                                }
+
+                            }
+
+                            final ReplaceListener.Event event = new ReplaceListener.Event(
+                                    tagToInsert, previousParent);
+                            events[count] = event;
+                            count++;
+                        }
+
+                        // if alreadyHasParent = true then it means the
+                        // child is
+                        // moving from one tag to another.
+
+                        if (alreadyHasParent) {
+                            tagToInsert.parent.children.remove(tagToInsert);
+                        }
+
+                        initSharedObject(tagToInsert);
+
+                        tagToInsert.parent = thisParent;
+
+                        thisParent.children.add(tagToInsert);
+                    }
+
+                } else {
+                    thisParent.children.add(parentChild);
+                }
+
+            }
+
+            if (replaceListener != null) {
+                replaceListener.replacedWith(thisParent, this, events);
                 results[1] = true;
             }
 

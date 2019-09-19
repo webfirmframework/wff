@@ -372,12 +372,47 @@ public class AbstractHtmlTest {
     }
 
     @Test(expected = NoParentException.class)
+    public void testReplaceWithWithNoParentException() {
+        Div div = new Div(null);
+        div.replaceWith(new Div(null, new Id("innerDivId")));
+
+    }
+    
+    @Test
+    public void testReplaceWith() {
+        {
+            Div parentDiv = new Div(null, new Id("parentDivId"));
+            Div childDiv = new Div(parentDiv, new Id("child1"));
+            childDiv.replaceWith(new Div(null, new Id("inserted1BeforeChild1")),
+                    new Div(null, new Id("inserted2BeforeChild1")));
+            assertEquals(
+                    "<div id=\"parentDivId\"><div id=\"inserted1BeforeChild1\"></div><div id=\"inserted2BeforeChild1\"></div></div>",
+                    parentDiv.toHtmlString());
+        }
+        {
+            Div parentDiv = new Div(null, new Id("parentDivId"));
+            Div childDiv1 = new Div(parentDiv, new Id("child1"));
+            new Div(parentDiv, new Id("child2"));
+            
+            assertEquals(
+                    "<div id=\"parentDivId\"><div id=\"child1\"></div><div id=\"child2\"></div></div>",
+                    parentDiv.toHtmlString());
+            
+            childDiv1.replaceWith(new Div(null, new Id("inserted1BeforeChild1")));
+            assertEquals(
+                    "<div id=\"parentDivId\"><div id=\"inserted1BeforeChild1\"></div><div id=\"child2\"></div></div>",
+                    parentDiv.toHtmlString());
+        }
+
+    }
+
+    @Test(expected = NoParentException.class)
     public void testInsertAfterWithNoParentException() {
         Div div = new Div(null);
         div.insertAfter(new Div(null, new Id("innerDivId")));
 
     }
-
+    
     @Test
     public void testInsertAfter() {
         Div parentDiv = new Div(null, new Id("parentDivId"));

@@ -36,7 +36,7 @@ import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.tag.html.listener.ChildTagAppendListener;
 import com.webfirmframework.wffweb.util.data.NameValue;
 
-class ChildTagAppendListenerImpl implements ChildTagAppendListener {
+final class ChildTagAppendListenerImpl implements ChildTagAppendListener {
 
     private static final long serialVersionUID = 1L;
 

@@ -46,6 +46,8 @@ public enum Task {
 
     INSERTED_BEFORE_TAG,
 
+    REPLACED_WITH_TAGS,
+
     REMOVED_ATTRIBUTES,
 
     ADDED_ATTRIBUTES,
