@@ -753,6 +753,15 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 listenerInvoked = true;
             } else {
                 for (final AbstractHtml innerHtml : innerHtmls) {
+                    if (innerHtml.parent != null
+                            && innerHtml.parent.sharedObject
+                                    .getInnerHtmlAddListener(
+                                            ACCESS_OBJECT) == null) {
+                        removeFromTagByWffIdMap(innerHtml,
+                                innerHtml.parent.sharedObject
+                                        .getTagByWffId(ACCESS_OBJECT));
+                    } // else {TODO also write the code to push
+                      // changes to the other BrowserPage}
                     addChild(innerHtml, false);
                 }
             }
@@ -842,6 +851,14 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
         } else {
             for (final AbstractHtml innerHtml : innerHtmls) {
+                if (innerHtml.parent != null && innerHtml.parent.sharedObject
+                        .getInnerHtmlAddListener(ACCESS_OBJECT) == null) {
+                    removeFromTagByWffIdMap(innerHtml,
+                            innerHtml.parent.sharedObject
+                                    .getTagByWffId(ACCESS_OBJECT));
+                } // else {TODO also write the code to push
+                  // changes to the other BrowserPage}
+
                 addChild(innerHtml, false);
             }
         }
@@ -1356,6 +1373,14 @@ public abstract class AbstractHtml extends AbstractJsObject {
         boolean result = false;
         try {
             lock.lock();
+
+            if (child.parent != null && child.parent.sharedObject
+                    .getChildTagAppendListener(ACCESS_OBJECT) == null) {
+                removeFromTagByWffIdMap(child,
+                        child.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
+            } // else {TODO also write the code to push
+              // changes to the other BrowserPage}
+
             result = addChild(child, true);
         } finally {
             lock.unlock();
@@ -1391,6 +1416,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
             lock.lock();
 
+            if (child.parent != null && child.parent.sharedObject
+                    .getChildTagAppendListener(ACCESS_OBJECT) == null) {
+                removeFromTagByWffIdMap(child,
+                        child.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
+            } // else {TODO also write the code to push
+              // changes to the other BrowserPage}
+
             result = addChild(child, invokeListener);
         } finally {
             lock.unlock();
@@ -1419,15 +1451,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
             if (alreadyHasParent) {
                 child.parent.children.remove(child);
-                if (child.parent.sharedObject != sharedObject) {
-                    if (!invokeListener || child.parent.sharedObject
-                            .getChildTagAppendListener(ACCESS_OBJECT) == null) {
-                        removeFromTagByWffIdMap(child, child.parent.sharedObject
-                                .getTagByWffId(ACCESS_OBJECT));
-                    } // else {TODO also write the code to push
-                      // changes to the other BrowserPage}
-
-                }
             }
 
             initParentAndSharedObject(child);
@@ -1567,6 +1590,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
             for (final AbstractHtml child : children) {
                 final AbstractHtml previousParent = child.parent;
 
+                if (child.parent != null && child.parent.sharedObject
+                        .getChildTagAppendListener(ACCESS_OBJECT) == null) {
+                    removeFromTagByWffIdMap(child, child.parent.sharedObject
+                            .getTagByWffId(ACCESS_OBJECT));
+                } // else {TODO also write the code to push
+                  // changes to the other BrowserPage}
+
                 addChild(child, false);
 
                 final ChildMovedEvent event = new ChildMovedEvent(
@@ -1621,6 +1651,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
             for (final AbstractHtml child : children) {
                 final AbstractHtml previousParent = child.parent;
+
+                if (child.parent != null && child.parent.sharedObject
+                        .getChildTagAppendListener(ACCESS_OBJECT) == null) {
+                    removeFromTagByWffIdMap(child, child.parent.sharedObject
+                            .getTagByWffId(ACCESS_OBJECT));
+                } // else {TODO also write the code to push
+                  // changes to the other BrowserPage}
 
                 addChild(child, false);
 
@@ -1720,6 +1757,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 for (final AbstractHtml child : children) {
                     final AbstractHtml previousParent = child.parent;
 
+                    if (child.parent != null && child.parent.sharedObject
+                            .getChildTagAppendListener(ACCESS_OBJECT) == null) {
+                        removeFromTagByWffIdMap(child, child.parent.sharedObject
+                                .getTagByWffId(ACCESS_OBJECT));
+                    } // else {TODO also write the code to push
+                      // changes to the other BrowserPage}
+
                     addChild(child, false);
 
                     final ChildMovedEvent event = new ChildMovedEvent(
@@ -1777,6 +1821,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
         for (final AbstractHtml child : children) {
             final AbstractHtml previousParent = child.parent;
+
+            if (child.parent != null && child.parent.sharedObject
+                    .getChildTagAppendListener(ACCESS_OBJECT) == null) {
+                removeFromTagByWffIdMap(child,
+                        child.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
+            } // else {TODO also write the code to push
+              // changes to the other BrowserPage}
 
             if (addChild(child, false)) {
                 results[0] = true;
@@ -5184,6 +5235,15 @@ public abstract class AbstractHtml extends AbstractJsObject {
                                     parent, tagToInsert, this, previousParent);
                             events[count] = event;
                             count++;
+                        } else if (alreadyHasParent) {
+                            if (tagToInsert.parent.sharedObject
+                                    .getInnerHtmlAddListener(
+                                            ACCESS_OBJECT) == null) {
+                                removeFromTagByWffIdMap(tagToInsert,
+                                        tagToInsert.parent.sharedObject
+                                                .getTagByWffId(ACCESS_OBJECT));
+                            } // else {TODO also write the code to push
+                              // changes to the other BrowserPage}
                         }
 
                         // if alreadyHasParent = true then it means the
@@ -5300,6 +5360,15 @@ public abstract class AbstractHtml extends AbstractJsObject {
                                     tagToInsert, previousParent);
                             events[count] = event;
                             count++;
+                        } else if (alreadyHasParent) {
+                            if (tagToInsert.parent.sharedObject
+                                    .getReplaceListener(
+                                            ACCESS_OBJECT) == null) {
+                                removeFromTagByWffIdMap(tagToInsert,
+                                        tagToInsert.parent.sharedObject
+                                                .getTagByWffId(ACCESS_OBJECT));
+                            } // else {TODO also write the code to push
+                              // changes to the other BrowserPage}
                         }
 
                         // if alreadyHasParent = true then it means the
