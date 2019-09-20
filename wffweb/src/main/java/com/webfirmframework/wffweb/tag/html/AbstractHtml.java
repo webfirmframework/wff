@@ -62,6 +62,7 @@ import com.webfirmframework.wffweb.tag.html.listener.ChildTagAppendListener.Chil
 import com.webfirmframework.wffweb.tag.html.listener.ChildTagRemoveListener;
 import com.webfirmframework.wffweb.tag.html.listener.InnerHtmlAddListener;
 import com.webfirmframework.wffweb.tag.html.listener.InsertBeforeListener;
+import com.webfirmframework.wffweb.tag.html.listener.InsertTagsBeforeListener;
 import com.webfirmframework.wffweb.tag.html.listener.PushQueue;
 import com.webfirmframework.wffweb.tag.html.listener.ReplaceListener;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
@@ -5184,8 +5185,12 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *         index: true if listener invoked otherwise false.
      * @since 2.1.6
      * @author WFF
+     * @deprecated will be removed in future
      */
-    private boolean[] insertBefore(final AbstractHtml[] removedParentChildren,
+    @SuppressWarnings("unused")
+    @Deprecated
+    private boolean[] insertBeforeOld(
+            final AbstractHtml[] removedParentChildren,
             final AbstractHtml[] abstractHtmls) {
 
         // inserted, listener invoked
@@ -5269,6 +5274,126 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
             if (insertBeforeListener != null) {
                 insertBeforeListener.insertedBefore(events);
+                results[1] = true;
+            }
+
+            results[0] = true;
+
+        }
+        return results;
+    }
+
+    /**
+     * should be used inside a synchronized block. NB:- It's removing
+     * removedParentChildren by parent.children.clear(); in this method.
+     *
+     * @param removedParentChildren
+     *                                  just pass the parent children, no need
+     *                                  to remove it from parent. It's removing
+     *                                  by parent.children.clear();
+     * @param abstractHtmls
+     * @return in zeroth index: true if inserted otherwise false. in first
+     *         index: true if listener invoked otherwise false.
+     * @since 3.0.7
+     * @author WFF
+     */
+    private boolean[] insertBefore(final AbstractHtml[] removedParentChildren,
+            final AbstractHtml[] abstractHtmls) {
+
+        // inserted, listener invoked
+        final boolean[] results = { false, false };
+
+        final int parentChildrenSize = parent.children.size();
+        if (parentChildrenSize > 0) {
+
+            final InsertTagsBeforeListener replaceListener = sharedObject
+                    .getInsertTagsBeforeListener(ACCESS_OBJECT);
+
+            // this.parent will be nullified in
+            // initNewSharedObjectInAllNestedTagsAndSetSuperParentNull so kept a
+            // local copy
+            final AbstractHtml thisParent = parent;
+            final AbstractHtml5SharedObject thisSharedObject = sharedObject;
+
+            thisParent.children.clear();
+
+            final InsertTagsBeforeListener.Event[] events = new InsertTagsBeforeListener.Event[abstractHtmls.length];
+
+            int count = 0;
+
+            for (final AbstractHtml parentChild : removedParentChildren) {
+
+                if (equals(parentChild)) {
+
+                    for (final AbstractHtml tagToInsert : abstractHtmls) {
+
+                        final boolean alreadyHasParent = tagToInsert.parent != null;
+
+                        if (replaceListener != null) {
+                            AbstractHtml previousParent = null;
+
+                            if (alreadyHasParent) {
+                                if (tagToInsert.parent.sharedObject == thisSharedObject) {
+                                    previousParent = tagToInsert.parent;
+                                } else {
+
+                                    if (tagToInsert.parent.sharedObject
+                                            .getReplaceListener(
+                                                    ACCESS_OBJECT) == null) {
+                                        removeFromTagByWffIdMap(tagToInsert,
+                                                tagToInsert.parent.sharedObject
+                                                        .getTagByWffId(
+                                                                ACCESS_OBJECT));
+                                    } // else {TODO also write the code to push
+                                      // changes to the other BrowserPage}
+
+                                }
+
+                            }
+
+                            // if parentChild == tagToInsert then
+                            // tagToInsert.parent i.e. previousParent
+                            // will be null (because we are calling
+                            // initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(parentChild))
+                            // that is useful for not removing it
+                            // from the browser UI.
+                            final InsertTagsBeforeListener.Event event = new InsertTagsBeforeListener.Event(
+                                    tagToInsert, previousParent);
+                            events[count] = event;
+                            count++;
+                        } else if (alreadyHasParent) {
+                            if (tagToInsert.parent.sharedObject
+                                    .getReplaceListener(
+                                            ACCESS_OBJECT) == null) {
+                                removeFromTagByWffIdMap(tagToInsert,
+                                        tagToInsert.parent.sharedObject
+                                                .getTagByWffId(ACCESS_OBJECT));
+                            } // else {TODO also write the code to push
+                              // changes to the other BrowserPage}
+                        }
+
+                        // if alreadyHasParent = true then it means the
+                        // child is
+                        // moving from one tag to another.
+
+                        if (alreadyHasParent) {
+                            tagToInsert.parent.children.remove(tagToInsert);
+                        }
+
+                        initSharedObject(tagToInsert);
+
+                        tagToInsert.parent = thisParent;
+
+                        thisParent.children.add(tagToInsert);
+                    }
+
+                }
+
+                thisParent.children.add(parentChild);
+            }
+
+            if (replaceListener != null) {
+                replaceListener.insertedBefore(thisParent, this, events);
                 results[1] = true;
             }
 

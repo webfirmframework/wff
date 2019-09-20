@@ -24,7 +24,7 @@ import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
  * @since 3.0.6
  *
  */
-class ChildTagRemoveListenerData {
+final class ChildTagRemoveListenerData {
 
     private final AbstractHtml5SharedObject sharedObject;
 

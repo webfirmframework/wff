@@ -40,6 +40,7 @@ import com.webfirmframework.wffweb.tag.html.listener.ChildTagAppendListener;
 import com.webfirmframework.wffweb.tag.html.listener.ChildTagRemoveListener;
 import com.webfirmframework.wffweb.tag.html.listener.InnerHtmlAddListener;
 import com.webfirmframework.wffweb.tag.html.listener.InsertBeforeListener;
+import com.webfirmframework.wffweb.tag.html.listener.InsertTagsBeforeListener;
 import com.webfirmframework.wffweb.tag.html.listener.PushQueue;
 import com.webfirmframework.wffweb.tag.html.listener.ReplaceListener;
 import com.webfirmframework.wffweb.tag.html.listener.WffBMDataDeleteListener;
@@ -78,6 +79,8 @@ public class AbstractHtml5SharedObject implements Serializable {
     private InsertBeforeListener insertBeforeListener;
 
     private ReplaceListener replaceListener;
+
+    private InsertTagsBeforeListener insertTagsBeforeListener;
 
     private WffBMDataDeleteListener wffBMDataDeleteListener;
 
@@ -502,7 +505,10 @@ public class AbstractHtml5SharedObject implements Serializable {
      * @return the insertBeforeListener
      *
      * @since 2.1.1
+     * @deprecated will be removed in future as there is a better implementation
+     *             with InsertTagsBeforeListener
      */
+    @Deprecated
     public InsertBeforeListener getInsertBeforeListener(
             final Object accessObject) {
 
@@ -522,7 +528,10 @@ public class AbstractHtml5SharedObject implements Serializable {
      *                                 the insertBeforeListener to set
      * @param accessObject
      * @since 2.1.1
+     * @deprecated will be removed in future as there is a better implementation
+     *             with InsertTagsBeforeListener
      */
+    @Deprecated
     public void setInsertBeforeListener(
             final InsertBeforeListener insertBeforeListener,
             final Object accessObject) {
@@ -573,6 +582,47 @@ public class AbstractHtml5SharedObject implements Serializable {
         }
 
         this.replaceListener = replaceListener;
+    }
+
+    /**
+     * NB:- This method is for only for internal use
+     *
+     * @param accessObject
+     * @return the insertTagsBeforeListener
+     *
+     * @since 3.0.7
+     */
+    public InsertTagsBeforeListener getInsertTagsBeforeListener(
+            final Object accessObject) {
+
+        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML
+                .equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException(
+                    "Not allowed to consume this method. This method is for internal use.");
+        }
+
+        return insertTagsBeforeListener;
+    }
+
+    /**
+     * NB:- This method is for only for internal use
+     *
+     * @param insertTagsBeforeListener
+     *                                     the insertTagsBeforeListener to set
+     * @param accessObject
+     * @since 3.0.7
+     */
+    public void setInsertTagsBeforeListener(
+            final InsertTagsBeforeListener insertTagsBeforeListener,
+            final Object accessObject) {
+
+        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE
+                .equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException(
+                    "Not allowed to consume this method. This method is for internal use.");
+        }
+
+        this.insertTagsBeforeListener = insertTagsBeforeListener;
     }
 
     /**

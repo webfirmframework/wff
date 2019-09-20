@@ -25,7 +25,7 @@ import com.webfirmframework.wffweb.tag.html.SharedTagContent.ContentFormatter;
  * @since 3.0.6
  *
  */
-class ModifiedParentData<T> {
+final class ModifiedParentData<T> {
 
     private final AbstractHtml parent;
 
