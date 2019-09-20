@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.tag.htmlwff;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 
 import com.webfirmframework.wffweb.MethodNotImplementedException;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
@@ -199,12 +200,14 @@ public class NoTag extends AbstractHtml {
         return noTagContentTypeHtml;
     }
 
+    @Deprecated
     @Override
     public boolean removeSharedTagContent(final boolean removeContent) {
         throw new MethodNotImplementedException(
                 "sharedTagContent is not allowed in NoTag or Blank tag so calling removeSharedTagContent is invalid");
     }
 
+    @Deprecated
     @Override
     public <T> void subscribeTo(final boolean updateClient,
             final SharedTagContent<T> sharedTagContent,
@@ -213,11 +216,19 @@ public class NoTag extends AbstractHtml {
                 "sharedTagContent is not allowed to apply in NoTag or Blank tag");
     }
 
+    @Deprecated
     @Override
     public <T> void addInnerHtml(final boolean updateClient,
             final SharedTagContent<T> sharedTagContent,
             final ContentFormatter<T> formatter) {
         throw new MethodNotImplementedException(
                 "sharedTagContent is not allowed to apply in NoTag or Blank tag");
+    }
+
+    @Deprecated
+    @Override
+    public <T extends AbstractHtml> T give(final Consumer<T> consumer) {
+        throw new MethodNotImplementedException(
+                "give is not allowed to use in NoTag or Blank tag");
     }
 }

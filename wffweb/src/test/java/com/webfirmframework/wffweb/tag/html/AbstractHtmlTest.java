@@ -27,7 +27,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -427,6 +426,21 @@ public class AbstractHtmlTest {
         }
 
     }
+    
+    @Test
+    public void testGive() {
+        Div rootDiv = new Div(null, new Id("rootDivId")).<Div> give(parent -> {
+            new Div(parent, new Id("parentDivId")).give(nestedTag1 -> {
+                new Div(nestedTag1, new Id("child1"));
+                new Div(nestedTag1, new Id("child2"));
+                new Div(nestedTag1, new Id("child3"));
+            });
+        });
+        assertEquals(
+                "<div id=\"rootDivId\"><div id=\"parentDivId\"><div id=\"child1\"></div><div id=\"child2\"></div><div id=\"child3\"></div></div></div>",
+                rootDiv.toHtmlString());
+
+    }
 
     @Test(expected = NoParentException.class)
     public void testInsertAfterWithNoParentException() {
@@ -444,7 +458,6 @@ public class AbstractHtmlTest {
         assertEquals(
                 "<div id=\"parentDivId\"><div id=\"child1\"></div><div id=\"inserted1BeforeChild1\"></div><div id=\"inserted2BeforeChild1\"></div></div>",
                 parentDiv.toHtmlString());
-        System.out.println(parentDiv.toHtmlString());
 
     }
 
@@ -459,7 +472,6 @@ public class AbstractHtmlTest {
         assertEquals(
                 "<div id=\"parentDivId\"><div id=\"child1\"></div><div id=\"inserted1BeforeChild1\"></div><div id=\"inserted2BeforeChild1\"></div><div id=\"child2\"></div></div>",
                 parentDiv.toHtmlString());
-        System.out.println(parentDiv.toHtmlString());
 
     }
 
@@ -1350,12 +1362,12 @@ public class AbstractHtmlTest {
 
             @Override
             public void run() {
-                System.out.println("threadOne started");
+//                System.out.println("threadOne started");
                 for (int i = 0; i < 150; i++) {
                     try {
                         insertedFirstTag
                                 .insertBefore(new CustomTag("tag" + i, null));
-                        System.out.println("inserted a tag before");
+//                        System.out.println("inserted a tag before");
                     } catch (Exception e) {
                         e.printStackTrace();
                         Assert.fail("threadOne this method is not thread safe");
@@ -1377,13 +1389,13 @@ public class AbstractHtmlTest {
 
             @Override
             public void run() {
-                System.out.println("threadTwo started");
+//                System.out.println("threadTwo started");
                 for (int i = 0; i < 150; i++) {
                     try {
                         final AbstractHtml firstChild = div.getFirstChild();
                         Assert.assertNotNull(firstChild);
-                        System.out.println(
-                                "firstChild: " + firstChild.toHtmlString());
+//                        System.out.println(
+//                                "firstChild: " + firstChild.toHtmlString());
                     } catch (Exception e) {
                         e.printStackTrace();
                         Assert.fail("threadTwo this method is not thread safe");
@@ -1425,14 +1437,14 @@ public class AbstractHtmlTest {
             @Override
             public void run() {
                 AbstractHtml currentFirstTag = insertedFirstTag;
-                System.out.println("threadOne started");
+//                System.out.println("threadOne started");
                 for (int i = 0; i < 150; i++) {
                     try {
                         final CustomTag customTag = new CustomTag("tag" + i,
                                 null);
                         currentFirstTag.insertBefore(customTag);
                         currentFirstTag = customTag;
-                        System.out.println("inserted a tag before");
+//                        System.out.println("inserted a tag before");
                     } catch (Exception e) {
                         e.printStackTrace();
                         Assert.fail("threadOne this method is not thread safe");
@@ -1454,15 +1466,15 @@ public class AbstractHtmlTest {
 
             @Override
             public void run() {
-                System.out.println("threadTwo started");
+//                System.out.println("threadTwo started");
                 for (int i = 0; i < 150; i++) {
                     try {
                         final AbstractHtml firstChild = div.getFirstChild();
                         // got null for firstChild when the getFirstChild
                         // internal implementation is not synchronized
                         Assert.assertNotNull(firstChild);
-                        System.out.println(
-                                "firstChild: " + firstChild.toHtmlString());
+//                        System.out.println(
+//                                "firstChild: " + firstChild.toHtmlString());
                     } catch (Exception e) {
                         e.printStackTrace();
                         Assert.fail("threadTwo this method is not thread safe");
@@ -1580,8 +1592,6 @@ public class AbstractHtmlTest {
         
         div.prependChildren(span, p, br);
         
-        System.out.println(div.toHtmlString());
-        
         assertEquals("<div id=\"one\"><span></span><p></p><br/><div id=\"child1\"></div></div>", div.toHtmlString());
         
         
@@ -1600,11 +1610,8 @@ public class AbstractHtmlTest {
         
         div.prependChildren(span, p, br);
         
-        System.out.println(div.toHtmlString());
         
         assertEquals("<div id=\"one\"><span></span><p></p><br/></div>", div.toHtmlString());
-        
-        
     }
     
     @Test

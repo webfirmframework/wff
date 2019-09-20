@@ -36,6 +36,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import com.webfirmframework.wffweb.InvalidTagException;
@@ -5778,5 +5779,49 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     byte[] getTagNameIndexBytes() {
         return tagNameIndexBytes;
+    }
+
+    /**
+     * This method can avoid creating anonymous class coding. <br>
+     * Eg: <br>
+     *
+     * <pre>
+     * <code>
+     * Div rootDiv = new Div(null, new Id("rootDivId")).&lt;Div&gt; give(parent -&gt; {
+     *     new Div(parent, new Id("parentDivId")).give(nestedTag1 -&gt; {
+     *         new Div(nestedTag1, new Id("child1"));
+     *         new Div(nestedTag1, new Id("child2"));
+     *         new Div(nestedTag1, new Id("child3"));
+     *     });
+     * });
+     *
+     * System.out.println(rootDiv.toHtmlString());
+     * </code>
+     * </pre>
+     *
+     * produces
+     *
+     * <pre>
+     * <code>
+     * &lt;div id="rootDivId"&gt;
+     *    &lt;div id="parentDivId"&gt;
+     *         &lt;div id="child1"&gt;&lt;/div&gt;
+     *         &lt;div id="child2"&gt;&lt;/div&gt;
+     *         &lt;div id="child3"&gt;&lt;/div&gt;
+     *     &lt;/div&gt;
+     * &lt;/div&gt;
+     * </code>
+     *
+     * <pre>
+     *
+     * @param consumer
+     *                     the consumer object
+     * @return the same object on which give method is called.
+     * @since 3.0.7
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends AbstractHtml> T give(final Consumer<T> consumer) {
+        consumer.accept((T) this);
+        return (T) this;
     }
 }
