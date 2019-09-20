@@ -5784,7 +5784,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * This method can avoid creating anonymous class coding. <br>
      * Eg: <br>
-     * <code>
+     *
      * <pre>
      * Div rootDiv = new Div(null, new Id("rootDivId")).&lt;Div&gt; give(parent -&gt; {
      *     new Div(parent, new Id("parentDivId")).give(nestedTag1 -&gt; {
@@ -5796,8 +5796,11 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *
      * System.out.println(rootDiv.toHtmlString());
      * </pre>
-     *</code> produces <code>
+     *
+     * produces
+     *
      * <pre>
+     * <code>
      * &lt;div id="rootDivId"&gt;
      *    &lt;div id="parentDivId"&gt;
      *         &lt;div id="child1"&gt;&lt;/div&gt;
@@ -5805,8 +5808,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *         &lt;div id="child3"&gt;&lt;/div&gt;
      *     &lt;/div&gt;
      * &lt;/div&gt;
-     * <pre>
-     *</code>
+     * </code>
+     * </pre>
+     *
+     *
      *
      * @param consumer
      *                     the consumer object
