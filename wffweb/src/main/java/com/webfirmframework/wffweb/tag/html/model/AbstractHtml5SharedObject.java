@@ -39,6 +39,7 @@ import com.webfirmframework.wffweb.tag.html.listener.AttributeRemoveListener;
 import com.webfirmframework.wffweb.tag.html.listener.ChildTagAppendListener;
 import com.webfirmframework.wffweb.tag.html.listener.ChildTagRemoveListener;
 import com.webfirmframework.wffweb.tag.html.listener.InnerHtmlAddListener;
+import com.webfirmframework.wffweb.tag.html.listener.InsertAfterListener;
 import com.webfirmframework.wffweb.tag.html.listener.InsertBeforeListener;
 import com.webfirmframework.wffweb.tag.html.listener.InsertTagsBeforeListener;
 import com.webfirmframework.wffweb.tag.html.listener.PushQueue;
@@ -81,6 +82,8 @@ public class AbstractHtml5SharedObject implements Serializable {
     private ReplaceListener replaceListener;
 
     private InsertTagsBeforeListener insertTagsBeforeListener;
+
+    private InsertAfterListener insertAfterListener;
 
     private WffBMDataDeleteListener wffBMDataDeleteListener;
 
@@ -623,6 +626,47 @@ public class AbstractHtml5SharedObject implements Serializable {
         }
 
         this.insertTagsBeforeListener = insertTagsBeforeListener;
+    }
+
+    /**
+     * NB:- This method is for only for internal use
+     *
+     * @param accessObject
+     * @return the insertAfterListener
+     *
+     * @since 3.0.7
+     */
+    public InsertAfterListener getInsertAfterListener(
+            final Object accessObject) {
+
+        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML
+                .equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException(
+                    "Not allowed to consume this method. This method is for internal use.");
+        }
+
+        return insertAfterListener;
+    }
+
+    /**
+     * NB:- This method is for only for internal use
+     *
+     * @param insertAfterListener
+     *                                the insertAfterListener to set
+     * @param accessObject
+     * @since 3.0.7
+     */
+    public void setInsertAfterListener(
+            final InsertAfterListener insertAfterListener,
+            final Object accessObject) {
+
+        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE
+                .equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException(
+                    "Not allowed to consume this method. This method is for internal use.");
+        }
+
+        this.insertAfterListener = insertAfterListener;
     }
 
     /**

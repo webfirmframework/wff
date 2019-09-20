@@ -61,6 +61,7 @@ import com.webfirmframework.wffweb.tag.html.listener.ChildTagAppendListener;
 import com.webfirmframework.wffweb.tag.html.listener.ChildTagAppendListener.ChildMovedEvent;
 import com.webfirmframework.wffweb.tag.html.listener.ChildTagRemoveListener;
 import com.webfirmframework.wffweb.tag.html.listener.InnerHtmlAddListener;
+import com.webfirmframework.wffweb.tag.html.listener.InsertAfterListener;
 import com.webfirmframework.wffweb.tag.html.listener.InsertBeforeListener;
 import com.webfirmframework.wffweb.tag.html.listener.InsertTagsBeforeListener;
 import com.webfirmframework.wffweb.tag.html.listener.PushQueue;
@@ -1802,6 +1803,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * adds the given children to the last position of the current children of
      * this object.
      *
+     * NB: Previously this method was consumed by insertAfter method but since
+     * 3.0.7 it has it own implementation like insertBefore method. This method
+     * can also be removed if not required.
+     *
      * @param children
      *                     children to append in this object's existing
      *                     children.
@@ -1810,6 +1815,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *         index: true if listener invoked otherwise false.
      * @since 3.0.1
      */
+    @SuppressWarnings("unused")
     private boolean[] appendChildrenLockless(final AbstractHtml... children) {
 
         // any changes to this method should also be applied in
@@ -5306,7 +5312,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
         final int parentChildrenSize = parent.children.size();
         if (parentChildrenSize > 0) {
 
-            final InsertTagsBeforeListener replaceListener = sharedObject
+            final InsertTagsBeforeListener insertBeforeListener = sharedObject
                     .getInsertTagsBeforeListener(ACCESS_OBJECT);
 
             // this.parent will be nullified in
@@ -5329,7 +5335,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                         final boolean alreadyHasParent = tagToInsert.parent != null;
 
-                        if (replaceListener != null) {
+                        if (insertBeforeListener != null) {
                             AbstractHtml previousParent = null;
 
                             if (alreadyHasParent) {
@@ -5338,7 +5344,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                                 } else {
 
                                     if (tagToInsert.parent.sharedObject
-                                            .getReplaceListener(
+                                            .getInsertTagsBeforeListener(
                                                     ACCESS_OBJECT) == null) {
                                         removeFromTagByWffIdMap(tagToInsert,
                                                 tagToInsert.parent.sharedObject
@@ -5363,7 +5369,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                             count++;
                         } else if (alreadyHasParent) {
                             if (tagToInsert.parent.sharedObject
-                                    .getReplaceListener(
+                                    .getInsertTagsBeforeListener(
                                             ACCESS_OBJECT) == null) {
                                 removeFromTagByWffIdMap(tagToInsert,
                                         tagToInsert.parent.sharedObject
@@ -5392,8 +5398,129 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 thisParent.children.add(parentChild);
             }
 
-            if (replaceListener != null) {
-                replaceListener.insertedBefore(thisParent, this, events);
+            if (insertBeforeListener != null) {
+                insertBeforeListener.insertedBefore(thisParent, this, events);
+                results[1] = true;
+            }
+
+            results[0] = true;
+
+        }
+        return results;
+    }
+
+    /**
+     * should be used inside a synchronized block. NB:- It's removing
+     * removedParentChildren by parent.children.clear(); in this method.
+     *
+     * @param removedParentChildren
+     *                                  just pass the parent children, no need
+     *                                  to remove it from parent. It's removing
+     *                                  by parent.children.clear();
+     * @param abstractHtmls
+     * @return in zeroth index: true if inserted otherwise false. in first
+     *         index: true if listener invoked otherwise false.
+     * @since 3.0.7
+     * @author WFF
+     */
+    private boolean[] insertAfter(final AbstractHtml[] removedParentChildren,
+            final AbstractHtml[] abstractHtmls) {
+
+        // inserted, listener invoked
+        final boolean[] results = { false, false };
+
+        final int parentChildrenSize = parent.children.size();
+        if (parentChildrenSize > 0) {
+
+            final InsertAfterListener insertAfterListener = sharedObject
+                    .getInsertAfterListener(ACCESS_OBJECT);
+
+            // this.parent will be nullified in
+            // initNewSharedObjectInAllNestedTagsAndSetSuperParentNull so kept a
+            // local copy
+            final AbstractHtml thisParent = parent;
+            final AbstractHtml5SharedObject thisSharedObject = sharedObject;
+
+            thisParent.children.clear();
+
+            final InsertAfterListener.Event[] events = new InsertAfterListener.Event[abstractHtmls.length];
+
+            int count = 0;
+
+            for (final AbstractHtml parentChild : removedParentChildren) {
+
+                thisParent.children.add(parentChild);
+
+                if (equals(parentChild)) {
+
+                    for (final AbstractHtml tagToInsert : abstractHtmls) {
+
+                        final boolean alreadyHasParent = tagToInsert.parent != null;
+
+                        if (insertAfterListener != null) {
+                            AbstractHtml previousParent = null;
+
+                            if (alreadyHasParent) {
+                                if (tagToInsert.parent.sharedObject == thisSharedObject) {
+                                    previousParent = tagToInsert.parent;
+                                } else {
+
+                                    if (tagToInsert.parent.sharedObject
+                                            .getInsertAfterListener(
+                                                    ACCESS_OBJECT) == null) {
+                                        removeFromTagByWffIdMap(tagToInsert,
+                                                tagToInsert.parent.sharedObject
+                                                        .getTagByWffId(
+                                                                ACCESS_OBJECT));
+                                    } // else {TODO also write the code to push
+                                      // changes to the other BrowserPage}
+
+                                }
+
+                            }
+
+                            // if parentChild == tagToInsert then
+                            // tagToInsert.parent i.e. previousParent
+                            // will be null (because we are calling
+                            // initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(parentChild))
+                            // that is useful for not removing it
+                            // from the browser UI.
+                            final InsertAfterListener.Event event = new InsertAfterListener.Event(
+                                    tagToInsert, previousParent);
+                            events[count] = event;
+                            count++;
+                        } else if (alreadyHasParent) {
+                            if (tagToInsert.parent.sharedObject
+                                    .getInsertAfterListener(
+                                            ACCESS_OBJECT) == null) {
+                                removeFromTagByWffIdMap(tagToInsert,
+                                        tagToInsert.parent.sharedObject
+                                                .getTagByWffId(ACCESS_OBJECT));
+                            } // else {TODO also write the code to push
+                              // changes to the other BrowserPage}
+                        }
+
+                        // if alreadyHasParent = true then it means the
+                        // child is
+                        // moving from one tag to another.
+
+                        if (alreadyHasParent) {
+                            tagToInsert.parent.children.remove(tagToInsert);
+                        }
+
+                        initSharedObject(tagToInsert);
+
+                        tagToInsert.parent = thisParent;
+
+                        thisParent.children.add(tagToInsert);
+                    }
+
+                }
+
+            }
+
+            if (insertAfterListener != null) {
+                insertAfterListener.insertedAfter(thisParent, this, events);
                 results[1] = true;
             }
 
@@ -5532,6 +5659,50 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * Inserts the given tags after this tag. There must be a parent for this
      * method tag. <br>
+     * Note : As promised this method is improved and works as performing and
+     * reliable as insertBefore method.
+     *
+     * @param abstractHtmls
+     *                          to insert after this tag
+     * @return true if inserted otherwise false.
+     * @since 2.1.6
+     * @since 3.0.7 better implementation
+     * @author WFF
+     */
+    public boolean insertAfter(final AbstractHtml... abstractHtmls) {
+
+        if (parent == null) {
+            throw new NoParentException("There must be a parent for this tag.");
+        }
+
+        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+        // inserted, listener invoked
+        boolean[] results = { false, false };
+        try {
+            lock.lock();
+
+            final AbstractHtml[] removedParentChildren = parent.children
+                    .toArray(new AbstractHtml[parent.children.size()]);
+
+            results = insertAfter(removedParentChildren, abstractHtmls);
+        } finally {
+            lock.unlock();
+        }
+
+        if (results[1]) {
+            final PushQueue pushQueue = sharedObject
+                    .getPushQueue(ACCESS_OBJECT);
+            if (pushQueue != null) {
+                pushQueue.push();
+            }
+        }
+
+        return results[0];
+    }
+
+    /**
+     * Inserts the given tags after this tag. There must be a parent for this
+     * method tag. <br>
      * Note : This {@code insertAfter} method might be bit slower (in terms of
      * nano optimization) than {@code insertBefore} method as it internally uses
      * {@code insertBefore} method. This will be improved in the future version.
@@ -5542,7 +5713,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @since 2.1.6
      * @author WFF
      */
-    public boolean insertAfter(final AbstractHtml... abstractHtmls) {
+    @SuppressWarnings("unused")
+    private boolean insertAfterOld(final AbstractHtml... abstractHtmls) {
+        // TODO remove this method later
 
         if (parent == null) {
             throw new NoParentException("There must be a parent for this tag.");

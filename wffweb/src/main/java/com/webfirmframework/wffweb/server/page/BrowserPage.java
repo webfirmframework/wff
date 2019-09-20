@@ -990,17 +990,23 @@ public abstract class BrowserPage implements Serializable {
                 ACCESS_OBJECT);
     }
 
-    @Deprecated
-    private void addInsertBeforeListener(final AbstractHtml abstractHtml) {
-        abstractHtml.getSharedObject().setInsertBeforeListener(
-                new InsertBeforeListenerImpl(this, ACCESS_OBJECT, tagByWffId),
-                ACCESS_OBJECT);
-    }
+    // @Deprecated
+    // private void addInsertBeforeListener(final AbstractHtml abstractHtml) {
+    // abstractHtml.getSharedObject().setInsertBeforeListener(
+    // new InsertBeforeListenerImpl(this, ACCESS_OBJECT, tagByWffId),
+    // ACCESS_OBJECT);
+    // }
 
     private void addInsertTagsBeforeListener(final AbstractHtml abstractHtml) {
         abstractHtml.getSharedObject().setInsertTagsBeforeListener(
                 new InsertTagsBeforeListenerImpl(this, ACCESS_OBJECT,
                         tagByWffId),
+                ACCESS_OBJECT);
+    }
+
+    private void addInsertAfterListener(final AbstractHtml abstractHtml) {
+        abstractHtml.getSharedObject().setInsertAfterListener(
+                new InsertAfterListenerImpl(this, ACCESS_OBJECT, tagByWffId),
                 ACCESS_OBJECT);
     }
 
@@ -1375,6 +1381,7 @@ public abstract class BrowserPage implements Serializable {
                     // TODO remove this listener later
                     // addInsertBeforeListener(rootTag);
 
+                    addInsertAfterListener(rootTag);
                     addInsertTagsBeforeListener(rootTag);
                     addReplaceListener(rootTag);
                     addWffBMDataUpdateListener(rootTag);
