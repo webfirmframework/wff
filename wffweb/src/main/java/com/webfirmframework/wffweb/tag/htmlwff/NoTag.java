@@ -200,6 +200,9 @@ public class NoTag extends AbstractHtml {
         return noTagContentTypeHtml;
     }
 
+    /**
+     * @deprecated this method is not allowed in NoTag or Blank class.
+     */
     @Deprecated
     @Override
     public boolean removeSharedTagContent(final boolean removeContent) {
@@ -207,6 +210,9 @@ public class NoTag extends AbstractHtml {
                 "sharedTagContent is not allowed in NoTag or Blank tag so calling removeSharedTagContent is invalid");
     }
 
+    /**
+     * @deprecated this method is not allowed in NoTag or Blank class.
+     */
     @Deprecated
     @Override
     public <T> void subscribeTo(final boolean updateClient,
@@ -216,6 +222,9 @@ public class NoTag extends AbstractHtml {
                 "sharedTagContent is not allowed to apply in NoTag or Blank tag");
     }
 
+    /**
+     * @deprecated this method is not allowed in NoTag or Blank class.
+     */
     @Deprecated
     @Override
     public <T> void addInnerHtml(final boolean updateClient,
@@ -225,6 +234,9 @@ public class NoTag extends AbstractHtml {
                 "sharedTagContent is not allowed to apply in NoTag or Blank tag");
     }
 
+    /**
+     * @deprecated this method is not allowed in NoTag or Blank class.
+     */
     @Deprecated
     @Override
     public <T extends AbstractHtml> T give(final Consumer<T> consumer) {
