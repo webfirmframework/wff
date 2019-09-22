@@ -305,56 +305,7 @@ var wffClientCRUDUtil = new function() {
 				parentTag.appendChild(htmlNodes);
 			}
 
-		} 
-		//TODO old impl remove later
-//		else if (taskValue == wffGlobal.taskValues.INSERTED_BEFORE_TAG) {
-//
-//			console.log('wffGlobal.taskValues.INSERTED_BEFORE_TAG');
-//
-//			for (var i = 1; i < nameValues.length; i++) {
-//				var wffId = wffTagUtil
-//						.getWffIdFromWffIdBytes(nameValues[i].name);
-//				var values = nameValues[i].values;
-//				var tagName = wffTagUtil.getTagNameFromCompressedBytes(values[0]);
-//				// var innerHtml = getStringFromBytes(values[1]);
-//
-//				// console.log('innerHtml', innerHtml);
-//
-//				var parentTag = wffTagUtil.getTagByTagNameAndWffId(tagName,
-//						wffId);
-//				
-//				var beforeTagName = wffTagUtil.getTagNameFromCompressedBytes(values[2]);
-//				
-//				var beforeTag;
-//				
-//				//# means NoTag
-//				if (beforeTagName === '#') {
-//					var chldNdxOptmzdIntByts = values[3];
-//					beforeTag = wffTagUtil.getChildByNthIndexBytes(parentTag, chldNdxOptmzdIntByts);				
-//				} else {
-//					var beforeTagWffId = wffTagUtil.getWffIdFromWffIdBytes(values[3]);					
-//					beforeTag = wffTagUtil.getTagByTagNameAndWffId(beforeTagName,
-//							beforeTagWffId);
-//				}
-//				
-//				var htmlNodes = wffTagUtil.createTagFromWffBMBytes(values[1]);
-//				
-//				//if length is 3 then there is an existing tag with this id
-//				if (values.length == 5) {
-//					console.log('values.length == 5');
-//					var existingTag = wffTagUtil.getTagByTagNameAndWffId(
-//							htmlNodes.nodeName, htmlNodes
-//									.getAttribute("data-wff-id"));
-//					var parentOfExistingTag = existingTag.parentNode;
-//					parentOfExistingTag.removeChild(existingTag);
-//					
-//				}
-//				
-//				parentTag.insertBefore(htmlNodes, beforeTag);
-//			}
-//
-//		} 
-		else if (taskValue == wffGlobal.taskValues.INSERTED_BEFORE_TAG) {
+		} else if (taskValue == wffGlobal.taskValues.INSERTED_BEFORE_TAG) {
 			
 			console.log('wffGlobal.taskValues.INSERTED_BEFORE_TAG');
 			
