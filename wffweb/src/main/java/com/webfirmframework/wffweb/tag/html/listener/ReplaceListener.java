@@ -77,7 +77,7 @@ public interface ReplaceListener extends Serializable {
      * @since 3.0.7
      * @author WFF
      */
-    public void replacedWith(AbstractHtml parentTag, AbstractHtml beforeTag,
-            Event... events);
+    public void replacedWith(final AbstractHtml parentTag,
+            final AbstractHtml beforeTag, final Event... events);
 
 }

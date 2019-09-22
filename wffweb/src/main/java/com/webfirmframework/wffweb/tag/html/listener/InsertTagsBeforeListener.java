@@ -77,7 +77,7 @@ public interface InsertTagsBeforeListener extends Serializable {
      * @since 3.0.7
      * @author WFF
      */
-    public void insertedBefore(AbstractHtml parentTag, AbstractHtml beforeTag,
-            Event... events);
+    public void insertedBefore(final AbstractHtml parentTag,
+            final AbstractHtml beforeTag, final Event... events);
 
 }

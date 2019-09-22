@@ -77,7 +77,7 @@ public interface InsertAfterListener extends Serializable {
      * @since 3.0.7
      * @author WFF
      */
-    public void insertedAfter(AbstractHtml parentTag, AbstractHtml afterTag,
-            Event... events);
+    public void insertedAfter(final AbstractHtml parentTag,
+            final AbstractHtml afterTag, final Event... events);
 
 }
