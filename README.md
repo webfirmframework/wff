@@ -35,11 +35,11 @@ since 3.0.7 you can use functional style coding
 ~~~
 Html html = new Html(null).give(html -> {
        	 
-        	new Head(html);
+    new Head(html);
        	 
-        	Body body = new Body(html).give(body -> {           	 
-            	new NoTag(body, "Hello World");           	 
-        	};
+    new Body(html).give(body -> {           	 
+        new NoTag(body, "Hello World");           	 
+    });
        	 
 });
 // prepends the doc type <!DOCTYPE html>
