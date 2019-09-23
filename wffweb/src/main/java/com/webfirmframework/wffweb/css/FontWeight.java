@@ -44,7 +44,7 @@ public enum FontWeight implements CssProperty {
     /**
      * use _100 instead of it
      *
-     * @deprecated
+     * @deprecated _100 is available for the same purpose
      */
     @Deprecated
     ONE_HUNDRED("100"),
@@ -52,7 +52,7 @@ public enum FontWeight implements CssProperty {
     /**
      * use _200 instead of it
      *
-     * @deprecated
+     * @deprecated _200 is available for the same purpose
      */
     @Deprecated
     TWO_HUNDRED("200"),
@@ -60,7 +60,7 @@ public enum FontWeight implements CssProperty {
     /**
      * use _300 instead of it
      *
-     * @deprecated
+     * @deprecated _300 is available for the same purpose
      */
     @Deprecated
     THREE_HUNDRED("300"),
@@ -68,7 +68,7 @@ public enum FontWeight implements CssProperty {
     /**
      * use _400 instead of it
      *
-     * @deprecated
+     * @deprecated _400 is available for the same purpose
      */
     @Deprecated
     FOUR_HUNDRED("400"),
@@ -76,7 +76,7 @@ public enum FontWeight implements CssProperty {
     /**
      * use _500 instead of it
      *
-     * @deprecated
+     * @deprecated _500 is available for the same purpose
      */
     @Deprecated
     FIVE_HUNDRED("500"),
@@ -84,7 +84,7 @@ public enum FontWeight implements CssProperty {
     /**
      * use _600 instead of it
      *
-     * @deprecated
+     * @deprecated _600 is available for the same purpose
      */
     @Deprecated
     SIX_HUNDRED("600"),
@@ -92,7 +92,7 @@ public enum FontWeight implements CssProperty {
     /**
      * use _700 instead of it
      *
-     * @deprecated
+     * @deprecated _700 is available for the same purpose
      */
     @Deprecated
     SEVEN_HUNDRED("700"),
@@ -100,7 +100,7 @@ public enum FontWeight implements CssProperty {
     /**
      * use _800 instead of it
      *
-     * @deprecated
+     * @deprecated _800 is available for the same purpose
      */
     @Deprecated
     EIGHT_HUNDRED("800"),
@@ -108,7 +108,7 @@ public enum FontWeight implements CssProperty {
     /**
      * use _900 instead of it
      *
-     * @deprecated
+     * @deprecated _900 is available for the same purpose
      */
     @Deprecated
     NINE_HUNDRED("900"),

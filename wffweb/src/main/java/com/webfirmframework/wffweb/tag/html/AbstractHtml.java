@@ -36,6 +36,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import com.webfirmframework.wffweb.InvalidTagException;
@@ -60,8 +61,10 @@ import com.webfirmframework.wffweb.tag.html.listener.ChildTagAppendListener;
 import com.webfirmframework.wffweb.tag.html.listener.ChildTagAppendListener.ChildMovedEvent;
 import com.webfirmframework.wffweb.tag.html.listener.ChildTagRemoveListener;
 import com.webfirmframework.wffweb.tag.html.listener.InnerHtmlAddListener;
-import com.webfirmframework.wffweb.tag.html.listener.InsertBeforeListener;
+import com.webfirmframework.wffweb.tag.html.listener.InsertAfterListener;
+import com.webfirmframework.wffweb.tag.html.listener.InsertTagsBeforeListener;
 import com.webfirmframework.wffweb.tag.html.listener.PushQueue;
+import com.webfirmframework.wffweb.tag.html.listener.ReplaceListener;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 import com.webfirmframework.wffweb.tag.htmlwff.CustomTag;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
@@ -220,12 +223,25 @@ public abstract class AbstractHtml extends AbstractJsObject {
             @Override
             public boolean removeAll(final Collection<?> children) {
 
-                final AbstractHtml[] removedAbstractHtmls = children
-                        .toArray(new AbstractHtml[children.size()]);
+                // NB: must be LinkedHashSet to keep order of removal
+                final Set<Object> validChildren = new LinkedHashSet<>(
+                        calcCapacity(children.size()));
 
-                final boolean removedAll = super.removeAll(children);
+                for (final Object each : children) {
+                    if (each instanceof AbstractHtml) {
+                        final AbstractHtml child = (AbstractHtml) each;
+                        if (AbstractHtml.this.equals(child.parent)) {
+                            validChildren.add(child);
+                        }
+                    }
+                }
+
+                final AbstractHtml[] removedAbstractHtmls = validChildren
+                        .toArray(new AbstractHtml[validChildren.size()]);
+
+                final boolean removedAll = super.removeAll(validChildren);
+
                 if (removedAll) {
-
                     initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(
                             removedAbstractHtmls);
 
@@ -542,6 +558,18 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
+     * Calculates capacity for the default load factor
+     *
+     * @param size
+     * @return the calculated capacity
+     * @since 3.0.7
+     */
+    private static int calcCapacity(final int size) {
+        // length/load factor + 1
+        return (int) (size / 0.75F) + 1;
+    }
+
+    /**
      * Appends the given child tag to its children.
      *
      * @param child
@@ -678,12 +706,12 @@ public abstract class AbstractHtml extends AbstractJsObject {
         try {
             lock.lock();
 
-            final AbstractHtml[] removedAbstractHtmls = children
+            final AbstractHtml[] removedTags = children
                     .toArray(new AbstractHtml[children.size()]);
             children.clear();
 
             initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(
-                    removedAbstractHtmls);
+                    removedTags);
 
             final InnerHtmlAddListener listener = sharedObject
                     .getInnerHtmlAddListener(ACCESS_OBJECT);
@@ -696,11 +724,23 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                 for (final AbstractHtml innerHtml : innerHtmls) {
 
+                    final boolean alreadyHasParent = innerHtml.parent != null;
                     AbstractHtml previousParentTag = null;
 
-                    if (innerHtml.parent != null
-                            && innerHtml.parent.sharedObject == sharedObject) {
-                        previousParentTag = innerHtml.parent;
+                    if (alreadyHasParent) {
+                        if (innerHtml.parent.sharedObject == sharedObject) {
+                            previousParentTag = innerHtml.parent;
+                        } else {
+                            if (innerHtml.parent.sharedObject
+                                    .getInnerHtmlAddListener(
+                                            ACCESS_OBJECT) == null) {
+                                removeFromTagByWffIdMap(innerHtml,
+                                        innerHtml.parent.sharedObject
+                                                .getTagByWffId(ACCESS_OBJECT));
+                            } // else {TODO also write the code to push
+                              // changes to the other BrowserPage}
+
+                        }
                     }
 
                     addChild(innerHtml, false);
@@ -715,6 +755,15 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 listenerInvoked = true;
             } else {
                 for (final AbstractHtml innerHtml : innerHtmls) {
+                    if (innerHtml.parent != null
+                            && innerHtml.parent.sharedObject
+                                    .getInnerHtmlAddListener(
+                                            ACCESS_OBJECT) == null) {
+                        removeFromTagByWffIdMap(innerHtml,
+                                innerHtml.parent.sharedObject
+                                        .getTagByWffId(ACCESS_OBJECT));
+                    } // else {TODO also write the code to push
+                      // changes to the other BrowserPage}
                     addChild(innerHtml, false);
                 }
             }
@@ -772,11 +821,23 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
             for (final AbstractHtml innerHtml : innerHtmls) {
 
+                final boolean alreadyHasParent = innerHtml.parent != null;
                 AbstractHtml previousParentTag = null;
 
-                if (innerHtml.parent != null
-                        && innerHtml.parent.sharedObject == sharedObject) {
-                    previousParentTag = innerHtml.parent;
+                if (alreadyHasParent) {
+                    if (innerHtml.parent.sharedObject == sharedObject) {
+                        previousParentTag = innerHtml.parent;
+                    } else {
+                        if (innerHtml.parent.sharedObject
+                                .getInnerHtmlAddListener(
+                                        ACCESS_OBJECT) == null) {
+                            removeFromTagByWffIdMap(innerHtml,
+                                    innerHtml.parent.sharedObject
+                                            .getTagByWffId(ACCESS_OBJECT));
+                        } // else {TODO also write the code to push
+                          // changes to the other BrowserPage}
+
+                    }
                 }
 
                 addChild(innerHtml, false);
@@ -792,6 +853,14 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
         } else {
             for (final AbstractHtml innerHtml : innerHtmls) {
+                if (innerHtml.parent != null && innerHtml.parent.sharedObject
+                        .getInnerHtmlAddListener(ACCESS_OBJECT) == null) {
+                    removeFromTagByWffIdMap(innerHtml,
+                            innerHtml.parent.sharedObject
+                                    .getTagByWffId(ACCESS_OBJECT));
+                } // else {TODO also write the code to push
+                  // changes to the other BrowserPage}
+
                 addChild(innerHtml, false);
             }
         }
@@ -1306,6 +1375,14 @@ public abstract class AbstractHtml extends AbstractJsObject {
         boolean result = false;
         try {
             lock.lock();
+
+            if (child.parent != null && child.parent.sharedObject
+                    .getChildTagAppendListener(ACCESS_OBJECT) == null) {
+                removeFromTagByWffIdMap(child,
+                        child.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
+            } // else {TODO also write the code to push
+              // changes to the other BrowserPage}
+
             result = addChild(child, true);
         } finally {
             lock.unlock();
@@ -1340,6 +1417,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
         try {
 
             lock.lock();
+
+            if (child.parent != null && child.parent.sharedObject
+                    .getChildTagAppendListener(ACCESS_OBJECT) == null) {
+                removeFromTagByWffIdMap(child,
+                        child.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
+            } // else {TODO also write the code to push
+              // changes to the other BrowserPage}
 
             result = addChild(child, invokeListener);
         } finally {
@@ -1402,6 +1486,46 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     }
 
+    /**
+     * @param tagByWffId
+     * @param tag
+     * @since 3.0.7
+     */
+    private static void removeFromTagByWffIdMap(final AbstractHtml tag,
+            final Map<String, AbstractHtml> tagByWffId) {
+
+        if (!tagByWffId.isEmpty()) {
+            final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
+            // passed 2 instead of 1 because the load factor is 0.75f
+            final Set<AbstractHtml> initialSet = new HashSet<>(2);
+            initialSet.add(tag);
+            childrenStack.push(initialSet);
+
+            Set<AbstractHtml> children;
+            while ((children = childrenStack.poll()) != null) {
+                for (final AbstractHtml child : children) {
+
+                    final DataWffId dataWffId = child.getDataWffId();
+                    if (dataWffId != null) {
+                        tagByWffId.computeIfPresent(dataWffId.getValue(),
+                                (k, v) -> {
+                                    if (child.equals(v)) {
+                                        return null;
+                                    }
+                                    return v;
+                                });
+                    }
+
+                    final Set<AbstractHtml> subChildren = child.children;
+                    if (subChildren != null && subChildren.size() > 0) {
+                        childrenStack.push(subChildren);
+                    }
+
+                }
+            }
+        }
+    }
+
     private void initParentAndSharedObject(final AbstractHtml child) {
 
         initSharedObject(child);
@@ -1429,8 +1553,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 // getLastDataWffId will not be -1)
                 if (sharedObject.getLastDataWffId(ACCESS_OBJECT) != -1
                         && eachChild.getDataWffId() == null
-                        && eachChild.getTagName() != null
-                        && !eachChild.getTagName().isEmpty()) {
+                        && eachChild.tagName != null
+                        && !eachChild.tagName.isEmpty()) {
 
                     eachChild.initDataWffId(sharedObject);
 
@@ -1467,6 +1591,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
             for (final AbstractHtml child : children) {
                 final AbstractHtml previousParent = child.parent;
+
+                if (child.parent != null && child.parent.sharedObject
+                        .getChildTagAppendListener(ACCESS_OBJECT) == null) {
+                    removeFromTagByWffIdMap(child, child.parent.sharedObject
+                            .getTagByWffId(ACCESS_OBJECT));
+                } // else {TODO also write the code to push
+                  // changes to the other BrowserPage}
 
                 addChild(child, false);
 
@@ -1522,6 +1653,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
             for (final AbstractHtml child : children) {
                 final AbstractHtml previousParent = child.parent;
+
+                if (child.parent != null && child.parent.sharedObject
+                        .getChildTagAppendListener(ACCESS_OBJECT) == null) {
+                    removeFromTagByWffIdMap(child, child.parent.sharedObject
+                            .getTagByWffId(ACCESS_OBJECT));
+                } // else {TODO also write the code to push
+                  // changes to the other BrowserPage}
 
                 addChild(child, false);
 
@@ -1621,6 +1759,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 for (final AbstractHtml child : children) {
                     final AbstractHtml previousParent = child.parent;
 
+                    if (child.parent != null && child.parent.sharedObject
+                            .getChildTagAppendListener(ACCESS_OBJECT) == null) {
+                        removeFromTagByWffIdMap(child, child.parent.sharedObject
+                                .getTagByWffId(ACCESS_OBJECT));
+                    } // else {TODO also write the code to push
+                      // changes to the other BrowserPage}
+
                     addChild(child, false);
 
                     final ChildMovedEvent event = new ChildMovedEvent(
@@ -1657,6 +1802,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * adds the given children to the last position of the current children of
      * this object.
      *
+     * NB: Previously this method was consumed by insertAfter method but since
+     * 3.0.7 it has it own implementation like insertBefore method. This method
+     * can also be removed if not required.
+     *
      * @param children
      *                     children to append in this object's existing
      *                     children.
@@ -1665,6 +1814,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *         index: true if listener invoked otherwise false.
      * @since 3.0.1
      */
+    @SuppressWarnings("unused")
     private boolean[] appendChildrenLockless(final AbstractHtml... children) {
 
         // any changes to this method should also be applied in
@@ -1678,6 +1828,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
         for (final AbstractHtml child : children) {
             final AbstractHtml previousParent = child.parent;
+
+            if (child.parent != null && child.parent.sharedObject
+                    .getChildTagAppendListener(ACCESS_OBJECT) == null) {
+                removeFromTagByWffIdMap(child,
+                        child.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
+            } // else {TODO also write the code to push
+              // changes to the other BrowserPage}
 
             if (addChild(child, false)) {
                 results[0] = true;
@@ -2426,6 +2583,76 @@ public abstract class AbstractHtml extends AbstractJsObject {
         } finally {
             lock.unlock();
         }
+    }
+
+    /**
+     * Gets the nth index of the given tag in this tag's children.
+     *
+     * @param child
+     * @return the index of this child in this tag's children. If the given tag
+     *         is not a child in this tag's children then -1 will be returned.
+     * @since 3.0.7
+     */
+    public int getIndexByChild(final AbstractHtml child) {
+        // NB: this logic may be improved by declaring a childIndex variable in
+        // tag so when the tag is added as a child in any tag childIndex needs
+        // to be updated. Removing/adding another tag can also affect the
+        // childIndex of that tag so that needs to be handled.
+
+        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
+        try {
+            lock.lock();
+            final Iterator<AbstractHtml> iterator = children.iterator();
+            int index = 0;
+            while (iterator.hasNext()) {
+                if (iterator.next().equals(child)) {
+                    return index;
+                }
+                index++;
+            }
+        } finally {
+            lock.unlock();
+        }
+        return -1;
+    }
+
+    /**
+     * NB: only for internal use. Use getIndexByChild(AbstractHtml).<br>
+     * <br>
+     *
+     * Gets the nth index of the given tag in this tag's children.
+     *
+     * @param accessObject
+     * @param child
+     * @return the index of this child in this tag's children. If the given tag
+     *         is not a child in this tag's children then -1 will be returned.
+     * @since 3.0.7
+     */
+    public int getIndexByChild(final Object accessObject,
+            final AbstractHtml child) {
+
+        // Lockless method to get child index
+
+        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE
+                .equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException(
+                    "Not allowed to consume this method. This method is for internal use.");
+        }
+
+        // NB: this logic may be improved by declaring a childIndex variable in
+        // tag so when the tag is added as a child in any tag childIndex needs
+        // to be updated. Removing/adding another tag can also affect the
+        // childIndex of that tag so that needs to be handled.
+
+        final Iterator<AbstractHtml> iterator = children.iterator();
+        int index = 0;
+        while (iterator.hasNext()) {
+            if (iterator.next().equals(child)) {
+                return index;
+            }
+            index++;
+        }
+        return -1;
     }
 
     /**
@@ -3279,7 +3506,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 NameValue nameValue = new NameValue();
 
                 final int tagNameIndex = TagRegistry.getTagNames()
-                        .indexOf(child.getTagName());
+                        .indexOf(child.tagName);
 
                 // if the tag index is -1 i.e. it's not indexed then the tag
                 // name prepended with 0 value byte should be set.
@@ -3290,8 +3517,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 byte[] closingTagNameConvertedBytes = null;
                 if (tagNameIndex == -1) {
 
-                    final byte[] tagNameBytes = child.getTagName()
-                            .getBytes(charset);
+                    final byte[] tagNameBytes = child.tagName.getBytes(charset);
 
                     byte[] nameBytes = new byte[tagNameBytes.length + 1];
 
@@ -4043,6 +4269,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
             abstractHtml.parentNullifiedOnce = true;
         }
 
+        final Map<String, AbstractHtml> tagByWffId = sharedObject
+                .getTagByWffId(ACCESS_OBJECT);
+
         abstractHtml.sharedObject = new AbstractHtml5SharedObject(abstractHtml);
 
         final Deque<Set<AbstractHtml>> removedTagsStack = new ArrayDeque<>();
@@ -4058,8 +4287,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                 final DataWffId dataWffId = stackChild.getDataWffId();
                 if (dataWffId != null) {
-                    sharedObject.getTagByWffId(ACCESS_OBJECT)
-                            .remove(dataWffId.getValue());
+                    tagByWffId.computeIfPresent(dataWffId.getValue(),
+                            (k, v) -> {
+                                if (stackChild.equals(v)) {
+                                    return null;
+                                }
+                                return v;
+                            });
                 }
 
                 stackChild.sharedObject = abstractHtml.sharedObject;
@@ -4132,7 +4366,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                 for (final AbstractHtml tag : children) {
 
-                    final String nodeName = tag.getTagName();
+                    final String nodeName = tag.tagName;
 
                     if (nodeName != null && !nodeName.isEmpty()) {
 
@@ -4244,7 +4478,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                 for (final AbstractHtml tag : children) {
 
-                    final String nodeName = tag.getTagName();
+                    final String nodeName = tag.tagName;
 
                     final AbstractHtml parentLocal = tag.parent;
 
@@ -4390,7 +4624,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                 for (final AbstractHtml tag : children) {
 
-                    final String nodeName = tag.getTagName();
+                    final String nodeName = tag.tagName;
 
                     final AbstractHtml parentLocal = tag.parent;
 
@@ -4903,6 +5137,47 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
+     * Replaces this tag with the given tags. There must be a parent for this
+     * method tag. Obviously, this tag will be removed from its parent if this
+     * method is called.
+     *
+     * @param tags
+     *                 tags for the replacement of this tag
+     * @return true if replace otherwise false.
+     * @since 3.0.7
+     */
+    public boolean replaceWith(final AbstractHtml... tags) {
+
+        if (parent == null) {
+            throw new NoParentException("There must be a parent for this tag.");
+        }
+
+        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+        // inserted, listener invoked
+        boolean[] results = { false, false };
+        try {
+            lock.lock();
+
+            final AbstractHtml[] removedParentChildren = parent.children
+                    .toArray(new AbstractHtml[parent.children.size()]);
+
+            results = replaceWith(removedParentChildren, tags);
+        } finally {
+            lock.unlock();
+        }
+
+        if (results[1]) {
+            final PushQueue pushQueue = sharedObject
+                    .getPushQueue(ACCESS_OBJECT);
+            if (pushQueue != null) {
+                pushQueue.push();
+            }
+        }
+
+        return results[0];
+    }
+
+    /**
      * should be used inside a synchronized block. NB:- It's removing
      * removedParentChildren by parent.children.clear(); in this method.
      *
@@ -4913,7 +5188,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param abstractHtmls
      * @return in zeroth index: true if inserted otherwise false. in first
      *         index: true if listener invoked otherwise false.
-     * @since 2.1.6
+     * @since 3.0.7
      * @author WFF
      */
     private boolean[] insertBefore(final AbstractHtml[] removedParentChildren,
@@ -4925,12 +5200,18 @@ public abstract class AbstractHtml extends AbstractJsObject {
         final int parentChildrenSize = parent.children.size();
         if (parentChildrenSize > 0) {
 
-            final InsertBeforeListener insertBeforeListener = sharedObject
-                    .getInsertBeforeListener(ACCESS_OBJECT);
+            final InsertTagsBeforeListener insertBeforeListener = sharedObject
+                    .getInsertTagsBeforeListener(ACCESS_OBJECT);
 
-            parent.children.clear();
+            // this.parent will be nullified in
+            // initNewSharedObjectInAllNestedTagsAndSetSuperParentNull so kept a
+            // local copy
+            final AbstractHtml thisParent = parent;
+            final AbstractHtml5SharedObject thisSharedObject = sharedObject;
 
-            final InsertBeforeListener.Event[] events = new InsertBeforeListener.Event[abstractHtmls.length];
+            thisParent.children.clear();
+
+            final InsertTagsBeforeListener.Event[] events = new InsertTagsBeforeListener.Event[abstractHtmls.length];
 
             int count = 0;
 
@@ -4938,21 +5219,51 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                 if (equals(parentChild)) {
 
-                    for (final AbstractHtml abstractHtmlToInsert : abstractHtmls) {
+                    for (final AbstractHtml tagToInsert : abstractHtmls) {
 
-                        final boolean alreadyHasParent = abstractHtmlToInsert.parent != null;
+                        final boolean alreadyHasParent = tagToInsert.parent != null;
 
                         if (insertBeforeListener != null) {
                             AbstractHtml previousParent = null;
-                            if (abstractHtmlToInsert.parent != null
-                                    && abstractHtmlToInsert.parent.sharedObject == sharedObject) {
-                                previousParent = abstractHtmlToInsert.parent;
+
+                            if (alreadyHasParent) {
+                                if (tagToInsert.parent.sharedObject == thisSharedObject) {
+                                    previousParent = tagToInsert.parent;
+                                } else {
+
+                                    if (tagToInsert.parent.sharedObject
+                                            .getInsertTagsBeforeListener(
+                                                    ACCESS_OBJECT) == null) {
+                                        removeFromTagByWffIdMap(tagToInsert,
+                                                tagToInsert.parent.sharedObject
+                                                        .getTagByWffId(
+                                                                ACCESS_OBJECT));
+                                    } // else {TODO also write the code to push
+                                      // changes to the other BrowserPage}
+
+                                }
+
                             }
-                            final InsertBeforeListener.Event event = new InsertBeforeListener.Event(
-                                    parent, abstractHtmlToInsert, this,
-                                    previousParent);
+
+                            // if parentChild == tagToInsert then
+                            // tagToInsert.parent i.e. previousParent
+                            // will be null (because we are calling
+                            // initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(parentChild))
+                            // that is useful for not removing it
+                            // from the browser UI.
+                            final InsertTagsBeforeListener.Event event = new InsertTagsBeforeListener.Event(
+                                    tagToInsert, previousParent);
                             events[count] = event;
                             count++;
+                        } else if (alreadyHasParent) {
+                            if (tagToInsert.parent.sharedObject
+                                    .getInsertTagsBeforeListener(
+                                            ACCESS_OBJECT) == null) {
+                                removeFromTagByWffIdMap(tagToInsert,
+                                        tagToInsert.parent.sharedObject
+                                                .getTagByWffId(ACCESS_OBJECT));
+                            } // else {TODO also write the code to push
+                              // changes to the other BrowserPage}
                         }
 
                         // if alreadyHasParent = true then it means the
@@ -4960,24 +5271,270 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         // moving from one tag to another.
 
                         if (alreadyHasParent) {
-                            abstractHtmlToInsert.parent.children
-                                    .remove(abstractHtmlToInsert);
+                            tagToInsert.parent.children.remove(tagToInsert);
                         }
 
-                        initSharedObject(abstractHtmlToInsert);
+                        initSharedObject(tagToInsert);
 
-                        abstractHtmlToInsert.parent = parent;
+                        tagToInsert.parent = thisParent;
 
-                        parent.children.add(abstractHtmlToInsert);
+                        thisParent.children.add(tagToInsert);
                     }
 
                 }
 
-                parent.children.add(parentChild);
+                thisParent.children.add(parentChild);
             }
 
             if (insertBeforeListener != null) {
-                insertBeforeListener.insertedBefore(events);
+                insertBeforeListener.insertedBefore(thisParent, this, events);
+                results[1] = true;
+            }
+
+            results[0] = true;
+
+        }
+        return results;
+    }
+
+    /**
+     * should be used inside a synchronized block. NB:- It's removing
+     * removedParentChildren by parent.children.clear(); in this method.
+     *
+     * @param removedParentChildren
+     *                                  just pass the parent children, no need
+     *                                  to remove it from parent. It's removing
+     *                                  by parent.children.clear();
+     * @param abstractHtmls
+     * @return in zeroth index: true if inserted otherwise false. in first
+     *         index: true if listener invoked otherwise false.
+     * @since 3.0.7
+     * @author WFF
+     */
+    private boolean[] insertAfter(final AbstractHtml[] removedParentChildren,
+            final AbstractHtml[] abstractHtmls) {
+
+        // inserted, listener invoked
+        final boolean[] results = { false, false };
+
+        final int parentChildrenSize = parent.children.size();
+        if (parentChildrenSize > 0) {
+
+            final InsertAfterListener insertAfterListener = sharedObject
+                    .getInsertAfterListener(ACCESS_OBJECT);
+
+            // this.parent will be nullified in
+            // initNewSharedObjectInAllNestedTagsAndSetSuperParentNull so kept a
+            // local copy
+            final AbstractHtml thisParent = parent;
+            final AbstractHtml5SharedObject thisSharedObject = sharedObject;
+
+            thisParent.children.clear();
+
+            final InsertAfterListener.Event[] events = new InsertAfterListener.Event[abstractHtmls.length];
+
+            int count = 0;
+
+            for (final AbstractHtml parentChild : removedParentChildren) {
+
+                thisParent.children.add(parentChild);
+
+                if (equals(parentChild)) {
+
+                    for (final AbstractHtml tagToInsert : abstractHtmls) {
+
+                        final boolean alreadyHasParent = tagToInsert.parent != null;
+
+                        if (insertAfterListener != null) {
+                            AbstractHtml previousParent = null;
+
+                            if (alreadyHasParent) {
+                                if (tagToInsert.parent.sharedObject == thisSharedObject) {
+                                    previousParent = tagToInsert.parent;
+                                } else {
+
+                                    if (tagToInsert.parent.sharedObject
+                                            .getInsertAfterListener(
+                                                    ACCESS_OBJECT) == null) {
+                                        removeFromTagByWffIdMap(tagToInsert,
+                                                tagToInsert.parent.sharedObject
+                                                        .getTagByWffId(
+                                                                ACCESS_OBJECT));
+                                    } // else {TODO also write the code to push
+                                      // changes to the other BrowserPage}
+
+                                }
+
+                            }
+
+                            // if parentChild == tagToInsert then
+                            // tagToInsert.parent i.e. previousParent
+                            // will be null (because we are calling
+                            // initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(parentChild))
+                            // that is useful for not removing it
+                            // from the browser UI.
+                            final InsertAfterListener.Event event = new InsertAfterListener.Event(
+                                    tagToInsert, previousParent);
+                            events[count] = event;
+                            count++;
+                        } else if (alreadyHasParent) {
+                            if (tagToInsert.parent.sharedObject
+                                    .getInsertAfterListener(
+                                            ACCESS_OBJECT) == null) {
+                                removeFromTagByWffIdMap(tagToInsert,
+                                        tagToInsert.parent.sharedObject
+                                                .getTagByWffId(ACCESS_OBJECT));
+                            } // else {TODO also write the code to push
+                              // changes to the other BrowserPage}
+                        }
+
+                        // if alreadyHasParent = true then it means the
+                        // child is
+                        // moving from one tag to another.
+
+                        if (alreadyHasParent) {
+                            tagToInsert.parent.children.remove(tagToInsert);
+                        }
+
+                        initSharedObject(tagToInsert);
+
+                        tagToInsert.parent = thisParent;
+
+                        thisParent.children.add(tagToInsert);
+                    }
+
+                }
+
+            }
+
+            if (insertAfterListener != null) {
+                insertAfterListener.insertedAfter(thisParent, this, events);
+                results[1] = true;
+            }
+
+            results[0] = true;
+
+        }
+        return results;
+    }
+
+    /**
+     * should be used inside a synchronized block. NB:- It's removing
+     * removedParentChildren by parent.children.clear(); in this method.
+     *
+     * @param removedParentChildren
+     *                                  just pass the parent children, no need
+     *                                  to remove it from parent. It's removing
+     *                                  by parent.children.clear();
+     * @param abstractHtmls
+     * @return in zeroth index: true if inserted otherwise false. in first
+     *         index: true if listener invoked otherwise false.
+     * @since 3.0.7
+     * @author WFF
+     */
+    private boolean[] replaceWith(final AbstractHtml[] removedParentChildren,
+            final AbstractHtml[] abstractHtmls) {
+
+        // inserted, listener invoked
+        final boolean[] results = { false, false };
+
+        final int parentChildrenSize = parent.children.size();
+        if (parentChildrenSize > 0) {
+
+            final ReplaceListener replaceListener = sharedObject
+                    .getReplaceListener(ACCESS_OBJECT);
+
+            // this.parent will be nullified in
+            // initNewSharedObjectInAllNestedTagsAndSetSuperParentNull so kept a
+            // local copy
+            final AbstractHtml thisParent = parent;
+            final AbstractHtml5SharedObject thisSharedObject = sharedObject;
+
+            thisParent.children.clear();
+
+            final ReplaceListener.Event[] events = new ReplaceListener.Event[abstractHtmls.length];
+
+            int count = 0;
+
+            for (final AbstractHtml parentChild : removedParentChildren) {
+
+                if (equals(parentChild)) {
+
+                    // must be the first statement, the replacing tag and
+                    // replacement tag could be same
+                    initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(
+                            parentChild);
+
+                    for (final AbstractHtml tagToInsert : abstractHtmls) {
+
+                        final boolean alreadyHasParent = tagToInsert.parent != null;
+
+                        if (replaceListener != null) {
+                            AbstractHtml previousParent = null;
+
+                            if (alreadyHasParent) {
+                                if (tagToInsert.parent.sharedObject == thisSharedObject) {
+                                    previousParent = tagToInsert.parent;
+                                } else {
+
+                                    if (tagToInsert.parent.sharedObject
+                                            .getReplaceListener(
+                                                    ACCESS_OBJECT) == null) {
+                                        removeFromTagByWffIdMap(tagToInsert,
+                                                tagToInsert.parent.sharedObject
+                                                        .getTagByWffId(
+                                                                ACCESS_OBJECT));
+                                    } // else {TODO also write the code to push
+                                      // changes to the other BrowserPage}
+
+                                }
+
+                            }
+
+                            // if parentChild == tagToInsert then
+                            // tagToInsert.parent i.e. previousParent
+                            // will be null (because we are calling
+                            // initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(parentChild))
+                            // that is useful for not removing it
+                            // from the browser UI.
+                            final ReplaceListener.Event event = new ReplaceListener.Event(
+                                    tagToInsert, previousParent);
+                            events[count] = event;
+                            count++;
+                        } else if (alreadyHasParent) {
+                            if (tagToInsert.parent.sharedObject
+                                    .getReplaceListener(
+                                            ACCESS_OBJECT) == null) {
+                                removeFromTagByWffIdMap(tagToInsert,
+                                        tagToInsert.parent.sharedObject
+                                                .getTagByWffId(ACCESS_OBJECT));
+                            } // else {TODO also write the code to push
+                              // changes to the other BrowserPage}
+                        }
+
+                        // if alreadyHasParent = true then it means the
+                        // child is
+                        // moving from one tag to another.
+
+                        if (alreadyHasParent) {
+                            tagToInsert.parent.children.remove(tagToInsert);
+                        }
+
+                        initSharedObject(tagToInsert);
+
+                        tagToInsert.parent = thisParent;
+
+                        thisParent.children.add(tagToInsert);
+                    }
+
+                } else {
+                    thisParent.children.add(parentChild);
+                }
+
+            }
+
+            if (replaceListener != null) {
+                replaceListener.replacedWith(thisParent, this, events);
                 results[1] = true;
             }
 
@@ -4990,14 +5547,14 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * Inserts the given tags after this tag. There must be a parent for this
      * method tag. <br>
-     * Note : This {@code insertAfter} method might be bit slower (in terms of
-     * nano optimization) than {@code insertBefore} method as it internally uses
-     * {@code insertBefore} method. This will be improved in the future version.
+     * Note : As promised this method is improved and works as performing and
+     * reliable as insertBefore method.
      *
      * @param abstractHtmls
      *                          to insert after this tag
      * @return true if inserted otherwise false.
      * @since 2.1.6
+     * @since 3.0.7 better implementation
      * @author WFF
      */
     public boolean insertAfter(final AbstractHtml... abstractHtmls) {
@@ -5007,35 +5564,19 @@ public abstract class AbstractHtml extends AbstractJsObject {
         }
 
         final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
-
         // inserted, listener invoked
         boolean[] results = { false, false };
         try {
             lock.lock();
 
-            final AbstractHtml[] childrenOfParent = parent.children
+            final AbstractHtml[] removedParentChildren = parent.children
                     .toArray(new AbstractHtml[parent.children.size()]);
 
-            for (int i = 0; i < childrenOfParent.length; i++) {
-
-                if (equals(childrenOfParent[i])) {
-
-                    if (i < (childrenOfParent.length - 1)) {
-
-                        results = childrenOfParent[i + 1]
-                                .insertBefore(childrenOfParent, abstractHtmls);
-
-                        break;
-                    } else {
-                        results = parent.appendChildrenLockless(abstractHtmls);
-                    }
-                }
-
-            }
-
+            results = insertAfter(removedParentChildren, abstractHtmls);
         } finally {
             lock.unlock();
         }
+
         if (results[1]) {
             final PushQueue pushQueue = sharedObject
                     .getPushQueue(ACCESS_OBJECT);
@@ -5043,6 +5584,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 pushQueue.push();
             }
         }
+
         return results[0];
     }
 
@@ -5362,5 +5904,48 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     byte[] getTagNameIndexBytes() {
         return tagNameIndexBytes;
+    }
+
+    /**
+     * This method can avoid creating anonymous class coding. <br>
+     * Eg: <br>
+     *
+     * <pre>
+     * Div rootDiv = new Div(null, new Id("rootDivId")).&lt;Div&gt; give(parent -&gt; {
+     *     new Div(parent, new Id("parentDivId")).give(nestedTag1 -&gt; {
+     *         new Div(nestedTag1, new Id("child1"));
+     *         new Div(nestedTag1, new Id("child2"));
+     *         new Div(nestedTag1, new Id("child3"));
+     *     });
+     * });
+     *
+     * System.out.println(rootDiv.toHtmlString());
+     * </pre>
+     *
+     * produces
+     *
+     * <pre>
+     * <code>
+     * &lt;div id="rootDivId"&gt;
+     *    &lt;div id="parentDivId"&gt;
+     *         &lt;div id="child1"&gt;&lt;/div&gt;
+     *         &lt;div id="child2"&gt;&lt;/div&gt;
+     *         &lt;div id="child3"&gt;&lt;/div&gt;
+     *     &lt;/div&gt;
+     * &lt;/div&gt;
+     * </code>
+     * </pre>
+     *
+     *
+     *
+     * @param consumer
+     *                     the consumer object
+     * @return the same object on which give method is called.
+     * @since 3.0.7
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends AbstractHtml> T give(final Consumer<T> consumer) {
+        consumer.accept((T) this);
+        return (T) this;
     }
 }

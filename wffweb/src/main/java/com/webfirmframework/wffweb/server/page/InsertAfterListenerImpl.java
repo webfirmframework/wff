@@ -29,20 +29,20 @@ import com.webfirmframework.wffweb.server.page.js.WffJsFile;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.TagUtil;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
-import com.webfirmframework.wffweb.tag.html.listener.InsertBeforeListener;
+import com.webfirmframework.wffweb.tag.html.listener.InsertAfterListener;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 import com.webfirmframework.wffweb.util.data.NameValue;
 
 /**
  * @author WFF
- * @since 2.1.1
+ * @since 3.0.7
  */
-final class InsertBeforeListenerImpl implements InsertBeforeListener {
+final class InsertAfterListenerImpl implements InsertAfterListener {
 
     private static final long serialVersionUID = 1L;
 
     private static final Logger LOGGER = Logger
-            .getLogger(InsertBeforeListenerImpl.class.getName());
+            .getLogger(InsertAfterListenerImpl.class.getName());
 
     private final BrowserPage browserPage;
 
@@ -51,11 +51,11 @@ final class InsertBeforeListenerImpl implements InsertBeforeListener {
     private final Map<String, AbstractHtml> tagByWffId;
 
     @SuppressWarnings("unused")
-    private InsertBeforeListenerImpl() {
+    private InsertAfterListenerImpl() {
         throw new AssertionError();
     }
 
-    InsertBeforeListenerImpl(final BrowserPage browserPage,
+    InsertAfterListenerImpl(final BrowserPage browserPage,
             final Object accessObject,
             final Map<String, AbstractHtml> tagByWffId) {
         this.browserPage = browserPage;
@@ -68,7 +68,7 @@ final class InsertBeforeListenerImpl implements InsertBeforeListener {
      * adds to wffid map
      *
      * @param tag
-     * @since 2.0.0
+     * @since 3.0.7
      * @author WFF
      */
     private void addInWffIdMap(final AbstractHtml tag) {
@@ -102,7 +102,8 @@ final class InsertBeforeListenerImpl implements InsertBeforeListener {
     }
 
     @Override
-    public void insertedBefore(final Event... events) {
+    public void insertedAfter(final AbstractHtml parentTag,
+            final AbstractHtml afterTag, final Event... events) {
 
         //@formatter:off
         // removed all children tags task format :-
@@ -110,78 +111,67 @@ final class InsertBeforeListenerImpl implements InsertBeforeListener {
         // { "name": 2, "values" : [[3]]}, { "name":"C55", "values" : ["div", "<span></span>", 1]}
         //@formatter:on
 
-        final NameValue task = Task.INSERTED_BEFORE_TAG.getTaskNameValue();
+        final NameValue task = Task.INSERTED_AFTER_TAG.getTaskNameValue();
 
         final Deque<NameValue> nameValues = new ArrayDeque<>();
         nameValues.add(task);
 
-        for (final Event event : events) {
+        if (parentTag.getDataWffId() != null) {
 
-            final AbstractHtml parentTag = event.getParentTag();
+            // start parent tag data
+            final byte[][] parentTagNameAndWffId = DataWffIdUtil
+                    .getIndexedTagNameAndWffId(accessObject, parentTag);
+            final byte[] parentTagName = parentTagNameAndWffId[0];
+            final byte[] parentWffIdBytes = parentTagNameAndWffId[1];
 
-            final AbstractHtml insertedTag = event.getInsertedTag();
+            final NameValue parentTagNV = new NameValue();
+            parentTagNV.setName(parentTagName);
+            parentTagNV.setValues(parentWffIdBytes);
+            nameValues.add(parentTagNV);
+            // end parent tag data
 
-            final AbstractHtml beforeTag = event.getBeforeTag();
+            // start afterTag data
+            final byte[][] beforeTagNameAndWffId;
 
-            final AbstractHtml previousParentTag = event.getPreviousParentTag();
+            if (TagUtil.isTagless(afterTag)) {
+                beforeTagNameAndWffId = DataWffIdUtil
+                        .getIndexedTagNameAndChildIndexForNoTag(accessObject,
+                                (NoTag) afterTag);
+            } else {
+                beforeTagNameAndWffId = DataWffIdUtil
+                        .getIndexedTagNameAndWffId(accessObject, afterTag);
+            }
 
-            final DataWffId dataWffId = parentTag.getDataWffId();
+            final NameValue afterTagNV = new NameValue();
+            afterTagNV.setName(beforeTagNameAndWffId[0]);
+            afterTagNV.setValues(beforeTagNameAndWffId[1]);
+            nameValues.add(afterTagNV);
+            // end afterTag data
 
-            if (dataWffId != null) {
+            // inserted tags data
+            for (final Event event : events) {
+
+                final AbstractHtml insertedTag = event.getInsertedTag();
+
+                final AbstractHtml previousParentTag = event
+                        .getPreviousParentTag();
 
                 final NameValue nameValue = new NameValue();
 
-                final byte[][] parentTagNameAndWffId = DataWffIdUtil
-                        .getIndexedTagNameAndWffId(accessObject, parentTag);
-
-                final byte[] parentWffIdBytes = parentTagNameAndWffId[1];
-
-                nameValue.setName(parentWffIdBytes);
-
-                final byte[] parentTagName = parentTagNameAndWffId[0];
-
-                final byte[][] beforeTagNameAndWffId;
-
-                if (TagUtil.isTagless(beforeTag)) {
-                    beforeTagNameAndWffId = DataWffIdUtil
-                            .getIndexedTagNameAndChildIndexForNoTag(
-                                    accessObject, (NoTag) beforeTag);
+                if (previousParentTag != null) {
+                    nameValue.setName(new byte[] { 1 });
                 } else {
-                    beforeTagNameAndWffId = DataWffIdUtil
-                            .getIndexedTagNameAndWffId(accessObject, beforeTag);
+                    nameValue.setName(new byte[0]);
                 }
 
                 try {
-                    if (previousParentTag != null) {
-                        if (WffJsFile.COMPRESSED_WFF_DATA) {
-                            nameValue.setValues(parentTagName,
-                                    insertedTag.toCompressedWffBMBytesV2(
-                                            StandardCharsets.UTF_8),
-                                    beforeTagNameAndWffId[0],
-                                    beforeTagNameAndWffId[1], new byte[] { 1 });
-                        } else {
-                            nameValue.setValues(parentTagName,
-                                    insertedTag.toWffBMBytes(
-                                            StandardCharsets.UTF_8),
-                                    beforeTagNameAndWffId[0],
-                                    beforeTagNameAndWffId[1], new byte[] { 1 });
-                        }
-
+                    if (WffJsFile.COMPRESSED_WFF_DATA) {
+                        nameValue
+                                .setValues(insertedTag.toCompressedWffBMBytesV2(
+                                        StandardCharsets.UTF_8));
                     } else {
-                        if (WffJsFile.COMPRESSED_WFF_DATA) {
-                            nameValue.setValues(parentTagName,
-                                    insertedTag.toCompressedWffBMBytesV2(
-                                            StandardCharsets.UTF_8),
-                                    beforeTagNameAndWffId[0],
-                                    beforeTagNameAndWffId[1]);
-                        } else {
-                            nameValue.setValues(parentTagName,
-                                    insertedTag.toWffBMBytes(
-                                            StandardCharsets.UTF_8),
-                                    beforeTagNameAndWffId[0],
-                                    beforeTagNameAndWffId[1]);
-                        }
-
+                        nameValue.setValues(insertedTag
+                                .toWffBMBytes(StandardCharsets.UTF_8));
                     }
                 } catch (final InvalidTagException e) {
                     if (LOGGER.isLoggable(Level.WARNING)) {
@@ -195,14 +185,13 @@ final class InsertBeforeListenerImpl implements InsertBeforeListener {
 
                 addInWffIdMap(insertedTag);
                 nameValues.add(nameValue);
-
-            } else {
-                LOGGER.severe("Could not find data-wff-id from owner tag");
             }
+
+        } else {
+            LOGGER.severe("Could not find data-wff-id from owner tag");
         }
 
         browserPage.push(nameValues.toArray(new NameValue[nameValues.size()]));
-
     }
 
 }

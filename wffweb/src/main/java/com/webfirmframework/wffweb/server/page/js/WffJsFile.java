@@ -156,6 +156,7 @@ public enum WffJsFile {
             functionNames.add("createTagFromWffBMBytes");
             functionNames.add("getTagCreatedWffBMBytes");
             functionNames.add("wffRemovePrevBPInstance");
+            functionNames.add("getChildByNthIndexBytes");
             functionNames.add("getWffIdFromWffIdBytes");
             functionNames.add("getWffIdFromWffIdBytes");
             functionNames.add("extractEachValueBytes");
@@ -205,6 +206,8 @@ public enum WffJsFile {
             variableNames.add("maxValuesBytesLength");
             variableNames.add("maxNoNameLengthBytes");
             variableNames.add("attrNamNdxOptmzdByts");
+            // child index optimized int bytes
+            variableNames.add("chldNdxOptmzdIntByts");
             variableNames.add("parentOfExistingTag");
             variableNames.add("maxNoOfValuesBytes");
             variableNames.add("wffInstanceIdBytes");

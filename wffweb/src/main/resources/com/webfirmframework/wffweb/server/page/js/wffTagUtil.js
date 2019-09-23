@@ -359,5 +359,12 @@ var wffTagUtil = new function() {
 	if(wffGlobal.CPRSD_DATA) {
 		this.createTagFromWffBMBytes = this.createTagFromCompressedWffBMBytes;
 	}
-
+	
+	//p for parent
+	this.getChildByNthIndexBytes = function(p, chldNdxOptmzdIntByts) {
+		//childIndex
+		var i = wffBMUtil.getIntFromOptimizedBytes(chldNdxOptmzdIntByts);
+		return p.childNodes[i];
+	};
+	
 };

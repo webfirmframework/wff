@@ -33,6 +33,28 @@ public final class TagUtil {
     }
 
     /**
+     * @param tag
+     * @return true if it is tagless
+     * @since 3.0.7
+     */
+    public static boolean isTagless(final AbstractHtml tag) {
+        final String tagName = tag.getTagName();
+        if (tagName == null || tagName.isEmpty()) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @param tag
+     * @return true if it is Tagged
+     * @since 3.0.7
+     */
+    public static boolean isTagged(final AbstractHtml tag) {
+        return !isTagless(tag);
+    }
+
+    /**
      * NB: Only for internal use
      *
      * @param accessObject

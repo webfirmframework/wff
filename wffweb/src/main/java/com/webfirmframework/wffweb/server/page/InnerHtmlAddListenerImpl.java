@@ -30,11 +30,12 @@ import com.webfirmframework.wffweb.InvalidTagException;
 import com.webfirmframework.wffweb.server.page.js.WffJsFile;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
+import com.webfirmframework.wffweb.tag.html.TagUtil;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.tag.html.listener.InnerHtmlAddListener;
 import com.webfirmframework.wffweb.util.data.NameValue;
 
-class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
+final class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
 
     private static final long serialVersionUID = 1L;
 
@@ -80,10 +81,11 @@ class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
         while ((children = childrenStack.poll()) != null) {
             for (final AbstractHtml child : children) {
 
-                final DataWffId wffIdAttr = child.getDataWffId();
-
-                if (wffIdAttr != null) {
-                    tagByWffId.put(wffIdAttr.getValue(), child);
+                if (TagUtil.isTagged(child)) {
+                    final DataWffId wffIdAttr = child.getDataWffId();
+                    if (wffIdAttr != null) {
+                        tagByWffId.put(wffIdAttr.getValue(), child);
+                    }
                 }
 
                 final Set<AbstractHtml> subChildren = child

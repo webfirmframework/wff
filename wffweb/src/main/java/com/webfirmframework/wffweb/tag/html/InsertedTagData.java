@@ -27,7 +27,7 @@ import com.webfirmframework.wffweb.tag.html.SharedTagContent.ContentFormatter;
  * @since 3.0.6
  *
  */
-class InsertedTagData<T> {
+final class InsertedTagData<T> {
 
     private final ContentFormatter<T> formatter;
 

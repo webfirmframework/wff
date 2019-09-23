@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.tag.htmlwff;
 
 import com.webfirmframework.wffweb.InvalidTagException;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.TagUtil;
 
 /**
  * @author WFF
@@ -42,7 +43,7 @@ public enum TagContent {
     }
 
     private void checkCompatibility(final AbstractHtml tag) {
-        if (tag.getTagName() == null || tag.getTagName().isEmpty()) {
+        if (TagUtil.isTagless(tag)) {
             throw new InvalidTagException(
                     "The given tag instance is not supported for this operation.");
         }

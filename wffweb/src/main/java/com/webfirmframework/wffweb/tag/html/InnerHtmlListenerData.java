@@ -26,7 +26,7 @@ import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
  * @since 3.0.6
  *
  */
-class InnerHtmlListenerData {
+final class InnerHtmlListenerData {
 
     private final AbstractHtml5SharedObject sharedObject;
 

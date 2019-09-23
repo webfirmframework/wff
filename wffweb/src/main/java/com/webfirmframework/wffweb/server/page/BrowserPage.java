@@ -52,6 +52,7 @@ import com.webfirmframework.wffweb.server.page.js.WffJsFile;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.Html;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
+import com.webfirmframework.wffweb.tag.html.TagUtil;
 import com.webfirmframework.wffweb.tag.html.attribute.Defer;
 import com.webfirmframework.wffweb.tag.html.attribute.Nonce;
 import com.webfirmframework.wffweb.tag.html.attribute.Src;
@@ -154,6 +155,10 @@ public abstract class BrowserPage implements Serializable {
     // false and fairness may decrease the lock time
     private final ReentrantLock pushWffBMBytesQueueLock = new ReentrantLock(
             false);
+
+    // there will be only one thread waiting for the lock so fairness must be
+    // false and fairness may decrease the lock time
+    private final ReentrantLock unholdPushLock = new ReentrantLock(false);
 
     private final AtomicReference<Thread> waitingThreadRef = new AtomicReference<>();
 
@@ -309,6 +314,10 @@ public abstract class BrowserPage implements Serializable {
             // add method internally calls offer method in ConcurrentLinkedQueue
             wffBMBytesHoldPushQueue.offer(clientTasks);
         } else {
+
+            if (!wffBMBytesHoldPushQueue.isEmpty()) {
+                copyCachedBMBytesToMainQ();
+            }
             // add method internally calls offer which internally
             // calls offerLast method in ConcurrentLinkedQueue
 
@@ -802,11 +811,12 @@ public abstract class BrowserPage implements Serializable {
 
             for (final AbstractHtml child : children) {
 
-                if (child.getDataWffId() == null) {
-                    child.setDataWffId(getNewDataWffId());
+                if (TagUtil.isTagged(child)) {
+                    if (child.getDataWffId() == null) {
+                        child.setDataWffId(getNewDataWffId());
+                    }
+                    tagByWffId.put(child.getDataWffId().getValue(), child);
                 }
-
-                tagByWffId.put(child.getDataWffId().getValue(), child);
 
                 final Set<AbstractHtml> subChildren = child
                         .getChildren(ACCESS_OBJECT);
@@ -980,9 +990,22 @@ public abstract class BrowserPage implements Serializable {
                 ACCESS_OBJECT);
     }
 
-    private void addInsertBeforeListener(final AbstractHtml abstractHtml) {
-        abstractHtml.getSharedObject().setInsertBeforeListener(
-                new InsertBeforeListenerImpl(this, ACCESS_OBJECT, tagByWffId),
+    private void addInsertTagsBeforeListener(final AbstractHtml abstractHtml) {
+        abstractHtml.getSharedObject().setInsertTagsBeforeListener(
+                new InsertTagsBeforeListenerImpl(this, ACCESS_OBJECT,
+                        tagByWffId),
+                ACCESS_OBJECT);
+    }
+
+    private void addInsertAfterListener(final AbstractHtml abstractHtml) {
+        abstractHtml.getSharedObject().setInsertAfterListener(
+                new InsertAfterListenerImpl(this, ACCESS_OBJECT, tagByWffId),
+                ACCESS_OBJECT);
+    }
+
+    private void addReplaceListener(final AbstractHtml abstractHtml) {
+        abstractHtml.getSharedObject().setReplaceListener(
+                new ReplaceListenerImpl(this, ACCESS_OBJECT, tagByWffId),
                 ACCESS_OBJECT);
     }
 
@@ -1347,7 +1370,9 @@ public abstract class BrowserPage implements Serializable {
                     addAttributeAddListener(rootTag);
                     addAttributeRemoveListener(rootTag);
                     addInnerHtmlAddListener(rootTag);
-                    addInsertBeforeListener(rootTag);
+                    addInsertAfterListener(rootTag);
+                    addInsertTagsBeforeListener(rootTag);
+                    addReplaceListener(rootTag);
                     addWffBMDataUpdateListener(rootTag);
                     addWffBMDataDeleteListener(rootTag);
                     addPushQueue(rootTag);
@@ -1356,17 +1381,23 @@ public abstract class BrowserPage implements Serializable {
                     afterRender(rootTag);
                     wsWarningDisabled = false;
                 } else {
-                    synchronized (wffBMBytesQueue) {
+                    unholdPushLock.lock();
+                    try {
                         wffBMBytesQueue.clear();
                         pushQueueSize.reset();
+                    } finally {
+                        unholdPushLock.unlock();
                     }
                 }
             }
 
         } else {
-            synchronized (wffBMBytesQueue) {
+            unholdPushLock.lock();
+            try {
                 wffBMBytesQueue.clear();
                 pushQueueSize.reset();
+            } finally {
+                unholdPushLock.unlock();
             }
         }
 
@@ -1550,12 +1581,21 @@ public abstract class BrowserPage implements Serializable {
      * @author WFF
      */
     public final void unholdPush() {
-
         if (holdPush.get() > 0) {
+            holdPush.decrementAndGet();
+            if (copyCachedBMBytesToMainQ()) {
+                pushWffBMBytesQueue();
+            }
+        }
+    }
 
-            synchronized (wffBMBytesQueue) {
+    private boolean copyCachedBMBytesToMainQ() {
 
-                holdPush.decrementAndGet();
+        boolean copied = false;
+
+        if (!unholdPushLock.hasQueuedThreads()) {
+            unholdPushLock.lock();
+            try {
 
                 ClientTasksWrapper clientTask = wffBMBytesHoldPushQueue.poll();
 
@@ -1600,14 +1640,18 @@ public abstract class BrowserPage implements Serializable {
                             ByteBuffer.wrap(WffBinaryMessageUtil.VERSION_1
                                     .getWffBinaryMessageBytes(
                                             invokeMultipleTasks))));
+
                     pushQueueSize.increment();
 
-                    pushWffBMBytesQueue();
+                    copied = true;
                 }
 
+            } finally {
+                unholdPushLock.unlock();
             }
         }
 
+        return copied;
     }
 
     /**

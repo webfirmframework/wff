@@ -25,7 +25,7 @@ import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
  *
  *
  */
-class ParentNoTagData<T> {
+final class ParentNoTagData<T> {
 
     private final AbstractHtml parent;
 
