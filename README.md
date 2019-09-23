@@ -31,6 +31,23 @@ To support us please donate anything you wish to the author of this framework!
 Here are some sample codes
 
 ##### Sample1 :-
+since 3.0.7 you can use functional style coding
+~~~
+Html html = new Html(null).give(html -> {
+       	 
+    new Head(html);
+       	 
+    new Body(html).give(body -> {           	 
+        new NoTag(body, "Hello World");           	 
+    });
+       	 
+});
+// prepends the doc type <!DOCTYPE html>
+html.setPrependDocType(true);
+System.out.println(html.toHtmlString(true)); 
+~~~
+
+or the same in another coding style
 ~~~
 Html html = new Html(null) {
        	 
@@ -38,7 +55,7 @@ Html html = new Html(null) {
        	 
         	Body body = new Body(this) {
            	 
-            	Blank blank = new Blank(this, "Hello World");
+            	new NoTag(this, "Hello World");
            	 
         	};
        	 
