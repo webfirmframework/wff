@@ -126,11 +126,11 @@ final class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
         final byte[][] tagNameAndWffId = DataWffIdUtil
                 .getIndexedTagNameAndWffId(accessObject, parentTag);
 
-        final byte[] parentTagName = tagNameAndWffId[0];
+        final byte[] parentTagNameIndexed = tagNameAndWffId[0];
 
         final byte[] parentWffIdBytes = tagNameAndWffId[1];
 
-        final NameValue parentTagNameValue = new NameValue(parentTagName,
+        final NameValue parentTagNameValue = new NameValue(parentTagNameIndexed,
                 new byte[][] { parentWffIdBytes });
 
         nameValues.add(parentTagNameValue);
@@ -179,8 +179,10 @@ final class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
         final Queue<Collection<NameValue>> multiTasks = new ArrayDeque<>(2);
         multiTasks.add(nameValues);
 
-        final String parentTagNameString = new String(parentTagName,
-                StandardCharsets.UTF_8);
+        final String parentTagNameString = DataWffIdUtil
+                .parseTagNameBytesCompressedByIndex(parentTagNameIndexed,
+                        StandardCharsets.UTF_8);
+
         if (TagNameConstants.TEXTAREA.equals(parentTagNameString)) {
             //@formatter:off
                 // removed all children tags task format :-

@@ -73,6 +73,10 @@ public final class TagUtil {
                     "Not allowed to consume this method. This method is for internal use.");
         }
 
+        // NB: if this method is modified then
+        // DataWffIdUtil.parseTagNameBytesCompressedByIndex should also be
+        // modified
+
         // just be initialized as local
         final byte[] tagNameIndexBytes = tag.getTagNameIndexBytes();
 
