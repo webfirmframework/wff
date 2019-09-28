@@ -22,6 +22,8 @@ import java.util.function.Consumer;
 import com.webfirmframework.wffweb.css.core.CssProperty;
 
 /**
+ * Use {@code InlineCssBlock#load(String, Consumer)} method to create instance.
+ * It returns a new object every time. of this class.
  *
  * @author WFF
  * @since 3.0.8
@@ -32,10 +34,19 @@ public final class InlineCssBlock extends AbstractCssFileBlock {
 
     private Consumer<Set<CssProperty>> consumer;
 
-    public InlineCssBlock(final String name) {
+    private InlineCssBlock(final String name) {
         super(name);
     }
 
+    /**
+     * Internally calls setExcludeCssBlock method and returns the current
+     * instance.
+     *
+     * @param excludeCssBlock
+     *                            true or false
+     * @return the current instance
+     * @since 3.0.8
+     */
     public InlineCssBlock setExclude(final boolean excludeCssBlock) {
         super.setExcludeCssBlock(excludeCssBlock);
         return this;
@@ -48,6 +59,12 @@ public final class InlineCssBlock extends AbstractCssFileBlock {
         }
     }
 
+    /**
+     * @param selectors
+     * @param consumer
+     * @return a new instance of InlineCssBlock with the applied properties.
+     * @since 3.0.8
+     */
     public static InlineCssBlock load(final String selectors,
             final Consumer<Set<CssProperty>> consumer) {
         final InlineCssBlock inlineCssBlock = new InlineCssBlock(selectors);
