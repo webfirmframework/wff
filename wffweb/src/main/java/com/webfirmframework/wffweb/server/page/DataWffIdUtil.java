@@ -22,6 +22,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.TagUtil;
 import com.webfirmframework.wffweb.tag.html.core.PreIndexedTagName;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
@@ -228,6 +229,8 @@ final class DataWffIdUtil {
     static String parseTagNameBytesCompressedByIndex(final byte[] bytes,
             final Charset charset) {
 
+        // this method should be moved to appropriate class
+
         if (bytes == null || bytes.length == 0) {
             return null;
         }
@@ -250,5 +253,52 @@ final class DataWffIdUtil {
         final byte[] tagNameBytes = new byte[bytes.length - 1];
         System.arraycopy(bytes, 1, tagNameBytes, 0, tagNameBytes.length);
         return new String(tagNameBytes, charset);
+    }
+
+    /**
+     * @param bytes
+     *                    tag name compressed by index bytes
+     * @param charset
+     * @return true if the tag name is textarea otherwise false
+     * @since 3.0.8
+     */
+    static boolean isTagNameTextArea(final byte[] bytes,
+            final Charset charset) {
+
+        // this method should be moved to appropriate class
+
+        if (bytes == null || bytes.length == 0) {
+            return false;
+        }
+        if (bytes.length == 1) {
+            final int tagNameIndex = WffBinaryMessageUtil
+                    .getIntFromOptimizedBytes(bytes);
+
+            if (tagNameIndex == PreIndexedTagName.TEXTAREA.index()) {
+                return true;
+            }
+
+            return false;
+        }
+
+        final byte lengOfOptmzdBytsOfTgNam = bytes[0];
+
+        if (lengOfOptmzdBytsOfTgNam > 0) {
+            final byte[] copy = new byte[lengOfOptmzdBytsOfTgNam];
+            System.arraycopy(bytes, 1, copy, 0, copy.length);
+            final int tagNameIndex = WffBinaryMessageUtil
+                    .getIntFromOptimizedBytes(copy);
+
+            if (tagNameIndex == PreIndexedTagName.TEXTAREA.index()) {
+                return true;
+            }
+
+            return false;
+        }
+
+        final byte[] tagNameBytes = new byte[bytes.length - 1];
+        System.arraycopy(bytes, 1, tagNameBytes, 0, tagNameBytes.length);
+        return TagNameConstants.TEXTAREA
+                .equals(new String(tagNameBytes, charset));
     }
 }

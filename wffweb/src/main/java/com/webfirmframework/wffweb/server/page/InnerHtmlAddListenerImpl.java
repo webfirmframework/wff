@@ -29,7 +29,6 @@ import java.util.logging.Logger;
 import com.webfirmframework.wffweb.InvalidTagException;
 import com.webfirmframework.wffweb.server.page.js.WffJsFile;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
-import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.TagUtil;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.tag.html.listener.InnerHtmlAddListener;
@@ -179,11 +178,8 @@ final class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
         final Queue<Collection<NameValue>> multiTasks = new ArrayDeque<>(2);
         multiTasks.add(nameValues);
 
-        final String parentTagNameString = DataWffIdUtil
-                .parseTagNameBytesCompressedByIndex(parentTagNameIndexed,
-                        StandardCharsets.UTF_8);
-
-        if (TagNameConstants.TEXTAREA.equals(parentTagNameString)) {
+        if (DataWffIdUtil.isTagNameTextArea(parentTagNameIndexed,
+                StandardCharsets.UTF_8)) {
             //@formatter:off
                 // removed all children tags task format :-
                 // { "name": task_byte, "values" : [COPY_INNER_TEXT_TO_VALUE_byte_from_Task_enum]}, { "name": parent_tag_name, "values" : [ data-wff-id ] }

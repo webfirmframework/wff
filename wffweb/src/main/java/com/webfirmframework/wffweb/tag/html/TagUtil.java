@@ -74,7 +74,8 @@ public final class TagUtil {
         }
 
         // NB: if this method is modified then
-        // DataWffIdUtil.parseTagNameBytesCompressedByIndex should also be
+        // DataWffIdUtil.parseTagNameBytesCompressedByIndex,
+        // DataWffIdUtil.isTagNameTextArea should also be
         // modified
 
         // just be initialized as local
