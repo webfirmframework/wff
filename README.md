@@ -108,6 +108,7 @@ Hello World
 ##### Sample2 :-
 ~~~
 Div div = new Div(null); 
+System.out.println(div.toHtmlString()); 
 ~~~
 prints :- 
 ~~~
@@ -116,13 +117,11 @@ prints :-
 
 ##### Sample3 :-
 ~~~
-Div div = new Div(null) {
-       	 
-        	Div div1 = new Div(this);  
-       	 
-        	Div div2 = new Div(this);
-       	 
-};
+Div rootTag = new Div(body).give(div -> {
+    new Div(div);
+    new Div(div);
+});
+System.out.println(rootTag.toHtmlString()); 
 ~~~
 prints :- 
 ~~~
@@ -136,6 +135,7 @@ prints :-
 ##### Sample4 :-
 ~~~
 Div div = new Div(null, new Width(50, CssLengthUnit.PX));
+System.out.println(div.toHtmlString()); 
 ~~~
 prints :- 
 ~~~
@@ -145,6 +145,7 @@ prints :-
 ##### Sample5 :-
 ~~~
 Div div = new Div(null, new Style(new BackgroundColor("green")));
+System.out.println(div.toHtmlString()); 
 ~~~
 prints :- 
 ~~~
@@ -154,36 +155,38 @@ prints :-
 ##### Sample6 :-
 ```
 final Style paragraphStyle = new Style("color:red");
+Html rootTag = new Html(null, new CustomAttribute("some", "val"),
+        new Id("htmlId"), new Style("background:white;width:15px"))
+                .give(html -> {
 
-Html html = new Html(null, new CustomAttribute("some", "val"), new Id("htmlId"),
-		new Style("background:white;width:15px")) {{
+                    new Div(html, new Id("outerDivId")).give(div -> {
 
-	new Div(this, new Id("outerDivId")) {
+                        int[] paragraphCount = { 0 };
 
-		int paragraphCount = 0;
+                        new Div(div).give(div2 -> {
 
-		Div contentDiv = new Div(this) {{
+                            new H1(div2).give(h -> {
+                                new NoTag(h, "Web Firm Framework");
+                            });
 
-			new H1(this) {{
-				new NoTag(this, "Web Firm Framework");
-			}};
+                            for (paragraphCount[0] = 1; paragraphCount[0] < 4; paragraphCount[0]++) {
+                                new P(div2, paragraphStyle).give(p -> {
+                                    new NoTag(p,
+                                            "Web Firm Framework Paragraph "
+                                                    + paragraphCount);
+                                });
+                            }
 
-			for (paragraphCount = 1; paragraphCount < 4; paragraphCount++) {
-				new P(this, paragraphStyle) {{
-					new NoTag(this,
-							"Web Firm Framework Paragraph " + paragraphCount);
-				}};
-			}
+                        });
+                    });
 
-		}};
-	};
-
-	new Div(this, new Hidden());
-}};
+                    new Div(html, new Hidden());
+                });
 
 paragraphStyle.addCssProperty(AlignContent.CENTER);
 
-System.out.println(html.toHtmlString(true));
+System.out.println(rootTag.toHtmlString(true));
+
 ```
 prints
 
