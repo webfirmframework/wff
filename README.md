@@ -31,7 +31,7 @@ To support us please donate anything you wish to the author of this framework!
 Here are some sample codes
 
 ##### Sample1 :-
-since 3.0.8 or later you can use functional style coding
+Since 3.0.8 or later you can use functional style coding as follows. This is the recommended coding style vs anonymous coding style.
 ~~~
 Html rootTag = new Html(null).give(html -> {
        	 
@@ -108,11 +108,6 @@ Hello World
 ##### Sample2 :-
 ~~~
 Div div = new Div(null); 
-~~~
-or 
-~~~
-Div div = new Div(null) {
-};
 ~~~
 prints :- 
 ~~~
