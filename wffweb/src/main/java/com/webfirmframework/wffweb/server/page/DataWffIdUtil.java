@@ -16,11 +16,13 @@
 package com.webfirmframework.wffweb.server.page;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.TagUtil;
 import com.webfirmframework.wffweb.tag.html.core.PreIndexedTagName;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
@@ -28,6 +30,9 @@ import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 
 final class DataWffIdUtil {
+
+    private static final PreIndexedTagName[] PRE_INDEXED_TAG_NAMES = PreIndexedTagName
+            .values();
 
     private DataWffIdUtil() {
         throw new AssertionError();
@@ -212,5 +217,88 @@ final class DataWffIdUtil {
             throws UnsupportedEncodingException {
         // there is no DataWffId attribute for NoTag
         return new byte[2][0];
+    }
+
+    /**
+     * @param bytes
+     *                    the compressed by index bytes of tag name
+     * @param charset
+     * @return the tag name or null if no tag name
+     * @since 3.0.8
+     */
+    static String parseTagNameBytesCompressedByIndex(final byte[] bytes,
+            final Charset charset) {
+
+        // this method should be moved to appropriate class
+
+        if (bytes == null || bytes.length == 0) {
+            return null;
+        }
+        if (bytes.length == 1) {
+            final int tagNameIndex = WffBinaryMessageUtil
+                    .getIntFromOptimizedBytes(bytes);
+            return PRE_INDEXED_TAG_NAMES[tagNameIndex].tagName();
+        }
+
+        final byte lengOfOptmzdBytsOfTgNam = bytes[0];
+
+        if (lengOfOptmzdBytsOfTgNam > 0) {
+            final byte[] copy = new byte[lengOfOptmzdBytsOfTgNam];
+            System.arraycopy(bytes, 1, copy, 0, copy.length);
+            final int tagNameIndex = WffBinaryMessageUtil
+                    .getIntFromOptimizedBytes(copy);
+            return PRE_INDEXED_TAG_NAMES[tagNameIndex].tagName();
+        }
+
+        final byte[] tagNameBytes = new byte[bytes.length - 1];
+        System.arraycopy(bytes, 1, tagNameBytes, 0, tagNameBytes.length);
+        return new String(tagNameBytes, charset);
+    }
+
+    /**
+     * @param bytes
+     *                    tag name compressed by index bytes
+     * @param charset
+     * @return true if the tag name is textarea otherwise false
+     * @since 3.0.8
+     */
+    static boolean isTagNameTextArea(final byte[] bytes,
+            final Charset charset) {
+
+        // this method should be moved to appropriate class
+
+        if (bytes == null || bytes.length == 0) {
+            return false;
+        }
+        if (bytes.length == 1) {
+            final int tagNameIndex = WffBinaryMessageUtil
+                    .getIntFromOptimizedBytes(bytes);
+
+            if (tagNameIndex == PreIndexedTagName.TEXTAREA.index()) {
+                return true;
+            }
+
+            return false;
+        }
+
+        final byte lengOfOptmzdBytsOfTgNam = bytes[0];
+
+        if (lengOfOptmzdBytsOfTgNam > 0) {
+            final byte[] copy = new byte[lengOfOptmzdBytsOfTgNam];
+            System.arraycopy(bytes, 1, copy, 0, copy.length);
+            final int tagNameIndex = WffBinaryMessageUtil
+                    .getIntFromOptimizedBytes(copy);
+
+            if (tagNameIndex == PreIndexedTagName.TEXTAREA.index()) {
+                return true;
+            }
+
+            return false;
+        }
+
+        final byte[] tagNameBytes = new byte[bytes.length - 1];
+        System.arraycopy(bytes, 1, tagNameBytes, 0, tagNameBytes.length);
+        return TagNameConstants.TEXTAREA
+                .equals(new String(tagNameBytes, charset));
     }
 }

@@ -62,7 +62,7 @@ public class SampleCssFile extends CssFile {
         @Override
         protected void load(Set<CssProperty> cssProperties) {
 
-            if (!fontWeights.contains(FontWeight.NINE_HUNDRED)) {
+            if (!fontWeights.contains(FontWeight._900)) {
                 setExcludeCssBlock(true);
             }
 

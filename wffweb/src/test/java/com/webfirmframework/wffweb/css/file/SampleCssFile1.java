@@ -38,4 +38,10 @@ public class SampleCssFile1 extends CssFile {
         }
     };
 
+    private InlineCssBlock block2 = InlineCssBlock.load("test-class11",
+            cssProperties -> {
+                cssProperties.add(FontStyle.NORMAL);
+                cssProperties.add(cssProperty);
+            });
+
 }

@@ -28,24 +28,24 @@ public class CssFileTest {
 
     @Test
     public void testToCssString() {
-        final SampleCssFile sampleCssFile = new SampleCssFile(FontWeight.NINE_HUNDRED);
+        final SampleCssFile sampleCssFile = new SampleCssFile(FontWeight._900);
         String cssString = sampleCssFile.toCssString();
-        assertEquals("test-class1{font-style:normal;background-color:green;}test-class2{font-style:oblique;}test-class3{font-style:oblique;}", cssString);
-        sampleCssFile.getFontWeights().remove(FontWeight.NINE_HUNDRED);
+        assertEquals("test-class1{font-style:normal;background-color:green;}test-class11{font-style:normal;background-color:green;}test-class2{font-style:oblique;}test-class3{font-style:oblique;}", cssString);
+        sampleCssFile.getFontWeights().remove(FontWeight._900);
         cssString = sampleCssFile.toCssString();
-        assertEquals("test-class1{font-style:normal;background-color:green;}test-class2{font-style:oblique;}test-class3{font-style:oblique;}", sampleCssFile.toCssString());
+        assertEquals("test-class1{font-style:normal;background-color:green;}test-class11{font-style:normal;background-color:green;}test-class2{font-style:oblique;}test-class3{font-style:oblique;}", sampleCssFile.toCssString());
     }
     
     @Test
     public void testToCssStringBooleanTrue() {
-        final SampleCssFile sampleCssFile = new SampleCssFile(FontWeight.NINE_HUNDRED);
+        final SampleCssFile sampleCssFile = new SampleCssFile(FontWeight._900);
         String cssString = sampleCssFile.toCssString();
         cssString = sampleCssFile.toCssString();
-        assertEquals("test-class1{font-style:normal;background-color:green;}test-class2{font-style:oblique;}test-class3{font-style:oblique;}", cssString);
-        sampleCssFile.getFontWeights().remove(FontWeight.NINE_HUNDRED);
+        assertEquals("test-class1{font-style:normal;background-color:green;}test-class11{font-style:normal;background-color:green;}test-class2{font-style:oblique;}test-class3{font-style:oblique;}", cssString);
+        sampleCssFile.getFontWeights().remove(FontWeight._900);
         cssString = sampleCssFile.toCssString(true);
         cssString = sampleCssFile.toCssString(true);
-        assertEquals("test-class1{font-style:normal;background-color:green;}test-class2{font-style:oblique;}", cssString);
+        assertEquals("test-class1{font-style:normal;background-color:green;}test-class11{font-style:normal;background-color:green;}test-class2{font-style:oblique;}", cssString);
     }
     
     @Test
@@ -53,7 +53,7 @@ public class CssFileTest {
         final SampleCssFile sampleCssFile = new SampleCssFile(FontWeight.BOLDER);
         String cssString = sampleCssFile.toCssString();
         cssString = sampleCssFile.toCssString();
-        assertEquals("test-class1{font-style:normal;background-color:green;}test-class2{font-style:oblique;}", cssString);
+        assertEquals("test-class1{font-style:normal;background-color:green;}test-class11{font-style:normal;background-color:green;}test-class2{font-style:oblique;}", cssString);
     }
     
     @Test
@@ -61,17 +61,17 @@ public class CssFileTest {
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         
-        final SampleCssFile sampleCssFile = new SampleCssFile(FontWeight.NINE_HUNDRED);
+        final SampleCssFile sampleCssFile = new SampleCssFile(FontWeight._900);
         sampleCssFile.toOutputStream(baos);
         String cssString = new String(baos.toByteArray());
-        assertEquals("test-class1{font-style:normal;background-color:green;}test-class2{font-style:oblique;}test-class3{font-style:oblique;}", cssString);
-        sampleCssFile.getFontWeights().remove(FontWeight.NINE_HUNDRED);
+        assertEquals("test-class1{font-style:normal;background-color:green;}test-class11{font-style:normal;background-color:green;}test-class2{font-style:oblique;}test-class3{font-style:oblique;}", cssString);
+        sampleCssFile.getFontWeights().remove(FontWeight._900);
         
         baos = new ByteArrayOutputStream();
         sampleCssFile.toOutputStream(baos);
         cssString = sampleCssFile.toCssString();
 //        assertEquals("test-class1{font-style:normal;background-color:green;}test-class2{font-style:oblique;}", cssString);
-        assertEquals("test-class1{font-style:normal;background-color:green;}test-class2{font-style:oblique;}test-class3{font-style:oblique;}", sampleCssFile.toCssString());
+        assertEquals("test-class1{font-style:normal;background-color:green;}test-class11{font-style:normal;background-color:green;}test-class2{font-style:oblique;}test-class3{font-style:oblique;}", sampleCssFile.toCssString());
 //        fail("Not yet implemented");
     }
     
@@ -79,11 +79,11 @@ public class CssFileTest {
     public void testToOutputStreamBooleanTrue() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         
-        final SampleCssFile sampleCssFile = new SampleCssFile(FontWeight.NINE_HUNDRED);
+        final SampleCssFile sampleCssFile = new SampleCssFile(FontWeight._900);
         sampleCssFile.toOutputStream(baos);
         String cssString = new String(baos.toByteArray());
-        assertEquals("test-class1{font-style:normal;background-color:green;}test-class2{font-style:oblique;}test-class3{font-style:oblique;}", cssString);
-        sampleCssFile.getFontWeights().remove(FontWeight.NINE_HUNDRED);
+        assertEquals("test-class1{font-style:normal;background-color:green;}test-class11{font-style:normal;background-color:green;}test-class2{font-style:oblique;}test-class3{font-style:oblique;}", cssString);
+        sampleCssFile.getFontWeights().remove(FontWeight._900);
         baos = new ByteArrayOutputStream();
         sampleCssFile.toOutputStream(baos, true);
         cssString = new String(baos.toByteArray());
@@ -92,7 +92,7 @@ public class CssFileTest {
         sampleCssFile.toOutputStream(baos, true);
         cssString = new String(baos.toByteArray());
 
-        assertEquals("test-class1{font-style:normal;background-color:green;}test-class2{font-style:oblique;}", cssString);
+        assertEquals("test-class1{font-style:normal;background-color:green;}test-class11{font-style:normal;background-color:green;}test-class2{font-style:oblique;}", cssString);
     }
     
     @Test
@@ -106,7 +106,7 @@ public class CssFileTest {
         baos = new ByteArrayOutputStream();
         sampleCssFile.toOutputStream(baos);
         cssString = new String(baos.toByteArray());
-        assertEquals("test-class1{font-style:normal;background-color:green;}test-class2{font-style:oblique;}", cssString);
+        assertEquals("test-class1{font-style:normal;background-color:green;}test-class11{font-style:normal;background-color:green;}test-class2{font-style:oblique;}", cssString);
     }
     
     @Test
@@ -121,7 +121,7 @@ public class CssFileTest {
         baos = new ByteArrayOutputStream();
         sampleCssFile.toOutputStream(baos);
         cssString = new String(baos.toByteArray());
-        assertEquals("@CHARSET \"UTF-8\";\ntest-class1{font-style:normal;background-color:green;}test-class2{font-style:oblique;}", cssString);
+        assertEquals("@CHARSET \"UTF-8\";\ntest-class1{font-style:normal;background-color:green;}test-class11{font-style:normal;background-color:green;}test-class2{font-style:oblique;}", cssString);
     }
 
 }
