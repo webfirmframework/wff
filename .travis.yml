@@ -4,6 +4,7 @@ language: java
 
 jdk:
   
+  - oraclejdk13
   - oraclejdk11
   - openjdk-ea
   - openjdk13
