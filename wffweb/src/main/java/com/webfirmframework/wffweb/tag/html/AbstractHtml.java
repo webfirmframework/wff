@@ -1534,6 +1534,16 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     private void initSharedObject(final AbstractHtml child) {
+        initSharedObject(child, sharedObject);
+    }
+
+    /**
+     * @param child
+     * @param sharedObject
+     * @since 3.0.9
+     */
+    private static void initSharedObject(final AbstractHtml child,
+            final AbstractHtml5SharedObject sharedObject) {
 
         final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
         // passed 2 instead of 1 because the load factor is 0.75f
@@ -5520,7 +5530,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                             tagToInsert.parent.children.remove(tagToInsert);
                         }
 
-                        initSharedObject(tagToInsert);
+                        initSharedObject(tagToInsert, thisSharedObject);
 
                         tagToInsert.parent = thisParent;
 

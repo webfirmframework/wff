@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -37,6 +38,7 @@ import com.webfirmframework.wffweb.server.page.BrowserPage;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.MaxLength;
 import com.webfirmframework.wffweb.tag.html.attribute.Name;
+import com.webfirmframework.wffweb.tag.html.attribute.Src;
 import com.webfirmframework.wffweb.tag.html.attribute.Type;
 import com.webfirmframework.wffweb.tag.html.attribute.Value;
 import com.webfirmframework.wffweb.tag.html.attribute.global.ClassAttribute;
@@ -49,6 +51,7 @@ import com.webfirmframework.wffweb.tag.html.formsandinputs.Input;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Controls;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.Translate;
 import com.webfirmframework.wffweb.tag.html.links.A;
+import com.webfirmframework.wffweb.tag.html.links.Link;
 import com.webfirmframework.wffweb.tag.html.metainfo.Head;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Span;
@@ -378,6 +381,48 @@ public class AbstractHtmlTest {
     }
     
     @Test
+    public void testReplaceWithUnderBrowserPage() {
+        BrowserPage browserPage = new BrowserPage() {
+            
+            @Override
+            public String webSocketUrl() {
+                return "ws://localhost/indexws";
+            }
+            
+            @Override
+            public AbstractHtml render() {
+               
+                Html rootTag = new Html(null).give(html -> {
+                    new Head(html).give(head -> {
+                        new Link(head, new Id("appbasicCssLink"), new Src("https://localhost/appbasic.css"));
+                    });
+                    new Body(html).give(body -> {
+                       
+                        new Div(body, new Id("parentDivId"));
+                        
+                    });
+                });
+                return rootTag;
+            }
+        };
+        
+        browserPage.toHtmlString();
+        
+        final AbstractHtml appbasicCssLink = browserPage.getTagRepository().findTagById("appbasicCssLink");
+        assertNotNull(appbasicCssLink);
+        assertEquals("link", appbasicCssLink.getTagName());
+        assertTrue(TagUtil.isTagged(appbasicCssLink));
+        
+        final Link appadditionalCssLink = new Link(null, new Id("appadditionalCssLink"), new Src("https://localhost/appadditional.css"));
+        
+        appbasicCssLink.replaceWith(appadditionalCssLink);
+        
+        final AbstractHtml appadditionalCssLinkFound = browserPage.getTagRepository().findTagById("appadditionalCssLink");
+        assertNotNull(appadditionalCssLinkFound);
+        assertEquals(appadditionalCssLink, appadditionalCssLinkFound);
+    }
+    
+    @Test
     public void testReplaceWith() {
         {
             Div parentDiv = new Div(null, new Id("parentDivId"));
@@ -387,6 +432,18 @@ public class AbstractHtmlTest {
             assertEquals(
                     "<div id=\"parentDivId\"><div id=\"inserted1BeforeChild1\"></div><div id=\"inserted2BeforeChild1\"></div></div>",
                     parentDiv.toHtmlString());
+            
+            final AbstractHtml replacementTag = TagRepository.findTagById("inserted1BeforeChild1", parentDiv);
+            assertNotNull(replacementTag);
+            Link lnk = new Link(parentDiv, new Id("cssLink"));
+            assertNotEquals(
+                    "<div id=\"parentDivId\"><div id=\"inserted1BeforeChild1\"></div><div id=\"inserted2BeforeChild1\"></div></div>",
+                    parentDiv.toHtmlString());
+            final AbstractHtml linkTag = TagRepository.findTagById("cssLink", parentDiv);
+            assertNotNull(linkTag);
+            assertEquals("link", linkTag.getTagName());
+            assertTrue(TagUtil.isTagged(lnk));
+            
         }
         {
             Div parentDiv = new Div(null, new Id("parentDivId"));
@@ -401,6 +458,9 @@ public class AbstractHtmlTest {
             assertEquals(
                     "<div id=\"parentDivId\"><div id=\"inserted1BeforeChild1\"></div><div id=\"child2\"></div></div>",
                     parentDiv.toHtmlString());
+            
+            final AbstractHtml replacementTag = TagRepository.findTagById("inserted1BeforeChild1", parentDiv);
+            assertNotNull(replacementTag);
         }
 
     }
