@@ -2099,7 +2099,35 @@ public class AbstractHtmlTest {
         mainDivId1.insertAfter(outerdv);
         assertNotEquals("<div data-wff-id=\"S17\" id=\"mainDivId2\"><span data-wff-id=\"S18\" id=\"mainDivId2\">Sample text</span></div>", mainDivId2.toHtmlString());        
         assertNotEquals("<div data-wff-id=\"S20\" id=\"mainDivId2\"><span data-wff-id=\"S18\" id=\"mainDivId2\">Sample text</span></div>", mainDivId2.toHtmlString());        
-        assertEquals("<div data-wff-id=\"S20\" id=\"mainDivId2\"><span data-wff-id=\"S22\" id=\"mainDivId2\">Sample text</span></div>", mainDivId2.toHtmlString());        
+        assertEquals("<div data-wff-id=\"S20\" id=\"mainDivId2\"><span data-wff-id=\"S22\" id=\"mainDivId2\">Sample text</span></div>", mainDivId2.toHtmlString());
+
+        body.appendChild(mainDivId2);
+        
+        assertEquals("<div data-wff-id=\"S20\" id=\"mainDivId2\"><span data-wff-id=\"S22\" id=\"mainDivId2\">Sample text</span></div>", mainDivId2.toHtmlString());
+        
+        mainDivId2.getParent().removeChild(mainDivId2);
+        assertEquals("<div data-wff-id=\"S20\" id=\"mainDivId2\"><span data-wff-id=\"S22\" id=\"mainDivId2\">Sample text</span></div>", mainDivId2.toHtmlString());
+        body.appendChild(mainDivId2);
+        assertNotEquals("<div data-wff-id=\"S20\" id=\"mainDivId2\"><span data-wff-id=\"S22\" id=\"mainDivId2\">Sample text</span></div>", mainDivId2.toHtmlString());
+        assertEquals("<div data-wff-id=\"S23\" id=\"mainDivId2\"><span data-wff-id=\"S24\" id=\"mainDivId2\">Sample text</span></div>", mainDivId2.toHtmlString());
+        
+        assertNotNull(mainDivId2.getParent());
+        body.addInnerHtml(mainDivId2);
+        assertEquals("<div data-wff-id=\"S25\" id=\"mainDivId2\"><span data-wff-id=\"S26\" id=\"mainDivId2\">Sample text</span></div>", mainDivId2.toHtmlString());
+        
+        body.removeAllChildren();
+        
+        Div div1 = new Div(null, new Id("div1"));
+        Div div2 = new Div(null, new Id("div2"));
+        body.appendChildren(div1, div2);
+        
+        div1.addInnerHtml(mainDivId2);
+        assertEquals("<div data-wff-id=\"S29\" id=\"mainDivId2\"><span data-wff-id=\"S30\" id=\"mainDivId2\">Sample text</span></div>", mainDivId2.toHtmlString());
+        assertEquals("<div data-wff-id=\"S29\" id=\"mainDivId2\"><span data-wff-id=\"S30\" id=\"mainDivId2\">Sample text</span></div>", mainDivId2.toHtmlString());
+        
+        assertNotNull(mainDivId2.getParent());
+        
+        div2.addInnerHtml(mainDivId2);
         
 //        System.out.println(body.toHtmlString());
         
