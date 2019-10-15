@@ -30,7 +30,8 @@ import com.webfirmframework.wffweb.tag.html.SharedTagContent.ContentFormatter;
  * <br>
  * NB: Nesting NoTag is not recommended and it may cause strange behavior. We
  * recommend TagContent enum for NoTag insertion in a tag instead of creating
- * new NoTag object.
+ * new NoTag object. insertBefore method in NoTag may not work as expected for
+ * now so its use is not recommended.
  *
  * @author WFF
  * @since 1.0.0
