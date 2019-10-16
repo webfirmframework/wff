@@ -140,6 +140,8 @@ public class Type extends AbstractAttribute
 
     public static final String WEEK = "week";
 
+    public static final String MODULE = "module";
+
     public static final String TEXT_JAVASCRIPT = "text/javascript";
 
     public static final String TEXT_ECMASCRIPT = "text/ecmascript";
