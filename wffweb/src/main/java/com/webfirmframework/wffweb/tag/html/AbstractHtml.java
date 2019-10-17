@@ -741,6 +741,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
                               // changes to the other BrowserPage}
 
                         }
+                    } else {
+                        removeDataWffIdFromHierarchy(innerHtml);
                     }
 
                     addChild(innerHtml, false);
@@ -755,15 +757,20 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 listenerInvoked = true;
             } else {
                 for (final AbstractHtml innerHtml : innerHtmls) {
-                    if (innerHtml.parent != null
-                            && innerHtml.parent.sharedObject
-                                    .getInnerHtmlAddListener(
-                                            ACCESS_OBJECT) == null) {
-                        removeFromTagByWffIdMap(innerHtml,
-                                innerHtml.parent.sharedObject
-                                        .getTagByWffId(ACCESS_OBJECT));
-                    } // else {TODO also write the code to push
-                      // changes to the other BrowserPage}
+
+                    if (innerHtml.parent != null) {
+                        if (innerHtml.parent.sharedObject
+                                .getInnerHtmlAddListener(
+                                        ACCESS_OBJECT) == null) {
+                            removeFromTagByWffIdMap(innerHtml,
+                                    innerHtml.parent.sharedObject
+                                            .getTagByWffId(ACCESS_OBJECT));
+                        } // else {TODO also write the code to push
+                          // changes to the other BrowserPage}
+                    } else {
+                        removeDataWffIdFromHierarchy(innerHtml);
+                    }
+
                     addChild(innerHtml, false);
                 }
             }
@@ -838,6 +845,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
                           // changes to the other BrowserPage}
 
                     }
+                } else {
+                    removeDataWffIdFromHierarchy(innerHtml);
                 }
 
                 addChild(innerHtml, false);
@@ -853,13 +862,17 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
         } else {
             for (final AbstractHtml innerHtml : innerHtmls) {
-                if (innerHtml.parent != null && innerHtml.parent.sharedObject
-                        .getInnerHtmlAddListener(ACCESS_OBJECT) == null) {
-                    removeFromTagByWffIdMap(innerHtml,
-                            innerHtml.parent.sharedObject
-                                    .getTagByWffId(ACCESS_OBJECT));
-                } // else {TODO also write the code to push
-                  // changes to the other BrowserPage}
+                if (innerHtml.parent != null) {
+                    if (innerHtml.parent.sharedObject
+                            .getInnerHtmlAddListener(ACCESS_OBJECT) == null) {
+                        removeFromTagByWffIdMap(innerHtml,
+                                innerHtml.parent.sharedObject
+                                        .getTagByWffId(ACCESS_OBJECT));
+                    } // else {TODO also write the code to push
+                      // changes to the other BrowserPage}
+                } else {
+                    removeDataWffIdFromHierarchy(innerHtml);
+                }
 
                 addChild(innerHtml, false);
             }
@@ -1376,12 +1389,16 @@ public abstract class AbstractHtml extends AbstractJsObject {
         try {
             lock.lock();
 
-            if (child.parent != null && child.parent.sharedObject
-                    .getChildTagAppendListener(ACCESS_OBJECT) == null) {
-                removeFromTagByWffIdMap(child,
-                        child.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
-            } // else {TODO also write the code to push
-              // changes to the other BrowserPage}
+            if (child.parent != null) {
+                if (child.parent.sharedObject
+                        .getChildTagAppendListener(ACCESS_OBJECT) == null) {
+                    removeFromTagByWffIdMap(child, child.parent.sharedObject
+                            .getTagByWffId(ACCESS_OBJECT));
+                } // else {TODO also write the code to push
+                  // changes to the other BrowserPage}
+            } else {
+                removeDataWffIdFromHierarchy(child);
+            }
 
             result = addChild(child, true);
         } finally {
@@ -1418,12 +1435,18 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
             lock.lock();
 
-            if (child.parent != null && child.parent.sharedObject
-                    .getChildTagAppendListener(ACCESS_OBJECT) == null) {
-                removeFromTagByWffIdMap(child,
-                        child.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
-            } // else {TODO also write the code to push
-              // changes to the other BrowserPage}
+            final boolean alreadyHasParent = child.parent != null;
+
+            if (alreadyHasParent) {
+                if (child.parent.sharedObject
+                        .getChildTagAppendListener(ACCESS_OBJECT) == null) {
+                    removeFromTagByWffIdMap(child, child.parent.sharedObject
+                            .getTagByWffId(ACCESS_OBJECT));
+                } // else {TODO also write the code to push
+                  // changes to the other BrowserPage}
+            } else {
+                removeDataWffIdFromHierarchy(child);
+            }
 
             result = addChild(child, invokeListener);
         } finally {
@@ -1510,6 +1533,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         tagByWffId.computeIfPresent(dataWffId.getValue(),
                                 (k, v) -> {
                                     if (child.equals(v)) {
+                                        child.removeDataWffId();
                                         return null;
                                     }
                                     return v;
@@ -1526,6 +1550,70 @@ public abstract class AbstractHtml extends AbstractJsObject {
         }
     }
 
+    /**
+     * @param tag
+     * @since 3.0.9
+     */
+    private static void removeDataWffIdFromHierarchy(final AbstractHtml tag) {
+
+        final Set<AbstractHtml> applicableTags = extractParentTagsForDataWffIdRemoval(
+                tag);
+
+        final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
+        childrenStack.push(applicableTags);
+
+        Set<AbstractHtml> children;
+        while ((children = childrenStack.poll()) != null) {
+            for (final AbstractHtml child : children) {
+
+                child.removeDataWffId();
+
+                final Set<AbstractHtml> subChildren = child.children;
+                if (subChildren != null && subChildren.size() > 0) {
+                    childrenStack.push(subChildren);
+                }
+
+            }
+        }
+
+    }
+
+    /**
+     * @param tag
+     * @return only the applicable parent tags for DataWffId removal. NB: all of
+     *         its children are also applicable for DataWffId removal.
+     * @since 3.0.9
+     */
+    private static Set<AbstractHtml> extractParentTagsForDataWffIdRemoval(
+            final AbstractHtml tag) {
+
+        final Set<AbstractHtml> applicableTags = new HashSet<>(2);
+
+        final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
+        // passed 2 instead of 1 because the load factor is 0.75f
+        final Set<AbstractHtml> initialSet = new HashSet<>(2);
+        initialSet.add(tag);
+        childrenStack.push(initialSet);
+
+        Set<AbstractHtml> children;
+        while ((children = childrenStack.poll()) != null) {
+            for (final AbstractHtml child : children) {
+
+                if (child.parentNullifiedOnce) {
+                    applicableTags.add(child);
+                } else {
+                    final Set<AbstractHtml> subChildren = child.children;
+                    if (subChildren != null && subChildren.size() > 0) {
+                        childrenStack.push(subChildren);
+                    }
+                }
+
+            }
+        }
+
+        return applicableTags;
+    }
+
     private void initParentAndSharedObject(final AbstractHtml child) {
 
         initSharedObject(child);
@@ -1534,6 +1622,16 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     private void initSharedObject(final AbstractHtml child) {
+        initSharedObject(child, sharedObject);
+    }
+
+    /**
+     * @param child
+     * @param sharedObject
+     * @since 3.0.9
+     */
+    private static void initSharedObject(final AbstractHtml child,
+            final AbstractHtml5SharedObject sharedObject) {
 
         final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
         // passed 2 instead of 1 because the load factor is 0.75f
@@ -1592,12 +1690,16 @@ public abstract class AbstractHtml extends AbstractJsObject {
             for (final AbstractHtml child : children) {
                 final AbstractHtml previousParent = child.parent;
 
-                if (child.parent != null && child.parent.sharedObject
-                        .getChildTagAppendListener(ACCESS_OBJECT) == null) {
-                    removeFromTagByWffIdMap(child, child.parent.sharedObject
-                            .getTagByWffId(ACCESS_OBJECT));
-                } // else {TODO also write the code to push
-                  // changes to the other BrowserPage}
+                if (child.parent != null) {
+                    if (child.parent.sharedObject
+                            .getChildTagAppendListener(ACCESS_OBJECT) == null) {
+                        removeFromTagByWffIdMap(child, child.parent.sharedObject
+                                .getTagByWffId(ACCESS_OBJECT));
+                    } // else {TODO also write the code to push
+                      // changes to the other BrowserPage}
+                } else {
+                    removeDataWffIdFromHierarchy(child);
+                }
 
                 addChild(child, false);
 
@@ -1654,12 +1756,16 @@ public abstract class AbstractHtml extends AbstractJsObject {
             for (final AbstractHtml child : children) {
                 final AbstractHtml previousParent = child.parent;
 
-                if (child.parent != null && child.parent.sharedObject
-                        .getChildTagAppendListener(ACCESS_OBJECT) == null) {
-                    removeFromTagByWffIdMap(child, child.parent.sharedObject
-                            .getTagByWffId(ACCESS_OBJECT));
-                } // else {TODO also write the code to push
-                  // changes to the other BrowserPage}
+                if (previousParent != null) {
+                    if (child.parent.sharedObject
+                            .getChildTagAppendListener(ACCESS_OBJECT) == null) {
+                        removeFromTagByWffIdMap(child, child.parent.sharedObject
+                                .getTagByWffId(ACCESS_OBJECT));
+                    } // else {TODO also write the code to push
+                      // changes to the other BrowserPage}
+                } else {
+                    removeDataWffIdFromHierarchy(child);
+                }
 
                 addChild(child, false);
 
@@ -1759,12 +1865,17 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 for (final AbstractHtml child : children) {
                     final AbstractHtml previousParent = child.parent;
 
-                    if (child.parent != null && child.parent.sharedObject
-                            .getChildTagAppendListener(ACCESS_OBJECT) == null) {
-                        removeFromTagByWffIdMap(child, child.parent.sharedObject
-                                .getTagByWffId(ACCESS_OBJECT));
-                    } // else {TODO also write the code to push
-                      // changes to the other BrowserPage}
+                    if (child.parent != null) {
+                        if (child.parent.sharedObject.getChildTagAppendListener(
+                                ACCESS_OBJECT) == null) {
+                            removeFromTagByWffIdMap(child,
+                                    child.parent.sharedObject
+                                            .getTagByWffId(ACCESS_OBJECT));
+                        } // else {TODO also write the code to push
+                          // changes to the other BrowserPage}
+                    } else {
+                        removeDataWffIdFromHierarchy(child);
+                    }
 
                     addChild(child, false);
 
@@ -1829,12 +1940,16 @@ public abstract class AbstractHtml extends AbstractJsObject {
         for (final AbstractHtml child : children) {
             final AbstractHtml previousParent = child.parent;
 
-            if (child.parent != null && child.parent.sharedObject
-                    .getChildTagAppendListener(ACCESS_OBJECT) == null) {
-                removeFromTagByWffIdMap(child,
-                        child.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
-            } // else {TODO also write the code to push
-              // changes to the other BrowserPage}
+            if (child.parent != null) {
+                if (child.parent.sharedObject
+                        .getChildTagAppendListener(ACCESS_OBJECT) == null) {
+                    removeFromTagByWffIdMap(child, child.parent.sharedObject
+                            .getTagByWffId(ACCESS_OBJECT));
+                } // else {TODO also write the code to push
+                  // changes to the other BrowserPage}
+            } else {
+                removeDataWffIdFromHierarchy(child);
+            }
 
             if (addChild(child, false)) {
                 results[0] = true;
@@ -2150,6 +2265,39 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 pushQueue.push();
             }
         }
+
+        return removed;
+    }
+
+    /**
+     * removes the dataWffId from this tag.
+     *
+     *
+     * @return true if dataWffId is removed.
+     * @since 3.0.9
+     */
+    private boolean removeDataWffId() {
+
+        boolean removed = false;
+
+        if (dataWffId == null || attributesMap == null) {
+            return false;
+        }
+
+        if (dataWffId.unsetOwnerTag(this)) {
+            final String attributeName = dataWffId.getAttributeName();
+            final AbstractAttribute prev = attributesMap.remove(attributeName);
+            removed = prev != null;
+        }
+
+        if (removed) {
+            attributes = new AbstractAttribute[attributesMap.size()];
+            attributesMap.values().toArray(attributes);
+            setModified(true);
+            sharedObject.setChildModified(true);
+        }
+
+        dataWffId = null;
 
         return removed;
     }
@@ -4541,7 +4689,12 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         tag.wffSlotIndex = nameValues.size();
                         nameValues.add(nameValue);
 
-                    } else if (!tag.getClosingTag().isEmpty()) {
+                    } else {
+
+                        // tag.tagName == null means it is no tag
+                        // !tag.getClosingTag().isEmpty() SharedTagContet is
+                        // injecting NoTag with empty content so
+                        // !tag.getClosingTag().isEmpty() is not valid here
 
                         final int parentWffSlotIndex = parentLocal == null ? -1
                                 : parentLocal.wffSlotIndex;
@@ -4693,7 +4846,12 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         tag.wffSlotIndex = nameValues.size();
                         nameValues.add(nameValue);
 
-                    } else if (!tag.getClosingTag().isEmpty()) {
+                    } else {
+
+                        // tag.tagName == null means it is no tag
+                        // !tag.getClosingTag().isEmpty() SharedTagContet is
+                        // injecting NoTag with empty content so
+                        // !tag.getClosingTag().isEmpty() is not valid here
 
                         final int parentWffSlotIndex = parentLocal == null ? -1
                                 : parentLocal.wffSlotIndex;
@@ -5272,6 +5430,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                         if (alreadyHasParent) {
                             tagToInsert.parent.children.remove(tagToInsert);
+                        } else {
+                            removeDataWffIdFromHierarchy(tagToInsert);
                         }
 
                         initSharedObject(tagToInsert);
@@ -5394,6 +5554,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                         if (alreadyHasParent) {
                             tagToInsert.parent.children.remove(tagToInsert);
+                        } else {
+                            removeDataWffIdFromHierarchy(tagToInsert);
                         }
 
                         initSharedObject(tagToInsert);
@@ -5518,9 +5680,11 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                         if (alreadyHasParent) {
                             tagToInsert.parent.children.remove(tagToInsert);
+                        } else {
+                            removeDataWffIdFromHierarchy(tagToInsert);
                         }
 
-                        initSharedObject(tagToInsert);
+                        initSharedObject(tagToInsert, thisSharedObject);
 
                         tagToInsert.parent = thisParent;
 

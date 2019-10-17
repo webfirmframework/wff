@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -37,6 +38,7 @@ import com.webfirmframework.wffweb.server.page.BrowserPage;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.MaxLength;
 import com.webfirmframework.wffweb.tag.html.attribute.Name;
+import com.webfirmframework.wffweb.tag.html.attribute.Src;
 import com.webfirmframework.wffweb.tag.html.attribute.Type;
 import com.webfirmframework.wffweb.tag.html.attribute.Value;
 import com.webfirmframework.wffweb.tag.html.attribute.global.ClassAttribute;
@@ -49,6 +51,7 @@ import com.webfirmframework.wffweb.tag.html.formsandinputs.Input;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Controls;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.Translate;
 import com.webfirmframework.wffweb.tag.html.links.A;
+import com.webfirmframework.wffweb.tag.html.links.Link;
 import com.webfirmframework.wffweb.tag.html.metainfo.Head;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Span;
@@ -378,6 +381,48 @@ public class AbstractHtmlTest {
     }
     
     @Test
+    public void testReplaceWithUnderBrowserPage() {
+        BrowserPage browserPage = new BrowserPage() {
+            
+            @Override
+            public String webSocketUrl() {
+                return "ws://localhost/indexws";
+            }
+            
+            @Override
+            public AbstractHtml render() {
+               
+                Html rootTag = new Html(null).give(html -> {
+                    new Head(html).give(head -> {
+                        new Link(head, new Id("appbasicCssLink"), new Src("https://localhost/appbasic.css"));
+                    });
+                    new Body(html).give(body -> {
+                       
+                        new Div(body, new Id("parentDivId"));
+                        
+                    });
+                });
+                return rootTag;
+            }
+        };
+        
+        browserPage.toHtmlString();
+        
+        final AbstractHtml appbasicCssLink = browserPage.getTagRepository().findTagById("appbasicCssLink");
+        assertNotNull(appbasicCssLink);
+        assertEquals("link", appbasicCssLink.getTagName());
+        assertTrue(TagUtil.isTagged(appbasicCssLink));
+        
+        final Link appadditionalCssLink = new Link(null, new Id("appadditionalCssLink"), new Src("https://localhost/appadditional.css"));
+        
+        appbasicCssLink.replaceWith(appadditionalCssLink);
+        
+        final AbstractHtml appadditionalCssLinkFound = browserPage.getTagRepository().findTagById("appadditionalCssLink");
+        assertNotNull(appadditionalCssLinkFound);
+        assertEquals(appadditionalCssLink, appadditionalCssLinkFound);
+    }
+    
+    @Test
     public void testReplaceWith() {
         {
             Div parentDiv = new Div(null, new Id("parentDivId"));
@@ -387,6 +432,18 @@ public class AbstractHtmlTest {
             assertEquals(
                     "<div id=\"parentDivId\"><div id=\"inserted1BeforeChild1\"></div><div id=\"inserted2BeforeChild1\"></div></div>",
                     parentDiv.toHtmlString());
+            
+            final AbstractHtml replacementTag = TagRepository.findTagById("inserted1BeforeChild1", parentDiv);
+            assertNotNull(replacementTag);
+            Link lnk = new Link(parentDiv, new Id("cssLink"));
+            assertNotEquals(
+                    "<div id=\"parentDivId\"><div id=\"inserted1BeforeChild1\"></div><div id=\"inserted2BeforeChild1\"></div></div>",
+                    parentDiv.toHtmlString());
+            final AbstractHtml linkTag = TagRepository.findTagById("cssLink", parentDiv);
+            assertNotNull(linkTag);
+            assertEquals("link", linkTag.getTagName());
+            assertTrue(TagUtil.isTagged(lnk));
+            
         }
         {
             Div parentDiv = new Div(null, new Id("parentDivId"));
@@ -401,6 +458,9 @@ public class AbstractHtmlTest {
             assertEquals(
                     "<div id=\"parentDivId\"><div id=\"inserted1BeforeChild1\"></div><div id=\"child2\"></div></div>",
                     parentDiv.toHtmlString());
+            
+            final AbstractHtml replacementTag = TagRepository.findTagById("inserted1BeforeChild1", parentDiv);
+            assertNotNull(replacementTag);
         }
 
     }
@@ -1920,6 +1980,167 @@ public class AbstractHtmlTest {
 //        assertTrue(toCompressedWffBMBytesProcessingTime < toWffBMBytesProcessingTime);
         
         
+    }
+    
+    @Test
+    public void testDataWffIdLifeCycle() {
+        BrowserPage browserPage = new BrowserPage() {
+            
+            @Override
+            public String webSocketUrl() {
+                return "ws://localhost/indexws";
+            }
+            
+            @Override
+            public AbstractHtml render() {
+               
+                Html rootTag = new Html(null).give(html -> {
+                    new Head(html).give(head -> {
+                        new Link(head, new Id("appbasicCssLink"), new Src("https://localhost/appbasic.css"));
+                    });
+                    new Body(html).give(body -> {
+                       
+                        Div dv = new Div(body, new Id("mainDivId1"));
+                        
+                        assertEquals("<div id=\"mainDivId1\"></div>", dv.toHtmlString());
+
+                        dv = new Div(body, new Id("mainDivId2")).give(dv2 -> {
+                            new Span(dv2, new Id("mainDivId2")).give(dv3 -> {
+                                new NoTag(dv3, "Sample text");
+                            });
+                        });
+                        
+                        assertEquals("<div id=\"mainDivId2\"><span id=\"mainDivId2\">Sample text</span></div>", dv.toHtmlString());
+                        
+                    });
+                });
+                return rootTag;
+            }
+        };
+        
+        browserPage.toHtmlString();
+        
+        final TagRepository tagRepository = browserPage.getTagRepository();
+        
+        final Body body = tagRepository.findBodyTag();
+        
+        //no need to remove DataWffId when tag is removed
+        //because we are removing it if it is again adding in to another tag
+        
+        final AbstractHtml mainDivId2 = tagRepository.findTagById("mainDivId2");
+        assertEquals("<div data-wff-id=\"S4\" id=\"mainDivId2\"><span data-wff-id=\"S5\" id=\"mainDivId2\">Sample text</span></div>", mainDivId2.toHtmlString());
+        
+        final AbstractHtml mainDivId1 = tagRepository.findTagById("mainDivId1");
+        assertEquals("<div data-wff-id=\"S3\" id=\"mainDivId1\"></div>", mainDivId1.toHtmlString());
+        mainDivId1.getParent().removeChild(mainDivId1);
+        assertEquals("<div data-wff-id=\"S3\" id=\"mainDivId1\"></div>", mainDivId1.toHtmlString());
+        
+        assertEquals("<div data-wff-id=\"S4\" id=\"mainDivId2\"><span data-wff-id=\"S5\" id=\"mainDivId2\">Sample text</span></div>", mainDivId2.toHtmlString());
+        
+        body.prependChildren(mainDivId1);
+        assertEquals("<div data-wff-id=\"S8\" id=\"mainDivId1\"></div>", mainDivId1.toHtmlString());
+        mainDivId1.getParent().removeChild(mainDivId1);
+        assertEquals("<div data-wff-id=\"S8\" id=\"mainDivId1\"></div>", mainDivId1.toHtmlString());
+        
+        assertEquals("<div data-wff-id=\"S4\" id=\"mainDivId2\"><span data-wff-id=\"S5\" id=\"mainDivId2\">Sample text</span></div>", mainDivId2.toHtmlString());
+        
+        body.prependChildren(mainDivId1);
+        assertEquals("<div data-wff-id=\"S9\" id=\"mainDivId1\"></div>", mainDivId1.toHtmlString());
+        mainDivId1.getParent().removeChildren(mainDivId1);
+        assertEquals("<div data-wff-id=\"S9\" id=\"mainDivId1\"></div>", mainDivId1.toHtmlString());
+        
+        assertEquals("<div data-wff-id=\"S4\" id=\"mainDivId2\"><span data-wff-id=\"S5\" id=\"mainDivId2\">Sample text</span></div>", mainDivId2.toHtmlString());
+        
+        body.prependChildren(mainDivId1);
+        assertEquals("<div data-wff-id=\"S10\" id=\"mainDivId1\"></div>", mainDivId1.toHtmlString());
+        mainDivId1.getParent().removeChildren(mainDivId1);
+        assertEquals("<div data-wff-id=\"S10\" id=\"mainDivId1\"></div>", mainDivId1.toHtmlString());
+        
+        assertEquals("<div data-wff-id=\"S4\" id=\"mainDivId2\"><span data-wff-id=\"S5\" id=\"mainDivId2\">Sample text</span></div>", mainDivId2.toHtmlString());        
+        
+        
+        
+        mainDivId2.getParent().removeChild(mainDivId2);
+        body.appendChildren(mainDivId2);
+        assertEquals("<div data-wff-id=\"S11\" id=\"mainDivId2\"><span data-wff-id=\"S12\" id=\"mainDivId2\">Sample text</span></div>", mainDivId2.toHtmlString());
+        assertEquals("<div data-wff-id=\"S10\" id=\"mainDivId1\"></div>", mainDivId1.toHtmlString());
+        mainDivId2.getParent().removeChildren(mainDivId2);
+        assertEquals("<div data-wff-id=\"S11\" id=\"mainDivId2\"><span data-wff-id=\"S12\" id=\"mainDivId2\">Sample text</span></div>", mainDivId2.toHtmlString());
+        assertEquals("<div data-wff-id=\"S10\" id=\"mainDivId1\"></div>", mainDivId1.toHtmlString());
+
+        body.appendChildren(mainDivId2);
+        assertNotEquals("<div data-wff-id=\"S11\" id=\"mainDivId2\"><span data-wff-id=\"S12\" id=\"mainDivId2\">Sample text</span></div>", mainDivId2.toHtmlString());
+        assertEquals("<div data-wff-id=\"S13\" id=\"mainDivId2\"><span data-wff-id=\"S14\" id=\"mainDivId2\">Sample text</span></div>", mainDivId2.toHtmlString());
+        
+        assertEquals("<div data-wff-id=\"S10\" id=\"mainDivId1\"></div>", mainDivId1.toHtmlString());
+        
+        mainDivId2.getParent().removeChild(mainDivId2);        
+        Div outerdv = new Div(null, new Id("mainDivId2Outer"));
+        outerdv.addInnerHtml(mainDivId2);
+        assertNotEquals("<div data-wff-id=\"S13\" id=\"mainDivId2\"><span data-wff-id=\"S14\" id=\"mainDivId2\">Sample text</span></div>", mainDivId2.toHtmlString());
+        assertEquals("<div id=\"mainDivId2\"><span id=\"mainDivId2\">Sample text</span></div>", mainDivId2.toHtmlString());
+        
+        body.prependChildren(mainDivId1);
+        
+        mainDivId1.insertBefore(outerdv);
+        assertNotEquals("<div id=\"mainDivId2\"><span id=\"mainDivId2\">Sample text</span></div>", mainDivId2.toHtmlString());
+        
+        assertEquals("<div data-wff-id=\"S17\" id=\"mainDivId2\"><span data-wff-id=\"S18\" id=\"mainDivId2\">Sample text</span></div>", mainDivId2.toHtmlString());
+        
+        outerdv.getParent().removeChild(outerdv);        
+        
+        outerdv = new Div(null, new Id("mainDivId2Outer"));
+        final Div mainDivId2OuterFirstChild = new Div(outerdv, new Id("mainDivId2OuterFirstChild"));
+        mainDivId2OuterFirstChild.insertBefore(mainDivId2);
+        
+        assertEquals("<div data-wff-id=\"S17\" id=\"mainDivId2\"><span data-wff-id=\"S18\" id=\"mainDivId2\">Sample text</span></div>", mainDivId2.toHtmlString());
+        
+        
+        mainDivId1.insertAfter(outerdv);
+        assertNotEquals("<div data-wff-id=\"S17\" id=\"mainDivId2\"><span data-wff-id=\"S18\" id=\"mainDivId2\">Sample text</span></div>", mainDivId2.toHtmlString());        
+        assertNotEquals("<div data-wff-id=\"S20\" id=\"mainDivId2\"><span data-wff-id=\"S18\" id=\"mainDivId2\">Sample text</span></div>", mainDivId2.toHtmlString());        
+        assertEquals("<div data-wff-id=\"S20\" id=\"mainDivId2\"><span data-wff-id=\"S22\" id=\"mainDivId2\">Sample text</span></div>", mainDivId2.toHtmlString());
+
+        body.appendChild(mainDivId2);
+        
+        assertEquals("<div data-wff-id=\"S20\" id=\"mainDivId2\"><span data-wff-id=\"S22\" id=\"mainDivId2\">Sample text</span></div>", mainDivId2.toHtmlString());
+        
+        mainDivId2.getParent().removeChild(mainDivId2);
+        assertEquals("<div data-wff-id=\"S20\" id=\"mainDivId2\"><span data-wff-id=\"S22\" id=\"mainDivId2\">Sample text</span></div>", mainDivId2.toHtmlString());
+        body.appendChild(mainDivId2);
+        assertNotEquals("<div data-wff-id=\"S20\" id=\"mainDivId2\"><span data-wff-id=\"S22\" id=\"mainDivId2\">Sample text</span></div>", mainDivId2.toHtmlString());
+        assertEquals("<div data-wff-id=\"S23\" id=\"mainDivId2\"><span data-wff-id=\"S24\" id=\"mainDivId2\">Sample text</span></div>", mainDivId2.toHtmlString());
+        
+        assertNotNull(mainDivId2.getParent());
+        body.addInnerHtml(mainDivId2);
+        assertEquals("<div data-wff-id=\"S25\" id=\"mainDivId2\"><span data-wff-id=\"S26\" id=\"mainDivId2\">Sample text</span></div>", mainDivId2.toHtmlString());
+        
+        body.removeAllChildren();
+        
+        Div div1 = new Div(null, new Id("div1"));
+        Div div2 = new Div(null, new Id("div2"));
+        body.appendChildren(div1, div2);
+        
+        div1.addInnerHtml(mainDivId2);
+        assertEquals("<div data-wff-id=\"S29\" id=\"mainDivId2\"><span data-wff-id=\"S30\" id=\"mainDivId2\">Sample text</span></div>", mainDivId2.toHtmlString());
+        assertEquals("<div data-wff-id=\"S29\" id=\"mainDivId2\"><span data-wff-id=\"S30\" id=\"mainDivId2\">Sample text</span></div>", mainDivId2.toHtmlString());
+        
+        assertNotNull(mainDivId2.getParent());
+        
+        div2.addInnerHtml(mainDivId2);
+        
+//        System.out.println(body.toHtmlString());
+        
+        mainDivId2.addInnerHtml(new NoTag(null, ""));
+        mainDivId2.appendChild(new NoTag(null, ""));
+        
+        SharedTagContent<String> stc = new SharedTagContent<String>("");
+        mainDivId2.subscribeTo(stc);
+        
+
+//        assertEquals("<div data-wff-id=\"S15\" id=\"mainDivId1\"></div>", mainDivId1.toHtmlString());
+        
+//        System.out.println(body.toHtmlString());
     }
 
 }

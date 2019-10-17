@@ -914,6 +914,10 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     }
 
     /**
+     * Please know that the AbstractAttribute class doesn't prevent its consumer
+     * tags to be garbage collected. So, this is a weak method. i.e. if the
+     * consumer tags are garbage collected they will not be included in the
+     * array.
      *
      * @return the tags which are consuming this attribute as an array. If there
      *         is no owner tag then it will return an empty array instead of
