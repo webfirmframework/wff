@@ -2131,6 +2131,12 @@ public class AbstractHtmlTest {
         
 //        System.out.println(body.toHtmlString());
         
+        mainDivId2.addInnerHtml(new NoTag(null, ""));
+        mainDivId2.appendChild(new NoTag(null, ""));
+        
+        SharedTagContent<String> stc = new SharedTagContent<String>("");
+        mainDivId2.subscribeTo(stc);
+        
 
 //        assertEquals("<div data-wff-id=\"S15\" id=\"mainDivId1\"></div>", mainDivId1.toHtmlString());
         

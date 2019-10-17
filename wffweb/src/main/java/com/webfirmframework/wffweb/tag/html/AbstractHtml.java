@@ -4689,7 +4689,12 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         tag.wffSlotIndex = nameValues.size();
                         nameValues.add(nameValue);
 
-                    } else if (!tag.getClosingTag().isEmpty()) {
+                    } else {
+
+                        // tag.tagName == null means it is no tag
+                        // !tag.getClosingTag().isEmpty() SharedTagContet is
+                        // injecting NoTag with empty content so
+                        // !tag.getClosingTag().isEmpty() is not valid here
 
                         final int parentWffSlotIndex = parentLocal == null ? -1
                                 : parentLocal.wffSlotIndex;
@@ -4841,7 +4846,12 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         tag.wffSlotIndex = nameValues.size();
                         nameValues.add(nameValue);
 
-                    } else if (!tag.getClosingTag().isEmpty()) {
+                    } else {
+
+                        // tag.tagName == null means it is no tag
+                        // !tag.getClosingTag().isEmpty() SharedTagContet is
+                        // injecting NoTag with empty content so
+                        // !tag.getClosingTag().isEmpty() is not valid here
 
                         final int parentWffSlotIndex = parentLocal == null ? -1
                                 : parentLocal.wffSlotIndex;
