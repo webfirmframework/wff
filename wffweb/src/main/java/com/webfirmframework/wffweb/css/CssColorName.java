@@ -476,4 +476,37 @@ public enum CssColorName {
         return ALL_OBJECTS.get(enumString);
     }
 
+    /**
+     * Extracts opacity from the given hex value.
+     *
+     * @param hex
+     *                it must start with #
+     * @return the opacity value from the given hex. It will also return 1.0 if
+     *         it doesn't contain alpha value in the given hex value.
+     * @since 3.0.10
+     */
+    public static float extractOpacity(final String hex) {
+        if (hex.length() == 9) {
+            final int alphaInHex = Integer.parseInt(hex.substring(7, 9), 16);
+            // must be rounded so used int
+            final float ratio = alphaInHex * 100 / 255F;
+            final float alpha = Math.round(ratio) / 100F;
+            // AKA opacity
+            return alpha;
+        } else if (hex.length() == 5) {
+            String alphaHex = hex.substring(4, 5);
+            alphaHex += alphaHex;
+            final int alphaInHex = Integer.parseInt(alphaHex, 16);
+            // must be rounded so used int
+            final float ratio = alphaInHex * 100 / 255F;
+            final float alpha = Math.round(ratio) / 100F;
+            // AKA opacity
+            return alpha;
+        } else if (hex.length() == 8 || hex.length() == 4) {
+            return 1.0F;
+        }
+        throw new IllegalArgumentException(
+                "Invalid hex value. A valid hex value is #FFFFFF80");
+    }
+
 }
