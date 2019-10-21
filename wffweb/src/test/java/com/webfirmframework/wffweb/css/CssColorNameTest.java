@@ -48,6 +48,8 @@ public class CssColorNameTest {
     public void testExtractOpacity() throws Exception {
         assertTrue(CssColorName.extractOpacity("#FFF") == 1F);
         assertTrue(CssColorName.extractOpacity("#FFF") == 1F);
+        assertTrue(CssColorName.extractOpacity("#FFFF") == 1F);
+        assertTrue(CssColorName.extractOpacity("#F5F5F5") == 1F);
         assertTrue(CssColorName.extractOpacity("#00ff0088") == 0.53F);
         assertTrue(CssColorName.extractOpacity("#0f08") == 0.53F);
     }

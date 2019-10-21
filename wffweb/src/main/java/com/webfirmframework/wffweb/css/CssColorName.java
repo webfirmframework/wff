@@ -482,7 +482,9 @@ public enum CssColorName {
      * @param hex
      *                it must start with #
      * @return the opacity value from the given hex. It will also return 1.0 if
-     *         it doesn't contain alpha value in the given hex value.
+     *         it doesn't contain alpha value in the given hex value. If the
+     *         length of hex value is 4 or 7 that means it doesn't contain alpha
+     *         value in it.
      * @since 3.0.10
      */
     public static float extractOpacity(final String hex) {
@@ -502,7 +504,7 @@ public enum CssColorName {
             final float alpha = Math.round(ratio) / 100F;
             // AKA opacity
             return alpha;
-        } else if (hex.length() == 8 || hex.length() == 4) {
+        } else if (hex.length() == 7 || hex.length() == 4) {
             return 1.0F;
         }
         throw new IllegalArgumentException(
