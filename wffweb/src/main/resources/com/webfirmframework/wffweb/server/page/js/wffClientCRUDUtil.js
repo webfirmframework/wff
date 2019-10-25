@@ -257,7 +257,15 @@ var wffClientCRUDUtil = new function() {
 
 						var attrName = wffTagUtil.getAttrNameFromCompressedBytes(nameValue.values[j]);
 
+						if (attrName == "checked" && tagName == "input") {
+							var typeAttrVal = applicableTag.getAttribute("type");
+							if(typeAttrVal && (typeAttrVal == "checkbox" || typeAttrVal == "radio")) {
+								applicableTag.checked = false;
+							}
+						}
+						
 						applicableTag.removeAttribute(attrName);
+						
 					}
 				}
 
