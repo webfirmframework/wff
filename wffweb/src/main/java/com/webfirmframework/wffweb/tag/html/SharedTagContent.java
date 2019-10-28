@@ -632,7 +632,11 @@ public class SharedTagContent<T> {
 
     /**
      * @param exclusionTags
-     *                          these tags will be excluded for client update
+     *                          tags to be excluded only from client update. It
+     *                          means that the content of all consumer tags will
+     *                          be kept updated at server side so their content
+     *                          content formatter and change listeners will be
+     *                          invoked.
      * @param content
      * @since 3.0.6
      */
@@ -644,7 +648,11 @@ public class SharedTagContent<T> {
 
     /**
      * @param exclusionTags
-     *                            these tags will be excluded for client update
+     *                            tags to be excluded only from client update.
+     *                            It means that the content of all consumer tags
+     *                            will be kept updated at server side so their
+     *                            content content formatter and change listeners
+     *                            will be invoked.
      * @param content
      * @param contentTypeHtml
      * @since 3.0.6
@@ -673,6 +681,12 @@ public class SharedTagContent<T> {
      *                               sequentially do each browser page push
      *                               operation.
      * @param exclusionTags
+     *                               tags to be excluded only from client
+     *                               update. It means that the content of all
+     *                               consumer tags will be kept updated at
+     *                               server side so their content content
+     *                               formatter and change listeners will be
+     *                               invoked.
      * @param content
      * @param contentTypeHtml
      */
@@ -702,6 +716,12 @@ public class SharedTagContent<T> {
      *                               sequentially do each browser page push
      *                               operation.
      * @param exclusionTags
+     *                               tags to be excluded only from client
+     *                               update. It means that the content of all
+     *                               consumer tags will be kept updated at
+     *                               server side so their content content
+     *                               formatter and change listeners will be
+     *                               invoked.
      * @param content
      * @param contentTypeHtml
      * @param shared
