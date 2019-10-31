@@ -262,6 +262,8 @@ var wffClientCRUDUtil = new function() {
 							if(typeAttrVal && (typeAttrVal == "checkbox" || typeAttrVal == "radio")) {
 								applicableTag.checked = false;
 							}
+						} else if (attrName == "selected" && tagName == "option") {
+							applicableTag.selected = false;
 						}
 						
 						applicableTag.removeAttribute(attrName);
