@@ -213,6 +213,7 @@ import com.webfirmframework.wffweb.tag.html.html5.attribute.global.Dropzone;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.Hidden;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.SpellCheck;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.Translate;
+import com.webfirmframework.wffweb.tag.html.identifier.BooleanAttribute;
 
 public class AttributeRegistry {
 
@@ -228,6 +229,8 @@ public class AttributeRegistry {
     private static final List<Class<?>> INDEXED_ATTR_CLASSES = new ArrayList<>();
 
     private static Map<String, Class<?>> attributeClassByAttrNameTmp;
+
+    private static final List<String> SORTED_BOOLEAN_ATTR_NAMES;
 
     static {
 
@@ -583,11 +586,25 @@ public class AttributeRegistry {
 
         attributeClassByAttrNameTmp.putAll(attributeClassByAttrName);
 
+        final List<String> tmpSortedBooleanAttrNames = new ArrayList<>(8);
         for (final Entry<String, Class<?>> entry : attributeClassByAttrName
                 .entrySet()) {
-            ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(entry.getKey(),
-                    entry.getValue().getSimpleName());
+            final Class<?> attrClass = entry.getValue();
+            final String attrName = entry.getKey();
+            ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(attrName,
+                    attrClass.getSimpleName());
+
+            if (BooleanAttribute.class.isAssignableFrom(attrClass)) {
+                tmpSortedBooleanAttrNames.add(attrName);
+            }
         }
+
+        // sorting in ascending order of length
+        Collections.sort(tmpSortedBooleanAttrNames,
+                (o1, o2) -> Integer.compare(o1.length(), o2.length()));
+
+        SORTED_BOOLEAN_ATTR_NAMES = Collections
+                .unmodifiableList(tmpSortedBooleanAttrNames);
 
         ATTRIBUTE_NAMES_SET = new HashSet<>(initialCapacity);
 
@@ -637,13 +654,7 @@ public class AttributeRegistry {
                 .addAll(ATTRIBUTE_NAMES_SET);
 
         Collections.sort(IndexedAttributeName.INSTANCE.sortedAttrNames(),
-                (o1, o2) -> {
-
-                    final Integer length1 = o1.length();
-                    final Integer length2 = o2.length();
-
-                    return length1.compareTo(length2);
-                });
+                (o1, o2) -> Integer.compare(o1.length(), o2.length()));
     }
 
     /**
@@ -654,6 +665,15 @@ public class AttributeRegistry {
      */
     public static List<String> getAttributeNames() {
         return new ArrayList<>(IndexedAttributeName.INSTANCE.sortedAttrNames());
+    }
+
+    /**
+     * @return the list of boolean attribute names sorted in the ascending order
+     *         of its length
+     * @since 3.0.10
+     */
+    public static List<String> getBooleanAttributeNames() {
+        return SORTED_BOOLEAN_ATTR_NAMES;
     }
 
     /**

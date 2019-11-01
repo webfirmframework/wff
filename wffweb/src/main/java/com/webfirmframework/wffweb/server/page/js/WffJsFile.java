@@ -99,6 +99,7 @@ public enum WffJsFile {
      */
     private static final String NDXD_TGS;
     private static final String NDXD_ATRBS;
+    private static final String NDXD_BLN_ATRBS;
 
     static {
 
@@ -109,6 +110,7 @@ public enum WffJsFile {
             tagsArraySB.append(tagName);
             tagsArraySB.append('"');
         }
+        // length must always be greater than 0 otherwise bug
         NDXD_TGS = "[" + tagsArraySB.substring(1) + "]";
 
         final StringBuilder attrbsArraySB = new StringBuilder();
@@ -118,23 +120,40 @@ public enum WffJsFile {
             attrbsArraySB.append(attrName);
             attrbsArraySB.append('"');
         }
+        // length must always be greater than 0 otherwise bug
         NDXD_ATRBS = "[" + attrbsArraySB.substring(1) + "]";
+
+        final StringBuilder boolAttrbsArraySB = new StringBuilder();
+        for (final String attrName : AttributeRegistry
+                .getBooleanAttributeNames()) {
+            boolAttrbsArraySB.append(",\"");
+            boolAttrbsArraySB.append(attrName);
+            boolAttrbsArraySB.append('"');
+        }
+
+        // length must always be greater than 0 otherwise bug
+        NDXD_BLN_ATRBS = "[" + boolAttrbsArraySB.substring(1) + "]";
 
         if (PRODUCTION_MODE) {
 
-            final Comparator<String> descendingLehgth = (o1, o2) -> {
-                // to sort in descending order of the length of the names
-                if (o1.length() > o2.length()) {
-                    return -1;
-                }
-                if (o1.length() < o2.length()) {
-                    return 1;
-                }
-                return -1;
-            };
+            // to sort in descending order of the length of the names
+            final Comparator<String> descendingLength = (a, b) -> Integer
+                    .compare(b.length(), a.length());
 
-            functionNames = new TreeSet<>(descendingLehgth);
-            variableNames = new TreeSet<>(descendingLehgth);
+            // old impl
+            // final Comparator<String> descendingLength = (o1, o2) -> {
+            // // to sort in descending order of the length of the names
+            // if (o1.length() > o2.length()) {
+            // return -1;
+            // }
+            // if (o1.length() < o2.length()) {
+            // return 1;
+            // }
+            // return -1;
+            // };
+
+            functionNames = new TreeSet<>(descendingLength);
+            variableNames = new TreeSet<>(descendingLength);
 
             // should be in descending order of the value length
 
@@ -573,6 +592,8 @@ public enum WffJsFile {
                                         .replace("\"${NDXD_TGS}\"", NDXD_TGS)
                                         .replace("\"${NDXD_ATRBS}\"",
                                                 NDXD_ATRBS)
+                                        .replace("\"${NDXD_BLN_ATRBS}\"",
+                                                NDXD_BLN_ATRBS)
                                         .replace("${WS_URL}",
                                                 wsUrl)
                                         .replace("${INSTANCE_ID}", instanceId)
