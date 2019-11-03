@@ -207,18 +207,22 @@ public enum Task {
      */
     public static Set<Task> getSortedTasks() {
 
-        final Set<Task> sortedTaskNames = new TreeSet<>((o1, o2) -> {
-            // to sort the tasks in descending order of the length
-            // of the
-            // names
-            if (o1.name().length() > o2.name().length()) {
-                return -1;
-            }
-            if (o1.name().length() < o2.name().length()) {
-                return 1;
-            }
-            return -1;
-        });
+        // old impl
+        // final Set<Task> sortedTaskNames = new TreeSet<>((o1, o2) -> {
+        // // to sort the tasks in descending order of the length
+        // // of the
+        // // names
+        // if (o1.name().length() > o2.name().length()) {
+        // return -1;
+        // }
+        // if (o1.name().length() < o2.name().length()) {
+        // return 1;
+        // }
+        // return -1;
+        // });
+
+        final Set<Task> sortedTaskNames = new TreeSet<>((o1, o2) -> Integer
+                .compare(o2.name().length(), o1.name().length()));
 
         for (final Task task : Task.values()) {
             sortedTaskNames.add(task);

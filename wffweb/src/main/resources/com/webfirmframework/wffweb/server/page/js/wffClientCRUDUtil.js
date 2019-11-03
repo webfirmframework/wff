@@ -255,9 +255,17 @@ var wffClientCRUDUtil = new function() {
 
 					for (var j = 2; j < nameValue.values.length; j++) {
 
-						var attrName = wffTagUtil.getAttrNameFromCompressedBytes(nameValue.values[j]);
-
+						var attrName = wffTagUtil.getAttrNameFromCompressedBytes(nameValue.values[j]);						
+						
 						applicableTag.removeAttribute(attrName);
+						
+						if (wffGlobal.NDXD_BLN_ATRBS.indexOf(attrName) != -1) {
+							var prop = applicableTag[attrName];
+							//=== is very important here
+							if (prop && prop === true) {
+								applicableTag[attrName] = false;	
+							}
+						}
 					}
 				}
 

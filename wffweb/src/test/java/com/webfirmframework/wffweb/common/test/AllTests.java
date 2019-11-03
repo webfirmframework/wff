@@ -42,6 +42,7 @@ import com.webfirmframework.wffweb.css.BorderTopWidthTest;
 import com.webfirmframework.wffweb.css.BorderWidthTest;
 import com.webfirmframework.wffweb.css.BottomTest;
 import com.webfirmframework.wffweb.css.ColorTest;
+import com.webfirmframework.wffweb.css.CssColorNameTest;
 import com.webfirmframework.wffweb.css.CssPropertyEnumTests;
 import com.webfirmframework.wffweb.css.CursorTest;
 import com.webfirmframework.wffweb.css.FontFamilyTest;
@@ -225,7 +226,7 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObjectArrayTest;
         CodePerformanceTest.class, HashUtilTest.class,
         AbstractHtml5SharedObjectTest.class, ByteBufferUtilTest.class,
         UnicodeRangeTest.class, DataWffIdTest.class,
-        SharedTagContentTest.class })
+        SharedTagContentTest.class, CssColorNameTest.class })
 public class AllTests {
 
 }
