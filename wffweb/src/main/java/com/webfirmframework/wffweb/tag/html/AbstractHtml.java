@@ -1569,23 +1569,38 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     private static void removeDataWffIdFromHierarchy(final AbstractHtml tag) {
 
-        final Set<AbstractHtml> applicableTags = extractParentTagsForDataWffIdRemoval(
-                tag);
+        Lock lock = null;
+        // comes null when running BrowserPageTest.testToHtmlString
+        if (tag.sharedObject != null) {
+            lock = tag.sharedObject.getLock(ACCESS_OBJECT).readLock();
+            lock.lock();
+        }
 
-        final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
-        childrenStack.push(applicableTags);
+        try {
 
-        Set<AbstractHtml> children;
-        while ((children = childrenStack.poll()) != null) {
-            for (final AbstractHtml child : children) {
+            final Set<AbstractHtml> applicableTags = extractParentTagsForDataWffIdRemoval(
+                    tag);
 
-                child.removeDataWffId();
+            final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
+            childrenStack.push(applicableTags);
 
-                final Set<AbstractHtml> subChildren = child.children;
-                if (subChildren != null && subChildren.size() > 0) {
-                    childrenStack.push(subChildren);
+            Set<AbstractHtml> children;
+            while ((children = childrenStack.poll()) != null) {
+                for (final AbstractHtml child : children) {
+
+                    child.removeDataWffId();
+
+                    final Set<AbstractHtml> subChildren = child.children;
+                    if (subChildren != null && subChildren.size() > 0) {
+                        childrenStack.push(subChildren);
+                    }
+
                 }
+            }
 
+        } finally {
+            if (lock != null) {
+                lock.unlock();
             }
         }
 
