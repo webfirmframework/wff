@@ -1571,6 +1571,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
         Lock lock = null;
         // comes null when running BrowserPageTest.testToHtmlString
+        // addChild from constructor will satisfy this condition
         if (tag.sharedObject != null) {
             lock = tag.sharedObject.getLock(ACCESS_OBJECT).readLock();
             lock.lock();
