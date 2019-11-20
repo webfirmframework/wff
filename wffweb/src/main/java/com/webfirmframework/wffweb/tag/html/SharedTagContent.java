@@ -404,6 +404,14 @@ public class SharedTagContent<T> {
     }
 
     /**
+     * @return the content
+     * @since 3.0.11
+     */
+    public T lazyGetContent() {
+        return content;
+    }
+
+    /**
      * @return true if content type is HTML
      * @since 3.0.6
      */
@@ -417,6 +425,14 @@ public class SharedTagContent<T> {
     }
 
     /**
+     * @return true if content type is HTML
+     * @since 3.0.11
+     */
+    public boolean lazyIsContentTypeHtml() {
+        return contentTypeHtml;
+    }
+
+    /**
      * @return true if its content is shared across all consuming tags.
      * @since 3.0.6
      */
@@ -427,6 +443,14 @@ public class SharedTagContent<T> {
         } finally {
             lock.unlockRead(stamp);
         }
+    }
+
+    /**
+     * @return true if its content is shared across all consuming tags.
+     * @since 3.0.11
+     */
+    public boolean lazyIsShared() {
+        return shared;
     }
 
     /**
@@ -445,6 +469,18 @@ public class SharedTagContent<T> {
             lock.unlockRead(stamp);
         }
 
+    }
+
+    /**
+     *
+     * Refer {@link #setUpdateClientNature(UpdateClientNature)} for more
+     * details.
+     *
+     * @return UpdateClientNature which specifies the nature.
+     * @since 3.0.11
+     */
+    public UpdateClientNature lazyGetUpdateClientNature() {
+        return updateClientNature;
     }
 
     /**
@@ -492,6 +528,16 @@ public class SharedTagContent<T> {
         } finally {
             lock.unlockRead(stamp);
         }
+    }
+
+    /**
+     * its default value is true if not explicitly set
+     *
+     * @return true if updating client browser page is turned off
+     * @since 3.0.11
+     */
+    public boolean lazyIsUpdateClient() {
+        return updateClient;
     }
 
     /**
