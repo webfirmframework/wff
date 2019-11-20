@@ -395,19 +395,6 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public T getContent() {
-        final long stamp = lock.readLock();
-        try {
-            return content;
-        } finally {
-            lock.unlockRead(stamp);
-        }
-    }
-
-    /**
-     * @return the content
-     * @since 3.0.11
-     */
-    public T lazyGetContent() {
         return content;
     }
 
@@ -416,19 +403,6 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public boolean isContentTypeHtml() {
-        final long stamp = lock.readLock();
-        try {
-            return contentTypeHtml;
-        } finally {
-            lock.unlockRead(stamp);
-        }
-    }
-
-    /**
-     * @return true if content type is HTML
-     * @since 3.0.11
-     */
-    public boolean lazyIsContentTypeHtml() {
         return contentTypeHtml;
     }
 
@@ -437,19 +411,6 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public boolean isShared() {
-        final long stamp = lock.readLock();
-        try {
-            return shared;
-        } finally {
-            lock.unlockRead(stamp);
-        }
-    }
-
-    /**
-     * @return true if its content is shared across all consuming tags.
-     * @since 3.0.11
-     */
-    public boolean lazyIsShared() {
         return shared;
     }
 
@@ -462,24 +423,6 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public UpdateClientNature getUpdateClientNature() {
-        final long stamp = lock.readLock();
-        try {
-            return updateClientNature;
-        } finally {
-            lock.unlockRead(stamp);
-        }
-
-    }
-
-    /**
-     *
-     * Refer {@link #setUpdateClientNature(UpdateClientNature)} for more
-     * details.
-     *
-     * @return UpdateClientNature which specifies the nature.
-     * @since 3.0.11
-     */
-    public UpdateClientNature lazyGetUpdateClientNature() {
         return updateClientNature;
     }
 
@@ -522,21 +465,6 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public boolean isUpdateClient() {
-        final long stamp = lock.readLock();
-        try {
-            return updateClient;
-        } finally {
-            lock.unlockRead(stamp);
-        }
-    }
-
-    /**
-     * its default value is true if not explicitly set
-     *
-     * @return true if updating client browser page is turned off
-     * @since 3.0.11
-     */
-    public boolean lazyIsUpdateClient() {
         return updateClient;
     }
 
