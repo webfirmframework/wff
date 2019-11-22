@@ -4,6 +4,8 @@ var wffWS = new function() {
 	var encoder = wffGlobal.encoder;
 	var decoder = wffGlobal.decoder;
 
+	//last reconnect interval obj
+	var prevIntvl;
 	var webSocket;
 
 	this.openSocket = function(wsUrl) {
@@ -24,6 +26,9 @@ var wffWS = new function() {
 
 		webSocket.onopen = function(event) {
 			try {
+				
+				if(prevIntvl){clearInterval(prevIntvl);}
+				
 				wffBMClientEvents.wffRemovePrevBPInstance();
 
 				if (typeof event.data === 'undefined') {
@@ -98,15 +103,17 @@ var wffWS = new function() {
 				wffLog(e);
 			}
 		};
-
+		
 		webSocket.onclose = function(event) {
-			console.log("onclose", event);
-			setTimeout(function() {
-				if (typeof webSocket === 'undefined' || webSocket.readyState == 3) {
-					console.log("2 seconds loop");
+			if(prevIntvl) {clearInterval(prevIntvl);}
+			prevIntvl = setInterval(function() {
+				if (typeof webSocket === 'undefined' || webSocket.readyState == 3) {					
 					wffWS.openSocket(wffGlobal.WS_URL);
 				}
 			}, wffGlobal.WS_RECON);
+		};
+		webSocket.onerror = function(event) {
+			try{webSocket.close();}catch(e){wffLog("ws.close error");}
 		};
 	};
 
