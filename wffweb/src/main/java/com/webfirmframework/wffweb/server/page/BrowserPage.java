@@ -167,7 +167,8 @@ public abstract class BrowserPage implements Serializable {
     // to make it GC friendly, it is made as static
     private static final ThreadLocal<PayloadProcessor> PALYLOAD_PROCESSOR_TL = new ThreadLocal<>();
 
-    // inline initialization is better because object creation is not heavy.
+    // NB: this non-static initialization makes BrowserPage and PayloadProcessor
+    // never to get GCd. It leads to memory leak. It seems to be a bug.
     // private final ThreadLocal<PayloadProcessor> PALYLOAD_PROCESSOR_TL =
     // ThreadLocal
     // .withInitial(() -> new PayloadProcessor(this, true));
