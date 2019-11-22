@@ -164,9 +164,13 @@ public abstract class BrowserPage implements Serializable {
 
     private volatile TagRepository tagRepository;
 
+    // to make it GC friendly, it is made as static
+    private static final ThreadLocal<PayloadProcessor> PALYLOAD_PROCESSOR_TL = new ThreadLocal<>();
+
     // inline initialization is better because object creation is not heavy.
-    private final ThreadLocal<PayloadProcessor> PALYLOAD_PROCESSOR_TL = ThreadLocal
-            .withInitial(() -> new PayloadProcessor(this, true));
+    // private final ThreadLocal<PayloadProcessor> PALYLOAD_PROCESSOR_TL =
+    // ThreadLocal
+    // .withInitial(() -> new PayloadProcessor(this, true));
 
     // for security purpose, the class name should not be modified
     private static final class Security implements Serializable {
@@ -2070,7 +2074,12 @@ public abstract class BrowserPage implements Serializable {
      * @since 3.0.2
      */
     public final PayloadProcessor getPayloadProcessor() {
-        return PALYLOAD_PROCESSOR_TL.get();
+        PayloadProcessor payloadProcessor = PALYLOAD_PROCESSOR_TL.get();
+        if (payloadProcessor == null) {
+            payloadProcessor = new PayloadProcessor(this, true);
+            PALYLOAD_PROCESSOR_TL.set(payloadProcessor);
+        }
+        return payloadProcessor;
     }
 
     /**
