@@ -50,9 +50,10 @@ public class PayloadProcessor implements Serializable {
     /**
      * @param browserPage
      * @param singleThreaded
+     *                           to be used under single thread.
      * @since 3.0.3
      */
-    PayloadProcessor(final BrowserPage browserPage,
+    public PayloadProcessor(final BrowserPage browserPage,
             final boolean singleThreaded) {
         this.browserPage = browserPage;
         this.singleThreaded = singleThreaded;

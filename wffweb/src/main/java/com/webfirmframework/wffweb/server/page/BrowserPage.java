@@ -2071,9 +2071,13 @@ public abstract class BrowserPage implements Serializable {
      * bytes from WebSocket. To manually create new PayloadProcessor use <em>new
      * PayloadProcessor(browserPage)</em>.
      *
-     * @return new instance of PayloadProcessor
+     * @return new instance of PayloadProcessor/thread
      * @since 3.0.2
+     * @deprecated this method call may make deadlock somewhere in the
+     *             application while using multiple threads. Use
+     *             {@code BrowserPage#newPayloadProcessor()}.
      */
+    @Deprecated
     public final PayloadProcessor getPayloadProcessor() {
         PayloadProcessor payloadProcessor = PALYLOAD_PROCESSOR_TL.get();
         if (payloadProcessor == null) {
@@ -2089,9 +2093,25 @@ public abstract class BrowserPage implements Serializable {
      * calling {@link #getPayloadProcessor()} by the same thread.
      *
      * @since 3.0.2
+     * @deprecated this method call may make deadlock.
      */
+    @Deprecated
     public final void removePayloadProcessor() {
         PALYLOAD_PROCESSOR_TL.remove();
+    }
+
+    /**
+     * Creates and returns new instance of {@code PayloadProcessor} for this
+     * browser page. This PayloadProcessor can process incoming partial bytes
+     * from WebSocket. To manually create new PayloadProcessor use <em>new
+     * PayloadProcessor(browserPage)</em>. Use this PayloadProcessor instance
+     * only under one thread at a time for its complete payload parts.
+     *
+     * @return new instance of PayloadProcessor each method call.
+     * @since 3.0.11
+     */
+    public final PayloadProcessor newPayloadProcessor() {
+        return new PayloadProcessor(this, true);
     }
 
 }
