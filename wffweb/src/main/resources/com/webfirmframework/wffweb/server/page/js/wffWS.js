@@ -3,7 +3,7 @@ var wffWS = new function() {
 
 	var encoder = wffGlobal.encoder;
 	var decoder = wffGlobal.decoder;
-
+	
 	//last reconnect interval obj
 	var prevIntvl = null;
 	var webSocket;
@@ -24,23 +24,25 @@ var wffWS = new function() {
 		webSocket = new WebSocket(wsUrl);
 		
 		sendQData = function() {
-			var inData = [];
-			var ndx = 0;
-			var xp = false;
-			for (ndx = 0; ndx < inDataQ.length; ndx++) { 
-				var each = inDataQ[ndx]; 
-				if (!xp) {
-					try {
-						webSocket.send(new Int8Array(each).buffer);
-					} catch(e) {
-						xp = true;
+			if (webSocket.readyState === WebSocket.OPEN) {
+				var inData = [];
+				var ndx = 0;
+				var xp = false;
+				for (ndx = 0; ndx < inDataQ.length; ndx++) { 
+					var each = inDataQ[ndx]; 
+					if (!xp) {
+						try {
+							webSocket.send(new Int8Array(each).buffer);
+						} catch(e) {
+							xp = true;
+							inData.push(each);
+						}
+					} else {
 						inData.push(each);
-					}
-				} else {
-					inData.push(each);
-				}					
-			}
-			inDataQ = inData;
+					}					
+				}
+				inDataQ = inData;
+			}			
 		};
 		
 
@@ -138,7 +140,7 @@ var wffWS = new function() {
 				prevIntvl = null;
 			}
 			prevIntvl = setInterval(function() {
-				if (typeof webSocket === 'undefined' || webSocket.readyState == 3) {					
+				if (typeof webSocket === 'undefined' || webSocket.readyState === WebSocket.CLOSED) {					
 					wffWS.openSocket(wffGlobal.WS_URL);
 				}
 			}, wffGlobal.WS_RECON);
