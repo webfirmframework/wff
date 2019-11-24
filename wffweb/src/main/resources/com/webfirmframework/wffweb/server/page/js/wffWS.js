@@ -7,6 +7,8 @@ var wffWS = new function() {
 	//last reconnect interval obj
 	var prevIntvl = null;
 	var webSocket;
+	var inDataQ = [];
+	var sendQData;
 
 	this.openSocket = function(wsUrl) {
 
@@ -20,6 +22,27 @@ var wffWS = new function() {
 
 		// Create a new instance of websocket
 		webSocket = new WebSocket(wsUrl);
+		
+		sendQData = function() {
+			var inData = [];
+			var ndx = 0;
+			var xp = false;
+			for (ndx = 0; ndx < inDataQ.length; ndx++) { 
+				var each = inDataQ[ndx]; 
+				if (!xp) {
+					try {
+						webSocket.send(new Int8Array(each).buffer);
+					} catch(e) {
+						xp = true;
+						inData.push(each);
+					}
+				} else {
+					inData.push(each);
+				}					
+			}
+			inDataQ = inData;
+		};
+		
 
 		// this is required to send binary data
 		webSocket.binaryType = 'arraybuffer';
@@ -33,6 +56,8 @@ var wffWS = new function() {
 				}
 				
 				wffBMClientEvents.wffRemovePrevBPInstance();
+				
+				sendQData();
 
 				if (typeof event.data === 'undefined') {
 					return;
@@ -122,12 +147,19 @@ var wffWS = new function() {
 			try{webSocket.close();}catch(e){wffLog("ws.close error");}
 		};
 	};
+	
+	
 
 	/**
 	 * Sends the bytes to the server
 	 */
 	this.send = function(bytes) {
-		webSocket.send(new Int8Array(bytes).buffer);
+		if (bytes.length > 0) {
+			inDataQ.push(bytes);
+			sendQData();	
+		} else {
+			webSocket.send(new Int8Array(bytes).buffer);	
+		}
 	};
 
 	this.closeSocket = function() {
