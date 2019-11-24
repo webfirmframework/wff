@@ -5,7 +5,7 @@ var wffWS = new function() {
 	var decoder = wffGlobal.decoder;
 
 	//last reconnect interval obj
-	var prevIntvl;
+	var prevIntvl = null;
 	var webSocket;
 
 	this.openSocket = function(wsUrl) {
@@ -27,7 +27,10 @@ var wffWS = new function() {
 		webSocket.onopen = function(event) {
 			try {
 				
-				if(prevIntvl){clearInterval(prevIntvl);}
+				if(prevIntvl !== null) {
+					clearInterval(prevIntvl);
+					prevIntvl = null;
+				}
 				
 				wffBMClientEvents.wffRemovePrevBPInstance();
 
@@ -105,7 +108,10 @@ var wffWS = new function() {
 		};
 		
 		webSocket.onclose = function(event) {
-			if(prevIntvl) {clearInterval(prevIntvl);}
+			if(prevIntvl !== null) {
+				clearInterval(prevIntvl);
+				prevIntvl = null;
+			}
 			prevIntvl = setInterval(function() {
 				if (typeof webSocket === 'undefined' || webSocket.readyState == 3) {					
 					wffWS.openSocket(wffGlobal.WS_URL);
