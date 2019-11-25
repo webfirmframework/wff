@@ -4,16 +4,18 @@ var wffWS = new function() {
 	var encoder = wffGlobal.encoder;
 	var decoder = wffGlobal.decoder;
 	
+	// (null == undefined) is true
+	
 	//last reconnect interval obj
 	var prevIntvl = null;
-	var webSocket;
+	var webSocket = null;
 	var inDataQ = [];
-	var sendQData;
+	var sendQData = null;
 
 	this.openSocket = function(wsUrl) {
 
 		// Ensures only one connection is open at a time
-		if (typeof webSocket !== 'undefined'
+		if (webSocket !== null
 				&& webSocket.readyState !== WebSocket.CLOSED 
 				&& webSocket.readyState !== WebSocket.CLOSING) {
 			console.log("WebSocket is already opened.");
@@ -24,7 +26,7 @@ var wffWS = new function() {
 		webSocket = new WebSocket(wsUrl);
 		
 		sendQData = function() {
-			if (webSocket.readyState === WebSocket.OPEN) {
+			if (webSocket !== null && webSocket.readyState === WebSocket.OPEN) {
 				var inData = [];
 				var ndx = 0;
 				var xp = false;
@@ -59,7 +61,9 @@ var wffWS = new function() {
 				
 				wffBMClientEvents.wffRemovePrevBPInstance();
 				
-				sendQData();
+				if (sendQData !== null) {
+					sendQData();	
+				}				
 
 				if (typeof event.data === 'undefined') {
 					return;
@@ -140,7 +144,7 @@ var wffWS = new function() {
 				prevIntvl = null;
 			}
 			prevIntvl = setInterval(function() {
-				if (typeof webSocket === 'undefined' || webSocket.readyState === WebSocket.CLOSED) {					
+				if (webSocket === null || webSocket.readyState === WebSocket.CLOSED) {					
 					wffWS.openSocket(wffGlobal.WS_URL);
 				}
 			}, wffGlobal.WS_RECON);
@@ -156,7 +160,9 @@ var wffWS = new function() {
 	this.send = function(bytes) {
 		if (bytes.length > 0) {
 			inDataQ.push(bytes);
-			sendQData();	
+			if (sendQData !== null) {
+				sendQData();
+			}
 		} else {
 			webSocket.send(new Int8Array(bytes).buffer);	
 		}
@@ -164,7 +170,7 @@ var wffWS = new function() {
 
 	this.closeSocket = function() {
 		try {
-			if (typeof webSocket !== 'undefined' 
+			if (webSocket !== null 
 				&& webSocket.readyState !== WebSocket.CONNECTING
 				&& webSocket.readyState !== WebSocket.CLOSED) {
 				webSocket.close();
@@ -173,7 +179,7 @@ var wffWS = new function() {
 	};
 
 	this.getStatus = function() {
-		if (typeof webSocket !== 'undefined') {
+		if (webSocket !== null) {
 			return webSocket.readyState;
 		}
 		return -1;
