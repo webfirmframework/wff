@@ -178,7 +178,7 @@ var wffWS = new function() {
 		} catch(e){}
 	};
 
-	this.getStatus = function() {
+	this.getState = function() {
 		if (webSocket !== null) {
 			return webSocket.readyState;
 		}
