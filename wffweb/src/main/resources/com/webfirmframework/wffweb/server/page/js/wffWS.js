@@ -149,8 +149,6 @@ var wffWS = new function() {
 			try{webSocket.close();}catch(e){wffLog("ws.close error");}
 		};
 	};
-	
-	
 
 	/**
 	 * Sends the bytes to the server
@@ -174,4 +172,10 @@ var wffWS = new function() {
 		} catch(e){}
 	};
 
+	this.getStatus = function() {
+		if (typeof webSocket !== 'undefined') {
+			return webSocket.readyState;
+		}
+		return -1;
+	};
 };
