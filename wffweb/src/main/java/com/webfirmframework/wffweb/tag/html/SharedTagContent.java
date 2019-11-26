@@ -19,6 +19,7 @@ package com.webfirmframework.wffweb.tag.html;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -1694,6 +1695,74 @@ public class SharedTagContent<T> {
         } finally {
             lock.unlockWrite(stamp);
         }
+    }
+
+    /**
+     * @param tag
+     *                the tag whose ContentFormatter to be got.
+     * @return the ContentFormatter object set for the given tag.
+     * @since 3.0.11
+     */
+    public ContentFormatter<T> getContentFormatter(final AbstractHtml tag) {
+        final AbstractHtml firstChild = tag.getFirstChild();
+        if (firstChild != null) {
+            final long stamp = lock.readLock();
+            try {
+                final InsertedTagData<T> insertedTagData = insertedTags
+                        .get(firstChild);
+                if (insertedTagData != null) {
+                    return insertedTagData.formatter();
+                }
+            } finally {
+                lock.unlockRead(stamp);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param tag
+     *                tag from which the listeners to be got.
+     * @return the ContentChangeListeners for the given tag.
+     * @since 3.0.11
+     */
+    public Set<ContentChangeListener<T>> getContentChangeListeners(
+            final AbstractHtml tag) {
+        final long stamp = lock.readLock();
+        try {
+            final Set<ContentChangeListener<T>> listeners = contentChangeListeners
+                    .get(tag);
+            if (listeners != null) {
+                final Set<ContentChangeListener<T>> unmodifiableSet = Collections
+                        .unmodifiableSet(listeners);
+                return unmodifiableSet;
+            }
+
+        } finally {
+            lock.unlockRead(stamp);
+        }
+        return null;
+    }
+
+    /**
+     * @param tag
+     *                tag from which the listeners to be got.
+     * @return the DetachListeners for the given tag.
+     * @since 3.0.11
+     */
+    public Set<DetachListener<T>> getDetachListeners(final AbstractHtml tag) {
+        final long stamp = lock.readLock();
+        try {
+            final Set<DetachListener<T>> listeners = detachListeners.get(tag);
+            if (listeners != null) {
+                final Set<DetachListener<T>> unmodifiableSet = Collections
+                        .unmodifiableSet(listeners);
+                return unmodifiableSet;
+            }
+        } finally {
+            lock.unlockRead(stamp);
+        }
+        return null;
     }
 
 }
