@@ -1236,7 +1236,13 @@ public class SharedTagContent<T> {
 
             for (final Entry<NoTag, InsertedTagData<T>> entry : insertedTags
                     .entrySet()) {
+                if (entry == null) {
+                    continue;
+                }
                 final NoTag prevNoTag = entry.getKey();
+                if (prevNoTag == null) {
+                    continue;
+                }
                 final InsertedTagData<T> insertedTagData = entry.getValue();
                 final AbstractHtml parentTag = prevNoTag.getParent();
 
