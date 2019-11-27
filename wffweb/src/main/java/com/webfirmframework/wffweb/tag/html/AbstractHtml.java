@@ -19,7 +19,6 @@ package com.webfirmframework.wffweb.tag.html;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
-import java.lang.ref.WeakReference;
 import java.nio.charset.Charset;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -153,7 +152,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     protected final boolean noTagContentTypeHtml;
 
     @SuppressWarnings("rawtypes")
-    private volatile WeakReference<SharedTagContent> sharedTagContentRef;
+    private volatile SharedTagContent sharedTagContent;
 
     public static enum TagType {
         OPENING_CLOSING, SELF_CLOSING, NON_CLOSING;
@@ -1106,9 +1105,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
             final SharedTagContent.ContentFormatter<T> formatter,
             final boolean subscribe) {
 
-        if (sharedTagContentRef == null || sharedTagContentRef.get() == null
-                || !Objects.equals(sharedTagContentRef.get(),
-                        sharedTagContent)) {
+        if (this.sharedTagContent == null
+                || !Objects.equals(this.sharedTagContent, sharedTagContent)) {
 
             final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
             lock.lock();
@@ -1117,20 +1115,23 @@ public abstract class AbstractHtml extends AbstractJsObject {
                     final AbstractHtml noTagInserted = sharedTagContent
                             .addInnerHtml(updateClient, this, formatter,
                                     subscribe);
-                    noTagInserted.sharedTagContentRef = new WeakReference<>(
-                            sharedTagContent);
+                    noTagInserted.sharedTagContent = sharedTagContent;
                 } else {
                     if (children.size() == 1) {
                         final Iterator<AbstractHtml> iterator = children
                                 .iterator();
                         if (iterator.hasNext()) {
                             final AbstractHtml firstChild = iterator.next();
-                            if (firstChild != null
-                                    && !firstChild.parentNullifiedOnce
-                                    && firstChild instanceof NoTag
-                                    && firstChild.sharedTagContentRef != null) {
-                                firstChild.sharedTagContentRef = null;
+                            if (firstChild != null) {
+                                if (firstChild instanceof NoTag
+                                        && !firstChild.parentNullifiedOnce
+                                        && firstChild.sharedTagContent != null) {
+                                    firstChild.sharedTagContent
+                                            .remove(firstChild, this);
+                                    firstChild.sharedTagContent = null;
+                                }
                             }
+
                         }
 
                     }
@@ -1148,17 +1149,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @since 3.0.6
      */
     <T> void setSharedTagContent(final SharedTagContent<T> sharedTagContent) {
-        sharedTagContentRef = new WeakReference<>(sharedTagContent);
+        this.sharedTagContent = sharedTagContent;
     }
 
     /**
-     * Gets the {@code SharedTagContent} object if it is not already garbage
-     * collected.
-     *
      * @return the object of SharedTagContent which created the NoTag in the
      *         child or null if the child NoTag is not created by any
-     *         {@code SharedTagContent} object. It can also return null if the
-     *         {@code SharedTagContent} is already garbage collected.
+     *         SharedTagContent object.
      * @since 3.0.6
      */
     @SuppressWarnings("unchecked")
@@ -1171,15 +1168,11 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 if (iterator.hasNext()) {
                     final AbstractHtml firstChild = iterator.next();
                     if (firstChild != null && !firstChild.parentNullifiedOnce
-                            && firstChild.sharedTagContentRef != null
-                            && firstChild instanceof NoTag) {
-                        @SuppressWarnings("rawtypes")
-                        final SharedTagContent stc = firstChild.sharedTagContentRef
-                                .get();
-                        if (stc != null && stc.contains(firstChild)) {
-                            return stc;
-                        }
-
+                            && firstChild.sharedTagContent != null
+                            && firstChild instanceof NoTag
+                            && firstChild.sharedTagContent
+                                    .contains(firstChild)) {
+                        return firstChild.sharedTagContent;
                     }
 
                 }
@@ -1194,8 +1187,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     /**
      * @return true if this tag is subscribed to any SharedTagContent object
-     *         otherwise false. It will also return false if the
-     *         {@code SharedTagContent} object is already garbage collected.
+     *         otherwise false.
      * @since 3.0.6
      */
     public boolean isSubscribedToSharedTagContent() {
@@ -1208,12 +1200,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 if (iterator.hasNext()) {
                     final AbstractHtml firstChild = iterator.next();
                     if (firstChild != null && !firstChild.parentNullifiedOnce
-                            && firstChild.sharedTagContentRef != null
+                            && firstChild.sharedTagContent != null
                             && firstChild instanceof NoTag) {
-                        @SuppressWarnings("rawtypes")
-                        final SharedTagContent stc = firstChild.sharedTagContentRef
-                                .get();
-                        return stc != null && stc.isSubscribed(firstChild);
+                        return firstChild.sharedTagContent
+                                .isSubscribed(firstChild);
                     }
 
                 }
@@ -1248,13 +1238,11 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 if (iterator.hasNext()) {
                     final AbstractHtml firstChild = iterator.next();
                     if (firstChild != null && !firstChild.parentNullifiedOnce
-                            && firstChild.sharedTagContentRef != null
+                            && firstChild.sharedTagContent != null
                             && firstChild instanceof NoTag) {
 
-                        @SuppressWarnings("rawtypes")
-                        final SharedTagContent stc = firstChild.sharedTagContentRef
-                                .get();
-                        removed = stc == null || stc.remove(firstChild);
+                        removed = firstChild.sharedTagContent.remove(firstChild,
+                                this);
 
                         if (removed && removeContent) {
 
