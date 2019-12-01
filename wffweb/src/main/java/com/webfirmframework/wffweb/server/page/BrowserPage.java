@@ -164,9 +164,14 @@ public abstract class BrowserPage implements Serializable {
 
     private volatile TagRepository tagRepository;
 
-    // inline initialization is better because object creation is not heavy.
-    private final ThreadLocal<PayloadProcessor> PALYLOAD_PROCESSOR_TL = ThreadLocal
-            .withInitial(() -> new PayloadProcessor(this, true));
+    // to make it GC friendly, it is made as static
+    private static final ThreadLocal<PayloadProcessor> PALYLOAD_PROCESSOR_TL = new ThreadLocal<>();
+
+    // NB: this non-static initialization makes BrowserPage and PayloadProcessor
+    // never to get GCd. It leads to memory leak. It seems to be a bug.
+    // private final ThreadLocal<PayloadProcessor> PALYLOAD_PROCESSOR_TL =
+    // ThreadLocal
+    // .withInitial(() -> new PayloadProcessor(this, true));
 
     // for security purpose, the class name should not be modified
     private static final class Security implements Serializable {
@@ -2066,11 +2071,20 @@ public abstract class BrowserPage implements Serializable {
      * bytes from WebSocket. To manually create new PayloadProcessor use <em>new
      * PayloadProcessor(browserPage)</em>.
      *
-     * @return new instance of PayloadProcessor
+     * @return new instance of PayloadProcessor/thread
      * @since 3.0.2
+     * @deprecated this method call may make deadlock somewhere in the
+     *             application while using multiple threads. Use
+     *             {@code BrowserPage#newPayloadProcessor()}.
      */
+    @Deprecated
     public final PayloadProcessor getPayloadProcessor() {
-        return PALYLOAD_PROCESSOR_TL.get();
+        PayloadProcessor payloadProcessor = PALYLOAD_PROCESSOR_TL.get();
+        if (payloadProcessor == null) {
+            payloadProcessor = new PayloadProcessor(this, true);
+            PALYLOAD_PROCESSOR_TL.set(payloadProcessor);
+        }
+        return payloadProcessor;
     }
 
     /**
@@ -2079,9 +2093,25 @@ public abstract class BrowserPage implements Serializable {
      * calling {@link #getPayloadProcessor()} by the same thread.
      *
      * @since 3.0.2
+     * @deprecated this method call may make deadlock.
      */
+    @Deprecated
     public final void removePayloadProcessor() {
         PALYLOAD_PROCESSOR_TL.remove();
+    }
+
+    /**
+     * Creates and returns new instance of {@code PayloadProcessor} for this
+     * browser page. This PayloadProcessor can process incoming partial bytes
+     * from WebSocket. To manually create new PayloadProcessor use <em>new
+     * PayloadProcessor(browserPage)</em>. Use this PayloadProcessor instance
+     * only under one thread at a time for its complete payload parts.
+     *
+     * @return new instance of PayloadProcessor each method call.
+     * @since 3.0.11
+     */
+    public final PayloadProcessor newPayloadProcessor() {
+        return new PayloadProcessor(this, true);
     }
 
 }

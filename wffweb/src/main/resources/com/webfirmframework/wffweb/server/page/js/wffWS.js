@@ -3,13 +3,19 @@ var wffWS = new function() {
 
 	var encoder = wffGlobal.encoder;
 	var decoder = wffGlobal.decoder;
-
-	var webSocket;
+	
+	// (null == undefined) is true
+	
+	//last reconnect interval obj
+	var prevIntvl = null;
+	var webSocket = null;
+	var inDataQ = [];
+	var sendQData = null;
 
 	this.openSocket = function(wsUrl) {
 
 		// Ensures only one connection is open at a time
-		if (typeof webSocket !== 'undefined'
+		if (webSocket !== null
 				&& webSocket.readyState !== WebSocket.CLOSED 
 				&& webSocket.readyState !== WebSocket.CLOSING) {
 			console.log("WebSocket is already opened.");
@@ -18,13 +24,46 @@ var wffWS = new function() {
 
 		// Create a new instance of websocket
 		webSocket = new WebSocket(wsUrl);
+		
+		sendQData = function() {
+			if (webSocket !== null && webSocket.readyState === WebSocket.OPEN) {
+				var inData = [];
+				var ndx = 0;
+				var xp = false;
+				for (ndx = 0; ndx < inDataQ.length; ndx++) { 
+					var each = inDataQ[ndx]; 
+					if (!xp) {
+						try {
+							webSocket.send(new Int8Array(each).buffer);
+						} catch(e) {
+							xp = true;
+							inData.push(each);
+						}
+					} else {
+						inData.push(each);
+					}					
+				}
+				inDataQ = inData;
+			}			
+		};
+		
 
 		// this is required to send binary data
 		webSocket.binaryType = 'arraybuffer';
 
 		webSocket.onopen = function(event) {
 			try {
+				
+				if(prevIntvl !== null) {
+					clearInterval(prevIntvl);
+					prevIntvl = null;
+				}
+				
 				wffBMClientEvents.wffRemovePrevBPInstance();
+				
+				if (sendQData !== null) {
+					sendQData();	
+				}				
 
 				if (typeof event.data === 'undefined') {
 					return;
@@ -98,15 +137,20 @@ var wffWS = new function() {
 				wffLog(e);
 			}
 		};
-
+		
 		webSocket.onclose = function(event) {
-			console.log("onclose", event);
-			setTimeout(function() {
-				if (typeof webSocket === 'undefined' || webSocket.readyState == 3) {
-					console.log("2 seconds loop");
+			if(prevIntvl !== null) {
+				clearInterval(prevIntvl);
+				prevIntvl = null;
+			}
+			prevIntvl = setInterval(function() {
+				if (webSocket === null || webSocket.readyState === WebSocket.CLOSED) {					
 					wffWS.openSocket(wffGlobal.WS_URL);
 				}
 			}, wffGlobal.WS_RECON);
+		};
+		webSocket.onerror = function(event) {
+			try{webSocket.close();}catch(e){wffLog("ws.close error");}
 		};
 	};
 
@@ -114,12 +158,19 @@ var wffWS = new function() {
 	 * Sends the bytes to the server
 	 */
 	this.send = function(bytes) {
-		webSocket.send(new Int8Array(bytes).buffer);
+		if (bytes.length > 0) {
+			inDataQ.push(bytes);
+			if (sendQData !== null) {
+				sendQData();
+			}
+		} else {
+			webSocket.send(new Int8Array(bytes).buffer);	
+		}
 	};
 
 	this.closeSocket = function() {
 		try {
-			if (typeof webSocket !== 'undefined' 
+			if (webSocket !== null 
 				&& webSocket.readyState !== WebSocket.CONNECTING
 				&& webSocket.readyState !== WebSocket.CLOSED) {
 				webSocket.close();
@@ -127,4 +178,10 @@ var wffWS = new function() {
 		} catch(e){}
 	};
 
+	this.getState = function() {
+		if (webSocket !== null) {
+			return webSocket.readyState;
+		}
+		return -1;
+	};
 };

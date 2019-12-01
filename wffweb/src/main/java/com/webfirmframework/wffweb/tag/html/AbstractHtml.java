@@ -742,7 +742,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                         }
                     } else {
-                        removeDataWffIdFromHierarchy(innerHtml);
+                        removeDataWffIdFromHierarchy(sharedObject, innerHtml);
                     }
 
                     addChild(innerHtml, false);
@@ -768,7 +768,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         } // else {TODO also write the code to push
                           // changes to the other BrowserPage}
                     } else {
-                        removeDataWffIdFromHierarchy(innerHtml);
+                        removeDataWffIdFromHierarchy(sharedObject, innerHtml);
                     }
 
                     addChild(innerHtml, false);
@@ -846,7 +846,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                     }
                 } else {
-                    removeDataWffIdFromHierarchy(innerHtml);
+                    removeDataWffIdFromHierarchy(sharedObject, innerHtml);
                 }
 
                 addChild(innerHtml, false);
@@ -871,7 +871,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                     } // else {TODO also write the code to push
                       // changes to the other BrowserPage}
                 } else {
-                    removeDataWffIdFromHierarchy(innerHtml);
+                    removeDataWffIdFromHierarchy(sharedObject, innerHtml);
                 }
 
                 addChild(innerHtml, false);
@@ -1125,8 +1125,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
                             if (firstChild != null) {
                                 if (firstChild instanceof NoTag
                                         && !firstChild.parentNullifiedOnce
-                                        && firstChild.sharedTagContent
-                                                .contains(firstChild)) {
+                                        && firstChild.sharedTagContent != null) {
+                                    firstChild.sharedTagContent
+                                            .remove(firstChild, this);
                                     firstChild.sharedTagContent = null;
                                 }
                             }
@@ -1240,8 +1241,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
                             && firstChild.sharedTagContent != null
                             && firstChild instanceof NoTag) {
 
-                        removed = firstChild.sharedTagContent
-                                .remove(firstChild);
+                        removed = firstChild.sharedTagContent.remove(firstChild,
+                                this);
 
                         if (removed && removeContent) {
 
@@ -1397,7 +1398,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 } // else {TODO also write the code to push
                   // changes to the other BrowserPage}
             } else {
-                removeDataWffIdFromHierarchy(child);
+                removeDataWffIdFromHierarchy(sharedObject, child);
             }
 
             result = addChild(child, true);
@@ -1445,7 +1446,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 } // else {TODO also write the code to push
                   // changes to the other BrowserPage}
             } else {
-                removeDataWffIdFromHierarchy(child);
+                removeDataWffIdFromHierarchy(sharedObject, child);
             }
 
             result = addChild(child, invokeListener);
@@ -1474,11 +1475,23 @@ public abstract class AbstractHtml extends AbstractJsObject {
             final boolean alreadyHasParent = child.parent != null;
             final AbstractHtml previousParent = child.parent;
 
-            if (alreadyHasParent) {
-                child.parent.children.remove(child);
+            Lock foreignLock = null;
+            AbstractHtml5SharedObject foreignSO = child.sharedObject;
+            if (foreignSO != null && !sharedObject.equals(foreignSO)) {
+                foreignLock = foreignSO.getLock(ACCESS_OBJECT).writeLock();
+                foreignSO = null;
+                foreignLock.lock();
             }
-
-            initParentAndSharedObject(child);
+            try {
+                if (alreadyHasParent) {
+                    child.parent.children.remove(child);
+                }
+                initParentAndSharedObject(child);
+            } finally {
+                if (foreignLock != null) {
+                    foreignLock.unlock();
+                }
+            }
 
             if (invokeListener) {
 
@@ -1551,11 +1564,55 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
+     * locking if only if required. if the currentSharedObject and
+     * tag.sharedObject is not matching then only locking will be applied.
+     *
+     * @param currentSharedObject
+     * @param tag
+     * @since 3.0.11
+     */
+    private static void removeDataWffIdFromHierarchy(
+            final AbstractHtml5SharedObject currentSharedObject,
+            final AbstractHtml tag) {
+        if (currentSharedObject.equals(tag.sharedObject)) {
+            removeDataWffIdFromHierarchyLockless(tag);
+        } else {
+            removeDataWffIdFromHierarchy(tag);
+        }
+    }
+
+    /**
      * @param tag
      * @since 3.0.9
      */
     private static void removeDataWffIdFromHierarchy(final AbstractHtml tag) {
 
+        Lock foreignLock = null;
+        // foreignSO comes null when running BrowserPageTest.testToHtmlString
+        // addChild from constructor will satisfy this condition
+        AbstractHtml5SharedObject foreignSO = tag.sharedObject;
+        if (foreignSO != null) {
+            foreignLock = foreignSO.getLock(ACCESS_OBJECT).writeLock();
+            foreignSO = null;
+            foreignLock.lock();
+        }
+
+        try {
+            removeDataWffIdFromHierarchyLockless(tag);
+        } finally {
+            if (foreignLock != null) {
+                foreignLock.unlock();
+            }
+        }
+
+    }
+
+    /**
+     * @param tag
+     * @since 3.0.11
+     */
+    private static void removeDataWffIdFromHierarchyLockless(
+            final AbstractHtml tag) {
         final Set<AbstractHtml> applicableTags = extractParentTagsForDataWffIdRemoval(
                 tag);
 
@@ -1575,7 +1632,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
             }
         }
-
     }
 
     /**
@@ -1698,7 +1754,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                     } // else {TODO also write the code to push
                       // changes to the other BrowserPage}
                 } else {
-                    removeDataWffIdFromHierarchy(child);
+                    removeDataWffIdFromHierarchy(sharedObject, child);
                 }
 
                 addChild(child, false);
@@ -1764,7 +1820,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                     } // else {TODO also write the code to push
                       // changes to the other BrowserPage}
                 } else {
-                    removeDataWffIdFromHierarchy(child);
+                    removeDataWffIdFromHierarchy(sharedObject, child);
                 }
 
                 addChild(child, false);
@@ -1874,7 +1930,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         } // else {TODO also write the code to push
                           // changes to the other BrowserPage}
                     } else {
-                        removeDataWffIdFromHierarchy(child);
+                        removeDataWffIdFromHierarchy(sharedObject, child);
                     }
 
                     addChild(child, false);
@@ -1948,7 +2004,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 } // else {TODO also write the code to push
                   // changes to the other BrowserPage}
             } else {
-                removeDataWffIdFromHierarchy(child);
+                removeDataWffIdFromHierarchy(sharedObject, child);
             }
 
             if (addChild(child, false)) {
@@ -5429,14 +5485,46 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         // moving from one tag to another.
 
                         if (alreadyHasParent) {
-                            tagToInsert.parent.children.remove(tagToInsert);
+                            Lock foreignLock = null;
+                            AbstractHtml5SharedObject foreignSO = tagToInsert.sharedObject;
+                            if (foreignSO != null
+                                    && !thisSharedObject.equals(foreignSO)) {
+                                foreignLock = foreignSO.getLock(ACCESS_OBJECT)
+                                        .writeLock();
+                                foreignSO = null;
+                                foreignLock.lock();
+                            }
+                            try {
+                                tagToInsert.parent.children.remove(tagToInsert);
+                                initSharedObject(tagToInsert);
+                                tagToInsert.parent = thisParent;
+                            } finally {
+                                if (foreignLock != null) {
+                                    foreignLock.unlock();
+                                }
+                            }
                         } else {
-                            removeDataWffIdFromHierarchy(tagToInsert);
+                            Lock foreignLock = null;
+                            AbstractHtml5SharedObject foreignSO = tagToInsert.sharedObject;
+                            if (foreignSO != null
+                                    && !thisSharedObject.equals(foreignSO)) {
+                                foreignLock = foreignSO.getLock(ACCESS_OBJECT)
+                                        .writeLock();
+                                foreignSO = null;
+                                foreignLock.lock();
+                            }
+                            try {
+                                removeDataWffIdFromHierarchyLockless(
+                                        tagToInsert);
+                                initSharedObject(tagToInsert);
+                                tagToInsert.parent = thisParent;
+                            } finally {
+                                if (foreignLock != null) {
+                                    foreignLock.unlock();
+                                }
+                            }
+
                         }
-
-                        initSharedObject(tagToInsert);
-
-                        tagToInsert.parent = thisParent;
 
                         thisParent.children.add(tagToInsert);
                     }
@@ -5553,14 +5641,49 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         // moving from one tag to another.
 
                         if (alreadyHasParent) {
-                            tagToInsert.parent.children.remove(tagToInsert);
+
+                            Lock foreignLock = null;
+                            AbstractHtml5SharedObject foreignSO = tagToInsert.sharedObject;
+                            if (foreignSO != null
+                                    && !thisSharedObject.equals(foreignSO)) {
+                                foreignLock = foreignSO.getLock(ACCESS_OBJECT)
+                                        .writeLock();
+                                foreignSO = null;
+                                foreignLock.lock();
+                            }
+                            try {
+                                tagToInsert.parent.children.remove(tagToInsert);
+                                initSharedObject(tagToInsert);
+                                tagToInsert.parent = thisParent;
+                            } finally {
+                                if (foreignLock != null) {
+                                    foreignLock.unlock();
+                                }
+                            }
+
                         } else {
-                            removeDataWffIdFromHierarchy(tagToInsert);
+
+                            Lock foreignLock = null;
+                            AbstractHtml5SharedObject foreignSO = tagToInsert.sharedObject;
+                            if (foreignSO != null
+                                    && !thisSharedObject.equals(foreignSO)) {
+                                foreignLock = foreignSO.getLock(ACCESS_OBJECT)
+                                        .writeLock();
+                                foreignSO = null;
+                                foreignLock.lock();
+                            }
+                            try {
+                                removeDataWffIdFromHierarchyLockless(
+                                        tagToInsert);
+                                initSharedObject(tagToInsert);
+                                tagToInsert.parent = thisParent;
+                            } finally {
+                                if (foreignLock != null) {
+                                    foreignLock.unlock();
+                                }
+                            }
+
                         }
-
-                        initSharedObject(tagToInsert);
-
-                        tagToInsert.parent = thisParent;
 
                         thisParent.children.add(tagToInsert);
                     }
@@ -5679,14 +5802,45 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         // moving from one tag to another.
 
                         if (alreadyHasParent) {
-                            tagToInsert.parent.children.remove(tagToInsert);
+                            Lock foreignLock = null;
+                            AbstractHtml5SharedObject foreignSO = tagToInsert.sharedObject;
+                            if (foreignSO != null
+                                    && !thisSharedObject.equals(foreignSO)) {
+                                foreignLock = foreignSO.getLock(ACCESS_OBJECT)
+                                        .writeLock();
+                                foreignSO = null;
+                                foreignLock.lock();
+                            }
+                            try {
+                                tagToInsert.parent.children.remove(tagToInsert);
+                                initSharedObject(tagToInsert, thisSharedObject);
+                                tagToInsert.parent = thisParent;
+                            } finally {
+                                if (foreignLock != null) {
+                                    foreignLock.unlock();
+                                }
+                            }
                         } else {
-                            removeDataWffIdFromHierarchy(tagToInsert);
+                            Lock foreignLock = null;
+                            AbstractHtml5SharedObject foreignSO = tagToInsert.sharedObject;
+                            if (foreignSO != null
+                                    && !thisSharedObject.equals(foreignSO)) {
+                                foreignLock = foreignSO.getLock(ACCESS_OBJECT)
+                                        .writeLock();
+                                foreignSO = null;
+                                foreignLock.lock();
+                            }
+                            try {
+                                removeDataWffIdFromHierarchyLockless(
+                                        tagToInsert);
+                                initSharedObject(tagToInsert, thisSharedObject);
+                                tagToInsert.parent = thisParent;
+                            } finally {
+                                if (foreignLock != null) {
+                                    foreignLock.unlock();
+                                }
+                            }
                         }
-
-                        initSharedObject(tagToInsert, thisSharedObject);
-
-                        tagToInsert.parent = thisParent;
 
                         thisParent.children.add(tagToInsert);
                     }

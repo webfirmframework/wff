@@ -19,6 +19,7 @@ package com.webfirmframework.wffweb.tag.html;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -395,12 +396,7 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public T getContent() {
-        final long stamp = lock.readLock();
-        try {
-            return content;
-        } finally {
-            lock.unlockRead(stamp);
-        }
+        return content;
     }
 
     /**
@@ -408,12 +404,7 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public boolean isContentTypeHtml() {
-        final long stamp = lock.readLock();
-        try {
-            return contentTypeHtml;
-        } finally {
-            lock.unlockRead(stamp);
-        }
+        return contentTypeHtml;
     }
 
     /**
@@ -421,12 +412,7 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public boolean isShared() {
-        final long stamp = lock.readLock();
-        try {
-            return shared;
-        } finally {
-            lock.unlockRead(stamp);
-        }
+        return shared;
     }
 
     /**
@@ -438,13 +424,7 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public UpdateClientNature getUpdateClientNature() {
-        final long stamp = lock.readLock();
-        try {
-            return updateClientNature;
-        } finally {
-            lock.unlockRead(stamp);
-        }
-
+        return updateClientNature;
     }
 
     /**
@@ -486,12 +466,7 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public boolean isUpdateClient() {
-        final long stamp = lock.readLock();
-        try {
-            return updateClient;
-        } finally {
-            lock.unlockRead(stamp);
-        }
+        return updateClient;
     }
 
     /**
@@ -1144,15 +1119,30 @@ public class SharedTagContent<T> {
     }
 
     /**
+     * NB: Only for internal use
+     *
      * @param insertedTag
      *                        instance of NoTag
+     * @param parentTag
+     *                        parent tag of NoTag
      * @return true if removed otherwise false
      * @since 3.0.6
      */
-    boolean remove(final AbstractHtml insertedTag) {
+    boolean remove(final AbstractHtml insertedTag,
+            final AbstractHtml parentTag) {
         final long stamp = lock.writeLock();
         try {
-            return insertedTags.remove(insertedTag) != null;
+
+            final boolean removed = insertedTags.remove(insertedTag) != null;
+            if (removed) {
+                if (detachListeners != null) {
+                    detachListeners.remove(parentTag);
+                }
+                if (contentChangeListeners != null) {
+                    contentChangeListeners.remove(parentTag);
+                }
+            }
+            return removed;
         } finally {
             lock.unlockWrite(stamp);
         }
@@ -1246,7 +1236,13 @@ public class SharedTagContent<T> {
 
             for (final Entry<NoTag, InsertedTagData<T>> entry : insertedTags
                     .entrySet()) {
+                if (entry == null) {
+                    continue;
+                }
                 final NoTag prevNoTag = entry.getKey();
+                if (prevNoTag == null) {
+                    continue;
+                }
                 final InsertedTagData<T> insertedTagData = entry.getValue();
                 final AbstractHtml parentTag = prevNoTag.getParent();
 
@@ -1720,6 +1716,74 @@ public class SharedTagContent<T> {
         } finally {
             lock.unlockWrite(stamp);
         }
+    }
+
+    /**
+     * @param tag
+     *                the tag whose ContentFormatter to be got.
+     * @return the ContentFormatter object set for the given tag.
+     * @since 3.0.11
+     */
+    public ContentFormatter<T> getContentFormatter(final AbstractHtml tag) {
+        final AbstractHtml firstChild = tag.getFirstChild();
+        if (firstChild != null) {
+            final long stamp = lock.readLock();
+            try {
+                final InsertedTagData<T> insertedTagData = insertedTags
+                        .get(firstChild);
+                if (insertedTagData != null) {
+                    return insertedTagData.formatter();
+                }
+            } finally {
+                lock.unlockRead(stamp);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param tag
+     *                tag from which the listeners to be got.
+     * @return the ContentChangeListeners for the given tag.
+     * @since 3.0.11
+     */
+    public Set<ContentChangeListener<T>> getContentChangeListeners(
+            final AbstractHtml tag) {
+        final long stamp = lock.readLock();
+        try {
+            final Set<ContentChangeListener<T>> listeners = contentChangeListeners
+                    .get(tag);
+            if (listeners != null) {
+                final Set<ContentChangeListener<T>> unmodifiableSet = Collections
+                        .unmodifiableSet(listeners);
+                return unmodifiableSet;
+            }
+
+        } finally {
+            lock.unlockRead(stamp);
+        }
+        return null;
+    }
+
+    /**
+     * @param tag
+     *                tag from which the listeners to be got.
+     * @return the DetachListeners for the given tag.
+     * @since 3.0.11
+     */
+    public Set<DetachListener<T>> getDetachListeners(final AbstractHtml tag) {
+        final long stamp = lock.readLock();
+        try {
+            final Set<DetachListener<T>> listeners = detachListeners.get(tag);
+            if (listeners != null) {
+                final Set<DetachListener<T>> unmodifiableSet = Collections
+                        .unmodifiableSet(listeners);
+                return unmodifiableSet;
+            }
+        } finally {
+            lock.unlockRead(stamp);
+        }
+        return null;
     }
 
 }

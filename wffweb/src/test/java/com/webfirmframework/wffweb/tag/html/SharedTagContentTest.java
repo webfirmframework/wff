@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.junit.Test;
 
@@ -1400,6 +1401,25 @@ public class SharedTagContentTest {
 
         assertFalse(span2.removeSharedTagContent(false));
         assertFalse(span2.removeSharedTagContent(true));
+    }
+    
+    @Test
+    public void testNoTagGC() {
+        Span span = new Span(null);
+        SharedTagContent<String> stc = new SharedTagContent<String>("initd");
+        span.subscribeTo(stc);
+        
+        final AbstractHtml firstChild = span.getFirstChild();
+        
+        assertNotNull(firstChild);
+        assertEquals(span, firstChild.getParent());
+        
+        stc.setContent("content changed");
+        assertNull(firstChild.getParent());
+        
+        assertNotEquals(firstChild, span.getFirstChild());
+        assertFalse(stc.contains(firstChild));
+        
     }
     
 //for dev test purpose
