@@ -871,20 +871,20 @@ public class SharedTagContent<T> {
                                                     updateClientTagSpecific,
                                                     parentNoTagData.getNoTag());
 
-                                    // subscribed and offline
-                                    if (parentNoTagData.insertedTagData()
-                                            .subscribed()
-                                            && !sharedObject
-                                                    .isActiveWSListener()) {
-                                        final ClientTasksWrapper lastClientTask = parentNoTagData
-                                                .insertedTagData()
-                                                .lastClientTask();
-                                        if (lastClientTask != null) {
-                                            lastClientTask.nullifyTasks();
-                                        }
-                                    }
-
                                     if (listenerData != null) {
+
+                                        // subscribed and offline
+                                        if (parentNoTagData.insertedTagData()
+                                                .subscribed()
+                                                && !sharedObject
+                                                        .isActiveWSListener()) {
+                                            final ClientTasksWrapper lastClientTask = parentNoTagData
+                                                    .insertedTagData()
+                                                    .lastClientTask();
+                                            if (lastClientTask != null) {
+                                                lastClientTask.nullifyTasks();
+                                            }
+                                        }
 
                                         // TODO declare new innerHtmlsAdded for
                                         // multiple
