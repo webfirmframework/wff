@@ -2,15 +2,20 @@ package com.webfirmframework.wffweb.tag.html;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.tag.html.SharedTagContent.ChangeEvent;
+import com.webfirmframework.wffweb.tag.html.SharedTagContent.Content;
+import com.webfirmframework.wffweb.tag.html.SharedTagContent.ContentFormatter;
 import com.webfirmframework.wffweb.tag.html.SharedTagContent.DetachEvent;
 import com.webfirmframework.wffweb.tag.html.SharedTagContent.UpdateClientNature;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
@@ -1477,6 +1482,41 @@ public class SharedTagContentTest {
 //        final AbstractHtml div = browserPage.getTagRepository().findTagById("mainDivId");
 //        assertNotNull(div);
 //    }
+    
+    @Test
+    public void testOrderOfContentChangeOnConsumerTags() throws Exception {
+        
+        int maxTags = 500;
+        List<Integer> expectedContentChangeOrder = new ArrayList<>();
+        for (int i = 0; i < maxTags * 2; i++) {
+            expectedContentChangeOrder.add(i);
+        }
+        
+        List<Integer> contentChangeOrder = new ArrayList<>();
+        
+        AtomicInteger idGenerator = new AtomicInteger(0);
+        
+        Div div = new Div(null);
+        
+        
+        SharedTagContent<String> stc = new SharedTagContent<String>("initial content");
+        
+        for (int i = 0; i < maxTags; i++) {
+            Span span1 = new Span(div);
+            span1.subscribeTo(stc, new ContentFormatter<String>() {
+
+                @Override
+                public Content<String> format(Content<String> content) {
+                    contentChangeOrder.add(idGenerator.getAndIncrement());
+                    return content;
+                }
+            });
+        }
+        
+        stc.setContent("content changed");      
+        
+        assertArrayEquals(expectedContentChangeOrder.toArray(), contentChangeOrder.toArray());
+    }
             
 
 }
