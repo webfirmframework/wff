@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 Web Firm Framework
+ * Copyright 2014-2020 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.StampedLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import com.webfirmframework.wffweb.server.page.ClientTasksWrapper;
 import com.webfirmframework.wffweb.tag.html.listener.PushQueue;
@@ -90,6 +92,8 @@ public class SharedTagContent<T> {
     // NB Using ReentrantReadWriteLock causes
     // java.lang.IllegalMonitorStateException in production app
     private final StampedLock lock = new StampedLock();
+
+    private volatile long ordinal = 0L;
 
     private final Map<NoTag, InsertedTagData<T>> insertedTags = new WeakHashMap<>(
             4, 0.75F);
@@ -724,10 +728,16 @@ public class SharedTagContent<T> {
                 this.contentTypeHtml = contentTypeHtml;
                 this.shared = shared;
 
-                final Map<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> tagsGroupedBySharedObject = new HashMap<>();
+                final List<Map.Entry<NoTag, InsertedTagData<T>>> insertedTagsEntries = insertedTags
+                        .entrySet().stream()
+                        .sorted(Map.Entry.comparingByValue())
+                        .collect(Collectors.toList());
 
-                for (final Entry<NoTag, InsertedTagData<T>> entry : insertedTags
-                        .entrySet()) {
+                insertedTags.clear();
+
+                final Map<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> tagsGroupedBySharedObject = new LinkedHashMap<>();
+
+                for (final Entry<NoTag, InsertedTagData<T>> entry : insertedTagsEntries) {
 
                     final NoTag prevNoTag = entry.getKey();
                     final InsertedTagData<T> insertedTagData = entry.getValue();
@@ -782,8 +792,6 @@ public class SharedTagContent<T> {
                             noTag, insertedTagData, contentApplied));
 
                 }
-
-                insertedTags.clear();
 
                 final List<ModifiedParentData<T>> modifiedParents = new ArrayList<>(
                         4);
@@ -871,20 +879,20 @@ public class SharedTagContent<T> {
                                                     updateClientTagSpecific,
                                                     parentNoTagData.getNoTag());
 
-                                    // subscribed and offline
-                                    if (parentNoTagData.insertedTagData()
-                                            .subscribed()
-                                            && !sharedObject
-                                                    .isActiveWSListener()) {
-                                        final ClientTasksWrapper lastClientTask = parentNoTagData
-                                                .insertedTagData()
-                                                .lastClientTask();
-                                        if (lastClientTask != null) {
-                                            lastClientTask.nullifyTasks();
-                                        }
-                                    }
-
                                     if (listenerData != null) {
+
+                                        // subscribed and offline
+                                        if (parentNoTagData.insertedTagData()
+                                                .subscribed()
+                                                && !sharedObject
+                                                        .isActiveWSListener()) {
+                                            final ClientTasksWrapper lastClientTask = parentNoTagData
+                                                    .insertedTagData()
+                                                    .lastClientTask();
+                                            if (lastClientTask != null) {
+                                                lastClientTask.nullifyTasks();
+                                            }
+                                        }
 
                                         // TODO declare new innerHtmlsAdded for
                                         // multiple
@@ -1096,7 +1104,10 @@ public class SharedTagContent<T> {
             noTagInserted = noTag;
 
             final InsertedTagData<T> insertedTagData = new InsertedTagData<>(
-                    cFormatter, subscribe);
+                    ordinal, cFormatter, subscribe);
+
+            // AtomicLong is not required as it is under lock
+            ordinal++;
             insertedTags.put(noTag, insertedTagData);
 
             if (listenerData != null) {

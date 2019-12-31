@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 Web Firm Framework
+ * Copyright 2014-2020 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -117,7 +117,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     private String openingTag;
 
     // should be initialized with empty string
-    private String closingTag = "";
+    private final String closingTag;
 
     private StringBuilder htmlStartSB;
 
@@ -127,9 +127,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     private final String tagName;
 
-    private StringBuilder tagBuilder;
+    private final StringBuilder tagBuilder = new StringBuilder();;
 
-    private AbstractAttribute[] attributes;
+    private volatile AbstractAttribute[] attributes;
 
     private volatile Map<String, AbstractAttribute> attributesMap;
 
@@ -147,7 +147,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     private transient Charset charset = Charset.defaultCharset();
 
-    private TagType tagType = TagType.OPENING_CLOSING;
+    // default must be TagType.OPENING_CLOSING
+    private final TagType tagType;
 
     protected final boolean noTagContentTypeHtml;
 
@@ -388,6 +389,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     public AbstractHtml(final AbstractHtml base,
             final AbstractHtml... children) {
         tagName = null;
+        tagType = TagType.OPENING_CLOSING;
         tagNameIndexBytes = null;
         noTagContentTypeHtml = false;
         if (base == null) {
@@ -397,7 +399,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
         initInConstructor();
 
         buildOpeningTag(false);
-        buildClosingTag();
+        closingTag = buildClosingTag();
         if (base != null) {
             base.addChild(this);
             // base.children.add(this);
@@ -425,6 +427,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             final boolean noTagContentTypeHtml) {
 
         tagName = null;
+        tagType = TagType.OPENING_CLOSING;
         tagNameIndexBytes = null;
 
         this.noTagContentTypeHtml = noTagContentTypeHtml;
@@ -438,7 +441,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
         htmlStartSBAsFirst = true;
         getHtmlMiddleSB().append(childContent);
         buildOpeningTag(false);
-        buildClosingTag();
+        closingTag = buildClosingTag();
         if (base != null) {
             base.addChild(this);
             // base.children.add(this);
@@ -479,6 +482,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             final AbstractAttribute[] attributes) {
 
         this.tagName = tagName;
+        tagType = TagType.OPENING_CLOSING;
         tagNameIndexBytes = null;
         noTagContentTypeHtml = false;
         if (base == null) {
@@ -491,7 +495,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
         markOwnerTag(attributes);
         buildOpeningTag(false);
-        buildClosingTag();
+        closingTag = buildClosingTag();
         if (base != null) {
             base.addChild(this);
             // base.children.add(this);
@@ -523,6 +527,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     protected AbstractHtml(final PreIndexedTagName preIndexedTagName,
             final AbstractHtml base, final AbstractAttribute[] attributes) {
         tagName = preIndexedTagName.tagName();
+        tagType = TagType.OPENING_CLOSING;
         tagNameIndexBytes = preIndexedTagName.internalIndexBytes(ACCESS_OBJECT);
         noTagContentTypeHtml = false;
         if (base == null) {
@@ -535,7 +540,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
         markOwnerTag(attributes);
         buildOpeningTag(false);
-        buildClosingTag();
+        closingTag = buildClosingTag();
         if (base != null) {
             base.addChild(this);
             // base.children.add(this);
@@ -553,7 +558,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     private void init() {
-        tagBuilder = new StringBuilder();
         setRebuild(true);
     }
 
@@ -2529,9 +2533,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
         buildOpeningTag(false);
 
-        if (tagType == TagType.OPENING_CLOSING) {
-            buildClosingTag();
-        }
+        closingTag = tagType == TagType.OPENING_CLOSING ? buildClosingTag()
+                : "";
 
         if (base != null) {
             base.addChild(this);
@@ -2934,7 +2937,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
             try {
                 lock.lock();
 
-                return tagBuilder.toString();
+                final String html = tagBuilder.toString();
+                return html;
             } finally {
                 lock.unlock();
             }
@@ -2975,7 +2979,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
         final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
         try {
             lock.lock();
-            return tagBuilder.toString();
+            final String html = tagBuilder.toString();
+            return html;
         } finally {
             lock.unlock();
         }
@@ -3149,8 +3154,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
         final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
         try {
             lock.lock();
-
-            return tagBuilder.toString();
+            final String html = tagBuilder.toString();
+            return html;
         } finally {
             lock.unlock();
         }
@@ -4172,8 +4177,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *
      * @since 1.0.0
      * @author WFF
+     * @return closing tag
      */
-    private void buildClosingTag() {
+    private String buildClosingTag() {
         if (htmlEndSB.length() > 0) {
             htmlEndSB.delete(0, htmlEndSB.length());
         }
@@ -4186,7 +4192,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             }
         }
         htmlEndSB.trimToSize();
-        closingTag = htmlEndSB.toString();
+        return htmlEndSB.toString();
     }
 
     /**

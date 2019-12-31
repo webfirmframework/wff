@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 Web Firm Framework
+ * Copyright 2014-2020 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,9 @@ import com.webfirmframework.wffweb.tag.html.SharedTagContent.ContentFormatter;
  * @since 3.0.6
  *
  */
-final class InsertedTagData<T> {
+final class InsertedTagData<T> implements Comparable<InsertedTagData<T>> {
+
+    private final Long ordinal;
 
     private final ContentFormatter<T> formatter;
 
@@ -38,9 +40,10 @@ final class InsertedTagData<T> {
 
     private volatile WeakReference<ClientTasksWrapper> lastClientTaskRef;
 
-    InsertedTagData(final ContentFormatter<T> formatter,
+    InsertedTagData(final long ordinal, final ContentFormatter<T> formatter,
             final boolean subscribed) {
         super();
+        this.ordinal = ordinal;
         this.formatter = formatter;
         this.subscribed = subscribed;
     }
@@ -69,6 +72,11 @@ final class InsertedTagData<T> {
      */
     void lastClientTask(final ClientTasksWrapper lastClientTask) {
         lastClientTaskRef = new WeakReference<>(lastClientTask);
+    }
+
+    @Override
+    public int compareTo(final InsertedTagData<T> o) {
+        return this.ordinal.compareTo(o.ordinal);
     }
 
 }
