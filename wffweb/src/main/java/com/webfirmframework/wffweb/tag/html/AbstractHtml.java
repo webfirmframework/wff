@@ -32,7 +32,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
@@ -1109,41 +1108,34 @@ public abstract class AbstractHtml extends AbstractJsObject {
             final SharedTagContent.ContentFormatter<T> formatter,
             final boolean subscribe) {
 
-        if (this.sharedTagContent == null
-                || !Objects.equals(this.sharedTagContent, sharedTagContent)) {
-
-            final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
-            lock.lock();
-            try {
-                if (sharedTagContent != null) {
-                    final AbstractHtml noTagInserted = sharedTagContent
-                            .addInnerHtml(updateClient, this, formatter,
-                                    subscribe);
-                    noTagInserted.sharedTagContent = sharedTagContent;
-                } else {
-                    if (children.size() == 1) {
-                        final Iterator<AbstractHtml> iterator = children
-                                .iterator();
-                        if (iterator.hasNext()) {
-                            final AbstractHtml firstChild = iterator.next();
-                            if (firstChild != null) {
-                                if (firstChild instanceof NoTag
-                                        && !firstChild.parentNullifiedOnce
-                                        && firstChild.sharedTagContent != null) {
-                                    firstChild.sharedTagContent
-                                            .remove(firstChild, this);
-                                    firstChild.sharedTagContent = null;
-                                }
+        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+        lock.lock();
+        try {
+            if (sharedTagContent != null) {
+                final AbstractHtml noTagInserted = sharedTagContent
+                        .addInnerHtml(updateClient, this, formatter, subscribe);
+                noTagInserted.sharedTagContent = sharedTagContent;
+            } else {
+                if (children.size() == 1) {
+                    final Iterator<AbstractHtml> iterator = children.iterator();
+                    if (iterator.hasNext()) {
+                        final AbstractHtml firstChild = iterator.next();
+                        if (firstChild != null) {
+                            if (firstChild instanceof NoTag
+                                    && !firstChild.parentNullifiedOnce
+                                    && firstChild.sharedTagContent != null) {
+                                firstChild.sharedTagContent.remove(firstChild,
+                                        this);
+                                firstChild.sharedTagContent = null;
                             }
-
                         }
 
                     }
-                }
-            } finally {
-                lock.unlock();
-            }
 
+                }
+            }
+        } finally {
+            lock.unlock();
         }
 
     }
