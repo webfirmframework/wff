@@ -58,6 +58,19 @@ public enum TagContent {
     }
 
     /**
+     * Prepends content in the given parent object as the first child.
+     *
+     * @param parent
+     * @return parent
+     * @since 3.0.13
+     */
+    public static <R extends AbstractHtml> R prependText(final R parent,
+            final String content) {
+        TagContent.TEXT.prependChild(parent, content);
+        return parent;
+    }
+
+    /**
      * Appends content in the given parent object as the last child.
      *
      * @param parent
@@ -82,6 +95,20 @@ public enum TagContent {
     public static <R extends AbstractHtml> R html(final R parent,
             final String content) {
         TagContent.HTML.addInnerContent(parent, content);
+        return parent;
+    }
+
+    /**
+     * Prepends content in the given parent object as the first child. It
+     * internally marks the given content type as html.
+     *
+     * @param parent
+     * @return parent
+     * @since 3.0.13
+     */
+    public static <R extends AbstractHtml> R prependHtml(final R parent,
+            final String content) {
+        TagContent.HTML.prependChild(parent, content);
         return parent;
     }
 
