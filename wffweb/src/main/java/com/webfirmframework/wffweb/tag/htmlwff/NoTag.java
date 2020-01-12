@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.tag.htmlwff;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 import com.webfirmframework.wffweb.MethodNotImplementedException;
@@ -241,6 +242,29 @@ public class NoTag extends AbstractHtml {
     @Deprecated
     @Override
     public <T extends AbstractHtml> T give(final Consumer<T> consumer) {
+        throw new MethodNotImplementedException(
+                "give is not allowed to use in NoTag or Blank tag");
+    }
+
+    /**
+     * @deprecated this method is not allowed in NoTag or Blank class.
+     */
+    @Deprecated
+    @Override
+    public <R extends AbstractHtml, C> R give(
+            final BiFunction<R, C, R> consumer, final C input) {
+        throw new MethodNotImplementedException(
+                "give is not allowed to use in NoTag or Blank tag");
+    }
+
+    /**
+     * @deprecated this method is not allowed in NoTag or Blank class.
+     */
+    @Deprecated
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R extends AbstractHtml, C> R give(
+            final BiFunction<R, C[], R> consumer, final C... inputs) {
         throw new MethodNotImplementedException(
                 "give is not allowed to use in NoTag or Blank tag");
     }

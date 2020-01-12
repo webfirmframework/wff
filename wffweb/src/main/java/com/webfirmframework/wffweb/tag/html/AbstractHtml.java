@@ -35,6 +35,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -6437,4 +6438,107 @@ public abstract class AbstractHtml extends AbstractJsObject {
         consumer.accept((T) this);
         return (T) this;
     }
+
+    /**
+     * This method can avoid creating anonymous class coding. <br>
+     * Eg: <br>
+     *
+     * <pre>
+     * Div div = new Div(null, new Id("rootDivId")).give(TagContent::text,
+     *         "Hello World");
+     * System.out.println(div.toHtmlString());
+     *
+     * </pre>
+     *
+     * produces
+     *
+     * <pre>
+     * <code>
+     * &lt;div id="rootDivId"&gt;Hello World&lt;/div&gt;
+     * </code>
+     * </pre>
+     *
+     * A mix of give methods will be
+     *
+     * <pre>
+     * Div div = new Div(null).give(dv -> {
+     *     new Span(dv).give(TagContent::text, "Hello World");
+     * });
+     * </pre>
+     *
+     * produces
+     *
+     * <pre>
+     * <code>
+     * &lt;div&gt;
+     *     &lt;span&gt;Hello World&lt;/span&gt;
+     * &lt;/div&gt;
+     * </code>
+     * </pre>
+     *
+     * @param consumer
+     * @param input
+     *                     the object to be passed as second argument of
+     *                     {@code BiFunction#apply(Object, Object)} method.
+     * @return the object which {@code BiFunction#apply(Object, Object)} returns
+     *         which will be a subclass of {@code AbstractHtml}
+     * @since 3.0.13
+     */
+    @SuppressWarnings("unchecked")
+    public <R extends AbstractHtml, C> R give(
+            final BiFunction<R, C, R> consumer, final C input) {
+        return consumer.apply((R) this, input);
+    }
+
+    /**
+     * This method can avoid creating anonymous class coding. <br>
+     * Eg: <br>
+     *
+     * <pre>
+     * Div div = new Div(null, new Id("rootDivId")).give(TagContent::text,
+     *         "Hello World");
+     * System.out.println(div.toHtmlString());
+     *
+     * </pre>
+     *
+     * produces
+     *
+     * <pre>
+     * <code>
+     * &lt;div id="rootDivId"&gt;Hello World&lt;/div&gt;
+     * </code>
+     * </pre>
+     *
+     * A mix of give methods will be
+     *
+     * <pre>
+     * Div div = new Div(null).give(dv -> {
+     *     new Span(dv).give(TagContent::text, "Hello World");
+     * });
+     * </pre>
+     *
+     * produces
+     *
+     * <pre>
+     * <code>
+     * &lt;div&gt;
+     *     &lt;span&gt;Hello World&lt;/span&gt;
+     * &lt;/div&gt;
+     * </code>
+     * </pre>
+     *
+     * @param consumer
+     * @param inputs
+     *                     the array of objects to be passed as second argument
+     *                     of {@code BiFunction#apply(Object, Object)} method.
+     * @return the object which {@code BiFunction#apply(Object, Object)} returns
+     *         which will be a subclass of {@code AbstractHtml}
+     * @since 3.0.13
+     */
+    @SuppressWarnings("unchecked")
+    public <R extends AbstractHtml, C> R give(
+            final BiFunction<R, C[], R> consumer, final C... inputs) {
+        return consumer.apply((R) this, inputs);
+    }
+
 }

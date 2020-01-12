@@ -42,6 +42,53 @@ public enum TagContent {
         this.contentTypeHtml = contentTypeHtml;
     }
 
+    /**
+     * @param parent
+     * @param content
+     * @return parent
+     * @since 3.0.13
+     */
+    public static <R extends AbstractHtml> R text(final R parent,
+            final String content) {
+        TagContent.TEXT.addInnerContent(parent, content);
+        return parent;
+    }
+
+    /**
+     * @param parent
+     * @return parent
+     * @since 3.0.13
+     */
+    public static <R extends AbstractHtml> R html(final R parent,
+            final String content) {
+        TagContent.HTML.addInnerContent(parent, content);
+        return parent;
+    }
+
+    /**
+     * @param parent
+     * @param contents
+     * @return parent
+     * @since 3.0.13
+     */
+    public static <R extends AbstractHtml> R texts(final R parent,
+            final String... contents) {
+        TagContent.TEXT.addInnerContents(parent, contents);
+        return parent;
+    }
+
+    /**
+     * @param parent
+     * @param contents
+     * @return parent
+     * @since 3.0.13
+     */
+    public static <R extends AbstractHtml> R htmls(final R parent,
+            final String... contents) {
+        TagContent.HTML.addInnerContents(parent, contents);
+        return parent;
+    }
+
     private void checkCompatibility(final AbstractHtml tag) {
         if (TagUtil.isTagless(tag)) {
             throw new InvalidTagException(
