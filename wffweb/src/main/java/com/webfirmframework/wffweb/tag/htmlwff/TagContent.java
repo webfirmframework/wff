@@ -43,6 +43,9 @@ public enum TagContent {
     }
 
     /**
+     * Adds inner content for the given parent object, children of parent will
+     * be removed if already exists.
+     *
      * @param parent
      * @param content
      * @return parent
@@ -55,6 +58,10 @@ public enum TagContent {
     }
 
     /**
+     * Adds inner content for the given parent object, children of parent will
+     * be removed if already exists. It internally marks the given content type
+     * as html.
+     *
      * @param parent
      * @return parent
      * @since 3.0.13
@@ -66,6 +73,9 @@ public enum TagContent {
     }
 
     /**
+     * Adds inner content for the given parent object, children of parent will
+     * be removed if already exists.
+     *
      * @param parent
      * @param contents
      * @return parent
@@ -78,6 +88,10 @@ public enum TagContent {
     }
 
     /**
+     * Adds inner content for the given parent object, children of parent will
+     * be removed if already exists. It internally marks the given content type
+     * as html.
+     *
      * @param parent
      * @param contents
      * @return parent
