@@ -6461,7 +6461,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * A mix of give methods will be
      *
      * <pre>
-     * Div div = new Div(null).give(dv -> {
+     * Div div = new Div(null).give(dv -&gt; {
      *     new Span(dv).give(TagContent::text, "Hello World");
      * });
      * </pre>
