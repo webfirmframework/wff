@@ -72,37 +72,6 @@ public enum TagContent {
         return parent;
     }
 
-    /**
-     * Adds inner content for the given parent object, children of parent will
-     * be removed if already exists.
-     *
-     * @param parent
-     * @param contents
-     * @return parent
-     * @since 3.0.13
-     */
-    public static <R extends AbstractHtml> R texts(final R parent,
-            final String... contents) {
-        TagContent.TEXT.addInnerContents(parent, contents);
-        return parent;
-    }
-
-    /**
-     * Adds inner content for the given parent object, children of parent will
-     * be removed if already exists. It internally marks the given content type
-     * as html.
-     *
-     * @param parent
-     * @param contents
-     * @return parent
-     * @since 3.0.13
-     */
-    public static <R extends AbstractHtml> R htmls(final R parent,
-            final String... contents) {
-        TagContent.HTML.addInnerContents(parent, contents);
-        return parent;
-    }
-
     private void checkCompatibility(final AbstractHtml tag) {
         if (TagUtil.isTagless(tag)) {
             throw new InvalidTagException(

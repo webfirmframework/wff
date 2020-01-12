@@ -516,57 +516,12 @@ public class AbstractHtmlTest {
             assertFalse(noTag.isChildContentTypeHtml());
         }
         
-        div = new Div(null, new Id("rootDivId")).give(TagContent::texts, "content1");
-        assertEquals("<div id=\"rootDivId\">content1</div>", div.toHtmlString());
-        for (AbstractHtml each : div.getChildren()) {
-            NoTag noTag = (NoTag) each;
-            assertFalse(noTag.isChildContentTypeHtml());
-        }
-        
-        div = new Div(null, new Id("rootDivId")).give(TagContent::texts, "content1", "content2");
-        assertEquals("<div id=\"rootDivId\">content1content2</div>", div.toHtmlString());
-        for (AbstractHtml each : div.getChildren()) {
-            NoTag noTag = (NoTag) each;
-            assertFalse(noTag.isChildContentTypeHtml());
-        }
-        
-        div = new Div(null, new Id("rootDivId")).give(TagContent::texts, " content1 ", " content2 ");
-        assertEquals("<div id=\"rootDivId\"> content1  content2 </div>", div.toHtmlString());
-        for (AbstractHtml each : div.getChildren()) {
-            NoTag noTag = (NoTag) each;
-            assertFalse(noTag.isChildContentTypeHtml());
-        }
-        
-        //---- multiple children
         div = new Div(null, new Id("rootDivId")).give(TagContent::html, "content1");
         assertEquals("<div id=\"rootDivId\">content1</div>", div.toHtmlString());
         for (AbstractHtml each : div.getChildren()) {
             NoTag noTag = (NoTag) each;
             assertTrue(noTag.isChildContentTypeHtml());
         }
-        
-        div = new Div(null, new Id("rootDivId")).give(TagContent::htmls, "content1");
-        assertEquals("<div id=\"rootDivId\">content1</div>", div.toHtmlString());
-        for (AbstractHtml each : div.getChildren()) {
-            NoTag noTag = (NoTag) each;
-            assertTrue(noTag.isChildContentTypeHtml());
-        }
-        
-        div = new Div(null, new Id("rootDivId")).give(TagContent::htmls, "content1", "content2");
-        assertEquals("<div id=\"rootDivId\">content1content2</div>", div.toHtmlString());
-        for (AbstractHtml each : div.getChildren()) {
-            NoTag noTag = (NoTag) each;
-            assertTrue(noTag.isChildContentTypeHtml());
-        }
-        
-        div = new Div(null, new Id("rootDivId")).give(TagContent::htmls, " content1 ", " content2 ");
-        assertEquals("<div id=\"rootDivId\"> content1  content2 </div>", div.toHtmlString());
-        for (AbstractHtml each : div.getChildren()) {
-            NoTag noTag = (NoTag) each;
-            assertTrue(noTag.isChildContentTypeHtml());
-        }
-        //end
-        
         
         Div div1 = new Div(null, new Id("rootDivId")).give(TagContent::text, "content1");
         for (AbstractHtml each : div1.getChildren()) {
@@ -578,19 +533,7 @@ public class AbstractHtmlTest {
         for (AbstractHtml each : div2.getChildren()) {
             NoTag noTag = (NoTag) each;
             assertTrue(noTag.isChildContentTypeHtml());
-        }
-        
-        Div div3 = new Div(null, new Id("rootDivId")).give(TagContent::texts, "content1", "content2");
-        for (AbstractHtml each : div3.getChildren()) {
-            NoTag noTag = (NoTag) each;
-            assertFalse(noTag.isChildContentTypeHtml());
-        }
-        
-        Div div4 = new Div(null, new Id("rootDivId")).give(TagContent::htmls, "content1", "content2");
-        for (AbstractHtml each : div4.getChildren()) {
-            NoTag noTag = (NoTag) each;
-            assertTrue(noTag.isChildContentTypeHtml());
-        }
+        }       
         
     }
 
