@@ -42,6 +42,90 @@ public enum TagContent {
         this.contentTypeHtml = contentTypeHtml;
     }
 
+    /**
+     * Adds inner content for the given parent object, children of parent will
+     * be removed if already exists.
+     *
+     * @param parent
+     * @param content
+     * @return parent
+     * @since 3.0.13
+     */
+    public static <R extends AbstractHtml> R text(final R parent,
+            final String content) {
+        TagContent.TEXT.addInnerContent(parent, content);
+        return parent;
+    }
+
+    /**
+     * Prepends content in the given parent object as the first child.
+     *
+     * @param parent
+     * @return parent
+     * @since 3.0.13
+     */
+    public static <R extends AbstractHtml> R prependText(final R parent,
+            final String content) {
+        TagContent.TEXT.prependChild(parent, content);
+        return parent;
+    }
+
+    /**
+     * Appends content in the given parent object as the last child.
+     *
+     * @param parent
+     * @return parent
+     * @since 3.0.13
+     */
+    public static <R extends AbstractHtml> R appendText(final R parent,
+            final String content) {
+        TagContent.TEXT.appendChild(parent, content);
+        return parent;
+    }
+
+    /**
+     * Adds inner content for the given parent object, children of parent will
+     * be removed if already exists. It internally marks the given content type
+     * as html.
+     *
+     * @param parent
+     * @return parent
+     * @since 3.0.13
+     */
+    public static <R extends AbstractHtml> R html(final R parent,
+            final String content) {
+        TagContent.HTML.addInnerContent(parent, content);
+        return parent;
+    }
+
+    /**
+     * Prepends content in the given parent object as the first child. It
+     * internally marks the given content type as html.
+     *
+     * @param parent
+     * @return parent
+     * @since 3.0.13
+     */
+    public static <R extends AbstractHtml> R prependHtml(final R parent,
+            final String content) {
+        TagContent.HTML.prependChild(parent, content);
+        return parent;
+    }
+
+    /**
+     * Appends content in the given parent object as the last child. It
+     * internally marks the given content type as html.
+     *
+     * @param parent
+     * @return parent
+     * @since 3.0.13
+     */
+    public static <R extends AbstractHtml> R appendHtml(final R parent,
+            final String content) {
+        TagContent.HTML.appendChild(parent, content);
+        return parent;
+    }
+
     private void checkCompatibility(final AbstractHtml tag) {
         if (TagUtil.isTagless(tag)) {
             throw new InvalidTagException(

@@ -16,6 +16,7 @@
 package com.webfirmframework.wffweb.tag.html;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -57,6 +58,7 @@ import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Span;
 import com.webfirmframework.wffweb.tag.htmlwff.CustomTag;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
+import com.webfirmframework.wffweb.tag.htmlwff.TagContent;
 import com.webfirmframework.wffweb.tag.repository.TagRepository;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 
@@ -500,6 +502,39 @@ public class AbstractHtmlTest {
                 "<div id=\"rootDivId\"><div id=\"parentDivId\"><div id=\"child1\"></div><div id=\"child2\"></div><div id=\"child3\"></div></div></div>",
                 rootDiv.toHtmlString());
 
+    }
+    
+    @Test
+    public void testGiveBiFun() {
+       
+        AbstractHtml div = null;       
+        
+        div = new Div(null, new Id("rootDivId")).give(TagContent::text, "content1");
+        assertEquals("<div id=\"rootDivId\">content1</div>", div.toHtmlString());
+        for (AbstractHtml each : div.getChildren()) {
+            NoTag noTag = (NoTag) each;
+            assertFalse(noTag.isChildContentTypeHtml());
+        }
+        
+        div = new Div(null, new Id("rootDivId")).give(TagContent::html, "content1");
+        assertEquals("<div id=\"rootDivId\">content1</div>", div.toHtmlString());
+        for (AbstractHtml each : div.getChildren()) {
+            NoTag noTag = (NoTag) each;
+            assertTrue(noTag.isChildContentTypeHtml());
+        }
+        
+        Div div1 = new Div(null, new Id("rootDivId")).give(TagContent::text, "content1");
+        for (AbstractHtml each : div1.getChildren()) {
+            NoTag noTag = (NoTag) each;
+            assertFalse(noTag.isChildContentTypeHtml());
+        }
+        
+        Div div2 = new Div(null, new Id("rootDivId")).give(TagContent::html, "content1");
+        for (AbstractHtml each : div2.getChildren()) {
+            NoTag noTag = (NoTag) each;
+            assertTrue(noTag.isChildContentTypeHtml());
+        }       
+        
     }
 
     @Test(expected = NoParentException.class)

@@ -32,10 +32,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -388,33 +388,61 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     public AbstractHtml(final AbstractHtml base,
             final AbstractHtml... children) {
+
         tagName = null;
         tagType = TagType.OPENING_CLOSING;
         tagNameIndexBytes = null;
         noTagContentTypeHtml = false;
+
+        final Lock parentLock;
+        final Lock childLock;
+
         if (base == null) {
             sharedObject = new AbstractHtml5SharedObject(this);
+            parentLock = null;
+            childLock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+        } else {
+            parentLock = base.sharedObject.getLock(ACCESS_OBJECT).writeLock();
+            childLock = sharedObject != null
+                    ? sharedObject.getLock(ACCESS_OBJECT).writeLock()
+                    : null;
         }
 
-        initInConstructor();
-
-        buildOpeningTag(false);
-        closingTag = buildClosingTag();
-        if (base != null) {
-            base.addChild(this);
-            // base.children.add(this);
-            // should not uncomment the below codes as it is handled in the
-            // above add method
-            // parent = base;
-            // sharedObject = base.sharedObject;
+        if (parentLock != null) {
+            parentLock.lock();
         }
-        // sharedObject initialization must come first
-        // else {
-        // sharedObject = new AbstractHtml5SharedObject(this);
-        // }
-        // this.children.addAll(children);
-        this.appendChildren(children);
-        // childAppended(parent, this);
+        if (childLock != null) {
+            childLock.lock();
+        }
+        try {
+
+            initInConstructor();
+
+            buildOpeningTag(false);
+            closingTag = buildClosingTag();
+            if (base != null) {
+                base.addChildLockless(this);
+                // base.children.add(this);
+                // should not uncomment the below codes as it is handled in the
+                // above add method
+                // parent = base;
+                // sharedObject = base.sharedObject;
+            }
+            // sharedObject initialization must come first
+            // else {
+            // sharedObject = new AbstractHtml5SharedObject(this);
+            // }
+            // this.children.addAll(children);
+            appendChildrenLockless(children);
+            // childAppended(parent, this);
+        } finally {
+            if (parentLock != null) {
+                parentLock.unlock();
+            }
+            if (childLock != null) {
+                childLock.unlock();
+            }
+        }
     }
 
     /**
@@ -429,34 +457,61 @@ public abstract class AbstractHtml extends AbstractJsObject {
         tagName = null;
         tagType = TagType.OPENING_CLOSING;
         tagNameIndexBytes = null;
-
         this.noTagContentTypeHtml = noTagContentTypeHtml;
+
+        final Lock parentLock;
+        final Lock childLock;
 
         if (base == null) {
             sharedObject = new AbstractHtml5SharedObject(this);
+            parentLock = null;
+            childLock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+        } else {
+            parentLock = base.sharedObject.getLock(ACCESS_OBJECT).writeLock();
+            childLock = sharedObject != null
+                    ? sharedObject.getLock(ACCESS_OBJECT).writeLock()
+                    : null;
         }
 
-        initInConstructor();
-
-        htmlStartSBAsFirst = true;
-        getHtmlMiddleSB().append(childContent);
-        buildOpeningTag(false);
-        closingTag = buildClosingTag();
-        if (base != null) {
-            base.addChild(this);
-            // base.children.add(this);
-            // should not uncomment the below codes as it is handled in the
-            // above add method
-            // parent = base;
-            // sharedObject = base.sharedObject;
+        if (parentLock != null) {
+            parentLock.lock();
         }
-        // sharedObject initialization must come first
-        // else {
-        // sharedObject = new AbstractHtml5SharedObject(this);
-        // }
-        setRebuild(true);
+        if (childLock != null) {
+            childLock.lock();
+        }
 
-        // childAppended(parent, this);
+        try {
+
+            initInConstructor();
+
+            htmlStartSBAsFirst = true;
+            getHtmlMiddleSB().append(childContent);
+            buildOpeningTag(false);
+            closingTag = buildClosingTag();
+            if (base != null) {
+                base.addChildLockless(this);
+                // base.children.add(this);
+                // should not uncomment the below codes as it is handled in the
+                // above add method
+                // parent = base;
+                // sharedObject = base.sharedObject;
+            }
+            // sharedObject initialization must come first
+            // else {
+            // sharedObject = new AbstractHtml5SharedObject(this);
+            // }
+            setRebuild(true);
+
+            // childAppended(parent, this);
+
+        } finally {
+            if (parentLock != null) {
+                parentLock.unlock();
+            }
+            if (childLock != null) {
+                childLock.unlock();
+            }
+        }
     }
 
     /**
@@ -485,31 +540,59 @@ public abstract class AbstractHtml extends AbstractJsObject {
         tagType = TagType.OPENING_CLOSING;
         tagNameIndexBytes = null;
         noTagContentTypeHtml = false;
+
+        final Lock parentLock;
+        final Lock childLock;
+
         if (base == null) {
             sharedObject = new AbstractHtml5SharedObject(this);
+            parentLock = null;
+            childLock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+        } else {
+            parentLock = base.sharedObject.getLock(ACCESS_OBJECT).writeLock();
+            childLock = sharedObject != null
+                    ? sharedObject.getLock(ACCESS_OBJECT).writeLock()
+                    : null;
         }
 
-        initAttributes(attributes);
-
-        initInConstructor();
-
-        markOwnerTag(attributes);
-        buildOpeningTag(false);
-        closingTag = buildClosingTag();
-        if (base != null) {
-            base.addChild(this);
-            // base.children.add(this);
-            // should not uncomment the below codes as it is handled in the
-            // above add method
-            // parent = base;
-            // sharedObject = base.sharedObject;
+        if (parentLock != null) {
+            parentLock.lock();
+        }
+        if (childLock != null) {
+            childLock.lock();
         }
 
-        // else {
-        // sharedObject = new AbstractHtml5SharedObject(this);
-        // }
+        try {
 
-        // childAppended(parent, this);
+            initAttributes(attributes);
+
+            initInConstructor();
+
+            markOwnerTag(attributes);
+            buildOpeningTag(false);
+            closingTag = buildClosingTag();
+            if (base != null) {
+                base.addChildLockless(this);
+                // base.children.add(this);
+                // should not uncomment the below codes as it is handled in the
+                // above add method
+                // parent = base;
+                // sharedObject = base.sharedObject;
+            }
+
+            // else {
+            // sharedObject = new AbstractHtml5SharedObject(this);
+            // }
+
+            // childAppended(parent, this);
+        } finally {
+            if (parentLock != null) {
+                parentLock.unlock();
+            }
+            if (childLock != null) {
+                childLock.unlock();
+            }
+        }
     }
 
     /**
@@ -526,35 +609,65 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     protected AbstractHtml(final PreIndexedTagName preIndexedTagName,
             final AbstractHtml base, final AbstractAttribute[] attributes) {
+
         tagName = preIndexedTagName.tagName();
         tagType = TagType.OPENING_CLOSING;
         tagNameIndexBytes = preIndexedTagName.internalIndexBytes(ACCESS_OBJECT);
         noTagContentTypeHtml = false;
+
+        final Lock parentLock;
+        final Lock childLock;
+
         if (base == null) {
             sharedObject = new AbstractHtml5SharedObject(this);
+            parentLock = null;
+            childLock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+        } else {
+            parentLock = base.sharedObject.getLock(ACCESS_OBJECT).writeLock();
+            childLock = sharedObject != null
+                    ? sharedObject.getLock(ACCESS_OBJECT).writeLock()
+                    : null;
         }
 
-        initAttributes(attributes);
-
-        initInConstructor();
-
-        markOwnerTag(attributes);
-        buildOpeningTag(false);
-        closingTag = buildClosingTag();
-        if (base != null) {
-            base.addChild(this);
-            // base.children.add(this);
-            // should not uncomment the below codes as it is handled in the
-            // above add method
-            // parent = base;
-            // sharedObject = base.sharedObject;
+        if (parentLock != null) {
+            parentLock.lock();
+        }
+        if (childLock != null) {
+            childLock.lock();
         }
 
-        // else {
-        // sharedObject = new AbstractHtml5SharedObject(this);
-        // }
+        try {
 
-        // childAppended(parent, this);
+            initAttributes(attributes);
+
+            initInConstructor();
+
+            markOwnerTag(attributes);
+            buildOpeningTag(false);
+            closingTag = buildClosingTag();
+            if (base != null) {
+                base.addChildLockless(this);
+                // base.children.add(this);
+                // should not uncomment the below codes as it is handled in the
+                // above add method
+                // parent = base;
+                // sharedObject = base.sharedObject;
+            }
+
+            // else {
+            // sharedObject = new AbstractHtml5SharedObject(this);
+            // }
+
+            // childAppended(parent, this);
+        } finally {
+            if (parentLock != null) {
+                parentLock.unlock();
+            }
+            if (childLock != null) {
+                childLock.unlock();
+            }
+
+        }
     }
 
     private void init() {
@@ -1109,41 +1222,34 @@ public abstract class AbstractHtml extends AbstractJsObject {
             final SharedTagContent.ContentFormatter<T> formatter,
             final boolean subscribe) {
 
-        if (this.sharedTagContent == null
-                || !Objects.equals(this.sharedTagContent, sharedTagContent)) {
-
-            final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
-            lock.lock();
-            try {
-                if (sharedTagContent != null) {
-                    final AbstractHtml noTagInserted = sharedTagContent
-                            .addInnerHtml(updateClient, this, formatter,
-                                    subscribe);
-                    noTagInserted.sharedTagContent = sharedTagContent;
-                } else {
-                    if (children.size() == 1) {
-                        final Iterator<AbstractHtml> iterator = children
-                                .iterator();
-                        if (iterator.hasNext()) {
-                            final AbstractHtml firstChild = iterator.next();
-                            if (firstChild != null) {
-                                if (firstChild instanceof NoTag
-                                        && !firstChild.parentNullifiedOnce
-                                        && firstChild.sharedTagContent != null) {
-                                    firstChild.sharedTagContent
-                                            .remove(firstChild, this);
-                                    firstChild.sharedTagContent = null;
-                                }
+        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+        lock.lock();
+        try {
+            if (sharedTagContent != null) {
+                final AbstractHtml noTagInserted = sharedTagContent
+                        .addInnerHtml(updateClient, this, formatter, subscribe);
+                noTagInserted.sharedTagContent = sharedTagContent;
+            } else {
+                if (children.size() == 1) {
+                    final Iterator<AbstractHtml> iterator = children.iterator();
+                    if (iterator.hasNext()) {
+                        final AbstractHtml firstChild = iterator.next();
+                        if (firstChild != null) {
+                            if (firstChild instanceof NoTag
+                                    && !firstChild.parentNullifiedOnce
+                                    && firstChild.sharedTagContent != null) {
+                                firstChild.sharedTagContent.remove(firstChild,
+                                        this);
+                                firstChild.sharedTagContent = null;
                             }
-
                         }
 
                     }
-                }
-            } finally {
-                lock.unlock();
-            }
 
+                }
+            }
+        } finally {
+            lock.unlock();
         }
 
     }
@@ -1386,6 +1492,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
         return removed;
     }
 
+    @SuppressWarnings("unused")
     private boolean addChild(final AbstractHtml child) {
         // this method should contain lock even if it is a private method
         // because this method is called in constructors.
@@ -1409,6 +1516,27 @@ public abstract class AbstractHtml extends AbstractJsObject {
         } finally {
             lock.unlock();
         }
+        final PushQueue pushQueue = sharedObject.getPushQueue(ACCESS_OBJECT);
+        if (pushQueue != null) {
+            pushQueue.push();
+        }
+        return result;
+    }
+
+    private boolean addChildLockless(final AbstractHtml child) {
+        boolean result = false;
+        if (child.parent != null) {
+            if (child.parent.sharedObject
+                    .getChildTagAppendListener(ACCESS_OBJECT) == null) {
+                removeFromTagByWffIdMap(child,
+                        child.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
+            } // else {TODO also write the code to push
+              // changes to the other BrowserPage}
+        } else {
+            removeDataWffIdFromHierarchy(sharedObject, child);
+        }
+
+        result = addChild(child, true, false);
         final PushQueue pushQueue = sharedObject.getPushQueue(ACCESS_OBJECT);
         if (pushQueue != null) {
             pushQueue.push();
@@ -1469,6 +1597,11 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     private boolean addChild(final AbstractHtml child,
             final boolean invokeListener) {
+        return addChild(child, invokeListener, true);
+    }
+
+    private boolean addChild(final AbstractHtml child,
+            final boolean invokeListener, final boolean foreignLocking) {
 
         final boolean added = children.add(child);
         if (added) {
@@ -1479,22 +1612,30 @@ public abstract class AbstractHtml extends AbstractJsObject {
             final boolean alreadyHasParent = child.parent != null;
             final AbstractHtml previousParent = child.parent;
 
-            Lock foreignLock = null;
-            AbstractHtml5SharedObject foreignSO = child.sharedObject;
-            if (foreignSO != null && !sharedObject.equals(foreignSO)) {
-                foreignLock = foreignSO.getLock(ACCESS_OBJECT).writeLock();
-                foreignSO = null;
-                foreignLock.lock();
-            }
-            try {
+            if (foreignLocking) {
+                Lock foreignLock = null;
+                AbstractHtml5SharedObject foreignSO = child.sharedObject;
+                if (foreignSO != null && !sharedObject.equals(foreignSO)) {
+                    foreignLock = foreignSO.getLock(ACCESS_OBJECT).writeLock();
+                    foreignSO = null;
+                    foreignLock.lock();
+                }
+                try {
+                    if (alreadyHasParent) {
+                        child.parent.children.remove(child);
+                    }
+                    initParentAndSharedObject(child);
+                } finally {
+                    if (foreignLock != null) {
+                        foreignLock.unlock();
+                    }
+                }
+
+            } else {
                 if (alreadyHasParent) {
                     child.parent.children.remove(child);
                 }
                 initParentAndSharedObject(child);
-            } finally {
-                if (foreignLock != null) {
-                    foreignLock.unlock();
-                }
             }
 
             if (invokeListener) {
@@ -1803,12 +1944,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
         // appendChildrenLockless(AbstractHtml... children)
         // this method in consumed in constructor
 
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
-
         boolean listenerInvoked = false;
-
+        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+        lock.lock();
         try {
-            lock.lock();
 
             final Collection<ChildMovedEvent> movedOrAppended = new ArrayDeque<>(
                     children.length);
@@ -1985,7 +2124,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *         index: true if listener invoked otherwise false.
      * @since 3.0.1
      */
-    @SuppressWarnings("unused")
     private boolean[] appendChildrenLockless(final AbstractHtml... children) {
 
         // any changes to this method should also be applied in
@@ -2011,7 +2149,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 removeDataWffIdFromHierarchy(sharedObject, child);
             }
 
-            if (addChild(child, false)) {
+            if (addChild(child, false, false)) {
                 results[0] = true;
             }
 
@@ -2516,37 +2654,65 @@ public abstract class AbstractHtml extends AbstractJsObject {
     private AbstractHtml(final TagType tagType, final String tagName,
             final byte[] tagNameIndexBytes, final AbstractHtml base,
             final AbstractAttribute[] attributes) {
+
         this.tagType = tagType;
         this.tagName = tagName;
         this.tagNameIndexBytes = tagNameIndexBytes;
         noTagContentTypeHtml = false;
 
+        final Lock parentLock;
+        final Lock childLock;
+
         if (base == null) {
             sharedObject = new AbstractHtml5SharedObject(this);
+            parentLock = null;
+            childLock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+        } else {
+            parentLock = base.sharedObject.getLock(ACCESS_OBJECT).writeLock();
+            childLock = sharedObject != null
+                    ? sharedObject.getLock(ACCESS_OBJECT).writeLock()
+                    : null;
         }
 
-        initAttributes(attributes);
-
-        initInConstructor();
-
-        markOwnerTag(attributes);
-
-        buildOpeningTag(false);
-
-        closingTag = tagType == TagType.OPENING_CLOSING ? buildClosingTag()
-                : "";
-
-        if (base != null) {
-            base.addChild(this);
-            // base.children.add(this);
-            // not required it is handled in the above add method
-            // parent = base;
-            // sharedObject = base.sharedObject;
+        if (parentLock != null) {
+            parentLock.lock();
         }
-        //
-        // else {
-        // sharedObject = new AbstractHtml5SharedObject(this);
-        // }
+        if (childLock != null) {
+            childLock.lock();
+        }
+        try {
+
+            initAttributes(attributes);
+
+            initInConstructor();
+
+            markOwnerTag(attributes);
+
+            buildOpeningTag(false);
+
+            closingTag = tagType == TagType.OPENING_CLOSING ? buildClosingTag()
+                    : "";
+
+            if (base != null) {
+                base.addChildLockless(this);
+                // base.children.add(this);
+                // not required it is handled in the above add method
+                // parent = base;
+                // sharedObject = base.sharedObject;
+            }
+            //
+            // else {
+            // sharedObject = new AbstractHtml5SharedObject(this);
+            // }
+
+        } finally {
+            if (parentLock != null) {
+                parentLock.unlock();
+            }
+            if (childLock != null) {
+                childLock.unlock();
+            }
+        }
     }
 
     /**
@@ -6272,4 +6438,56 @@ public abstract class AbstractHtml extends AbstractJsObject {
         consumer.accept((T) this);
         return (T) this;
     }
+
+    /**
+     * This method can avoid creating anonymous class coding. <br>
+     * Eg: <br>
+     *
+     * <pre>
+     * Div div = new Div(null, new Id("rootDivId")).give(TagContent::text,
+     *         "Hello World");
+     * System.out.println(div.toHtmlString());
+     *
+     * </pre>
+     *
+     * produces
+     *
+     * <pre>
+     * <code>
+     * &lt;div id="rootDivId"&gt;Hello World&lt;/div&gt;
+     * </code>
+     * </pre>
+     *
+     * A mix of give methods will be
+     *
+     * <pre>
+     * Div div = new Div(null).give(dv -&gt; {
+     *     new Span(dv).give(TagContent::text, "Hello World");
+     * });
+     * </pre>
+     *
+     * produces
+     *
+     * <pre>
+     * <code>
+     * &lt;div&gt;
+     *     &lt;span&gt;Hello World&lt;/span&gt;
+     * &lt;/div&gt;
+     * </code>
+     * </pre>
+     *
+     * @param consumer
+     * @param input
+     *                     the object to be passed as second argument of
+     *                     {@code BiFunction#apply(Object, Object)} method.
+     * @return the object which {@code BiFunction#apply(Object, Object)} returns
+     *         which will be a subclass of {@code AbstractHtml}
+     * @since 3.0.13
+     */
+    @SuppressWarnings("unchecked")
+    public <R extends AbstractHtml, I> R give(
+            final BiFunction<R, I, R> consumer, final I input) {
+        return consumer.apply((R) this, input);
+    }
+
 }

@@ -15,6 +15,8 @@
  */
 package com.webfirmframework.wffweb.tag.html;
 
+import static org.junit.Assert.*;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -335,6 +337,15 @@ public class HtmlTest {
             Assert.assertEquals(expected, os.toString("UTF-8"));
         }
 
+    }
+    
+    @Test
+    public void testConstructorLock() throws Exception {
+        Html html = new Html(null) {
+            {
+                new Div(this, new Id("id"));
+            }
+        };
     }
 
     @Test
