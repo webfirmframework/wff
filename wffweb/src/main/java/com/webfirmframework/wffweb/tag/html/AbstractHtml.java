@@ -5538,7 +5538,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
             throw new NoParentException("There must be a parent for this tag.");
         }
 
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+        // NB: this tag itself is getting replaced after replaceWith so
+        // this.sharedObject will be different object after that and calling
+        // this.sharedObject.getPushQueue is invalid. So keeping the right
+        // object in thisSharedObject.
+        final AbstractHtml5SharedObject thisSharedObject = sharedObject;
+
+        final Lock lock = thisSharedObject.getLock(ACCESS_OBJECT).writeLock();
         // inserted, listener invoked
         boolean[] results = { false, false };
         try {
@@ -5553,7 +5559,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
         }
 
         if (results[1]) {
-            final PushQueue pushQueue = sharedObject
+            final PushQueue pushQueue = thisSharedObject
                     .getPushQueue(ACCESS_OBJECT);
             if (pushQueue != null) {
                 pushQueue.push();
