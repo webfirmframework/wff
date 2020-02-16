@@ -72,12 +72,12 @@ public interface ReplaceListener extends Serializable {
      * Tags insertedTags inserted before tag beforeTag having parent parentTag.
      *
      * @param parentTag
-     * @param beforeTag
+     * @param replacingTag
      * @param events
      * @since 3.0.7
      * @author WFF
      */
     public void replacedWith(final AbstractHtml parentTag,
-            final AbstractHtml beforeTag, final Event... events);
+            final AbstractHtml replacingTag, final Event... events);
 
 }
