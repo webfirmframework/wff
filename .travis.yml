@@ -26,3 +26,4 @@ branches:
   only:
     - master
     - dev
+    - dev-3.0.15
