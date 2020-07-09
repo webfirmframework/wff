@@ -589,6 +589,29 @@ public abstract class DocType extends AbstractHtml {
     /*
      * (non-Javadoc)
      *
+     * @see
+     * com.webfirmframework.wffweb.tag.html.AbstractHtml#toBigOutputStream(java.
+     * io.OutputStream, boolean, java.nio.charset.Charset, boolean)
+     */
+    @Override
+    public int toBigOutputStream(final OutputStream os, final boolean rebuild,
+            final Charset charset, final boolean flushOnWrite)
+            throws IOException {
+        int docTypeTagLength = 0;
+        if (prependDocType) {
+            final byte[] docTypeTagBytes = (docTypeTag + "\n")
+                    .getBytes(charset);
+            os.write(docTypeTagBytes);
+            docTypeTagLength = docTypeTagBytes.length;
+        }
+        return docTypeTagLength
+                + super.toBigOutputStream(os, rebuild, charset, flushOnWrite);
+
+    }
+
+    /*
+     * (non-Javadoc)
+     *
      * @see com.webfirmframework.wffweb.tag.html.AbstractHtml#toString()
      */
     // it is not a best practice to print html string by this method because if

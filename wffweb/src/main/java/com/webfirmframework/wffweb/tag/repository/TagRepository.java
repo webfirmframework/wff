@@ -17,7 +17,9 @@ package com.webfirmframework.wffweb.tag.repository;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayDeque;
 import java.util.Collection;
+import java.util.Deque;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
@@ -3045,6 +3047,70 @@ public class TagRepository extends AbstractHtmlRepository
      */
     public Stream<AbstractAttribute> buildAllAttributesStream() {
         return buildAllAttributesStream(false);
+    }
+
+    /**
+     * Finds and returns the first matching parent tag (including nested parent)
+     * (which is assignable to the given tag class).
+     *
+     * @param tagClass
+     *                     the class of the tag.
+     * @param fromTag
+     *                     from which the findings to be done.
+     * @return the first matching tag which is assignable to the given tag class
+     *         or null if not found.
+     * @throws NullValueException
+     *                                 if the {@code tagClass} or
+     *                                 {@code fromTags} is null
+     * @throws InvalidTagException
+     *                                 if the given tag class is NoTag.class
+     * @since 3.0.15
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends AbstractHtml> T findFirstParentTagAssignableToTag(
+            final Class<T> tagClass, final AbstractHtml fromTag)
+            throws NullValueException, InvalidTagException {
+
+        if (tagClass == null) {
+            throw new NullValueException("The tagClass should not be null");
+        }
+
+        if (NoTag.class.isAssignableFrom(tagClass)) {
+            throw new InvalidTagException(
+                    "classes like NoTag.class cannot be used to find tags as it's not a logical tag in behaviour.");
+        }
+
+        if (fromTag == null) {
+            throw new NullValueException("The fromTag should not be null");
+        }
+
+        final Collection<Lock> locks = getReadLocks(fromTag);
+        for (final Lock lock : locks) {
+            lock.lock();
+        }
+
+        try {
+            final Deque<AbstractHtml> stack = new ArrayDeque<>();
+            stack.add(fromTag);
+
+            AbstractHtml each;
+
+            while ((each = stack.poll()) != null) {
+                final AbstractHtml parent = each.getParent();
+                if (parent != null) {
+                    if (tagClass.isAssignableFrom(parent.getClass())) {
+                        return (T) parent;
+                    }
+                    stack.push(parent);
+                }
+            }
+
+            return null;
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
     }
 
 }

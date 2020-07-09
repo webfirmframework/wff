@@ -18,9 +18,15 @@ package com.webfirmframework.wffweb.tag.html.attribute;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
+import com.webfirmframework.wffweb.tag.html.html5.identifier.EmbedAttributable;
+import com.webfirmframework.wffweb.tag.html.html5.identifier.MenuAttributable;
+import com.webfirmframework.wffweb.tag.html.html5.identifier.SourceAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.AreaAttributable;
+import com.webfirmframework.wffweb.tag.html.identifier.ButtonAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
+import com.webfirmframework.wffweb.tag.html.identifier.LinkAttributable;
+import com.webfirmframework.wffweb.tag.html.identifier.ObjectTagAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.ScriptAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.StyleAttributable;
 
@@ -90,9 +96,11 @@ import com.webfirmframework.wffweb.tag.html.identifier.StyleAttributable;
  */
 public class Type extends AbstractAttribute
         implements AAttributable, AreaAttributable, InputAttributable,
-        ScriptAttributable, StyleAttributable {
+        ScriptAttributable, StyleAttributable, ButtonAttributable,
+        EmbedAttributable, LinkAttributable, MenuAttributable,
+        ObjectTagAttributable, SourceAttributable {
 
-    private static final long serialVersionUID = 1_0_0L;
+    private static final long serialVersionUID = 1_0_1L;
 
     public static final String BUTTON = "button";
 
