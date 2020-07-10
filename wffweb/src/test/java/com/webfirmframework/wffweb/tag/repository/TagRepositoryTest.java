@@ -925,8 +925,13 @@ public class TagRepositoryTest {
         TagRepository.findFirstParentTagAssignableToTag(Html.class, null);
     }
     
-    @Test(expected = InvalidTagException.class)
+    @Test(expected = NullValueException.class)
     public void testFindFirstParentTagAssignableToTagExp2() {
+        TagRepository.findFirstParentTagAssignableToTag(null, new Div(null));
+    }
+    
+    @Test(expected = InvalidTagException.class)
+    public void testFindFirstParentTagAssignableToTagExp3() {
         TagRepository.findFirstParentTagAssignableToTag(NoTag.class, null);
     }
 
