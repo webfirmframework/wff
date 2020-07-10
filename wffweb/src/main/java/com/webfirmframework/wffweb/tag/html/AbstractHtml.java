@@ -2904,6 +2904,47 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
+     * Gets the last child of this tag. The efficient way to get the last child.
+     *
+     * @return the last child of this tag or null if there is no child.
+     *
+     * @since 3.0.15
+     * @author WFF
+     */
+    public AbstractHtml getLastChild() {
+        // this block must be synchronized otherwise may get null or
+        // ConcurrentModificationException
+        // the test cases are written to check its thread safety and can be
+        // reproduce by uncommenting this synchronized block, checkout
+        // AbstractHtmlTest class for it.
+        // synchronized (children) {
+        //
+        // }
+        // it's been replaced with locking
+
+        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
+        try {
+            lock.lock();
+
+            // this must be most efficient because the javadoc of findFirst says
+            // "This is a short-circuiting terminal operation."
+            // return (T) children.stream().findFirst().orElse(null);
+
+            // but as per CodePerformanceTest.testPerformanceOfFindFirst
+            // the below is faster
+            // so for getting the last the following must be fast
+            final Iterator<AbstractHtml> iterator = children.iterator();
+            AbstractHtml lastChild = null;
+            while (iterator.hasNext()) {
+                lastChild = iterator.next();
+            }
+            return lastChild;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
      * Gets the number of children in this tag. An efficient way to find the
      * size of children.
      *
@@ -2952,7 +2993,26 @@ public abstract class AbstractHtml extends AbstractJsObject {
         try {
             lock.lock();
 
-            return children.toArray(new AbstractHtml[children.size()])[index];
+            if (index < 0) {
+                throw new ArrayIndexOutOfBoundsException(index);
+            }
+
+            final int size = children.size();
+            if (size == 0 || index > (size - 1)) {
+                throw new ArrayIndexOutOfBoundsException(index);
+            }
+
+            int count = 0;
+            final Iterator<AbstractHtml> iterator = children.iterator();
+            while (iterator.hasNext()) {
+                final AbstractHtml each = iterator.next();
+                if (count == index) {
+                    return each;
+                }
+                count++;
+            }
+
+            return null;
         } finally {
             lock.unlock();
         }
