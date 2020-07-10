@@ -28,6 +28,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.InvalidTagException;
+import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.WffSecurityException;
 import com.webfirmframework.wffweb.server.page.BrowserPage;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
@@ -866,7 +867,6 @@ public class TagRepositoryTest {
     }
     
 
-    @SuppressWarnings("unused")
     @Test
     public void testFindFirstParentTagAssignableToTag() throws Exception {
         Html html = new Html(null).give(t -> {
@@ -891,6 +891,13 @@ public class TagRepositoryTest {
                                    assertNotNull(tBdy);
                                    assertEquals(tBody, tBdy);
                                    
+                                   //firstChild is NoTag("col2")
+                                   final AbstractHtml firstChild = td2.getFirstChild();
+                                   assertEquals(NoTag.class, firstChild.getClass());
+                                   tBdy = TagRepository.findFirstParentTagAssignableToTag(TBody.class, firstChild);
+                                   assertNotNull(tBdy);
+                                   assertEquals(tBody, tBdy);
+                                   
                                    Div firstParentDv = TagRepository.findFirstParentTagAssignableToTag(Div.class, td1);
                                    assertNotNull(firstParentDv);
                                    assertEquals(dv, firstParentDv);
@@ -909,7 +916,18 @@ public class TagRepositoryTest {
                 
             });
         });
-       
+        Html parentOfHtml = TagRepository.findFirstParentTagAssignableToTag(Html.class, html);
+        assertNull(parentOfHtml);
+    }
+    
+    @Test(expected = NullValueException.class)
+    public void testFindFirstParentTagAssignableToTagExp1() {
+        TagRepository.findFirstParentTagAssignableToTag(Html.class, null);
+    }
+    
+    @Test(expected = InvalidTagException.class)
+    public void testFindFirstParentTagAssignableToTagExp2() {
+        TagRepository.findFirstParentTagAssignableToTag(NoTag.class, null);
     }
 
 }
