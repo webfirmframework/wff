@@ -2988,14 +2988,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @author WFF
      */
     public AbstractHtml getChildAt(final int index) {
-
+        if (index < 0) {
+            throw new ArrayIndexOutOfBoundsException(index);
+        }
         final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
         try {
-            lock.lock();
 
-            if (index < 0) {
-                throw new ArrayIndexOutOfBoundsException(index);
-            }
+            lock.lock();
 
             final int size = children.size();
             if (size == 0 || index > (size - 1)) {
