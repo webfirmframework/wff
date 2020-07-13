@@ -19,16 +19,17 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.WeakHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
@@ -1336,20 +1337,28 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected Collection<WriteLock> lockAndGetWriteLocks() {
 
-        final Collection<WriteLock> writeLocks = new TreeSet<>((o1,
-                o2) -> Integer.compare(o2.getHoldCount(), o1.getHoldCount()));
+        int size = ownerTags.size();
+        if (size < 1) {
+            size = 2;
+        }
+        final List<WriteLock> locks = new ArrayList<>(size);
 
         for (final AbstractHtml ownerTag : ownerTags) {
             final WriteLock writeLock = ownerTag.getSharedObject()
                     .getLock(ACCESS_OBJECT).writeLock();
             if (writeLock != null) {
                 try {
-                    writeLocks.add(writeLock);
+                    locks.add(writeLock);
                 } catch (final Exception e) {
                     e.printStackTrace();
                 }
             }
         }
+
+        Collections.sort(locks, (o1, o2) -> Integer.compare(o2.getHoldCount(),
+                o1.getHoldCount()));
+        final Collection<WriteLock> writeLocks = new LinkedHashSet<>(locks);
+
         // must be separately locked
         for (final WriteLock writeLock : writeLocks) {
             writeLock.lock();
@@ -1402,22 +1411,27 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected Collection<WriteLock> getWriteLocks() {
 
-        final Collection<WriteLock> writeLocks = new TreeSet<>((o1,
-                o2) -> Integer.compare(o2.getHoldCount(), o1.getHoldCount()));
+        int size = ownerTags.size();
+        if (size < 1) {
+            size = 2;
+        }
+        final List<WriteLock> locks = new ArrayList<>(size);
 
         for (final AbstractHtml ownerTag : ownerTags) {
             final WriteLock writeLock = ownerTag.getSharedObject()
                     .getLock(ACCESS_OBJECT).writeLock();
             if (writeLock != null) {
                 try {
-                    writeLocks.add(writeLock);
+                    locks.add(writeLock);
                 } catch (final Exception e) {
                     e.printStackTrace();
                 }
             }
         }
+        Collections.sort(locks, (o1, o2) -> Integer.compare(o2.getHoldCount(),
+                o1.getHoldCount()));
 
-        return writeLocks;
+        return new LinkedHashSet<>(locks);
     }
 
     /**
