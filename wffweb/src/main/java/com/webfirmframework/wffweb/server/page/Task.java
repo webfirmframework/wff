@@ -233,9 +233,7 @@ public enum Task {
         Collections.sort(tasks, (o1, o2) -> Integer.compare(o2.name().length(),
                 o1.name().length()));
 
-        final Set<Task> sortedTaskNames = new LinkedHashSet<>(tasks);
-
-        return sortedTaskNames;
+        return new LinkedHashSet<>(tasks);
     }
 
 }
