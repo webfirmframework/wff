@@ -264,6 +264,8 @@ public enum WffJsFile {
             variableNameList.add("nameLegthBytes");
             variableNameList.add("nodeValueBytes");
             variableNameList.add("nameLegthBytes");
+            variableNameList.add("taskNameValues");
+            variableNameList.add("taskNameValue");
             variableNameList.add("callbackFunId");
             variableNameList.add("fromByteArray");
             variableNameList.add("applicableTag");
