@@ -1025,9 +1025,7 @@ public class SharedTagContent<T> {
                 }
             } else if (UpdateClientNature.ALLOW_PARALLEL
                     .equals(updateClientNature)) {
-                pushQueues.parallelStream().forEach((pushQueue) -> {
-                    pushQueue.push();
-                });
+                pushQueues.parallelStream().forEach(PushQueue::push);
             } else {
                 // UpdateClientNature.SEQUENTIAL.equals(updateClientNature)
                 for (final PushQueue pushQueue : pushQueues) {
