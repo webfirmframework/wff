@@ -15,8 +15,11 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 import com.webfirmframework.wffweb.util.data.NameValue;
 
@@ -203,6 +206,7 @@ public enum Task {
      * @return the sorted set of tasks in the descending order of the name of
      *         task length.
      * @since 2.1.10
+     * @since 3.0.15 bug fix
      * @author WFF
      */
     public static Set<Task> getSortedTasks() {
@@ -221,12 +225,15 @@ public enum Task {
         // return -1;
         // });
 
-        final Set<Task> sortedTaskNames = new TreeSet<>((o1, o2) -> Integer
-                .compare(o2.name().length(), o1.name().length()));
+        final List<Task> tasks = new ArrayList<>();
 
         for (final Task task : Task.values()) {
-            sortedTaskNames.add(task);
+            tasks.add(task);
         }
+        Collections.sort(tasks, (o1, o2) -> Integer.compare(o2.name().length(),
+                o1.name().length()));
+
+        final Set<Task> sortedTaskNames = new LinkedHashSet<>(tasks);
 
         return sortedTaskNames;
     }
