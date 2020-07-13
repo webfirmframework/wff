@@ -281,6 +281,45 @@ public class SharedTagContent<T> {
     }
 
     /**
+     * @param updateClientNature
+     *
+     *                               If this SharedTagContent object has to
+     *                               update content of tags from multiple
+     *                               BrowserPage instances,
+     *                               UpdateClientNature.ALLOW_ASYNC_PARALLEL
+     *                               will allow parallel operation in the
+     *                               background for pushing changes to client
+     *                               browser page and
+     *                               UpdateClientNature.ALLOW_PARALLEL will
+     *                               allow parallel operation but will wait for
+     *                               the push to finish to exit the setContent
+     *                               method. UpdateClientNature.SEQUENTIAL will
+     *                               sequentially do each browser page push
+     *                               operation.
+     * @param shared
+     *                               true to share its content across all
+     *                               consuming tags when
+     *                               {@link SharedTagContent#setContent} is
+     *                               called.
+     * @param content
+     *                               the content to embed in the consumer tags.
+     * @param contentTypeHtml
+     *                               true to treat the given content as HTML
+     *                               otherwise false.
+     * @since 3.0.15
+     */
+    public SharedTagContent(final UpdateClientNature updateClientNature,
+            final boolean shared, final T content,
+            final boolean contentTypeHtml) {
+        if (updateClientNature != null) {
+            this.updateClientNature = updateClientNature;
+        }
+        this.shared = shared;
+        this.content = content;
+        this.contentTypeHtml = contentTypeHtml;
+    }
+
+    /**
      * plain text content with updateClientNature as
      * UpdateClientNature.ALLOW_ASYNC_PARALLEL.
      *
@@ -290,8 +329,7 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public SharedTagContent(final T content) {
-        this.content = content;
-        contentTypeHtml = false;
+        this(null, true, content, false);
     }
 
     /**
@@ -318,11 +356,7 @@ public class SharedTagContent<T> {
      */
     public SharedTagContent(final UpdateClientNature updateClientNature,
             final T content) {
-        if (updateClientNature != null) {
-            this.updateClientNature = updateClientNature;
-        }
-        this.content = content;
-        contentTypeHtml = false;
+        this(updateClientNature, true, content, false);
     }
 
     /**
@@ -330,12 +364,14 @@ public class SharedTagContent<T> {
      * UpdateClientNature.ALLOW_ASYNC_PARALLEL.
      *
      * @param content
+     *                            the content to embed in the consumer tags.
      * @param contentTypeHtml
+     *                            true to treat the given content as HTML
+     *                            otherwise false.
      * @since 3.0.6
      */
     public SharedTagContent(final T content, final boolean contentTypeHtml) {
-        this.content = content;
-        this.contentTypeHtml = contentTypeHtml;
+        this(null, true, content, contentTypeHtml);
     }
 
     /**
@@ -355,16 +391,47 @@ public class SharedTagContent<T> {
      *                               sequentially do each browser page push
      *                               operation.
      * @param content
+     *                               the content to embed in the consumer tags.
      * @param contentTypeHtml
+     *                               true to treat the given content as HTML
+     *                               otherwise false.
      * @since 3.0.6
      */
     public SharedTagContent(final UpdateClientNature updateClientNature,
             final T content, final boolean contentTypeHtml) {
-        if (updateClientNature != null) {
-            this.updateClientNature = updateClientNature;
-        }
-        this.content = content;
-        this.contentTypeHtml = contentTypeHtml;
+        this(updateClientNature, true, content, contentTypeHtml);
+    }
+
+    /**
+     * @param updateClientNature
+     *
+     *                               If this SharedTagContent object has to
+     *                               update content of tags from multiple
+     *                               BrowserPage instances,
+     *                               UpdateClientNature.ALLOW_ASYNC_PARALLEL
+     *                               will allow parallel operation in the
+     *                               background for pushing changes to client
+     *                               browser page and
+     *                               UpdateClientNature.ALLOW_PARALLEL will
+     *                               allow parallel operation but will wait for
+     *                               the push to finish to exit the setContent
+     *                               method. UpdateClientNature.SEQUENTIAL will
+     *                               sequentially do each browser page push
+     *                               operation.
+     * @param shared
+     *                               true to share its content across all
+     *                               consuming tags when
+     *                               {@link SharedTagContent#setContent} is
+     *                               called.
+     * @param content
+     *                               the content which will be treated as plain
+     *                               text in the consumer tags.
+     *
+     * @since 3.0.15
+     */
+    public SharedTagContent(final UpdateClientNature updateClientNature,
+            final boolean shared, final T content) {
+        this(updateClientNature, shared, content, false);
     }
 
     /**
@@ -373,14 +440,15 @@ public class SharedTagContent<T> {
      *                            tags when {@link SharedTagContent#setContent}
      *                            is called.
      * @param content
+     *                            the content to embed in the consumer tags.
      * @param contentTypeHtml
+     *                            true to treat the given content as HTML
+     *                            otherwise false.
      * @since 3.0.6
      */
     public SharedTagContent(final boolean shared, final T content,
             final boolean contentTypeHtml) {
-        this.shared = shared;
-        this.content = content;
-        this.contentTypeHtml = contentTypeHtml;
+        this(null, shared, content, contentTypeHtml);
     }
 
     /**
@@ -388,11 +456,12 @@ public class SharedTagContent<T> {
      *                    true to share its content across all consuming tags
      *                    when {@link SharedTagContent#setContent} is called.
      * @param content
+     *                    the content which will be treated as plain text in the
+     *                    consumer tags.
      * @since 3.0.6
      */
     public SharedTagContent(final boolean shared, final T content) {
-        this.shared = shared;
-        this.content = content;
+        this(null, shared, content, false);
     }
 
     /**
