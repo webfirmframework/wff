@@ -448,13 +448,12 @@ public abstract class BrowserPage implements Serializable {
     public final void webSocketMessaged(final byte[] message) {
         try {
 
-            // TODO minimum number of an empty bm message length is 4
+            // minimum number of an empty bm message length is 4
             // below that length is not a valid bm message so check
             // message.length < 4
             // later if there is such requirement
-            if (message.length == 0) {
-                // should not proceed if the message.length is zero because
-                // to avoid exception if the client sends an empty message just
+            if (message.length < 4) {
+                // message.length == 0 when client sends an empty message just
                 // for ping
                 return;
             }
