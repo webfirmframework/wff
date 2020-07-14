@@ -201,10 +201,7 @@ public class TagRepository extends AbstractHtmlRepository
 
             }).findAny();
 
-            if (any.isPresent()) {
-                return any.get();
-            }
-            return null;
+            return any.orElse(null);
         } finally {
             for (final Lock lock : locks) {
                 lock.unlock();
@@ -412,9 +409,8 @@ public class TagRepository extends AbstractHtmlRepository
 
         try {
             return getAllNestedChildrenIncludingParent(parallel, fromTags)
-                    .filter(child -> {
-                        return tagName.equals(child.getTagName());
-                    }).collect(Collectors.toSet());
+                    .filter(child -> tagName.equals(child.getTagName()))
+                    .collect(Collectors.toSet());
         } finally {
             for (final Lock lock : locks) {
                 lock.unlock();
@@ -514,11 +510,9 @@ public class TagRepository extends AbstractHtmlRepository
 
         try {
             return getAllNestedChildrenIncludingParent(parallel, fromTags)
-                    .filter(child -> {
-                        return child.getAttributes() != null;
-                    }).map(child -> {
-                        return child.getAttributes();
-                    }).flatMap(attributes -> attributes.stream()).filter(filter)
+                    .filter(child -> child.getAttributes() != null)
+                    .map(AbstractHtml::getAttributes)
+                    .flatMap(Collection::stream).filter(filter)
                     .collect(Collectors.toSet());
         } finally {
             for (final Lock lock : locks) {
@@ -570,13 +564,10 @@ public class TagRepository extends AbstractHtmlRepository
         }
         try {
             return getAllNestedChildrenIncludingParent(parallel, fromTags)
-                    .filter(child -> {
-                        return tagName.equals(child.getTagName())
-                                && child.getAttributes() != null;
-                    }).map(child -> {
-                        return child.getAttributes();
-                    }).flatMap(attributes -> attributes.stream())
-                    .collect(Collectors.toSet());
+                    .filter(child -> tagName.equals(child.getTagName())
+                            && child.getAttributes() != null)
+                    .map(AbstractHtml::getAttributes)
+                    .flatMap(Collection::stream).collect(Collectors.toSet());
         } finally {
             for (final Lock lock : locks) {
                 lock.unlock();
@@ -652,12 +643,9 @@ public class TagRepository extends AbstractHtmlRepository
 
         try {
             return getAllNestedChildrenIncludingParent(parallel, fromTags)
-                    .filter(child -> {
-                        return child.getAttributes() != null;
-                    }).filter(filter).map(child -> {
-                        return child.getAttributes();
-                    }).flatMap(attributes -> attributes.stream())
-                    .collect(Collectors.toSet());
+                    .filter(child -> child.getAttributes() != null)
+                    .filter(filter).map(AbstractHtml::getAttributes)
+                    .flatMap(Collection::stream).collect(Collectors.toSet());
         } finally {
             for (final Lock lock : locks) {
                 lock.unlock();
@@ -744,10 +732,7 @@ public class TagRepository extends AbstractHtmlRepository
 
             }).findAny();
 
-            if (any.isPresent()) {
-                return any.get();
-            }
-            return null;
+            return any.orElse(null);
         } finally {
             for (final Lock lock : locks) {
                 lock.unlock();
@@ -817,15 +802,12 @@ public class TagRepository extends AbstractHtmlRepository
 
         try {
             final Optional<AbstractHtml> any = getAllNestedChildrenIncludingParent(
-                    parallel, fromTags).filter(tag -> {
-                        return tagName.equals(tag.getTagName());
-                    }).findAny();
+                    parallel, fromTags)
+                            .filter(tag -> tagName.equals(tag.getTagName()))
+                            .findAny();
 
-            if (any.isPresent()) {
-                return any.get();
-            }
+            return any.orElse(null);
 
-            return null;
         } finally {
             for (final Lock lock : locks) {
                 lock.unlock();
@@ -970,11 +952,8 @@ public class TagRepository extends AbstractHtmlRepository
                                             .isAssignableFrom(child.getClass()))
                             .findAny();
 
-            if (any.isPresent()) {
-                return (T) any.get();
-            }
+            return (T) any.orElse(null);
 
-            return null;
         } finally {
             for (final Lock lock : locks) {
                 lock.unlock();
@@ -1125,11 +1104,11 @@ public class TagRepository extends AbstractHtmlRepository
 
         try {
             return (Collection<T>) getAllNestedChildrenIncludingParent(parallel,
-                    fromTags).filter(tag -> {
-                        return tagClass.isAssignableFrom(tag.getClass())
-                                && !NoTag.class
-                                        .isAssignableFrom(tag.getClass());
-                    }).collect(Collectors.toSet());
+                    fromTags).filter(
+                            tag -> tagClass.isAssignableFrom(tag.getClass())
+                                    && !NoTag.class
+                                            .isAssignableFrom(tag.getClass()))
+                            .collect(Collectors.toSet());
         } finally {
             for (final Lock lock : locks) {
                 lock.unlock();
@@ -1201,16 +1180,12 @@ public class TagRepository extends AbstractHtmlRepository
         }
         try {
             final Optional<AbstractHtml> any = getAllNestedChildrenIncludingParent(
-                    parallel, fromTags).filter(child -> {
+                    parallel, fromTags)
+                            .filter(child -> child
+                                    .getAttributeByName(attributeName) != null)
+                            .findAny();
 
-                        return child.getAttributeByName(attributeName) != null;
-                    }).findAny();
-
-            if (any.isPresent()) {
-                return any.get();
-            }
-
-            return null;
+            return any.orElse(null);
         } finally {
             for (final Lock lock : locks) {
                 lock.unlock();
@@ -1284,10 +1259,9 @@ public class TagRepository extends AbstractHtmlRepository
 
         try {
             return getAllNestedChildrenIncludingParent(parallel, fromTags)
-                    .filter(child -> {
-
-                        return child.getAttributeByName(attributeName) != null;
-                    }).collect(Collectors.toSet());
+                    .filter(child -> child
+                            .getAttributeByName(attributeName) != null)
+                    .collect(Collectors.toSet());
         } finally {
             for (final Lock lock : locks) {
                 lock.unlock();
@@ -1348,9 +1322,9 @@ public class TagRepository extends AbstractHtmlRepository
         }
 
         try {
-            return buildAllTagsStream(parallel).filter(tag -> {
-                return tag.getAttributeByName(attributeName) != null;
-            }).collect(Collectors.toSet());
+            return buildAllTagsStream(parallel).filter(
+                    tag -> tag.getAttributeByName(attributeName) != null)
+                    .collect(Collectors.toSet());
         } finally {
             for (final Lock lock : locks) {
                 lock.unlock();
@@ -1700,9 +1674,8 @@ public class TagRepository extends AbstractHtmlRepository
                     parallel)
                             .filter(tag -> tagName.equals(tag.getTagName())
                                     && tag.getAttributes() != null)
-                            .map(tag -> {
-                                return tag.getAttributes();
-                            }).flatMap(attributes -> attributes.stream());
+                            .map(AbstractHtml::getAttributes)
+                            .flatMap(Collection::stream);
 
             return attributesStream.collect(Collectors.toSet());
         } finally {
@@ -1771,9 +1744,8 @@ public class TagRepository extends AbstractHtmlRepository
         try {
             final Stream<AbstractAttribute> attributesStream = buildAllTagsStream(
                     parallel).filter(tag -> tag.getAttributes() != null)
-                            .map(tag -> {
-                                return tag.getAttributes();
-                            }).flatMap(attributes -> attributes.stream());
+                            .map(AbstractHtml::getAttributes)
+                            .flatMap(Collection::stream);
 
             return attributesStream.filter(filter).collect(Collectors.toSet());
         } finally {
@@ -1847,11 +1819,8 @@ public class TagRepository extends AbstractHtmlRepository
                         && attributeValue.equals(attribute.getAttributeValue());
             }).findAny();
 
-            if (any.isPresent()) {
-                return any.get();
-            }
+            return any.orElse(null);
 
-            return null;
         } finally {
             for (final Lock lock : locks) {
                 lock.unlock();
@@ -1910,15 +1879,9 @@ public class TagRepository extends AbstractHtmlRepository
 
         try {
             final Optional<AbstractHtml> any = buildAllTagsStream(parallel)
-                    .filter(tag -> {
-                        return tagName.equals(tag.getTagName());
-                    }).findAny();
+                    .filter(tag -> tagName.equals(tag.getTagName())).findAny();
 
-            if (any.isPresent()) {
-                return any.get();
-            }
-
-            return null;
+            return any.orElse(null);
         } finally {
             for (final Lock lock : locks) {
                 lock.unlock();
@@ -2032,16 +1995,12 @@ public class TagRepository extends AbstractHtmlRepository
         try {
             final Stream<AbstractHtml> stream = buildAllTagsStream(parallel);
 
-            final Optional<AbstractHtml> any = stream.filter(tag -> {
-                return tagClass.isAssignableFrom(tag.getClass())
-                        && !NoTag.class.isAssignableFrom(tag.getClass());
-            }).findAny();
+            final Optional<AbstractHtml> any = stream
+                    .filter(tag -> tagClass.isAssignableFrom(tag.getClass())
+                            && !NoTag.class.isAssignableFrom(tag.getClass()))
+                    .findAny();
 
-            if (any.isPresent()) {
-                return (T) any.get();
-            }
-
-            return null;
+            return (T) any.orElse(null);
         } finally {
             for (final Lock lock : locks) {
                 lock.unlock();
@@ -2181,11 +2140,9 @@ public class TagRepository extends AbstractHtmlRepository
 
         try {
             final Set<AbstractHtml> set = buildAllTagsStream(parallel)
-                    .filter(tag -> {
-                        return tagClass.isAssignableFrom(tag.getClass())
-                                && !NoTag.class
-                                        .isAssignableFrom(tag.getClass());
-                    }).collect(Collectors.toSet());
+                    .filter(tag -> tagClass.isAssignableFrom(tag.getClass())
+                            && !NoTag.class.isAssignableFrom(tag.getClass()))
+                    .collect(Collectors.toSet());
 
             return (Collection<T>) set;
         } finally {
@@ -2248,15 +2205,11 @@ public class TagRepository extends AbstractHtmlRepository
         try {
             final Stream<AbstractHtml> stream = buildAllTagsStream(parallel);
 
-            final Optional<AbstractHtml> any = stream.filter(tag -> {
-                return tag.getAttributeByName(attributeName) != null;
-            }).findAny();
+            final Optional<AbstractHtml> any = stream.filter(
+                    tag -> tag.getAttributeByName(attributeName) != null)
+                    .findAny();
 
-            if (any.isPresent()) {
-                return any.get();
-            }
-
-            return null;
+            return any.orElse(null);
         } finally {
             for (final Lock lock : locks) {
                 lock.unlock();
@@ -2663,12 +2616,9 @@ public class TagRepository extends AbstractHtmlRepository
      */
     public Stream<AbstractAttribute> buildAllAttributesStream(
             final boolean parallel) {
-        final Stream<AbstractAttribute> attributesStream = buildAllTagsStream(
-                parallel).filter(tag -> tag.getAttributes() != null)
-                        .map(tag -> {
-                            return tag.getAttributes();
-                        }).flatMap(attributes -> attributes.stream());
-        return attributesStream;
+        return buildAllTagsStream(parallel)
+                .filter(tag -> tag.getAttributes() != null)
+                .map(AbstractHtml::getAttributes).flatMap(Collection::stream);
     }
 
     /**
@@ -2720,10 +2670,9 @@ public class TagRepository extends AbstractHtmlRepository
         }
         try {
             return getAllNestedChildrenIncludingParent(parallel, fromTags)
-                    .filter(tag -> tag.getAttributes() != null).map(tag -> {
-                        return tag.getAttributes();
-                    }).flatMap(attributes -> attributes.stream())
-                    .collect(Collectors.toSet());
+                    .filter(tag -> tag.getAttributes() != null)
+                    .map(AbstractHtml::getAttributes)
+                    .flatMap(Collection::stream).collect(Collectors.toSet());
         } finally {
             for (final Lock lock : locks) {
                 lock.unlock();
@@ -3030,12 +2979,9 @@ public class TagRepository extends AbstractHtmlRepository
      */
     public static Stream<AbstractAttribute> buildAllAttributesStream(
             final boolean parallel, final AbstractHtml... fromTags) {
-        final Stream<AbstractAttribute> attributesStream = getAllNestedChildrenIncludingParent(
-                parallel, fromTags).filter(tag -> tag.getAttributes() != null)
-                        .map(tag -> {
-                            return tag.getAttributes();
-                        }).flatMap(attributes -> attributes.stream());
-        return attributesStream;
+        return getAllNestedChildrenIncludingParent(parallel, fromTags)
+                .filter(tag -> tag.getAttributes() != null)
+                .map(AbstractHtml::getAttributes).flatMap(Collection::stream);
     }
 
     /**
