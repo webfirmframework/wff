@@ -20,7 +20,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -80,7 +79,7 @@ public enum WffJsFile {
 
     private static String allOptimizedContent;
 
-    private String filename;
+    private final String filename;
 
     private String optimizedFileContent;
 
@@ -335,7 +334,7 @@ public enum WffJsFile {
             final Comparator<FunctionOrVarName> descendingLength = (a,
                     b) -> Integer.compare(b.name.length(), a.name.length());
 
-            Collections.sort(functionAndVarNameList, descendingLength);
+            functionAndVarNameList.sort(descendingLength);
 
             // NB: passing descendingLength comparator as constructor argument
             // in TreeSet makes bug it also removes elements having same length
@@ -387,7 +386,7 @@ public enum WffJsFile {
 
             final StringBuilder builder = new StringBuilder((int) fileLength);
 
-            String eachLine = null;
+            String eachLine;
 
             while ((eachLine = reader.readLine()) != null) {
                 // replacing double spaces with single space
@@ -418,7 +417,7 @@ public enum WffJsFile {
             }
 
             if (PRODUCTION_MODE) {
-                boolean containsComment = false;
+                boolean containsComment;
 
                 do {
                     containsComment = false;
@@ -438,7 +437,7 @@ public enum WffJsFile {
 
                 } while (containsComment);
 
-                boolean containsLog = false;
+                boolean containsLog;
 
                 do {
                     containsLog = false;
@@ -458,8 +457,7 @@ public enum WffJsFile {
                 } while (containsLog);
             }
 
-            optimizedFileContent = StringBuilderUtil.getTrimmedString(builder)
-                    .toString();
+            optimizedFileContent = StringBuilderUtil.getTrimmedString(builder);
         } catch (final Exception e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
@@ -476,6 +474,8 @@ public enum WffJsFile {
      * @param removePrevBPOnClosetTab
      * @param heartbeatInterval
      *                                    in milliseconds
+     * @param wsReconnectInterval
+     * @param autoremoveParentScript
      * @return the js string for the client
      * @author WFF
      */
@@ -525,8 +525,7 @@ public enum WffJsFile {
                 builder.append('\n').append(wffJsFiles[i].optimizedFileContent);
             }
 
-            allOptimizedContent = StringBuilderUtil.getTrimmedString(builder)
-                    .toString();
+            allOptimizedContent = StringBuilderUtil.getTrimmedString(builder);
 
             if (PRODUCTION_MODE && functionAndVarNames != null) {
 

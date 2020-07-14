@@ -1346,16 +1346,10 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         for (final AbstractHtml ownerTag : ownerTags) {
             final WriteLock writeLock = ownerTag.getSharedObject()
                     .getLock(ACCESS_OBJECT).writeLock();
-            if (writeLock != null) {
-                try {
-                    locks.add(writeLock);
-                } catch (final Exception e) {
-                    e.printStackTrace();
-                }
-            }
+            locks.add(writeLock);
         }
 
-        Collections.sort(locks, (o1, o2) -> Integer.compare(o2.getHoldCount(),
+        locks.sort((o1, o2) -> Integer.compare(o2.getHoldCount(),
                 o1.getHoldCount()));
         final Collection<WriteLock> writeLocks = new LinkedHashSet<>(locks);
 
@@ -1384,9 +1378,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         for (final AbstractHtml ownerTag : ownerTags) {
             final ReadLock readLock = ownerTag.getSharedObject()
                     .getLock(ACCESS_OBJECT).readLock();
-            if (readLock != null) {
-                readLocks.add(readLock);
-            }
+            readLocks.add(readLock);
         }
 
         // must be separately locked
@@ -1420,15 +1412,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         for (final AbstractHtml ownerTag : ownerTags) {
             final WriteLock writeLock = ownerTag.getSharedObject()
                     .getLock(ACCESS_OBJECT).writeLock();
-            if (writeLock != null) {
-                try {
-                    locks.add(writeLock);
-                } catch (final Exception e) {
-                    e.printStackTrace();
-                }
-            }
+            locks.add(writeLock);
         }
-        Collections.sort(locks, (o1, o2) -> Integer.compare(o2.getHoldCount(),
+        locks.sort((o1, o2) -> Integer.compare(o2.getHoldCount(),
                 o1.getHoldCount()));
 
         return new LinkedHashSet<>(locks);
@@ -1452,9 +1438,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         for (final AbstractHtml ownerTag : ownerTags) {
             final ReadLock readLock = ownerTag.getSharedObject()
                     .getLock(ACCESS_OBJECT).readLock();
-            if (readLock != null) {
-                readLocks.add(readLock);
-            }
+            readLocks.add(readLock);
         }
 
         return readLocks;
