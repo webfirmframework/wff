@@ -4279,7 +4279,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     public int toOutputStream(final OutputStream os, final String charset)
             throws IOException {
 
-        if (charset == null) {
+        if (charset != null) {
             return writePrintStructureToOutputStream(Charset.forName(charset),
                     os, true);
         }
