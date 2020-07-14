@@ -112,8 +112,35 @@ public class SharedTagContent<T> {
 
     private volatile boolean updateClient = true;
 
+    /**
+     * Represents the behavior of push operation of BrowserPage to client.
+     * {@code ALLOW_ASYNC_PARALLEL} is the default in the
+     * {@code SharedTagContent} object unless it is explicitly specified. In
+     * future after the arrival of Java Virtual thread there will be two more
+     * types named {@code ALLOW_VIRTUAL_PARALLEL} and
+     * {@code ALLOW_VIRTUAL_ASYNC_PARALLEL} and
+     * {@code ALLOW_VIRTUAL_ASYNC_PARALLEL} may be the default.
+     *
+     */
     public static enum UpdateClientNature {
-        ALLOW_ASYNC_PARALLEL, ALLOW_PARALLEL, SEQUENTIAL;
+
+        /**
+         * Allows parallel operation in the background for pushing changes to
+         * client browser page.
+         */
+        ALLOW_ASYNC_PARALLEL,
+
+        /**
+         * Allows parallel operation but will wait for the push to finish to
+         * exit the setContent method.
+         */
+        ALLOW_PARALLEL,
+
+        /**
+         * Does each browser page push operation one by one.
+         */
+        SEQUENTIAL;
+
         private UpdateClientNature() {
         }
     }
