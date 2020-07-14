@@ -16,7 +16,6 @@
 package com.webfirmframework.wffweb.server.page;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -230,7 +229,7 @@ public enum Task {
         for (final Task task : Task.values()) {
             tasks.add(task);
         }
-        Collections.sort(tasks, (o1, o2) -> Integer.compare(o2.name().length(),
+        tasks.sort((o1, o2) -> Integer.compare(o2.name().length(),
                 o1.name().length()));
 
         return new LinkedHashSet<>(tasks);

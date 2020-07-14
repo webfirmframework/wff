@@ -19,6 +19,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -387,14 +388,8 @@ public class TagRegistry {
         IndexedTagName.INSTANCE.sortedTagNames().clear();
         IndexedTagName.INSTANCE.sortedTagNames().addAll(TAG_NAMES_SET);
 
-        Collections.sort(IndexedTagName.INSTANCE.sortedTagNames(), (o1, o2) -> {
-
-            final Integer length1 = o1.length();
-            final Integer length2 = o2.length();
-
-            return length1.compareTo(length2);
-        });
-
+        IndexedTagName.INSTANCE.sortedTagNames()
+                .sort(Comparator.comparingInt(String::length));
     }
 
     /**

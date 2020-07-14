@@ -19,6 +19,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -600,8 +601,8 @@ public class AttributeRegistry {
         }
 
         // sorting in ascending order of length
-        Collections.sort(tmpSortedBooleanAttrNames,
-                (o1, o2) -> Integer.compare(o1.length(), o2.length()));
+        tmpSortedBooleanAttrNames
+                .sort((o1, o2) -> Integer.compare(o1.length(), o2.length()));
 
         SORTED_BOOLEAN_ATTR_NAMES = Collections
                 .unmodifiableList(tmpSortedBooleanAttrNames);
@@ -653,8 +654,8 @@ public class AttributeRegistry {
         IndexedAttributeName.INSTANCE.sortedAttrNames()
                 .addAll(ATTRIBUTE_NAMES_SET);
 
-        Collections.sort(IndexedAttributeName.INSTANCE.sortedAttrNames(),
-                (o1, o2) -> Integer.compare(o1.length(), o2.length()));
+        IndexedAttributeName.INSTANCE.sortedAttrNames()
+                .sort(Comparator.comparingInt(String::length));
     }
 
     /**
