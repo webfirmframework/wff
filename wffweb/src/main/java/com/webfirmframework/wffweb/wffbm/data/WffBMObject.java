@@ -75,7 +75,7 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
         try {
             initWffBMObject(bMBytes, true);
             this.bMBytes = bMBytes;
-        } catch (final UnsupportedEncodingException e) {
+        } catch (final RuntimeException e) {
             throw new WffRuntimeException("Could not create wff bm object", e);
         }
     }
@@ -84,7 +84,7 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
         try {
             initWffBMObject(bMBytes, outer);
             this.bMBytes = bMBytes;
-        } catch (final UnsupportedEncodingException e) {
+        } catch (final RuntimeException e) {
             throw new WffRuntimeException("Could not create wff bm object", e);
         }
     }
@@ -124,8 +124,23 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
      *                                          changes since 3.0.1.
      * @since 1.1.5
      * @author WFF
+     * @deprecated building bytes implementation doesn't throw
+     *             UnsupportedEncodingException so deprecated this method. The
+     *             same goal can be achieved using buildBytes method.
      */
+    @Deprecated
     public byte[] build() throws UnsupportedEncodingException {
+        return buildBytes(outer);
+    }
+
+    /**
+     * replacement method for build() method.
+     *
+     * @return
+     *
+     * @since 3.0.15
+     */
+    public byte[] buildBytes() {
         return buildBytes(outer);
     }
 
@@ -259,16 +274,10 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
     /**
      * @param bmObjectBytes
      * @param outer
-     * @throws UnsupportedEncodingException
-     *                                          throwing this exception will be
-     *                                          removed in future version
-     *                                          because its internal
-     *                                          implementation will never make
-     *                                          this exception due to the code
-     *                                          changes since 3.0.1.
+     *
      */
     private void initWffBMObject(final byte[] bmObjectBytes,
-            final boolean outer) throws UnsupportedEncodingException {
+            final boolean outer) {
 
         final WffBMObject wffBMObject = this;
 

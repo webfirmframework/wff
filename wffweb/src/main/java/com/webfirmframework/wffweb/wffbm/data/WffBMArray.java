@@ -128,7 +128,7 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
     public WffBMArray(final byte[] bmArrayBytes) {
         try {
             valueType = initWffBMObject(bmArrayBytes, true);
-        } catch (final UnsupportedEncodingException e) {
+        } catch (final RuntimeException e) {
             throw new WffRuntimeException("Invalid Wff BM Array bytes", e);
         }
     }
@@ -136,7 +136,7 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
     public WffBMArray(final byte[] bmArrayBytes, final boolean outer) {
         try {
             valueType = initWffBMObject(bmArrayBytes, outer);
-        } catch (final UnsupportedEncodingException e) {
+        } catch (final RuntimeException e) {
             throw new WffRuntimeException("Invalid Wff BM Array bytes", e);
         }
     }
@@ -145,16 +145,10 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
      * @param bmArrayBytes
      * @param outer
      * @return
-     * @throws UnsupportedEncodingException
-     *                                          throwing this exception will be
-     *                                          removed in future version
-     *                                          because its internal
-     *                                          implementation will never make
-     *                                          this exception due to the code
-     *                                          changes since 3.0.1.
+     *
      */
     private BMValueType initWffBMObject(final byte[] bmArrayBytes,
-            final boolean outer) throws UnsupportedEncodingException {
+            final boolean outer) {
 
         if (bmArrayBytes.length == 0 && !outer) {
             // if the inner WffBMArray is an empty array then the bmArrayBytes
