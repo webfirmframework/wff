@@ -55,11 +55,11 @@ public class OnMouseMove extends AbstractEventAttribute
         setServerAsyncMethod(null, serverAsyncMethod, null, null);
     }
 
-    public OnMouseMove(final String preJsFunctionBody,
+    public OnMouseMove(final String jsPreFunctionBody,
             final ServerAsyncMethod serverAsyncMethod,
             final String jsFilterFunctionBody,
             final String postJsFunctionBody) {
-        setServerAsyncMethod(preJsFunctionBody, serverAsyncMethod,
+        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod,
                 jsFilterFunctionBody, postJsFunctionBody);
     }
 
@@ -79,18 +79,18 @@ public class OnMouseMove extends AbstractEventAttribute
     }
 
     /**
-     * @param preJsFunctionBody
+     * @param jsPreFunctionBody
      * @param serverAsyncMethod
      * @param jsFilterFunctionBody
      * @param postJsFunctionBody
      * @param serverSideData
      * @since 3.0.2
      */
-    public OnMouseMove(final String preJsFunctionBody,
+    public OnMouseMove(final String jsPreFunctionBody,
             final ServerAsyncMethod serverAsyncMethod,
             final String jsFilterFunctionBody, final String postJsFunctionBody,
             final Object serverSideData) {
-        setServerAsyncMethod(preJsFunctionBody, serverAsyncMethod,
+        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod,
                 jsFilterFunctionBody, postJsFunctionBody, serverSideData);
     }
 

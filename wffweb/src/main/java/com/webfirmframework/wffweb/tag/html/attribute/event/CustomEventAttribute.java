@@ -25,11 +25,11 @@ public class CustomEventAttribute extends AbstractEventAttribute {
     }
 
     public CustomEventAttribute(final String attributeName,
-            final String preJsFunctionBody,
+            final String jsPreFunctionBody,
             final ServerAsyncMethod serverAsyncMethod,
             final String jsFilterFunctionBody,
             final String postJsFunctionBody) {
-        super(attributeName, preJsFunctionBody, serverAsyncMethod,
+        super(attributeName, jsPreFunctionBody, serverAsyncMethod,
                 jsFilterFunctionBody, postJsFunctionBody);
     }
 
@@ -48,7 +48,7 @@ public class CustomEventAttribute extends AbstractEventAttribute {
 
     /**
      * @param attributeName
-     * @param preJsFunctionBody
+     * @param jsPreFunctionBody
      * @param serverAsyncMethod
      * @param jsFilterFunctionBody
      * @param postJsFunctionBody
@@ -56,11 +56,11 @@ public class CustomEventAttribute extends AbstractEventAttribute {
      * @since 3.0.2
      */
     public CustomEventAttribute(final String attributeName,
-            final String preJsFunctionBody,
+            final String jsPreFunctionBody,
             final ServerAsyncMethod serverAsyncMethod,
             final String jsFilterFunctionBody, final String postJsFunctionBody,
             final Object serverSideData) {
-        super(attributeName, preJsFunctionBody, serverAsyncMethod,
+        super(attributeName, jsPreFunctionBody, serverAsyncMethod,
                 jsFilterFunctionBody, postJsFunctionBody, serverSideData);
     }
 

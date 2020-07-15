@@ -54,11 +54,11 @@ public class OnFocus extends AbstractEventAttribute implements AAttributable {
         setServerAsyncMethod(null, serverAsyncMethod, null, null);
     }
 
-    public OnFocus(final String preJsFunctionBody,
+    public OnFocus(final String jsPreFunctionBody,
             final ServerAsyncMethod serverAsyncMethod,
             final String jsFilterFunctionBody,
             final String postJsFunctionBody) {
-        setServerAsyncMethod(preJsFunctionBody, serverAsyncMethod,
+        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod,
                 jsFilterFunctionBody, postJsFunctionBody);
     }
 
@@ -78,18 +78,18 @@ public class OnFocus extends AbstractEventAttribute implements AAttributable {
     }
 
     /**
-     * @param preJsFunctionBody
+     * @param jsPreFunctionBody
      * @param serverAsyncMethod
      * @param jsFilterFunctionBody
      * @param postJsFunctionBody
      * @param serverSideData
      * @since 3.0.2
      */
-    public OnFocus(final String preJsFunctionBody,
+    public OnFocus(final String jsPreFunctionBody,
             final ServerAsyncMethod serverAsyncMethod,
             final String jsFilterFunctionBody, final String postJsFunctionBody,
             final Object serverSideData) {
-        setServerAsyncMethod(preJsFunctionBody, serverAsyncMethod,
+        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod,
                 jsFilterFunctionBody, postJsFunctionBody, serverSideData);
     }
 

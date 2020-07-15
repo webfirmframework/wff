@@ -56,11 +56,11 @@ public class OnPageHide extends AbstractEventAttribute
         setServerAsyncMethod(null, serverAsyncMethod, null, null);
     }
 
-    public OnPageHide(final String preJsFunctionBody,
+    public OnPageHide(final String jsPreFunctionBody,
             final ServerAsyncMethod serverAsyncMethod,
             final String jsFilterFunctionBody,
             final String postJsFunctionBody) {
-        setServerAsyncMethod(preJsFunctionBody, serverAsyncMethod,
+        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod,
                 jsFilterFunctionBody, postJsFunctionBody);
     }
 
@@ -80,18 +80,18 @@ public class OnPageHide extends AbstractEventAttribute
     }
 
     /**
-     * @param preJsFunctionBody
+     * @param jsPreFunctionBody
      * @param serverAsyncMethod
      * @param jsFilterFunctionBody
      * @param postJsFunctionBody
      * @param serverSideData
      * @since 3.0.2
      */
-    public OnPageHide(final String preJsFunctionBody,
+    public OnPageHide(final String jsPreFunctionBody,
             final ServerAsyncMethod serverAsyncMethod,
             final String jsFilterFunctionBody, final String postJsFunctionBody,
             final Object serverSideData) {
-        setServerAsyncMethod(preJsFunctionBody, serverAsyncMethod,
+        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod,
                 jsFilterFunctionBody, postJsFunctionBody, serverSideData);
     }
 
