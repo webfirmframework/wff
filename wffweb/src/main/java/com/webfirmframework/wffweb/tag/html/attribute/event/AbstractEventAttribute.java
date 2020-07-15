@@ -22,13 +22,11 @@ import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
- *
  * All event attributes will be extend by this class. It contains some common
  * features which all event attribute classes want.
  *
- * @since 2.0.0
  * @author WFF
- *
+ * @since 2.0.0
  */
 public abstract class AbstractEventAttribute extends AbstractAttribute
         implements EventAttribute {
@@ -38,13 +36,15 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
     private static final Logger LOGGER = Logger
             .getLogger(AbstractEventAttribute.class.getName());
 
-    private ServerAsyncMethod serverAsyncMethod;
+    private volatile boolean preventDefault;
 
-    private String jsFilterFunctionBody;
+    private volatile ServerAsyncMethod serverAsyncMethod;
 
-    private String jsPreFunctionBody;
+    private volatile String jsFilterFunctionBody;
 
-    private String jsPostFunctionBody;
+    private volatile String jsPreFunctionBody;
+
+    private volatile String jsPostFunctionBody;
 
     private volatile Object serverSideData;
 
@@ -74,11 +74,10 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
     }
 
     /**
-     *
      * @param value
      *                  the value for the attribute
-     * @since 2.0.0
      * @author WFF
+     * @since 2.0.0
      */
     protected AbstractEventAttribute(final String attributeName,
             final String value) {
@@ -103,10 +102,10 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      *                                 Eg:-
      *
      *                                 <pre>
-     *            if (source.type == 'button') {
-     *               return true;
-     *            }
-     *            return false;
+     *                                                                    if (source.type == 'button') {
+     *                                                                       return true;
+     *                                                                    }
+     *                                                                    return false;
      *                                 </pre>
      *
      * @param serverAsyncMethod
@@ -115,7 +114,6 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      *                                 {@code wffBMObject} is the
      *                                 representational javascript object
      *                                 returned by {@code jsFilterFunctionBody}.
-     *
      * @param jsFilterFunctionBody
      *                                 The body part of a javascript function
      *                                 (without function declaration). It can
@@ -128,8 +126,8 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      *                                 Eg:-
      *
      *                                 <pre>
-     *            var bName = source.name;
-     *            return {buttonName: bName, author:'wff', dateOfYear: 2014};
+     *                                                                    var bName = source.name;
+     *                                                                    return {buttonName: bName, author:'wff', dateOfYear: 2014};
      *                                 </pre>
      *
      * @param jsPostFunctionBody
@@ -141,8 +139,8 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      *                                 {@code jsObject} in the scope. There are
      *                                 common implicit objects {@code event} and
      *                                 {@code source} in the scope.
-     * @since 2.0.0
      * @author WFF
+     * @since 2.0.0
      */
     protected AbstractEventAttribute(final String attributeName,
             final String jsPreFunctionBody,
@@ -172,10 +170,10 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      *                                 Eg:-
      *
      *                                 <pre>
-     *            if (source.type == 'button') {
-     *               return true;
-     *            }
-     *            return false;
+     *                                                                    if (source.type == 'button') {
+     *                                                                       return true;
+     *                                                                    }
+     *                                                                    return false;
      *                                 </pre>
      *
      * @param serverAsyncMethod
@@ -184,7 +182,6 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      *                                 {@code wffBMObject} is the
      *                                 representational javascript object
      *                                 returned by {@code jsFilterFunctionBody}.
-     *
      * @param jsFilterFunctionBody
      *                                 The body part of a javascript function
      *                                 (without function declaration). It can
@@ -197,8 +194,8 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      *                                 Eg:-
      *
      *                                 <pre>
-     *            var bName = source.name;
-     *            return {buttonName: bName, author:'wff', dateOfYear: 2014};
+     *                                                                    var bName = source.name;
+     *                                                                    return {buttonName: bName, author:'wff', dateOfYear: 2014};
      *                                 </pre>
      *
      * @param jsPostFunctionBody
@@ -214,8 +211,8 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      *                                 this data will be available in the Event
      *                                 object of ServerAsyncMethod.asyncMethod
      *                                 method.
-     * @since 3.0.2
      * @author WFF
+     * @since 3.0.2
      */
     protected AbstractEventAttribute(final String attributeName,
             final String jsPreFunctionBody,
@@ -242,8 +239,8 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      *
      * @param value
      *                  the value for the attribute.
-     * @since 2.0.0
      * @author WFF
+     * @since 2.0.0
      */
     public void setValue(final String value) {
         super.setAttributeValue(value);
@@ -253,8 +250,8 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      * gets the value of this attribute
      *
      * @return the value of the attribute
-     * @since 2.0.0
      * @author WFF
+     * @since 2.0.0
      */
     public String getValue() {
         return super.getAttributeValue();
@@ -275,9 +272,9 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
     }
 
     private static String getPreparedJsFunctionBody(
-            final String jsfunctionBody) {
+            final String jsFunctionBody) {
 
-        final String functionBody = StringUtil.strip(jsfunctionBody);
+        final String functionBody = StringUtil.strip(jsFunctionBody);
         final StringBuilder builder = new StringBuilder(26);
 
         builder.append("function(event, source){").append(functionBody);
@@ -304,10 +301,10 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      *                                 Eg:-
      *
      *                                 <pre>
-     *            if (source.type == 'button') {
-     *               return true;
-     *            }
-     *            return false;
+     *                                                                    if (source.type == 'button') {
+     *                                                                       return true;
+     *                                                                    }
+     *                                                                    return false;
      *                                 </pre>
      *
      * @param serverAsyncMethod
@@ -316,7 +313,6 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      *                                 {@code wffBMObject} is the
      *                                 representational javascript object
      *                                 returned by {@code jsFilterFunctionBody}.
-     *
      * @param jsFilterFunctionBody
      *                                 The body part of a javascript function
      *                                 (without function declaration). It can
@@ -329,8 +325,8 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      *                                 Eg:-
      *
      *                                 <pre>
-     *            var bName = source.name;
-     *            return {buttonName: bName, author:'wff', dateOfYear: 2014};
+     *                                                                    var bName = source.name;
+     *                                                                    return {buttonName: bName, author:'wff', dateOfYear: 2014};
      *                                 </pre>
      *
      * @param jsPostFunctionBody
@@ -342,8 +338,8 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      *                                 {@code jsObject} in the scope. There are
      *                                 common implicit objects {@code event} and
      *                                 {@code source} in the scope.
-     * @since 2.0.0
      * @author WFF
+     * @since 2.0.0
      */
     public void setServerAsyncMethod(final String jsPreFunctionBody,
             final ServerAsyncMethod serverAsyncMethod,
@@ -370,10 +366,10 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      *                                 Eg:-
      *
      *                                 <pre>
-     *            if (source.type == 'button') {
-     *               return true;
-     *            }
-     *            return false;
+     *                                                                    if (source.type == 'button') {
+     *                                                                       return true;
+     *                                                                    }
+     *                                                                    return false;
      *                                 </pre>
      *
      * @param serverAsyncMethod
@@ -382,7 +378,6 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      *                                 {@code wffBMObject} is the
      *                                 representational javascript object
      *                                 returned by {@code jsFilterFunctionBody}.
-     *
      * @param jsFilterFunctionBody
      *                                 The body part of a javascript function
      *                                 (without function declaration). It can
@@ -395,8 +390,8 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      *                                 Eg:-
      *
      *                                 <pre>
-     *            var bName = source.name;
-     *            return {buttonName: bName, author:'wff', dateOfYear: 2014};
+     *                                                                    var bName = source.name;
+     *                                                                    return {buttonName: bName, author:'wff', dateOfYear: 2014};
      *                                 </pre>
      *
      * @param jsPostFunctionBody
@@ -412,10 +407,83 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      *                                 this data will be available in the Event
      *                                 object of ServerAsyncMethod.asyncMethod
      *                                 method.
-     * @since 3.0.2
      * @author WFF
+     * @since 3.0.2
      */
     public void setServerAsyncMethod(final String jsPreFunctionBody,
+            final ServerAsyncMethod serverAsyncMethod,
+            final String jsFilterFunctionBody, final String jsPostFunctionBody,
+            final Object serverSideData) {
+        setServerAsyncMethod(preventDefault, jsPreFunctionBody,
+                serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody,
+                serverSideData);
+    }
+
+    /**
+     * @param preventDefault
+     *                                 true to call event.preventDefault(); on
+     *                                 event
+     * @param jsPreFunctionBody
+     *                                 the body part javascript function
+     *                                 (without function declaration). It must
+     *                                 return true/false. This function will
+     *                                 invoke at client side before
+     *                                 {@code serverAsyncMethod}. If the
+     *                                 jsPrefunction returns true then only
+     *                                 {@code serverAsyncMethod} method will
+     *                                 invoke (if it is implemented). It has
+     *                                 implicit objects like {@code event} and
+     *                                 {@code source} which gives the reference
+     *                                 of the current tag. <br>
+     *                                 Eg:-
+     *
+     *                                 <pre>
+     *                                                                    if (source.type == 'button') {
+     *                                                                       return true;
+     *                                                                    }
+     *                                                                    return false;
+     *                                 </pre>
+     *
+     * @param serverAsyncMethod
+     *                                 This method will invoke at server side
+     *                                 with an argument {@code wffBMObject}. The
+     *                                 {@code wffBMObject} is the
+     *                                 representational javascript object
+     *                                 returned by {@code jsFilterFunctionBody}.
+     * @param jsFilterFunctionBody
+     *                                 The body part of a javascript function
+     *                                 (without function declaration). It can
+     *                                 return a javascript object so that it
+     *                                 will be available at server side in
+     *                                 {@code serverAsyncMethod} as
+     *                                 {@code wffBMObject} parameter. There are
+     *                                 implicit objects {@code event} and
+     *                                 {@code source} in the scope.<br>
+     *                                 Eg:-
+     *
+     *                                 <pre>
+     *                                                                    var bName = source.name;
+     *                                                                    return {buttonName: bName, author:'wff', dateOfYear: 2014};
+     *                                 </pre>
+     *
+     * @param jsPostFunctionBody
+     *                                 The body part of a javascript function
+     *                                 (without function declaration). The
+     *                                 {@code wffBMObject} returned by
+     *                                 {@code serverAsyncMethod} will be
+     *                                 available as an implicit object
+     *                                 {@code jsObject} in the scope. There are
+     *                                 common implicit objects {@code event} and
+     *                                 {@code source} in the scope.
+     * @param serverSideData
+     *                                 this data will be available in the Event
+     *                                 object of ServerAsyncMethod.asyncMethod
+     *                                 method.
+     * @author WFF
+     * @since 3.0.15
+     */
+    protected void setServerAsyncMethod(final boolean preventDefault,
+            final String jsPreFunctionBody,
             final ServerAsyncMethod serverAsyncMethod,
             final String jsFilterFunctionBody, final String jsPostFunctionBody,
             final Object serverSideData) {
@@ -424,82 +492,80 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
 
         if (serverAsyncMethod != null) {
 
+            final String preventDefaultS = preventDefault
+                    ? "event.preventDefault();"
+                    : "";
+
             if (jsPreFunctionBody != null && jsPostFunctionBody != null
                     && jsFilterFunctionBody != null) {
 
-                super.setAttributeValue(
-                        new StringBuilder(invokeAsyncWithPreFilterFun)
-                                .append("(event,this,'")
-                                .append(getAttributeName()).append("',")
-                                .append(getPreparedJsFunctionBody(
-                                        jsPreFunctionBody))
-                                .append(',')
-                                .append(getPreparedJsFunctionBody(
-                                        jsFilterFunctionBody))
-                                .append(')').toString());
+                super.setAttributeValue(new StringBuilder(preventDefaultS)
+                        .append(invokeAsyncWithPreFilterFun)
+                        .append("(event,this,'").append(getAttributeName())
+                        .append("',")
+                        .append(getPreparedJsFunctionBody(jsPreFunctionBody))
+                        .append(',')
+                        .append(getPreparedJsFunctionBody(jsFilterFunctionBody))
+                        .append(')').toString());
 
             } else if (jsPreFunctionBody != null
                     && jsPostFunctionBody != null) {
 
-                super.setAttributeValue(new StringBuilder(invokeAsyncWithPreFun)
-                        .append("(event,this,'").append(getAttributeName())
-                        .append("',")
+                super.setAttributeValue(new StringBuilder(preventDefaultS)
+                        .append(invokeAsyncWithPreFun).append("(event,this,'")
+                        .append(getAttributeName()).append("',")
                         .append(getPreparedJsFunctionBody(jsPreFunctionBody))
                         .append(')').toString());
 
             } else if (jsPreFunctionBody != null
                     && jsFilterFunctionBody != null) {
 
-                super.setAttributeValue(
-                        new StringBuilder(invokeAsyncWithPreFilterFun)
-                                .append("(event,this,'")
-                                .append(getAttributeName()).append("',")
-                                .append(getPreparedJsFunctionBody(
-                                        jsPreFunctionBody))
-                                .append(',')
-                                .append(getPreparedJsFunctionBody(
-                                        jsFilterFunctionBody))
-                                .append(')').toString());
+                super.setAttributeValue(new StringBuilder(preventDefaultS)
+                        .append(invokeAsyncWithPreFilterFun)
+                        .append("(event,this,'").append(getAttributeName())
+                        .append("',")
+                        .append(getPreparedJsFunctionBody(jsPreFunctionBody))
+                        .append(',')
+                        .append(getPreparedJsFunctionBody(jsFilterFunctionBody))
+                        .append(')').toString());
 
             } else if (jsPostFunctionBody != null
                     && jsFilterFunctionBody != null) {
 
-                super.setAttributeValue(
-                        new StringBuilder(invokeAsyncWithFilterFun)
-                                .append("(event,this,'")
-                                .append(getAttributeName()).append("',")
-                                .append(getPreparedJsFunctionBody(
-                                        jsFilterFunctionBody))
-                                .append(')').toString());
+                super.setAttributeValue(new StringBuilder(preventDefaultS)
+                        .append(invokeAsyncWithFilterFun)
+                        .append("(event,this,'").append(getAttributeName())
+                        .append("',")
+                        .append(getPreparedJsFunctionBody(jsFilterFunctionBody))
+                        .append(')').toString());
 
             } else if (jsPreFunctionBody != null) {
 
-                super.setAttributeValue(new StringBuilder(invokeAsyncWithPreFun)
-                        .append("(event,this,'").append(getAttributeName())
-                        .append("',")
+                super.setAttributeValue(new StringBuilder(preventDefaultS)
+                        .append(invokeAsyncWithPreFun).append("(event,this,'")
+                        .append(getAttributeName()).append("',")
                         .append(getPreparedJsFunctionBody(jsPreFunctionBody))
                         .append(')').toString());
 
             } else if (jsFilterFunctionBody != null) {
 
-                super.setAttributeValue(
-                        new StringBuilder(invokeAsyncWithFilterFun)
-                                .append("(event,this,'")
-                                .append(getAttributeName()).append("',")
-                                .append(getPreparedJsFunctionBody(
-                                        jsFilterFunctionBody))
-                                .append(')').toString());
-            } else if (jsPostFunctionBody != null) {
-                super.setAttributeValue(new StringBuilder(invokeAsync)
+                super.setAttributeValue(new StringBuilder(preventDefaultS)
+                        .append(invokeAsyncWithFilterFun)
                         .append("(event,this,'").append(getAttributeName())
-                        .append("')").toString());
+                        .append("',")
+                        .append(getPreparedJsFunctionBody(jsFilterFunctionBody))
+                        .append(')').toString());
+            } else if (jsPostFunctionBody != null) {
+                super.setAttributeValue(new StringBuilder(preventDefaultS)
+                        .append(invokeAsync).append("(event,this,'")
+                        .append(getAttributeName()).append("')").toString());
             } else {
 
-                super.setAttributeValue(new StringBuilder(invokeAsync)
-                        .append("(event,this,'").append(getAttributeName())
-                        .append("')").toString());
+                super.setAttributeValue(new StringBuilder(preventDefaultS)
+                        .append(invokeAsync).append("(event,this,'")
+                        .append(getAttributeName()).append("')").toString());
             }
-
+            this.preventDefault = preventDefault;
             this.jsPreFunctionBody = jsPreFunctionBody;
             this.jsFilterFunctionBody = jsFilterFunctionBody;
             this.jsPostFunctionBody = jsPostFunctionBody;
@@ -508,6 +574,17 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
             LOGGER.warning(
                     "serverAsyncMethod is null so jsPreFunctionBody, jsFilterFunctionBody and jsPostFunctionBody are not also set.They are valid only if serverAsyncMethod is NOT null.");
         }
+    }
+
+    /**
+     * This is applicable for some special attributes like OnSubmit.
+     *
+     * @return true or false. true means to call event.preventDefault() on event
+     *         otherwise false.
+     * @since 3.0.15
+     */
+    protected boolean getPreventDefault() {
+        return preventDefault;
     }
 
     @Override
@@ -522,8 +599,8 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
 
     /**
      * @return
-     * @since 2.1.9
      * @author WFF
+     * @since 2.1.9
      */
     public String getJsFilterFunctionBody() {
         return jsFilterFunctionBody;
@@ -531,11 +608,27 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
 
     /**
      * @return
-     * @since 2.1.9
      * @author WFF
+     * @since 2.1.9
      */
     public String getJsPreFunctionBody() {
         return jsPreFunctionBody;
+    }
+
+    /**
+     * true to call event.preventDefault(); on event. It will set only if there
+     * is {@code ServerAsyncMethod}. This is applicable for some special
+     * attributes like OnSubmit.
+     *
+     * @param preventDefault
+     *                           true to call event.preventDefault(); on event
+     *                           otherwise false.
+     * @since 3.0.15
+     */
+    protected void setPreventDefault(final boolean preventDefault) {
+        setServerAsyncMethod(preventDefault, jsPreFunctionBody,
+                serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody,
+                serverSideData);
     }
 
     /**
@@ -554,8 +647,8 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      * Sets the pre function body JavaScript.
      *
      * @param jsPreFunctionBody
-     * @since 2.1.9
      * @author WFF
+     * @since 2.1.9
      */
     public void setJsPreFunctionBody(final String jsPreFunctionBody) {
         setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod,
@@ -566,8 +659,8 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      * Sets the filter function body JavaScript.
      *
      * @param jsFilterFunctionBody
-     * @since 2.1.9
      * @author WFF
+     * @since 2.1.9
      */
     public void setJsFilterFunctionBody(final String jsFilterFunctionBody) {
         setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod,
