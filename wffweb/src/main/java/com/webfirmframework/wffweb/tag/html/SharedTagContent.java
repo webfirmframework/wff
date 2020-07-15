@@ -148,7 +148,21 @@ public class SharedTagContent<T> {
     public static final class Content<T> {
 
         private final T content;
+
         private final boolean contentTypeHtml;
+
+        /**
+         * The content will be treated as plain text.
+         *
+         * @param content
+         *                    the plain text content.
+         * @since 3.0.15
+         */
+        public Content(final T content) {
+            super();
+            this.content = content;
+            contentTypeHtml = false;
+        }
 
         public Content(final T content, final boolean contentTypeHtml) {
             super();
