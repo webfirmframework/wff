@@ -583,7 +583,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      *         otherwise false.
      * @since 3.0.15
      */
-    protected boolean getPreventDefault() {
+    protected boolean isPreventDefault() {
         return preventDefault;
     }
 
@@ -684,4 +684,5 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
     public void setServerSideData(final Object serverSideData) {
         this.serverSideData = serverSideData;
     }
+
 }

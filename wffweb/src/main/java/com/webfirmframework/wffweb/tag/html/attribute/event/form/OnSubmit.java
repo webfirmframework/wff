@@ -399,8 +399,8 @@ public class OnSubmit extends AbstractEventAttribute implements AAttributable {
      * AbstractEventAttribute#getPreventDefault()
      */
     @Override
-    public boolean getPreventDefault() {
-        return super.getPreventDefault();
+    public boolean isPreventDefault() {
+        return super.isPreventDefault();
     }
 
     /**
