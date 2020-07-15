@@ -404,8 +404,9 @@ public class OnSubmit extends AbstractEventAttribute implements AAttributable {
     }
 
     /**
-     * true to call event.preventDefault(); on event, it will prevent form submission
-     * to action url if it is added on form. It will set only if there is {@code ServerAsyncMethod}.
+     * true to call event.preventDefault(); on event, it will prevent form
+     * submission to action url if it is added on form. It will set only if
+     * there is {@code ServerAsyncMethod}.
      *
      * @param preventDefault
      *                           true to call event.preventDefault(); on event
