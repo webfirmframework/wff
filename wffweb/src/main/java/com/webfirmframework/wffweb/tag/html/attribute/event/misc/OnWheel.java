@@ -56,9 +56,9 @@ public class OnWheel extends AbstractEventAttribute {
     public OnWheel(final String jsPreFunctionBody,
             final ServerAsyncMethod serverAsyncMethod,
             final String jsFilterFunctionBody,
-            final String postJsFunctionBody) {
+            final String jsPostFunctionBody) {
         setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod,
-                jsFilterFunctionBody, postJsFunctionBody);
+                jsFilterFunctionBody, jsPostFunctionBody);
     }
 
     public OnWheel(final String value) {
@@ -80,16 +80,16 @@ public class OnWheel extends AbstractEventAttribute {
      * @param jsPreFunctionBody
      * @param serverAsyncMethod
      * @param jsFilterFunctionBody
-     * @param postJsFunctionBody
+     * @param jsPostFunctionBody
      * @param serverSideData
      * @since 3.0.2
      */
     public OnWheel(final String jsPreFunctionBody,
             final ServerAsyncMethod serverAsyncMethod,
-            final String jsFilterFunctionBody, final String postJsFunctionBody,
+            final String jsFilterFunctionBody, final String jsPostFunctionBody,
             final Object serverSideData) {
         setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod,
-                jsFilterFunctionBody, postJsFunctionBody, serverSideData);
+                jsFilterFunctionBody, jsPostFunctionBody, serverSideData);
     }
 
     /**

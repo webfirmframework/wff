@@ -58,9 +58,9 @@ public class OnMouseOver extends AbstractEventAttribute
     public OnMouseOver(final String jsPreFunctionBody,
             final ServerAsyncMethod serverAsyncMethod,
             final String jsFilterFunctionBody,
-            final String postJsFunctionBody) {
+            final String jsPostFunctionBody) {
         setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod,
-                jsFilterFunctionBody, postJsFunctionBody);
+                jsFilterFunctionBody, jsPostFunctionBody);
     }
 
     public OnMouseOver(final String value) {
@@ -82,16 +82,16 @@ public class OnMouseOver extends AbstractEventAttribute
      * @param jsPreFunctionBody
      * @param serverAsyncMethod
      * @param jsFilterFunctionBody
-     * @param postJsFunctionBody
+     * @param jsPostFunctionBody
      * @param serverSideData
      * @since 3.0.2
      */
     public OnMouseOver(final String jsPreFunctionBody,
             final ServerAsyncMethod serverAsyncMethod,
-            final String jsFilterFunctionBody, final String postJsFunctionBody,
+            final String jsFilterFunctionBody, final String jsPostFunctionBody,
             final Object serverSideData) {
         setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod,
-                jsFilterFunctionBody, postJsFunctionBody, serverSideData);
+                jsFilterFunctionBody, jsPostFunctionBody, serverSideData);
     }
 
     /**

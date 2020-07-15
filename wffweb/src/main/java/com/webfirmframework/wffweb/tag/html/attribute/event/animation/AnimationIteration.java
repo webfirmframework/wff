@@ -55,9 +55,9 @@ public class AnimationIteration extends AbstractEventAttribute {
     public AnimationIteration(final String jsPreFunctionBody,
             final ServerAsyncMethod serverAsyncMethod,
             final String jsFilterFunctionBody,
-            final String postJsFunctionBody) {
+            final String jsPostFunctionBody) {
         setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod,
-                jsFilterFunctionBody, postJsFunctionBody);
+                jsFilterFunctionBody, jsPostFunctionBody);
     }
 
     public AnimationIteration(final String value) {
@@ -79,16 +79,16 @@ public class AnimationIteration extends AbstractEventAttribute {
      * @param jsPreFunctionBody
      * @param serverAsyncMethod
      * @param jsFilterFunctionBody
-     * @param postJsFunctionBody
+     * @param jsPostFunctionBody
      * @param serverSideData
      * @since 3.0.2
      */
     public AnimationIteration(final String jsPreFunctionBody,
             final ServerAsyncMethod serverAsyncMethod,
-            final String jsFilterFunctionBody, final String postJsFunctionBody,
+            final String jsFilterFunctionBody, final String jsPostFunctionBody,
             final Object serverSideData) {
         setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod,
-                jsFilterFunctionBody, postJsFunctionBody, serverSideData);
+                jsFilterFunctionBody, jsPostFunctionBody, serverSideData);
     }
 
     /**

@@ -211,8 +211,6 @@ public class OnSubmit extends AbstractEventAttribute implements AAttributable {
                 jsFilterFunctionBody, jsPostFunctionBody, serverSideData);
     }
 
-    // --currently modifying here
-
     /**
      * @param preventDefault
      *                              true to call event.preventDefault(); on
@@ -418,8 +416,6 @@ public class OnSubmit extends AbstractEventAttribute implements AAttributable {
     public void setPreventDefault(final boolean preventDefault) {
         super.setPreventDefault(preventDefault);
     }
-
-    // --end
 
     /**
      * invokes only once per object
