@@ -202,8 +202,8 @@ public enum Task {
     }
 
     /**
-     * @return the sorted set of tasks in the descending order of the name of
-     *         task length.
+     * @return the sorted set of tasks in the descending order of the length of
+     *         task name.
      * @since 2.1.10
      * @since 3.0.15 bug fix
      * @author WFF
