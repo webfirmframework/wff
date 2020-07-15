@@ -949,8 +949,8 @@ public class SharedTagContent<T> {
                     try {
                         contentApplied = formatter.format(contentAfter);
                         if (contentApplied != null) {
-                            noTag = new NoTag(null, contentApplied.getContent(),
-                                    contentApplied.isContentTypeHtml());
+                            noTag = new NoTag(null, contentApplied.content,
+                                    contentApplied.contentTypeHtml);
 
                         } else {
                             noTag = prevNoTag;
@@ -958,8 +958,8 @@ public class SharedTagContent<T> {
                         }
                     } catch (final RuntimeException e) {
                         contentApplied = new Content<>("", false);
-                        noTag = new NoTag(null, contentApplied.getContent(),
-                                contentApplied.isContentTypeHtml());
+                        noTag = new NoTag(null, contentApplied.content,
+                                contentApplied.contentTypeHtml);
                         LOGGER.log(Level.SEVERE,
                                 "Exception while ContentFormatter.format", e);
                     }
@@ -1262,8 +1262,8 @@ public class SharedTagContent<T> {
                 final Content<String> formattedContent = cFormatter
                         .format(contentLocal);
                 if (formattedContent != null) {
-                    noTag = new NoTag(null, formattedContent.getContent(),
-                            formattedContent.isContentTypeHtml());
+                    noTag = new NoTag(null, formattedContent.content,
+                            formattedContent.contentTypeHtml);
                 } else {
                     noTag = new NoTag(null, "", false);
                 }
