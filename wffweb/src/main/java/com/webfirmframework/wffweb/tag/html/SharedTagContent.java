@@ -26,6 +26,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.CompletableFuture;
@@ -145,6 +146,12 @@ public class SharedTagContent<T> {
         }
     }
 
+    /**
+     * This is a record class for handling content in {@code SharedTagContent}
+     * object.
+     *
+     * @param <T>
+     */
     public static final class Content<T> {
 
         private final T content;
@@ -152,7 +159,8 @@ public class SharedTagContent<T> {
         private final boolean contentTypeHtml;
 
         /**
-         * The content will be treated as plain text.
+         * The content will be treated as plain text, i.e. contentTypeHtml
+         * property will be false.
          *
          * @param content
          *                    the plain text content.
@@ -164,20 +172,80 @@ public class SharedTagContent<T> {
             contentTypeHtml = false;
         }
 
+        /**
+         * @param content
+         *                            the content to be embedded in the consumer
+         *                            tags.
+         * @param contentTypeHtml
+         *                            true to treat the content as HTML when
+         *                            embedding in the consumer tags otherwise
+         *                            false. Default value is false.
+         */
         public Content(final T content, final boolean contentTypeHtml) {
             super();
             this.content = content;
             this.contentTypeHtml = contentTypeHtml;
         }
 
+        /**
+         * @return the content
+         * @deprecated As it is record class no need to use getter method
+         *             instead use {@link Content#content()}.This method will be
+         *             removed in future release.
+         */
+        @Deprecated
         public T getContent() {
             return content;
         }
 
+        /**
+         * @return true or false
+         * @deprecated As it is record class no need to use getter method
+         *             instead use {@link Content#contentTypeHtml()}. This
+         *             method will be removed in future release.
+         *
+         */
+        @Deprecated
         public boolean isContentTypeHtml() {
             return contentTypeHtml;
         }
 
+        /**
+         * @return the content
+         * @since 3.0.15
+         */
+        public T content() {
+            return content;
+        }
+
+        /**
+         * Denotes whether the content type to be treated as HTML when embedding
+         * in the consumer tags.
+         *
+         * @return true or false
+         * @since 3.0.15
+         */
+        public boolean contentTypeHtml() {
+            return contentTypeHtml;
+        }
+
+        @Override
+        public boolean equals(final Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            final Content<?> content1 = (Content<?>) o;
+            return contentTypeHtml == content1.contentTypeHtml
+                    && Objects.equals(content, content1.content);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(content, contentTypeHtml);
+        }
     }
 
     @FunctionalInterface
