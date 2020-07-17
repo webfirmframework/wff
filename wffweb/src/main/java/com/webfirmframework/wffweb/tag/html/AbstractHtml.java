@@ -1686,7 +1686,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             while ((children = childrenStack.poll()) != null) {
                 for (final AbstractHtml child : children) {
 
-                    final DataWffId dataWffId = child.getDataWffId();
+                    final DataWffId dataWffId = child.dataWffId;
                     if (dataWffId != null) {
                         tagByWffId.computeIfPresent(dataWffId.getValue(),
                                 (k, v) -> {
@@ -1851,7 +1851,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 // BrowserPage (if it is rended by BrowserPage then
                 // getLastDataWffId will not be -1)
                 if (sharedObject.getLastDataWffId(ACCESS_OBJECT) != -1
-                        && eachChild.getDataWffId() == null
+                        && eachChild.dataWffId == null
                         && eachChild.tagName != null
                         && !eachChild.tagName.isEmpty()) {
 
@@ -2187,14 +2187,18 @@ public abstract class AbstractHtml extends AbstractJsObject {
         // because the load factor is 0.75f
         // possible initial attributes on a tag may be maximum 8
         // they may be id, name, class, value, style, onchange, placeholder
-        attributesMap = new ConcurrentHashMap<>(8);
+        final Map<String, AbstractAttribute> map = new ConcurrentHashMap<>(8);
 
         for (final AbstractAttribute attribute : attributes) {
-            attributesMap.put(attribute.getAttributeName(), attribute);
+            map.put(attribute.getAttributeName(), attribute);
         }
 
-        this.attributes = new AbstractAttribute[attributesMap.size()];
-        attributesMap.values().toArray(this.attributes);
+        final AbstractAttribute[] attributesLocal = new AbstractAttribute[map
+                .size()];
+        map.values().toArray(attributesLocal);
+
+        attributesMap = map;
+        this.attributes = attributesLocal;
     }
 
     /**
@@ -2478,23 +2482,31 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
         boolean removed = false;
 
-        if (dataWffId == null || attributesMap == null) {
+        DataWffId thisDataWffId = dataWffId;
+        final Map<String, AbstractAttribute> thisAttributesMap = attributesMap;
+
+        if (thisDataWffId == null || thisAttributesMap == null) {
             return false;
         }
 
-        if (dataWffId.unsetOwnerTag(this)) {
-            final String attributeName = dataWffId.getAttributeName();
-            final AbstractAttribute prev = attributesMap.remove(attributeName);
+        if (thisDataWffId.unsetOwnerTag(this)) {
+            final String attributeName = thisDataWffId.getAttributeName();
+            final AbstractAttribute prev = thisAttributesMap
+                    .remove(attributeName);
             removed = prev != null;
         }
 
         if (removed) {
-            attributes = new AbstractAttribute[attributesMap.size()];
-            attributesMap.values().toArray(attributes);
+            final AbstractAttribute[] attributesLocal = new AbstractAttribute[thisAttributesMap
+                    .size()];
+            thisAttributesMap.values().toArray(attributesLocal);
+            attributes = attributesLocal;
+
             setModified(true);
             sharedObject.setChildModified(true);
         }
 
+        thisDataWffId = null;
         dataWffId = null;
 
         return removed;
@@ -4775,7 +4787,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
             for (final AbstractHtml stackChild : stackChildren) {
 
-                final DataWffId dataWffId = stackChild.getDataWffId();
+                final DataWffId dataWffId = stackChild.dataWffId;
                 if (dataWffId != null) {
                     tagByWffId.computeIfPresent(dataWffId.getValue(),
                             (k, v) -> {
