@@ -164,6 +164,17 @@ public abstract class BrowserPage implements Serializable {
 
     private volatile TagRepository tagRepository;
 
+    /**
+     * It has frequent reads so made it as non-volatile. However, setting the
+     * value is called inside the synchronized block to flush the value to the
+     * main memory. This is used to surround synchronized block on
+     * ServerAsyncMethod.asyncMethod so that it will read the shared
+     * variables/objects from the main memory and if any shared
+     * variables/objects modified it will be flushed back to main memory when
+     * the synchronized block exits.
+     */
+    private boolean readAndFlushToMainMemory = true;
+
     // to make it GC friendly, it is made as static
     private static final ThreadLocal<PayloadProcessor> PALYLOAD_PROCESSOR_TL = new ThreadLocal<>();
 
@@ -598,8 +609,16 @@ public abstract class BrowserPage implements Serializable {
                             methodTag, attributeByName,
                             eventAttr.getServerSideData());
 
-                    final WffBMObject returnedObject = serverAsyncMethod
-                            .asyncMethod(wffBMObject, event);
+                    final WffBMObject returnedObject;
+                    if (readAndFlushToMainMemory) {
+                        synchronized (this) {
+                            returnedObject = serverAsyncMethod
+                                    .asyncMethod(wffBMObject, event);
+                        }
+                    } else {
+                        returnedObject = serverAsyncMethod
+                                .asyncMethod(wffBMObject, event);
+                    }
 
                     final String jsPostFunctionBody = eventAttr
                             .getJsPostFunctionBody();
@@ -705,10 +724,19 @@ public abstract class BrowserPage implements Serializable {
                 wffBMObject = new WffBMObject(values[0], true);
             }
 
-            final WffBMObject returnedObject = serverMethod
-                    .getServerAsyncMethod().asyncMethod(wffBMObject,
-                            new ServerAsyncMethod.Event(methodName,
-                                    serverMethod.getServerSideData()));
+            final WffBMObject returnedObject;
+            if (readAndFlushToMainMemory) {
+                synchronized (this) {
+                    returnedObject = serverMethod.getServerAsyncMethod()
+                            .asyncMethod(wffBMObject,
+                                    new ServerAsyncMethod.Event(methodName,
+                                            serverMethod.getServerSideData()));
+                }
+            } else {
+                returnedObject = serverMethod.getServerAsyncMethod()
+                        .asyncMethod(wffBMObject, new ServerAsyncMethod.Event(
+                                methodName, serverMethod.getServerSideData()));
+            }
 
             String callbackFunId = null;
 
@@ -2270,6 +2298,40 @@ public abstract class BrowserPage implements Serializable {
      */
     public final PayloadProcessor newPayloadProcessor() {
         return new PayloadProcessor(this, true);
+    }
+
+    /**
+     * Its default value is true since 3.0.15.
+     *
+     * @return true or false.
+     * @since 3.0.15
+     */
+    protected boolean isReadAndFlushToMainMemory() {
+        synchronized (this) {
+            return readAndFlushToMainMemory;
+        }
+    }
+
+    /**
+     * Its default value is true since 3.0.15. If true is set then if the
+     * implemented {@link ServerAsyncMethod#asyncMethod} uses any shared
+     * variables/objects it will be read from the main memory and if any shared
+     * variables/objects modified its changes will be written to the main memory
+     * when the method exits. However, it doesn't guarantee atomicity of the
+     * shared variables/objects unless they are explicitly handled.
+     * {@link ServerAsyncMethod#asyncMethod} is used to capture events like
+     * OnClick, OnChange, OnSubmit etc... or events from custom server methods
+     * added by {@link BrowserPage#addServerMethod}.
+     *
+     * @param readAndFlushToMainMemory
+     *                                     true or false.
+     * @since 3.0.15
+     */
+    protected void setReadAndFlushToMainMemory(
+            final boolean readAndFlushToMainMemory) {
+        synchronized (this) {
+            this.readAndFlushToMainMemory = readAndFlushToMainMemory;
+        }
     }
 
 }
