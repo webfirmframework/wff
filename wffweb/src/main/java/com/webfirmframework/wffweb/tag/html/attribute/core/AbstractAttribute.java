@@ -116,8 +116,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     /**
      * @return {@code String} equalent to the html string of the tag including
      *         the child tags.
-     * @since 1.0.0
      * @author WFF
+     * @since 1.0.0
      */
     protected String getPrintStructure() {
         String printStructure = null;
@@ -194,8 +194,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      *
      * @return the attribute name and value in the format of name=value. Eg:
      *         style=color:green;background:blue
-     * @since 2.0.0
      * @author WFF
+     * @since 2.0.0
      */
     protected String getWffPrintStructure() {
         final String attributeValue = this.attributeValue;
@@ -207,24 +207,30 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         if (attributeValue != null) {
             attrBuilder.append(new char[] { '=' }).append(attributeValue);
             result = StringBuilderUtil.getTrimmedString(attrBuilder);
-        } else if (attributeValueMap != null && attributeValueMap.size() > 0) {
-            attrBuilder.append(new char[] { '=' });
-            final Set<Entry<String, String>> entrySet = getAttributeValueMap()
-                    .entrySet();
-            for (final Entry<String, String> entry : entrySet) {
-                attrBuilder.append(entry.getKey()).append(':')
-                        .append(entry.getValue()).append(';');
-            }
-
-            result = StringBuilderUtil.getTrimmedString(attrBuilder);
-        } else if (attributeValueSet != null && attributeValueSet.size() > 0) {
-            attrBuilder.append(new char[] { '=' });
-            for (final String each : getAttributeValueSet()) {
-                attrBuilder.append(each).append(' ');
-            }
-            result = StringBuilderUtil.getTrimmedString(attrBuilder);
         } else {
-            result = attrBuilder.toString();
+            final Map<String, String> attributeValueMap = this.attributeValueMap;
+            if (attributeValueMap != null && attributeValueMap.size() > 0) {
+                attrBuilder.append(new char[] { '=' });
+                final Set<Entry<String, String>> entrySet = getAttributeValueMap()
+                        .entrySet();
+                for (final Entry<String, String> entry : entrySet) {
+                    attrBuilder.append(entry.getKey()).append(':')
+                            .append(entry.getValue()).append(';');
+                }
+
+                result = StringBuilderUtil.getTrimmedString(attrBuilder);
+            } else {
+                final Set<String> attributeValueSet = this.attributeValueSet;
+                if (attributeValueSet != null && attributeValueSet.size() > 0) {
+                    attrBuilder.append(new char[] { '=' });
+                    for (final String each : getAttributeValueSet()) {
+                        attrBuilder.append(each).append(' ');
+                    }
+                    result = StringBuilderUtil.getTrimmedString(attrBuilder);
+                } else {
+                    result = attrBuilder.toString();
+                }
+            }
         }
 
         return result;
@@ -237,8 +243,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      *
      * @return the attribute name and value in the format of name=value. Eg:
      *         style=color:green;background:blue;
-     * @since 2.0.0
      * @author WFF
+     * @since 2.0.0
      */
     public String toWffString() {
         return getWffPrintStructure();
@@ -257,8 +263,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @param rebuild
      * @return the compressed by index bytes.
      * @throws IOException
-     * @since 1.1.3
      * @author WFF
+     * @since 1.1.3
      */
     protected byte[] getBinaryStructureCompressedByIndex(final boolean rebuild)
             throws IOException {
@@ -275,8 +281,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @param charset
      * @return the compressed by index bytes.
      * @throws IOException
-     * @since 3.0.3
      * @author WFF
+     * @since 3.0.3
      */
     protected byte[] getBinaryStructureCompressedByIndex(final boolean rebuild,
             final Charset charset) throws IOException {
@@ -375,8 +381,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     /**
      * @return the attributeName set by
      *         {@code AbstractAttribute#setAttributeName(String)}
-     * @since 1.0.0
      * @author WFF
+     * @since 1.0.0
      */
     public String getAttributeName() {
         return attributeName;
@@ -387,8 +393,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      *
      * @param attributeName
      *                          the attributeName to set
-     * @since 1.0.0
      * @author WFF
+     * @since 1.0.0
      */
     protected void setAttributeName(final String attributeName) {
         this.attributeName = attributeName;
@@ -400,9 +406,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      *
      * @param preIndexedAttrName
      *                               PreIndexedAttributeName object
-     *
-     * @since 3.0.3
      * @author WFF
+     * @since 3.0.3
      */
     protected void setPreIndexedAttribute(
             final PreIndexedAttributeName preIndexedAttrName) {
@@ -528,8 +533,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
     /**
      * @return the attributeValueMap
-     * @since 1.0.0
      * @author WFF
+     * @since 1.0.0
      */
     protected Map<String, String> getAttributeValueMap() {
         if (attributeValueMap == null) {
@@ -545,8 +550,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     /**
      * @param attributeValueMap
      *                              the attributeValueMap to set
-     * @since 1.0.0
      * @author WFF
+     * @since 1.0.0
      */
     protected void setAttributeValueMap(
             final Map<String, String> attributeValueMap) {
@@ -564,8 +569,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @param key
      * @param value
      * @return true if it is modified
-     * @since 1.0.0
      * @author WFF
+     * @since 1.0.0
      */
     protected boolean addToAttributeValueMap(final String key,
             final String value) {
@@ -646,9 +651,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * adds all to the attribute value map.
      *
      * @param map
-     * @since 1.0.0
-     * @author WFF
      * @return true if it is modified
+     * @author WFF
+     * @since 1.0.0
      */
     protected boolean addAllToAttributeValueMap(final Map<String, String> map) {
 
@@ -683,10 +688,10 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * removes the key value for the input key.
      *
      * @param key
-     * @since 1.0.0
-     * @author WFF
      * @return true if the given key (as well as value contained corresponding
      *         to it) has been removed.
+     * @author WFF
+     * @since 1.0.0
      */
     protected boolean removeFromAttributeValueMap(final String key) {
         return removeFromAttributeValueMapByKeys(key);
@@ -696,10 +701,10 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * removes the key value for the input key.
      *
      * @param keys
-     * @since 3.0.1
-     * @author WFF
      * @return true if any of the given keys (as well as value contained
      *         corresponding to it) has been removed.
+     * @author WFF
+     * @since 3.0.1
      */
     protected boolean removeFromAttributeValueMapByKeys(final String... keys) {
 
@@ -768,9 +773,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      *
      * @param key
      * @param value
-     * @since 1.0.0
-     * @author WFF
      * @return true if it is modified
+     * @author WFF
+     * @since 1.0.0
      */
     protected boolean removeFromAttributeValueMap(final String key,
             final String value) {
@@ -820,8 +825,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
     /**
      * @return the attributeValue
-     * @since 1.0.0
      * @author WFF
+     * @since 1.0.0
      */
     public String getAttributeValue() {
         // NB:- Do not call this method for internal operations
@@ -833,8 +838,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     /**
      * @param attributeValue
      *                           the attributeValue to set
-     * @since 1.0.0
      * @author WFF
+     * @since 1.0.0
      */
     protected void setAttributeValue(final String attributeValue) {
         if (!Objects.equals(this.attributeValue, attributeValue)) {
@@ -868,8 +873,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      *                           page.
      * @param attributeValue
      *                           the attributeValue to set
-     * @since 2.1.15
      * @author WFF
+     * @since 2.1.15
      */
     protected void setAttributeValue(final boolean updateClient,
             final String attributeValue) {
@@ -899,10 +904,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     }
 
     /**
-     *
      * @return one of the ownerTags
-     * @since 1.0.0
      * @author WFF
+     * @since 1.0.0
      * @deprecated this method may be removed later as there could be multiple
      *             owner tags.
      */
@@ -923,15 +927,15 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @return the tags which are consuming this attribute as an array. If there
      *         is no owner tag then it will return an empty array instead of
      *         null.
-     * @since 2.0.0
      * @author WFF
+     * @since 2.0.0
      */
     public AbstractHtml[] getOwnerTags() {
         // returning the set is not good because
         // if the AbstractHtml needs to be
         // modified while iterating the set will cause
         // ConcurrentModificationException
-        return ownerTags.toArray(new AbstractHtml[ownerTags.size()]);
+        return ownerTags.toArray(new AbstractHtml[0]);
     }
 
     /**
@@ -940,8 +944,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      *
      * @param ownerTag
      *                     the ownerTag to set
-     * @since 1.0.0
      * @author WFF
+     * @since 1.0.0
      */
     public void setOwnerTag(final AbstractHtml ownerTag) {
         ownerTags.add(ownerTag);
@@ -954,8 +958,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @param ownerTag
      *                     the ownerTag to unset
      * @return true if the given ownerTag is an owner of the attribute.
-     * @since 2.0.0
      * @author WFF
+     * @since 2.0.0
      */
     public boolean unsetOwnerTag(final AbstractHtml ownerTag) {
         return ownerTags.remove(ownerTag);
@@ -978,8 +982,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * for adding
      *
      * @return the attributeValueSet
-     * @since 1.0.0
      * @author WFF
+     * @since 1.0.0
      */
     protected Set<String> getAttributeValueSet() {
         if (attributeValueSet == null) {
@@ -996,8 +1000,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     /**
      * @param attributeValueSet
      *                              the attributeValueSet to set
-     * @since 1.0.0
      * @author WFF
+     * @since 1.0.0
      */
     protected void setAttributeValueSet(final Set<String> attributeValueSet) {
         if (!Objects.equals(this.attributeValueSet, attributeValueSet)) {
@@ -1010,9 +1014,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * adds to the attribute value set.
      *
      * @param value
-     * @since 1.0.0
-     * @author WFF
      * @return
+     * @author WFF
+     * @since 1.0.0
      */
     protected boolean addToAttributeValueSet(final String value) {
         final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
@@ -1043,8 +1047,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * adds all to the attribute value set.
      *
      * @param values
-     * @since 1.0.0
      * @author WFF
+     * @since 1.0.0
      */
     protected void addAllToAttributeValueSet(final Collection<String> values) {
         if (values != null) {
@@ -1075,8 +1079,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * removes all and then adds all to the attribute value set.
      *
      * @param values
-     * @since 3.0.1
      * @author WFF
+     * @since 3.0.1
      */
     protected void replaceAllInAttributeValueSet(
             final Collection<String> values) {
@@ -1089,8 +1093,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @param updateClient
      *                         true to update client browser page
      * @param values
-     * @since 3.0.1
      * @author WFF
+     * @since 3.0.1
      */
     protected void replaceAllInAttributeValueSet(final boolean updateClient,
             final Collection<String> values) {
@@ -1130,8 +1134,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      *                         available. The default value is true but it will
      *                         be ignored if there is no client browser page.
      * @param values
-     * @since 2.1.15
      * @author WFF
+     * @since 2.1.15
      */
     protected void addAllToAttributeValueSet(final boolean updateClient,
             final Collection<String> values) {
@@ -1164,8 +1168,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * removes the value from the the attribute set.
      *
      * @param value
-     * @since 1.0.0
      * @author WFF
+     * @since 1.0.0
      */
     protected void removeFromAttributeValueSet(final String value) {
         final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
@@ -1194,8 +1198,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * removes the value from the the attribute set.
      *
      * @param values
-     * @since 1.0.0
      * @author WFF
+     * @since 1.0.0
      */
     protected void removeAllFromAttributeValueSet(
             final Collection<String> values) {
@@ -1224,8 +1228,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     /**
      * clears all values from the value set.
      *
-     * @since 1.0.0
      * @author WFF
+     * @since 1.0.0
      */
     protected void removeAllFromAttributeValueSet() {
 
@@ -1251,8 +1255,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * invokes just before {@code getPrintStructure(final boolean} method and
      * only if the getPrintStructure(final boolean} rebuilds the structure.
      *
-     * @since 1.0.0
      * @author WFF
+     * @since 1.0.0
      */
     protected void beforePrintStructure() {
         // TODO override and use
@@ -1264,8 +1268,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * if the getPrintStructureCompressedByIndex(final boolean} rebuilds the
      * structure.
      *
-     * @since 1.0.0
      * @author WFF
+     * @since 1.0.0
      */
     protected void beforePrintStructureCompressedByIndex() {
         // TODO override and use
@@ -1290,15 +1294,18 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * adds value change lister which will be invoked when the value changed
      *
      * @param valueChangeListener
-     * @since 2.0.0
      * @author WFF
+     * @since 2.0.0
      */
     public void addValueChangeListener(
             final AttributeValueChangeListener valueChangeListener) {
+        Set<AttributeValueChangeListener> valueChangeListeners = this.valueChangeListeners;
         if (valueChangeListeners == null) {
             synchronized (this) {
+                valueChangeListeners = this.valueChangeListeners;
                 if (valueChangeListeners == null) {
                     valueChangeListeners = new LinkedHashSet<>();
+                    this.valueChangeListeners = valueChangeListeners;
                 }
             }
         }
@@ -1310,11 +1317,12 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * removes the corresponding value change listener
      *
      * @param valueChangeListener
-     * @since 2.0.0
      * @author WFF
+     * @since 2.0.0
      */
     public void removeValueChangeListener(
             final AttributeValueChangeListener valueChangeListener) {
+        final Set<AttributeValueChangeListener> valueChangeListeners = this.valueChangeListeners;
         if (valueChangeListeners != null) {
             valueChangeListeners.remove(valueChangeListener);
         }
@@ -1322,8 +1330,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
     /**
      * @return the set of value change listeners
-     * @since 2.0.0
      * @author WFF
+     * @since 2.0.0
      */
     public Set<AttributeValueChangeListener> getValueChangeListeners() {
         return Collections.unmodifiableSet(valueChangeListeners);

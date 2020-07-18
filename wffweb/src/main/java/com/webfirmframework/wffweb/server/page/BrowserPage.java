@@ -621,16 +621,8 @@ public abstract class BrowserPage implements Serializable {
 
     /**
      * @param nameValues
-     * @throws UnsupportedEncodingException
-     *                                          throwing this exception will be
-     *                                          removed in future version
-     *                                          because its internal
-     *                                          implementation will never make
-     *                                          this exception due to the code
-     *                                          changes since 3.0.1.
      */
-    private void invokeAsychMethod(final List<NameValue> nameValues)
-            throws UnsupportedEncodingException {
+    private void invokeAsychMethod(final List<NameValue> nameValues) {
         //@formatter:off
         // invoke method task format :-
         // { "name": task_byte, "values" : [invoke_method_byte_from_Task_enum]}, { "name": data-wff-id, "values" : [ event_attribute_name ]}
@@ -768,16 +760,8 @@ public abstract class BrowserPage implements Serializable {
 
     /**
      * @param nameValues
-     * @throws UnsupportedEncodingException
-     *                                          throwing this exception will be
-     *                                          removed in future version
-     *                                          because its internal
-     *                                          implementation will never make
-     *                                          this exception due to the code
-     *                                          changes since 3.0.1.
      */
-    private void invokeCustomServerMethod(final List<NameValue> nameValues)
-            throws UnsupportedEncodingException {
+    private void invokeCustomServerMethod(final List<NameValue> nameValues) {
         //@formatter:off
         // invoke custom server method task format :-
         // { "name": task_byte, "values" : [invoke_custom_server_method_byte_from_Task_enum]},
