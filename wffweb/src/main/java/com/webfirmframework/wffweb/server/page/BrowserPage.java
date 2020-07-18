@@ -32,9 +32,12 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.AtomicReferenceArray;
@@ -48,6 +51,7 @@ import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.NotRenderedException;
 import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.PushFailedException;
+import com.webfirmframework.wffweb.WffRuntimeException;
 import com.webfirmframework.wffweb.server.page.js.WffJsFile;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.Html;
@@ -164,16 +168,7 @@ public abstract class BrowserPage implements Serializable {
 
     private volatile TagRepository tagRepository;
 
-    /**
-     * It has frequent reads so made it as non-volatile. However, setting the
-     * value is called inside the synchronized block to flush the value to the
-     * main memory. This is used to surround synchronized block on
-     * ServerAsyncMethod.asyncMethod so that it will read the shared
-     * variables/objects from the main memory and if any shared
-     * variables/objects modified it will be flushed back to main memory when
-     * the synchronized block exits.
-     */
-    private boolean readAndFlushToMainMemory = true;
+    private Executor executor;
 
     // to make it GC friendly, it is made as static
     private static final ThreadLocal<PayloadProcessor> PALYLOAD_PROCESSOR_TL = new ThreadLocal<>();
@@ -583,11 +578,12 @@ public abstract class BrowserPage implements Serializable {
         final String eventAttrName = new String(values[0],
                 StandardCharsets.UTF_8);
 
-        WffBMObject wffBMObject = null;
+        final WffBMObject wffBMObject;
         if (values.length > 1) {
             final byte[] wffBMObjectBytes = values[1];
             wffBMObject = new WffBMObject(wffBMObjectBytes, true);
-
+        } else {
+            wffBMObject = null;
         }
 
         final AbstractHtml methodTag = tagByWffId.get(wffTagId);
@@ -610,14 +606,51 @@ public abstract class BrowserPage implements Serializable {
                             eventAttr.getServerSideData());
 
                     final WffBMObject returnedObject;
-                    if (readAndFlushToMainMemory) {
-                        synchronized (this) {
-                            returnedObject = serverAsyncMethod
-                                    .asyncMethod(wffBMObject, event);
+                    try {
+                        final Executor executor = this.executor;
+
+                        if (executor != null) {
+                            returnedObject = CompletableFuture
+                                    .supplyAsync(() -> {
+
+                                        WffBMObject result;
+                                        synchronized (this) {
+                                            // to read up to date value from
+                                            // main memory and to flush
+                                            // modification to main memory
+                                            // synchronized will do it as
+                                            // per
+                                            // java memory
+                                            // model
+                                            result = serverAsyncMethod
+                                                    .asyncMethod(wffBMObject,
+                                                            event);
+                                        }
+                                        return result;
+                                    }, executor).get();
+                        } else {
+                            returnedObject = CompletableFuture
+                                    .supplyAsync(() -> {
+
+                                        WffBMObject result;
+                                        synchronized (this) {
+                                            // to read up to date value from
+                                            // main memory and to flush
+                                            // modification to main memory
+                                            // synchronized will do it as
+                                            // per
+                                            // java memory
+                                            // model
+                                            result = serverAsyncMethod
+                                                    .asyncMethod(wffBMObject,
+                                                            event);
+                                        }
+                                        return result;
+                                    }).get();
                         }
-                    } else {
-                        returnedObject = serverAsyncMethod
-                                .asyncMethod(wffBMObject, event);
+
+                    } catch (InterruptedException | ExecutionException e) {
+                        throw new WffRuntimeException(e.getMessage(), e);
                     }
 
                     final String jsPostFunctionBody = eventAttr
@@ -718,24 +751,58 @@ public abstract class BrowserPage implements Serializable {
 
             final byte[][] values = methodNameAndArg.getValues();
 
-            WffBMObject wffBMObject = null;
-
-            if (values.length > 0) {
-                wffBMObject = new WffBMObject(values[0], true);
-            }
+            final WffBMObject wffBMObject = values.length > 0
+                    ? new WffBMObject(values[0], true)
+                    : null;
 
             final WffBMObject returnedObject;
-            if (readAndFlushToMainMemory) {
-                synchronized (this) {
-                    returnedObject = serverMethod.getServerAsyncMethod()
-                            .asyncMethod(wffBMObject,
-                                    new ServerAsyncMethod.Event(methodName,
-                                            serverMethod.getServerSideData()));
+            try {
+                final Executor executor = this.executor;
+
+                if (executor != null) {
+                    returnedObject = CompletableFuture.supplyAsync(() -> {
+
+                        final WffBMObject result;
+                        synchronized (this) {
+                            // to read up to date value from
+                            // main memory and to flush
+                            // modification to main memory
+                            // synchronized will do it as
+                            // per
+                            // java memory
+                            // model
+                            result = serverMethod.getServerAsyncMethod()
+                                    .asyncMethod(wffBMObject,
+                                            new ServerAsyncMethod.Event(
+                                                    methodName, serverMethod
+                                                            .getServerSideData()));
+                        }
+                        return result;
+                    }, executor).get();
+                } else {
+                    returnedObject = CompletableFuture.supplyAsync(() -> {
+
+                        final WffBMObject result;
+                        synchronized (this) {
+                            // to read up to date value from
+                            // main memory and to flush
+                            // modification to main memory
+                            // synchronized will do it as
+                            // per
+                            // java memory
+                            // model
+                            result = serverMethod.getServerAsyncMethod()
+                                    .asyncMethod(wffBMObject,
+                                            new ServerAsyncMethod.Event(
+                                                    methodName, serverMethod
+                                                            .getServerSideData()));
+                        }
+                        return result;
+                    }).get();
                 }
-            } else {
-                returnedObject = serverMethod.getServerAsyncMethod()
-                        .asyncMethod(wffBMObject, new ServerAsyncMethod.Event(
-                                methodName, serverMethod.getServerSideData()));
+
+            } catch (InterruptedException | ExecutionException e) {
+                throw new WffRuntimeException(e.getMessage(), e);
             }
 
             String callbackFunId = null;
@@ -2301,36 +2368,41 @@ public abstract class BrowserPage implements Serializable {
     }
 
     /**
-     * Its default value is true since 3.0.15.
+     * gets the executor set by
+     * {@link BrowserPage#setExecutorForServerAsyncMethod}.
      *
-     * @return true or false.
+     * @return return the executor object
      * @since 3.0.15
      */
-    protected boolean isReadAndFlushToMainMemory() {
+    protected Executor getExecutorForServerAsyncMethod() {
         synchronized (this) {
-            return readAndFlushToMainMemory;
+            // to read up to date value from
+            // main memory synchronized will do it as per
+            // java memory model
+            return executor;
         }
     }
 
     /**
-     * Its default value is true since 3.0.15. If true is set then if the
-     * implemented {@link ServerAsyncMethod#asyncMethod} uses any shared
-     * variables/objects it will be read from the main memory and if any shared
-     * variables/objects modified its changes will be written to the main memory
-     * when the method exits. However, it doesn't guarantee atomicity of the
-     * shared variables/objects unless they are explicitly handled.
-     * {@link ServerAsyncMethod#asyncMethod} is used to capture events like
-     * OnClick, OnChange, OnSubmit etc... or events from custom server methods
-     * added by {@link BrowserPage#addServerMethod}.
+     * Sets the executor to run {@link ServerAsyncMethod#asyncMethod}, <br>
+     * eg:
      *
-     * @param readAndFlushToMainMemory
-     *                                     true or false.
+     * <pre>
+     * <code>
+     * Executor executor = Executors.newCachedThreadPool(Executors.defaultThreadFactory());
+     * browserPage.setExecutorForServerAsyncMethod(executor);
+     * </code>
+     * </pre>
+     *
+     * @param executor
      * @since 3.0.15
      */
-    protected void setReadAndFlushToMainMemory(
-            final boolean readAndFlushToMainMemory) {
+    protected void setExecutorForServerAsyncMethod(final Executor executor) {
         synchronized (this) {
-            this.readAndFlushToMainMemory = readAndFlushToMainMemory;
+            // to flush modification to main memory
+            // synchronized will do it as per
+            // java memory model
+            this.executor = executor;
         }
     }
 
