@@ -514,6 +514,13 @@ public abstract class BrowserPage implements Serializable {
 
                         try {
                             executeWffBMTask(taskFromClient);
+                        } catch (final WffRuntimeException e) {
+                            if (!PRODUCTION_MODE) {
+                                e.printStackTrace();
+                            }
+                            if (LOGGER.isLoggable(Level.SEVERE)) {
+                                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                            }
                         } catch (final Exception e) {
                             if (!PRODUCTION_MODE) {
                                 e.printStackTrace();
