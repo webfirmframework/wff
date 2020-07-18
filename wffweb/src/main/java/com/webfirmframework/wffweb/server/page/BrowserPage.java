@@ -476,13 +476,10 @@ public abstract class BrowserPage implements Serializable {
         if (!taskFromClientQ.isEmpty()) {
             final Executor executor = this.executor;
             if (executor != null) {
-                CompletableFuture.runAsync(() -> {
-                    executeTasksFromClientFromQ();
-                }, executor);
+                CompletableFuture.runAsync(this::executeTasksFromClientFromQ,
+                        executor);
             } else {
-                CompletableFuture.runAsync(() -> {
-                    executeTasksFromClientFromQ();
-                });
+                CompletableFuture.runAsync(this::executeTasksFromClientFromQ);
             }
         }
 
