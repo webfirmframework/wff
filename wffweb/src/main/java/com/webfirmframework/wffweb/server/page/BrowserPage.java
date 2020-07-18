@@ -36,7 +36,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -128,6 +127,14 @@ public abstract class BrowserPage implements Serializable {
     // ConcurrentLinkedQueue give better performance than ConcurrentLinkedDeque
     // on benchmark
     private final Queue<ClientTasksWrapper> wffBMBytesHoldPushQueue = new ConcurrentLinkedQueue<>();
+
+    // there will be only one thread waiting for the lock so fairness must be
+    // false and fairness may decrease the lock time
+    private final ReentrantLock taskFromClientQLock = new ReentrantLock(false);
+
+    // ConcurrentLinkedQueue give better performance than ConcurrentLinkedDeque
+    // on benchmark
+    private final Queue<byte[]> taskFromClientQ = new ConcurrentLinkedQueue<>();
 
     private static final Security ACCESS_OBJECT = new Security();
 
@@ -452,28 +459,90 @@ public abstract class BrowserPage implements Serializable {
      * @author WFF
      */
     public final void webSocketMessaged(final byte[] message) {
-        try {
+        // minimum number of an empty bm message length is 4
+        // below that length is not a valid bm message so check
+        // message.length < 4
+        // later if there is such requirement
+        if (message.length < 4) {
+            // message.length == 0 when client sends an empty message just
+            // for ping
+            return;
+        }
 
-            // minimum number of an empty bm message length is 4
-            // below that length is not a valid bm message so check
-            // message.length < 4
-            // later if there is such requirement
-            if (message.length < 4) {
-                // message.length == 0 when client sends an empty message just
-                // for ping
-                return;
-            }
+        // executeWffBMTask(message);
 
-            executeWffBMTask(message);
-        } catch (final Exception e) {
-            if (!PRODUCTION_MODE) {
-                e.printStackTrace();
-            }
-            if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.log(Level.SEVERE,
-                        "Could not process this data received from client.", e);
+        taskFromClientQ.offer(message);
+
+        if (!taskFromClientQ.isEmpty()) {
+            final Executor executor = this.executor;
+            if (executor != null) {
+                CompletableFuture.runAsync(() -> {
+                    executeTasksFromClientFromQ();
+                }, executor);
+            } else {
+                CompletableFuture.runAsync(() -> {
+                    executeTasksFromClientFromQ();
+                });
             }
         }
+
+    }
+
+    /**
+     * @since 3.0.15
+     */
+    private void executeTasksFromClientFromQ() {
+
+        // hasQueuedThreads internally uses transient volatile Node
+        // so it must be fine for production use but
+        // TODO verify it in deep if it is good for production
+        if (!taskFromClientQLock.hasQueuedThreads()
+                && !taskFromClientQ.isEmpty()) {
+
+            try {
+
+                taskFromClientQLock.lock();
+
+                // wsPushInProgress must be implemented here and it is very
+                // important because multiple threads should not process
+                // simultaneously
+                // from same taskFromClientQueue which will cause incorrect
+                // order of
+                // execution
+
+                byte[] taskFromClient = taskFromClientQ.poll();
+                if (taskFromClient != null) {
+
+                    do {
+
+                        try {
+                            executeWffBMTask(taskFromClient);
+                        } catch (final Exception e) {
+                            if (!PRODUCTION_MODE) {
+                                e.printStackTrace();
+                            }
+                            if (LOGGER.isLoggable(Level.SEVERE)) {
+                                LOGGER.log(Level.SEVERE,
+                                        "Could not process this data received from client.",
+                                        e);
+                            }
+                        }
+
+                        if (taskFromClientQLock.hasQueuedThreads()) {
+                            break;
+                        }
+
+                        taskFromClient = taskFromClientQ.poll();
+
+                    } while (taskFromClient != null);
+
+                }
+
+            } finally {
+                taskFromClientQLock.unlock();
+            }
+        }
+
     }
 
     /**
@@ -606,50 +675,21 @@ public abstract class BrowserPage implements Serializable {
                             eventAttr.getServerSideData());
 
                     final WffBMObject returnedObject;
+
                     try {
-                        final Executor executor = this.executor;
-
-                        if (executor != null) {
-                            returnedObject = CompletableFuture
-                                    .supplyAsync(() -> {
-
-                                        WffBMObject result;
-                                        synchronized (this) {
-                                            // to read up to date value from
-                                            // main memory and to flush
-                                            // modification to main memory
-                                            // synchronized will do it as
-                                            // per
-                                            // java memory
-                                            // model
-                                            result = serverAsyncMethod
-                                                    .asyncMethod(wffBMObject,
-                                                            event);
-                                        }
-                                        return result;
-                                    }, executor).get();
-                        } else {
-                            returnedObject = CompletableFuture
-                                    .supplyAsync(() -> {
-
-                                        WffBMObject result;
-                                        synchronized (this) {
-                                            // to read up to date value from
-                                            // main memory and to flush
-                                            // modification to main memory
-                                            // synchronized will do it as
-                                            // per
-                                            // java memory
-                                            // model
-                                            result = serverAsyncMethod
-                                                    .asyncMethod(wffBMObject,
-                                                            event);
-                                        }
-                                        return result;
-                                    }).get();
+                        synchronized (this) {
+                            // to read up to date value from
+                            // main memory and to flush
+                            // modification to main memory
+                            // synchronized will do it as
+                            // per
+                            // java memory
+                            // model
+                            returnedObject = serverAsyncMethod
+                                    .asyncMethod(wffBMObject, event);
                         }
 
-                    } catch (InterruptedException | ExecutionException e) {
+                    } catch (final Exception e) {
                         throw new WffRuntimeException(e.getMessage(), e);
                     }
 
@@ -757,51 +797,22 @@ public abstract class BrowserPage implements Serializable {
 
             final WffBMObject returnedObject;
             try {
-                final Executor executor = this.executor;
 
-                if (executor != null) {
-                    returnedObject = CompletableFuture.supplyAsync(() -> {
-
-                        final WffBMObject result;
-                        synchronized (this) {
-                            // to read up to date value from
-                            // main memory and to flush
-                            // modification to main memory
-                            // synchronized will do it as
-                            // per
-                            // java memory
-                            // model
-                            result = serverMethod.getServerAsyncMethod()
-                                    .asyncMethod(wffBMObject,
-                                            new ServerAsyncMethod.Event(
-                                                    methodName, serverMethod
-                                                            .getServerSideData()));
-                        }
-                        return result;
-                    }, executor).get();
-                } else {
-                    returnedObject = CompletableFuture.supplyAsync(() -> {
-
-                        final WffBMObject result;
-                        synchronized (this) {
-                            // to read up to date value from
-                            // main memory and to flush
-                            // modification to main memory
-                            // synchronized will do it as
-                            // per
-                            // java memory
-                            // model
-                            result = serverMethod.getServerAsyncMethod()
-                                    .asyncMethod(wffBMObject,
-                                            new ServerAsyncMethod.Event(
-                                                    methodName, serverMethod
-                                                            .getServerSideData()));
-                        }
-                        return result;
-                    }).get();
+                synchronized (this) {
+                    // to read up to date value from
+                    // main memory and to flush
+                    // modification to main memory
+                    // synchronized will do it as
+                    // per
+                    // java memory
+                    // model
+                    returnedObject = serverMethod.getServerAsyncMethod()
+                            .asyncMethod(wffBMObject,
+                                    new ServerAsyncMethod.Event(methodName,
+                                            serverMethod.getServerSideData()));
                 }
 
-            } catch (InterruptedException | ExecutionException e) {
+            } catch (final Exception e) {
                 throw new WffRuntimeException(e.getMessage(), e);
             }
 
