@@ -3465,7 +3465,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     public int toBigOutputStream(final OutputStream os, final String charset)
             throws IOException {
 
-        if (charset == null) {
+        if (charset != null) {
             return writePrintStructureToOSWithoutRecursive(
                     Charset.forName(charset), os, true, false);
         }
