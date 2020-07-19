@@ -159,20 +159,6 @@ public class SharedTagContent<T> {
         private final boolean contentTypeHtml;
 
         /**
-         * The content will be treated as plain text, i.e. contentTypeHtml
-         * property will be false.
-         *
-         * @param content
-         *                    the plain text content.
-         * @since 3.0.15
-         */
-        public Content(final T content) {
-            super();
-            this.content = content;
-            contentTypeHtml = false;
-        }
-
-        /**
          * @param content
          *                            the content to be embedded in the consumer
          *                            tags.
