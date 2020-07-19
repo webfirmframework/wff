@@ -2196,12 +2196,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
             map.put(attribute.getAttributeName(), attribute);
         }
 
-        final AbstractAttribute[] attributesLocal = new AbstractAttribute[map
-                .size()];
-        map.values().toArray(attributesLocal);
-
         attributesMap = map;
-        this.attributes = attributesLocal;
+
+        this.attributes = map.values()
+                .toArray(new AbstractAttribute[map.size()]);
     }
 
     /**
@@ -2523,10 +2521,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
         }
 
         if (removed) {
-            final AbstractAttribute[] attributesLocal = new AbstractAttribute[thisAttributesMap
-                    .size()];
-            thisAttributesMap.values().toArray(attributesLocal);
-            attributes = attributesLocal;
+
+            attributes = thisAttributesMap.values()
+                    .toArray(new AbstractAttribute[thisAttributesMap.size()]);
 
             setModified(true);
             sharedObject.setChildModified(true);
@@ -2598,6 +2595,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
         boolean removed = false;
         boolean listenerInvoked = false;
+        final AbstractHtml5SharedObject sharedObject = this.sharedObject;
         final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
         try {
             lock.lock();
@@ -2620,8 +2618,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
             }
 
             if (removed) {
-                attributes = new AbstractAttribute[attributesMap.size()];
-                attributesMap.values().toArray(attributes);
+                attributes = attributesMap.values()
+                        .toArray(new AbstractAttribute[attributesMap.size()]);
                 setModified(true);
                 sharedObject.setChildModified(true);
 
@@ -6196,6 +6194,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             throw new NoParentException("There must be a parent for this tag.");
         }
 
+        final AbstractHtml5SharedObject sharedObject = this.sharedObject;
         final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
         // inserted, listener invoked
         boolean[] results = { false, false };
