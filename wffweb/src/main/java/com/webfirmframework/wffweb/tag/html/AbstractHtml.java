@@ -77,9 +77,8 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
 
 /**
  * @author WFF
- * @since 1.0.0
  * @version 3.0.1
- *
+ * @since 1.0.0
  */
 public abstract class AbstractHtml extends AbstractJsObject {
 
@@ -127,7 +126,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     private final String tagName;
 
-    private final StringBuilder tagBuilder = new StringBuilder();;
+    private final StringBuilder tagBuilder = new StringBuilder();
 
     private volatile AbstractAttribute[] attributes;
 
@@ -601,7 +600,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *
      * @param preIndexedTagName
      *                              PreIndexedTagName constant
-     *
      * @param base
      *                              TODO
      * @author WFF
@@ -713,6 +711,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     public void removeAllChildren() {
 
         boolean listenerInvoked = false;
+        final AbstractHtml5SharedObject sharedObject = this.sharedObject;
         final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
 
         try {
@@ -763,6 +762,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 removedAbstractHtmls);
 
         if (updateClient) {
+            final AbstractHtml5SharedObject sharedObject = this.sharedObject;
             final ChildTagRemoveListener listener = sharedObject
                     .getChildTagRemoveListener(ACCESS_OBJECT);
             if (listener != null) {
@@ -794,8 +794,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *
      * @param innerHtmls
      *                       the inner html tags to add
-     * @since 2.1.3
      * @author WFF
+     * @since 2.1.3
      */
     public void addInnerHtmls(final AbstractHtml... innerHtmls) {
         addInnerHtmls(true, innerHtmls);
@@ -810,9 +810,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *                         be ignored if there is no client browser page.
      * @param innerHtmls
      *                         the inner html tags to add
-     *
-     * @since 2.1.15
      * @author WFF
+     * @since 2.1.15
      */
     protected void addInnerHtmls(final boolean updateClient,
             final AbstractHtml... innerHtmls) {
@@ -1065,7 +1064,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param formatter
      *                             content to be formatted using this formatter
      *                             before it is embedded in this tag.
-     *
      * @since 3.0.6
      */
     public <T> void addInnerHtml(final boolean updateClient,
@@ -1096,14 +1094,12 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * push the out dated data (time). In such cases
      * {@link AbstractHtml#subscribeTo(SharedTagContent)} is more appropriate.
      *
-     *
      * @param sharedTagContent
      *                             the shared content to be inserted as inner
      *                             content. Any changes of content in the
      *                             sharedTagContent will be reflected in this
      *                             tag and all other consuming tags of this
      *                             sharedTagContent object.
-     *
      * @since 3.0.6
      */
     public <T> void subscribeTo(final SharedTagContent<T> sharedTagContent) {
@@ -1141,7 +1137,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param formatter
      *                             content to be formatted using this formatter
      *                             before it is embedded in this tag.
-     *
      * @since 3.0.6
      */
     public <T> void subscribeTo(final SharedTagContent<T> sharedTagContent,
@@ -1186,7 +1181,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param formatter
      *                             content to be formatted using this formatter
      *                             before it is embedded in this tag.
-     *
      * @since 3.0.6
      */
     public <T> void subscribeTo(final boolean updateClient,
@@ -1401,6 +1395,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @author WFF
      */
     public boolean removeChildren(final Collection<AbstractHtml> children) {
+        final AbstractHtml5SharedObject sharedObject = this.sharedObject;
         final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
         boolean result = false;
         try {
@@ -1426,6 +1421,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @since 3.0.1
      */
     public boolean removeChildren(final AbstractHtml... children) {
+        final AbstractHtml5SharedObject sharedObject = this.sharedObject;
         final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
         boolean result = false;
         try {
@@ -1551,8 +1547,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param child
      * @param invokeListener
      * @return
-     * @since 2.0.0
      * @author WFF
+     * @since 2.0.0
      */
     public boolean addChild(final Object accessObject, final AbstractHtml child,
             final boolean invokeListener) {
@@ -1611,6 +1607,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
             // one tag to another.
             final boolean alreadyHasParent = child.parent != null;
             final AbstractHtml previousParent = child.parent;
+
+            final AbstractHtml5SharedObject sharedObject = this.sharedObject;
 
             if (foreignLocking) {
                 Lock foreignLock = null;
@@ -1881,6 +1879,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     public void appendChildren(final Collection<AbstractHtml> children) {
 
         boolean listenerInvoked = false;
+        final AbstractHtml5SharedObject sharedObject = this.sharedObject;
         final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
         try {
             lock.lock();
@@ -1945,6 +1944,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
         // this method in consumed in constructor
 
         boolean listenerInvoked = false;
+        final AbstractHtml5SharedObject sharedObject = this.sharedObject;
         final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
         lock.lock();
         try {
@@ -2015,7 +2015,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * System.out.println(div.toHtmlString());
      *
      * </pre>
-     *
+     * <p>
      * This prints
      *
      * <pre>
@@ -2035,6 +2035,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     public void prependChildren(final AbstractHtml... children) {
 
+        final AbstractHtml5SharedObject sharedObject = this.sharedObject;
         final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
 
         // inserted, listener invoked
@@ -2111,7 +2112,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * {@code appendChildren(AbstractHtml... children)} <br>
      * adds the given children to the last position of the current children of
      * this object.
-     *
+     * <p>
      * NB: Previously this method was consumed by insertAfter method but since
      * 3.0.7 it has it own implementation like insertBefore method. This method
      * can also be removed if not required.
@@ -2119,15 +2120,17 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param children
      *                     children to append in this object's existing
      *                     children.
-     * @author WFF
      * @return in zeroth index: true if inserted otherwise false. in first
      *         index: true if listener invoked otherwise false.
+     * @author WFF
      * @since 3.0.1
      */
     private boolean[] appendChildrenLockless(final AbstractHtml... children) {
 
         // any changes to this method should also be applied in
         // appendChildren(AbstractHtml... children)
+
+        final AbstractHtml5SharedObject sharedObject = this.sharedObject;
 
         // inserted, listener invoked
         final boolean[] results = { false, false };
@@ -2174,8 +2177,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * should be called only once per object.
      *
      * @param attributes
-     * @since 2.0.0
      * @author WFF
+     * @since 2.0.0
      */
     private void initAttributes(final AbstractAttribute... attributes) {
 
@@ -2206,8 +2209,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *
      * @param attributes
      *                       attributes to add
-     * @since 2.0.0
      * @author WFF
+     * @since 2.0.0
      */
     public void addAttributes(final AbstractAttribute... attributes) {
         addAttributes(true, attributes);
@@ -2222,14 +2225,15 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *                         be ignored if there is no client browser page.
      * @param attributes
      *                         attributes to add
+     * @author WFF
      * @since 2.0.0 initial implementation
      * @since 2.0.15 changed to public scope
-     * @author WFF
      */
     public void addAttributes(final boolean updateClient,
             final AbstractAttribute... attributes) {
 
         boolean listenerInvoked = false;
+        final AbstractHtml5SharedObject sharedObject = this.sharedObject;
         final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
         try {
             lock.lock();
@@ -2257,26 +2261,32 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *                         be ignored if there is no client browser page.
      * @param attributes
      *                         attributes to add
-     * @since 3.0.1 initial implementation
-     * @author WFF
      * @return true if the listener invoked else false. DO NOT confuse it with
      *         whether attributes are added.
+     * @author WFF
+     * @since 3.0.1 initial implementation
      */
     private boolean addAttributesLockless(final boolean updateClient,
             final AbstractAttribute... attributes) {
 
+        final AbstractHtml5SharedObject sharedObject = this.sharedObject;
+        AbstractAttribute[] thisAttributes = this.attributes;
+
         boolean listenerInvoked = false;
 
+        Map<String, AbstractAttribute> attributesMap = this.attributesMap;
         if (attributesMap == null) {
             synchronized (this) {
+                attributesMap = this.attributesMap;
                 if (attributesMap == null) {
                     attributesMap = new ConcurrentHashMap<>(attributes.length);
+                    this.attributesMap = attributesMap;
                 }
             }
         }
 
-        if (this.attributes != null) {
-            for (final AbstractAttribute attribute : this.attributes) {
+        if (thisAttributes != null) {
+            for (final AbstractAttribute attribute : thisAttributes) {
                 attributesMap.put(attribute.getAttributeName(), attribute);
             }
         }
@@ -2290,9 +2300,11 @@ public abstract class AbstractHtml extends AbstractJsObject {
             }
         }
 
-        this.attributes = new AbstractAttribute[attributesMap.size()];
-        attributesMap.values().toArray(this.attributes);
+        thisAttributes = new AbstractAttribute[attributesMap.size()];
+        attributesMap.values().toArray(thisAttributes);
+        this.attributes = thisAttributes;
         setModified(true);
+
         sharedObject.setChildModified(true);
 
         // invokeListener
@@ -2313,24 +2325,30 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     /**
      * @return the collection of attributes
-     * @since 2.0.0
      * @author WFF
+     * @since 2.0.0
      */
     public Collection<AbstractAttribute> getAttributes() {
 
+        Map<String, AbstractAttribute> attributesMap = this.attributesMap;
         if (attributesMap == null) {
             return null;
         }
 
         final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
+        lock.lock();
+
         try {
-            lock.lock();
-            final Collection<AbstractAttribute> result = Collections
-                    .unmodifiableCollection(attributesMap.values());
-            return result;
+            attributesMap = this.attributesMap;
+            if (attributesMap != null) {
+                final Collection<AbstractAttribute> result = Collections
+                        .unmodifiableCollection(attributesMap.values());
+                return result;
+            }
         } finally {
             lock.unlock();
         }
+        return null;
     }
 
     /**
@@ -2338,14 +2356,20 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *
      * @return the attribute object for the given attribute name if exists
      *         otherwise returns null.
-     * @since 2.0.0
      * @author WFF
+     * @since 2.0.0
      */
     public AbstractAttribute getAttributeByName(final String attributeName) {
+        Map<String, AbstractAttribute> attributesMap = this.attributesMap;
+        if (attributesMap == null) {
+            return null;
+        }
+
         final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
         AbstractAttribute result = null;
         try {
             lock.lock();
+            attributesMap = this.attributesMap;
 
             if (attributesMap != null) {
                 result = attributesMap.get(attributeName);
@@ -2362,8 +2386,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param attributes
      *                       attributes to remove
      * @return true if any of the attributes are removed.
-     * @since 2.0.0
      * @author WFF
+     * @since 2.0.0
      */
     public boolean removeAttributes(final AbstractAttribute... attributes) {
         return removeAttributes(true, attributes);
@@ -2377,8 +2401,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param attributes
      *                           attributes to remove
      * @return true if any of the attributes are removed.
-     * @since 2.0.0
      * @author WFF
+     * @since 2.0.0
      */
     public boolean removeAttributes(final Object accessObject,
             final boolean invokeListener,
@@ -2405,18 +2429,21 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param attributes
      *                         attributes to remove
      * @return true if any of the attributes are removed.
+     * @author WFF
      * @since 2.0.0 initial implementation
      * @since 2.0.15 changed to public scope
-     * @author WFF
      */
     public boolean removeAttributes(final boolean updateClient,
             final AbstractAttribute... attributes) {
 
+        final AbstractHtml5SharedObject sharedObject = this.sharedObject;
         boolean listenerInvoked = false;
         boolean removed = false;
         final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+        lock.lock();
         try {
-            lock.lock();
+
+            final Map<String, AbstractAttribute> attributesMap = this.attributesMap;
 
             if (attributesMap == null) {
                 return false;
@@ -2474,7 +2501,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * removes the dataWffId from this tag.
      *
-     *
      * @return true if dataWffId is removed.
      * @since 3.0.9
      */
@@ -2519,8 +2545,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *                           to remove the attributes having in the given
      *                           names.
      * @return true if any of the attributes are removed.
-     * @since 2.0.0
      * @author WFF
+     * @since 2.0.0
      */
     public boolean removeAttributes(final String... attributeNames) {
         return removeAttributes(true, attributeNames);
@@ -2535,8 +2561,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *                           to remove the attributes having in the given
      *                           names.
      * @return true if any of the attributes are removed.
-     * @since 2.0.0
      * @author WFF
+     * @since 2.0.0
      */
     public boolean removeAttributes(final Object accessObject,
             final boolean invokeListener, final String... attributeNames) {
@@ -2563,9 +2589,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *                           to remove the attributes having in the given
      *                           names.
      * @return true if any of the attributes are removed.
+     * @author WFF
      * @since 2.0.0 initial implementation
      * @since 2.0.15 changed to public scope
-     * @author WFF
      */
     public boolean removeAttributes(final boolean updateClient,
             final String... attributeNames) {
@@ -2636,7 +2662,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *                    TODO
      * @param base
      *                    TODO
-     *
      * @author WFF
      */
     protected AbstractHtml(final TagType tagType, final String tagName,
@@ -2659,7 +2684,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *                              valid index value in TagRegistry.
      * @param base
      *                              TODO
-     *
      * @author WFF
      * @since 3.0.3
      */
@@ -2734,10 +2758,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param tagType
      * @param preIndexedTagName
      *                              PreIndexedTagName constant
-     *
      * @param base
      *                              TODO
-     *
      * @author WFF
      * @since 3.0.3
      */
@@ -2753,8 +2775,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * marks the owner tag in the attributes
      *
      * @param attributes
-     * @since 1.0.0
      * @author WFF
+     * @since 1.0.0
      */
     private void markOwnerTag(final AbstractAttribute[] attributes) {
         if (attributes == null) {
@@ -2768,8 +2790,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * to initialize objects in the constructor
      *
-     * @since 1.0.0
      * @author WFF
+     * @since 1.0.0
      */
     private void initInConstructor() {
         htmlStartSB = new StringBuilder(tagName == null ? 0
@@ -2787,8 +2809,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     /**
      * @param parent
-     * @since 2.0.0
      * @author WFF
+     * @since 2.0.0
      * @deprecated This method is not allowed to use. It's not implemented.
      */
     @Deprecated
@@ -2800,8 +2822,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     /**
      * @return the unmodifiable list of children
-     * @since 2.0.0
      * @author WFF
+     * @since 2.0.0
      */
     public List<AbstractHtml> getChildren() {
 
@@ -2820,8 +2842,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * modified.
      *
      * @return the internal children object.
-     * @since 2.0.0
      * @author WFF
+     * @since 2.0.0
      */
     public Set<AbstractHtml> getChildren(final Object accessObject) {
 
@@ -2842,8 +2864,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *                     which will be set as the children tag after removing
      *                     all current children. Empty set or null will remove
      *                     all current children from this tag.
-     * @since 2.1.12 proper implementation is available since 2.1.12
      * @author WFF
+     * @since 2.1.12 proper implementation is available since 2.1.12
      */
     public void setChildren(final Set<AbstractHtml> children) {
         if (children == null || children.size() == 0) {
@@ -2858,8 +2880,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * children as an array.
      *
      * @return the array of children of this tag.
-     * @since 3.0.1
      * @author WFF
+     * @since 3.0.1
      */
     public AbstractHtml[] getChildrenAsArray() {
 
@@ -2878,9 +2900,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * child.
      *
      * @return the first child of this tag or null if there is no child.
-     *
-     * @since 3.0.1
      * @author WFF
+     * @since 3.0.1
      */
     public AbstractHtml getFirstChild() {
         // this block must be synchronized otherwise may get null or
@@ -2919,9 +2940,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * Gets the last child of this tag. The efficient way to get the last child.
      *
      * @return the last child of this tag or null if there is no child.
-     *
-     * @since 3.0.15
      * @author WFF
+     * @since 3.0.15
      */
     public AbstractHtml getLastChild() {
         // this block must be synchronized otherwise may get null or
@@ -2961,8 +2981,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * size of children.
      *
      * @return the size of children.
-     * @since 3.0.1
      * @author WFF
+     * @since 3.0.1
      */
     public int getChildrenSize() {
         final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
@@ -2980,8 +3000,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * size of children.
      *
      * @return the size of children.
-     * @since 3.0.6
      * @author WFF
+     * @since 3.0.6
      */
     int getChildrenSizeLockless() {
         return children.size();
@@ -2996,8 +3016,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param index
      *                  from this index the tag will be returned
      * @return the child at the specified index.
-     * @since 3.0.1
      * @author WFF
+     * @since 3.0.1
      */
     public AbstractHtml getChildAt(final int index) {
         if (index < 0) {
@@ -3063,7 +3083,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * NB: only for internal use. Use getIndexByChild(AbstractHtml).<br>
      * <br>
-     *
+     * <p>
      * Gets the nth index of the given tag in this tag's children.
      *
      * @param accessObject
@@ -3105,8 +3125,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *
      * @param childTag
      * @return true if the given tag is a child of this tags.
-     * @since 3.0.1
      * @author WFF
+     * @since 3.0.1
      */
     public boolean containsChild(final AbstractHtml childTag) {
 
@@ -3154,8 +3174,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * @return {@code String} equalent to the html string of the tag including
      *         the child tags.
-     * @since 1.0.0
      * @author WFF
+     * @since 1.0.0
      */
     protected String getPrintStructure() {
         if (isRebuild() || isModified()) {
@@ -3185,12 +3205,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     *
-     *
      * @param rebuild
      * @return
-     * @since 1.0.0
      * @author WFF
+     * @since 1.0.0
      */
     protected String getPrintStructure(final boolean rebuild) {
 
@@ -3268,11 +3286,12 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     // for future development
+
     /**
      * @param rebuild
-     * @since 2.0.0
-     * @author WFF
      * @throws IOException
+     * @author WFF
+     * @since 2.0.0
      */
     protected void writePrintStructureToWffBinaryMessageOutputStream(
             final boolean rebuild) throws IOException {
@@ -3297,8 +3316,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param children
      * @param rebuild
      *                     TODO
-     * @since 1.0.0
      * @author WFF
+     * @since 1.0.0
      */
     private static void recurChildren(final StringBuilder tagBuilder,
             final Set<AbstractHtml> children, final boolean rebuild) {
@@ -3326,8 +3345,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * NB:- this method has not been undergone all testing process.
      *
      * @return the HTML string similar to toHtmlString method.
-     * @since 2.1.12
      * @author WFF
+     * @since 2.1.12
      */
     public String toBigHtmlString() {
 
@@ -3360,8 +3379,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *                    true to rebuild the tag hierarchy or false to return
      *                    from cache if available.
      * @return the HTML string similar to toHtmlString method.
-     * @since 2.1.12
      * @author WFF
+     * @since 2.1.12
      */
     public String toBigHtmlString(final boolean rebuild) {
         return getPrintStructureWithoutRecursive(rebuild);
@@ -3489,7 +3508,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *                    true to rebuild &amp; false to write previously built
      *                    bytes.
      * @return the total number of bytes written
-     *
      * @throws IOException
      * @since 2.1.12
      */
@@ -3687,8 +3705,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param rebuild
      * @param flushOnWrite
      * @throws IOException
-     * @since 2.1.12
      * @author WFF
+     * @since 2.1.12
      */
     private static void writePrintStructureToOSWithoutRecursive(
             final int[] totalWritten, final Charset charset,
@@ -3939,10 +3957,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *                         TODO
      * @param flushOnWrite
      *                         true to flush on each write to OutputStream
-     *
-     * @since 1.0.0
-     * @author WFF
      * @throws IOException
+     * @author WFF
+     * @since 1.0.0
      */
     private static void recurChildrenToOutputStream(final int[] totalWritten,
             final Charset charset, final OutputStream os,
@@ -3984,15 +4001,16 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     // for future development
+
     /**
      * to form html string from the children
      *
      * @param children
      * @param rebuild
      *                     TODO
-     * @since 2.0.0
-     * @author WFF
      * @throws IOException
+     * @author WFF
+     * @since 2.0.0
      */
     private void recurChildrenToWffBinaryMessageOutputStream(
             final Set<AbstractHtml> children, final boolean rebuild)
@@ -4208,6 +4226,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     // TODO for future implementation
+
     /**
      * @param os
      *               the object of {@code OutputStream} to write to.
@@ -4305,7 +4324,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *                    true to rebuild &amp; false to write previously built
      *                    bytes.
      * @return the total number of bytes written
-     *
      * @throws IOException
      */
     public int toOutputStream(final OutputStream os, final boolean rebuild)
@@ -4322,7 +4340,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param flushOnWrite
      *                         true to flush on each write to OutputStream
      * @return the total number of bytes written
-     *
      * @throws IOException
      * @since 3.0.2
      */
@@ -4414,8 +4431,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *
      * @return the tagName set by {@code AbstractHtml5#setTagName(String)}
      *         method.
-     * @since 1.0.0
      * @author WFF
+     * @since 1.0.0
      */
     public String getTagName() {
         return tagName;
@@ -4428,11 +4445,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     *
      * @param rebuild
      *                    TODO
-     * @since 1.0.0
      * @author WFF
+     * @since 1.0.0
      */
     private void buildOpeningTag(final boolean rebuild) {
 
@@ -4466,10 +4482,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     *
-     * @since 1.0.0
-     * @author WFF
      * @return closing tag
+     * @author WFF
+     * @since 1.0.0
      */
     private String buildClosingTag() {
         if (htmlEndSB.length() > 0) {
@@ -4489,8 +4504,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     /**
      * @return the sharedObject
-     * @since 1.0.0
      * @author WFF
+     * @since 1.0.0
      */
     @Override
     public final AbstractHtml5SharedObject getSharedObject() {
@@ -4499,8 +4514,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     /**
      * @return the htmlMiddleSB
-     * @since 1.0.0
      * @author WFF
+     * @since 1.0.0
      */
     protected StringBuilder getHtmlMiddleSB() {
         if (htmlMiddleSB == null) {
@@ -4515,8 +4530,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     /**
      * @return the htmlStartSBAsFirst
-     * @since 1.0.0
      * @author WFF
+     * @since 1.0.0
      */
     public boolean isHtmlStartSBAsFirst() {
         return htmlStartSBAsFirst;
@@ -4524,15 +4539,15 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     protected AbstractHtml deepClone(final AbstractHtml objectToBeClonned)
             throws CloneNotSupportedException {
-        return CloneUtil.<AbstractHtml> deepClone(objectToBeClonned);
+        return CloneUtil.deepClone(objectToBeClonned);
     }
 
     /**
      * invokes just before {@code getPrintStructure(final boolean} method and
      * only if the getPrintStructure(final boolean} rebuilds the structure.
      *
-     * @since 1.0.0
      * @author WFF
+     * @since 1.0.0
      */
     protected void beforePrintStructure() {
         // NOP override and use
@@ -4542,8 +4557,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * invokes just before
      * {@code writePrintStructureToOutputStream(final OutputStream} method.
      *
-     * @since 1.0.0
      * @author WFF
+     * @since 1.0.0
      */
     protected void beforeWritePrintStructureToOutputStream() {
         // NOP override and use
@@ -4554,8 +4569,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * {@code writePrintStructureToWffBinaryMessageOutputStream(final OutputStream}
      * method.
      *
-     * @since 2.0.0
      * @author WFF
+     * @since 2.0.0
      */
     protected void beforeWritePrintStructureToWffBinaryMessageOutputStream() {
         // NOP override and use
@@ -4614,18 +4629,17 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * object, not a "deep copy" operation.
      *
      * @return a deep clone of this instance.
-     * @exception CloneNotSupportedException
-     *                                           if the object's class does not
-     *                                           support the {@code Cloneable}
-     *                                           and {@code Serializable}
-     *                                           interfaces. Subclasses that
-     *                                           override the {@code clone}
-     *                                           method can also throw this
-     *                                           exception to indicate that an
-     *                                           instance cannot be cloned.
+     * @throws CloneNotSupportedException
+     *                                        if the object's class does not
+     *                                        support the {@code Cloneable} and
+     *                                        {@code Serializable} interfaces.
+     *                                        Subclasses that override the
+     *                                        {@code clone} method can also
+     *                                        throw this exception to indicate
+     *                                        that an instance cannot be cloned.
+     * @author WFF
      * @see java.lang.Cloneable
      * @see java.io.Serializable
-     * @author WFF
      */
     @Override
     public AbstractHtml clone() throws CloneNotSupportedException {
@@ -4688,20 +4702,18 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *                              pass the attributes names which need to be
      *                              excluded from all tags including their child
      *                              tags.
-     *
      * @return a deep clone of this instance without the given attributes.
-     * @exception CloneNotSupportedException
-     *                                           if the object's class does not
-     *                                           support the {@code Cloneable}
-     *                                           and {@code Serializable}
-     *                                           interfaces. Subclasses that
-     *                                           override the {@code clone}
-     *                                           method can also throw this
-     *                                           exception to indicate that an
-     *                                           instance cannot be cloned.
+     * @throws CloneNotSupportedException
+     *                                        if the object's class does not
+     *                                        support the {@code Cloneable} and
+     *                                        {@code Serializable} interfaces.
+     *                                        Subclasses that override the
+     *                                        {@code clone} method can also
+     *                                        throw this exception to indicate
+     *                                        that an instance cannot be cloned.
+     * @author WFF
      * @see java.lang.Cloneable
      * @see java.io.Serializable
-     * @author WFF
      * @since 2.0.0
      */
     public AbstractHtml clone(final String... excludeAttributes)
@@ -4814,9 +4826,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @return the Wff Binary Message bytes of this tag. It uses default charset
      *         for encoding values.
      * @version 1.1
+     * @author WFF
      * @since 2.0.0 initial implementation
      * @since 3.0.2 improved to handle NoTag with contentTypeHtml true
-     * @author WFF
      */
     public byte[] toWffBMBytes() {
         return toWffBMBytes(charset);
@@ -4828,9 +4840,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @return the Wff Binary Message bytes of this tag
      * @throws InvalidTagException
      * @version 1.1
+     * @author WFF
      * @since 2.0.0 initial implementation
      * @since 3.0.2 improved to handle NoTag with contentTypeHtml true
-     * @author WFF
      */
     public byte[] toWffBMBytes(final String charset) {
         return toWffBMBytes(Charset.forName(charset));
@@ -4839,8 +4851,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * @param charset
      * @return the Wff Binary Message bytes of this tag
-     * @author WFF
      * @throws InvalidTagException
+     * @author WFF
      * @version 1.1
      * @since 3.0.1 initial implementation
      * @since 3.0.2 improved to handle NoTag with contentTypeHtml true
@@ -4952,8 +4964,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param charset
      * @return the Wff Binary Message bytes of this tag containing indexed tag
      *         name and attribute name
-     * @author WFF
      * @throws InvalidTagException
+     * @author WFF
      * @version algorithm version 1.0
      * @since 3.0.3
      */
@@ -5105,8 +5117,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param charset
      * @return the Wff Binary Message bytes of this tag containing indexed tag
      *         name and attribute name
-     * @author WFF
      * @throws InvalidTagException
+     * @author WFF
      * @version algorithm version 2
      * @since 3.0.6
      */
@@ -5266,9 +5278,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param bmMessageBytes
      * @return the AbstractHtml instance from the given Wff BM bytes. It uses
      *         system default charset.
+     * @author WFF
      * @since 2.0.0 initial implementation
      * @since 3.0.2 improved to handle NoTag with contentTypeHtml true
-     * @author WFF
      */
     public static AbstractHtml getTagFromWffBMBytes(
             final byte[] bmMessageBytes) {
@@ -5283,9 +5295,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *                    the charset used to generate bm bytes in
      *                    {@link AbstractHtml#toWffBMBytes(String)}
      * @return the AbstractHtml instance from the given Wff BM bytes
+     * @author WFF
      * @since 2.0.0 initial implementation
      * @since 3.0.2 improved to handle NoTag with contentTypeHtml true
-     * @author WFF
      */
     public static AbstractHtml getTagFromWffBMBytes(final byte[] bmBytes,
             final String charset) {
@@ -5300,9 +5312,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *                    the charset used to generate bm bytes in
      *                    {@link AbstractHtml#toWffBMBytes(Charset)}
      * @return the AbstractHtml instance from the given Wff BM bytes
+     * @author WFF
      * @since 3.0.1 initial implementation
      * @since 3.0.2 improved to handle NoTag with contentTypeHtml true
-     * @author WFF
      */
     public static AbstractHtml getTagFromWffBMBytes(final byte[] bmBytes,
             final Charset charset) {
@@ -5415,9 +5427,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *                    the charset used to generate bm bytes in
      *                    {@link AbstractHtml#toWffBMBytes(Charset)}
      * @return the AbstractHtml instance from the given Wff BM bytes
+     * @author WFF
      * @since 3.0.2 Also includes the improvement to handle NoTag with
      *        contentTypeHtml true
-     * @author WFF
      */
     public static AbstractHtml getExactTagFromWffBMBytes(final byte[] bmBytes,
             final Charset charset) {
@@ -5578,7 +5590,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     *
      * adds data-wff-id for the tag if doesn't already exist. NB:- this method
      * is ony for internal use.
      *
@@ -5614,8 +5625,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param abstractHtmls
      *                          to insert before this tag
      * @return true if inserted otherwise false.
-     * @since 2.1.1
      * @author WFF
+     * @since 2.1.1
      */
     public boolean insertBefore(final AbstractHtml... abstractHtmls) {
 
@@ -5706,8 +5717,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param abstractHtmls
      * @return in zeroth index: true if inserted otherwise false. in first
      *         index: true if listener invoked otherwise false.
-     * @since 3.0.7
      * @author WFF
+     * @since 3.0.7
      */
     private boolean[] insertBefore(final AbstractHtml[] removedParentChildren,
             final AbstractHtml[] abstractHtmls) {
@@ -5860,8 +5871,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param abstractHtmls
      * @return in zeroth index: true if inserted otherwise false. in first
      *         index: true if listener invoked otherwise false.
-     * @since 3.0.7
      * @author WFF
+     * @since 3.0.7
      */
     private boolean[] insertAfter(final AbstractHtml[] removedParentChildren,
             final AbstractHtml[] abstractHtmls) {
@@ -6018,8 +6029,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param abstractHtmls
      * @return in zeroth index: true if inserted otherwise false. in first
      *         index: true if listener invoked otherwise false.
-     * @since 3.0.7
      * @author WFF
+     * @since 3.0.7
      */
     private boolean[] replaceWith(final AbstractHtml[] removedParentChildren,
             final AbstractHtml[] abstractHtmls) {
@@ -6175,9 +6186,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param abstractHtmls
      *                          to insert after this tag
      * @return true if inserted otherwise false.
+     * @author WFF
      * @since 2.1.6
      * @since 3.0.7 better implementation
-     * @author WFF
      */
     public boolean insertAfter(final AbstractHtml... abstractHtmls) {
 
@@ -6223,9 +6234,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *                           loop
      * @param parents
      *                           the tags from which to loop through.
-     *
-     * @since 2.1.8
      * @author WFF
+     * @since 2.1.8
      */
     protected static void loopThroughAllNestedChildren(
             final NestedChild nestedChild, final boolean includeParents,
@@ -6266,8 +6276,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param key
      * @param wffBMData
      * @return
-     * @since 2.1.8
      * @author WFF
+     * @since 2.1.8
      */
     protected WffBMData addWffData(final String key,
             final WffBMData wffBMData) {
@@ -6277,8 +6287,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * @param key
      * @return
-     * @since 2.1.8
      * @author WFF
+     * @since 2.1.8
      */
     protected WffBMData removeWffData(final String key) {
         return AbstractJsObject.removeWffData(this, key);
@@ -6287,8 +6297,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * @param key
      * @return
-     * @since 3.0.1
      * @author WFF
+     * @since 3.0.1
      */
     protected WffBMData getWffData(final String key) {
         return AbstractJsObject.getWffData(this, key);
@@ -6305,8 +6315,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *         may be null if there is no {@code TagRepository#upsert} operation
      *         has been done at least once in the whole life cycle. Otherwise it
      *         may also be empty.
-     * @since 2.1.8
      * @author WFF
+     * @since 2.1.8
      */
     public Map<String, WffBMData> getWffObjects() {
         return Collections.unmodifiableMap(wffBMDatas);
@@ -6317,8 +6327,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *
      * @return the root parent tag or the current tag if there is no parent for
      *         the given tag
-     * @since 2.1.11
      * @author WFF
+     * @since 2.1.11
      */
     public AbstractHtml getRootTag() {
         return sharedObject.getRootTag();
@@ -6367,8 +6377,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *
      * @return the sharedData object set by setSharedData method. This object is
      *         same across all of this tag hierarchy.
-     * @since 2.1.11
      * @author WFF
+     * @since 2.1.11
      */
     public Object getSharedData() {
         return sharedObject.getSharedData();
@@ -6421,8 +6431,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param sharedData
      *                       the object to access through all of this tag
      *                       hierarchy.
-     * @since 2.1.11
      * @author WFF
+     * @since 2.1.11
      */
     public void setSharedData(final Object sharedData) {
         sharedObject.setSharedData(sharedData);
@@ -6445,15 +6455,15 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * reset before use otherwise there could be some strange behaviour in the
      * UI. To avoid compromising performance such usage never throws any
      * exception. <br>
-     *
+     * <p>
      * NB:- Child tag cannot be reset, i.e. this tag should not be a child of
      * another tag.
      *
      * @throws InvalidTagException
      *                                 if the tag is already used by another
      *                                 tag, i.e. if this tag has a parent tag.
-     * @since 2.1.13
      * @author WFF
+     * @since 2.1.13
      */
     public final void resetHierarchy() throws InvalidTagException {
 
@@ -6479,8 +6489,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * NB: it might lead to StackOverflowException if the tag hierarchy is deep.
      *
      * @return stream of all nested children including this parent object.
-     * @since 3.0.0
      * @author WFF
+     * @since 3.0.0
      */
     private Stream<AbstractHtml> buildNestedChildrenIncludingParent() {
         return Stream.concat(Stream.of(this), children.stream()
@@ -6494,8 +6504,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *                   the parent object from which the nested children stream
      *                   to be built.
      * @return stream of all nested children including the given parent object.
-     * @since 2.1.15
      * @author WFF
+     * @since 2.1.15
      */
     protected static Stream<AbstractHtml> getAllNestedChildrenIncludingParent(
             final AbstractHtml parent) {
@@ -6543,7 +6553,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *
      * System.out.println(rootDiv.toHtmlString());
      * </pre>
-     *
+     * <p>
      * produces
      *
      * <pre>
@@ -6557,8 +6567,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * &lt;/div&gt;
      * </code>
      * </pre>
-     *
-     *
      *
      * @param consumer
      *                     the consumer object
@@ -6581,7 +6589,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * System.out.println(div.toHtmlString());
      *
      * </pre>
-     *
+     * <p>
      * produces
      *
      * <pre>
@@ -6589,7 +6597,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * &lt;div id="rootDivId"&gt;Hello World&lt;/div&gt;
      * </code>
      * </pre>
-     *
+     * <p>
      * A mix of give methods will be
      *
      * <pre>
@@ -6597,7 +6605,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *     new Span(dv).give(TagContent::text, "Hello World");
      * });
      * </pre>
-     *
+     * <p>
      * produces
      *
      * <pre>
