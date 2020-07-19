@@ -224,7 +224,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             public boolean removeAll(final Collection<?> children) {
 
                 // NB: must be LinkedHashSet to keep order of removal
-                final Set<Object> validChildren = new LinkedHashSet<>(
+                final Set<AbstractHtml> validChildren = new LinkedHashSet<>(
                         calcCapacity(children.size()));
 
                 for (final Object each : children) {
@@ -2298,8 +2298,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
             }
         }
 
-        thisAttributes = new AbstractAttribute[attributesMap.size()];
-        attributesMap.values().toArray(thisAttributes);
+        thisAttributes = attributesMap.values()
+                .toArray(new AbstractAttribute[attributesMap.size()]);
         this.attributes = thisAttributes;
         setModified(true);
 
@@ -2462,8 +2462,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
             }
 
             if (removed) {
-                this.attributes = new AbstractAttribute[attributesMap.size()];
-                attributesMap.values().toArray(this.attributes);
+                this.attributes = attributesMap.values()
+                        .toArray(new AbstractAttribute[attributesMap.size()]);
                 setModified(true);
                 sharedObject.setChildModified(true);
 
