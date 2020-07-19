@@ -4945,7 +4945,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             }
 
             final NameValue nameValue = nameValues.getFirst();
-            nameValue.setName(new byte[] {});
+            nameValue.setName(new byte[0]);
 
             return WffBinaryMessageUtil.VERSION_1
                     .getWffBinaryMessageBytes(nameValues);
@@ -5098,7 +5098,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             }
 
             final NameValue nameValue = nameValues.getFirst();
-            nameValue.setName(new byte[] {});
+            nameValue.setName(new byte[0]);
 
             return WffBinaryMessageUtil.VERSION_1
                     .getWffBinaryMessageBytes(nameValues);
@@ -5259,7 +5259,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             }
 
             final NameValue nameValue = nameValues.getFirst();
-            nameValue.setName(new byte[] {});
+            nameValue.setName(new byte[0]);
 
             return WffBinaryMessageUtil.VERSION_1
                     .getWffBinaryMessageBytes(nameValues);
