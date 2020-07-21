@@ -2373,7 +2373,7 @@ public abstract class BrowserPage implements Serializable {
      * @return return the executor object
      * @since 3.0.15
      */
-    protected Executor getExecutorForServerAsyncMethod() {
+    protected final Executor getExecutorForServerAsyncMethod() {
         synchronized (this) {
             // to read up to date value from
             // main memory synchronized will do it as per
@@ -2384,19 +2384,33 @@ public abstract class BrowserPage implements Serializable {
 
     /**
      * Sets the executor to run {@link ServerAsyncMethod#asyncMethod}, <br>
-     * eg:
+     *
+     * <br>
+     * NB: You may need only one copy of executor object for all browserPage
+     * instances in the project. Eg: <br>
      *
      * <pre>
      * <code>
-     * Executor executor = Executors.newCachedThreadPool(Executors.defaultThreadFactory());
-     * browserPage.setExecutorForServerAsyncMethod(executor);
+     *
+     * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
+     * browserPage.setExecutorForServerAsyncMethod(EXECUTOR);
+     * </code>
+     * </pre>
+     *
+     * When Java releases Virtual Thread we may be able to use as follows
+     *
+     * <pre>
+     * <code>
+     * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
+     * browserPage.setExecutorForServerAsyncMethod(EXECUTOR);
      * </code>
      * </pre>
      *
      * @param executor
      * @since 3.0.15
      */
-    protected void setExecutorForServerAsyncMethod(final Executor executor) {
+    protected final void setExecutorForServerAsyncMethod(
+            final Executor executor) {
         synchronized (this) {
             // to flush modification to main memory
             // synchronized will do it as per
