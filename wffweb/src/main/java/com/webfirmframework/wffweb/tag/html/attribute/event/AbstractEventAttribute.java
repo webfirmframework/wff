@@ -120,7 +120,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      *                                                                                                }
      *                                                                                                return false;
      *                                 </pre>
-     * 
+     *
      * @param serverAsyncMethod
      *                                 This method will invoke at server side
      *                                 with an argument {@code wffBMObject}. The
@@ -142,7 +142,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      *                                                                                                var bName = source.name;
      *                                                                                                return {buttonName: bName, author:'wff', dateOfYear: 2014};
      *                                 </pre>
-     * 
+     *
      * @param jsPostFunctionBody
      *                                 The body part of a javascript function
      *                                 (without function declaration). The
@@ -189,7 +189,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      *                                                                                                }
      *                                                                                                return false;
      *                                 </pre>
-     * 
+     *
      * @param serverAsyncMethod
      *                                 This method will invoke at server side
      *                                 with an argument {@code wffBMObject}. The
@@ -211,7 +211,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      *                                                                                                var bName = source.name;
      *                                                                                                return {buttonName: bName, author:'wff', dateOfYear: 2014};
      *                                 </pre>
-     * 
+     *
      * @param jsPostFunctionBody
      *                                 The body part of a javascript function
      *                                 (without function declaration). The
@@ -319,7 +319,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      *                                                                                                }
      *                                                                                                return false;
      *                                 </pre>
-     * 
+     *
      * @param serverAsyncMethod
      *                                 This method will invoke at server side
      *                                 with an argument {@code wffBMObject}. The
@@ -341,7 +341,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      *                                                                                                var bName = source.name;
      *                                                                                                return {buttonName: bName, author:'wff', dateOfYear: 2014};
      *                                 </pre>
-     * 
+     *
      * @param jsPostFunctionBody
      *                                 The body part of a javascript function
      *                                 (without function declaration). The
@@ -384,7 +384,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      *                                                                                                }
      *                                                                                                return false;
      *                                 </pre>
-     * 
+     *
      * @param serverAsyncMethod
      *                                 This method will invoke at server side
      *                                 with an argument {@code wffBMObject}. The
@@ -406,7 +406,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      *                                                                                                var bName = source.name;
      *                                                                                                return {buttonName: bName, author:'wff', dateOfYear: 2014};
      *                                 </pre>
-     * 
+     *
      * @param jsPostFunctionBody
      *                                 The body part of a javascript function
      *                                 (without function declaration). The
@@ -456,7 +456,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      *                                                                                                }
      *                                                                                                return false;
      *                                 </pre>
-     * 
+     *
      * @param serverAsyncMethod
      *                                 This method will invoke at server side
      *                                 with an argument {@code wffBMObject}. The
@@ -478,7 +478,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      *                                                                                                var bName = source.name;
      *                                                                                                return {buttonName: bName, author:'wff', dateOfYear: 2014};
      *                                 </pre>
-     * 
+     *
      * @param jsPostFunctionBody
      *                                 The body part of a javascript function
      *                                 (without function declaration). The
