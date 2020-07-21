@@ -54,29 +54,29 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
     // short name for invokeAsyncWithPreFilterFun is iawpff
     private static final String invokeAsyncWithPreFilterFun = "wffSM.iawpff";
 
-    // short name for invokeAsyncWithPreFilterFunPrvntDflt is iawpffpd
-    private static final String invokeAsyncWithPreFilterFunPrvntDflt = "wffSM.iawpffpd";
+    // short name for invokeAsyncWithPreFilterFun with PD as true is iawpffpd
+    private static final String invokeAsyncWithPreFilterFunPDTrue = "wffSM.iawpffpd";
 
     // for better readability it's not capitalized
     // short name for invokeAsyncWithPreFun is iawpf
     private static final String invokeAsyncWithPreFun = "wffSM.iawpf";
 
-    // short name for invokeAsyncWithPreFunPrvntDflt is iawpfpd
-    private static final String invokeAsyncWithPreFunPrvntDflt = "wffSM.iawpfpd";
+    // short name for invokeAsyncWithPreFun with PD as true is iawpfpd
+    private static final String invokeAsyncWithPreFunPDTrue = "wffSM.iawpfpd";
 
     // for better readability it's not capitalized
     // short name for invokeAsyncWithFilterFun is iawff
     private static final String invokeAsyncWithFilterFun = "wffSM.iawff";
 
-    // short name for invokeAsyncWithFilterFunPrvntDflt is iawffpd
-    private static final String invokeAsyncWithFilterFunPrvntDflt = "wffSM.iawffpd";
+    // short name for invokeAsyncWithFilterFun with PD as true is iawffpd
+    private static final String invokeAsyncWithFilterFunPDTrue = "wffSM.iawffpd";
 
     // for better readability it's not capitalized
     // short name for invokeAsync is ia
     private static final String invokeAsync = "wffSM.ia";
 
-    // short name for invokeAsyncPrvntDflt is iapd
-    private static final String invokeAsyncPrvntDflt = "wffSM.iapd";
+    // short name for invokeAsync with PD as true is iapd
+    private static final String invokeAsyncPDTrue = "wffSM.iapd";
 
     {
         init();
@@ -508,7 +508,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
                     && jsFilterFunctionBody != null) {
 
                 super.setAttributeValue(new StringBuilder(
-                        preventDefault ? invokeAsyncWithPreFilterFunPrvntDflt
+                        preventDefault ? invokeAsyncWithPreFilterFunPDTrue
                                 : invokeAsyncWithPreFilterFun)
                                         .append("(event,this,'")
                                         .append(getAttributeName()).append("',")
@@ -523,7 +523,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
                     && jsPostFunctionBody != null) {
 
                 super.setAttributeValue(new StringBuilder()
-                        .append(preventDefault ? invokeAsyncWithPreFunPrvntDflt
+                        .append(preventDefault ? invokeAsyncWithPreFunPDTrue
                                 : invokeAsyncWithPreFun)
                         .append("(event,this,'").append(getAttributeName())
                         .append("',")
@@ -534,7 +534,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
                     && jsFilterFunctionBody != null) {
 
                 super.setAttributeValue(new StringBuilder(
-                        preventDefault ? invokeAsyncWithPreFilterFunPrvntDflt
+                        preventDefault ? invokeAsyncWithPreFilterFunPDTrue
                                 : invokeAsyncWithPreFilterFun)
                                         .append("(event,this,'")
                                         .append(getAttributeName()).append("',")
@@ -549,7 +549,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
                     && jsFilterFunctionBody != null) {
 
                 super.setAttributeValue(new StringBuilder(
-                        preventDefault ? invokeAsyncWithFilterFunPrvntDflt
+                        preventDefault ? invokeAsyncWithFilterFunPDTrue
                                 : invokeAsyncWithFilterFun)
                                         .append("(event,this,'")
                                         .append(getAttributeName()).append("',")
@@ -560,7 +560,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
             } else if (jsPreFunctionBody != null) {
 
                 super.setAttributeValue(new StringBuilder(
-                        preventDefault ? invokeAsyncWithPreFunPrvntDflt
+                        preventDefault ? invokeAsyncWithPreFunPDTrue
                                 : invokeAsyncWithPreFun).append("(event,this,'")
                                         .append(getAttributeName()).append("',")
                                         .append(getPreparedJsFunctionBody(
@@ -570,7 +570,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
             } else if (jsFilterFunctionBody != null) {
 
                 super.setAttributeValue(new StringBuilder(
-                        preventDefault ? invokeAsyncWithFilterFunPrvntDflt
+                        preventDefault ? invokeAsyncWithFilterFunPDTrue
                                 : invokeAsyncWithFilterFun)
                                         .append("(event,this,'")
                                         .append(getAttributeName()).append("',")
@@ -579,14 +579,14 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
                                         .append(')').toString());
             } else if (jsPostFunctionBody != null) {
                 super.setAttributeValue(new StringBuilder(
-                        preventDefault ? invokeAsyncPrvntDflt : invokeAsync)
+                        preventDefault ? invokeAsyncPDTrue : invokeAsync)
                                 .append("(event,this,'")
                                 .append(getAttributeName()).append("')")
                                 .toString());
             } else {
 
                 super.setAttributeValue(new StringBuilder(
-                        preventDefault ? invokeAsyncPrvntDflt : invokeAsync)
+                        preventDefault ? invokeAsyncPDTrue : invokeAsync)
                                 .append("(event,this,'")
                                 .append(getAttributeName()).append("')")
                                 .toString());
