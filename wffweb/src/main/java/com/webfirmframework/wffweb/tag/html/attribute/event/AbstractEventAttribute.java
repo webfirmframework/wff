@@ -279,7 +279,6 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
     public void setServerAsyncMethod(
             final ServerAsyncMethod serverAsyncMethod) {
         if (serverAsyncMethod != null) {
-
             setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod,
                     jsFilterFunctionBody, jsPostFunctionBody);
         }
