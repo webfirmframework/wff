@@ -289,13 +289,13 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
         final String attributeValue = this.attributeValue;
         final String attributeName = this.attributeName;
-
-        final ByteArrayOutputStream compressedBytesBuilder = new ByteArrayOutputStream();
-
-        byte[] compressedBytes = new byte[0];
+        byte[] compressedBytes = this.compressedBytes;
 
         // String result = "";
-        if (rebuild || this.compressedBytes == null) {
+        if (rebuild || compressedBytes == null) {
+
+            compressedBytes = new byte[0];
+            final ByteArrayOutputStream compressedBytesBuilder = new ByteArrayOutputStream();
 
             beforePrintStructureCompressedByIndex();
             // tagBuildzer.append(' ');
@@ -372,7 +372,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             }
 
         } else {
-            return this.compressedBytes;
+            return compressedBytes;
         }
         this.compressedBytes = compressedBytes;
         return compressedBytes;
