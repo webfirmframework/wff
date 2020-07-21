@@ -34,7 +34,9 @@ var wffServerMethods = new function () {
 		wffWS.send(wffBM);
 	};	
 	//never ever rename iapd
-	this.iapd = invokeAsyncPD;
+	this.iapd = function(event, tag, attr) {
+		invokeAsyncPD(event, tag, attr, true);
+	};
 	
 	var invokeAsync = function(event, tag, attr) {
 		invokeAsyncPD(event, tag, attr, false);
@@ -61,7 +63,9 @@ var wffServerMethods = new function () {
 		
 	};
 	//never ever rename iawpfpd
-	this.iawpfpd = invokeAsyncWithPreFunPD;
+	this.iawpfpd = function(event, tag, attr, preFun) {
+		invokeAsyncWithPreFunPD(event, tag, attr, preFun, true);
+	};
 	
 	var invokeAsyncWithPreFun = function(event, tag, attr, preFun) {
 		invokeAsyncWithPreFunPD(event, tag, attr, preFun, false);
@@ -95,8 +99,11 @@ var wffServerMethods = new function () {
 		}
 		
 	};	
+	
 	//never ever rename iawpffpd
-	this.iawpffpd = invokeAsyncWithPreFilterFunPD;
+	this.iawpffpd = function(event, tag, attr, preFun, filterFun) {
+		invokeAsyncWithPreFilterFunPD(event, tag, attr, preFun, filterFun, true);
+	};
 	
 	var invokeAsyncWithPreFilterFun = function(event, tag, attr, preFun, filterFun) {
 		invokeAsyncWithPreFilterFunPD(event, tag, attr, preFun, filterFun, false);
@@ -128,7 +135,9 @@ var wffServerMethods = new function () {
 		
 	};
 	//never ever rename iawffpd
-	this.iawffpd = invokeAsyncWithFilterFunPD;
+	this.iawffpd = function(event, tag, attr, filterFun) {
+		invokeAsyncWithFilterFunPD(event, tag, attr, filterFun, true);
+	};
 	
 	var invokeAsyncWithFilterFun = function(event, tag, attr, filterFun) {
 		invokeAsyncWithFilterFunPD(event, tag, attr, filterFun, false);
