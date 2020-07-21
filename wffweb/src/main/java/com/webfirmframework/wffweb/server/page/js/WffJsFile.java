@@ -172,9 +172,11 @@ public enum WffJsFile {
             functionNameList.add("getLengthOfOptimizedBytesFromInt");
             functionNameList.add("concatArrayValuesFromPosition");
             functionNameList.add("getTagNameFromCompressedBytes");
+            functionNameList.add("invokeAsyncWithPreFilterFunPD");
             functionNameList.add("extractValuesFromValueBytes");
             functionNameList.add("getDoubleFromOptimizedBytes");
             functionNameList.add("parseWffBinaryMessageBytes");
+            functionNameList.add("invokeAsyncWithFilterFunPD");
             functionNameList.add("getAttrUpdatedWffBMBytes");
             functionNameList.add("getWffBinaryMessageBytes");
             functionNameList.add("getIntFromOptimizedBytes");
@@ -186,6 +188,7 @@ public enum WffJsFile {
             functionNameList.add("getTagCreatedWffBMBytes");
             functionNameList.add("wffRemovePrevBPInstance");
             functionNameList.add("getChildByNthIndexBytes");
+            functionNameList.add("invokeAsyncWithPreFunPD");
             functionNameList.add("getWffIdFromWffIdBytes");
             functionNameList.add("getWffIdFromWffIdBytes");
             functionNameList.add("extractEachValueBytes");
@@ -208,6 +211,7 @@ public enum WffJsFile {
             functionNameList.add("getBytesFromInt");
             functionNameList.add("getTagByWffId");
             functionNameList.add("getTagByWffId");
+            functionNameList.add("invokeAsyncPD");
             functionNameList.add("invokeTasks");
             functionNameList.add("recurChild");
             functionNameList.add("invokeTask");
