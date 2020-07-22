@@ -87,4 +87,48 @@ public class CustomEventAttribute extends AbstractEventAttribute {
                 serverSideData);
     }
 
+    /**
+     * @param attributeName
+     * @param preventDefault
+     *                                 true to call event.preventDefault(); on
+     *                                 event otherwise false. In almost all
+     *                                 cases this may not be required.
+     * @param jsPreFunctionBody
+     * @param serverAsyncMethod
+     * @param jsFilterFunctionBody
+     * @param jsPostFunctionBody
+     * @since 3.0.15
+     */
+    public CustomEventAttribute(final String attributeName,
+            final boolean preventDefault, final String jsPreFunctionBody,
+            final ServerAsyncMethod serverAsyncMethod,
+            final String jsFilterFunctionBody,
+            final String jsPostFunctionBody) {
+        super(attributeName, preventDefault, jsPreFunctionBody,
+                serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody,
+                null);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.webfirmframework.wffweb.tag.html.attribute.event.
+     * AbstractEventAttribute#isPreventDefault()
+     */
+    @Override
+    public boolean isPreventDefault() {
+        return super.isPreventDefault();
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.webfirmframework.wffweb.tag.html.attribute.event.
+     * AbstractEventAttribute#setPreventDefault(boolean)
+     */
+    @Override
+    public void setPreventDefault(final boolean preventDefault) {
+        super.setPreventDefault(preventDefault);
+    }
+
 }
