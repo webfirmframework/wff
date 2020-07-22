@@ -3225,6 +3225,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 recurChildren(tagBuilder, localChildren, true);
                 setRebuild(false);
                 tagBuilder.trimToSize();
+                final String html = tagBuilder.toString();
+                return html;
             } finally {
                 lock.unlock();
             }
@@ -3399,7 +3401,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 appendPrintStructureWithoutRecursive(tagBuilder, this, true);
                 setRebuild(false);
                 tagBuilder.trimToSize();
-
+                final String html = tagBuilder.toString();
+                return html;
             } finally {
                 lock.unlock();
             }
