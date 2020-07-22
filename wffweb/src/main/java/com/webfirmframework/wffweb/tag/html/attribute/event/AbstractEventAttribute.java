@@ -173,7 +173,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
         // NB: always trim attributeName to avoid starting with 0 value byte
         // because the first byte value is zero if sending its index bytes from
         // client.
-        setAttributeName(
+        super.setAttributeName(
                 attributeName != null ? attributeName.trim() : attributeName);
         setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod,
                 jsFilterFunctionBody, jsPostFunctionBody);
@@ -249,7 +249,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
         // NB: always trim attributeName to avoid starting with 0 value byte
         // because the first byte value is zero if sending its index bytes from
         // client.
-        setAttributeName(
+        super.setAttributeName(
                 attributeName != null ? attributeName.trim() : attributeName);
         setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod,
                 jsFilterFunctionBody, jsPostFunctionBody, serverSideData);
@@ -329,7 +329,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
         // NB: always trim attributeName to avoid starting with 0 value byte
         // because the first byte value is zero if sending its index bytes from
         // client.
-        setAttributeName(
+        super.setAttributeName(
                 attributeName != null ? attributeName.trim() : attributeName);
         setServerAsyncMethod(preventDefault, jsPreFunctionBody,
                 serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody,
@@ -359,6 +359,15 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
             final PreIndexedAttributeName preIndexedAttrName) {
         super.setPreIndexedAttribute(preIndexedAttrName);
         this.preIndexedAttrName = preIndexedAttrName;
+    }
+
+    @Override
+    protected void setAttributeName(final String attributeName) {
+        // NB: always trim attributeName to avoid starting with 0 value byte
+        // because the first byte value is zero if sending its index bytes from
+        // client.
+        super.setAttributeName(
+                attributeName != null ? attributeName.trim() : attributeName);
     }
 
     /**
