@@ -293,6 +293,7 @@ public enum WffJsFile {
             variableNameList.add("secondIndex");
             variableNameList.add("attrValByts");
             variableNameList.add("attrNamByts");
+            variableNameList.add("attrNmOrNdx");
             variableNameList.add("thirdIndex");
             variableNameList.add("valueLegth");
             variableNameList.add("childWffId");
