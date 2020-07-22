@@ -120,8 +120,6 @@ var wffServerMethods = new function () {
 			var nameValues = [taskNameValue, nameValue];
 			var wffBM = wffBMUtil.getWffBinaryMessageBytes(nameValues);
 			
-			
-			
 			wffWS.send(wffBM);
 		}
 		
@@ -168,32 +166,6 @@ var wffServerMethods = new function () {
 	
 	//never ever rename iawff
 	this.iawff = invokeAsyncWithFilterFun;
-	
-	//TODO
-//	this.invokeAsyncWithPreFilterPostFun = function(tag, attr, preFun, filterFun, postFun) {
-//		console.log('invokeAsyncWithPreFilterFun tag', tag);
-//		
-//		if (preFun(tag)) {
-//			var taskNameValue = wffTaskUtil.getTaskNameValue(wffGlobal.taskValues.TASK, wffGlobal.taskValues.INVOKE_ASYNC_METHOD);
-//
-//			
-//			var attrBytes = encoder.encode(attr);
-//			
-//			var argumentBMObject = filterFun(tag);
-//			
-//			var argBytes = argumentBMObject.getBMBytes();
-//			
-//			var nameValue = {'name':wffTagUtil.getWffIdBytesFromTag(tag), 'values':[attrBytes, argBytes]};
-//			var nameValues = [taskNameValue, nameValue];
-//			var wffBM = wffBMUtil.getWffBinaryMessageBytes(nameValues);
-//			
-//			
-//			
-//			wffWS.send(wffBM);
-//		}
-//		
-//	};
-
 	
 };
 //never ever rename ia
