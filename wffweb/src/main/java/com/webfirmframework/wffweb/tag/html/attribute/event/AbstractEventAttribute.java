@@ -99,7 +99,11 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
      */
     protected AbstractEventAttribute(final String attributeName,
             final String value) {
-        super.setAttributeName(attributeName);
+        // NB: always trim attributeName to avoid starting with 0 value byte
+        // because the first byte value is zero if sending its index bytes from
+        // client.
+        super.setAttributeName(
+                attributeName != null ? attributeName.trim() : attributeName);
         super.setAttributeValue(value);
     }
 
@@ -166,8 +170,11 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
             final ServerAsyncMethod serverAsyncMethod,
             final String jsFilterFunctionBody,
             final String jsPostFunctionBody) {
-
-        setAttributeName(attributeName);
+        // NB: always trim attributeName to avoid starting with 0 value byte
+        // because the first byte value is zero if sending its index bytes from
+        // client.
+        setAttributeName(
+                attributeName != null ? attributeName.trim() : attributeName);
         setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod,
                 jsFilterFunctionBody, jsPostFunctionBody);
     }
@@ -239,7 +246,11 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
             final ServerAsyncMethod serverAsyncMethod,
             final String jsFilterFunctionBody, final String jsPostFunctionBody,
             final Object serverSideData) {
-        setAttributeName(attributeName);
+        // NB: always trim attributeName to avoid starting with 0 value byte
+        // because the first byte value is zero if sending its index bytes from
+        // client.
+        setAttributeName(
+                attributeName != null ? attributeName.trim() : attributeName);
         setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod,
                 jsFilterFunctionBody, jsPostFunctionBody, serverSideData);
     }
@@ -315,7 +326,11 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
             final ServerAsyncMethod serverAsyncMethod,
             final String jsFilterFunctionBody, final String jsPostFunctionBody,
             final Object serverSideData) {
-        setAttributeName(attributeName);
+        // NB: always trim attributeName to avoid starting with 0 value byte
+        // because the first byte value is zero if sending its index bytes from
+        // client.
+        setAttributeName(
+                attributeName != null ? attributeName.trim() : attributeName);
         setServerAsyncMethod(preventDefault, jsPreFunctionBody,
                 serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody,
                 serverSideData);
@@ -333,7 +348,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute#
      * setPreIndexedAttribute(com.webfirmframework.wffweb.tag.html.attribute.

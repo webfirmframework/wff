@@ -61,6 +61,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.Nonce;
 import com.webfirmframework.wffweb.tag.html.attribute.Src;
 import com.webfirmframework.wffweb.tag.html.attribute.Type;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.attribute.event.EventAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.event.ServerAsyncMethod;
 import com.webfirmframework.wffweb.tag.html.attribute.listener.AttributeValueChangeListener;
@@ -640,8 +641,25 @@ public abstract class BrowserPage implements Serializable {
                 + WffBinaryMessageUtil.getIntFromOptimizedBytes(intBytes);
 
         final byte[][] values = wffTagIdAndAttrName.getValues();
-        final String eventAttrName = new String(values[0],
-                StandardCharsets.UTF_8);
+
+        final byte[] attrIndexOrName = values[0];
+        final String eventAttrName;
+        if (attrIndexOrName[0] == 0) {
+            // 0 represents index as optimized bytes of int
+
+            final int lengthOfOptimizedBytes = attrIndexOrName.length - 1;
+
+            final byte[] indexBytes = new byte[lengthOfOptimizedBytes];
+            System.arraycopy(attrIndexOrName, 1, indexBytes, 0,
+                    lengthOfOptimizedBytes);
+
+            eventAttrName = PreIndexedAttributeName.getAttrNameByIndex(
+                    WffBinaryMessageUtil.getIntFromOptimizedBytes(indexBytes));
+        } else {
+            // the first byte of a string will never start with 0 byte value
+            // because a 0 byte value is a null character in charset
+            eventAttrName = new String(attrIndexOrName, StandardCharsets.UTF_8);
+        }
 
         final WffBMObject wffBMObject;
         if (values.length > 1) {

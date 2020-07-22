@@ -16,19 +16,46 @@ var wffTaskUtil = new function () {
 var wffServerMethods = new function () {
 
 	var encoder = wffGlobal.encoder;
+	
+	var getAttrBytesForServer = function(attrNmOrNdx) {
+		
+		var attrBytes = [];
+		
+		if (typeof attrNmOrNdx === 'string') {
+			var ndx = wffGlobal.NDXD_ATRBS.indexOf(attrNmOrNdx);
+			if (ndx != -1) {
+				var ndxByts = wffBMUtil.getOptimizedBytesFromInt(ndx);
+				//0 represents rest of the bytes are optimized int bytes 
+				attrBytes.push(0);
+	            for (var i = 0; i < ndxByts.length; i++) {
+	            	attrBytes.push(ndxByts[i]);
+				}
+			} else {
+				//0 (byte value) is a null char in charset so no need to start with 0 (byte value)
+				// an attr name will never start with 0 (byte value)
+				attrBytes = encoder.encode(attrNmOrNdx);
+			}
+		} else {
+			var ndxByts = wffBMUtil.getOptimizedBytesFromInt(attrNmOrNdx);
+			//0 represents rest of the bytes are optimized int bytes
+			attrBytes.push(0);
+			for (var i = 0; i < ndxByts.length; i++) {
+	            attrBytes.push(ndxByts[i]);
+			}
+		}
+		return attrBytes;
+	};
+	
 	//PD for preventDefault
 	var invokeAsyncPD = function(event, tag, attrNmOrNdx, prvntDflt) {
 		
 		if(prvntDflt) {
 			event.preventDefault();
-		}
-		
-		var attr = typeof attrNmOrNdx === 'string' ? attrNmOrNdx : wffGlobal.NDXD_ATRBS[attrNmOrNdx];
+		}	
 		
 		var taskNameValue = wffTaskUtil.getTaskNameValue(wffGlobal.taskValues.TASK, wffGlobal.taskValues.INVOKE_ASYNC_METHOD);
 
-		
-		var attrBytes = encoder.encode(attr);
+		var attrBytes = getAttrBytesForServer(attrNmOrNdx);
 		
 		var nameValue = {'name':wffTagUtil.getWffIdBytesFromTag(tag), 'values':[attrBytes]};
 		var nameValues = [taskNameValue, nameValue];
@@ -53,10 +80,8 @@ var wffServerMethods = new function () {
 		
 		if (preFun(event, tag)) {
 			var taskNameValue = wffTaskUtil.getTaskNameValue(wffGlobal.taskValues.TASK, wffGlobal.taskValues.INVOKE_ASYNC_METHOD);
-
-			var attr = typeof attrNmOrNdx === 'string' ? attrNmOrNdx : wffGlobal.NDXD_ATRBS[attrNmOrNdx];
 			
-			var attrBytes = encoder.encode(attr);
+			var attrBytes = getAttrBytesForServer(attrNmOrNdx);
 			
 			var nameValue = {'name':wffTagUtil.getWffIdBytesFromTag(tag), 'values':[attrBytes]};
 			var nameValues = [taskNameValue, nameValue];
@@ -85,9 +110,7 @@ var wffServerMethods = new function () {
 		if (preFun(event, tag)) {
 			var taskNameValue = wffTaskUtil.getTaskNameValue(wffGlobal.taskValues.TASK, wffGlobal.taskValues.INVOKE_ASYNC_METHOD);
 
-			var attr = typeof attrNmOrNdx === 'string' ? attrNmOrNdx : wffGlobal.NDXD_ATRBS[attrNmOrNdx];
-			
-			var attrBytes = encoder.encode(attr);
+			var attrBytes = getAttrBytesForServer(attrNmOrNdx);
 			
 			var jsObject = filterFun(event, tag);
 			var argumentBMObject = new WffBMObject(jsObject);
@@ -122,9 +145,7 @@ var wffServerMethods = new function () {
 		
 		var taskNameValue = wffTaskUtil.getTaskNameValue(wffGlobal.taskValues.TASK, wffGlobal.taskValues.INVOKE_ASYNC_METHOD);
 
-		var attr = typeof attrNmOrNdx === 'string' ? attrNmOrNdx : wffGlobal.NDXD_ATRBS[attrNmOrNdx];
-		
-		var attrBytes = encoder.encode(attr);
+		var attrBytes = getAttrBytesForServer(attrNmOrNdx);
 		
 		var jsObject = filterFun(event, tag);
 		var argumentBMObject = new WffBMObject(jsObject);
@@ -134,10 +155,7 @@ var wffServerMethods = new function () {
 		var nameValues = [taskNameValue, nameValue];
 		var wffBM = wffBMUtil.getWffBinaryMessageBytes(nameValues);
 		
-		
-		
 		wffWS.send(wffBM);
-		
 	};
 	//never ever rename iawffpd
 	this.iawffpd = function(event, tag, attrNmOrNdx, filterFun) {

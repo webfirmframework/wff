@@ -400,6 +400,8 @@ public enum PreIndexedAttributeName {
 
     ANIMATIONITERATION(AttributeNameConstants.ANIMATIONITERATION);
 
+    private static final PreIndexedAttributeName[] allValues;
+
     private final String attrName;
 
     private final int index;
@@ -409,12 +411,11 @@ public enum PreIndexedAttributeName {
     private static final Map<String, PreIndexedAttributeName> OBJ_BY_ATTR_NAME;
 
     static {
-        final PreIndexedAttributeName[] objects = PreIndexedAttributeName
-                .values();
+        allValues = PreIndexedAttributeName.values();
         final float lf = 0.75F;
-        final int capacity = (int) (objects.length / lf) + 1;
+        final int capacity = (int) (allValues.length / lf) + 1;
         OBJ_BY_ATTR_NAME = new ConcurrentHashMap<>(capacity, lf, 1);
-        for (final PreIndexedAttributeName each : objects) {
+        for (final PreIndexedAttributeName each : allValues) {
             OBJ_BY_ATTR_NAME.put(each.attrName, each);
         }
     }
@@ -480,6 +481,15 @@ public enum PreIndexedAttributeName {
      */
     static PreIndexedAttributeName forAttrName(final String attrName) {
         return OBJ_BY_ATTR_NAME.get(attrName);
+    }
+
+    /**
+     * @param index
+     * @return the name of the attribute at the given index
+     * @since 3.0.15
+     */
+    public static String getAttrNameByIndex(final int index) {
+        return allValues[index].attrName();
     }
 
 }

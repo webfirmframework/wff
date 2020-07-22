@@ -192,6 +192,7 @@ public enum WffJsFile {
             functionNameList.add("getWffIdFromWffIdBytes");
             functionNameList.add("getWffIdFromWffIdBytes");
             functionNameList.add("extractEachValueBytes");
+            functionNameList.add("getAttrBytesForServer");
             functionNameList.add("getWffIdBytesFromTag");
             functionNameList.add("getWffIdBytesFromTag");
             functionNameList.add("appendHtmlAsChildren");
