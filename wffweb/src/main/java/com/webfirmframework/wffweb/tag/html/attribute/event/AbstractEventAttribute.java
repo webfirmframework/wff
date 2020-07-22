@@ -49,6 +49,9 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
 
     private volatile Object serverSideData;
 
+    /**
+     * not required to be atomic because null also works
+     */
     private PreIndexedAttributeName preIndexedAttrName;
 
     // short name for wffServerMethods is wffSM
@@ -328,10 +331,17 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
         // to override and use this method
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute#
+     * setPreIndexedAttribute(com.webfirmframework.wffweb.tag.html.attribute.
+     * core.PreIndexedAttributeName)
+     */
     @Override
     protected void setPreIndexedAttribute(
             final PreIndexedAttributeName preIndexedAttrName) {
-        // TODO Auto-generated method stub
         super.setPreIndexedAttribute(preIndexedAttrName);
         this.preIndexedAttrName = preIndexedAttrName;
     }
