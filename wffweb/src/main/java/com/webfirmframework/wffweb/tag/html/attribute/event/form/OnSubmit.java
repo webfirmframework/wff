@@ -299,6 +299,53 @@ public class OnSubmit extends AbstractEventAttribute implements AAttributable {
 
     /**
      * @param preventDefault
+     *                                 true to call event.preventDefault(); on
+     *                                 event
+     *
+     *
+     * @param serverAsyncMethod
+     *                                 This method will invoke at server side
+     *                                 with an argument {@code wffBMObject}. The
+     *                                 {@code wffBMObject} is the
+     *                                 representational JavaScript object
+     *                                 returned by {@code jsFilterFunctionBody}.
+     * @param jsFilterFunctionBody
+     *                                 The body part of a JavaScript function
+     *                                 (without function declaration). It can
+     *                                 return a JavaScript object so that it
+     *                                 will be available at server side in
+     *                                 {@code serverAsyncMethod} as
+     *                                 {@code wffBMObject} parameter. There are
+     *                                 implicit objects {@code event} and
+     *                                 {@code source} in the scope.<br>
+     *                                 Eg:-
+     *
+     *                                 <pre>
+     *                                                                    var bName = source.name;
+     *                                                                    return {buttonName: bName, author:'wff', dateOfYear: 2014};
+     *                                 </pre>
+     *
+     * @param jsPostFunctionBody
+     *                                 The body part of a JavaScript function
+     *                                 (without function declaration). The
+     *                                 {@code wffBMObject} returned by
+     *                                 {@code serverAsyncMethod} will be
+     *                                 available as an implicit object
+     *                                 {@code jsObject} in the scope. There are
+     *                                 common implicit objects {@code event} and
+     *                                 {@code source} in the scope.
+     * @since 3.0.15
+     */
+    public OnSubmit(final boolean preventDefault,
+            final ServerAsyncMethod serverAsyncMethod,
+            final String jsFilterFunctionBody,
+            final String jsPostFunctionBody) {
+        setServerAsyncMethod(preventDefault, null, serverAsyncMethod,
+                jsFilterFunctionBody, jsPostFunctionBody, null);
+    }
+
+    /**
+     * @param preventDefault
      *                              true to call event.preventDefault(); on
      *                              event
      * @param serverAsyncMethod
