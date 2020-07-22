@@ -242,6 +242,83 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
     }
 
     /**
+     * @param attributeName
+     *                                 the name of the attribute
+     *
+     * @param preventDefault
+     *                                 true to call event.preventDefault(); on
+     *                                 event
+     * @param jsPreFunctionBody
+     *                                 the body part javascript function
+     *                                 (without function declaration). It must
+     *                                 return true/false. This function will
+     *                                 invoke at client side before
+     *                                 {@code serverAsyncMethod}. If the
+     *                                 jsPrefunction returns true then only
+     *                                 {@code serverAsyncMethod} method will
+     *                                 invoke (if it is implemented). It has
+     *                                 implicit objects like {@code event} and
+     *                                 {@code source} which gives the reference
+     *                                 of the current tag. <br>
+     *                                 Eg:-
+     *
+     *                                 <pre>
+     *                                                                                                if (source.type == 'button') {
+     *                                                                                                   return true;
+     *                                                                                                }
+     *                                                                                                return false;
+     *                                 </pre>
+     *
+     * @param serverAsyncMethod
+     *                                 This method will invoke at server side
+     *                                 with an argument {@code wffBMObject}. The
+     *                                 {@code wffBMObject} is the
+     *                                 representational javascript object
+     *                                 returned by {@code jsFilterFunctionBody}.
+     * @param jsFilterFunctionBody
+     *                                 The body part of a javascript function
+     *                                 (without function declaration). It can
+     *                                 return a javascript object so that it
+     *                                 will be available at server side in
+     *                                 {@code serverAsyncMethod} as
+     *                                 {@code wffBMObject} parameter. There are
+     *                                 implicit objects {@code event} and
+     *                                 {@code source} in the scope.<br>
+     *                                 Eg:-
+     *
+     *                                 <pre>
+     *                                                                                                var bName = source.name;
+     *                                                                                                return {buttonName: bName, author:'wff', dateOfYear: 2014};
+     *                                 </pre>
+     *
+     * @param jsPostFunctionBody
+     *                                 The body part of a javascript function
+     *                                 (without function declaration). The
+     *                                 {@code wffBMObject} returned by
+     *                                 {@code serverAsyncMethod} will be
+     *                                 available as an implicit object
+     *                                 {@code jsObject} in the scope. There are
+     *                                 common implicit objects {@code event} and
+     *                                 {@code source} in the scope.
+     * @param serverSideData
+     *                                 this data will be available in the Event
+     *                                 object of ServerAsyncMethod.asyncMethod
+     *                                 method.
+     * @author WFF
+     * @since 3.0.15
+     */
+    protected AbstractEventAttribute(final String attributeName,
+            final boolean preventDefault, final String jsPreFunctionBody,
+            final ServerAsyncMethod serverAsyncMethod,
+            final String jsFilterFunctionBody, final String jsPostFunctionBody,
+            final Object serverSideData) {
+        setAttributeName(attributeName);
+        setServerAsyncMethod(preventDefault, jsPreFunctionBody,
+                serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody,
+                serverSideData);
+    }
+
+    /**
      * invokes only once per object
      *
      * @author WFF

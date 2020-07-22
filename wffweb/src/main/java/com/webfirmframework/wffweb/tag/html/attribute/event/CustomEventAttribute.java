@@ -64,4 +64,27 @@ public class CustomEventAttribute extends AbstractEventAttribute {
                 jsFilterFunctionBody, jsPostFunctionBody, serverSideData);
     }
 
+    /**
+     * @param attributeName
+     * @param preventDefault
+     *                                 true to call event.preventDefault(); on
+     *                                 event otherwise false. In almost all
+     *                                 cases this may not be required.
+     * @param jsPreFunctionBody
+     * @param serverAsyncMethod
+     * @param jsFilterFunctionBody
+     * @param jsPostFunctionBody
+     * @param serverSideData
+     * @since 3.0.15
+     */
+    public CustomEventAttribute(final String attributeName,
+            final boolean preventDefault, final String jsPreFunctionBody,
+            final ServerAsyncMethod serverAsyncMethod,
+            final String jsFilterFunctionBody, final String jsPostFunctionBody,
+            final Object serverSideData) {
+        super(attributeName, preventDefault, jsPreFunctionBody,
+                serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody,
+                serverSideData);
+    }
+
 }
