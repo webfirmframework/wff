@@ -57,32 +57,32 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
     // short name for wffServerMethods is wffSM
 
     // for better readability it's not capitalized
-    // short name for invokeAsyncWithPreFilterFun is iawpff
-    private static final String invokeAsyncWithPreFilterFun = "wffSM.iawpff";
+    // short name for invokeAsync is ia
+    private static final String invokeAsync = "wffSM.a";
 
-    // short name for invokeAsyncWithPreFilterFun with PD as true is iawpffpd
-    private static final String invokeAsyncWithPreFilterFunPDTrue = "wffSM.iawpffpd";
-
-    // for better readability it's not capitalized
-    // short name for invokeAsyncWithPreFun is iawpf
-    private static final String invokeAsyncWithPreFun = "wffSM.iawpf";
-
-    // short name for invokeAsyncWithPreFun with PD as true is iawpfpd
-    private static final String invokeAsyncWithPreFunPDTrue = "wffSM.iawpfpd";
+    // short name for invokeAsync with PD as true is iapd
+    private static final String invokeAsyncPDTrue = "wffSM.b";
 
     // for better readability it's not capitalized
     // short name for invokeAsyncWithFilterFun is iawff
-    private static final String invokeAsyncWithFilterFun = "wffSM.iawff";
+    private static final String invokeAsyncWithFilterFun = "wffSM.c";
 
     // short name for invokeAsyncWithFilterFun with PD as true is iawffpd
-    private static final String invokeAsyncWithFilterFunPDTrue = "wffSM.iawffpd";
+    private static final String invokeAsyncWithFilterFunPDTrue = "wffSM.d";
 
     // for better readability it's not capitalized
-    // short name for invokeAsync is ia
-    private static final String invokeAsync = "wffSM.ia";
+    // short name for invokeAsyncWithPreFun is iawpf
+    private static final String invokeAsyncWithPreFun = "wffSM.e";
 
-    // short name for invokeAsync with PD as true is iapd
-    private static final String invokeAsyncPDTrue = "wffSM.iapd";
+    // short name for invokeAsyncWithPreFun with PD as true is iawpfpd
+    private static final String invokeAsyncWithPreFunPDTrue = "wffSM.f";
+
+    // for better readability it's not capitalized
+    // short name for invokeAsyncWithPreFilterFun is iawpff
+    private static final String invokeAsyncWithPreFilterFun = "wffSM.g";
+
+    // short name for invokeAsyncWithPreFilterFun with PD as true is iawpffpd
+    private static final String invokeAsyncWithPreFilterFunPDTrue = "wffSM.h";
 
     {
         init();
