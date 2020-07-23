@@ -512,6 +512,7 @@ public enum PreIndexedAttributeName {
      * for internal use
      *
      * @param index
+     *                  the index got by {@link PreIndexedAttributeName#index()}
      * @return the PreIndexedAttributeName object at the given index
      * @since 3.0.15
      */
@@ -545,9 +546,7 @@ public enum PreIndexedAttributeName {
     }
 
     /**
-     * @return true if the name of the attribute is starting with "on". If an
-     *         attribute name is starting with "on" then it is considered as
-     *         event attribute.
+     * @return true if the attribute is an instance of EventAttribute.
      * @since 3.0.15
      */
     public boolean eventAttr() {
