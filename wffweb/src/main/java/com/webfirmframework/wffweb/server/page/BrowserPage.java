@@ -61,7 +61,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.Nonce;
 import com.webfirmframework.wffweb.tag.html.attribute.Src;
 import com.webfirmframework.wffweb.tag.html.attribute.Type;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
+import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeRegistry;
 import com.webfirmframework.wffweb.tag.html.attribute.event.EventAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.event.ServerAsyncMethod;
 import com.webfirmframework.wffweb.tag.html.attribute.listener.AttributeValueChangeListener;
@@ -653,7 +653,7 @@ public abstract class BrowserPage implements Serializable {
             System.arraycopy(attrIndexOrName, 1, indexBytes, 0,
                     lengthOfOptimizedBytes);
 
-            eventAttrName = PreIndexedAttributeName.getAttrNameByIndex(
+            eventAttrName = AttributeRegistry.getAttrNameByEventAttrIndex(
                     WffBinaryMessageUtil.getIntFromOptimizedBytes(indexBytes));
         } else {
             // the first byte of a string will never start with 0 byte value

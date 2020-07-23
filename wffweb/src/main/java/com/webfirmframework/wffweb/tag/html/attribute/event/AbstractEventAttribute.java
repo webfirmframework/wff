@@ -629,8 +629,10 @@ public abstract class AbstractEventAttribute extends AbstractAttribute
 
             final PreIndexedAttributeName preIndexedAttrName = this.preIndexedAttrName;
             final String attrIndexOrName = preIndexedAttrName != null
-                    ? String.valueOf(preIndexedAttrName.index())
-                    : '\'' + getAttributeName() + '\'';
+                    && preIndexedAttrName.eventAttr()
+                            ? String.valueOf(
+                                    preIndexedAttrName.eventAttrIndex())
+                            : '\'' + getAttributeName() + '\'';
 
             if (jsPreFunctionBody != null && jsPostFunctionBody != null
                     && jsFilterFunctionBody != null) {

@@ -233,6 +233,8 @@ public class AttributeRegistry {
 
     private static final List<String> SORTED_BOOLEAN_ATTR_NAMES;
 
+    private static final List<String> SORTED_EVENT_ATTR_NAMES;
+
     static {
 
         final Field[] fields = AttributeNameConstants.class.getFields();
@@ -588,6 +590,7 @@ public class AttributeRegistry {
         attributeClassByAttrNameTmp.putAll(attributeClassByAttrName);
 
         final List<String> tmpSortedBooleanAttrNames = new ArrayList<>(8);
+
         for (final Entry<String, Class<?>> entry : attributeClassByAttrName
                 .entrySet()) {
             final Class<?> attrClass = entry.getValue();
@@ -598,6 +601,7 @@ public class AttributeRegistry {
             if (BooleanAttribute.class.isAssignableFrom(attrClass)) {
                 tmpSortedBooleanAttrNames.add(attrName);
             }
+
         }
 
         // sorting in ascending order of length
@@ -606,6 +610,8 @@ public class AttributeRegistry {
 
         SORTED_BOOLEAN_ATTR_NAMES = Collections
                 .unmodifiableList(tmpSortedBooleanAttrNames);
+
+        final List<String> tmpSortedEventAttrNames = new ArrayList<>(8);
 
         ATTRIBUTE_NAMES_SET = new HashSet<>(initialCapacity);
 
@@ -631,6 +637,16 @@ public class AttributeRegistry {
 
             index++;
         }
+
+        // already sorted by length in ascending order in
+        // PreIndexedAttributeName
+        for (final PreIndexedAttributeName each : PreIndexedAttributeName
+                .alleventattributes()) {
+            tmpSortedEventAttrNames.add(each.attrName());
+        }
+
+        SORTED_EVENT_ATTR_NAMES = Collections
+                .unmodifiableList(tmpSortedEventAttrNames);
     }
 
     /**
@@ -675,6 +691,26 @@ public class AttributeRegistry {
      */
     public static List<String> getBooleanAttributeNames() {
         return SORTED_BOOLEAN_ATTR_NAMES;
+    }
+
+    /**
+     * @return only the list of event attribute names sorted in the ascending
+     *         order of its length
+     * @since 3.0.15
+     */
+    public static List<String> getEventAttributeNames() {
+        return SORTED_EVENT_ATTR_NAMES;
+    }
+
+    /**
+     * @param index
+     *                  the index got by
+     *                  {@link PreIndexedAttributeName#eventAttrIndex()}
+     * @return the attribute name of event attribute at event attribute index
+     * @since 3.0.15
+     */
+    public static String getAttrNameByEventAttrIndex(final int index) {
+        return PreIndexedAttributeName.forEventAttrIndex(index).attrName();
     }
 
     /**

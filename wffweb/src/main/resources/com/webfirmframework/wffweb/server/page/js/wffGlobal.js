@@ -13,6 +13,7 @@ window.wffGlobal = new function() {
 	this.CPRSD_DATA = "${CPRSD_DATA}";
 	this.NDXD_TGS = "${NDXD_TGS}";
 	this.NDXD_ATRBS = "${NDXD_ATRBS}";
+	this.NDXD_VNT_ATRBS = "${NDXD_VNT_ATRBS}";
 	this.NDXD_BLN_ATRBS = "${NDXD_BLN_ATRBS}";
 	this.taskValues = "${TASK_VALUES}";
 	this.WS_URL = "${WS_URL}";

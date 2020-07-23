@@ -96,6 +96,7 @@ public enum WffJsFile {
     private static final String NDXD_TGS;
     private static final String NDXD_ATRBS;
     private static final String NDXD_BLN_ATRBS;
+    private static final String NDXD_VNT_ATRBS;
 
     // java record class is perfect for such use case
     private static final class FunctionOrVarName {
@@ -140,6 +141,17 @@ public enum WffJsFile {
 
         // length must always be greater than 0 otherwise bug
         NDXD_BLN_ATRBS = "[" + boolAttrbsArraySB.substring(1) + "]";
+
+        final StringBuilder eventAttrbsArraySB = new StringBuilder();
+        for (final String attrName : AttributeRegistry
+                .getEventAttributeNames()) {
+            eventAttrbsArraySB.append(",\"");
+            eventAttrbsArraySB.append(attrName);
+            eventAttrbsArraySB.append('"');
+        }
+
+        // length must always be greater than 0 otherwise bug
+        NDXD_VNT_ATRBS = "[" + eventAttrbsArraySB.substring(1) + "]";
 
         if (PRODUCTION_MODE) {
 
@@ -628,6 +640,8 @@ public enum WffJsFile {
                                         .replace("\"${NDXD_TGS}\"", NDXD_TGS)
                                         .replace("\"${NDXD_ATRBS}\"",
                                                 NDXD_ATRBS)
+                                        .replace("\"${NDXD_VNT_ATRBS}\"",
+                                                NDXD_VNT_ATRBS)
                                         .replace("\"${NDXD_BLN_ATRBS}\"",
                                                 NDXD_BLN_ATRBS)
                                         .replace("${WS_URL}",

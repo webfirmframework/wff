@@ -15,7 +15,9 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute.core;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -402,6 +404,8 @@ public enum PreIndexedAttributeName {
 
     private static final PreIndexedAttributeName[] allValues;
 
+    private static final PreIndexedAttributeName[] allEventAttributes;
+
     private final String attrName;
 
     private final int index;
@@ -410,14 +414,28 @@ public enum PreIndexedAttributeName {
 
     private static final Map<String, PreIndexedAttributeName> OBJ_BY_ATTR_NAME;
 
+    private final boolean eventAttr;
+
+    private int eventAttrIndex = -1;
+
     static {
         allValues = PreIndexedAttributeName.values();
         final float lf = 0.75F;
         final int capacity = (int) (allValues.length / lf) + 1;
         OBJ_BY_ATTR_NAME = new ConcurrentHashMap<>(capacity, lf, 1);
+        int eventAttrIndexCount = 0;
+        final List<PreIndexedAttributeName> eventAttrs = new ArrayList<>();
         for (final PreIndexedAttributeName each : allValues) {
             OBJ_BY_ATTR_NAME.put(each.attrName, each);
+            if (each.eventAttr) {
+                eventAttrs.add(each);
+                each.eventAttrIndex = eventAttrIndexCount;
+                eventAttrIndexCount++;
+            }
         }
+
+        allEventAttributes = eventAttrs
+                .toArray(new PreIndexedAttributeName[eventAttrs.size()]);
     }
 
     /**
@@ -428,6 +446,13 @@ public enum PreIndexedAttributeName {
         this.attrName = attrName;
         index = ordinal();
         indexBytes = WffBinaryMessageUtil.getOptimizedBytesFromInt(index);
+
+        // should not use AttributeRegistry inside this class as it cause a
+        // cyclic dependency
+        // always returns null
+        // final Map<String, Class<?>> map = AttributeRegistry
+        // .getAttributeClassByAttrName();
+        eventAttr = attrName.startsWith("on");
     }
 
     /**
@@ -484,12 +509,58 @@ public enum PreIndexedAttributeName {
     }
 
     /**
+     * for internal use
+     *
      * @param index
      * @return the name of the attribute at the given index
      * @since 3.0.15
      */
-    public static String getAttrNameByIndex(final int index) {
-        return allValues[index].attrName();
+    static PreIndexedAttributeName forIndex(final int index) {
+        return allValues[index];
+    }
+
+    /**
+     * for internal use
+     *
+     * @param index
+     *                  pass the index got by
+     *                  {@linkplain PreIndexedAttributeName#eventAttrIndex}
+     * @return the PreIndexedAttributeName at the given index
+     * @since 3.0.15
+     */
+    static PreIndexedAttributeName forEventAttrIndex(final int index) {
+        return allEventAttributes[index];
+    }
+
+    /**
+     * for internal use. never change it to public as the array values could be
+     * modified.
+     *
+     * @return
+     * @since 3.0.15
+     *
+     */
+    static PreIndexedAttributeName[] alleventattributes() {
+        return allEventAttributes;
+    }
+
+    /**
+     * @return true if the name of the attribute is starting with "on". If an
+     *         attribute name is starting with "on" then it is considered as
+     *         event attribute.
+     * @since 3.0.15
+     */
+    public boolean eventAttr() {
+        return eventAttr;
+    }
+
+    /**
+     * @return the index of event attribute if it is not an event attribute then
+     *         -1 will be returned.
+     * @since 3.0.15
+     */
+    public int eventAttrIndex() {
+        return eventAttrIndex;
     }
 
 }

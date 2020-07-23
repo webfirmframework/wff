@@ -22,7 +22,7 @@ var wffServerMethods = new function () {
 		var attrBytes = [];
 		
 		if (typeof attrNmOrNdx === 'string') {
-			var ndx = wffGlobal.NDXD_ATRBS.indexOf(attrNmOrNdx);
+			var ndx = wffGlobal.NDXD_VNT_ATRBS.indexOf(attrNmOrNdx);
 			if (ndx != -1) {
 				var ndxByts = wffBMUtil.getOptimizedBytesFromInt(ndx);
 				//0 represents rest of the bytes are optimized int bytes 
