@@ -512,10 +512,10 @@ public enum PreIndexedAttributeName {
      * for internal use
      *
      * @param index
-     * @return the name of the attribute at the given index
+     * @return the PreIndexedAttributeName object at the given index
      * @since 3.0.15
      */
-    static PreIndexedAttributeName forIndex(final int index) {
+    static PreIndexedAttributeName forAttrIndex(final int index) {
         return allValues[index];
     }
 
@@ -525,7 +525,7 @@ public enum PreIndexedAttributeName {
      * @param index
      *                  pass the index got by
      *                  {@linkplain PreIndexedAttributeName#eventAttrIndex}
-     * @return the PreIndexedAttributeName at the given index
+     * @return the PreIndexedAttributeName object at the given index
      * @since 3.0.15
      */
     static PreIndexedAttributeName forEventAttrIndex(final int index) {
