@@ -47,7 +47,7 @@ public class AttributeRegistryTest {
 
                 if (cls == null
                         || !EventAttribute.class.isAssignableFrom(cls)) {
-                    org.junit.Assert.fail(" is not an event attribute");
+                    org.junit.Assert.fail(each.attrName() + " is not an event attribute");
                 }
             }
         }
