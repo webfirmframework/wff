@@ -45,7 +45,6 @@ public class AttributeRegistryTest {
                 final Class<?> cls = attributeClassByAttrName
                         .get(each.attrName());
 
-                System.out.println("cls "  + cls);
                 if (cls == null
                         || !EventAttribute.class.isAssignableFrom(cls)) {
                     org.junit.Assert.fail(" is not an event attribute");
