@@ -371,9 +371,21 @@ public enum WffJsFile {
             // should not be included even by mistake
             functionAndVarNames.remove("wffSM");
             functionAndVarNames.remove("iawpff");
+            functionAndVarNames.remove("iawpffpd");
             functionAndVarNames.remove("iawpf");
+            functionAndVarNames.remove("iawpfpd");
             functionAndVarNames.remove("iawff");
+            functionAndVarNames.remove("iawffpd");
             functionAndVarNames.remove("ia");
+            functionAndVarNames.remove("iapd");
+            functionAndVarNames.remove("a");
+            functionAndVarNames.remove("b");
+            functionAndVarNames.remove("c");
+            functionAndVarNames.remove("d");
+            functionAndVarNames.remove("e");
+            functionAndVarNames.remove("f");
+            functionAndVarNames.remove("g");
+            functionAndVarNames.remove("h");
         }
     }
 
