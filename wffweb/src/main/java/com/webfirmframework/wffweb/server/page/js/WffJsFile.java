@@ -38,7 +38,6 @@ import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
  * @author WFF
- *
  */
 public enum WffJsFile {
 
@@ -385,7 +384,6 @@ public enum WffJsFile {
 
     private String buildOptimizedFileContent() {
 
-        final String optimizedFileContent;
         try {
 
             // this might make java.nio.file.FileSystemNotFoundException in
@@ -479,7 +477,7 @@ public enum WffJsFile {
                 } while (containsLog);
             }
 
-            optimizedFileContent = StringBuilderUtil.getTrimmedString(builder);
+            return StringBuilderUtil.getTrimmedString(builder);
         } catch (final RuntimeException | IOException e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
@@ -487,21 +485,25 @@ public enum WffJsFile {
             throw new WffRuntimeException(
                     "Unable to build optimizedFileContent");
         }
-
-        return optimizedFileContent;
     }
 
     /**
      * NB :- This method is only for internal use.
      *
      * @param wsUrl
+     *                                    the complete websocket url
      * @param instanceId
+     *                                    the instanceId of browserPage
      * @param removePrevBPOnInitTab
+     *                                    true or false
      * @param removePrevBPOnClosetTab
+     *                                    true or false
      * @param heartbeatInterval
      *                                    in milliseconds
      * @param wsReconnectInterval
+     *                                    in milliseconds
      * @param autoremoveParentScript
+     *                                    true or false
      * @return the js string for the client
      * @author WFF
      */
