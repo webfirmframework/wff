@@ -16,6 +16,7 @@
 package com.webfirmframework.wffweb.server.page.js;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -28,6 +29,7 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.webfirmframework.wffweb.WffRuntimeException;
 import com.webfirmframework.wffweb.server.page.Task;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeRegistry;
 import com.webfirmframework.wffweb.tag.html.core.TagRegistry;
@@ -81,7 +83,7 @@ public enum WffJsFile {
 
     private final String filename;
 
-    private String optimizedFileContent;
+    private final String optimizedFileContent;
 
     private static volatile Map<String, Boolean> functionAndVarNames;
 
@@ -378,10 +380,12 @@ public enum WffJsFile {
 
     private WffJsFile(final String filename) {
         this.filename = filename;
-        init();
+        optimizedFileContent = buildOptimizedFileContent();
     }
 
-    private void init() {
+    private String buildOptimizedFileContent() {
+
+        final String optimizedFileContent;
         try {
 
             // this might make java.nio.file.FileSystemNotFoundException in
@@ -476,11 +480,15 @@ public enum WffJsFile {
             }
 
             optimizedFileContent = StringBuilderUtil.getTrimmedString(builder);
-        } catch (final Exception e) {
+        } catch (final RuntimeException | IOException e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
+            throw new WffRuntimeException(
+                    "Unable to build optimizedFileContent");
         }
+
+        return optimizedFileContent;
     }
 
     /**
