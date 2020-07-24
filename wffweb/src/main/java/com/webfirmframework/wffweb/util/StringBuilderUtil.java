@@ -54,4 +54,59 @@ public final class StringBuilderUtil {
         return sb.substring(first, last);
     }
 
+    /**
+     * @param sb
+     *               StringBuilder object to be trimmed.
+     * @return the same StringBuilder object after trimming.
+     * @since 3.0.15
+     */
+    public static StringBuilder trim(final StringBuilder sb) {
+
+        int first;
+        int last;
+
+        for (first = 0; first < sb.length(); first++) {
+            if (!Character.isWhitespace(sb.charAt(first))) {
+                break;
+            }
+        }
+
+        if (first > 0) {
+            sb.delete(0, first);
+        }
+
+        for (last = sb.length(); last > first; last--) {
+            if (!Character.isWhitespace(sb.charAt(last - 1))) {
+                break;
+            }
+        }
+
+        if (sb.length() > last) {
+            sb.delete(last, sb.length());
+        }
+
+        return sb;
+    }
+
+    /**
+     * @param from
+     *                       content to be replaced from this StringBuilder
+     * @param thisString
+     *                       the string to be replaced
+     * @param with
+     *                       with this string the thisString will be replaced.
+     * @return the modified StringBuilder which is the same from.
+     * @since 3.0.15
+     */
+    public static StringBuilder replaceFirst(final StringBuilder from,
+            final String thisString, final String with) {
+
+        final int idx = from.indexOf(thisString);
+
+        if (idx > -1) {
+            return from.replace(idx, idx + thisString.length(), with);
+        }
+        return from;
+    }
+
 }

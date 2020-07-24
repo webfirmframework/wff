@@ -630,37 +630,49 @@ public enum WffJsFile {
             final boolean removePrevBPOnInitTab,
             final boolean removePrevBPOnClosetTab,
             final int wsReconnectInterval) {
-        return new StringBuilder(
-                "var wffLog = console.log;")
-                        .append(JS_WORK_AROUND.optimizedFileContent).append(
-                                WFF_GLOBAL.optimizedFileContent
-                                        .replace("\"${CPRSD_DATA}\"",
-                                                String.valueOf(
-                                                        COMPRESSED_WFF_DATA))
-                                        .replace("\"${NDXD_TGS}\"", NDXD_TGS)
-                                        .replace("\"${NDXD_ATRBS}\"",
-                                                NDXD_ATRBS)
-                                        .replace("\"${NDXD_VNT_ATRBS}\"",
-                                                NDXD_VNT_ATRBS)
-                                        .replace("\"${NDXD_BLN_ATRBS}\"",
-                                                NDXD_BLN_ATRBS)
-                                        .replace("${WS_URL}",
-                                                wsUrl)
-                                        .replace("${INSTANCE_ID}", instanceId)
-                                        .replace(
-                                                "\"${REMOVE_PREV_BP_ON_TABCLOSE}\"",
-                                                String.valueOf(
-                                                        removePrevBPOnClosetTab))
-                                        .replace(
-                                                "\"${REMOVE_PREV_BP_ON_INITTAB}\"",
-                                                String.valueOf(
-                                                        removePrevBPOnInitTab))
-                                        .replace("\"${TASK_VALUES}\"",
-                                                Task.getJsObjectString())
-                                        .replace("\"${WS_RECON}\"", String
-                                                .valueOf(wsReconnectInterval))
 
-                        ).append(allOptimizedContent);
+        final StringBuilder globalContentBuider = new StringBuilder(
+                WFF_GLOBAL.optimizedFileContent);
+
+        StringBuilderUtil.replaceFirst(globalContentBuider, "\"${CPRSD_DATA}\"",
+                String.valueOf(COMPRESSED_WFF_DATA));
+
+        StringBuilderUtil.replaceFirst(globalContentBuider, "\"${NDXD_TGS}\"",
+                NDXD_TGS);
+
+        StringBuilderUtil.replaceFirst(globalContentBuider, "\"${NDXD_ATRBS}\"",
+                NDXD_ATRBS);
+
+        StringBuilderUtil.replaceFirst(globalContentBuider,
+                "\"${NDXD_VNT_ATRBS}\"", NDXD_VNT_ATRBS);
+
+        StringBuilderUtil.replaceFirst(globalContentBuider,
+                "\"${NDXD_BLN_ATRBS}\"", NDXD_BLN_ATRBS);
+
+        StringBuilderUtil.replaceFirst(globalContentBuider, "${WS_URL}", wsUrl);
+
+        StringBuilderUtil.replaceFirst(globalContentBuider, "${INSTANCE_ID}",
+                instanceId);
+
+        StringBuilderUtil.replaceFirst(globalContentBuider,
+                "\"${REMOVE_PREV_BP_ON_TABCLOSE}\"",
+                String.valueOf(removePrevBPOnClosetTab));
+
+        StringBuilderUtil.replaceFirst(globalContentBuider,
+                "\"${REMOVE_PREV_BP_ON_INITTAB}\"",
+                String.valueOf(removePrevBPOnInitTab));
+
+        StringBuilderUtil.replaceFirst(globalContentBuider,
+                "\"${TASK_VALUES}\"", Task.getJsObjectString());
+
+        StringBuilderUtil.replaceFirst(globalContentBuider, "\"${WS_RECON}\"",
+                String.valueOf(wsReconnectInterval));
+
+        final String globalContent = globalContentBuider.toString();
+
+        return new StringBuilder("var wffLog = console.log;")
+                .append(JS_WORK_AROUND.optimizedFileContent)
+                .append(globalContent).append(allOptimizedContent);
     }
 
 }

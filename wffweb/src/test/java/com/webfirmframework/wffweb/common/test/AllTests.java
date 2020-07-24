@@ -130,6 +130,7 @@ import com.webfirmframework.wffweb.css.css3.WebkitFlexTest;
 import com.webfirmframework.wffweb.css.file.CssFileTest;
 import com.webfirmframework.wffweb.js.JsUtilTest;
 import com.webfirmframework.wffweb.server.page.TaskTest;
+import com.webfirmframework.wffweb.server.page.js.WffJsFileTest;
 import com.webfirmframework.wffweb.streamer.WffBinaryMessageOutputStreamerTest;
 import com.webfirmframework.wffweb.tag.html.AbstractHtmlRepositoryTest;
 import com.webfirmframework.wffweb.tag.html.AbstractHtmlTest;
@@ -160,6 +161,7 @@ import com.webfirmframework.wffweb.util.CssLengthUtilTest;
 import com.webfirmframework.wffweb.util.CssValueUtilTest;
 import com.webfirmframework.wffweb.util.HashUtilTest;
 import com.webfirmframework.wffweb.util.ObjectUtilTest;
+import com.webfirmframework.wffweb.util.StringBuilderUtilTest;
 import com.webfirmframework.wffweb.util.StringUtilTest;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtilTest;
 import com.webfirmframework.wffweb.wffbm.data.WffBMObjectArrayTest;
@@ -227,7 +229,8 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObjectArrayTest;
         CodePerformanceTest.class, HashUtilTest.class,
         AbstractHtml5SharedObjectTest.class, ByteBufferUtilTest.class,
         UnicodeRangeTest.class, DataWffIdTest.class, SharedTagContentTest.class,
-        CssColorNameTest.class, TaskTest.class })
+        CssColorNameTest.class, TaskTest.class, WffJsFileTest.class,
+        StringBuilderUtilTest.class })
 public class AllTests {
 
 }
