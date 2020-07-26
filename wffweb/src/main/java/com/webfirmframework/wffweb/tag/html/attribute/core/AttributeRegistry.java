@@ -672,8 +672,8 @@ public class AttributeRegistry {
         IndexedAttributeName.INSTANCE.sortedAttrNames()
                 .addAll(ATTRIBUTE_NAMES_SET);
 
-        IndexedAttributeName.INSTANCE.sortedAttrNames()
-                .sort(Comparator.comparingInt(String::length));
+        IndexedAttributeName.INSTANCE.sortedAttrNames().sort(Comparator
+                .comparingInt(String::length).thenComparing(String::compareTo));
     }
 
     /**
