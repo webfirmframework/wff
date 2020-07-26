@@ -115,7 +115,7 @@ public enum BrowserPageAction {
         // but not changing the method signature to keep consistency of this
         // method
 
-        final NameValue taskNameValue = Task.EXECURE_JS.getTaskNameValue();
+        final NameValue taskNameValue = Task.EXEC_JS.getTaskNameValue();
         final byte[][] taskValue = taskNameValue.getValues();
         final byte[][] values = new byte[taskValue.length + 1][0];
 

@@ -16,6 +16,8 @@
 package com.webfirmframework.wffweb.server.page;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -68,7 +70,7 @@ public enum Task {
 
     INVOKE_POST_FUNCTION,
 
-    EXECURE_JS,
+    EXEC_JS,
 
     RELOAD_BROWSER,
 
@@ -229,8 +231,12 @@ public enum Task {
         for (final Task task : Task.values()) {
             tasks.add(task);
         }
-        tasks.sort((o1, o2) -> Integer.compare(o2.name().length(),
-                o1.name().length()));
+        final Comparator<Task> asc = (o1, o2) -> Integer
+                .compare(o1.name().length(), o2.name().length());
+
+        tasks.sort(asc.thenComparing(Task::name));
+
+        Collections.reverse(tasks);
 
         return new LinkedHashSet<>(tasks);
     }
