@@ -226,9 +226,9 @@ public enum Task {
         // return -1;
         // });
 
-        final List<Task> tasks = new ArrayList<>();
-
-        for (final Task task : Task.values()) {
+        final Task[] values = Task.values();
+        final List<Task> tasks = new ArrayList<>(values.length);
+        for (final Task task : values) {
             tasks.add(task);
         }
         final Comparator<Task> asc = (o1, o2) -> Integer
