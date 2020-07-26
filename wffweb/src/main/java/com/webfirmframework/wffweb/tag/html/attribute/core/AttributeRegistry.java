@@ -640,7 +640,8 @@ public class AttributeRegistry {
             index++;
         }
 
-        // already sorted by length in ascending order in
+        // already sorted by length in ascending order and then by name in
+        // ascending order in
         // PreIndexedAttributeName
         for (final PreIndexedAttributeName each : PreIndexedAttributeName
                 .alleventattributes()) {
