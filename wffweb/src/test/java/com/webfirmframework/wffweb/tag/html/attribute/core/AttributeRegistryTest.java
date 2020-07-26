@@ -228,7 +228,6 @@ public class AttributeRegistryTest {
 
         List<String> names = new ArrayList<>();
         for (PreIndexedAttributeName each : PreIndexedAttributeName.values()) {
-
             if (set.contains(each.attrName())) {
                 names.add(each.attrName());
             }
