@@ -604,9 +604,11 @@ public class AttributeRegistry {
 
         }
 
-        // sorting in ascending order of length
-        tmpSortedBooleanAttrNames
-                .sort((o1, o2) -> Integer.compare(o1.length(), o2.length()));
+        // sorting in ascending order of length is the first priority
+        // then needs to sort by ascending order of name otherwise
+        // in some machines multiple,selected comes as selected,multiple
+        tmpSortedBooleanAttrNames.sort(Comparator.comparingInt(String::length)
+                .thenComparing(String::compareTo));
 
         SORTED_BOOLEAN_ATTR_NAMES = Collections
                 .unmodifiableList(tmpSortedBooleanAttrNames);
@@ -654,8 +656,8 @@ public class AttributeRegistry {
      *                      the attribute names to register, eg:-
      *                      AttributeRegistry.register("attri-name1",
      *                      "attri-name2")
-     * @since 1.1.3
      * @author WFF
+     * @since 1.1.3
      */
     public static void register(final String... attrNames) {
 
@@ -677,8 +679,8 @@ public class AttributeRegistry {
     /**
      * @return the list of attribute names sorted in the ascending order of its
      *         length
-     * @since 1.1.3
      * @author WFF
+     * @since 1.1.3
      */
     public static List<String> getAttributeNames() {
         return new ArrayList<>(IndexedAttributeName.INSTANCE.sortedAttrNames());
@@ -726,8 +728,8 @@ public class AttributeRegistry {
     /**
      * @return a map containing attribute name as key and value as tag class
      *         name without package name
-     * @since 1.0.0
      * @author WFF
+     * @since 1.0.0
      */
     public static Map<String, String> getAttributeClassNameByAttributeName() {
         return ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME;
@@ -744,8 +746,8 @@ public class AttributeRegistry {
     /**
      * Loads all attribute classes.
      *
-     * @since 2.1.13
      * @author WFF
+     * @since 2.1.13
      */
     public static void loadAllAttributeClasses() {
 
@@ -777,8 +779,8 @@ public class AttributeRegistry {
     /**
      * @param attributeName
      * @return
-     * @since 3.0.2
      * @throws InvalidValueException
+     * @since 3.0.2
      */
     public static AbstractAttribute getNewAttributeInstance(
             final String attributeName) {
@@ -789,8 +791,8 @@ public class AttributeRegistry {
      * @param attributeName
      * @param attributeValue
      * @return
-     * @since 3.0.2
      * @throws InvalidValueException
+     * @since 3.0.2
      */
     public static AbstractAttribute getNewAttributeInstance(
             final String attributeName, final String attributeValue) {

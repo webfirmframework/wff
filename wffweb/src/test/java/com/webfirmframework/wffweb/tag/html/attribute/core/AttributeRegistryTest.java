@@ -20,8 +20,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import org.junit.Test;
@@ -199,5 +203,38 @@ public class AttributeRegistryTest {
             assertEquals(attrName, attrNameByIndex);
         }
     }
+    
+    @Test
+    public void testPreIndexedAttributeNameOrder() {
+
+        //it is always used so its length must be kept 1
+        assertEquals(1, PreIndexedAttributeName.DATA_WFF_ID.indexBytes().length);
+        List<String> names = new ArrayList<>();
+        for (PreIndexedAttributeName each : PreIndexedAttributeName.values()) {
+            names.add(each.attrName());
+        }
+
+        List<String> multiSortedNames = new ArrayList<>(names);
+        multiSortedNames
+                .sort(Comparator.comparingInt(String::length).thenComparing(String::compareTo));
+        assertEquals(multiSortedNames, names);
+    }
+    
+    @Test
+    public void testSortedBooleanAttrNames() {
+
+        final List<String> booleanAttributeNames = AttributeRegistry.getBooleanAttributeNames();
+        Set<String> set = new HashSet<>(booleanAttributeNames);
+
+        List<String> names = new ArrayList<>();
+        for (PreIndexedAttributeName each : PreIndexedAttributeName.values()) {
+
+            if (set.contains(each.attrName())) {
+                names.add(each.attrName());
+            }
+        }
+        assertEquals(names, booleanAttributeNames);
+    }
+
 
 }
