@@ -388,8 +388,13 @@ public class TagRegistry {
         IndexedTagName.INSTANCE.sortedTagNames().clear();
         IndexedTagName.INSTANCE.sortedTagNames().addAll(TAG_NAMES_SET);
 
-        IndexedTagName.INSTANCE.sortedTagNames()
-                .sort(Comparator.comparingInt(String::length));
+        // sorting in ascending order of length is the first priority
+        // then needs to sort by ascending order of name otherwise
+        // in some machines the order will be different for names having same
+        // length
+        IndexedTagName.INSTANCE.sortedTagNames().sort(Comparator
+                .comparingInt(String::length).thenComparing(String::compareTo));
+
     }
 
     /**
