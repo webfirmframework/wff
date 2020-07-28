@@ -1420,14 +1420,10 @@ public class SharedTagContent<T> {
                         continue;
                     }
 
-                    List<ParentNoTagData<T>> dataList = tagsGroupedBySharedObject
-                            .get(parentTag.getSharedObject());
+                    final List<ParentNoTagData<T>> dataList = tagsGroupedBySharedObject
+                            .computeIfAbsent(parentTag.getSharedObject(),
+                                    k -> new ArrayList<>(4));
 
-                    if (dataList == null) {
-                        dataList = new ArrayList<>(4);
-                        tagsGroupedBySharedObject
-                                .put(parentTag.getSharedObject(), dataList);
-                    }
                     NoTag noTag;
                     Content<String> contentApplied;
                     try {
@@ -1994,14 +1990,9 @@ public class SharedTagContent<T> {
                     continue;
                 }
 
-                List<ParentNoTagData<T>> dataList = tagsGroupedBySharedObject
-                        .get(parentTag.getSharedObject());
-
-                if (dataList == null) {
-                    dataList = new ArrayList<>(4);
-                    tagsGroupedBySharedObject.put(parentTag.getSharedObject(),
-                            dataList);
-                }
+                final List<ParentNoTagData<T>> dataList = tagsGroupedBySharedObject
+                        .computeIfAbsent(parentTag.getSharedObject(),
+                                k -> new ArrayList<>(4));
 
                 // final NoTag noTag = new NoTag(null, content,
                 // contentTypeHtml);
