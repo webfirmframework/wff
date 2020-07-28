@@ -1730,18 +1730,18 @@ public class SharedTagContent<T> {
                     .equals(updateClientNature)) {
 
                 if (executor != null) {
-                    final List<CompletableFuture<PushQueue>> cfList = new ArrayList<>(
+                    final List<CompletableFuture<Boolean>> cfList = new ArrayList<>(
                             pushQueues.size());
                     for (final PushQueue pushQueue : pushQueues) {
-                        final CompletableFuture<PushQueue> cf = CompletableFuture
+                        final CompletableFuture<Boolean> cf = CompletableFuture
                                 .supplyAsync(() -> {
                                     pushQueue.push();
-                                    return pushQueue;
+                                    return true;
                                 }, executor);
                         cfList.add(cf);
                     }
 
-                    for (final CompletableFuture<PushQueue> each : cfList) {
+                    for (final CompletableFuture<Boolean> each : cfList) {
                         try {
                             each.get();
                         } catch (InterruptedException | ExecutionException e) {
