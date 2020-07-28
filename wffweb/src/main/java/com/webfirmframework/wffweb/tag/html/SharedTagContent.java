@@ -1102,7 +1102,7 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public void setShared(final boolean shared) {
-        if (this.shared = shared) {
+        if (this.shared != shared) {
             final long stamp = lock.writeLock();
             try {
                 this.shared = shared;
@@ -1110,7 +1110,6 @@ public class SharedTagContent<T> {
                 lock.unlockWrite(stamp);
             }
         }
-
     }
 
     /**
@@ -1146,7 +1145,15 @@ public class SharedTagContent<T> {
      * @since 3.0.15
      */
     public void setExecutor(final Executor executor) {
-        this.executor = executor;
+        if (this.executor != executor) {
+            final long stamp = lock.writeLock();
+            try {
+                this.executor = executor;
+            } finally {
+                lock.unlockWrite(stamp);
+            }
+        }
+
     }
 
     /**
