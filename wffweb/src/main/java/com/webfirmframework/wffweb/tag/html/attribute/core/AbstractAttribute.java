@@ -1338,8 +1338,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     }
 
     /**
-     * NB: this may not return the same locks as there could be the its
-     * ownerTags change. Use it for only unlock.
+     * NB: this may not return the same locks as the ownerTags of this attribute
+     * may be changed at any time. Use it for only unlock.
      *
      * @return the set of write locks after locking
      */
@@ -1370,8 +1370,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     }
 
     /**
-     * NB: this may not return the same locks as there could be the its
-     * ownerTags change. Use it for only unlock.
+     * NB: this may not return the same locks as the ownerTags of this attribute
+     * may be changed at any time. Use it for only unlock.
      *
      * @return the set of read locks after locking
      */
@@ -1403,9 +1403,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     }
 
     /**
-     * NB: this may not return the same locks as there could be the its
-     * ownerTags change. So call only once and reuse it for both lock and unlock
-     * call.
+     * NB: this may not return the same locks as the ownerTags of this attribute
+     * may be changed at any time. So call only once and reuse it for both lock
+     * and unlock call.
      *
      * @return the set of write locks
      */
