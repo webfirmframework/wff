@@ -1412,11 +1412,9 @@ public class SharedTagContent<T> {
                         continue;
                     }
 
-                    final AbstractHtml prevNoTagAsBase = prevNoTag;
-                    // noTagAsBase.isParentNullifiedOnce() == true
-                    // means the parent of this tag has already been changed
-                    // at least once
-                    if (prevNoTagAsBase.isParentNullifiedOnce()) {
+                    // the condition isParentNullifiedOnce true means the parent
+                    // of this tag has already been changed at least once
+                    if (((AbstractHtml) prevNoTag).isParentNullifiedOnce()) {
                         continue;
                     }
 
@@ -1982,11 +1980,9 @@ public class SharedTagContent<T> {
                     continue;
                 }
 
-                final AbstractHtml prevNoTagAsBase = prevNoTag;
-                // noTagAsBase.isParentNullifiedOnce() == true
-                // means the parent of this tag has already been changed
-                // at least once
-                if (prevNoTagAsBase.isParentNullifiedOnce()) {
+                // the condition isParentNullifiedOnce true means the parent of
+                // this tag has already been changed at least once
+                if (((AbstractHtml) prevNoTag).isParentNullifiedOnce()) {
                     continue;
                 }
 
