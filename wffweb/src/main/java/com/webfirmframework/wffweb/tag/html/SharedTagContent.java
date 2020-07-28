@@ -30,6 +30,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.StampedLock;
@@ -384,7 +385,9 @@ public class SharedTagContent<T> {
      *                               if no preference. This executor object will
      *                               be used only if the
      *                               {@code updateClientNature} is
-     *                               {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL}.
+     *                               {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL}
+     *                               or
+     *                               {@link UpdateClientNature#ALLOW_PARALLEL}.
      *
      *                               <br>
      *                               NB: You may need only one copy of executor
@@ -493,7 +496,8 @@ public class SharedTagContent<T> {
      *                     the executor object for async push or null if no
      *                     preference. This executor object will be used only if
      *                     the {@code updateClientNature} is
-     *                     {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL}.
+     *                     {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL} or
+     *                     {@link UpdateClientNature#ALLOW_PARALLEL}.
      *
      *                     <br>
      *                     NB: You may need only one copy of executor object for
@@ -517,7 +521,7 @@ public class SharedTagContent<T> {
      * sharedTagContent.setExecutor(EXECUTOR);
      * </code>
      *                     </pre>
-     * 
+     *
      * @param content
      *                     the content its content type will be considered as
      *                     plain text, i.e. contentTypeHtml will be false.
@@ -573,7 +577,9 @@ public class SharedTagContent<T> {
      *                               if no preference. This executor object will
      *                               be used only if the
      *                               {@code updateClientNature} is
-     *                               {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL}.
+     *                               {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL}
+     *                               or
+     *                               {@link UpdateClientNature#ALLOW_PARALLEL}.
      *
      *                               <br>
      *                               NB: You may need only one copy of executor
@@ -598,7 +604,7 @@ public class SharedTagContent<T> {
      * sharedTagContent.setExecutor(EXECUTOR);
      * </code>
      *                               </pre>
-     * 
+     *
      * @param updateClientNature
      *
      *                               If this SharedTagContent object has to
@@ -648,7 +654,8 @@ public class SharedTagContent<T> {
      *                            the executor object for async push or null if
      *                            no preference. This executor object will be
      *                            used only if the {@code updateClientNature} is
-     *                            {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL}.
+     *                            {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL}
+     *                            or {@link UpdateClientNature#ALLOW_PARALLEL}.
      *
      *                            <br>
      *                            NB: You may need only one copy of executor
@@ -673,7 +680,7 @@ public class SharedTagContent<T> {
      * sharedTagContent.setExecutor(EXECUTOR);
      * </code>
      *                            </pre>
-     * 
+     *
      * @param content
      *                            the content to embed in the consumer tags.
      * @param contentTypeHtml
@@ -720,7 +727,9 @@ public class SharedTagContent<T> {
      *                               if no preference. This executor object will
      *                               be used only if the
      *                               {@code updateClientNature} is
-     *                               {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL}.
+     *                               {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL}
+     *                               or
+     *                               {@link UpdateClientNature#ALLOW_PARALLEL}.
      *
      *                               <br>
      *                               NB: You may need only one copy of executor
@@ -745,7 +754,7 @@ public class SharedTagContent<T> {
      * sharedTagContent.setExecutor(EXECUTOR);
      * </code>
      *                               </pre>
-     * 
+     *
      * @param updateClientNature
      *
      *                               If this SharedTagContent object has to
@@ -812,7 +821,9 @@ public class SharedTagContent<T> {
      *                               if no preference. This executor object will
      *                               be used only if the
      *                               {@code updateClientNature} is
-     *                               {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL}.
+     *                               {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL}
+     *                               or
+     *                               {@link UpdateClientNature#ALLOW_PARALLEL}.
      *
      *                               <br>
      *                               NB: You may need only one copy of executor
@@ -837,7 +848,7 @@ public class SharedTagContent<T> {
      * sharedTagContent.setExecutor(EXECUTOR);
      * </code>
      *                               </pre>
-     * 
+     *
      * @param updateClientNature
      *
      *                               If this SharedTagContent object has to
@@ -892,7 +903,8 @@ public class SharedTagContent<T> {
      *                            the executor object for async push or null if
      *                            no preference. This executor object will be
      *                            used only if the {@code updateClientNature} is
-     *                            {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL}.
+     *                            {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL}
+     *                            or {@link UpdateClientNature#ALLOW_PARALLEL}.
      *
      *                            <br>
      *                            NB: You may need only one copy of executor
@@ -917,7 +929,7 @@ public class SharedTagContent<T> {
      * sharedTagContent.setExecutor(EXECUTOR);
      * </code>
      *                            </pre>
-     * 
+     *
      * @param shared
      *                            true to share its content across all consuming
      *                            tags when {@link SharedTagContent#setContent}
@@ -952,7 +964,8 @@ public class SharedTagContent<T> {
      *                     the executor object for async push or null if no
      *                     preference. This executor object will be used only if
      *                     the {@code updateClientNature} is
-     *                     {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL}.
+     *                     {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL} or
+     *                     {@link UpdateClientNature#ALLOW_PARALLEL}.
      *
      *                     <br>
      *                     NB: You may need only one copy of executor object for
@@ -976,7 +989,7 @@ public class SharedTagContent<T> {
      * sharedTagContent.setExecutor(EXECUTOR);
      * </code>
      *                     </pre>
-     * 
+     *
      * @param shared
      *                     true to share its content across all consuming tags
      *                     when {@link SharedTagContent#setContent} is called.
@@ -1117,7 +1130,8 @@ public class SharedTagContent<T> {
      *                     the executor object for async push or null if no
      *                     preference. This executor object will be used only if
      *                     the {@code updateClientNature} is
-     *                     {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL}.
+     *                     {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL} or
+     *                     {@link UpdateClientNature#ALLOW_PARALLEL}.
      *
      *                     <br>
      *                     NB: You may need only one copy of executor object for
@@ -1141,7 +1155,7 @@ public class SharedTagContent<T> {
      * sharedTagContent.setExecutor(EXECUTOR);
      * </code>
      *                     </pre>
-     * 
+     *
      * @since 3.0.15
      */
     public void setExecutor(final Executor executor) {
@@ -1652,7 +1666,9 @@ public class SharedTagContent<T> {
      *                               if no preference. This executor object will
      *                               be used only if the
      *                               {@code updateClientNature} is
-     *                               {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL}.
+     *                               {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL}
+     *                               or
+     *                               {@link UpdateClientNature#ALLOW_PARALLEL}.
      *
      *                               <br>
      *                               NB: You may need only one copy of executor
@@ -1702,18 +1718,41 @@ public class SharedTagContent<T> {
                     .equals(updateClientNature)) {
                 if (executor != null) {
                     for (final PushQueue pushQueue : pushQueues) {
-                        CompletableFuture.runAsync(() -> pushQueue.push(),
-                                executor);
+                        CompletableFuture.runAsync(pushQueue::push, executor);
                     }
                 } else {
                     for (final PushQueue pushQueue : pushQueues) {
-                        CompletableFuture.runAsync(() -> pushQueue.push());
+                        CompletableFuture.runAsync(pushQueue::push);
                     }
                 }
 
             } else if (UpdateClientNature.ALLOW_PARALLEL
                     .equals(updateClientNature)) {
-                pushQueues.parallelStream().forEach(PushQueue::push);
+
+                if (executor != null) {
+                    final List<CompletableFuture<PushQueue>> cfList = new ArrayList<>(
+                            pushQueues.size());
+                    for (final PushQueue pushQueue : pushQueues) {
+                        final CompletableFuture<PushQueue> cf = CompletableFuture
+                                .supplyAsync(() -> {
+                                    pushQueue.push();
+                                    return pushQueue;
+                                }, executor);
+                        cfList.add(cf);
+                    }
+
+                    for (final CompletableFuture<PushQueue> each : cfList) {
+                        try {
+                            each.get();
+                        } catch (InterruptedException | ExecutionException e) {
+                            // NOP
+                        }
+                    }
+
+                } else {
+                    pushQueues.parallelStream().forEach(PushQueue::push);
+                }
+
             } else {
                 // UpdateClientNature.SEQUENTIAL.equals(updateClientNature)
                 for (final PushQueue pushQueue : pushQueues) {
