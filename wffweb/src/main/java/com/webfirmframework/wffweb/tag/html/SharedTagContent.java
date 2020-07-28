@@ -30,6 +30,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.StampedLock;
 import java.util.logging.Level;
@@ -112,6 +113,8 @@ public class SharedTagContent<T> {
     private volatile UpdateClientNature updateClientNature = UpdateClientNature.ALLOW_ASYNC_PARALLEL;
 
     private volatile boolean updateClient = true;
+
+    private volatile Executor executor;
 
     /**
      * Represents the behavior of push operation of BrowserPage to client.
@@ -376,6 +379,79 @@ public class SharedTagContent<T> {
     }
 
     /**
+     * @param executor
+     *                               the executor object for async push or null
+     *                               if no preference. This executor object will
+     *                               be used only if the
+     *                               {@code updateClientNature} is
+     *                               {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL}.
+     *
+     *                               <br>
+     *                               NB: You may need only one copy of executor
+     *                               object for all sharedTagContent instances
+     *                               in the project. So it could be declared as
+     *                               a static final object. Eg: <br>
+     *
+     *                               <pre>
+     * <code>
+     *
+     * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                               </pre>
+     *
+     *                               When Java releases Virtual Thread we may be
+     *                               able to use as follows
+     *
+     *                               <pre>
+     * <code>
+     * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                               </pre>
+     *
+     * @param updateClientNature
+     *
+     *                               If this SharedTagContent object has to
+     *                               update content of tags from multiple
+     *                               BrowserPage instances,
+     *                               UpdateClientNature.ALLOW_ASYNC_PARALLEL
+     *                               will allow parallel operation in the
+     *                               background for pushing changes to client
+     *                               browser page and
+     *                               UpdateClientNature.ALLOW_PARALLEL will
+     *                               allow parallel operation but will wait for
+     *                               the push to finish to exit the setContent
+     *                               method. UpdateClientNature.SEQUENTIAL will
+     *                               sequentially do each browser page push
+     *                               operation.
+     * @param shared
+     *                               true to share its content across all
+     *                               consuming tags when
+     *                               {@link SharedTagContent#setContent} is
+     *                               called.
+     * @param content
+     *                               the content to embed in the consumer tags.
+     * @param contentTypeHtml
+     *                               true to treat the given content as HTML
+     *                               otherwise false.
+     * @since 3.0.15
+     */
+    public SharedTagContent(final Executor executor,
+            final UpdateClientNature updateClientNature, final boolean shared,
+            final T content, final boolean contentTypeHtml) {
+        if (updateClientNature != null) {
+            this.updateClientNature = updateClientNature;
+        }
+        this.shared = shared;
+        this.executor = executor;
+        this.content = content;
+        this.contentTypeHtml = contentTypeHtml;
+    }
+
+    /**
+     * or null if no preference.
+     *
      * @param updateClientNature
      *
      *                               If this SharedTagContent object has to
@@ -406,12 +482,49 @@ public class SharedTagContent<T> {
     public SharedTagContent(final UpdateClientNature updateClientNature,
             final boolean shared, final T content,
             final boolean contentTypeHtml) {
-        if (updateClientNature != null) {
-            this.updateClientNature = updateClientNature;
-        }
-        this.shared = shared;
-        this.content = content;
-        this.contentTypeHtml = contentTypeHtml;
+        this(null, updateClientNature, shared, content, contentTypeHtml);
+    }
+
+    /**
+     * plain text content with updateClientNature as
+     * UpdateClientNature.ALLOW_ASYNC_PARALLEL.
+     *
+     * @param executor
+     *                     the executor object for async push or null if no
+     *                     preference. This executor object will be used only if
+     *                     the {@code updateClientNature} is
+     *                     {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL}.
+     *
+     *                     <br>
+     *                     NB: You may need only one copy of executor object for
+     *                     all sharedTagContent instances in the project. So it
+     *                     could be declared as a static final object. Eg: <br>
+     *
+     *                     <pre>
+     * <code>
+     *
+     * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                     </pre>
+     *
+     *                     When Java releases Virtual Thread we may be able to
+     *                     use as follows
+     *
+     *                     <pre>
+     * <code>
+     * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                     </pre>
+     * 
+     * @param content
+     *                     the content its content type will be considered as
+     *                     plain text, i.e. contentTypeHtml will be false.
+     * @since 3.0.15
+     */
+    public SharedTagContent(final Executor executor, final T content) {
+        this(executor, null, true, content, false);
     }
 
     /**
@@ -424,7 +537,7 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public SharedTagContent(final T content) {
-        this(null, true, content, false);
+        this(null, null, true, content, false);
     }
 
     /**
@@ -451,7 +564,65 @@ public class SharedTagContent<T> {
      */
     public SharedTagContent(final UpdateClientNature updateClientNature,
             final T content) {
-        this(updateClientNature, true, content, false);
+        this(null, updateClientNature, true, content, false);
+    }
+
+    /**
+     * @param executor
+     *                               the executor object for async push or null
+     *                               if no preference. This executor object will
+     *                               be used only if the
+     *                               {@code updateClientNature} is
+     *                               {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL}.
+     *
+     *                               <br>
+     *                               NB: You may need only one copy of executor
+     *                               object for all sharedTagContent instances
+     *                               in the project. So it could be declared as
+     *                               a static final object. Eg: <br>
+     *
+     *                               <pre>
+     * <code>
+     *
+     * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                               </pre>
+     *
+     *                               When Java releases Virtual Thread we may be
+     *                               able to use as follows
+     *
+     *                               <pre>
+     * <code>
+     * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                               </pre>
+     * 
+     * @param updateClientNature
+     *
+     *                               If this SharedTagContent object has to
+     *                               update content of tags from multiple
+     *                               BrowserPage instances,
+     *                               UpdateClientNature.ALLOW_ASYNC_PARALLEL
+     *                               will allow parallel operation in the
+     *                               background for pushing changes to client
+     *                               browser page and
+     *                               UpdateClientNature.ALLOW_PARALLEL will
+     *                               allow parallel operation but will wait for
+     *                               the push to finish to exit the setContent
+     *                               method. UpdateClientNature.SEQUENTIAL will
+     *                               sequentially do each browser page push
+     *                               operation.
+     * @param content
+     *                               the content its content type will be
+     *                               considered as plain text, i.e.
+     *                               contentTypeHtml will be false.
+     * @since 3.0.15
+     */
+    public SharedTagContent(final Executor executor,
+            final UpdateClientNature updateClientNature, final T content) {
+        this(executor, updateClientNature, true, content, false);
     }
 
     /**
@@ -466,7 +637,53 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public SharedTagContent(final T content, final boolean contentTypeHtml) {
-        this(null, true, content, contentTypeHtml);
+        this(null, null, true, content, contentTypeHtml);
+    }
+
+    /**
+     * The default value of updateClientNature is
+     * UpdateClientNature.ALLOW_ASYNC_PARALLEL.
+     *
+     * @param executor
+     *                            the executor object for async push or null if
+     *                            no preference. This executor object will be
+     *                            used only if the {@code updateClientNature} is
+     *                            {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL}.
+     *
+     *                            <br>
+     *                            NB: You may need only one copy of executor
+     *                            object for all sharedTagContent instances in
+     *                            the project. So it could be declared as a
+     *                            static final object. Eg: <br>
+     *
+     *                            <pre>
+     * <code>
+     *
+     * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                            </pre>
+     *
+     *                            When Java releases Virtual Thread we may be
+     *                            able to use as follows
+     *
+     *                            <pre>
+     * <code>
+     * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                            </pre>
+     * 
+     * @param content
+     *                            the content to embed in the consumer tags.
+     * @param contentTypeHtml
+     *                            true to treat the given content as HTML
+     *                            otherwise false.
+     * @since 3.0.15
+     */
+    public SharedTagContent(final Executor executor, final T content,
+            final boolean contentTypeHtml) {
+        this(executor, null, true, content, contentTypeHtml);
     }
 
     /**
@@ -494,7 +711,67 @@ public class SharedTagContent<T> {
      */
     public SharedTagContent(final UpdateClientNature updateClientNature,
             final T content, final boolean contentTypeHtml) {
-        this(updateClientNature, true, content, contentTypeHtml);
+        this(null, updateClientNature, true, content, contentTypeHtml);
+    }
+
+    /**
+     * @param executor
+     *                               the executor object for async push or null
+     *                               if no preference. This executor object will
+     *                               be used only if the
+     *                               {@code updateClientNature} is
+     *                               {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL}.
+     *
+     *                               <br>
+     *                               NB: You may need only one copy of executor
+     *                               object for all sharedTagContent instances
+     *                               in the project. So it could be declared as
+     *                               a static final object. Eg: <br>
+     *
+     *                               <pre>
+     * <code>
+     *
+     * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                               </pre>
+     *
+     *                               When Java releases Virtual Thread we may be
+     *                               able to use as follows
+     *
+     *                               <pre>
+     * <code>
+     * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                               </pre>
+     * 
+     * @param updateClientNature
+     *
+     *                               If this SharedTagContent object has to
+     *                               update content of tags from multiple
+     *                               BrowserPage instances,
+     *                               UpdateClientNature.ALLOW_ASYNC_PARALLEL
+     *                               will allow parallel operation in the
+     *                               background for pushing changes to client
+     *                               browser page and
+     *                               UpdateClientNature.ALLOW_PARALLEL will
+     *                               allow parallel operation but will wait for
+     *                               the push to finish to exit the setContent
+     *                               method. UpdateClientNature.SEQUENTIAL will
+     *                               sequentially do each browser page push
+     *                               operation.
+     * @param content
+     *                               the content to embed in the consumer tags.
+     * @param contentTypeHtml
+     *                               true to treat the given content as HTML
+     *                               otherwise false.
+     * @since 3.0.15
+     */
+    public SharedTagContent(final Executor executor,
+            final UpdateClientNature updateClientNature, final T content,
+            final boolean contentTypeHtml) {
+        this(executor, updateClientNature, true, content, contentTypeHtml);
     }
 
     /**
@@ -526,7 +803,71 @@ public class SharedTagContent<T> {
      */
     public SharedTagContent(final UpdateClientNature updateClientNature,
             final boolean shared, final T content) {
-        this(updateClientNature, shared, content, false);
+        this(null, updateClientNature, shared, content, false);
+    }
+
+    /**
+     * @param executor
+     *                               the executor object for async push or null
+     *                               if no preference. This executor object will
+     *                               be used only if the
+     *                               {@code updateClientNature} is
+     *                               {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL}.
+     *
+     *                               <br>
+     *                               NB: You may need only one copy of executor
+     *                               object for all sharedTagContent instances
+     *                               in the project. So it could be declared as
+     *                               a static final object. Eg: <br>
+     *
+     *                               <pre>
+     * <code>
+     *
+     * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                               </pre>
+     *
+     *                               When Java releases Virtual Thread we may be
+     *                               able to use as follows
+     *
+     *                               <pre>
+     * <code>
+     * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                               </pre>
+     * 
+     * @param updateClientNature
+     *
+     *                               If this SharedTagContent object has to
+     *                               update content of tags from multiple
+     *                               BrowserPage instances,
+     *                               UpdateClientNature.ALLOW_ASYNC_PARALLEL
+     *                               will allow parallel operation in the
+     *                               background for pushing changes to client
+     *                               browser page and
+     *                               UpdateClientNature.ALLOW_PARALLEL will
+     *                               allow parallel operation but will wait for
+     *                               the push to finish to exit the setContent
+     *                               method. UpdateClientNature.SEQUENTIAL will
+     *                               sequentially do each browser page push
+     *                               operation.
+     * @param shared
+     *                               true to share its content across all
+     *                               consuming tags when
+     *                               {@link SharedTagContent#setContent} is
+     *                               called.
+     * @param content
+     *                               the content which will be treated as plain
+     *                               text in the consumer tags.
+     *
+     * @since 3.0.15
+     */
+    public SharedTagContent(final Executor executor,
+            final UpdateClientNature updateClientNature, final boolean shared,
+            final T content) {
+        this(executor, updateClientNature, shared, content, false);
     }
 
     /**
@@ -543,7 +884,54 @@ public class SharedTagContent<T> {
      */
     public SharedTagContent(final boolean shared, final T content,
             final boolean contentTypeHtml) {
-        this(null, shared, content, contentTypeHtml);
+        this(null, null, shared, content, contentTypeHtml);
+    }
+
+    /**
+     * @param executor
+     *                            the executor object for async push or null if
+     *                            no preference. This executor object will be
+     *                            used only if the {@code updateClientNature} is
+     *                            {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL}.
+     *
+     *                            <br>
+     *                            NB: You may need only one copy of executor
+     *                            object for all sharedTagContent instances in
+     *                            the project. So it could be declared as a
+     *                            static final object. Eg: <br>
+     *
+     *                            <pre>
+     * <code>
+     *
+     * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                            </pre>
+     *
+     *                            When Java releases Virtual Thread we may be
+     *                            able to use as follows
+     *
+     *                            <pre>
+     * <code>
+     * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                            </pre>
+     * 
+     * @param shared
+     *                            true to share its content across all consuming
+     *                            tags when {@link SharedTagContent#setContent}
+     *                            is called.
+     * @param content
+     *                            the content to embed in the consumer tags.
+     * @param contentTypeHtml
+     *                            true to treat the given content as HTML
+     *                            otherwise false.
+     * @since 3.0.15
+     */
+    public SharedTagContent(final Executor executor, final boolean shared,
+            final T content, final boolean contentTypeHtml) {
+        this(executor, null, shared, content, contentTypeHtml);
     }
 
     /**
@@ -556,7 +944,50 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public SharedTagContent(final boolean shared, final T content) {
-        this(null, shared, content, false);
+        this(null, null, shared, content, false);
+    }
+
+    /**
+     * @param executor
+     *                     the executor object for async push or null if no
+     *                     preference. This executor object will be used only if
+     *                     the {@code updateClientNature} is
+     *                     {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL}.
+     *
+     *                     <br>
+     *                     NB: You may need only one copy of executor object for
+     *                     all sharedTagContent instances in the project. So it
+     *                     could be declared as a static final object. Eg: <br>
+     *
+     *                     <pre>
+     * <code>
+     *
+     * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                     </pre>
+     *
+     *                     When Java releases Virtual Thread we may be able to
+     *                     use as follows
+     *
+     *                     <pre>
+     * <code>
+     * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                     </pre>
+     * 
+     * @param shared
+     *                     true to share its content across all consuming tags
+     *                     when {@link SharedTagContent#setContent} is called.
+     * @param content
+     *                     the content which will be treated as plain text in
+     *                     the consumer tags.
+     * @since 3.0.15
+     */
+    public SharedTagContent(final Executor executor, final boolean shared,
+            final T content) {
+        this(executor, null, shared, content, false);
     }
 
     /**
@@ -638,6 +1069,14 @@ public class SharedTagContent<T> {
     }
 
     /**
+     * @return the Executor object.
+     * @since 3.0.15
+     */
+    public Executor getExecutor() {
+        return executor;
+    }
+
+    /**
      * @param updateClient
      *                         true to turn on updating client browser page. By
      *                         default it is true.
@@ -672,6 +1111,42 @@ public class SharedTagContent<T> {
             }
         }
 
+    }
+
+    /**
+     * @param executor
+     *                     the executor object for async push or null if no
+     *                     preference. This executor object will be used only if
+     *                     the {@code updateClientNature} is
+     *                     {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL}.
+     *
+     *                     <br>
+     *                     NB: You may need only one copy of executor object for
+     *                     all sharedTagContent instances in the project. So it
+     *                     could be declared as a static final object. Eg: <br>
+     *
+     *                     <pre>
+     * <code>
+     *
+     * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                     </pre>
+     *
+     *                     When Java releases Virtual Thread we may be able to
+     *                     use as follows
+     *
+     *                     <pre>
+     * <code>
+     * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                     </pre>
+     * 
+     * @since 3.0.15
+     */
+    public void setExecutor(final Executor executor) {
+        this.executor = executor;
     }
 
     /**
@@ -843,6 +1318,7 @@ public class SharedTagContent<T> {
 
     /**
      * @param updateClient
+     *                               true or false
      * @param updateClientNature
      *
      *                               If this SharedTagContent object has to
@@ -891,6 +1367,7 @@ public class SharedTagContent<T> {
                 this.content = content;
                 this.contentTypeHtml = contentTypeHtml;
                 this.shared = shared;
+                // this.executor = executor;
 
                 final List<Map.Entry<NoTag, InsertedTagData<T>>> insertedTagsEntries = insertedTags
                         .entrySet().stream()
@@ -1135,7 +1612,7 @@ public class SharedTagContent<T> {
                 lock.unlockWrite(stamp);
             }
 
-            pushQueue(updateClientNature, sharedObjects);
+            pushQueue(executor, updateClientNature, sharedObjects);
 
             if (runnables != null) {
                 for (final Runnable runnable : runnables) {
@@ -1163,12 +1640,44 @@ public class SharedTagContent<T> {
     }
 
     /**
+     * @param executor
+     *                               the executor object for async push or null
+     *                               if no preference. This executor object will
+     *                               be used only if the
+     *                               {@code updateClientNature} is
+     *                               {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL}.
+     *
+     *                               <br>
+     *                               NB: You may need only one copy of executor
+     *                               object for all sharedTagContent instances
+     *                               in the project. So it could be declared as
+     *                               a static final object. Eg: <br>
+     *
+     *                               <pre>
+     * <code>
+     *
+     * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                               </pre>
+     *
+     *                               When Java releases Virtual Thread we may be
+     *                               able to use as follows
+     *
+     *                               <pre>
+     * <code>
+     * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                               </pre>
+     *
      * @param updateClientNature
      * @param sharedObjects
-     *
      * @since 3.0.6
+     * @since 3.0.15 introduced executor
      */
-    private void pushQueue(final UpdateClientNature updateClientNature,
+    private void pushQueue(final Executor executor,
+            final UpdateClientNature updateClientNature,
             final List<AbstractHtml5SharedObject> sharedObjects) {
 
         final List<PushQueue> pushQueues = new ArrayList<>(
@@ -1184,9 +1693,17 @@ public class SharedTagContent<T> {
         if (pushQueues.size() > 1) {
             if (UpdateClientNature.ALLOW_ASYNC_PARALLEL
                     .equals(updateClientNature)) {
-                for (final PushQueue pushQueue : pushQueues) {
-                    CompletableFuture.runAsync(() -> pushQueue.push());
+                if (executor != null) {
+                    for (final PushQueue pushQueue : pushQueues) {
+                        CompletableFuture.runAsync(() -> pushQueue.push(),
+                                executor);
+                    }
+                } else {
+                    for (final PushQueue pushQueue : pushQueues) {
+                        CompletableFuture.runAsync(() -> pushQueue.push());
+                    }
                 }
+
             } else if (UpdateClientNature.ALLOW_PARALLEL
                     .equals(updateClientNature)) {
                 pushQueues.parallelStream().forEach(PushQueue::push);
@@ -1585,7 +2102,7 @@ public class SharedTagContent<T> {
             lock.unlockWrite(stamp);
         }
 
-        pushQueue(updateClientNature, sharedObjects);
+        pushQueue(executor, updateClientNature, sharedObjects);
 
         if (runnables != null) {
             for (final Runnable runnable : runnables) {
