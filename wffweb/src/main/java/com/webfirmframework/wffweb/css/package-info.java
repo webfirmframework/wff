@@ -117,7 +117,7 @@
  * font-weight font-size/line-height
  * font-family|caption|icon|menu|message-box|small-caption|status-bar|initial|
  * inherit; <br>
- * 
+ *
  * @font-face : cannot be used directly<br> + font-family:
  * font|initial|inherit;<br> +
  * font-size:medium|xx-small|x-small|small|large|x-large|xx-large|smaller|larger
@@ -132,7 +132,7 @@
  * auto|length|initial|inherit;<br> + icon: auto|URL|initial|inherit;<br> +
  * justify-content:
  * flex-start|flex-end|center|space-between|space-around|initial|inherit;<br>
- * 
+ *
  * @keyframes : cannot be used directly<br> + left:
  * auto|length|initial|inherit;<br> + letter-spacing:
  * normal|length|initial|inherit;<br> + line-height:
@@ -149,7 +149,7 @@
  * length|auto|initial|inherit;<br> + margin-right:
  * length|auto|initial|inherit;<br> + margin-top:
  * length|auto|initial|inherit;<br> + max-height<br> + max-width<br>
- * 
+ *
  * @media : cannot be used directly<br> + min-height<br> + min-width<br> -
  * nav-down: auto|id|target-name|initial|inherit;<br> - nav-index:
  * auto|number|initial|inherit;<br> - nav-left:

@@ -175,7 +175,7 @@ public class Font extends AbstractCssProperty<Font> implements StateChangeInform
          * InvalidValueException( "The string '" + constant +
          * "' makes the given cssValue invalid, please remove '" + constant +
          * "' from it and try."); } }
-         * 
+         *
          * } else
          */
         // @formatter:on

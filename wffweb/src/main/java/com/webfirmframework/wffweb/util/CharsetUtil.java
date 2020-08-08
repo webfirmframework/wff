@@ -46,7 +46,7 @@ public final class CharsetUtil {
     public static char[] getUpperCaseCharset(final int upto) {
         final int uptoPlusOne = upto + 1;
 
-        final char[] current = CHACHED_UPPER_CASE_CHARSETS.computeIfAbsent(uptoPlusOne, (k) -> {
+        final char[] current = CHACHED_UPPER_CASE_CHARSETS.computeIfAbsent(uptoPlusOne, k -> {
             final char[] charset = new char[uptoPlusOne];
             char index = 0;
             while (index < uptoPlusOne) {
@@ -71,7 +71,7 @@ public final class CharsetUtil {
     public static char[] getLowerCaseCharset(final int upto) {
         final int uptoPlusOne = upto + 1;
 
-        final char[] current = CHACHED_LOWER_CASE_CHARSETS.computeIfAbsent(uptoPlusOne, (k) -> {
+        final char[] current = CHACHED_LOWER_CASE_CHARSETS.computeIfAbsent(uptoPlusOne, k -> {
             final char[] charset = new char[uptoPlusOne];
             char index = 0;
             while (index < uptoPlusOne) {
