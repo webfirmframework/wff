@@ -53,12 +53,9 @@ public class OnCut extends AbstractEventAttribute {
         setServerAsyncMethod(null, serverAsyncMethod, null, null);
     }
 
-    public OnCut(final String jsPreFunctionBody,
-            final ServerAsyncMethod serverAsyncMethod,
-            final String jsFilterFunctionBody,
-            final String jsPostFunctionBody) {
-        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod,
-                jsFilterFunctionBody, jsPostFunctionBody);
+    public OnCut(final String jsPreFunctionBody, final ServerAsyncMethod serverAsyncMethod,
+            final String jsFilterFunctionBody, final String jsPostFunctionBody) {
+        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody);
     }
 
     public OnCut(final String value) {
@@ -70,10 +67,8 @@ public class OnCut extends AbstractEventAttribute {
      * @param serverSideData
      * @since 3.0.2
      */
-    public OnCut(final ServerAsyncMethod serverAsyncMethod,
-            final Object serverSideData) {
-        setServerAsyncMethod(null, serverAsyncMethod, null, null,
-                serverSideData);
+    public OnCut(final ServerAsyncMethod serverAsyncMethod, final Object serverSideData) {
+        setServerAsyncMethod(null, serverAsyncMethod, null, null, serverSideData);
     }
 
     /**
@@ -84,12 +79,10 @@ public class OnCut extends AbstractEventAttribute {
      * @param serverSideData
      * @since 3.0.2
      */
-    public OnCut(final String jsPreFunctionBody,
-            final ServerAsyncMethod serverAsyncMethod,
-            final String jsFilterFunctionBody, final String jsPostFunctionBody,
-            final Object serverSideData) {
-        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod,
-                jsFilterFunctionBody, jsPostFunctionBody, serverSideData);
+    public OnCut(final String jsPreFunctionBody, final ServerAsyncMethod serverAsyncMethod,
+            final String jsFilterFunctionBody, final String jsPostFunctionBody, final Object serverSideData) {
+        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody,
+                serverSideData);
     }
 
     /**

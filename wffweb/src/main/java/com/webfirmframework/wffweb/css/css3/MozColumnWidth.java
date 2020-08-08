@@ -61,18 +61,16 @@ public class MozColumnWidth extends AbstractCssProperty<MozColumnWidth> {
     }
 
     /**
-     * @param cssValue
-     *                     the css value to set.
+     * @param cssValue the css value to set.
      */
     public MozColumnWidth(final String cssValue) {
         setCssValue(cssValue);
     }
 
     /**
-     * @param mozColumnWidth
-     *                           the {@code MozColumnWidth} object from which
-     *                           the cssValue to set.And, {@code null} will
-     *                           throw {@code NullValueException}
+     * @param mozColumnWidth the {@code MozColumnWidth} object from which the
+     *                       cssValue to set.And, {@code null} will throw
+     *                       {@code NullValueException}
      */
     public MozColumnWidth(final MozColumnWidth mozColumnWidth) {
         if (mozColumnWidth == null) {
@@ -82,9 +80,8 @@ public class MozColumnWidth extends AbstractCssProperty<MozColumnWidth> {
     }
 
     /**
-     * @param percent
-     *                    the percentage value to set. The cssLengthUnit will
-     *                    automatically set to %.
+     * @param percent the percentage value to set. The cssLengthUnit will
+     *                automatically set to %.
      * @since 1.0.0
      * @author WFF
      */
@@ -98,8 +95,7 @@ public class MozColumnWidth extends AbstractCssProperty<MozColumnWidth> {
      * @param value
      * @param cssLengthUnit
      */
-    public MozColumnWidth(final float value,
-            final CssLengthUnit cssLengthUnit) {
+    public MozColumnWidth(final float value, final CssLengthUnit cssLengthUnit) {
         this.value = value;
         this.cssLengthUnit = cssLengthUnit;
         cssValue = String.valueOf(value) + cssLengthUnit;
@@ -112,8 +108,7 @@ public class MozColumnWidth extends AbstractCssProperty<MozColumnWidth> {
      * @since 1.0.0
      * @author WFF
      */
-    public MozColumnWidth setValue(final float value,
-            final CssLengthUnit cssLengthUnit) {
+    public MozColumnWidth setValue(final float value, final CssLengthUnit cssLengthUnit) {
         this.value = value;
         this.cssLengthUnit = cssLengthUnit;
         cssValue = String.valueOf(value) + cssLengthUnit;
@@ -124,8 +119,7 @@ public class MozColumnWidth extends AbstractCssProperty<MozColumnWidth> {
     }
 
     /**
-     * @param percent
-     *                    the percent to set
+     * @param percent the percent to set
      * @since 1.0.0
      * @author WFF
      */
@@ -172,12 +166,11 @@ public class MozColumnWidth extends AbstractCssProperty<MozColumnWidth> {
     }
 
     /**
-     * gets the -moz-column-width in float value.
-     * {@code MozColumnWidth#getUnit()} should be used to get the cssLengthUnit
-     * for this value.
+     * gets the -moz-column-width in float value. {@code MozColumnWidth#getUnit()}
+     * should be used to get the cssLengthUnit for this value.
      *
-     * @return the value in float or null if the cssValue is
-     *         <code>initial</code> or <code>inherit</code>.
+     * @return the value in float or null if the cssValue is <code>initial</code> or
+     *         <code>inherit</code>.
      * @since 1.0.0
      * @author WFF
      */
@@ -196,11 +189,9 @@ public class MozColumnWidth extends AbstractCssProperty<MozColumnWidth> {
     }
 
     /**
-     * @param cssValue
-     *                     the value should be in the format of
-     *                     <code>55px</code> or <code>95%</code>. {@code null}
-     *                     is considered as an invalid value and it will throw
-     *                     {@code NullValueException}.
+     * @param cssValue the value should be in the format of <code>55px</code> or
+     *                 <code>95%</code>. {@code null} is considered as an invalid
+     *                 value and it will throw {@code NullValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -213,12 +204,10 @@ public class MozColumnWidth extends AbstractCssProperty<MozColumnWidth> {
             } else {
                 final String trimmedCssValue = StringUtil.strip(cssValue);
                 boolean invalidValue = true;
-                for (final CssLengthUnit cssLengthUnit : CssLengthUnit
-                        .values()) {
+                for (final CssLengthUnit cssLengthUnit : CssLengthUnit.values()) {
                     final String unit = cssLengthUnit.getUnit();
                     if (trimmedCssValue.endsWith(unit)) {
-                        final String valueOnly = cssValue.replaceFirst(unit,
-                                "");
+                        final String valueOnly = cssValue.replaceFirst(unit, "");
                         try {
                             value = Float.parseFloat(valueOnly);
                         } catch (final NumberFormatException e) {
@@ -230,8 +219,7 @@ public class MozColumnWidth extends AbstractCssProperty<MozColumnWidth> {
                         break;
                     }
                 }
-                if (trimmedCssValue.equalsIgnoreCase(INITIAL)
-                        || trimmedCssValue.equalsIgnoreCase(INHERIT)
+                if (trimmedCssValue.equalsIgnoreCase(INITIAL) || trimmedCssValue.equalsIgnoreCase(INHERIT)
                         || trimmedCssValue.equalsIgnoreCase(AUTO)) {
                     this.cssValue = trimmedCssValue.toLowerCase();
                     cssLengthUnit = null;

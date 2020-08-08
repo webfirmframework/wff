@@ -37,8 +37,8 @@ class CssPropertySet extends LinkedHashSet<CssProperty> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * must be reentrant otherwise makes a deadlock when tested so StampedLock
-     * is not applicable
+     * must be reentrant otherwise makes a deadlock when tested so StampedLock is
+     * not applicable
      */
     private final ReadWriteLock lock = new ReentrantReadWriteLock(true);
 
@@ -167,8 +167,7 @@ class CssPropertySet extends LinkedHashSet<CssProperty> {
     }
 
     @Override
-    public boolean addAll(
-            final Collection<? extends CssProperty> cssProperties) {
+    public boolean addAll(final Collection<? extends CssProperty> cssProperties) {
         final Lock writeLock = lock.writeLock();
         writeLock.lock();
         try {
@@ -176,8 +175,7 @@ class CssPropertySet extends LinkedHashSet<CssProperty> {
             if (addedAll) {
                 cssFileBlock.setModified(addedAll);
                 for (final CssProperty cssProperty : cssProperties) {
-                    cssPropertiesAsMap.put(cssProperty.getCssName(),
-                            cssProperty);
+                    cssPropertiesAsMap.put(cssProperty.getCssName(), cssProperty);
                 }
             }
             return addedAll;
@@ -207,8 +205,7 @@ class CssPropertySet extends LinkedHashSet<CssProperty> {
                 cssFileBlock.setModified(removedAll);
                 for (final Object object : c) {
                     if (object instanceof CssProperty) {
-                        cssPropertiesAsMap
-                                .remove(((CssProperty) object).getCssName());
+                        cssPropertiesAsMap.remove(((CssProperty) object).getCssName());
                     }
                 }
             }
@@ -235,8 +232,7 @@ class CssPropertySet extends LinkedHashSet<CssProperty> {
 
         if (cssFileBlock.isModified()) {
             final int length = cssString.length();
-            final StringBuilder cssStringBuilder = new StringBuilder(
-                    length > 0 ? length : 16);
+            final StringBuilder cssStringBuilder = new StringBuilder(length > 0 ? length : 16);
             cssStringBuilder.delete(0, cssStringBuilder.length());
 
             final Lock readLock = lock.readLock();
@@ -252,8 +248,7 @@ class CssPropertySet extends LinkedHashSet<CssProperty> {
                 final Iterator<CssProperty> iterator = super.iterator();
                 while (iterator.hasNext()) {
                     final CssProperty cssProperty = iterator.next();
-                    cssStringBuilder.append(cssProperty.getCssName())
-                            .append(':').append(cssProperty.getCssValue())
+                    cssStringBuilder.append(cssProperty.getCssName()).append(':').append(cssProperty.getCssValue())
                             .append(';');
                 }
 

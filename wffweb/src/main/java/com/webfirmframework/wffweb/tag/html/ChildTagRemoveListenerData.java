@@ -32,8 +32,8 @@ final class ChildTagRemoveListenerData {
 
     private final ChildTagRemoveListener listener;
 
-    ChildTagRemoveListenerData(final AbstractHtml5SharedObject sharedObject,
-            final ChildTagRemoveListener listener, final Event event) {
+    ChildTagRemoveListenerData(final AbstractHtml5SharedObject sharedObject, final ChildTagRemoveListener listener,
+            final Event event) {
         super();
         this.sharedObject = sharedObject;
         this.listener = listener;

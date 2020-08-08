@@ -53,12 +53,9 @@ public class OnDrop extends AbstractEventAttribute {
         setServerAsyncMethod(null, serverAsyncMethod, null, null);
     }
 
-    public OnDrop(final String jsPreFunctionBody,
-            final ServerAsyncMethod serverAsyncMethod,
-            final String jsFilterFunctionBody,
-            final String jsPostFunctionBody) {
-        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod,
-                jsFilterFunctionBody, jsPostFunctionBody);
+    public OnDrop(final String jsPreFunctionBody, final ServerAsyncMethod serverAsyncMethod,
+            final String jsFilterFunctionBody, final String jsPostFunctionBody) {
+        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody);
     }
 
     public OnDrop(final String value) {
@@ -70,10 +67,8 @@ public class OnDrop extends AbstractEventAttribute {
      * @param serverSideData
      * @since 3.0.2
      */
-    public OnDrop(final ServerAsyncMethod serverAsyncMethod,
-            final Object serverSideData) {
-        setServerAsyncMethod(null, serverAsyncMethod, null, null,
-                serverSideData);
+    public OnDrop(final ServerAsyncMethod serverAsyncMethod, final Object serverSideData) {
+        setServerAsyncMethod(null, serverAsyncMethod, null, null, serverSideData);
     }
 
     /**
@@ -84,12 +79,10 @@ public class OnDrop extends AbstractEventAttribute {
      * @param serverSideData
      * @since 3.0.2
      */
-    public OnDrop(final String jsPreFunctionBody,
-            final ServerAsyncMethod serverAsyncMethod,
-            final String jsFilterFunctionBody, final String jsPostFunctionBody,
-            final Object serverSideData) {
-        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod,
-                jsFilterFunctionBody, jsPostFunctionBody, serverSideData);
+    public OnDrop(final String jsPreFunctionBody, final ServerAsyncMethod serverAsyncMethod,
+            final String jsFilterFunctionBody, final String jsPostFunctionBody, final Object serverSideData) {
+        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody,
+                serverSideData);
     }
 
     /**

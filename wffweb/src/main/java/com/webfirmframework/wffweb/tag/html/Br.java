@@ -60,10 +60,8 @@ public class Br extends AbstractHtml {
 
     /**
      *
-     * @param base
-     *                       i.e. parent tag of this tag
-     * @param attributes
-     *                       An array of {@code AbstractAttribute}
+     * @param base       i.e. parent tag of this tag
+     * @param attributes An array of {@code AbstractAttribute}
      *
      * @since 1.0.0
      */
@@ -74,14 +72,11 @@ public class Br extends AbstractHtml {
         }
     }
 
-    private static void warnForUnsupportedAttributes(
-            final AbstractAttribute... attributes) {
+    private static void warnForUnsupportedAttributes(final AbstractAttribute... attributes) {
         for (final AbstractAttribute abstractAttribute : attributes) {
-            if (!(abstractAttribute != null
-                    && (abstractAttribute instanceof BaseAttributable
-                            || abstractAttribute instanceof GlobalAttributable))) {
-                LOGGER.warning(abstractAttribute
-                        + " is not an instance of BaseAttribute");
+            if (!(abstractAttribute != null && (abstractAttribute instanceof BaseAttributable
+                    || abstractAttribute instanceof GlobalAttributable))) {
+                LOGGER.warning(abstractAttribute + " is not an instance of BaseAttribute");
             }
         }
     }
@@ -97,10 +92,9 @@ public class Br extends AbstractHtml {
     }
 
     /**
-     * @param selfClosing
-     *                        <code>true</code> to set as self closing tag and
-     *                        <code>false</code> for not to set as self closing
-     *                        tag. The default value is <code>true</code>.
+     * @param selfClosing <code>true</code> to set as self closing tag and
+     *                    <code>false</code> for not to set as self closing tag. The
+     *                    default value is <code>true</code>.
      * @since 1.0.0
      * @author WFF
      */
@@ -109,10 +103,9 @@ public class Br extends AbstractHtml {
     }
 
     /**
-     * @param nonClosing
-     *                       <code>true</code> to set as self closing tag and
-     *                       <code>false</code> for not to set as self closing
-     *                       tag. The default value is <code>true</code>.
+     * @param nonClosing <code>true</code> to set as self closing tag and
+     *                   <code>false</code> for not to set as self closing tag. The
+     *                   default value is <code>true</code>.
      * @since 1.0.0
      * @author WFF
      */

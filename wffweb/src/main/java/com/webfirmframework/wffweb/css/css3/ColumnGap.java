@@ -49,8 +49,7 @@ public class ColumnGap extends AbstractCssProperty<ColumnGap> {
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays
-            .asList(INITIAL, INHERIT, NORMAL);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(INITIAL, INHERIT, NORMAL);
 
     private String cssValue;
     private Float value;
@@ -64,18 +63,15 @@ public class ColumnGap extends AbstractCssProperty<ColumnGap> {
     }
 
     /**
-     * @param cssValue
-     *                     the css value to set.
+     * @param cssValue the css value to set.
      */
     public ColumnGap(final String cssValue) {
         setCssValue(cssValue);
     }
 
     /**
-     * @param columnGap
-     *                      the {@code ColumnGap} object from which the cssValue
-     *                      to set.And, {@code null} will throw
-     *                      {@code NullValueException}
+     * @param columnGap the {@code ColumnGap} object from which the cssValue to
+     *                  set.And, {@code null} will throw {@code NullValueException}
      */
     public ColumnGap(final ColumnGap columnGap) {
         if (columnGap == null) {
@@ -85,9 +81,8 @@ public class ColumnGap extends AbstractCssProperty<ColumnGap> {
     }
 
     /**
-     * @param percent
-     *                    the percentage value to set. The cssLengthUnit will
-     *                    automatically set to %.
+     * @param percent the percentage value to set. The cssLengthUnit will
+     *                automatically set to %.
      * @since 1.0.0
      * @author WFF
      */
@@ -114,8 +109,7 @@ public class ColumnGap extends AbstractCssProperty<ColumnGap> {
      * @since 1.0.0
      * @author WFF
      */
-    public ColumnGap setValue(final float value,
-            final CssLengthUnit cssLengthUnit) {
+    public ColumnGap setValue(final float value, final CssLengthUnit cssLengthUnit) {
         this.value = value;
         this.cssLengthUnit = cssLengthUnit;
         cssValue = String.valueOf(value) + cssLengthUnit;
@@ -126,8 +120,7 @@ public class ColumnGap extends AbstractCssProperty<ColumnGap> {
     }
 
     /**
-     * @param percent
-     *                    the percent to set
+     * @param percent the percent to set
      * @since 1.0.0
      * @author WFF
      */
@@ -174,11 +167,11 @@ public class ColumnGap extends AbstractCssProperty<ColumnGap> {
     }
 
     /**
-     * gets the width in float value. {@code ColumnGap#getUnit()} should be used
-     * to get the cssLengthUnit for this value.
+     * gets the width in float value. {@code ColumnGap#getUnit()} should be used to
+     * get the cssLengthUnit for this value.
      *
-     * @return the value in float or null if the cssValue is
-     *         <code>initial</code> or <code>inherit</code>.
+     * @return the value in float or null if the cssValue is <code>initial</code> or
+     *         <code>inherit</code>.
      * @since 1.0.0
      * @author WFF
      */
@@ -197,11 +190,9 @@ public class ColumnGap extends AbstractCssProperty<ColumnGap> {
     }
 
     /**
-     * @param cssValue
-     *                     the value should be in the format of
-     *                     <code>55px</code> or <code>95%</code>. {@code null}
-     *                     is considered as an invalid value and it will throw
-     *                     {@code NullValueException}.
+     * @param cssValue the value should be in the format of <code>55px</code> or
+     *                 <code>95%</code>. {@code null} is considered as an invalid
+     *                 value and it will throw {@code NullValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -214,12 +205,10 @@ public class ColumnGap extends AbstractCssProperty<ColumnGap> {
             } else {
                 final String trimmedCssValue = StringUtil.strip(cssValue);
                 boolean invalidValue = true;
-                for (final CssLengthUnit cssLengthUnit : CssLengthUnit
-                        .values()) {
+                for (final CssLengthUnit cssLengthUnit : CssLengthUnit.values()) {
                     final String unit = cssLengthUnit.getUnit();
                     if (trimmedCssValue.endsWith(unit)) {
-                        final String valueOnly = trimmedCssValue
-                                .replaceFirst(unit, "");
+                        final String valueOnly = trimmedCssValue.replaceFirst(unit, "");
                         try {
                             value = Float.parseFloat(valueOnly);
                         } catch (final NumberFormatException e) {
@@ -231,8 +220,7 @@ public class ColumnGap extends AbstractCssProperty<ColumnGap> {
                         break;
                     }
                 }
-                if (trimmedCssValue.equalsIgnoreCase(INITIAL)
-                        || trimmedCssValue.equalsIgnoreCase(INHERIT)
+                if (trimmedCssValue.equalsIgnoreCase(INITIAL) || trimmedCssValue.equalsIgnoreCase(INHERIT)
                         || trimmedCssValue.equalsIgnoreCase(NORMAL)) {
                     this.cssValue = trimmedCssValue.toLowerCase();
                     cssLengthUnit = null;
@@ -289,8 +277,7 @@ public class ColumnGap extends AbstractCssProperty<ColumnGap> {
     /**
      * validates if the given cssValue is valid for this class.
      *
-     * @param cssValue
-     *                     the value to check.
+     * @param cssValue the value to check.
      * @return true if valid and false if invalid.
      * @author WFF
      * @since 1.0.0

@@ -53,8 +53,7 @@ public class BorderLeftWidth extends AbstractCssProperty<BorderLeftWidth> {
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays
-            .asList(INITIAL, INHERIT, MEDIUM, THIN, THICK);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(INITIAL, INHERIT, MEDIUM, THIN, THICK);
 
     private String cssValue;
     private Float value;
@@ -68,18 +67,16 @@ public class BorderLeftWidth extends AbstractCssProperty<BorderLeftWidth> {
     }
 
     /**
-     * @param cssValue
-     *                     the css value to set.
+     * @param cssValue the css value to set.
      */
     public BorderLeftWidth(final String cssValue) {
         setCssValue(cssValue);
     }
 
     /**
-     * @param borderLeftWidth
-     *                            the {@code BorderLeftWidth} object from which
-     *                            the cssValue to set.And, {@code null} will
-     *                            throw {@code NullValueException}
+     * @param borderLeftWidth the {@code BorderLeftWidth} object from which the
+     *                        cssValue to set.And, {@code null} will throw
+     *                        {@code NullValueException}
      */
     public BorderLeftWidth(final BorderLeftWidth borderLeftWidth) {
         if (borderLeftWidth == null) {
@@ -89,9 +86,8 @@ public class BorderLeftWidth extends AbstractCssProperty<BorderLeftWidth> {
     }
 
     /**
-     * @param percent
-     *                    the percentage value to set. The cssLengthUnit will
-     *                    automatically set to %.
+     * @param percent the percentage value to set. The cssLengthUnit will
+     *                automatically set to %.
      * @since 1.0.0
      * @author WFF
      */
@@ -105,8 +101,7 @@ public class BorderLeftWidth extends AbstractCssProperty<BorderLeftWidth> {
      * @param value
      * @param cssLengthUnit
      */
-    public BorderLeftWidth(final float value,
-            final CssLengthUnit cssLengthUnit) {
+    public BorderLeftWidth(final float value, final CssLengthUnit cssLengthUnit) {
         this.value = value;
         this.cssLengthUnit = cssLengthUnit;
         cssValue = String.valueOf(value) + cssLengthUnit;
@@ -119,8 +114,7 @@ public class BorderLeftWidth extends AbstractCssProperty<BorderLeftWidth> {
      * @since 1.0.0
      * @author WFF
      */
-    public BorderLeftWidth setValue(final float value,
-            final CssLengthUnit cssLengthUnit) {
+    public BorderLeftWidth setValue(final float value, final CssLengthUnit cssLengthUnit) {
         this.value = value;
         this.cssLengthUnit = cssLengthUnit;
         cssValue = String.valueOf(value) + cssLengthUnit;
@@ -131,8 +125,7 @@ public class BorderLeftWidth extends AbstractCssProperty<BorderLeftWidth> {
     }
 
     /**
-     * @param percent
-     *                    the percent to set
+     * @param percent the percent to set
      * @since 1.0.0
      * @author WFF
      */
@@ -180,11 +173,11 @@ public class BorderLeftWidth extends AbstractCssProperty<BorderLeftWidth> {
 
     /**
      * gets the border-left-width in {@code Float} value.
-     * {@code BorderLeftWidth#getUnit()} should be used to get the cssLengthUnit
-     * for this value.
+     * {@code BorderLeftWidth#getUnit()} should be used to get the cssLengthUnit for
+     * this value.
      *
-     * @return the value in float or null if the cssValue is
-     *         <code>initial</code> or <code>inherit</code>.
+     * @return the value in float or null if the cssValue is <code>initial</code> or
+     *         <code>inherit</code>.
      * @since 1.0.0
      * @author WFF
      */
@@ -203,11 +196,9 @@ public class BorderLeftWidth extends AbstractCssProperty<BorderLeftWidth> {
     }
 
     /**
-     * @param cssValue
-     *                     the value should be in the format of
-     *                     <code>55px</code> or <code>95%</code>. {@code null}
-     *                     is considered as an invalid value and it will throw
-     *                     {@code NullValueException}.
+     * @param cssValue the value should be in the format of <code>55px</code> or
+     *                 <code>95%</code>. {@code null} is considered as an invalid
+     *                 value and it will throw {@code NullValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -219,15 +210,12 @@ public class BorderLeftWidth extends AbstractCssProperty<BorderLeftWidth> {
                 throw new NullValueException(
                         "null is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit.");
             } else {
-                final String trimmedCssValue = TagStringUtil
-                        .toLowerCase(StringUtil.strip(cssValue));
+                final String trimmedCssValue = TagStringUtil.toLowerCase(StringUtil.strip(cssValue));
                 boolean invalidValue = true;
-                for (final CssLengthUnit cssLengthUnit : CssLengthUnit
-                        .values()) {
+                for (final CssLengthUnit cssLengthUnit : CssLengthUnit.values()) {
                     final String unit = cssLengthUnit.getUnit();
                     if (trimmedCssValue.endsWith(unit)) {
-                        final String valueOnly = trimmedCssValue
-                                .replaceFirst(unit, "");
+                        final String valueOnly = trimmedCssValue.replaceFirst(unit, "");
                         try {
                             value = Float.parseFloat(valueOnly);
                         } catch (final NumberFormatException e) {
@@ -315,8 +303,7 @@ public class BorderLeftWidth extends AbstractCssProperty<BorderLeftWidth> {
     /**
      * validates if the given cssValue is valid for this class.
      *
-     * @param cssValue
-     *                     the value to check.
+     * @param cssValue the value to check.
      * @return true if valid and false if invalid.
      * @author WFF
      * @since 1.0.0

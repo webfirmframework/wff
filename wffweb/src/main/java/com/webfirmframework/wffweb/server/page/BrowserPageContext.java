@@ -31,8 +31,7 @@ public enum BrowserPageContext {
 
     INSTANCE;
 
-    private static final Logger LOGGER = Logger
-            .getLogger(BrowserPageContext.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(BrowserPageContext.class.getName());
 
     /**
      * key httpSessionId, value : (key: instanceId, value: BrowserPage)
@@ -40,20 +39,20 @@ public enum BrowserPageContext {
     private final Map<String, Map<String, BrowserPage>> httpSessionIdBrowserPages;
 
     /**
-     * key:- unique id for BrowserPage (AKA wff instance id in terms of wff)
-     * value:- BrowserPage
+     * key:- unique id for BrowserPage (AKA wff instance id in terms of wff) value:-
+     * BrowserPage
      */
     private final Map<String, BrowserPage> instanceIdBrowserPage;
 
     /**
-     * key:- unique id for BrowserPage (AKA wff instance id in terms of wff)
-     * value:- BrowserPage this is only for websocket open close handling
+     * key:- unique id for BrowserPage (AKA wff instance id in terms of wff) value:-
+     * BrowserPage this is only for websocket open close handling
      */
     private final Map<String, BrowserPage> instanceIdBPForWS;
 
     /**
-     * key:- unique id for AbstractBrowserPage (AKA wff instance id in terms of
-     * wff) value:- httpSessionId
+     * key:- unique id for AbstractBrowserPage (AKA wff instance id in terms of wff)
+     * value:- httpSessionId
      */
     private final Map<String, String> instanceIdHttpSessionId;
 
@@ -71,14 +70,12 @@ public enum BrowserPageContext {
      * @since 2.0.0
      * @author WFF
      */
-    public String addBrowserPage(final String httpSessionId,
-            final BrowserPage browserPage) {
+    public String addBrowserPage(final String httpSessionId, final BrowserPage browserPage) {
 
         // passed 4 instead of 1 because the load factor is 0.75f
 
-        final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages
-                .computeIfAbsent(httpSessionId,
-                        key -> new ConcurrentHashMap<>(4));
+        final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.computeIfAbsent(httpSessionId,
+                key -> new ConcurrentHashMap<>(4));
 
         browserPages.put(browserPage.getInstanceId(), browserPage);
 
@@ -96,11 +93,9 @@ public enum BrowserPageContext {
      * @since 2.0.0
      * @author WFF
      */
-    public BrowserPage getBrowserPage(final String httpSessionId,
-            final String instanceId) {
+    public BrowserPage getBrowserPage(final String httpSessionId, final String instanceId) {
 
-        final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages
-                .get(httpSessionId);
+        final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.get(httpSessionId);
         if (browserPages != null) {
             return browserPages.get(instanceId);
         }
@@ -109,8 +104,8 @@ public enum BrowserPageContext {
 
     /**
      * gets the browserPage object for the given instance id.
-     * BrowserPage#getBrowserPge(httpSessionId, instanceId) method is better
-     * than this method in terms of performance.
+     * BrowserPage#getBrowserPge(httpSessionId, instanceId) method is better than
+     * this method in terms of performance.
      *
      * @param instanceId
      * @return browser page object if it exists otherwise null.
@@ -130,11 +125,9 @@ public enum BrowserPageContext {
      * @return an unmodifiable map of BrowserPages associated with this session
      *         where key as instanceId and value as BrowserPage.
      */
-    public Map<String, BrowserPage> getBrowserPages(
-            final String httpSessionId) {
+    public Map<String, BrowserPage> getBrowserPages(final String httpSessionId) {
 
-        final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages
-                .get(httpSessionId);
+        final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.get(httpSessionId);
 
         if (browserPages == null) {
             return null;
@@ -145,30 +138,25 @@ public enum BrowserPageContext {
     /**
      * This should be called when the http session is closed
      *
-     * @param httpSessionId
-     *                          the session id of http session
+     * @param httpSessionId the session id of http session
      * @since 2.0.0
      * @author WFF
      */
     public void destroyContext(final String httpSessionId) {
-        final Map<String, BrowserPage> httpSessionIdBrowserPage = httpSessionIdBrowserPages
-                .remove(httpSessionId);
+        final Map<String, BrowserPage> httpSessionIdBrowserPage = httpSessionIdBrowserPages.remove(httpSessionId);
 
         if (httpSessionIdBrowserPage != null) {
 
-            for (final BrowserPage browserPage : httpSessionIdBrowserPage
-                    .values()) {
+            for (final BrowserPage browserPage : httpSessionIdBrowserPage.values()) {
                 instanceIdHttpSessionId.remove(browserPage.getInstanceId());
-                final BrowserPage removedBP = instanceIdBrowserPage
-                        .remove(browserPage.getInstanceId());
+                final BrowserPage removedBP = instanceIdBrowserPage.remove(browserPage.getInstanceId());
                 if (removedBP != null) {
                     try {
                         browserPage.removedFromContext();
                     } catch (final Throwable e) {
                         if (LOGGER.isLoggable(Level.WARNING)) {
                             LOGGER.log(Level.WARNING,
-                                    "The overridden method BrowserPage#removedFromContext threw an exception.",
-                                    e);
+                                    "The overridden method BrowserPage#removedFromContext threw an exception.", e);
                         }
                     }
                 }
@@ -182,27 +170,24 @@ public enum BrowserPageContext {
     /**
      * this method should be called when the websocket is opened
      *
-     * @param wffInstanceId
-     *                          the wffInstanceId which can be retried from the
-     *                          request parameter in websocket connection
+     * @param wffInstanceId the wffInstanceId which can be retried from the request
+     *                      parameter in websocket connection
      * @since 2.0.0
      * @author WFF
-     * @return the {@code BrowserPage} object associated with this instance id,
-     *         if the instanceId is associated with a closed http session it
-     *         will return null.
+     * @return the {@code BrowserPage} object associated with this instance id, if
+     *         the instanceId is associated with a closed http session it will
+     *         return null.
      */
     public BrowserPage webSocketOpened(final String wffInstanceId) {
 
         final String httpSessionId = instanceIdHttpSessionId.get(wffInstanceId);
 
         if (httpSessionId != null) {
-            final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages
-                    .get(httpSessionId);
+            final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.get(httpSessionId);
             if (browserPages != null) {
                 final BrowserPage browserPage = browserPages.get(wffInstanceId);
                 if (browserPage != null) {
-                    instanceIdBPForWS.put(browserPage.getInstanceId(),
-                            browserPage);
+                    instanceIdBPForWS.put(browserPage.getInstanceId(), browserPage);
                 }
                 return browserPage;
             }
@@ -214,9 +199,8 @@ public enum BrowserPageContext {
     /**
      * this method should be called when the websocket is closed
      *
-     * @param wffInstanceId
-     *                          the wffInstanceId which can be retried from the
-     *                          request parameter in websocket connection
+     * @param wffInstanceId the wffInstanceId which can be retried from the request
+     *                      parameter in websocket connection
      * @since 2.0.0
      * @author WFF
      * @deprecated this method is for future development
@@ -229,20 +213,16 @@ public enum BrowserPageContext {
     /**
      * this method should be called when the websocket is closed.
      *
-     * @param wffInstanceId
-     *                          the wffInstanceId which can be retried from the
-     *                          request parameter in websocket connection
-     * @param sessionId
-     *                          the websocket session id, i.e. the unique id of
-     *                          the websocket session which is given in
-     *                          {@code BrowserPage#addWebSocketPushListener}
-     *                          method.
+     * @param wffInstanceId the wffInstanceId which can be retried from the request
+     *                      parameter in websocket connection
+     * @param sessionId     the websocket session id, i.e. the unique id of the
+     *                      websocket session which is given in
+     *                      {@code BrowserPage#addWebSocketPushListener} method.
      * @since 2.1.0
      * @author WFF
      * @return browserPage instance associated with this wffInstanceId
      */
-    public BrowserPage webSocketClosed(final String wffInstanceId,
-            final String sessionId) {
+    public BrowserPage webSocketClosed(final String wffInstanceId, final String sessionId) {
         final BrowserPage bp = instanceIdBPForWS.get(wffInstanceId);
         if (bp != null) {
             bp.removeWebSocketPushListener(sessionId);
@@ -255,8 +235,8 @@ public enum BrowserPageContext {
     }
 
     /**
-     * should be called when the httpsession is closed. The closed http session
-     * id should be passed as an argument.
+     * should be called when the httpsession is closed. The closed http session id
+     * should be passed as an argument.
      *
      * @param httpSessionId
      * @since 2.0.0
@@ -265,14 +245,12 @@ public enum BrowserPageContext {
     public void httpSessionClosed(final String httpSessionId) {
 
         if (httpSessionId != null) {
-            final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages
-                    .get(httpSessionId);
+            final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.get(httpSessionId);
             if (browserPages != null) {
 
                 for (final String instanceId : browserPages.keySet()) {
                     instanceIdHttpSessionId.remove(instanceId);
-                    final BrowserPage removedBrowserPage = instanceIdBrowserPage
-                            .remove(instanceId);
+                    final BrowserPage removedBrowserPage = instanceIdBrowserPage.remove(instanceId);
                     if (removedBrowserPage != null) {
 
                         try {
@@ -280,8 +258,7 @@ public enum BrowserPageContext {
                         } catch (final Throwable e) {
                             if (LOGGER.isLoggable(Level.WARNING)) {
                                 LOGGER.log(Level.WARNING,
-                                        "The overridden method BrowserPage#removedFromContext threw an exception.",
-                                        e);
+                                        "The overridden method BrowserPage#removedFromContext threw an exception.", e);
                             }
                         }
                     }
@@ -292,8 +269,7 @@ public enum BrowserPageContext {
             }
         } else {
             if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.warning(
-                        "The associatd HttpSession is alread closed for this instance id");
+                LOGGER.warning("The associatd HttpSession is alread closed for this instance id");
             }
         }
 
@@ -303,37 +279,30 @@ public enum BrowserPageContext {
      * This method is will be removed in the next version. Use
      * {@code webSocketMessaged} method instead of this method.
      *
-     * @param wffInstanceId
-     *                          the wffInstanceId which can be retried from the
-     *                          request parameter in websocket connection.
+     * @param wffInstanceId the wffInstanceId which can be retried from the request
+     *                      parameter in websocket connection.
      * @since 2.0.0
-     * @param message
-     *                    the message received from websocket
+     * @param message the message received from websocket
      * @author WFF
      * @deprecated use webSocketMessaged which does the same job.
      */
     @Deprecated
-    public BrowserPage websocketMessaged(final String wffInstanceId,
-            final byte[] message) {
+    public BrowserPage websocketMessaged(final String wffInstanceId, final byte[] message) {
         return webSocketMessaged(wffInstanceId, message);
     }
 
     /**
      * this method should be called when the websocket is messagedS
      *
-     * @param wffInstanceId
-     *                          the wffInstanceId which can be retried from the
-     *                          request parameter in websocket connection.
-     * @param message
-     *                          the message received from websocket
+     * @param wffInstanceId the wffInstanceId which can be retried from the request
+     *                      parameter in websocket connection.
+     * @param message       the message received from websocket
      * @since 2.1.0
      * @author WFF
      */
-    public BrowserPage webSocketMessaged(final String wffInstanceId,
-            final byte[] message) {
+    public BrowserPage webSocketMessaged(final String wffInstanceId, final byte[] message) {
 
-        final BrowserPage browserPage = instanceIdBrowserPage
-                .get(wffInstanceId);
+        final BrowserPage browserPage = instanceIdBrowserPage.get(wffInstanceId);
 
         if (browserPage != null) {
             browserPage.webSocketMessaged(message);
@@ -344,22 +313,17 @@ public enum BrowserPageContext {
     }
 
     /**
-     * removes browser page by the given instance id. This method is for
-     * internal usage.
+     * removes browser page by the given instance id. This method is for internal
+     * usage.
      *
-     * @param callerInstanceId
-     *                             instance id of the caller browserPage
-     *                             instance.
-     * @param instanceId
-     *                             the instance id of the browser page which is
-     *                             indented to be removed.
+     * @param callerInstanceId instance id of the caller browserPage instance.
+     * @param instanceId       the instance id of the browser page which is indented
+     *                         to be removed.
      * @since 2.1.4
      */
-    void removeBrowserPage(final String callerInstanceId,
-            final String instanceId) {
+    void removeBrowserPage(final String callerInstanceId, final String instanceId) {
 
-        final String callerHttpSessionId = instanceIdHttpSessionId
-                .get(callerInstanceId);
+        final String callerHttpSessionId = instanceIdHttpSessionId.get(callerInstanceId);
 
         final String httpSessionId = instanceIdHttpSessionId.get(instanceId);
 
@@ -367,14 +331,11 @@ public enum BrowserPageContext {
         // the caller session id must be
         // same as the session id of the instanceId
         // otherwise it's considered as a hacking.
-        if (httpSessionId != null
-                && httpSessionId.equals(callerHttpSessionId)) {
+        if (httpSessionId != null && httpSessionId.equals(callerHttpSessionId)) {
 
-            final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages
-                    .get(httpSessionId);
+            final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.get(httpSessionId);
             if (browserPages != null) {
-                final BrowserPage removedBrowserPage = browserPages
-                        .remove(instanceId);
+                final BrowserPage removedBrowserPage = browserPages.remove(instanceId);
 
                 if (removedBrowserPage != null) {
                     try {
@@ -382,8 +343,7 @@ public enum BrowserPageContext {
                     } catch (final Throwable e) {
                         if (LOGGER.isLoggable(Level.WARNING)) {
                             LOGGER.log(Level.WARNING,
-                                    "The overridden method BrowserPage#removedFromContext threw an exception.",
-                                    e);
+                                    "The overridden method BrowserPage#removedFromContext threw an exception.", e);
                         }
                     }
                 }
@@ -394,8 +354,7 @@ public enum BrowserPageContext {
 
         } else {
             if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.warning("The callerInstanceId " + callerInstanceId
-                        + " tried to remove instanceId " + instanceId
+                LOGGER.warning("The callerInstanceId " + callerInstanceId + " tried to remove instanceId " + instanceId
                         + " BrowserPageContext");
             }
         }
@@ -407,18 +366,15 @@ public enum BrowserPageContext {
      *
      * @param browserPage
      * @return true if the given browserPage exists in the BrowserPageContext.
-     * @throws NullValueException
-     *                                if the given browserPage instance is null
+     * @throws NullValueException if the given browserPage instance is null
      * @since 2.1.13
      * @author WFF
      */
-    public boolean exists(final BrowserPage browserPage)
-            throws NullValueException {
+    public boolean exists(final BrowserPage browserPage) throws NullValueException {
         if (browserPage == null) {
             throw new NullValueException("browserPage instance cannot be null");
         }
-        return browserPage
-                .equals(instanceIdBrowserPage.get(browserPage.getInstanceId()));
+        return browserPage.equals(instanceIdBrowserPage.get(browserPage.getInstanceId()));
     }
 
 }

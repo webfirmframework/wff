@@ -162,8 +162,7 @@ import com.webfirmframework.wffweb.tag.html.tables.Tr;
 
 public class TagRegistry {
 
-    private static final Logger LOGGER = Logger
-            .getLogger(TagRegistry.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(TagRegistry.class.getName());
 
     private static final Set<String> TAG_NAMES_SET;
 
@@ -180,8 +179,7 @@ public class TagRegistry {
         final Field[] fields = TagNameConstants.class.getFields();
         final int initialCapacity = fields.length;
 
-        final Map<String, Class<?>> tagClassByTagName = new ConcurrentHashMap<>(
-                initialCapacity);
+        final Map<String, Class<?>> tagClassByTagName = new ConcurrentHashMap<>(initialCapacity);
         tagClassByTagNameTmp = new HashMap<>(initialCapacity);
 
         tagClassByTagName.put(TagNameConstants.A, A.class);
@@ -317,17 +315,13 @@ public class TagRegistry {
 
         final Map<String, String> tagClassNameByTagName = new ConcurrentHashMap<>();
 
-        for (final Entry<String, Class<?>> entry : tagClassByTagName
-                .entrySet()) {
-            tagClassNameByTagName.put(entry.getKey(),
-                    entry.getValue().getSimpleName());
+        for (final Entry<String, Class<?>> entry : tagClassByTagName.entrySet()) {
+            tagClassNameByTagName.put(entry.getKey(), entry.getValue().getSimpleName());
         }
 
-        TAG_CLASS_NAME_BY_TAG_NAME = Collections
-                .unmodifiableMap(tagClassNameByTagName);
+        TAG_CLASS_NAME_BY_TAG_NAME = Collections.unmodifiableMap(tagClassNameByTagName);
 
-        TAG_NAMES_SET = Collections
-                .newSetFromMap(new ConcurrentHashMap<>(initialCapacity));
+        TAG_NAMES_SET = Collections.newSetFromMap(new ConcurrentHashMap<>(initialCapacity));
 
         TAG_NAMES_SET.addAll(TAG_CLASS_NAME_BY_TAG_NAME.keySet());
 
@@ -371,16 +365,14 @@ public class TagRegistry {
 
     /**
      *
-     * @param tagNamesToRegister
-     *                               the tag names to register , eg:-
-     *                               register("new-tag1", "new-tag2")
+     * @param tagNamesToRegister the tag names to register , eg:-
+     *                           register("new-tag1", "new-tag2")
      * @since 1.1.3
      * @author WFF
      */
     public static void register(final String... tagNamesToRegister) {
 
-        final Set<String> tagNamesWithoutDuplicates = new HashSet<>(
-                tagNamesToRegister.length);
+        final Set<String> tagNamesWithoutDuplicates = new HashSet<>(tagNamesToRegister.length);
         Collections.addAll(tagNamesWithoutDuplicates, tagNamesToRegister);
 
         TAG_NAMES_SET.addAll(tagNamesWithoutDuplicates);
@@ -392,14 +384,14 @@ public class TagRegistry {
         // then needs to sort by ascending order of name otherwise
         // in some machines the order will be different for names having same
         // length
-        IndexedTagName.INSTANCE.sortedTagNames().sort(Comparator
-                .comparingInt(String::length).thenComparing(String::compareTo));
+        IndexedTagName.INSTANCE.sortedTagNames()
+                .sort(Comparator.comparingInt(String::length).thenComparing(String::compareTo));
 
     }
 
     /**
-     * @return a map containing tag name as key and value as tag class name
-     *         without package name
+     * @return a map containing tag name as key and value as tag class name without
+     *         package name
      * @since 1.1.3
      * @author WFF
      */
@@ -425,8 +417,7 @@ public class TagRegistry {
 
         final Map<String, Class<?>> unloadedClasses = new HashMap<>();
 
-        for (final Entry<String, Class<?>> entry : tagClassByTagNameTmp
-                .entrySet()) {
+        for (final Entry<String, Class<?>> entry : tagClassByTagNameTmp.entrySet()) {
             try {
 
                 Class.forName(entry.getValue().getName());
@@ -434,8 +425,7 @@ public class TagRegistry {
             } catch (final ClassNotFoundException e) {
                 unloadedClasses.put(entry.getKey(), entry.getValue());
                 if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.warning("Could not load tag class "
-                            + entry.getValue().getName());
+                    LOGGER.warning("Could not load tag class " + entry.getValue().getName());
                 }
 
             }
@@ -449,8 +439,7 @@ public class TagRegistry {
     }
 
     /**
-     * @param tagName
-     *                    name of tag in lower case
+     * @param tagName name of tag in lower case
      * @return the new instance of given tag name without any parent tag and
      *         attributes
      * @since 3.0.2
@@ -461,49 +450,14 @@ public class TagRegistry {
     }
 
     /**
-     * @param tagName
-     *                       name of tag in lower case
+     * @param tagName    name of tag in lower case
      * @param parent
      * @param attributes
      * @return
      * @since 3.0.2
      * @throws InvalidValueException
      */
-    public static AbstractHtml getNewTagInstance(final String tagName,
-            final AbstractHtml parent, final AbstractAttribute... attributes) {
-
-        final Class<?> tagClass = TAG_CLASS_BY_TAG_NAME.get(tagName);
-
-        if (tagClass == null) {
-            return null;
-        }
-
-        try {
-
-            final AbstractHtml tag = (AbstractHtml) tagClass
-                    .getConstructor(AbstractHtml.class,
-                            AbstractAttribute[].class)
-                    .newInstance(parent, attributes);
-
-            return tag;
-        } catch (InstantiationException | IllegalAccessException
-                | IllegalArgumentException | InvocationTargetException
-                | NoSuchMethodException | SecurityException e) {
-            throw new InvalidValueException(
-                    "Unable to create instance for " + tagClass, e);
-        }
-    }
-
-    /**
-     * @param tagName
-     *                       name of tag in lower case
-     * @param parent
-     * @param attributes
-     * @return new instance or null if failed
-     * @since 3.0.2
-     */
-    public static AbstractHtml getNewTagInstanceOrNullIfFailed(
-            final String tagName, final AbstractHtml parent,
+    public static AbstractHtml getNewTagInstance(final String tagName, final AbstractHtml parent,
             final AbstractAttribute... attributes) {
 
         final Class<?> tagClass = TAG_CLASS_BY_TAG_NAME.get(tagName);
@@ -515,13 +469,38 @@ public class TagRegistry {
         try {
 
             final AbstractHtml tag = (AbstractHtml) tagClass
-                    .getConstructor(AbstractHtml.class,
-                            AbstractAttribute[].class)
-                    .newInstance(parent, attributes);
+                    .getConstructor(AbstractHtml.class, AbstractAttribute[].class).newInstance(parent, attributes);
 
             return tag;
-        } catch (InstantiationException | IllegalAccessException
-                | IllegalArgumentException | InvocationTargetException
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+                | NoSuchMethodException | SecurityException e) {
+            throw new InvalidValueException("Unable to create instance for " + tagClass, e);
+        }
+    }
+
+    /**
+     * @param tagName    name of tag in lower case
+     * @param parent
+     * @param attributes
+     * @return new instance or null if failed
+     * @since 3.0.2
+     */
+    public static AbstractHtml getNewTagInstanceOrNullIfFailed(final String tagName, final AbstractHtml parent,
+            final AbstractAttribute... attributes) {
+
+        final Class<?> tagClass = TAG_CLASS_BY_TAG_NAME.get(tagName);
+
+        if (tagClass == null) {
+            return null;
+        }
+
+        try {
+
+            final AbstractHtml tag = (AbstractHtml) tagClass
+                    .getConstructor(AbstractHtml.class, AbstractAttribute[].class).newInstance(parent, attributes);
+
+            return tag;
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
                 | NoSuchMethodException | SecurityException e) {
             // NOP
         }
@@ -529,15 +508,13 @@ public class TagRegistry {
     }
 
     /**
-     * @param tagNameIndex
-     *                         index of tag name
+     * @param tagNameIndex index of tag name
      * @param parent
      * @param attributes
      * @return new instance or null if failed
      * @since 3.0.3
      */
-    public static AbstractHtml getNewTagInstanceOrNullIfFailed(
-            final int tagNameIndex, final AbstractHtml parent,
+    public static AbstractHtml getNewTagInstanceOrNullIfFailed(final int tagNameIndex, final AbstractHtml parent,
             final AbstractAttribute... attributes) {
 
         final Class<?> tagClass = INDEXED_TAG_CLASSES.get(tagNameIndex);
@@ -549,13 +526,10 @@ public class TagRegistry {
         try {
 
             final AbstractHtml tag = (AbstractHtml) tagClass
-                    .getConstructor(AbstractHtml.class,
-                            AbstractAttribute[].class)
-                    .newInstance(parent, attributes);
+                    .getConstructor(AbstractHtml.class, AbstractAttribute[].class).newInstance(parent, attributes);
 
             return tag;
-        } catch (InstantiationException | IllegalAccessException
-                | IllegalArgumentException | InvocationTargetException
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
                 | NoSuchMethodException | SecurityException e) {
             // NOP
         }
@@ -563,23 +537,19 @@ public class TagRegistry {
     }
 
     // only for testing purpose
-    static void test() throws InstantiationException, IllegalAccessException,
-            NoSuchFieldException, SecurityException, IllegalArgumentException,
-            InvocationTargetException, NoSuchMethodException,
-            InvalidValueException {
-        for (final Entry<String, Class<?>> each : TAG_CLASS_BY_TAG_NAME
-                .entrySet()) {
+    static void test() throws InstantiationException, IllegalAccessException, NoSuchFieldException, SecurityException,
+            IllegalArgumentException, InvocationTargetException, NoSuchMethodException, InvalidValueException {
+        for (final Entry<String, Class<?>> each : TAG_CLASS_BY_TAG_NAME.entrySet()) {
             final String expectedTagName = each.getKey();
             final Class<?> tagClass = each.getValue();
             final AbstractHtml newInstance = (AbstractHtml) tagClass
-                    .getConstructor(AbstractHtml.class,
-                            AbstractAttribute[].class)
+                    .getConstructor(AbstractHtml.class, AbstractAttribute[].class)
                     .newInstance(null, new AbstractAttribute[0]);
             final String actualTagName = newInstance.getTagName();
 
             if (!expectedTagName.equals(actualTagName)) {
-                throw new InvalidValueException("expectedTagName: "
-                        + expectedTagName + " actualTagName: " + actualTagName);
+                throw new InvalidValueException(
+                        "expectedTagName: " + expectedTagName + " actualTagName: " + actualTagName);
             }
         }
     }

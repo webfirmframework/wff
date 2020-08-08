@@ -26,8 +26,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.ImgAttributable;
  * @author WFF
  * @since 2.0.2
  */
-public class Sizes extends AbstractAttribute
-        implements ImgAttributable, SourceAttributable {
+public class Sizes extends AbstractAttribute implements ImgAttributable, SourceAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -46,8 +45,7 @@ public class Sizes extends AbstractAttribute
 
     /**
      *
-     * @param value
-     *                  the value for the attribute
+     * @param value the value for the attribute
      * @since 2.0.2
      */
     public Sizes(final String value) {
@@ -57,8 +55,7 @@ public class Sizes extends AbstractAttribute
     /**
      * sets the value for this attribute
      *
-     * @param value
-     *                  the value for the attribute.
+     * @param value the value for the attribute.
      * @since 2.0.2
      */
     public void setValue(final String value) {
@@ -68,12 +65,10 @@ public class Sizes extends AbstractAttribute
     /**
      * sets the value for this attribute
      *
-     * @param updateClient
-     *                         true to update client browser page if it is
-     *                         available. The default value is true but it will
-     *                         be ignored if there is no client browser page.
-     * @param value
-     *                         the value for the attribute.
+     * @param updateClient true to update client browser page if it is available.
+     *                     The default value is true but it will be ignored if there
+     *                     is no client browser page.
+     * @param value        the value for the attribute.
      * @since 2.1.15
      * @author WFF
      */

@@ -25,8 +25,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
 
 public enum BrowserPageAction {
 
-    RELOAD(Task.RELOAD_BROWSER,
-            null), RELOAD_FROM_CACHE(Task.RELOAD_BROWSER_FROM_CACHE, null);
+    RELOAD(Task.RELOAD_BROWSER, null), RELOAD_FROM_CACHE(Task.RELOAD_BROWSER_FROM_CACHE, null);
 
     private byte[] actionBytes;
 
@@ -42,12 +41,10 @@ public enum BrowserPageAction {
             nameValue.setValues(new byte[][] {});
 
             actionBytes = WffBinaryMessageUtil.VERSION_1
-                    .getWffBinaryMessageBytes(
-                            Task.RELOAD_BROWSER.getTaskNameValue(), nameValue);
+                    .getWffBinaryMessageBytes(Task.RELOAD_BROWSER.getTaskNameValue(), nameValue);
         } else {
             actionBytes = WffBinaryMessageUtil.VERSION_1
-                    .getWffBinaryMessageBytes(
-                            Task.RELOAD_BROWSER.getTaskNameValue());
+                    .getWffBinaryMessageBytes(Task.RELOAD_BROWSER.getTaskNameValue());
         }
     }
 
@@ -72,44 +69,35 @@ public enum BrowserPageAction {
     /**
      * Gets the action {@code ByteBuffer} for executing the given JavaScript
      *
-     * @param js
-     *               JavaScript to execute in the browser
-     * @return the action {@code ByteBuffer} for executing the given JavaScript
-     *         in the browser.
-     * @throws UnsupportedEncodingException
-     *                                          throwing this exception will be
-     *                                          removed in future version
-     *                                          because its internal
-     *                                          implementation will never make
-     *                                          this exception due to the code
-     *                                          changes since 3.0.1.
+     * @param js JavaScript to execute in the browser
+     * @return the action {@code ByteBuffer} for executing the given JavaScript in
+     *         the browser.
+     * @throws UnsupportedEncodingException throwing this exception will be removed
+     *                                      in future version because its internal
+     *                                      implementation will never make this
+     *                                      exception due to the code changes since
+     *                                      3.0.1.
      * @since 2.1.0
      * @author WFF
      */
-    public static ByteBuffer getActionByteBufferForExecuteJS(final String js)
-            throws UnsupportedEncodingException {
+    public static ByteBuffer getActionByteBufferForExecuteJS(final String js) throws UnsupportedEncodingException {
         return ByteBuffer.wrap(getActionBytesForExecuteJS(js));
     }
 
     /**
      * Gets the action bytes for executing the given JavaScript in the browser.
      *
-     * @param js
-     *               JavaScript to execute in the browser
-     * @return the action bytes for executing the given JavaScript in the
-     *         browser.
-     * @throws UnsupportedEncodingException
-     *                                          throwing this exception will be
-     *                                          removed in future version
-     *                                          because its internal
-     *                                          implementation will never make
-     *                                          this exception due to the code
-     *                                          changes since 3.0.1.
+     * @param js JavaScript to execute in the browser
+     * @return the action bytes for executing the given JavaScript in the browser.
+     * @throws UnsupportedEncodingException throwing this exception will be removed
+     *                                      in future version because its internal
+     *                                      implementation will never make this
+     *                                      exception due to the code changes since
+     *                                      3.0.1.
      * @since 2.1.0
      * @author WFF
      */
-    public static byte[] getActionBytesForExecuteJS(final String js)
-            throws UnsupportedEncodingException {
+    public static byte[] getActionBytesForExecuteJS(final String js) throws UnsupportedEncodingException {
 
         // this method will never throw UnsupportedEncodingException
         // but not changing the method signature to keep consistency of this
@@ -130,8 +118,7 @@ public enum BrowserPageAction {
 
         taskNameValue.setValues(values);
 
-        return WffBinaryMessageUtil.VERSION_1
-                .getWffBinaryMessageBytes(taskNameValue);
+        return WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(taskNameValue);
     }
 
 }

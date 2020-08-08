@@ -41,13 +41,11 @@ public abstract class AbstractBean<FORCLASS> implements Bean {
     }
 
     /**
-     * @param stateChangeInformer
-     *                                the stateChangeInformer to set
+     * @param stateChangeInformer the stateChangeInformer to set
      * @since 1.0.0
      * @author WFF
      */
-    public void setStateChangeInformer(
-            final StateChangeInformer<Bean> stateChangeInformer) {
+    public void setStateChangeInformer(final StateChangeInformer<Bean> stateChangeInformer) {
         this.stateChangeInformer = stateChangeInformer;
     }
 
@@ -64,8 +62,7 @@ public abstract class AbstractBean<FORCLASS> implements Bean {
      * sets the if the object is already in use. It will also set null for
      * stateChangeInformer if the given argument is false.
      *
-     * @param alreadyInUse
-     *                         the alreadyInUse to set
+     * @param alreadyInUse the alreadyInUse to set
      * @since 1.0.0
      * @author WFF
      */

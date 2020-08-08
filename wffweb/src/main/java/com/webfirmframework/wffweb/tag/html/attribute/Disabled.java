@@ -36,8 +36,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
  * @author WFF
  * @since 1.0.0
  */
-public class Disabled extends AbstractAttribute
-        implements InputAttributable, BooleanAttribute {
+public class Disabled extends AbstractAttribute implements InputAttributable, BooleanAttribute {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -55,8 +54,8 @@ public class Disabled extends AbstractAttribute
     }
 
     /**
-     * sets the default value as <code>disabled</code> (since 2.1.5). If value
-     * is not required then use <code>new Disabled(null)</code>.
+     * sets the default value as <code>disabled</code> (since 2.1.5). If value is
+     * not required then use <code>new Disabled(null)</code>.
      *
      * @since 1.0.0
      * @author WFF

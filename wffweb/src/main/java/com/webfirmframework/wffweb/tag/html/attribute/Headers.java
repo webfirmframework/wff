@@ -28,8 +28,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.ThAttributable;
  * @author WFF
  *
  */
-public class Headers extends AbstractValueSetAttribute
-        implements ThAttributable, TdAttributable {
+public class Headers extends AbstractValueSetAttribute implements ThAttributable, TdAttributable {
 
     /**
      *
@@ -88,9 +87,8 @@ public class Headers extends AbstractValueSetAttribute
     /**
      * adds the given header ids.
      *
-     * @param headerIds
-     *                      one or more header ids separated by space or as an
-     *                      array of header ids.
+     * @param headerIds one or more header ids separated by space or as an array of
+     *                  header ids.
      * @since 1.1.3
      * @author WFF
      */
@@ -103,9 +101,8 @@ public class Headers extends AbstractValueSetAttribute
     /**
      * removed all current header ids and adds the given header ids.
      *
-     * @param headerIds
-     *                      one or more header ids separated by space or an
-     *                      array of header ids.
+     * @param headerIds one or more header ids separated by space or an array of
+     *                  header ids.
      * @since 1.1.3
      * @author WFF
      */
@@ -129,8 +126,7 @@ public class Headers extends AbstractValueSetAttribute
     /**
      * removes all header ids from the class attribute
      *
-     * @param headerIds
-     *                      the header ids to remove
+     * @param headerIds the header ids to remove
      * @since 1.1.3
      * @author WFF
      */
@@ -141,8 +137,7 @@ public class Headers extends AbstractValueSetAttribute
     /**
      * removes the given header id
      *
-     * @param headerId
-     *                     the header id to remove
+     * @param headerId the header id to remove
      * @since 1.1.3
      * @author WFF
      * @deprecated this method will be removed in the future release, use
@@ -156,8 +151,7 @@ public class Headers extends AbstractValueSetAttribute
     /**
      * removes the given header id
      *
-     * @param headerId
-     *                     the header id to remove
+     * @param headerId the header id to remove
      * @since 3.0.1
      * @author WFF
      */
@@ -168,8 +162,7 @@ public class Headers extends AbstractValueSetAttribute
     /**
      * removes the given header ids
      *
-     * @param headerIds
-     *                      the header ids to remove
+     * @param headerIds the header ids to remove
      * @since 3.0.1
      * @author WFF
      */
@@ -180,8 +173,7 @@ public class Headers extends AbstractValueSetAttribute
     /**
      * removes the given header ids
      *
-     * @param headerIds
-     *                      the header ids to remove
+     * @param headerIds the header ids to remove
      * @since 3.0.1
      * @author WFF
      */

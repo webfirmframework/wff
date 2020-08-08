@@ -435,8 +435,7 @@ public enum PreIndexedAttributeName {
             }
         }
 
-        allEventAttributes = eventAttrs
-                .toArray(new PreIndexedAttributeName[eventAttrs.size()]);
+        allEventAttributes = eventAttrs.toArray(new PreIndexedAttributeName[eventAttrs.size()]);
     }
 
     /**
@@ -484,8 +483,7 @@ public enum PreIndexedAttributeName {
         } else if (indexBytes.length == 3) {
             return new byte[] { indexBytes[0], indexBytes[1], indexBytes[2] };
         } else if (indexBytes.length == 4) {
-            return new byte[] { indexBytes[0], indexBytes[1], indexBytes[2],
-                    indexBytes[3] };
+            return new byte[] { indexBytes[0], indexBytes[1], indexBytes[2], indexBytes[3] };
         }
         return Arrays.copyOf(indexBytes, indexBytes.length);
     }
@@ -512,8 +510,7 @@ public enum PreIndexedAttributeName {
     /**
      * for internal use
      *
-     * @param index
-     *                  the index got by {@link PreIndexedAttributeName#index()}
+     * @param index the index got by {@link PreIndexedAttributeName#index()}
      * @return the PreIndexedAttributeName object at the given index
      * @since 3.0.15
      */
@@ -524,9 +521,8 @@ public enum PreIndexedAttributeName {
     /**
      * for internal use
      *
-     * @param index
-     *                  pass the index got by
-     *                  {@linkplain PreIndexedAttributeName#eventAttrIndex}
+     * @param index pass the index got by
+     *              {@linkplain PreIndexedAttributeName#eventAttrIndex}
      * @return the PreIndexedAttributeName object at the given index
      * @since 3.0.15
      */
@@ -554,8 +550,8 @@ public enum PreIndexedAttributeName {
     }
 
     /**
-     * @return the index of event attribute if it is not an event attribute then
-     *         -1 will be returned.
+     * @return the index of event attribute if it is not an event attribute then -1
+     *         will be returned.
      * @since 3.0.15
      */
     public int eventAttrIndex() {

@@ -31,8 +31,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.TextAreaAttributable;
  * @author WFF
  *
  */
-public class OnKeyDown extends AbstractEventAttribute
-        implements InputAttributable, TextAreaAttributable {
+public class OnKeyDown extends AbstractEventAttribute implements InputAttributable, TextAreaAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -56,12 +55,9 @@ public class OnKeyDown extends AbstractEventAttribute
         setServerAsyncMethod(null, serverAsyncMethod, null, null);
     }
 
-    public OnKeyDown(final String jsPreFunctionBody,
-            final ServerAsyncMethod serverAsyncMethod,
-            final String jsFilterFunctionBody,
-            final String jsPostFunctionBody) {
-        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod,
-                jsFilterFunctionBody, jsPostFunctionBody);
+    public OnKeyDown(final String jsPreFunctionBody, final ServerAsyncMethod serverAsyncMethod,
+            final String jsFilterFunctionBody, final String jsPostFunctionBody) {
+        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody);
     }
 
     public OnKeyDown(final String value) {
@@ -73,10 +69,8 @@ public class OnKeyDown extends AbstractEventAttribute
      * @param serverSideData
      * @since 3.0.2
      */
-    public OnKeyDown(final ServerAsyncMethod serverAsyncMethod,
-            final Object serverSideData) {
-        setServerAsyncMethod(null, serverAsyncMethod, null, null,
-                serverSideData);
+    public OnKeyDown(final ServerAsyncMethod serverAsyncMethod, final Object serverSideData) {
+        setServerAsyncMethod(null, serverAsyncMethod, null, null, serverSideData);
     }
 
     /**
@@ -87,12 +81,10 @@ public class OnKeyDown extends AbstractEventAttribute
      * @param serverSideData
      * @since 3.0.2
      */
-    public OnKeyDown(final String jsPreFunctionBody,
-            final ServerAsyncMethod serverAsyncMethod,
-            final String jsFilterFunctionBody, final String jsPostFunctionBody,
-            final Object serverSideData) {
-        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod,
-                jsFilterFunctionBody, jsPostFunctionBody, serverSideData);
+    public OnKeyDown(final String jsPreFunctionBody, final ServerAsyncMethod serverAsyncMethod,
+            final String jsFilterFunctionBody, final String jsPostFunctionBody, final Object serverSideData) {
+        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody,
+                serverSideData);
     }
 
     /**

@@ -36,10 +36,8 @@ public class Blank extends NoTag {
 
     /**
      *
-     * @param base
-     *                     i.e. parent tag of this tag
-     * @param children
-     *                     An array of {@code AbstractHtml}
+     * @param base     i.e. parent tag of this tag
+     * @param children An array of {@code AbstractHtml}
      *
      * @since 1.0.0
      */
@@ -49,22 +47,18 @@ public class Blank extends NoTag {
 
     /**
      *
-     * @param base
-     *                     i.e. parent tag of this tag
-     * @param children
-     *                     An array of {@code AbstractHtml}
+     * @param base     i.e. parent tag of this tag
+     * @param children An array of {@code AbstractHtml}
      *
      * @since 1.0.0
      */
-    public Blank(final AbstractHtml base,
-            final Collection<? extends AbstractHtml> children) {
+    public Blank(final AbstractHtml base, final Collection<? extends AbstractHtml> children) {
         super(base, children);
     }
 
     /**
      *
-     * @param base
-     *                         i.e. parent tag of this tag
+     * @param base         i.e. parent tag of this tag
      * @param childContent
      *
      * @since 1.0.0

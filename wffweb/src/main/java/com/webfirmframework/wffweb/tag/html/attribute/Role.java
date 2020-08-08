@@ -42,8 +42,8 @@ public class Role extends AbstractAttribute implements GlobalAttributable {
     public static final String ALERT = "alert";
 
     /**
-     * A type of dialog that contains an alert message, where initial focus goes
-     * to an element within the dialog.
+     * A type of dialog that contains an alert message, where initial focus goes to
+     * an element within the dialog.
      */
     public static final String ALERTDIALOG = "alertdialog";
 
@@ -53,8 +53,8 @@ public class Role extends AbstractAttribute implements GlobalAttributable {
     public static final String APPLICATION = "application";
 
     /**
-     * A section of a page that consists of a composition that forms an
-     * independent part of a document, page, or site.
+     * A section of a page that consists of a composition that forms an independent
+     * part of a document, page, or site.
      */
     public static final String ARTICLE = "article";
 
@@ -80,16 +80,16 @@ public class Role extends AbstractAttribute implements GlobalAttributable {
     public static final String COLUMNHEADER = "columnheader";
 
     /**
-     * A presentation of a select; usually similar to a textbox where users can
-     * type ahead to select an option, or type to enter arbitrary text as a new
-     * item in the list. See related listbox.
+     * A presentation of a select; usually similar to a textbox where users can type
+     * ahead to select an option, or type to enter arbitrary text as a new item in
+     * the list. See related listbox.
      */
     public static final String COMBOBOX = "combobox";
 
     /**
      * A supporting section of the document, designed to be complementary to the
-     * main content at a similar level in the DOM hierarchy, but remains
-     * meaningful when separated from the main content.
+     * main content at a similar level in the DOM hierarchy, but remains meaningful
+     * when separated from the main content.
      */
     public static final String COMPLEMENTARY = "complementary";
 
@@ -105,9 +105,9 @@ public class Role extends AbstractAttribute implements GlobalAttributable {
     public static final String DEFINITION = "definition";
 
     /**
-     * A dialog is an application window that is designed to interrupt the
-     * current processing of an application in order to prompt the user to enter
-     * information or require a response.
+     * A dialog is an application window that is designed to interrupt the current
+     * processing of an application in order to prompt the user to enter information
+     * or require a response.
      */
     public static final String DIALOG = "dialog";
 
@@ -118,14 +118,14 @@ public class Role extends AbstractAttribute implements GlobalAttributable {
     public static final String DIRECTORY = "directory";
 
     /**
-     * A region containing related information that is declared as document
-     * content, as opposed to a web application.
+     * A region containing related information that is declared as document content,
+     * as opposed to a web application.
      */
     public static final String DOCUMENT = "document";
 
     /**
-     * A landmark region that contains a collection of items and objects that,
-     * as a whole, combine to create a form.
+     * A landmark region that contains a collection of items and objects that, as a
+     * whole, combine to create a form.
      */
     public static final String FORM = "form";
 
@@ -141,8 +141,8 @@ public class Role extends AbstractAttribute implements GlobalAttributable {
     public static final String GRIDCELL = "gridcell";
 
     /**
-     * A set of user interface objects which are not intended to be included in
-     * a page summary or table of contents by assistive technologies.
+     * A set of user interface objects which are not intended to be included in a
+     * page summary or table of contents by assistive technologies.
      */
     public static final String GROUP = "group";
 
@@ -179,8 +179,8 @@ public class Role extends AbstractAttribute implements GlobalAttributable {
     public static final String LISTITEM = "listitem";
 
     /**
-     * A type of live region where new information is added in meaningful order
-     * and old information may disappear.
+     * A type of live region where new information is added in meaningful order and
+     * old information may disappear.
      */
     public static final String LOG = "log";
 
@@ -205,8 +205,8 @@ public class Role extends AbstractAttribute implements GlobalAttributable {
     public static final String MENU = "menu";
 
     /**
-     * A presentation of menu that usually remains visible and is usually
-     * presented horizontally.
+     * A presentation of menu that usually remains visible and is usually presented
+     * horizontally.
      */
     public static final String MENUBAR = "menubar";
 
@@ -216,14 +216,13 @@ public class Role extends AbstractAttribute implements GlobalAttributable {
     public static final String MENUITEM = "menuitem";
 
     /**
-     * A checkable menuitem that has three possible values: true, false, or
-     * mixed.
+     * A checkable menuitem that has three possible values: true, false, or mixed.
      */
     public static final String MENUITEMCHECKBOX = "menuitemcheckbox";
 
     /**
-     * A checkable menuitem in a group of menuitemradio roles, only one of which
-     * can be checked at a time.
+     * A checkable menuitem in a group of menuitemradio roles, only one of which can
+     * be checked at a time.
      */
     public static final String MENUITEMRADIO = "menuitemradio";
 
@@ -234,8 +233,8 @@ public class Role extends AbstractAttribute implements GlobalAttributable {
     public static final String NAVIGATION = "navigation";
 
     /**
-     * A section whose content is parenthetic or ancillary to the main content
-     * of the resource.
+     * A section whose content is parenthetic or ancillary to the main content of
+     * the resource.
      */
     public static final String NOTE = "note";
 
@@ -251,14 +250,13 @@ public class Role extends AbstractAttribute implements GlobalAttributable {
     public static final String PRESENTATION = "presentation";
 
     /**
-     * An element that displays the progress status for tasks that take a long
-     * time.
+     * An element that displays the progress status for tasks that take a long time.
      */
     public static final String PROGRESSBAR = "progressbar";
 
     /**
-     * A checkable input in a group of radio roles, only one of which can be
-     * checked at a time.
+     * A checkable input in a group of radio roles, only one of which can be checked
+     * at a time.
      */
     public static final String RADIO = "radio";
 
@@ -268,10 +266,9 @@ public class Role extends AbstractAttribute implements GlobalAttributable {
     public static final String RADIOGROUP = "radiogroup";
 
     /**
-     * A large perceivable section of a web page or document, that the author
-     * feels is important enough to be included in a page summary or table of
-     * contents, for example, an area of the page containing live sporting event
-     * statistics.
+     * A large perceivable section of a web page or document, that the author feels
+     * is important enough to be included in a page summary or table of contents,
+     * for example, an area of the page containing live sporting event statistics.
      */
     public static final String REGION = "region";
 
@@ -291,21 +288,21 @@ public class Role extends AbstractAttribute implements GlobalAttributable {
     public static final String ROWHEADER = "rowheader";
 
     /**
-     * A graphical object that controls the scrolling of content within a
-     * viewing area, regardless of whether the content is fully displayed within
-     * the viewing area.
+     * A graphical object that controls the scrolling of content within a viewing
+     * area, regardless of whether the content is fully displayed within the viewing
+     * area.
      */
     public static final String SCROLLBAR = "scrollbar";
 
     /**
-     * A landmark region that contains a collection of items and objects that,
-     * as a whole, combine to create a search facility.
+     * A landmark region that contains a collection of items and objects that, as a
+     * whole, combine to create a search facility.
      */
     public static final String SEARCH = "search";
 
     /**
-     * A divider that separates and distinguishes sections of content or groups
-     * of menuitems.
+     * A divider that separates and distinguishes sections of content or groups of
+     * menuitems.
      */
     public static final String SEPARATOR = "separator";
 
@@ -315,21 +312,20 @@ public class Role extends AbstractAttribute implements GlobalAttributable {
     public static final String SLIDER = "slider";
 
     /**
-     * A form of range that expects the user to select from among discrete
-     * choices.
+     * A form of range that expects the user to select from among discrete choices.
      */
     public static final String SPINBUTTON = "spinbutton";
 
     /**
      * A container whose content is advisory information for the user but is not
-     * important enough to justify an alert, often but not necessarily presented
-     * as a status bar.
+     * important enough to justify an alert, often but not necessarily presented as
+     * a status bar.
      */
     public static final String STATUS = "status";
 
     /**
-     * A grouping label providing a mechanism for selecting the tab content that
-     * is to be rendered to the user.
+     * A grouping label providing a mechanism for selecting the tab content that is
+     * to be rendered to the user.
      */
     public static final String TAB = "tab";
 
@@ -351,14 +347,14 @@ public class Role extends AbstractAttribute implements GlobalAttributable {
 
     /**
      * A type of live region containing a numerical counter which indicates an
-     * amount of elapsed time from a start point, or the time remaining until an
-     * end point.
+     * amount of elapsed time from a start point, or the time remaining until an end
+     * point.
      */
     public static final String TIMER = "timer";
 
     /**
-     * A collection of commonly used function buttons represented in compact
-     * visual form.
+     * A collection of commonly used function buttons represented in compact visual
+     * form.
      */
     public static final String TOOLBAR = "toolbar";
 
@@ -368,14 +364,14 @@ public class Role extends AbstractAttribute implements GlobalAttributable {
     public static final String TOOLTIP = "tooltip";
 
     /**
-     * A type of list that may contain sub-level nested groups that can be
-     * collapsed and expanded.
+     * A type of list that may contain sub-level nested groups that can be collapsed
+     * and expanded.
      */
     public static final String TREE = "tree";
 
     /**
-     * A grid whose rows can be expanded and collapsed in the same manner as for
-     * a tree.
+     * A grid whose rows can be expanded and collapsed in the same manner as for a
+     * tree.
      */
     public static final String TREEGRID = "treegrid";
 
@@ -400,8 +396,7 @@ public class Role extends AbstractAttribute implements GlobalAttributable {
 
     /**
      *
-     * @param value
-     *                  the value for the attribute
+     * @param value the value for the attribute
      * @since 2.0.1
      * @author WFF
      */
@@ -412,8 +407,7 @@ public class Role extends AbstractAttribute implements GlobalAttributable {
     /**
      * sets the value for this attribute
      *
-     * @param value
-     *                  the value for the attribute.
+     * @param value the value for the attribute.
      * @since 2.0.1
      * @author WFF
      */
@@ -424,12 +418,10 @@ public class Role extends AbstractAttribute implements GlobalAttributable {
     /**
      * sets the value for this attribute
      *
-     * @param updateClient
-     *                         true to update client browser page if it is
-     *                         available. The default value is true but it will
-     *                         be ignored if there is no client browser page.
-     * @param value
-     *                         the value for the attribute.
+     * @param updateClient true to update client browser page if it is available.
+     *                     The default value is true but it will be ignored if there
+     *                     is no client browser page.
+     * @param value        the value for the attribute.
      * @since 2.1.15
      * @author WFF
      */

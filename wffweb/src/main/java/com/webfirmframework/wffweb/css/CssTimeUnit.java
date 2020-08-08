@@ -56,18 +56,16 @@ public enum CssTimeUnit implements TimeUnit {
 
     /**
      * gets the corresponding object for the given {@code unitName} or null for
-     * invalid unit name. The {@code unitName} is case insensitive. If the
-     * passing {@code unitName} is always in upper case then it will be better
-     * to use {@code CssTimeUnit.valueOf(String)} method because this method
-     * internally converts the {@code unitName} string to upper case (uses a bit
-     * optimized way of conversion) and gets the object by
-     * {@code CssTimeUnit.valueOf(String)} method.
+     * invalid unit name. The {@code unitName} is case insensitive. If the passing
+     * {@code unitName} is always in upper case then it will be better to use
+     * {@code CssTimeUnit.valueOf(String)} method because this method internally
+     * converts the {@code unitName} string to upper case (uses a bit optimized way
+     * of conversion) and gets the object by {@code CssTimeUnit.valueOf(String)}
+     * method.
      *
-     * @param unitName
-     *                     the name of the unit eg:- <code>s</code> or
-     *                     <code>ms</code>.
-     * @return the corresponding object for the given {@code unitName} or null
-     *         for invalid unitName.
+     * @param unitName the name of the unit eg:- <code>s</code> or <code>ms</code>.
+     * @return the corresponding object for the given {@code unitName} or null for
+     *         invalid unitName.
      * @since 1.0.0
      * @author WFF
      */

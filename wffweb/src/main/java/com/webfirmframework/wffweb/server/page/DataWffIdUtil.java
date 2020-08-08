@@ -31,8 +31,7 @@ import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 
 final class DataWffIdUtil {
 
-    private static final PreIndexedTagName[] PRE_INDEXED_TAG_NAMES = PreIndexedTagName
-            .values();
+    private static final PreIndexedTagName[] PRE_INDEXED_TAG_NAMES = PreIndexedTagName.values();
 
     private DataWffIdUtil() {
         throw new AssertionError();
@@ -49,8 +48,7 @@ final class DataWffIdUtil {
         // remaining string is an integer value
         final byte sOrC = dataWffId.getBytes(StandardCharsets.UTF_8)[0];
 
-        final byte[] intBytes = WffBinaryMessageUtil.getOptimizedBytesFromInt(
-                Integer.parseInt(dataWffId.substring(1)));
+        final byte[] intBytes = WffBinaryMessageUtil.getOptimizedBytesFromInt(Integer.parseInt(dataWffId.substring(1)));
 
         final byte[] dataWffIdBytes = new byte[1 + intBytes.length];
         dataWffIdBytes[0] = sOrC;
@@ -95,25 +93,21 @@ final class DataWffIdUtil {
     // }
 
     /**
-     * @param accessObject
-     *                         TODO
+     * @param accessObject TODO
      * @param abstractHtml
      * @return array containing tagName bytes and dataWffIdBytes of the given
      *         argument or its parent.
-     * @throws UnsupportedEncodingException
-     *                                          throwing this exception will be
-     *                                          removed in future version
-     *                                          because its internal
-     *                                          implementation will never make
-     *                                          this exception due to the code
-     *                                          changes since 3.0.1.
+     * @throws UnsupportedEncodingException throwing this exception will be removed
+     *                                      in future version because its internal
+     *                                      implementation will never make this
+     *                                      exception due to the code changes since
+     *                                      3.0.1.
      * @since 2.0.0
      * @author WFF
      * @deprecated this method will be removed in future
      */
     @Deprecated
-    static byte[][] getTagNameAndWffId(final AbstractHtml abstractHtml)
-            throws UnsupportedEncodingException {
+    static byte[][] getTagNameAndWffId(final AbstractHtml abstractHtml) throws UnsupportedEncodingException {
 
         final Deque<AbstractHtml> parentStack = new ArrayDeque<>();
         parentStack.push(abstractHtml);
@@ -124,12 +118,9 @@ final class DataWffIdUtil {
             if (TagUtil.isTagged(parent)) {
                 final DataWffId dataWffId = parent.getDataWffId();
 
-                final byte[] dataWffIdBytes = DataWffIdUtil
-                        .getDataWffIdBytes(dataWffId.getValue());
+                final byte[] dataWffIdBytes = DataWffIdUtil.getDataWffIdBytes(dataWffId.getValue());
 
-                return new byte[][] {
-                        parent.getTagName().getBytes(StandardCharsets.UTF_8),
-                        dataWffIdBytes };
+                return new byte[][] { parent.getTagName().getBytes(StandardCharsets.UTF_8), dataWffIdBytes };
             }
 
             final AbstractHtml parentOfParent = parent.getParent();
@@ -147,30 +138,25 @@ final class DataWffIdUtil {
      * @return { PreIndexedTagName.HASH.indexBytes(), childIndexBytes }
      * @since 3.0.7
      */
-    static byte[][] getIndexedTagNameAndChildIndexForNoTag(
-            final Object accessObject, final NoTag noTag) {
+    static byte[][] getIndexedTagNameAndChildIndexForNoTag(final Object accessObject, final NoTag noTag) {
 
-        final int childIndex = noTag.getParent().getIndexByChild(accessObject,
-                noTag);
+        final int childIndex = noTag.getParent().getIndexByChild(accessObject, noTag);
 
-        final byte[] intBytes = WffBinaryMessageUtil
-                .getOptimizedBytesFromInt(childIndex);
+        final byte[] intBytes = WffBinaryMessageUtil.getOptimizedBytesFromInt(childIndex);
 
         // # represents NoTag, as tag name
         return new byte[][] { PreIndexedTagName.HASH.indexBytes(), intBytes };
     }
 
     /**
-     * @param accessObject
-     *                         TODO
+     * @param accessObject TODO
      * @param tag
      * @return array containing tagName bytes and dataWffIdBytes of the given
      *         argument or its parent.
      * @since 3.0.6 contains TagNameBytesCompressedByIndex
      * @author WFF
      */
-    static byte[][] getIndexedTagNameAndWffId(final Object accessObject,
-            final AbstractHtml tag) {
+    static byte[][] getIndexedTagNameAndWffId(final Object accessObject, final AbstractHtml tag) {
 
         final Deque<AbstractHtml> parentStack = new ArrayDeque<>();
         parentStack.push(tag);
@@ -181,12 +167,10 @@ final class DataWffIdUtil {
             if (TagUtil.isTagged(parent)) {
                 final DataWffId dataWffId = parent.getDataWffId();
 
-                final byte[] dataWffIdBytes = DataWffIdUtil
-                        .getDataWffIdBytes(dataWffId.getValue());
+                final byte[] dataWffIdBytes = DataWffIdUtil.getDataWffIdBytes(dataWffId.getValue());
 
-                final byte[] wffTagNameBytes = TagUtil
-                        .getTagNameBytesCompressedByIndex(accessObject, parent,
-                                StandardCharsets.UTF_8);
+                final byte[] wffTagNameBytes = TagUtil.getTagNameBytesCompressedByIndex(accessObject, parent,
+                        StandardCharsets.UTF_8);
 
                 return new byte[][] { wffTagNameBytes, dataWffIdBytes };
             }
@@ -203,31 +187,26 @@ final class DataWffIdUtil {
 
     /**
      * @return
-     * @throws UnsupportedEncodingException
-     *                                          throwing this exception will be
-     *                                          removed in future version
-     *                                          because its internal
-     *                                          implementation will never make
-     *                                          this exception due to the code
-     *                                          changes since 3.0.1.
+     * @throws UnsupportedEncodingException throwing this exception will be removed
+     *                                      in future version because its internal
+     *                                      implementation will never make this
+     *                                      exception due to the code changes since
+     *                                      3.0.1.
      * @since 2.1.13
      * @author WFF
      */
-    static byte[][] getTagNameAndWffIdForNoTag()
-            throws UnsupportedEncodingException {
+    static byte[][] getTagNameAndWffIdForNoTag() throws UnsupportedEncodingException {
         // there is no DataWffId attribute for NoTag
         return new byte[2][0];
     }
 
     /**
-     * @param bytes
-     *                    the compressed by index bytes of tag name
+     * @param bytes   the compressed by index bytes of tag name
      * @param charset
      * @return the tag name or null if no tag name
      * @since 3.0.8
      */
-    static String parseTagNameBytesCompressedByIndex(final byte[] bytes,
-            final Charset charset) {
+    static String parseTagNameBytesCompressedByIndex(final byte[] bytes, final Charset charset) {
 
         // this method should be moved to appropriate class
 
@@ -235,8 +214,7 @@ final class DataWffIdUtil {
             return null;
         }
         if (bytes.length == 1) {
-            final int tagNameIndex = WffBinaryMessageUtil
-                    .getIntFromOptimizedBytes(bytes);
+            final int tagNameIndex = WffBinaryMessageUtil.getIntFromOptimizedBytes(bytes);
             return PRE_INDEXED_TAG_NAMES[tagNameIndex].tagName();
         }
 
@@ -245,8 +223,7 @@ final class DataWffIdUtil {
         if (lengOfOptmzdBytsOfTgNam > 0) {
             final byte[] copy = new byte[lengOfOptmzdBytsOfTgNam];
             System.arraycopy(bytes, 1, copy, 0, copy.length);
-            final int tagNameIndex = WffBinaryMessageUtil
-                    .getIntFromOptimizedBytes(copy);
+            final int tagNameIndex = WffBinaryMessageUtil.getIntFromOptimizedBytes(copy);
             return PRE_INDEXED_TAG_NAMES[tagNameIndex].tagName();
         }
 
@@ -256,14 +233,12 @@ final class DataWffIdUtil {
     }
 
     /**
-     * @param bytes
-     *                    tag name compressed by index bytes
+     * @param bytes   tag name compressed by index bytes
      * @param charset
      * @return true if the tag name is textarea otherwise false
      * @since 3.0.8
      */
-    static boolean isTagNameTextArea(final byte[] bytes,
-            final Charset charset) {
+    static boolean isTagNameTextArea(final byte[] bytes, final Charset charset) {
 
         // this method should be moved to appropriate class
 
@@ -271,8 +246,7 @@ final class DataWffIdUtil {
             return false;
         }
         if (bytes.length == 1) {
-            final int tagNameIndex = WffBinaryMessageUtil
-                    .getIntFromOptimizedBytes(bytes);
+            final int tagNameIndex = WffBinaryMessageUtil.getIntFromOptimizedBytes(bytes);
 
             if (tagNameIndex == PreIndexedTagName.TEXTAREA.index()) {
                 return true;
@@ -286,8 +260,7 @@ final class DataWffIdUtil {
         if (lengOfOptmzdBytsOfTgNam > 0) {
             final byte[] copy = new byte[lengOfOptmzdBytsOfTgNam];
             System.arraycopy(bytes, 1, copy, 0, copy.length);
-            final int tagNameIndex = WffBinaryMessageUtil
-                    .getIntFromOptimizedBytes(copy);
+            final int tagNameIndex = WffBinaryMessageUtil.getIntFromOptimizedBytes(copy);
 
             if (tagNameIndex == PreIndexedTagName.TEXTAREA.index()) {
                 return true;
@@ -298,7 +271,6 @@ final class DataWffIdUtil {
 
         final byte[] tagNameBytes = new byte[bytes.length - 1];
         System.arraycopy(bytes, 1, tagNameBytes, 0, tagNameBytes.length);
-        return TagNameConstants.TEXTAREA
-                .equals(new String(tagNameBytes, charset));
+        return TagNameConstants.TEXTAREA.equals(new String(tagNameBytes, charset));
     }
 }

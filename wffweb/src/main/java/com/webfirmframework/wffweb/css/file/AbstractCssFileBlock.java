@@ -186,8 +186,7 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
     }
 
     /**
-     * @param modified
-     *                     the modified to set
+     * @param modified the modified to set
      * @since 1.0.0
      * @author WFF
      */
@@ -249,18 +248,17 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
     }
 
     /**
-     * @return the excludeCssBlock true if the css block has been excluded, i.e.
-     *         it will not be contained in the generated css.
+     * @return the excludeCssBlock true if the css block has been excluded, i.e. it
+     *         will not be contained in the generated css.
      */
     public boolean isExcludeCssBlock() {
         return excludeCssBlock;
     }
 
     /**
-     * @param excludeCssBlock
-     *                            the excludeCssBlock to set. If it is set to
-     *                            true, then this css block will not be
-     *                            contained in the generated css.
+     * @param excludeCssBlock the excludeCssBlock to set. If it is set to true, then
+     *                        this css block will not be contained in the generated
+     *                        css.
      */
     protected void setExcludeCssBlock(final boolean excludeCssBlock) {
         this.excludeCssBlock = excludeCssBlock;

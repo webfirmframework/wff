@@ -29,12 +29,11 @@ public final class StringUtil {
     }
 
     /**
-     * Converts all continues multiple spaces to a single space so that the
-     * words will have a single space as separator.
+     * Converts all continues multiple spaces to a single space so that the words
+     * will have a single space as separator.
      *
-     * @param input
-     *                  the string in which all continues multiple spaces
-     *                  required to be converted to single space.
+     * @param input the string in which all continues multiple spaces required to be
+     *              converted to single space.
      * @return the converted string having a single space in between words.
      * @author WFF
      * @since 1.0.0
@@ -49,23 +48,18 @@ public final class StringUtil {
     /**
      * gets the first substring which starts and ends with the given values.
      *
-     * @param inputString
-     *                         the string from which the substring will be
-     *                         extracted.
-     * @param startingWith
-     *                         to match the starting substring
-     * @param endingWith
-     *                         to match the ending substring
+     * @param inputString  the string from which the substring will be extracted.
+     * @param startingWith to match the starting substring
+     * @param endingWith   to match the ending substring
      * @return the substring which starts and ends with the given
-     *         {@code startingWith} and {@code endingWith} values. Or returns
-     *         null if it doesn't contain.
+     *         {@code startingWith} and {@code endingWith} values. Or returns null
+     *         if it doesn't contain.
      * @author WFF
      * @since 1.0.0
      */
-    public static String getFirstSubstring(final String inputString,
-            final String startingWith, final String endingWith) {
-        if (!inputString.contains(startingWith)
-                || !inputString.contains(endingWith)) {
+    public static String getFirstSubstring(final String inputString, final String startingWith,
+            final String endingWith) {
+        if (!inputString.contains(startingWith) || !inputString.contains(endingWith)) {
             return null;
         }
         final int startIndex = inputString.indexOf(startingWith);
@@ -74,8 +68,7 @@ public final class StringUtil {
             return null;
         }
 
-        final int endIndex = inputString.indexOf(endingWith, startIndex + 1)
-                + 1;
+        final int endIndex = inputString.indexOf(endingWith, startIndex + 1) + 1;
         if (startIndex > endIndex || startIndex < 0 || endIndex < 0) {
             return null;
         }
@@ -85,39 +78,30 @@ public final class StringUtil {
     /**
      * gets the first substring which starts and ends with the given values.
      *
-     * @param inputString
-     *                            the string from which the substring will be
-     *                            extracted.
-     * @param startingWith
-     *                            to match the starting substring
-     * @param endingWith
-     *                            to match the ending substring
-     * @param searchFromIndex
-     *                            the starting index from where the substring
-     *                            should be searched.
+     * @param inputString     the string from which the substring will be extracted.
+     * @param startingWith    to match the starting substring
+     * @param endingWith      to match the ending substring
+     * @param searchFromIndex the starting index from where the substring should be
+     *                        searched.
      *
      * @return the substring which starts and ends with the given
-     *         {@code startingWith} and {@code endingWith} values. Or returns
-     *         null if it doesn't contain.
+     *         {@code startingWith} and {@code endingWith} values. Or returns null
+     *         if it doesn't contain.
      * @author WFF
      * @since 1.0.0
      */
-    public static String getFirstSubstring(final String inputString,
-            final String startingWith, final String endingWith,
+    public static String getFirstSubstring(final String inputString, final String startingWith, final String endingWith,
             final int searchFromIndex) {
-        if (!inputString.contains(startingWith)
-                || !inputString.contains(endingWith)) {
+        if (!inputString.contains(startingWith) || !inputString.contains(endingWith)) {
             return null;
         }
-        final int startIndex = inputString.indexOf(startingWith,
-                searchFromIndex);
+        final int startIndex = inputString.indexOf(startingWith, searchFromIndex);
 
         if (!((startIndex + 1) < inputString.length())) {
             return null;
         }
 
-        final int endIndex = inputString.indexOf(endingWith, startIndex + 1)
-                + 1;
+        final int endIndex = inputString.indexOf(endingWith, startIndex + 1) + 1;
         if (startIndex > endIndex || startIndex < 0 || endIndex < 0) {
             return null;
         }
@@ -139,32 +123,26 @@ public final class StringUtil {
      * the output will be : <i>abcd</i>
      * </pre>
      *
-     * @param inputString
-     *                         the string from which the substrings will be
-     *                         extracted.
-     * @param startingWith
-     *                         to match the starting substring
-     * @param endingWith
-     *                         to match the ending substring
-     * @return the array of substrings which contains strings starting and
-     *         ending with the given {@code startingWith} and {@code endingWith}
-     *         values. Or returns an empty array (i.e an array having length
-     *         zero) if it doesn't contain.
+     * @param inputString  the string from which the substrings will be extracted.
+     * @param startingWith to match the starting substring
+     * @param endingWith   to match the ending substring
+     * @return the array of substrings which contains strings starting and ending
+     *         with the given {@code startingWith} and {@code endingWith} values. Or
+     *         returns an empty array (i.e an array having length zero) if it
+     *         doesn't contain.
      * @author WFF
      * @since 1.0.0
      */
-    public static String[] getAllSubstrings(final String inputString,
-            final String startingWith, final String endingWith) {
-        if (!inputString.contains(startingWith)
-                || !inputString.contains(endingWith)) {
+    public static String[] getAllSubstrings(final String inputString, final String startingWith,
+            final String endingWith) {
+        if (!inputString.contains(startingWith) || !inputString.contains(endingWith)) {
             return new String[0];
         }
 
         final int inputStringLength = inputString.length();
 
         final int endingWithLength = endingWith.length();
-        final int maxArrayLength = inputStringLength
-                / (startingWith.length() + endingWithLength);
+        final int maxArrayLength = inputStringLength / (startingWith.length() + endingWithLength);
 
         if (maxArrayLength == 0) {
             return new String[0];
@@ -174,13 +152,11 @@ public final class StringUtil {
         int startSearchFromIndex = 0;
         int count = 0;
         do {
-            final int startIndex = inputString.indexOf(startingWith,
-                    startSearchFromIndex);
+            final int startIndex = inputString.indexOf(startingWith, startSearchFromIndex);
             if (!((startIndex + 1) < inputStringLength)) {
                 break;
             }
-            final int indexOfEndingWith = inputString.indexOf(endingWith,
-                    startIndex + 1);
+            final int indexOfEndingWith = inputString.indexOf(endingWith, startIndex + 1);
 
             if (startIndex < 0 || indexOfEndingWith < 0) {
                 break;
@@ -191,8 +167,7 @@ public final class StringUtil {
             if ((startIndex > endIndex)) {
                 startSearchFromIndex = inputStringLength;
             } else {
-                maxSubstrings[count] = inputString.substring(startIndex,
-                        endIndex);
+                maxSubstrings[count] = inputString.substring(startIndex, endIndex);
                 count++;
             }
         } while (startSearchFromIndex < inputStringLength);
@@ -207,16 +182,11 @@ public final class StringUtil {
     }
 
     /**
-     * @param inputString
-     *                         the string from the index should be found.
-     * @param startingWith
-     *                         the substring to check whether it comes in the
-     *                         given inputString before {@code endingWith}
-     *                         substring.
-     * @param endingWith
-     *                         the substring to check whether it comes in the
-     *                         given inputString after {@code startingWith}
-     *                         substring.
+     * @param inputString  the string from the index should be found.
+     * @param startingWith the substring to check whether it comes in the given
+     *                     inputString before {@code endingWith} substring.
+     * @param endingWith   the substring to check whether it comes in the given
+     *                     inputString after {@code startingWith} substring.
      * @return the index of {@code startingWith} substring if the given
      *         {@code inputString} contains a substring starting with
      *         {@code startingWith} string and ending with {@code endingWith}
@@ -224,11 +194,9 @@ public final class StringUtil {
      * @author WFF
      * @since 1.0.0
      */
-    public static int startIndexOf(final String inputString,
-            final String startingWith, final String endingWith) {
+    public static int startIndexOf(final String inputString, final String startingWith, final String endingWith) {
 
-        if (!inputString.contains(startingWith)
-                || !inputString.contains(endingWith)) {
+        if (!inputString.contains(startingWith) || !inputString.contains(endingWith)) {
             return -1;
         }
         final int startIndex = inputString.indexOf(startingWith);
@@ -243,16 +211,11 @@ public final class StringUtil {
     }
 
     /**
-     * @param inputString
-     *                         the string from the index should be found.
-     * @param startingWith
-     *                         the substring to check whether it comes in the
-     *                         given inputString before {@code endingWith}
-     *                         substring.
-     * @param endingWith
-     *                         the substring to check whether it comes in the
-     *                         given inputString after {@code startingWith}
-     *                         substring.
+     * @param inputString  the string from the index should be found.
+     * @param startingWith the substring to check whether it comes in the given
+     *                     inputString before {@code endingWith} substring.
+     * @param endingWith   the substring to check whether it comes in the given
+     *                     inputString after {@code startingWith} substring.
      * @return the index of {@code endingWith} substring if the given
      *         {@code inputString} contains a substring starting with
      *         {@code startingWith} string and ending with {@code endingWith}
@@ -260,11 +223,9 @@ public final class StringUtil {
      * @author WFF
      * @since 1.0.0
      */
-    public static int endIndexOf(final String inputString,
-            final String startingWith, final String endingWith) {
+    public static int endIndexOf(final String inputString, final String startingWith, final String endingWith) {
 
-        if (!inputString.contains(startingWith)
-                || !inputString.contains(endingWith)) {
+        if (!inputString.contains(startingWith) || !inputString.contains(endingWith)) {
             return -1;
         }
         final int startIndex = inputString.indexOf(startingWith);
@@ -279,19 +240,13 @@ public final class StringUtil {
     }
 
     /**
-     * @param inputString
-     *                            the string from the index should be found.
-     * @param startingWith
-     *                            the substring to check whether it comes in the
-     *                            given inputString before {@code endingWith}
-     *                            substring.
-     * @param endingWith
-     *                            the substring to check whether it comes in the
-     *                            given inputString after {@code startingWith}
-     *                            substring.
-     * @param searchFromIndex
-     *                            the starting index from where the substring
-     *                            should be searched.
+     * @param inputString     the string from the index should be found.
+     * @param startingWith    the substring to check whether it comes in the given
+     *                        inputString before {@code endingWith} substring.
+     * @param endingWith      the substring to check whether it comes in the given
+     *                        inputString after {@code startingWith} substring.
+     * @param searchFromIndex the starting index from where the substring should be
+     *                        searched.
      * @return the index of {@code startingWith} substring if the given
      *         {@code inputString} contains a substring starting with
      *         {@code startingWith} string and ending with {@code endingWith}
@@ -299,16 +254,13 @@ public final class StringUtil {
      * @author WFF
      * @since 1.0.0
      */
-    public static int startIndexOf(final String inputString,
-            final String startingWith, final String endingWith,
+    public static int startIndexOf(final String inputString, final String startingWith, final String endingWith,
             final int searchFromIndex) {
 
-        if (!inputString.contains(startingWith)
-                || !inputString.contains(endingWith)) {
+        if (!inputString.contains(startingWith) || !inputString.contains(endingWith)) {
             return -1;
         }
-        final int startIndex = inputString.indexOf(startingWith,
-                searchFromIndex);
+        final int startIndex = inputString.indexOf(startingWith, searchFromIndex);
         if (!((startIndex + 1) < inputString.length())) {
             return -1;
         }
@@ -320,19 +272,13 @@ public final class StringUtil {
     }
 
     /**
-     * @param inputString
-     *                            the string from the index should be found.
-     * @param startingWith
-     *                            the substring to check whether it comes in the
-     *                            given inputString before {@code endingWith}
-     *                            substring.
-     * @param endingWith
-     *                            the substring to check whether it comes in the
-     *                            given inputString after {@code startingWith}
-     *                            substring.
-     * @param searchFromIndex
-     *                            the starting index from where the substring
-     *                            should be searched.
+     * @param inputString     the string from the index should be found.
+     * @param startingWith    the substring to check whether it comes in the given
+     *                        inputString before {@code endingWith} substring.
+     * @param endingWith      the substring to check whether it comes in the given
+     *                        inputString after {@code startingWith} substring.
+     * @param searchFromIndex the starting index from where the substring should be
+     *                        searched.
      * @return the index of {@code endingWith} substring if the given
      *         {@code inputString} contains a substring starting with
      *         {@code startingWith} string and ending with {@code endingWith}
@@ -340,16 +286,13 @@ public final class StringUtil {
      * @author WFF
      * @since 1.0.0
      */
-    public static int endIndexOf(final String inputString,
-            final String startingWith, final String endingWith,
+    public static int endIndexOf(final String inputString, final String startingWith, final String endingWith,
             final int searchFromIndex) {
 
-        if (!inputString.contains(startingWith)
-                || !inputString.contains(endingWith)) {
+        if (!inputString.contains(startingWith) || !inputString.contains(endingWith)) {
             return -1;
         }
-        final int startIndex = inputString.indexOf(startingWith,
-                searchFromIndex);
+        final int startIndex = inputString.indexOf(startingWith, searchFromIndex);
 
         if (!((startIndex + 1) < inputString.length())) {
             return -1;
@@ -363,28 +306,22 @@ public final class StringUtil {
     }
 
     /**
-     * @param inputString
-     *                         the string from the index should be found.
-     * @param startingWith
-     *                         the substring to check whether it comes in the
-     *                         given inputString before {@code endingWith}
-     *                         substring.
-     * @param endingWith
-     *                         the substring to check whether it comes in the
-     *                         given inputString after {@code startingWith}
-     *                         substring.
-     * @return an array containing the index of {@code startingWith} substring
-     *         if the given {@code inputString} contains a substring starting
-     *         with {@code startingWith} string and ending with
-     *         {@code endingWith} string, otherwise returns an empty array.
+     * @param inputString  the string from the index should be found.
+     * @param startingWith the substring to check whether it comes in the given
+     *                     inputString before {@code endingWith} substring.
+     * @param endingWith   the substring to check whether it comes in the given
+     *                     inputString after {@code startingWith} substring.
+     * @return an array containing the index of {@code startingWith} substring if
+     *         the given {@code inputString} contains a substring starting with
+     *         {@code startingWith} string and ending with {@code endingWith}
+     *         string, otherwise returns an empty array.
      * @author WFF
      * @since 1.0.0
      */
-    public static int[] startIndexAndEndIndexOf(final String inputString,
-            final String startingWith, final String endingWith) {
+    public static int[] startIndexAndEndIndexOf(final String inputString, final String startingWith,
+            final String endingWith) {
 
-        if (!inputString.contains(startingWith)
-                || !inputString.contains(endingWith)) {
+        if (!inputString.contains(startingWith) || !inputString.contains(endingWith)) {
             return new int[] {};
         }
 
@@ -402,37 +339,28 @@ public final class StringUtil {
     }
 
     /**
-     * @param inputString
-     *                            the string from the index should be found.
-     * @param startingWith
-     *                            the substring to check whether it comes in the
-     *                            given inputString before {@code endingWith}
-     *                            substring.
-     * @param endingWith
-     *                            the substring to check whether it comes in the
-     *                            given inputString after {@code startingWith}
-     *                            substring.
-     * @param searchFromIndex
-     *                            the starting index from where the substring
-     *                            should be searched.
-     * @return an array containing the index of {@code startingWith} substring
-     *         if the given {@code inputString} contains a substring starting
-     *         with {@code startingWith} string and ending with
-     *         {@code endingWith} string, otherwise returns an empty array.
+     * @param inputString     the string from the index should be found.
+     * @param startingWith    the substring to check whether it comes in the given
+     *                        inputString before {@code endingWith} substring.
+     * @param endingWith      the substring to check whether it comes in the given
+     *                        inputString after {@code startingWith} substring.
+     * @param searchFromIndex the starting index from where the substring should be
+     *                        searched.
+     * @return an array containing the index of {@code startingWith} substring if
+     *         the given {@code inputString} contains a substring starting with
+     *         {@code startingWith} string and ending with {@code endingWith}
+     *         string, otherwise returns an empty array.
      * @author WFF
      * @since 1.0.0
      */
-    public static int[] startIndexAndEndIndexOf(final String inputString,
-            final String startingWith, final String endingWith,
-            final int searchFromIndex) {
+    public static int[] startIndexAndEndIndexOf(final String inputString, final String startingWith,
+            final String endingWith, final int searchFromIndex) {
 
-        if (!inputString.contains(startingWith)
-                || !inputString.contains(endingWith)) {
+        if (!inputString.contains(startingWith) || !inputString.contains(endingWith)) {
             return new int[] {};
         }
 
-        final int startIndex = inputString.indexOf(startingWith,
-                searchFromIndex);
+        final int startIndex = inputString.indexOf(startingWith, searchFromIndex);
 
         if (!((startIndex + 1) < inputString.length())) {
             return new int[0];
@@ -446,8 +374,8 @@ public final class StringUtil {
     }
 
     /**
-     * gets all start and end indexes as an array of array which start and end
-     * with the given values.<br>
+     * gets all start and end indexes as an array of array which start and end with
+     * the given values.<br>
      * Note:- it will never return null instead it will return an empty array
      * (having length zero).
      *
@@ -481,32 +409,26 @@ public final class StringUtil {
      * the output will be : <i>0 - 3</i>
      * </pre>
      *
-     * @param inputString
-     *                         the string from which the substrings will be
-     *                         extracted.
-     * @param startingWith
-     *                         to match the starting substring
-     * @param endingWith
-     *                         to match the ending substring
-     * @return the array of substrings which contains strings starting and
-     *         ending with the given {@code startingWith} and {@code endingWith}
-     *         values. Or returns an empty array (i.e an array having length
-     *         zero) if it doesn't contain.
+     * @param inputString  the string from which the substrings will be extracted.
+     * @param startingWith to match the starting substring
+     * @param endingWith   to match the ending substring
+     * @return the array of substrings which contains strings starting and ending
+     *         with the given {@code startingWith} and {@code endingWith} values. Or
+     *         returns an empty array (i.e an array having length zero) if it
+     *         doesn't contain.
      * @author WFF
      * @since 1.0.0
      */
-    public static int[][] startAndEndIndexesOf(final String inputString,
-            final String startingWith, final String endingWith) {
-        if (!inputString.contains(startingWith)
-                || !inputString.contains(endingWith)) {
+    public static int[][] startAndEndIndexesOf(final String inputString, final String startingWith,
+            final String endingWith) {
+        if (!inputString.contains(startingWith) || !inputString.contains(endingWith)) {
             return new int[0][0];
         }
 
         final int inputStringLength = inputString.length();
 
         final int endingWithLength = endingWith.length();
-        final int maxArrayLength = inputStringLength
-                / (startingWith.length() + endingWithLength);
+        final int maxArrayLength = inputStringLength / (startingWith.length() + endingWithLength);
 
         if (maxArrayLength == 0) {
             return new int[0][0];
@@ -516,15 +438,13 @@ public final class StringUtil {
         int startSearchFromIndex = 0;
         int count = 0;
         do {
-            final int startIndex = inputString.indexOf(startingWith,
-                    startSearchFromIndex);
+            final int startIndex = inputString.indexOf(startingWith, startSearchFromIndex);
 
             if (!((startIndex + 1) < inputStringLength)) {
                 return new int[0][0];
             }
 
-            final int indexOfEndingWith = inputString.indexOf(endingWith,
-                    startIndex + 1);
+            final int indexOfEndingWith = inputString.indexOf(endingWith, startIndex + 1);
 
             if (startIndex < 0 || indexOfEndingWith < 0) {
                 break;
@@ -551,8 +471,8 @@ public final class StringUtil {
     }
 
     /**
-     * To make the clone copy of the given String array. This method is faster
-     * than the clone method of String array.
+     * To make the clone copy of the given String array. This method is faster than
+     * the clone method of String array.
      *
      * @param inputArray
      * @return the cloned array of the given string array.
@@ -613,10 +533,8 @@ public final class StringUtil {
     }
 
     /**
-     * @param string
-     *                   the string to split.
-     * @param delim
-     *                   to by which the given string to be split.
+     * @param string the string to split.
+     * @param delim  to by which the given string to be split.
      * @return the array of strings split by the given char.
      * @since 3.0.0 public
      * @author WFF
@@ -818,8 +736,7 @@ public final class StringUtil {
      * @return String
      * @since 3.0.1
      */
-    public static String join(final char delimiter, final char prefix,
-            final char suffix, final String... items) {
+    public static String join(final char delimiter, final char prefix, final char suffix, final String... items) {
 
         // total delimiters: items.length -1
         // prefix and suffix: 2
@@ -890,8 +807,7 @@ public final class StringUtil {
      * @return String
      * @since 3.0.1
      */
-    public static String join(final char delimiter,
-            final Collection<String> items) {
+    public static String join(final char delimiter, final Collection<String> items) {
 
         // total delimiters: items.length -1
         int capacity = (items.size() - 1);
@@ -911,8 +827,7 @@ public final class StringUtil {
     }
 
     /**
-     * @param s
-     *              String to check
+     * @param s String to check
      * @return true if the given string doesn't contain any char other than
      *         whitespace.
      * @since 3.0.1

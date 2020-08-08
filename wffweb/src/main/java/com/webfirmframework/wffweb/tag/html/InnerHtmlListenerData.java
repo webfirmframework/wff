@@ -34,8 +34,8 @@ final class InnerHtmlListenerData {
 
     private final InnerHtmlAddListener listener;
 
-    InnerHtmlListenerData(final AbstractHtml5SharedObject sharedObject,
-            final InnerHtmlAddListener listener, final Event[] events) {
+    InnerHtmlListenerData(final AbstractHtml5SharedObject sharedObject, final InnerHtmlAddListener listener,
+            final Event[] events) {
         super();
         this.sharedObject = sharedObject;
         this.listener = listener;

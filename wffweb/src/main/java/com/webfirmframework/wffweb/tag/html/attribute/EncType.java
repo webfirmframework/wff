@@ -46,15 +46,15 @@ public class EncType extends AbstractAttribute implements FormAttributable {
     public static final String URL_ENCODED = "application/x-www-form-urlencoded";
 
     /**
-     * No characters are encoded. This value is required when you are using
-     * forms that have a file upload control. It represents
+     * No characters are encoded. This value is required when you are using forms
+     * that have a file upload control. It represents
      * <code>multipart/form-data</code>.
      */
     public static final String MULTIPART = "multipart/form-data";
 
     /**
-     * Spaces are converted to "+" symbols, but no special characters are
-     * encoded. It represents <code>text/plain</code>
+     * Spaces are converted to "+" symbols, but no special characters are encoded.
+     * It represents <code>text/plain</code>
      *
      */
     public static final String TEXT_PLAIN = "text/plain";
@@ -84,8 +84,7 @@ public class EncType extends AbstractAttribute implements FormAttributable {
 
     /**
      *
-     * @param value
-     *                  the value for the attribute
+     * @param value the value for the attribute
      * @since 1.1.4
      * @author WFF
      */
@@ -96,8 +95,7 @@ public class EncType extends AbstractAttribute implements FormAttributable {
     /**
      * sets the value for this attribute
      *
-     * @param value
-     *                  the value for the attribute.
+     * @param value the value for the attribute.
      * @since 1.1.4
      * @author WFF
      */
@@ -108,12 +106,10 @@ public class EncType extends AbstractAttribute implements FormAttributable {
     /**
      * sets the value for this attribute
      *
-     * @param updateClient
-     *                         true to update client browser page if it is
-     *                         available. The default value is true but it will
-     *                         be ignored if there is no client browser page.
-     * @param value
-     *                         the value for the attribute.
+     * @param updateClient true to update client browser page if it is available.
+     *                     The default value is true but it will be ignored if there
+     *                     is no client browser page.
+     * @param value        the value for the attribute.
      * @since 2.1.15
      * @author WFF
      */

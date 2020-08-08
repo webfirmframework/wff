@@ -350,16 +350,14 @@ public enum CssColorName {
             if (min > length) {
                 min = length;
             }
-            final String upperCaseCssValue = TagStringUtil
-                    .toUpperCase(values()[i].colorName);
+            final String upperCaseCssValue = TagStringUtil.toUpperCase(values()[i].colorName);
             upperCaseSuperToStringsTemp.add(upperCaseCssValue);
             ALL_OBJECTS.put(upperCaseCssValue, values()[i]);
         }
         LOWEST_LENGTH = min;
         HIGHEST_LENGTH = max;
         if (values().length > 10) {
-            upperCaseSuperToStringsTemp = new HashSet<>(
-                    upperCaseSuperToStringsTemp);
+            upperCaseSuperToStringsTemp = new HashSet<>(upperCaseSuperToStringsTemp);
         }
         UPPER_CASE_SUPER_TO_STRINGS = upperCaseSuperToStringsTemp;
     }
@@ -446,28 +444,25 @@ public enum CssColorName {
     }
 
     /**
-     * checks whether the given given {@code colorName} is valid , i.e. whether
-     * it can have a corresponding object from it.
+     * checks whether the given given {@code colorName} is valid , i.e. whether it
+     * can have a corresponding object from it.
      *
      * @param colorName
-     * @return true if the given {@code cssColorName} has a corresponding
-     *         object.
+     * @return true if the given {@code cssColorName} has a corresponding object.
      * @since 1.0.0
      * @author WFF
      */
     public static boolean isValid(final String colorName) {
-        return CssEnumUtil.contains(colorName, UPPER_CASE_SUPER_TO_STRINGS,
-                LOWEST_LENGTH, HIGHEST_LENGTH);
+        return CssEnumUtil.contains(colorName, UPPER_CASE_SUPER_TO_STRINGS, LOWEST_LENGTH, HIGHEST_LENGTH);
     }
 
     /**
      * gets the corresponding object for the given {@code colorName} or null for
      * invalid colorName.
      *
-     * @param colorName
-     *                      the inbuilt color name as per w3 standard.
-     * @return the corresponding object for the given {@code colorName} or null
-     *         for invalid colorName.
+     * @param colorName the inbuilt color name as per w3 standard.
+     * @return the corresponding object for the given {@code colorName} or null for
+     *         invalid colorName.
      * @since 1.0.0
      * @author WFF
      */
@@ -479,12 +474,10 @@ public enum CssColorName {
     /**
      * Extracts opacity from the given hex value.
      *
-     * @param hex
-     *                it must start with #
-     * @return the opacity value from the given hex. It will also return 1.0 if
-     *         it doesn't contain alpha value in the given hex value. If the
-     *         length of hex value is 4 or 7 that means it doesn't contain alpha
-     *         value in it.
+     * @param hex it must start with #
+     * @return the opacity value from the given hex. It will also return 1.0 if it
+     *         doesn't contain alpha value in the given hex value. If the length of
+     *         hex value is 4 or 7 that means it doesn't contain alpha value in it.
      * @since 3.0.10
      */
     public static float extractOpacity(final String hex) {
@@ -507,8 +500,7 @@ public enum CssColorName {
         } else if (hex.length() == 7 || hex.length() == 4) {
             return 1.0F;
         }
-        throw new IllegalArgumentException(
-                "Invalid hex value. A valid hex value is #FFFFFF80");
+        throw new IllegalArgumentException("Invalid hex value. A valid hex value is #FFFFFF80");
     }
 
 }

@@ -49,19 +49,16 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class BorderTop extends AbstractCssProperty<BorderTop>
-        implements StateChangeInformer<CssProperty> {
+public class BorderTop extends AbstractCssProperty<BorderTop> implements StateChangeInformer<CssProperty> {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    private static final Logger LOGGER = Logger
-            .getLogger(BorderTop.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(BorderTop.class.getName());
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays
-            .asList(INITIAL, INHERIT);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(INITIAL, INHERIT);
 
     private String cssValue;
 
@@ -72,8 +69,7 @@ public class BorderTop extends AbstractCssProperty<BorderTop>
     private BorderTopColor borderTopColor;
 
     /**
-     * The value <code>medium none black</code> will be assigned as the
-     * cssValue.
+     * The value <code>medium none black</code> will be assigned as the cssValue.
      *
      * @author WFF
      * @since 1.0.0
@@ -83,18 +79,15 @@ public class BorderTop extends AbstractCssProperty<BorderTop>
     }
 
     /**
-     * @param cssValue
-     *                     the css value to set.
+     * @param cssValue the css value to set.
      */
     public BorderTop(final String cssValue) {
         setCssValue(cssValue);
     }
 
     /**
-     * @param borderTop
-     *                      the {@code BorderTop} object from which the cssValue
-     *                      to set.And, {@code null} will throw
-     *                      {@code NullValueException}
+     * @param borderTop the {@code BorderTop} object from which the cssValue to
+     *                  set.And, {@code null} will throw {@code NullValueException}
      */
     public BorderTop(final BorderTop borderTop) {
         if (borderTop == null) {
@@ -137,12 +130,10 @@ public class BorderTop extends AbstractCssProperty<BorderTop>
     }
 
     /**
-     * @param cssValue
-     *                     the value should be in the format of
-     *                     <code>medium none color</code>, <code>initial</code>
-     *                     or <code>inherit</code>. {@code null} is considered
-     *                     as an invalid value and it will throw
-     *                     {@code NullValueException}.
+     * @param cssValue the value should be in the format of
+     *                 <code>medium none color</code>, <code>initial</code> or
+     *                 <code>inherit</code>. {@code null} is considered as an
+     *                 invalid value and it will throw {@code NullValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -152,8 +143,7 @@ public class BorderTop extends AbstractCssProperty<BorderTop>
         if (cssValue == null) {
             throw new NullValueException(
                     "null is an invalid value. The value format should be as for example medium none color Or initial/inherit.");
-        } else if ((trimmedCssValue = TagStringUtil
-                .toLowerCase(StringUtil.strip(cssValue))).isEmpty()) {
+        } else if ((trimmedCssValue = TagStringUtil.toLowerCase(StringUtil.strip(cssValue))).isEmpty()) {
             throw new NullValueException(cssValue
                     + " is an invalid value. The value format should be as for example medium none color Or initial/inherit.");
         }
@@ -206,11 +196,9 @@ public class BorderTop extends AbstractCssProperty<BorderTop>
                     this.borderTopWidth.setCssValue(eachPart);
                     borderTopWidth = this.borderTopWidth;
                 }
-            } else if (borderTopStyle == null
-                    && BorderTopStyle.isValid(eachPart)) {
+            } else if (borderTopStyle == null && BorderTopStyle.isValid(eachPart)) {
                 borderTopStyle = BorderTopStyle.getThis(eachPart);
-            } else if (borderTopColor == null
-                    && BorderTopColor.isValid(eachPart)) {
+            } else if (borderTopColor == null && BorderTopColor.isValid(eachPart)) {
                 if (this.borderTopColor == null) {
                     borderTopColor = new BorderTopColor(eachPart);
                     borderTopColor.setStateChangeInformer(this);
@@ -283,12 +271,10 @@ public class BorderTop extends AbstractCssProperty<BorderTop>
             if (borderTopWidth == null && BorderTopWidth.isValid(eachPart)) {
                 borderTopWidth = new BorderTopWidth(eachPart);
                 invalid = false;
-            } else if (borderTopStyle == null
-                    && BorderTopStyle.isValid(eachPart)) {
+            } else if (borderTopStyle == null && BorderTopStyle.isValid(eachPart)) {
                 borderTopStyle = BorderTopStyle.getThis(eachPart);
                 invalid = false;
-            } else if (borderTopColor == null
-                    && BorderTopColor.isValid(eachPart)) {
+            } else if (borderTopColor == null && BorderTopColor.isValid(eachPart)) {
                 borderTopColor = new BorderTopColor(eachPart);
                 invalid = false;
             }
@@ -297,8 +283,7 @@ public class BorderTop extends AbstractCssProperty<BorderTop>
             }
         }
 
-        return borderTopWidth != null || borderTopStyle != null
-                || borderTopColor != null;
+        return borderTopWidth != null || borderTopStyle != null || borderTopColor != null;
     }
 
     /**
@@ -342,8 +327,7 @@ public class BorderTop extends AbstractCssProperty<BorderTop>
             final String borderTopWidthCssValue = borderTopWidth.getCssValue();
             if (BorderTopWidth.INITIAL.equals(borderTopWidthCssValue)
                     || BorderTopWidth.INHERIT.equals(borderTopWidthCssValue)) {
-                throw new InvalidValueException(
-                        "borderTopWidth cannot have initial/inherit as its cssValue");
+                throw new InvalidValueException("borderTopWidth cannot have initial/inherit as its cssValue");
             }
 
             cssValueBuilder.append(borderTopWidth.getCssValue()).append(' ');
@@ -357,8 +341,7 @@ public class BorderTop extends AbstractCssProperty<BorderTop>
             cssValueBuilder.append(borderTopColor.getCssValue()).append(' ');
         }
 
-        final String trimmedCssValue = StringBuilderUtil
-                .getTrimmedString(cssValueBuilder).toString();
+        final String trimmedCssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder).toString();
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
         if (borderTopWidth != null && borderTopWidth.isAlreadyInUse()
@@ -403,8 +386,7 @@ public class BorderTop extends AbstractCssProperty<BorderTop>
             cssValueBuilder.append(borderTopColor.getCssValue()).append(' ');
         }
 
-        final String trimmedCssValue = StringBuilderUtil
-                .getTrimmedString(cssValueBuilder).toString();
+        final String trimmedCssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder).toString();
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
         this.borderTopStyle = borderTopStyle;
@@ -431,14 +413,12 @@ public class BorderTop extends AbstractCssProperty<BorderTop>
             final String borderTopColorCssValue = borderTopColor.getCssValue();
             if (BorderTopColor.INITIAL.equals(borderTopColorCssValue)
                     || BorderTopColor.INHERIT.equals(borderTopColorCssValue)) {
-                throw new InvalidValueException(
-                        "borderTopColor cannot have initial/inherit as its cssValue");
+                throw new InvalidValueException("borderTopColor cannot have initial/inherit as its cssValue");
             }
             cssValueBuilder.append(borderTopColorCssValue);
         }
 
-        final String trimmedCssValue = StringBuilderUtil
-                .getTrimmedString(cssValueBuilder).toString();
+        final String trimmedCssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder).toString();
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
         if (borderTopColor != null && borderTopColor.isAlreadyInUse()
@@ -475,10 +455,8 @@ public class BorderTop extends AbstractCssProperty<BorderTop>
 
             final String cssValue = borderTopColor.getCssValue();
 
-            if (BorderTopColor.INITIAL.equals(cssValue)
-                    || BorderTopColor.INHERIT.equals(cssValue)) {
-                throw new InvalidValueException(
-                        "initial/inherit cannot be set as borderTopColor cssValue");
+            if (BorderTopColor.INITIAL.equals(cssValue) || BorderTopColor.INHERIT.equals(cssValue)) {
+                throw new InvalidValueException("initial/inherit cannot be set as borderTopColor cssValue");
             }
 
             setBorderTopColor(borderTopColor);

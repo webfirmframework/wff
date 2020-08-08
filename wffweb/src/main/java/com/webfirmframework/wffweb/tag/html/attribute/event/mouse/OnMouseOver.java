@@ -30,8 +30,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
  * @author WFF
  *
  */
-public class OnMouseOver extends AbstractEventAttribute
-        implements AAttributable {
+public class OnMouseOver extends AbstractEventAttribute implements AAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -55,12 +54,9 @@ public class OnMouseOver extends AbstractEventAttribute
         setServerAsyncMethod(null, serverAsyncMethod, null, null);
     }
 
-    public OnMouseOver(final String jsPreFunctionBody,
-            final ServerAsyncMethod serverAsyncMethod,
-            final String jsFilterFunctionBody,
-            final String jsPostFunctionBody) {
-        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod,
-                jsFilterFunctionBody, jsPostFunctionBody);
+    public OnMouseOver(final String jsPreFunctionBody, final ServerAsyncMethod serverAsyncMethod,
+            final String jsFilterFunctionBody, final String jsPostFunctionBody) {
+        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody);
     }
 
     public OnMouseOver(final String value) {
@@ -72,10 +68,8 @@ public class OnMouseOver extends AbstractEventAttribute
      * @param serverSideData
      * @since 3.0.2
      */
-    public OnMouseOver(final ServerAsyncMethod serverAsyncMethod,
-            final Object serverSideData) {
-        setServerAsyncMethod(null, serverAsyncMethod, null, null,
-                serverSideData);
+    public OnMouseOver(final ServerAsyncMethod serverAsyncMethod, final Object serverSideData) {
+        setServerAsyncMethod(null, serverAsyncMethod, null, null, serverSideData);
     }
 
     /**
@@ -86,12 +80,10 @@ public class OnMouseOver extends AbstractEventAttribute
      * @param serverSideData
      * @since 3.0.2
      */
-    public OnMouseOver(final String jsPreFunctionBody,
-            final ServerAsyncMethod serverAsyncMethod,
-            final String jsFilterFunctionBody, final String jsPostFunctionBody,
-            final Object serverSideData) {
-        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod,
-                jsFilterFunctionBody, jsPostFunctionBody, serverSideData);
+    public OnMouseOver(final String jsPreFunctionBody, final ServerAsyncMethod serverAsyncMethod,
+            final String jsFilterFunctionBody, final String jsPostFunctionBody, final Object serverSideData) {
+        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody,
+                serverSideData);
     }
 
     /**

@@ -29,9 +29,8 @@ public enum CssLengthUnit implements LengthUnit {
     // should be in descending order of length
     // enum name should be upper case of unit string, if there is any special
     // case comes handle as % in the consuming part
-    VMIN("vmin"), VMAX("vmax"), REM("rem"), VW("vw"), VH("vh"), PX("px"), PT(
-            "pt"), PC("pc"), MM("mm"), IN(
-                    "in"), EX("ex"), EM("em"), CM("cm"), CH("ch"), PER("%"),;
+    VMIN("vmin"), VMAX("vmax"), REM("rem"), VW("vw"), VH("vh"), PX("px"), PT("pt"), PC("pc"), MM("mm"), IN("in"),
+    EX("ex"), EM("em"), CM("cm"), CH("ch"), PER("%"),;
 
     private String valueString;
 

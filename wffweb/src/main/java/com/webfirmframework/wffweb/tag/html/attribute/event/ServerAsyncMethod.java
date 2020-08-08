@@ -40,8 +40,7 @@ public interface ServerAsyncMethod extends Serializable {
             serverSideData = null;
         }
 
-        public Event(final AbstractHtml sourceTag,
-                final AbstractAttribute sourceAttribute) {
+        public Event(final AbstractHtml sourceTag, final AbstractAttribute sourceAttribute) {
             super();
             this.sourceTag = sourceTag;
             this.sourceAttribute = sourceAttribute;
@@ -53,8 +52,7 @@ public interface ServerAsyncMethod extends Serializable {
          * @param serverSideData
          * @since 3.0.2
          */
-        public Event(final String serverMethodName,
-                final Object serverSideData) {
+        public Event(final String serverMethodName, final Object serverSideData) {
             sourceAttribute = null;
             this.serverMethodName = serverMethodName;
             this.serverSideData = serverSideData;
@@ -66,8 +64,7 @@ public interface ServerAsyncMethod extends Serializable {
          * @param serverSideData
          * @since 3.0.2
          */
-        public Event(final AbstractHtml sourceTag,
-                final AbstractAttribute sourceAttribute,
+        public Event(final AbstractHtml sourceTag, final AbstractAttribute sourceAttribute,
                 final Object serverSideData) {
             super();
             this.sourceTag = sourceTag;
@@ -83,8 +80,7 @@ public interface ServerAsyncMethod extends Serializable {
         }
 
         /**
-         * @param sourceTag
-         *                      the sourceTag to set
+         * @param sourceTag the sourceTag to set
          * @deprecated The use of this method is not encouraged. Use constructor
          *             initialization instead.
          */

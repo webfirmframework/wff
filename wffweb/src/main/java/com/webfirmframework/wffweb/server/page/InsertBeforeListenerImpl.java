@@ -41,8 +41,7 @@ final class InsertBeforeListenerImpl implements InsertBeforeListener {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Logger LOGGER = Logger
-            .getLogger(InsertBeforeListenerImpl.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(InsertBeforeListenerImpl.class.getName());
 
     private final BrowserPage browserPage;
 
@@ -55,8 +54,7 @@ final class InsertBeforeListenerImpl implements InsertBeforeListener {
         throw new AssertionError();
     }
 
-    InsertBeforeListenerImpl(final BrowserPage browserPage,
-            final Object accessObject,
+    InsertBeforeListenerImpl(final BrowserPage browserPage, final Object accessObject,
             final Map<String, AbstractHtml> tagByWffId) {
         this.browserPage = browserPage;
         this.accessObject = accessObject;
@@ -90,8 +88,7 @@ final class InsertBeforeListenerImpl implements InsertBeforeListener {
                     }
                 }
 
-                final Set<AbstractHtml> subChildren = child
-                        .getChildren(accessObject);
+                final Set<AbstractHtml> subChildren = child.getChildren(accessObject);
                 if (subChildren != null && subChildren.size() > 0) {
                     childrenStack.push(subChildren);
                 }
@@ -104,11 +101,14 @@ final class InsertBeforeListenerImpl implements InsertBeforeListener {
     @Override
     public void insertedBefore(final Event... events) {
 
-        //@formatter:off
+        // @formatter:off
         // removed all children tags task format :-
-        // { "name": task_byte, "values" : [INSERTED_BEFORE_TAG_byte_from_Task_enum]}, { "name": parent_data-wff-id, "values" : [ parent_tag_name, inserted_tag_html, before_tag_name, before_tag_data-wff-id, 1_if_there_was_a_previous_parent ]}
-        // { "name": 2, "values" : [[3]]}, { "name":"C55", "values" : ["div", "<span></span>", 1]}
-        //@formatter:on
+        // { "name": task_byte, "values" : [INSERTED_BEFORE_TAG_byte_from_Task_enum]}, {
+        // "name": parent_data-wff-id, "values" : [ parent_tag_name, inserted_tag_html,
+        // before_tag_name, before_tag_data-wff-id, 1_if_there_was_a_previous_parent ]}
+        // { "name": 2, "values" : [[3]]}, { "name":"C55", "values" : ["div",
+        // "<span></span>", 1]}
+        // @formatter:on
 
         final NameValue task = Task.INSERTED_BEFORE_TAG.getTaskNameValue();
 
@@ -131,8 +131,7 @@ final class InsertBeforeListenerImpl implements InsertBeforeListener {
 
                 final NameValue nameValue = new NameValue();
 
-                final byte[][] parentTagNameAndWffId = DataWffIdUtil
-                        .getIndexedTagNameAndWffId(accessObject, parentTag);
+                final byte[][] parentTagNameAndWffId = DataWffIdUtil.getIndexedTagNameAndWffId(accessObject, parentTag);
 
                 final byte[] parentWffIdBytes = parentTagNameAndWffId[1];
 
@@ -143,51 +142,39 @@ final class InsertBeforeListenerImpl implements InsertBeforeListener {
                 final byte[][] beforeTagNameAndWffId;
 
                 if (TagUtil.isTagless(beforeTag)) {
-                    beforeTagNameAndWffId = DataWffIdUtil
-                            .getIndexedTagNameAndChildIndexForNoTag(
-                                    accessObject, (NoTag) beforeTag);
+                    beforeTagNameAndWffId = DataWffIdUtil.getIndexedTagNameAndChildIndexForNoTag(accessObject,
+                            (NoTag) beforeTag);
                 } else {
-                    beforeTagNameAndWffId = DataWffIdUtil
-                            .getIndexedTagNameAndWffId(accessObject, beforeTag);
+                    beforeTagNameAndWffId = DataWffIdUtil.getIndexedTagNameAndWffId(accessObject, beforeTag);
                 }
 
                 try {
                     if (previousParentTag != null) {
                         if (WffJsFile.COMPRESSED_WFF_DATA) {
                             nameValue.setValues(parentTagName,
-                                    insertedTag.toCompressedWffBMBytesV2(
-                                            StandardCharsets.UTF_8),
-                                    beforeTagNameAndWffId[0],
-                                    beforeTagNameAndWffId[1], new byte[] { 1 });
+                                    insertedTag.toCompressedWffBMBytesV2(StandardCharsets.UTF_8),
+                                    beforeTagNameAndWffId[0], beforeTagNameAndWffId[1], new byte[] { 1 });
                         } else {
-                            nameValue.setValues(parentTagName,
-                                    insertedTag.toWffBMBytes(
-                                            StandardCharsets.UTF_8),
-                                    beforeTagNameAndWffId[0],
-                                    beforeTagNameAndWffId[1], new byte[] { 1 });
+                            nameValue.setValues(parentTagName, insertedTag.toWffBMBytes(StandardCharsets.UTF_8),
+                                    beforeTagNameAndWffId[0], beforeTagNameAndWffId[1], new byte[] { 1 });
                         }
 
                     } else {
                         if (WffJsFile.COMPRESSED_WFF_DATA) {
                             nameValue.setValues(parentTagName,
-                                    insertedTag.toCompressedWffBMBytesV2(
-                                            StandardCharsets.UTF_8),
-                                    beforeTagNameAndWffId[0],
-                                    beforeTagNameAndWffId[1]);
+                                    insertedTag.toCompressedWffBMBytesV2(StandardCharsets.UTF_8),
+                                    beforeTagNameAndWffId[0], beforeTagNameAndWffId[1]);
                         } else {
-                            nameValue.setValues(parentTagName,
-                                    insertedTag.toWffBMBytes(
-                                            StandardCharsets.UTF_8),
-                                    beforeTagNameAndWffId[0],
-                                    beforeTagNameAndWffId[1]);
+                            nameValue.setValues(parentTagName, insertedTag.toWffBMBytes(StandardCharsets.UTF_8),
+                                    beforeTagNameAndWffId[0], beforeTagNameAndWffId[1]);
                         }
 
                     }
                 } catch (final InvalidTagException e) {
                     if (LOGGER.isLoggable(Level.WARNING)) {
                         LOGGER.log(Level.WARNING,
-                                "Do not append/add an empty NoTag as child tag, eg: new NoTag(null, \"\").\n"
-                                        .concat("To make a tag's children as empty then invoke removeAllChildren() method in it."),
+                                "Do not append/add an empty NoTag as child tag, eg: new NoTag(null, \"\").\n".concat(
+                                        "To make a tag's children as empty then invoke removeAllChildren() method in it."),
                                 e);
                     }
                     continue;

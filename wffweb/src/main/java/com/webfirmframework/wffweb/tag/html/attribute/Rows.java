@@ -61,8 +61,7 @@ public class Rows extends AbstractAttribute implements TextAreaAttributable {
     }
 
     /**
-     * @param value
-     *                  the the number of columns to span
+     * @param value the the number of columns to span
      * @since 2.1.4
      * @author WFF
      */
@@ -72,8 +71,7 @@ public class Rows extends AbstractAttribute implements TextAreaAttributable {
     }
 
     /**
-     * @param value
-     *                  the the number of columns to span
+     * @param value the the number of columns to span
      * @since 2.1.4
      * @author WFF
      */
@@ -103,8 +101,7 @@ public class Rows extends AbstractAttribute implements TextAreaAttributable {
     }
 
     /**
-     * @param index
-     *                  the the number of columns to span
+     * @param index the the number of columns to span
      * @author WFF
      * @since 2.1.4
      */

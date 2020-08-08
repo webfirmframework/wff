@@ -70,8 +70,7 @@ public enum WffJsFile {
 
     private static final String AUTOREMOVE_PARENT_SCRIPT = "document.currentScript.parentNode.removeChild(document.currentScript);";
 
-    private static final Logger LOGGER = Logger
-            .getLogger(WffJsFile.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(WffJsFile.class.getName());
 
     // should be static final
     public static final boolean PRODUCTION_MODE = true;
@@ -86,8 +85,8 @@ public enum WffJsFile {
 
     private static volatile Map<String, Boolean> functionAndVarNames;
 
-    private static String[][] minifiableParts = { { "else {", "else{" },
-            { "} else", "}else" }, { "if (", "if(" }, { ") {", "){" } };
+    private static String[][] minifiableParts = { { "else {", "else{" }, { "} else", "}else" }, { "if (", "if(" },
+            { ") {", "){" } };
 
     private static final String HEART_BEAT_JS = "setInterval(function(){try{wffWS.send([]);}catch(e){wffWS.closeSocket();}},\"${HEARTBEAT_INTERVAL}\");";
 
@@ -133,8 +132,7 @@ public enum WffJsFile {
         NDXD_ATRBS = "[" + attrbsArraySB.substring(1) + "]";
 
         final StringBuilder boolAttrbsArraySB = new StringBuilder();
-        for (final String attrName : AttributeRegistry
-                .getBooleanAttributeNames()) {
+        for (final String attrName : AttributeRegistry.getBooleanAttributeNames()) {
             boolAttrbsArraySB.append(",\"");
             boolAttrbsArraySB.append(attrName);
             boolAttrbsArraySB.append('"');
@@ -144,8 +142,7 @@ public enum WffJsFile {
         NDXD_BLN_ATRBS = "[" + boolAttrbsArraySB.substring(1) + "]";
 
         final StringBuilder eventAttrbsArraySB = new StringBuilder();
-        for (final String attrName : AttributeRegistry
-                .getEventAttributeNames()) {
+        for (final String attrName : AttributeRegistry.getEventAttributeNames()) {
             eventAttrbsArraySB.append(",\"");
             eventAttrbsArraySB.append(attrName);
             eventAttrbsArraySB.append('"');
@@ -350,15 +347,14 @@ public enum WffJsFile {
             }
 
             // to sort in descending order of the length of the names
-            final Comparator<FunctionOrVarName> descendingLength = (a,
-                    b) -> Integer.compare(b.name.length(), a.name.length());
+            final Comparator<FunctionOrVarName> descendingLength = (a, b) -> Integer.compare(b.name.length(),
+                    a.name.length());
 
             functionAndVarNameList.sort(descendingLength);
 
             // NB: passing descendingLength comparator as constructor argument
             // in TreeSet makes bug it also removes elements having same length
-            functionAndVarNames = new LinkedHashMap<>(
-                    functionAndVarNameList.size());
+            functionAndVarNames = new LinkedHashMap<>(functionAndVarNameList.size());
             for (final FunctionOrVarName each : functionAndVarNameList) {
                 functionAndVarNames.put(each.name, each.function);
             }
@@ -404,10 +400,8 @@ public enum WffJsFile {
             // Paths.get(WffJsFile.class.getResource(filename).toURI()),
             // StandardCharsets.UTF_8);
 
-            final InputStream in = WffJsFile.class
-                    .getResourceAsStream(filename);
-            final BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(in, StandardCharsets.UTF_8));
+            final InputStream in = WffJsFile.class.getResourceAsStream(filename);
+            final BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
 
             // this will might java.nio.file.FileSystemNotFoundException in
             // production server.
@@ -430,8 +424,7 @@ public enum WffJsFile {
                 if (indexOfCommentSlashes != -1) {
                     if (indexOfCommentSlashes == 0) {
                         line = line.substring(0, indexOfCommentSlashes);
-                    } else if (line
-                            .indexOf("://") != (indexOfCommentSlashes - 1)) {
+                    } else if (line.indexOf("://") != (indexOfCommentSlashes - 1)) {
                         line = line.substring(0, indexOfCommentSlashes);
                     }
                 }
@@ -454,15 +447,12 @@ public enum WffJsFile {
                 do {
                     containsComment = false;
 
-                    final int indexOfSlashStarCommentStart = builder
-                            .indexOf("/*");
+                    final int indexOfSlashStarCommentStart = builder.indexOf("/*");
                     if (indexOfSlashStarCommentStart != -1) {
                         final int indexOfStarCommentEnd = builder.indexOf("*/");
 
-                        if (indexOfStarCommentEnd != -1
-                                && indexOfSlashStarCommentStart < indexOfStarCommentEnd) {
-                            builder.replace(indexOfSlashStarCommentStart,
-                                    indexOfStarCommentEnd + 2, "");
+                        if (indexOfStarCommentEnd != -1 && indexOfSlashStarCommentStart < indexOfStarCommentEnd) {
+                            builder.replace(indexOfSlashStarCommentStart, indexOfStarCommentEnd + 2, "");
                             containsComment = true;
                         }
                     }
@@ -476,12 +466,10 @@ public enum WffJsFile {
 
                     final int indexOfConsole = builder.indexOf("console");
                     if (indexOfConsole != -1) {
-                        final int indexOfSemiColon = builder.indexOf(");",
-                                indexOfConsole);
+                        final int indexOfSemiColon = builder.indexOf(");", indexOfConsole);
 
                         if (indexOfSemiColon > indexOfConsole) {
-                            builder.replace(indexOfConsole,
-                                    indexOfSemiColon + 2, "");
+                            builder.replace(indexOfConsole, indexOfSemiColon + 2, "");
                             containsLog = true;
                         }
                     }
@@ -494,60 +482,44 @@ public enum WffJsFile {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
-            throw new WffRuntimeException(
-                    "Unable to build optimizedFileContent");
+            throw new WffRuntimeException("Unable to build optimizedFileContent");
         }
     }
 
     /**
      * NB :- This method is only for internal use.
      *
-     * @param wsUrl
-     *                                    the complete websocket url
-     * @param instanceId
-     *                                    the instanceId of browserPage
-     * @param removePrevBPOnInitTab
-     *                                    true or false
-     * @param removePrevBPOnClosetTab
-     *                                    true or false
-     * @param heartbeatInterval
-     *                                    in milliseconds
-     * @param wsReconnectInterval
-     *                                    in milliseconds
-     * @param autoremoveParentScript
-     *                                    true or false
+     * @param wsUrl                   the complete websocket url
+     * @param instanceId              the instanceId of browserPage
+     * @param removePrevBPOnInitTab   true or false
+     * @param removePrevBPOnClosetTab true or false
+     * @param heartbeatInterval       in milliseconds
+     * @param wsReconnectInterval     in milliseconds
+     * @param autoremoveParentScript  true or false
      * @return the js string for the client
      * @author WFF
      */
-    public static String getAllOptimizedContent(final String wsUrl,
-            final String instanceId, final boolean removePrevBPOnInitTab,
-            final boolean removePrevBPOnClosetTab, final int heartbeatInterval,
-            final int wsReconnectInterval,
-            final boolean autoremoveParentScript) {
+    public static String getAllOptimizedContent(final String wsUrl, final String instanceId,
+            final boolean removePrevBPOnInitTab, final boolean removePrevBPOnClosetTab, final int heartbeatInterval,
+            final int wsReconnectInterval, final boolean autoremoveParentScript) {
 
         if (allOptimizedContent != null) {
 
             if (heartbeatInterval > 0) {
                 if (autoremoveParentScript) {
-                    return buildJsContentWithHeartbeat(wsUrl, instanceId,
-                            removePrevBPOnInitTab, removePrevBPOnClosetTab,
-                            heartbeatInterval, wsReconnectInterval)
-                                    .append(AUTOREMOVE_PARENT_SCRIPT)
-                                    .toString();
+                    return buildJsContentWithHeartbeat(wsUrl, instanceId, removePrevBPOnInitTab,
+                            removePrevBPOnClosetTab, heartbeatInterval, wsReconnectInterval)
+                                    .append(AUTOREMOVE_PARENT_SCRIPT).toString();
                 }
-                return buildJsContentWithHeartbeat(wsUrl, instanceId,
-                        removePrevBPOnInitTab, removePrevBPOnClosetTab,
+                return buildJsContentWithHeartbeat(wsUrl, instanceId, removePrevBPOnInitTab, removePrevBPOnClosetTab,
                         heartbeatInterval, wsReconnectInterval).toString();
             }
 
             if (autoremoveParentScript) {
-                return buildJsContentWithoutHeartbeat(wsUrl, instanceId,
-                        removePrevBPOnInitTab, removePrevBPOnClosetTab,
-                        wsReconnectInterval).append(AUTOREMOVE_PARENT_SCRIPT)
-                                .toString();
+                return buildJsContentWithoutHeartbeat(wsUrl, instanceId, removePrevBPOnInitTab, removePrevBPOnClosetTab,
+                        wsReconnectInterval).append(AUTOREMOVE_PARENT_SCRIPT).toString();
             }
-            return buildJsContentWithoutHeartbeat(wsUrl, instanceId,
-                    removePrevBPOnInitTab, removePrevBPOnClosetTab,
+            return buildJsContentWithoutHeartbeat(wsUrl, instanceId, removePrevBPOnInitTab, removePrevBPOnClosetTab,
                     wsReconnectInterval).toString();
         }
 
@@ -576,19 +548,14 @@ public enum WffJsFile {
                         int functionId = 0;
                         int variableId = 0;
 
-                        for (final Entry<String, Boolean> entry : functionAndVarNames
-                                .entrySet()) {
+                        for (final Entry<String, Boolean> entry : functionAndVarNames.entrySet()) {
 
-                            final String minName = entry.getValue()
-                                    ? "f" + (++functionId)
-                                    : "v" + (++variableId);
-                            allOptimizedContent = allOptimizedContent
-                                    .replace(entry.getKey(), minName);
+                            final String minName = entry.getValue() ? "f" + (++functionId) : "v" + (++variableId);
+                            allOptimizedContent = allOptimizedContent.replace(entry.getKey(), minName);
                         }
 
                         for (final String[] each : minifiableParts) {
-                            allOptimizedContent = allOptimizedContent
-                                    .replace(each[0], each[1]);
+                            allOptimizedContent = allOptimizedContent.replace(each[0], each[1]);
                         }
 
                         // there is bug while enabling this, also enable in Task
@@ -608,25 +575,19 @@ public enum WffJsFile {
 
             if (heartbeatInterval > 0) {
                 if (autoremoveParentScript) {
-                    return buildJsContentWithHeartbeat(wsUrl, instanceId,
-                            removePrevBPOnInitTab, removePrevBPOnClosetTab,
-                            heartbeatInterval, wsReconnectInterval)
-                                    .append(AUTOREMOVE_PARENT_SCRIPT)
-                                    .toString();
+                    return buildJsContentWithHeartbeat(wsUrl, instanceId, removePrevBPOnInitTab,
+                            removePrevBPOnClosetTab, heartbeatInterval, wsReconnectInterval)
+                                    .append(AUTOREMOVE_PARENT_SCRIPT).toString();
                 }
-                return buildJsContentWithHeartbeat(wsUrl, instanceId,
-                        removePrevBPOnInitTab, removePrevBPOnClosetTab,
+                return buildJsContentWithHeartbeat(wsUrl, instanceId, removePrevBPOnInitTab, removePrevBPOnClosetTab,
                         heartbeatInterval, wsReconnectInterval).toString();
             }
 
             if (autoremoveParentScript) {
-                return buildJsContentWithoutHeartbeat(wsUrl, instanceId,
-                        removePrevBPOnInitTab, removePrevBPOnClosetTab,
-                        wsReconnectInterval).append(AUTOREMOVE_PARENT_SCRIPT)
-                                .toString();
+                return buildJsContentWithoutHeartbeat(wsUrl, instanceId, removePrevBPOnInitTab, removePrevBPOnClosetTab,
+                        wsReconnectInterval).append(AUTOREMOVE_PARENT_SCRIPT).toString();
             }
-            return buildJsContentWithoutHeartbeat(wsUrl, instanceId,
-                    removePrevBPOnInitTab, removePrevBPOnClosetTab,
+            return buildJsContentWithoutHeartbeat(wsUrl, instanceId, removePrevBPOnInitTab, removePrevBPOnClosetTab,
                     wsReconnectInterval).toString();
         } catch (final Exception e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
@@ -636,64 +597,46 @@ public enum WffJsFile {
         return "";
     }
 
-    private static StringBuilder buildJsContentWithHeartbeat(final String wsUrl,
-            final String instanceId, final boolean removePrevBPOnInitTab,
-            final boolean removePrevBPOnClosetTab, final int heartbeatInterval,
+    private static StringBuilder buildJsContentWithHeartbeat(final String wsUrl, final String instanceId,
+            final boolean removePrevBPOnInitTab, final boolean removePrevBPOnClosetTab, final int heartbeatInterval,
             final int wsReconnectInterval) {
-        return buildJsContentWithoutHeartbeat(wsUrl, instanceId,
-                removePrevBPOnInitTab, removePrevBPOnClosetTab,
+        return buildJsContentWithoutHeartbeat(wsUrl, instanceId, removePrevBPOnInitTab, removePrevBPOnClosetTab,
                 wsReconnectInterval).append(
-                        HEART_BEAT_JS.replace("\"${HEARTBEAT_INTERVAL}\"",
-                                Integer.toString(heartbeatInterval)));
+                        HEART_BEAT_JS.replace("\"${HEARTBEAT_INTERVAL}\"", Integer.toString(heartbeatInterval)));
     }
 
-    private static StringBuilder buildJsContentWithoutHeartbeat(
-            final String wsUrl, final String instanceId,
-            final boolean removePrevBPOnInitTab,
-            final boolean removePrevBPOnClosetTab,
-            final int wsReconnectInterval) {
+    private static StringBuilder buildJsContentWithoutHeartbeat(final String wsUrl, final String instanceId,
+            final boolean removePrevBPOnInitTab, final boolean removePrevBPOnClosetTab, final int wsReconnectInterval) {
 
-        final StringBuilder globalContentBuider = new StringBuilder(
-                WFF_GLOBAL.optimizedFileContent);
+        final StringBuilder globalContentBuider = new StringBuilder(WFF_GLOBAL.optimizedFileContent);
 
-        StringBuilderUtil.replaceFirst(globalContentBuider, "\"${CPRSD_DATA}\"",
-                String.valueOf(COMPRESSED_WFF_DATA));
+        StringBuilderUtil.replaceFirst(globalContentBuider, "\"${CPRSD_DATA}\"", String.valueOf(COMPRESSED_WFF_DATA));
 
-        StringBuilderUtil.replaceFirst(globalContentBuider, "\"${NDXD_TGS}\"",
-                NDXD_TGS);
+        StringBuilderUtil.replaceFirst(globalContentBuider, "\"${NDXD_TGS}\"", NDXD_TGS);
 
-        StringBuilderUtil.replaceFirst(globalContentBuider, "\"${NDXD_ATRBS}\"",
-                NDXD_ATRBS);
+        StringBuilderUtil.replaceFirst(globalContentBuider, "\"${NDXD_ATRBS}\"", NDXD_ATRBS);
 
-        StringBuilderUtil.replaceFirst(globalContentBuider,
-                "\"${NDXD_VNT_ATRBS}\"", NDXD_VNT_ATRBS);
+        StringBuilderUtil.replaceFirst(globalContentBuider, "\"${NDXD_VNT_ATRBS}\"", NDXD_VNT_ATRBS);
 
-        StringBuilderUtil.replaceFirst(globalContentBuider,
-                "\"${NDXD_BLN_ATRBS}\"", NDXD_BLN_ATRBS);
+        StringBuilderUtil.replaceFirst(globalContentBuider, "\"${NDXD_BLN_ATRBS}\"", NDXD_BLN_ATRBS);
 
         StringBuilderUtil.replaceFirst(globalContentBuider, "${WS_URL}", wsUrl);
 
-        StringBuilderUtil.replaceFirst(globalContentBuider, "${INSTANCE_ID}",
-                instanceId);
+        StringBuilderUtil.replaceFirst(globalContentBuider, "${INSTANCE_ID}", instanceId);
 
-        StringBuilderUtil.replaceFirst(globalContentBuider,
-                "\"${REMOVE_PREV_BP_ON_TABCLOSE}\"",
+        StringBuilderUtil.replaceFirst(globalContentBuider, "\"${REMOVE_PREV_BP_ON_TABCLOSE}\"",
                 String.valueOf(removePrevBPOnClosetTab));
 
-        StringBuilderUtil.replaceFirst(globalContentBuider,
-                "\"${REMOVE_PREV_BP_ON_INITTAB}\"",
+        StringBuilderUtil.replaceFirst(globalContentBuider, "\"${REMOVE_PREV_BP_ON_INITTAB}\"",
                 String.valueOf(removePrevBPOnInitTab));
 
-        StringBuilderUtil.replaceFirst(globalContentBuider,
-                "\"${TASK_VALUES}\"", Task.getJsObjectString());
+        StringBuilderUtil.replaceFirst(globalContentBuider, "\"${TASK_VALUES}\"", Task.getJsObjectString());
 
-        StringBuilderUtil.replaceFirst(globalContentBuider, "\"${WS_RECON}\"",
-                String.valueOf(wsReconnectInterval));
+        StringBuilderUtil.replaceFirst(globalContentBuider, "\"${WS_RECON}\"", String.valueOf(wsReconnectInterval));
 
         final String globalContent = globalContentBuider.toString();
 
-        return new StringBuilder("var wffLog = console.log;")
-                .append(JS_WORK_AROUND.optimizedFileContent)
+        return new StringBuilder("var wffLog = console.log;").append(JS_WORK_AROUND.optimizedFileContent)
                 .append(globalContent).append(allOptimizedContent);
     }
 

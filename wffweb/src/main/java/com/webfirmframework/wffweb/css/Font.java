@@ -50,8 +50,7 @@ import com.webfirmframework.wffweb.util.StringUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class Font extends AbstractCssProperty<Font>
-        implements StateChangeInformer<CssProperty> {
+public class Font extends AbstractCssProperty<Font> implements StateChangeInformer<CssProperty> {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -66,9 +65,8 @@ public class Font extends AbstractCssProperty<Font>
     public static final String SMALL_CAPTION = "small-caption";
     public static final String STATUS_BAR = "status-bar";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(
-            INITIAL, INHERIT, CAPTION, ICON, MENU, MESSAGE_BOX, SMALL_CAPTION,
-            STATUS_BAR);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(INITIAL, INHERIT, CAPTION, ICON, MENU,
+            MESSAGE_BOX, SMALL_CAPTION, STATUS_BAR);
 
     private String cssValue;
 
@@ -95,18 +93,15 @@ public class Font extends AbstractCssProperty<Font>
     }
 
     /**
-     * @param cssValue
-     *                     the css value to set.
+     * @param cssValue the css value to set.
      */
     public Font(final String cssValue) {
         setCssValue(cssValue);
     }
 
     /**
-     * @param font
-     *                 the {@code Font} object from which the cssValue to
-     *                 set.And, {@code null} will throw
-     *                 {@code NullValueException}
+     * @param font the {@code Font} object from which the cssValue to set.And,
+     *             {@code null} will throw {@code NullValueException}
      */
     public Font(final Font font) {
         if (font == null) {
@@ -149,12 +144,11 @@ public class Font extends AbstractCssProperty<Font>
     }
 
     /**
-     * @param cssValue
-     *                     the value should be in the format of
-     *                     <code>italic small-caps bold 12px arial,sans-serif</code>
-     *                     or <code>initial/inherit</code>. {@code null} is
-     *                     considered as an invalid value and it will throw
-     *                     {@code NullValueException}.
+     * @param cssValue the value should be in the format of
+     *                 <code>italic small-caps bold 12px arial,sans-serif</code> or
+     *                 <code>initial/inherit</code>. {@code null} is considered as
+     *                 an invalid value and it will throw
+     *                 {@code NullValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -171,29 +165,22 @@ public class Font extends AbstractCssProperty<Font>
                     + " is an invalid value. The value format should be as for example italic small-caps bold 12px arial,sans-serif Or initial/inherit.");
         }
 
-        final String[] cssValueParts = getExtractedSubCssValues(
-                trimmedCssValue);
+        final String[] cssValueParts = getExtractedSubCssValues(trimmedCssValue);
 
         // @formatter:off
         /*
-        if (cssValueParts.length > 1) {
-            may not be fine, if the predefined constant comes as a substring of font-family name in future.
-             for (String constant : PREDEFINED_CONSTANTS) {
-                if (trimmedCssValue.contains(constant)) {
-                    throw new InvalidValueException(
-                            "The string '"
-                                    + constant
-                                    + "' makes the given cssValue invalid, please remove '"
-                                    + constant + "' from it and try.");
-                }
-            }
-
-        } else
-        */
+         * if (cssValueParts.length > 1) { may not be fine, if the predefined constant
+         * comes as a substring of font-family name in future. for (String constant :
+         * PREDEFINED_CONSTANTS) { if (trimmedCssValue.contains(constant)) { throw new
+         * InvalidValueException( "The string '" + constant +
+         * "' makes the given cssValue invalid, please remove '" + constant +
+         * "' from it and try."); } }
+         * 
+         * } else
+         */
         // @formatter:on
 
-        if (cssValueParts.length == 1
-                && PREDEFINED_CONSTANTS.contains(trimmedCssValue)) {
+        if (cssValueParts.length == 1 && PREDEFINED_CONSTANTS.contains(trimmedCssValue)) {
 
             fontStyle = null;
             fontVariant = null;
@@ -251,8 +238,7 @@ public class Font extends AbstractCssProperty<Font>
                     lineHeight = this.lineHeight;
                 }
             } else if (fontFamily == null
-                    && (!FontFamily.isValidateFontFamilyNameGlobally()
-                            || FontFamily.isValid(eachPart))) {
+                    && (!FontFamily.isValidateFontFamilyNameGlobally() || FontFamily.isValid(eachPart))) {
                 if (this.fontFamily == null) {
                     fontFamily = new FontFamily(eachPart);
                     fontFamily.setStateChangeInformer(this);
@@ -330,10 +316,8 @@ public class Font extends AbstractCssProperty<Font>
      * @since 1.0.0
      */
     protected static String[] getExtractedSubCssValues(final String cssValue) {
-        final String convertedToSingleSpace = StringUtil
-                .convertToSingleSpace(cssValue);
-        final String[] subCssValues = convertedToSingleSpace.replace(", ", ",")
-                .split("[ /]");
+        final String convertedToSingleSpace = StringUtil.convertToSingleSpace(cssValue);
+        final String[] subCssValues = convertedToSingleSpace.replace(", ", ",").split("[ /]");
         return subCssValues;
     }
 
@@ -381,8 +365,7 @@ public class Font extends AbstractCssProperty<Font>
                 lineHeight = new LineHeight(eachPart);
                 invalid = false;
             } else if (fontFamily == null
-                    && (!FontFamily.isValidateFontFamilyNameGlobally()
-                            || FontFamily.isValid(eachPart))) {
+                    && (!FontFamily.isValidateFontFamilyNameGlobally() || FontFamily.isValid(eachPart))) {
                 fontFamily = new FontFamily(eachPart);
                 invalid = false;
             }
@@ -391,8 +374,8 @@ public class Font extends AbstractCssProperty<Font>
             }
         }
 
-        return fontStyle != null || fontVariant != null || fontWeight != null
-                || fontSize != null || lineHeight != null || fontFamily != null;
+        return fontStyle != null || fontVariant != null || fontWeight != null || fontSize != null || lineHeight != null
+                || fontFamily != null;
     }
 
     /**
@@ -547,8 +530,7 @@ public class Font extends AbstractCssProperty<Font>
             cssValueBuilder.append(fontFamily.getCssValue()).append(' ');
         }
 
-        final String trimmedCssValue = StringBuilderUtil
-                .getTrimmedString(cssValueBuilder).toString();
+        final String trimmedCssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder).toString();
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
         this.fontStyle = fontStyle;
@@ -593,8 +575,7 @@ public class Font extends AbstractCssProperty<Font>
             cssValueBuilder.append(fontFamily.getCssValue()).append(' ');
         }
 
-        final String trimmedCssValue = StringBuilderUtil
-                .getTrimmedString(cssValueBuilder).toString();
+        final String trimmedCssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder).toString();
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
         this.fontVariant = fontVariant;
@@ -639,8 +620,7 @@ public class Font extends AbstractCssProperty<Font>
             cssValueBuilder.append(fontFamily.getCssValue()).append(' ');
         }
 
-        final String trimmedCssValue = StringBuilderUtil
-                .getTrimmedString(cssValueBuilder).toString();
+        final String trimmedCssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder).toString();
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
         this.fontWeight = fontWeight;
@@ -669,10 +649,8 @@ public class Font extends AbstractCssProperty<Font>
 
         if (fontSize != null) {
             final String fontSizeCssValue = fontSize.getCssValue();
-            if (FontSize.INITIAL.equals(fontSizeCssValue)
-                    || FontSize.INHERIT.equals(fontSizeCssValue)) {
-                throw new InvalidValueException(
-                        "fontSize cannot have initial/inherit as its cssValue");
+            if (FontSize.INITIAL.equals(fontSizeCssValue) || FontSize.INHERIT.equals(fontSizeCssValue)) {
+                throw new InvalidValueException("fontSize cannot have initial/inherit as its cssValue");
             }
             cssValueBuilder.append(fontSizeCssValue);
             if (lineHeight == null) {
@@ -693,12 +671,10 @@ public class Font extends AbstractCssProperty<Font>
             cssValueBuilder.append(fontFamilyCssValue).append(' ');
         }
 
-        final String trimmedCssValue = StringBuilderUtil
-                .getTrimmedString(cssValueBuilder).toString();
+        final String trimmedCssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder).toString();
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
-        if (fontSize != null && fontSize.isAlreadyInUse()
-                && this.fontSize != fontSize) {
+        if (fontSize != null && fontSize.isAlreadyInUse() && this.fontSize != fontSize) {
             if (LOGGER.isLoggable(Level.WARNING)) {
                 LOGGER.warning(
                         "the given fontSize is already used by another object so a new object or the previous object (if it exists) of FontSize will be used");
@@ -749,10 +725,8 @@ public class Font extends AbstractCssProperty<Font>
 
         if (lineHeight != null) {
             final String lineHeightCssValue = lineHeight.getCssValue();
-            if (FontSize.INITIAL.equals(lineHeightCssValue)
-                    || FontSize.INHERIT.equals(lineHeightCssValue)) {
-                throw new InvalidValueException(
-                        "fontSize cannot have initial/inherit as its cssValue");
+            if (FontSize.INITIAL.equals(lineHeightCssValue) || FontSize.INHERIT.equals(lineHeightCssValue)) {
+                throw new InvalidValueException("fontSize cannot have initial/inherit as its cssValue");
             }
             if (fontSize != null) {
                 cssValueBuilder.append('/');
@@ -765,12 +739,10 @@ public class Font extends AbstractCssProperty<Font>
             cssValueBuilder.append(fontFamilyCssValue).append(' ');
         }
 
-        final String trimmedCssValue = StringBuilderUtil
-                .getTrimmedString(cssValueBuilder).toString();
+        final String trimmedCssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder).toString();
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
-        if (lineHeight != null && lineHeight.isAlreadyInUse()
-                && this.lineHeight != lineHeight) {
+        if (lineHeight != null && lineHeight.isAlreadyInUse() && this.lineHeight != lineHeight) {
             if (LOGGER.isLoggable(Level.WARNING)) {
                 LOGGER.warning(
                         "the given lineHeight is already used by another object so a new object or the previous object (if it exists) of FontSize will be used");
@@ -829,20 +801,16 @@ public class Font extends AbstractCssProperty<Font>
 
         if (fontFamily != null) {
             final String fontFamilyCssValue = fontFamily.getCssValue();
-            if (FontFamily.INITIAL.equals(fontFamilyCssValue)
-                    || FontFamily.INHERIT.equals(fontFamilyCssValue)) {
-                throw new InvalidValueException(
-                        "fontFamily cannot have initial/inherit as its cssValue");
+            if (FontFamily.INITIAL.equals(fontFamilyCssValue) || FontFamily.INHERIT.equals(fontFamilyCssValue)) {
+                throw new InvalidValueException("fontFamily cannot have initial/inherit as its cssValue");
             }
             cssValueBuilder.append(fontFamilyCssValue).append(' ');
         }
 
-        final String trimmedCssValue = StringBuilderUtil
-                .getTrimmedString(cssValueBuilder).toString();
+        final String trimmedCssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder).toString();
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
-        if (fontFamily != null && fontFamily.isAlreadyInUse()
-                && this.fontFamily != fontFamily) {
+        if (fontFamily != null && fontFamily.isAlreadyInUse() && this.fontFamily != fontFamily) {
             if (LOGGER.isLoggable(Level.WARNING)) {
                 LOGGER.warning(
                         "the given fontFamily is already used by another object so a new object or the previous object (if it exists) of FontSize will be used");
@@ -875,10 +843,8 @@ public class Font extends AbstractCssProperty<Font>
 
             final String cssValue = fontSize.getCssValue();
 
-            if (FontSize.INITIAL.equals(cssValue)
-                    || FontSize.INHERIT.equals(cssValue)) {
-                throw new InvalidValueException(
-                        "initial/inherit cannot be set as fontSize cssValue");
+            if (FontSize.INITIAL.equals(cssValue) || FontSize.INHERIT.equals(cssValue)) {
+                throw new InvalidValueException("initial/inherit cannot be set as fontSize cssValue");
             }
 
             setFontSize(fontSize);
@@ -888,10 +854,8 @@ public class Font extends AbstractCssProperty<Font>
 
             final String cssValue = lineHeight.getCssValue();
 
-            if (LineHeight.INITIAL.equals(cssValue)
-                    || LineHeight.INHERIT.equals(cssValue)) {
-                throw new InvalidValueException(
-                        "initial/inherit cannot be set as lineHeight cssValue");
+            if (LineHeight.INITIAL.equals(cssValue) || LineHeight.INHERIT.equals(cssValue)) {
+                throw new InvalidValueException("initial/inherit cannot be set as lineHeight cssValue");
             }
 
             setLineHeight(lineHeight);
@@ -901,10 +865,8 @@ public class Font extends AbstractCssProperty<Font>
 
             final String cssValue = fontFamily.getCssValue();
 
-            if (FontFamily.INITIAL.equals(cssValue)
-                    || FontFamily.INHERIT.equals(cssValue)) {
-                throw new InvalidValueException(
-                        "initial/inherit cannot be set as fontFamily cssValue");
+            if (FontFamily.INITIAL.equals(cssValue) || FontFamily.INHERIT.equals(cssValue)) {
+                throw new InvalidValueException("initial/inherit cannot be set as fontFamily cssValue");
             }
 
             setFontFamily(fontFamily);

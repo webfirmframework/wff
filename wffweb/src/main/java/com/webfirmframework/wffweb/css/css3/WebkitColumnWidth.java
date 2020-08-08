@@ -61,18 +61,16 @@ public class WebkitColumnWidth extends AbstractCssProperty<WebkitColumnWidth> {
     }
 
     /**
-     * @param cssValue
-     *                     the css value to set.
+     * @param cssValue the css value to set.
      */
     public WebkitColumnWidth(final String cssValue) {
         setCssValue(cssValue);
     }
 
     /**
-     * @param webkitColumnWidth
-     *                              the {@code WebkitColumnWidth} object from
-     *                              which the cssValue to set.And, {@code null}
-     *                              will throw {@code NullValueException}
+     * @param webkitColumnWidth the {@code WebkitColumnWidth} object from which the
+     *                          cssValue to set.And, {@code null} will throw
+     *                          {@code NullValueException}
      */
     public WebkitColumnWidth(final WebkitColumnWidth webkitColumnWidth) {
         if (webkitColumnWidth == null) {
@@ -82,9 +80,8 @@ public class WebkitColumnWidth extends AbstractCssProperty<WebkitColumnWidth> {
     }
 
     /**
-     * @param percent
-     *                    the percentage value to set. The cssLengthUnit will
-     *                    automatically set to %.
+     * @param percent the percentage value to set. The cssLengthUnit will
+     *                automatically set to %.
      * @since 1.0.0
      * @author WFF
      */
@@ -98,8 +95,7 @@ public class WebkitColumnWidth extends AbstractCssProperty<WebkitColumnWidth> {
      * @param value
      * @param cssLengthUnit
      */
-    public WebkitColumnWidth(final float value,
-            final CssLengthUnit cssLengthUnit) {
+    public WebkitColumnWidth(final float value, final CssLengthUnit cssLengthUnit) {
         this.value = value;
         this.cssLengthUnit = cssLengthUnit;
         cssValue = String.valueOf(value) + cssLengthUnit;
@@ -112,8 +108,7 @@ public class WebkitColumnWidth extends AbstractCssProperty<WebkitColumnWidth> {
      * @since 1.0.0
      * @author WFF
      */
-    public WebkitColumnWidth setValue(final float value,
-            final CssLengthUnit cssLengthUnit) {
+    public WebkitColumnWidth setValue(final float value, final CssLengthUnit cssLengthUnit) {
         this.value = value;
         this.cssLengthUnit = cssLengthUnit;
         cssValue = String.valueOf(value) + cssLengthUnit;
@@ -124,8 +119,7 @@ public class WebkitColumnWidth extends AbstractCssProperty<WebkitColumnWidth> {
     }
 
     /**
-     * @param percent
-     *                    the percent to set
+     * @param percent the percent to set
      * @since 1.0.0
      * @author WFF
      */
@@ -173,11 +167,11 @@ public class WebkitColumnWidth extends AbstractCssProperty<WebkitColumnWidth> {
 
     /**
      * gets the -webkit-column-width in float value.
-     * {@code WebkitColumnWidth#getUnit()} should be used to get the
-     * cssLengthUnit for this value.
+     * {@code WebkitColumnWidth#getUnit()} should be used to get the cssLengthUnit
+     * for this value.
      *
-     * @return the value in float or null if the cssValue is
-     *         <code>initial</code> or <code>inherit</code>.
+     * @return the value in float or null if the cssValue is <code>initial</code> or
+     *         <code>inherit</code>.
      * @since 1.0.0
      * @author WFF
      */
@@ -196,11 +190,9 @@ public class WebkitColumnWidth extends AbstractCssProperty<WebkitColumnWidth> {
     }
 
     /**
-     * @param cssValue
-     *                     the value should be in the format of
-     *                     <code>55px</code> or <code>95%</code>. {@code null}
-     *                     is considered as an invalid value and it will throw
-     *                     {@code NullValueException}.
+     * @param cssValue the value should be in the format of <code>55px</code> or
+     *                 <code>95%</code>. {@code null} is considered as an invalid
+     *                 value and it will throw {@code NullValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -213,12 +205,10 @@ public class WebkitColumnWidth extends AbstractCssProperty<WebkitColumnWidth> {
             } else {
                 final String trimmedCssValue = StringUtil.strip(cssValue);
                 boolean invalidValue = true;
-                for (final CssLengthUnit cssLengthUnit : CssLengthUnit
-                        .values()) {
+                for (final CssLengthUnit cssLengthUnit : CssLengthUnit.values()) {
                     final String unit = cssLengthUnit.getUnit();
                     if (trimmedCssValue.endsWith(unit)) {
-                        final String valueOnly = cssValue.replaceFirst(unit,
-                                "");
+                        final String valueOnly = cssValue.replaceFirst(unit, "");
                         try {
                             value = Float.parseFloat(valueOnly);
                         } catch (final NumberFormatException e) {
@@ -230,8 +220,7 @@ public class WebkitColumnWidth extends AbstractCssProperty<WebkitColumnWidth> {
                         break;
                     }
                 }
-                if (trimmedCssValue.equalsIgnoreCase(INITIAL)
-                        || trimmedCssValue.equalsIgnoreCase(INHERIT)
+                if (trimmedCssValue.equalsIgnoreCase(INITIAL) || trimmedCssValue.equalsIgnoreCase(INHERIT)
                         || trimmedCssValue.equalsIgnoreCase(AUTO)) {
                     this.cssValue = trimmedCssValue.toLowerCase();
                     cssLengthUnit = null;

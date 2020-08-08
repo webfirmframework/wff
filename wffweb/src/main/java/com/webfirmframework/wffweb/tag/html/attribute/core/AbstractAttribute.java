@@ -92,8 +92,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         // almost all attributes may have only one owner tag
         // in a practical scenario so passed 2 here because the load factor is
         // 0.75f
-        ownerTags = Collections
-                .newSetFromMap(new WeakHashMap<AbstractHtml, Boolean>(2));
+        ownerTags = Collections.newSetFromMap(new WeakHashMap<AbstractHtml, Boolean>(2));
 
         setRebuild(true);
     }
@@ -103,19 +102,18 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     }
 
     /**
-     * this constructor is only for the attribute whose value is an attribute
-     * value map, eg: style
+     * this constructor is only for the attribute whose value is an attribute value
+     * map, eg: style
      *
-     * @param nullableAttrValueMapValue
-     *                                      only
+     * @param nullableAttrValueMapValue only
      */
     protected AbstractAttribute(final boolean nullableAttrValueMapValue) {
         this.nullableAttrValueMapValue = nullableAttrValueMapValue;
     }
 
     /**
-     * @return {@code String} equalent to the html string of the tag including
-     *         the child tags.
+     * @return {@code String} equalent to the html string of the tag including the
+     *         child tags.
      * @author WFF
      * @since 1.0.0
      */
@@ -142,24 +140,19 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             // tagBuildzer.append(' ');
             tagBuilder.append(attributeName);
             if (attributeValue != null) {
-                tagBuilder.append(new char[] { '=', '"' })
-                        .append(attributeValue);
+                tagBuilder.append(new char[] { '=', '"' }).append(attributeValue);
                 result = StringBuilderUtil.getTrimmedString(tagBuilder) + '"';
                 tagBuilder.append('"');
-            } else if (attributeValueMap != null
-                    && attributeValueMap.size() > 0) {
+            } else if (attributeValueMap != null && attributeValueMap.size() > 0) {
                 tagBuilder.append(new char[] { '=', '"' });
-                final Set<Entry<String, String>> entrySet = getAttributeValueMap()
-                        .entrySet();
+                final Set<Entry<String, String>> entrySet = getAttributeValueMap().entrySet();
                 for (final Entry<String, String> entry : entrySet) {
-                    tagBuilder.append(entry.getKey()).append(':')
-                            .append(entry.getValue()).append(';');
+                    tagBuilder.append(entry.getKey()).append(':').append(entry.getValue()).append(';');
                 }
 
                 result = StringBuilderUtil.getTrimmedString(tagBuilder) + '"';
                 tagBuilder.append('"');
-            } else if (attributeValueSet != null
-                    && attributeValueSet.size() > 0) {
+            } else if (attributeValueSet != null && attributeValueSet.size() > 0) {
                 tagBuilder.append(new char[] { '=', '"' });
                 for (final String each : getAttributeValueSet()) {
                     tagBuilder.append(each).append(' ');
@@ -172,8 +165,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             /*
              * int lastIndex = tagBuilder.length() - 1;
              *
-             * should be analyzed for optimization (as the deleteCharAt method
-             * might compromise performance).
+             * should be analyzed for optimization (as the deleteCharAt method might
+             * compromise performance).
              *
              * if (Character.isWhitespace(tagBuilder.charAt(lastIndex))) {
              * tagBuilder.deleteCharAt(lastIndex); }
@@ -211,11 +204,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             final Map<String, String> attributeValueMap = this.attributeValueMap;
             if (attributeValueMap != null && attributeValueMap.size() > 0) {
                 attrBuilder.append(new char[] { '=' });
-                final Set<Entry<String, String>> entrySet = getAttributeValueMap()
-                        .entrySet();
+                final Set<Entry<String, String>> entrySet = getAttributeValueMap().entrySet();
                 for (final Entry<String, String> entry : entrySet) {
-                    attrBuilder.append(entry.getKey()).append(':')
-                            .append(entry.getValue()).append(';');
+                    attrBuilder.append(entry.getKey()).append(':').append(entry.getValue()).append(';');
                 }
 
                 result = StringBuilderUtil.getTrimmedString(attrBuilder);
@@ -255,10 +246,10 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     }
 
     /**
-     * gives compressed by index bytes for the attribute and value. The first
-     * byte represents the attribute name index bytes length, the next bytes
-     * represent the attribute name index bytes and the remaining bytes
-     * represent attribute value without <i>=</i> and <i>"</i>.
+     * gives compressed by index bytes for the attribute and value. The first byte
+     * represents the attribute name index bytes length, the next bytes represent
+     * the attribute name index bytes and the remaining bytes represent attribute
+     * value without <i>=</i> and <i>"</i>.
      *
      * @param rebuild
      * @return the compressed by index bytes.
@@ -266,16 +257,15 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @author WFF
      * @since 1.1.3
      */
-    protected byte[] getBinaryStructureCompressedByIndex(final boolean rebuild)
-            throws IOException {
+    protected byte[] getBinaryStructureCompressedByIndex(final boolean rebuild) throws IOException {
         return getBinaryStructureCompressedByIndex(rebuild, charset);
     }
 
     /**
-     * gives compressed by index bytes for the attribute and value. The first
-     * byte represents the attribute name index bytes length, the next bytes
-     * represent the attribute name index bytes and the remaining bytes
-     * represent attribute value without <i>=</i> and <i>"</i>.
+     * gives compressed by index bytes for the attribute and value. The first byte
+     * represents the attribute name index bytes length, the next bytes represent
+     * the attribute name index bytes and the remaining bytes represent attribute
+     * value without <i>=</i> and <i>"</i>.
      *
      * @param rebuild
      * @param charset
@@ -284,8 +274,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @author WFF
      * @since 3.0.3
      */
-    protected byte[] getBinaryStructureCompressedByIndex(final boolean rebuild,
-            final Charset charset) throws IOException {
+    protected byte[] getBinaryStructureCompressedByIndex(final boolean rebuild, final Charset charset)
+            throws IOException {
 
         final String attributeValue = this.attributeValue;
         final String attributeName = this.attributeName;
@@ -323,8 +313,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 // }
             } else {
 
-                compressedBytesBuilder
-                        .write(new byte[] { (byte) attrNameIndexBytes.length });
+                compressedBytesBuilder.write(new byte[] { (byte) attrNameIndexBytes.length });
                 compressedBytesBuilder.write(attrNameIndexBytes);
             }
 
@@ -335,27 +324,22 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
                 compressedBytesBuilder.write(attributeValue.getBytes(charset));
                 compressedBytes = compressedBytesBuilder.toByteArray();
-            } else if (attributeValueMap != null
-                    && attributeValueMap.size() > 0) {
+            } else if (attributeValueMap != null && attributeValueMap.size() > 0) {
 
                 if (attrNameIndexBytes == null) {
                     compressedBytesBuilder.write("=".getBytes(charset));
                 }
 
-                final Set<Entry<String, String>> entrySet = getAttributeValueMap()
-                        .entrySet();
+                final Set<Entry<String, String>> entrySet = getAttributeValueMap().entrySet();
                 for (final Entry<String, String> entry : entrySet) {
 
-                    compressedBytesBuilder
-                            .write(entry.getKey().getBytes(charset));
+                    compressedBytesBuilder.write(entry.getKey().getBytes(charset));
                     compressedBytesBuilder.write(new byte[] { ':' });
-                    compressedBytesBuilder
-                            .write(entry.getValue().getBytes(charset));
+                    compressedBytesBuilder.write(entry.getValue().getBytes(charset));
                     compressedBytesBuilder.write(new byte[] { ';' });
                 }
                 compressedBytes = compressedBytesBuilder.toByteArray();
-            } else if (attributeValueSet != null
-                    && attributeValueSet.size() > 0) {
+            } else if (attributeValueSet != null && attributeValueSet.size() > 0) {
 
                 if (attrNameIndexBytes == null) {
                     compressedBytesBuilder.write("=".getBytes(charset));
@@ -391,8 +375,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     /**
      * Set attribute name, eg: width, height, name, type etc..
      *
-     * @param attributeName
-     *                          the attributeName to set
+     * @param attributeName the attributeName to set
      * @author WFF
      * @since 1.0.0
      */
@@ -401,16 +384,14 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     }
 
     /**
-     * NB: only for internal use. Signature of this method may be modified in
-     * future version. Sets PreIndexedAttributeName for name and index
+     * NB: only for internal use. Signature of this method may be modified in future
+     * version. Sets PreIndexedAttributeName for name and index
      *
-     * @param preIndexedAttrName
-     *                               PreIndexedAttributeName object
+     * @param preIndexedAttrName PreIndexedAttributeName object
      * @author WFF
      * @since 3.0.3
      */
-    protected void setPreIndexedAttribute(
-            final PreIndexedAttributeName preIndexedAttrName) {
+    protected void setPreIndexedAttribute(final PreIndexedAttributeName preIndexedAttrName) {
         attributeName = preIndexedAttrName.attrName();
         attrNameIndexBytes = preIndexedAttrName.internalIndexBytes();
     }
@@ -429,13 +410,11 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         return getPrintStructure(true);
     }
 
-    public byte[] toCompressedBytesByIndex(final boolean rebuild)
-            throws IOException {
+    public byte[] toCompressedBytesByIndex(final boolean rebuild) throws IOException {
         return getBinaryStructureCompressedByIndex(rebuild);
     }
 
-    public byte[] toCompressedBytesByIndex(final boolean rebuild,
-            final Charset charset) throws IOException {
+    public byte[] toCompressedBytesByIndex(final boolean rebuild, final Charset charset) throws IOException {
         return getBinaryStructureCompressedByIndex(rebuild, charset);
     }
 
@@ -548,13 +527,11 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     }
 
     /**
-     * @param attributeValueMap
-     *                              the attributeValueMap to set
+     * @param attributeValueMap the attributeValueMap to set
      * @author WFF
      * @since 1.0.0
      */
-    protected void setAttributeValueMap(
-            final Map<String, String> attributeValueMap) {
+    protected void setAttributeValueMap(final Map<String, String> attributeValueMap) {
 
         if (!Objects.equals(attributeValueMap, this.attributeValueMap)) {
             this.attributeValueMap = attributeValueMap;
@@ -572,8 +549,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @author WFF
      * @since 1.0.0
      */
-    protected boolean addToAttributeValueMap(final String key,
-            final String value) {
+    protected boolean addToAttributeValueMap(final String key, final String value) {
 
         final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
         boolean listenerInvoked = false;
@@ -604,28 +580,26 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * this method should be called after changing of attribute value not before
      * changing value
      */
-    private void invokeValueChangeListeners(
-            final Collection<AbstractHtml5SharedObject> sharedObjects) {
+    private void invokeValueChangeListeners(final Collection<AbstractHtml5SharedObject> sharedObjects) {
 
         for (final AbstractHtml5SharedObject sharedObject : sharedObjects) {
-            final AttributeValueChangeListener valueChangeListener = sharedObject
-                    .getValueChangeListener(ACCESS_OBJECT);
+            final AttributeValueChangeListener valueChangeListener = sharedObject.getValueChangeListener(ACCESS_OBJECT);
             if (valueChangeListener != null) {
 
                 // ownerTags should not be modified in the consuming
                 // part, here
                 // skipped it making unmodifiable to gain
                 // performance
-                final AttributeValueChangeListener.Event event = new AttributeValueChangeListener.Event(
-                        this, ownerTags);
+                final AttributeValueChangeListener.Event event = new AttributeValueChangeListener.Event(this,
+                        ownerTags);
                 valueChangeListener.valueChanged(event);
             }
         }
 
         if (valueChangeListeners != null) {
             for (final AttributeValueChangeListener listener : valueChangeListeners) {
-                final AttributeValueChangeListener.Event event = new AttributeValueChangeListener.Event(
-                        this, Collections.unmodifiableSet(ownerTags));
+                final AttributeValueChangeListener.Event event = new AttributeValueChangeListener.Event(this,
+                        Collections.unmodifiableSet(ownerTags));
                 listener.valueChanged(event);
             }
         }
@@ -638,8 +612,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         // better avoid calling it
         // normally there will be one sharedObject so the capacity may be
         // considered as 1
-        final Collection<AbstractHtml5SharedObject> sharedObjects = new HashSet<>(
-                1);
+        final Collection<AbstractHtml5SharedObject> sharedObjects = new HashSet<>(1);
 
         for (final AbstractHtml ownerTag : ownerTags) {
             sharedObjects.add(ownerTag.getSharedObject());
@@ -688,8 +661,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * removes the key value for the input key.
      *
      * @param key
-     * @return true if the given key (as well as value contained corresponding
-     *         to it) has been removed.
+     * @return true if the given key (as well as value contained corresponding to
+     *         it) has been removed.
      * @author WFF
      * @since 1.0.0
      */
@@ -753,13 +726,10 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @param sharedObjects
      * @param listenerInvoked
      */
-    private void pushQueues(
-            final Collection<AbstractHtml5SharedObject> sharedObjects,
-            final boolean listenerInvoked) {
+    private void pushQueues(final Collection<AbstractHtml5SharedObject> sharedObjects, final boolean listenerInvoked) {
         if (listenerInvoked) {
             for (final AbstractHtml5SharedObject sharedObject : sharedObjects) {
-                final PushQueue pushQueue = sharedObject
-                        .getPushQueue(ACCESS_OBJECT);
+                final PushQueue pushQueue = sharedObject.getPushQueue(ACCESS_OBJECT);
                 if (pushQueue != null) {
                     pushQueue.push();
                 }
@@ -777,8 +747,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @author WFF
      * @since 1.0.0
      */
-    protected boolean removeFromAttributeValueMap(final String key,
-            final String value) {
+    protected boolean removeFromAttributeValueMap(final String key, final String value) {
 
         final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
 
@@ -836,8 +805,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     }
 
     /**
-     * @param attributeValue
-     *                           the attributeValue to set
+     * @param attributeValue the attributeValue to set
      * @author WFF
      * @since 1.0.0
      */
@@ -866,18 +834,14 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     }
 
     /**
-     * @param updateClient
-     *                           true to update client browser page if it is
-     *                           available. The default value is true but it
-     *                           will be ignored if there is no client browser
-     *                           page.
-     * @param attributeValue
-     *                           the attributeValue to set
+     * @param updateClient   true to update client browser page if it is available.
+     *                       The default value is true but it will be ignored if
+     *                       there is no client browser page.
+     * @param attributeValue the attributeValue to set
      * @author WFF
      * @since 2.1.15
      */
-    protected void setAttributeValue(final boolean updateClient,
-            final String attributeValue) {
+    protected void setAttributeValue(final boolean updateClient, final String attributeValue) {
 
         if (!Objects.equals(this.attributeValue, attributeValue)) {
             final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
@@ -907,8 +871,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @return one of the ownerTags
      * @author WFF
      * @since 1.0.0
-     * @deprecated this method may be removed later as there could be multiple
-     *             owner tags.
+     * @deprecated this method may be removed later as there could be multiple owner
+     *             tags.
      */
     @Deprecated
     public AbstractHtml getOwnerTag() {
@@ -920,13 +884,11 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
     /**
      * Please know that the AbstractAttribute class doesn't prevent its consumer
-     * tags to be garbage collected. So, this is a weak method. i.e. if the
-     * consumer tags are garbage collected they will not be included in the
-     * array.
+     * tags to be garbage collected. So, this is a weak method. i.e. if the consumer
+     * tags are garbage collected they will not be included in the array.
      *
-     * @return the tags which are consuming this attribute as an array. If there
-     *         is no owner tag then it will return an empty array instead of
-     *         null.
+     * @return the tags which are consuming this attribute as an array. If there is
+     *         no owner tag then it will return an empty array instead of null.
      * @author WFF
      * @since 2.0.0
      */
@@ -939,11 +901,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     }
 
     /**
-     * NB:- this method is used for internal purpose, so it should not be
-     * consumed.
+     * NB:- this method is used for internal purpose, so it should not be consumed.
      *
-     * @param ownerTag
-     *                     the ownerTag to set
+     * @param ownerTag the ownerTag to set
      * @author WFF
      * @since 1.0.0
      */
@@ -952,11 +912,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     }
 
     /**
-     * NB:- this method is used for internal purpose, so it should not be
-     * consumed.
+     * NB:- this method is used for internal purpose, so it should not be consumed.
      *
-     * @param ownerTag
-     *                     the ownerTag to unset
+     * @param ownerTag the ownerTag to unset
      * @return true if the given ownerTag is an owner of the attribute.
      * @author WFF
      * @since 2.0.0
@@ -978,8 +936,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     }
 
     /**
-     * NB:- this is only for getting values. Use addToAttributeValueSet method
-     * for adding
+     * NB:- this is only for getting values. Use addToAttributeValueSet method for
+     * adding
      *
      * @return the attributeValueSet
      * @author WFF
@@ -998,8 +956,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     }
 
     /**
-     * @param attributeValueSet
-     *                              the attributeValueSet to set
+     * @param attributeValueSet the attributeValueSet to set
      * @author WFF
      * @since 1.0.0
      */
@@ -1082,22 +1039,19 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @author WFF
      * @since 3.0.1
      */
-    protected void replaceAllInAttributeValueSet(
-            final Collection<String> values) {
+    protected void replaceAllInAttributeValueSet(final Collection<String> values) {
         replaceAllInAttributeValueSet(true, values);
     }
 
     /**
      * removes all and then adds all to the attribute value set.
      *
-     * @param updateClient
-     *                         true to update client browser page
+     * @param updateClient true to update client browser page
      * @param values
      * @author WFF
      * @since 3.0.1
      */
-    protected void replaceAllInAttributeValueSet(final boolean updateClient,
-            final Collection<String> values) {
+    protected void replaceAllInAttributeValueSet(final boolean updateClient, final Collection<String> values) {
         if (values != null) {
             final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
             boolean listenerInvoked = false;
@@ -1129,16 +1083,14 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     /**
      * adds all to the attribute value set.
      *
-     * @param updateClient
-     *                         true to update client browser page if it is
-     *                         available. The default value is true but it will
-     *                         be ignored if there is no client browser page.
+     * @param updateClient true to update client browser page if it is available.
+     *                     The default value is true but it will be ignored if there
+     *                     is no client browser page.
      * @param values
      * @author WFF
      * @since 2.1.15
      */
-    protected void addAllToAttributeValueSet(final boolean updateClient,
-            final Collection<String> values) {
+    protected void addAllToAttributeValueSet(final boolean updateClient, final Collection<String> values) {
         if (values != null) {
             final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
             boolean listenerInvoked = false;
@@ -1201,8 +1153,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @author WFF
      * @since 1.0.0
      */
-    protected void removeAllFromAttributeValueSet(
-            final Collection<String> values) {
+    protected void removeAllFromAttributeValueSet(final Collection<String> values) {
         final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
         boolean listenerInvoked = false;
         final Collection<WriteLock> writeLocks = lockAndGetWriteLocks();
@@ -1252,8 +1203,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     }
 
     /**
-     * invokes just before {@code getPrintStructure(final boolean} method and
-     * only if the getPrintStructure(final boolean} rebuilds the structure.
+     * invokes just before {@code getPrintStructure(final boolean} method and only
+     * if the getPrintStructure(final boolean} rebuilds the structure.
      *
      * @author WFF
      * @since 1.0.0
@@ -1263,10 +1214,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     }
 
     /**
-     * invokes just before
-     * {@code getPrintStructureCompressedByIndex(final boolean} method and only
-     * if the getPrintStructureCompressedByIndex(final boolean} rebuilds the
-     * structure.
+     * invokes just before {@code getPrintStructureCompressedByIndex(final boolean}
+     * method and only if the getPrintStructureCompressedByIndex(final boolean}
+     * rebuilds the structure.
      *
      * @author WFF
      * @since 1.0.0
@@ -1283,8 +1233,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     }
 
     /**
-     * @param charset
-     *                    the charset to set
+     * @param charset the charset to set
      */
     public void setCharset(final Charset charset) {
         this.charset = charset;
@@ -1297,8 +1246,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @author WFF
      * @since 2.0.0
      */
-    public void addValueChangeListener(
-            final AttributeValueChangeListener valueChangeListener) {
+    public void addValueChangeListener(final AttributeValueChangeListener valueChangeListener) {
         Set<AttributeValueChangeListener> valueChangeListeners = this.valueChangeListeners;
         if (valueChangeListeners == null) {
             synchronized (this) {
@@ -1320,8 +1268,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @author WFF
      * @since 2.0.0
      */
-    public void removeValueChangeListener(
-            final AttributeValueChangeListener valueChangeListener) {
+    public void removeValueChangeListener(final AttributeValueChangeListener valueChangeListener) {
         final Set<AttributeValueChangeListener> valueChangeListeners = this.valueChangeListeners;
         if (valueChangeListeners != null) {
             valueChangeListeners.remove(valueChangeListener);
@@ -1338,8 +1285,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     }
 
     /**
-     * NB: this may not return the same locks as the ownerTags of this attribute
-     * may be changed at any time. Use it for only unlock.
+     * NB: this may not return the same locks as the ownerTags of this attribute may
+     * be changed at any time. Use it for only unlock.
      *
      * @return the set of write locks after locking
      */
@@ -1352,13 +1299,11 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         final List<WriteLock> locks = new ArrayList<>(size);
 
         for (final AbstractHtml ownerTag : ownerTags) {
-            final WriteLock writeLock = ownerTag.getSharedObject()
-                    .getLock(ACCESS_OBJECT).writeLock();
+            final WriteLock writeLock = ownerTag.getSharedObject().getLock(ACCESS_OBJECT).writeLock();
             locks.add(writeLock);
         }
 
-        locks.sort((o1, o2) -> Integer.compare(o2.getHoldCount(),
-                o1.getHoldCount()));
+        locks.sort((o1, o2) -> Integer.compare(o2.getHoldCount(), o1.getHoldCount()));
         final Collection<WriteLock> writeLocks = new LinkedHashSet<>(locks);
 
         // must be separately locked
@@ -1370,8 +1315,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     }
 
     /**
-     * NB: this may not return the same locks as the ownerTags of this attribute
-     * may be changed at any time. Use it for only unlock.
+     * NB: this may not return the same locks as the ownerTags of this attribute may
+     * be changed at any time. Use it for only unlock.
      *
      * @return the set of read locks after locking
      */
@@ -1384,8 +1329,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         final Collection<ReadLock> readLocks = new HashSet<>(2);
 
         for (final AbstractHtml ownerTag : ownerTags) {
-            final ReadLock readLock = ownerTag.getSharedObject()
-                    .getLock(ACCESS_OBJECT).readLock();
+            final ReadLock readLock = ownerTag.getSharedObject().getLock(ACCESS_OBJECT).readLock();
             readLocks.add(readLock);
         }
 
@@ -1403,9 +1347,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     }
 
     /**
-     * NB: this may not return the same locks as the ownerTags of this attribute
-     * may be changed at any time. So call only once and reuse it for both lock
-     * and unlock call.
+     * NB: this may not return the same locks as the ownerTags of this attribute may
+     * be changed at any time. So call only once and reuse it for both lock and
+     * unlock call.
      *
      * @return the set of write locks
      */
@@ -1418,20 +1362,17 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         final List<WriteLock> locks = new ArrayList<>(size);
 
         for (final AbstractHtml ownerTag : ownerTags) {
-            final WriteLock writeLock = ownerTag.getSharedObject()
-                    .getLock(ACCESS_OBJECT).writeLock();
+            final WriteLock writeLock = ownerTag.getSharedObject().getLock(ACCESS_OBJECT).writeLock();
             locks.add(writeLock);
         }
-        locks.sort((o1, o2) -> Integer.compare(o2.getHoldCount(),
-                o1.getHoldCount()));
+        locks.sort((o1, o2) -> Integer.compare(o2.getHoldCount(), o1.getHoldCount()));
 
         return new LinkedHashSet<>(locks);
     }
 
     /**
-     * NB: this may not return the same locks as there could be the its
-     * ownerTags change. So call only once and reuse it for both lock and unlock
-     * call.
+     * NB: this may not return the same locks as there could be the its ownerTags
+     * change. So call only once and reuse it for both lock and unlock call.
      *
      * @return the set of read locks
      */
@@ -1444,8 +1385,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         final Collection<ReadLock> readLocks = new HashSet<>(2);
 
         for (final AbstractHtml ownerTag : ownerTags) {
-            final ReadLock readLock = ownerTag.getSharedObject()
-                    .getLock(ACCESS_OBJECT).readLock();
+            final ReadLock readLock = ownerTag.getSharedObject().getLock(ACCESS_OBJECT).readLock();
             readLocks.add(readLock);
         }
 

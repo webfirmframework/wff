@@ -47,13 +47,11 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  * @version 1.0.0
  * @since 1.0.0
  */
-public class Color extends AbstractCssProperty<Color>
-        implements StateChangeInformer<Bean> {
+public class Color extends AbstractCssProperty<Color> implements StateChangeInformer<Bean> {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    private static final Logger LOGGER = Logger
-            .getLogger(Color.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Color.class.getName());
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
@@ -76,18 +74,15 @@ public class Color extends AbstractCssProperty<Color>
     }
 
     /**
-     * @param cssValue
-     *                     the css value to set.
+     * @param cssValue the css value to set.
      */
     public Color(final String cssValue) {
         setCssValue(cssValue);
     }
 
     /**
-     * @param color
-     *                  the {@code Color} object from which the cssValue to
-     *                  set.And, {@code null} will throw
-     *                  {@code NullValueException}
+     * @param color the {@code Color} object from which the cssValue to set.And,
+     *              {@code null} will throw {@code NullValueException}
      */
     public Color(final Color color) {
         if (color == null) {
@@ -97,11 +92,9 @@ public class Color extends AbstractCssProperty<Color>
     }
 
     /**
-     * @param cssColorName
-     *                         the {@code CssColorName} object from which the
-     *                         color name will be taken for cssValue to set.
-     *                         And, {@code null} will throw
-     *                         {@code NullValueException}.
+     * @param cssColorName the {@code CssColorName} object from which the color name
+     *                     will be taken for cssValue to set. And, {@code null} will
+     *                     throw {@code NullValueException}.
      * @since 1.1.4
      */
     public Color(final CssColorName cssColorName) {
@@ -119,8 +112,8 @@ public class Color extends AbstractCssProperty<Color>
     }
 
     /**
-     * the color/color code to set. The alternative method {@code setCssValue}
-     * can also be used.
+     * the color/color code to set. The alternative method {@code setCssValue} can
+     * also be used.
      *
      * @param value
      * @return the current object
@@ -134,9 +127,8 @@ public class Color extends AbstractCssProperty<Color>
 
     /**
      *
-     * @param cssColorName
-     *                         the cssColorName object from which the color name
-     *                         will be taken for setting value.
+     * @param cssColorName the cssColorName object from which the color name will be
+     *                     taken for setting value.
      * @return the current object
      * @since 1.1.4
      * @author WFF
@@ -180,8 +172,8 @@ public class Color extends AbstractCssProperty<Color>
     }
 
     /**
-     * gets the value, {@code getCssValue} method can also be used to get the
-     * same value.
+     * gets the value, {@code getCssValue} method can also be used to get the same
+     * value.
      *
      * @return the value in String.
      * @since 1.0.0
@@ -192,13 +184,12 @@ public class Color extends AbstractCssProperty<Color>
     }
 
     /**
-     * @param cssValue
-     *                     the value should be a color/color code/rgb, for
-     *                     example <code>#0000ff</code>. {@code null} is
-     *                     considered as an invalid value and it will throw
-     *                     {@code NullValueException}.And an empty string is
-     *                     also considered as an invalid value and it will throw
-     *                     {@code InvalidValueException}.
+     * @param cssValue the value should be a color/color code/rgb, for example
+     *                 <code>#0000ff</code>. {@code null} is considered as an
+     *                 invalid value and it will throw
+     *                 {@code NullValueException}.And an empty string is also
+     *                 considered as an invalid value and it will throw
+     *                 {@code InvalidValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -299,11 +290,9 @@ public class Color extends AbstractCssProperty<Color>
             return false;
         }
 
-        final String trimmedCssValueLowerCase = TagStringUtil
-                .toLowerCase(trimmedCssValue);
+        final String trimmedCssValueLowerCase = TagStringUtil.toLowerCase(trimmedCssValue);
 
-        if (INITIAL.equals(trimmedCssValueLowerCase)
-                || INHERIT.equals(trimmedCssValueLowerCase)) {
+        if (INITIAL.equals(trimmedCssValueLowerCase) || INHERIT.equals(trimmedCssValueLowerCase)) {
             return true;
         }
 
@@ -325,8 +314,7 @@ public class Color extends AbstractCssProperty<Color>
         }
 
         try {
-            if (trimmedCssValue.length() == 0
-                    || trimmedCssValue.charAt(0) != '#') {
+            if (trimmedCssValue.length() == 0 || trimmedCssValue.charAt(0) != '#') {
                 return false;
             }
             final long value = Long.parseLong(trimmedCssValue.substring(1), 16);
@@ -383,8 +371,7 @@ public class Color extends AbstractCssProperty<Color>
     }
 
     /**
-     * @param rgbCssValue
-     *                        the rgbCssValue to set
+     * @param rgbCssValue the rgbCssValue to set
      * @since 1.0.0
      * @author WFF
      */
@@ -394,16 +381,13 @@ public class Color extends AbstractCssProperty<Color>
         }
         if (this.rgbCssValue != null) {
             if (rgbCssValue.isAlreadyInUse()
-                    && this.rgbCssValue.getStateChangeInformer() != rgbCssValue
-                            .getStateChangeInformer()) {
+                    && this.rgbCssValue.getStateChangeInformer() != rgbCssValue.getStateChangeInformer()) {
                 try {
-                    final RgbCssValue rgbCssValueClone = CloneUtil
-                            .deepClone(rgbCssValue);
+                    final RgbCssValue rgbCssValueClone = CloneUtil.deepClone(rgbCssValue);
                     this.rgbCssValue.setAlreadyInUse(false);
                     this.rgbCssValue = rgbCssValueClone;
                     if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.warning("cloned rgbCssValue " + rgbCssValue
-                                + "(hashcode: " + rgbCssValue.hashCode()
+                        LOGGER.warning("cloned rgbCssValue " + rgbCssValue + "(hashcode: " + rgbCssValue.hashCode()
                                 + ") as it is already used by another object");
                     }
                 } catch (final CloneNotSupportedException e) {
@@ -418,8 +402,7 @@ public class Color extends AbstractCssProperty<Color>
                 try {
                     this.rgbCssValue = CloneUtil.deepClone(rgbCssValue);
                     if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.warning("cloned rgbCssValue " + rgbCssValue
-                                + "(hashcode: " + rgbCssValue.hashCode()
+                        LOGGER.warning("cloned rgbCssValue " + rgbCssValue + "(hashcode: " + rgbCssValue.hashCode()
                                 + ") as it is already used by another object");
                     }
                 } catch (final CloneNotSupportedException e) {
@@ -438,8 +421,7 @@ public class Color extends AbstractCssProperty<Color>
     }
 
     /**
-     * @param rgbaCssValue
-     *                         the rgbaCssValue to set
+     * @param rgbaCssValue the rgbaCssValue to set
      * @since 1.0.0
      * @author WFF
      */
@@ -448,17 +430,14 @@ public class Color extends AbstractCssProperty<Color>
             throw new NullValueException("rgbaCssValue can not be null");
         }
         if (this.rgbaCssValue != null) {
-            if (rgbaCssValue.isAlreadyInUse() && this.rgbaCssValue
-                    .getStateChangeInformer() != rgbaCssValue
-                            .getStateChangeInformer()) {
+            if (rgbaCssValue.isAlreadyInUse()
+                    && this.rgbaCssValue.getStateChangeInformer() != rgbaCssValue.getStateChangeInformer()) {
                 try {
-                    final RgbaCssValue rgbaCssValueClone = CloneUtil
-                            .deepClone(rgbaCssValue);
+                    final RgbaCssValue rgbaCssValueClone = CloneUtil.deepClone(rgbaCssValue);
                     this.rgbaCssValue.setAlreadyInUse(false);
                     this.rgbaCssValue = rgbaCssValueClone;
                     if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.warning("cloned rgbaCssValue " + rgbaCssValue
-                                + "(hashcode: " + rgbaCssValue.hashCode()
+                        LOGGER.warning("cloned rgbaCssValue " + rgbaCssValue + "(hashcode: " + rgbaCssValue.hashCode()
                                 + ") as it is already used by another object");
                     }
                 } catch (final CloneNotSupportedException e) {
@@ -473,8 +452,7 @@ public class Color extends AbstractCssProperty<Color>
                 try {
                     this.rgbaCssValue = CloneUtil.deepClone(rgbaCssValue);
                     if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.warning("cloned rgbaCssValue " + rgbaCssValue
-                                + "(hashcode: " + rgbaCssValue.hashCode()
+                        LOGGER.warning("cloned rgbaCssValue " + rgbaCssValue + "(hashcode: " + rgbaCssValue.hashCode()
                                 + ") as it is already used by another object");
                     }
                 } catch (final CloneNotSupportedException e) {
@@ -493,8 +471,7 @@ public class Color extends AbstractCssProperty<Color>
     }
 
     /**
-     * @param hslCssValue
-     *                        the hslCssValue to set
+     * @param hslCssValue the hslCssValue to set
      * @since 1.0.0
      * @author WFF
      */
@@ -504,16 +481,13 @@ public class Color extends AbstractCssProperty<Color>
         }
         if (this.hslCssValue != null) {
             if (hslCssValue.isAlreadyInUse()
-                    && this.hslCssValue.getStateChangeInformer() != hslCssValue
-                            .getStateChangeInformer()) {
+                    && this.hslCssValue.getStateChangeInformer() != hslCssValue.getStateChangeInformer()) {
                 try {
-                    final HslCssValue hslCssValueClone = CloneUtil
-                            .deepClone(hslCssValue);
+                    final HslCssValue hslCssValueClone = CloneUtil.deepClone(hslCssValue);
                     this.hslCssValue.setAlreadyInUse(false);
                     this.hslCssValue = hslCssValueClone;
                     if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.warning("cloned hslCssValue " + hslCssValue
-                                + "(hashcode: " + hslCssValue.hashCode()
+                        LOGGER.warning("cloned hslCssValue " + hslCssValue + "(hashcode: " + hslCssValue.hashCode()
                                 + ") as it is already used by another object");
                     }
                 } catch (final CloneNotSupportedException e) {
@@ -528,8 +502,7 @@ public class Color extends AbstractCssProperty<Color>
                 try {
                     this.hslCssValue = CloneUtil.deepClone(hslCssValue);
                     if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.warning("cloned hslCssValue " + hslCssValue
-                                + "(hashcode: " + hslCssValue.hashCode()
+                        LOGGER.warning("cloned hslCssValue " + hslCssValue + "(hashcode: " + hslCssValue.hashCode()
                                 + ") as it is already used by another object");
                     }
                 } catch (final CloneNotSupportedException e) {
@@ -548,8 +521,7 @@ public class Color extends AbstractCssProperty<Color>
     }
 
     /**
-     * @param hslaCssValue
-     *                         the hslaCssValue to set
+     * @param hslaCssValue the hslaCssValue to set
      * @since 1.0.0
      * @author WFF
      */
@@ -558,17 +530,14 @@ public class Color extends AbstractCssProperty<Color>
             throw new NullValueException("hslaCssValue can not be null");
         }
         if (this.hslaCssValue != null) {
-            if (hslaCssValue.isAlreadyInUse() && this.hslaCssValue
-                    .getStateChangeInformer() != hslaCssValue
-                            .getStateChangeInformer()) {
+            if (hslaCssValue.isAlreadyInUse()
+                    && this.hslaCssValue.getStateChangeInformer() != hslaCssValue.getStateChangeInformer()) {
                 try {
-                    final HslaCssValue hslaCssValueClone = CloneUtil
-                            .deepClone(hslaCssValue);
+                    final HslaCssValue hslaCssValueClone = CloneUtil.deepClone(hslaCssValue);
                     this.hslaCssValue.setAlreadyInUse(false);
                     this.hslaCssValue = hslaCssValueClone;
                     if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.warning("cloned hslaCssValue " + hslaCssValue
-                                + "(hashcode: " + hslaCssValue.hashCode()
+                        LOGGER.warning("cloned hslaCssValue " + hslaCssValue + "(hashcode: " + hslaCssValue.hashCode()
                                 + ") as it is already used by another object");
                     }
                 } catch (final CloneNotSupportedException e) {
@@ -583,8 +552,7 @@ public class Color extends AbstractCssProperty<Color>
                 try {
                     this.hslaCssValue = CloneUtil.deepClone(hslaCssValue);
                     if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.warning("cloned hslaCssValue " + hslaCssValue
-                                + "(hashcode: " + hslaCssValue.hashCode()
+                        LOGGER.warning("cloned hslaCssValue " + hslaCssValue + "(hashcode: " + hslaCssValue.hashCode()
                                 + ") as it is already used by another object");
                     }
                 } catch (final CloneNotSupportedException e) {

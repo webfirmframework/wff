@@ -26,8 +26,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
  * @author WFF
  *
  */
-public class CustomAttribute extends AbstractAttribute
-        implements GlobalAttributable {
+public class CustomAttribute extends AbstractAttribute implements GlobalAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -71,8 +70,7 @@ public class CustomAttribute extends AbstractAttribute
     }
 
     /**
-     * @param value
-     *                  the value to set
+     * @param value the value to set
      * @author WFF
      * @since 1.0.0
      */
@@ -81,12 +79,10 @@ public class CustomAttribute extends AbstractAttribute
     }
 
     /**
-     * @param updateClient
-     *                         true to update client browser page if it is
-     *                         available. The default value is true but it will
-     *                         be ignored if there is no client browser page.
-     * @param value
-     *                         the value to set
+     * @param updateClient true to update client browser page if it is available.
+     *                     The default value is true but it will be ignored if there
+     *                     is no client browser page.
+     * @param value        the value to set
      * @author WFF
      * @since 2.1.15
      */

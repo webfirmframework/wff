@@ -19,14 +19,12 @@ package com.webfirmframework.wffweb.util;
 public interface Slice<T> {
 
     /**
-     * Possible question: why it returns boolean to continue slicing? Sometimes
-     * we may need to stop slicing once a certain data is received, in such case
-     * it will be a great optimization.
+     * Possible question: why it returns boolean to continue slicing? Sometimes we
+     * may need to stop slicing once a certain data is received, in such case it
+     * will be a great optimization.
      *
-     * @param part
-     *                 each part in the when slicing.
-     * @param last
-     *                 true if the part is the last part.
+     * @param part each part in the when slicing.
+     * @param last true if the part is the last part.
      * @return false to break slicing or true to go on.
      * @since 3.0.1
      */

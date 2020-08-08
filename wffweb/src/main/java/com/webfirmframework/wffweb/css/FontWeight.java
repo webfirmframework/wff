@@ -159,16 +159,14 @@ public enum FontWeight implements CssProperty {
             if (min > length) {
                 min = length;
             }
-            final String upperCaseCssValue = TagStringUtil
-                    .toUpperCase(values()[i].cssValue);
+            final String upperCaseCssValue = TagStringUtil.toUpperCase(values()[i].cssValue);
             upperCaseSuperToStringsTemp.add(upperCaseCssValue);
             ALL_OBJECTS.put(upperCaseCssValue, values()[i]);
         }
         LOWEST_LENGTH = min;
         HIGHEST_LENGTH = max;
         if (values().length > 10) {
-            upperCaseSuperToStringsTemp = new HashSet<>(
-                    upperCaseSuperToStringsTemp);
+            upperCaseSuperToStringsTemp = new HashSet<>(upperCaseSuperToStringsTemp);
         }
         UPPER_CASE_SUPER_TO_STRINGS = upperCaseSuperToStringsTemp;
     }
@@ -195,28 +193,25 @@ public enum FontWeight implements CssProperty {
     }
 
     /**
-     * checks whether the given given {@code colorName} is valid , i.e. whether
-     * it can have a corresponding object from it.
+     * checks whether the given given {@code colorName} is valid , i.e. whether it
+     * can have a corresponding object from it.
      *
      * @param colorName
-     * @return true if the given {@code cssColorName} has a corresponding
-     *         object.
+     * @return true if the given {@code cssColorName} has a corresponding object.
      * @since 1.0.0
      * @author WFF
      */
     public static boolean isValid(final String colorName) {
-        return CssEnumUtil.contains(colorName, UPPER_CASE_SUPER_TO_STRINGS,
-                LOWEST_LENGTH, HIGHEST_LENGTH);
+        return CssEnumUtil.contains(colorName, UPPER_CASE_SUPER_TO_STRINGS, LOWEST_LENGTH, HIGHEST_LENGTH);
     }
 
     /**
      * gets the corresponding object for the given {@code cssValue} or null for
      * invalid cssValue.
      *
-     * @param cssValue
-     *                     the inbuilt cssValue as per w3 standard.
-     * @return the corresponding object for the given {@code cssValue} or null
-     *         for invalid cssValue.
+     * @param cssValue the inbuilt cssValue as per w3 standard.
+     * @return the corresponding object for the given {@code cssValue} or null for
+     *         invalid cssValue.
      * @since 1.0.0
      * @author WFF
      */

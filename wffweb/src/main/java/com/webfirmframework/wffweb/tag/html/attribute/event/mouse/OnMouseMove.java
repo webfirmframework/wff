@@ -30,8 +30,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
  * @author WFF
  *
  */
-public class OnMouseMove extends AbstractEventAttribute
-        implements AAttributable {
+public class OnMouseMove extends AbstractEventAttribute implements AAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -55,12 +54,9 @@ public class OnMouseMove extends AbstractEventAttribute
         setServerAsyncMethod(null, serverAsyncMethod, null, null);
     }
 
-    public OnMouseMove(final String jsPreFunctionBody,
-            final ServerAsyncMethod serverAsyncMethod,
-            final String jsFilterFunctionBody,
-            final String jsPostFunctionBody) {
-        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod,
-                jsFilterFunctionBody, jsPostFunctionBody);
+    public OnMouseMove(final String jsPreFunctionBody, final ServerAsyncMethod serverAsyncMethod,
+            final String jsFilterFunctionBody, final String jsPostFunctionBody) {
+        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody);
     }
 
     public OnMouseMove(final String value) {
@@ -72,10 +68,8 @@ public class OnMouseMove extends AbstractEventAttribute
      * @param serverSideData
      * @since 3.0.2
      */
-    public OnMouseMove(final ServerAsyncMethod serverAsyncMethod,
-            final Object serverSideData) {
-        setServerAsyncMethod(null, serverAsyncMethod, null, null,
-                serverSideData);
+    public OnMouseMove(final ServerAsyncMethod serverAsyncMethod, final Object serverSideData) {
+        setServerAsyncMethod(null, serverAsyncMethod, null, null, serverSideData);
     }
 
     /**
@@ -86,12 +80,10 @@ public class OnMouseMove extends AbstractEventAttribute
      * @param serverSideData
      * @since 3.0.2
      */
-    public OnMouseMove(final String jsPreFunctionBody,
-            final ServerAsyncMethod serverAsyncMethod,
-            final String jsFilterFunctionBody, final String jsPostFunctionBody,
-            final Object serverSideData) {
-        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod,
-                jsFilterFunctionBody, jsPostFunctionBody, serverSideData);
+    public OnMouseMove(final String jsPreFunctionBody, final ServerAsyncMethod serverAsyncMethod,
+            final String jsFilterFunctionBody, final String jsPostFunctionBody, final Object serverSideData) {
+        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody,
+                serverSideData);
     }
 
     /**

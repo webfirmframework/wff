@@ -35,11 +35,9 @@ public abstract class ForEach<EACHTYPE> implements Serializable, Cloneable {
     }
 
     /**
-     * @param base
-     *                   the parent object i.e. the outer tag, usually this
-     *                   (current object). This argument cannot be null.
-     * @param values
-     *                   from which to do the iteration
+     * @param base   the parent object i.e. the outer tag, usually this (current
+     *               object). This argument cannot be null.
+     * @param values from which to do the iteration
      */
     public ForEach(final AbstractHtml base, final Collection<EACHTYPE> values) {
         if (base != null && values != null) {
@@ -50,11 +48,9 @@ public abstract class ForEach<EACHTYPE> implements Serializable, Cloneable {
     }
 
     /**
-     * @param base
-     *                   the parent object i.e. the outer tag, usually this
-     *                   (current object). This argument cannot be null.
-     * @param values
-     *                   from which to do the iteration
+     * @param base   the parent object i.e. the outer tag, usually this (current
+     *               object). This argument cannot be null.
+     * @param values from which to do the iteration
      */
     @SafeVarargs
     public ForEach(final AbstractHtml base, final EACHTYPE... values) {
@@ -68,18 +64,13 @@ public abstract class ForEach<EACHTYPE> implements Serializable, Cloneable {
     /**
      * invokes for each looping.
      *
-     * @param base
-     *                      the base object given as the argument.
-     * @param values
-     *                      the values object passed as a constructor argument.
-     *                      Type cast to the corresponding type.
-     * @param eachValue
-     *                      each value from the given values passed in
-     *                      constructor.
+     * @param base      the base object given as the argument.
+     * @param values    the values object passed as a constructor argument. Type
+     *                  cast to the corresponding type.
+     * @param eachValue each value from the given values passed in constructor.
      * @since 1.0.0
      * @author WFF
      */
-    public abstract void each(final AbstractHtml base, final Object values,
-            final EACHTYPE eachValue);
+    public abstract void each(final AbstractHtml base, final Object values, final EACHTYPE eachValue);
 
 }

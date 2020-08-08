@@ -41,8 +41,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class AnimationIterationCount
-        extends AbstractCssProperty<AnimationIterationCount> {
+public class AnimationIterationCount extends AbstractCssProperty<AnimationIterationCount> {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -50,8 +49,7 @@ public class AnimationIterationCount
     public static final String INHERIT = "inherit";
     public static final String INFINITE = "infinite";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays
-            .asList(INITIAL, INHERIT, INFINITE);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(INITIAL, INHERIT, INFINITE);
 
     private String cssValue;
     private Integer value;
@@ -68,24 +66,20 @@ public class AnimationIterationCount
     }
 
     /**
-     * @param cssValue
-     *                     the css value to set.
+     * @param cssValue the css value to set.
      */
     public AnimationIterationCount(final String cssValue) {
         setCssValue(cssValue);
     }
 
     /**
-     * @param animationIterationCount
-     *                                    the {@code Opacity} object from which
-     *                                    the cssValue to set.And, {@code null}
-     *                                    will throw {@code NullValueException}
+     * @param animationIterationCount the {@code Opacity} object from which the
+     *                                cssValue to set.And, {@code null} will throw
+     *                                {@code NullValueException}
      */
-    public AnimationIterationCount(
-            final AnimationIterationCount animationIterationCount) {
+    public AnimationIterationCount(final AnimationIterationCount animationIterationCount) {
         if (animationIterationCount == null) {
-            throw new NullValueException(
-                    "animationIterationCount can not be null");
+            throw new NullValueException("animationIterationCount can not be null");
         }
         setCssValue(animationIterationCount.getCssValue());
     }
@@ -134,8 +128,8 @@ public class AnimationIterationCount
     /**
      * gets the animationIterationCount in {@code Integer} value.
      *
-     * @return the value in int or null if the cssValue is <code>initial</code>
-     *         or <code>inherit</code>.
+     * @return the value in int or null if the cssValue is <code>initial</code> or
+     *         <code>inherit</code>.
      * @since 1.0.0
      * @author WFF
      */
@@ -144,8 +138,7 @@ public class AnimationIterationCount
     }
 
     /**
-     * @param value
-     *                  the value to set
+     * @param value the value to set
      * @author WFF
      * @since 1.0.0
      */
@@ -158,11 +151,10 @@ public class AnimationIterationCount
     }
 
     /**
-     * @param cssValue
-     *                     the value should be in the format of
-     *                     <code>0.5</code>, <code>initial/inherit</code>.
-     *                     {@code null} is considered as an invalid value and it
-     *                     will throw {@code NullValueException}.
+     * @param cssValue the value should be in the format of <code>0.5</code>,
+     *                 <code>initial/inherit</code>. {@code null} is considered as
+     *                 an invalid value and it will throw
+     *                 {@code NullValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -173,11 +165,9 @@ public class AnimationIterationCount
                     "null is an invalid value. The value format should be as for example 0.5, initial/inherit.");
         } else {
 
-            final String trimmedCssValue = TagStringUtil
-                    .toLowerCase(StringUtil.strip(cssValue));
+            final String trimmedCssValue = TagStringUtil.toLowerCase(StringUtil.strip(cssValue));
 
-            if (INITIAL.equals(trimmedCssValue)
-                    || INHERIT.equals(trimmedCssValue)
+            if (INITIAL.equals(trimmedCssValue) || INHERIT.equals(trimmedCssValue)
                     || INFINITE.equals(trimmedCssValue)) {
                 this.cssValue = trimmedCssValue;
                 value = null;
@@ -232,15 +222,13 @@ public class AnimationIterationCount
     /**
      * validates if the given cssValue is valid for this class.
      *
-     * @param cssValue
-     *                     the value to check.
+     * @param cssValue the value to check.
      * @return true if valid and false if invalid.
      * @author WFF
      * @since 1.0.0
      */
     public static boolean isValid(final String cssValue) {
-        final String trimmedCssValue = TagStringUtil
-                .toLowerCase(StringUtil.strip(cssValue));
+        final String trimmedCssValue = TagStringUtil.toLowerCase(StringUtil.strip(cssValue));
         if (StringUtil.containsSpace(trimmedCssValue)) {
             return false;
         }
@@ -248,8 +236,7 @@ public class AnimationIterationCount
             final int parsedValue = Integer.parseInt(trimmedCssValue);
 
             return !(parsedValue == 0
-                    && (StringUtil.containsMinus(trimmedCssValue)
-                            || StringUtil.containsPlus(trimmedCssValue)));
+                    && (StringUtil.containsMinus(trimmedCssValue) || StringUtil.containsPlus(trimmedCssValue)));
         } catch (final NumberFormatException e) {
         }
 

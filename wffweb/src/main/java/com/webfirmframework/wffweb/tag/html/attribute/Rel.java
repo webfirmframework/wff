@@ -39,14 +39,13 @@ import com.webfirmframework.wffweb.tag.html.identifier.LinkAttributable;
  * @since 1.0.0
  *
  */
-public class Rel extends AbstractValueSetAttribute
-        implements AAttributable, AreaAttributable, LinkAttributable {
+public class Rel extends AbstractValueSetAttribute implements AAttributable, AreaAttributable, LinkAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
     /**
-     * Links to an alternate version of the document (i.e. print page,
-     * translated or mirror)
+     * Links to an alternate version of the document (i.e. print page, translated or
+     * mirror)
      */
     public static final String ALTERNATE = "alternative";
 
@@ -77,20 +76,19 @@ public class Rel extends AbstractValueSetAttribute
 
     /**
      * Links to an unendorsed document, like a paid link. ("nofollow" is used by
-     * Google, to specify that the Google search spider should not follow that
-     * link)
+     * Google, to specify that the Google search spider should not follow that link)
      */
     public static final String NOFOLLOW = "nofollow";
 
     /**
-     * Specifies that the browser should not send a HTTP referer header if the
-     * user follows the hyperlink
+     * Specifies that the browser should not send a HTTP referer header if the user
+     * follows the hyperlink
      */
     public static final String NOREFERRER = "noreferrer";
 
     /**
-     * Specifies that the browsing context created by its related url must not
-     * have an opener browsing context.
+     * Specifies that the browsing context created by its related url must not have
+     * an opener browsing context.
      */
     public static final String NOOPENER = "noopener";
 
@@ -120,8 +118,8 @@ public class Rel extends AbstractValueSetAttribute
     public static final String STYLESHEET = "stylesheet";
 
     /**
-     * preloads the resource from <i>href</i> attribute as the attribute value
-     * given in <i>as</i> attribute
+     * preloads the resource from <i>href</i> attribute as the attribute value given
+     * in <i>as</i> attribute
      */
     public static final String PRELOAD = "preload";
 
@@ -170,9 +168,8 @@ public class Rel extends AbstractValueSetAttribute
 
     /**
      *
-     * @param value
-     *                  the value for the attribute. If there are multiple
-     *                  values it can be separated by space.
+     * @param value the value for the attribute. If there are multiple values it can
+     *              be separated by space.
      * @since 1.0.0
      * @author WFF
      */
@@ -182,9 +179,8 @@ public class Rel extends AbstractValueSetAttribute
 
     /**
      *
-     * @param values
-     *                   the values for the attribute. If there are multiple
-     *                   values it can be separated by space.
+     * @param values the values for the attribute. If there are multiple values it
+     *               can be separated by space.
      * @since 1.0.0
      * @author WFF
      */
@@ -195,8 +191,7 @@ public class Rel extends AbstractValueSetAttribute
     /**
      * sets the value for this attribute
      *
-     * @param value
-     *                  the value for the attribute.
+     * @param value the value for the attribute.
      * @since 1.0.0
      * @author WFF
      */

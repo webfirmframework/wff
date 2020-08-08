@@ -36,8 +36,7 @@ public class WffConfiguration {
     }
 
     /**
-     * @param debugMode
-     *                      the debugMode to set
+     * @param debugMode the debugMode to set
      * @author WFF
      * @since 1.0.0
      */
@@ -55,12 +54,10 @@ public class WffConfiguration {
     }
 
     /**
-     * gives warning message on inappropriate usage of code if it is set to
-     * true. NB:- its implementation is not finished yet so it may give unwanted
-     * warning.
+     * gives warning message on inappropriate usage of code if it is set to true.
+     * NB:- its implementation is not finished yet so it may give unwanted warning.
      *
-     * @param directionWarningOn
-     *                               the directionWarningOn to set
+     * @param directionWarningOn the directionWarningOn to set
      * @author WFF
      * @since 1.0.0
      */

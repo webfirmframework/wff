@@ -36,15 +36,12 @@ public class Abbr extends AbstractHtml implements AbbrAttributable {
 
     /**
      *
-     * @param base
-     *                       i.e. parent tag of this tag
-     * @param attributes
-     *                       An array of {@code AbstractAttribute}
+     * @param base       i.e. parent tag of this tag
+     * @param attributes An array of {@code AbstractAttribute}
      *
      * @since 1.0.0
      */
-    public Abbr(final AbstractHtml base,
-            final AbstractAttribute... attributes) {
+    public Abbr(final AbstractHtml base, final AbstractAttribute... attributes) {
         super(PRE_INDEXED_TAG_NAME, base, attributes);
 
         if (WffConfiguration.isDirectionWarningOn()) {
@@ -52,14 +49,11 @@ public class Abbr extends AbstractHtml implements AbbrAttributable {
         }
     }
 
-    private static void warnForUnsupportedAttributes(
-            final AbstractAttribute... attributes) {
+    private static void warnForUnsupportedAttributes(final AbstractAttribute... attributes) {
         for (final AbstractAttribute abstractAttribute : attributes) {
-            if (!(abstractAttribute != null
-                    && (abstractAttribute instanceof AbbrAttributable
-                            || abstractAttribute instanceof GlobalAttributable))) {
-                LOGGER.warning(abstractAttribute
-                        + " is not an instance of AAttribute");
+            if (!(abstractAttribute != null && (abstractAttribute instanceof AbbrAttributable
+                    || abstractAttribute instanceof GlobalAttributable))) {
+                LOGGER.warning(abstractAttribute + " is not an instance of AAttribute");
             }
         }
     }

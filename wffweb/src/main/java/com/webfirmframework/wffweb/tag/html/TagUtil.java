@@ -63,14 +63,11 @@ public final class TagUtil {
      * @return bytes
      * @since 3.0.6
      */
-    public static byte[] getTagNameBytesCompressedByIndex(
-            final Object accessObject, final AbstractHtml tag,
+    public static byte[] getTagNameBytesCompressedByIndex(final Object accessObject, final AbstractHtml tag,
             final Charset charset) {
 
-        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE
-                .equals(accessObject.getClass().getName()))) {
-            throw new WffSecurityException(
-                    "Not allowed to consume this method. This method is for internal use.");
+        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
 
         // NB: if this method is modified then
@@ -85,14 +82,12 @@ public final class TagUtil {
 
         if (tagNameIndexBytes == null) {
             final byte[] rowNodeNameBytes = tagName.getBytes(charset);
-            final byte[] wffTagNameBytes = new byte[rowNodeNameBytes.length
-                    + 1];
+            final byte[] wffTagNameBytes = new byte[rowNodeNameBytes.length + 1];
             // if zero there is no optimized int bytes for index
             // because there is no tagNameIndex. second byte
             // onwards the bytes of tag name
             wffTagNameBytes[0] = 0;
-            System.arraycopy(rowNodeNameBytes, 0, wffTagNameBytes, 1,
-                    rowNodeNameBytes.length);
+            System.arraycopy(rowNodeNameBytes, 0, wffTagNameBytes, 1, rowNodeNameBytes.length);
 
             return wffTagNameBytes;
 
@@ -112,8 +107,7 @@ public final class TagUtil {
         } else {
             wffTagNameBytes = new byte[tagNameIndexBytes.length + 1];
             wffTagNameBytes[0] = (byte) tagNameIndexBytes.length;
-            System.arraycopy(tagNameIndexBytes, 0, wffTagNameBytes, 1,
-                    tagNameIndexBytes.length);
+            System.arraycopy(tagNameIndexBytes, 0, wffTagNameBytes, 1, tagNameIndexBytes.length);
         }
 
         return wffTagNameBytes;

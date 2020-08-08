@@ -34,8 +34,7 @@ final class WffBMDataUpdateListenerImpl implements WffBMDataUpdateListener {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Logger LOGGER = Logger
-            .getLogger(WffBMDataUpdateListenerImpl.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(WffBMDataUpdateListenerImpl.class.getName());
 
     private final BrowserPage browserPage;
 
@@ -46,8 +45,7 @@ final class WffBMDataUpdateListenerImpl implements WffBMDataUpdateListener {
         throw new AssertionError();
     }
 
-    WffBMDataUpdateListenerImpl(final BrowserPage browserPage,
-            final Object accessObject) {
+    WffBMDataUpdateListenerImpl(final BrowserPage browserPage, final Object accessObject) {
         this.browserPage = browserPage;
         this.accessObject = accessObject;
     }
@@ -57,11 +55,13 @@ final class WffBMDataUpdateListenerImpl implements WffBMDataUpdateListener {
 
         try {
 
-            //@formatter:off
+            // @formatter:off
             // SET_BM_OBJ_ON_TAG/SET_BM_ARR_ON_TAG task format :-
-            // { "name": task_byte, "values" : [SET_BM_OBJ_ON_TAG/SET_BM_ARR_ON_TAG_byte_from_Task_enum]},
-            // { "name": [tag name bytes], "values" : [[wff id bytes], [key bytes], [bm bytes] }
-            //@formatter:on
+            // { "name": task_byte, "values" :
+            // [SET_BM_OBJ_ON_TAG/SET_BM_ARR_ON_TAG_byte_from_Task_enum]},
+            // { "name": [tag name bytes], "values" : [[wff id bytes], [key bytes], [bm
+            // bytes] }
+            // @formatter:on
 
             final AbstractHtml tag = event.getTag();
             final WffBMData wffBMData = event.getWffData();
@@ -79,16 +79,13 @@ final class WffBMDataUpdateListenerImpl implements WffBMDataUpdateListener {
 
             final NameValue[] nameValues = { task, nameValue };
 
-            final byte[] wffTagNameBytes = TagUtil
-                    .getTagNameBytesCompressedByIndex(accessObject, tag,
-                            StandardCharsets.UTF_8);
+            final byte[] wffTagNameBytes = TagUtil.getTagNameBytesCompressedByIndex(accessObject, tag,
+                    StandardCharsets.UTF_8);
             nameValue.setName(wffTagNameBytes);
 
-            final byte[] dataWffIdBytes = DataWffIdUtil
-                    .getDataWffIdBytes(tag.getDataWffId().getValue());
+            final byte[] dataWffIdBytes = DataWffIdUtil.getDataWffIdBytes(tag.getDataWffId().getValue());
 
-            nameValue.setValues(new byte[][] { dataWffIdBytes,
-                    event.getKey().getBytes(StandardCharsets.UTF_8),
+            nameValue.setValues(new byte[][] { dataWffIdBytes, event.getKey().getBytes(StandardCharsets.UTF_8),
                     wffBMData.buildBytes(true) });
 
             browserPage.push(nameValues);

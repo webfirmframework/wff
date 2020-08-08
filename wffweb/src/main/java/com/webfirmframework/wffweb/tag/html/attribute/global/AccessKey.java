@@ -72,8 +72,7 @@ public class AccessKey extends AbstractAttribute implements GlobalAttributable {
     }
 
     /**
-     * @param accessKey
-     *                      the accessKey to set
+     * @param accessKey the accessKey to set
      * @since 1.0.0
      * @author WFF
      */

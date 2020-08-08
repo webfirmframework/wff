@@ -52,8 +52,7 @@ import com.webfirmframework.wffweb.util.StringUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class Icon extends AbstractCssProperty<Icon>
-        implements StateChangeInformer<Bean> {
+public class Icon extends AbstractCssProperty<Icon> implements StateChangeInformer<Bean> {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -61,8 +60,7 @@ public class Icon extends AbstractCssProperty<Icon>
     public static final String INHERIT = "inherit";
     public static final String NONE = "none";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays
-            .asList(INITIAL, INHERIT, NONE);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(INITIAL, INHERIT, NONE);
 
     private static final Logger LOGGER = Logger.getLogger(Icon.class.getName());
 
@@ -86,9 +84,8 @@ public class Icon extends AbstractCssProperty<Icon>
     }
 
     /**
-     * @param cssValue
-     *                     the cssValue to set. <br>
-     *                     eg:- {@code url(images/BackgroundDesign.png)}
+     * @param cssValue the cssValue to set. <br>
+     *                 eg:- {@code url(images/BackgroundDesign.png)}
      * @author WFF
      */
     public Icon(final String cssValue) {
@@ -96,9 +93,8 @@ public class Icon extends AbstractCssProperty<Icon>
     }
 
     /**
-     * @param icon
-     *                 the {@code Icon} object from which the cssName and
-     *                 cssValue to set.
+     * @param icon the {@code Icon} object from which the cssName and cssValue to
+     *             set.
      * @author WFF
      */
     public Icon(final Icon icon) {
@@ -106,8 +102,7 @@ public class Icon extends AbstractCssProperty<Icon>
             throw new NullValueException("customCss can not be null");
         }
         if (icon.getCssName() == null) {
-            throw new NullValueException(
-                    "customCss.getCssName() can not be null");
+            throw new NullValueException("customCss.getCssName() can not be null");
         }
         setCssValue(icon.getCssValue());
     }
@@ -115,16 +110,14 @@ public class Icon extends AbstractCssProperty<Icon>
     /**
      *
      * sample code :- {@code new Icon("Test.gif", "TestImage.png")} creates
-     * <code>background-image: url("Test.gif"), url("TestImage.png");</code> .
-     * For css3 syntax method please use
-     * {@code new Icon(UrlCss3Value... urlCss3Values)} or
-     * {@code setImageUrls(UrlCss3Value... urlCss3Values)} method.
+     * <code>background-image: url("Test.gif"), url("TestImage.png");</code> . For
+     * css3 syntax method please use {@code new Icon(UrlCss3Value... urlCss3Values)}
+     * or {@code setImageUrls(UrlCss3Value... urlCss3Values)} method.
      *
-     * @param imageUrls
-     *                      an array of icon urls, eg:-
-     *                      {@code icon.setImageUrls("Test.gif", "TestImage.png")}
-     *                      and the generated css will be
-     *                      <code>background-image: url("Test.gif"), url("TestImage.png");</code>
+     * @param imageUrls an array of icon urls, eg:-
+     *                  {@code icon.setImageUrls("Test.gif", "TestImage.png")} and
+     *                  the generated css will be
+     *                  <code>background-image: url("Test.gif"), url("TestImage.png");</code>
      * @since 1.0.0
      * @author WFF
      */
@@ -133,8 +126,7 @@ public class Icon extends AbstractCssProperty<Icon>
     }
 
     /**
-     * @param urlCss3Values
-     *                          an array of {@code UrlCss3Value} objects.
+     * @param urlCss3Values an array of {@code UrlCss3Value} objects.
      * @author WFF
      */
     public Icon(final UrlCss3Value... urlCss3Values) {
@@ -175,8 +167,7 @@ public class Icon extends AbstractCssProperty<Icon>
     }
 
     /**
-     * @param cssValue
-     *                     {@code null} is considered as an invalid value.
+     * @param cssValue {@code null} is considered as an invalid value.
      * @since 1.0.0
      * @author WFF
      */
@@ -203,8 +194,7 @@ public class Icon extends AbstractCssProperty<Icon>
             if (urlCss3Values == null) {
                 urlCss3Values = new UrlCss3Value[cssValueParts.length];
                 for (int i = 0; i < cssValueParts.length; i++) {
-                    final UrlCss3Value urlCss3Value = new UrlCss3Value(
-                            cssValueParts[i]);
+                    final UrlCss3Value urlCss3Value = new UrlCss3Value(cssValueParts[i]);
                     urlCss3Value.setAlreadyInUse(true);
                     urlCss3Value.setStateChangeInformer(this);
                     urlCss3Values[i] = urlCss3Value;
@@ -266,17 +256,15 @@ public class Icon extends AbstractCssProperty<Icon>
     }
 
     /**
-     * sample code :- {@code icon.setImageUrls("Test.gif", "TestImage.png")}
-     * creates
-     * <code>background-image: url("Test.gif"), url("TestImage.png");</code>.
-     * For css3 syntax method please use
+     * sample code :- {@code icon.setImageUrls("Test.gif", "TestImage.png")} creates
+     * <code>background-image: url("Test.gif"), url("TestImage.png");</code>. For
+     * css3 syntax method please use
      * {@code setImageUrls(UrlCss3Value... urlCss3Values)} method.
      *
-     * @param imageUrls
-     *                      an array of icon urls, eg:-
-     *                      {@code icon.setImageUrls("Test.gif", "TestImage.png")}
-     *                      and the generated css will be
-     *                      <code>background-image: url("Test.gif"), url("TestImage.png");</code>
+     * @param imageUrls an array of icon urls, eg:-
+     *                  {@code icon.setImageUrls("Test.gif", "TestImage.png")} and
+     *                  the generated css will be
+     *                  <code>background-image: url("Test.gif"), url("TestImage.png");</code>
      * @since 1.0.0
      * @author WFF
      */
@@ -298,9 +286,7 @@ public class Icon extends AbstractCssProperty<Icon>
     }
 
     /**
-     * @param urlCss3Values
-     *                          urlCss3Values an array of {@code UrlCss3Value}
-     *                          objects.
+     * @param urlCss3Values urlCss3Values an array of {@code UrlCss3Value} objects.
      * @since 1.0.0
      * @author WFF
      */
@@ -322,14 +308,12 @@ public class Icon extends AbstractCssProperty<Icon>
             if (urlCss3Value.isAlreadyInUse()) {
                 try {
                     final UrlCss3Value clonedUrlCss3Value = CloneUtil
-                            .<UrlCss3Value> deepCloneOnlyIfDoesNotContain(
-                                    urlCss3Value, this.urlCss3Values);
+                            .<UrlCss3Value>deepCloneOnlyIfDoesNotContain(urlCss3Value, this.urlCss3Values);
                     if (!Objects.equals(clonedUrlCss3Value, urlCss3Value)) {
                         urlCss3Value = clonedUrlCss3Value;
                         if (LOGGER.isLoggable(Level.WARNING)) {
-                            LOGGER.warning("cloned urlCss3Value " + urlCss3Value
-                                    + "(hashcode: " + urlCss3Value.hashCode()
-                                    + ") as it is already used by another object");
+                            LOGGER.warning("cloned urlCss3Value " + urlCss3Value + "(hashcode: "
+                                    + urlCss3Value.hashCode() + ") as it is already used by another object");
                         }
                     }
                 } catch (final CloneNotSupportedException e) {
@@ -364,8 +348,8 @@ public class Icon extends AbstractCssProperty<Icon>
     }
 
     /**
-     * @return a new object of unmodifiable {@code List<UrlCss3Value>} whenever
-     *         this method is called. Or null.
+     * @return a new object of unmodifiable {@code List<UrlCss3Value>} whenever this
+     *         method is called. Or null.
      *
      * @author WFF
      * @since 1.0.0
@@ -404,12 +388,10 @@ public class Icon extends AbstractCssProperty<Icon>
 
     @Override
     public void stateChanged(final Bean stateChangedObject) {
-        if (urlCss3Values != null
-                && stateChangedObject instanceof UrlCss3Value) {
+        if (urlCss3Values != null && stateChangedObject instanceof UrlCss3Value) {
             final UrlCss3Value urlCss3Value = (UrlCss3Value) stateChangedObject;
             if (urlCss3Value.getX() > -1 || urlCss3Value.getY() > -1) {
-                throw new InvalidValueException(
-                        "urlCss3Value cannot be set with x or y values.");
+                throw new InvalidValueException("urlCss3Value cannot be set with x or y values.");
             }
             setImageUrls(urlCss3Values);
             if (getStateChangeInformer() != null) {

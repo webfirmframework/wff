@@ -338,8 +338,7 @@ public enum PreIndexedTagName {
         } else if (indexBytes.length == 3) {
             return new byte[] { indexBytes[0], indexBytes[1], indexBytes[2] };
         } else if (indexBytes.length == 4) {
-            return new byte[] { indexBytes[0], indexBytes[1], indexBytes[2],
-                    indexBytes[3] };
+            return new byte[] { indexBytes[0], indexBytes[1], indexBytes[2], indexBytes[3] };
         }
         return Arrays.copyOf(indexBytes, indexBytes.length);
     }
@@ -351,10 +350,9 @@ public enum PreIndexedTagName {
      * @since 3.0.6
      */
     public byte[] internalIndexBytes(final Object accessObject) {
-        if (accessObject == null || !((SecurityClassConstants.ABSTRACT_HTML
-                .equals(accessObject.getClass().getName())))) {
-            throw new WffSecurityException(
-                    "Not allowed to consume this method. This method is for internal use.");
+        if (accessObject == null
+                || !((SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName())))) {
+            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
         return indexBytes;
     }

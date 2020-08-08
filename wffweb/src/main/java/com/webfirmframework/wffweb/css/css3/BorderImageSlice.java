@@ -83,8 +83,7 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
 
     protected static final String DEFAULT_VALUE = "100%";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays
-            .asList(INITIAL, INHERIT);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(INITIAL, INHERIT);
 
     private String cssValue;
 
@@ -109,18 +108,15 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
     }
 
     /**
-     * @param cssValue
-     *                     the css value to set.
+     * @param cssValue the css value to set.
      */
     public BorderImageSlice(final String cssValue) {
         setCssValue(cssValue);
     }
 
     /**
-     * @param bottom
-     *                   the {@code BorderBottomSlice} object from which the
-     *                   cssValue to set.And, {@code null} will throw
-     *                   {@code NullValueException}
+     * @param bottom the {@code BorderBottomSlice} object from which the cssValue to
+     *               set.And, {@code null} will throw {@code NullValueException}
      */
     public BorderImageSlice(final BorderImageSlice bottom) {
         if (bottom == null) {
@@ -130,9 +126,8 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
     }
 
     /**
-     * @param percent
-     *                    the percentage value to set. The cssLengthUnit will
-     *                    automatically set to %.
+     * @param percent the percentage value to set. The cssLengthUnit will
+     *                automatically set to %.
      * @since 1.0.0
      * @author WFF
      */
@@ -144,14 +139,12 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
      * @param value
      * @param cssLengthUnit
      */
-    public BorderImageSlice(final float value,
-            final CssLengthUnit cssLengthUnit) {
+    public BorderImageSlice(final float value, final CssLengthUnit cssLengthUnit) {
         setCssValue(String.valueOf(value) + cssLengthUnit);
     }
 
     /**
-     * @param percent
-     *                    the percent to set
+     * @param percent the percent to set
      * @since 1.0.0
      * @author WFF
      */
@@ -193,11 +186,9 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
     }
 
     /**
-     * @param cssValue
-     *                     the value should be in the format of
-     *                     <code>55px</code> or <code>95%</code>. {@code null}
-     *                     is considered as an invalid value and it will throw
-     *                     {@code NullValueException}.
+     * @param cssValue the value should be in the format of <code>55px</code> or
+     *                 <code>95%</code>. {@code null} is considered as an invalid
+     *                 value and it will throw {@code NullValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -224,8 +215,7 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
             final Float previousBottom = bottom;
             final Float previousLeft = left;
             try {
-                final String trimmedCssValue = TagStringUtil
-                        .toLowerCase(StringUtil.strip(cssValue));
+                final String trimmedCssValue = TagStringUtil.toLowerCase(StringUtil.strip(cssValue));
 
                 if (PREDEFINED_CONSTANTS.contains(trimmedCssValue)) {
                     this.cssValue = trimmedCssValue;
@@ -237,37 +227,30 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
                     return this;
                 }
 
-                final String cssValueWithoutFill = trimmedCssValue.replace(FILL,
-                        "");
+                final String cssValueWithoutFill = trimmedCssValue.replace(FILL, "");
 
                 final int lengthOfFill = FILL.length();
 
-                final int lengthWithFill = cssValueWithoutFill.length()
-                        + lengthOfFill;
+                final int lengthWithFill = cssValueWithoutFill.length() + lengthOfFill;
 
                 final int lengthBeforeRemovingFill = trimmedCssValue.length();
 
                 if ((lengthBeforeRemovingFill - lengthWithFill) > 0) {
-                    throw new InvalidValueException("The given cssValue '"
-                            + cssValue
+                    throw new InvalidValueException("The given cssValue '" + cssValue
                             + "' is invalid as it contains more that one 'fill' value.");
                 }
 
-                middle = lengthBeforeRemovingFill == lengthWithFill ? FILL
-                        : null;
+                middle = lengthBeforeRemovingFill == lengthWithFill ? FILL : null;
 
                 final String convertedToSingleSpace = StringUtil
-                        .convertToSingleSpace(
-                                StringUtil.strip(cssValueWithoutFill));
+                        .convertToSingleSpace(StringUtil.strip(cssValueWithoutFill));
 
                 if (!StringUtil.isBlank(convertedToSingleSpace)) {
 
-                    final String[] extractedSlices = StringUtil
-                            .splitBySpace(convertedToSingleSpace);
+                    final String[] extractedSlices = StringUtil.splitBySpace(convertedToSingleSpace);
 
                     if (extractedSlices.length == 1) {
-                        final Object[] lengthValueAndUnitAll = CssLengthUtil
-                                .getLengthValueAndUnit(extractedSlices[0]);
+                        final Object[] lengthValueAndUnitAll = CssLengthUtil.getLengthValueAndUnit(extractedSlices[0]);
                         if (lengthValueAndUnitAll.length == 2) {
                             top = right = bottom = left = (Float) lengthValueAndUnitAll[0];
                             topUnit = rightUnit = bottomUnit = leftUnit = (CssLengthUnit) lengthValueAndUnitAll[1];
@@ -275,9 +258,8 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
                             top = right = bottom = left = (Float) lengthValueAndUnitAll[0];
                             topUnit = rightUnit = bottomUnit = leftUnit = null;
                         } else {
-                            throw new InvalidValueException("'"
-                                    + extractedSlices[0] + "' is invalid in '"
-                                    + cssValue + "'");
+                            throw new InvalidValueException(
+                                    "'" + extractedSlices[0] + "' is invalid in '" + cssValue + "'");
                         }
 
                     } else if (extractedSlices.length == 2) {
@@ -292,9 +274,8 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
                             top = bottom = (Float) lengthValueAndUnitTopBottom[0];
                             topUnit = bottomUnit = null;
                         } else {
-                            throw new InvalidValueException("'"
-                                    + extractedSlices[0] + "' is invalid in '"
-                                    + cssValue + "'");
+                            throw new InvalidValueException(
+                                    "'" + extractedSlices[0] + "' is invalid in '" + cssValue + "'");
                         }
 
                         final Object[] lengthValueAndUnitRightLeft = CssLengthUtil
@@ -307,15 +288,13 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
                             right = left = (Float) lengthValueAndUnitRightLeft[0];
                             rightUnit = leftUnit = null;
                         } else {
-                            throw new InvalidValueException("'"
-                                    + extractedSlices[1] + "' is invalid in '"
-                                    + cssValue + "'");
+                            throw new InvalidValueException(
+                                    "'" + extractedSlices[1] + "' is invalid in '" + cssValue + "'");
                         }
 
                     } else if (extractedSlices.length == 3) {
 
-                        final Object[] lengthValueAndUnitTop = CssLengthUtil
-                                .getLengthValueAndUnit(extractedSlices[0]);
+                        final Object[] lengthValueAndUnitTop = CssLengthUtil.getLengthValueAndUnit(extractedSlices[0]);
                         if (lengthValueAndUnitTop.length == 2) {
                             top = (Float) lengthValueAndUnitTop[0];
                             topUnit = (CssLengthUnit) lengthValueAndUnitTop[1];
@@ -323,9 +302,8 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
                             top = (Float) lengthValueAndUnitTop[0];
                             topUnit = null;
                         } else {
-                            throw new InvalidValueException("'"
-                                    + extractedSlices[0] + "' is invalid in '"
-                                    + cssValue + "'");
+                            throw new InvalidValueException(
+                                    "'" + extractedSlices[0] + "' is invalid in '" + cssValue + "'");
                         }
 
                         final Object[] lengthValueAndUnitRightLeft = CssLengthUtil
@@ -337,9 +315,8 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
                             right = left = (Float) lengthValueAndUnitRightLeft[0];
                             rightUnit = leftUnit = null;
                         } else {
-                            throw new InvalidValueException("'"
-                                    + extractedSlices[1] + "' is invalid in '"
-                                    + cssValue + "'");
+                            throw new InvalidValueException(
+                                    "'" + extractedSlices[1] + "' is invalid in '" + cssValue + "'");
                         }
 
                         final Object[] lengthValueAndUnitBottom = CssLengthUtil
@@ -351,15 +328,13 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
                             bottom = (Float) lengthValueAndUnitBottom[0];
                             bottomUnit = null;
                         } else {
-                            throw new InvalidValueException("'"
-                                    + extractedSlices[2] + "' is invalid in '"
-                                    + cssValue + "'");
+                            throw new InvalidValueException(
+                                    "'" + extractedSlices[2] + "' is invalid in '" + cssValue + "'");
                         }
 
                     } else if (extractedSlices.length == 4) {
 
-                        final Object[] lengthValueAndUnitTop = CssLengthUtil
-                                .getLengthValueAndUnit(extractedSlices[0]);
+                        final Object[] lengthValueAndUnitTop = CssLengthUtil.getLengthValueAndUnit(extractedSlices[0]);
                         if (lengthValueAndUnitTop.length == 2) {
                             top = (Float) lengthValueAndUnitTop[0];
                             topUnit = (CssLengthUnit) lengthValueAndUnitTop[1];
@@ -367,9 +342,8 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
                             top = (Float) lengthValueAndUnitTop[0];
                             topUnit = null;
                         } else {
-                            throw new InvalidValueException("'"
-                                    + extractedSlices[0] + "' is invalid in '"
-                                    + cssValue + "'");
+                            throw new InvalidValueException(
+                                    "'" + extractedSlices[0] + "' is invalid in '" + cssValue + "'");
                         }
 
                         final Object[] lengthValueAndUnitRight = CssLengthUtil
@@ -381,9 +355,8 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
                             right = (Float) lengthValueAndUnitRight[0];
                             rightUnit = null;
                         } else {
-                            throw new InvalidValueException("'"
-                                    + extractedSlices[1] + "' is invalid in '"
-                                    + cssValue + "'");
+                            throw new InvalidValueException(
+                                    "'" + extractedSlices[1] + "' is invalid in '" + cssValue + "'");
                         }
                         final Object[] lengthValueAndUnitBottom = CssLengthUtil
                                 .getLengthValueAndUnit(extractedSlices[2]);
@@ -394,13 +367,11 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
                             bottom = (Float) lengthValueAndUnitBottom[0];
                             bottomUnit = null;
                         } else {
-                            throw new InvalidValueException("'"
-                                    + extractedSlices[2] + "' is invalid in '"
-                                    + cssValue + "'");
+                            throw new InvalidValueException(
+                                    "'" + extractedSlices[2] + "' is invalid in '" + cssValue + "'");
                         }
 
-                        final Object[] lengthValueAndUnitLeft = CssLengthUtil
-                                .getLengthValueAndUnit(extractedSlices[3]);
+                        final Object[] lengthValueAndUnitLeft = CssLengthUtil.getLengthValueAndUnit(extractedSlices[3]);
                         if (lengthValueAndUnitLeft.length == 2) {
                             left = (Float) lengthValueAndUnitLeft[0];
                             leftUnit = (CssLengthUnit) lengthValueAndUnitLeft[1];
@@ -408,18 +379,16 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
                             left = (Float) lengthValueAndUnitLeft[0];
                             leftUnit = null;
                         } else {
-                            throw new InvalidValueException("'"
-                                    + extractedSlices[3] + "' is invalid in '"
-                                    + cssValue + "'");
+                            throw new InvalidValueException(
+                                    "'" + extractedSlices[3] + "' is invalid in '" + cssValue + "'");
                         }
 
                     } else {
-                        throw new InvalidValueException(
-                                "the given cssValue is invalid");
+                        throw new InvalidValueException("the given cssValue is invalid");
                     }
                 }
-                this.cssValue = getProducedCssValue(top, topUnit, right,
-                        rightUnit, bottom, bottomUnit, left, leftUnit, middle);
+                this.cssValue = getProducedCssValue(top, topUnit, right, rightUnit, bottom, bottomUnit, left, leftUnit,
+                        middle);
                 if (getStateChangeInformer() != null) {
                     getStateChangeInformer().stateChanged(this);
                 }
@@ -487,30 +456,23 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
     /**
      * sets the top, right, bottom and left in {@code BorderImageSlice}.
      *
-     * @param top
-     *                   the value for top. The value {@code fill} will be
-     *                   assigned for null value.
-     * @param right
-     *                   the value for right. The value {@code auto} will be
-     *                   assigned for null value.
-     * @param bottom
-     *                   the value for bottom. The value {@code auto} will be
-     *                   assigned for null value.
-     * @param left
-     *                   the value for left. The value {@code auto} will be
-     *                   assigned for null value.
-     * @param unit
-     *                   the {@code CssLengthUnit} for all of the given top,
-     *                   right, bottom and left values.
+     * @param top    the value for top. The value {@code fill} will be assigned for
+     *               null value.
+     * @param right  the value for right. The value {@code auto} will be assigned
+     *               for null value.
+     * @param bottom the value for bottom. The value {@code auto} will be assigned
+     *               for null value.
+     * @param left   the value for left. The value {@code auto} will be assigned for
+     *               null value.
+     * @param unit   the {@code CssLengthUnit} for all of the given top, right,
+     *               bottom and left values.
      * @author WFF
      * @since 1.0.0
      */
-    public void setBorderImageTopRightBottomLeft(final Float top,
-            final Float right, final Float bottom, final Float left,
-            final CssLengthUnit unit) {
+    public void setBorderImageTopRightBottomLeft(final Float top, final Float right, final Float bottom,
+            final Float left, final CssLengthUnit unit) {
 
-        cssValue = getProducedCssValue(top, unit, right, unit, bottom, unit,
-                left, unit, middle);
+        cssValue = getProducedCssValue(top, unit, right, unit, bottom, unit, left, unit, middle);
 
         this.top = top;
         this.right = right;
@@ -524,14 +486,11 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
         }
     }
 
-    public void setBorderImageTopRightBottomLeft(final Float top,
-            final CssLengthUnit topUnit, final Float right,
-            final CssLengthUnit rightUnit, final Float bottom,
-            final CssLengthUnit bottomUnit, final Float left,
+    public void setBorderImageTopRightBottomLeft(final Float top, final CssLengthUnit topUnit, final Float right,
+            final CssLengthUnit rightUnit, final Float bottom, final CssLengthUnit bottomUnit, final Float left,
             final CssLengthUnit leftUnit) {
 
-        cssValue = getProducedCssValue(top, topUnit, right, rightUnit, bottom,
-                bottomUnit, left, leftUnit, middle);
+        cssValue = getProducedCssValue(top, topUnit, right, rightUnit, bottom, bottomUnit, left, leftUnit, middle);
 
         this.top = top;
         this.right = right;
@@ -550,14 +509,12 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
     }
 
     /**
-     * @param top
-     *                the top to set
+     * @param top the top to set
      * @author WFF
      * @since 1.0.0
      */
     public void setTop(final Float top, final CssLengthUnit topUnit) {
-        cssValue = getProducedCssValue(top, topUnit, right, rightUnit, bottom,
-                bottomUnit, left, leftUnit, middle);
+        cssValue = getProducedCssValue(top, topUnit, right, rightUnit, bottom, bottomUnit, left, leftUnit, middle);
         this.top = top;
         this.topUnit = topUnit;
         final StateChangeInformer<CssProperty> stateChangeInformer = getStateChangeInformer();
@@ -567,15 +524,13 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
     }
 
     /**
-     * @param right
-     *                  the right to set
+     * @param right the right to set
      * @author WFF
      * @param rightUnit
      * @since 1.0.0
      */
     public void setRight(final Float right, final CssLengthUnit rightUnit) {
-        cssValue = getProducedCssValue(top, topUnit, right, rightUnit, bottom,
-                bottomUnit, left, leftUnit, middle);
+        cssValue = getProducedCssValue(top, topUnit, right, rightUnit, bottom, bottomUnit, left, leftUnit, middle);
         this.right = right;
         this.rightUnit = rightUnit;
         final StateChangeInformer<CssProperty> stateChangeInformer = getStateChangeInformer();
@@ -585,15 +540,13 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
     }
 
     /**
-     * @param bottom
-     *                   the bottom to set
+     * @param bottom the bottom to set
      * @author WFF
      * @param bottomUnit
      * @since 1.0.0
      */
     public void setBottom(final Float bottom, final CssLengthUnit bottomUnit) {
-        cssValue = getProducedCssValue(top, topUnit, right, rightUnit, bottom,
-                bottomUnit, left, leftUnit, middle);
+        cssValue = getProducedCssValue(top, topUnit, right, rightUnit, bottom, bottomUnit, left, leftUnit, middle);
         this.bottom = bottom;
         this.bottomUnit = bottomUnit;
         final StateChangeInformer<CssProperty> stateChangeInformer = getStateChangeInformer();
@@ -603,15 +556,13 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
     }
 
     /**
-     * @param left
-     *                 the left to set
+     * @param left the left to set
      * @author WFF
      * @param leftUnit
      * @since 1.0.0
      */
     public void setLeft(final Float left, final CssLengthUnit leftUnit) {
-        cssValue = getProducedCssValue(top, topUnit, right, rightUnit, bottom,
-                bottomUnit, left, leftUnit, middle);
+        cssValue = getProducedCssValue(top, topUnit, right, rightUnit, bottom, bottomUnit, left, leftUnit, middle);
         this.left = left;
         this.leftUnit = leftUnit;
         final StateChangeInformer<CssProperty> stateChangeInformer = getStateChangeInformer();
@@ -621,8 +572,8 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
     }
 
     /**
-     * @return the top. It will return null for auto or the cssValue is
-     *         predefined constant.
+     * @return the top. It will return null for auto or the cssValue is predefined
+     *         constant.
      * @author WFF
      * @since 1.0.0
      */
@@ -640,8 +591,8 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
     }
 
     /**
-     * @return the right. It will return null for auto or the cssValue is
-     *         predefined constant.
+     * @return the right. It will return null for auto or the cssValue is predefined
+     *         constant.
      * @author WFF
      * @since 1.0.0
      */
@@ -678,8 +629,8 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
     }
 
     /**
-     * @return the left. It will return null for auto or the cssValue is
-     *         predefined constant.
+     * @return the left. It will return null for auto or the cssValue is predefined
+     *         constant.
      * @author WFF
      * @since 1.0.0
      */
@@ -698,56 +649,41 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
 
     /**
      *
-     * @param top
-     *                       the value for top. The value {@code auto} will be
-     *                       assigned for null value.
+     * @param top        the value for top. The value {@code auto} will be assigned
+     *                   for null value.
      * @param topUnit
-     * @param right
-     *                       the value for right. The value {@code auto} will be
-     *                       assigned for null value.
+     * @param right      the value for right. The value {@code auto} will be
+     *                   assigned for null value.
      * @param rightUnit
-     * @param bottom
-     *                       the value for bottom. The value {@code auto} will
-     *                       be assigned for null value.
+     * @param bottom     the value for bottom. The value {@code auto} will be
+     *                   assigned for null value.
      * @param bottomUnit
-     * @param left
-     *                       the value for left. The value {@code auto} will be
-     *                       assigned for null value.
+     * @param left       the value for left. The value {@code auto} will be assigned
+     *                   for null value.
      * @param leftUnit
-     * @param middle
-     *                       TODO
+     * @param middle     TODO
      * @author WFF
      * @return
      * @since 1.0.0
      */
-    protected static String getProducedCssValue(final Float top,
-            final CssLengthUnit topUnit, final Float right,
-            final CssLengthUnit rightUnit, final Float bottom,
-            final CssLengthUnit bottomUnit, final Float left,
+    protected static String getProducedCssValue(final Float top, final CssLengthUnit topUnit, final Float right,
+            final CssLengthUnit rightUnit, final Float bottom, final CssLengthUnit bottomUnit, final Float left,
             final CssLengthUnit leftUnit, final String middle) {
 
-        if ((ObjectUtil.isEqual(top, right)
-                && Objects.equals(topUnit, rightUnit))
-                && (ObjectUtil.isEqual(right, bottom)
-                        && ObjectUtil.isEqual(rightUnit, bottomUnit))
-                && (ObjectUtil.isEqual(bottom, left)
-                        && Objects.equals(bottomUnit, leftUnit))) {
+        if ((ObjectUtil.isEqual(top, right) && Objects.equals(topUnit, rightUnit))
+                && (ObjectUtil.isEqual(right, bottom) && ObjectUtil.isEqual(rightUnit, bottomUnit))
+                && (ObjectUtil.isEqual(bottom, left) && Objects.equals(bottomUnit, leftUnit))) {
 
             if (middle != null) {
-                return (top != null && topUnit != null
-                        ? String.valueOf(top).concat(topUnit.getUnit())
-                        : top != null ? String.valueOf(top) : DEFAULT_VALUE)
-                                .concat(" ").concat(middle);
+                return (top != null && topUnit != null ? String.valueOf(top).concat(topUnit.getUnit())
+                        : top != null ? String.valueOf(top) : DEFAULT_VALUE).concat(" ").concat(middle);
             }
 
-            return top != null && topUnit != null
-                    ? String.valueOf(top).concat(topUnit.getUnit())
+            return top != null && topUnit != null ? String.valueOf(top).concat(topUnit.getUnit())
                     : top != null ? String.valueOf(top) : DEFAULT_VALUE;
 
-        } else if ((ObjectUtil.isEqual(top, bottom)
-                && Objects.equals(topUnit, bottomUnit))
-                && (ObjectUtil.isEqual(right, left)
-                        && Objects.equals(rightUnit, leftUnit))) {
+        } else if ((ObjectUtil.isEqual(top, bottom) && Objects.equals(topUnit, bottomUnit))
+                && (ObjectUtil.isEqual(right, left) && Objects.equals(rightUnit, leftUnit))) {
 
             final StringBuilder cssValueBuilder = new StringBuilder();
             if (top != null) {
@@ -771,8 +707,7 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
             }
 
             return cssValueBuilder.toString();
-        } else if ((ObjectUtil.isEqual(right, left)
-                && Objects.equals(rightUnit, leftUnit))) {
+        } else if ((ObjectUtil.isEqual(right, left) && Objects.equals(rightUnit, leftUnit))) {
             final StringBuilder cssValueBuilder = new StringBuilder();
             if (top != null) {
                 cssValueBuilder.append(top);
@@ -852,15 +787,14 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
     /**
      * validates if the given cssValue is valid for this class.
      *
-     * @param cssValue
-     *                     the value to check.
+     * @param cssValue the value to check.
      * @return true if valid and false if invalid.
      * @author WFF
      * @since 1.0.0
      */
     public static boolean isValid(final String cssValue) {
-        final String trimmedCssValue = StringUtil.convertToSingleSpace(
-                TagStringUtil.toLowerCase(StringUtil.strip(cssValue)));
+        final String trimmedCssValue = StringUtil
+                .convertToSingleSpace(TagStringUtil.toLowerCase(StringUtil.strip(cssValue)));
 
         if (PREDEFINED_CONSTANTS.contains(trimmedCssValue)) {
             return true;
@@ -871,14 +805,12 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
             return false;
         }
 
-        if ((cssValue.length() - cssValue.replace(FILL, "").length()) > FILL
-                .length()) {
+        if ((cssValue.length() - cssValue.replace(FILL, "").length()) > FILL.length()) {
             return false;
         }
 
         for (final String cssValuePart : cssValueParts) {
-            final Object[] lengthValueAndUnit = CssLengthUtil
-                    .getLengthValueAndUnit(cssValuePart);
+            final Object[] lengthValueAndUnit = CssLengthUtil.getLengthValueAndUnit(cssValuePart);
             if (lengthValueAndUnit.length == 0 && !FILL.equals(cssValuePart)) {
                 return false;
             }

@@ -36,8 +36,8 @@ import com.webfirmframework.wffweb.tag.html.identifier.LinkAttributable;
  * @author WFF
  * @since 1.0.0
  */
-public class Href extends AbstractAttribute implements AAttributable,
-        AreaAttributable, BaseAttributable, LinkAttributable {
+public class Href extends AbstractAttribute
+        implements AAttributable, AreaAttributable, BaseAttributable, LinkAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -58,14 +58,13 @@ public class Href extends AbstractAttribute implements AAttributable,
      * This was the single required attribute for anchors defining a hypertext
      * source link, but is no longer required in HTML5. Omitting this attribute
      * creates a placeholder link. The href attribute indicates the link target,
-     * either a URL or a URL fragment. A URL fragment is a name preceded by a
-     * hash mark (#), which specifies an internal target location (an ID) within
-     * the current document. URLs are not restricted to Web (HTTP)-based
-     * documents. URLs might use any protocol supported by the browser. For
-     * example, file, ftp, and mailto work in most user agents.
+     * either a URL or a URL fragment. A URL fragment is a name preceded by a hash
+     * mark (#), which specifies an internal target location (an ID) within the
+     * current document. URLs are not restricted to Web (HTTP)-based documents. URLs
+     * might use any protocol supported by the browser. For example, file, ftp, and
+     * mailto work in most user agents.
      *
-     * @param url
-     *                the url.
+     * @param url the url.
      * @since 1.0.0
      * @author WFF
      */
@@ -76,8 +75,7 @@ public class Href extends AbstractAttribute implements AAttributable,
     /**
      * sets the value for this attribute
      *
-     * @param url
-     *                the url.
+     * @param url the url.
      * @since 1.0.0
      * @author WFF
      */

@@ -27,16 +27,14 @@ public class ValueValueType implements Serializable {
 
     private byte valueTypeByte;
 
-    public ValueValueType(final String name, final byte valueTypeByte,
-            final Object value) {
+    public ValueValueType(final String name, final byte valueTypeByte, final Object value) {
         super();
         this.name = name;
         this.valueTypeByte = valueTypeByte;
         this.value = value;
     }
 
-    public ValueValueType(final String name, final BMValueType valueType,
-            final Object value) {
+    public ValueValueType(final String name, final BMValueType valueType, final Object value) {
         super();
         this.name = name;
         valueTypeByte = valueType.getType();

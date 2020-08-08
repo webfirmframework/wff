@@ -104,12 +104,12 @@ public abstract class AbstractHtml extends AbstractJsObject {
     private volatile boolean parentNullifiedOnce;
 
     /**
-     * NB: iterator in this children is not synchronized so for-each loop may
-     * make ConcurrentModificationException if the children object is not used
-     * in synchronized block eg: synchronized (children) {} if possible replace
-     * this with a new implementation of a concurrent linked hashset.
-     * Unfortunately, jdk doesn't contain such class upto java 11. Solved:
-     * children is surrounded by lock in its top outer method.
+     * NB: iterator in this children is not synchronized so for-each loop may make
+     * ConcurrentModificationException if the children object is not used in
+     * synchronized block eg: synchronized (children) {} if possible replace this
+     * with a new implementation of a concurrent linked hashset. Unfortunately, jdk
+     * doesn't contain such class upto java 11. Solved: children is surrounded by
+     * lock in its top outer method.
      */
     private final Set<AbstractHtml> children;
 
@@ -174,12 +174,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
         ACCESS_OBJECT = new Security();
 
         // its length will be always 1
-        INDEXED_AT_CHAR_BYTES = PreIndexedTagName.AT
-                .internalIndexBytes(ACCESS_OBJECT);
+        INDEXED_AT_CHAR_BYTES = PreIndexedTagName.AT.internalIndexBytes(ACCESS_OBJECT);
 
         // its length will be always 1
-        INDEXED_HASH_CHAR_BYTES = PreIndexedTagName.HASH
-                .internalIndexBytes(ACCESS_OBJECT);
+        INDEXED_HASH_CHAR_BYTES = PreIndexedTagName.HASH.internalIndexBytes(ACCESS_OBJECT);
 
     }
 
@@ -224,8 +222,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             public boolean removeAll(final Collection<?> children) {
 
                 // NB: must be LinkedHashSet to keep order of removal
-                final Set<AbstractHtml> validChildren = new LinkedHashSet<>(
-                        calcCapacity(children.size()));
+                final Set<AbstractHtml> validChildren = new LinkedHashSet<>(calcCapacity(children.size()));
 
                 for (final Object each : children) {
                     if (each instanceof AbstractHtml) {
@@ -242,17 +239,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 final boolean removedAll = super.removeAll(validChildren);
 
                 if (removedAll) {
-                    initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(
-                            removedAbstractHtmls);
+                    initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(removedAbstractHtmls);
 
-                    final ChildTagRemoveListener listener = sharedObject
-                            .getChildTagRemoveListener(ACCESS_OBJECT);
+                    final ChildTagRemoveListener listener = sharedObject.getChildTagRemoveListener(ACCESS_OBJECT);
 
                     if (listener != null) {
                         listener.childrenRemoved(
-                                new ChildTagRemoveListener.Event(
-                                        AbstractHtml.this,
-                                        removedAbstractHtmls));
+                                new ChildTagRemoveListener.Event(AbstractHtml.this, removedAbstractHtmls));
                     }
 
                 }
@@ -327,10 +320,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
             // }
 
             @Override
-            public boolean addAll(
-                    final Collection<? extends AbstractHtml> children) {
-                throw new MethodNotImplementedException(
-                        "This method is not implemented");
+            public boolean addAll(final Collection<? extends AbstractHtml> children) {
+                throw new MethodNotImplementedException("This method is not implemented");
                 // No need to implement as it will call add method
                 // boolean addedAll = super.addAll(children);
                 // if (addedAll) {
@@ -364,29 +355,23 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * @param base
-     *                     the parent tag of this object
-     * @param children
-     *                     the tags which will be added as a children tag of
-     *                     this object.
+     * @param base     the parent tag of this object
+     * @param children the tags which will be added as a children tag of this
+     *                 object.
      * @author WFF
      */
-    public AbstractHtml(final AbstractHtml base,
-            final Collection<? extends AbstractHtml> children) {
+    public AbstractHtml(final AbstractHtml base, final Collection<? extends AbstractHtml> children) {
         this(base, children.toArray(new AbstractHtml[children.size()]));
     }
 
     /**
-     * @param base
-     *                     the parent tag of this object
-     * @param children
-     *                     the tags which will be added as a children tag of
-     *                     this object.
+     * @param base     the parent tag of this object
+     * @param children the tags which will be added as a children tag of this
+     *                 object.
      * @author WFF
      * @since 3.0.1
      */
-    public AbstractHtml(final AbstractHtml base,
-            final AbstractHtml... children) {
+    public AbstractHtml(final AbstractHtml base, final AbstractHtml... children) {
 
         tagName = null;
         tagType = TagType.OPENING_CLOSING;
@@ -402,9 +387,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             childLock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
         } else {
             parentLock = base.sharedObject.getLock(ACCESS_OBJECT).writeLock();
-            childLock = sharedObject != null
-                    ? sharedObject.getLock(ACCESS_OBJECT).writeLock()
-                    : null;
+            childLock = sharedObject != null ? sharedObject.getLock(ACCESS_OBJECT).writeLock() : null;
         }
 
         if (parentLock != null) {
@@ -446,12 +429,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     /**
      * @param base
-     * @param childContent
-     *                         any text, it can also be html text.
+     * @param childContent any text, it can also be html text.
      * @since 3.0.2
      */
-    protected AbstractHtml(final AbstractHtml base, final String childContent,
-            final boolean noTagContentTypeHtml) {
+    protected AbstractHtml(final AbstractHtml base, final String childContent, final boolean noTagContentTypeHtml) {
 
         tagName = null;
         tagType = TagType.OPENING_CLOSING;
@@ -467,9 +448,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             childLock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
         } else {
             parentLock = base.sharedObject.getLock(ACCESS_OBJECT).writeLock();
-            childLock = sharedObject != null
-                    ? sharedObject.getLock(ACCESS_OBJECT).writeLock()
-                    : null;
+            childLock = sharedObject != null ? sharedObject.getLock(ACCESS_OBJECT).writeLock() : null;
         }
 
         if (parentLock != null) {
@@ -515,25 +494,21 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     /**
      * @param base
-     * @param childContent
-     *                         any text, it can also be html text.
+     * @param childContent any text, it can also be html text.
      */
     public AbstractHtml(final AbstractHtml base, final String childContent) {
         this(base, childContent, false);
     }
 
     /**
-     * should be invoked to generate opening and closing tag base class
-     * containing the functionalities to generate html string.
+     * should be invoked to generate opening and closing tag base class containing
+     * the functionalities to generate html string.
      *
-     * @param tagName
-     *                    TODO
-     * @param base
-     *                    TODO
+     * @param tagName TODO
+     * @param base    TODO
      * @author WFF
      */
-    public AbstractHtml(final String tagName, final AbstractHtml base,
-            final AbstractAttribute[] attributes) {
+    public AbstractHtml(final String tagName, final AbstractHtml base, final AbstractAttribute[] attributes) {
 
         this.tagName = tagName;
         tagType = TagType.OPENING_CLOSING;
@@ -549,9 +524,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             childLock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
         } else {
             parentLock = base.sharedObject.getLock(ACCESS_OBJECT).writeLock();
-            childLock = sharedObject != null
-                    ? sharedObject.getLock(ACCESS_OBJECT).writeLock()
-                    : null;
+            childLock = sharedObject != null ? sharedObject.getLock(ACCESS_OBJECT).writeLock() : null;
         }
 
         if (parentLock != null) {
@@ -595,18 +568,16 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * should be invoked to generate opening and closing tag base class
-     * containing the functionalities to generate html string.
+     * should be invoked to generate opening and closing tag base class containing
+     * the functionalities to generate html string.
      *
-     * @param preIndexedTagName
-     *                              PreIndexedTagName constant
-     * @param base
-     *                              TODO
+     * @param preIndexedTagName PreIndexedTagName constant
+     * @param base              TODO
      * @author WFF
      * @since 3.0.3
      */
-    protected AbstractHtml(final PreIndexedTagName preIndexedTagName,
-            final AbstractHtml base, final AbstractAttribute[] attributes) {
+    protected AbstractHtml(final PreIndexedTagName preIndexedTagName, final AbstractHtml base,
+            final AbstractAttribute[] attributes) {
 
         tagName = preIndexedTagName.tagName();
         tagType = TagType.OPENING_CLOSING;
@@ -622,9 +593,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             childLock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
         } else {
             parentLock = base.sharedObject.getLock(ACCESS_OBJECT).writeLock();
-            childLock = sharedObject != null
-                    ? sharedObject.getLock(ACCESS_OBJECT).writeLock()
-                    : null;
+            childLock = sharedObject != null ? sharedObject.getLock(ACCESS_OBJECT).writeLock() : null;
         }
 
         if (parentLock != null) {
@@ -687,8 +656,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * Appends the given child tag to its children.
      *
-     * @param child
-     *                  the tag to append to its children.
+     * @param child the tag to append to its children.
      * @return true if the given child tag is appended as child of this tag.
      * @author WFF
      */
@@ -718,17 +686,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
             lock.lock();
 
-            final AbstractHtml[] removedAbstractHtmls = children
-                    .toArray(new AbstractHtml[children.size()]);
+            final AbstractHtml[] removedAbstractHtmls = children.toArray(new AbstractHtml[children.size()]);
             children.clear();
 
-            initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(
-                    removedAbstractHtmls);
-            final ChildTagRemoveListener listener = sharedObject
-                    .getChildTagRemoveListener(ACCESS_OBJECT);
+            initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(removedAbstractHtmls);
+            final ChildTagRemoveListener listener = sharedObject.getChildTagRemoveListener(ACCESS_OBJECT);
             if (listener != null) {
-                listener.allChildrenRemoved(new ChildTagRemoveListener.Event(
-                        this, removedAbstractHtmls));
+                listener.allChildrenRemoved(new ChildTagRemoveListener.Event(this, removedAbstractHtmls));
                 listenerInvoked = true;
             }
 
@@ -736,8 +700,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             lock.unlock();
         }
         if (listenerInvoked) {
-            final PushQueue pushQueue = sharedObject
-                    .getPushQueue(ACCESS_OBJECT);
+            final PushQueue pushQueue = sharedObject.getPushQueue(ACCESS_OBJECT);
             if (pushQueue != null) {
                 pushQueue.push();
             }
@@ -751,26 +714,20 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @return
      * @since 3.0.6
      */
-    ChildTagRemoveListenerData removeAllChildrenAndGetEventsLockless(
-            final boolean updateClient) {
+    ChildTagRemoveListenerData removeAllChildrenAndGetEventsLockless(final boolean updateClient) {
 
-        final AbstractHtml[] removedAbstractHtmls = children
-                .toArray(new AbstractHtml[children.size()]);
+        final AbstractHtml[] removedAbstractHtmls = children.toArray(new AbstractHtml[children.size()]);
         children.clear();
 
-        initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(
-                removedAbstractHtmls);
+        initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(removedAbstractHtmls);
 
         if (updateClient) {
             final AbstractHtml5SharedObject sharedObject = this.sharedObject;
-            final ChildTagRemoveListener listener = sharedObject
-                    .getChildTagRemoveListener(ACCESS_OBJECT);
+            final ChildTagRemoveListener listener = sharedObject.getChildTagRemoveListener(ACCESS_OBJECT);
             if (listener != null) {
 
-                final ChildTagRemoveListenerData listenerData = new ChildTagRemoveListenerData(
-                        sharedObject, listener,
-                        new ChildTagRemoveListener.Event(this,
-                                removedAbstractHtmls));
+                final ChildTagRemoveListenerData listenerData = new ChildTagRemoveListenerData(sharedObject, listener,
+                        new ChildTagRemoveListener.Event(this, removedAbstractHtmls));
                 return listenerData;
             }
         }
@@ -781,8 +738,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * removes all children and adds the given tag
      *
-     * @param innerHtml
-     *                      the inner html tag to add
+     * @param innerHtml the inner html tag to add
      * @author WFF
      */
     public void addInnerHtml(final AbstractHtml innerHtml) {
@@ -792,8 +748,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * Removes all children and adds the given tags as children.
      *
-     * @param innerHtmls
-     *                       the inner html tags to add
+     * @param innerHtmls the inner html tags to add
      * @author WFF
      * @since 2.1.3
      */
@@ -804,17 +759,14 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * Removes all children and adds the given tags as children.
      *
-     * @param updateClient
-     *                         true to update client browser page if it is
-     *                         available. The default value is true but it will
-     *                         be ignored if there is no client browser page.
-     * @param innerHtmls
-     *                         the inner html tags to add
+     * @param updateClient true to update client browser page if it is available.
+     *                     The default value is true but it will be ignored if there
+     *                     is no client browser page.
+     * @param innerHtmls   the inner html tags to add
      * @author WFF
      * @since 2.1.15
      */
-    protected void addInnerHtmls(final boolean updateClient,
-            final AbstractHtml... innerHtmls) {
+    protected void addInnerHtmls(final boolean updateClient, final AbstractHtml... innerHtmls) {
 
         boolean listenerInvoked = false;
         final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
@@ -822,15 +774,12 @@ public abstract class AbstractHtml extends AbstractJsObject {
         try {
             lock.lock();
 
-            final AbstractHtml[] removedTags = children
-                    .toArray(new AbstractHtml[children.size()]);
+            final AbstractHtml[] removedTags = children.toArray(new AbstractHtml[children.size()]);
             children.clear();
 
-            initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(
-                    removedTags);
+            initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(removedTags);
 
-            final InnerHtmlAddListener listener = sharedObject
-                    .getInnerHtmlAddListener(ACCESS_OBJECT);
+            final InnerHtmlAddListener listener = sharedObject.getInnerHtmlAddListener(ACCESS_OBJECT);
 
             if (listener != null && updateClient) {
 
@@ -847,12 +796,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         if (innerHtml.parent.sharedObject == sharedObject) {
                             previousParentTag = innerHtml.parent;
                         } else {
-                            if (innerHtml.parent.sharedObject
-                                    .getInnerHtmlAddListener(
-                                            ACCESS_OBJECT) == null) {
+                            if (innerHtml.parent.sharedObject.getInnerHtmlAddListener(ACCESS_OBJECT) == null) {
                                 removeFromTagByWffIdMap(innerHtml,
-                                        innerHtml.parent.sharedObject
-                                                .getTagByWffId(ACCESS_OBJECT));
+                                        innerHtml.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
                             } // else {TODO also write the code to push
                               // changes to the other BrowserPage}
 
@@ -863,8 +809,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                     addChild(innerHtml, false);
 
-                    events[index] = new InnerHtmlAddListener.Event(this,
-                            innerHtml, previousParentTag);
+                    events[index] = new InnerHtmlAddListener.Event(this, innerHtml, previousParentTag);
                     index++;
 
                 }
@@ -875,12 +820,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 for (final AbstractHtml innerHtml : innerHtmls) {
 
                     if (innerHtml.parent != null) {
-                        if (innerHtml.parent.sharedObject
-                                .getInnerHtmlAddListener(
-                                        ACCESS_OBJECT) == null) {
+                        if (innerHtml.parent.sharedObject.getInnerHtmlAddListener(ACCESS_OBJECT) == null) {
                             removeFromTagByWffIdMap(innerHtml,
-                                    innerHtml.parent.sharedObject
-                                            .getTagByWffId(ACCESS_OBJECT));
+                                    innerHtml.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
                         } // else {TODO also write the code to push
                           // changes to the other BrowserPage}
                     } else {
@@ -896,8 +838,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
         }
 
         if (listenerInvoked) {
-            final PushQueue pushQueue = sharedObject
-                    .getPushQueue(ACCESS_OBJECT);
+            final PushQueue pushQueue = sharedObject.getPushQueue(ACCESS_OBJECT);
             if (pushQueue != null) {
                 pushQueue.push();
             }
@@ -914,27 +855,23 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * @param updateClient
-     *                         true to update client browser page if it is
-     *                         available. The default value is true but it will
-     *                         be ignored if there is no client browser page.
+     * @param updateClient true to update client browser page if it is available.
+     *                     The default value is true but it will be ignored if there
+     *                     is no client browser page.
      * @param innerHtmls
      * @return
      * @since 3.0.6
      */
-    InnerHtmlListenerData addInnerHtmlsAndGetEventsLockless(
-            final boolean updateClient, final AbstractHtml... innerHtmls) {
+    InnerHtmlListenerData addInnerHtmlsAndGetEventsLockless(final boolean updateClient,
+            final AbstractHtml... innerHtmls) {
 
         InnerHtmlListenerData innerHtmlListenerData = null;
-        final AbstractHtml[] removedAbstractHtmls = children
-                .toArray(new AbstractHtml[children.size()]);
+        final AbstractHtml[] removedAbstractHtmls = children.toArray(new AbstractHtml[children.size()]);
         children.clear();
 
-        initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(
-                removedAbstractHtmls);
+        initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(removedAbstractHtmls);
 
-        final InnerHtmlAddListener listener = sharedObject
-                .getInnerHtmlAddListener(ACCESS_OBJECT);
+        final InnerHtmlAddListener listener = sharedObject.getInnerHtmlAddListener(ACCESS_OBJECT);
 
         if (listener != null && updateClient) {
 
@@ -951,12 +888,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
                     if (innerHtml.parent.sharedObject == sharedObject) {
                         previousParentTag = innerHtml.parent;
                     } else {
-                        if (innerHtml.parent.sharedObject
-                                .getInnerHtmlAddListener(
-                                        ACCESS_OBJECT) == null) {
+                        if (innerHtml.parent.sharedObject.getInnerHtmlAddListener(ACCESS_OBJECT) == null) {
                             removeFromTagByWffIdMap(innerHtml,
-                                    innerHtml.parent.sharedObject
-                                            .getTagByWffId(ACCESS_OBJECT));
+                                    innerHtml.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
                         } // else {TODO also write the code to push
                           // changes to the other BrowserPage}
 
@@ -967,23 +901,18 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                 addChild(innerHtml, false);
 
-                events[index] = new InnerHtmlAddListener.Event(this, innerHtml,
-                        previousParentTag);
+                events[index] = new InnerHtmlAddListener.Event(this, innerHtml, previousParentTag);
                 index++;
 
             }
 
-            innerHtmlListenerData = new InnerHtmlListenerData(sharedObject,
-                    listener, events);
+            innerHtmlListenerData = new InnerHtmlListenerData(sharedObject, listener, events);
 
         } else {
             for (final AbstractHtml innerHtml : innerHtmls) {
                 if (innerHtml.parent != null) {
-                    if (innerHtml.parent.sharedObject
-                            .getInnerHtmlAddListener(ACCESS_OBJECT) == null) {
-                        removeFromTagByWffIdMap(innerHtml,
-                                innerHtml.parent.sharedObject
-                                        .getTagByWffId(ACCESS_OBJECT));
+                    if (innerHtml.parent.sharedObject.getInnerHtmlAddListener(ACCESS_OBJECT) == null) {
+                        removeFromTagByWffIdMap(innerHtml, innerHtml.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
                     } // else {TODO also write the code to push
                       // changes to the other BrowserPage}
                 } else {
@@ -999,12 +928,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * @param sharedTagContent
-     *                             the shared content to be inserted as inner
-     *                             content. Any changes of content in the
-     *                             sharedTagContent will be reflected in this
-     *                             tag and all other consuming tags of this
-     *                             sharedTagContent object.
+     * @param sharedTagContent the shared content to be inserted as inner content.
+     *                         Any changes of content in the sharedTagContent will
+     *                         be reflected in this tag and all other consuming tags
+     *                         of this sharedTagContent object.
      * @since 3.0.6
      */
     public <T> void addInnerHtml(final SharedTagContent<T> sharedTagContent) {
@@ -1012,15 +939,12 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * @param sharedTagContent
-     *                             the shared content to be inserted as inner
-     *                             content. Any changes of content in the
-     *                             sharedTagContent will be reflected in this
-     *                             tag and all other consuming tags of this
-     *                             sharedTagContent object.
-     * @param formatter
-     *                             content to be formatted using this formatter
-     *                             before it is embedded in this tag.
+     * @param sharedTagContent the shared content to be inserted as inner content.
+     *                         Any changes of content in the sharedTagContent will
+     *                         be reflected in this tag and all other consuming tags
+     *                         of this sharedTagContent object.
+     * @param formatter        content to be formatted using this formatter before
+     *                         it is embedded in this tag.
      * @since 3.0.6
      */
     public <T> void addInnerHtml(final SharedTagContent<T> sharedTagContent,
@@ -1029,77 +953,66 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * @param updateClient
-     *                             true to update client browser page if it is
-     *                             available. The default value is true but it
-     *                             will be ignored if there is no client browser
-     *                             page. false will skip updating client browser
-     *                             page only when this method call.
-     * @param sharedTagContent
-     *                             the shared content to be inserted as inner
-     *                             content. Any changes of content in the
-     *                             sharedTagContent will be reflected in this
-     *                             tag and all other consuming tags of this
-     *                             sharedTagContent object.
+     * @param updateClient     true to update client browser page if it is
+     *                         available. The default value is true but it will be
+     *                         ignored if there is no client browser page. false
+     *                         will skip updating client browser page only when this
+     *                         method call.
+     * @param sharedTagContent the shared content to be inserted as inner content.
+     *                         Any changes of content in the sharedTagContent will
+     *                         be reflected in this tag and all other consuming tags
+     *                         of this sharedTagContent object.
      * @since 3.0.6
      */
-    public <T> void addInnerHtml(final boolean updateClient,
-            final SharedTagContent<T> sharedTagContent) {
+    public <T> void addInnerHtml(final boolean updateClient, final SharedTagContent<T> sharedTagContent) {
         addInnerHtml(updateClient, sharedTagContent, null);
     }
 
     /**
-     * @param updateClient
-     *                             true to update client browser page if it is
-     *                             available. The default value is true but it
-     *                             will be ignored if there is no client browser
-     *                             page. false will skip updating client browser
-     *                             page only when this method call.
-     * @param sharedTagContent
-     *                             the shared content to be inserted as inner
-     *                             content. Any changes of content in the
-     *                             sharedTagContent will be reflected in this
-     *                             tag and all other consuming tags of this
-     *                             sharedTagContent object.
-     * @param formatter
-     *                             content to be formatted using this formatter
-     *                             before it is embedded in this tag.
+     * @param updateClient     true to update client browser page if it is
+     *                         available. The default value is true but it will be
+     *                         ignored if there is no client browser page. false
+     *                         will skip updating client browser page only when this
+     *                         method call.
+     * @param sharedTagContent the shared content to be inserted as inner content.
+     *                         Any changes of content in the sharedTagContent will
+     *                         be reflected in this tag and all other consuming tags
+     *                         of this sharedTagContent object.
+     * @param formatter        content to be formatted using this formatter before
+     *                         it is embedded in this tag.
      * @since 3.0.6
      */
-    public <T> void addInnerHtml(final boolean updateClient,
-            final SharedTagContent<T> sharedTagContent,
+    public <T> void addInnerHtml(final boolean updateClient, final SharedTagContent<T> sharedTagContent,
             final SharedTagContent.ContentFormatter<T> formatter) {
         addInnerHtml(updateClient, sharedTagContent, formatter, false);
     }
 
     /**
-     * Subscribes to the given SharedTagContent and listens to its content
-     * updates but pushes updates of this tag to client browser page only if
-     * there is an active WebSocket connection between server and client browser
-     * page and if there is no active WebSocket connection that changes will not
-     * be cached for later push. However, it will try to keep the change of this
-     * tag (server object) up to date with client browser page. The difference
-     * of this method with {@link AbstractHtml#addInnerHtml(SharedTagContent)}
-     * is that addInnerHtml(SharedTagContent) will push all changes of this tag
-     * (server side object) to client browser page and if push is failed it will
-     * be cached for retry. {@link AbstractHtml#addInnerHtml(SharedTagContent)}
-     * will reliably deliver each and every change to client browser page. There
-     * are cases where it is discouraged,
+     * Subscribes to the given SharedTagContent and listens to its content updates
+     * but pushes updates of this tag to client browser page only if there is an
+     * active WebSocket connection between server and client browser page and if
+     * there is no active WebSocket connection that changes will not be cached for
+     * later push. However, it will try to keep the change of this tag (server
+     * object) up to date with client browser page. The difference of this method
+     * with {@link AbstractHtml#addInnerHtml(SharedTagContent)} is that
+     * addInnerHtml(SharedTagContent) will push all changes of this tag (server side
+     * object) to client browser page and if push is failed it will be cached for
+     * retry. {@link AbstractHtml#addInnerHtml(SharedTagContent)} will reliably
+     * deliver each and every change to client browser page. There are cases where
+     * it is discouraged,
      *
      * <br>
      * <br>
-     * Eg:- printing current time in realtime. Imagine, while printing the time
-     * in realtime the websocket communication between the client and server is
-     * lost and reconnected after few seconds. In that case we don't have to
-     * push the out dated data (time). In such cases
+     * Eg:- printing current time in realtime. Imagine, while printing the time in
+     * realtime the websocket communication between the client and server is lost
+     * and reconnected after few seconds. In that case we don't have to push the out
+     * dated data (time). In such cases
      * {@link AbstractHtml#subscribeTo(SharedTagContent)} is more appropriate.
      *
-     * @param sharedTagContent
-     *                             the shared content to be inserted as inner
-     *                             content. Any changes of content in the
-     *                             sharedTagContent will be reflected in this
-     *                             tag and all other consuming tags of this
-     *                             sharedTagContent object.
+     * @param sharedTagContent the shared content to be inserted as inner content.
+     *                         Any changes of content in the sharedTagContent will
+     *                         be reflected in this tag and all other consuming tags
+     *                         of this sharedTagContent object.
      * @since 3.0.6
      */
     public <T> void subscribeTo(final SharedTagContent<T> sharedTagContent) {
@@ -1107,36 +1020,33 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * Subscribes to the given SharedTagContent and listens to its content
-     * updates but pushes updates of this tag to client browser page only if
-     * there is an active WebSocket connection between server and client browser
-     * page and if there is no active WebSocket connection that changes will not
-     * be cached for later push. However, it will try to keep the change of this
-     * tag (server object) up to date with client browser page. The difference
-     * of this method with {@link AbstractHtml#addInnerHtml(SharedTagContent)}
-     * is that addInnerHtml(SharedTagContent) will push all changes of this tag
-     * (server side object) to client browser page and if push is failed it will
-     * be cached for retry. {@link AbstractHtml#addInnerHtml(SharedTagContent)}
-     * will reliably deliver each and every change to client browser page. There
-     * are cases where it is discouraged,
+     * Subscribes to the given SharedTagContent and listens to its content updates
+     * but pushes updates of this tag to client browser page only if there is an
+     * active WebSocket connection between server and client browser page and if
+     * there is no active WebSocket connection that changes will not be cached for
+     * later push. However, it will try to keep the change of this tag (server
+     * object) up to date with client browser page. The difference of this method
+     * with {@link AbstractHtml#addInnerHtml(SharedTagContent)} is that
+     * addInnerHtml(SharedTagContent) will push all changes of this tag (server side
+     * object) to client browser page and if push is failed it will be cached for
+     * retry. {@link AbstractHtml#addInnerHtml(SharedTagContent)} will reliably
+     * deliver each and every change to client browser page. There are cases where
+     * it is discouraged,
      *
      * <br>
      * <br>
-     * Eg:- printing current time in realtime. Imagine, while printing the time
-     * in realtime the websocket communication between the client and server is
-     * lost and reconnected after few seconds. In that case we don't have to
-     * push the out dated data (time). In such cases
+     * Eg:- printing current time in realtime. Imagine, while printing the time in
+     * realtime the websocket communication between the client and server is lost
+     * and reconnected after few seconds. In that case we don't have to push the out
+     * dated data (time). In such cases
      * {@link AbstractHtml#subscribeTo(SharedTagContent)} is more appropriate.
      *
-     * @param sharedTagContent
-     *                             the shared content to be inserted as inner
-     *                             content. Any changes of content in the
-     *                             sharedTagContent will be reflected in this
-     *                             tag and all other consuming tags of this
-     *                             sharedTagContent object.
-     * @param formatter
-     *                             content to be formatted using this formatter
-     *                             before it is embedded in this tag.
+     * @param sharedTagContent the shared content to be inserted as inner content.
+     *                         Any changes of content in the sharedTagContent will
+     *                         be reflected in this tag and all other consuming tags
+     *                         of this sharedTagContent object.
+     * @param formatter        content to be formatted using this formatter before
+     *                         it is embedded in this tag.
      * @since 3.0.6
      */
     public <T> void subscribeTo(final SharedTagContent<T> sharedTagContent,
@@ -1145,83 +1055,70 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * Subscribes to the given SharedTagContent and listens to its content
-     * updates but pushes updates of this tag to client browser page only if
-     * there is an active WebSocket connection between server and client browser
-     * page and if there is no active WebSocket connection that changes will not
-     * be cached for later push. However, it will try to keep the change of this
-     * tag (server object) up to date with client browser page. The difference
-     * of this method with {@link AbstractHtml#addInnerHtml(SharedTagContent)}
-     * is that addInnerHtml(SharedTagContent) will push all changes of this tag
-     * (server side object) to client browser page and if push is failed it will
-     * be cached for retry. {@link AbstractHtml#addInnerHtml(SharedTagContent)}
-     * will reliably deliver each and every change to client browser page. There
-     * are cases where it is discouraged,
+     * Subscribes to the given SharedTagContent and listens to its content updates
+     * but pushes updates of this tag to client browser page only if there is an
+     * active WebSocket connection between server and client browser page and if
+     * there is no active WebSocket connection that changes will not be cached for
+     * later push. However, it will try to keep the change of this tag (server
+     * object) up to date with client browser page. The difference of this method
+     * with {@link AbstractHtml#addInnerHtml(SharedTagContent)} is that
+     * addInnerHtml(SharedTagContent) will push all changes of this tag (server side
+     * object) to client browser page and if push is failed it will be cached for
+     * retry. {@link AbstractHtml#addInnerHtml(SharedTagContent)} will reliably
+     * deliver each and every change to client browser page. There are cases where
+     * it is discouraged,
      *
      * <br>
      * <br>
-     * Eg:- printing current time in realtime. Imagine, while printing the time
-     * in realtime the websocket communication between the client and server is
-     * lost and reconnected after few seconds. In that case we don't have to
-     * push the out dated data (time). In such cases
+     * Eg:- printing current time in realtime. Imagine, while printing the time in
+     * realtime the websocket communication between the client and server is lost
+     * and reconnected after few seconds. In that case we don't have to push the out
+     * dated data (time). In such cases
      * {@link AbstractHtml#subscribeTo(SharedTagContent)} is more appropriate.
      *
-     * @param updateClient
-     *                             true to update client browser page if it is
-     *                             available. The default value is true but it
-     *                             will be ignored if there is no client browser
-     *                             page. false will skip updating client browser
-     *                             page only when this method call.
-     * @param sharedTagContent
-     *                             the shared content to be inserted as inner
-     *                             content. Any changes of content in the
-     *                             sharedTagContent will be reflected in this
-     *                             tag and all other consuming tags of this
-     *                             sharedTagContent object.
-     * @param formatter
-     *                             content to be formatted using this formatter
-     *                             before it is embedded in this tag.
+     * @param updateClient     true to update client browser page if it is
+     *                         available. The default value is true but it will be
+     *                         ignored if there is no client browser page. false
+     *                         will skip updating client browser page only when this
+     *                         method call.
+     * @param sharedTagContent the shared content to be inserted as inner content.
+     *                         Any changes of content in the sharedTagContent will
+     *                         be reflected in this tag and all other consuming tags
+     *                         of this sharedTagContent object.
+     * @param formatter        content to be formatted using this formatter before
+     *                         it is embedded in this tag.
      * @since 3.0.6
      */
-    public <T> void subscribeTo(final boolean updateClient,
-            final SharedTagContent<T> sharedTagContent,
+    public <T> void subscribeTo(final boolean updateClient, final SharedTagContent<T> sharedTagContent,
             final SharedTagContent.ContentFormatter<T> formatter) {
         addInnerHtml(updateClient, sharedTagContent, formatter, true);
     }
 
     /**
-     * @param updateClient
-     *                             true to update client browser page if it is
-     *                             available. The default value is true but it
-     *                             will be ignored if there is no client browser
-     *                             page. false will skip updating client browser
-     *                             page only when this method call.
-     * @param sharedTagContent
-     *                             the shared content to be inserted as inner
-     *                             content. Any changes of content in the
-     *                             sharedTagContent will be reflected in this
-     *                             tag and all other consuming tags of this
-     *                             sharedTagContent object.
-     * @param formatter
-     *                             content to be formatted using this formatter
-     *                             before it is embedded in this tag.
-     * @param subscribe
-     *                             updateClient will be true only if there is an
-     *                             active wsListener otherwise updateClient will
-     *                             be false.
+     * @param updateClient     true to update client browser page if it is
+     *                         available. The default value is true but it will be
+     *                         ignored if there is no client browser page. false
+     *                         will skip updating client browser page only when this
+     *                         method call.
+     * @param sharedTagContent the shared content to be inserted as inner content.
+     *                         Any changes of content in the sharedTagContent will
+     *                         be reflected in this tag and all other consuming tags
+     *                         of this sharedTagContent object.
+     * @param formatter        content to be formatted using this formatter before
+     *                         it is embedded in this tag.
+     * @param subscribe        updateClient will be true only if there is an active
+     *                         wsListener otherwise updateClient will be false.
      * @since 3.0.6
      */
-    private <T> void addInnerHtml(final boolean updateClient,
-            final SharedTagContent<T> sharedTagContent,
-            final SharedTagContent.ContentFormatter<T> formatter,
-            final boolean subscribe) {
+    private <T> void addInnerHtml(final boolean updateClient, final SharedTagContent<T> sharedTagContent,
+            final SharedTagContent.ContentFormatter<T> formatter, final boolean subscribe) {
 
         final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
         lock.lock();
         try {
             if (sharedTagContent != null) {
-                final AbstractHtml noTagInserted = sharedTagContent
-                        .addInnerHtml(updateClient, this, formatter, subscribe);
+                final AbstractHtml noTagInserted = sharedTagContent.addInnerHtml(updateClient, this, formatter,
+                        subscribe);
                 noTagInserted.sharedTagContent = sharedTagContent;
             } else {
                 if (children.size() == 1) {
@@ -1229,11 +1126,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
                     if (iterator.hasNext()) {
                         final AbstractHtml firstChild = iterator.next();
                         if (firstChild != null) {
-                            if (firstChild instanceof NoTag
-                                    && !firstChild.parentNullifiedOnce
+                            if (firstChild instanceof NoTag && !firstChild.parentNullifiedOnce
                                     && firstChild.sharedTagContent != null) {
-                                firstChild.sharedTagContent.remove(firstChild,
-                                        this);
+                                firstChild.sharedTagContent.remove(firstChild, this);
                                 firstChild.sharedTagContent = null;
                             }
                         }
@@ -1257,9 +1152,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * @return the object of SharedTagContent which created the NoTag in the
-     *         child or null if the child NoTag is not created by any
-     *         SharedTagContent object.
+     * @return the object of SharedTagContent which created the NoTag in the child
+     *         or null if the child NoTag is not created by any SharedTagContent
+     *         object.
      * @since 3.0.6
      */
     @SuppressWarnings("unchecked")
@@ -1271,11 +1166,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 final Iterator<AbstractHtml> iterator = children.iterator();
                 if (iterator.hasNext()) {
                     final AbstractHtml firstChild = iterator.next();
-                    if (firstChild != null && !firstChild.parentNullifiedOnce
-                            && firstChild.sharedTagContent != null
-                            && firstChild instanceof NoTag
-                            && firstChild.sharedTagContent
-                                    .contains(firstChild)) {
+                    if (firstChild != null && !firstChild.parentNullifiedOnce && firstChild.sharedTagContent != null
+                            && firstChild instanceof NoTag && firstChild.sharedTagContent.contains(firstChild)) {
                         return firstChild.sharedTagContent;
                     }
 
@@ -1303,11 +1195,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 final Iterator<AbstractHtml> iterator = children.iterator();
                 if (iterator.hasNext()) {
                     final AbstractHtml firstChild = iterator.next();
-                    if (firstChild != null && !firstChild.parentNullifiedOnce
-                            && firstChild.sharedTagContent != null
+                    if (firstChild != null && !firstChild.parentNullifiedOnce && firstChild.sharedTagContent != null
                             && firstChild instanceof NoTag) {
-                        return firstChild.sharedTagContent
-                                .isSubscribed(firstChild);
+                        return firstChild.sharedTagContent.isSubscribed(firstChild);
                     }
 
                 }
@@ -1321,11 +1211,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * @param removeContent
-     *                          true to remove the inner content of this tag
-     *                          otherwise false. The inner content will be
-     *                          removed only if it contains a ShareTagContent
-     *                          object.
+     * @param removeContent true to remove the inner content of this tag otherwise
+     *                      false. The inner content will be removed only if it
+     *                      contains a ShareTagContent object.
      * @return true if any SharedTagContent object is removed from this tag
      *         otherwise false.
      * @since 3.0.6
@@ -1341,12 +1229,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 final Iterator<AbstractHtml> iterator = children.iterator();
                 if (iterator.hasNext()) {
                     final AbstractHtml firstChild = iterator.next();
-                    if (firstChild != null && !firstChild.parentNullifiedOnce
-                            && firstChild.sharedTagContent != null
+                    if (firstChild != null && !firstChild.parentNullifiedOnce && firstChild.sharedTagContent != null
                             && firstChild instanceof NoTag) {
 
-                        removed = firstChild.sharedTagContent.remove(firstChild,
-                                this);
+                        removed = firstChild.sharedTagContent.remove(firstChild, this);
 
                         if (removed && removeContent) {
 
@@ -1354,14 +1240,12 @@ public abstract class AbstractHtml extends AbstractJsObject {
                                     .toArray(new AbstractHtml[children.size()]);
                             children.clear();
 
-                            initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(
-                                    removedAbstractHtmls);
+                            initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(removedAbstractHtmls);
                             final ChildTagRemoveListener listener = sharedObject
                                     .getChildTagRemoveListener(ACCESS_OBJECT);
                             if (listener != null) {
                                 listener.allChildrenRemoved(
-                                        new ChildTagRemoveListener.Event(this,
-                                                removedAbstractHtmls));
+                                        new ChildTagRemoveListener.Event(this, removedAbstractHtmls));
                                 listenerInvoked = true;
                             }
                         }
@@ -1376,8 +1260,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
         }
 
         if (listenerInvoked) {
-            final PushQueue pushQueue = sharedObject
-                    .getPushQueue(ACCESS_OBJECT);
+            final PushQueue pushQueue = sharedObject.getPushQueue(ACCESS_OBJECT);
             if (pushQueue != null) {
                 pushQueue.push();
             }
@@ -1389,8 +1272,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * Removes the given tags from its children tags.
      *
-     * @param children
-     *                     the tags to remove from its children.
+     * @param children the tags to remove from its children.
      * @return true given given children tags have been removed.
      * @author WFF
      */
@@ -1414,8 +1296,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * Removes the given tags from its children tags.
      *
-     * @param children
-     *                     the tags to remove from its children.
+     * @param children the tags to remove from its children.
      * @return true given given children tags have been removed.
      * @author WFF
      * @since 3.0.1
@@ -1441,11 +1322,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * Removes the given tag from its children only if the given tag is a child
-     * of this tag.
+     * Removes the given tag from its children only if the given tag is a child of
+     * this tag.
      *
-     * @param child
-     *                  the tag to remove from its children
+     * @param child the tag to remove from its children
      * @return true if removed
      * @author WFF
      */
@@ -1464,12 +1344,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 // making child.parent = null inside the below method.
                 initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(child);
 
-                final ChildTagRemoveListener listener = sharedObject
-                        .getChildTagRemoveListener(ACCESS_OBJECT);
+                final ChildTagRemoveListener listener = sharedObject.getChildTagRemoveListener(ACCESS_OBJECT);
 
                 if (listener != null) {
-                    listener.childRemoved(
-                            new ChildTagRemoveListener.Event(this, child));
+                    listener.childRemoved(new ChildTagRemoveListener.Event(this, child));
                     listenerInvoked = true;
                 }
 
@@ -1479,8 +1357,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             lock.unlock();
         }
         if (listenerInvoked) {
-            final PushQueue pushQueue = sharedObject
-                    .getPushQueue(ACCESS_OBJECT);
+            final PushQueue pushQueue = sharedObject.getPushQueue(ACCESS_OBJECT);
             if (pushQueue != null) {
                 pushQueue.push();
             }
@@ -1498,10 +1375,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
             lock.lock();
 
             if (child.parent != null) {
-                if (child.parent.sharedObject
-                        .getChildTagAppendListener(ACCESS_OBJECT) == null) {
-                    removeFromTagByWffIdMap(child, child.parent.sharedObject
-                            .getTagByWffId(ACCESS_OBJECT));
+                if (child.parent.sharedObject.getChildTagAppendListener(ACCESS_OBJECT) == null) {
+                    removeFromTagByWffIdMap(child, child.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
                 } // else {TODO also write the code to push
                   // changes to the other BrowserPage}
             } else {
@@ -1522,10 +1397,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
     private boolean addChildLockless(final AbstractHtml child) {
         boolean result = false;
         if (child.parent != null) {
-            if (child.parent.sharedObject
-                    .getChildTagAppendListener(ACCESS_OBJECT) == null) {
-                removeFromTagByWffIdMap(child,
-                        child.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
+            if (child.parent.sharedObject.getChildTagAppendListener(ACCESS_OBJECT) == null) {
+                removeFromTagByWffIdMap(child, child.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
             } // else {TODO also write the code to push
               // changes to the other BrowserPage}
         } else {
@@ -1550,12 +1423,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @author WFF
      * @since 2.0.0
      */
-    public boolean addChild(final Object accessObject, final AbstractHtml child,
-            final boolean invokeListener) {
-        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE
-                .equals(accessObject.getClass().getName()))) {
-            throw new WffSecurityException(
-                    "Not allowed to consume this method. This method is for internal use.");
+    public boolean addChild(final Object accessObject, final AbstractHtml child, final boolean invokeListener) {
+        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
 
         final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
@@ -1567,10 +1437,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
             final boolean alreadyHasParent = child.parent != null;
 
             if (alreadyHasParent) {
-                if (child.parent.sharedObject
-                        .getChildTagAppendListener(ACCESS_OBJECT) == null) {
-                    removeFromTagByWffIdMap(child, child.parent.sharedObject
-                            .getTagByWffId(ACCESS_OBJECT));
+                if (child.parent.sharedObject.getChildTagAppendListener(ACCESS_OBJECT) == null) {
+                    removeFromTagByWffIdMap(child, child.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
                 } // else {TODO also write the code to push
                   // changes to the other BrowserPage}
             } else {
@@ -1582,8 +1450,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             lock.unlock();
         }
         if (invokeListener) {
-            final PushQueue pushQueue = sharedObject
-                    .getPushQueue(ACCESS_OBJECT);
+            final PushQueue pushQueue = sharedObject.getPushQueue(ACCESS_OBJECT);
             if (pushQueue != null) {
                 pushQueue.push();
             }
@@ -1591,13 +1458,11 @@ public abstract class AbstractHtml extends AbstractJsObject {
         return result;
     }
 
-    private boolean addChild(final AbstractHtml child,
-            final boolean invokeListener) {
+    private boolean addChild(final AbstractHtml child, final boolean invokeListener) {
         return addChild(child, invokeListener, true);
     }
 
-    private boolean addChild(final AbstractHtml child,
-            final boolean invokeListener, final boolean foreignLocking) {
+    private boolean addChild(final AbstractHtml child, final boolean invokeListener, final boolean foreignLocking) {
 
         final boolean added = children.add(child);
         if (added) {
@@ -1639,22 +1504,17 @@ public abstract class AbstractHtml extends AbstractJsObject {
             if (invokeListener) {
 
                 if (alreadyHasParent) {
-                    final ChildTagAppendListener listener = sharedObject
-                            .getChildTagAppendListener(ACCESS_OBJECT);
+                    final ChildTagAppendListener listener = sharedObject.getChildTagAppendListener(ACCESS_OBJECT);
 
                     if (listener != null) {
-                        listener.childMoved(
-                                new ChildTagAppendListener.ChildMovedEvent(
-                                        previousParent, this, child));
+                        listener.childMoved(new ChildTagAppendListener.ChildMovedEvent(previousParent, this, child));
                     }
 
                 } else {
 
-                    final ChildTagAppendListener listener = sharedObject
-                            .getChildTagAppendListener(ACCESS_OBJECT);
+                    final ChildTagAppendListener listener = sharedObject.getChildTagAppendListener(ACCESS_OBJECT);
                     if (listener != null) {
-                        final ChildTagAppendListener.Event event = new ChildTagAppendListener.Event(
-                                this, child);
+                        final ChildTagAppendListener.Event event = new ChildTagAppendListener.Event(this, child);
                         listener.childAppended(event);
                     }
                 }
@@ -1670,8 +1530,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param tag
      * @since 3.0.7
      */
-    private static void removeFromTagByWffIdMap(final AbstractHtml tag,
-            final Map<String, AbstractHtml> tagByWffId) {
+    private static void removeFromTagByWffIdMap(final AbstractHtml tag, final Map<String, AbstractHtml> tagByWffId) {
 
         if (!tagByWffId.isEmpty()) {
             final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
@@ -1686,14 +1545,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                     final DataWffId dataWffId = child.dataWffId;
                     if (dataWffId != null) {
-                        tagByWffId.computeIfPresent(dataWffId.getValue(),
-                                (k, v) -> {
-                                    if (child.equals(v)) {
-                                        child.removeDataWffId();
-                                        return null;
-                                    }
-                                    return v;
-                                });
+                        tagByWffId.computeIfPresent(dataWffId.getValue(), (k, v) -> {
+                            if (child.equals(v)) {
+                                child.removeDataWffId();
+                                return null;
+                            }
+                            return v;
+                        });
                     }
 
                     final Set<AbstractHtml> subChildren = child.children;
@@ -1707,15 +1565,14 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * locking if only if required. if the currentSharedObject and
-     * tag.sharedObject is not matching then only locking will be applied.
+     * locking if only if required. if the currentSharedObject and tag.sharedObject
+     * is not matching then only locking will be applied.
      *
      * @param currentSharedObject
      * @param tag
      * @since 3.0.11
      */
-    private static void removeDataWffIdFromHierarchy(
-            final AbstractHtml5SharedObject currentSharedObject,
+    private static void removeDataWffIdFromHierarchy(final AbstractHtml5SharedObject currentSharedObject,
             final AbstractHtml tag) {
         if (currentSharedObject.equals(tag.sharedObject)) {
             removeDataWffIdFromHierarchyLockless(tag);
@@ -1754,10 +1611,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param tag
      * @since 3.0.11
      */
-    private static void removeDataWffIdFromHierarchyLockless(
-            final AbstractHtml tag) {
-        final Set<AbstractHtml> applicableTags = extractParentTagsForDataWffIdRemoval(
-                tag);
+    private static void removeDataWffIdFromHierarchyLockless(final AbstractHtml tag) {
+        final Set<AbstractHtml> applicableTags = extractParentTagsForDataWffIdRemoval(tag);
 
         final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
         childrenStack.push(applicableTags);
@@ -1779,12 +1634,11 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     /**
      * @param tag
-     * @return only the applicable parent tags for DataWffId removal. NB: all of
-     *         its children are also applicable for DataWffId removal.
+     * @return only the applicable parent tags for DataWffId removal. NB: all of its
+     *         children are also applicable for DataWffId removal.
      * @since 3.0.9
      */
-    private static Set<AbstractHtml> extractParentTagsForDataWffIdRemoval(
-            final AbstractHtml tag) {
+    private static Set<AbstractHtml> extractParentTagsForDataWffIdRemoval(final AbstractHtml tag) {
 
         final Set<AbstractHtml> applicableTags = new HashSet<>(2);
 
@@ -1829,8 +1683,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param sharedObject
      * @since 3.0.9
      */
-    private static void initSharedObject(final AbstractHtml child,
-            final AbstractHtml5SharedObject sharedObject) {
+    private static void initSharedObject(final AbstractHtml child, final AbstractHtml5SharedObject sharedObject) {
 
         final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
         // passed 2 instead of 1 because the load factor is 0.75f
@@ -1848,10 +1701,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 // no need to add data-wff-id if the tag is not rendered by
                 // BrowserPage (if it is rended by BrowserPage then
                 // getLastDataWffId will not be -1)
-                if (sharedObject.getLastDataWffId(ACCESS_OBJECT) != -1
-                        && eachChild.dataWffId == null
-                        && eachChild.tagName != null
-                        && !eachChild.tagName.isEmpty()) {
+                if (sharedObject.getLastDataWffId(ACCESS_OBJECT) != -1 && eachChild.dataWffId == null
+                        && eachChild.tagName != null && !eachChild.tagName.isEmpty()) {
 
                     eachChild.initDataWffId(sharedObject);
 
@@ -1868,12 +1719,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * adds the given children to the last position of the current children of
-     * this object.
+     * adds the given children to the last position of the current children of this
+     * object.
      *
-     * @param children
-     *                     children to append in this object's existing
-     *                     children.
+     * @param children children to append in this object's existing children.
      * @author WFF
      */
     public void appendChildren(final Collection<AbstractHtml> children) {
@@ -1884,17 +1733,14 @@ public abstract class AbstractHtml extends AbstractJsObject {
         try {
             lock.lock();
 
-            final Collection<ChildMovedEvent> movedOrAppended = new ArrayDeque<>(
-                    children.size());
+            final Collection<ChildMovedEvent> movedOrAppended = new ArrayDeque<>(children.size());
 
             for (final AbstractHtml child : children) {
                 final AbstractHtml previousParent = child.parent;
 
                 if (child.parent != null) {
-                    if (child.parent.sharedObject
-                            .getChildTagAppendListener(ACCESS_OBJECT) == null) {
-                        removeFromTagByWffIdMap(child, child.parent.sharedObject
-                                .getTagByWffId(ACCESS_OBJECT));
+                    if (child.parent.sharedObject.getChildTagAppendListener(ACCESS_OBJECT) == null) {
+                        removeFromTagByWffIdMap(child, child.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
                     } // else {TODO also write the code to push
                       // changes to the other BrowserPage}
                 } else {
@@ -1903,14 +1749,12 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                 addChild(child, false);
 
-                final ChildMovedEvent event = new ChildMovedEvent(
-                        previousParent, this, child);
+                final ChildMovedEvent event = new ChildMovedEvent(previousParent, this, child);
                 movedOrAppended.add(event);
 
             }
 
-            final ChildTagAppendListener listener = sharedObject
-                    .getChildTagAppendListener(ACCESS_OBJECT);
+            final ChildTagAppendListener listener = sharedObject.getChildTagAppendListener(ACCESS_OBJECT);
             if (listener != null) {
                 listener.childrendAppendedOrMoved(movedOrAppended);
                 listenerInvoked = true;
@@ -1919,8 +1763,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             lock.unlock();
         }
         if (listenerInvoked) {
-            final PushQueue pushQueue = sharedObject
-                    .getPushQueue(ACCESS_OBJECT);
+            final PushQueue pushQueue = sharedObject.getPushQueue(ACCESS_OBJECT);
             if (pushQueue != null) {
                 pushQueue.push();
             }
@@ -1928,12 +1771,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * adds the given children to the last position of the current children of
-     * this object.
+     * adds the given children to the last position of the current children of this
+     * object.
      *
-     * @param children
-     *                     children to append in this object's existing
-     *                     children.
+     * @param children children to append in this object's existing children.
      * @author WFF
      * @since 2.1.6
      */
@@ -1949,17 +1790,14 @@ public abstract class AbstractHtml extends AbstractJsObject {
         lock.lock();
         try {
 
-            final Collection<ChildMovedEvent> movedOrAppended = new ArrayDeque<>(
-                    children.length);
+            final Collection<ChildMovedEvent> movedOrAppended = new ArrayDeque<>(children.length);
 
             for (final AbstractHtml child : children) {
                 final AbstractHtml previousParent = child.parent;
 
                 if (previousParent != null) {
-                    if (child.parent.sharedObject
-                            .getChildTagAppendListener(ACCESS_OBJECT) == null) {
-                        removeFromTagByWffIdMap(child, child.parent.sharedObject
-                                .getTagByWffId(ACCESS_OBJECT));
+                    if (child.parent.sharedObject.getChildTagAppendListener(ACCESS_OBJECT) == null) {
+                        removeFromTagByWffIdMap(child, child.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
                     } // else {TODO also write the code to push
                       // changes to the other BrowserPage}
                 } else {
@@ -1968,14 +1806,12 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                 addChild(child, false);
 
-                final ChildMovedEvent event = new ChildMovedEvent(
-                        previousParent, this, child);
+                final ChildMovedEvent event = new ChildMovedEvent(previousParent, this, child);
                 movedOrAppended.add(event);
 
             }
 
-            final ChildTagAppendListener listener = sharedObject
-                    .getChildTagAppendListener(ACCESS_OBJECT);
+            final ChildTagAppendListener listener = sharedObject.getChildTagAppendListener(ACCESS_OBJECT);
             if (listener != null) {
                 listener.childrendAppendedOrMoved(movedOrAppended);
                 listenerInvoked = true;
@@ -1984,8 +1820,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             lock.unlock();
         }
         if (listenerInvoked) {
-            final PushQueue pushQueue = sharedObject
-                    .getPushQueue(ACCESS_OBJECT);
+            final PushQueue pushQueue = sharedObject.getPushQueue(ACCESS_OBJECT);
             if (pushQueue != null) {
                 pushQueue.push();
             }
@@ -1993,8 +1828,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * prepends the given children to the first position of the current children
-     * of this object. <br>
+     * prepends the given children to the first position of the current children of
+     * this object. <br>
      * Eg:-
      *
      * <pre>
@@ -2027,9 +1862,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * &lt;/div&gt;
      * </pre>
      *
-     * @param children
-     *                     children to prepend in this object's existing
-     *                     children.
+     * @param children children to prepend in this object's existing children.
      * @author WFF
      * @since 3.0.1
      */
@@ -2051,26 +1884,21 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 final AbstractHtml[] removedParentChildren = this.children
                         .toArray(new AbstractHtml[this.children.size()]);
 
-                results = firstChild.insertBefore(removedParentChildren,
-                        children);
+                results = firstChild.insertBefore(removedParentChildren, children);
 
             } else {
 
                 // NB: similar impl is done in appendChildren(AbstractHtml...
                 // children) so any improvements here will be applicable in
                 // there also
-                final Collection<ChildMovedEvent> movedOrAppended = new ArrayDeque<>(
-                        children.length);
+                final Collection<ChildMovedEvent> movedOrAppended = new ArrayDeque<>(children.length);
 
                 for (final AbstractHtml child : children) {
                     final AbstractHtml previousParent = child.parent;
 
                     if (child.parent != null) {
-                        if (child.parent.sharedObject.getChildTagAppendListener(
-                                ACCESS_OBJECT) == null) {
-                            removeFromTagByWffIdMap(child,
-                                    child.parent.sharedObject
-                                            .getTagByWffId(ACCESS_OBJECT));
+                        if (child.parent.sharedObject.getChildTagAppendListener(ACCESS_OBJECT) == null) {
+                            removeFromTagByWffIdMap(child, child.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
                         } // else {TODO also write the code to push
                           // changes to the other BrowserPage}
                     } else {
@@ -2079,14 +1907,12 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                     addChild(child, false);
 
-                    final ChildMovedEvent event = new ChildMovedEvent(
-                            previousParent, this, child);
+                    final ChildMovedEvent event = new ChildMovedEvent(previousParent, this, child);
                     movedOrAppended.add(event);
 
                 }
 
-                final ChildTagAppendListener listener = sharedObject
-                        .getChildTagAppendListener(ACCESS_OBJECT);
+                final ChildTagAppendListener listener = sharedObject.getChildTagAppendListener(ACCESS_OBJECT);
                 if (listener != null) {
                     listener.childrendAppendedOrMoved(movedOrAppended);
                     results[1] = true;
@@ -2098,8 +1924,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
         }
 
         if (results[1]) {
-            final PushQueue pushQueue = sharedObject
-                    .getPushQueue(ACCESS_OBJECT);
+            final PushQueue pushQueue = sharedObject.getPushQueue(ACCESS_OBJECT);
             if (pushQueue != null) {
                 pushQueue.push();
             }
@@ -2110,18 +1935,16 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * NB: lockless implementation of
      * {@code appendChildren(AbstractHtml... children)} <br>
-     * adds the given children to the last position of the current children of
-     * this object.
+     * adds the given children to the last position of the current children of this
+     * object.
      * <p>
-     * NB: Previously this method was consumed by insertAfter method but since
-     * 3.0.7 it has it own implementation like insertBefore method. This method
-     * can also be removed if not required.
+     * NB: Previously this method was consumed by insertAfter method but since 3.0.7
+     * it has it own implementation like insertBefore method. This method can also
+     * be removed if not required.
      *
-     * @param children
-     *                     children to append in this object's existing
-     *                     children.
-     * @return in zeroth index: true if inserted otherwise false. in first
-     *         index: true if listener invoked otherwise false.
+     * @param children children to append in this object's existing children.
+     * @return in zeroth index: true if inserted otherwise false. in first index:
+     *         true if listener invoked otherwise false.
      * @author WFF
      * @since 3.0.1
      */
@@ -2135,17 +1958,14 @@ public abstract class AbstractHtml extends AbstractJsObject {
         // inserted, listener invoked
         final boolean[] results = { false, false };
 
-        final Collection<ChildMovedEvent> movedOrAppended = new ArrayDeque<>(
-                children.length);
+        final Collection<ChildMovedEvent> movedOrAppended = new ArrayDeque<>(children.length);
 
         for (final AbstractHtml child : children) {
             final AbstractHtml previousParent = child.parent;
 
             if (child.parent != null) {
-                if (child.parent.sharedObject
-                        .getChildTagAppendListener(ACCESS_OBJECT) == null) {
-                    removeFromTagByWffIdMap(child, child.parent.sharedObject
-                            .getTagByWffId(ACCESS_OBJECT));
+                if (child.parent.sharedObject.getChildTagAppendListener(ACCESS_OBJECT) == null) {
+                    removeFromTagByWffIdMap(child, child.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
                 } // else {TODO also write the code to push
                   // changes to the other BrowserPage}
             } else {
@@ -2156,14 +1976,12 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 results[0] = true;
             }
 
-            final ChildMovedEvent event = new ChildMovedEvent(previousParent,
-                    this, child);
+            final ChildMovedEvent event = new ChildMovedEvent(previousParent, this, child);
             movedOrAppended.add(event);
 
         }
 
-        final ChildTagAppendListener listener = sharedObject
-                .getChildTagAppendListener(ACCESS_OBJECT);
+        final ChildTagAppendListener listener = sharedObject.getChildTagAppendListener(ACCESS_OBJECT);
         if (listener != null) {
             listener.childrendAppendedOrMoved(movedOrAppended);
             results[1] = true;
@@ -2198,15 +2016,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
         attributesMap = map;
 
-        this.attributes = map.values()
-                .toArray(new AbstractAttribute[map.size()]);
+        this.attributes = map.values().toArray(new AbstractAttribute[map.size()]);
     }
 
     /**
      * adds the given attributes to this tag.
      *
-     * @param attributes
-     *                       attributes to add
+     * @param attributes attributes to add
      * @author WFF
      * @since 2.0.0
      */
@@ -2217,18 +2033,15 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * adds the given attributes to this tag.
      *
-     * @param updateClient
-     *                         true to update client browser page if it is
-     *                         available. The default value is true but it will
-     *                         be ignored if there is no client browser page.
-     * @param attributes
-     *                         attributes to add
+     * @param updateClient true to update client browser page if it is available.
+     *                     The default value is true but it will be ignored if there
+     *                     is no client browser page.
+     * @param attributes   attributes to add
      * @author WFF
      * @since 2.0.0 initial implementation
      * @since 2.0.15 changed to public scope
      */
-    public void addAttributes(final boolean updateClient,
-            final AbstractAttribute... attributes) {
+    public void addAttributes(final boolean updateClient, final AbstractAttribute... attributes) {
 
         boolean listenerInvoked = false;
         final AbstractHtml5SharedObject sharedObject = this.sharedObject;
@@ -2241,8 +2054,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
         }
 
         if (listenerInvoked) {
-            final PushQueue pushQueue = sharedObject
-                    .getPushQueue(ACCESS_OBJECT);
+            final PushQueue pushQueue = sharedObject.getPushQueue(ACCESS_OBJECT);
             if (pushQueue != null) {
                 pushQueue.push();
             }
@@ -2253,19 +2065,16 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * adds the given attributes to this tag.
      *
-     * @param updateClient
-     *                         true to update client browser page if it is
-     *                         available. The default value is true but it will
-     *                         be ignored if there is no client browser page.
-     * @param attributes
-     *                         attributes to add
+     * @param updateClient true to update client browser page if it is available.
+     *                     The default value is true but it will be ignored if there
+     *                     is no client browser page.
+     * @param attributes   attributes to add
      * @return true if the listener invoked else false. DO NOT confuse it with
      *         whether attributes are added.
      * @author WFF
      * @since 3.0.1 initial implementation
      */
-    private boolean addAttributesLockless(final boolean updateClient,
-            final AbstractAttribute... attributes) {
+    private boolean addAttributesLockless(final boolean updateClient, final AbstractAttribute... attributes) {
 
         final AbstractHtml5SharedObject sharedObject = this.sharedObject;
         AbstractAttribute[] thisAttributes = this.attributes;
@@ -2291,15 +2100,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
         for (final AbstractAttribute attribute : attributes) {
             attribute.setOwnerTag(this);
-            final AbstractAttribute previous = attributesMap
-                    .put(attribute.getAttributeName(), attribute);
+            final AbstractAttribute previous = attributesMap.put(attribute.getAttributeName(), attribute);
             if (previous != null && !attribute.equals(previous)) {
                 previous.unsetOwnerTag(this);
             }
         }
 
-        thisAttributes = attributesMap.values()
-                .toArray(new AbstractAttribute[attributesMap.size()]);
+        thisAttributes = attributesMap.values().toArray(new AbstractAttribute[attributesMap.size()]);
         this.attributes = thisAttributes;
         setModified(true);
 
@@ -2307,8 +2114,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
         // invokeListener
         if (updateClient) {
-            final AttributeAddListener attributeAddListener = sharedObject
-                    .getAttributeAddListener(ACCESS_OBJECT);
+            final AttributeAddListener attributeAddListener = sharedObject.getAttributeAddListener(ACCESS_OBJECT);
             if (attributeAddListener != null) {
                 final AttributeAddListener.AddEvent event = new AttributeAddListener.AddEvent();
                 event.setAddedToTag(this);
@@ -2339,8 +2145,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
         try {
             attributesMap = this.attributesMap;
             if (attributesMap != null) {
-                final Collection<AbstractAttribute> result = Collections
-                        .unmodifiableCollection(attributesMap.values());
+                final Collection<AbstractAttribute> result = Collections.unmodifiableCollection(attributesMap.values());
                 return result;
             }
         } finally {
@@ -2352,8 +2157,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * gets the attribute by attribute name
      *
-     * @return the attribute object for the given attribute name if exists
-     *         otherwise returns null.
+     * @return the attribute object for the given attribute name if exists otherwise
+     *         returns null.
      * @author WFF
      * @since 2.0.0
      */
@@ -2381,8 +2186,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * removes the given attributes from this tag.
      *
-     * @param attributes
-     *                       attributes to remove
+     * @param attributes attributes to remove
      * @return true if any of the attributes are removed.
      * @author WFF
      * @since 2.0.0
@@ -2394,22 +2198,17 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * removes the given attributes from this tag.
      *
-     * @param invokeListener
-     *                           true to invoke listener
-     * @param attributes
-     *                           attributes to remove
+     * @param invokeListener true to invoke listener
+     * @param attributes     attributes to remove
      * @return true if any of the attributes are removed.
      * @author WFF
      * @since 2.0.0
      */
-    public boolean removeAttributes(final Object accessObject,
-            final boolean invokeListener,
+    public boolean removeAttributes(final Object accessObject, final boolean invokeListener,
             final AbstractAttribute... attributes) {
 
-        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE
-                .equals(accessObject.getClass().getName()))) {
-            throw new WffSecurityException(
-                    "Not allowed to consume this method. This method is for internal use.");
+        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
 
         }
         // lock is not required here. it is used in
@@ -2420,19 +2219,16 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * removes the given attributes from this tag.
      *
-     * @param updateClient
-     *                         true to update client browser page if it is
-     *                         available. The default value is true but it will
-     *                         be ignored if there is no client browser page.
-     * @param attributes
-     *                         attributes to remove
+     * @param updateClient true to update client browser page if it is available.
+     *                     The default value is true but it will be ignored if there
+     *                     is no client browser page.
+     * @param attributes   attributes to remove
      * @return true if any of the attributes are removed.
      * @author WFF
      * @since 2.0.0 initial implementation
      * @since 2.0.15 changed to public scope
      */
-    public boolean removeAttributes(final boolean updateClient,
-            final AbstractAttribute... attributes) {
+    public boolean removeAttributes(final boolean updateClient, final AbstractAttribute... attributes) {
 
         final AbstractHtml5SharedObject sharedObject = this.sharedObject;
         boolean listenerInvoked = false;
@@ -2447,8 +2243,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 return false;
             }
 
-            final List<AbstractAttribute> removedAttributes = new ArrayList<>(
-                    attributes.length);
+            final List<AbstractAttribute> removedAttributes = new ArrayList<>(attributes.length);
 
             for (final AbstractAttribute attribute : attributes) {
 
@@ -2462,15 +2257,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
             }
 
             if (removed) {
-                this.attributes = attributesMap.values()
-                        .toArray(new AbstractAttribute[attributesMap.size()]);
+                this.attributes = attributesMap.values().toArray(new AbstractAttribute[attributesMap.size()]);
                 setModified(true);
                 sharedObject.setChildModified(true);
 
                 // invokeListener
                 if (updateClient) {
-                    final AttributeRemoveListener listener = sharedObject
-                            .getAttributeRemoveListener(ACCESS_OBJECT);
+                    final AttributeRemoveListener listener = sharedObject.getAttributeRemoveListener(ACCESS_OBJECT);
                     if (listener != null) {
                         final AttributeRemoveListener.RemovedEvent event = new AttributeRemoveListener.RemovedEvent(
                                 this, removedAttributes);
@@ -2486,8 +2279,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
         }
 
         if (listenerInvoked) {
-            final PushQueue pushQueue = sharedObject
-                    .getPushQueue(ACCESS_OBJECT);
+            final PushQueue pushQueue = sharedObject.getPushQueue(ACCESS_OBJECT);
             if (pushQueue != null) {
                 pushQueue.push();
             }
@@ -2515,15 +2307,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
         if (thisDataWffId.unsetOwnerTag(this)) {
             final String attributeName = thisDataWffId.getAttributeName();
-            final AbstractAttribute prev = thisAttributesMap
-                    .remove(attributeName);
+            final AbstractAttribute prev = thisAttributesMap.remove(attributeName);
             removed = prev != null;
         }
 
         if (removed) {
 
-            attributes = thisAttributesMap.values()
-                    .toArray(new AbstractAttribute[thisAttributesMap.size()]);
+            attributes = thisAttributesMap.values().toArray(new AbstractAttribute[thisAttributesMap.size()]);
 
             setModified(true);
             sharedObject.setChildModified(true);
@@ -2538,9 +2328,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * removes the given attributes from this tag.
      *
-     * @param attributeNames
-     *                           to remove the attributes having in the given
-     *                           names.
+     * @param attributeNames to remove the attributes having in the given names.
      * @return true if any of the attributes are removed.
      * @author WFF
      * @since 2.0.0
@@ -2552,21 +2340,16 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * removes the given attributes from this tag.
      *
-     * @param invokeListener
-     *                           true to invoke listener
-     * @param attributeNames
-     *                           to remove the attributes having in the given
-     *                           names.
+     * @param invokeListener true to invoke listener
+     * @param attributeNames to remove the attributes having in the given names.
      * @return true if any of the attributes are removed.
      * @author WFF
      * @since 2.0.0
      */
-    public boolean removeAttributes(final Object accessObject,
-            final boolean invokeListener, final String... attributeNames) {
-        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE
-                .equals(accessObject.getClass().getName()))) {
-            throw new WffSecurityException(
-                    "Not allowed to consume this method. This method is for internal use.");
+    public boolean removeAttributes(final Object accessObject, final boolean invokeListener,
+            final String... attributeNames) {
+        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
 
         }
         // lock is not required here. it is used in
@@ -2577,21 +2360,16 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * removes the given attributes from this tag.
      *
-     * @param updateClient
-     *                           true to update client browser page if it is
-     *                           available. The default value is true but it
-     *                           will be ignored if there is no client browser
-     *                           page.
-     * @param attributeNames
-     *                           to remove the attributes having in the given
-     *                           names.
+     * @param updateClient   true to update client browser page if it is available.
+     *                       The default value is true but it will be ignored if
+     *                       there is no client browser page.
+     * @param attributeNames to remove the attributes having in the given names.
      * @return true if any of the attributes are removed.
      * @author WFF
      * @since 2.0.0 initial implementation
      * @since 2.0.15 changed to public scope
      */
-    public boolean removeAttributes(final boolean updateClient,
-            final String... attributeNames) {
+    public boolean removeAttributes(final boolean updateClient, final String... attributeNames) {
 
         boolean removed = false;
         boolean listenerInvoked = false;
@@ -2606,8 +2384,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
             for (final String attributeName : attributeNames) {
 
-                final AbstractAttribute attribute = attributesMap
-                        .get(attributeName);
+                final AbstractAttribute attribute = attributesMap.get(attributeName);
 
                 if (attribute != null) {
                     attribute.unsetOwnerTag(this);
@@ -2618,15 +2395,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
             }
 
             if (removed) {
-                attributes = attributesMap.values()
-                        .toArray(new AbstractAttribute[attributesMap.size()]);
+                attributes = attributesMap.values().toArray(new AbstractAttribute[attributesMap.size()]);
                 setModified(true);
                 sharedObject.setChildModified(true);
 
                 // invokeListener
                 if (updateClient) {
-                    final AttributeRemoveListener listener = sharedObject
-                            .getAttributeRemoveListener(ACCESS_OBJECT);
+                    final AttributeRemoveListener listener = sharedObject.getAttributeRemoveListener(ACCESS_OBJECT);
                     if (listener != null) {
                         final AttributeRemoveListener.RemovedEvent event = new AttributeRemoveListener.RemovedEvent(
                                 this, attributeNames);
@@ -2641,8 +2416,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
         }
 
         if (listenerInvoked) {
-            final PushQueue pushQueue = sharedObject
-                    .getPushQueue(ACCESS_OBJECT);
+            final PushQueue pushQueue = sharedObject.getPushQueue(ACCESS_OBJECT);
             if (pushQueue != null) {
                 pushQueue.push();
             }
@@ -2652,42 +2426,35 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * should be invoked to generate opening and closing tag base class
-     * containing the functionalities to generate html string.
+     * should be invoked to generate opening and closing tag base class containing
+     * the functionalities to generate html string.
      *
      * @param tagType
-     * @param tagName
-     *                    TODO
-     * @param base
-     *                    TODO
+     * @param tagName TODO
+     * @param base    TODO
      * @author WFF
      */
-    protected AbstractHtml(final TagType tagType, final String tagName,
-            final AbstractHtml base, final AbstractAttribute[] attributes) {
+    protected AbstractHtml(final TagType tagType, final String tagName, final AbstractHtml base,
+            final AbstractAttribute[] attributes) {
         this(tagType, tagName, null, base, attributes);
     }
 
     /**
-     * should be invoked to generate opening and closing tag base class
-     * containing the functionalities to generate html string.
+     * should be invoked to generate opening and closing tag base class containing
+     * the functionalities to generate html string.
      *
      * @param tagType
-     * @param tagName
-     *                              TODO
-     * @param tagNameIndexBytes
-     *                              There is an index value for the each tag
-     *                              name in tag registry then pass its
-     *                              indexBytes otherwise pass null. Never pass
-     *                              an arbitrary value if the tag name has no
-     *                              valid index value in TagRegistry.
-     * @param base
-     *                              TODO
+     * @param tagName           TODO
+     * @param tagNameIndexBytes There is an index value for the each tag name in tag
+     *                          registry then pass its indexBytes otherwise pass
+     *                          null. Never pass an arbitrary value if the tag name
+     *                          has no valid index value in TagRegistry.
+     * @param base              TODO
      * @author WFF
      * @since 3.0.3
      */
-    private AbstractHtml(final TagType tagType, final String tagName,
-            final byte[] tagNameIndexBytes, final AbstractHtml base,
-            final AbstractAttribute[] attributes) {
+    private AbstractHtml(final TagType tagType, final String tagName, final byte[] tagNameIndexBytes,
+            final AbstractHtml base, final AbstractAttribute[] attributes) {
 
         this.tagType = tagType;
         this.tagName = tagName;
@@ -2703,9 +2470,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             childLock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
         } else {
             parentLock = base.sharedObject.getLock(ACCESS_OBJECT).writeLock();
-            childLock = sharedObject != null
-                    ? sharedObject.getLock(ACCESS_OBJECT).writeLock()
-                    : null;
+            childLock = sharedObject != null ? sharedObject.getLock(ACCESS_OBJECT).writeLock() : null;
         }
 
         if (parentLock != null) {
@@ -2724,8 +2489,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
             buildOpeningTag(false);
 
-            closingTag = tagType == TagType.OPENING_CLOSING ? buildClosingTag()
-                    : "";
+            closingTag = tagType == TagType.OPENING_CLOSING ? buildClosingTag() : "";
 
             if (base != null) {
                 base.addChildLockless(this);
@@ -2750,22 +2514,18 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * should be invoked to generate opening and closing tag base class
-     * containing the functionalities to generate html string.
+     * should be invoked to generate opening and closing tag base class containing
+     * the functionalities to generate html string.
      *
      * @param tagType
-     * @param preIndexedTagName
-     *                              PreIndexedTagName constant
-     * @param base
-     *                              TODO
+     * @param preIndexedTagName PreIndexedTagName constant
+     * @param base              TODO
      * @author WFF
      * @since 3.0.3
      */
-    protected AbstractHtml(final TagType tagType,
-            final PreIndexedTagName preIndexedTagName, final AbstractHtml base,
+    protected AbstractHtml(final TagType tagType, final PreIndexedTagName preIndexedTagName, final AbstractHtml base,
             final AbstractAttribute[] attributes) {
-        this(tagType, preIndexedTagName.tagName(),
-                preIndexedTagName.internalIndexBytes(ACCESS_OBJECT), base,
+        this(tagType, preIndexedTagName.tagName(), preIndexedTagName.internalIndexBytes(ACCESS_OBJECT), base,
                 attributes);
     }
 
@@ -2792,12 +2552,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @since 1.0.0
      */
     private void initInConstructor() {
-        htmlStartSB = new StringBuilder(tagName == null ? 0
-                : tagName.length() + 2
-                        + ((attributes == null ? 0 : attributes.length) * 16));
+        htmlStartSB = new StringBuilder(
+                tagName == null ? 0 : tagName.length() + 2 + ((attributes == null ? 0 : attributes.length) * 16));
 
-        htmlEndSB = new StringBuilder(
-                tagName == null ? 16 : tagName.length() + 3);
+        htmlEndSB = new StringBuilder(tagName == null ? 16 : tagName.length() + 3);
     }
 
     public AbstractHtml getParent() {
@@ -2813,8 +2571,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     @Deprecated
     public void setParent(final AbstractHtml parent) {
-        throw new MethodNotImplementedException(
-                "This method is not implemented");
+        throw new MethodNotImplementedException("This method is not implemented");
         // this.parent = parent;
     }
 
@@ -2845,10 +2602,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     public Set<AbstractHtml> getChildren(final Object accessObject) {
 
-        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE
-                .equals(accessObject.getClass().getName()))) {
-            throw new WffSecurityException(
-                    "Not allowed to consume this method. This method is for internal use.");
+        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
         return children;
     }
@@ -2858,10 +2613,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * Unlike setter methods, it will not reuse the given set object but it will
      * copy all children from the given set object. <br>
      *
-     * @param children
-     *                     which will be set as the children tag after removing
-     *                     all current children. Empty set or null will remove
-     *                     all current children from this tag.
+     * @param children which will be set as the children tag after removing all
+     *                 current children. Empty set or null will remove all current
+     *                 children from this tag.
      * @author WFF
      * @since 2.1.12 proper implementation is available since 2.1.12
      */
@@ -2894,8 +2648,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * Gets the first child of this tag. The efficient way to get the first
-     * child.
+     * Gets the first child of this tag. The efficient way to get the first child.
      *
      * @return the first child of this tag or null if there is no child.
      * @author WFF
@@ -2975,8 +2728,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * Gets the number of children in this tag. An efficient way to find the
-     * size of children.
+     * Gets the number of children in this tag. An efficient way to find the size of
+     * children.
      *
      * @return the size of children.
      * @author WFF
@@ -2994,8 +2747,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * Gets the number of children in this tag. An efficient way to find the
-     * size of children.
+     * Gets the number of children in this tag. An efficient way to find the size of
+     * children.
      *
      * @return the size of children.
      * @author WFF
@@ -3006,13 +2759,11 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * Gets the child at the specified position. An efficient way to get the
-     * child at particular position. If you want to get the child at 0th(zeroth)
-     * index then use {@code AbstractHtml#getFirstChild()} method instead of
-     * this method.
+     * Gets the child at the specified position. An efficient way to get the child
+     * at particular position. If you want to get the child at 0th(zeroth) index
+     * then use {@code AbstractHtml#getFirstChild()} method instead of this method.
      *
-     * @param index
-     *                  from this index the tag will be returned
+     * @param index from this index the tag will be returned
      * @return the child at the specified index.
      * @author WFF
      * @since 3.0.1
@@ -3051,8 +2802,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * Gets the nth index of the given tag in this tag's children.
      *
      * @param child
-     * @return the index of this child in this tag's children. If the given tag
-     *         is not a child in this tag's children then -1 will be returned.
+     * @return the index of this child in this tag's children. If the given tag is
+     *         not a child in this tag's children then -1 will be returned.
      * @since 3.0.7
      */
     public int getIndexByChild(final AbstractHtml child) {
@@ -3086,19 +2837,16 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *
      * @param accessObject
      * @param child
-     * @return the index of this child in this tag's children. If the given tag
-     *         is not a child in this tag's children then -1 will be returned.
+     * @return the index of this child in this tag's children. If the given tag is
+     *         not a child in this tag's children then -1 will be returned.
      * @since 3.0.7
      */
-    public int getIndexByChild(final Object accessObject,
-            final AbstractHtml child) {
+    public int getIndexByChild(final Object accessObject, final AbstractHtml child) {
 
         // Lockless method to get child index
 
-        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE
-                .equals(accessObject.getClass().getName()))) {
-            throw new WffSecurityException(
-                    "Not allowed to consume this method. This method is for internal use.");
+        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
 
         // NB: this logic may be improved by declaring a childIndex variable in
@@ -3118,8 +2866,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * Checks whether a tag is contained in its direct children. An efficient
-     * way to check if the given tag is a direct child of this tag.
+     * Checks whether a tag is contained in its direct children. An efficient way to
+     * check if the given tag is a direct child of this tag.
      *
      * @param childTag
      * @return true if the given tag is a child of this tags.
@@ -3170,8 +2918,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * @return {@code String} equalent to the html string of the tag including
-     *         the child tags.
+     * @return {@code String} equalent to the html string of the tag including the
+     *         child tags.
      * @author WFF
      * @since 1.0.0
      */
@@ -3249,8 +2997,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @throws IOException
      * @since 1.0.0
      */
-    protected int writePrintStructureToOutputStream(final Charset charset,
-            final OutputStream os, final boolean rebuild) throws IOException {
+    protected int writePrintStructureToOutputStream(final Charset charset, final OutputStream os, final boolean rebuild)
+            throws IOException {
         return writePrintStructureToOutputStream(os, rebuild, charset, false);
     }
 
@@ -3258,14 +3006,12 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @param os
      * @param rebuild
      * @param charset
-     * @param flushOnWrite
-     *                         true to flush on each write to OutputStream
+     * @param flushOnWrite true to flush on each write to OutputStream
      * @return the total number of bytes written
      * @throws IOException
      * @since 3.0.2
      */
-    protected int writePrintStructureToOutputStream(final OutputStream os,
-            final boolean rebuild, final Charset charset,
+    protected int writePrintStructureToOutputStream(final OutputStream os, final boolean rebuild, final Charset charset,
             final boolean flushOnWrite) throws IOException {
 
         final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
@@ -3277,8 +3023,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             // passed 2 instead of 1 because the load factor is 0.75f
             final Set<AbstractHtml> localChildren = new LinkedHashSet<>(2);
             localChildren.add(this);
-            recurChildrenToOutputStream(totalWritten, charset, os,
-                    localChildren, rebuild, flushOnWrite);
+            recurChildrenToOutputStream(totalWritten, charset, os, localChildren, rebuild, flushOnWrite);
             return totalWritten[0];
         } finally {
             lock.unlock();
@@ -3293,8 +3038,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @author WFF
      * @since 2.0.0
      */
-    protected void writePrintStructureToWffBinaryMessageOutputStream(
-            final boolean rebuild) throws IOException {
+    protected void writePrintStructureToWffBinaryMessageOutputStream(final boolean rebuild) throws IOException {
 
         final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
         try {
@@ -3314,13 +3058,12 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * to form html string from the children
      *
      * @param children
-     * @param rebuild
-     *                     TODO
+     * @param rebuild  TODO
      * @author WFF
      * @since 1.0.0
      */
-    private static void recurChildren(final StringBuilder tagBuilder,
-            final Set<AbstractHtml> children, final boolean rebuild) {
+    private static void recurChildren(final StringBuilder tagBuilder, final Set<AbstractHtml> children,
+            final boolean rebuild) {
         if (children != null && children.size() > 0) {
             for (final AbstractHtml child : children) {
                 child.setRebuild(rebuild);
@@ -3354,8 +3097,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
         try {
             lock.lock();
 
-            final String printStructure = getPrintStructureWithoutRecursive(
-                    getSharedObject().isChildModified());
+            final String printStructure = getPrintStructureWithoutRecursive(getSharedObject().isChildModified());
 
             if (parent == null) {
                 sharedObject.setChildModified(false);
@@ -3375,9 +3117,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * {@code StackOverflowError}. <br>
      * NB:- this method has not been undergone all testing process.
      *
-     * @param rebuild
-     *                    true to rebuild the tag hierarchy or false to return
-     *                    from cache if available.
+     * @param rebuild true to rebuild the tag hierarchy or false to return from
+     *                cache if available.
      * @return the HTML string similar to toHtmlString method.
      * @author WFF
      * @since 2.1.12
@@ -3421,203 +3162,160 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     /**
      * Use this method to produce HTML from very heavy and complicated tag
-     * hierarchy. For normal and simple HTML hierarchy use
-     * {@code toOutputStream} method which is faster than this method. The
-     * advantage of {@code toBigOutputStream} over {@code toOutputStream} is it
-     * will never throw {@code StackOverflowError} and the memory consumed at
-     * the time of writing could be available for GC (depends on JVM GC rules).
-     * <br>
+     * hierarchy. For normal and simple HTML hierarchy use {@code toOutputStream}
+     * method which is faster than this method. The advantage of
+     * {@code toBigOutputStream} over {@code toOutputStream} is it will never throw
+     * {@code StackOverflowError} and the memory consumed at the time of writing
+     * could be available for GC (depends on JVM GC rules). <br>
      * NB:- this method has not been undergone all testing process.
      *
-     * @param os
-     *               the object of {@code OutputStream} to write to.
+     * @param os the object of {@code OutputStream} to write to.
      * @return the total number of bytes written
      * @throws IOException
      * @since 2.1.12
      */
     public int toBigOutputStream(final OutputStream os) throws IOException {
-        return writePrintStructureToOSWithoutRecursive(charset, os, true,
-                false);
+        return writePrintStructureToOSWithoutRecursive(charset, os, true, false);
     }
 
     /**
      * Use this method to produce HTML from very heavy and complicated tag
-     * hierarchy. For normal and simple HTML hierarchy use
-     * {@code toOutputStream} method which is faster than this method. The
-     * advantage of {@code toBigOutputStream} over {@code toOutputStream} is it
-     * will never throw {@code StackOverflowError} and the memory consumed at
-     * the time of writing could be available for GC (depends on JVM GC rules).
-     * <br>
+     * hierarchy. For normal and simple HTML hierarchy use {@code toOutputStream}
+     * method which is faster than this method. The advantage of
+     * {@code toBigOutputStream} over {@code toOutputStream} is it will never throw
+     * {@code StackOverflowError} and the memory consumed at the time of writing
+     * could be available for GC (depends on JVM GC rules). <br>
      * NB:- this method has not been undergone all testing process.
      *
-     * @param os
-     *                    the object of {@code OutputStream} to write to.
-     * @param charset
-     *                    the charset
+     * @param os      the object of {@code OutputStream} to write to.
+     * @param charset the charset
      * @return
      * @throws IOException
      * @since 2.1.12
      */
-    public int toBigOutputStream(final OutputStream os, final Charset charset)
-            throws IOException {
-        return writePrintStructureToOSWithoutRecursive(charset, os, true,
-                false);
+    public int toBigOutputStream(final OutputStream os, final Charset charset) throws IOException {
+        return writePrintStructureToOSWithoutRecursive(charset, os, true, false);
     }
 
     /**
      * Use this method to produce HTML from very heavy and complicated tag
-     * hierarchy. For normal and simple HTML hierarchy use
-     * {@code toOutputStream} method which is faster than this method. The
-     * advantage of {@code toBigOutputStream} over {@code toOutputStream} is it
-     * will never throw {@code StackOverflowError} and the memory consumed at
-     * the time of writing could be available for GC (depends on JVM GC rules).
-     * <br>
+     * hierarchy. For normal and simple HTML hierarchy use {@code toOutputStream}
+     * method which is faster than this method. The advantage of
+     * {@code toBigOutputStream} over {@code toOutputStream} is it will never throw
+     * {@code StackOverflowError} and the memory consumed at the time of writing
+     * could be available for GC (depends on JVM GC rules). <br>
      * NB:- this method has not been undergone all testing process.
      *
-     * @param os
-     *                    the object of {@code OutputStream} to write to.
-     * @param charset
-     *                    the charset
+     * @param os      the object of {@code OutputStream} to write to.
+     * @param charset the charset
      * @return the total number of bytes written
      * @throws IOException
      * @since 2.1.12
      */
-    public int toBigOutputStream(final OutputStream os, final String charset)
-            throws IOException {
+    public int toBigOutputStream(final OutputStream os, final String charset) throws IOException {
 
         if (charset != null) {
-            return writePrintStructureToOSWithoutRecursive(
-                    Charset.forName(charset), os, true, false);
+            return writePrintStructureToOSWithoutRecursive(Charset.forName(charset), os, true, false);
         }
-        return writePrintStructureToOSWithoutRecursive(this.charset, os, true,
-                false);
+        return writePrintStructureToOSWithoutRecursive(this.charset, os, true, false);
     }
 
     /**
      * Use this method to produce HTML from very heavy and complicated tag
-     * hierarchy. For normal and simple HTML hierarchy use
-     * {@code toOutputStream} method which is faster than this method. The
-     * advantage of {@code toBigOutputStream} over {@code toOutputStream} is it
-     * will never throw {@code StackOverflowError} and the memory consumed at
-     * the time of writing could be available for GC (depends on JVM GC rules).
-     * <br>
+     * hierarchy. For normal and simple HTML hierarchy use {@code toOutputStream}
+     * method which is faster than this method. The advantage of
+     * {@code toBigOutputStream} over {@code toOutputStream} is it will never throw
+     * {@code StackOverflowError} and the memory consumed at the time of writing
+     * could be available for GC (depends on JVM GC rules). <br>
      * NB:- this method has not been undergone all testing process.
      *
-     * @param os
-     *                    the object of {@code OutputStream} to write to.
-     * @param rebuild
-     *                    true to rebuild &amp; false to write previously built
-     *                    bytes.
+     * @param os      the object of {@code OutputStream} to write to.
+     * @param rebuild true to rebuild &amp; false to write previously built bytes.
      * @return the total number of bytes written
      * @throws IOException
      * @since 2.1.12
      */
-    public int toBigOutputStream(final OutputStream os, final boolean rebuild)
+    public int toBigOutputStream(final OutputStream os, final boolean rebuild) throws IOException {
+        return writePrintStructureToOSWithoutRecursive(charset, os, rebuild, false);
+    }
+
+    /**
+     * Use this method to produce HTML from very heavy and complicated tag
+     * hierarchy. For normal and simple HTML hierarchy use {@code toOutputStream}
+     * method which is faster than this method. The advantage of
+     * {@code toBigOutputStream} over {@code toOutputStream} is it will never throw
+     * {@code StackOverflowError} and the memory consumed at the time of writing
+     * could be available for GC (depends on JVM GC rules). <br>
+     * NB:- this method has not been undergone all testing process.
+     *
+     * @param os      the object of {@code OutputStream} to write to.
+     * @param rebuild true to rebuild &amp; false to write previously built bytes.
+     * @param charset the charset
+     * @return the total number of bytes written
+     * @throws IOException
+     * @since 2.1.12
+     */
+    public int toBigOutputStream(final OutputStream os, final boolean rebuild, final Charset charset)
             throws IOException {
-        return writePrintStructureToOSWithoutRecursive(charset, os, rebuild,
-                false);
-    }
-
-    /**
-     * Use this method to produce HTML from very heavy and complicated tag
-     * hierarchy. For normal and simple HTML hierarchy use
-     * {@code toOutputStream} method which is faster than this method. The
-     * advantage of {@code toBigOutputStream} over {@code toOutputStream} is it
-     * will never throw {@code StackOverflowError} and the memory consumed at
-     * the time of writing could be available for GC (depends on JVM GC rules).
-     * <br>
-     * NB:- this method has not been undergone all testing process.
-     *
-     * @param os
-     *                    the object of {@code OutputStream} to write to.
-     * @param rebuild
-     *                    true to rebuild &amp; false to write previously built
-     *                    bytes.
-     * @param charset
-     *                    the charset
-     * @return the total number of bytes written
-     * @throws IOException
-     * @since 2.1.12
-     */
-    public int toBigOutputStream(final OutputStream os, final boolean rebuild,
-            final Charset charset) throws IOException {
         if (charset == null) {
-            return writePrintStructureToOSWithoutRecursive(this.charset, os,
-                    rebuild, false);
+            return writePrintStructureToOSWithoutRecursive(this.charset, os, rebuild, false);
         }
-        return writePrintStructureToOSWithoutRecursive(charset, os, rebuild,
-                false);
+        return writePrintStructureToOSWithoutRecursive(charset, os, rebuild, false);
     }
 
     /**
      * Use this method to produce HTML from very heavy and complicated tag
-     * hierarchy. For normal and simple HTML hierarchy use
-     * {@code toOutputStream} method which is faster than this method. The
-     * advantage of {@code toBigOutputStream} over {@code toOutputStream} is it
-     * will never throw {@code StackOverflowError} and the memory consumed at
-     * the time of writing could be available for GC (depends on JVM GC rules).
-     * <br>
+     * hierarchy. For normal and simple HTML hierarchy use {@code toOutputStream}
+     * method which is faster than this method. The advantage of
+     * {@code toBigOutputStream} over {@code toOutputStream} is it will never throw
+     * {@code StackOverflowError} and the memory consumed at the time of writing
+     * could be available for GC (depends on JVM GC rules). <br>
      * NB:- this method has not been undergone all testing process.
      *
-     * @param os
-     *                         the object of {@code OutputStream} to write to.
-     * @param rebuild
-     *                         true to rebuild &amp; false to write previously
-     *                         built bytes.
-     * @param charset
-     *                         the charset
-     * @param flushOnWrite
-     *                         true to flush on each write to OutputStream
+     * @param os           the object of {@code OutputStream} to write to.
+     * @param rebuild      true to rebuild &amp; false to write previously built
+     *                     bytes.
+     * @param charset      the charset
+     * @param flushOnWrite true to flush on each write to OutputStream
      * @return the total number of bytes written
      * @throws IOException
      * @since 3.0.15
      */
-    public int toBigOutputStream(final OutputStream os, final boolean rebuild,
-            final Charset charset, final boolean flushOnWrite)
-            throws IOException {
+    public int toBigOutputStream(final OutputStream os, final boolean rebuild, final Charset charset,
+            final boolean flushOnWrite) throws IOException {
         if (charset == null) {
-            return writePrintStructureToOSWithoutRecursive(this.charset, os,
-                    rebuild, flushOnWrite);
+            return writePrintStructureToOSWithoutRecursive(this.charset, os, rebuild, flushOnWrite);
         }
-        return writePrintStructureToOSWithoutRecursive(charset, os, rebuild,
-                flushOnWrite);
+        return writePrintStructureToOSWithoutRecursive(charset, os, rebuild, flushOnWrite);
     }
 
     /**
      * Use this method to produce HTML from very heavy and complicated tag
-     * hierarchy. For normal and simple HTML hierarchy use
-     * {@code toOutputStream} method which is faster than this method. The
-     * advantage of {@code toBigOutputStream} over {@code toOutputStream} is it
-     * will never throw {@code StackOverflowError} and the memory consumed at
-     * the time of writing could be available for GC (depends on JVM GC rules).
-     * <br>
+     * hierarchy. For normal and simple HTML hierarchy use {@code toOutputStream}
+     * method which is faster than this method. The advantage of
+     * {@code toBigOutputStream} over {@code toOutputStream} is it will never throw
+     * {@code StackOverflowError} and the memory consumed at the time of writing
+     * could be available for GC (depends on JVM GC rules). <br>
      * NB:- this method has not been undergone all testing process.
      *
-     * @param os
-     *                    the object of {@code OutputStream} to write to.
-     * @param rebuild
-     *                    true to rebuild &amp; false to write previously built
-     *                    bytes.
-     * @param charset
-     *                    the charset
+     * @param os      the object of {@code OutputStream} to write to.
+     * @param rebuild true to rebuild &amp; false to write previously built bytes.
+     * @param charset the charset
      * @return the total number of bytes written
      * @throws IOException
      * @since 2.1.12
      */
-    public int toBigOutputStream(final OutputStream os, final boolean rebuild,
-            final String charset) throws IOException {
+    public int toBigOutputStream(final OutputStream os, final boolean rebuild, final String charset)
+            throws IOException {
 
         if (charset == null) {
-            return writePrintStructureToOSWithoutRecursive(this.charset, os,
-                    rebuild, false);
+            return writePrintStructureToOSWithoutRecursive(this.charset, os, rebuild, false);
         }
-        return writePrintStructureToOSWithoutRecursive(Charset.forName(charset),
-                os, rebuild, false);
+        return writePrintStructureToOSWithoutRecursive(Charset.forName(charset), os, rebuild, false);
     }
 
-    private int writePrintStructureToOSWithoutRecursive(final Charset charset,
-            final OutputStream os, final boolean rebuild,
-            final boolean flushOnWrite) throws IOException {
+    private int writePrintStructureToOSWithoutRecursive(final Charset charset, final OutputStream os,
+            final boolean rebuild, final boolean flushOnWrite) throws IOException {
 
         final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
         try {
@@ -3625,8 +3323,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
             beforeWritePrintStructureToOutputStream();
             final int[] totalWritten = { 0 };
-            writePrintStructureToOSWithoutRecursive(totalWritten, charset, os,
-                    this, rebuild, flushOnWrite);
+            writePrintStructureToOSWithoutRecursive(totalWritten, charset, os, this, rebuild, flushOnWrite);
             return totalWritten[0];
 
         } finally {
@@ -3634,8 +3331,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
         }
     }
 
-    private static void appendPrintStructureWithoutRecursive(
-            final StringBuilder builder, final AbstractHtml topBase,
+    private static void appendPrintStructureWithoutRecursive(final StringBuilder builder, final AbstractHtml topBase,
             final boolean rebuild) {
 
         AbstractHtml current = topBase;
@@ -3645,8 +3341,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             final AbstractHtml child = current;
             current = null;
 
-            final AbstractHtml bottomChild = appendOpeningTagAndReturnBottomTag(
-                    builder, child, rebuild);
+            final AbstractHtml bottomChild = appendOpeningTagAndReturnBottomTag(builder, child, rebuild);
 
             builder.append(bottomChild.closingTag);
 
@@ -3654,15 +3349,12 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 break;
             }
 
-            final List<AbstractHtml> childrenHoldingBottomChild = new ArrayList<>(
-                    bottomChild.parent.children);
+            final List<AbstractHtml> childrenHoldingBottomChild = new ArrayList<>(bottomChild.parent.children);
 
-            final int indexOfNextToBottomChild = childrenHoldingBottomChild
-                    .indexOf(bottomChild) + 1;
+            final int indexOfNextToBottomChild = childrenHoldingBottomChild.indexOf(bottomChild) + 1;
 
             if (indexOfNextToBottomChild < childrenHoldingBottomChild.size()) {
-                final AbstractHtml nextToBottomChild = childrenHoldingBottomChild
-                        .get(indexOfNextToBottomChild);
+                final AbstractHtml nextToBottomChild = childrenHoldingBottomChild.get(indexOfNextToBottomChild);
                 current = nextToBottomChild;
             } else {
 
@@ -3671,11 +3363,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
                     break;
                 }
 
-                final List<AbstractHtml> childrenHoldingParent = new ArrayList<>(
-                        bottomChild.parent.parent.children);
+                final List<AbstractHtml> childrenHoldingParent = new ArrayList<>(bottomChild.parent.parent.children);
 
-                final int indexOfNextToBottomParent = childrenHoldingParent
-                        .indexOf(bottomChild.parent) + 1;
+                final int indexOfNextToBottomParent = childrenHoldingParent.indexOf(bottomChild.parent) + 1;
 
                 if (indexOfNextToBottomParent < childrenHoldingParent.size()) {
                     builder.append(bottomChild.parent.closingTag);
@@ -3684,12 +3374,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         break;
                     }
 
-                    final AbstractHtml nextToParent = childrenHoldingParent
-                            .get(indexOfNextToBottomParent);
+                    final AbstractHtml nextToParent = childrenHoldingParent.get(indexOfNextToBottomParent);
                     current = nextToParent;
                 } else {
-                    current = appendClosingTagUptoRootReturnFirstMiddleChild(
-                            builder, topBase, bottomChild);
+                    current = appendClosingTagUptoRootReturnFirstMiddleChild(builder, topBase, bottomChild);
                 }
 
             }
@@ -3709,10 +3397,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @author WFF
      * @since 2.1.12
      */
-    private static void writePrintStructureToOSWithoutRecursive(
-            final int[] totalWritten, final Charset charset,
-            final OutputStream os, final AbstractHtml topBase,
-            final boolean rebuild, final boolean flushOnWrite)
+    private static void writePrintStructureToOSWithoutRecursive(final int[] totalWritten, final Charset charset,
+            final OutputStream os, final AbstractHtml topBase, final boolean rebuild, final boolean flushOnWrite)
             throws IOException {
 
         AbstractHtml current = topBase;
@@ -3722,12 +3408,11 @@ public abstract class AbstractHtml extends AbstractJsObject {
             final AbstractHtml child = current;
             current = null;
 
-            final AbstractHtml bottomChild = writeOpeningTagAndReturnBottomTag(
-                    totalWritten, charset, os, child, rebuild);
+            final AbstractHtml bottomChild = writeOpeningTagAndReturnBottomTag(totalWritten, charset, os, child,
+                    rebuild);
 
             {
-                final byte[] closingTagBytes = bottomChild.closingTag
-                        .getBytes(charset);
+                final byte[] closingTagBytes = bottomChild.closingTag.getBytes(charset);
                 os.write(closingTagBytes);
                 if (flushOnWrite) {
                     os.flush();
@@ -3739,23 +3424,19 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 }
             }
 
-            final List<AbstractHtml> childrenHoldingBottomChild = new ArrayList<>(
-                    bottomChild.parent.children);
+            final List<AbstractHtml> childrenHoldingBottomChild = new ArrayList<>(bottomChild.parent.children);
 
-            final int indexOfNextToBottomChild = childrenHoldingBottomChild
-                    .indexOf(bottomChild) + 1;
+            final int indexOfNextToBottomChild = childrenHoldingBottomChild.indexOf(bottomChild) + 1;
 
             if (indexOfNextToBottomChild < childrenHoldingBottomChild.size()) {
-                final AbstractHtml nextToBottomChild = childrenHoldingBottomChild
-                        .get(indexOfNextToBottomChild);
+                final AbstractHtml nextToBottomChild = childrenHoldingBottomChild.get(indexOfNextToBottomChild);
                 current = nextToBottomChild;
             } else {
 
                 {
                     if (bottomChild.parent.parent == null) {
 
-                        final byte[] closingTagBytes = bottomChild.parent.closingTag
-                                .getBytes(charset);
+                        final byte[] closingTagBytes = bottomChild.parent.closingTag.getBytes(charset);
                         os.write(closingTagBytes);
                         if (flushOnWrite) {
                             os.flush();
@@ -3766,16 +3447,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
                     }
                 }
 
-                final List<AbstractHtml> childrenHoldingParent = new ArrayList<>(
-                        bottomChild.parent.parent.children);
+                final List<AbstractHtml> childrenHoldingParent = new ArrayList<>(bottomChild.parent.parent.children);
 
-                final int indexOfNextToBottomParent = childrenHoldingParent
-                        .indexOf(bottomChild.parent) + 1;
+                final int indexOfNextToBottomParent = childrenHoldingParent.indexOf(bottomChild.parent) + 1;
 
                 if (indexOfNextToBottomParent < childrenHoldingParent.size()) {
 
-                    final byte[] closingTagBytes = bottomChild.parent.closingTag
-                            .getBytes(charset);
+                    final byte[] closingTagBytes = bottomChild.parent.closingTag.getBytes(charset);
                     os.write(closingTagBytes);
                     if (flushOnWrite) {
                         os.flush();
@@ -3787,13 +3465,11 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         break;
                     }
 
-                    final AbstractHtml nextToParent = childrenHoldingParent
-                            .get(indexOfNextToBottomParent);
+                    final AbstractHtml nextToParent = childrenHoldingParent.get(indexOfNextToBottomParent);
                     current = nextToParent;
                 } else {
-                    current = writeClosingTagUptoRootReturnFirstMiddleChild(
-                            totalWritten, charset, os, topBase, bottomChild,
-                            flushOnWrite);
+                    current = writeClosingTagUptoRootReturnFirstMiddleChild(totalWritten, charset, os, topBase,
+                            bottomChild, flushOnWrite);
                 }
 
             }
@@ -3802,8 +3478,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     }
 
-    private static AbstractHtml appendOpeningTagAndReturnBottomTag(
-            final StringBuilder builder, final AbstractHtml base,
+    private static AbstractHtml appendOpeningTagAndReturnBottomTag(final StringBuilder builder, final AbstractHtml base,
             final boolean rebuild) {
 
         AbstractHtml bottomChild = base;
@@ -3835,10 +3510,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
         return bottomChild;
     }
 
-    private static AbstractHtml writeOpeningTagAndReturnBottomTag(
-            final int[] totalWritten, final Charset charset,
-            final OutputStream os, final AbstractHtml base,
-            final boolean rebuild) throws IOException {
+    private static AbstractHtml writeOpeningTagAndReturnBottomTag(final int[] totalWritten, final Charset charset,
+            final OutputStream os, final AbstractHtml base, final boolean rebuild) throws IOException {
 
         AbstractHtml bottomChild = base;
 
@@ -3858,8 +3531,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                 child.setRebuild(rebuild);
 
-                final byte[] openingTagBytes = child.getOpeningTag()
-                        .getBytes(charset);
+                final byte[] openingTagBytes = child.getOpeningTag().getBytes(charset);
                 os.write(openingTagBytes);
                 totalWritten[0] += openingTagBytes.length;
 
@@ -3876,9 +3548,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
         return bottomChild;
     }
 
-    private static AbstractHtml appendClosingTagUptoRootReturnFirstMiddleChild(
-            final StringBuilder builder, final AbstractHtml topBase,
-            final AbstractHtml bottomChild) {
+    private static AbstractHtml appendClosingTagUptoRootReturnFirstMiddleChild(final StringBuilder builder,
+            final AbstractHtml topBase, final AbstractHtml bottomChild) {
 
         AbstractHtml current = bottomChild;
 
@@ -3889,10 +3560,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
             if (child.parent != null) {
 
-                final List<AbstractHtml> childrenHoldingChild = new ArrayList<>(
-                        child.parent.children);
-                final int nextIndexOfChild = childrenHoldingChild.indexOf(child)
-                        + 1;
+                final List<AbstractHtml> childrenHoldingChild = new ArrayList<>(child.parent.children);
+                final int nextIndexOfChild = childrenHoldingChild.indexOf(child) + 1;
                 if (nextIndexOfChild < childrenHoldingChild.size()) {
                     return childrenHoldingChild.get(nextIndexOfChild);
                 } else {
@@ -3908,11 +3577,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
         return null;
     }
 
-    private static AbstractHtml writeClosingTagUptoRootReturnFirstMiddleChild(
-            final int[] totalWritten, final Charset charset,
-            final OutputStream os, final AbstractHtml topBase,
-            final AbstractHtml bottomChild, final boolean flushOnWrite)
-            throws IOException {
+    private static AbstractHtml writeClosingTagUptoRootReturnFirstMiddleChild(final int[] totalWritten,
+            final Charset charset, final OutputStream os, final AbstractHtml topBase, final AbstractHtml bottomChild,
+            final boolean flushOnWrite) throws IOException {
 
         AbstractHtml current = bottomChild;
 
@@ -3922,16 +3589,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
             current = null;
 
             if (child.parent != null) {
-                final List<AbstractHtml> childrenHoldingChild = new ArrayList<>(
-                        child.parent.children);
+                final List<AbstractHtml> childrenHoldingChild = new ArrayList<>(child.parent.children);
 
-                final int nextIndexOfChild = childrenHoldingChild.indexOf(child)
-                        + 1;
+                final int nextIndexOfChild = childrenHoldingChild.indexOf(child) + 1;
                 if (nextIndexOfChild < childrenHoldingChild.size()) {
                     return childrenHoldingChild.get(nextIndexOfChild);
                 } else {
-                    final byte[] closingTagBytes = child.parent.closingTag
-                            .getBytes(charset);
+                    final byte[] closingTagBytes = child.parent.closingTag.getBytes(charset);
                     os.write(closingTagBytes);
                     if (flushOnWrite) {
                         os.flush();
@@ -3954,25 +3618,21 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * to form html string from the children
      *
      * @param children
-     * @param rebuild
-     *                         TODO
-     * @param flushOnWrite
-     *                         true to flush on each write to OutputStream
+     * @param rebuild      TODO
+     * @param flushOnWrite true to flush on each write to OutputStream
      * @throws IOException
      * @author WFF
      * @since 1.0.0
      */
-    private static void recurChildrenToOutputStream(final int[] totalWritten,
-            final Charset charset, final OutputStream os,
-            final Set<AbstractHtml> children, final boolean rebuild,
-            final boolean flushOnWrite) throws IOException {
+    private static void recurChildrenToOutputStream(final int[] totalWritten, final Charset charset,
+            final OutputStream os, final Set<AbstractHtml> children, final boolean rebuild, final boolean flushOnWrite)
+            throws IOException {
 
         if (children != null && children.size() > 0) {
             for (final AbstractHtml child : children) {
                 child.setRebuild(rebuild);
 
-                byte[] openingTagBytes = child.getOpeningTag()
-                        .getBytes(charset);
+                byte[] openingTagBytes = child.getOpeningTag().getBytes(charset);
                 os.write(openingTagBytes);
                 if (flushOnWrite) {
                     os.flush();
@@ -3985,8 +3645,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 // final Set<AbstractHtml> childrenOfChildren = child.children;
                 // declaring a separate local variable childrenOfChildren will
                 // consume stack space so directly passed it as argument
-                recurChildrenToOutputStream(totalWritten, charset, os,
-                        child.children, rebuild, flushOnWrite);
+                recurChildrenToOutputStream(totalWritten, charset, os, child.children, rebuild, flushOnWrite);
 
                 byte[] closingTagBytes = child.closingTag.getBytes(charset);
                 os.write(closingTagBytes);
@@ -4007,14 +3666,12 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * to form html string from the children
      *
      * @param children
-     * @param rebuild
-     *                     TODO
+     * @param rebuild  TODO
      * @throws IOException
      * @author WFF
      * @since 2.0.0
      */
-    private void recurChildrenToWffBinaryMessageOutputStream(
-            final Set<AbstractHtml> children, final boolean rebuild)
+    private void recurChildrenToWffBinaryMessageOutputStream(final Set<AbstractHtml> children, final boolean rebuild)
             throws IOException {
         if (children != null && children.size() > 0) {
             for (final AbstractHtml child : children) {
@@ -4025,8 +3682,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                 NameValue nameValue = new NameValue();
 
-                final int tagNameIndex = TagRegistry.getTagNames()
-                        .indexOf(child.tagName);
+                final int tagNameIndex = TagRegistry.getTagNames().indexOf(child.tagName);
 
                 // if the tag index is -1 i.e. it's not indexed then the tag
                 // name prepended with 0 value byte should be set.
@@ -4043,8 +3699,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                     nameBytes[0] = 0;
 
-                    System.arraycopy(tagNameBytes, 0, nameBytes, 1,
-                            tagNameBytes.length);
+                    System.arraycopy(tagNameBytes, 0, nameBytes, 1, tagNameBytes.length);
                     nameValue.setName(nameBytes);
                     closingTagNameConvertedBytes = nameBytes;
                     // explicitly dereferenced right after use
@@ -4056,15 +3711,11 @@ public abstract class AbstractHtml extends AbstractJsObject {
                     // .getOptimizedBytesFromInt(tagNameIndex);
                     // directly passed it as argument to
                     // avoid consuming stack space
-                    nameValue.setName(WffBinaryMessageUtil
-                            .getOptimizedBytesFromInt(tagNameIndex));
-                    closingTagNameConvertedBytes = WffBinaryMessageUtil
-                            .getOptimizedBytesFromInt((tagNameIndex * (-1)));
+                    nameValue.setName(WffBinaryMessageUtil.getOptimizedBytesFromInt(tagNameIndex));
+                    closingTagNameConvertedBytes = WffBinaryMessageUtil.getOptimizedBytesFromInt((tagNameIndex * (-1)));
                 }
 
-                nameValue.setValues(
-                        child.getAttributeHtmlBytesCompressedByIndex(rebuild,
-                                charset));
+                nameValue.setValues(child.getAttributeHtmlBytesCompressedByIndex(rebuild, charset));
 
                 wffBinaryMessageOutputStreamer.write(nameValue);
                 // explicitly dereferenced right after use
@@ -4074,8 +3725,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 // final Set<AbstractHtml> childrenOfChildren = child.children;
                 // declaring a separate local variable childrenOfChildren will
                 // consume stack space so directly passed it as argument
-                recurChildrenToWffBinaryMessageOutputStream(child.children,
-                        rebuild);
+                recurChildrenToWffBinaryMessageOutputStream(child.children, rebuild);
 
                 NameValue closingTagNameValue = new NameValue();
                 closingTagNameValue.setName(closingTagNameConvertedBytes);
@@ -4107,8 +3757,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
         try {
             lock.lock();
 
-            final String printStructure = getPrintStructure(
-                    getSharedObject().isChildModified());
+            final String printStructure = getPrintStructure(getSharedObject().isChildModified());
 
             if (parent == null) {
                 sharedObject.setChildModified(false);
@@ -4229,15 +3878,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
     // TODO for future implementation
 
     /**
-     * @param os
-     *               the object of {@code OutputStream} to write to.
+     * @param os the object of {@code OutputStream} to write to.
      * @throws IOException
      * @deprecated this method is for future implementation so it should not be
      *             consumed
      */
     @Deprecated
-    void toOutputStream(final boolean asWffBinaryMessage, final OutputStream os)
-            throws IOException {
+    void toOutputStream(final boolean asWffBinaryMessage, final OutputStream os) throws IOException {
 
         final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
         try {
@@ -4245,8 +3892,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
             if (asWffBinaryMessage) {
                 try {
-                    wffBinaryMessageOutputStreamer = new WffBinaryMessageOutputStreamer(
-                            os);
+                    wffBinaryMessageOutputStreamer = new WffBinaryMessageOutputStreamer(os);
                     writePrintStructureToWffBinaryMessageOutputStream(true);
                 } finally {
                     wffBinaryMessageOutputStreamer = null;
@@ -4261,8 +3907,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * @param os
-     *               the object of {@code OutputStream} to write to.
+     * @param os the object of {@code OutputStream} to write to.
      * @return the total number of bytes written
      * @throws IOException
      */
@@ -4271,148 +3916,111 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * @param os
-     *                    the object of {@code OutputStream} to write to.
-     * @param charset
-     *                    the charset
+     * @param os      the object of {@code OutputStream} to write to.
+     * @param charset the charset
      * @return
      * @throws IOException
      */
-    public int toOutputStream(final OutputStream os, final Charset charset)
-            throws IOException {
+    public int toOutputStream(final OutputStream os, final Charset charset) throws IOException {
         return writePrintStructureToOutputStream(charset, os, true);
     }
 
     /**
-     * @param os
-     *                         the object of {@code OutputStream} to write to.
-     * @param charset
-     *                         the charset
-     * @param flushOnWrite
-     *                         true to flush on each write to OutputStream
+     * @param os           the object of {@code OutputStream} to write to.
+     * @param charset      the charset
+     * @param flushOnWrite true to flush on each write to OutputStream
      * @return
      * @throws IOException
      * @since 3.0.2
      */
-    public int toOutputStream(final OutputStream os, final Charset charset,
-            final boolean flushOnWrite) throws IOException {
-        return writePrintStructureToOutputStream(os, true, charset,
-                flushOnWrite);
+    public int toOutputStream(final OutputStream os, final Charset charset, final boolean flushOnWrite)
+            throws IOException {
+        return writePrintStructureToOutputStream(os, true, charset, flushOnWrite);
     }
 
     /**
-     * @param os
-     *                    the object of {@code OutputStream} to write to.
-     * @param charset
-     *                    the charset
+     * @param os      the object of {@code OutputStream} to write to.
+     * @param charset the charset
      * @return the total number of bytes written
      * @throws IOException
      */
-    public int toOutputStream(final OutputStream os, final String charset)
-            throws IOException {
+    public int toOutputStream(final OutputStream os, final String charset) throws IOException {
 
         if (charset != null) {
-            return writePrintStructureToOutputStream(Charset.forName(charset),
-                    os, true);
+            return writePrintStructureToOutputStream(Charset.forName(charset), os, true);
         }
         return writePrintStructureToOutputStream(this.charset, os, true);
     }
 
     /**
-     * @param os
-     *                    the object of {@code OutputStream} to write to.
-     * @param rebuild
-     *                    true to rebuild &amp; false to write previously built
-     *                    bytes.
+     * @param os      the object of {@code OutputStream} to write to.
+     * @param rebuild true to rebuild &amp; false to write previously built bytes.
      * @return the total number of bytes written
      * @throws IOException
      */
-    public int toOutputStream(final OutputStream os, final boolean rebuild)
-            throws IOException {
+    public int toOutputStream(final OutputStream os, final boolean rebuild) throws IOException {
         return writePrintStructureToOutputStream(charset, os, rebuild);
     }
 
     /**
-     * @param os
-     *                         the object of {@code OutputStream} to write to.
-     * @param rebuild
-     *                         true to rebuild &amp; false to write previously
-     *                         built bytes.
-     * @param flushOnWrite
-     *                         true to flush on each write to OutputStream
+     * @param os           the object of {@code OutputStream} to write to.
+     * @param rebuild      true to rebuild &amp; false to write previously built
+     *                     bytes.
+     * @param flushOnWrite true to flush on each write to OutputStream
      * @return the total number of bytes written
      * @throws IOException
      * @since 3.0.2
      */
-    public int toOutputStream(final OutputStream os, final boolean rebuild,
+    public int toOutputStream(final OutputStream os, final boolean rebuild, final boolean flushOnWrite)
+            throws IOException {
+        return writePrintStructureToOutputStream(os, rebuild, charset, flushOnWrite);
+    }
+
+    /**
+     * @param os      the object of {@code OutputStream} to write to.
+     * @param rebuild true to rebuild &amp; false to write previously built bytes.
+     * @param charset the charset
+     * @return the total number of bytes written
+     * @throws IOException
+     */
+    public int toOutputStream(final OutputStream os, final boolean rebuild, final Charset charset) throws IOException {
+        if (charset == null) {
+            return writePrintStructureToOutputStream(this.charset, os, rebuild);
+        }
+        return writePrintStructureToOutputStream(charset, os, rebuild);
+    }
+
+    /**
+     * @param os           the object of {@code OutputStream} to write to.
+     * @param rebuild      true to rebuild &amp; false to write previously built
+     *                     bytes.
+     * @param charset      the charset
+     * @param flushOnWrite true to flush on each write to OutputStream
+     * @return the total number of bytes written
+     * @throws IOException
+     * @since 3.0.2
+     */
+    public int toOutputStream(final OutputStream os, final boolean rebuild, final Charset charset,
             final boolean flushOnWrite) throws IOException {
-        return writePrintStructureToOutputStream(os, rebuild, charset,
-                flushOnWrite);
-    }
-
-    /**
-     * @param os
-     *                    the object of {@code OutputStream} to write to.
-     * @param rebuild
-     *                    true to rebuild &amp; false to write previously built
-     *                    bytes.
-     * @param charset
-     *                    the charset
-     * @return the total number of bytes written
-     * @throws IOException
-     */
-    public int toOutputStream(final OutputStream os, final boolean rebuild,
-            final Charset charset) throws IOException {
         if (charset == null) {
-            return writePrintStructureToOutputStream(this.charset, os, rebuild);
+            return writePrintStructureToOutputStream(os, rebuild, this.charset, flushOnWrite);
         }
-        return writePrintStructureToOutputStream(charset, os, rebuild);
+        return writePrintStructureToOutputStream(os, rebuild, charset, flushOnWrite);
     }
 
     /**
-     * @param os
-     *                         the object of {@code OutputStream} to write to.
-     * @param rebuild
-     *                         true to rebuild &amp; false to write previously
-     *                         built bytes.
-     * @param charset
-     *                         the charset
-     * @param flushOnWrite
-     *                         true to flush on each write to OutputStream
-     * @return the total number of bytes written
-     * @throws IOException
-     * @since 3.0.2
-     */
-    public int toOutputStream(final OutputStream os, final boolean rebuild,
-            final Charset charset, final boolean flushOnWrite)
-            throws IOException {
-        if (charset == null) {
-            return writePrintStructureToOutputStream(os, rebuild, this.charset,
-                    flushOnWrite);
-        }
-        return writePrintStructureToOutputStream(os, rebuild, charset,
-                flushOnWrite);
-    }
-
-    /**
-     * @param os
-     *                    the object of {@code OutputStream} to write to.
-     * @param rebuild
-     *                    true to rebuild &amp; false to write previously built
-     *                    bytes.
-     * @param charset
-     *                    the charset
+     * @param os      the object of {@code OutputStream} to write to.
+     * @param rebuild true to rebuild &amp; false to write previously built bytes.
+     * @param charset the charset
      * @return the total number of bytes written
      * @throws IOException
      */
-    public int toOutputStream(final OutputStream os, final boolean rebuild,
-            final String charset) throws IOException {
+    public int toOutputStream(final OutputStream os, final boolean rebuild, final String charset) throws IOException {
 
         if (charset == null) {
             return writePrintStructureToOutputStream(this.charset, os, rebuild);
         }
-        return writePrintStructureToOutputStream(Charset.forName(charset), os,
-                rebuild);
+        return writePrintStructureToOutputStream(Charset.forName(charset), os, rebuild);
     }
 
     /*
@@ -4430,8 +4038,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * Eg tag names :- html, body, div table, input, button etc...
      *
-     * @return the tagName set by {@code AbstractHtml5#setTagName(String)}
-     *         method.
+     * @return the tagName set by {@code AbstractHtml5#setTagName(String)} method.
      * @author WFF
      * @since 1.0.0
      */
@@ -4439,15 +4046,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
         return tagName;
     }
 
-    public byte[][] getAttributeHtmlBytesCompressedByIndex(
-            final boolean rebuild, final Charset charset) throws IOException {
-        return AttributeUtil.getAttributeHtmlBytesCompressedByIndex(rebuild,
-                charset, attributes);
+    public byte[][] getAttributeHtmlBytesCompressedByIndex(final boolean rebuild, final Charset charset)
+            throws IOException {
+        return AttributeUtil.getAttributeHtmlBytesCompressedByIndex(rebuild, charset, attributes);
     }
 
     /**
-     * @param rebuild
-     *                    TODO
+     * @param rebuild TODO
      * @author WFF
      * @since 1.0.0
      */
@@ -4463,8 +4068,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
         if (tagName != null) {
             // previously attributeHtmlString was used in append method
             // as argument.
-            htmlStartSB.append('<').append(tagName).append(AttributeUtil
-                    .getAttributeHtmlString(rebuild, charset, attributes));
+            htmlStartSB.append('<').append(tagName)
+                    .append(AttributeUtil.getAttributeHtmlString(rebuild, charset, attributes));
             if (tagType == TagType.OPENING_CLOSING) {
                 htmlStartSB.append('>');
             } else if (tagType == TagType.SELF_CLOSING) {
@@ -4492,8 +4097,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             htmlEndSB.delete(0, htmlEndSB.length());
         }
         if (tagName != null) {
-            htmlEndSB.append(new char[] { '<', '/' }).append(tagName)
-                    .append('>');
+            htmlEndSB.append(new char[] { '<', '/' }).append(tagName).append('>');
         } else {
             if (htmlStartSB != null) {
                 htmlEndSB.append(getHtmlMiddleSB());
@@ -4538,14 +4142,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
         return htmlStartSBAsFirst;
     }
 
-    protected AbstractHtml deepClone(final AbstractHtml objectToBeClonned)
-            throws CloneNotSupportedException {
+    protected AbstractHtml deepClone(final AbstractHtml objectToBeClonned) throws CloneNotSupportedException {
         return CloneUtil.deepClone(objectToBeClonned);
     }
 
     /**
-     * invokes just before {@code getPrintStructure(final boolean} method and
-     * only if the getPrintStructure(final boolean} rebuilds the structure.
+     * invokes just before {@code getPrintStructure(final boolean} method and only
+     * if the getPrintStructure(final boolean} rebuilds the structure.
      *
      * @author WFF
      * @since 1.0.0
@@ -4578,9 +4181,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * Creates and returns a deeply cloned copy of this object. The precise
-     * meaning of "copy" may depend on the class of the object. The general
-     * intent is that, for any object {@code x}, the expression: <blockquote>
+     * Creates and returns a deeply cloned copy of this object. The precise meaning
+     * of "copy" may depend on the class of the object. The general intent is that,
+     * for any object {@code x}, the expression: <blockquote>
      *
      * <pre>
      * x.clone() != x
@@ -4592,8 +4195,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * x.clone().getClass() == x.getClass()
      * </pre>
      *
-     * </blockquote> will be {@code true}, but these are not absolute
-     * requirements. While it is typically the case that: <blockquote>
+     * </blockquote> will be {@code true}, but these are not absolute requirements.
+     * While it is typically the case that: <blockquote>
      *
      * <pre>
      * x.clone().equals(x)
@@ -4606,38 +4209,35 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * {@code Object}) obey this convention, it will be the case that
      * {@code x.clone().getClass() == x.getClass()}.
      * <p>
-     * By convention, the object returned by this method should be independent
-     * of this object (which is being cloned). To achieve this independence, it
-     * may be necessary to modify one or more fields of the object returned by
-     * {@code super.clone} before returning it. Typically, this means copying
-     * any mutable objects that comprise the internal "deep structure" of the
-     * object being cloned and replacing the references to these objects with
-     * references to the copies. If a class contains only primitive fields or
-     * references to immutable objects, then it is usually the case that no
-     * fields in the object returned by {@code super.clone} need to be modified.
+     * By convention, the object returned by this method should be independent of
+     * this object (which is being cloned). To achieve this independence, it may be
+     * necessary to modify one or more fields of the object returned by
+     * {@code super.clone} before returning it. Typically, this means copying any
+     * mutable objects that comprise the internal "deep structure" of the object
+     * being cloned and replacing the references to these objects with references to
+     * the copies. If a class contains only primitive fields or references to
+     * immutable objects, then it is usually the case that no fields in the object
+     * returned by {@code super.clone} need to be modified.
      * <p>
-     * The method {@code clone} for class {@code AbstractHtml} performs a
-     * specific cloning operation. First, if the class of this object does not
-     * implement the interfaces {@code Cloneable} and {@code Serializable}, then
-     * a {@code CloneNotSupportedException} is thrown. Note that all arrays are
-     * considered to implement the interface {@code Cloneable} and that the
-     * return type of the {@code clone} method of an array type {@code T[]} is
-     * {@code T[]} where T is any reference or primitive type. Otherwise, this
-     * method creates a new instance of the class of this object and initializes
-     * all its fields with exactly the contents of the corresponding fields of
-     * this object, as if by assignment; the contents of the fields are not
-     * themselves cloned. Thus, this method performs a "shallow copy" of this
-     * object, not a "deep copy" operation.
+     * The method {@code clone} for class {@code AbstractHtml} performs a specific
+     * cloning operation. First, if the class of this object does not implement the
+     * interfaces {@code Cloneable} and {@code Serializable}, then a
+     * {@code CloneNotSupportedException} is thrown. Note that all arrays are
+     * considered to implement the interface {@code Cloneable} and that the return
+     * type of the {@code clone} method of an array type {@code T[]} is {@code T[]}
+     * where T is any reference or primitive type. Otherwise, this method creates a
+     * new instance of the class of this object and initializes all its fields with
+     * exactly the contents of the corresponding fields of this object, as if by
+     * assignment; the contents of the fields are not themselves cloned. Thus, this
+     * method performs a "shallow copy" of this object, not a "deep copy" operation.
      *
      * @return a deep clone of this instance.
-     * @throws CloneNotSupportedException
-     *                                        if the object's class does not
-     *                                        support the {@code Cloneable} and
-     *                                        {@code Serializable} interfaces.
-     *                                        Subclasses that override the
-     *                                        {@code clone} method can also
-     *                                        throw this exception to indicate
-     *                                        that an instance cannot be cloned.
+     * @throws CloneNotSupportedException if the object's class does not support the
+     *                                    {@code Cloneable} and {@code Serializable}
+     *                                    interfaces. Subclasses that override the
+     *                                    {@code clone} method can also throw this
+     *                                    exception to indicate that an instance
+     *                                    cannot be cloned.
      * @author WFF
      * @see java.lang.Cloneable
      * @see java.io.Serializable
@@ -4648,9 +4248,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * Creates and returns a deeply cloned copy of this object. The precise
-     * meaning of "copy" may depend on the class of the object. The general
-     * intent is that, for any object {@code x}, the expression: <blockquote>
+     * Creates and returns a deeply cloned copy of this object. The precise meaning
+     * of "copy" may depend on the class of the object. The general intent is that,
+     * for any object {@code x}, the expression: <blockquote>
      *
      * <pre>
      * x.clone() != x
@@ -4662,8 +4262,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * x.clone().getClass() == x.getClass()
      * </pre>
      *
-     * </blockquote> will be {@code true}, but these are not absolute
-     * requirements. While it is typically the case that: <blockquote>
+     * </blockquote> will be {@code true}, but these are not absolute requirements.
+     * While it is typically the case that: <blockquote>
      *
      * <pre>
      * x.clone().equals(x)
@@ -4676,49 +4276,43 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * {@code Object}) obey this convention, it will be the case that
      * {@code x.clone().getClass() == x.getClass()}.
      * <p>
-     * By convention, the object returned by this method should be independent
-     * of this object (which is being cloned). To achieve this independence, it
-     * may be necessary to modify one or more fields of the object returned by
-     * {@code super.clone} before returning it. Typically, this means copying
-     * any mutable objects that comprise the internal "deep structure" of the
-     * object being cloned and replacing the references to these objects with
-     * references to the copies. If a class contains only primitive fields or
-     * references to immutable objects, then it is usually the case that no
-     * fields in the object returned by {@code super.clone} need to be modified.
+     * By convention, the object returned by this method should be independent of
+     * this object (which is being cloned). To achieve this independence, it may be
+     * necessary to modify one or more fields of the object returned by
+     * {@code super.clone} before returning it. Typically, this means copying any
+     * mutable objects that comprise the internal "deep structure" of the object
+     * being cloned and replacing the references to these objects with references to
+     * the copies. If a class contains only primitive fields or references to
+     * immutable objects, then it is usually the case that no fields in the object
+     * returned by {@code super.clone} need to be modified.
      * <p>
-     * The method {@code clone} for class {@code AbstractHtml} performs a
-     * specific cloning operation. First, if the class of this object does not
-     * implement the interfaces {@code Cloneable} and {@code Serializable}, then
-     * a {@code CloneNotSupportedException} is thrown. Note that all arrays are
-     * considered to implement the interface {@code Cloneable} and that the
-     * return type of the {@code clone} method of an array type {@code T[]} is
-     * {@code T[]} where T is any reference or primitive type. Otherwise, this
-     * method creates a new instance of the class of this object and initializes
-     * all its fields with exactly the contents of the corresponding fields of
-     * this object, as if by assignment; the contents of the fields are not
-     * themselves cloned. Thus, this method performs a "shallow copy" of this
-     * object, not a "deep copy" operation.
+     * The method {@code clone} for class {@code AbstractHtml} performs a specific
+     * cloning operation. First, if the class of this object does not implement the
+     * interfaces {@code Cloneable} and {@code Serializable}, then a
+     * {@code CloneNotSupportedException} is thrown. Note that all arrays are
+     * considered to implement the interface {@code Cloneable} and that the return
+     * type of the {@code clone} method of an array type {@code T[]} is {@code T[]}
+     * where T is any reference or primitive type. Otherwise, this method creates a
+     * new instance of the class of this object and initializes all its fields with
+     * exactly the contents of the corresponding fields of this object, as if by
+     * assignment; the contents of the fields are not themselves cloned. Thus, this
+     * method performs a "shallow copy" of this object, not a "deep copy" operation.
      *
-     * @param excludeAttributes
-     *                              pass the attributes names which need to be
-     *                              excluded from all tags including their child
-     *                              tags.
+     * @param excludeAttributes pass the attributes names which need to be excluded
+     *                          from all tags including their child tags.
      * @return a deep clone of this instance without the given attributes.
-     * @throws CloneNotSupportedException
-     *                                        if the object's class does not
-     *                                        support the {@code Cloneable} and
-     *                                        {@code Serializable} interfaces.
-     *                                        Subclasses that override the
-     *                                        {@code clone} method can also
-     *                                        throw this exception to indicate
-     *                                        that an instance cannot be cloned.
+     * @throws CloneNotSupportedException if the object's class does not support the
+     *                                    {@code Cloneable} and {@code Serializable}
+     *                                    interfaces. Subclasses that override the
+     *                                    {@code clone} method can also throw this
+     *                                    exception to indicate that an instance
+     *                                    cannot be cloned.
      * @author WFF
      * @see java.lang.Cloneable
      * @see java.io.Serializable
      * @since 2.0.0
      */
-    public AbstractHtml clone(final String... excludeAttributes)
-            throws CloneNotSupportedException {
+    public AbstractHtml clone(final String... excludeAttributes) throws CloneNotSupportedException {
 
         final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
         try {
@@ -4760,32 +4354,27 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * @param charset
-     *                    the charset to set
+     * @param charset the charset to set
      */
     public void setCharset(final Charset charset) {
         this.charset = charset;
     }
 
-    private void initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(
-            final AbstractHtml[] removedAbstractHtmls) {
+    private void initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(final AbstractHtml[] removedAbstractHtmls) {
         for (final AbstractHtml abstractHtml : removedAbstractHtmls) {
-            initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(
-                    abstractHtml);
+            initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(abstractHtml);
 
         }
     }
 
-    private void initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(
-            final AbstractHtml abstractHtml) {
+    private void initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(final AbstractHtml abstractHtml) {
 
         if (abstractHtml.parent != null) {
             abstractHtml.parent = null;
             abstractHtml.parentNullifiedOnce = true;
         }
 
-        final Map<String, AbstractHtml> tagByWffId = sharedObject
-                .getTagByWffId(ACCESS_OBJECT);
+        final Map<String, AbstractHtml> tagByWffId = sharedObject.getTagByWffId(ACCESS_OBJECT);
 
         abstractHtml.sharedObject = new AbstractHtml5SharedObject(abstractHtml);
 
@@ -4802,13 +4391,12 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                 final DataWffId dataWffId = stackChild.dataWffId;
                 if (dataWffId != null) {
-                    tagByWffId.computeIfPresent(dataWffId.getValue(),
-                            (k, v) -> {
-                                if (stackChild.equals(v)) {
-                                    return null;
-                                }
-                                return v;
-                            });
+                    tagByWffId.computeIfPresent(dataWffId.getValue(), (k, v) -> {
+                        if (stackChild.equals(v)) {
+                            return null;
+                        }
+                        return v;
+                    });
                 }
 
                 stackChild.sharedObject = abstractHtml.sharedObject;
@@ -4824,8 +4412,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * @return the Wff Binary Message bytes of this tag. It uses default charset
-     *         for encoding values.
+     * @return the Wff Binary Message bytes of this tag. It uses default charset for
+     *         encoding values.
      * @version 1.1
      * @author WFF
      * @since 2.0.0 initial implementation
@@ -4836,8 +4424,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * @param charset
-     *                    Eg: UTF-8
+     * @param charset Eg: UTF-8
      * @return the Wff Binary Message bytes of this tag
      * @throws InvalidTagException
      * @version 1.1
@@ -4888,21 +4475,16 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         final NameValue nameValue = new NameValue();
 
                         final byte[] nodeNameBytes = nodeName.getBytes(charset);
-                        final byte[][] wffAttributeBytes = AttributeUtil
-                                .getWffAttributeBytes(charset, tag.attributes);
+                        final byte[][] wffAttributeBytes = AttributeUtil.getWffAttributeBytes(charset, tag.attributes);
 
-                        final int parentWffSlotIndex = tag.parent == null ? -1
-                                : tag.parent.wffSlotIndex;
-                        nameValue.setName(WffBinaryMessageUtil
-                                .getBytesFromInt(parentWffSlotIndex));
+                        final int parentWffSlotIndex = tag.parent == null ? -1 : tag.parent.wffSlotIndex;
+                        nameValue.setName(WffBinaryMessageUtil.getBytesFromInt(parentWffSlotIndex));
 
-                        final byte[][] values = new byte[wffAttributeBytes.length
-                                + 1][0];
+                        final byte[][] values = new byte[wffAttributeBytes.length + 1][0];
 
                         values[0] = nodeNameBytes;
 
-                        System.arraycopy(wffAttributeBytes, 0, values, 1,
-                                wffAttributeBytes.length);
+                        System.arraycopy(wffAttributeBytes, 0, values, 1, wffAttributeBytes.length);
 
                         nameValue.setValues(values);
                         tag.wffSlotIndex = nameValues.size();
@@ -4910,19 +4492,16 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                     } else if (!tag.getClosingTag().isEmpty()) {
 
-                        final int parentWffSlotIndex = tag.parent == null ? -1
-                                : tag.parent.wffSlotIndex;
+                        final int parentWffSlotIndex = tag.parent == null ? -1 : tag.parent.wffSlotIndex;
 
                         final NameValue nameValue = new NameValue();
 
                         // # short for #text
                         // @ short for html content
-                        final byte[] nodeNameBytes = tag.noTagContentTypeHtml
-                                ? encodedBytesForAtChar
+                        final byte[] nodeNameBytes = tag.noTagContentTypeHtml ? encodedBytesForAtChar
                                 : encodedByesForHashChar;
 
-                        nameValue.setName(WffBinaryMessageUtil
-                                .getBytesFromInt(parentWffSlotIndex));
+                        nameValue.setName(WffBinaryMessageUtil.getBytesFromInt(parentWffSlotIndex));
 
                         final byte[][] values = new byte[2][0];
 
@@ -4948,8 +4527,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             final NameValue nameValue = nameValues.getFirst();
             nameValue.setName(new byte[0]);
 
-            return WffBinaryMessageUtil.VERSION_1
-                    .getWffBinaryMessageBytes(nameValues);
+            return WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues);
         } catch (final NoSuchElementException e) {
             throw new InvalidTagException(
                     "Not possible to build wff bm bytes on this tag.\nDon't use an empty new NoTag(null, \"\") or new Blank(null, \"\")",
@@ -4963,8 +4541,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     /**
      * @param charset
-     * @return the Wff Binary Message bytes of this tag containing indexed tag
-     *         name and attribute name
+     * @return the Wff Binary Message bytes of this tag containing indexed tag name
+     *         and attribute name
      * @throws InvalidTagException
      * @author WFF
      * @version algorithm version 1.0
@@ -5007,16 +4585,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         final byte[] tagNameIndexBytes = tag.tagNameIndexBytes;
 
                         if (tagNameIndexBytes == null) {
-                            final byte[] rowNodeNameBytes = nodeName
-                                    .getBytes(charset);
-                            nodeNameBytes = new byte[rowNodeNameBytes.length
-                                    + 1];
+                            final byte[] rowNodeNameBytes = nodeName.getBytes(charset);
+                            nodeNameBytes = new byte[rowNodeNameBytes.length + 1];
                             // if zero there is no optimized int bytes for index
                             // because there is no tagNameIndex. second byte
                             // onwards the bytes of tag name
                             nodeNameBytes[0] = 0;
-                            System.arraycopy(rowNodeNameBytes, 0, nodeNameBytes,
-                                    1, rowNodeNameBytes.length);
+                            System.arraycopy(rowNodeNameBytes, 0, nodeNameBytes, 1, rowNodeNameBytes.length);
 
                             // logging is not required here
                             // it is not an unusual case
@@ -5028,29 +4603,22 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                         } else {
 
-                            nodeNameBytes = new byte[tagNameIndexBytes.length
-                                    + 1];
+                            nodeNameBytes = new byte[tagNameIndexBytes.length + 1];
                             nodeNameBytes[0] = (byte) tagNameIndexBytes.length;
-                            System.arraycopy(tagNameIndexBytes, 0,
-                                    nodeNameBytes, 1, tagNameIndexBytes.length);
+                            System.arraycopy(tagNameIndexBytes, 0, nodeNameBytes, 1, tagNameIndexBytes.length);
                         }
 
-                        final byte[][] wffAttributeBytes = AttributeUtil
-                                .getAttributeHtmlBytesCompressedByIndex(false,
-                                        charset, tag.attributes);
+                        final byte[][] wffAttributeBytes = AttributeUtil.getAttributeHtmlBytesCompressedByIndex(false,
+                                charset, tag.attributes);
 
-                        final int parentWffSlotIndex = parentLocal == null ? -1
-                                : parentLocal.wffSlotIndex;
-                        nameValue.setName(WffBinaryMessageUtil
-                                .getBytesFromInt(parentWffSlotIndex));
+                        final int parentWffSlotIndex = parentLocal == null ? -1 : parentLocal.wffSlotIndex;
+                        nameValue.setName(WffBinaryMessageUtil.getBytesFromInt(parentWffSlotIndex));
 
-                        final byte[][] values = new byte[wffAttributeBytes.length
-                                + 1][0];
+                        final byte[][] values = new byte[wffAttributeBytes.length + 1][0];
 
                         values[0] = nodeNameBytes;
 
-                        System.arraycopy(wffAttributeBytes, 0, values, 1,
-                                wffAttributeBytes.length);
+                        System.arraycopy(wffAttributeBytes, 0, values, 1, wffAttributeBytes.length);
 
                         nameValue.setValues(values);
                         tag.wffSlotIndex = nameValues.size();
@@ -5063,19 +4631,16 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         // injecting NoTag with empty content so
                         // !tag.getClosingTag().isEmpty() is not valid here
 
-                        final int parentWffSlotIndex = parentLocal == null ? -1
-                                : parentLocal.wffSlotIndex;
+                        final int parentWffSlotIndex = parentLocal == null ? -1 : parentLocal.wffSlotIndex;
 
                         final NameValue nameValue = new NameValue();
 
                         // # short for #text
                         // @ short for html content
-                        final byte[] nodeNameBytes = tag.noTagContentTypeHtml
-                                ? encodedBytesForAtChar
+                        final byte[] nodeNameBytes = tag.noTagContentTypeHtml ? encodedBytesForAtChar
                                 : encodedBytesForHashChar;
 
-                        nameValue.setName(WffBinaryMessageUtil
-                                .getBytesFromInt(parentWffSlotIndex));
+                        nameValue.setName(WffBinaryMessageUtil.getBytesFromInt(parentWffSlotIndex));
 
                         final byte[][] values = new byte[2][0];
 
@@ -5101,8 +4666,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             final NameValue nameValue = nameValues.getFirst();
             nameValue.setName(new byte[0]);
 
-            return WffBinaryMessageUtil.VERSION_1
-                    .getWffBinaryMessageBytes(nameValues);
+            return WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues);
         } catch (final NoSuchElementException e) {
             throw new InvalidTagException(
                     "Not possible to build wff bm bytes on this tag.\nDon't use an empty new NoTag(null, \"\") or new Blank(null, \"\")",
@@ -5116,8 +4680,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     /**
      * @param charset
-     * @return the Wff Binary Message bytes of this tag containing indexed tag
-     *         name and attribute name
+     * @return the Wff Binary Message bytes of this tag containing indexed tag name
+     *         and attribute name
      * @throws InvalidTagException
      * @author WFF
      * @version algorithm version 2
@@ -5158,16 +4722,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         final byte[] tagNameIndexBytes = tag.tagNameIndexBytes;
 
                         if (tagNameIndexBytes == null) {
-                            final byte[] rowNodeNameBytes = nodeName
-                                    .getBytes(charset);
-                            nodeNameBytes = new byte[rowNodeNameBytes.length
-                                    + 1];
+                            final byte[] rowNodeNameBytes = nodeName.getBytes(charset);
+                            nodeNameBytes = new byte[rowNodeNameBytes.length + 1];
                             // if zero there is no optimized int bytes for index
                             // because there is no tagNameIndex. second byte
                             // onwards the bytes of tag name
                             nodeNameBytes[0] = 0;
-                            System.arraycopy(rowNodeNameBytes, 0, nodeNameBytes,
-                                    1, rowNodeNameBytes.length);
+                            System.arraycopy(rowNodeNameBytes, 0, nodeNameBytes, 1, rowNodeNameBytes.length);
 
                             // logging is not required here
                             // it is not an unusual case
@@ -5182,32 +4743,24 @@ public abstract class AbstractHtml extends AbstractJsObject {
                             if (tagNameIndexBytes.length == 1) {
                                 nodeNameBytes = tagNameIndexBytes;
                             } else {
-                                nodeNameBytes = new byte[tagNameIndexBytes.length
-                                        + 1];
+                                nodeNameBytes = new byte[tagNameIndexBytes.length + 1];
                                 nodeNameBytes[0] = (byte) tagNameIndexBytes.length;
-                                System.arraycopy(tagNameIndexBytes, 0,
-                                        nodeNameBytes, 1,
-                                        tagNameIndexBytes.length);
+                                System.arraycopy(tagNameIndexBytes, 0, nodeNameBytes, 1, tagNameIndexBytes.length);
                             }
 
                         }
 
-                        final byte[][] wffAttributeBytes = AttributeUtil
-                                .getAttributeHtmlBytesCompressedByIndex(false,
-                                        charset, tag.attributes);
+                        final byte[][] wffAttributeBytes = AttributeUtil.getAttributeHtmlBytesCompressedByIndex(false,
+                                charset, tag.attributes);
 
-                        final int parentWffSlotIndex = parentLocal == null ? -1
-                                : parentLocal.wffSlotIndex;
-                        nameValue.setName(WffBinaryMessageUtil
-                                .getBytesFromInt(parentWffSlotIndex));
+                        final int parentWffSlotIndex = parentLocal == null ? -1 : parentLocal.wffSlotIndex;
+                        nameValue.setName(WffBinaryMessageUtil.getBytesFromInt(parentWffSlotIndex));
 
-                        final byte[][] values = new byte[wffAttributeBytes.length
-                                + 1][0];
+                        final byte[][] values = new byte[wffAttributeBytes.length + 1][0];
 
                         values[0] = nodeNameBytes;
 
-                        System.arraycopy(wffAttributeBytes, 0, values, 1,
-                                wffAttributeBytes.length);
+                        System.arraycopy(wffAttributeBytes, 0, values, 1, wffAttributeBytes.length);
 
                         nameValue.setValues(values);
                         tag.wffSlotIndex = nameValues.size();
@@ -5220,8 +4773,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         // injecting NoTag with empty content so
                         // !tag.getClosingTag().isEmpty() is not valid here
 
-                        final int parentWffSlotIndex = parentLocal == null ? -1
-                                : parentLocal.wffSlotIndex;
+                        final int parentWffSlotIndex = parentLocal == null ? -1 : parentLocal.wffSlotIndex;
 
                         final NameValue nameValue = new NameValue();
 
@@ -5231,12 +4783,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         // ? encodedBytesForAtChar
                         // : encodedByesForHashChar;
 
-                        final byte[] nodeNameBytes = tag.noTagContentTypeHtml
-                                ? INDEXED_AT_CHAR_BYTES
+                        final byte[] nodeNameBytes = tag.noTagContentTypeHtml ? INDEXED_AT_CHAR_BYTES
                                 : INDEXED_HASH_CHAR_BYTES;
 
-                        nameValue.setName(WffBinaryMessageUtil
-                                .getBytesFromInt(parentWffSlotIndex));
+                        nameValue.setName(WffBinaryMessageUtil.getBytesFromInt(parentWffSlotIndex));
 
                         final byte[][] values = new byte[2][0];
 
@@ -5262,8 +4812,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             final NameValue nameValue = nameValues.getFirst();
             nameValue.setName(new byte[0]);
 
-            return WffBinaryMessageUtil.VERSION_1
-                    .getWffBinaryMessageBytes(nameValues);
+            return WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues);
         } catch (final NoSuchElementException e) {
             throw new InvalidTagException(
                     "Not possible to build wff bm bytes on this tag.\nDon't use an empty new NoTag(null, \"\") or new Blank(null, \"\")",
@@ -5277,54 +4826,45 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     /**
      * @param bmMessageBytes
-     * @return the AbstractHtml instance from the given Wff BM bytes. It uses
-     *         system default charset.
+     * @return the AbstractHtml instance from the given Wff BM bytes. It uses system
+     *         default charset.
      * @author WFF
      * @since 2.0.0 initial implementation
      * @since 3.0.2 improved to handle NoTag with contentTypeHtml true
      */
-    public static AbstractHtml getTagFromWffBMBytes(
-            final byte[] bmMessageBytes) {
+    public static AbstractHtml getTagFromWffBMBytes(final byte[] bmMessageBytes) {
         return getTagFromWffBMBytes(bmMessageBytes, Charset.defaultCharset());
     }
 
     /**
-     * @param bmBytes
-     *                    Wff Binary Message bytes of tag i.e. returned by
-     *                    {@link AbstractHtml#toWffBMBytes(String)}
-     * @param charset
-     *                    the charset used to generate bm bytes in
-     *                    {@link AbstractHtml#toWffBMBytes(String)}
+     * @param bmBytes Wff Binary Message bytes of tag i.e. returned by
+     *                {@link AbstractHtml#toWffBMBytes(String)}
+     * @param charset the charset used to generate bm bytes in
+     *                {@link AbstractHtml#toWffBMBytes(String)}
      * @return the AbstractHtml instance from the given Wff BM bytes
      * @author WFF
      * @since 2.0.0 initial implementation
      * @since 3.0.2 improved to handle NoTag with contentTypeHtml true
      */
-    public static AbstractHtml getTagFromWffBMBytes(final byte[] bmBytes,
-            final String charset) {
+    public static AbstractHtml getTagFromWffBMBytes(final byte[] bmBytes, final String charset) {
         return getTagFromWffBMBytes(bmBytes, Charset.forName(charset));
     }
 
     /**
-     * @param bmBytes
-     *                    Wff Binary Message bytes of tag i.e. returned by
-     *                    {@link AbstractHtml#toWffBMBytes(Charset)}
-     * @param charset
-     *                    the charset used to generate bm bytes in
-     *                    {@link AbstractHtml#toWffBMBytes(Charset)}
+     * @param bmBytes Wff Binary Message bytes of tag i.e. returned by
+     *                {@link AbstractHtml#toWffBMBytes(Charset)}
+     * @param charset the charset used to generate bm bytes in
+     *                {@link AbstractHtml#toWffBMBytes(Charset)}
      * @return the AbstractHtml instance from the given Wff BM bytes
      * @author WFF
      * @since 3.0.1 initial implementation
      * @since 3.0.2 improved to handle NoTag with contentTypeHtml true
      */
-    public static AbstractHtml getTagFromWffBMBytes(final byte[] bmBytes,
-            final Charset charset) {
+    public static AbstractHtml getTagFromWffBMBytes(final byte[] bmBytes, final Charset charset) {
 
-        final List<NameValue> nameValuesAsList = WffBinaryMessageUtil.VERSION_1
-                .parse(bmBytes);
+        final List<NameValue> nameValuesAsList = WffBinaryMessageUtil.VERSION_1.parse(bmBytes);
 
-        final NameValue[] nameValues = nameValuesAsList
-                .toArray(new NameValue[nameValuesAsList.size()]);
+        final NameValue[] nameValues = nameValuesAsList.toArray(new NameValue[nameValuesAsList.size()]);
 
         final NameValue superParentNameValue = nameValues[0];
         final byte[][] superParentValues = superParentNameValue.getValues();
@@ -5337,17 +4877,14 @@ public abstract class AbstractHtml extends AbstractJsObject {
         // @ short for html content
         boolean noTagContentTypeHtml = superParentValues[0][0] == '@';
         if (superParentValues[0][0] == '#' || noTagContentTypeHtml) {
-            parent = new NoTag(null, new String(superParentValues[1], charset),
-                    noTagContentTypeHtml);
+            parent = new NoTag(null, new String(superParentValues[1], charset), noTagContentTypeHtml);
         } else {
             final String tagName = new String(superParentValues[0], charset);
 
-            final AbstractAttribute[] attributes = new AbstractAttribute[superParentValues.length
-                    - 1];
+            final AbstractAttribute[] attributes = new AbstractAttribute[superParentValues.length - 1];
 
             for (int i = 1; i < superParentValues.length; i++) {
-                final String attrNameValue = new String(superParentValues[i],
-                        charset);
+                final String attrNameValue = new String(superParentValues[i], charset);
                 final int indexOfEqualChar = attrNameValue.indexOf('=');
                 final String attrName;
                 final String attrValue;
@@ -5357,8 +4894,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                     attrValue = null;
                 } else {
                     attrName = attrNameValue.substring(0, indexOfEqualChar);
-                    attrValue = attrNameValue.substring(indexOfEqualChar + 1,
-                            attrNameValue.length());
+                    attrValue = attrNameValue.substring(indexOfEqualChar + 1, attrNameValue.length());
                 }
                 // CustomAttribute should be replaced with relevant class
                 // later
@@ -5372,8 +4908,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
         for (int i = 1; i < nameValues.length; i++) {
 
             final NameValue nameValue = nameValues[i];
-            final int indexOfParent = WffBinaryMessageUtil
-                    .getIntFromOptimizedBytes(nameValue.getName());
+            final int indexOfParent = WffBinaryMessageUtil.getIntFromOptimizedBytes(nameValue.getName());
 
             final byte[][] values = nameValue.getValues();
             // # short for #text
@@ -5381,13 +4916,11 @@ public abstract class AbstractHtml extends AbstractJsObject {
             noTagContentTypeHtml = values[0][0] == '@';
             AbstractHtml child;
             if (values[0][0] == '#' || noTagContentTypeHtml) {
-                child = new NoTag(allTags[indexOfParent],
-                        new String(values[1], charset), noTagContentTypeHtml);
+                child = new NoTag(allTags[indexOfParent], new String(values[1], charset), noTagContentTypeHtml);
             } else {
                 final String tagName = new String(values[0], charset);
 
-                final AbstractAttribute[] attributes = new AbstractAttribute[values.length
-                        - 1];
+                final AbstractAttribute[] attributes = new AbstractAttribute[values.length - 1];
 
                 for (int j = 1; j < values.length; j++) {
                     final String attrNameValue = new String(values[j], charset);
@@ -5401,18 +4934,15 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         attrValue = null;
                     } else {
                         attrName = attrNameValue.substring(0, indexOfEqualChar);
-                        attrValue = attrNameValue.substring(
-                                indexOfEqualChar + 1, attrNameValue.length());
+                        attrValue = attrNameValue.substring(indexOfEqualChar + 1, attrNameValue.length());
                     }
 
                     // CustomAttribute should be replaced with relevant
                     // class later
-                    attributes[j - 1] = new CustomAttribute(attrName,
-                            attrValue);
+                    attributes[j - 1] = new CustomAttribute(attrName, attrValue);
                 }
                 // CustomTag should be replaced with relevant class later
-                child = new CustomTag(tagName, allTags[indexOfParent],
-                        attributes);
+                child = new CustomTag(tagName, allTags[indexOfParent], attributes);
             }
             allTags[i] = child;
         }
@@ -5421,25 +4951,20 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * @param bmBytes
-     *                    Wff Binary Message bytes of tag i.e. returned by
-     *                    {@link AbstractHtml#toWffBMBytes(Charset)}
-     * @param charset
-     *                    the charset used to generate bm bytes in
-     *                    {@link AbstractHtml#toWffBMBytes(Charset)}
+     * @param bmBytes Wff Binary Message bytes of tag i.e. returned by
+     *                {@link AbstractHtml#toWffBMBytes(Charset)}
+     * @param charset the charset used to generate bm bytes in
+     *                {@link AbstractHtml#toWffBMBytes(Charset)}
      * @return the AbstractHtml instance from the given Wff BM bytes
      * @author WFF
      * @since 3.0.2 Also includes the improvement to handle NoTag with
      *        contentTypeHtml true
      */
-    public static AbstractHtml getExactTagFromWffBMBytes(final byte[] bmBytes,
-            final Charset charset) {
+    public static AbstractHtml getExactTagFromWffBMBytes(final byte[] bmBytes, final Charset charset) {
 
-        final List<NameValue> nameValuesAsList = WffBinaryMessageUtil.VERSION_1
-                .parse(bmBytes);
+        final List<NameValue> nameValuesAsList = WffBinaryMessageUtil.VERSION_1.parse(bmBytes);
 
-        final NameValue[] nameValues = nameValuesAsList
-                .toArray(new NameValue[nameValuesAsList.size()]);
+        final NameValue[] nameValues = nameValuesAsList.toArray(new NameValue[nameValuesAsList.size()]);
 
         final NameValue superParentNameValue = nameValues[0];
         final byte[][] superParentValues = superParentNameValue.getValues();
@@ -5452,17 +4977,14 @@ public abstract class AbstractHtml extends AbstractJsObject {
         // @ short for html content
         boolean noTagContentTypeHtml = superParentValues[0][0] == '@';
         if (superParentValues[0][0] == '#' || noTagContentTypeHtml) {
-            parent = new NoTag(null, new String(superParentValues[1], charset),
-                    noTagContentTypeHtml);
+            parent = new NoTag(null, new String(superParentValues[1], charset), noTagContentTypeHtml);
         } else {
             final String tagName = new String(superParentValues[0], charset);
 
-            final AbstractAttribute[] attributes = new AbstractAttribute[superParentValues.length
-                    - 1];
+            final AbstractAttribute[] attributes = new AbstractAttribute[superParentValues.length - 1];
 
             for (int i = 1; i < superParentValues.length; i++) {
-                final String attrNameValue = new String(superParentValues[i],
-                        charset);
+                final String attrNameValue = new String(superParentValues[i], charset);
                 final int indexOfEqualChar = attrNameValue.indexOf('=');
 
                 final String attrName;
@@ -5473,24 +4995,20 @@ public abstract class AbstractHtml extends AbstractJsObject {
                     attrValue = null;
                 } else {
                     attrName = attrNameValue.substring(0, indexOfEqualChar);
-                    attrValue = attrNameValue.substring(indexOfEqualChar + 1,
-                            attrNameValue.length());
+                    attrValue = attrNameValue.substring(indexOfEqualChar + 1, attrNameValue.length());
                 }
 
                 final AbstractAttribute newAttributeInstance = AttributeRegistry
-                        .getNewAttributeInstanceOrNullIfFailed(attrName,
-                                attrValue);
+                        .getNewAttributeInstanceOrNullIfFailed(attrName, attrValue);
 
                 if (newAttributeInstance != null) {
                     attributes[i - 1] = newAttributeInstance;
                 } else {
-                    attributes[i - 1] = new CustomAttribute(attrName,
-                            attrValue);
+                    attributes[i - 1] = new CustomAttribute(attrName, attrValue);
                 }
             }
 
-            final AbstractHtml newTagInstance = TagRegistry
-                    .getNewTagInstanceOrNullIfFailed(tagName, null, attributes);
+            final AbstractHtml newTagInstance = TagRegistry.getNewTagInstanceOrNullIfFailed(tagName, null, attributes);
 
             if (newTagInstance != null) {
                 parent = newTagInstance;
@@ -5504,8 +5022,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
         for (int i = 1; i < nameValues.length; i++) {
 
             final NameValue nameValue = nameValues[i];
-            final int indexOfParent = WffBinaryMessageUtil
-                    .getIntFromOptimizedBytes(nameValue.getName());
+            final int indexOfParent = WffBinaryMessageUtil.getIntFromOptimizedBytes(nameValue.getName());
 
             final byte[][] values = nameValue.getValues();
             // # short for #text
@@ -5513,13 +5030,11 @@ public abstract class AbstractHtml extends AbstractJsObject {
             noTagContentTypeHtml = values[0][0] == '@';
             AbstractHtml child;
             if (values[0][0] == '#' || noTagContentTypeHtml) {
-                child = new NoTag(allTags[indexOfParent],
-                        new String(values[1], charset), noTagContentTypeHtml);
+                child = new NoTag(allTags[indexOfParent], new String(values[1], charset), noTagContentTypeHtml);
             } else {
                 final String tagName = new String(values[0], charset);
 
-                final AbstractAttribute[] attributes = new AbstractAttribute[values.length
-                        - 1];
+                final AbstractAttribute[] attributes = new AbstractAttribute[values.length - 1];
 
                 for (int j = 1; j < values.length; j++) {
                     final String attrNameValue = new String(values[j], charset);
@@ -5533,32 +5048,27 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         attrValue = null;
                     } else {
                         attrName = attrNameValue.substring(0, indexOfEqualChar);
-                        attrValue = attrNameValue.substring(
-                                indexOfEqualChar + 1, attrNameValue.length());
+                        attrValue = attrNameValue.substring(indexOfEqualChar + 1, attrNameValue.length());
                     }
 
                     final AbstractAttribute newAttributeInstance = AttributeRegistry
-                            .getNewAttributeInstanceOrNullIfFailed(attrName,
-                                    attrValue);
+                            .getNewAttributeInstanceOrNullIfFailed(attrName, attrValue);
 
                     if (newAttributeInstance != null) {
                         attributes[j - 1] = newAttributeInstance;
                     } else {
-                        attributes[j - 1] = new CustomAttribute(attrName,
-                                attrValue);
+                        attributes[j - 1] = new CustomAttribute(attrName, attrValue);
                     }
 
                 }
 
-                final AbstractHtml newTagInstance = TagRegistry
-                        .getNewTagInstanceOrNullIfFailed(tagName,
-                                allTags[indexOfParent], attributes);
+                final AbstractHtml newTagInstance = TagRegistry.getNewTagInstanceOrNullIfFailed(tagName,
+                        allTags[indexOfParent], attributes);
 
                 if (newTagInstance != null) {
                     child = newTagInstance;
                 } else {
-                    child = new CustomTag(tagName, allTags[indexOfParent],
-                            attributes);
+                    child = new CustomTag(tagName, allTags[indexOfParent], attributes);
                 }
 
             }
@@ -5572,8 +5082,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
         if (dataWffId == null) {
             synchronized (this) {
                 if (dataWffId == null) {
-                    final DataWffId newDataWffId = sharedObject
-                            .getNewDataWffId(ACCESS_OBJECT);
+                    final DataWffId newDataWffId = sharedObject.getNewDataWffId(ACCESS_OBJECT);
                     addAttributesLockless(false, newDataWffId);
                     dataWffId = newDataWffId;
                 }
@@ -5591,19 +5100,17 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * adds data-wff-id for the tag if doesn't already exist. NB:- this method
-     * is ony for internal use.
+     * adds data-wff-id for the tag if doesn't already exist. NB:- this method is
+     * ony for internal use.
      *
-     * @param dataWffId
-     *                      the dataWffId to set
+     * @param dataWffId the dataWffId to set
      */
     public void setDataWffId(final DataWffId dataWffId) {
         if (this.dataWffId == null) {
             synchronized (this) {
                 if (this.dataWffId == null) {
 
-                    final Lock lock = sharedObject.getLock(ACCESS_OBJECT)
-                            .writeLock();
+                    final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
                     try {
                         lock.lock();
                         addAttributesLockless(false, dataWffId);
@@ -5623,8 +5130,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * Inserts the given tags before this tag. There must be a parent for this
      * method tag.
      *
-     * @param abstractHtmls
-     *                          to insert before this tag
+     * @param abstractHtmls to insert before this tag
      * @return true if inserted otherwise false.
      * @author WFF
      * @since 2.1.1
@@ -5650,8 +5156,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
         }
 
         if (results[1]) {
-            final PushQueue pushQueue = sharedObject
-                    .getPushQueue(ACCESS_OBJECT);
+            final PushQueue pushQueue = sharedObject.getPushQueue(ACCESS_OBJECT);
             if (pushQueue != null) {
                 pushQueue.push();
             }
@@ -5661,12 +5166,11 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * Replaces this tag with the given tags. There must be a parent for this
-     * method tag. Obviously, this tag will be removed from its parent if this
-     * method is called.
+     * Replaces this tag with the given tags. There must be a parent for this method
+     * tag. Obviously, this tag will be removed from its parent if this method is
+     * called.
      *
-     * @param tags
-     *                 tags for the replacement of this tag
+     * @param tags tags for the replacement of this tag
      * @return true if replace otherwise false.
      * @since 3.0.7
      */
@@ -5697,8 +5201,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
         }
 
         if (results[1]) {
-            final PushQueue pushQueue = thisSharedObject
-                    .getPushQueue(ACCESS_OBJECT);
+            final PushQueue pushQueue = thisSharedObject.getPushQueue(ACCESS_OBJECT);
             if (pushQueue != null) {
                 pushQueue.push();
             }
@@ -5711,18 +5214,16 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * should be used inside a synchronized block. NB:- It's removing
      * removedParentChildren by parent.children.clear(); in this method.
      *
-     * @param removedParentChildren
-     *                                  just pass the parent children, no need
-     *                                  to remove it from parent. It's removing
-     *                                  by parent.children.clear();
+     * @param removedParentChildren just pass the parent children, no need to remove
+     *                              it from parent. It's removing by
+     *                              parent.children.clear();
      * @param abstractHtmls
-     * @return in zeroth index: true if inserted otherwise false. in first
-     *         index: true if listener invoked otherwise false.
+     * @return in zeroth index: true if inserted otherwise false. in first index:
+     *         true if listener invoked otherwise false.
      * @author WFF
      * @since 3.0.7
      */
-    private boolean[] insertBefore(final AbstractHtml[] removedParentChildren,
-            final AbstractHtml[] abstractHtmls) {
+    private boolean[] insertBefore(final AbstractHtml[] removedParentChildren, final AbstractHtml[] abstractHtmls) {
 
         // inserted, listener invoked
         final boolean[] results = { false, false };
@@ -5762,12 +5263,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
                                 } else {
 
                                     if (tagToInsert.parent.sharedObject
-                                            .getInsertTagsBeforeListener(
-                                                    ACCESS_OBJECT) == null) {
+                                            .getInsertTagsBeforeListener(ACCESS_OBJECT) == null) {
                                         removeFromTagByWffIdMap(tagToInsert,
-                                                tagToInsert.parent.sharedObject
-                                                        .getTagByWffId(
-                                                                ACCESS_OBJECT));
+                                                tagToInsert.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
                                     } // else {TODO also write the code to push
                                       // changes to the other BrowserPage}
 
@@ -5781,17 +5279,14 @@ public abstract class AbstractHtml extends AbstractJsObject {
                             // initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(parentChild))
                             // that is useful for not removing it
                             // from the browser UI.
-                            final InsertTagsBeforeListener.Event event = new InsertTagsBeforeListener.Event(
-                                    tagToInsert, previousParent);
+                            final InsertTagsBeforeListener.Event event = new InsertTagsBeforeListener.Event(tagToInsert,
+                                    previousParent);
                             events[count] = event;
                             count++;
                         } else if (alreadyHasParent) {
-                            if (tagToInsert.parent.sharedObject
-                                    .getInsertTagsBeforeListener(
-                                            ACCESS_OBJECT) == null) {
+                            if (tagToInsert.parent.sharedObject.getInsertTagsBeforeListener(ACCESS_OBJECT) == null) {
                                 removeFromTagByWffIdMap(tagToInsert,
-                                        tagToInsert.parent.sharedObject
-                                                .getTagByWffId(ACCESS_OBJECT));
+                                        tagToInsert.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
                             } // else {TODO also write the code to push
                               // changes to the other BrowserPage}
                         }
@@ -5803,10 +5298,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         if (alreadyHasParent) {
                             Lock foreignLock = null;
                             AbstractHtml5SharedObject foreignSO = tagToInsert.sharedObject;
-                            if (foreignSO != null
-                                    && !thisSharedObject.equals(foreignSO)) {
-                                foreignLock = foreignSO.getLock(ACCESS_OBJECT)
-                                        .writeLock();
+                            if (foreignSO != null && !thisSharedObject.equals(foreignSO)) {
+                                foreignLock = foreignSO.getLock(ACCESS_OBJECT).writeLock();
                                 foreignSO = null;
                                 foreignLock.lock();
                             }
@@ -5822,16 +5315,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         } else {
                             Lock foreignLock = null;
                             AbstractHtml5SharedObject foreignSO = tagToInsert.sharedObject;
-                            if (foreignSO != null
-                                    && !thisSharedObject.equals(foreignSO)) {
-                                foreignLock = foreignSO.getLock(ACCESS_OBJECT)
-                                        .writeLock();
+                            if (foreignSO != null && !thisSharedObject.equals(foreignSO)) {
+                                foreignLock = foreignSO.getLock(ACCESS_OBJECT).writeLock();
                                 foreignSO = null;
                                 foreignLock.lock();
                             }
                             try {
-                                removeDataWffIdFromHierarchyLockless(
-                                        tagToInsert);
+                                removeDataWffIdFromHierarchyLockless(tagToInsert);
                                 initSharedObject(tagToInsert);
                                 tagToInsert.parent = thisParent;
                             } finally {
@@ -5865,18 +5355,16 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * should be used inside a synchronized block. NB:- It's removing
      * removedParentChildren by parent.children.clear(); in this method.
      *
-     * @param removedParentChildren
-     *                                  just pass the parent children, no need
-     *                                  to remove it from parent. It's removing
-     *                                  by parent.children.clear();
+     * @param removedParentChildren just pass the parent children, no need to remove
+     *                              it from parent. It's removing by
+     *                              parent.children.clear();
      * @param abstractHtmls
-     * @return in zeroth index: true if inserted otherwise false. in first
-     *         index: true if listener invoked otherwise false.
+     * @return in zeroth index: true if inserted otherwise false. in first index:
+     *         true if listener invoked otherwise false.
      * @author WFF
      * @since 3.0.7
      */
-    private boolean[] insertAfter(final AbstractHtml[] removedParentChildren,
-            final AbstractHtml[] abstractHtmls) {
+    private boolean[] insertAfter(final AbstractHtml[] removedParentChildren, final AbstractHtml[] abstractHtmls) {
 
         // inserted, listener invoked
         final boolean[] results = { false, false };
@@ -5884,8 +5372,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
         final int parentChildrenSize = parent.children.size();
         if (parentChildrenSize > 0) {
 
-            final InsertAfterListener insertAfterListener = sharedObject
-                    .getInsertAfterListener(ACCESS_OBJECT);
+            final InsertAfterListener insertAfterListener = sharedObject.getInsertAfterListener(ACCESS_OBJECT);
 
             // this.parent will be nullified in
             // initNewSharedObjectInAllNestedTagsAndSetSuperParentNull so kept a
@@ -5917,13 +5404,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
                                     previousParent = tagToInsert.parent;
                                 } else {
 
-                                    if (tagToInsert.parent.sharedObject
-                                            .getInsertAfterListener(
-                                                    ACCESS_OBJECT) == null) {
+                                    if (tagToInsert.parent.sharedObject.getInsertAfterListener(ACCESS_OBJECT) == null) {
                                         removeFromTagByWffIdMap(tagToInsert,
-                                                tagToInsert.parent.sharedObject
-                                                        .getTagByWffId(
-                                                                ACCESS_OBJECT));
+                                                tagToInsert.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
                                     } // else {TODO also write the code to push
                                       // changes to the other BrowserPage}
 
@@ -5937,17 +5420,14 @@ public abstract class AbstractHtml extends AbstractJsObject {
                             // initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(parentChild))
                             // that is useful for not removing it
                             // from the browser UI.
-                            final InsertAfterListener.Event event = new InsertAfterListener.Event(
-                                    tagToInsert, previousParent);
+                            final InsertAfterListener.Event event = new InsertAfterListener.Event(tagToInsert,
+                                    previousParent);
                             events[count] = event;
                             count++;
                         } else if (alreadyHasParent) {
-                            if (tagToInsert.parent.sharedObject
-                                    .getInsertAfterListener(
-                                            ACCESS_OBJECT) == null) {
+                            if (tagToInsert.parent.sharedObject.getInsertAfterListener(ACCESS_OBJECT) == null) {
                                 removeFromTagByWffIdMap(tagToInsert,
-                                        tagToInsert.parent.sharedObject
-                                                .getTagByWffId(ACCESS_OBJECT));
+                                        tagToInsert.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
                             } // else {TODO also write the code to push
                               // changes to the other BrowserPage}
                         }
@@ -5960,10 +5440,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                             Lock foreignLock = null;
                             AbstractHtml5SharedObject foreignSO = tagToInsert.sharedObject;
-                            if (foreignSO != null
-                                    && !thisSharedObject.equals(foreignSO)) {
-                                foreignLock = foreignSO.getLock(ACCESS_OBJECT)
-                                        .writeLock();
+                            if (foreignSO != null && !thisSharedObject.equals(foreignSO)) {
+                                foreignLock = foreignSO.getLock(ACCESS_OBJECT).writeLock();
                                 foreignSO = null;
                                 foreignLock.lock();
                             }
@@ -5981,16 +5459,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                             Lock foreignLock = null;
                             AbstractHtml5SharedObject foreignSO = tagToInsert.sharedObject;
-                            if (foreignSO != null
-                                    && !thisSharedObject.equals(foreignSO)) {
-                                foreignLock = foreignSO.getLock(ACCESS_OBJECT)
-                                        .writeLock();
+                            if (foreignSO != null && !thisSharedObject.equals(foreignSO)) {
+                                foreignLock = foreignSO.getLock(ACCESS_OBJECT).writeLock();
                                 foreignSO = null;
                                 foreignLock.lock();
                             }
                             try {
-                                removeDataWffIdFromHierarchyLockless(
-                                        tagToInsert);
+                                removeDataWffIdFromHierarchyLockless(tagToInsert);
                                 initSharedObject(tagToInsert);
                                 tagToInsert.parent = thisParent;
                             } finally {
@@ -6023,18 +5498,16 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * should be used inside a synchronized block. NB:- It's removing
      * removedParentChildren by parent.children.clear(); in this method.
      *
-     * @param removedParentChildren
-     *                                  just pass the parent children, no need
-     *                                  to remove it from parent. It's removing
-     *                                  by parent.children.clear();
+     * @param removedParentChildren just pass the parent children, no need to remove
+     *                              it from parent. It's removing by
+     *                              parent.children.clear();
      * @param abstractHtmls
-     * @return in zeroth index: true if inserted otherwise false. in first
-     *         index: true if listener invoked otherwise false.
+     * @return in zeroth index: true if inserted otherwise false. in first index:
+     *         true if listener invoked otherwise false.
      * @author WFF
      * @since 3.0.7
      */
-    private boolean[] replaceWith(final AbstractHtml[] removedParentChildren,
-            final AbstractHtml[] abstractHtmls) {
+    private boolean[] replaceWith(final AbstractHtml[] removedParentChildren, final AbstractHtml[] abstractHtmls) {
 
         // inserted, listener invoked
         final boolean[] results = { false, false };
@@ -6042,8 +5515,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
         final int parentChildrenSize = parent.children.size();
         if (parentChildrenSize > 0) {
 
-            final ReplaceListener replaceListener = sharedObject
-                    .getReplaceListener(ACCESS_OBJECT);
+            final ReplaceListener replaceListener = sharedObject.getReplaceListener(ACCESS_OBJECT);
 
             // this.parent will be nullified in
             // initNewSharedObjectInAllNestedTagsAndSetSuperParentNull so kept a
@@ -6063,8 +5535,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                     // must be the first statement, the replacing tag and
                     // replacement tag could be same
-                    initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(
-                            parentChild);
+                    initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(parentChild);
 
                     for (final AbstractHtml tagToInsert : abstractHtmls) {
 
@@ -6078,13 +5549,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
                                     previousParent = tagToInsert.parent;
                                 } else {
 
-                                    if (tagToInsert.parent.sharedObject
-                                            .getReplaceListener(
-                                                    ACCESS_OBJECT) == null) {
+                                    if (tagToInsert.parent.sharedObject.getReplaceListener(ACCESS_OBJECT) == null) {
                                         removeFromTagByWffIdMap(tagToInsert,
-                                                tagToInsert.parent.sharedObject
-                                                        .getTagByWffId(
-                                                                ACCESS_OBJECT));
+                                                tagToInsert.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
                                     } // else {TODO also write the code to push
                                       // changes to the other BrowserPage}
 
@@ -6098,17 +5565,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
                             // initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(parentChild))
                             // that is useful for not removing it
                             // from the browser UI.
-                            final ReplaceListener.Event event = new ReplaceListener.Event(
-                                    tagToInsert, previousParent);
+                            final ReplaceListener.Event event = new ReplaceListener.Event(tagToInsert, previousParent);
                             events[count] = event;
                             count++;
                         } else if (alreadyHasParent) {
-                            if (tagToInsert.parent.sharedObject
-                                    .getReplaceListener(
-                                            ACCESS_OBJECT) == null) {
+                            if (tagToInsert.parent.sharedObject.getReplaceListener(ACCESS_OBJECT) == null) {
                                 removeFromTagByWffIdMap(tagToInsert,
-                                        tagToInsert.parent.sharedObject
-                                                .getTagByWffId(ACCESS_OBJECT));
+                                        tagToInsert.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
                             } // else {TODO also write the code to push
                               // changes to the other BrowserPage}
                         }
@@ -6120,10 +5583,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         if (alreadyHasParent) {
                             Lock foreignLock = null;
                             AbstractHtml5SharedObject foreignSO = tagToInsert.sharedObject;
-                            if (foreignSO != null
-                                    && !thisSharedObject.equals(foreignSO)) {
-                                foreignLock = foreignSO.getLock(ACCESS_OBJECT)
-                                        .writeLock();
+                            if (foreignSO != null && !thisSharedObject.equals(foreignSO)) {
+                                foreignLock = foreignSO.getLock(ACCESS_OBJECT).writeLock();
                                 foreignSO = null;
                                 foreignLock.lock();
                             }
@@ -6139,16 +5600,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         } else {
                             Lock foreignLock = null;
                             AbstractHtml5SharedObject foreignSO = tagToInsert.sharedObject;
-                            if (foreignSO != null
-                                    && !thisSharedObject.equals(foreignSO)) {
-                                foreignLock = foreignSO.getLock(ACCESS_OBJECT)
-                                        .writeLock();
+                            if (foreignSO != null && !thisSharedObject.equals(foreignSO)) {
+                                foreignLock = foreignSO.getLock(ACCESS_OBJECT).writeLock();
                                 foreignSO = null;
                                 foreignLock.lock();
                             }
                             try {
-                                removeDataWffIdFromHierarchyLockless(
-                                        tagToInsert);
+                                removeDataWffIdFromHierarchyLockless(tagToInsert);
                                 initSharedObject(tagToInsert, thisSharedObject);
                                 tagToInsert.parent = thisParent;
                             } finally {
@@ -6179,13 +5637,12 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * Inserts the given tags after this tag. There must be a parent for this
-     * method tag. <br>
+     * Inserts the given tags after this tag. There must be a parent for this method
+     * tag. <br>
      * Note : As promised this method is improved and works as performing and
      * reliable as insertBefore method.
      *
-     * @param abstractHtmls
-     *                          to insert after this tag
+     * @param abstractHtmls to insert after this tag
      * @return true if inserted otherwise false.
      * @author WFF
      * @since 2.1.6
@@ -6213,8 +5670,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
         }
 
         if (results[1]) {
-            final PushQueue pushQueue = sharedObject
-                    .getPushQueue(ACCESS_OBJECT);
+            final PushQueue pushQueue = sharedObject.getPushQueue(ACCESS_OBJECT);
             if (pushQueue != null) {
                 pushQueue.push();
             }
@@ -6224,23 +5680,18 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * Loops through all nested children tags (excluding the given tag) of the
-     * given tag. The looping is in a random order to gain maximum performance
-     * and minimum memory footprint.
+     * Loops through all nested children tags (excluding the given tag) of the given
+     * tag. The looping is in a random order to gain maximum performance and minimum
+     * memory footprint.
      *
-     * @param nestedChild
-     *                           the object of NestedChild from which the
-     *                           eachChild(AbstractHtml) to be invoked.
-     * @param includeParents
-     *                           true to include the given parent tags in the
-     *                           loop
-     * @param parents
-     *                           the tags from which to loop through.
+     * @param nestedChild    the object of NestedChild from which the
+     *                       eachChild(AbstractHtml) to be invoked.
+     * @param includeParents true to include the given parent tags in the loop
+     * @param parents        the tags from which to loop through.
      * @author WFF
      * @since 2.1.8
      */
-    protected static void loopThroughAllNestedChildren(
-            final NestedChild nestedChild, final boolean includeParents,
+    protected static void loopThroughAllNestedChildren(final NestedChild nestedChild, final boolean includeParents,
             final AbstractHtml... parents) {
 
         final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
@@ -6281,8 +5732,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @author WFF
      * @since 2.1.8
      */
-    protected WffBMData addWffData(final String key,
-            final WffBMData wffBMData) {
+    protected WffBMData addWffData(final String key, final WffBMData wffBMData) {
         return AbstractJsObject.addWffData(this, key, wffBMData);
     }
 
@@ -6309,14 +5759,14 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * Gets the unmodifiable map of wffObjects which are upserted by
      * {@link TagRepository#upsert(AbstractHtml, String, WffBMObject)} or
-     * {@link TagRepository#upsert(AbstractHtml, String, WffBMArray)}.
-     * {@code null} checking is required while consuming this map.
+     * {@link TagRepository#upsert(AbstractHtml, String, WffBMArray)}. {@code null}
+     * checking is required while consuming this map.
      *
      * @return the unmodifiable map of wffObjects. The value may either be an
-     *         instance of {@link WffBMObject} or {@link WffBMArray}. This map
-     *         may be null if there is no {@code TagRepository#upsert} operation
-     *         has been done at least once in the whole life cycle. Otherwise it
-     *         may also be empty.
+     *         instance of {@link WffBMObject} or {@link WffBMArray}. This map may
+     *         be null if there is no {@code TagRepository#upsert} operation has
+     *         been done at least once in the whole life cycle. Otherwise it may
+     *         also be empty.
      * @author WFF
      * @since 2.1.8
      */
@@ -6327,8 +5777,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /**
      * Gets the root level tag of this tag.
      *
-     * @return the root parent tag or the current tag if there is no parent for
-     *         the given tag
+     * @return the root parent tag or the current tag if there is no parent for the
+     *         given tag
      * @author WFF
      * @since 2.1.11
      */
@@ -6387,10 +5837,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * Sets the object which will be accessible by getSharedData method in all
-     * of this tag hierarchy. {@code setData} sets an object for the specific
-     * tag but {@code setSharedData} sets an object for all of the tag
-     * hierarchy. <br>
+     * Sets the object which will be accessible by getSharedData method in all of
+     * this tag hierarchy. {@code setData} sets an object for the specific tag but
+     * {@code setSharedData} sets an object for all of the tag hierarchy. <br>
      * <br>
      * <br>
      * Eg:-
@@ -6430,9 +5879,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * </code>
      * </pre>
      *
-     * @param sharedData
-     *                       the object to access through all of this tag
-     *                       hierarchy.
+     * @param sharedData the object to access through all of this tag hierarchy.
      * @author WFF
      * @since 2.1.11
      */
@@ -6450,20 +5897,18 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * Resets the hierarchy of this tag so that it can be used in another
-     * instance of {@code BrowserPage}. If a tag is used under a
-     * {@code BrowserPage} instance and the same instance of tag needs to be
-     * used in another instance of {@code BrowserPage} then the tag needs to be
-     * reset before use otherwise there could be some strange behaviour in the
-     * UI. To avoid compromising performance such usage never throws any
-     * exception. <br>
+     * Resets the hierarchy of this tag so that it can be used in another instance
+     * of {@code BrowserPage}. If a tag is used under a {@code BrowserPage} instance
+     * and the same instance of tag needs to be used in another instance of
+     * {@code BrowserPage} then the tag needs to be reset before use otherwise there
+     * could be some strange behaviour in the UI. To avoid compromising performance
+     * such usage never throws any exception. <br>
      * <p>
      * NB:- Child tag cannot be reset, i.e. this tag should not be a child of
      * another tag.
      *
-     * @throws InvalidTagException
-     *                                 if the tag is already used by another
-     *                                 tag, i.e. if this tag has a parent tag.
+     * @throws InvalidTagException if the tag is already used by another tag, i.e.
+     *                             if this tag has a parent tag.
      * @author WFF
      * @since 2.1.13
      */
@@ -6495,22 +5940,20 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @since 3.0.0
      */
     private Stream<AbstractHtml> buildNestedChildrenIncludingParent() {
-        return Stream.concat(Stream.of(this), children.stream()
-                .flatMap(AbstractHtml::buildNestedChildrenIncludingParent));
+        return Stream.concat(Stream.of(this),
+                children.stream().flatMap(AbstractHtml::buildNestedChildrenIncludingParent));
     }
 
     /**
      * NB: it might lead to StackOverflowException if the tag hierarchy is deep.
      *
-     * @param parent
-     *                   the parent object from which the nested children stream
-     *                   to be built.
+     * @param parent the parent object from which the nested children stream to be
+     *               built.
      * @return stream of all nested children including the given parent object.
      * @author WFF
      * @since 2.1.15
      */
-    protected static Stream<AbstractHtml> getAllNestedChildrenIncludingParent(
-            final AbstractHtml parent) {
+    protected static Stream<AbstractHtml> getAllNestedChildrenIncludingParent(final AbstractHtml parent) {
         return parent.buildNestedChildrenIncludingParent();
     }
 
@@ -6545,7 +5988,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * Eg: <br>
      *
      * <pre>
-     * Div rootDiv = new Div(null, new Id("rootDivId")).&lt;Div&gt; give(parent -&gt; {
+     * Div rootDiv = new Div(null, new Id("rootDivId")).&lt;Div&gt;give(parent -&gt; {
      *     new Div(parent, new Id("parentDivId")).give(nestedTag1 -&gt; {
      *         new Div(nestedTag1, new Id("child1"));
      *         new Div(nestedTag1, new Id("child2"));
@@ -6570,8 +6013,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * </code>
      * </pre>
      *
-     * @param consumer
-     *                     the consumer object
+     * @param consumer the consumer object
      * @return the same object on which give method is called.
      * @since 3.0.7
      */
@@ -6586,8 +6028,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * Eg: <br>
      *
      * <pre>
-     * Div div = new Div(null, new Id("rootDivId")).give(TagContent::text,
-     *         "Hello World");
+     * Div div = new Div(null, new Id("rootDivId")).give(TagContent::text, "Hello World");
      * System.out.println(div.toHtmlString());
      *
      * </pre>
@@ -6619,16 +6060,14 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * </pre>
      *
      * @param consumer
-     * @param input
-     *                     the object to be passed as second argument of
-     *                     {@code BiFunction#apply(Object, Object)} method.
+     * @param input    the object to be passed as second argument of
+     *                 {@code BiFunction#apply(Object, Object)} method.
      * @return the object which {@code BiFunction#apply(Object, Object)} returns
      *         which will be a subclass of {@code AbstractHtml}
      * @since 3.0.13
      */
     @SuppressWarnings("unchecked")
-    public <R extends AbstractHtml, I> R give(
-            final BiFunction<R, I, R> consumer, final I input) {
+    public <R extends AbstractHtml, I> R give(final BiFunction<R, I, R> consumer, final I input) {
         return consumer.apply((R) this, input);
     }
 

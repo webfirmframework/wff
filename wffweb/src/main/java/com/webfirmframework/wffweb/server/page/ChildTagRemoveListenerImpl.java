@@ -31,8 +31,7 @@ final class ChildTagRemoveListenerImpl implements ChildTagRemoveListener {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Logger LOGGER = Logger
-            .getLogger(ChildTagRemoveListenerImpl.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ChildTagRemoveListenerImpl.class.getName());
 
     private final BrowserPage browserPage;
 
@@ -45,8 +44,7 @@ final class ChildTagRemoveListenerImpl implements ChildTagRemoveListener {
         throw new AssertionError();
     }
 
-    ChildTagRemoveListenerImpl(final BrowserPage browserPage,
-            final Object accessObject,
+    ChildTagRemoveListenerImpl(final BrowserPage browserPage, final Object accessObject,
             final Map<String, AbstractHtml> tagByWffId) {
         this.browserPage = browserPage;
         this.accessObject = accessObject;
@@ -68,17 +66,15 @@ final class ChildTagRemoveListenerImpl implements ChildTagRemoveListener {
 
                     final DataWffId dataWffId = child.getDataWffId();
                     if (dataWffId != null) {
-                        tagByWffId.computeIfPresent(dataWffId.getValue(),
-                                (k, v) -> {
-                                    if (child.equals(v)) {
-                                        return null;
-                                    }
-                                    return v;
-                                });
+                        tagByWffId.computeIfPresent(dataWffId.getValue(), (k, v) -> {
+                            if (child.equals(v)) {
+                                return null;
+                            }
+                            return v;
+                        });
                     }
 
-                    final Set<AbstractHtml> subChildren = child
-                            .getChildren(accessObject);
+                    final Set<AbstractHtml> subChildren = child.getChildren(accessObject);
                     if (subChildren != null && subChildren.size() > 0) {
                         childrenStack.push(subChildren);
                     }
@@ -100,11 +96,12 @@ final class ChildTagRemoveListenerImpl implements ChildTagRemoveListener {
 
     private void removeChildren(final AbstractHtml[] removedChildrenTags) {
 
-        //@formatter:off
-            // removed child task format :-
-            // { "name": task_byte, "values" : [REMOVED_TAGS_byte_from_Task_enum]}, { "name": data-wff-id, "values" : [ parent_tag_name, html_string ]}
-            // { "name": 2, "values" : [[3]]}, { "name":"C55", "values" : ["div"]}
-            //@formatter:on
+        // @formatter:off
+        // removed child task format :-
+        // { "name": task_byte, "values" : [REMOVED_TAGS_byte_from_Task_enum]}, {
+        // "name": data-wff-id, "values" : [ parent_tag_name, html_string ]}
+        // { "name": 2, "values" : [[3]]}, { "name":"C55", "values" : ["div"]}
+        // @formatter:on
 
         final NameValue task = Task.REMOVED_TAGS.getTaskNameValue();
 
@@ -119,9 +116,7 @@ final class ChildTagRemoveListenerImpl implements ChildTagRemoveListener {
 
                 final NameValue nameValue = new NameValue();
 
-                final byte[][] tagNameAndWffId = DataWffIdUtil
-                        .getIndexedTagNameAndWffId(accessObject,
-                                removedChildTag);
+                final byte[][] tagNameAndWffId = DataWffIdUtil.getIndexedTagNameAndWffId(accessObject, removedChildTag);
 
                 final byte[] parentWffIdBytes = tagNameAndWffId[1];
 
@@ -157,14 +152,14 @@ final class ChildTagRemoveListenerImpl implements ChildTagRemoveListener {
 
         final AbstractHtml parentTag = event.getParentTag();
 
-        //@formatter:off
+        // @formatter:off
         // removed all children tags task format :-
-        // { "name": task_byte, "values" : [REMOVED_TAGS_byte_from_Task_enum]}, { "name": data-wff-id, "values" : [ parent_tag_name]}
+        // { "name": task_byte, "values" : [REMOVED_TAGS_byte_from_Task_enum]}, {
+        // "name": data-wff-id, "values" : [ parent_tag_name]}
         // { "name": 2, "values" : [[3]]}, { "name":"C55", "values" : ["div"]}
-        //@formatter:on
+        // @formatter:on
 
-        final NameValue task = Task.REMOVED_ALL_CHILDREN_TAGS
-                .getTaskNameValue();
+        final NameValue task = Task.REMOVED_ALL_CHILDREN_TAGS.getTaskNameValue();
 
         final DataWffId dataWffId = parentTag.getDataWffId();
 
@@ -172,8 +167,7 @@ final class ChildTagRemoveListenerImpl implements ChildTagRemoveListener {
 
             final NameValue nameValue = new NameValue();
 
-            final byte[][] tagNameAndWffId = DataWffIdUtil
-                    .getIndexedTagNameAndWffId(accessObject, parentTag);
+            final byte[][] tagNameAndWffId = DataWffIdUtil.getIndexedTagNameAndWffId(accessObject, parentTag);
 
             final byte[] parentWffIdBytes = tagNameAndWffId[1];
 

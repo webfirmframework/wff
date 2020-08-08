@@ -36,8 +36,7 @@ public class Rev extends AbstractAttribute implements AAttributable {
     private static final long serialVersionUID = 1_0_0L;
 
     /**
-     * An alternate version of the document (i.e. print page, translated or
-     * mirror)
+     * An alternate version of the document (i.e. print page, translated or mirror)
      */
     public static final String ALTERNATE = "alternate";
 
@@ -112,8 +111,8 @@ public class Rev extends AbstractAttribute implements AAttributable {
     public static final String BOOKMARK = "bookmark";
 
     /**
-     * "nofollow" is used by Google, to specify that the Google search spider
-     * should not follow that link (mostly used for paid links)
+     * "nofollow" is used by Google, to specify that the Google search spider should
+     * not follow that link (mostly used for paid links)
      */
     public static final String NOFOLLOW = "nofollow";
 
@@ -138,8 +137,7 @@ public class Rev extends AbstractAttribute implements AAttributable {
 
     /**
      *
-     * @param value
-     *                  the value for the attribute
+     * @param value the value for the attribute
      * @since 1.0.0
      * @author WFF
      */
@@ -150,8 +148,7 @@ public class Rev extends AbstractAttribute implements AAttributable {
     /**
      * sets the value for this attribute
      *
-     * @param value
-     *                  the value for the attribute.
+     * @param value the value for the attribute.
      * @since 1.0.0
      * @author WFF
      */
@@ -162,12 +159,10 @@ public class Rev extends AbstractAttribute implements AAttributable {
     /**
      * sets the value for this attribute
      *
-     * @param updateClient
-     *                         true to update client browser page if it is
-     *                         available. The default value is true but it will
-     *                         be ignored if there is no client browser page.
-     * @param value
-     *                         the value for the attribute.
+     * @param updateClient true to update client browser page if it is available.
+     *                     The default value is true but it will be ignored if there
+     *                     is no client browser page.
+     * @param value        the value for the attribute.
      * @since 2.1.15
      * @author WFF
      */

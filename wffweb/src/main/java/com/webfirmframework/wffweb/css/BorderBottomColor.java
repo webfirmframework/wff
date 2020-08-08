@@ -50,20 +50,17 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class BorderBottomColor extends AbstractCssProperty<BorderBottomColor>
-        implements StateChangeInformer<Bean> {
+public class BorderBottomColor extends AbstractCssProperty<BorderBottomColor> implements StateChangeInformer<Bean> {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    private static final Logger LOGGER = Logger
-            .getLogger(BorderBottomColor.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(BorderBottomColor.class.getName());
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
     public static final String TRANSPARENT = "transparent";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays
-            .asList(INITIAL, INHERIT, TRANSPARENT);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(INITIAL, INHERIT, TRANSPARENT);
 
     private String cssValue;
 
@@ -83,18 +80,16 @@ public class BorderBottomColor extends AbstractCssProperty<BorderBottomColor>
     }
 
     /**
-     * @param cssValue
-     *                     the css value to set.
+     * @param cssValue the css value to set.
      */
     public BorderBottomColor(final String cssValue) {
         setCssValue(cssValue);
     }
 
     /**
-     * @param borderBottomColor
-     *                              the {@code BorderBottomColor} object from
-     *                              which the cssValue to set.And, {@code null}
-     *                              will throw {@code NullValueException}
+     * @param borderBottomColor the {@code BorderBottomColor} object from which the
+     *                          cssValue to set.And, {@code null} will throw
+     *                          {@code NullValueException}
      */
     public BorderBottomColor(final BorderBottomColor borderBottomColor) {
         if (borderBottomColor == null) {
@@ -112,8 +107,8 @@ public class BorderBottomColor extends AbstractCssProperty<BorderBottomColor>
     }
 
     /**
-     * the color/color code to set. The alternative method {@code setCssValue}
-     * can also be used.
+     * the color/color code to set. The alternative method {@code setCssValue} can
+     * also be used.
      *
      * @param value
      * @return the current object
@@ -159,8 +154,8 @@ public class BorderBottomColor extends AbstractCssProperty<BorderBottomColor>
     }
 
     /**
-     * gets the value, {@code getCssValue} method can also be used to get the
-     * same value.
+     * gets the value, {@code getCssValue} method can also be used to get the same
+     * value.
      *
      * @return the value in String.
      * @since 1.0.0
@@ -171,13 +166,12 @@ public class BorderBottomColor extends AbstractCssProperty<BorderBottomColor>
     }
 
     /**
-     * @param cssValue
-     *                     the value should be a color/color code/rgb, for
-     *                     example <code>#0000ff</code>. {@code null} is
-     *                     considered as an invalid value and it will throw
-     *                     {@code NullValueException}.And an empty string is
-     *                     also considered as an invalid value and it will throw
-     *                     {@code InvalidValueException}.
+     * @param cssValue the value should be a color/color code/rgb, for example
+     *                 <code>#0000ff</code>. {@code null} is considered as an
+     *                 invalid value and it will throw
+     *                 {@code NullValueException}.And an empty string is also
+     *                 considered as an invalid value and it will throw
+     *                 {@code InvalidValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -292,26 +286,21 @@ public class BorderBottomColor extends AbstractCssProperty<BorderBottomColor>
             return false;
         }
 
-        final String trimmedCssValueLowerCase = TagStringUtil
-                .toLowerCase(trimmedCssValue);
+        final String trimmedCssValueLowerCase = TagStringUtil.toLowerCase(trimmedCssValue);
 
-        if (INITIAL.equals(trimmedCssValueLowerCase)
-                || INHERIT.equals(trimmedCssValueLowerCase)
+        if (INITIAL.equals(trimmedCssValueLowerCase) || INHERIT.equals(trimmedCssValueLowerCase)
                 || TRANSPARENT.equals(trimmedCssValueLowerCase)) {
             return true;
         }
 
-        if (CssColorName.isValid(trimmedCssValue)
-                || RgbCssValue.isValid(trimmedCssValue)
-                || RgbaCssValue.isValid(trimmedCssValue)
-                || HslCssValue.isValid(trimmedCssValue)
+        if (CssColorName.isValid(trimmedCssValue) || RgbCssValue.isValid(trimmedCssValue)
+                || RgbaCssValue.isValid(trimmedCssValue) || HslCssValue.isValid(trimmedCssValue)
                 || HslaCssValue.isValid(trimmedCssValue)) {
             return true;
         }
 
         try {
-            if (trimmedCssValue.length() == 0
-                    || trimmedCssValue.charAt(0) != '#') {
+            if (trimmedCssValue.length() == 0 || trimmedCssValue.charAt(0) != '#') {
                 return false;
             }
 
@@ -370,8 +359,7 @@ public class BorderBottomColor extends AbstractCssProperty<BorderBottomColor>
     }
 
     /**
-     * @param rgbCssValue
-     *                        the rgbCssValue to set
+     * @param rgbCssValue the rgbCssValue to set
      * @since 1.0.0
      * @author WFF
      */
@@ -380,19 +368,16 @@ public class BorderBottomColor extends AbstractCssProperty<BorderBottomColor>
             throw new NullValueException("rgbCssValue can not be null");
         }
         if (this.rgbCssValue != null) {
-            if (rgbCssValue.isAlreadyInUse() && !Objects.equals(
-                    this.rgbCssValue.getStateChangeInformer(),
-                    rgbCssValue.getStateChangeInformer())
+            if (rgbCssValue.isAlreadyInUse()
+                    && !Objects.equals(this.rgbCssValue.getStateChangeInformer(), rgbCssValue.getStateChangeInformer())
 
             ) {
                 try {
-                    final RgbCssValue rgbCssValueClone = CloneUtil
-                            .deepClone(rgbCssValue);
+                    final RgbCssValue rgbCssValueClone = CloneUtil.deepClone(rgbCssValue);
                     this.rgbCssValue.setAlreadyInUse(false);
                     this.rgbCssValue = rgbCssValueClone;
                     if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.warning("cloned rgbCssValue " + rgbCssValue
-                                + "(hashcode: " + rgbCssValue.hashCode()
+                        LOGGER.warning("cloned rgbCssValue " + rgbCssValue + "(hashcode: " + rgbCssValue.hashCode()
                                 + ") as it is already used by another object");
                     }
                 } catch (final CloneNotSupportedException e) {
@@ -407,8 +392,7 @@ public class BorderBottomColor extends AbstractCssProperty<BorderBottomColor>
                 try {
                     this.rgbCssValue = CloneUtil.deepClone(rgbCssValue);
                     if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.warning("cloned rgbCssValue " + rgbCssValue
-                                + "(hashcode: " + rgbCssValue.hashCode()
+                        LOGGER.warning("cloned rgbCssValue " + rgbCssValue + "(hashcode: " + rgbCssValue.hashCode()
                                 + ") as it is already used by another object");
                     }
                 } catch (final CloneNotSupportedException e) {
@@ -427,8 +411,7 @@ public class BorderBottomColor extends AbstractCssProperty<BorderBottomColor>
     }
 
     /**
-     * @param rgbaCssValue
-     *                         the rgbaCssValue to set
+     * @param rgbaCssValue the rgbaCssValue to set
      * @since 1.0.0
      * @author WFF
      */
@@ -437,17 +420,14 @@ public class BorderBottomColor extends AbstractCssProperty<BorderBottomColor>
             throw new NullValueException("rgbCssValue can not be null");
         }
         if (this.rgbaCssValue != null) {
-            if (rgbaCssValue.isAlreadyInUse() && !Objects.equals(
-                    this.rgbaCssValue.getStateChangeInformer(),
+            if (rgbaCssValue.isAlreadyInUse() && !Objects.equals(this.rgbaCssValue.getStateChangeInformer(),
                     rgbaCssValue.getStateChangeInformer())) {
                 try {
-                    final RgbaCssValue rgbaCssValueClone = CloneUtil
-                            .deepClone(rgbaCssValue);
+                    final RgbaCssValue rgbaCssValueClone = CloneUtil.deepClone(rgbaCssValue);
                     this.rgbaCssValue.setAlreadyInUse(false);
                     this.rgbaCssValue = rgbaCssValueClone;
                     if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.warning("cloned rgbaCssValue " + rgbaCssValue
-                                + "(hashcode: " + rgbaCssValue.hashCode()
+                        LOGGER.warning("cloned rgbaCssValue " + rgbaCssValue + "(hashcode: " + rgbaCssValue.hashCode()
                                 + ") as it is already used by another object");
                     }
                 } catch (final CloneNotSupportedException e) {
@@ -462,8 +442,7 @@ public class BorderBottomColor extends AbstractCssProperty<BorderBottomColor>
                 try {
                     this.rgbaCssValue = CloneUtil.deepClone(rgbaCssValue);
                     if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.warning("cloned rgbaCssValue " + rgbaCssValue
-                                + "(hashcode: " + rgbaCssValue.hashCode()
+                        LOGGER.warning("cloned rgbaCssValue " + rgbaCssValue + "(hashcode: " + rgbaCssValue.hashCode()
                                 + ") as it is already used by another object");
                     }
                 } catch (final CloneNotSupportedException e) {
@@ -482,8 +461,7 @@ public class BorderBottomColor extends AbstractCssProperty<BorderBottomColor>
     }
 
     /**
-     * @param hslCssValue
-     *                        the hslCssValue to set
+     * @param hslCssValue the hslCssValue to set
      * @since 1.0.0
      * @author WFF
      */
@@ -492,17 +470,14 @@ public class BorderBottomColor extends AbstractCssProperty<BorderBottomColor>
             throw new NullValueException("hslCssValue can not be null");
         }
         if (this.hslCssValue != null) {
-            if (hslCssValue.isAlreadyInUse() && !Objects.equals(
-                    this.hslCssValue.getStateChangeInformer(),
+            if (hslCssValue.isAlreadyInUse() && !Objects.equals(this.hslCssValue.getStateChangeInformer(),
                     hslCssValue.getStateChangeInformer())) {
                 try {
-                    final HslCssValue hslCssValueClone = CloneUtil
-                            .deepClone(hslCssValue);
+                    final HslCssValue hslCssValueClone = CloneUtil.deepClone(hslCssValue);
                     this.hslCssValue.setAlreadyInUse(false);
                     this.hslCssValue = hslCssValueClone;
                     if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.warning("cloned hslCssValue " + hslCssValue
-                                + "(hashcode: " + hslCssValue.hashCode()
+                        LOGGER.warning("cloned hslCssValue " + hslCssValue + "(hashcode: " + hslCssValue.hashCode()
                                 + ") as it is already used by another object");
                     }
                 } catch (final CloneNotSupportedException e) {
@@ -517,8 +492,7 @@ public class BorderBottomColor extends AbstractCssProperty<BorderBottomColor>
                 try {
                     this.hslCssValue = CloneUtil.deepClone(hslCssValue);
                     if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.warning("cloned hslCssValue " + hslCssValue
-                                + "(hashcode: " + hslCssValue.hashCode()
+                        LOGGER.warning("cloned hslCssValue " + hslCssValue + "(hashcode: " + hslCssValue.hashCode()
                                 + ") as it is already used by another object");
                     }
                 } catch (final CloneNotSupportedException e) {
@@ -537,8 +511,7 @@ public class BorderBottomColor extends AbstractCssProperty<BorderBottomColor>
     }
 
     /**
-     * @param hslaCssValue
-     *                         the hslCssValue to set
+     * @param hslaCssValue the hslCssValue to set
      * @since 1.0.0
      * @author WFF
      */
@@ -547,17 +520,14 @@ public class BorderBottomColor extends AbstractCssProperty<BorderBottomColor>
             throw new NullValueException("hslCssValue can not be null");
         }
         if (this.hslaCssValue != null) {
-            if (hslaCssValue.isAlreadyInUse() && !Objects.equals(
-                    this.hslaCssValue.getStateChangeInformer(),
+            if (hslaCssValue.isAlreadyInUse() && !Objects.equals(this.hslaCssValue.getStateChangeInformer(),
                     hslaCssValue.getStateChangeInformer())) {
                 try {
-                    final HslaCssValue hslaCssValueClone = CloneUtil
-                            .deepClone(hslaCssValue);
+                    final HslaCssValue hslaCssValueClone = CloneUtil.deepClone(hslaCssValue);
                     this.hslaCssValue.setAlreadyInUse(false);
                     this.hslaCssValue = hslaCssValueClone;
                     if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.warning("cloned hslaCssValue " + hslaCssValue
-                                + "(hashcode: " + hslaCssValue.hashCode()
+                        LOGGER.warning("cloned hslaCssValue " + hslaCssValue + "(hashcode: " + hslaCssValue.hashCode()
                                 + ") as it is already used by another object");
                     }
                 } catch (final CloneNotSupportedException e) {
@@ -572,8 +542,7 @@ public class BorderBottomColor extends AbstractCssProperty<BorderBottomColor>
                 try {
                     this.hslaCssValue = CloneUtil.deepClone(hslaCssValue);
                     if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.warning("cloned hslaCssValue " + hslaCssValue
-                                + "(hashcode: " + hslaCssValue.hashCode()
+                        LOGGER.warning("cloned hslaCssValue " + hslaCssValue + "(hashcode: " + hslaCssValue.hashCode()
                                 + ") as it is already used by another object");
                     }
                 } catch (final CloneNotSupportedException e) {

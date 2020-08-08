@@ -35,12 +35,9 @@ public abstract class AbstractHtmlRepository {
      * @return the list of read lock
      * @since 3.0.1
      */
-    protected static Collection<Lock> getReadLocks(
-            final AbstractHtml... fromTags) {
+    protected static Collection<Lock> getReadLocks(final AbstractHtml... fromTags) {
         // passed 2 instead of 1 because the load factor is 0.75f
-        final Collection<Lock> locks = fromTags.length > 1
-                ? new HashSet<>(fromTags.length)
-                : new ArrayDeque<>(2);
+        final Collection<Lock> locks = fromTags.length > 1 ? new HashSet<>(fromTags.length) : new ArrayDeque<>(2);
         for (final AbstractHtml tag : fromTags) {
             final Lock readLock = tag.getReadLock();
             if (readLock != null) {
@@ -51,16 +48,14 @@ public abstract class AbstractHtmlRepository {
     }
 
     /**
-     * @param parallel
-     *                     true to use parallel stream.
-     * @param parents
-     *                     the tags from which the nested children to be taken.
+     * @param parallel true to use parallel stream.
+     * @param parents  the tags from which the nested children to be taken.
      * @return stream of all nested children including the given parent.
      * @since 3.0.0
      * @author WFF
      */
-    protected static Stream<AbstractHtml> getAllNestedChildrenIncludingParent(
-            final boolean parallel, final AbstractHtml... parents) {
+    protected static Stream<AbstractHtml> getAllNestedChildrenIncludingParent(final boolean parallel,
+            final AbstractHtml... parents) {
 
         final Builder<AbstractHtml> builder = Stream.builder();
 
@@ -86,27 +81,21 @@ public abstract class AbstractHtmlRepository {
     }
 
     /**
-     * Loops through all nested children tags (excluding the given tag) of the
-     * given tag. The looping is in a random order to gain maximum performance
-     * and minimum memory footprint.
+     * Loops through all nested children tags (excluding the given tag) of the given
+     * tag. The looping is in a random order to gain maximum performance and minimum
+     * memory footprint.
      *
-     * @param nestedChild
-     *                           the object of NestedChild from which the
-     *                           eachChild(AbstractHtml) to be invoked.
-     * @param includeParents
-     *                           true to include the given parent tags in the
-     *                           loop
-     * @param parents
-     *                           the tags from which to loop through.
+     * @param nestedChild    the object of NestedChild from which the
+     *                       eachChild(AbstractHtml) to be invoked.
+     * @param includeParents true to include the given parent tags in the loop
+     * @param parents        the tags from which to loop through.
      *
      * @since 2.1.8
      * @author WFF
      */
-    protected static void loopThroughAllNestedChildren(
-            final NestedChild nestedChild, final boolean includeParents,
+    protected static void loopThroughAllNestedChildren(final NestedChild nestedChild, final boolean includeParents,
             final AbstractHtml... parents) {
-        AbstractHtml.loopThroughAllNestedChildren(nestedChild, includeParents,
-                parents);
+        AbstractHtml.loopThroughAllNestedChildren(nestedChild, includeParents, parents);
     }
 
     /**
@@ -117,8 +106,8 @@ public abstract class AbstractHtmlRepository {
      * @since 2.1.8
      * @author WFF
      */
-    protected static WffBMData addWffData(final AbstractHtml abstractHtml,
-            final String key, final WffBMData wffBMData) {
+    protected static WffBMData addWffData(final AbstractHtml abstractHtml, final String key,
+            final WffBMData wffBMData) {
         return abstractHtml.addWffData(key, wffBMData);
     }
 
@@ -129,8 +118,7 @@ public abstract class AbstractHtmlRepository {
      * @since 2.1.8
      * @author WFF
      */
-    protected static WffBMData removeWffData(final AbstractHtml abstractHtml,
-            final String key) {
+    protected static WffBMData removeWffData(final AbstractHtml abstractHtml, final String key) {
         return abstractHtml.removeWffData(key);
     }
 
@@ -141,8 +129,7 @@ public abstract class AbstractHtmlRepository {
      * @since 3.0.1
      * @author WFF
      */
-    protected static WffBMData getWffData(final AbstractHtml abstractHtml,
-            final String key) {
+    protected static WffBMData getWffData(final AbstractHtml abstractHtml, final String key) {
         return abstractHtml.getWffData(key);
     }
 

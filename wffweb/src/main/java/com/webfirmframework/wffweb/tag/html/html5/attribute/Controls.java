@@ -32,8 +32,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.BooleanAttribute;
  * @author WFF
  * @since 1.0.0
  */
-public class Controls extends AbstractAttribute
-        implements AudioAttributable, BooleanAttribute {
+public class Controls extends AbstractAttribute implements AudioAttributable, BooleanAttribute {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -57,16 +56,14 @@ public class Controls extends AbstractAttribute
     }
 
     /**
-     * @param value
-     *                  true or false
+     * @param value true or false
      * @since 3.0.2
      */
     public Controls(final String value) {
         if ("true".equals(value) || "false".equals(value)) {
             controls = Boolean.parseBoolean(value);
         } else {
-            throw new InvalidValueException(
-                    "the value should be either true or false");
+            throw new InvalidValueException("the value should be either true or false");
         }
         setAttributeValue(value);
     }
@@ -100,9 +97,7 @@ public class Controls extends AbstractAttribute
     }
 
     /**
-     * @param controls
-     *                     the controls to set. {@code null} will remove the
-     *                     value.
+     * @param controls the controls to set. {@code null} will remove the value.
      * @author WFF
      * @since 1.0.0
      */

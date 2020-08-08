@@ -28,8 +28,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
  * @author WFF
  *
  */
-public class ClassAttribute extends AbstractValueSetAttribute
-        implements GlobalAttributable {
+public class ClassAttribute extends AbstractValueSetAttribute implements GlobalAttributable {
 
     /**
      *
@@ -84,9 +83,8 @@ public class ClassAttribute extends AbstractValueSetAttribute
     /**
      * adds the given class names.
      *
-     * @param classNames
-     *                       one or more class names separated by space or as an
-     *                       array of class names.
+     * @param classNames one or more class names separated by space or as an array
+     *                   of class names.
      * @since 1.0.0
      * @author WFF
      */
@@ -97,9 +95,8 @@ public class ClassAttribute extends AbstractValueSetAttribute
     /**
      * removed all current class names and adds the given class names.
      *
-     * @param classNames
-     *                       one or more class names separated by space or an
-     *                       array of class names.
+     * @param classNames one or more class names separated by space or an array of
+     *                   class names.
      * @since 1.0.0
      * @author WFF
      */
@@ -124,8 +121,7 @@ public class ClassAttribute extends AbstractValueSetAttribute
     /**
      * removes all class names from the class attribute
      *
-     * @param classNames
-     *                       the class names to remove
+     * @param classNames the class names to remove
      * @since 1.0.0
      * @author WFF
      */
@@ -136,8 +132,7 @@ public class ClassAttribute extends AbstractValueSetAttribute
     /**
      * removes the given class name
      *
-     * @param className
-     *                      the class name to remove
+     * @param className the class name to remove
      * @since 1.0.0
      * @author WFF
      */
@@ -172,8 +167,7 @@ public class ClassAttribute extends AbstractValueSetAttribute
      * sets the value for this attribute
      *
      *
-     * @param value
-     *                  the value for the attribute.
+     * @param value the value for the attribute.
      * @since 2.1.15
      * @author WFF
      */

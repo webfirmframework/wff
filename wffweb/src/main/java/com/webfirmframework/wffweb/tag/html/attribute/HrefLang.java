@@ -31,8 +31,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.AreaAttributable;
  * @author WFF
  * @since 1.0.0
  */
-public class HrefLang extends AbstractAttribute
-        implements AAttributable, AreaAttributable {
+public class HrefLang extends AbstractAttribute implements AAttributable, AreaAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -52,13 +51,11 @@ public class HrefLang extends AbstractAttribute
     }
 
     /**
-     * This attribute indicates the language of the linked resource. It is
-     * purely advisory. Allowed values are determined by BCP47 for HTML5 and by
-     * RFC1766 for HTML4. Use this attribute only if the href attribute is
-     * present.
+     * This attribute indicates the language of the linked resource. It is purely
+     * advisory. Allowed values are determined by BCP47 for HTML5 and by RFC1766 for
+     * HTML4. Use this attribute only if the href attribute is present.
      *
-     * @param languageCode
-     *                         the languageCode.
+     * @param languageCode the languageCode.
      * @since 1.0.0
      * @author WFF
      */
@@ -68,13 +65,11 @@ public class HrefLang extends AbstractAttribute
     }
 
     /**
-     * This attribute indicates the language of the linked resource. It is
-     * purely advisory. Allowed values are determined by BCP47 for HTML5 and by
-     * RFC1766 for HTML4. Use this attribute only if the href attribute is
-     * present.
+     * This attribute indicates the language of the linked resource. It is purely
+     * advisory. Allowed values are determined by BCP47 for HTML5 and by RFC1766 for
+     * HTML4. Use this attribute only if the href attribute is present.
      *
-     * @param language
-     *                     the {@code Locale} object for language.
+     * @param language the {@code Locale} object for language.
      * @since 1.0.0
      * @author WFF
      */
@@ -86,8 +81,7 @@ public class HrefLang extends AbstractAttribute
     /**
      * sets the value for this attribute
      *
-     * @param languageCode
-     *                         the languageCode.
+     * @param languageCode the languageCode.
      * @since 1.0.0
      * @author WFF
      */
@@ -99,8 +93,7 @@ public class HrefLang extends AbstractAttribute
     /**
      * sets the value for this attribute
      *
-     * @param language
-     *                     the {@code Locale} object for language.
+     * @param language the {@code Locale} object for language.
      * @since 1.0.0
      * @author WFF
      */

@@ -50,8 +50,8 @@ public final class CssValueUtil {
     /**
      * The given value is used by Web Firm Framework Index Based Extraction
      * algorithm to extract css value parts, i.e. the
-     * {@code CssValueUtil#split(String)} is extracting values based on the
-     * given values. <br>
+     * {@code CssValueUtil#split(String)} is extracting values based on the given
+     * values. <br>
      * Eg :-
      *
      * <pre>
@@ -59,16 +59,14 @@ public final class CssValueUtil {
      * </pre>
      *
      * And the following <code>"rgb(", ")"</code>, <code>"rgba(", ")"</code>,
-     * <code>"hsl(", ")"</code>, <code>"hsla(", ")"</code> values are already
-     * added.
+     * <code>"hsl(", ")"</code>, <code>"hsla(", ")"</code> values are already added.
      *
      * @param start
      * @param end
      * @author WFF
      * @since 1.0.0
      */
-    public void addCssValuePartStartEndValue(final String start,
-            final String end) {
+    public void addCssValuePartStartEndValue(final String start, final String end) {
         CSS_VALUE_PART_START_END_VALUES.put(start, end);
     }
 
@@ -78,8 +76,8 @@ public final class CssValueUtil {
      * Extraction algorithm. It will throw InvalidValueException if the given
      * cssValue contains no space in between any valid cssValue part, eg:-
      * <code>rgb(1, 2, 5)rgb(11, 12, 15)</code>. And, it doesn't validate the
-     * extracted cssValue parts so the extracted cssValue parts (i.e. the
-     * returned {@code List<String>}) may contain invalid cssValue part.<br>
+     * extracted cssValue parts so the extracted cssValue parts (i.e. the returned
+     * {@code List<String>}) may contain invalid cssValue part.<br>
      * <br>
      * Sample code to test
      *
@@ -103,8 +101,7 @@ public final class CssValueUtil {
      * </pre>
      *
      *
-     * @param cssValue
-     *                     the value from which the css parts will be extracted
+     * @param cssValue the value from which the css parts will be extracted
      * @return the list containing cssValue parts
      * @author WFF
      * @since 1.0.0
@@ -114,20 +111,17 @@ public final class CssValueUtil {
 
             final Map<Integer, int[]> startAndEndIndexes = new TreeMap<>();
 
-            for (final Entry<String, String> entry : CSS_VALUE_PART_START_END_VALUES
-                    .entrySet()) {
+            for (final Entry<String, String> entry : CSS_VALUE_PART_START_END_VALUES.entrySet()) {
 
-                final int[][] rgbStartAndEndIndexesOf = StringUtil
-                        .startAndEndIndexesOf(cssValue, entry.getKey(),
-                                entry.getValue());
+                final int[][] rgbStartAndEndIndexesOf = StringUtil.startAndEndIndexesOf(cssValue, entry.getKey(),
+                        entry.getValue());
                 for (final int[] each : rgbStartAndEndIndexesOf) {
                     startAndEndIndexes.put(each[0], each);
                 }
             }
 
             if (startAndEndIndexes.size() == 0) {
-                return Arrays.asList(StringUtil.splitBySpace(
-                        StringUtil.convertToSingleSpace(cssValue)));
+                return Arrays.asList(StringUtil.splitBySpace(StringUtil.convertToSingleSpace(cssValue)));
             }
 
             final List<String> cssValueParts = new ArrayList<>();
@@ -137,8 +131,7 @@ public final class CssValueUtil {
 
             int[] previousStartEndIndex = null;
 
-            for (final Entry<Integer, int[]> entry : startAndEndIndexes
-                    .entrySet()) {
+            for (final Entry<Integer, int[]> entry : startAndEndIndexes.entrySet()) {
 
                 count++;
 
@@ -156,21 +149,16 @@ public final class CssValueUtil {
                     // char.
                     if ((zerothSlotCurrent - firstSlotOfPrevious) > 2) {
 
-                        final String cssValuePart2 = cssValue.substring(
-                                firstSlotOfPrevious + 1, zerothSlotCurrent);
+                        final String cssValuePart2 = cssValue.substring(firstSlotOfPrevious + 1, zerothSlotCurrent);
 
-                        final String trimmedCssValuePart2 = StringUtil
-                                .strip(cssValuePart2);
+                        final String trimmedCssValuePart2 = StringUtil.strip(cssValuePart2);
 
                         if (StringUtil.startsWithWhitespace(cssValuePart2)
-                                && StringUtil
-                                        .endsWithWhitespace(cssValuePart2)) {
+                                && StringUtil.endsWithWhitespace(cssValuePart2)) {
                             if (!trimmedCssValuePart2.isEmpty()) {
-                                for (final String each : StringUtil
-                                        .splitBySpace(trimmedCssValuePart2)) {
+                                for (final String each : StringUtil.splitBySpace(trimmedCssValuePart2)) {
                                     final String trimmed;
-                                    if (!(trimmed = StringUtil.strip(each))
-                                            .isEmpty()) {
+                                    if (!(trimmed = StringUtil.strip(each)).isEmpty()) {
                                         cssValueParts.add(trimmed);
                                     }
                                 }
@@ -184,13 +172,10 @@ public final class CssValueUtil {
                     } else if ((zerothSlotCurrent - firstSlotOfPrevious) == 1) {
                         throw new InvalidValueException(
                                 "there must be a space between each part of cssValue, a space is expected before '"
-                                        + cssValue.substring(zerothSlotCurrent)
-                                        + "'");
+                                        + cssValue.substring(zerothSlotCurrent) + "'");
                     }
 
-                    cssValueParts
-                            .add(cssValue.substring(currentStartEndIndex[0],
-                                    currentStartEndIndex[1] + 1));
+                    cssValueParts.add(cssValue.substring(currentStartEndIndex[0], currentStartEndIndex[1] + 1));
 
                 } else {
 
@@ -201,18 +186,14 @@ public final class CssValueUtil {
                     // index number.
 
                     if ((zerothSlotCurrent) > 1) {
-                        final String cssValuePart2 = cssValue.substring(0,
-                                zerothSlotCurrent);
+                        final String cssValuePart2 = cssValue.substring(0, zerothSlotCurrent);
 
-                        final String trimmedCssValuePart2 = StringUtil
-                                .strip(cssValuePart2);
+                        final String trimmedCssValuePart2 = StringUtil.strip(cssValuePart2);
 
                         if (StringUtil.endsWithWhitespace(cssValuePart2)) {
-                            for (final String each : StringUtil
-                                    .splitBySpace(trimmedCssValuePart2)) {
+                            for (final String each : StringUtil.splitBySpace(trimmedCssValuePart2)) {
                                 final String trimmed;
-                                if (!(trimmed = StringUtil.strip(each))
-                                        .isEmpty()) {
+                                if (!(trimmed = StringUtil.strip(each)).isEmpty()) {
                                     cssValueParts.add(trimmed);
                                 }
                             }
@@ -225,25 +206,19 @@ public final class CssValueUtil {
 
                     }
 
-                    cssValueParts
-                            .add(cssValue.substring(currentStartEndIndex[0],
-                                    currentStartEndIndex[1] + 1));
+                    cssValueParts.add(cssValue.substring(currentStartEndIndex[0], currentStartEndIndex[1] + 1));
 
                 }
 
                 final int cssValueLength = cssValue.length();
-                if (count == startAndEndIndexesSize
-                        && (firstSlotCurrent < (cssValueLength - 1))) {
+                if (count == startAndEndIndexesSize && (firstSlotCurrent < (cssValueLength - 1))) {
 
-                    final String cssValuePart2 = cssValue
-                            .substring(firstSlotCurrent + 1);
+                    final String cssValuePart2 = cssValue.substring(firstSlotCurrent + 1);
 
-                    final String trimmedCssValuePart2 = StringUtil
-                            .strip(cssValuePart2);
+                    final String trimmedCssValuePart2 = StringUtil.strip(cssValuePart2);
 
                     if (StringUtil.startsWithWhitespace(cssValuePart2)) {
-                        for (final String each : StringUtil
-                                .splitBySpace(trimmedCssValuePart2)) {
+                        for (final String each : StringUtil.splitBySpace(trimmedCssValuePart2)) {
                             if (!each.isEmpty()) {
                                 cssValueParts.add(each);
                             }
@@ -267,9 +242,9 @@ public final class CssValueUtil {
     }
 
     /**
-     * This method throws {@code NullValueException} if the given
-     * {@code cssValue} is null or {@code InvalidValueException} if the given
-     * {@code cssValue} is blank.
+     * This method throws {@code NullValueException} if the given {@code cssValue}
+     * is null or {@code InvalidValueException} if the given {@code cssValue} is
+     * blank.
      *
      * @param cssValue
      * @throws NullValueException
@@ -282,8 +257,7 @@ public final class CssValueUtil {
         if (cssValue == null) {
             throw new NullValueException("the cssValue should not be null.");
         } else if (StringUtil.isBlank(cssValue)) {
-            throw new InvalidValueException(
-                    "the cssValue should not be blank.");
+            throw new InvalidValueException("the cssValue should not be blank.");
         }
     }
 

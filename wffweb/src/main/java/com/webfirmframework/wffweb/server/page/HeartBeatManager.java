@@ -35,8 +35,7 @@ import com.webfirmframework.wffweb.NullValueException;
  */
 public final class HeartBeatManager {
 
-    private static final Logger LOGGER = Logger
-            .getLogger(HeartBeatManager.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(HeartBeatManager.class.getName());
 
     // there will be only one thread waiting for the lock so fairness must be
     // false and fairness may decrease the lock time
@@ -55,18 +54,13 @@ public final class HeartBeatManager {
     private final Runnable task;
 
     /**
-     * @param executor
-     *                        the executor object to use thread from it.
-     * @param minInterval
-     *                        in milliseconds. It keeps the minimum interval
-     *                        between the task execution.
-     * @param task
-     *                        the Runnable object which makes a request with
-     *                        sessionid to the heartbeat url for keeping http
-     *                        session alive.
+     * @param executor    the executor object to use thread from it.
+     * @param minInterval in milliseconds. It keeps the minimum interval between the
+     *                    task execution.
+     * @param task        the Runnable object which makes a request with sessionid
+     *                    to the heartbeat url for keeping http session alive.
      */
-    public HeartBeatManager(final Executor executor, final long minInterval,
-            final Runnable task) {
+    public HeartBeatManager(final Executor executor, final long minInterval, final Runnable task) {
         this.executor = executor;
         this.minInterval = minInterval;
         this.task = task;
@@ -76,13 +70,10 @@ public final class HeartBeatManager {
     }
 
     /**
-     * @param minInterval
-     *                        in milliseconds. It keeps the minimum interval
-     *                        between the task execution.
-     * @param task
-     *                        the Runnable object which makes a request with
-     *                        sessionid to the heartbeat url for keeping http
-     *                        session alive.
+     * @param minInterval in milliseconds. It keeps the minimum interval between the
+     *                    task execution.
+     * @param task        the Runnable object which makes a request with sessionid
+     *                    to the heartbeat url for keeping http session alive.
      */
     public HeartBeatManager(final long minInterval, final Runnable task) {
         executor = null;
@@ -110,11 +101,9 @@ public final class HeartBeatManager {
             }
             if (!taskQ.isEmpty()) {
                 if (executor != null) {
-                    CompletableFuture.runAsync(
-                            () -> executeTasksFromQ(currentTime), executor);
+                    CompletableFuture.runAsync(() -> executeTasksFromQ(currentTime), executor);
                 } else {
-                    CompletableFuture
-                            .runAsync(() -> executeTasksFromQ(currentTime));
+                    CompletableFuture.runAsync(() -> executeTasksFromQ(currentTime));
                 }
             }
         }
@@ -156,9 +145,7 @@ public final class HeartBeatManager {
 
                         } catch (final Exception e) {
                             if (LOGGER.isLoggable(Level.SEVERE)) {
-                                LOGGER.log(Level.SEVERE,
-                                        "Could not process this data received from client.",
-                                        e);
+                                LOGGER.log(Level.SEVERE, "Could not process this data received from client.", e);
                             }
                         }
 

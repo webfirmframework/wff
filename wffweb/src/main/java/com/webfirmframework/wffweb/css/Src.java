@@ -40,8 +40,7 @@ public class Src extends AbstractCssProperty<Src> {
 
     /**
      *
-     * @param cssValue
-     *                     the cssValue to set
+     * @param cssValue the cssValue to set
      * @author WFF
      * @since 1.1.2
      */
@@ -83,8 +82,7 @@ public class Src extends AbstractCssProperty<Src> {
     }
 
     /**
-     * @param cssValue
-     *                     The value should be a unicodeChars sequence.
+     * @param cssValue The value should be a unicodeChars sequence.
      * @since 1.1.2
      * @author WFF
      */

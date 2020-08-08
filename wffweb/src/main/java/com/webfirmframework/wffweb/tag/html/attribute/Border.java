@@ -55,8 +55,7 @@ public class Border extends AbstractAttribute implements TableAttributable {
     }
 
     /**
-     * @param value
-     *                  the the number of borders
+     * @param value the the number of borders
      * @since 1.1.5
      * @author WFF
      */
@@ -66,8 +65,7 @@ public class Border extends AbstractAttribute implements TableAttributable {
     }
 
     /**
-     * @param value
-     *                  the the number of borders
+     * @param value the the number of borders
      * @since 1.1.5
      * @author WFF
      */
@@ -97,8 +95,7 @@ public class Border extends AbstractAttribute implements TableAttributable {
     }
 
     /**
-     * @param value
-     *                  the the number of borders
+     * @param value the the number of borders
      * @author WFF
      * @since 1.1.5
      */

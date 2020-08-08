@@ -27,9 +27,8 @@ public final class StringBuilderUtil {
     }
 
     /**
-     * @param sb
-     *               the {@code StringBuilder} object to create a trimmed string
-     *               from it.
+     * @param sb the {@code StringBuilder} object to create a trimmed string from
+     *           it.
      * @return
      * @since 1.0.0
      * @author WFF
@@ -55,8 +54,7 @@ public final class StringBuilderUtil {
     }
 
     /**
-     * @param sb
-     *               StringBuilder object to be trimmed.
+     * @param sb StringBuilder object to be trimmed.
      * @return the same StringBuilder object after trimming.
      * @since 3.0.15
      */
@@ -89,17 +87,13 @@ public final class StringBuilderUtil {
     }
 
     /**
-     * @param from
-     *                       content to be replaced from this StringBuilder
-     * @param thisString
-     *                       the string to be replaced
-     * @param with
-     *                       with this string the thisString will be replaced.
+     * @param from       content to be replaced from this StringBuilder
+     * @param thisString the string to be replaced
+     * @param with       with this string the thisString will be replaced.
      * @return the modified StringBuilder which is the same from.
      * @since 3.0.15
      */
-    public static StringBuilder replaceFirst(final StringBuilder from,
-            final String thisString, final String with) {
+    public static StringBuilder replaceFirst(final StringBuilder from, final String thisString, final String with) {
 
         final int idx = from.indexOf(thisString);
 

@@ -65,19 +65,16 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class Padding extends AbstractCssProperty<Padding>
-        implements StateChangeInformer<CssProperty> {
+public class Padding extends AbstractCssProperty<Padding> implements StateChangeInformer<CssProperty> {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    private static final Logger LOGGER = Logger
-            .getLogger(Padding.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Padding.class.getName());
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays
-            .asList(INITIAL, INHERIT);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(INITIAL, INHERIT);
 
     private String cssValue;
 
@@ -94,18 +91,16 @@ public class Padding extends AbstractCssProperty<Padding>
     }
 
     /**
-     * @param cssValue
-     *                     the css value to set.
+     * @param cssValue the css value to set.
      */
     public Padding(final String cssValue) {
         setCssValue(cssValue);
     }
 
     /**
-     * @param paddingBottom
-     *                          the {@code PaddingBottom} object from which the
-     *                          cssValue to set.And, {@code null} will throw
-     *                          {@code NullValueException}
+     * @param paddingBottom the {@code PaddingBottom} object from which the cssValue
+     *                      to set.And, {@code null} will throw
+     *                      {@code NullValueException}
      */
     public Padding(final Padding paddingBottom) {
         if (paddingBottom == null) {
@@ -162,8 +157,8 @@ public class Padding extends AbstractCssProperty<Padding>
     }
 
     /**
-     * gets the value, {@code getCssValue} method can also be used to get the
-     * same value.
+     * gets the value, {@code getCssValue} method can also be used to get the same
+     * value.
      *
      * @return the value in String.
      * @since 1.0.0
@@ -174,13 +169,11 @@ public class Padding extends AbstractCssProperty<Padding>
     }
 
     /**
-     * @param cssValue
-     *                     the value should be a length value, for example
-     *                     <code>5px</code>. {@code null} is considered as an
-     *                     invalid value and it will throw
-     *                     {@code NullValueException}.And an empty string is
-     *                     also considered as an invalid value and it will throw
-     *                     {@code InvalidValueException}.
+     * @param cssValue the value should be a length value, for example
+     *                 <code>5px</code>. {@code null} is considered as an invalid
+     *                 value and it will throw {@code NullValueException}.And an
+     *                 empty string is also considered as an invalid value and it
+     *                 will throw {@code InvalidValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -220,11 +213,9 @@ public class Padding extends AbstractCssProperty<Padding>
                 return this;
             }
 
-            final String paddingString = StringUtil
-                    .convertToSingleSpace(trimmedCssValue);
+            final String paddingString = StringUtil.convertToSingleSpace(trimmedCssValue);
 
-            final String[] extractedPaddings = StringUtil
-                    .splitBySpace(paddingString);
+            final String[] extractedPaddings = StringUtil.splitBySpace(paddingString);
 
             if (extractedPaddings.length == 1) {
                 if (paddingTop == null) {
@@ -343,8 +334,7 @@ public class Padding extends AbstractCssProperty<Padding>
                     paddingLeft.setCssValue(extractedPaddings[3]);
                 }
             } else {
-                throw new InvalidValueException(
-                        "the given cssValue is invalid");
+                throw new InvalidValueException("the given cssValue is invalid");
             }
 
             this.cssValue = paddingString;
@@ -385,10 +375,10 @@ public class Padding extends AbstractCssProperty<Padding>
     }
 
     /**
-     * sets the top, right, bottom and left width in {@code Padding}. If the
-     * given argument is already used by another object, then the
-     * existing/cloned object will be used. And throws
-     * {@code NullValueException} if any of the given argument is null.
+     * sets the top, right, bottom and left width in {@code Padding}. If the given
+     * argument is already used by another object, then the existing/cloned object
+     * will be used. And throws {@code NullValueException} if any of the given
+     * argument is null.
      *
      * @param paddingTop
      * @param paddingRight
@@ -397,12 +387,10 @@ public class Padding extends AbstractCssProperty<Padding>
      * @author WFF
      * @since 1.0.0
      */
-    public void setPadding(final PaddingTop paddingTop,
-            final PaddingRight paddingRight, final PaddingBottom paddingBottom,
-            final PaddingLeft paddingLeft) {
+    public void setPadding(final PaddingTop paddingTop, final PaddingRight paddingRight,
+            final PaddingBottom paddingBottom, final PaddingLeft paddingLeft) {
 
-        if (paddingTop != null && paddingRight != null && paddingBottom != null
-                && paddingLeft != null) {
+        if (paddingTop != null && paddingRight != null && paddingBottom != null && paddingLeft != null) {
 
             if (PaddingTop.INITIAL.equals(paddingTop.getCssValue())
                     || PaddingTop.INHERIT.equals(paddingTop.getCssValue())
@@ -429,11 +417,9 @@ public class Padding extends AbstractCssProperty<Padding>
                     this.paddingLeft.setAlreadyInUse(false);
                 }
 
-                if (paddingTop.isAlreadyInUse()
-                        && this.paddingTop != paddingTop) {
+                if (paddingTop.isAlreadyInUse() && this.paddingTop != paddingTop) {
                     if (this.paddingTop != null) {
-                        paddingTopTemp = this.paddingTop
-                                .setCssValue(paddingTop.getCssValue());
+                        paddingTopTemp = this.paddingTop.setCssValue(paddingTop.getCssValue());
                         if (LOGGER.isLoggable(Level.WARNING)) {
                             LOGGER.warning(
                                     "the given paddingTop is already used by another object so the existing object is used");
@@ -449,11 +435,9 @@ public class Padding extends AbstractCssProperty<Padding>
                     paddingTopTemp = paddingTop;
                 }
 
-                if (paddingRight.isAlreadyInUse()
-                        && this.paddingRight != paddingRight) {
+                if (paddingRight.isAlreadyInUse() && this.paddingRight != paddingRight) {
                     if (this.paddingRight != null) {
-                        paddingRightTemp = this.paddingRight
-                                .setCssValue(paddingTop.getCssValue());
+                        paddingRightTemp = this.paddingRight.setCssValue(paddingTop.getCssValue());
                         if (LOGGER.isLoggable(Level.WARNING)) {
                             LOGGER.warning(
                                     "the given paddingRight is already used by another object so the existing object is used");
@@ -470,11 +454,9 @@ public class Padding extends AbstractCssProperty<Padding>
                     paddingRightTemp = paddingRight;
                 }
 
-                if (paddingBottom.isAlreadyInUse()
-                        && this.paddingBottom != paddingBottom) {
+                if (paddingBottom.isAlreadyInUse() && this.paddingBottom != paddingBottom) {
                     if (this.paddingBottom != null) {
-                        paddingBottomTemp = this.paddingBottom
-                                .setCssValue(paddingTop.getCssValue());
+                        paddingBottomTemp = this.paddingBottom.setCssValue(paddingTop.getCssValue());
                         if (LOGGER.isLoggable(Level.WARNING)) {
                             LOGGER.warning(
                                     "the given paddingBottom is already used by another object so the existing object is used");
@@ -491,11 +473,9 @@ public class Padding extends AbstractCssProperty<Padding>
                     paddingBottomTemp = paddingBottom;
                 }
 
-                if (paddingLeft.isAlreadyInUse()
-                        && this.paddingLeft != paddingLeft) {
+                if (paddingLeft.isAlreadyInUse() && this.paddingLeft != paddingLeft) {
                     if (this.paddingLeft != null) {
-                        paddingLeftTemp = this.paddingLeft
-                                .setCssValue(paddingTop.getCssValue());
+                        paddingLeftTemp = this.paddingLeft.setCssValue(paddingTop.getCssValue());
                         if (LOGGER.isLoggable(Level.WARNING)) {
                             LOGGER.warning(
                                     "the given paddingLeft is already used by another object so the existing object is used");
@@ -524,8 +504,7 @@ public class Padding extends AbstractCssProperty<Padding>
                 paddingLeftTemp.setAlreadyInUse(true);
                 paddingLeftTemp.setStateChangeInformer(this);
 
-                assignProducedCssValue(paddingTop, paddingRight, paddingBottom,
-                        paddingLeft);
+                assignProducedCssValue(paddingTop, paddingRight, paddingBottom, paddingLeft);
 
                 this.paddingTop = paddingTopTemp;
                 this.paddingRight = paddingRightTemp;
@@ -576,17 +555,15 @@ public class Padding extends AbstractCssProperty<Padding>
      * @author WFF
      * @since 1.0.0
      */
-    private void assignProducedCssValue(final PaddingTop paddingTop,
-            final PaddingRight paddingRight, final PaddingBottom paddingBottom,
-            final PaddingLeft paddingLeft) {
+    private void assignProducedCssValue(final PaddingTop paddingTop, final PaddingRight paddingRight,
+            final PaddingBottom paddingBottom, final PaddingLeft paddingLeft) {
 
         final String paddingTopCssValue = paddingTop.getCssValue();
         final String paddingRightCssValue = paddingRight.getCssValue();
         final String paddingBottomCssValue = paddingBottom.getCssValue();
         final String paddingLeftCssValue = paddingLeft.getCssValue();
 
-        if (paddingTopCssValue.equals(paddingRightCssValue)
-                && paddingRightCssValue.equals(paddingBottomCssValue)
+        if (paddingTopCssValue.equals(paddingRightCssValue) && paddingRightCssValue.equals(paddingBottomCssValue)
                 && paddingBottomCssValue.equals(paddingLeftCssValue)) {
 
             cssValue = paddingTopCssValue;
@@ -598,8 +575,7 @@ public class Padding extends AbstractCssProperty<Padding>
         } else if (paddingTopCssValue.equals(paddingBottomCssValue)
                 && paddingRightCssValue.equals(paddingLeftCssValue)) {
 
-            final StringBuilder cssValueBuilder = new StringBuilder(
-                    paddingTopCssValue);
+            final StringBuilder cssValueBuilder = new StringBuilder(paddingTopCssValue);
             cssValueBuilder.append(' ').append(paddingRightCssValue);
 
             cssValue = cssValueBuilder.toString();
@@ -610,8 +586,7 @@ public class Padding extends AbstractCssProperty<Padding>
             }
 
         } else if (paddingRightCssValue.equals(paddingLeftCssValue)) {
-            cssValue = new StringBuilder(paddingTopCssValue).append(' ')
-                    .append(paddingRightCssValue).append(' ')
+            cssValue = new StringBuilder(paddingTopCssValue).append(' ').append(paddingRightCssValue).append(' ')
                     .append(paddingBottomCssValue).toString();
 
             final StateChangeInformer<CssProperty> stateChangeInformer = getStateChangeInformer();
@@ -620,10 +595,8 @@ public class Padding extends AbstractCssProperty<Padding>
             }
         } else {
 
-            cssValue = new StringBuilder(paddingTopCssValue).append(' ')
-                    .append(paddingRightCssValue).append(' ')
-                    .append(paddingBottomCssValue).append(' ')
-                    .append(paddingLeftCssValue).toString();
+            cssValue = new StringBuilder(paddingTopCssValue).append(' ').append(paddingRightCssValue).append(' ')
+                    .append(paddingBottomCssValue).append(' ').append(paddingLeftCssValue).toString();
 
             final StateChangeInformer<CssProperty> stateChangeInformer = getStateChangeInformer();
             if (stateChangeInformer != null) {
@@ -635,8 +608,7 @@ public class Padding extends AbstractCssProperty<Padding>
     /*
      * (non-Javadoc)
      *
-     * @see
-     * com.webfirmframework.wffweb.informer.StateChangeInformer#stateChanged(
+     * @see com.webfirmframework.wffweb.informer.StateChangeInformer#stateChanged(
      * java.lang .Object)
      */
     @Override
@@ -646,36 +618,29 @@ public class Padding extends AbstractCssProperty<Padding>
             final PaddingTop paddingTop = (PaddingTop) stateChangedObject;
             if (PaddingTop.INITIAL.equals(paddingTop.getCssValue())
                     || PaddingTop.INHERIT.equals(paddingTop.getCssValue())) {
-                throw new InvalidValueException(
-                        "paddingTop cannot have initial/inherit as its cssValue");
+                throw new InvalidValueException("paddingTop cannot have initial/inherit as its cssValue");
             }
         } else if (stateChangedObject instanceof PaddingRight) {
             final PaddingRight paddingRight = (PaddingRight) stateChangedObject;
             if (PaddingRight.INITIAL.equals(paddingRight.getCssValue())
-                    || PaddingRight.INHERIT
-                            .equals(paddingRight.getCssValue())) {
-                throw new InvalidValueException(
-                        "paddingRight cannot have initial/inherit as its cssValue");
+                    || PaddingRight.INHERIT.equals(paddingRight.getCssValue())) {
+                throw new InvalidValueException("paddingRight cannot have initial/inherit as its cssValue");
             }
         } else if (stateChangedObject instanceof PaddingBottom) {
             final PaddingBottom paddingBottom = (PaddingBottom) stateChangedObject;
             if (PaddingBottom.INITIAL.equals(paddingBottom.getCssValue())
-                    || PaddingBottom.INHERIT
-                            .equals(paddingBottom.getCssValue())) {
-                throw new InvalidValueException(
-                        "paddingBottom cannot have initial/inherit as its cssValue");
+                    || PaddingBottom.INHERIT.equals(paddingBottom.getCssValue())) {
+                throw new InvalidValueException("paddingBottom cannot have initial/inherit as its cssValue");
             }
         } else if (stateChangedObject instanceof PaddingLeft) {
             final PaddingLeft paddingLeft = (PaddingLeft) stateChangedObject;
             if (PaddingLeft.INITIAL.equals(paddingLeft.getCssValue())
                     || PaddingLeft.INHERIT.equals(paddingLeft.getCssValue())) {
-                throw new InvalidValueException(
-                        "paddingLeft cannot have initial/inherit as its cssValue");
+                throw new InvalidValueException("paddingLeft cannot have initial/inherit as its cssValue");
             }
         }
 
-        assignProducedCssValue(paddingTop, paddingRight, paddingBottom,
-                paddingLeft);
+        assignProducedCssValue(paddingTop, paddingRight, paddingBottom, paddingLeft);
 
     }
 
@@ -696,12 +661,10 @@ public class Padding extends AbstractCssProperty<Padding>
      */
     public static boolean isValid(final String cssValue) {
         final String trimmedCssValue;
-        if (cssValue == null || (trimmedCssValue = TagStringUtil
-                .toLowerCase(StringUtil.strip(cssValue))).isEmpty()) {
+        if (cssValue == null || (trimmedCssValue = TagStringUtil.toLowerCase(StringUtil.strip(cssValue))).isEmpty()) {
             return false;
         }
-        if (INITIAL.equalsIgnoreCase(trimmedCssValue)
-                || INHERIT.equalsIgnoreCase(trimmedCssValue)) {
+        if (INITIAL.equalsIgnoreCase(trimmedCssValue) || INHERIT.equalsIgnoreCase(trimmedCssValue)) {
             return true;
         }
 
@@ -709,9 +672,7 @@ public class Padding extends AbstractCssProperty<Padding>
 
         for (final String eachPart : cssValueParts) {
             final boolean valid = PaddingTop.isValid(eachPart);
-            if ((valid
-                    && (INITIAL.equals(eachPart) || INHERIT.equals(eachPart)))
-                    || !valid) {
+            if ((valid && (INITIAL.equals(eachPart) || INHERIT.equals(eachPart))) || !valid) {
                 return false;
             }
         }

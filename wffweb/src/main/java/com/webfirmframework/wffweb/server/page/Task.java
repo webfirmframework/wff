@@ -120,8 +120,7 @@ public enum Task {
     private Task() {
         valueByte = (byte) ordinal();
         shortName = "T".concat(String.valueOf(ordinal()));
-        jsNameValue = SHORT_NAME_ENABLED
-                ? shortName.concat(":").concat(String.valueOf(ordinal()))
+        jsNameValue = SHORT_NAME_ENABLED ? shortName.concat(":").concat(String.valueOf(ordinal()))
                 : name().concat(":").concat(String.valueOf(ordinal()));
     }
 
@@ -133,8 +132,8 @@ public enum Task {
     }
 
     /**
-     * @return nameValue with name as TASK byte value and values as the the
-     *         current task/object byte value.
+     * @return nameValue with name as TASK byte value and values as the the current
+     *         task/object byte value.
      * @since 2.0.0
      * @author WFF
      */
@@ -146,8 +145,7 @@ public enum Task {
     }
 
     /**
-     * @return nameValue with name as TASK_OF_TASKS byte value and values as
-     *         null
+     * @return nameValue with name as TASK_OF_TASKS byte value and values as null
      * @since 2.1.3
      * @author WFF
      */
@@ -204,8 +202,8 @@ public enum Task {
     }
 
     /**
-     * @return the sorted set of tasks in the descending order of the length of
-     *         task name.
+     * @return the sorted set of tasks in the descending order of the length of task
+     *         name.
      * @since 2.1.10
      * @since 3.0.15 bug fix
      * @author WFF
@@ -231,8 +229,7 @@ public enum Task {
         for (final Task task : values) {
             tasks.add(task);
         }
-        final Comparator<Task> asc = (o1, o2) -> Integer
-                .compare(o1.name().length(), o2.name().length());
+        final Comparator<Task> asc = (o1, o2) -> Integer.compare(o1.name().length(), o2.name().length());
 
         tasks.sort(asc.thenComparing(Task::name));
 

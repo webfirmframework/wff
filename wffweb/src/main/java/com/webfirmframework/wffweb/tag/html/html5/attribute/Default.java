@@ -35,8 +35,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.BooleanAttribute;
  * @author WFF
  * @since 2.1.9
  */
-public class Default extends AbstractAttribute
-        implements BooleanAttribute, TrackAttributable {
+public class Default extends AbstractAttribute implements BooleanAttribute, TrackAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 

@@ -46,8 +46,7 @@ public class PaddingTop extends AbstractCssProperty<PaddingTop> {
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays
-            .asList(INITIAL, INHERIT);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(INITIAL, INHERIT);
 
     private String cssValue;
     private Float value;
@@ -61,18 +60,15 @@ public class PaddingTop extends AbstractCssProperty<PaddingTop> {
     }
 
     /**
-     * @param cssValue
-     *                     the css value to set.
+     * @param cssValue the css value to set.
      */
     public PaddingTop(final String cssValue) {
         setCssValue(cssValue);
     }
 
     /**
-     * @param paddingTop
-     *                       the {@code PaddingTop} object from which the
-     *                       cssValue to set.And, {@code null} will throw
-     *                       {@code NullValueException}
+     * @param paddingTop the {@code PaddingTop} object from which the cssValue to
+     *                   set.And, {@code null} will throw {@code NullValueException}
      */
     public PaddingTop(final PaddingTop paddingTop) {
         if (paddingTop == null) {
@@ -82,9 +78,8 @@ public class PaddingTop extends AbstractCssProperty<PaddingTop> {
     }
 
     /**
-     * @param percent
-     *                    the percentage value to set. The cssLengthUnit will
-     *                    automatically set to %.
+     * @param percent the percentage value to set. The cssLengthUnit will
+     *                automatically set to %.
      * @since 1.0.0
      * @author WFF
      */
@@ -111,8 +106,7 @@ public class PaddingTop extends AbstractCssProperty<PaddingTop> {
      * @since 1.0.0
      * @author WFF
      */
-    public PaddingTop setValue(final float value,
-            final CssLengthUnit cssLengthUnit) {
+    public PaddingTop setValue(final float value, final CssLengthUnit cssLengthUnit) {
         this.value = value;
         this.cssLengthUnit = cssLengthUnit;
         cssValue = String.valueOf(value) + cssLengthUnit;
@@ -123,8 +117,7 @@ public class PaddingTop extends AbstractCssProperty<PaddingTop> {
     }
 
     /**
-     * @param percent
-     *                    the percent to set
+     * @param percent the percent to set
      * @since 1.0.0
      * @author WFF
      */
@@ -171,11 +164,11 @@ public class PaddingTop extends AbstractCssProperty<PaddingTop> {
     }
 
     /**
-     * gets the width in float value. {@code PaddingTop#getUnit()} should be
-     * used to get the cssLengthUnit for this value.
+     * gets the width in float value. {@code PaddingTop#getUnit()} should be used to
+     * get the cssLengthUnit for this value.
      *
-     * @return the value in float or null if the cssValue is
-     *         <code>initial</code> or <code>inherit</code>.
+     * @return the value in float or null if the cssValue is <code>initial</code> or
+     *         <code>inherit</code>.
      * @since 1.0.0
      * @author WFF
      */
@@ -194,11 +187,9 @@ public class PaddingTop extends AbstractCssProperty<PaddingTop> {
     }
 
     /**
-     * @param cssValue
-     *                     the value should be in the format of
-     *                     <code>55px</code> or <code>95%</code>. {@code null}
-     *                     is considered as an invalid value and it will throw
-     *                     {@code NullValueException}.
+     * @param cssValue the value should be in the format of <code>55px</code> or
+     *                 <code>95%</code>. {@code null} is considered as an invalid
+     *                 value and it will throw {@code NullValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -212,12 +203,10 @@ public class PaddingTop extends AbstractCssProperty<PaddingTop> {
             } else {
                 final String trimmedCssValue = StringUtil.strip(cssValue);
                 boolean invalidValue = true;
-                for (final CssLengthUnit cssLengthUnit : CssLengthUnit
-                        .values()) {
+                for (final CssLengthUnit cssLengthUnit : CssLengthUnit.values()) {
                     final String unit = cssLengthUnit.getUnit();
                     if (trimmedCssValue.endsWith(unit)) {
-                        final String valueOnly = trimmedCssValue
-                                .replaceFirst(unit, "");
+                        final String valueOnly = trimmedCssValue.replaceFirst(unit, "");
                         try {
                             value = Float.parseFloat(valueOnly);
                             // it could be -ve when it comes as sub
@@ -234,8 +223,7 @@ public class PaddingTop extends AbstractCssProperty<PaddingTop> {
                         break;
                     }
                 }
-                if (trimmedCssValue.equalsIgnoreCase(INITIAL)
-                        || trimmedCssValue.equalsIgnoreCase(INHERIT)) {
+                if (trimmedCssValue.equalsIgnoreCase(INITIAL) || trimmedCssValue.equalsIgnoreCase(INHERIT)) {
                     this.cssValue = trimmedCssValue.toLowerCase();
                     cssLengthUnit = null;
                     value = null;
@@ -285,8 +273,7 @@ public class PaddingTop extends AbstractCssProperty<PaddingTop> {
     /**
      * validates if the given cssValue is valid for this class.
      *
-     * @param cssValue
-     *                     the value to check.
+     * @param cssValue the value to check.
      * @return true if valid and false if invalid.
      * @author WFF
      * @since 1.0.0

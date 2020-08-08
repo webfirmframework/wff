@@ -28,8 +28,7 @@ public final class CommonConstants {
      *
      * @since 3.0.2
      */
-    public static final long FFFFFFFF_HEX_VALUE = Long.parseLong("FFFFFFFF",
-            16);
+    public static final long FFFFFFFF_HEX_VALUE = Long.parseLong("FFFFFFFF", 16);
 
     public static final long FFFFFF_HEX_VALUE = Long.parseLong("FFFFFF", 16);
 

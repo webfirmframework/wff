@@ -218,8 +218,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.BooleanAttribute;
 
 public class AttributeRegistry {
 
-    private static final Logger LOGGER = Logger
-            .getLogger(AttributeRegistry.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(AttributeRegistry.class.getName());
 
     private static final Set<String> ATTRIBUTE_NAMES_SET;
 
@@ -240,363 +239,215 @@ public class AttributeRegistry {
         final Field[] fields = AttributeNameConstants.class.getFields();
         final int initialCapacity = fields.length;
 
-        Map<String, Class<?>> attributeClassByAttrName = new ConcurrentHashMap<>(
-                initialCapacity);
-        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME = new ConcurrentHashMap<>(
-                initialCapacity);
+        Map<String, Class<?>> attributeClassByAttrName = new ConcurrentHashMap<>(initialCapacity);
+        ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME = new ConcurrentHashMap<>(initialCapacity);
         attributeClassByAttrNameTmp = new ConcurrentHashMap<>(initialCapacity);
         attributeClassByAttrName = new ConcurrentHashMap<>(initialCapacity);
 
         attributeClassByAttrName.put(DataWffId.ATTRIBUTE_NAME, DataWffId.class);
 
-        attributeClassByAttrName.put(AttributeNameConstants.ACCEPT,
-                Accept.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ACCESSKEY,
-                AccessKey.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ACCEPT, Accept.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ACCESSKEY, AccessKey.class);
         attributeClassByAttrName.put(AttributeNameConstants.ALIGN, Align.class);
         attributeClassByAttrName.put(AttributeNameConstants.ALT, Alt.class);
-        attributeClassByAttrName.put(AttributeNameConstants.AUTOCOMPLETE,
-                AutoComplete.class);
-        attributeClassByAttrName.put(AttributeNameConstants.AUTOFOCUS,
-                AutoFocus.class);
-        attributeClassByAttrName.put(AttributeNameConstants.AUTOPLAY,
-                AutoPlay.class);
-        attributeClassByAttrName.put(AttributeNameConstants.CHARSET,
-                Charset.class);
-        attributeClassByAttrName.put(AttributeNameConstants.CHECKED,
-                Checked.class);
-        attributeClassByAttrName.put(AttributeNameConstants.CLASS,
-                ClassAttribute.class);
-        attributeClassByAttrName.put(AttributeNameConstants.COLOR,
-                ColorAttribute.class);
-        attributeClassByAttrName.put(AttributeNameConstants.CONTENT,
-                Content.class);
-        attributeClassByAttrName.put(AttributeNameConstants.CONTENTEDITABLE,
-                ContentEditable.class);
-        attributeClassByAttrName.put(AttributeNameConstants.CONTEXTMENU,
-                ContextMenu.class);
-        attributeClassByAttrName.put(AttributeNameConstants.CONTROLS,
-                Controls.class);
-        attributeClassByAttrName.put(AttributeNameConstants.COORDS,
-                CoOrds.class);
-        attributeClassByAttrName.put(AttributeNameConstants.DATA,
-                DataAttribute.class);
+        attributeClassByAttrName.put(AttributeNameConstants.AUTOCOMPLETE, AutoComplete.class);
+        attributeClassByAttrName.put(AttributeNameConstants.AUTOFOCUS, AutoFocus.class);
+        attributeClassByAttrName.put(AttributeNameConstants.AUTOPLAY, AutoPlay.class);
+        attributeClassByAttrName.put(AttributeNameConstants.CHARSET, Charset.class);
+        attributeClassByAttrName.put(AttributeNameConstants.CHECKED, Checked.class);
+        attributeClassByAttrName.put(AttributeNameConstants.CLASS, ClassAttribute.class);
+        attributeClassByAttrName.put(AttributeNameConstants.COLOR, ColorAttribute.class);
+        attributeClassByAttrName.put(AttributeNameConstants.CONTENT, Content.class);
+        attributeClassByAttrName.put(AttributeNameConstants.CONTENTEDITABLE, ContentEditable.class);
+        attributeClassByAttrName.put(AttributeNameConstants.CONTEXTMENU, ContextMenu.class);
+        attributeClassByAttrName.put(AttributeNameConstants.CONTROLS, Controls.class);
+        attributeClassByAttrName.put(AttributeNameConstants.COORDS, CoOrds.class);
+        attributeClassByAttrName.put(AttributeNameConstants.DATA, DataAttribute.class);
         attributeClassByAttrName.put(AttributeNameConstants.DIR, Dir.class);
-        attributeClassByAttrName.put(AttributeNameConstants.DISABLED,
-                Disabled.class);
-        attributeClassByAttrName.put(AttributeNameConstants.DOWNLOAD,
-                Download.class);
-        attributeClassByAttrName.put(AttributeNameConstants.DRAGGABLE,
-                Draggable.class);
-        attributeClassByAttrName.put(AttributeNameConstants.DROPZONE,
-                Dropzone.class);
+        attributeClassByAttrName.put(AttributeNameConstants.DISABLED, Disabled.class);
+        attributeClassByAttrName.put(AttributeNameConstants.DOWNLOAD, Download.class);
+        attributeClassByAttrName.put(AttributeNameConstants.DRAGGABLE, Draggable.class);
+        attributeClassByAttrName.put(AttributeNameConstants.DROPZONE, Dropzone.class);
         attributeClassByAttrName.put(AttributeNameConstants.FACE, Face.class);
-        attributeClassByAttrName.put(AttributeNameConstants.FORM,
-                FormAttribute.class);
-        attributeClassByAttrName.put(AttributeNameConstants.FORMACTION,
-                FormAction.class);
-        attributeClassByAttrName.put(AttributeNameConstants.FORMENCTYPE,
-                FormEncType.class);
-        attributeClassByAttrName.put(AttributeNameConstants.FORMMETHOD,
-                FormMethod.class);
-        attributeClassByAttrName.put(AttributeNameConstants.FORMNOVALIDATE,
-                FormNoValidate.class);
-        attributeClassByAttrName.put(AttributeNameConstants.FORMTARGET,
-                FormTarget.class);
-        attributeClassByAttrName.put(AttributeNameConstants.HEIGHT,
-                Height.class);
-        attributeClassByAttrName.put(AttributeNameConstants.HIDDEN,
-                Hidden.class);
+        attributeClassByAttrName.put(AttributeNameConstants.FORM, FormAttribute.class);
+        attributeClassByAttrName.put(AttributeNameConstants.FORMACTION, FormAction.class);
+        attributeClassByAttrName.put(AttributeNameConstants.FORMENCTYPE, FormEncType.class);
+        attributeClassByAttrName.put(AttributeNameConstants.FORMMETHOD, FormMethod.class);
+        attributeClassByAttrName.put(AttributeNameConstants.FORMNOVALIDATE, FormNoValidate.class);
+        attributeClassByAttrName.put(AttributeNameConstants.FORMTARGET, FormTarget.class);
+        attributeClassByAttrName.put(AttributeNameConstants.HEIGHT, Height.class);
+        attributeClassByAttrName.put(AttributeNameConstants.HIDDEN, Hidden.class);
         attributeClassByAttrName.put(AttributeNameConstants.HREF, Href.class);
-        attributeClassByAttrName.put(AttributeNameConstants.HREFLANG,
-                HrefLang.class);
-        attributeClassByAttrName.put(AttributeNameConstants.HTTP_EQUIV,
-                HttpEquiv.class);
+        attributeClassByAttrName.put(AttributeNameConstants.HREFLANG, HrefLang.class);
+        attributeClassByAttrName.put(AttributeNameConstants.HTTP_EQUIV, HttpEquiv.class);
         attributeClassByAttrName.put(AttributeNameConstants.ID, Id.class);
         attributeClassByAttrName.put(AttributeNameConstants.LANG, Lang.class);
         attributeClassByAttrName.put(AttributeNameConstants.LIST,
                 com.webfirmframework.wffweb.tag.html.html5.attribute.List.class);
         attributeClassByAttrName.put(AttributeNameConstants.LOOP, Loop.class);
         attributeClassByAttrName.put(AttributeNameConstants.MAX, Max.class);
-        attributeClassByAttrName.put(AttributeNameConstants.MAXLENGTH,
-                MaxLength.class);
+        attributeClassByAttrName.put(AttributeNameConstants.MAXLENGTH, MaxLength.class);
         attributeClassByAttrName.put(AttributeNameConstants.MEDIA, Media.class);
-        attributeClassByAttrName.put(AttributeNameConstants.METHOD,
-                Method.class);
+        attributeClassByAttrName.put(AttributeNameConstants.METHOD, Method.class);
         attributeClassByAttrName.put(AttributeNameConstants.MIN, Min.class);
-        attributeClassByAttrName.put(AttributeNameConstants.MINLENGTH,
-                MinLength.class);
-        attributeClassByAttrName.put(AttributeNameConstants.MULTIPLE,
-                Multiple.class);
+        attributeClassByAttrName.put(AttributeNameConstants.MINLENGTH, MinLength.class);
+        attributeClassByAttrName.put(AttributeNameConstants.MULTIPLE, Multiple.class);
         attributeClassByAttrName.put(AttributeNameConstants.MUTED, Muted.class);
         attributeClassByAttrName.put(AttributeNameConstants.NAME, Name.class);
-        attributeClassByAttrName.put(AttributeNameConstants.NOHREF,
-                NoHref.class);
-        attributeClassByAttrName.put(AttributeNameConstants.PATTERN,
-                Pattern.class);
-        attributeClassByAttrName.put(AttributeNameConstants.PLACEHOLDER,
-                Placeholder.class);
-        attributeClassByAttrName.put(AttributeNameConstants.PRELOAD,
-                Preload.class);
-        attributeClassByAttrName.put(AttributeNameConstants.READONLY,
-                ReadOnly.class);
+        attributeClassByAttrName.put(AttributeNameConstants.NOHREF, NoHref.class);
+        attributeClassByAttrName.put(AttributeNameConstants.PATTERN, Pattern.class);
+        attributeClassByAttrName.put(AttributeNameConstants.PLACEHOLDER, Placeholder.class);
+        attributeClassByAttrName.put(AttributeNameConstants.PRELOAD, Preload.class);
+        attributeClassByAttrName.put(AttributeNameConstants.READONLY, ReadOnly.class);
         attributeClassByAttrName.put(AttributeNameConstants.REL, Rel.class);
-        attributeClassByAttrName.put(AttributeNameConstants.REQUIRED,
-                Required.class);
+        attributeClassByAttrName.put(AttributeNameConstants.REQUIRED, Required.class);
         attributeClassByAttrName.put(AttributeNameConstants.REV, Rev.class);
         attributeClassByAttrName.put(AttributeNameConstants.SHAPE, Shape.class);
         attributeClassByAttrName.put(AttributeNameConstants.SIZE, Size.class);
-        attributeClassByAttrName.put(AttributeNameConstants.SPELLCHECK,
-                SpellCheck.class);
+        attributeClassByAttrName.put(AttributeNameConstants.SPELLCHECK, SpellCheck.class);
         attributeClassByAttrName.put(AttributeNameConstants.SRC,
                 com.webfirmframework.wffweb.tag.html.attribute.Src.class);
         attributeClassByAttrName.put(AttributeNameConstants.STEP, Step.class);
         attributeClassByAttrName.put(AttributeNameConstants.STYLE, Style.class);
-        attributeClassByAttrName.put(AttributeNameConstants.TABINDEX,
-                TabIndex.class);
-        attributeClassByAttrName.put(AttributeNameConstants.TARGET,
-                Target.class);
+        attributeClassByAttrName.put(AttributeNameConstants.TABINDEX, TabIndex.class);
+        attributeClassByAttrName.put(AttributeNameConstants.TARGET, Target.class);
         attributeClassByAttrName.put(AttributeNameConstants.TITLE, Title.class);
-        attributeClassByAttrName.put(AttributeNameConstants.TRANSLATE,
-                Translate.class);
+        attributeClassByAttrName.put(AttributeNameConstants.TRANSLATE, Translate.class);
         attributeClassByAttrName.put(AttributeNameConstants.TYPE, Type.class);
         attributeClassByAttrName.put(AttributeNameConstants.VALUE, Value.class);
         attributeClassByAttrName.put(AttributeNameConstants.WIDTH, Width.class);
-        attributeClassByAttrName.put(AttributeNameConstants.COLSPAN,
-                ColSpan.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ROWSPAN,
-                RowSpan.class);
-        attributeClassByAttrName.put(AttributeNameConstants.HEADERS,
-                Headers.class);
+        attributeClassByAttrName.put(AttributeNameConstants.COLSPAN, ColSpan.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ROWSPAN, RowSpan.class);
+        attributeClassByAttrName.put(AttributeNameConstants.HEADERS, Headers.class);
         attributeClassByAttrName.put(AttributeNameConstants.SCOPE, Scope.class);
-        attributeClassByAttrName.put(AttributeNameConstants.SORTED,
-                Sorted.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ENCTYPE,
-                EncType.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ACTION,
-                Action.class);
-        attributeClassByAttrName.put(AttributeNameConstants.BORDER,
-                Border.class);
-        attributeClassByAttrName.put(AttributeNameConstants.CELLPADDING,
-                CellPadding.class);
-        attributeClassByAttrName.put(AttributeNameConstants.CELLSPACING,
-                CellSpacing.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONCLICK,
-                OnClick.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONCONTEXTMENU,
-                OnContextMenu.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONDBLCLICK,
-                OnDblClick.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONMOUSEDOWN,
-                OnMouseDown.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONMOUSEENTER,
-                OnMouseEnter.class);
+        attributeClassByAttrName.put(AttributeNameConstants.SORTED, Sorted.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ENCTYPE, EncType.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ACTION, Action.class);
+        attributeClassByAttrName.put(AttributeNameConstants.BORDER, Border.class);
+        attributeClassByAttrName.put(AttributeNameConstants.CELLPADDING, CellPadding.class);
+        attributeClassByAttrName.put(AttributeNameConstants.CELLSPACING, CellSpacing.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONCLICK, OnClick.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONCONTEXTMENU, OnContextMenu.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONDBLCLICK, OnDblClick.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONMOUSEDOWN, OnMouseDown.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONMOUSEENTER, OnMouseEnter.class);
 
-        attributeClassByAttrName.put(AttributeNameConstants.ONMOUSELEAVE,
-                OnMouseLeave.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONMOUSEMOVE,
-                OnMouseMove.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONMOUSEOUT,
-                OnMouseOut.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONMOUSEUP,
-                OnMouseUp.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONKEYDOWN,
-                OnKeyDown.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONKEYPRESS,
-                OnKeyPress.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONKEYUP,
-                OnKeyUp.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONABORT,
-                OnAbort.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONBEFOREUNLOAD,
-                OnBeforeUnload.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONERROR,
-                OnError.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONMOUSELEAVE, OnMouseLeave.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONMOUSEMOVE, OnMouseMove.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONMOUSEOUT, OnMouseOut.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONMOUSEUP, OnMouseUp.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONKEYDOWN, OnKeyDown.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONKEYPRESS, OnKeyPress.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONKEYUP, OnKeyUp.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONABORT, OnAbort.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONBEFOREUNLOAD, OnBeforeUnload.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONERROR, OnError.class);
 
-        attributeClassByAttrName.put(AttributeNameConstants.ONHASHCHANGE,
-                OnHashChange.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONHASHCHANGE, OnHashChange.class);
 
-        attributeClassByAttrName.put(AttributeNameConstants.ONLOAD,
-                OnLoad.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONPAGESHOW,
-                OnPageShow.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONPAGEHIDE,
-                OnPageHide.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONSCROLL,
-                OnScroll.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONUNLOAD,
-                OnUnload.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONBLUR,
-                OnBlur.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONCHANGE,
-                OnChange.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONFOCUS,
-                OnFocus.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONFOCUSIN,
-                OnFocusIn.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONFOCUSOUT,
-                OnFocusOut.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONINPUT,
-                OnInput.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONINVALID,
-                OnInvalid.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONRESET,
-                OnReset.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONSEARCH,
-                OnSearch.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONSELECT,
-                OnSelect.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONSUBMIT,
-                OnSubmit.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONDRAG,
-                OnDrag.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONDRAGEND,
-                OnDragEnd.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONDRAGENTER,
-                OnDragEnter.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONDRAGLEAVE,
-                OnDragLeave.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONDRAGOVER,
-                OnDragOver.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONDRAGSTART,
-                OnDragStart.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONDROP,
-                OnDrop.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONCOPY,
-                OnCopy.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONLOAD, OnLoad.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONPAGESHOW, OnPageShow.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONPAGEHIDE, OnPageHide.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONSCROLL, OnScroll.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONUNLOAD, OnUnload.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONBLUR, OnBlur.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONCHANGE, OnChange.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONFOCUS, OnFocus.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONFOCUSIN, OnFocusIn.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONFOCUSOUT, OnFocusOut.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONINPUT, OnInput.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONINVALID, OnInvalid.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONRESET, OnReset.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONSEARCH, OnSearch.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONSELECT, OnSelect.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONSUBMIT, OnSubmit.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONDRAG, OnDrag.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONDRAGEND, OnDragEnd.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONDRAGENTER, OnDragEnter.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONDRAGLEAVE, OnDragLeave.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONDRAGOVER, OnDragOver.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONDRAGSTART, OnDragStart.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONDROP, OnDrop.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONCOPY, OnCopy.class);
         attributeClassByAttrName.put(AttributeNameConstants.ONCUT, OnCut.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONPASTE,
-                OnPaste.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONAFTERPRINT,
-                OnAfterPrint.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONBEFOREPRINT,
-                OnBeforePrint.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONPASTE, OnPaste.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONAFTERPRINT, OnAfterPrint.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONBEFOREPRINT, OnBeforePrint.class);
 
-        attributeClassByAttrName.put(AttributeNameConstants.ONCANPLAY,
-                OnCanPlay.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONCANPLAYTHROUGH,
-                OnCanPlayThrough.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONDURATIONCHANGE,
-                OnDurationChange.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONEMPTIED,
-                OnEmptied.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONENDED,
-                OnEnded.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONLOADEDDATA,
-                OnLoadedData.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONLOADEDMETADATA,
-                OnLoadedMetaData.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONLOADSTART,
-                OnLoadStart.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONPAUSE,
-                OnPause.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONPLAY,
-                OnPlay.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONPLAYING,
-                OnPlaying.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONPROGRESS,
-                OnProgress.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONRATECHANGE,
-                OnRateChange.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONSEEKED,
-                OnSeeked.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONCANPLAY, OnCanPlay.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONCANPLAYTHROUGH, OnCanPlayThrough.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONDURATIONCHANGE, OnDurationChange.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONEMPTIED, OnEmptied.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONENDED, OnEnded.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONLOADEDDATA, OnLoadedData.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONLOADEDMETADATA, OnLoadedMetaData.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONLOADSTART, OnLoadStart.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONPAUSE, OnPause.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONPLAY, OnPlay.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONPLAYING, OnPlaying.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONPROGRESS, OnProgress.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONRATECHANGE, OnRateChange.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONSEEKED, OnSeeked.class);
 
-        attributeClassByAttrName.put(AttributeNameConstants.ONSEEKING,
-                OnSeeking.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONSTALLED,
-                OnStalled.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONSUSPEND,
-                OnSuspend.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONTIMEUPDATE,
-                OnTimeUpdate.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONVOLUMECHANGE,
-                OnVolumeChange.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONWAITING,
-                OnWaiting.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ANIMATIONEND,
-                AnimationEnd.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ANIMATIONITERATION,
-                AnimationIteration.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ANIMATIONSTART,
-                AnimationStart.class);
-        attributeClassByAttrName.put(AttributeNameConstants.TRANSITIONEND,
-                TransitionEnd.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONOFFLINE,
-                OnOffline.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONONLINE,
-                OnOnline.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONPOPSTATE,
-                OnPopState.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONSHOW,
-                OnShow.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONSTORAGE,
-                OnStorage.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONTOGGLE,
-                OnToggle.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONWHEEL,
-                OnWheel.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONTOUCHCANCEL,
-                OnTouchCancel.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONTOUCHEND,
-                OnTouchEnd.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONTOUCHMOVE,
-                OnTouchMove.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONTOUCHSTART,
-                OnTouchStart.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONSEEKING, OnSeeking.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONSTALLED, OnStalled.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONSUSPEND, OnSuspend.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONTIMEUPDATE, OnTimeUpdate.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONVOLUMECHANGE, OnVolumeChange.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONWAITING, OnWaiting.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ANIMATIONEND, AnimationEnd.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ANIMATIONITERATION, AnimationIteration.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ANIMATIONSTART, AnimationStart.class);
+        attributeClassByAttrName.put(AttributeNameConstants.TRANSITIONEND, TransitionEnd.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONOFFLINE, OnOffline.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONONLINE, OnOnline.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONPOPSTATE, OnPopState.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONSHOW, OnShow.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONSTORAGE, OnStorage.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONTOGGLE, OnToggle.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONWHEEL, OnWheel.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONTOUCHCANCEL, OnTouchCancel.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONTOUCHEND, OnTouchEnd.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONTOUCHMOVE, OnTouchMove.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONTOUCHSTART, OnTouchStart.class);
         attributeClassByAttrName.put(AttributeNameConstants.ROLE, Role.class);
-        attributeClassByAttrName.put(AttributeNameConstants.SRCSET,
-                SrcSet.class);
+        attributeClassByAttrName.put(AttributeNameConstants.SRCSET, SrcSet.class);
         attributeClassByAttrName.put(AttributeNameConstants.SIZES, Sizes.class);
 
         attributeClassByAttrName.put(AttributeNameConstants.COLS, Cols.class);
         attributeClassByAttrName.put(AttributeNameConstants.ROWS, Rows.class);
         attributeClassByAttrName.put(AttributeNameConstants.FOR, For.class);
-        attributeClassByAttrName.put(AttributeNameConstants.SELECTED,
-                Selected.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ACCEPT_CHARSET,
-                AcceptCharset.class);
+        attributeClassByAttrName.put(AttributeNameConstants.SELECTED, Selected.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ACCEPT_CHARSET, AcceptCharset.class);
         attributeClassByAttrName.put(AttributeNameConstants.ASYNC, Async.class);
-        attributeClassByAttrName.put(AttributeNameConstants.DATETIME,
-                DateTime.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONMOUSEOVER,
-                OnMouseOver.class);
-        attributeClassByAttrName.put(AttributeNameConstants.ONRESIZE,
-                OnResize.class);
+        attributeClassByAttrName.put(AttributeNameConstants.DATETIME, DateTime.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONMOUSEOVER, OnMouseOver.class);
+        attributeClassByAttrName.put(AttributeNameConstants.ONRESIZE, OnResize.class);
         attributeClassByAttrName.put(AttributeNameConstants.OPEN, Open.class);
-        attributeClassByAttrName.put(AttributeNameConstants.OPTIMUM,
-                Optimum.class);
+        attributeClassByAttrName.put(AttributeNameConstants.OPTIMUM, Optimum.class);
         attributeClassByAttrName.put(AttributeNameConstants.DEFER, Defer.class);
-        attributeClassByAttrName.put(AttributeNameConstants.DEFAULT,
-                Default.class);
-        attributeClassByAttrName.put(AttributeNameConstants.DIRNAME,
-                DirName.class);
+        attributeClassByAttrName.put(AttributeNameConstants.DEFAULT, Default.class);
+        attributeClassByAttrName.put(AttributeNameConstants.DIRNAME, DirName.class);
         attributeClassByAttrName.put(AttributeNameConstants.HIGH, High.class);
         attributeClassByAttrName.put(AttributeNameConstants.LOW, Low.class);
-        attributeClassByAttrName.put(AttributeNameConstants.REVERSED,
-                Reversed.class);
-        attributeClassByAttrName.put(AttributeNameConstants.POSTER,
-                Poster.class);
+        attributeClassByAttrName.put(AttributeNameConstants.REVERSED, Reversed.class);
+        attributeClassByAttrName.put(AttributeNameConstants.POSTER, Poster.class);
         attributeClassByAttrName.put(AttributeNameConstants.ISMAP, IsMap.class);
-        attributeClassByAttrName.put(AttributeNameConstants.SANDBOX,
-                Sandbox.class);
+        attributeClassByAttrName.put(AttributeNameConstants.SANDBOX, Sandbox.class);
         attributeClassByAttrName.put(AttributeNameConstants.WRAP, Wrap.class);
-        attributeClassByAttrName.put(AttributeNameConstants.USEMAP,
-                UseMap.class);
+        attributeClassByAttrName.put(AttributeNameConstants.USEMAP, UseMap.class);
         attributeClassByAttrName.put(AttributeNameConstants.NONCE, Nonce.class);
 
-        ATTRIBUTE_CLASS_BY_ATTR_NAME = Collections
-                .unmodifiableMap(attributeClassByAttrName);
+        ATTRIBUTE_CLASS_BY_ATTR_NAME = Collections.unmodifiableMap(attributeClassByAttrName);
 
         attributeClassByAttrNameTmp.putAll(attributeClassByAttrName);
 
         final List<String> tmpSortedBooleanAttrNames = new ArrayList<>(8);
 
-        for (final Entry<String, Class<?>> entry : attributeClassByAttrName
-                .entrySet()) {
+        for (final Entry<String, Class<?>> entry : attributeClassByAttrName.entrySet()) {
             final Class<?> attrClass = entry.getValue();
             final String attrName = entry.getKey();
-            ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(attrName,
-                    attrClass.getSimpleName());
+            ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME.put(attrName, attrClass.getSimpleName());
 
             if (BooleanAttribute.class.isAssignableFrom(attrClass)) {
                 tmpSortedBooleanAttrNames.add(attrName);
@@ -607,11 +458,9 @@ public class AttributeRegistry {
         // sorting in ascending order of length is the first priority
         // then needs to sort by ascending order of name otherwise
         // in some machines multiple,selected comes as selected,multiple
-        tmpSortedBooleanAttrNames.sort(Comparator.comparingInt(String::length)
-                .thenComparing(String::compareTo));
+        tmpSortedBooleanAttrNames.sort(Comparator.comparingInt(String::length).thenComparing(String::compareTo));
 
-        SORTED_BOOLEAN_ATTR_NAMES = Collections
-                .unmodifiableList(tmpSortedBooleanAttrNames);
+        SORTED_BOOLEAN_ATTR_NAMES = Collections.unmodifiableList(tmpSortedBooleanAttrNames);
 
         final List<String> tmpSortedEventAttrNames = new ArrayList<>(8);
 
@@ -631,10 +480,8 @@ public class AttributeRegistry {
         }
 
         int index = 0;
-        for (final String attrName : IndexedAttributeName.INSTANCE
-                .sortedAttrNames()) {
-            final Class<?> attrClass = ATTRIBUTE_CLASS_BY_ATTR_NAME
-                    .get(attrName);
+        for (final String attrName : IndexedAttributeName.INSTANCE.sortedAttrNames()) {
+            final Class<?> attrClass = ATTRIBUTE_CLASS_BY_ATTR_NAME.get(attrName);
             INDEXED_ATTR_CLASSES.add(index, attrClass);
 
             index++;
@@ -643,38 +490,32 @@ public class AttributeRegistry {
         // already sorted by length in ascending order and then by name in
         // ascending order in
         // PreIndexedAttributeName
-        for (final PreIndexedAttributeName each : PreIndexedAttributeName
-                .alleventattributes()) {
+        for (final PreIndexedAttributeName each : PreIndexedAttributeName.alleventattributes()) {
             tmpSortedEventAttrNames.add(each.attrName());
         }
 
-        SORTED_EVENT_ATTR_NAMES = Collections
-                .unmodifiableList(tmpSortedEventAttrNames);
+        SORTED_EVENT_ATTR_NAMES = Collections.unmodifiableList(tmpSortedEventAttrNames);
     }
 
     /**
-     * @param attrNames
-     *                      the attribute names to register, eg:-
-     *                      AttributeRegistry.register("attri-name1",
-     *                      "attri-name2")
+     * @param attrNames the attribute names to register, eg:-
+     *                  AttributeRegistry.register("attri-name1", "attri-name2")
      * @author WFF
      * @since 1.1.3
      */
     public static void register(final String... attrNames) {
 
-        final Set<String> tagNamesWithoutDuplicates = new HashSet<>(
-                attrNames.length);
+        final Set<String> tagNamesWithoutDuplicates = new HashSet<>(attrNames.length);
 
         Collections.addAll(tagNamesWithoutDuplicates, attrNames);
 
         ATTRIBUTE_NAMES_SET.addAll(tagNamesWithoutDuplicates);
 
         IndexedAttributeName.INSTANCE.sortedAttrNames().clear();
-        IndexedAttributeName.INSTANCE.sortedAttrNames()
-                .addAll(ATTRIBUTE_NAMES_SET);
+        IndexedAttributeName.INSTANCE.sortedAttrNames().addAll(ATTRIBUTE_NAMES_SET);
 
-        IndexedAttributeName.INSTANCE.sortedAttrNames().sort(Comparator
-                .comparingInt(String::length).thenComparing(String::compareTo));
+        IndexedAttributeName.INSTANCE.sortedAttrNames()
+                .sort(Comparator.comparingInt(String::length).thenComparing(String::compareTo));
     }
 
     /**
@@ -688,8 +529,8 @@ public class AttributeRegistry {
     }
 
     /**
-     * @return the list of boolean attribute names sorted in the ascending order
-     *         of its length
+     * @return the list of boolean attribute names sorted in the ascending order of
+     *         its length
      * @since 3.0.10
      */
     public static List<String> getBooleanAttributeNames() {
@@ -697,8 +538,8 @@ public class AttributeRegistry {
     }
 
     /**
-     * @return only the list of event attribute names sorted in the ascending
-     *         order of its length
+     * @return only the list of event attribute names sorted in the ascending order
+     *         of its length
      * @since 3.0.15
      */
     public static List<String> getEventAttributeNames() {
@@ -706,9 +547,8 @@ public class AttributeRegistry {
     }
 
     /**
-     * @param index
-     *                  the index got by
-     *                  {@link PreIndexedAttributeName#eventAttrIndex()}
+     * @param index the index got by
+     *              {@link PreIndexedAttributeName#eventAttrIndex()}
      * @return the attribute name of event attribute at event attribute index
      * @since 3.0.15
      */
@@ -722,13 +562,12 @@ public class AttributeRegistry {
      * @since 3.0.3
      */
     public static Integer getIndexByAttributeName(final String attributeName) {
-        return IndexedAttributeName.INSTANCE
-                .getIndexByAttributeName(attributeName);
+        return IndexedAttributeName.INSTANCE.getIndexByAttributeName(attributeName);
     }
 
     /**
-     * @return a map containing attribute name as key and value as tag class
-     *         name without package name
+     * @return a map containing attribute name as key and value as tag class name
+     *         without package name
      * @author WFF
      * @since 1.0.0
      */
@@ -754,8 +593,7 @@ public class AttributeRegistry {
 
         final Map<String, Class<?>> unloadedClasses = new HashMap<>();
 
-        for (final Entry<String, Class<?>> entry : attributeClassByAttrNameTmp
-                .entrySet()) {
+        for (final Entry<String, Class<?>> entry : attributeClassByAttrNameTmp.entrySet()) {
             try {
 
                 Class.forName(entry.getValue().getName());
@@ -763,8 +601,7 @@ public class AttributeRegistry {
             } catch (final ClassNotFoundException e) {
                 unloadedClasses.put(entry.getKey(), entry.getValue());
                 if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.warning("Could not load attribute class "
-                            + entry.getValue().getName());
+                    LOGGER.warning("Could not load attribute class " + entry.getValue().getName());
                 }
 
             }
@@ -783,8 +620,7 @@ public class AttributeRegistry {
      * @throws InvalidValueException
      * @since 3.0.2
      */
-    public static AbstractAttribute getNewAttributeInstance(
-            final String attributeName) {
+    public static AbstractAttribute getNewAttributeInstance(final String attributeName) {
         return getNewAttributeInstance(attributeName, null);
     }
 
@@ -795,11 +631,9 @@ public class AttributeRegistry {
      * @throws InvalidValueException
      * @since 3.0.2
      */
-    public static AbstractAttribute getNewAttributeInstance(
-            final String attributeName, final String attributeValue) {
+    public static AbstractAttribute getNewAttributeInstance(final String attributeName, final String attributeValue) {
 
-        final Class<?> attrClass = ATTRIBUTE_CLASS_BY_ATTR_NAME
-                .get(attributeName);
+        final Class<?> attrClass = ATTRIBUTE_CLASS_BY_ATTR_NAME.get(attributeName);
 
         if (attrClass == null) {
             return null;
@@ -808,20 +642,18 @@ public class AttributeRegistry {
         try {
 
             if (attributeValue == null) {
-                final AbstractAttribute newInstance = (AbstractAttribute) attrClass
-                        .getConstructor().newInstance();
+                final AbstractAttribute newInstance = (AbstractAttribute) attrClass.getConstructor().newInstance();
                 return newInstance;
             }
 
-            final AbstractAttribute newInstance = (AbstractAttribute) attrClass
-                    .getConstructor(String.class).newInstance(attributeValue);
+            final AbstractAttribute newInstance = (AbstractAttribute) attrClass.getConstructor(String.class)
+                    .newInstance(attributeValue);
 
             return newInstance;
-        } catch (InstantiationException | IllegalAccessException
-                | IllegalArgumentException | InvocationTargetException
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
                 | NoSuchMethodException | SecurityException e) {
-            throw new InvalidValueException("The given attributeValue "
-                    + attributeValue + " is invalid for " + attributeName);
+            throw new InvalidValueException(
+                    "The given attributeValue " + attributeValue + " is invalid for " + attributeName);
         }
 
     }
@@ -832,11 +664,10 @@ public class AttributeRegistry {
      * @return new instance or null if failed
      * @since 3.0.2
      */
-    public static AbstractAttribute getNewAttributeInstanceOrNullIfFailed(
-            final String attributeName, final String attributeValue) {
+    public static AbstractAttribute getNewAttributeInstanceOrNullIfFailed(final String attributeName,
+            final String attributeValue) {
 
-        final Class<?> attrClass = ATTRIBUTE_CLASS_BY_ATTR_NAME
-                .get(attributeName);
+        final Class<?> attrClass = ATTRIBUTE_CLASS_BY_ATTR_NAME.get(attributeName);
 
         if (attrClass == null) {
             return null;
@@ -845,17 +676,15 @@ public class AttributeRegistry {
         try {
 
             if (attributeValue == null) {
-                final AbstractAttribute newInstance = (AbstractAttribute) attrClass
-                        .getConstructor().newInstance();
+                final AbstractAttribute newInstance = (AbstractAttribute) attrClass.getConstructor().newInstance();
                 return newInstance;
             }
 
-            final AbstractAttribute newInstance = (AbstractAttribute) attrClass
-                    .getConstructor(String.class).newInstance(attributeValue);
+            final AbstractAttribute newInstance = (AbstractAttribute) attrClass.getConstructor(String.class)
+                    .newInstance(attributeValue);
 
             return newInstance;
-        } catch (InstantiationException | IllegalAccessException
-                | IllegalArgumentException | InvocationTargetException
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
                 | NoSuchMethodException | SecurityException e) {
             // NOP
         }
@@ -864,14 +693,13 @@ public class AttributeRegistry {
     }
 
     /**
-     * @param attributeNameIndex
-     *                               index
+     * @param attributeNameIndex index
      * @param attributeValue
      * @return new instance or null if failed
      * @since 3.0.3
      */
-    public static AbstractAttribute getNewAttributeInstanceOrNullIfFailed(
-            final int attributeNameIndex, final String attributeValue) {
+    public static AbstractAttribute getNewAttributeInstanceOrNullIfFailed(final int attributeNameIndex,
+            final String attributeValue) {
 
         final Class<?> attrClass = INDEXED_ATTR_CLASSES.get(attributeNameIndex);
 
@@ -882,17 +710,15 @@ public class AttributeRegistry {
         try {
 
             if (attributeValue == null) {
-                final AbstractAttribute newInstance = (AbstractAttribute) attrClass
-                        .getConstructor().newInstance();
+                final AbstractAttribute newInstance = (AbstractAttribute) attrClass.getConstructor().newInstance();
                 return newInstance;
             }
 
-            final AbstractAttribute newInstance = (AbstractAttribute) attrClass
-                    .getConstructor(String.class).newInstance(attributeValue);
+            final AbstractAttribute newInstance = (AbstractAttribute) attrClass.getConstructor(String.class)
+                    .newInstance(attributeValue);
 
             return newInstance;
-        } catch (InstantiationException | IllegalAccessException
-                | IllegalArgumentException | InvocationTargetException
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
                 | NoSuchMethodException | SecurityException e) {
             // NOP
         }
@@ -901,31 +727,24 @@ public class AttributeRegistry {
     }
 
     // only for testing purpose
-    static void test() throws InstantiationException, IllegalAccessException,
-            NoSuchFieldException, SecurityException, IllegalArgumentException,
-            InvocationTargetException, NoSuchMethodException,
-            InvalidValueException {
-        for (final Entry<String, Class<?>> each : attributeClassByAttrNameTmp
-                .entrySet()) {
+    static void test() throws InstantiationException, IllegalAccessException, NoSuchFieldException, SecurityException,
+            IllegalArgumentException, InvocationTargetException, NoSuchMethodException, InvalidValueException {
+        for (final Entry<String, Class<?>> each : attributeClassByAttrNameTmp.entrySet()) {
             final String expectedAttrName = each.getKey();
             final Class<?> attrClass = each.getValue();
 
             AbstractAttribute newInstance = null;
             try {
-                newInstance = (AbstractAttribute) attrClass.getConstructor()
-                        .newInstance();
+                newInstance = (AbstractAttribute) attrClass.getConstructor().newInstance();
             } catch (final Exception e) {
                 try {
                     final Object[] initargs = { null };
-                    newInstance = (AbstractAttribute) attrClass
-                            .getConstructor(String.class).newInstance(initargs);
+                    newInstance = (AbstractAttribute) attrClass.getConstructor(String.class).newInstance(initargs);
                 } catch (final Exception e1) {
                     try {
-                        newInstance = (AbstractAttribute) attrClass
-                                .getConstructor(int.class).newInstance(1);
+                        newInstance = (AbstractAttribute) attrClass.getConstructor(int.class).newInstance(1);
                     } catch (final Exception e2) {
-                        newInstance = (AbstractAttribute) attrClass
-                                .getConstructor(String.class).newInstance("");
+                        newInstance = (AbstractAttribute) attrClass.getConstructor(String.class).newInstance("");
                     }
                 }
             }
@@ -933,19 +752,15 @@ public class AttributeRegistry {
             final String actualAttrName = newInstance.getAttributeName();
             if (!expectedAttrName.equals(actualAttrName)) {
                 throw new InvalidValueException(
-                        "expectedAttrName: " + expectedAttrName
-                                + " actualAttrName: " + actualAttrName);
+                        "expectedAttrName: " + expectedAttrName + " actualAttrName: " + actualAttrName);
             }
         }
     }
 
     // only for testing purpose
-    static void test1() throws InstantiationException, IllegalAccessException,
-            NoSuchFieldException, SecurityException, IllegalArgumentException,
-            InvocationTargetException, NoSuchMethodException,
-            InvalidValueException {
-        for (final Entry<String, Class<?>> each : attributeClassByAttrNameTmp
-                .entrySet()) {
+    static void test1() throws InstantiationException, IllegalAccessException, NoSuchFieldException, SecurityException,
+            IllegalArgumentException, InvocationTargetException, NoSuchMethodException, InvalidValueException {
+        for (final Entry<String, Class<?>> each : attributeClassByAttrNameTmp.entrySet()) {
             String expectedHtmlString = each.getKey() + "=";
             final Class<?> attrClass = each.getValue();
 
@@ -954,13 +769,11 @@ public class AttributeRegistry {
             if (attrClass.equals(DataAttribute.class)) {
                 expectedHtmlString = each.getKey() + "attrName";
                 final Object[] initargs = { "attrName" };
-                newInstance = (AbstractAttribute) attrClass
-                        .getConstructor(String.class).newInstance(initargs);
+                newInstance = (AbstractAttribute) attrClass.getConstructor(String.class).newInstance(initargs);
                 final String actualHtmlString = newInstance.toHtmlString();
                 if (!expectedHtmlString.equals(actualHtmlString)) {
                     throw new InvalidValueException(
-                            "expectedHtmlString: " + expectedHtmlString
-                                    + " actualHtmlString: " + actualHtmlString);
+                            "expectedHtmlString: " + expectedHtmlString + " actualHtmlString: " + actualHtmlString);
                 }
                 continue;
             }
@@ -968,40 +781,32 @@ public class AttributeRegistry {
             if (attrClass.equals(Style.class)) {
                 expectedHtmlString += "\"color:green;\"";
                 final Object[] initargs = { "color:green;" };
-                newInstance = (AbstractAttribute) attrClass
-                        .getConstructor(String.class).newInstance(initargs);
+                newInstance = (AbstractAttribute) attrClass.getConstructor(String.class).newInstance(initargs);
                 final String actualHtmlString = newInstance.toHtmlString();
                 if (!expectedHtmlString.equals(actualHtmlString)) {
                     throw new InvalidValueException(
-                            "expectedHtmlString: " + expectedHtmlString
-                                    + " actualHtmlString: " + actualHtmlString);
+                            "expectedHtmlString: " + expectedHtmlString + " actualHtmlString: " + actualHtmlString);
                 }
                 continue;
             }
 
             try {
                 final Object[] initargs = { "1" };
-                newInstance = (AbstractAttribute) attrClass
-                        .getConstructor(String.class).newInstance(initargs);
+                newInstance = (AbstractAttribute) attrClass.getConstructor(String.class).newInstance(initargs);
                 expectedHtmlString += "\"1\"";
             } catch (final Exception e) {
 
                 try {
                     final Object[] initargs = { "true" };
-                    newInstance = (AbstractAttribute) attrClass
-                            .getConstructor(String.class).newInstance(initargs);
+                    newInstance = (AbstractAttribute) attrClass.getConstructor(String.class).newInstance(initargs);
                     expectedHtmlString += "\"true\"";
                 } catch (final Exception e1) {
                     try {
                         final Object[] initargs = { "yes" };
-                        newInstance = (AbstractAttribute) attrClass
-                                .getConstructor(String.class)
-                                .newInstance(initargs);
+                        newInstance = (AbstractAttribute) attrClass.getConstructor(String.class).newInstance(initargs);
                         expectedHtmlString += "\"yes\"";
                     } catch (final Exception e2) {
-                        throw new InvalidValueException(
-                                "could not pass string true as arg for "
-                                        + attrClass.getName());
+                        throw new InvalidValueException("could not pass string true as arg for " + attrClass.getName());
                     }
                 }
 
@@ -1010,8 +815,7 @@ public class AttributeRegistry {
             final String actualHtmlString = newInstance.toHtmlString();
             if (!expectedHtmlString.equals(actualHtmlString)) {
                 throw new InvalidValueException(
-                        "expectedHtmlString: " + expectedHtmlString
-                                + " actualHtmlString: " + actualHtmlString);
+                        "expectedHtmlString: " + expectedHtmlString + " actualHtmlString: " + actualHtmlString);
             }
         }
     }

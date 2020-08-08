@@ -35,18 +35,15 @@ public final class JsUtil {
     }
 
     /**
-     * @param jsKeyAndElementId
-     *                              The map containing key values. The key in
-     *                              the map will be used as the key in the
-     *                              generated js object. The value in the map
-     *                              should be the id of the field.
+     * @param jsKeyAndElementId The map containing key values. The key in the map
+     *                          will be used as the key in the generated js object.
+     *                          The value in the map should be the id of the field.
      * @return the JavaScript object for the fields value. Sample :
      *         <code>{username:document.getElementById('uId').value}</code>
      * @since 2.1.1
      * @author WFF
      */
-    public static String getJsObjectForFieldsValue(
-            final Map<String, Object> jsKeyAndElementId) {
+    public static String getJsObjectForFieldsValue(final Map<String, Object> jsKeyAndElementId) {
 
         final StringBuilder builder = new StringBuilder(38);
 
@@ -54,8 +51,8 @@ public final class JsUtil {
 
         for (final Entry<String, Object> entry : jsKeyAndElementId.entrySet()) {
 
-            builder.append(entry.getKey()).append(":document.getElementById('")
-                    .append(entry.getValue().toString()).append("').value,");
+            builder.append(entry.getKey()).append(":document.getElementById('").append(entry.getValue().toString())
+                    .append("').value,");
 
         }
 
@@ -65,28 +62,24 @@ public final class JsUtil {
     }
 
     /**
-     * @param jsKeyAndElementId
-     *                                The map containing key values. The key in
-     *                                the map will be used as the key in the
-     *                                generated js object. The value in the map
-     *                                should be the id of the field.
-     * @param alternativeFunction
-     *                                alternative function name for
-     *                                document.getElementById
+     * @param jsKeyAndElementId   The map containing key values. The key in the map
+     *                            will be used as the key in the generated js
+     *                            object. The value in the map should be the id of
+     *                            the field.
+     * @param alternativeFunction alternative function name for
+     *                            document.getElementById
      *
      * @return the JavaScript object for the fields value. Sample :
-     *         <code>{username:gebi('uId').value}</code> if the
-     *         alternativeFunction is gebi
+     *         <code>{username:gebi('uId').value}</code> if the alternativeFunction
+     *         is gebi
      * @since 3.0.1
      * @author WFF
      */
-    public static String getJsObjectForFieldsValue(
-            final Map<String, Object> jsKeyAndElementId,
+    public static String getJsObjectForFieldsValue(final Map<String, Object> jsKeyAndElementId,
             final String alternativeFunction) {
 
         if (StringUtil.isBlank(alternativeFunction)) {
-            throw new InvalidValueException(
-                    "alternativeFunction cannot be blank");
+            throw new InvalidValueException("alternativeFunction cannot be blank");
         }
 
         final StringBuilder builder = new StringBuilder(38);
@@ -95,8 +88,7 @@ public final class JsUtil {
 
         for (final Entry<String, Object> entry : jsKeyAndElementId.entrySet()) {
 
-            builder.append(entry.getKey()).append(':')
-                    .append(alternativeFunction).append("('")
+            builder.append(entry.getKey()).append(':').append(alternativeFunction).append("('")
                     .append(entry.getValue().toString()).append("').value,");
 
         }
@@ -107,11 +99,10 @@ public final class JsUtil {
     }
 
     /**
-     * @param ids
-     *                The set containing element ids. The id will be used as the
-     *                key in the generated js object. The value in the set
-     *                should be the id of the field. The id in the set should be
-     *                a valid JavaScript object key.
+     * @param ids The set containing element ids. The id will be used as the key in
+     *            the generated js object. The value in the set should be the id of
+     *            the field. The id in the set should be a valid JavaScript object
+     *            key.
      * @return the JavaScript object for the fields value. Sample :
      *         <code>{uId:document.getElementById('uId').value}</code>
      * @since 2.1.1
@@ -125,8 +116,8 @@ public final class JsUtil {
 
         for (final Object id : ids) {
 
-            builder.append(id.toString()).append(":document.getElementById('")
-                    .append(id.toString()).append("').value,");
+            builder.append(id.toString()).append(":document.getElementById('").append(id.toString())
+                    .append("').value,");
 
         }
 
@@ -137,28 +128,24 @@ public final class JsUtil {
 
     /**
      *
-     * @param ids
-     *                                The set containing element ids. The id
-     *                                will be used as the key in the generated
-     *                                js object. The value in the set should be
-     *                                the id of the field. The id in the set
-     *                                should be a valid JavaScript object key.
+     * @param ids                 The set containing element ids. The id will be
+     *                            used as the key in the generated js object. The
+     *                            value in the set should be the id of the field.
+     *                            The id in the set should be a valid JavaScript
+     *                            object key.
      *
-     * @param alternativeFunction
-     *                                alternative function name for
-     *                                document.getElementById
+     * @param alternativeFunction alternative function name for
+     *                            document.getElementById
      *
      * @return the JavaScript object for the fields value. Sample :
      *         <code>{uId:gebi('uId').value} if alternativeFunction is gebi </code>
      * @since 3.0.1
      * @author WFF
      */
-    public static String getJsObjectForFieldsValue(final Set<Object> ids,
-            final String alternativeFunction) {
+    public static String getJsObjectForFieldsValue(final Set<Object> ids, final String alternativeFunction) {
 
         if (StringUtil.isBlank(alternativeFunction)) {
-            throw new InvalidValueException(
-                    "alternativeFunction cannot be blank");
+            throw new InvalidValueException("alternativeFunction cannot be blank");
         }
 
         final StringBuilder builder = new StringBuilder(75);
@@ -167,9 +154,8 @@ public final class JsUtil {
 
         for (final Object id : ids) {
 
-            builder.append(id.toString()).append(':')
-                    .append(alternativeFunction).append("('")
-                    .append(id.toString()).append("').value,");
+            builder.append(id.toString()).append(':').append(alternativeFunction).append("('").append(id.toString())
+                    .append("').value,");
 
         }
 
@@ -179,11 +165,10 @@ public final class JsUtil {
     }
 
     /**
-     * @param ids
-     *                The string array containing element ids. The id will be
-     *                used as the key in the generated js object. The value in
-     *                the array should be the id of the field. The id in the
-     *                array should be a valid JavaScript object key.
+     * @param ids The string array containing element ids. The id will be used as
+     *            the key in the generated js object. The value in the array should
+     *            be the id of the field. The id in the array should be a valid
+     *            JavaScript object key.
      * @return the JavaScript object for the fields value. Sample :
      *         <code>{uId:document.getElementById('uId'.value)}</code>
      * @since 2.1.3
@@ -197,8 +182,8 @@ public final class JsUtil {
 
         for (final Object id : ids) {
 
-            builder.append(id.toString()).append(":document.getElementById('")
-                    .append(id.toString()).append("').value,");
+            builder.append(id.toString()).append(":document.getElementById('").append(id.toString())
+                    .append("').value,");
 
         }
 
@@ -208,27 +193,22 @@ public final class JsUtil {
     }
 
     /**
-     * @param ids
-     *                                The string array containing element ids.
-     *                                The id will be used as the key in the
-     *                                generated js object. The value in the
-     *                                array should be the id of the field. The
-     *                                id in the array should be a valid
-     *                                JavaScript object key.
-     * @param alternativeFunction
-     *                                alternative function name for
-     *                                document.getElementById
+     * @param ids                 The string array containing element ids. The id
+     *                            will be used as the key in the generated js
+     *                            object. The value in the array should be the id of
+     *                            the field. The id in the array should be a valid
+     *                            JavaScript object key.
+     * @param alternativeFunction alternative function name for
+     *                            document.getElementById
      * @return the JavaScript object for the fields value. Sample :
      *         <code>{uId:document.getElementById('uId'.value)}</code>
      * @since 3.0.1
      * @author WFF
      */
-    public static String getJsObjectForFieldsValueWithAltFun(
-            final String alternativeFunction, final String... ids) {
+    public static String getJsObjectForFieldsValueWithAltFun(final String alternativeFunction, final String... ids) {
 
         if (StringUtil.isBlank(alternativeFunction)) {
-            throw new InvalidValueException(
-                    "alternativeFunction cannot be blank");
+            throw new InvalidValueException("alternativeFunction cannot be blank");
         }
 
         final StringBuilder builder = new StringBuilder(38);
@@ -237,9 +217,8 @@ public final class JsUtil {
 
         for (final Object id : ids) {
 
-            builder.append(id.toString()).append(':')
-                    .append(alternativeFunction).append("('")
-                    .append(id.toString()).append("').value,");
+            builder.append(id.toString()).append(':').append(alternativeFunction).append("('").append(id.toString())
+                    .append("').value,");
 
         }
 
@@ -249,16 +228,13 @@ public final class JsUtil {
     }
 
     /**
-     * @param inputIds
-     *                        input field ids such as input type text etc..
-     * @param checkboxIds
-     *                        checkbox field ids such as input type checkbox
+     * @param inputIds    input field ids such as input type text etc..
+     * @param checkboxIds checkbox field ids such as input type checkbox
      * @return the JavaScript object for the fields value. Sample :
      *         <code>{usernameInputId:document.getElementById('usernameInputId').value,dateExpiredCheckboxId:document.getElementById('dateExpiredCheckboxId').checked}</code>
      * @since 3.0.1
      */
-    public static String getJsObjectForFieldsValue(final Set<Object> inputIds,
-            final Set<Object> checkboxIds) {
+    public static String getJsObjectForFieldsValue(final Set<Object> inputIds, final Set<Object> checkboxIds) {
 
         final StringBuilder builder = new StringBuilder(75);
 
@@ -266,15 +242,15 @@ public final class JsUtil {
 
         for (final Object id : inputIds) {
 
-            builder.append(id.toString()).append(":document.getElementById('")
-                    .append(id.toString()).append("').value,");
+            builder.append(id.toString()).append(":document.getElementById('").append(id.toString())
+                    .append("').value,");
 
         }
 
         for (final Object id : checkboxIds) {
 
-            builder.append(id.toString()).append(":document.getElementById('")
-                    .append(id.toString()).append("').checked,");
+            builder.append(id.toString()).append(":document.getElementById('").append(id.toString())
+                    .append("').checked,");
 
         }
 
@@ -285,25 +261,19 @@ public final class JsUtil {
 
     /**
      *
-     * @param inputIds
-     *                                input field ids such as input type text
-     *                                etc..
-     * @param checkboxIds
-     *                                checkbox field ids such as input type
-     *                                checkbox
-     * @param alternativeFunction
-     *                                alternative function name for
-     *                                document.getElementById
+     * @param inputIds            input field ids such as input type text etc..
+     * @param checkboxIds         checkbox field ids such as input type checkbox
+     * @param alternativeFunction alternative function name for
+     *                            document.getElementById
      * @return the JavaScript object for the fields value. Sample :
      *         <code>{usernameInputId:document.getElementById('usernameInputId').value,dateExpiredCheckboxId:document.getElementById('dateExpiredCheckboxId').checked}</code>
      * @since 3.0.1
      */
-    public static String getJsObjectForFieldsValue(final Set<Object> inputIds,
-            final Set<Object> checkboxIds, final String alternativeFunction) {
+    public static String getJsObjectForFieldsValue(final Set<Object> inputIds, final Set<Object> checkboxIds,
+            final String alternativeFunction) {
 
         if (StringUtil.isBlank(alternativeFunction)) {
-            throw new InvalidValueException(
-                    "alternativeFunction cannot be blank");
+            throw new InvalidValueException("alternativeFunction cannot be blank");
         }
 
         final StringBuilder builder = new StringBuilder(75);
@@ -312,17 +282,15 @@ public final class JsUtil {
 
         for (final Object id : inputIds) {
 
-            builder.append(id.toString()).append(':')
-                    .append(alternativeFunction).append("('")
-                    .append(id.toString()).append("').value,");
+            builder.append(id.toString()).append(':').append(alternativeFunction).append("('").append(id.toString())
+                    .append("').value,");
 
         }
 
         for (final Object id : checkboxIds) {
 
-            builder.append(id.toString()).append(':')
-                    .append(alternativeFunction).append("('")
-                    .append(id.toString()).append("').checked,");
+            builder.append(id.toString()).append(':').append(alternativeFunction).append("('").append(id.toString())
+                    .append("').checked,");
 
         }
 
