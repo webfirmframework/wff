@@ -455,7 +455,7 @@ public abstract class BrowserPage implements Serializable {
         if (!taskFromClientQ.isEmpty()) {
             final Executor executor = this.executor;
             if (executor != null) {
-                CompletableFuture.runAsync(this::executeTasksFromClientFromQ, executor);
+                executor.execute(this::executeTasksFromClientFromQ);
             } else {
                 CompletableFuture.runAsync(this::executeTasksFromClientFromQ);
             }
@@ -2188,12 +2188,12 @@ public abstract class BrowserPage implements Serializable {
     }
 
     /**
-     * gets the executor set by {@link BrowserPage#setExecutorForServerAsyncMethod}.
+     * gets the executor set by {@link BrowserPage#setExecutor}.
      *
      * @return return the executor object
      * @since 3.0.15
      */
-    protected final Executor getExecutorForServerAsyncMethod() {
+    protected final Executor getExecutor() {
         synchronized (this) {
             // to read up to date value from
             // main memory synchronized will do it as per
@@ -2213,7 +2213,7 @@ public abstract class BrowserPage implements Serializable {
      * <code>
      *
      * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
-     * browserPage.setExecutorForServerAsyncMethod(EXECUTOR);
+     * browserPage.setExecutor(EXECUTOR);
      * </code>
      * </pre>
      *
@@ -2222,14 +2222,14 @@ public abstract class BrowserPage implements Serializable {
      * <pre>
      * <code>
      * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
-     * browserPage.setExecutorForServerAsyncMethod(EXECUTOR);
+     * browserPage.setExecutor(EXECUTOR);
      * </code>
      * </pre>
      *
      * @param executor
      * @since 3.0.15
      */
-    protected final void setExecutorForServerAsyncMethod(final Executor executor) {
+    protected final void setExecutor(final Executor executor) {
         synchronized (this) {
             // to flush modification to main memory
             // synchronized will do it as per

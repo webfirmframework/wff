@@ -101,7 +101,7 @@ public final class HeartBeatManager {
             }
             if (!taskQ.isEmpty()) {
                 if (executor != null) {
-                    CompletableFuture.runAsync(() -> executeTasksFromQ(currentTime), executor);
+                    executor.execute(() -> executeTasksFromQ(currentTime));
                 } else {
                     CompletableFuture.runAsync(() -> executeTasksFromQ(currentTime));
                 }

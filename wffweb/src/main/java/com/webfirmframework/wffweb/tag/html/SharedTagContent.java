@@ -1493,7 +1493,7 @@ public class SharedTagContent<T> {
             if (UpdateClientNature.ALLOW_ASYNC_PARALLEL.equals(updateClientNature)) {
                 if (executor != null) {
                     for (final PushQueue pushQueue : pushQueues) {
-                        CompletableFuture.runAsync(pushQueue::push, executor);
+                        executor.execute(pushQueue::push);
                     }
                 } else {
                     for (final PushQueue pushQueue : pushQueues) {
