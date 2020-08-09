@@ -94,10 +94,12 @@ public interface ServerAsyncMethod extends Serializable {
         /**
          * @return the sourceTag
          * @deprecated use {@link Event#sourceTag()} method instead as its value cannot
-         *             be modified in this Event object. Using {@link Event#sourceTag()}
-         *             is better for keeping java record class standard. This method
-         *             will be removed only if the minimal java version of this
-         *             framework is upgraded to a java record class supported version.
+         *             be modified in this Event object. This method will not affect the
+         *             value of {@link Event#sourceTag()} method. Using
+         *             {@link Event#sourceTag()} is better for keeping java record class
+         *             standard. This method will be removed only if the minimal java
+         *             version of this framework is upgraded to a java record class
+         *             supported version.
          */
         @Deprecated
         public AbstractHtml getSourceTag() {
@@ -105,6 +107,12 @@ public interface ServerAsyncMethod extends Serializable {
         }
 
         /**
+         * <br>
+         * Set the sourceTag so that the value of {@link Event#getSourceTag()} will
+         * return this value. <br>
+         * NB: Calling this method will not affect the value of
+         * {@link Event#sourceTag()} method.
+         *
          * @param sourceTag the sourceTag to set
          * @deprecated The use of this method is not encouraged. Use constructor
          *             initialization instead. This method will be removed only if the
@@ -132,6 +140,12 @@ public interface ServerAsyncMethod extends Serializable {
         }
 
         /**
+         * <br>
+         * Set the serverMethodName so that the value of
+         * {@link Event#getServerMethodName()} will return this value. <br>
+         * NB: Calling this method will not affect the value of
+         * {@link Event#serverMethodName()} method.
+         *
          * @param serverMethodName
          * @author WFF
          * @deprecated The use of this method is not encouraged. Use constructor
@@ -145,15 +159,17 @@ public interface ServerAsyncMethod extends Serializable {
         }
 
         /**
-         * the source attribute from which the event is generated.
+         * <br>
+         * This method returns the source attribute from which the event is generated.
          *
          * @return the sourceAttribute
-         * @since 2.1.2
+         *
          * @deprecated use {@link Event#sourceAttribute()} method instead. Using
          *             {@link Event#sourceAttribute()} is better for keeping java record
          *             class standard. This method will be removed only if the minimal
          *             java version of this framework is upgraded to a java record class
          *             supported version.
+         * @since 2.1.2
          */
         @Deprecated
         public AbstractAttribute getSourceAttribute() {
@@ -161,13 +177,14 @@ public interface ServerAsyncMethod extends Serializable {
         }
 
         /**
-         * @return the server side data passed in the event attribute argument
-         * @since 3.0.2
+         * @return the server side data passed in the event attribute argument.
+         *
          * @deprecated use {@link Event#serverSideData()} method instead. Using
          *             {@link Event#serverSideData()} is better for keeping java record
          *             class standard. This method will be removed only if the minimal
          *             java version of this framework is upgraded to a java record class
          *             supported version.
+         * @since 3.0.2
          */
         @Deprecated
         public Object getServerSideData() {
@@ -175,6 +192,9 @@ public interface ServerAsyncMethod extends Serializable {
         }
 
         /**
+         * NB: The deprecated {@link Event#setSourceTag(AbstractHtml)} will not affect
+         * the value of this method.
+         *
          * @return the sourceTag
          * @since 3.0.15
          */
@@ -193,7 +213,7 @@ public interface ServerAsyncMethod extends Serializable {
         }
 
         /**
-         * @return the server side data passed in the event attribute argument
+         * @return the server side data passed in the event attribute argument.
          * @since 3.0.15
          */
         public Object serverSideData() {
