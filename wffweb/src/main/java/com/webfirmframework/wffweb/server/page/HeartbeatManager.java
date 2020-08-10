@@ -28,14 +28,14 @@ import com.webfirmframework.wffweb.NullValueException;
 /**
  *
  * It makes sure that the task is invoked only once in the specified interval of
- * time even if the {@link HeartBeatManager#runAsync()} methods is called by
+ * time even if the {@link HeartbeatManager#runAsync()} methods is called by
  * multiple threads less than the interval of specified time.
  *
  * @since 3.0.15
  */
-public final class HeartBeatManager {
+public final class HeartbeatManager {
 
-    private static final Logger LOGGER = Logger.getLogger(HeartBeatManager.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(HeartbeatManager.class.getName());
 
     // there will be only one thread waiting for the lock so fairness must be
     // false and fairness may decrease the lock time
@@ -60,7 +60,7 @@ public final class HeartBeatManager {
      * @param task        the Runnable object which makes a request with sessionid
      *                    to the heartbeat url for keeping http session alive.
      */
-    public HeartBeatManager(final Executor executor, final long minInterval, final Runnable task) {
+    public HeartbeatManager(final Executor executor, final long minInterval, final Runnable task) {
         this.executor = executor;
         this.minInterval = minInterval;
         this.task = task;
@@ -75,7 +75,7 @@ public final class HeartBeatManager {
      * @param task        the Runnable object which makes a request with sessionid
      *                    to the heartbeat url for keeping http session alive.
      */
-    public HeartBeatManager(final long minInterval, final Runnable task) {
+    public HeartbeatManager(final long minInterval, final Runnable task) {
         executor = null;
         this.minInterval = minInterval;
         this.task = task;
