@@ -1449,7 +1449,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @return the set of write locks after locking
      * @since 3.0.15
      */
-    protected Collection<Lock> lockAndGetWriteLocksWithAttrLock() {
+    protected final Collection<Lock> lockAndGetWriteLocksWithAttrLock() {
 
         final Lock ownerTagsWriteLock = ownerTagsLock.asWriteLock();
 
@@ -1530,7 +1530,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @return the set of read locks after locking
      * @since 3.0.15
      */
-    protected Collection<Lock> lockAndGetReadLocksWithAttrLock() {
+    protected final Collection<Lock> lockAndGetReadLocksWithAttrLock() {
 
         final Lock ownerTagsReadLock = ownerTagsLock.asReadLock();
 
