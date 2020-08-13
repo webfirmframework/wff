@@ -663,7 +663,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             // better avoid calling it
             // normally there will be one sharedObject so the capacity may be
             // considered as 1
-            final Collection<AbstractHtml5SharedObject> sharedObjects = new HashSet<>(1);
+            final Collection<AbstractHtml5SharedObject> sharedObjects = new LinkedHashSet<>(1);
 
             final Set<AbstractHtml> ownerTags = Collections.unmodifiableSet(this.ownerTags);
             for (final AbstractHtml ownerTag : ownerTags) {
@@ -1402,11 +1402,12 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         final long stamp = ownerTagsLock.readLock();
 
         try {
-            int size = ownerTags.size();
-            if (size < 1) {
-                size = 2;
-            }
-            final List<WriteLock> locks = new ArrayList<>(size);
+
+            // internally ownerTags.size() (WeakHashMap) contains synchronization so
+            // better avoid calling it
+            // normally there will be one sharedObject so the capacity may be
+            // considered as 1
+            final List<WriteLock> locks = new ArrayList<>(1);
 
             for (final AbstractHtml ownerTag : ownerTags) {
                 locks.add(ownerTag.getSharedObject().getLock(ACCESS_OBJECT).writeLock());
@@ -1474,11 +1475,12 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         final long stamp = ownerTagsLock.readLock();
 
         try {
-            int size = ownerTags.size();
-            if (size < 1) {
-                size = 2;
-            }
-            final List<WriteLock> locks = new ArrayList<>(size);
+
+            // internally ownerTags.size() (WeakHashMap) contains synchronization so
+            // better avoid calling it
+            // normally there will be one sharedObject so the capacity may be
+            // considered as 1
+            final List<WriteLock> locks = new ArrayList<>(1);
 
             for (final AbstractHtml ownerTag : ownerTags) {
                 locks.add(ownerTag.getSharedObject().getLock(ACCESS_OBJECT).writeLock());
