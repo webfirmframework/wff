@@ -4446,13 +4446,42 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @since 3.0.2 improved to handle NoTag with contentTypeHtml true
      */
     public byte[] toWffBMBytes(final Charset charset) {
+        return toWffBMBytes(charset, null);
+    }
+
+    /**
+     * Only for internal use.
+     *
+     * @param charset
+     * @param accessObject
+     * @return the Wff Binary Message bytes of this tag
+     * @throws InvalidTagException
+     * @author WFF
+     * @version 1.1
+     * @since 3.0.1 initial implementation
+     * @since 3.0.2 improved to handle NoTag with contentTypeHtml true
+     * @since 3.0.15 accessObject added
+     */
+    public byte[] toWffBMBytes(final Charset charset, final Object accessObject) {
 
         final byte[] encodedBytesForAtChar = "@".getBytes(charset);
         final byte[] encodedByesForHashChar = "#".getBytes(charset);
 
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
-        try {
+        final Lock lock;
+
+        if (accessObject != null) {
+            lock = null;
+            if (!SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName())) {
+                throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
+            }
+
+        } else {
+            // writeLock is better as we are writing to wffSlotIndex
+            lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
             lock.lock();
+        }
+
+        try {
 
             final Deque<NameValue> nameValues = new ArrayDeque<>();
 
@@ -4535,7 +4564,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
         } catch (final Exception e) {
             throw new WffRuntimeException(e.getMessage(), e);
         } finally {
-            lock.unlock();
+            if (lock != null) {
+                lock.unlock();
+            }
         }
     }
 
@@ -4688,11 +4719,38 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @since 3.0.6
      */
     public byte[] toCompressedWffBMBytesV2(final Charset charset) {
+        return toCompressedWffBMBytesV2(charset, null);
+    }
 
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
+    /**
+     * Only for internal purpose
+     *
+     * @param charset
+     * @param accessObject
+     * @return the Wff Binary Message bytes of this tag containing indexed tag name
+     *         and attribute name
+     * @throws InvalidTagException
+     * @author WFF
+     * @version algorithm version 2
+     * @since 3.0.6
+     * @since 3.0.15 accessObject added
+     */
+    public byte[] toCompressedWffBMBytesV2(final Charset charset, final Object accessObject) {
+
+        final Lock lock;
+
+        if (accessObject != null) {
+            lock = null;
+            if (!SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName())) {
+                throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
+            }
+        } else {
+            // writeLock is better as we are writing to wffSlotIndex
+            lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+            lock.lock();
+        }
 
         try {
-            lock.lock();
 
             final Deque<NameValue> nameValues = new ArrayDeque<>();
 
@@ -4820,7 +4878,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
         } catch (final Exception e) {
             throw new WffRuntimeException(e.getMessage(), e);
         } finally {
-            lock.unlock();
+            if (lock != null) {
+                lock.unlock();
+            }
+
         }
     }
 

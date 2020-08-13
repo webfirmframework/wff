@@ -121,9 +121,10 @@ final class ChildTagAppendListenerImpl implements ChildTagAppendListener {
             final byte[] parentTagName = tagNameAndWffId[0];
 
             if (WffJsFile.COMPRESSED_WFF_DATA) {
-                nameValue.setValues(parentTagName, appendedChildTag.toCompressedWffBMBytesV2(StandardCharsets.UTF_8));
+                nameValue.setValues(parentTagName,
+                        appendedChildTag.toCompressedWffBMBytesV2(StandardCharsets.UTF_8, accessObject));
             } else {
-                nameValue.setValues(parentTagName, appendedChildTag.toWffBMBytes(StandardCharsets.UTF_8));
+                nameValue.setValues(parentTagName, appendedChildTag.toWffBMBytes(StandardCharsets.UTF_8, accessObject));
             }
 
             browserPage.push(task, nameValue);
@@ -200,9 +201,10 @@ final class ChildTagAppendListenerImpl implements ChildTagAppendListener {
             try {
                 if (WffJsFile.COMPRESSED_WFF_DATA) {
                     nameValue.setValues(parentTagName,
-                            appendedChildTag.toCompressedWffBMBytesV2(StandardCharsets.UTF_8));
+                            appendedChildTag.toCompressedWffBMBytesV2(StandardCharsets.UTF_8, accessObject));
                 } else {
-                    nameValue.setValues(parentTagName, appendedChildTag.toWffBMBytes(StandardCharsets.UTF_8));
+                    nameValue.setValues(parentTagName,
+                            appendedChildTag.toWffBMBytes(StandardCharsets.UTF_8, accessObject));
                 }
 
             } catch (final InvalidTagException e) {
@@ -371,10 +373,10 @@ final class ChildTagAppendListenerImpl implements ChildTagAppendListener {
                             // tag
                             if (WffJsFile.COMPRESSED_WFF_DATA) {
                                 nameValue.setValues(currentTagName, movedChildWffIdBytes, movedChildTagName,
-                                        movedChildTag.toCompressedWffBMBytesV2(StandardCharsets.UTF_8));
+                                        movedChildTag.toCompressedWffBMBytesV2(StandardCharsets.UTF_8, accessObject));
                             } else {
                                 nameValue.setValues(currentTagName, movedChildWffIdBytes, movedChildTagName,
-                                        movedChildTag.toWffBMBytes(StandardCharsets.UTF_8));
+                                        movedChildTag.toWffBMBytes(StandardCharsets.UTF_8, accessObject));
                             }
 
                         } catch (final InvalidTagException e) {

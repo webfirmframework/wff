@@ -161,9 +161,9 @@ final class ReplaceListenerImpl implements ReplaceListener {
 
                 try {
                     if (WffJsFile.COMPRESSED_WFF_DATA) {
-                        nameValue.setValues(insertedTag.toCompressedWffBMBytesV2(StandardCharsets.UTF_8));
+                        nameValue.setValues(insertedTag.toCompressedWffBMBytesV2(StandardCharsets.UTF_8, accessObject));
                     } else {
-                        nameValue.setValues(insertedTag.toWffBMBytes(StandardCharsets.UTF_8));
+                        nameValue.setValues(insertedTag.toWffBMBytes(StandardCharsets.UTF_8, accessObject));
                     }
                 } catch (final InvalidTagException e) {
                     if (LOGGER.isLoggable(Level.WARNING)) {
