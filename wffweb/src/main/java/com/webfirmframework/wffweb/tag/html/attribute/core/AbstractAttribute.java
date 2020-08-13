@@ -1414,12 +1414,18 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             }
 
             locks.sort((o1, o2) -> Integer.compare(o2.getHoldCount(), o1.getHoldCount()));
-            final Collection<WriteLock> writeLocks = new LinkedHashSet<>(locks);
+
+            List<WriteLock> writeLocks = new ArrayList<>(new LinkedHashSet<>(locks));
 
             // must be separately locked
             for (final WriteLock writeLock : writeLocks) {
                 writeLock.lock();
             }
+
+            // NB: must reverse it before returning because its unlocking must be in the
+            // reverse order
+            Collections.reverse(writeLocks);
+
             return writeLocks;
         } finally {
             ownerTagsLock.unlockRead(stamp);
@@ -1441,21 +1447,22 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             // better avoid calling it
             // normally there will be one sharedObject so the capacity may be
             // considered as 2 because the load factor is 0.75f
-            final Collection<ReadLock> readLocks = new HashSet<>(2);
+            final Collection<ReadLock> locks = new HashSet<>(2);
 
             for (final AbstractHtml ownerTag : ownerTags) {
-                readLocks.add(ownerTag.getSharedObject().getLock(ACCESS_OBJECT).readLock());
+                locks.add(ownerTag.getSharedObject().getLock(ACCESS_OBJECT).readLock());
             }
+
+            List<ReadLock> readLocks = new ArrayList<>(locks);
 
             // must be separately locked
             for (final ReadLock readLock : readLocks) {
-                try {
-                    readLock.lock();
-                    readLocks.add(readLock);
-                } catch (final Exception e) {
-                    e.printStackTrace();
-                }
+                readLock.lock();
             }
+
+            // NB: must reverse it before returning because its unlocking must be in the
+            // reverse order
+            Collections.reverse(readLocks);
 
             return readLocks;
         } finally {
@@ -1468,6 +1475,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * NB: this may not return the same locks as the ownerTags of this attribute may
      * be changed at any time. So call only once and reuse it for both lock and
      * unlock call.
+     * 
+     * NB: should be unlocked in the reverse order.
      *
      * @return the set of write locks
      */
@@ -1495,8 +1504,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
     /**
      * NB: this may not return the same locks as there could be the its ownerTags
-     * change. So call only once and reuse it for both lock and unlock call.
-     *
+     * change. So call only once and reuse it for both lock and unlock call. NB:
+     * should be unlocked in the reverse order.
+     * 
      * @return the set of read locks
      */
     protected Collection<ReadLock> getReadLocks() {
