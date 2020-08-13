@@ -123,7 +123,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
      *
      * @since 3.0.1
      */
-    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock(true);
+    private final transient ReentrantReadWriteLock lock = new ReentrantReadWriteLock(true);
 
     private volatile boolean activeWSListener;
 

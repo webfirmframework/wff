@@ -34,6 +34,7 @@ import java.util.WeakHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
+import java.util.concurrent.locks.StampedLock;
 
 import com.webfirmframework.wffweb.tag.core.AbstractTagBase;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
@@ -62,6 +63,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
     private transient final Set<AbstractHtml> ownerTags;
 
+    private transient final StampedLock ownerTagsLock = new StampedLock();
+
     private final StringBuilder tagBuilder;
 
     // private AttributeValueChangeListener valueChangeListener;
@@ -80,6 +83,22 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         private static final long serialVersionUID = 1L;
 
         private Security() {
+        }
+    }
+
+    /**
+     *
+     * @since 3.0.15
+     *
+     */
+    private static final class OwnerTagsRecord {
+        private final Set<AbstractHtml> ownerTags;
+        private final Collection<AbstractHtml5SharedObject> sharedObjects;
+
+        private OwnerTagsRecord(final Set<AbstractHtml> ownerTags,
+                final Collection<AbstractHtml5SharedObject> sharedObjects) {
+            this.ownerTags = ownerTags;
+            this.sharedObjects = sharedObjects;
         }
     }
 
@@ -551,7 +570,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected boolean addToAttributeValueMap(final String key, final String value) {
 
-        final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+//        final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+        final OwnerTagsRecord ownerTagsRecord = getOwnerTagsRecord();
+
         boolean listenerInvoked = false;
         final Collection<WriteLock> writeLocks = lockAndGetWriteLocks();
         try {
@@ -561,7 +582,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
             if (!Objects.equals(previousValue, value)) {
                 setModified(true);
-                invokeValueChangeListeners(sharedObjects);
+                invokeValueChangeListeners(ownerTagsRecord);
                 listenerInvoked = true;
             }
 
@@ -571,7 +592,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             }
         }
 
-        pushQueues(sharedObjects, listenerInvoked);
+        pushQueues(ownerTagsRecord.sharedObjects, listenerInvoked);
 
         return listenerInvoked;
     }
@@ -580,7 +601,11 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * this method should be called after changing of attribute value not before
      * changing value
      */
-    private void invokeValueChangeListeners(final Collection<AbstractHtml5SharedObject> sharedObjects) {
+    private void invokeValueChangeListeners(final OwnerTagsRecord ownerTagsRecord) {
+
+        final Collection<AbstractHtml5SharedObject> sharedObjects = ownerTagsRecord.sharedObjects;
+
+        final Set<AbstractHtml> ownerTags = ownerTagsRecord.ownerTags;
 
         for (final AbstractHtml5SharedObject sharedObject : sharedObjects) {
             final AttributeValueChangeListener valueChangeListener = sharedObject.getValueChangeListener(ACCESS_OBJECT);
@@ -599,25 +624,55 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         if (valueChangeListeners != null) {
             for (final AttributeValueChangeListener listener : valueChangeListeners) {
                 final AttributeValueChangeListener.Event event = new AttributeValueChangeListener.Event(this,
-                        Collections.unmodifiableSet(ownerTags));
+                        ownerTags);
                 listener.valueChanged(event);
             }
         }
 
     }
 
+    @SuppressWarnings("unused")
     private Collection<AbstractHtml5SharedObject> getSharedObjects() {
 
-        // internally ownerTags.size() (WeakHashMap) contains synchronization so
-        // better avoid calling it
-        // normally there will be one sharedObject so the capacity may be
-        // considered as 1
-        final Collection<AbstractHtml5SharedObject> sharedObjects = new HashSet<>(1);
+        final long stamp = ownerTagsLock.readLock();
 
-        for (final AbstractHtml ownerTag : ownerTags) {
-            sharedObjects.add(ownerTag.getSharedObject());
+        try {
+            // internally ownerTags.size() (WeakHashMap) contains synchronization so
+            // better avoid calling it
+            // normally there will be one sharedObject so the capacity may be
+            // considered as 1
+            final Collection<AbstractHtml5SharedObject> sharedObjects = new HashSet<>(1);
+
+            for (final AbstractHtml ownerTag : ownerTags) {
+                sharedObjects.add(ownerTag.getSharedObject());
+            }
+            return sharedObjects;
+        } finally {
+            ownerTagsLock.unlockRead(stamp);
         }
-        return sharedObjects;
+    }
+
+    /**
+     * @return OwnerTagsRecord object
+     * @since 3.0.15
+     */
+    private OwnerTagsRecord getOwnerTagsRecord() {
+        final long stamp = ownerTagsLock.readLock();
+        try {
+            // internally ownerTags.size() (WeakHashMap) contains synchronization so
+            // better avoid calling it
+            // normally there will be one sharedObject so the capacity may be
+            // considered as 1
+            final Collection<AbstractHtml5SharedObject> sharedObjects = new HashSet<>(1);
+
+            final Set<AbstractHtml> ownerTags = Collections.unmodifiableSet(this.ownerTags);
+            for (final AbstractHtml ownerTag : ownerTags) {
+                sharedObjects.add(ownerTag.getSharedObject());
+            }
+            return new OwnerTagsRecord(ownerTags, sharedObjects);
+        } finally {
+            ownerTagsLock.unlockRead(stamp);
+        }
     }
 
     /**
@@ -632,7 +687,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
         if (map != null && map.size() > 0) {
 
-            final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+//            final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+            final OwnerTagsRecord ownerTagsRecord = getOwnerTagsRecord();
             boolean listenerInvoked = false;
 
             final Collection<WriteLock> writeLocks = lockAndGetWriteLocks();
@@ -642,7 +698,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
                 setModified(true);
 
-                invokeValueChangeListeners(sharedObjects);
+                invokeValueChangeListeners(ownerTagsRecord);
                 listenerInvoked = true;
 
             } finally {
@@ -650,7 +706,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                     lock.unlock();
                 }
             }
-            pushQueues(sharedObjects, listenerInvoked);
+            pushQueues(ownerTagsRecord.sharedObjects, listenerInvoked);
             return listenerInvoked;
 
         }
@@ -681,7 +737,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected boolean removeFromAttributeValueMapByKeys(final String... keys) {
 
-        final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+//        final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+        final OwnerTagsRecord ownerTagsRecord = getOwnerTagsRecord();
+
         boolean listenerInvoked = false;
         final Collection<WriteLock> writeLocks = lockAndGetWriteLocks();
         boolean result = false;
@@ -707,7 +765,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
             if (result) {
                 setModified(true);
-                invokeValueChangeListeners(sharedObjects);
+                invokeValueChangeListeners(ownerTagsRecord);
                 listenerInvoked = true;
             }
 
@@ -716,7 +774,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 lock.unlock();
             }
         }
-        pushQueues(sharedObjects, listenerInvoked);
+        pushQueues(ownerTagsRecord.sharedObjects, listenerInvoked);
         return result;
     }
 
@@ -749,7 +807,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected boolean removeFromAttributeValueMap(final String key, final String value) {
 
-        final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+//        final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+        final OwnerTagsRecord ownerTagsRecord = getOwnerTagsRecord();
 
         final Collection<WriteLock> writeLocks = lockAndGetWriteLocks();
         boolean listenerInvoked = false;
@@ -759,7 +818,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
             if (removed) {
                 setModified(true);
-                invokeValueChangeListeners(sharedObjects);
+                invokeValueChangeListeners(ownerTagsRecord);
                 listenerInvoked = true;
             }
 
@@ -768,27 +827,28 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 lock.unlock();
             }
         }
-        pushQueues(sharedObjects, listenerInvoked);
+        pushQueues(ownerTagsRecord.sharedObjects, listenerInvoked);
         return listenerInvoked;
     }
 
     protected void removeAllFromAttributeValueMap() {
         if (attributeValueMap != null && getAttributeValueMap().size() > 0) {
-            final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+//            final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+            final OwnerTagsRecord ownerTagsRecord = getOwnerTagsRecord();
             boolean listenerInvoked = false;
             final Collection<WriteLock> writeLocks = lockAndGetWriteLocks();
             try {
                 getAttributeValueMap().clear();
                 setModified(true);
 
-                invokeValueChangeListeners(sharedObjects);
+                invokeValueChangeListeners(ownerTagsRecord);
                 listenerInvoked = true;
             } finally {
                 for (final Lock lock : writeLocks) {
                     lock.unlock();
                 }
             }
-            pushQueues(sharedObjects, listenerInvoked);
+            pushQueues(ownerTagsRecord.sharedObjects, listenerInvoked);
         }
     }
 
@@ -811,7 +871,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected void setAttributeValue(final String attributeValue) {
         if (!Objects.equals(this.attributeValue, attributeValue)) {
-            final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+//            final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+            final OwnerTagsRecord ownerTagsRecord = getOwnerTagsRecord();
             boolean listenerInvoked = false;
             final Collection<WriteLock> writeLocks = lockAndGetWriteLocks();
 
@@ -821,7 +882,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 // before invokeValueChangeListeners
                 this.attributeValue = attributeValue;
                 setModified(true);
-                invokeValueChangeListeners(sharedObjects);
+                invokeValueChangeListeners(ownerTagsRecord);
                 listenerInvoked = true;
             } finally {
                 for (final Lock lock : writeLocks) {
@@ -829,7 +890,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 }
             }
 
-            pushQueues(sharedObjects, listenerInvoked);
+            pushQueues(ownerTagsRecord.sharedObjects, listenerInvoked);
         }
     }
 
@@ -844,7 +905,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     protected void setAttributeValue(final boolean updateClient, final String attributeValue) {
 
         if (!Objects.equals(this.attributeValue, attributeValue)) {
-            final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+//            final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+            final OwnerTagsRecord ownerTagsRecord = getOwnerTagsRecord();
             boolean listenerInvoked = false;
             final Collection<WriteLock> writeLocks = lockAndGetWriteLocks();
 
@@ -855,7 +917,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 this.attributeValue = attributeValue;
                 setModified(true);
                 if (updateClient) {
-                    invokeValueChangeListeners(sharedObjects);
+                    invokeValueChangeListeners(ownerTagsRecord);
                     listenerInvoked = true;
                 }
             } finally {
@@ -863,7 +925,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                     lock.unlock();
                 }
             }
-            pushQueues(sharedObjects, listenerInvoked);
+            pushQueues(ownerTagsRecord.sharedObjects, listenerInvoked);
         }
     }
 
@@ -876,10 +938,18 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     @Deprecated
     public AbstractHtml getOwnerTag() {
-        if (ownerTags.iterator().hasNext()) {
-            return ownerTags.iterator().next();
+        AbstractHtml tag;
+        final long stamp = ownerTagsLock.readLock();
+        try {
+            if (ownerTags.iterator().hasNext()) {
+                tag = ownerTags.iterator().next();
+            } else {
+                tag = null;
+            }
+        } finally {
+            ownerTagsLock.unlockRead(stamp);
         }
-        return null;
+        return tag;
     }
 
     /**
@@ -893,11 +963,21 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @since 2.0.0
      */
     public AbstractHtml[] getOwnerTags() {
+
+        final long stamp = ownerTagsLock.readLock();
+
         // returning the set is not good because
         // if the AbstractHtml needs to be
         // modified while iterating the set will cause
         // ConcurrentModificationException
-        return ownerTags.toArray(new AbstractHtml[0]);
+        final AbstractHtml[] result;
+        try {
+            result = ownerTags.toArray(new AbstractHtml[0]);
+        } finally {
+            ownerTagsLock.unlockRead(stamp);
+        }
+
+        return result;
     }
 
     /**
@@ -908,7 +988,13 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @since 1.0.0
      */
     public void setOwnerTag(final AbstractHtml ownerTag) {
-        ownerTags.add(ownerTag);
+
+        final long stamp = ownerTagsLock.writeLock();
+        try {
+            ownerTags.add(ownerTag);
+        } finally {
+            ownerTagsLock.unlockWrite(stamp);
+        }
     }
 
     /**
@@ -920,17 +1006,30 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @since 2.0.0
      */
     public boolean unsetOwnerTag(final AbstractHtml ownerTag) {
-        return ownerTags.remove(ownerTag);
+        final long stamp = ownerTagsLock.writeLock();
+        final boolean result;
+        try {
+            result = ownerTags.remove(ownerTag);
+        } finally {
+            ownerTagsLock.unlockWrite(stamp);
+        }
+        return result;
     }
 
     @Override
     public void setModified(final boolean modified) {
         super.setModified(modified);
         if (modified) {
-            compressedBytes = null;
-            for (final AbstractHtml ownerTag : ownerTags) {
-                ownerTag.setModified(modified);
-                ownerTag.getSharedObject().setChildModified(modified);
+            final long stamp = ownerTagsLock.readLock();
+
+            try {
+                compressedBytes = null;
+                for (final AbstractHtml ownerTag : ownerTags) {
+                    ownerTag.setModified(modified);
+                    ownerTag.getSharedObject().setChildModified(modified);
+                }
+            } finally {
+                ownerTagsLock.unlockRead(stamp);
             }
         }
     }
@@ -976,7 +1075,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @since 1.0.0
      */
     protected boolean addToAttributeValueSet(final String value) {
-        final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+//        final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+        final OwnerTagsRecord ownerTagsRecord = getOwnerTagsRecord();
         boolean listenerInvoked = false;
         final Collection<WriteLock> writeLocks = lockAndGetWriteLocks();
         try {
@@ -986,7 +1086,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             if (added) {
                 setModified(true);
 
-                invokeValueChangeListeners(sharedObjects);
+                invokeValueChangeListeners(ownerTagsRecord);
                 listenerInvoked = true;
 
             }
@@ -996,7 +1096,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 lock.unlock();
             }
         }
-        pushQueues(sharedObjects, listenerInvoked);
+        pushQueues(ownerTagsRecord.sharedObjects, listenerInvoked);
         return listenerInvoked;
     }
 
@@ -1009,7 +1109,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected void addAllToAttributeValueSet(final Collection<String> values) {
         if (values != null) {
-            final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+//            final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+            final OwnerTagsRecord ownerTagsRecord = getOwnerTagsRecord();
             boolean listenerInvoked = false;
             final Collection<WriteLock> writeLocks = lockAndGetWriteLocks();
             try {
@@ -1019,7 +1120,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 if (added) {
                     setModified(true);
 
-                    invokeValueChangeListeners(sharedObjects);
+                    invokeValueChangeListeners(ownerTagsRecord);
                     listenerInvoked = true;
                 }
 
@@ -1028,7 +1129,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                     lock.unlock();
                 }
             }
-            pushQueues(sharedObjects, listenerInvoked);
+            pushQueues(ownerTagsRecord.sharedObjects, listenerInvoked);
         }
     }
 
@@ -1053,7 +1154,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected void replaceAllInAttributeValueSet(final boolean updateClient, final Collection<String> values) {
         if (values != null) {
-            final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+//            final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+            final OwnerTagsRecord ownerTagsRecord = getOwnerTagsRecord();
             boolean listenerInvoked = false;
             final Collection<WriteLock> writeLocks = lockAndGetWriteLocks();
             try {
@@ -1066,7 +1168,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                     setModified(true);
 
                     if (updateClient) {
-                        invokeValueChangeListeners(sharedObjects);
+                        invokeValueChangeListeners(ownerTagsRecord);
                         listenerInvoked = true;
                     }
                 }
@@ -1076,7 +1178,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                     lock.unlock();
                 }
             }
-            pushQueues(sharedObjects, listenerInvoked);
+            pushQueues(ownerTagsRecord.sharedObjects, listenerInvoked);
         }
     }
 
@@ -1092,7 +1194,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected void addAllToAttributeValueSet(final boolean updateClient, final Collection<String> values) {
         if (values != null) {
-            final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+//            final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+            final OwnerTagsRecord ownerTagsRecord = getOwnerTagsRecord();
             boolean listenerInvoked = false;
             final Collection<WriteLock> writeLocks = lockAndGetWriteLocks();
             try {
@@ -1103,7 +1206,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                     setModified(true);
 
                     if (updateClient) {
-                        invokeValueChangeListeners(sharedObjects);
+                        invokeValueChangeListeners(ownerTagsRecord);
                         listenerInvoked = true;
                     }
                 }
@@ -1112,7 +1215,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                     lock.unlock();
                 }
             }
-            pushQueues(sharedObjects, listenerInvoked);
+            pushQueues(ownerTagsRecord.sharedObjects, listenerInvoked);
         }
     }
 
@@ -1124,7 +1227,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @since 1.0.0
      */
     protected void removeFromAttributeValueSet(final String value) {
-        final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+//        final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+        final OwnerTagsRecord ownerTagsRecord = getOwnerTagsRecord();
+
         boolean listenerInvoked = false;
         final Collection<WriteLock> writeLocks = lockAndGetWriteLocks();
         try {
@@ -1135,7 +1240,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
                 setModified(true);
 
-                invokeValueChangeListeners(sharedObjects);
+                invokeValueChangeListeners(ownerTagsRecord);
                 listenerInvoked = true;
             }
         } finally {
@@ -1143,7 +1248,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 lock.unlock();
             }
         }
-        pushQueues(sharedObjects, listenerInvoked);
+        pushQueues(ownerTagsRecord.sharedObjects, listenerInvoked);
     }
 
     /**
@@ -1154,7 +1259,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @since 1.0.0
      */
     protected void removeAllFromAttributeValueSet(final Collection<String> values) {
-        final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+//        final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+        final OwnerTagsRecord ownerTagsRecord = getOwnerTagsRecord();
         boolean listenerInvoked = false;
         final Collection<WriteLock> writeLocks = lockAndGetWriteLocks();
         try {
@@ -1164,7 +1270,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             if (removedAll) {
                 setModified(true);
 
-                invokeValueChangeListeners(sharedObjects);
+                invokeValueChangeListeners(ownerTagsRecord);
                 listenerInvoked = true;
             }
 
@@ -1173,7 +1279,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 lock.unlock();
             }
         }
-        pushQueues(sharedObjects, listenerInvoked);
+        pushQueues(ownerTagsRecord.sharedObjects, listenerInvoked);
     }
 
     /**
@@ -1184,7 +1290,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected void removeAllFromAttributeValueSet() {
 
-        final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+//        final Collection<AbstractHtml5SharedObject> sharedObjects = getSharedObjects();
+        final OwnerTagsRecord ownerTagsRecord = getOwnerTagsRecord();
         boolean listenerInvoked = false;
 
         final Collection<WriteLock> writeLocks = lockAndGetWriteLocks();
@@ -1192,14 +1299,14 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             getAttributeValueSet().clear();
             setModified(true);
 
-            invokeValueChangeListeners(sharedObjects);
+            invokeValueChangeListeners(ownerTagsRecord);
             listenerInvoked = true;
         } finally {
             for (final Lock lock : writeLocks) {
                 lock.unlock();
             }
         }
-        pushQueues(sharedObjects, listenerInvoked);
+        pushQueues(ownerTagsRecord.sharedObjects, listenerInvoked);
     }
 
     /**
@@ -1292,26 +1399,30 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected Collection<WriteLock> lockAndGetWriteLocks() {
 
-        int size = ownerTags.size();
-        if (size < 1) {
-            size = 2;
+        final long stamp = ownerTagsLock.readLock();
+
+        try {
+            int size = ownerTags.size();
+            if (size < 1) {
+                size = 2;
+            }
+            final List<WriteLock> locks = new ArrayList<>(size);
+
+            for (final AbstractHtml ownerTag : ownerTags) {
+                locks.add(ownerTag.getSharedObject().getLock(ACCESS_OBJECT).writeLock());
+            }
+
+            locks.sort((o1, o2) -> Integer.compare(o2.getHoldCount(), o1.getHoldCount()));
+            final Collection<WriteLock> writeLocks = new LinkedHashSet<>(locks);
+
+            // must be separately locked
+            for (final WriteLock writeLock : writeLocks) {
+                writeLock.lock();
+            }
+            return writeLocks;
+        } finally {
+            ownerTagsLock.unlockRead(stamp);
         }
-        final List<WriteLock> locks = new ArrayList<>(size);
-
-        for (final AbstractHtml ownerTag : ownerTags) {
-            final WriteLock writeLock = ownerTag.getSharedObject().getLock(ACCESS_OBJECT).writeLock();
-            locks.add(writeLock);
-        }
-
-        locks.sort((o1, o2) -> Integer.compare(o2.getHoldCount(), o1.getHoldCount()));
-        final Collection<WriteLock> writeLocks = new LinkedHashSet<>(locks);
-
-        // must be separately locked
-        for (final WriteLock writeLock : writeLocks) {
-            writeLock.lock();
-        }
-
-        return writeLocks;
     }
 
     /**
@@ -1322,28 +1433,34 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected Collection<ReadLock> lockAndGetReadLocks() {
 
-        // internally ownerTags.size() (WeakHashMap) contains synchronization
-        // better avoid calling it
-        // normally there will be one sharedObject so the capacity may be
-        // considered as 2 because the load factor is 0.75f
-        final Collection<ReadLock> readLocks = new HashSet<>(2);
+        final long stamp = ownerTagsLock.readLock();
 
-        for (final AbstractHtml ownerTag : ownerTags) {
-            final ReadLock readLock = ownerTag.getSharedObject().getLock(ACCESS_OBJECT).readLock();
-            readLocks.add(readLock);
-        }
+        try {
+            // internally ownerTags.size() (WeakHashMap) contains synchronization
+            // better avoid calling it
+            // normally there will be one sharedObject so the capacity may be
+            // considered as 2 because the load factor is 0.75f
+            final Collection<ReadLock> readLocks = new HashSet<>(2);
 
-        // must be separately locked
-        for (final ReadLock readLock : readLocks) {
-            try {
-                readLock.lock();
-                readLocks.add(readLock);
-            } catch (final Exception e) {
-                e.printStackTrace();
+            for (final AbstractHtml ownerTag : ownerTags) {
+                readLocks.add(ownerTag.getSharedObject().getLock(ACCESS_OBJECT).readLock());
             }
+
+            // must be separately locked
+            for (final ReadLock readLock : readLocks) {
+                try {
+                    readLock.lock();
+                    readLocks.add(readLock);
+                } catch (final Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return readLocks;
+        } finally {
+            ownerTagsLock.unlockRead(stamp);
         }
 
-        return readLocks;
     }
 
     /**
@@ -1354,20 +1471,24 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @return the set of write locks
      */
     protected Collection<WriteLock> getWriteLocks() {
+        final long stamp = ownerTagsLock.readLock();
 
-        int size = ownerTags.size();
-        if (size < 1) {
-            size = 2;
+        try {
+            int size = ownerTags.size();
+            if (size < 1) {
+                size = 2;
+            }
+            final List<WriteLock> locks = new ArrayList<>(size);
+
+            for (final AbstractHtml ownerTag : ownerTags) {
+                locks.add(ownerTag.getSharedObject().getLock(ACCESS_OBJECT).writeLock());
+            }
+            locks.sort((o1, o2) -> Integer.compare(o2.getHoldCount(), o1.getHoldCount()));
+
+            return new LinkedHashSet<>(locks);
+        } finally {
+            ownerTagsLock.unlockRead(stamp);
         }
-        final List<WriteLock> locks = new ArrayList<>(size);
-
-        for (final AbstractHtml ownerTag : ownerTags) {
-            final WriteLock writeLock = ownerTag.getSharedObject().getLock(ACCESS_OBJECT).writeLock();
-            locks.add(writeLock);
-        }
-        locks.sort((o1, o2) -> Integer.compare(o2.getHoldCount(), o1.getHoldCount()));
-
-        return new LinkedHashSet<>(locks);
     }
 
     /**
@@ -1377,19 +1498,23 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @return the set of read locks
      */
     protected Collection<ReadLock> getReadLocks() {
+        final long stamp = ownerTagsLock.readLock();
 
-        // internally ownerTags.size() (WeakHashMap) contains synchronization
-        // better avoid calling it
-        // normally there will be one sharedObject so the capacity may be
-        // considered as 2 because the load factor is 0.75f
-        final Collection<ReadLock> readLocks = new HashSet<>(2);
+        try {
+            // internally ownerTags.size() (WeakHashMap) contains synchronization
+            // better avoid calling it
+            // normally there will be one sharedObject so the capacity may be
+            // considered as 2 because the load factor is 0.75f
+            final Collection<ReadLock> readLocks = new HashSet<>(2);
 
-        for (final AbstractHtml ownerTag : ownerTags) {
-            final ReadLock readLock = ownerTag.getSharedObject().getLock(ACCESS_OBJECT).readLock();
-            readLocks.add(readLock);
+            for (final AbstractHtml ownerTag : ownerTags) {
+                readLocks.add(ownerTag.getSharedObject().getLock(ACCESS_OBJECT).readLock());
+            }
+
+            return readLocks;
+        } finally {
+            ownerTagsLock.unlockRead(stamp);
         }
-
-        return readLocks;
     }
 
     /**

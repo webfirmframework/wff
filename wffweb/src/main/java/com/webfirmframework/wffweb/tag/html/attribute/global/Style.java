@@ -427,7 +427,7 @@ public class Style extends AbstractAttribute implements GlobalAttributable, Stat
     protected final Map<String, AbstractCssProperty<?>> abstractCssPropertyClassObjects;
 
     // for internal use
-    private final StampedLock lock = new StampedLock();
+    private final transient StampedLock lock = new StampedLock();
 
     // for internal use
     private final Set<CssProperty> cssProperties = ConcurrentHashMap.newKeySet();

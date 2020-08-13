@@ -48,7 +48,7 @@ public abstract class AbstractCssFileBlock implements CssFileBlock {
 
     private boolean excludeCssBlock;
 
-    private final ReadWriteLock lock;
+    private final transient ReadWriteLock lock;
 
     @SuppressWarnings("unused")
     private AbstractCssFileBlock() {

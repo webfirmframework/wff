@@ -92,7 +92,7 @@ public class SharedTagContent<T> {
 
     // NB Using ReentrantReadWriteLock causes
     // java.lang.IllegalMonitorStateException in production app
-    private final StampedLock lock = new StampedLock();
+    private final transient StampedLock lock = new StampedLock();
 
     private volatile long ordinal = 0L;
 

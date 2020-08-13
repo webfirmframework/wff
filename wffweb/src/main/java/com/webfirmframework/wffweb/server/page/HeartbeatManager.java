@@ -39,7 +39,7 @@ public final class HeartbeatManager {
 
     // there will be only one thread waiting for the lock so fairness must be
     // false and fairness may decrease the lock time
-    private final ReentrantLock taskQLock = new ReentrantLock(false);
+    private final transient ReentrantLock taskQLock = new ReentrantLock(false);
 
     // ConcurrentLinkedQueue give better performance than ConcurrentLinkedDeque
     // on benchmark

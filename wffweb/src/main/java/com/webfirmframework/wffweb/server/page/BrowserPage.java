@@ -130,7 +130,7 @@ public abstract class BrowserPage implements Serializable {
 
     // there will be only one thread waiting for the lock so fairness must be
     // false and fairness may decrease the lock time
-    private final ReentrantLock taskFromClientQLock = new ReentrantLock(false);
+    private final transient ReentrantLock taskFromClientQLock = new ReentrantLock(false);
 
     // ConcurrentLinkedQueue give better performance than ConcurrentLinkedDeque
     // on benchmark
@@ -164,11 +164,11 @@ public abstract class BrowserPage implements Serializable {
 
     // there will be only one thread waiting for the lock so fairness must be
     // false and fairness may decrease the lock time
-    private final ReentrantLock pushWffBMBytesQueueLock = new ReentrantLock(false);
+    private final transient ReentrantLock pushWffBMBytesQueueLock = new ReentrantLock(false);
 
     // there will be only one thread waiting for the lock so fairness must be
     // false and fairness may decrease the lock time
-    private final ReentrantLock unholdPushLock = new ReentrantLock(false);
+    private final transient ReentrantLock unholdPushLock = new ReentrantLock(false);
 
     private final AtomicReference<Thread> waitingThreadRef = new AtomicReference<>();
 

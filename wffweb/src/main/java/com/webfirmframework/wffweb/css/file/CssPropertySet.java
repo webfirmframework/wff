@@ -40,7 +40,7 @@ class CssPropertySet extends LinkedHashSet<CssProperty> {
      * must be reentrant otherwise makes a deadlock when tested so StampedLock is
      * not applicable
      */
-    private final ReadWriteLock lock = new ReentrantReadWriteLock(true);
+    private final transient ReadWriteLock lock = new ReentrantReadWriteLock(true);
 
     private final Map<String, CssProperty> cssPropertiesAsMap = new LinkedHashMap<>();
 
