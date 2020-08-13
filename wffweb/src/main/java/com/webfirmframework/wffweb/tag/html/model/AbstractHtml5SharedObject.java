@@ -52,7 +52,7 @@ import com.webfirmframework.wffweb.tag.html.listener.WffBMDataUpdateListener;
  * @author WFF
  * @since 1.0.0
  */
-public class AbstractHtml5SharedObject implements Serializable {
+public final class AbstractHtml5SharedObject implements Serializable {
 
     private static final long serialVersionUID = 1_0_1L;
 

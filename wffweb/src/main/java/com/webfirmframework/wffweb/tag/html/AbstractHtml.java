@@ -1423,7 +1423,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @author WFF
      * @since 2.0.0
      */
-    public boolean addChild(final Object accessObject, final AbstractHtml child, final boolean invokeListener) {
+    public final boolean addChild(final Object accessObject, final AbstractHtml child, final boolean invokeListener) {
         if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
@@ -2204,7 +2204,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @author WFF
      * @since 2.0.0
      */
-    public boolean removeAttributes(final Object accessObject, final boolean invokeListener,
+    public final boolean removeAttributes(final Object accessObject, final boolean invokeListener,
             final AbstractAttribute... attributes) {
 
         if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName()))) {
@@ -2346,7 +2346,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @author WFF
      * @since 2.0.0
      */
-    public boolean removeAttributes(final Object accessObject, final boolean invokeListener,
+    public final boolean removeAttributes(final Object accessObject, final boolean invokeListener,
             final String... attributeNames) {
         if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
@@ -2600,7 +2600,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @author WFF
      * @since 2.0.0
      */
-    public Set<AbstractHtml> getChildren(final Object accessObject) {
+    public final Set<AbstractHtml> getChildren(final Object accessObject) {
 
         if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
@@ -2841,7 +2841,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *         not a child in this tag's children then -1 will be returned.
      * @since 3.0.7
      */
-    public int getIndexByChild(final Object accessObject, final AbstractHtml child) {
+    public final int getIndexByChild(final Object accessObject, final AbstractHtml child) {
 
         // Lockless method to get child index
 
