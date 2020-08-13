@@ -18,9 +18,12 @@ package com.webfirmframework.wffweb.tag.repository;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -156,10 +159,11 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
             throw new NullValueException("The fromTags should not be null");
         }
 
-        final Collection<Lock> locks = getReadLocks(fromTags);
+        final List<Lock> locks = new ArrayList<>(getReadLocks(fromTags));
         for (final Lock lock : locks) {
             lock.lock();
         }
+        Collections.reverse(locks);
 
         try {
             final Stream<AbstractHtml> stream = getAllNestedChildrenIncludingParent(parallel, fromTags);
@@ -269,11 +273,11 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
             throw new NullValueException("The fromTags should not be null");
         }
 
-        final Collection<Lock> locks = getReadLocks(fromTags);
+        final List<Lock> locks = new ArrayList<>(getReadLocks(fromTags));
         for (final Lock lock : locks) {
             lock.lock();
         }
-
+        Collections.reverse(locks);
         try {
             return getAllNestedChildrenIncludingParent(parallel, fromTags).filter(child -> {
 
@@ -333,10 +337,11 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
             throw new NullValueException("The fromTags should not be null");
         }
 
-        final Collection<Lock> locks = getReadLocks(fromTags);
+        final List<Lock> locks = new ArrayList<>(getReadLocks(fromTags));
         for (final Lock lock : locks) {
             lock.lock();
         }
+        Collections.reverse(locks);
 
         try {
             return getAllNestedChildrenIncludingParent(parallel, fromTags)
@@ -417,10 +422,11 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
             throw new NullValueException("The fromTags should not be null");
         }
 
-        final Collection<Lock> locks = getReadLocks(fromTags);
+        final List<Lock> locks = new ArrayList<>(getReadLocks(fromTags));
         for (final Lock lock : locks) {
             lock.lock();
         }
+        Collections.reverse(locks);
 
         try {
             return getAllNestedChildrenIncludingParent(parallel, fromTags)
@@ -463,10 +469,11 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
             throw new NullValueException("The fromTags should not be null");
         }
 
-        final Collection<Lock> locks = getReadLocks(fromTags);
+        final List<Lock> locks = new ArrayList<>(getReadLocks(fromTags));
         for (final Lock lock : locks) {
             lock.lock();
         }
+        Collections.reverse(locks);
         try {
             return getAllNestedChildrenIncludingParent(parallel, fromTags)
                     .filter(child -> tagName.equals(child.getTagName()) && child.getAttributes() != null)
@@ -528,10 +535,11 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
             throw new NullValueException("The fromTags should not be null");
         }
 
-        final Collection<Lock> locks = getReadLocks(fromTags);
+        final List<Lock> locks = new ArrayList<>(getReadLocks(fromTags));
         for (final Lock lock : locks) {
             lock.lock();
         }
+        Collections.reverse(locks);
 
         try {
             return getAllNestedChildrenIncludingParent(parallel, fromTags)
@@ -589,10 +597,11 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
             throw new NullValueException("The fromTags should not be null");
         }
 
-        final Collection<Lock> locks = getReadLocks(fromTags);
+        final List<Lock> locks = new ArrayList<>(getReadLocks(fromTags));
         for (final Lock lock : locks) {
             lock.lock();
         }
+        Collections.reverse(locks);
 
         try {
             final Stream<AbstractHtml> stream = getAllNestedChildrenIncludingParent(parallel, fromTags);
@@ -657,10 +666,11 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
             throw new NullValueException("The fromTags should not be null");
         }
 
-        final Collection<Lock> locks = getReadLocks(fromTags);
+        final List<Lock> locks = new ArrayList<>(getReadLocks(fromTags));
         for (final Lock lock : locks) {
             lock.lock();
         }
+        Collections.reverse(locks);
 
         try {
             final Optional<AbstractHtml> any = getAllNestedChildrenIncludingParent(parallel, fromTags)
@@ -784,10 +794,11 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
             throw new NullValueException("The fromTags should not be null");
         }
 
-        final Collection<Lock> locks = getReadLocks(fromTags);
+        final List<Lock> locks = new ArrayList<>(getReadLocks(fromTags));
         for (final Lock lock : locks) {
             lock.lock();
         }
+        Collections.reverse(locks);
 
         try {
             final Optional<AbstractHtml> any = getAllNestedChildrenIncludingParent(parallel, fromTags)
@@ -927,10 +938,11 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
             throw new NullValueException("The fromTags should not be null");
         }
 
-        final Collection<Lock> locks = getReadLocks(fromTags);
+        final List<Lock> locks = new ArrayList<>(getReadLocks(fromTags));
         for (final Lock lock : locks) {
             lock.lock();
         }
+        Collections.reverse(locks);
 
         try {
             return (Collection<T>) getAllNestedChildrenIncludingParent(parallel, fromTags).filter(
@@ -990,10 +1002,11 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
             throw new NullValueException("The fromTags should not be null");
         }
 
-        final Collection<Lock> locks = getReadLocks(fromTags);
+        final List<Lock> locks = new ArrayList<>(getReadLocks(fromTags));
         for (final Lock lock : locks) {
             lock.lock();
         }
+        Collections.reverse(locks);
         try {
             final Optional<AbstractHtml> any = getAllNestedChildrenIncludingParent(parallel, fromTags)
                     .filter(child -> child.getAttributeByName(attributeName) != null).findAny();
@@ -1054,10 +1067,11 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
             throw new NullValueException("The fromTags should not be null");
         }
 
-        final Collection<Lock> locks = getReadLocks(fromTags);
+        final List<Lock> locks = new ArrayList<>(getReadLocks(fromTags));
         for (final Lock lock : locks) {
             lock.lock();
         }
+        Collections.reverse(locks);
 
         try {
             return getAllNestedChildrenIncludingParent(parallel, fromTags)
@@ -1107,10 +1121,11 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
             throw new NullValueException("The attributeName should not be null");
         }
 
-        final Collection<Lock> locks = getReadLocks(rootTags);
+        final List<Lock> locks = new ArrayList<>(getReadLocks(rootTags));
         for (final Lock lock : locks) {
             lock.lock();
         }
+        Collections.reverse(locks);
 
         try {
             return buildAllTagsStream(parallel).filter(tag -> tag.getAttributeByName(attributeName) != null)
@@ -1171,10 +1186,11 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
             throw new NullValueException("The attributeValue should not be null");
         }
 
-        final Collection<Lock> locks = getReadLocks(rootTags);
+        final List<Lock> locks = new ArrayList<>(getReadLocks(rootTags));
         for (final Lock lock : locks) {
             lock.lock();
         }
+        Collections.reverse(locks);
 
         try {
             return buildAllTagsStream(parallel).filter(tag -> {
@@ -1227,10 +1243,11 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
             throw new NullValueException("The tagName should not be null");
         }
 
-        final Collection<Lock> locks = getReadLocks(rootTags);
+        final List<Lock> locks = new ArrayList<>(getReadLocks(rootTags));
         for (final Lock lock : locks) {
             lock.lock();
         }
+        Collections.reverse(locks);
 
         try {
             return buildAllTagsStream(parallel).filter(tag -> tagName.equals(tag.getTagName()))
@@ -1283,10 +1300,11 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
             throw new NullValueException("The filter should not be null");
         }
 
-        final Collection<Lock> locks = getReadLocks(rootTags);
+        final List<Lock> locks = new ArrayList<>(getReadLocks(rootTags));
         for (final Lock lock : locks) {
             lock.lock();
         }
+        Collections.reverse(locks);
 
         try {
             return buildAllTagsStream(parallel).filter(filter).collect(Collectors.toSet());
@@ -1325,10 +1343,11 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
             throw new NullValueException("The fromTags should not be null");
         }
 
-        final Collection<Lock> locks = getReadLocks(fromTags);
+        final List<Lock> locks = new ArrayList<>(getReadLocks(fromTags));
         for (final Lock lock : locks) {
             lock.lock();
         }
+        Collections.reverse(locks);
         try {
 
             return getAllNestedChildrenIncludingParent(parallel, fromTags).filter(filter).collect(Collectors.toSet());
@@ -1400,10 +1419,11 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
             throw new NullValueException("The tagName should not be null");
         }
 
-        final Collection<Lock> locks = getReadLocks(rootTags);
+        final List<Lock> locks = new ArrayList<>(getReadLocks(rootTags));
         for (final Lock lock : locks) {
             lock.lock();
         }
+        Collections.reverse(locks);
 
         try {
             final Stream<AbstractAttribute> attributesStream = buildAllTagsStream(parallel)
@@ -1460,10 +1480,11 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
             throw new NullValueException("The filter should not be null");
         }
 
-        final Collection<Lock> locks = getReadLocks(rootTags);
+        final List<Lock> locks = new ArrayList<>(getReadLocks(rootTags));
         for (final Lock lock : locks) {
             lock.lock();
         }
+        Collections.reverse(locks);
 
         try {
             final Stream<AbstractAttribute> attributesStream = buildAllTagsStream(parallel)
@@ -1518,10 +1539,11 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
     public AbstractHtml findOneTagByAttribute(final boolean parallel, final String attributeName,
             final String attributeValue) throws NullValueException {
 
-        final Collection<Lock> locks = getReadLocks(rootTags);
+        final List<Lock> locks = new ArrayList<>(getReadLocks(rootTags));
         for (final Lock lock : locks) {
             lock.lock();
         }
+        Collections.reverse(locks);
 
         try {
             final Stream<AbstractHtml> stream = buildAllTagsStream(parallel);
@@ -1576,10 +1598,11 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
             throw new NullValueException("The tagName should not be null");
         }
 
-        final Collection<Lock> locks = getReadLocks(rootTags);
+        final List<Lock> locks = new ArrayList<>(getReadLocks(rootTags));
         for (final Lock lock : locks) {
             lock.lock();
         }
+        Collections.reverse(locks);
 
         try {
             final Optional<AbstractHtml> any = buildAllTagsStream(parallel)
@@ -1681,10 +1704,11 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
     public <T extends AbstractHtml> T findOneTagAssignableToTag(final boolean parallel, final Class<T> tagClass)
             throws NullValueException {
 
-        final Collection<Lock> locks = getReadLocks(rootTags);
+        final List<Lock> locks = new ArrayList<>(getReadLocks(rootTags));
         for (final Lock lock : locks) {
             lock.lock();
         }
+        Collections.reverse(locks);
 
         try {
             final Stream<AbstractHtml> stream = buildAllTagsStream(parallel);
@@ -1816,10 +1840,11 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
                     "classes like NoTag.class cannot be used to find tags as it's not a logical tag in behaviour.");
         }
 
-        final Collection<Lock> locks = getReadLocks(rootTags);
+        final List<Lock> locks = new ArrayList<>(getReadLocks(rootTags));
         for (final Lock lock : locks) {
             lock.lock();
         }
+        Collections.reverse(locks);
 
         try {
             final Set<AbstractHtml> set = buildAllTagsStream(parallel).filter(
@@ -1871,10 +1896,11 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
         if (attributeName == null) {
             throw new NullValueException("The attributeName should not be null");
         }
-        final Collection<Lock> locks = getReadLocks(rootTags);
+        final List<Lock> locks = new ArrayList<>(getReadLocks(rootTags));
         for (final Lock lock : locks) {
             lock.lock();
         }
+        Collections.reverse(locks);
 
         try {
             final Stream<AbstractHtml> stream = buildAllTagsStream(parallel);
@@ -2107,10 +2133,11 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      * @author WFF
      */
     public Collection<AbstractHtml> findAllTags(final boolean parallel) {
-        final Collection<Lock> locks = getReadLocks(rootTags);
+        final List<Lock> locks = new ArrayList<>(getReadLocks(rootTags));
         for (final Lock lock : locks) {
             lock.lock();
         }
+        Collections.reverse(locks);
         try {
             return buildAllTagsStream(parallel).collect(Collectors.toSet());
         } finally {
@@ -2175,10 +2202,11 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
             throw new NullValueException("fromTags cannot be null");
         }
 
-        final Collection<Lock> locks = getReadLocks(fromTags);
+        final List<Lock> locks = new ArrayList<>(getReadLocks(fromTags));
         for (final Lock lock : locks) {
             lock.lock();
         }
+        Collections.reverse(locks);
 
         try {
             return getAllNestedChildrenIncludingParent(parallel, fromTags).collect(Collectors.toSet());
@@ -2215,10 +2243,11 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      * @author WFF
      */
     public Collection<AbstractAttribute> findAllAttributes(final boolean parallel) {
-        final Collection<Lock> locks = getReadLocks(rootTags);
+        final List<Lock> locks = new ArrayList<>(getReadLocks(rootTags));
         for (final Lock lock : locks) {
             lock.lock();
         }
+        Collections.reverse(locks);
         try {
             return buildAllAttributesStream(parallel).collect(Collectors.toSet());
         } finally {
@@ -2282,10 +2311,11 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
             throw new NullValueException("fromTags cannot be null");
         }
 
-        final Collection<Lock> locks = getReadLocks(fromTags);
+        final List<Lock> locks = new ArrayList<>(getReadLocks(fromTags));
         for (final Lock lock : locks) {
             lock.lock();
         }
+        Collections.reverse(locks);
         try {
             return getAllNestedChildrenIncludingParent(parallel, fromTags).filter(tag -> tag.getAttributes() != null)
                     .map(AbstractHtml::getAttributes).flatMap(Collection::stream).collect(Collectors.toSet());
@@ -2612,10 +2642,11 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
             throw new NullValueException("The fromTag should not be null");
         }
 
-        final Collection<Lock> locks = getReadLocks(fromTag);
+        final List<Lock> locks = new ArrayList<>(getReadLocks(fromTag));
         for (final Lock lock : locks) {
             lock.lock();
         }
+        Collections.reverse(locks);
 
         try {
             final Deque<AbstractHtml> stack = new ArrayDeque<>();
