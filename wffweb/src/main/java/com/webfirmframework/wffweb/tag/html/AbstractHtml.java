@@ -4462,7 +4462,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @since 3.0.2 improved to handle NoTag with contentTypeHtml true
      * @since 3.0.15 accessObject added
      */
-    public byte[] toWffBMBytes(final Charset charset, final Object accessObject) {
+    public final byte[] toWffBMBytes(final Charset charset, final Object accessObject) {
 
         final byte[] encodedBytesForAtChar = "@".getBytes(charset);
         final byte[] encodedByesForHashChar = "#".getBytes(charset);
@@ -4735,7 +4735,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @since 3.0.6
      * @since 3.0.15 accessObject added
      */
-    public byte[] toCompressedWffBMBytesV2(final Charset charset, final Object accessObject) {
+    public final byte[] toCompressedWffBMBytesV2(final Charset charset, final Object accessObject) {
 
         final Lock lock;
 
