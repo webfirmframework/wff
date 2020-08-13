@@ -952,18 +952,19 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     @Deprecated
     public AbstractHtml getOwnerTag() {
-        AbstractHtml tag;
+
         final long stamp = ownerTagsLock.readLock();
         try {
+            final AbstractHtml tag;
             if (ownerTags.iterator().hasNext()) {
                 tag = ownerTags.iterator().next();
             } else {
                 tag = null;
             }
+            return tag;
         } finally {
             ownerTagsLock.unlockRead(stamp);
         }
-        return tag;
     }
 
     /**
