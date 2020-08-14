@@ -1453,6 +1453,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     protected final Collection<Lock> lockAndGetWriteLocksWithAttrLock() {
 
         final Lock ownerTagsWriteLock = ownerTagsLock.asWriteLock();
+        // lock must be called before using ownerTags
+        ownerTagsWriteLock.lock();
 
         // internally ownerTags.size() (WeakHashMap) contains synchronization so
         // better avoid calling it
@@ -1466,13 +1468,17 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
         locks.sort((o1, o2) -> Integer.compare(o2.getHoldCount(), o1.getHoldCount()));
 
+        final Set<WriteLock> locksWithoutDuplicates = new LinkedHashSet<>(locks);
+
         final List<Lock> writeLocks = new ArrayList<>(locks.size() + 1);
         writeLocks.add(ownerTagsWriteLock);
-        writeLocks.addAll(new LinkedHashSet<>(locks));
 
         // must be separately locked
-        for (final Lock writeLock : writeLocks) {
+        // ownerTagsWriteLock is already locked so iterating over locksWithoutDuplicates
+        // object
+        for (final Lock writeLock : locksWithoutDuplicates) {
             writeLock.lock();
+            writeLocks.add(writeLock);
         }
 
         // NB: must reverse it before returning because its unlocking must be in the
@@ -1534,12 +1540,14 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     protected final Collection<Lock> lockAndGetReadLocksWithAttrLock() {
 
         final Lock ownerTagsReadLock = ownerTagsLock.asReadLock();
+        // lock must be called before using ownerTags
+        ownerTagsReadLock.lock();
 
         // internally ownerTags.size() (WeakHashMap) contains synchronization
         // better avoid calling it
         // normally there will be one sharedObject so the capacity may be
         // considered as 2 because the load factor is 0.75f
-        final Collection<ReadLock> locks = new HashSet<>(2);
+        final Collection<ReadLock> locks = new LinkedHashSet<>(2);
 
         for (final AbstractHtml ownerTag : ownerTags) {
             locks.add(ownerTag.getSharedObject().getLock(ACCESS_OBJECT).readLock());
@@ -1547,11 +1555,12 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
         final List<Lock> readLocks = new ArrayList<>(locks.size() + 1);
         readLocks.add(ownerTagsReadLock);
-        readLocks.addAll(locks);
 
         // must be separately locked
-        for (final Lock readLock : readLocks) {
+        // ownerTagsReadLock is already locked so iterating over locks object
+        for (final Lock readLock : locks) {
             readLock.lock();
+            readLocks.add(readLock);
         }
 
         // NB: must reverse it before returning because its unlocking must be in the
