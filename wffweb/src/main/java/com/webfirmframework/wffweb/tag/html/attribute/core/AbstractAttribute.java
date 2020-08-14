@@ -1034,27 +1034,18 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     @Override
     public void setModified(final boolean modified) {
         final long stamp = ownerTagsLock.writeLock();
-
         try {
-            super.setModified(modified);
-            if (modified) {
-                compressedBytes = null;
-                for (final AbstractHtml ownerTag : ownerTags) {
-                    ownerTag.setModified(modified);
-                    ownerTag.getSharedObject().setChildModified(modified);
-                }
-            }
+            setModifiedLockless(modified);
         } finally {
             ownerTagsLock.unlockWrite(stamp);
         }
-
     }
 
     /**
      * @param modified
      * @since 3.0.15
      */
-    private void setModifiedLockless(final boolean modified) {
+    protected final void setModifiedLockless(final boolean modified) {
         super.setModified(modified);
         if (modified) {
             compressedBytes = null;
@@ -1092,8 +1083,13 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected void setAttributeValueSet(final Set<String> attributeValueSet) {
         if (!Objects.equals(this.attributeValueSet, attributeValueSet)) {
-            this.attributeValueSet = attributeValueSet;
-            setModified(true);
+            final long stamp = ownerTagsLock.writeLock();
+            try {
+                this.attributeValueSet = attributeValueSet;
+                setModifiedLockless(true);
+            } finally {
+                ownerTagsLock.unlockWrite(stamp);
+            }
         }
     }
 
