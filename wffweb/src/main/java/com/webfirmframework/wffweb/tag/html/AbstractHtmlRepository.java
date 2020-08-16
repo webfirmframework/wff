@@ -22,6 +22,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.stream.Stream;
 import java.util.stream.Stream.Builder;
 
+import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.wffbm.data.WffBMData;
 
 /**
@@ -29,6 +30,26 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMData;
  * @since 2.1.8
  */
 public abstract class AbstractHtmlRepository {
+
+    /**
+     * @param tag
+     * @param attributeName
+     * @return the tag or null
+     * @since 3.0.15
+     */
+    protected static AbstractAttribute getAttributeByNameLockless(final AbstractHtml tag, final String attributeName) {
+        return tag.getAttributeByNameLockless(attributeName);
+    }
+
+    /**
+     * @param tag
+     * @return collection of attributes
+     * @since 3.0.15
+     *
+     */
+    protected static Collection<AbstractAttribute> getAttributesLockless(final AbstractHtml tag) {
+        return tag.getAttributesLockless();
+    }
 
     /**
      * @param fromTags

@@ -2155,6 +2155,22 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
+     * @return the collection of attributes
+     * @author WFF
+     * @since 3.0.15
+     */
+    protected final Collection<AbstractAttribute> getAttributesLockless() {
+
+        final Map<String, AbstractAttribute> attributesMap = this.attributesMap;
+
+        if (attributesMap != null) {
+            final Collection<AbstractAttribute> result = Collections.unmodifiableCollection(attributesMap.values());
+            return result;
+        }
+        return null;
+    }
+
+    /**
      * gets the attribute by attribute name
      *
      * @return the attribute object for the given attribute name if exists otherwise
@@ -2181,6 +2197,24 @@ public abstract class AbstractHtml extends AbstractJsObject {
             lock.unlock();
         }
         return result;
+    }
+
+    /**
+     * gets the attribute by attribute name. NB: only for internal use.
+     *
+     * @return the attribute object for the given attribute name if exists otherwise
+     *         returns null.
+     * @author WFF
+     * @since 3.0.15
+     */
+    protected final AbstractAttribute getAttributeByNameLockless(final String attributeName) {
+
+        final Map<String, AbstractAttribute> attributesMap = this.attributesMap;
+
+        if (attributesMap != null) {
+            return attributesMap.get(attributeName);
+        }
+        return null;
     }
 
     /**
