@@ -15,10 +15,7 @@
  */
 package com.webfirmframework.wffweb.tag.repository;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -933,6 +930,33 @@ public class TagRepositoryTest {
     @Test(expected = InvalidTagException.class)
     public void testFindFirstParentTagAssignableToTagExp3() {
         TagRepository.findFirstParentTagAssignableToTag(NoTag.class, null);
+    }
+    
+    @Test
+    public void testParallel() throws Exception {
+        Html html = new Html(null).give(t -> {
+            new Head(t).give(head -> {
+                new TitleTag(head).give(TagContent::text, "some title");
+            });
+            new Body(t, new Id("one")).give(body -> {
+
+                new Div(body).give(topDv -> {
+                    new Div(topDv).give(dv -> {
+                        for (int i = 0; i < 100; i++) {
+                            new Div(dv);
+                        }
+                        new Div(dv, new Id("someDivId"));
+                    });
+                });
+
+            });
+        });
+        
+        AbstractHtml tag = TagRepository.findTagById(true, "someDivId", html);
+        assertNotNull(tag);
+        assertEquals("<div id=\"someDivId\"></div>", tag.toHtmlString());
+        
+        //TODO test other methods with parallel true
     }
 
 }
