@@ -15,12 +15,14 @@
  */
 package com.webfirmframework.wffweb.tag.html;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -59,6 +61,26 @@ public abstract class AbstractHtmlRepository {
     }
 
     /**
+     * Old implementation of getReadLocks method. It is kept for future reference.
+     *
+     * @param fromTags
+     * @return the list of read lock
+     * @since 3.0.1
+     */
+    @SuppressWarnings("unused")
+    private static Collection<Lock> getReadLocksOldImpl(final AbstractHtml... fromTags) {
+        // passed 2 instead of 1 because the load factor is 0.75f
+        final Collection<Lock> locks = fromTags.length > 1 ? new HashSet<>(fromTags.length) : new ArrayDeque<>(2);
+        for (final AbstractHtml tag : fromTags) {
+            final Lock readLock = tag.getReadLock();
+            if (readLock != null) {
+                locks.add(readLock);
+            }
+        }
+        return locks;
+    }
+
+    /**
      * @param fromTags
      * @return the list of read lock
      * @since 3.0.1
@@ -91,9 +113,7 @@ public abstract class AbstractHtmlRepository {
         }
 
         if (fromTags.length == 1) {
-            final Lock readLock = fromTags[0].getReadLock();
-            readLock.lock();
-            return Arrays.asList(readLock);
+            return Arrays.asList(fromTags[0].getReadLock());
         }
 
         final Map<AbstractHtml5SharedObject, AbstractHtml> sharedObjects = new HashMap<>(fromTags.length);
