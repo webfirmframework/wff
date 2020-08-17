@@ -1228,7 +1228,7 @@ public class SharedTagContent<T> {
 
                 insertedTags.clear();
 
-                final Map<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> tagsGroupedBySharedObject = new LinkedHashMap<>();
+                Map<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> tagsGroupedBySO = new LinkedHashMap<>();
 
                 for (final Entry<NoTag, InsertedTagData<T>> entry : insertedTagsEntries) {
 
@@ -1248,7 +1248,7 @@ public class SharedTagContent<T> {
                         continue;
                     }
 
-                    final List<ParentNoTagData<T>> dataList = tagsGroupedBySharedObject
+                    final List<ParentNoTagData<T>> dataList = tagsGroupedBySO
                             .computeIfAbsent(parentTag.getSharedObject(), k -> new ArrayList<>(4));
 
                     NoTag noTag;
@@ -1273,11 +1273,21 @@ public class SharedTagContent<T> {
                     dataList.add(new ParentNoTagData<>(prevNoTag, parentTag, noTag, insertedTagData, contentApplied));
 
                 }
+                final List<Entry<AbstractHtml5SharedObject, List<ParentNoTagData<T>>>> tagsGroupedBySOEntries = new ArrayList<>(
+                        tagsGroupedBySO.size());
+
+                for (final Entry<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> entry : tagsGroupedBySO
+                        .entrySet()) {
+                    tagsGroupedBySOEntries.add(entry);
+                }
+
+                tagsGroupedBySO = null;
+
+                tagsGroupedBySOEntries.sort((o1, o2) -> Long.compare(o1.getKey().objectId(), o2.getKey().objectId()));
 
                 final List<ModifiedParentData<T>> modifiedParents = new ArrayList<>(4);
 
-                for (final Entry<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> entry : tagsGroupedBySharedObject
-                        .entrySet()) {
+                for (final Entry<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> entry : tagsGroupedBySOEntries) {
 
                     final AbstractHtml5SharedObject sharedObject = entry.getKey();
 
@@ -1716,7 +1726,7 @@ public class SharedTagContent<T> {
 
             final Content<T> contentBefore = new Content<>(content, contentTypeHtml);
 
-            final Map<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> tagsGroupedBySharedObject = new HashMap<>();
+            Map<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> tagsGroupedBySO = new HashMap<>();
 
             for (final Entry<NoTag, InsertedTagData<T>> entry : insertedTags.entrySet()) {
                 if (entry == null) {
@@ -1739,8 +1749,8 @@ public class SharedTagContent<T> {
                     continue;
                 }
 
-                final List<ParentNoTagData<T>> dataList = tagsGroupedBySharedObject
-                        .computeIfAbsent(parentTag.getSharedObject(), k -> new ArrayList<>(4));
+                final List<ParentNoTagData<T>> dataList = tagsGroupedBySO.computeIfAbsent(parentTag.getSharedObject(),
+                        k -> new ArrayList<>(4));
 
                 // final NoTag noTag = new NoTag(null, content,
                 // contentTypeHtml);
@@ -1751,10 +1761,20 @@ public class SharedTagContent<T> {
 
             insertedTags.clear();
 
+            final List<Entry<AbstractHtml5SharedObject, List<ParentNoTagData<T>>>> tagsGroupedBySOEntries = new ArrayList<>(
+                    tagsGroupedBySO.size());
+
+            for (final Entry<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> entry : tagsGroupedBySO.entrySet()) {
+                tagsGroupedBySOEntries.add(entry);
+            }
+
+            tagsGroupedBySO = null;
+
+            tagsGroupedBySOEntries.sort((o1, o2) -> Long.compare(o1.getKey().objectId(), o2.getKey().objectId()));
+
             final List<AbstractHtml> modifiedParents = new ArrayList<>(4);
 
-            for (final Entry<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> entry : tagsGroupedBySharedObject
-                    .entrySet()) {
+            for (final Entry<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> entry : tagsGroupedBySOEntries) {
 
                 final AbstractHtml5SharedObject sharedObject = entry.getKey();
 

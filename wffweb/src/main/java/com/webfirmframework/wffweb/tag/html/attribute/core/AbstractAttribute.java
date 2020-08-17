@@ -81,6 +81,10 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
     private static transient final AtomicLong OBJECT_ID_GENERATOR = new AtomicLong(0);
 
+    /**
+     * NB: do not generate equals and hashcode base on this as the deserialized
+     * object can lead to bug.
+     */
     private final long objectId;
 
     // for security purpose, the class name should not be modified
@@ -1786,6 +1790,10 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         return attrNameIndexBytes;
     }
 
+    /**
+     * @return the objectId
+     * @since 3.0.15
+     */
     final long objectId() {
         return objectId;
     }

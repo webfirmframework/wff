@@ -130,6 +130,10 @@ public final class AbstractHtml5SharedObject implements Serializable {
 
     private static transient final AtomicLong OBJECT_ID_GENERATOR = new AtomicLong(0);
 
+    /**
+     * NB: do not generate equals and hashcode base on this as the deserialized
+     * object can lead to bug.
+     */
     private final long objectId;
 
     public AbstractHtml5SharedObject(final AbstractHtml rootTag) {
@@ -743,8 +747,10 @@ public final class AbstractHtml5SharedObject implements Serializable {
 
     /**
      * @return the object id for this object
+     *
+     * @since 3.0.15
      */
-    public long objectId() {
+    public final long objectId() {
         return objectId;
     }
 
