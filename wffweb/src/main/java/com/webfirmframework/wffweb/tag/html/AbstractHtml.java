@@ -821,7 +821,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                         }
                     } else {
-                        removeDataWffIdFromHierarchy(sharedObject, innerHtml);
+                        removeDataWffIdFromHierarchyLockless(innerHtml);
                     }
 
                     addChild(innerHtml, false);
@@ -1402,7 +1402,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 } // else {TODO also write the code to push
                   // changes to the other BrowserPage}
             } else {
-                removeDataWffIdFromHierarchy(sharedObject, child);
+                removeDataWffIdFromHierarchyLockless(child);
             }
 
             result = addChild(child, true);
@@ -1772,7 +1772,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                     } // else {TODO also write the code to push
                       // changes to the other BrowserPage}
                 } else {
-                    removeDataWffIdFromHierarchy(sharedObject, child);
+                    removeDataWffIdFromHierarchyLockless(child);
                 }
 
                 addChild(child, false);
@@ -1838,7 +1838,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                     } // else {TODO also write the code to push
                       // changes to the other BrowserPage}
                 } else {
-                    removeDataWffIdFromHierarchy(sharedObject, child);
+                    removeDataWffIdFromHierarchyLockless(child);
                 }
 
                 addChild(child, false);
@@ -1951,7 +1951,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                         } // else {TODO also write the code to push
                           // changes to the other BrowserPage}
                     } else {
-                        removeDataWffIdFromHierarchy(sharedObject, child);
+                        removeDataWffIdFromHierarchyLockless(child);
                     }
 
                     addChild(child, false);

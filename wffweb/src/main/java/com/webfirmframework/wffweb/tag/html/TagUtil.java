@@ -136,10 +136,6 @@ public final class TagUtil {
     static List<Lock> lockAndGetWriteLocks(final Object accessObject, final AbstractHtml currentTag,
             final AbstractHtml... foreignTags) {
 
-        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName()))) {
-            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
-        }
-
         final Set<AbstractHtml5SharedObject> sharedObjectsSet = new LinkedHashSet<>(foreignTags.length + 1);
 
         final AbstractHtml5SharedObject currentSO = currentTag.getSharedObjectLockless();
