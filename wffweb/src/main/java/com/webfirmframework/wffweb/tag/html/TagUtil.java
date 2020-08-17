@@ -232,8 +232,9 @@ public final class TagUtil {
     }
 
     /**
+     * @param accessObject
      * @param tags
-     * @return
+     * @return the locks
      * @since 3.0.15
      */
     static List<Lock> lockAndGetNestedAttributeWriteLocks(final Object accessObject, final AbstractHtml... tags) {

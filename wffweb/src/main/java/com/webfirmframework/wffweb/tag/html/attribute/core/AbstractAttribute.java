@@ -1032,18 +1032,18 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     }
 
     /**
-     * @return
+     * @return the readLock
      * @since 3.0.15
      */
-    Lock getObjectReadLock() {
+    final Lock getObjectReadLock() {
         return ownerTagsLock.asReadLock();
     }
 
     /**
-     * @return
+     * @return the writeLock
      * @since 3.0.15
      */
-    Lock getObjectWriteLock() {
+    final Lock getObjectWriteLock() {
         return ownerTagsLock.asWriteLock();
     }
 
@@ -1782,7 +1782,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @return
      * @since 3.0.3
      */
-    byte[] getAttrNameIndexBytes() {
+    final byte[] getAttrNameIndexBytes() {
         return attrNameIndexBytes;
     }
 
