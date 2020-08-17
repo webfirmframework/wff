@@ -20,8 +20,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -1228,7 +1228,10 @@ public class SharedTagContent<T> {
 
                 insertedTags.clear();
 
-                Map<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> tagsGroupedBySO = new LinkedHashMap<>();
+                // LinkedHashMap is irrelevant after the implementation of sharedObject.objectId
+                // grouping
+                Map<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> tagsGroupedBySO = new HashMap<>(
+                        insertedTagsEntries.size());
 
                 for (final Entry<NoTag, InsertedTagData<T>> entry : insertedTagsEntries) {
 
@@ -1274,16 +1277,11 @@ public class SharedTagContent<T> {
 
                 }
                 final List<Entry<AbstractHtml5SharedObject, List<ParentNoTagData<T>>>> tagsGroupedBySOEntries = new ArrayList<>(
-                        tagsGroupedBySO.size());
-
-                for (final Entry<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> entry : tagsGroupedBySO
-                        .entrySet()) {
-                    tagsGroupedBySOEntries.add(entry);
-                }
+                        tagsGroupedBySO.entrySet());
 
                 tagsGroupedBySO = null;
 
-                tagsGroupedBySOEntries.sort((o1, o2) -> Long.compare(o1.getKey().objectId(), o2.getKey().objectId()));
+                tagsGroupedBySOEntries.sort(Comparator.comparingLong(o -> o.getKey().objectId()));
 
                 final List<ModifiedParentData<T>> modifiedParents = new ArrayList<>(4);
 
@@ -1762,15 +1760,11 @@ public class SharedTagContent<T> {
             insertedTags.clear();
 
             final List<Entry<AbstractHtml5SharedObject, List<ParentNoTagData<T>>>> tagsGroupedBySOEntries = new ArrayList<>(
-                    tagsGroupedBySO.size());
-
-            for (final Entry<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> entry : tagsGroupedBySO.entrySet()) {
-                tagsGroupedBySOEntries.add(entry);
-            }
+                    tagsGroupedBySO.entrySet());
 
             tagsGroupedBySO = null;
 
-            tagsGroupedBySOEntries.sort((o1, o2) -> Long.compare(o1.getKey().objectId(), o2.getKey().objectId()));
+            tagsGroupedBySOEntries.sort(Comparator.comparingLong(o -> o.getKey().objectId()));
 
             final List<AbstractHtml> modifiedParents = new ArrayList<>(4);
 
