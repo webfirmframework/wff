@@ -15,14 +15,21 @@
  */
 package com.webfirmframework.wffweb.tag.html;
 
-import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.locks.Lock;
 import java.util.stream.Stream;
 import java.util.stream.Stream.Builder;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 import com.webfirmframework.wffweb.wffbm.data.WffBMData;
 
 /**
@@ -57,15 +64,73 @@ public abstract class AbstractHtmlRepository {
      * @since 3.0.1
      */
     protected static Collection<Lock> getReadLocks(final AbstractHtml... fromTags) {
-        // passed 2 instead of 1 because the load factor is 0.75f
-        final Collection<Lock> locks = fromTags.length > 1 ? new HashSet<>(fromTags.length) : new ArrayDeque<>(2);
-        for (final AbstractHtml tag : fromTags) {
-            final Lock readLock = tag.getReadLock();
-            if (readLock != null) {
-                locks.add(readLock);
-            }
+
+        if (fromTags == null || fromTags.length == 0) {
+            return Collections.emptyList();
         }
-        return locks;
+        if (fromTags.length == 1) {
+            return Arrays.asList(fromTags[0].getReadLock());
+        }
+
+        final Map<AbstractHtml5SharedObject, AbstractHtml> sharedObjects = new HashMap<>(fromTags.length);
+
+        for (final AbstractHtml tag : fromTags) {
+            sharedObjects.put(tag.getSharedObject(), tag);
+        }
+
+        final List<Entry<AbstractHtml5SharedObject, AbstractHtml>> sortedSharedObjects = new ArrayList<>(
+                sharedObjects.entrySet());
+
+        sortedSharedObjects.sort(Comparator.comparingLong(o -> o.getKey().objectId()));
+
+        final List<Lock> readLocks = new ArrayList<>(sortedSharedObjects.size());
+
+        for (final Entry<AbstractHtml5SharedObject, AbstractHtml> entry : sortedSharedObjects) {
+            readLocks.add(entry.getValue().getReadLock());
+        }
+
+        return readLocks;
+    }
+
+    /**
+     * @param fromTags
+     * @return the list of read lock
+     * @since 3.0.15
+     */
+    protected final static Collection<Lock> lockAndGetReadLocks(final AbstractHtml... fromTags) {
+
+        if (fromTags == null || fromTags.length == 0) {
+            return Collections.emptyList();
+        }
+
+        if (fromTags.length == 1) {
+            final Lock readLock = fromTags[0].getReadLock();
+            readLock.lock();
+            return Arrays.asList(readLock);
+        }
+
+        final Map<AbstractHtml5SharedObject, AbstractHtml> sharedObjects = new HashMap<>(fromTags.length);
+
+        for (final AbstractHtml tag : fromTags) {
+            sharedObjects.put(tag.getSharedObject(), tag);
+        }
+
+        final List<Entry<AbstractHtml5SharedObject, AbstractHtml>> sortedSharedObjects = new ArrayList<>(
+                sharedObjects.entrySet());
+
+        sortedSharedObjects.sort(Comparator.comparingLong(o -> o.getKey().objectId()));
+
+        final List<Lock> readLocks = new ArrayList<>(sortedSharedObjects.size());
+
+        for (final Entry<AbstractHtml5SharedObject, AbstractHtml> entry : sortedSharedObjects) {
+            final Lock readLock = entry.getValue().getReadLock();
+            readLock.lock();
+            readLocks.add(readLock);
+        }
+
+        Collections.reverse(readLocks);
+
+        return readLocks;
     }
 
     /**
