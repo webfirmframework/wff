@@ -18,12 +18,9 @@ package com.webfirmframework.wffweb.tag.repository;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Deque;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -1080,11 +1077,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
             throw new NullValueException("The attributeName should not be null");
         }
 
-        final List<Lock> locks = new ArrayList<>(getReadLocks(rootTags));
-        for (final Lock lock : locks) {
-            lock.lock();
-        }
-        Collections.reverse(locks);
+        final Collection<Lock> locks = lockAndGetReadLocks(rootTags);
 
         try {
             return buildAllTagsStream(parallel).filter(tag -> getAttributeByNameLockless(tag, attributeName) != null)
@@ -1145,11 +1138,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
             throw new NullValueException("The attributeValue should not be null");
         }
 
-        final List<Lock> locks = new ArrayList<>(getReadLocks(rootTags));
-        for (final Lock lock : locks) {
-            lock.lock();
-        }
-        Collections.reverse(locks);
+        final Collection<Lock> locks = lockAndGetReadLocks(rootTags);
 
         try {
             return buildAllTagsStream(parallel).filter(tag -> {
@@ -1202,11 +1191,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
             throw new NullValueException("The tagName should not be null");
         }
 
-        final List<Lock> locks = new ArrayList<>(getReadLocks(rootTags));
-        for (final Lock lock : locks) {
-            lock.lock();
-        }
-        Collections.reverse(locks);
+        final Collection<Lock> locks = lockAndGetReadLocks(rootTags);
 
         try {
             return buildAllTagsStream(parallel).filter(tag -> tagName.equals(tag.getTagName()))
@@ -1259,11 +1244,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
             throw new NullValueException("The filter should not be null");
         }
 
-        final List<Lock> locks = new ArrayList<>(getReadLocks(rootTags));
-        for (final Lock lock : locks) {
-            lock.lock();
-        }
-        Collections.reverse(locks);
+        final Collection<Lock> locks = lockAndGetReadLocks(rootTags);
 
         try {
             return buildAllTagsStream(parallel).filter(filter).collect(Collectors.toSet());
@@ -1375,11 +1356,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
             throw new NullValueException("The tagName should not be null");
         }
 
-        final List<Lock> locks = new ArrayList<>(getReadLocks(rootTags));
-        for (final Lock lock : locks) {
-            lock.lock();
-        }
-        Collections.reverse(locks);
+        final Collection<Lock> locks = lockAndGetReadLocks(rootTags);
 
         try {
             final Stream<AbstractAttribute> attributesStream = buildAllTagsStream(parallel)
@@ -1436,11 +1413,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
             throw new NullValueException("The filter should not be null");
         }
 
-        final List<Lock> locks = new ArrayList<>(getReadLocks(rootTags));
-        for (final Lock lock : locks) {
-            lock.lock();
-        }
-        Collections.reverse(locks);
+        final Collection<Lock> locks = lockAndGetReadLocks(rootTags);
 
         try {
             final Stream<AbstractAttribute> attributesStream = buildAllTagsStream(parallel)
@@ -1495,11 +1468,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
     public AbstractHtml findOneTagByAttribute(final boolean parallel, final String attributeName,
             final String attributeValue) throws NullValueException {
 
-        final List<Lock> locks = new ArrayList<>(getReadLocks(rootTags));
-        for (final Lock lock : locks) {
-            lock.lock();
-        }
-        Collections.reverse(locks);
+        final Collection<Lock> locks = lockAndGetReadLocks(rootTags);
 
         try {
             final Stream<AbstractHtml> stream = buildAllTagsStream(parallel);
@@ -1554,11 +1523,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
             throw new NullValueException("The tagName should not be null");
         }
 
-        final List<Lock> locks = new ArrayList<>(getReadLocks(rootTags));
-        for (final Lock lock : locks) {
-            lock.lock();
-        }
-        Collections.reverse(locks);
+        final Collection<Lock> locks = lockAndGetReadLocks(rootTags);
 
         try {
             final Optional<AbstractHtml> any = buildAllTagsStream(parallel)
@@ -1660,11 +1625,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
     public <T extends AbstractHtml> T findOneTagAssignableToTag(final boolean parallel, final Class<T> tagClass)
             throws NullValueException {
 
-        final List<Lock> locks = new ArrayList<>(getReadLocks(rootTags));
-        for (final Lock lock : locks) {
-            lock.lock();
-        }
-        Collections.reverse(locks);
+        final Collection<Lock> locks = lockAndGetReadLocks(rootTags);
 
         try {
             final Stream<AbstractHtml> stream = buildAllTagsStream(parallel);
@@ -1796,11 +1757,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
                     "classes like NoTag.class cannot be used to find tags as it's not a logical tag in behaviour.");
         }
 
-        final List<Lock> locks = new ArrayList<>(getReadLocks(rootTags));
-        for (final Lock lock : locks) {
-            lock.lock();
-        }
-        Collections.reverse(locks);
+        final Collection<Lock> locks = lockAndGetReadLocks(rootTags);
 
         try {
             final Set<AbstractHtml> set = buildAllTagsStream(parallel).filter(
@@ -1852,11 +1809,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
         if (attributeName == null) {
             throw new NullValueException("The attributeName should not be null");
         }
-        final List<Lock> locks = new ArrayList<>(getReadLocks(rootTags));
-        for (final Lock lock : locks) {
-            lock.lock();
-        }
-        Collections.reverse(locks);
+        final Collection<Lock> locks = lockAndGetReadLocks(rootTags);
 
         try {
             final Stream<AbstractHtml> stream = buildAllTagsStream(parallel);
@@ -2089,11 +2042,8 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      * @author WFF
      */
     public Collection<AbstractHtml> findAllTags(final boolean parallel) {
-        final List<Lock> locks = new ArrayList<>(getReadLocks(rootTags));
-        for (final Lock lock : locks) {
-            lock.lock();
-        }
-        Collections.reverse(locks);
+        final Collection<Lock> locks = lockAndGetReadLocks(rootTags);
+
         try {
             return buildAllTagsStream(parallel).collect(Collectors.toSet());
         } finally {
@@ -2195,11 +2145,8 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      * @author WFF
      */
     public Collection<AbstractAttribute> findAllAttributes(final boolean parallel) {
-        final List<Lock> locks = new ArrayList<>(getReadLocks(rootTags));
-        for (final Lock lock : locks) {
-            lock.lock();
-        }
-        Collections.reverse(locks);
+        final Collection<Lock> locks = lockAndGetReadLocks(rootTags);
+
         try {
             return buildAllAttributesStream(parallel).collect(Collectors.toSet());
         } finally {
