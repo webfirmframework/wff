@@ -64,32 +64,7 @@ public abstract class AbstractHtmlRepository {
      * @since 3.0.1
      */
     protected static Collection<Lock> getReadLocks(final AbstractHtml... fromTags) {
-
-        if (fromTags == null || fromTags.length == 0) {
-            return Collections.emptyList();
-        }
-        if (fromTags.length == 1) {
-            return Arrays.asList(fromTags[0].getReadLock());
-        }
-
-        final Map<AbstractHtml5SharedObject, AbstractHtml> sharedObjects = new HashMap<>(fromTags.length);
-
-        for (final AbstractHtml tag : fromTags) {
-            sharedObjects.put(tag.getSharedObject(), tag);
-        }
-
-        final List<Entry<AbstractHtml5SharedObject, AbstractHtml>> sortedSharedObjects = new ArrayList<>(
-                sharedObjects.entrySet());
-
-        sortedSharedObjects.sort(Comparator.comparingLong(o -> o.getKey().objectId()));
-
-        final List<Lock> readLocks = new ArrayList<>(sortedSharedObjects.size());
-
-        for (final Entry<AbstractHtml5SharedObject, AbstractHtml> entry : sortedSharedObjects) {
-            readLocks.add(entry.getValue().getReadLock());
-        }
-
-        return readLocks;
+        return extractReadLocks(fromTags);
     }
 
     /**
@@ -98,6 +73,18 @@ public abstract class AbstractHtmlRepository {
      * @since 3.0.15
      */
     protected final static Collection<Lock> lockAndGetReadLocks(final AbstractHtml... fromTags) {
+
+        final List<Lock> readLocks = extractReadLocks(fromTags);
+        for (final Lock lock : readLocks) {
+            lock.lock();
+        }
+
+        Collections.reverse(readLocks);
+
+        return readLocks;
+    }
+
+    private static List<Lock> extractReadLocks(final AbstractHtml... fromTags) {
 
         if (fromTags == null || fromTags.length == 0) {
             return Collections.emptyList();
@@ -123,13 +110,8 @@ public abstract class AbstractHtmlRepository {
         final List<Lock> readLocks = new ArrayList<>(sortedSharedObjects.size());
 
         for (final Entry<AbstractHtml5SharedObject, AbstractHtml> entry : sortedSharedObjects) {
-            final Lock readLock = entry.getValue().getReadLock();
-            readLock.lock();
-            readLocks.add(readLock);
+            readLocks.add(entry.getValue().getReadLock());
         }
-
-        Collections.reverse(readLocks);
-
         return readLocks;
     }
 
