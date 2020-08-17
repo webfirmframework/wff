@@ -22,6 +22,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -31,6 +32,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
@@ -77,6 +79,10 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
     private volatile byte[] compressedBytes;
 
+    private static transient final AtomicLong OBJECT_ID_GENERATOR = new AtomicLong(0);
+
+    private final long objectId;
+
     // for security purpose, the class name should not be modified
     private static final class Security implements Serializable {
 
@@ -118,6 +124,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
     public AbstractAttribute() {
         nullableAttrValueMapValue = false;
+        objectId = OBJECT_ID_GENERATOR.incrementAndGet();
     }
 
     /**
@@ -128,6 +135,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected AbstractAttribute(final boolean nullableAttrValueMapValue) {
         this.nullableAttrValueMapValue = nullableAttrValueMapValue;
+        objectId = OBJECT_ID_GENERATOR.incrementAndGet();
     }
 
     /**
@@ -1015,6 +1023,33 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     /**
      * NB:- this method is used for internal purpose, so it should not be consumed.
      *
+     * @param ownerTag the ownerTag to set
+     * @author WFF
+     * @since 3.0.15
+     */
+    final void setOwnerTagLockless(final AbstractHtml ownerTag) {
+        ownerTags.add(ownerTag);
+    }
+
+    /**
+     * @return
+     * @since 3.0.15
+     */
+    Lock getObjectReadLock() {
+        return ownerTagsLock.asReadLock();
+    }
+
+    /**
+     * @return
+     * @since 3.0.15
+     */
+    Lock getObjectWriteLock() {
+        return ownerTagsLock.asWriteLock();
+    }
+
+    /**
+     * NB:- this method is used for internal purpose, so it should not be consumed.
+     *
      * @param ownerTag the ownerTag to unset
      * @return true if the given ownerTag is an owner of the attribute.
      * @author WFF
@@ -1029,6 +1064,18 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             ownerTagsLock.unlockWrite(stamp);
         }
         return result;
+    }
+
+    /**
+     * NB:- this method is used for internal purpose, so it should not be consumed.
+     *
+     * @param ownerTag the ownerTag to unset
+     * @return true if the given ownerTag is an owner of the attribute.
+     * @author WFF
+     * @since 3.0.15
+     */
+    final boolean unsetOwnerTagLockless(final AbstractHtml ownerTag) {
+        return ownerTags.remove(ownerTag);
     }
 
     @Override
@@ -1452,19 +1499,30 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         // lock must be called before using ownerTags
         ownerTagsWriteLock.lock();
 
-        // internally ownerTags.size() (WeakHashMap) contains synchronization so
+        // internally this.ownerTags.size() (WeakHashMap) contains synchronization so
         // better avoid calling it
         // normally there will be one sharedObject so the capacity may be
         // considered as 1
-        final List<WriteLock> locks = new ArrayList<>(1);
+
+        final Set<AbstractHtml5SharedObject> sharedObjectsSet = new HashSet<>(1);
 
         for (final AbstractHtml ownerTag : ownerTags) {
-            locks.add(ownerTag.getSharedObject().getLock(ACCESS_OBJECT).writeLock());
+            sharedObjectsSet.add(ownerTag.getSharedObject());
         }
 
-        locks.sort((o1, o2) -> Integer.compare(o2.getHoldCount(), o1.getHoldCount()));
+        final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(sharedObjectsSet);
 
-        final Set<WriteLock> locksWithoutDuplicates = new LinkedHashSet<>(locks);
+        sharedObjects.sort(Comparator.comparingLong(AbstractHtml5SharedObject::objectId));
+
+        final List<WriteLock> locks = new ArrayList<>(sharedObjects.size());
+
+        for (final AbstractHtml5SharedObject sharedObject : sharedObjects) {
+            locks.add(sharedObject.getLock(ACCESS_OBJECT).writeLock());
+        }
+
+        // should not be sorted because it should be in the order of objectId otherwise
+        // it may lead to deadlock
+//        locks.sort((o1, o2) -> Integer.compare(o2.getHoldCount(), o1.getHoldCount()));
 
         final List<Lock> writeLocks = new ArrayList<>(locks.size() + 1);
         writeLocks.add(ownerTagsWriteLock);
@@ -1472,7 +1530,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         // must be separately locked
         // ownerTagsWriteLock is already locked so iterating over locksWithoutDuplicates
         // object
-        for (final Lock writeLock : locksWithoutDuplicates) {
+        for (final Lock writeLock : locks) {
             writeLock.lock();
             writeLocks.add(writeLock);
         }
@@ -1496,14 +1554,24 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
         try {
 
-            // internally ownerTags.size() (WeakHashMap) contains synchronization so
+            // internally this.ownerTags.size() (WeakHashMap) contains synchronization so
             // better avoid calling it
             // normally there will be one sharedObject so the capacity may be
             // considered as 1
-            final List<WriteLock> locks = new ArrayList<>(1);
+            final Set<AbstractHtml5SharedObject> sharedObjectsSet = new HashSet<>(1);
 
             for (final AbstractHtml ownerTag : ownerTags) {
-                locks.add(ownerTag.getSharedObject().getLock(ACCESS_OBJECT).writeLock());
+                sharedObjectsSet.add(ownerTag.getSharedObject());
+            }
+
+            final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(sharedObjectsSet);
+
+            sharedObjects.sort(Comparator.comparingLong(AbstractHtml5SharedObject::objectId));
+
+            final List<WriteLock> locks = new ArrayList<>(sharedObjects.size());
+
+            for (final AbstractHtml5SharedObject sharedObject : sharedObjects) {
+                locks.add(sharedObject.getLock(ACCESS_OBJECT).writeLock());
             }
 
             locks.sort((o1, o2) -> Integer.compare(o2.getHoldCount(), o1.getHoldCount()));
@@ -1539,14 +1607,25 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         // lock must be called before using ownerTags
         ownerTagsReadLock.lock();
 
-        // internally ownerTags.size() (WeakHashMap) contains synchronization
+        // internally this.ownerTags.size() (WeakHashMap) contains synchronization
         // better avoid calling it
         // normally there will be one sharedObject so the capacity may be
         // considered as 2 because the load factor is 0.75f
-        final Collection<ReadLock> locks = new LinkedHashSet<>(2);
+
+        final Set<AbstractHtml5SharedObject> sharedObjectsSet = new HashSet<>(1);
 
         for (final AbstractHtml ownerTag : ownerTags) {
-            locks.add(ownerTag.getSharedObject().getLock(ACCESS_OBJECT).readLock());
+            sharedObjectsSet.add(ownerTag.getSharedObject());
+        }
+
+        final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(sharedObjectsSet);
+
+        sharedObjects.sort(Comparator.comparingLong(AbstractHtml5SharedObject::objectId));
+
+        final Collection<ReadLock> locks = new LinkedHashSet<>(sharedObjects.size());
+
+        for (final AbstractHtml5SharedObject sharedObject : sharedObjects) {
+            locks.add(sharedObject.getLock(ACCESS_OBJECT).readLock());
         }
 
         final List<Lock> readLocks = new ArrayList<>(locks.size() + 1);
@@ -1577,14 +1656,26 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         final long stamp = ownerTagsLock.readLock();
 
         try {
-            // internally ownerTags.size() (WeakHashMap) contains synchronization
+
+            // internally this.ownerTags.size() (WeakHashMap) contains synchronization
             // better avoid calling it
             // normally there will be one sharedObject so the capacity may be
             // considered as 2 because the load factor is 0.75f
-            final Collection<ReadLock> locks = new HashSet<>(2);
+
+            final Set<AbstractHtml5SharedObject> sharedObjectsSet = new HashSet<>(1);
 
             for (final AbstractHtml ownerTag : ownerTags) {
-                locks.add(ownerTag.getSharedObject().getLock(ACCESS_OBJECT).readLock());
+                sharedObjectsSet.add(ownerTag.getSharedObject());
+            }
+
+            final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(sharedObjectsSet);
+
+            sharedObjects.sort(Comparator.comparingLong(AbstractHtml5SharedObject::objectId));
+
+            final Collection<ReadLock> locks = new HashSet<>(2);
+
+            for (final AbstractHtml5SharedObject sharedObject : sharedObjects) {
+                locks.add(sharedObject.getLock(ACCESS_OBJECT).readLock());
             }
 
             final List<ReadLock> readLocks = new ArrayList<>(locks);
@@ -1619,14 +1710,24 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
         try {
 
-            // internally ownerTags.size() (WeakHashMap) contains synchronization so
+            // internally this.ownerTags.size() (WeakHashMap) contains synchronization so
             // better avoid calling it
             // normally there will be one sharedObject so the capacity may be
             // considered as 1
-            final List<WriteLock> locks = new ArrayList<>(1);
+            final Set<AbstractHtml5SharedObject> sharedObjectsSet = new HashSet<>(1);
 
             for (final AbstractHtml ownerTag : ownerTags) {
-                locks.add(ownerTag.getSharedObject().getLock(ACCESS_OBJECT).writeLock());
+                sharedObjectsSet.add(ownerTag.getSharedObject());
+            }
+
+            final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(sharedObjectsSet);
+
+            sharedObjects.sort(Comparator.comparingLong(AbstractHtml5SharedObject::objectId));
+
+            final List<WriteLock> locks = new ArrayList<>(sharedObjects.size());
+
+            for (final AbstractHtml5SharedObject sharedObject : sharedObjects) {
+                locks.add(sharedObject.getLock(ACCESS_OBJECT).writeLock());
             }
             locks.sort((o1, o2) -> Integer.compare(o2.getHoldCount(), o1.getHoldCount()));
 
@@ -1647,14 +1748,26 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         final long stamp = ownerTagsLock.readLock();
 
         try {
-            // internally ownerTags.size() (WeakHashMap) contains synchronization
+
+            // internally this.ownerTags.size() (WeakHashMap) contains synchronization
             // better avoid calling it
             // normally there will be one sharedObject so the capacity may be
             // considered as 2 because the load factor is 0.75f
-            final Collection<ReadLock> readLocks = new HashSet<>(2);
+
+            final Set<AbstractHtml5SharedObject> sharedObjectsSet = new HashSet<>(1);
 
             for (final AbstractHtml ownerTag : ownerTags) {
-                readLocks.add(ownerTag.getSharedObject().getLock(ACCESS_OBJECT).readLock());
+                sharedObjectsSet.add(ownerTag.getSharedObject());
+            }
+
+            final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(sharedObjectsSet);
+
+            sharedObjects.sort(Comparator.comparingLong(AbstractHtml5SharedObject::objectId));
+
+            final Collection<ReadLock> readLocks = new HashSet<>(sharedObjects.size());
+
+            for (final AbstractHtml5SharedObject sharedObject : sharedObjects) {
+                readLocks.add(sharedObject.getLock(ACCESS_OBJECT).readLock());
             }
 
             return readLocks;
@@ -1671,6 +1784,10 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     byte[] getAttrNameIndexBytes() {
         return attrNameIndexBytes;
+    }
+
+    final long objectId() {
+        return objectId;
     }
 
 }

@@ -24,6 +24,7 @@ import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -127,8 +128,13 @@ public final class AbstractHtml5SharedObject implements Serializable {
 
     private volatile boolean activeWSListener;
 
+    private static transient final AtomicLong OBJECT_ID_GENERATOR = new AtomicLong(0);
+
+    private final long objectId;
+
     public AbstractHtml5SharedObject(final AbstractHtml rootTag) {
         this.rootTag = rootTag;
+        objectId = OBJECT_ID_GENERATOR.incrementAndGet();
     }
 
     /**
@@ -733,6 +739,13 @@ public final class AbstractHtml5SharedObject implements Serializable {
      */
     public boolean isActiveWSListener() {
         return activeWSListener;
+    }
+
+    /**
+     * @return the object id for this object
+     */
+    public long objectId() {
+        return objectId;
     }
 
 }

@@ -22,9 +22,18 @@ package com.webfirmframework.wffweb.tag.html.attribute.core;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.locks.Lock;
 
 import com.webfirmframework.wffweb.WffSecurityException;
 import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
+import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 
@@ -317,6 +326,127 @@ public final class AttributeUtil {
             final Charset charset) {
         return getAttrNameBytesCompressedByIndex(accessObject, attr.getAttributeName(), attr.getAttrNameIndexBytes(),
                 charset);
+    }
+
+    /**
+     * @param accessObject
+     * @param attributes
+     * @return
+     * @since 3.0.15
+     */
+    public static List<Lock> lockAndGetWriteLocks(final Object accessObject, final AbstractAttribute... attributes) {
+
+        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
+        }
+
+        if (attributes == null || attributes.length == 0) {
+            return null;
+        }
+
+        final Set<AbstractAttribute> attributesSet = new HashSet<>(attributes.length);
+        for (final AbstractAttribute attr : attributes) {
+            attributesSet.add(attr);
+        }
+
+        final List<AbstractAttribute> attributesList = new ArrayList<AbstractAttribute>(attributesSet);
+
+        // lock should be called on the order of objectId otherwise there will be
+        // deadlock
+        attributesList.sort(Comparator.comparingLong(AbstractAttribute::objectId));
+
+        final List<Lock> attrLocks = new ArrayList<Lock>(attributesList.size());
+
+        for (final AbstractAttribute attr : attributesList) {
+            final Lock writeLock = attr.getObjectWriteLock();
+            writeLock.lock();
+            attrLocks.add(writeLock);
+        }
+
+        Collections.reverse(attrLocks);
+        return attrLocks;
+    }
+
+    /**
+     * @param accessObject
+     * @param attributes
+     * @return
+     * @since 3.0.15
+     */
+    public static List<Lock> lockAndGetWriteLocks(final Object accessObject,
+            final Collection<AbstractAttribute> attributes) {
+
+        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
+        }
+
+        final List<AbstractAttribute> attributesList = new ArrayList<AbstractAttribute>(new HashSet<>(attributes));
+
+        // lock should be called on the order of objectId otherwise there will be
+        // deadlock
+        attributesList.sort(Comparator.comparingLong(AbstractAttribute::objectId));
+
+        final List<Lock> attrLocks = new ArrayList<Lock>(attributesList.size());
+
+        for (final AbstractAttribute attr : attributesList) {
+            final Lock writeLock = attr.getObjectWriteLock();
+            writeLock.lock();
+            attrLocks.add(writeLock);
+        }
+
+        Collections.reverse(attrLocks);
+        return attrLocks;
+    }
+
+    /**
+     * @param accessObject
+     * @param attribute
+     * @return the lock object
+     * @since 3.0.15
+     */
+    public static Lock lockAndGetWriteLock(final Object accessObject, final AbstractAttribute attribute) {
+
+        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
+        }
+
+        final Lock writeLock = attribute.getObjectWriteLock();
+        writeLock.lock();
+
+        return writeLock;
+    }
+
+    /**
+     * for internal use only.
+     *
+     * @param accessObject
+     * @param attribute
+     * @param ownerTag
+     * @return
+     * @since 3.0.15
+     */
+    public static boolean unassignOwnerTag(final Object accessObject, final AbstractAttribute attribute,
+            final AbstractHtml ownerTag) {
+        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
+        }
+        return attribute.unsetOwnerTagLockless(ownerTag);
+    }
+
+    /**
+     * for internal use only.
+     *
+     * @param accessObject
+     * @param attribute
+     * @param ownerTag
+     * @since 3.0.15
+     */
+    public static void assignOwnerTag(final Object accessObject, final AbstractAttribute attribute,
+            final AbstractHtml ownerTag) {
+        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
+        }
+        attribute.setOwnerTagLockless(ownerTag);
     }
 
 }

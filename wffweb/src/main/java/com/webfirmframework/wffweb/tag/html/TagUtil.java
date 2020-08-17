@@ -17,9 +17,20 @@
 package com.webfirmframework.wffweb.tag.html;
 
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.locks.Lock;
 
 import com.webfirmframework.wffweb.WffSecurityException;
 import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
+import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeUtil;
+import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 
 /**
  * @author WFF
@@ -111,6 +122,134 @@ public final class TagUtil {
         }
 
         return wffTagNameBytes;
+    }
+
+    /**
+     * only for internal use
+     *
+     * @param accessObject
+     * @param currentTag
+     * @param foreignTags
+     * @return the collection of locks
+     * @since 3.0.15
+     */
+    static List<Lock> lockAndGetWriteLocks(final Object accessObject, final AbstractHtml currentTag,
+            final AbstractHtml... foreignTags) {
+
+        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
+        }
+
+        final Set<AbstractHtml5SharedObject> sharedObjectsSet = new LinkedHashSet<>(foreignTags.length + 1);
+
+        final AbstractHtml5SharedObject currentSO = currentTag.getSharedObjectLockless();
+
+        for (final AbstractHtml eachTag : foreignTags) {
+            final AbstractHtml5SharedObject foreignSO = eachTag.getSharedObjectLockless();
+            sharedObjectsSet.add(foreignSO);
+        }
+
+        sharedObjectsSet.add(currentSO);
+
+        final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(sharedObjectsSet);
+
+        // lock should be called on the order of objectId otherwise there will be
+        // deadlock
+        sharedObjects.sort(Comparator.comparingLong(AbstractHtml5SharedObject::objectId));
+
+        final List<Lock> locks = new ArrayList<>(sharedObjects.size());
+        for (final AbstractHtml5SharedObject sharedObject : sharedObjects) {
+            final Lock lock = sharedObject.getLock(accessObject).writeLock();
+            lock.lock();
+            locks.add(lock);
+        }
+        Collections.reverse(locks);
+
+        return locks;
+    }
+
+    /**
+     * only for internal use
+     *
+     * @param accessObject
+     * @param foreignTags
+     * @return the collection of locks
+     * @since 3.0.15
+     */
+    static List<Lock> lockAndGetWriteLocks(final Object accessObject, final AbstractHtml[] foreignTags) {
+
+        final Set<AbstractHtml5SharedObject> sharedObjectsSet = new LinkedHashSet<>(foreignTags.length + 1);
+
+        for (final AbstractHtml eachTag : foreignTags) {
+            sharedObjectsSet.add(eachTag.getSharedObjectLockless());
+        }
+
+        final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(sharedObjectsSet);
+
+        // lock should be called on the order of objectId otherwise there will be
+        // deadlock
+        sharedObjects.sort(Comparator.comparingLong(AbstractHtml5SharedObject::objectId));
+
+        final List<Lock> locks = new ArrayList<>(sharedObjects.size());
+        for (final AbstractHtml5SharedObject sharedObject : sharedObjects) {
+            final Lock lock = sharedObject.getLock(accessObject).writeLock();
+            lock.lock();
+            locks.add(lock);
+        }
+        Collections.reverse(locks);
+
+        return locks;
+    }
+
+    /**
+     * only for internal use
+     *
+     * @param accessObject
+     * @param sharedObjects
+     * @return the collection of locks
+     * @since 3.0.15
+     */
+    static List<Lock> lockAndGetWriteLocks(final Object accessObject,
+            final AbstractHtml5SharedObject... sharedObjects) {
+
+        final List<AbstractHtml5SharedObject> sharedObjectsList = new ArrayList<>(sharedObjects.length);
+
+        for (final AbstractHtml5SharedObject each : sharedObjects) {
+            if (each != null) {
+                sharedObjectsList.add(each);
+            }
+        }
+
+        // lock should be called on the order of objectId otherwise there will be
+        // deadlock
+        sharedObjectsList.sort(Comparator.comparingLong(AbstractHtml5SharedObject::objectId));
+
+        final List<Lock> locks = new ArrayList<>(sharedObjectsList.size());
+        for (final AbstractHtml5SharedObject sharedObject : sharedObjectsList) {
+            final Lock lock = sharedObject.getLock(accessObject).writeLock();
+            lock.lock();
+            locks.add(lock);
+        }
+        Collections.reverse(locks);
+
+        return locks;
+    }
+
+    /**
+     * @param tags
+     * @return
+     * @since 3.0.15
+     */
+    static List<Lock> lockAndGetNestedAttributeWriteLocks(final Object accessObject, final AbstractHtml... tags) {
+        final Set<AbstractAttribute> allNestedAttributes = new HashSet<>();
+        AbstractHtml.loopThroughAllNestedChildren(child -> {
+
+            allNestedAttributes.addAll(child.getAttributesLockless());
+
+            return true;
+        }, true, tags);
+
+        return AttributeUtil.lockAndGetWriteLocks(accessObject, allNestedAttributes);
     }
 
 }
