@@ -128,17 +128,15 @@ public final class TagUtil {
      * only for internal use
      *
      * @param accessObject
-     * @param currentTag
+     * @param currentSO
      * @param foreignTags
      * @return the collection of locks
      * @since 3.0.15
      */
-    static List<Lock> lockAndGetWriteLocks(final Object accessObject, final AbstractHtml currentTag,
+    static List<Lock> lockAndGetWriteLocks(final Object accessObject, final AbstractHtml5SharedObject currentSO,
             final AbstractHtml... foreignTags) {
 
         final Set<AbstractHtml5SharedObject> sharedObjectsSet = new LinkedHashSet<>(foreignTags.length + 1);
-
-        final AbstractHtml5SharedObject currentSO = currentTag.getSharedObjectLockless();
 
         for (final AbstractHtml eachTag : foreignTags) {
             final AbstractHtml5SharedObject foreignSO = eachTag.getSharedObjectLockless();
