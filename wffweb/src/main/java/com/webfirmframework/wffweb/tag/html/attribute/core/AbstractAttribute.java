@@ -1578,9 +1578,11 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 locks.add(sharedObject.getLock(ACCESS_OBJECT).writeLock());
             }
 
-            locks.sort((o1, o2) -> Integer.compare(o2.getHoldCount(), o1.getHoldCount()));
+            // should not be sorted because it should be in the order of objectId otherwise
+            // it may lead to deadlock
+//            locks.sort((o1, o2) -> Integer.compare(o2.getHoldCount(), o1.getHoldCount()));
 
-            final List<WriteLock> writeLocks = new ArrayList<>(new LinkedHashSet<>(locks));
+            final List<WriteLock> writeLocks = new ArrayList<>(locks);
 
             // must be separately locked
             for (final WriteLock writeLock : writeLocks) {
@@ -1733,9 +1735,11 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             for (final AbstractHtml5SharedObject sharedObject : sharedObjects) {
                 locks.add(sharedObject.getLock(ACCESS_OBJECT).writeLock());
             }
-            locks.sort((o1, o2) -> Integer.compare(o2.getHoldCount(), o1.getHoldCount()));
+            // should not be sorted because it should be in the order of objectId otherwise
+            // it may lead to deadlock
+//            locks.sort((o1, o2) -> Integer.compare(o2.getHoldCount(), o1.getHoldCount()));
 
-            return new LinkedHashSet<>(locks);
+            return locks;
         } finally {
             ownerTagsLock.unlockRead(stamp);
         }
