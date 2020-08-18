@@ -21,6 +21,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.webfirmframework.wffweb.common.performance.test.CodePerformanceTest;
+import com.webfirmframework.wffweb.concurrent.ReentrantStampedLockTest;
 import com.webfirmframework.wffweb.css.BackgroundColorTest;
 import com.webfirmframework.wffweb.css.BackgroundImageTest;
 import com.webfirmframework.wffweb.css.BorderBottomColorTest;
@@ -208,7 +209,7 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObjectArrayTest;
         AutoCompleteTest.class, AbstractHtmlRepositoryTest.class, CodePerformanceTest.class, HashUtilTest.class,
         AbstractHtml5SharedObjectTest.class, ByteBufferUtilTest.class, UnicodeRangeTest.class, DataWffIdTest.class,
         SharedTagContentTest.class, CssColorNameTest.class, TaskTest.class, WffJsFileTest.class,
-        StringBuilderUtilTest.class, SecurityClassConstantsTest.class })
+        StringBuilderUtilTest.class, SecurityClassConstantsTest.class, ReentrantStampedLockTest.class })
 public class AllTests {
 
 }
