@@ -22,13 +22,14 @@ import java.util.concurrent.locks.StampedLock;
 
 /**
  * By default it is reentrant. NB: This is an experimental class it may not
- * exists in future release. It is not deeply tested so test well before use. It
- * is mainly for internal purpose.
+ * exists in future release. It is not deeply tested. Event it is not making any
+ * bug while running test cases it makes a deadlock bug in the production app so
+ * it is not ready for use.
  *
  * @author WFF
  * @since 3.0.15
  */
-public final class WffReadWriteLock implements ReadWriteLock {
+final class WffReadWriteLock implements ReadWriteLock {
 
     private final Lock readLock;
 
