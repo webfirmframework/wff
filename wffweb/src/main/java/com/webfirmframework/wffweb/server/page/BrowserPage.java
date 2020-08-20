@@ -677,7 +677,8 @@ public abstract class BrowserPage implements Serializable {
                         // name as function body string and value at
                         // zeroth index as
                         // wffBMObject bytes
-                        nameValue.setName(jsPostFunctionBody.getBytes(StandardCharsets.UTF_8));
+                        nameValue.setName(jsPostFunctionBody.replace("\r\n", "\\n").replace("\n", "\\n")
+                                .getBytes(StandardCharsets.UTF_8));
 
                         if (returnedObject != null) {
                             nameValue.setValues(new byte[][] { returnedObject.buildBytes(true) });
