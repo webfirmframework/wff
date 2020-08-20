@@ -213,7 +213,7 @@ public class Padding extends AbstractCssProperty<Padding> implements StateChange
                 return this;
             }
 
-            final String paddingString = StringUtil.convertToSingleSpace(trimmedCssValue);
+            final String paddingString = StringUtil.convertWhitespacesToSingleSpace(trimmedCssValue);
 
             final String[] extractedPaddings = StringUtil.splitBySpace(paddingString);
 

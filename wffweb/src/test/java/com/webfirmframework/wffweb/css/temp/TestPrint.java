@@ -42,7 +42,7 @@ public class TestPrint {
      * @since 1.0.0
      */
     protected static String[] getExtractedSubCssValues(final String input) {
-        final String convertedToSingleSpace = StringUtil.convertToSingleSpace(input);
+        final String convertedToSingleSpace = StringUtil.convertWhitespacesToSingleSpace(input);
         final String[] subCssValues = convertedToSingleSpace.replace(", ", ",").split("[ /]");
         return subCssValues;
     }

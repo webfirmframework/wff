@@ -243,7 +243,7 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
                 middle = lengthBeforeRemovingFill == lengthWithFill ? FILL : null;
 
                 final String convertedToSingleSpace = StringUtil
-                        .convertToSingleSpace(StringUtil.strip(cssValueWithoutFill));
+                        .convertWhitespacesToSingleSpace(StringUtil.strip(cssValueWithoutFill));
 
                 if (!StringUtil.isBlank(convertedToSingleSpace)) {
 
@@ -794,7 +794,7 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
      */
     public static boolean isValid(final String cssValue) {
         final String trimmedCssValue = StringUtil
-                .convertToSingleSpace(TagStringUtil.toLowerCase(StringUtil.strip(cssValue)));
+                .convertWhitespacesToSingleSpace(TagStringUtil.toLowerCase(StringUtil.strip(cssValue)));
 
         if (PREDEFINED_CONSTANTS.contains(trimmedCssValue)) {
             return true;

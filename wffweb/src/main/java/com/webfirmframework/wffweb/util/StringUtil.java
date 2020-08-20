@@ -24,17 +24,18 @@ import java.util.Collection;
  */
 public final class StringUtil {
 
+    private static final int SPACE_CODE_POINT = " ".codePointAt(0);
+
     private StringUtil() {
         throw new AssertionError();
     }
 
     /**
-     * Converts all continues multiple spaces to a single space so that the words
-     * will have a single space as separator.
+     * Converts all continues multiple spaces and new line/lines followed by
+     * space/spaces to a single space.
      *
-     * @param input the string in which all continues multiple spaces required to be
-     *              converted to single space.
-     * @return the converted string having a single space in between words.
+     * @param input the string to convert
+     * @return the converted string having a single space in between characters.
      * @author WFF
      * @since 1.0.0
      */
@@ -43,6 +44,114 @@ public final class StringUtil {
             return input;
         }
         return input.replaceAll("\\s+", " ");
+    }
+
+    /**
+     * Converts all continues multiple spaces to a single space.
+     *
+     * @param input the string to convert
+     * @return the converted string having a single space in between characters.
+     * @author WFF
+     * @since 3.0.15
+     */
+    public static String convertSpacesToSingleSpace(final String input) {
+
+        final StringBuilder builder = new StringBuilder(input.length());
+
+        final int[] prev = { 0, 0 };
+        input.codePoints().forEach(c -> {
+
+            if (prev[1] == 0 || prev[0] != SPACE_CODE_POINT || c != SPACE_CODE_POINT) {
+                builder.append(Character.toChars(c));
+            }
+
+            prev[0] = c;
+            prev[1]++;
+        });
+
+        return builder.toString();
+    }
+
+    /**
+     * Converts all continues multiple whitespaces to a single space. Please know
+     * that new line and tab are also considered as whitespace.
+     *
+     * @param input the string to convert
+     * @return the converted string having a single space in between characters.
+     * @author WFF
+     * @since 3.0.15
+     */
+    public static String convertWhitespacesToSingleSpace(final String input) {
+
+        final StringBuilder builder = new StringBuilder(input.length());
+
+        final int[] prev = { 0, 0 };
+
+        input.codePoints().forEach(c -> {
+            final boolean ws = Character.isWhitespace(c);
+
+            if (prev[1] == 0) {
+                if (ws) {
+                    builder.append(' ');
+                } else {
+                    builder.append(Character.toChars(c));
+                }
+            } else if (!Character.isWhitespace(prev[0])) {
+                if (ws) {
+                    builder.append(' ');
+                } else {
+                    builder.append(Character.toChars(c));
+                }
+            } else if (!ws) {
+                builder.append(Character.toChars(c));
+            }
+
+            prev[0] = c;
+            prev[1]++;
+        });
+
+        return builder.toString();
+    }
+
+    /**
+     * Removes all spaces from the string.
+     *
+     * @param input
+     * @return the string without spaces.
+     * @since 3.0.15
+     */
+    public static String removeSpaces(final String input) {
+
+        final StringBuilder builder = new StringBuilder(input.length());
+
+        input.codePoints().forEach(c -> {
+            if (c != SPACE_CODE_POINT) {
+                builder.append(Character.toChars(c));
+            }
+        });
+
+        return builder.toString();
+    }
+
+    /**
+     * Removes all whitespaces from the string. New line and tab are also
+     * whiltespace.
+     *
+     * @param input
+     * @return the string without spaces.
+     * @since 3.0.15
+     */
+    public static String removeWhitespaces(final String input) {
+
+        final StringBuilder builder = new StringBuilder(input.length());
+
+        input.codePoints().forEach(c -> {
+            if (!Character.isWhitespace(c)) {
+                builder.append(Character.toChars(c));
+            }
+        });
+
+        return builder.toString();
     }
 
     /**

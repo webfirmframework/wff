@@ -214,7 +214,7 @@ public class Margin extends AbstractCssProperty<Margin> implements StateChangeIn
                 return this;
             }
 
-            final String marginString = StringUtil.convertToSingleSpace(trimmedCssValue);
+            final String marginString = StringUtil.convertWhitespacesToSingleSpace(trimmedCssValue);
 
             final String[] extractedMargins = StringUtil.splitBySpace(marginString);
 

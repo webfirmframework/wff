@@ -141,7 +141,7 @@ public class BorderImageRepeat extends AbstractCssProperty<BorderImageRepeat> {
             } else {
 
                 final String trimmedCssValue = StringUtil
-                        .convertToSingleSpace(TagStringUtil.toLowerCase(StringUtil.strip(cssValue)));
+                        .convertWhitespacesToSingleSpace(TagStringUtil.toLowerCase(StringUtil.strip(cssValue)));
 
                 final String[] verticalHorzontal = StringUtil.splitBySpace(trimmedCssValue);
 

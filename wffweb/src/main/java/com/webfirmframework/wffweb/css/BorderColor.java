@@ -217,7 +217,7 @@ public class BorderColor extends AbstractCssProperty<BorderColor> implements Sta
                 return this;
             }
 
-            final String borderColorString = StringUtil.convertToSingleSpace(trimmedCssValue);
+            final String borderColorString = StringUtil.convertWhitespacesToSingleSpace(trimmedCssValue);
 
             final List<String> extractedColors = CssValueUtil.split(borderColorString);
 

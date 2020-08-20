@@ -121,7 +121,7 @@ public final class CssValueUtil {
             }
 
             if (startAndEndIndexes.size() == 0) {
-                return Arrays.asList(StringUtil.splitBySpace(StringUtil.convertToSingleSpace(cssValue)));
+                return Arrays.asList(StringUtil.splitBySpace(StringUtil.convertWhitespacesToSingleSpace(cssValue)));
             }
 
             final List<String> cssValueParts = new ArrayList<>();

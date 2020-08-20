@@ -224,7 +224,7 @@ public class BorderWidth extends AbstractCssProperty<BorderWidth> implements Sta
                 return this;
             }
 
-            final String borderWidthString = StringUtil.convertToSingleSpace(trimmedCssValue);
+            final String borderWidthString = StringUtil.convertWhitespacesToSingleSpace(trimmedCssValue);
 
             final String[] extractedWidths = StringUtil.splitBySpace(borderWidthString);
 

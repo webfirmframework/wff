@@ -207,7 +207,7 @@ public class BorderImageOutset extends AbstractCssProperty<BorderImageOutset> {
                 return this;
             }
 
-            final String borderImageWidthString = StringUtil.convertToSingleSpace(trimmedCssValue);
+            final String borderImageWidthString = StringUtil.convertWhitespacesToSingleSpace(trimmedCssValue);
 
             final String[] extractedWidths = StringUtil.splitBySpace(borderImageWidthString);
 

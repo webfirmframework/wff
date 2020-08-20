@@ -35,11 +35,134 @@ public class StringUtilTest {
 
     /**
      * Test method for
-     * {@link com.webfirmframework.wffweb.util.StringUtil#convertToSingleSpace(java.lang.String)}.
+     * {@link com.webfirmframework.wffweb.util.StringUtil#convertWhitespacesToSingleSpace(java.lang.String)}.
      */
     @Test
     public void testConvertToSingleSpace() {
         assertEquals("a b", StringUtil.convertToSingleSpace("a   b"));
+        
+        assertEquals("a b", StringUtil.convertToSingleSpace("a \n  b"));
+        
+        assertEquals("a b", StringUtil.convertToSingleSpace("a\n  b"));
+        
+        assertEquals("a b", StringUtil.convertToSingleSpace("a\n\n  b"));
+        
+        assertEquals("a b", StringUtil.convertToSingleSpace("a\n\n   b"));
+        
+        assertEquals("a \nb", StringUtil.convertToSingleSpace("a \nb"));
+        
+        assertEquals("a\n b", StringUtil.convertToSingleSpace("a\n b"));
+    }
+    
+    @Test
+    public void testConvertToSingleSpacePerformance() {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < 1000; i++) {
+            builder.append('a');
+            for (int j = 0; j < 1000; j++) {
+                builder.append(' ');
+            }
+        }
+        StringUtil.convertToSingleSpace(builder.toString());
+    }
+    
+    @Test
+    public void testConvertWhitespacesToSingleSpacePerformance() {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < 1000; i++) {
+            builder.append('a');
+            for (int j = 0; j < 1000; j++) {
+                builder.append(' ');
+            }
+        }
+        StringUtil.convertToSingleSpace(builder.toString());
+    }
+    
+    @Test
+    public void testConvertSpacesToSingleSpace() {
+        assertEquals(" a b ", StringUtil.convertSpacesToSingleSpace("  a   b   "));
+        
+        assertEquals("a b", StringUtil.convertSpacesToSingleSpace("a   b"));
+        
+        assertEquals("a \n b", StringUtil.convertSpacesToSingleSpace("a \n  b"));
+        
+        assertEquals("a\n b", StringUtil.convertSpacesToSingleSpace("a\n  b"));
+        
+        assertEquals("a\n\n b", StringUtil.convertSpacesToSingleSpace("a\n\n  b"));
+        
+        assertEquals("a\n\n b", StringUtil.convertSpacesToSingleSpace("a\n\n   b"));
+        
+        assertEquals("a \nb", StringUtil.convertSpacesToSingleSpace("a \nb"));
+        
+        assertEquals("a\n b", StringUtil.convertSpacesToSingleSpace("a\n b"));
+    }
+    
+    @Test
+    public void testConvertWhitespacesToSingleSpace() {
+        assertEquals("a b", StringUtil.convertWhitespacesToSingleSpace("a   b"));
+        
+        assertEquals("a b", StringUtil.convertWhitespacesToSingleSpace("a \n  b"));
+        
+        assertEquals("a b", StringUtil.convertWhitespacesToSingleSpace("a\n  b"));
+        
+        assertEquals("a b", StringUtil.convertWhitespacesToSingleSpace("a\n\n  b"));
+        
+        assertEquals("a b", StringUtil.convertWhitespacesToSingleSpace("a\n\n   b"));
+        
+        assertEquals("a b", StringUtil.convertWhitespacesToSingleSpace("a \nb"));
+        
+        assertEquals("a b", StringUtil.convertWhitespacesToSingleSpace("a\n b"));
+    }
+    
+    @Test
+    public void testRemoveSpaces() {
+
+        assertEquals("ab", StringUtil.removeSpaces("a   b"));
+
+        assertEquals("a\nb", StringUtil.removeSpaces("a \n b"));
+        
+        assertEquals("a\nb", StringUtil.removeSpaces("a \n  b"));
+        
+        assertEquals("a\nb", StringUtil.removeSpaces("a  \n b"));
+        
+        assertEquals("a\nb", StringUtil.removeSpaces("a  \n  b"));
+
+        assertEquals("a\nb", StringUtil.removeSpaces("a\n  b"));
+
+        assertEquals("a\n\nb", StringUtil.removeSpaces("a\n\n  b"));
+
+        assertEquals("a\n\nb", StringUtil.removeSpaces("a\n\n   b"));
+
+        assertEquals("a\nb", StringUtil.removeSpaces("a \nb"));
+
+        assertEquals("a\nb", StringUtil.removeSpaces("a\n b"));
+
+    }
+    
+    
+    @Test
+    public void testRemoveWhitespaces() {
+
+        assertEquals("ab", StringUtil.removeWhitespaces("a   b"));
+
+        assertEquals("ab", StringUtil.removeWhitespaces("a \n b"));
+        
+        assertEquals("ab", StringUtil.removeWhitespaces("a \n  b"));
+        
+        assertEquals("ab", StringUtil.removeWhitespaces("a  \n b"));
+        
+        assertEquals("ab", StringUtil.removeWhitespaces("a  \n  b"));
+
+        assertEquals("ab", StringUtil.removeWhitespaces("a\n  b"));
+
+        assertEquals("ab", StringUtil.removeWhitespaces("a\n\n  b"));
+
+        assertEquals("ab", StringUtil.removeWhitespaces("a\n\n   b"));
+
+        assertEquals("ab", StringUtil.removeWhitespaces("a \nb"));
+
+        assertEquals("ab", StringUtil.removeWhitespaces("a\n b"));
+
     }
 
     /**
