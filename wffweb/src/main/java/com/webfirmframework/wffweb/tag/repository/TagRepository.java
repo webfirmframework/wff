@@ -16,7 +16,6 @@
 package com.webfirmframework.wffweb.tag.repository;
 
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
@@ -2305,13 +2304,8 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      * @author WFF
      */
     public boolean executeJs(final String js) {
-        try {
-            browserPage.performBrowserPageAction(BrowserPageAction.getActionByteBufferForExecuteJS(js));
-            return true;
-        } catch (final UnsupportedEncodingException e) {
-            // NOP
-        }
-        return false;
+        browserPage.performBrowserPageAction(BrowserPageAction.getActionByteBufferForExecuteJS(js));
+        return true;
     }
 
     /**
