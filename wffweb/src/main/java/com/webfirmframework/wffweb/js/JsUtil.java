@@ -299,4 +299,16 @@ public final class JsUtil {
         return builder.toString();
     }
 
+    /**
+     * This method is mainly for internal use.
+     *
+     * @param s
+     * @return the returned string will be striped and all lines will be replace by
+     *         {@code \n} .
+     * @since 3.0.15
+     */
+    public static String toDynamicJs(final String s) {
+        return StringUtil.strip(s).replace("\r\n", "\\n").replace("\n", "\\n");
+    }
+
 }
