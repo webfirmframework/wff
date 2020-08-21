@@ -15,7 +15,6 @@
  */
 package com.webfirmframework.wffweb.server.page.action;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
@@ -73,15 +72,13 @@ public enum BrowserPageAction {
      * @param js JavaScript to execute in the browser
      * @return the action {@code ByteBuffer} for executing the given JavaScript in
      *         the browser.
-     * @throws UnsupportedEncodingException throwing this exception will be removed
-     *                                      in future version because its internal
-     *                                      implementation will never make this
-     *                                      exception due to the code changes since
-     *                                      3.0.1.
-     * @since 2.1.0
+     *
+     * @since 2.1.0 initial implementation.
+     * @since 3.0.15 throwing UnsupportedEncodingException is removed as announced
+     *        in 3.0.1 release.
      * @author WFF
      */
-    public static ByteBuffer getActionByteBufferForExecuteJS(final String js) throws UnsupportedEncodingException {
+    public static ByteBuffer getActionByteBufferForExecuteJS(final String js) {
         return ByteBuffer.wrap(getActionBytesForExecuteJS(js));
     }
 
@@ -90,12 +87,10 @@ public enum BrowserPageAction {
      *
      * @param js JavaScript to execute in the browser
      * @return the action bytes for executing the given JavaScript in the browser.
-     * @throws UnsupportedEncodingException throwing this exception will be removed
-     *                                      in future version because its internal
-     *                                      implementation will never make this
-     *                                      exception due to the code changes since
-     *                                      3.0.1.
-     * @since 2.1.0
+     *
+     * @since 2.1.0 initial implementation.
+     * @since 3.0.15 throwing UnsupportedEncodingException is removed as announced
+     *        in 3.0.1 release.
      * @author WFF
      */
     public static byte[] getActionBytesForExecuteJS(final String js) {
