@@ -679,6 +679,8 @@ public abstract class BrowserPage implements Serializable {
                         // zeroth index as
                         // wffBMObject bytes
 
+                        // handling JsUtil.toDynamicJs at server side is much better otherwise if the
+                        // script is huge the client browser page might get frozen.
                         nameValue.setName(JsUtil.toDynamicJs(jsPostFunctionBody).getBytes(StandardCharsets.UTF_8));
 
                         if (returnedObject != null) {

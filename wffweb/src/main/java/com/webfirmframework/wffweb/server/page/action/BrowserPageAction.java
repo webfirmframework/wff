@@ -19,6 +19,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
+import com.webfirmframework.wffweb.js.JsUtil;
 import com.webfirmframework.wffweb.server.page.Task;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 import com.webfirmframework.wffweb.util.data.NameValue;
@@ -97,7 +98,7 @@ public enum BrowserPageAction {
      * @since 2.1.0
      * @author WFF
      */
-    public static byte[] getActionBytesForExecuteJS(final String js) throws UnsupportedEncodingException {
+    public static byte[] getActionBytesForExecuteJS(final String js) {
 
         // this method will never throw UnsupportedEncodingException
         // but not changing the method signature to keep consistency of this
@@ -114,7 +115,9 @@ public enum BrowserPageAction {
         // but not it is not throwing this exception
         // however, do not change method signature to keep consistency of the
         // method accross multiple versions.
-        values[taskValue.length] = js.getBytes(StandardCharsets.UTF_8);
+        // handling JsUtil.toDynamicJs at server side is much better otherwise if the
+        // script is huge the client browser page might get frozen.
+        values[taskValue.length] = JsUtil.toDynamicJs(js).getBytes(StandardCharsets.UTF_8);
 
         taskNameValue.setValues(values);
 
