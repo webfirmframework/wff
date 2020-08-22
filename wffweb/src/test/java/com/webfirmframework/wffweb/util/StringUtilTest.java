@@ -524,6 +524,14 @@ public class StringUtilTest {
         assertFalse(StringUtil.endsWithSpace("something"));
         assertTrue(StringUtil.endsWithSpace("something "));
     }
+    
+    @Test
+    public void testStartsWith() {
+        int unicode = "😀".codePointAt(0);
+        assertTrue(StringUtil.startsWith("something", (int) 's' ));
+        assertTrue(StringUtil.startsWith("😀something", unicode ));
+        assertFalse(StringUtil.startsWith("something", (int) 'g' ));
+    }
 
     @Test
     public void testStartsWithSpace() {
@@ -553,6 +561,14 @@ public class StringUtilTest {
         assertTrue(StringUtil.containsPlus("+something"));
         assertTrue(StringUtil.containsPlus("something+"));
         assertTrue(StringUtil.containsPlus("some+thing"));
+    }
+    
+    @Test
+    public void testEndsWith() {
+        int unicode = "😀".codePointAt(0);
+        assertTrue(StringUtil.endsWith("something", (int) 'g' ));
+        assertTrue(StringUtil.endsWith("something😀", unicode ));
+        assertFalse(StringUtil.endsWith("something", (int) 's' ));
     }
 
     @Test

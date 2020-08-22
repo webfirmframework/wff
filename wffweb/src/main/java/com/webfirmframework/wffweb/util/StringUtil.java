@@ -905,7 +905,7 @@ public final class StringUtil {
      * @return true or false
      * @since 3.0.15
      */
-    private static boolean startsWith(final String string, final int c) {
+    static boolean startsWith(final String string, final int c) {
         if (string.length() == 0) {
             return false;
         }
@@ -918,7 +918,7 @@ public final class StringUtil {
      * @return true or false
      * @since 3.0.15
      */
-    private static boolean endsWith(final String string, final int c) {
+    static boolean endsWith(final String string, final int c) {
         if (string.length() == 0) {
             return false;
         }
