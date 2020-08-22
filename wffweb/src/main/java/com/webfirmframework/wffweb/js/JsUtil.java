@@ -30,6 +30,16 @@ import com.webfirmframework.wffweb.util.StringUtil;
  */
 public final class JsUtil {
 
+    private static final int SLASH_R_CODE_POINT;
+
+    private static final int SLASH_N_CODE_POINT;
+
+    static {
+        int[] codePoints = "\r\n".codePoints().toArray();
+        SLASH_R_CODE_POINT = codePoints[0];
+        SLASH_N_CODE_POINT = codePoints[1];
+    }
+
     private JsUtil() {
         throw new AssertionError();
     }
@@ -300,6 +310,27 @@ public final class JsUtil {
     }
 
     /**
+     * Removes all line separators from the string.
+     *
+     * @param input
+     * @return the string without line separators .
+     * @since 3.0.15
+     */
+    public static String removeLineSeparators(final String input) {
+
+        final StringBuilder builder = new StringBuilder(input.length());
+
+        final int[] codePoints = input.codePoints().toArray();
+        for (final int c : codePoints) {
+            if (c != SLASH_R_CODE_POINT && c != SLASH_N_CODE_POINT) {
+                builder.appendCodePoint(c);
+            }
+        }
+
+        return builder.toString();
+    }
+
+    /**
      * This method is mainly for internal use.
      *
      * @param s
@@ -308,7 +339,39 @@ public final class JsUtil {
      * @since 3.0.15
      */
     public static String toDynamicJs(final String s) {
-        return StringUtil.strip(s).replace("\r\n", "\\n").replace("\n", "\\n");
+
+        final String input = StringUtil.strip(s);
+
+        final StringBuilder builder = new StringBuilder(input.length());
+
+        final int[] codePoints = input.codePoints().toArray();
+        int prevC = 0;
+
+        for (int i = 0; i < codePoints.length; i++) {
+            final int c = codePoints[i];
+            if (i == 0) {
+                if (c == SLASH_N_CODE_POINT) {
+                    builder.append("\\n");
+                } else if (c != SLASH_R_CODE_POINT) {
+                    builder.appendCodePoint(c);
+                }
+            } else {
+                if (prevC == SLASH_R_CODE_POINT && c == SLASH_N_CODE_POINT) {
+                    builder.append("\\n");
+                } else if (prevC == SLASH_R_CODE_POINT && c != SLASH_N_CODE_POINT) {
+                    builder.append("\\n");
+                    builder.appendCodePoint(c);
+                } else if (c == SLASH_N_CODE_POINT) {
+                    builder.append("\\n");
+                } else if (c != SLASH_R_CODE_POINT) {
+                    builder.appendCodePoint(c);
+                }
+            }
+
+            prevC = c;
+        }
+
+        return builder.toString();
     }
 
 }

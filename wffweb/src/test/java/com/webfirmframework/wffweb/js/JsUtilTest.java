@@ -127,4 +127,20 @@ public class JsUtilTest {
                 JsUtil.getJsObjectForFieldsValue(jsInputKeyFieldIds,
                         jsCheckboxKeyFieldIds, "gebi"));
     }
+    
+    @Test
+    public void testToDynamicJs() throws Exception {
+        assertEquals(2, "\r\n".length());
+        assertEquals(2, "\r\n".toCharArray().length);
+        assertEquals(2, "\r\n".codePoints().count());
+        
+        assertEquals("some js content \\n after new line \\n again after new line", 
+                JsUtil.toDynamicJs("  some js content \r\n after new line \n again after new line   "));
+        
+        assertEquals("some js content \\n  \\n after new line \\n again after new line", 
+                JsUtil.toDynamicJs("  some js content \r  \r\n after new line \n again after new line   "));
+        
+        assertEquals("some js content \\n  \\n after new line \\n again after new line", 
+                JsUtil.toDynamicJs("  some js content \r  \r\n after new line \n again after new line   "));
+    }
 }

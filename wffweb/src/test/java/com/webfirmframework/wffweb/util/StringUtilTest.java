@@ -375,6 +375,139 @@ public class StringUtilTest {
         }
 
     }
+    
+    @Test
+    public void testEndsWithWhitespace() throws Exception {
+        String valContainingUnicodeChar = "yes😀 ";
+        assertTrue(StringUtil.endsWithWhitespace(valContainingUnicodeChar));
+    }
+    
+    @Test
+    public void testStartsWithWhitespace() throws Exception {
+        String valContainingUnicodeChar = " yes😀 ";
+        assertTrue(StringUtil.startsWithWhitespace(valContainingUnicodeChar));
+    }
+    
+    @Test
+    public void testSplitByCodePoint() throws Exception {
+        
+        //FYI 
+        //U+1F600
+        String unicodeVal = "😀";
+        assertEquals(2, unicodeVal.length());        
+        assertEquals(2, unicodeVal.toCharArray().length);        
+        assertEquals(1, unicodeVal.codePoints().toArray().length); 
+        
+        char c = unicodeVal.toCharArray()[0];
+        
+        assertEquals("a" + unicodeVal.toCharArray()[1], unicodeVal.replace(c, 'a'));
+        
+        assertTrue(unicodeVal.contains(c + ""));
+        String valueContainingUnicode =  "one😀two😀three";
+        
+        
+        String[] expected = {"one", "two", "three"};
+        
+        int deli = Character.codePointAt(";", 0);
+        
+        assertEquals("one;two;three", StringUtil.split("one;two;three", ':')[0]);
+        
+        assertEquals("without", StringUtil.split("without", deli)[0]);
+        
+        assertEquals("", StringUtil.split("", deli)[0]);
+        
+        assertEquals("", StringUtil.split(";", deli)[0]);
+        
+        assertEquals("one", StringUtil.split("one;two;three", deli)[0]);
+        
+        assertEquals("two", StringUtil.split("one;two;three", deli)[1]);
+        
+        assertEquals("three", StringUtil.split("one;two;three", deli)[2]);
+        
+        assertEquals("", StringUtil.split(";two;three", deli)[0]);
+        
+        assertEquals("", StringUtil.split("one;;three", deli)[1]);
+        
+        assertEquals("", StringUtil.split("one;two;", deli)[2]);
+        
+        assertArrayEquals(new String[] {"one", ""}, StringUtil.split("one;", deli));
+        
+        assertArrayEquals(new String[] {"", "one"}, StringUtil.split(";one", deli));
+        
+        assertArrayEquals(new String[] {"one"}, StringUtil.split("one", deli));
+        
+        assertArrayEquals(new String[] {""}, StringUtil.split("", deli));
+        
+        assertArrayEquals(new String[] {"", "two", "three", ""}, StringUtil.split(";two;three;", deli));
+        
+        assertArrayEquals(new String[] {"", "", "three", ""}, StringUtil.split(";;three;", deli));
+        
+        assertArrayEquals(new String[] {"", "", "", ""}, StringUtil.split(";;;", deli));
+        
+        assertArrayEquals(expected, StringUtil.split("one;two;three", deli));
+        
+        assertArrayEquals(new String[] {"one", "two", "three", ""}, StringUtil.split("one;two;three;", deli));
+        
+        assertArrayEquals(new String[] {" one ", " two ", " three ", " "}, StringUtil.split(" one ; two ; three ; ", deli));
+        
+        deli = ';';
+        
+        assertArrayEquals(expected, StringUtil.split("one;two;three", deli));
+        
+        assertArrayEquals(new String[] {"one", "two", "three", ""}, StringUtil.split("one;two;three;", deli));
+        
+        assertArrayEquals(new String[] {" one ", " two ", " three ", " "}, StringUtil.split(" one ; two ; three ; ", deli));
+        
+        deli = unicodeVal.codePointAt(0);
+        
+        assertEquals("without", StringUtil.split("without", deli)[0]);
+        
+        assertEquals("", StringUtil.split("", deli)[0]);
+        
+        assertEquals("", StringUtil.split("😀", deli)[0]);
+        
+        assertEquals("one", StringUtil.split(valueContainingUnicode, deli)[0]);
+        
+        assertEquals("two", StringUtil.split(valueContainingUnicode, deli)[1]);
+        
+        assertEquals("three", StringUtil.split(valueContainingUnicode, deli)[2]);
+        
+        assertEquals("", StringUtil.split("😀two😀three", deli)[0]);
+        
+        assertEquals("", StringUtil.split("one😀😀three", deli)[1]);
+        
+        assertEquals("", StringUtil.split("one😀two😀", deli)[2]);
+        
+        assertArrayEquals(new String[] {"one", ""}, StringUtil.split("one😀", deli));
+        
+        assertArrayEquals(new String[] {"", "one"}, StringUtil.split("😀one", deli));
+        
+        assertArrayEquals(new String[] {"one"}, StringUtil.split("one", deli));
+        
+        assertArrayEquals(new String[] {""}, StringUtil.split("", deli));
+        
+        assertArrayEquals(new String[] {"", "two", "three", ""}, StringUtil.split("😀two😀three😀", deli));
+        
+        assertArrayEquals(new String[] {"", "", "three", ""}, StringUtil.split("😀😀three😀", deli));
+        
+        assertArrayEquals(new String[] {"", "", "", ""}, StringUtil.split("😀😀😀", deli));
+        
+        assertArrayEquals(new String[] {"one", "two", "three", ""}, StringUtil.split("one😀two😀three😀", deli));
+        
+        assertArrayEquals(new String[] {" one ", " two ", " three ", " "}, StringUtil.split(" one 😀 two 😀 three 😀 ", deli));
+        
+        assertEquals("one", StringUtil.split(valueContainingUnicode, deli)[0]);
+        
+        assertEquals("two", StringUtil.split(valueContainingUnicode, deli)[1]);
+        
+        assertEquals("three", StringUtil.split(valueContainingUnicode, deli)[2]);
+        
+        assertArrayEquals(expected, StringUtil.split(valueContainingUnicode, deli));       
+        
+        assertArrayEquals(new String[] {"one", "two", "three", ""}, StringUtil.split("one😀two😀three😀", deli));
+        
+        assertArrayEquals(new String[] {" one ", " two ", " three ", " "}, StringUtil.split(" one 😀 two 😀 three 😀 ", deli));
+    }
 
     @Test
     public void testEndsWithSpace() {
@@ -470,6 +603,9 @@ public class StringUtilTest {
     
     @Test
     public void testStrip() throws Exception {
+        assertEquals("one", StringUtil.strip("one"));
+        assertEquals("one", StringUtil.strip(" one "));
+        assertEquals("o n e", StringUtil.strip(" o n e "));
         assertEquals("one", StringUtil.strip("    one      "));
         assertEquals("one", StringUtil.strip("\none\n"));
         assertEquals("one", StringUtil.strip("\r\none\r\n"));
