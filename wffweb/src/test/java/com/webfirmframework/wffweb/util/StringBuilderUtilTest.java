@@ -39,27 +39,27 @@ public class StringBuilderUtilTest {
     }
     
     @Test
-    public void testTrim() {
+    public void testStrip() {
         StringBuilder builder = new StringBuilder("  This is some long sentance.   ");
-        assertEquals("This is some long sentance.", StringBuilderUtil.trim(builder).toString());
+        assertEquals("This is some long sentance.", StringBuilderUtil.strip(builder).toString());
         
         builder = new StringBuilder("\n This is some long sentance. \n ");
-        assertEquals("This is some long sentance.", StringBuilderUtil.trim(builder).toString());
+        assertEquals("This is some long sentance.", StringBuilderUtil.strip(builder).toString());
         
         builder = new StringBuilder("\t This is some long sentance. \t ");
-        assertEquals("This is some long sentance.", StringBuilderUtil.trim(builder).toString());
+        assertEquals("This is some long sentance.", StringBuilderUtil.strip(builder).toString());
         
         builder = new StringBuilder(" This is some long sentance. ");
-        assertEquals("This is some long sentance.", StringBuilderUtil.trim(builder).toString());
+        assertEquals("This is some long sentance.", StringBuilderUtil.strip(builder).toString());
         
         builder = new StringBuilder("    This is some long sentance.");
-        assertEquals("This is some long sentance.", StringBuilderUtil.trim(builder).toString());
+        assertEquals("This is some long sentance.", StringBuilderUtil.strip(builder).toString());
         
         builder = new StringBuilder("This is some long sentance.    ");
-        assertEquals("This is some long sentance.", StringBuilderUtil.trim(builder).toString());
+        assertEquals("This is some long sentance.", StringBuilderUtil.strip(builder).toString());
         
         builder = new StringBuilder("This is some long sentance.");
-        assertEquals("This is some long sentance.", StringBuilderUtil.trim(builder).toString());
+        assertEquals("This is some long sentance.", StringBuilderUtil.strip(builder).toString());
     }
 
 
