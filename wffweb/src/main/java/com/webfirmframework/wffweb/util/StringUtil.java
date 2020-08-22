@@ -1197,6 +1197,10 @@ public final class StringUtil {
             }
         }
 
+        if (first == 0 && last == codePoints.length) {
+            return s;
+        }
+
         final int lastRemovedCount = codePoints.length - last;
 
         final int codePointsCount = codePoints.length - (first + lastRemovedCount);

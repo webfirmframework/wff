@@ -57,6 +57,9 @@ public final class StringBuilderUtil {
                 break;
             }
         }
+        if (first == 0 && last == codePoints.length) {
+            return sb.toString();
+        }
 
         final int lastRemovedCount = codePoints.length - last;
 
@@ -124,6 +127,10 @@ public final class StringBuilderUtil {
             if (!Character.isWhitespace(codePoints[last - 1])) {
                 break;
             }
+        }
+
+        if (first == 0 && last == codePoints.length) {
+            return sb;
         }
 
         final int lastRemovedCount = codePoints.length - last;

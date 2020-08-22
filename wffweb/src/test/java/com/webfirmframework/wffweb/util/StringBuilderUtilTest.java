@@ -14,6 +14,8 @@ public class StringBuilderUtilTest {
         builder.append("         ");        
         
         assertEquals("hi how are you", StringBuilderUtil.getTrimmedString(builder));
+        
+        assertEquals("hi how are you", StringBuilderUtil.getTrimmedString(new StringBuilder("hi how are you")));
     }
     
     @Test
@@ -61,8 +63,6 @@ public class StringBuilderUtilTest {
         builder = new StringBuilder("This is some long sentance.");
         assertEquals("This is some long sentance.", StringBuilderUtil.strip(builder).toString());
         
-        String unicodeChar = "😀";
-        
         builder = new StringBuilder("    😀 is an imoji.    ");
         assertEquals("😀 is an imoji.", StringBuilderUtil.strip(builder).toString());
         
@@ -74,6 +74,10 @@ public class StringBuilderUtilTest {
         
         builder = new StringBuilder("    ");
         assertEquals("", StringBuilderUtil.strip(builder).toString());
+        
+        assertEquals("hi how are you", StringBuilderUtil.strip(new StringBuilder("hi how are you")).toString());
+        
+        assertEquals("hi how are you😀", StringBuilderUtil.strip(new StringBuilder("hi how are you😀")).toString());
 
     }
 
