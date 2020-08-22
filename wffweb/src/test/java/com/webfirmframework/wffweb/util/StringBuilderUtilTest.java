@@ -68,6 +68,13 @@ public class StringBuilderUtilTest {
         
         builder = new StringBuilder("    This sentence contains 😀 as an imoji.    ");
         assertEquals("This sentence contains 😀 as an imoji.", StringBuilderUtil.strip(builder).toString());
+        
+        builder = new StringBuilder("");
+        assertEquals("", StringBuilderUtil.strip(builder).toString());
+        
+        builder = new StringBuilder("    ");
+        assertEquals("", StringBuilderUtil.strip(builder).toString());
+
     }
 
 
