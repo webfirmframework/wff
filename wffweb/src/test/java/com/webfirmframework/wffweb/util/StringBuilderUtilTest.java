@@ -60,6 +60,14 @@ public class StringBuilderUtilTest {
         
         builder = new StringBuilder("This is some long sentance.");
         assertEquals("This is some long sentance.", StringBuilderUtil.strip(builder).toString());
+        
+        String unicodeChar = "😀";
+        
+        builder = new StringBuilder("    😀 is an imoji.    ");
+        assertEquals("😀 is an imoji.", StringBuilderUtil.strip(builder).toString());
+        
+        builder = new StringBuilder("    This sentence contains 😀 as an imoji.    ");
+        assertEquals("This sentence contains 😀 as an imoji.", StringBuilderUtil.strip(builder).toString());
     }
 
 
