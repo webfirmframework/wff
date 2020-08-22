@@ -603,6 +603,7 @@ public class StringUtilTest {
     
     @Test
     public void testStrip() throws Exception {
+        assertEquals("", StringUtil.strip(""));
         assertEquals("one", StringUtil.strip("one"));
         assertEquals("one", StringUtil.strip(" one "));
         assertEquals("o n e", StringUtil.strip(" o n e "));

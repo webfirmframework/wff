@@ -1183,13 +1183,13 @@ public final class StringUtil {
         int last;
 
         final int[] codePoints = s.codePoints().toArray();
-        for (first = 0; first < s.length(); first++) {
+        for (first = 0; first < codePoints.length; first++) {
             if (!Character.isWhitespace(codePoints[first])) {
                 break;
             }
         }
 
-        for (last = s.length(); last > first; last--) {
+        for (last = codePoints.length; last > first; last--) {
             if (!Character.isWhitespace(codePoints[last - 1])) {
                 break;
             }
