@@ -380,12 +380,22 @@ public class StringUtilTest {
     public void testEndsWithWhitespace() throws Exception {
         String valContainingUnicodeChar = "yes😀 ";
         assertTrue(StringUtil.endsWithWhitespace(valContainingUnicodeChar));
+        assertTrue(StringUtil.endsWithWhitespace(" yes😀 "));
+        
+        assertTrue(StringUtil.endsWithWhitespace("yes "));
+        
+        assertFalse(StringUtil.endsWithWhitespace(" yes😀"));
+        assertFalse(StringUtil.endsWithWhitespace("yes😀"));
     }
     
     @Test
     public void testStartsWithWhitespace() throws Exception {
         String valContainingUnicodeChar = " yes😀 ";
         assertTrue(StringUtil.startsWithWhitespace(valContainingUnicodeChar));
+        
+        assertTrue(StringUtil.startsWithWhitespace(" yes😀"));
+        assertFalse(StringUtil.startsWithWhitespace("yes😀 "));
+        
     }
     
     @Test

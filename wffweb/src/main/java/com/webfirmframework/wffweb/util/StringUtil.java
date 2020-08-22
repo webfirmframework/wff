@@ -714,7 +714,7 @@ public final class StringUtil {
         // NB: doesn't work
 //      return Character.isWhitespace(value.codePointAt((int) (value.codePoints().count() - 1)));
 
-        return Character.isWhitespace(value.codePoints().toArray()[0]);
+        return Character.isWhitespace(value.codePoints().findFirst().getAsInt());
     }
 
     /**
@@ -732,8 +732,10 @@ public final class StringUtil {
         // NB: doesn't work
 //        return Character.isWhitespace(value.codePointAt((int) (value.codePoints().count() - 1)));
 
-        final int[] codePoints = value.codePoints().toArray();
+        // works but not sure about the performance cost.
+//      return Character.isWhitespace(value.codePoints().reduce((first, second) -> second).getAsInt());
 
+        final int[] codePoints = value.codePoints().toArray();
         return Character.isWhitespace(codePoints[codePoints.length - 1]);
     }
 
@@ -907,7 +909,7 @@ public final class StringUtil {
         if (string.length() == 0) {
             return false;
         }
-        return string.codePoints().toArray()[0] == c;
+        return string.codePoints().findFirst().getAsInt() == c;
     }
 
     /**
