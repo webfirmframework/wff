@@ -35,7 +35,7 @@ public final class JsUtil {
     private static final int SLASH_N_CODE_POINT;
 
     static {
-        int[] codePoints = "\r\n".codePoints().toArray();
+        final int[] codePoints = "\r\n".codePoints().toArray();
         SLASH_R_CODE_POINT = codePoints[0];
         SLASH_N_CODE_POINT = codePoints[1];
     }

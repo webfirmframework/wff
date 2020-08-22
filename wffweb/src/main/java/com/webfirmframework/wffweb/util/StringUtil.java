@@ -61,6 +61,9 @@ public final class StringUtil {
      * @since 1.0.0
      */
     public static String convertToSingleSpace(final String input) {
+        if (input.length() == 0) {
+            return input;
+        }
         if (!input.contains("  ")) {
             return input;
         }
@@ -76,6 +79,10 @@ public final class StringUtil {
      * @since 3.0.15 it is unicode aware
      */
     public static String convertSpacesToSingleSpace(final String input) {
+
+        if (input.length() == 0) {
+            return input;
+        }
 
         final StringBuilder builder = new StringBuilder(input.length());
 
@@ -105,6 +112,10 @@ public final class StringUtil {
      * @since 3.0.15 it is unicode aware.
      */
     public static String convertWhitespacesToSingleSpace(final String input) {
+
+        if (input.length() == 0) {
+            return input;
+        }
 
         final StringBuilder builder = new StringBuilder(input.length());
 
@@ -146,6 +157,9 @@ public final class StringUtil {
      * @since 3.0.15 it is unicode aware.
      */
     public static String removeSpaces(final String input) {
+        if (input.length() == 0) {
+            return input;
+        }
 
         final StringBuilder builder = new StringBuilder(input.length());
 
@@ -169,11 +183,50 @@ public final class StringUtil {
      */
     public static String removeWhitespaces(final String input) {
 
+        if (input.length() == 0) {
+            return input;
+        }
+
         final StringBuilder builder = new StringBuilder(input.length());
 
         final int[] codePoints = input.codePoints().toArray();
         for (final int c : codePoints) {
             if (!Character.isWhitespace(c)) {
+                builder.appendCodePoint(c);
+            }
+        }
+
+        return builder.toString();
+    }
+
+    /**
+     * For future development. Removes all given codePoints from the string.
+     *
+     * @param input
+     * @param codePoints
+     * @return the string without spaces.
+     * @since 3.0.15 it is unicode aware.
+     */
+    @SuppressWarnings("unused")
+    private static String removeCodePoints(final String input, final int[] codePoints) {
+
+        if (input.length() == 0) {
+            return input;
+        }
+
+        final StringBuilder builder = new StringBuilder(input.length());
+
+        final int[] codePointsAry = input.codePoints().toArray();
+        for (final int c : codePointsAry) {
+
+            boolean remove = false;
+            for (final int cp : codePoints) {
+                if (cp == c) {
+                    remove = true;
+                    break;
+                }
+            }
+            if (!remove) {
                 builder.appendCodePoint(c);
             }
         }
@@ -723,6 +776,10 @@ public final class StringUtil {
      */
     public static String[] split(final String string, final int delim) {
 
+        if (string.length() == 0) {
+            return new String[] { string };
+        }
+
         final int[] codePoints = string.codePoints().toArray();
 
         final int[] delimPositionInit = new int[codePoints.length];
@@ -939,6 +996,9 @@ public final class StringUtil {
      * @author WFF
      */
     public static boolean containsWhitespace(final String string) {
+        if (string.length() == 0) {
+            return false;
+        }
 
         final int[] codePoints = string.codePoints().toArray();
 
@@ -1091,6 +1151,9 @@ public final class StringUtil {
      * @since 3.0.15 it is unicode aware.
      */
     public static boolean isBlank(final String s) {
+        if (s.length() == 0) {
+            return true;
+        }
 
         final int[] codePoints = s.codePoints().toArray();
         for (int i = 0; i < codePoints.length; i++) {
@@ -1111,6 +1174,10 @@ public final class StringUtil {
      * @since 3.0.15 it is unicode aware.
      */
     public static String strip(final String s) {
+
+        if (s.length() == 0) {
+            return s;
+        }
 
         int first;
         int last;
