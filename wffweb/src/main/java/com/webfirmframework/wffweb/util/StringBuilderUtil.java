@@ -105,6 +105,10 @@ public final class StringBuilderUtil {
      */
     public static StringBuilder strip(final StringBuilder sb) {
 
+        if (sb.length() == 0) {
+            return sb;
+        }
+
         int first;
         int last;
 
