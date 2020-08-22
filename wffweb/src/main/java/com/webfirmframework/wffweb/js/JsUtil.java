@@ -331,6 +331,44 @@ public final class JsUtil {
     }
 
     /**
+     * Removes the trailing and leading whitespaces
+     *
+     * @param codePoints
+     * @return the striped codePoints
+     * @since 3.0.1 initial implementation.
+     * @since 3.0.15 it is unicode aware.
+     */
+    private static int[] strip(final int[] codePoints) {
+
+        if (codePoints.length == 0) {
+            return new int[0];
+        }
+
+        int first;
+        int last;
+
+        for (first = 0; first < codePoints.length; first++) {
+            if (!Character.isWhitespace(codePoints[first])) {
+                break;
+            }
+        }
+
+        for (last = codePoints.length; last > first; last--) {
+            if (!Character.isWhitespace(codePoints[last - 1])) {
+                break;
+            }
+        }
+
+        final int lastRemovedCount = codePoints.length - last;
+
+        final int codePointsCount = codePoints.length - (first + lastRemovedCount);
+
+        final int[] codePointsStripped = new int[codePointsCount];
+        System.arraycopy(codePoints, first, codePointsStripped, 0, codePointsCount);
+        return codePointsStripped;
+    }
+
+    /**
      * This method is mainly for internal use.
      *
      * @param s
@@ -340,11 +378,10 @@ public final class JsUtil {
      */
     public static String toDynamicJs(final String s) {
 
-        final String input = StringUtil.strip(s);
+        final int[] codePoints = strip(s.codePoints().toArray());
 
-        final StringBuilder builder = new StringBuilder(input.length());
+        final StringBuilder builder = new StringBuilder(codePoints.length);
 
-        final int[] codePoints = input.codePoints().toArray();
         int prevC = 0;
 
         for (int i = 0; i < codePoints.length; i++) {
