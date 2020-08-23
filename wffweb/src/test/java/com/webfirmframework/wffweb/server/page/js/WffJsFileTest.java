@@ -464,22 +464,24 @@ public class WffJsFileTest {
             "f40(event, tag, v70, false);};this.a = invokeAsync;var f22 = function(event, tag, v70, preFun, prvntDflt){\n" + 
             "if(prvntDflt){\n" + 
             "event.preventDefault();}\n" + 
-            "var invoked = false;var action = new function(){\n" + 
+            "var invoked = false;var actionPerform = function(){\n" + 
+            "invoked = true;var v46 = wffTaskUtil.f34(wffGlobal.taskValues.TASK, wffGlobal.taskValues.INVOKE_ASYNC_METHOD);var v88 = f24(v70);var v84 = {'name':wffTagUtil.f25(tag), 'values':[v88]};var v76 = [v46, v84];var wffBM = wffBMUtil.f13(v76);wffWS.send(wffBM);};var action = new function(){\n" + 
             "this.perform = function(){\n" + 
-            "invoked = true;var v46 = wffTaskUtil.f34(wffGlobal.taskValues.TASK, wffGlobal.taskValues.INVOKE_ASYNC_METHOD);var v88 = f24(v70);var v84 = {'name':wffTagUtil.f25(tag), 'values':[v88]};var v76 = [v46, v84];var wffBM = wffBMUtil.f13(v76);wffWS.send(wffBM);};};if(preFun(event, tag, action)){\n" + 
+            "actionPerform();};};if(preFun(event, tag, action)){\n" + 
             "if(!invoked){\n" + 
-            "action.perform();}\n" + 
+            "actionPerform();}\n" + 
             "}\n" + 
             "};this.f = function(event, tag, v70, preFun){\n" + 
             "f22(event, tag, v70, preFun, true);};var invokeAsyncWithPreFun = function(event, tag, v70, preFun){\n" + 
             "f22(event, tag, v70, preFun, false);};this.e = invokeAsyncWithPreFun;var f6 = function(event, tag, v70, preFun, filterFun, prvntDflt){\n" + 
             "if(prvntDflt){\n" + 
             "event.preventDefault();}\n" + 
-            "var invoked = false;var action = new function(){\n" + 
+            "var invoked = false;var actionPerform = function(){\n" + 
+            "invoked = true;var v46 = wffTaskUtil.f34(wffGlobal.taskValues.TASK, wffGlobal.taskValues.INVOKE_ASYNC_METHOD);var v88 = f24(v70);var jsObject = filterFun(event, tag);var v32 = new WffBMObject(jsObject);var v94 = v32.getBMBytes();var v84 = {'name':wffTagUtil.f25(tag), 'values':[v88, v94]};var v76 = [v46, v84];var wffBM = wffBMUtil.f13(v76);wffWS.send(wffBM);};var action = new function(){\n" + 
             "this.perform = function(){\n" + 
-            "invoked = true;var v46 = wffTaskUtil.f34(wffGlobal.taskValues.TASK, wffGlobal.taskValues.INVOKE_ASYNC_METHOD);var v88 = f24(v70);var jsObject = filterFun(event, tag);var v32 = new WffBMObject(jsObject);var v94 = v32.getBMBytes();var v84 = {'name':wffTagUtil.f25(tag), 'values':[v88, v94]};var v76 = [v46, v84];var wffBM = wffBMUtil.f13(v76);wffWS.send(wffBM);};};if(preFun(event, tag, action)){\n" + 
+            "actionPerform();};};if(preFun(event, tag, action)){\n" + 
             "if(!invoked){\n" + 
-            "action.perform();}\n" + 
+            "actionPerform();}\n" + 
             "}\n" + 
             "};this.h = function(event, tag, v70, preFun, filterFun){\n" + 
             "f6(event, tag, v70, preFun, filterFun, true);};var invokeAsyncWithPreFilterFun = function(event, tag, v70, preFun, filterFun){\n" + 

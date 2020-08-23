@@ -77,23 +77,29 @@ var wffServerMethods = new function () {
 		if(prvntDflt) {
 			event.preventDefault();
 		}
+		
 		var invoked = false;
+		var actionPerform = function() {
+			invoked = true;
+			var taskNameValue = wffTaskUtil.getTaskNameValue(wffGlobal.taskValues.TASK, wffGlobal.taskValues.INVOKE_ASYNC_METHOD);
+			var attrBytes = getAttrBytesForServer(attrNmOrNdx);
+			
+			var nameValue = {'name':wffTagUtil.getWffIdBytesFromTag(tag), 'values':[attrBytes]};
+			var nameValues = [taskNameValue, nameValue];
+			var wffBM = wffBMUtil.getWffBinaryMessageBytes(nameValues);
+			wffWS.send(wffBM);
+		};
+		
+		//a wrapper object is important to avoid script injection
 		var action = new function() {
 			this.perform = function() {
-				invoked = true;
-				var taskNameValue = wffTaskUtil.getTaskNameValue(wffGlobal.taskValues.TASK, wffGlobal.taskValues.INVOKE_ASYNC_METHOD);
-				var attrBytes = getAttrBytesForServer(attrNmOrNdx);
-				
-				var nameValue = {'name':wffTagUtil.getWffIdBytesFromTag(tag), 'values':[attrBytes]};
-				var nameValues = [taskNameValue, nameValue];
-				var wffBM = wffBMUtil.getWffBinaryMessageBytes(nameValues);
-				wffWS.send(wffBM);
+				actionPerform();
 			};
 		};
 		
 		if (preFun(event, tag, action)) {
 			if(!invoked) {
-				action.perform();	
+				actionPerform();
 			}			
 		}
 		
@@ -114,31 +120,36 @@ var wffServerMethods = new function () {
 		if(prvntDflt) {
 			event.preventDefault();
 		}
+		
 		var invoked = false;
-		var action = new function() {
-			this.perform = function() {
-				invoked = true;
-				var taskNameValue = wffTaskUtil.getTaskNameValue(wffGlobal.taskValues.TASK, wffGlobal.taskValues.INVOKE_ASYNC_METHOD);
+		var actionPerform = function() {
+			invoked = true;
+			var taskNameValue = wffTaskUtil.getTaskNameValue(wffGlobal.taskValues.TASK, wffGlobal.taskValues.INVOKE_ASYNC_METHOD);
 
-				var attrBytes = getAttrBytesForServer(attrNmOrNdx);
+			var attrBytes = getAttrBytesForServer(attrNmOrNdx);
 
-				var jsObject = filterFun(event, tag);
-				var argumentBMObject = new WffBMObject(jsObject);
-				var argBytes = argumentBMObject.getBMBytes();
+			var jsObject = filterFun(event, tag);
+			var argumentBMObject = new WffBMObject(jsObject);
+			var argBytes = argumentBMObject.getBMBytes();
 					
-				var nameValue = {'name':wffTagUtil.getWffIdBytesFromTag(tag), 'values':[attrBytes, argBytes]};
-				var nameValues = [taskNameValue, nameValue];
-				var wffBM = wffBMUtil.getWffBinaryMessageBytes(nameValues);
+			var nameValue = {'name':wffTagUtil.getWffIdBytesFromTag(tag), 'values':[attrBytes, argBytes]};
+			var nameValues = [taskNameValue, nameValue];
+			var wffBM = wffBMUtil.getWffBinaryMessageBytes(nameValues);
 
-				wffWS.send(wffBM);
+			wffWS.send(wffBM);
+		};		
+			
+		//a wrapper object is important to avoid script injection
+		var action = new function() {
+			this.perform = function() {				
+				actionPerform();
 			};			
 		};
 		
 		if (preFun(event, tag, action)) {
 			if (!invoked) {
-				action.perform();	
-			}
-			
+				actionPerform();	
+			}			
 		}
 		
 	};	
