@@ -377,12 +377,25 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
         }
     }
 
-    private static String getPreparedJsFunctionBody(final String jsFunctionBody) {
+    private static String getPreparedJsPreFunctionBody(final String jsFunctionBody) {
 
         final String functionBody = JsUtil.toDynamicJs(jsFunctionBody);
         final StringBuilder builder = new StringBuilder(26);
 
         builder.append("function(event,source,action){").append(functionBody);
+        if (functionBody.charAt(functionBody.length() - 1) != ';') {
+            builder.append(';');
+        }
+
+        return builder.append('}').toString();
+    }
+
+    private static String getPreparedJsFilterFunctionBody(final String jsFunctionBody) {
+
+        final String functionBody = JsUtil.toDynamicJs(jsFunctionBody);
+        final StringBuilder builder = new StringBuilder(26);
+
+        builder.append("function(event,source){").append(functionBody);
         if (functionBody.charAt(functionBody.length() - 1) != ';') {
             builder.append(';');
         }
@@ -597,44 +610,44 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
                 super.setAttributeValue(new StringBuilder(
                         preventDefault ? invokeAsyncWithPreFilterFunPDTrue : invokeAsyncWithPreFilterFun)
                                 .append("(event,this,").append(attrIndexOrName).append(',')
-                                .append(getPreparedJsFunctionBody(jsPreFunctionBody)).append(',')
-                                .append(getPreparedJsFunctionBody(jsFilterFunctionBody)).append(')').toString());
+                                .append(getPreparedJsPreFunctionBody(jsPreFunctionBody)).append(',')
+                                .append(getPreparedJsFilterFunctionBody(jsFilterFunctionBody)).append(')').toString());
 
             } else if (jsPreFunctionBody != null && jsPostFunctionBody != null) {
 
                 super.setAttributeValue(
                         new StringBuilder().append(preventDefault ? invokeAsyncWithPreFunPDTrue : invokeAsyncWithPreFun)
                                 .append("(event,this,").append(attrIndexOrName).append(',')
-                                .append(getPreparedJsFunctionBody(jsPreFunctionBody)).append(')').toString());
+                                .append(getPreparedJsPreFunctionBody(jsPreFunctionBody)).append(')').toString());
 
             } else if (jsPreFunctionBody != null && jsFilterFunctionBody != null) {
 
                 super.setAttributeValue(new StringBuilder(
                         preventDefault ? invokeAsyncWithPreFilterFunPDTrue : invokeAsyncWithPreFilterFun)
                                 .append("(event,this,").append(attrIndexOrName).append(',')
-                                .append(getPreparedJsFunctionBody(jsPreFunctionBody)).append(',')
-                                .append(getPreparedJsFunctionBody(jsFilterFunctionBody)).append(')').toString());
+                                .append(getPreparedJsPreFunctionBody(jsPreFunctionBody)).append(',')
+                                .append(getPreparedJsFilterFunctionBody(jsFilterFunctionBody)).append(')').toString());
 
             } else if (jsPostFunctionBody != null && jsFilterFunctionBody != null) {
 
                 super.setAttributeValue(
                         new StringBuilder(preventDefault ? invokeAsyncWithFilterFunPDTrue : invokeAsyncWithFilterFun)
                                 .append("(event,this,").append(attrIndexOrName).append(',')
-                                .append(getPreparedJsFunctionBody(jsFilterFunctionBody)).append(')').toString());
+                                .append(getPreparedJsFilterFunctionBody(jsFilterFunctionBody)).append(')').toString());
 
             } else if (jsPreFunctionBody != null) {
 
                 super.setAttributeValue(
                         new StringBuilder(preventDefault ? invokeAsyncWithPreFunPDTrue : invokeAsyncWithPreFun)
                                 .append("(event,this,").append(attrIndexOrName).append(',')
-                                .append(getPreparedJsFunctionBody(jsPreFunctionBody)).append(')').toString());
+                                .append(getPreparedJsPreFunctionBody(jsPreFunctionBody)).append(')').toString());
 
             } else if (jsFilterFunctionBody != null) {
 
                 super.setAttributeValue(
                         new StringBuilder(preventDefault ? invokeAsyncWithFilterFunPDTrue : invokeAsyncWithFilterFun)
                                 .append("(event,this,").append(attrIndexOrName).append(',')
-                                .append(getPreparedJsFunctionBody(jsFilterFunctionBody)).append(')').toString());
+                                .append(getPreparedJsFilterFunctionBody(jsFilterFunctionBody)).append(')').toString());
             } else if (jsPostFunctionBody != null) {
                 super.setAttributeValue(new StringBuilder(preventDefault ? invokeAsyncPDTrue : invokeAsync)
                         .append("(event,this,").append(attrIndexOrName).append(')').toString());
