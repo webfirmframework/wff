@@ -104,22 +104,32 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
 
     /**
      * @param attributeName        the name of the attribute
-     * @param jsPreFunctionBody    the body part javascript function (without
-     *                             function declaration). It must return true/false.
-     *                             This function will invoke at client side before
-     *                             {@code serverAsyncMethod}. If the jsPrefunction
-     *                             returns true then only {@code serverAsyncMethod}
-     *                             method will invoke (if it is implemented). It has
-     *                             implicit objects like {@code event} and
-     *                             {@code source} which gives the reference of the
-     *                             current tag. <br>
+     * @param jsPreFunctionBody    It is the body part of JavaScript function
+     *                             (without function declaration). It must return
+     *                             true/false. This function will invoke at client
+     *                             side before {@code serverAsyncMethod}. If the
+     *                             jsPrefunction returns true then only
+     *                             {@code serverAsyncMethod} method will invoke (if
+     *                             it is implemented). It has implicit objects in
+     *                             its scope. They are {@code event}, {@code source}
+     *                             which gives the reference of the current tag and
+     *                             {@code action}. The {@code action} implicit
+     *                             object has a function named {@code perform()}
+     *                             which can be used to invoke
+     *                             {@code jsFilterFunctionBody} and
+     *                             {@code serverAsyncMethod} (it works just like
+     *                             returning true in the {@code jsPreFunctionBody}).
+     *                             If the {@code action.perform()} is called inside
+     *                             {@code jsPreFunctionBody} then returning true in
+     *                             it has no effect. The {@code action} implicit
+     *                             object is only available since 3.0.15. <br>
      *                             Eg:-
      *
      *                             <pre>
-     *                                                                                                if (source.type == 'button') {
-     *                                                                                                   return true;
-     *                                                                                                }
-     *                                                                                                return false;
+     *                              if (source.type == 'button') {
+     *                                  return true;
+     *                              }
+     *                              return false;
      *                             </pre>
      *
      * @param serverAsyncMethod    This method will invoke at server side with an
@@ -162,22 +172,32 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
 
     /**
      * @param attributeName        the name of the attribute
-     * @param jsPreFunctionBody    the body part javascript function (without
-     *                             function declaration). It must return true/false.
-     *                             This function will invoke at client side before
-     *                             {@code serverAsyncMethod}. If the jsPrefunction
-     *                             returns true then only {@code serverAsyncMethod}
-     *                             method will invoke (if it is implemented). It has
-     *                             implicit objects like {@code event} and
-     *                             {@code source} which gives the reference of the
-     *                             current tag. <br>
+     * @param jsPreFunctionBody    It is the body part of JavaScript function
+     *                             (without function declaration). It must return
+     *                             true/false. This function will invoke at client
+     *                             side before {@code serverAsyncMethod}. If the
+     *                             jsPrefunction returns true then only
+     *                             {@code serverAsyncMethod} method will invoke (if
+     *                             it is implemented). It has implicit objects in
+     *                             its scope. They are {@code event}, {@code source}
+     *                             which gives the reference of the current tag and
+     *                             {@code action}. The {@code action} implicit
+     *                             object has a function named {@code perform()}
+     *                             which can be used to invoke
+     *                             {@code jsFilterFunctionBody} and
+     *                             {@code serverAsyncMethod} (it works just like
+     *                             returning true in the {@code jsPreFunctionBody}).
+     *                             If the {@code action.perform()} is called inside
+     *                             {@code jsPreFunctionBody} then returning true in
+     *                             it has no effect. The {@code action} implicit
+     *                             object is only available since 3.0.15. <br>
      *                             Eg:-
      *
      *                             <pre>
-     *                                                                                                if (source.type == 'button') {
-     *                                                                                                   return true;
-     *                                                                                                }
-     *                                                                                                return false;
+     *                              if (source.type == 'button') {
+     *                                  return true;
+     *                              }
+     *                              return false;
      *                             </pre>
      *
      * @param serverAsyncMethod    This method will invoke at server side with an
@@ -225,22 +245,32 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      * @param attributeName        the name of the attribute
      *
      * @param preventDefault       true to call event.preventDefault(); on event
-     * @param jsPreFunctionBody    the body part javascript function (without
-     *                             function declaration). It must return true/false.
-     *                             This function will invoke at client side before
-     *                             {@code serverAsyncMethod}. If the jsPrefunction
-     *                             returns true then only {@code serverAsyncMethod}
-     *                             method will invoke (if it is implemented). It has
-     *                             implicit objects like {@code event} and
-     *                             {@code source} which gives the reference of the
-     *                             current tag. <br>
+     * @param jsPreFunctionBody    It is the body part of JavaScript function
+     *                             (without function declaration). It must return
+     *                             true/false. This function will invoke at client
+     *                             side before {@code serverAsyncMethod}. If the
+     *                             jsPrefunction returns true then only
+     *                             {@code serverAsyncMethod} method will invoke (if
+     *                             it is implemented). It has implicit objects in
+     *                             its scope. They are {@code event}, {@code source}
+     *                             which gives the reference of the current tag and
+     *                             {@code action}. The {@code action} implicit
+     *                             object has a function named {@code perform()}
+     *                             which can be used to invoke
+     *                             {@code jsFilterFunctionBody} and
+     *                             {@code serverAsyncMethod} (it works just like
+     *                             returning true in the {@code jsPreFunctionBody}).
+     *                             If the {@code action.perform()} is called inside
+     *                             {@code jsPreFunctionBody} then returning true in
+     *                             it has no effect. The {@code action} implicit
+     *                             object is only available since 3.0.15. <br>
      *                             Eg:-
      *
      *                             <pre>
-     *                                                                                                if (source.type == 'button') {
-     *                                                                                                   return true;
-     *                                                                                                }
-     *                                                                                                return false;
+     *                              if (source.type == 'button') {
+     *                                  return true;
+     *                              }
+     *                              return false;
      *                             </pre>
      *
      * @param serverAsyncMethod    This method will invoke at server side with an
@@ -361,22 +391,32 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
     }
 
     /**
-     * @param jsPreFunctionBody    the body part javascript function (without
-     *                             function declaration). It must return true/false.
-     *                             This function will invoke at client side before
-     *                             {@code serverAsyncMethod}. If the jsPrefunction
-     *                             returns true then only {@code serverAsyncMethod}
-     *                             method will invoke (if it is implemented). It has
-     *                             implicit objects like {@code event} and
-     *                             {@code source} which gives the reference of the
-     *                             current tag. <br>
+     * @param jsPreFunctionBody    It is the body part of JavaScript function
+     *                             (without function declaration). It must return
+     *                             true/false. This function will invoke at client
+     *                             side before {@code serverAsyncMethod}. If the
+     *                             jsPrefunction returns true then only
+     *                             {@code serverAsyncMethod} method will invoke (if
+     *                             it is implemented). It has implicit objects in
+     *                             its scope. They are {@code event}, {@code source}
+     *                             which gives the reference of the current tag and
+     *                             {@code action}. The {@code action} implicit
+     *                             object has a function named {@code perform()}
+     *                             which can be used to invoke
+     *                             {@code jsFilterFunctionBody} and
+     *                             {@code serverAsyncMethod} (it works just like
+     *                             returning true in the {@code jsPreFunctionBody}).
+     *                             If the {@code action.perform()} is called inside
+     *                             {@code jsPreFunctionBody} then returning true in
+     *                             it has no effect. The {@code action} implicit
+     *                             object is only available since 3.0.15. <br>
      *                             Eg:-
      *
      *                             <pre>
-     *                                                                                                if (source.type == 'button') {
-     *                                                                                                   return true;
-     *                                                                                                }
-     *                                                                                                return false;
+     *                              if (source.type == 'button') {
+     *                                  return true;
+     *                              }
+     *                              return false;
      *                             </pre>
      *
      * @param serverAsyncMethod    This method will invoke at server side with an
@@ -415,22 +455,32 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
     }
 
     /**
-     * @param jsPreFunctionBody    the body part javascript function (without
-     *                             function declaration). It must return true/false.
-     *                             This function will invoke at client side before
-     *                             {@code serverAsyncMethod}. If the jsPrefunction
-     *                             returns true then only {@code serverAsyncMethod}
-     *                             method will invoke (if it is implemented). It has
-     *                             implicit objects like {@code event} and
-     *                             {@code source} which gives the reference of the
-     *                             current tag. <br>
+     * @param jsPreFunctionBody    It is the body part of JavaScript function
+     *                             (without function declaration). It must return
+     *                             true/false. This function will invoke at client
+     *                             side before {@code serverAsyncMethod}. If the
+     *                             jsPrefunction returns true then only
+     *                             {@code serverAsyncMethod} method will invoke (if
+     *                             it is implemented). It has implicit objects in
+     *                             its scope. They are {@code event}, {@code source}
+     *                             which gives the reference of the current tag and
+     *                             {@code action}. The {@code action} implicit
+     *                             object has a function named {@code perform()}
+     *                             which can be used to invoke
+     *                             {@code jsFilterFunctionBody} and
+     *                             {@code serverAsyncMethod} (it works just like
+     *                             returning true in the {@code jsPreFunctionBody}).
+     *                             If the {@code action.perform()} is called inside
+     *                             {@code jsPreFunctionBody} then returning true in
+     *                             it has no effect. The {@code action} implicit
+     *                             object is only available since 3.0.15. <br>
      *                             Eg:-
      *
      *                             <pre>
-     *                                                                                                if (source.type == 'button') {
-     *                                                                                                   return true;
-     *                                                                                                }
-     *                                                                                                return false;
+     *                              if (source.type == 'button') {
+     *                                  return true;
+     *                              }
+     *                              return false;
      *                             </pre>
      *
      * @param serverAsyncMethod    This method will invoke at server side with an
@@ -471,22 +521,32 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
 
     /**
      * @param preventDefault       true to call event.preventDefault(); on event
-     * @param jsPreFunctionBody    the body part javascript function (without
-     *                             function declaration). It must return true/false.
-     *                             This function will invoke at client side before
-     *                             {@code serverAsyncMethod}. If the jsPrefunction
-     *                             returns true then only {@code serverAsyncMethod}
-     *                             method will invoke (if it is implemented). It has
-     *                             implicit objects like {@code event} and
-     *                             {@code source} which gives the reference of the
-     *                             current tag. <br>
+     * @param jsPreFunctionBody    It is the body part of JavaScript function
+     *                             (without function declaration). It must return
+     *                             true/false. This function will invoke at client
+     *                             side before {@code serverAsyncMethod}. If the
+     *                             jsPrefunction returns true then only
+     *                             {@code serverAsyncMethod} method will invoke (if
+     *                             it is implemented). It has implicit objects in
+     *                             its scope. They are {@code event}, {@code source}
+     *                             which gives the reference of the current tag and
+     *                             {@code action}. The {@code action} implicit
+     *                             object has a function named {@code perform()}
+     *                             which can be used to invoke
+     *                             {@code jsFilterFunctionBody} and
+     *                             {@code serverAsyncMethod} (it works just like
+     *                             returning true in the {@code jsPreFunctionBody}).
+     *                             If the {@code action.perform()} is called inside
+     *                             {@code jsPreFunctionBody} then returning true in
+     *                             it has no effect. The {@code action} implicit
+     *                             object is only available since 3.0.15. <br>
      *                             Eg:-
      *
      *                             <pre>
-     *                                                                                                if (source.type == 'button') {
-     *                                                                                                   return true;
-     *                                                                                                }
-     *                                                                                                return false;
+     *                              if (source.type == 'button') {
+     *                                  return true;
+     *                              }
+     *                              return false;
      *                             </pre>
      *
      * @param serverAsyncMethod    This method will invoke at server side with an
@@ -658,9 +718,20 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
     }
 
     /**
-     * Sets the pre function body JavaScript.
+     * Sets the pre function body JavaScript. It is the body part of JavaScript
+     * function (without function declaration). It must return true/false. This
+     * function will invoke at client side before {@code serverAsyncMethod}. If the
+     * jsPrefunction returns true then only {@code serverAsyncMethod} method will
+     * invoke (if it is implemented). It has implicit objects in its scope. They are
+     * {@code event}, {@code source} which gives the reference of the current tag
+     * and {@code action}. The {@code action} implicit object has a function named
+     * {@code perform()} which can be used to invoke {@code jsFilterFunctionBody}
+     * and {@code serverAsyncMethod} (it works just like returning true in the
+     * {@code jsPreFunctionBody}). If the {@code action.perform()} is called inside
+     * {@code jsPreFunctionBody} then returning true in it has no effect. The
+     * {@code action} implicit object is only available since 3.0.15.
      *
-     * @param jsPreFunctionBody the js prefunction body
+     * @param jsPreFunctionBody the JavaScript to execute.
      * @author WFF
      * @since 2.1.9
      */
