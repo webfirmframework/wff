@@ -132,6 +132,13 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      *                              return false;
      *                             </pre>
      *
+     *                             <br>
+     *                             NB: calling {@code action.perform()} inside
+     *                             {@code jsFilterFunctionBody} and
+     *                             {@code jsPostFunctionBody} of the same event
+     *                             attribute will be harmful as it will make an
+     *                             infinite recursive call.
+     *
      * @param serverAsyncMethod    This method will invoke at server side with an
      *                             argument {@code wffBMObject}. The
      *                             {@code wffBMObject} is the representational
@@ -199,6 +206,13 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      *                              }
      *                              return false;
      *                             </pre>
+     *
+     *                             <br>
+     *                             NB: calling {@code action.perform()} inside
+     *                             {@code jsFilterFunctionBody} and
+     *                             {@code jsPostFunctionBody} of the same event
+     *                             attribute will be harmful as it will make an
+     *                             infinite recursive call.
      *
      * @param serverAsyncMethod    This method will invoke at server side with an
      *                             argument {@code wffBMObject}. The
@@ -272,6 +286,13 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      *                              }
      *                              return false;
      *                             </pre>
+     *
+     *                             <br>
+     *                             NB: calling {@code action.perform()} inside
+     *                             {@code jsFilterFunctionBody} and
+     *                             {@code jsPostFunctionBody} of the same event
+     *                             attribute will be harmful as it will make an
+     *                             infinite recursive call.
      *
      * @param serverAsyncMethod    This method will invoke at server side with an
      *                             argument {@code wffBMObject}. The
@@ -432,6 +453,13 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      *                              return false;
      *                             </pre>
      *
+     *                             <br>
+     *                             NB: calling {@code action.perform()} inside
+     *                             {@code jsFilterFunctionBody} and
+     *                             {@code jsPostFunctionBody} of the same event
+     *                             attribute will be harmful as it will make an
+     *                             infinite recursive call.
+     *
      * @param serverAsyncMethod    This method will invoke at server side with an
      *                             argument {@code wffBMObject}. The
      *                             {@code wffBMObject} is the representational
@@ -495,6 +523,13 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      *                              }
      *                              return false;
      *                             </pre>
+     *
+     *                             <br>
+     *                             NB: calling {@code action.perform()} inside
+     *                             {@code jsFilterFunctionBody} and
+     *                             {@code jsPostFunctionBody} of the same event
+     *                             attribute will be harmful as it will make an
+     *                             infinite recursive call.
      *
      * @param serverAsyncMethod    This method will invoke at server side with an
      *                             argument {@code wffBMObject}. The
@@ -561,6 +596,13 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      *                              }
      *                              return false;
      *                             </pre>
+     *
+     *                             <br>
+     *                             NB: calling {@code action.perform()} inside
+     *                             {@code jsFilterFunctionBody} and
+     *                             {@code jsPostFunctionBody} of the same event
+     *                             attribute will be harmful as it will make an
+     *                             infinite recursive call.
      *
      * @param serverAsyncMethod    This method will invoke at server side with an
      *                             argument {@code wffBMObject}. The
@@ -743,6 +785,11 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      * {@code jsPreFunctionBody}). If the {@code action.perform()} is called inside
      * {@code jsPreFunctionBody} then returning true in it has no effect. The
      * {@code action} implicit object is only available since 3.0.15.
+     *
+     * <br>
+     * NB: calling {@code action.perform()} inside {@code jsFilterFunctionBody} and
+     * {@code jsPostFunctionBody} of the same event attribute will be harmful as it
+     * will make an infinite recursive call.
      *
      * @param jsPreFunctionBody the JavaScript to execute.
      * @author WFF
