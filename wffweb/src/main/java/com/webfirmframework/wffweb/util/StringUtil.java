@@ -744,28 +744,32 @@ public final class StringUtil {
      * @param delim  to by which the given string to be split.
      * @return the array of strings split by the given char.
      * @since 3.0.0 public
+     * @since 3.0.15 unicode aware.
      * @author WFF
      */
     public static String[] split(final String string, final char delim) {
 
-        final CharSequence[] tmp = new CharSequence[(string.length() / 2) + 1];
-        int subCount = 0;
-        int i = 0;
-        // first substring
-        int j = string.indexOf(delim, 0);
+        // Old impl
+//        final CharSequence[] tmp = new CharSequence[(string.length() / 2) + 1];
+//        int subCount = 0;
+//        int i = 0;
+//        // first substring
+//        int j = string.indexOf(delim, 0);
+//
+//        while (j >= 0) {
+//            tmp[subCount++] = string.substring(i, j);
+//            i = j + 1;
+//            // rest of substrings
+//            j = string.indexOf(delim, i);
+//        }
+//        // last substring
+//        tmp[subCount++] = string.substring(i);
+//
+//        final String[] finalArray = new String[subCount];
+//        System.arraycopy(tmp, 0, finalArray, 0, subCount);
+//        return finalArray;
 
-        while (j >= 0) {
-            tmp[subCount++] = string.substring(i, j);
-            i = j + 1;
-            // rest of substrings
-            j = string.indexOf(delim, i);
-        }
-        // last substring
-        tmp[subCount++] = string.substring(i);
-
-        final String[] finalArray = new String[subCount];
-        System.arraycopy(tmp, 0, finalArray, 0, subCount);
-        return finalArray;
+        return split(string, (int) delim);
     }
 
     /**
