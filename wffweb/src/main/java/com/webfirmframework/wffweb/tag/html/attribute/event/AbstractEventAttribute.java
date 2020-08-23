@@ -352,7 +352,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
         final String functionBody = JsUtil.toDynamicJs(jsFunctionBody);
         final StringBuilder builder = new StringBuilder(26);
 
-        builder.append("function(event,source){").append(functionBody);
+        builder.append("function(event,source,action){").append(functionBody);
         if (functionBody.charAt(functionBody.length() - 1) != ';') {
             builder.append(';');
         }

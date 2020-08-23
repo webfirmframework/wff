@@ -382,6 +382,8 @@ public enum WffJsFile {
             functionAndVarNames.remove("f");
             functionAndVarNames.remove("g");
             functionAndVarNames.remove("h");
+            functionAndVarNames.remove("action");
+            functionAndVarNames.remove("perform");
         }
     }
 

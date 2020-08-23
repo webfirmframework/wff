@@ -77,16 +77,24 @@ var wffServerMethods = new function () {
 		if(prvntDflt) {
 			event.preventDefault();
 		}
+		var invoked = false;
+		var action = new function() {
+			this.perform = function() {
+				invoked = true;
+				var taskNameValue = wffTaskUtil.getTaskNameValue(wffGlobal.taskValues.TASK, wffGlobal.taskValues.INVOKE_ASYNC_METHOD);
+				var attrBytes = getAttrBytesForServer(attrNmOrNdx);
+				
+				var nameValue = {'name':wffTagUtil.getWffIdBytesFromTag(tag), 'values':[attrBytes]};
+				var nameValues = [taskNameValue, nameValue];
+				var wffBM = wffBMUtil.getWffBinaryMessageBytes(nameValues);
+				wffWS.send(wffBM);
+			};
+		};
 		
-		if (preFun(event, tag)) {
-			var taskNameValue = wffTaskUtil.getTaskNameValue(wffGlobal.taskValues.TASK, wffGlobal.taskValues.INVOKE_ASYNC_METHOD);
-			
-			var attrBytes = getAttrBytesForServer(attrNmOrNdx);
-			
-			var nameValue = {'name':wffTagUtil.getWffIdBytesFromTag(tag), 'values':[attrBytes]};
-			var nameValues = [taskNameValue, nameValue];
-			var wffBM = wffBMUtil.getWffBinaryMessageBytes(nameValues);
-			wffWS.send(wffBM);
+		if (preFun(event, tag, action)) {
+			if(!invoked) {
+				action.perform();	
+			}			
 		}
 		
 	};
@@ -106,21 +114,31 @@ var wffServerMethods = new function () {
 		if(prvntDflt) {
 			event.preventDefault();
 		}
-		
-		if (preFun(event, tag)) {
-			var taskNameValue = wffTaskUtil.getTaskNameValue(wffGlobal.taskValues.TASK, wffGlobal.taskValues.INVOKE_ASYNC_METHOD);
+		var invoked = false;
+		var action = new function() {
+			this.perform = function() {
+				invoked = true;
+				var taskNameValue = wffTaskUtil.getTaskNameValue(wffGlobal.taskValues.TASK, wffGlobal.taskValues.INVOKE_ASYNC_METHOD);
 
-			var attrBytes = getAttrBytesForServer(attrNmOrNdx);
+				var attrBytes = getAttrBytesForServer(attrNmOrNdx);
+
+				var jsObject = filterFun(event, tag);
+				var argumentBMObject = new WffBMObject(jsObject);
+				var argBytes = argumentBMObject.getBMBytes();
+					
+				var nameValue = {'name':wffTagUtil.getWffIdBytesFromTag(tag), 'values':[attrBytes, argBytes]};
+				var nameValues = [taskNameValue, nameValue];
+				var wffBM = wffBMUtil.getWffBinaryMessageBytes(nameValues);
+
+				wffWS.send(wffBM);
+			};			
+		};
+		
+		if (preFun(event, tag, action)) {
+			if (!invoked) {
+				action.perform();	
+			}
 			
-			var jsObject = filterFun(event, tag);
-			var argumentBMObject = new WffBMObject(jsObject);
-			var argBytes = argumentBMObject.getBMBytes();
-			
-			var nameValue = {'name':wffTagUtil.getWffIdBytesFromTag(tag), 'values':[attrBytes, argBytes]};
-			var nameValues = [taskNameValue, nameValue];
-			var wffBM = wffBMUtil.getWffBinaryMessageBytes(nameValues);
-			
-			wffWS.send(wffBM);
 		}
 		
 	};	
