@@ -316,27 +316,6 @@ public final class JsUtil {
     }
 
     /**
-     * Removes all line separators from the string.
-     *
-     * @param input
-     * @return the string without line separators .
-     * @since 3.0.15
-     */
-    public static String removeLineSeparators(final String input) {
-
-        final StringBuilder builder = new StringBuilder(input.length());
-
-        final int[] codePoints = input.codePoints().toArray();
-        for (final int c : codePoints) {
-            if (c != SLASH_R_CODE_POINT && c != SLASH_N_CODE_POINT) {
-                builder.appendCodePoint(c);
-            }
-        }
-
-        return builder.toString();
-    }
-
-    /**
      * Removes the trailing and leading whitespaces
      *
      * @param codePoints
