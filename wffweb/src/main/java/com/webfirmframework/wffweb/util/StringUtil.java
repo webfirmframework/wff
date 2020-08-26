@@ -109,6 +109,10 @@ public final class StringUtil {
         return builder.toString();
     }
 
+    private static boolean isWhitespace(final int c) {
+        return c == SPACE_CODE_POINT || c == SLASH_N_CODE_POINT || c == SLASH_T_CODE_POINT || Character.isWhitespace(c);
+    }
+
     /**
      * Converts all continues multiple whitespaces to a single space. Please know
      * that new line and tab are also considered as whitespace.
@@ -131,7 +135,7 @@ public final class StringUtil {
 
         final int[] codePoints = input.codePoints().toArray();
         for (final int c : codePoints) {
-            final boolean ws = Character.isWhitespace(c);
+            final boolean ws = isWhitespace(c);
 
             if (zerothIndex) {
                 if (ws) {
@@ -139,7 +143,7 @@ public final class StringUtil {
                 } else {
                     builder.appendCodePoint(c);
                 }
-            } else if (!Character.isWhitespace(prevCP)) {
+            } else if (!isWhitespace(prevCP)) {
                 if (ws) {
                     builder.append(' ');
                 } else {
@@ -198,7 +202,7 @@ public final class StringUtil {
 
         final int[] codePoints = input.codePoints().toArray();
         for (final int c : codePoints) {
-            if (!Character.isWhitespace(c)) {
+            if (!isWhitespace(c)) {
                 builder.appendCodePoint(c);
             }
         }
@@ -715,13 +719,13 @@ public final class StringUtil {
         }
 
         // Old
-        // return Character.isWhitespace(value.charAt(0));
+        // return isWhitespace(value.charAt(0));
 
         // New
         // NB: doesn't work
-//      return Character.isWhitespace(value.codePointAt((int) (value.codePoints().count() - 1)));
+//      return isWhitespace(value.codePointAt((int) (value.codePoints().count() - 1)));
 
-        return Character.isWhitespace(value.codePoints().findFirst().getAsInt());
+        return isWhitespace(value.codePoints().findFirst().getAsInt());
     }
 
     /**
@@ -737,13 +741,13 @@ public final class StringUtil {
         }
 
         // NB: doesn't work
-//        return Character.isWhitespace(value.codePointAt((int) (value.codePoints().count() - 1)));
+//        return isWhitespace(value.codePointAt((int) (value.codePoints().count() - 1)));
 
         // works but not sure about the performance cost.
-//      return Character.isWhitespace(value.codePoints().reduce((first, second) -> second).getAsInt());
+//      return isWhitespace(value.codePoints().reduce((first, second) -> second).getAsInt());
 
         final int[] codePoints = value.codePoints().toArray();
-        return Character.isWhitespace(codePoints[codePoints.length - 1]);
+        return isWhitespace(codePoints[codePoints.length - 1]);
     }
 
     /**
@@ -1016,7 +1020,7 @@ public final class StringUtil {
         final int[] codePoints = string.codePoints().toArray();
 
         for (int i = 0; i < codePoints.length; i++) {
-            if (Character.isWhitespace(codePoints[i])) {
+            if (isWhitespace(codePoints[i])) {
                 return true;
             }
         }
@@ -1170,7 +1174,8 @@ public final class StringUtil {
 
         final int[] codePoints = s.codePoints().toArray();
         for (int i = 0; i < codePoints.length; i++) {
-            if (!Character.isWhitespace(codePoints[i])) {
+            final int codePoint = codePoints[i];
+            if (!isWhitespace(codePoint)) {
                 return false;
             }
         }
@@ -1197,17 +1202,13 @@ public final class StringUtil {
 
         final int[] codePoints = s.codePoints().toArray();
         for (first = 0; first < codePoints.length; first++) {
-            final int codePoint = codePoints[first];
-            if (codePoint != SPACE_CODE_POINT && codePoint != SLASH_T_CODE_POINT && codePoint != SLASH_N_CODE_POINT
-                    && !Character.isWhitespace(codePoint)) {
+            if (!isWhitespace(codePoints[first])) {
                 break;
             }
         }
 
         for (last = codePoints.length; last > first; last--) {
-            final int codePoint = codePoints[last - 1];
-            if (codePoint != SPACE_CODE_POINT && codePoint != SLASH_T_CODE_POINT && codePoint != SLASH_N_CODE_POINT
-                    && !Character.isWhitespace(codePoint)) {
+            if (!isWhitespace(codePoints[last - 1])) {
                 break;
             }
         }
