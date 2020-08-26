@@ -37,8 +37,12 @@ public final class StringUtil {
 
     private static final int PLUS_CODE_POINT;
 
+    private static final int SLASH_T_CODE_POINT;
+
+    private static final int SLASH_N_CODE_POINT;
+
     static {
-        final int[] codePoints = " ,;:-+".codePoints().toArray();
+        final int[] codePoints = " ,;:-+\t\n".codePoints().toArray();
 
         SPACE_CODE_POINT = codePoints[0];
         COMMA_CODE_POINT = codePoints[1];
@@ -46,6 +50,8 @@ public final class StringUtil {
         COLON_CODE_POINT = codePoints[3];
         MINUS_CODE_POINT = codePoints[4];
         PLUS_CODE_POINT = codePoints[5];
+        SLASH_T_CODE_POINT = codePoints[6];
+        SLASH_N_CODE_POINT = codePoints[7];
     }
 
     private StringUtil() {
@@ -1191,13 +1197,17 @@ public final class StringUtil {
 
         final int[] codePoints = s.codePoints().toArray();
         for (first = 0; first < codePoints.length; first++) {
-            if (!Character.isWhitespace(codePoints[first])) {
+            final int codePoint = codePoints[first];
+            if (codePoint != SPACE_CODE_POINT && codePoint != SLASH_T_CODE_POINT && codePoint != SLASH_N_CODE_POINT
+                    && !Character.isWhitespace(codePoint)) {
                 break;
             }
         }
 
         for (last = codePoints.length; last > first; last--) {
-            if (!Character.isWhitespace(codePoints[last - 1])) {
+            final int codePoint = codePoints[last - 1];
+            if (codePoint != SPACE_CODE_POINT && codePoint != SLASH_T_CODE_POINT && codePoint != SLASH_N_CODE_POINT
+                    && !Character.isWhitespace(codePoint)) {
                 break;
             }
         }

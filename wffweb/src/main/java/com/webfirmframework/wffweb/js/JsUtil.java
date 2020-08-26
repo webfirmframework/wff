@@ -30,14 +30,20 @@ import com.webfirmframework.wffweb.util.StringUtil;
  */
 public final class JsUtil {
 
+    private static final int SPACE_CODE_POINT;
+
     private static final int SLASH_R_CODE_POINT;
 
     private static final int SLASH_N_CODE_POINT;
 
+    private static final int SLASH_T_CODE_POINT;
+
     static {
-        final int[] codePoints = "\r\n".codePoints().toArray();
-        SLASH_R_CODE_POINT = codePoints[0];
-        SLASH_N_CODE_POINT = codePoints[1];
+        final int[] codePoints = " \r\n\t".codePoints().toArray();
+        SPACE_CODE_POINT = codePoints[0];
+        SLASH_R_CODE_POINT = codePoints[1];
+        SLASH_N_CODE_POINT = codePoints[2];
+        SLASH_T_CODE_POINT = codePoints[3];
     }
 
     private JsUtil() {
@@ -348,13 +354,17 @@ public final class JsUtil {
         int last;
 
         for (first = 0; first < codePoints.length; first++) {
-            if (!Character.isWhitespace(codePoints[first])) {
+            final int codePoint = codePoints[first];
+            if (codePoint != SPACE_CODE_POINT && codePoint != SLASH_T_CODE_POINT && codePoint != SLASH_N_CODE_POINT
+                    && !Character.isWhitespace(codePoint)) {
                 break;
             }
         }
 
         for (last = codePoints.length; last > first; last--) {
-            if (!Character.isWhitespace(codePoints[last - 1])) {
+            final int codePoint = codePoints[last - 1];
+            if (codePoint != SPACE_CODE_POINT && codePoint != SLASH_T_CODE_POINT && codePoint != SLASH_N_CODE_POINT
+                    && !Character.isWhitespace(codePoint)) {
                 break;
             }
         }
