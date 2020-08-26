@@ -25,6 +25,7 @@ import com.webfirmframework.wffweb.MethodNotImplementedException;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.SharedTagContent;
 import com.webfirmframework.wffweb.tag.html.SharedTagContent.ContentFormatter;
+import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
  * It's a tag which makes child content without any opening closing tag. <br>
@@ -157,7 +158,7 @@ public class NoTag extends AbstractHtml {
     public void removeChild(final String child) {
         final StringBuilder htmlMiddleSB = getHtmlMiddleSB();
         final String sb = htmlMiddleSB.toString();
-        final String replaced = sb.replace(child, "");
+        final String replaced = StringUtil.replace(sb, child, "");
         final int lastIndex = htmlMiddleSB.length() - 1;
         htmlMiddleSB.delete(0, lastIndex);
         htmlMiddleSB.append(replaced);

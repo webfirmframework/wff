@@ -1117,7 +1117,8 @@ public class Style extends AbstractAttribute implements GlobalAttributable, Stat
      * removes only if it contains the given style name and value.
      *
      * @param cssName  eg: color
-     * @param cssValue eg: green (for color styleName)
+     * @param cssValue the css property value, eg: green (for color styleName) . It
+     *                 should not contain semicolon.
      * @since 1.0.0
      * @return true if the given syleName (as well as value contained corresponding
      *         to it) has been removed, or false if it doesn't contain the given
@@ -1132,8 +1133,9 @@ public class Style extends AbstractAttribute implements GlobalAttributable, Stat
         final String value = super.getAttributeValueMap().get(strippedCssName);
         // the value may contain !important that's why startsWith method is used
         // here.
-        if (value != null && value.startsWith(strippedCssValue.toLowerCase().replace(IMPORTANT, ""))) {
 
+        // strippedCssValue.toLowerCase() is removed it could be a bug
+        if (value != null && value.equals(StringUtil.strip(StringUtil.replace(strippedCssValue, IMPORTANT, "")))) {
             return removeCssPropertyNotFromSuperLockless(strippedCssName);
         }
 
@@ -1336,7 +1338,8 @@ public class Style extends AbstractAttribute implements GlobalAttributable, Stat
             final String trimmedStyleName = StringUtil.strip(styleName);
             final String value = super.getAttributeValueMap().get(trimmedStyleName);
             if (value != null && !value.isEmpty()) {
-                return super.addToAttributeValueMap(trimmedStyleName, StringUtil.strip(value.replace(IMPORTANT, "")));
+                return super.addToAttributeValueMap(trimmedStyleName,
+                        StringUtil.strip(StringUtil.replace(value, IMPORTANT, "")));
             }
             return false;
         } finally {
@@ -1502,8 +1505,8 @@ public class Style extends AbstractAttribute implements GlobalAttributable, Stat
         // given priority for optimization rather than coding standard
         if (classClass != null && classClass.isEnum() && (value = super.getAttributeValueMap().get(cssName)) != null) {
 
-            final String tempValue = StringUtil
-                    .strip(TagStringUtil.toUpperCase(value).replace(IMPORTANT_UPPERCASE, "").replace('-', '_'));
+            final String tempValue = StringUtil.strip(StringUtil
+                    .replace(StringUtil.replace(TagStringUtil.toUpperCase(value), IMPORTANT_UPPERCASE, ""), "-", "_"));
 
             try {
                 if (Character.isDigit(tempValue.charAt(0))) {
@@ -1521,7 +1524,7 @@ public class Style extends AbstractAttribute implements GlobalAttributable, Stat
             } catch (final IllegalArgumentException e) {
 
                 // .toLowerCase() is removed, it could become a bug
-                value = value.replace(IMPORTANT, "");
+                value = StringUtil.replace(value, IMPORTANT, "");
 
                 final AbstractCssProperty<?> abstractCssProperty = abstractCssPropertyClassObjects.get(cssName);
                 if (abstractCssProperty != null) {
@@ -1546,7 +1549,7 @@ public class Style extends AbstractAttribute implements GlobalAttributable, Stat
 
             // .toLowerCase() is removed, it could become a bug
             // eg: font-family: "Times New Roman", Times, serif
-            value = value.replace(IMPORTANT, "");
+            value = StringUtil.replace(value, IMPORTANT, "");
 
             try {
                 AbstractCssProperty<?> abstractCssProperty = abstractCssPropertyClassObjects.get(cssName);
@@ -1589,7 +1592,7 @@ public class Style extends AbstractAttribute implements GlobalAttributable, Stat
             // .toLowerCase() is removed, it seems could become a bug
             // eg: another new property similar to
             // font-family: "Times New Roman", Times, serif
-            value = value.replace(IMPORTANT, "");
+            value = StringUtil.replace(value, IMPORTANT, "");
 
             final AbstractCssProperty<?> abstractCssProperty = abstractCssPropertyClassObjects.get(cssName);
             if (abstractCssProperty != null) {

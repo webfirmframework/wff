@@ -227,7 +227,7 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
                     return this;
                 }
 
-                final String cssValueWithoutFill = trimmedCssValue.replace(FILL, "");
+                final String cssValueWithoutFill = StringUtil.replace(trimmedCssValue, FILL, "");
 
                 final int lengthOfFill = FILL.length();
 
@@ -439,7 +439,7 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
      */
     public void addFill() {
         middle = FILL;
-        cssValue = cssValue.replace(FILL, "").concat(" ").concat(FILL);
+        cssValue = StringUtil.replace(cssValue, FILL, "").concat(" ").concat(FILL);
         if (getStateChangeInformer() != null) {
             getStateChangeInformer().stateChanged(this);
         }
@@ -447,7 +447,7 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
 
     public void removeFill() {
         middle = null;
-        cssValue = StringUtil.strip(cssValue.replace(FILL, ""));
+        cssValue = StringUtil.strip(StringUtil.replace(cssValue, FILL, ""));
         if (getStateChangeInformer() != null) {
             getStateChangeInformer().stateChanged(this);
         }
@@ -805,7 +805,7 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
             return false;
         }
 
-        if ((cssValue.length() - cssValue.replace(FILL, "").length()) > FILL.length()) {
+        if ((cssValue.length() - StringUtil.replace(cssValue, FILL, "").length()) > FILL.length()) {
             return false;
         }
 

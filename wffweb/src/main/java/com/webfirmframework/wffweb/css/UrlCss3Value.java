@@ -90,8 +90,9 @@ public class UrlCss3Value extends AbstractBean<UrlCss3Value> {
 
             if (beginIndexCoordinatesPart < urlStringTrimmed.length()) {
 
-                final String coordinatesPart = StringUtil.strip(urlStringTrimmed.substring(beginIndexCoordinatesPart))
-                        .replaceAll("\\s+", " ");
+                // .replaceAll("\\s+", " ")
+                final String coordinatesPart = StringUtil.convertWhitespacesToSingleSpace(
+                        StringUtil.strip(urlStringTrimmed.substring(beginIndexCoordinatesPart)));
 
                 final String[] coordinatesStringParts = StringUtil.splitBySpace(coordinatesPart);
 
