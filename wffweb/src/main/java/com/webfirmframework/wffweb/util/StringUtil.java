@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.util;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 /**
@@ -1210,6 +1211,90 @@ public final class StringUtil {
         final int codePointsCount = codePoints.length - (first + lastRemovedCount);
 
         return new String(codePoints, first, codePointsCount);
+    }
+
+    /**
+     * @param s    the string for processing.
+     * @param it   the string for matching.
+     * @param with the matching to be replaced with this value.
+     * @return the processed string
+     * @since 3.0.15
+     */
+    public static String replace(final String s, final String it, final String with) {
+        return replace(s, it.codePoints().toArray(), with);
+    }
+
+    /**
+     * @param s                  the string for processing.
+     * @param codePointsSequence the array of code points for matching in its
+     *                           sequential order.
+     * @param with               the matching to be replaced with this value.
+     * @return the processed string
+     * @since 3.0.15
+     */
+    public static String replace(final String s, final int[] codePointsSequence, final String with) {
+
+        if (s == null || codePointsSequence == null || with == null) {
+            return s;
+        }
+
+        final int[] codePoints = s.codePoints().toArray();
+
+        if (codePoints.length == codePointsSequence.length && Arrays.equals(codePoints, codePointsSequence)) {
+            return with;
+        }
+
+        final int maxPossibleMatches = codePoints.length - (codePointsSequence.length - 1);
+
+        if (maxPossibleMatches < 1) {
+            return s;
+        }
+
+        final StringBuilder builder = new StringBuilder(codePoints.length);
+
+        if (maxPossibleMatches == codePoints.length && codePointsSequence.length == 1) {
+            final int cpToMatch = codePointsSequence[0];
+            if (with.length() > 0) {
+                for (final int c : codePoints) {
+                    if (c == cpToMatch) {
+                        builder.append(with);
+                    } else {
+                        builder.appendCodePoint(c);
+                    }
+                }
+            } else {
+                for (final int c : codePoints) {
+                    if (c != cpToMatch) {
+                        builder.appendCodePoint(c);
+                    }
+                }
+            }
+
+        } else {
+            for (int i = 0; i < maxPossibleMatches; i++) {
+
+                final int[] part = new int[codePointsSequence.length];
+
+                System.arraycopy(codePoints, i, part, 0, part.length);
+
+                if (Arrays.equals(part, codePointsSequence)) {
+                    if (with.length() > 0) {
+                        builder.append(with);
+                    }
+                    i = i + (codePointsSequence.length - 1);
+                } else {
+                    builder.appendCodePoint(codePoints[i]);
+                }
+
+                if (i >= (maxPossibleMatches - 1)) {
+                    final int nextIndex = i + 1;
+                    builder.append(new String(codePoints, nextIndex, codePoints.length - nextIndex));
+                }
+            }
+
+        }
+
+        return builder.toString();
     }
 
 }

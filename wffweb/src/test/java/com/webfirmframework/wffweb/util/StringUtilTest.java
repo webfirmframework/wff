@@ -641,5 +641,45 @@ public class StringUtilTest {
         assertEquals("_", StringUtil.strip("\t\t_\t\t\t"));
         assertEquals("", StringUtil.strip(" \t\r\r\n  "));
     }
+    
+    @Test
+    public void testReplace() {
+        assertEquals("12cdefg", StringUtil.replace("abcdefg", "ab".codePoints().toArray(), "12"));
+        assertEquals("abcdefg", StringUtil.replace("abcdefg", "ab".codePoints().toArray(), "ab"));
+        assertEquals("abcdefgcdefg", StringUtil.replace("abcdefg", "ab".codePoints().toArray(), "abcdefg"));
+        assertEquals("abcdefg", StringUtil.replace("abcdefg", "abcdefg".codePoints().toArray(), "abcdefg"));
+        assertEquals("abcdefg", StringUtil.replace("abcdefg", "abcdefgh".codePoints().toArray(), "a"));
+        assertEquals("abcdefg", StringUtil.replace("abcdefg", "abcdefghi".codePoints().toArray(), "abcdefghi"));
+        assertEquals("a", StringUtil.replace("abcdefg", "abcdefg".codePoints().toArray(), "a"));
+        assertEquals("a", StringUtil.replace("a", "abcdefg".codePoints().toArray(), "b"));
+        assertEquals("c", StringUtil.replace("a", "a".codePoints().toArray(), "c"));
+        assertEquals("abcdefg", StringUtil.replace("a", "a".codePoints().toArray(), "abcdefg"));
+
+        assertEquals("abcdefg", StringUtil.replace("😀", "😀".codePoints().toArray(), "abcdefg"));
+
+        assertEquals("ab1cd", StringUtil.replace("ab😀cd", "😀".codePoints().toArray(), "1"));
+
+        assertEquals("😀😀😀😀😀😀😀", StringUtil.replace("aaaaaaa", "a".codePoints().toArray(), "😀"));
+
+        assertEquals("bcdefg", StringUtil.replace("abcdefg", "a".codePoints().toArray(), ""));
+        assertEquals("ab", StringUtil.replace("abc", "c".codePoints().toArray(), ""));
+        assertEquals("", StringUtil.replace("a", "a".codePoints().toArray(), ""));
+        assertEquals("", StringUtil.replace("ab", "ab".codePoints().toArray(), ""));
+        assertEquals("", StringUtil.replace("abc", "abc".codePoints().toArray(), ""));
+        assertEquals("bc", StringUtil.replace("abc", "a".codePoints().toArray(), ""));
+        assertEquals("c", StringUtil.replace("bc", "b".codePoints().toArray(), ""));
+
+        assertNull(StringUtil.replace(null, "b".codePoints().toArray(), "abcd"));
+        assertEquals("abc", StringUtil.replace("abc", (int[]) null, ""));
+        assertEquals("abc", StringUtil.replace("abc", "b".codePoints().toArray(), null));
+        assertEquals("green ", StringUtil.replace("green !important", "!important".codePoints().toArray(), ""));
+        assertEquals(" green", StringUtil.replace("!important green", "!important".codePoints().toArray(), ""));
+        
+        assertEquals("aaaaaaa", StringUtil.replace("😀aaaaaaa😀", "😀".codePoints().toArray(), ""));
+        assertEquals("aaaaaaa", StringUtil.replace("baaaaaaab", "b".codePoints().toArray(), ""));
+        assertEquals("aaaaaaa", StringUtil.replace("baaaaaaa", "b".codePoints().toArray(), ""));
+        assertEquals("aaaaaaa", StringUtil.replace("aaaaaaab", "b".codePoints().toArray(), ""));
+        assertEquals("aaaaaaa", StringUtil.replace("aaaaaaa", "b".codePoints().toArray(), ""));
+    }
 
 }
