@@ -401,6 +401,13 @@ public class StringUtilTest {
     @Test
     public void testSplitByCodePoint() throws Exception {
         
+        
+        
+        assertArrayEquals(new String[] {"one", "two", "three"}, StringUtil.split("one/two/three", "/".codePoints().toArray()[0]));
+        assertArrayEquals(new String[] {"one", "two", "three"}, "one/two/three".split("[ /]"));
+        assertArrayEquals(new String[] {"one", "two", "three"}, "one two three".split("[ /]"));
+        assertArrayEquals(new String[] {"one", "two", "three"}, "one two/three".split("[ /]"));
+        
         //FYI 
         //U+1F600
         String unicodeVal = "😀";
@@ -414,6 +421,13 @@ public class StringUtilTest {
         
         assertTrue(unicodeVal.contains(c + ""));
         String valueContainingUnicode =  "one😀two😀three";
+        
+        
+        //regex based String.split works well, it considers unicode        
+        String[] stringRegExSplit = ("a" + unicodeVal).split("["+unicodeVal.toCharArray()[0]+"]");
+        assertEquals(1, stringRegExSplit.length);
+        assertEquals("a😀", stringRegExSplit[0]);        
+        
         
         
         String[] expected = {"one", "two", "three"};
