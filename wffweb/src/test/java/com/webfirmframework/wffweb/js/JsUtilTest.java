@@ -142,5 +142,10 @@ public class JsUtilTest {
         
         assertEquals("some js content \\n  \\n after new line \\n again after new line", 
                 JsUtil.toDynamicJs("  some js content \r  \r\n after new line \n again after new line   "));
+        assertEquals("", 
+                JsUtil.toDynamicJs(""));
+        
+        assertEquals("", 
+                JsUtil.toDynamicJs("   \t \r\n \n"));
     }
 }

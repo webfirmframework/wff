@@ -694,6 +694,9 @@ public class StringUtilTest {
         assertEquals("aaaaaaa", StringUtil.replace("baaaaaaa", "b".codePoints().toArray(), ""));
         assertEquals("aaaaaaa", StringUtil.replace("aaaaaaab", "b".codePoints().toArray(), ""));
         assertEquals("aaaaaaa", StringUtil.replace("aaaaaaa", "b".codePoints().toArray(), ""));
+        assertEquals("", StringUtil.replace("", "a".codePoints().toArray(), "b"));
+        assertEquals("b", StringUtil.replace("", "".codePoints().toArray(), "b"));
+        assertEquals("", StringUtil.replace("", "".codePoints().toArray(), ""));
     }
 
 }
