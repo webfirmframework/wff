@@ -54,15 +54,35 @@ public final class UnicodeString {
     }
 
     /**
-     *
-     * @param codePointsSequence the array of code points for matching in its
-     *                           sequential order.
-     * @param with               the matching to be replaced with this value.
-     * @return the processed string
-     * @since 3.0.15
+     * @param c
+     * @return
      */
-    public UnicodeString replace(final int[] codePointsSequence, final String with) {
-        return replace(codePoints, codePointsSequence, with.codePoints().toArray());
+    public int indexOf(final char c) {
+        final int chr = c;
+        int index = 0;
+        for (final int i : codePoints) {
+            if (i == chr) {
+                return index;
+            }
+            index++;
+        }
+        return -1;
+    }
+
+    /**
+     * @param c
+     * @return
+     */
+    public int lastIndexOf(final char c) {
+        final int chr = c;
+
+        for (int i = codePoints.length - 1; i >= 0; i--) {
+            if (codePoints[i] == chr) {
+                return i;
+            }
+        }
+
+        return -1;
     }
 
     /**
