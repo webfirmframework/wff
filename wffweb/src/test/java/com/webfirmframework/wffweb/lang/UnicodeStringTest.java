@@ -16,6 +16,34 @@ public class UnicodeStringTest {
     @Test
     public void testReplaceStringString() {
 //        fail("Not yet implemented");
+        
+    }
+    
+    @Test
+    public void testStrip() throws Exception {
+        assertEquals("", new UnicodeString("").strip().newString());
+        assertEquals("one", new UnicodeString("one").strip().newString());
+        assertEquals("one", new UnicodeString(" one ").strip().newString());
+        assertEquals("o n e", new UnicodeString(" o n e ").strip().newString());
+        assertEquals("one", new UnicodeString("    one      ").strip().newString());
+        assertEquals("one", new UnicodeString("\none\n").strip().newString());
+        assertEquals("one", new UnicodeString("\r\none\r\n").strip().newString());
+        assertEquals("one", new UnicodeString("\rone\r").strip().newString());
+        assertEquals("one", new UnicodeString("\t\tone\t\t\t").strip().newString());
+        assertEquals("_", new UnicodeString("\t\t_\t\t\t").strip().newString());
+        assertEquals("", new UnicodeString(" \t\r\r\n  ").strip().newString());
+    }
+    
+    @Test
+    public void testLength() {
+        String s = "\u0048\u0065\u006C\u006C\u006F World";
+        assertEquals(11, s.length());
+        
+        assertEquals(11, new UnicodeString(s).length());
+        
+        assertEquals(5, "😀bcd".length());
+        
+        assertEquals(4, new UnicodeString("😀bcd").length());
     }
     
     @Test
