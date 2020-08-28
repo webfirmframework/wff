@@ -54,7 +54,29 @@ public final class UnicodeString {
     }
 
     /**
-     * @param c
+     * @param startIndex
+     * @param endIndex   exclusive
+     * @return the substring
+     */
+    public UnicodeString substring(final int startIndex, final int endIndex) {
+        final int[] ary = new int[endIndex - startIndex];
+        System.arraycopy(codePoints, startIndex, ary, 0, ary.length);
+        return new UnicodeString(ary);
+    }
+
+    /**
+     * @param startIndex
+     * @param endIndex   exclusive
+     * @return the substring
+     */
+    public UnicodeString substring(final int startIndex) {
+        final int[] ary = new int[codePoints.length - startIndex];
+        System.arraycopy(codePoints, startIndex, ary, 0, ary.length);
+        return new UnicodeString(ary);
+    }
+
+    /**
+     * @param c the unicode char code
      * @return
      */
     public int indexOf(final int c) {
@@ -69,7 +91,7 @@ public final class UnicodeString {
     }
 
     /**
-     * @param c
+     * @param c c the unicode char code
      * @return
      */
     public int lastIndexOf(final int c) {

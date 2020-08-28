@@ -17,6 +17,32 @@ public class UnicodeStringTest {
     public void testReplaceStringString() {
 //        fail("Not yet implemented");
     }
+    
+    @Test
+    public void testSubstring1() {
+        assertEquals("bc", new UnicodeString("abcd").substring(1, 3).newString());
+        assertEquals("abcd", new UnicodeString("abcd").substring(0, 4).newString());
+        
+        assertEquals("bc", new UnicodeString("😀bcd").substring(1, 3).newString());
+        assertEquals("😀bcd", new UnicodeString("😀bcd").substring(0, 4).newString());
+        
+        assertEquals("bc", new UnicodeString("😀bc😀").substring(1, 3).newString());
+        assertEquals("😀bc😀", new UnicodeString("😀bc😀").substring(0, 4).newString());
+        
+    }
+    
+    @Test
+    public void testSubstring2() {
+        assertEquals("abcd", new UnicodeString("abcd").substring(0).newString());
+        assertEquals("bcd", new UnicodeString("abcd").substring(1).newString());
+        assertEquals("cd", new UnicodeString("abcd").substring(2).newString());
+        assertEquals("d", new UnicodeString("abcd").substring(3).newString());
+        
+        assertEquals("😀bc😀", new UnicodeString("😀bc😀").substring(0).newString());
+        assertEquals("bc😀", new UnicodeString("😀bc😀").substring(1).newString());
+        assertEquals("c😀", new UnicodeString("😀bc😀").substring(2).newString());
+        assertEquals("😀", new UnicodeString("😀bc😀").substring(3).newString());
+    }
 
     @Test
     public void testReplaceIntArrayIntArrayIntArray() {
