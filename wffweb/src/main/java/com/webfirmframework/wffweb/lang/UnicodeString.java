@@ -108,6 +108,7 @@ public final class UnicodeString {
             int result = 1;
             result = prime * result + Arrays.hashCode(codePoints);
             hash = result;
+            return result;
         }
 
         return h;
