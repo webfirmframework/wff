@@ -20,6 +20,145 @@ public class UnicodeStringTest {
     }
     
     @Test
+    public void testSplitByCodePoint() throws Exception {
+        
+        assertTrue(new UnicodeString("one").equals(new UnicodeString("one")));
+        
+        assertEquals(new UnicodeString((String) null), new UnicodeString((String) null));
+        
+        assertEquals(new UnicodeString(new int[0]), new UnicodeString(new int[0]));
+        assertEquals(new UnicodeString("one"), new UnicodeString("one"));
+        
+        assertFalse(new UnicodeString("one1").equals(new UnicodeString("one")));
+        
+        assertArrayEquals(new UnicodeString[] {new UnicodeString("one"), new UnicodeString("two"), new UnicodeString("three")}, new UnicodeString("one/two/three").split("/".codePoints().toArray()[0]) );
+
+        //FYI 
+        //U+1F600
+        String unicodeVal = "😀";
+        assertEquals(2, unicodeVal.length());        
+        assertEquals(2, unicodeVal.toCharArray().length);        
+        assertEquals(1, unicodeVal.codePoints().toArray().length); 
+        
+        char c = unicodeVal.toCharArray()[0];
+        
+        assertEquals("a" + unicodeVal.toCharArray()[1], unicodeVal.replace(c, 'a'));
+        
+        assertTrue(unicodeVal.contains(c + ""));
+        String valueContainingUnicode =  "one😀two😀three";
+        
+        
+        //regex based String.split works well, it considers unicode        
+        String[] stringRegExSplit = ("a" + unicodeVal).split("["+unicodeVal.toCharArray()[0]+"]");
+        assertEquals(1, stringRegExSplit.length);
+        assertEquals("a😀", stringRegExSplit[0]);        
+        
+        
+        
+        UnicodeString[] expected = {new UnicodeString("one"), new UnicodeString("two"), new UnicodeString("three")};
+        
+        int deli = Character.codePointAt(";", 0);
+        
+        assertEquals(new UnicodeString("one;two;three"), new UnicodeString("one;two;three").split( ':')[0]);
+        
+        assertEquals(new UnicodeString("without"), new UnicodeString("without").split(deli)[0]);
+        
+        assertEquals(new UnicodeString(""), new UnicodeString("").split(deli)[0]);
+        
+        assertEquals(new UnicodeString(""), new UnicodeString(";").split(deli)[0]);
+        
+        assertEquals(new UnicodeString("one"), new UnicodeString("one;two;three").split(deli)[0]);
+        
+        assertEquals(new UnicodeString("two"), new UnicodeString("one;two;three").split(deli)[1]);
+        
+        assertEquals(new UnicodeString("three"), new UnicodeString("one;two;three").split(deli)[2]);
+        
+        assertEquals(new UnicodeString(""), new UnicodeString(";two;three").split(deli)[0]);
+        
+        assertEquals(new UnicodeString(""), new UnicodeString("one;;three").split(deli)[1]);
+        
+        assertEquals(new UnicodeString(""), new UnicodeString("one;two;").split(deli)[2]);
+        
+        assertArrayEquals(new UnicodeString[] {new UnicodeString("one"), new UnicodeString("")}, new UnicodeString("one;").split(deli));
+        
+        assertArrayEquals(new UnicodeString[] {new UnicodeString(""), new UnicodeString("one")}, new UnicodeString(";one").split(deli));
+        
+        assertArrayEquals(new UnicodeString[] {new UnicodeString("one")}, new UnicodeString("one").split(deli));
+        
+        assertArrayEquals(new UnicodeString[] {new UnicodeString("")}, new UnicodeString("").split(deli));
+        
+        assertArrayEquals(new UnicodeString[] {new UnicodeString(""), new UnicodeString("two"), new UnicodeString("three"), new UnicodeString("")}, new UnicodeString(";two;three;").split(deli));
+        
+        assertArrayEquals(new UnicodeString[] {new UnicodeString(""), new UnicodeString(""), new UnicodeString("three"), new UnicodeString("")}, new UnicodeString(";;three;").split(deli));
+        
+        assertArrayEquals(new UnicodeString[] {new UnicodeString(""), new UnicodeString(""), new UnicodeString(""), new UnicodeString("")}, new UnicodeString(";;;").split(deli));
+        
+        assertArrayEquals(expected, new UnicodeString("one;two;three").split(deli));
+        
+        assertArrayEquals(new UnicodeString[] {new UnicodeString("one"), new UnicodeString("two"), new UnicodeString("three"), new UnicodeString("")}, new UnicodeString("one;two;three;").split(deli));
+        
+        assertArrayEquals(new UnicodeString[] {new UnicodeString(" one "), new UnicodeString(" two "), new UnicodeString(" three "), new UnicodeString(" ")}, new UnicodeString(" one ; two ; three ; ").split(deli));
+        
+        deli = ';';
+        
+        assertArrayEquals(expected, new UnicodeString("one;two;three").split(deli));
+        
+        assertArrayEquals(new UnicodeString[] {new UnicodeString("one"), new UnicodeString("two"), new UnicodeString("three"), new UnicodeString("")}, new UnicodeString("one;two;three;").split(deli));
+        
+        assertArrayEquals(new UnicodeString[] {new UnicodeString(" one "), new UnicodeString(" two "), new UnicodeString(" three "), new UnicodeString(" ")}, new UnicodeString(" one ; two ; three ; ").split(deli));
+        
+        deli = unicodeVal.codePointAt(0);
+        
+        assertEquals(new UnicodeString("without"), new UnicodeString("without").split(deli)[0]);
+        
+        assertEquals(new UnicodeString(""), new UnicodeString("").split(deli)[0]);
+        
+        assertEquals(new UnicodeString(""), new UnicodeString("😀").split(deli)[0]);
+        
+        assertEquals(new UnicodeString("one"), new UnicodeString(valueContainingUnicode).split(deli)[0]);
+        
+        assertEquals(new UnicodeString("two"), new UnicodeString(valueContainingUnicode).split(deli)[1]);
+        
+        assertEquals(new UnicodeString("three"), new UnicodeString(valueContainingUnicode).split(deli)[2]);
+        
+        assertEquals(new UnicodeString(""), new UnicodeString("😀two😀three").split(deli)[0]);
+        
+        assertEquals(new UnicodeString(""), new UnicodeString("one😀😀three").split(deli)[1]);
+        
+        assertEquals(new UnicodeString(""), new UnicodeString("one😀two😀").split(deli)[2]);
+        
+        assertArrayEquals(new UnicodeString[] {new UnicodeString("one"), new UnicodeString("")}, new UnicodeString("one😀").split(deli));
+        
+        assertArrayEquals(new UnicodeString[] {new UnicodeString(""), new UnicodeString("one")}, new UnicodeString("😀one").split(deli));
+        
+        assertArrayEquals(new UnicodeString[] {new UnicodeString("one")}, new UnicodeString("one").split(deli));
+        
+        assertArrayEquals(new UnicodeString[] {new UnicodeString("")}, new UnicodeString("").split(deli));
+        
+        assertArrayEquals(new UnicodeString[] {new UnicodeString(""), new UnicodeString("two"), new UnicodeString("three"), new UnicodeString("")}, new UnicodeString("😀two😀three😀").split(deli));
+        
+        assertArrayEquals(new UnicodeString[] {new UnicodeString(""), new UnicodeString(""), new UnicodeString("three"), new UnicodeString("")}, new UnicodeString("😀😀three😀").split(deli));
+        
+        assertArrayEquals(new UnicodeString[] {new UnicodeString(""), new UnicodeString(""), new UnicodeString(""), new UnicodeString("")}, new UnicodeString("😀😀😀").split(deli));
+        
+        assertArrayEquals(new UnicodeString[] {new UnicodeString("one"), new UnicodeString("two"), new UnicodeString("three"), new UnicodeString("")}, new UnicodeString("one😀two😀three😀").split(deli));
+        
+        assertArrayEquals(new UnicodeString[] {new UnicodeString(" one "), new UnicodeString(" two "), new UnicodeString(" three "), new UnicodeString(" ")}, new UnicodeString(" one 😀 two 😀 three 😀 ").split(deli));
+        
+        assertEquals(new UnicodeString("one"), new UnicodeString(valueContainingUnicode).split(deli)[0]);
+        
+        assertEquals(new UnicodeString("two"), new UnicodeString(valueContainingUnicode).split(deli)[1]);
+        
+        assertEquals(new UnicodeString("three"), new UnicodeString(valueContainingUnicode).split(deli)[2]);
+        
+        assertArrayEquals(expected, new UnicodeString(valueContainingUnicode).split(deli));       
+        
+        assertArrayEquals(new UnicodeString[] {new UnicodeString("one"), new UnicodeString("two"), new UnicodeString("three"), new UnicodeString("")}, new UnicodeString("one😀two😀three😀").split(deli));
+        
+        assertArrayEquals(new UnicodeString[] {new UnicodeString(" one "), new UnicodeString(" two "), new UnicodeString(" three "), new UnicodeString(" ")}, new UnicodeString(" one 😀 two 😀 three 😀 ").split(deli));
+    }
+    
+    @Test
     public void testStrip() throws Exception {
         assertEquals("", new UnicodeString("").strip().newString());
         assertEquals("one", new UnicodeString("one").strip().newString());

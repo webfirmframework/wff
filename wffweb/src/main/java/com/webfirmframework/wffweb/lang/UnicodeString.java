@@ -16,7 +16,6 @@
 package com.webfirmframework.wffweb.lang;
 
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.stream.IntStream;
 import java.util.stream.IntStream.Builder;
 
@@ -97,36 +96,38 @@ public final class UnicodeString {
     }
 
     @Override
-    public boolean equals(final Object thatObj) {
-        if (thatObj == null) {
-            return false;
+    public int hashCode() {
+        final int h = hash;
+        if (h == 0) {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + Arrays.hashCode(codePoints);
+            hash = result;
         }
-        if (this == thatObj) {
-            return true;
-        }
-        if (thatObj instanceof UnicodeString) {
-            final UnicodeString obj = (UnicodeString) thatObj;
 
-            if (codePoints == null && obj.codePoints == null) {
-                return true;
-            }
-
-            if (hashCode() != obj.hashCode()) {
-                return false;
-            }
-
-            return Objects.equals(obj.codePoints, codePoints);
-        }
-        return false;
+        return h;
     }
 
     @Override
-    public int hashCode() {
-        final int h = hash;
-        if (h == 0 && codePoints != null && codePoints.length > 0) {
-            hash = Objects.hash(codePoints);
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
         }
-        return h;
+
+        if (obj == null) {
+            return false;
+        }
+
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+
+        final UnicodeString other = (UnicodeString) obj;
+        if (!Arrays.equals(codePoints, other.codePoints)) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -211,6 +212,17 @@ public final class UnicodeString {
      */
     public UnicodeString strip() {
         return new UnicodeString(strip(codePoints));
+    }
+
+    /**
+     * @param delim to by which the given string to be split. It is the code point
+     *              value of char.
+     * @return the array of UnicodeStrings split by the given unicode char code.
+     * @since 3.0.15
+     * @author WFF
+     */
+    public UnicodeString[] split(final int delim) {
+        return split(codePoints, delim);
     }
 
     private static boolean isWhitespace(final int c) {
@@ -335,6 +347,76 @@ public final class UnicodeString {
         System.arraycopy(codePoints, first, result, 0, result.length);
 
         return result;
+    }
+
+    /**
+     * @param string the string to split.
+     * @param delim  to by which the given string to be split. It is the code point
+     *               value of char.
+     * @return the array of UnicodeStrings split by the given char.
+     * @since 3.0.15
+     * @author WFF
+     */
+    static UnicodeString[] split(final int[] codePoints, final int delim) {
+
+        if (codePoints == null || codePoints.length == 0) {
+            return new UnicodeString[] { new UnicodeString(codePoints) };
+        }
+
+        final int[] delimPositionInit = new int[codePoints.length];
+
+        int delimCount = 0;
+        for (int i = 0; i < codePoints.length; i++) {
+            if (codePoints[i] == delim) {
+                delimPositionInit[delimCount] = i;
+                delimCount++;
+            }
+        }
+
+        if (delimCount == 0) {
+            return new UnicodeString[] { new UnicodeString(codePoints) };
+        }
+
+        final int[] delimPositionsFinal = new int[delimCount];
+
+        System.arraycopy(delimPositionInit, 0, delimPositionsFinal, 0, delimPositionsFinal.length);
+
+        final UnicodeString[] splittedStrings = new UnicodeString[delimCount + 1];
+
+        int startIndex = 0;
+        for (int i = 0; i < delimPositionsFinal.length; i++) {
+            final int delimPosition = delimPositionsFinal[i];
+
+            int range = codePoints.length - (codePoints.length - delimPosition);
+            range = range - startIndex;
+
+            if (range > 0) {
+                final int[] part = new int[range];
+                System.arraycopy(codePoints, startIndex, part, 0, part.length);
+
+                splittedStrings[i] = new UnicodeString(part);
+            } else {
+                splittedStrings[i] = new UnicodeString(new int[0]);
+            }
+
+            startIndex = delimPosition + 1;
+        }
+
+        final int lastDelimPosition = delimPositionsFinal[delimPositionsFinal.length - 1];
+
+        startIndex = lastDelimPosition + 1;
+
+        final int range = codePoints.length - startIndex;
+
+        if (range > 0) {
+            final int[] part = new int[range];
+            System.arraycopy(codePoints, startIndex, part, 0, part.length);
+            splittedStrings[splittedStrings.length - 1] = new UnicodeString(part);
+        } else {
+            splittedStrings[splittedStrings.length - 1] = new UnicodeString(new int[0]);
+        }
+
+        return splittedStrings;
     }
 
 }
