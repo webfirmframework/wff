@@ -213,6 +213,39 @@ public final class UnicodeString {
     }
 
     /**
+     * @param us
+     * @return true if this UnicodeString starts with the given UnicodeString.
+     * @since 3.0.15
+     */
+    public boolean startsWith(final UnicodeString us) {
+        if (codePoints == null || us == null || us.codePoints == null || codePoints.length < us.codePoints.length) {
+            return false;
+        }
+
+        final int[] ary = new int[us.codePoints.length];
+        System.arraycopy(codePoints, 0, ary, 0, ary.length);
+
+        return Arrays.equals(ary, us.codePoints);
+    }
+
+    /**
+     * @param us
+     * @return true if this UnicodeString ends with the given UnicodeString.
+     * @since 3.0.15
+     */
+    public boolean endsWith(final UnicodeString us) {
+        if (codePoints == null || us == null || us.codePoints == null || codePoints.length < us.codePoints.length) {
+            return false;
+        }
+
+        final int[] ary = new int[us.codePoints.length];
+        final int startIndex = codePoints.length - us.codePoints.length;
+        System.arraycopy(codePoints, startIndex, ary, 0, ary.length);
+
+        return Arrays.equals(ary, us.codePoints);
+    }
+
+    /**
      * @return the stripped UnicodeString
      * @since 3.0.15
      */

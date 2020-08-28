@@ -20,7 +20,34 @@ public class UnicodeStringTest {
     }
     
     @Test
-    public void testSplitByCodePoint() throws Exception {
+    public void testStartsWith() {
+        assertTrue(new UnicodeString("one").startsWith(new UnicodeString("one")));
+        assertTrue(new UnicodeString("one1").startsWith(new UnicodeString("one")));
+        assertFalse(new UnicodeString("on").startsWith(new UnicodeString("one")));
+        assertFalse(new UnicodeString("one").startsWith(new UnicodeString("ane")));
+        
+        assertTrue(new UnicodeString("ones").startsWith(new UnicodeString("one")));
+        assertFalse(new UnicodeString("abcd").startsWith(new UnicodeString("one")));
+        
+        assertEquals("".startsWith(""), new UnicodeString("").startsWith(new UnicodeString("")));
+    }
+    
+    @Test
+    public void testEndsWith() {
+        assertTrue(new UnicodeString("one").endsWith(new UnicodeString("one")));
+        assertTrue(new UnicodeString("1one").endsWith(new UnicodeString("one")));
+        assertFalse(new UnicodeString("on").endsWith(new UnicodeString("one")));
+        assertFalse(new UnicodeString("one").endsWith(new UnicodeString("ane")));
+        assertTrue(new UnicodeString("").endsWith(new UnicodeString("")));
+        
+        assertTrue(new UnicodeString("sone").endsWith(new UnicodeString("one")));
+        assertFalse(new UnicodeString("abcd").endsWith(new UnicodeString("one")));
+        
+        assertEquals("".endsWith(""), new UnicodeString("").endsWith(new UnicodeString("")));
+    }
+    
+    @Test
+    public void testSplitByCodePoint() {
         
         assertTrue(new UnicodeString("one").equals(new UnicodeString("one")));
         
@@ -159,7 +186,7 @@ public class UnicodeStringTest {
     }
     
     @Test
-    public void testStrip() throws Exception {
+    public void testStrip() {
         assertEquals("", new UnicodeString("").strip().newString());
         assertEquals("one", new UnicodeString("one").strip().newString());
         assertEquals("one", new UnicodeString(" one ").strip().newString());
