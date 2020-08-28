@@ -30,14 +30,19 @@ public final class UnicodeString {
 
     private static final int SPACE_CODE_POINT;
 
+    @SuppressWarnings("unused")
     private static final int COMMA_CODE_POINT;
 
+    @SuppressWarnings("unused")
     private static final int SEMICOLON_CODE_POINT;
 
+    @SuppressWarnings("unused")
     private static final int COLON_CODE_POINT;
 
+    @SuppressWarnings("unused")
     private static final int MINUS_CODE_POINT;
 
+    @SuppressWarnings("unused")
     private static final int PLUS_CODE_POINT;
 
     private static final int SLASH_T_CODE_POINT;
@@ -357,7 +362,7 @@ public final class UnicodeString {
      * @since 3.0.15
      * @author WFF
      */
-    static UnicodeString[] split(final int[] codePoints, final int delim) {
+    private static UnicodeString[] split(final int[] codePoints, final int delim) {
 
         if (codePoints == null || codePoints.length == 0) {
             return new UnicodeString[] { new UnicodeString(codePoints) };
