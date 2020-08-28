@@ -57,11 +57,10 @@ public final class UnicodeString {
      * @param c
      * @return
      */
-    public int indexOf(final char c) {
-        final int chr = c;
+    public int indexOf(final int c) {
         int index = 0;
         for (final int i : codePoints) {
-            if (i == chr) {
+            if (i == c) {
                 return index;
             }
             index++;
@@ -73,11 +72,10 @@ public final class UnicodeString {
      * @param c
      * @return
      */
-    public int lastIndexOf(final char c) {
-        final int chr = c;
+    public int lastIndexOf(final int c) {
 
         for (int i = codePoints.length - 1; i >= 0; i--) {
-            if (codePoints[i] == chr) {
+            if (codePoints[i] == c) {
                 return i;
             }
         }
