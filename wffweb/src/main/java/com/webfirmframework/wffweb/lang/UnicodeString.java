@@ -284,10 +284,19 @@ public final class UnicodeString {
      *              value of char.
      * @return the array of UnicodeStrings split by the given unicode char code.
      * @since 3.0.15
-     * @author WFF
      */
     public UnicodeString[] split(final int delim) {
         return split(codePoints, delim);
+    }
+
+    /**
+     * @param delims to by which the given string to be split. It is the code point
+     *               values of chars, i.e. unicode values.
+     * @return the array of UnicodeStrings split by the given chars.
+     * @since 3.0.15
+     */
+    public UnicodeString[] splitByAny(final int... delims) {
+        return splitByAny(codePoints, delims);
     }
 
     private static boolean isWhitespace(final int c) {
@@ -516,12 +525,11 @@ public final class UnicodeString {
     }
 
     /**
-     * @param string the string to split.
-     * @param delim  to by which the given string to be split. It is the code point
-     *               value of char.
+     * @param codePoints the codePoints to split.
+     * @param delim      to by which the given string to be split. It is the code
+     *                   point value of char.
      * @return the array of UnicodeStrings split by the given char.
      * @since 3.0.15
-     * @author WFF
      */
     private static UnicodeString[] split(final int[] codePoints, final int delim) {
 
@@ -534,6 +542,79 @@ public final class UnicodeString {
         int delimCount = 0;
         for (int i = 0; i < codePoints.length; i++) {
             if (codePoints[i] == delim) {
+                delimPositionInit[delimCount] = i;
+                delimCount++;
+            }
+        }
+
+        if (delimCount == 0) {
+            return new UnicodeString[] { new UnicodeString(codePoints) };
+        }
+
+        final int[] delimPositionsFinal = new int[delimCount];
+
+        System.arraycopy(delimPositionInit, 0, delimPositionsFinal, 0, delimPositionsFinal.length);
+
+        final UnicodeString[] splittedStrings = new UnicodeString[delimCount + 1];
+
+        int startIndex = 0;
+        for (int i = 0; i < delimPositionsFinal.length; i++) {
+            final int delimPosition = delimPositionsFinal[i];
+
+            int range = codePoints.length - (codePoints.length - delimPosition);
+            range = range - startIndex;
+
+            if (range > 0) {
+                final int[] part = new int[range];
+                System.arraycopy(codePoints, startIndex, part, 0, part.length);
+
+                splittedStrings[i] = new UnicodeString(part);
+            } else {
+                splittedStrings[i] = new UnicodeString(new int[0]);
+            }
+
+            startIndex = delimPosition + 1;
+        }
+
+        final int lastDelimPosition = delimPositionsFinal[delimPositionsFinal.length - 1];
+
+        startIndex = lastDelimPosition + 1;
+
+        final int range = codePoints.length - startIndex;
+
+        if (range > 0) {
+            final int[] part = new int[range];
+            System.arraycopy(codePoints, startIndex, part, 0, part.length);
+            splittedStrings[splittedStrings.length - 1] = new UnicodeString(part);
+        } else {
+            splittedStrings[splittedStrings.length - 1] = new UnicodeString(new int[0]);
+        }
+
+        return splittedStrings;
+    }
+
+    /**
+     * @param codePoints the codePoints to split.
+     * @param delims     to by which the given string to be split. It is the code
+     *                   point values of chars.
+     * @return the array of UnicodeStrings split by the given chars.
+     * @since 3.0.15
+     */
+    private static UnicodeString[] splitByAny(final int[] codePoints, final int[] delims) {
+
+        if (codePoints == null || codePoints.length == 0) {
+            return new UnicodeString[] { new UnicodeString(codePoints) };
+        }
+
+        final int[] delimPositionInit = new int[codePoints.length];
+
+        final int[] sortedDelims = Arrays.copyOf(delims, delims.length);
+        Arrays.sort(sortedDelims);
+        int delimCount = 0;
+        for (int i = 0; i < codePoints.length; i++) {
+
+            // NB: should be >= 0 it should not be != -1
+            if (Arrays.binarySearch(sortedDelims, codePoints[i]) >= 0) {
                 delimPositionInit[delimCount] = i;
                 delimCount++;
             }

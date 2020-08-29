@@ -18,6 +18,12 @@ public class UnicodeStringTest {
     }
     
     @Test
+    public void testSplitByAny() {
+        assertArrayEquals(new UnicodeString[] {new UnicodeString("one"), new UnicodeString("two"), new UnicodeString("three"), new UnicodeString("")}, new UnicodeString("one;two;three;").splitByAny(';'));
+        assertArrayEquals(new UnicodeString[] {new UnicodeString("one"), new UnicodeString("two"), new UnicodeString("three"), new UnicodeString("")}, new UnicodeString("one:two;three;").splitByAny(';', ':'));
+    }
+    
+    @Test
     public void testIndexOf() {
         
         assertEquals(-1, UnicodeString.indexOf(null, null));
