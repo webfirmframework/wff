@@ -159,6 +159,18 @@ public final class UnicodeString {
     }
 
     /**
+     * @param uc the UnicodeString
+     * @return the index
+     * @since 3.0.15
+     */
+    public int indexOf(final UnicodeString uc) {
+        if (uc == null) {
+            return -1;
+        }
+        return indexOf(codePoints, uc.codePoints);
+    }
+
+    /**
      * @param c the unicode char code
      * @return the index
      * @since 3.0.15
@@ -175,8 +187,22 @@ public final class UnicodeString {
     }
 
     /**
+     * @param uc the UnicodeString
+     * @return the index from last
+     * @since 3.0.15
+     */
+    public int lastIndexOf(final UnicodeString uc) {
+
+        if (uc == null) {
+            return -1;
+        }
+
+        return lastIndexOf(codePoints, uc.codePoints);
+    }
+
+    /**
      * @param c c the unicode char code
-     * @return the index
+     * @return the index from last
      * @since 3.0.15
      */
     public int lastIndexOf(final int c) {
@@ -315,9 +341,10 @@ public final class UnicodeString {
                 }
             }
         } else {
-            for (int i = 0; i < maxPossibleMatches; i++) {
 
-                final int[] part = new int[codePointsSequence.length];
+            final int[] part = new int[codePointsSequence.length];
+
+            for (int i = 0; i < maxPossibleMatches; i++) {
 
                 System.arraycopy(codePoints, i, part, 0, part.length);
 
@@ -344,6 +371,106 @@ public final class UnicodeString {
         }
 
         return new UnicodeString(resultBuilder.build().toArray());
+    }
+
+    /**
+     * @param codePoints         codePoints of string for processing.
+     * @param codePointsSequence the array of code points for matching in its
+     *                           sequential order.
+     * @return the index of codePointsSequence in codePoints
+     * @since 3.0.15
+     */
+    static int indexOf(final int[] codePoints, final int[] codePointsSequence) {
+
+        if (codePoints == null || codePointsSequence == null) {
+            return -1;
+        }
+
+        if (codePoints.length == codePointsSequence.length && Arrays.equals(codePoints, codePointsSequence)) {
+            return 0;
+        }
+
+        final int maxPossibleMatches = codePoints.length - (codePointsSequence.length - 1);
+
+        if (maxPossibleMatches < 1) {
+            return -1;
+        }
+
+        if (maxPossibleMatches == codePoints.length && codePointsSequence.length == 1) {
+            final int cpToMatch = codePointsSequence[0];
+            int index = 0;
+            for (final int c : codePoints) {
+                if (c == cpToMatch) {
+                    return index;
+                }
+                index++;
+            }
+        } else {
+
+            final int[] part = new int[codePointsSequence.length];
+            for (int i = 0; i < maxPossibleMatches; i++) {
+
+                System.arraycopy(codePoints, i, part, 0, part.length);
+
+                if (Arrays.equals(part, codePointsSequence)) {
+                    return i;
+                }
+
+            }
+
+        }
+
+        return -1;
+    }
+
+    /**
+     * @param codePoints         codePoints of string for processing.
+     * @param codePointsSequence the array of code points for matching in its
+     *                           sequential order.
+     * @return the last index of codePointsSequence in codePoints
+     * @since 3.0.15
+     */
+    static int lastIndexOf(final int[] codePoints, final int[] codePointsSequence) {
+
+        if (codePoints == null || codePointsSequence == null) {
+            return -1;
+        }
+
+        if (codePoints.length == codePointsSequence.length && Arrays.equals(codePoints, codePointsSequence)) {
+            return 0;
+        }
+
+        final int maxPossibleMatches = codePoints.length - (codePointsSequence.length - 1);
+
+        if (maxPossibleMatches < 1) {
+            return -1;
+        }
+
+        if (maxPossibleMatches == codePoints.length && codePointsSequence.length == 1) {
+            final int cpToMatch = codePointsSequence[0];
+
+            for (int i = codePoints.length - 1; i >= 0; i--) {
+                if (codePoints[i] == cpToMatch) {
+                    return i;
+                }
+            }
+
+        } else {
+
+            final int[] part = new int[codePointsSequence.length];
+
+            for (int i = codePoints.length - codePointsSequence.length; i >= 0; i--) {
+
+                System.arraycopy(codePoints, i, part, 0, part.length);
+
+                if (Arrays.equals(part, codePointsSequence)) {
+                    return i;
+                }
+            }
+
+        }
+
+        return -1;
     }
 
     /**

@@ -4,8 +4,6 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import com.webfirmframework.wffweb.util.StringUtil;
-
 public class UnicodeStringTest {
 
     @Test
@@ -17,6 +15,70 @@ public class UnicodeStringTest {
     public void testReplaceStringString() {
 //        fail("Not yet implemented");
         
+    }
+    
+    @Test
+    public void testIndexOf() {
+        
+        assertEquals(-1, UnicodeString.indexOf(null, null));
+        assertEquals(-1, UnicodeString.indexOf(new int[2], null));
+        assertEquals(-1, UnicodeString.indexOf(null, new int[2]));
+        
+        assertEquals(0, new UnicodeString("abcdefg").indexOf(new UnicodeString("ab")));
+        
+        assertEquals("abcdefg".indexOf("ab"), new UnicodeString("abcdefg").indexOf(new UnicodeString("ab")));
+        
+        assertEquals("abcdefg".indexOf("bc"), new UnicodeString("abcdefg").indexOf(new UnicodeString("bc")));
+        
+        assertEquals("abcdefg".indexOf("cd"), new UnicodeString("abcdefg").indexOf(new UnicodeString("cd")));
+        
+        assertEquals("abcdefg".indexOf("de"), new UnicodeString("abcdefg").indexOf(new UnicodeString("de")));
+        
+        assertEquals("abcdefg".indexOf("ef"), new UnicodeString("abcdefg").indexOf(new UnicodeString("ef")));
+        
+        assertEquals("abcdefg".indexOf("fg"), new UnicodeString("abcdefg").indexOf(new UnicodeString("fg")));
+        
+        assertEquals("abcdefg".indexOf("gh"), new UnicodeString("abcdefg").indexOf(new UnicodeString("gh")));
+        
+        
+        assertEquals("abcdefg".indexOf("abcdefg"), new UnicodeString("abcdefg").indexOf(new UnicodeString("abcdefg")));
+        
+        assertEquals("abcdefg".indexOf("abcdefghi"), new UnicodeString("abcdefg").indexOf(new UnicodeString("abcdefghi")));
+    }
+    
+    @Test
+    public void testLastIndexOf() {
+        
+        assertEquals(-1, UnicodeString.lastIndexOf(null, null));
+        assertEquals(-1, UnicodeString.lastIndexOf(new int[2], null));
+        assertEquals(-1, UnicodeString.lastIndexOf(null, new int[2]));
+        
+        assertEquals(0, new UnicodeString("abcdefg").lastIndexOf(new UnicodeString("ab")));
+        
+        assertEquals("a".lastIndexOf("a"), new UnicodeString("a").lastIndexOf(new UnicodeString("a")));
+        
+        assertEquals("a".lastIndexOf("b"), new UnicodeString("a").lastIndexOf(new UnicodeString("b")));
+        
+        assertEquals("abcdefg".lastIndexOf("ab"), new UnicodeString("abcdefg").lastIndexOf(new UnicodeString("ab")));
+        
+        assertEquals("abcdefg".lastIndexOf("bc"), new UnicodeString("abcdefg").lastIndexOf(new UnicodeString("bc")));
+        
+        assertEquals("abcdefg".lastIndexOf("cd"), new UnicodeString("abcdefg").lastIndexOf(new UnicodeString("cd")));
+        
+        assertEquals("abcdefg".lastIndexOf("de"), new UnicodeString("abcdefg").lastIndexOf(new UnicodeString("de")));
+        
+        assertEquals("abcdefg".lastIndexOf("ef"), new UnicodeString("abcdefg").lastIndexOf(new UnicodeString("ef")));
+        
+        assertEquals("abcdefg".lastIndexOf("fg"), new UnicodeString("abcdefg").lastIndexOf(new UnicodeString("fg")));
+        
+        assertEquals("abcdefg".lastIndexOf("gh"), new UnicodeString("abcdefg").lastIndexOf(new UnicodeString("gh")));
+        
+        
+        assertEquals("abcdefg".lastIndexOf("abcdefg"), new UnicodeString("abcdefg").lastIndexOf(new UnicodeString("abcdefg")));
+        
+        assertEquals("abcdefg".lastIndexOf("abcdefghi"), new UnicodeString("abcdefg").lastIndexOf(new UnicodeString("abcdefghi")));
+        
+        assertEquals("abcdabcdefghi".lastIndexOf("abcd"), new UnicodeString("abcdabcdefghi").lastIndexOf(new UnicodeString("abcd")));
     }
     
     @Test
