@@ -149,7 +149,6 @@ public final class UnicodeString {
 
     /**
      * @param startIndex
-     * @param endIndex   exclusive
      * @return the substring
      */
     public UnicodeString substring(final int startIndex) {
