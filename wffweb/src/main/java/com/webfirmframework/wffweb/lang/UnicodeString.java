@@ -295,7 +295,7 @@ public final class UnicodeString {
      * @return the array of UnicodeStrings split by the given chars.
      * @since 3.0.15
      */
-    public UnicodeString[] splitByAny(final int... delims) {
+    public UnicodeString[] splitByAny(final int[] delims) {
         return splitByAny(codePoints, delims);
     }
 

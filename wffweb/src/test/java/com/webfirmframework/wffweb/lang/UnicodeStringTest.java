@@ -19,8 +19,8 @@ public class UnicodeStringTest {
     
     @Test
     public void testSplitByAny() {
-        assertArrayEquals(new UnicodeString[] {new UnicodeString("one"), new UnicodeString("two"), new UnicodeString("three"), new UnicodeString("")}, new UnicodeString("one;two;three;").splitByAny(';'));
-        assertArrayEquals(new UnicodeString[] {new UnicodeString("one"), new UnicodeString("two"), new UnicodeString("three"), new UnicodeString("")}, new UnicodeString("one:two;three;").splitByAny(';', ':'));
+        assertArrayEquals(new UnicodeString[] {new UnicodeString("one"), new UnicodeString("two"), new UnicodeString("three"), new UnicodeString("")}, new UnicodeString("one;two;three;").splitByAny(new int[] {';'}));
+        assertArrayEquals(new UnicodeString[] {new UnicodeString("one"), new UnicodeString("two"), new UnicodeString("three"), new UnicodeString("")}, new UnicodeString("one:two;three;").splitByAny(new int[] {';', ':'}));
     }
     
     @Test
