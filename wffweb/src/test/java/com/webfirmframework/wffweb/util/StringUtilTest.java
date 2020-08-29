@@ -22,6 +22,8 @@ import java.util.logging.Logger;
 
 import org.junit.Test;
 
+import com.webfirmframework.wffweb.lang.UnicodeString;
+
 /**
  * @author WFF
  * @since 1.0.0
@@ -340,6 +342,17 @@ public class StringUtilTest {
         String obj2 = "hi";
         assertTrue(StringUtil.isEqual(obj1, obj2));
         assertTrue(StringUtil.isEqual("hi", "hi"));
+    }
+    
+    @Test
+    public void testSplitByAny() {
+        assertArrayEquals(new String[] {new String("one"), new String("two"), new String("three"), new String("")}, StringUtil.splitByAny("one;two;three;", new int[] {';'}));
+        assertArrayEquals(new String[] {new String("one"), new String("two"), new String("three"), new String("")}, StringUtil.splitByAny("one:two;three;", new int[] {';', ':'}));
+        assertArrayEquals(new String[] {new String("one"), new String("two"), new String(""), new String("")}, StringUtil.splitByAny("one:two;;", new int[] {';', ':'}));
+        assertArrayEquals(new String[] {new String("one"), new String("two;;")}, StringUtil.splitByAny("one:two;;", new int[] {':'}));
+        
+        assertArrayEquals(new String[] {new String("one:two;;")}, StringUtil.splitByAny("one:two;;", new int[0]));
+        assertArrayEquals(new String[] {new String("")}, StringUtil.splitByAny("", new int[0]));
     }
 
     @SuppressWarnings("unused")

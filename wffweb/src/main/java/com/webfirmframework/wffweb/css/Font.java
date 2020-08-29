@@ -317,7 +317,8 @@ public class Font extends AbstractCssProperty<Font> implements StateChangeInform
      */
     protected static String[] getExtractedSubCssValues(final String cssValue) {
         final String convertedToSingleSpace = StringUtil.convertWhitespacesToSingleSpace(cssValue);
-        final String[] subCssValues = StringUtil.replace(convertedToSingleSpace, ", ", ",").split("[ /]");
+        final String[] subCssValues = StringUtil.splitByAny(StringUtil.replace(convertedToSingleSpace, ", ", ","),
+                new int[] { ' ', '/' });
         return subCssValues;
     }
 

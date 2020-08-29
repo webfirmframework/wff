@@ -64,7 +64,6 @@ public final class StringUtil {
      *
      * @param input the string to convert
      * @return the converted string having a single space in between characters.
-     * @author WFF
      * @since 1.0.0
      */
     public static String convertToSingleSpace(final String input) {
@@ -82,7 +81,6 @@ public final class StringUtil {
      *
      * @param input the string to convert
      * @return the converted string having a single space in between characters.
-     * @author WFF
      * @since 3.0.15 it is unicode aware
      */
     public static String convertSpacesToSingleSpace(final String input) {
@@ -119,7 +117,6 @@ public final class StringUtil {
      *
      * @param input the string to convert
      * @return the converted string having a single space in between characters.
-     * @author WFF
      * @since 3.0.15 it is unicode aware.
      */
     public static String convertWhitespacesToSingleSpace(final String input) {
@@ -254,7 +251,6 @@ public final class StringUtil {
      * @return the substring which starts and ends with the given
      *         {@code startingWith} and {@code endingWith} values. Or returns null
      *         if it doesn't contain.
-     * @author WFF
      * @since 1.0.0
      */
     public static String getFirstSubstring(final String inputString, final String startingWith,
@@ -287,7 +283,6 @@ public final class StringUtil {
      * @return the substring which starts and ends with the given
      *         {@code startingWith} and {@code endingWith} values. Or returns null
      *         if it doesn't contain.
-     * @author WFF
      * @since 1.0.0
      */
     public static String getFirstSubstring(final String inputString, final String startingWith, final String endingWith,
@@ -330,7 +325,6 @@ public final class StringUtil {
      *         with the given {@code startingWith} and {@code endingWith} values. Or
      *         returns an empty array (i.e an array having length zero) if it
      *         doesn't contain.
-     * @author WFF
      * @since 1.0.0
      */
     public static String[] getAllSubstrings(final String inputString, final String startingWith,
@@ -391,7 +385,6 @@ public final class StringUtil {
      *         {@code inputString} contains a substring starting with
      *         {@code startingWith} string and ending with {@code endingWith}
      *         string, otherwise returns -1.
-     * @author WFF
      * @since 1.0.0
      */
     public static int startIndexOf(final String inputString, final String startingWith, final String endingWith) {
@@ -420,7 +413,6 @@ public final class StringUtil {
      *         {@code inputString} contains a substring starting with
      *         {@code startingWith} string and ending with {@code endingWith}
      *         string, otherwise returns -1.
-     * @author WFF
      * @since 1.0.0
      */
     public static int endIndexOf(final String inputString, final String startingWith, final String endingWith) {
@@ -451,7 +443,6 @@ public final class StringUtil {
      *         {@code inputString} contains a substring starting with
      *         {@code startingWith} string and ending with {@code endingWith}
      *         string, otherwise returns -1.
-     * @author WFF
      * @since 1.0.0
      */
     public static int startIndexOf(final String inputString, final String startingWith, final String endingWith,
@@ -483,7 +474,6 @@ public final class StringUtil {
      *         {@code inputString} contains a substring starting with
      *         {@code startingWith} string and ending with {@code endingWith}
      *         string, otherwise returns -1.
-     * @author WFF
      * @since 1.0.0
      */
     public static int endIndexOf(final String inputString, final String startingWith, final String endingWith,
@@ -515,7 +505,6 @@ public final class StringUtil {
      *         the given {@code inputString} contains a substring starting with
      *         {@code startingWith} string and ending with {@code endingWith}
      *         string, otherwise returns an empty array.
-     * @author WFF
      * @since 1.0.0
      */
     public static int[] startIndexAndEndIndexOf(final String inputString, final String startingWith,
@@ -550,7 +539,6 @@ public final class StringUtil {
      *         the given {@code inputString} contains a substring starting with
      *         {@code startingWith} string and ending with {@code endingWith}
      *         string, otherwise returns an empty array.
-     * @author WFF
      * @since 1.0.0
      */
     public static int[] startIndexAndEndIndexOf(final String inputString, final String startingWith,
@@ -616,7 +604,6 @@ public final class StringUtil {
      *         with the given {@code startingWith} and {@code endingWith} values. Or
      *         returns an empty array (i.e an array having length zero) if it
      *         doesn't contain.
-     * @author WFF
      * @since 1.0.0
      */
     public static int[][] startAndEndIndexesOf(final String inputString, final String startingWith,
@@ -676,7 +663,6 @@ public final class StringUtil {
      *
      * @param inputArray
      * @return the cloned array of the given string array.
-     * @author WFF
      * @since 1.0.0
      */
     public static String[] cloneArray(final String[] inputArray) {
@@ -687,7 +673,6 @@ public final class StringUtil {
 
     /**
      *
-     * @author WFF
      * @return true if all strings are equal or null.
      * @since 1.0.0
      */
@@ -698,7 +683,6 @@ public final class StringUtil {
 
     /**
      *
-     * @author WFF
      * @return true if two strings are equal or null.
      * @since 1.0.0
      */
@@ -711,7 +695,6 @@ public final class StringUtil {
      * @return true if the given value is starting with a white space
      * @since 2.1.8 initial implementation.
      * @since 3.0.15 unicode aware.
-     * @author WFF
      */
     public static boolean startsWithWhitespace(final String value) {
         if (value.length() == 0) {
@@ -733,7 +716,6 @@ public final class StringUtil {
      * @return true if the given value is ending with a white space
      * @since 2.1.8 initial implementation.
      * @since 3.0.15 unicode aware.
-     * @author WFF
      */
     public static boolean endsWithWhitespace(final String value) {
         if (value.length() == 0) {
@@ -756,7 +738,6 @@ public final class StringUtil {
      * @return the array of strings split by the given char.
      * @since 3.0.0 public
      * @since 3.0.15 unicode aware.
-     * @author WFF
      */
     public static String[] split(final String string, final char delim) {
 
@@ -789,7 +770,6 @@ public final class StringUtil {
      *               value of char.
      * @return the array of strings split by the given char.
      * @since 3.0.15
-     * @author WFF
      */
     public static String[] split(final String string, final int delim) {
 
@@ -856,7 +836,6 @@ public final class StringUtil {
      * @param string
      * @return the array of strings
      * @since 2.1.15
-     * @author WFF
      */
     public static String[] splitBySpace(final String string) {
         return split(string, SPACE_CODE_POINT);
@@ -868,7 +847,6 @@ public final class StringUtil {
      * @param string
      * @return the array of strings
      * @since 2.1.15
-     * @author WFF
      */
     public static String[] splitByComma(final String string) {
         return split(string, COMMA_CODE_POINT);
@@ -880,7 +858,6 @@ public final class StringUtil {
      * @param string
      * @return the array of strings
      * @since 2.1.15
-     * @author WFF
      */
     public static String[] splitBySemicolon(final String string) {
         return split(string, SEMICOLON_CODE_POINT);
@@ -892,7 +869,6 @@ public final class StringUtil {
      * @param string
      * @return the array of strings
      * @since 2.1.15
-     * @author WFF
      */
     public static String[] splitByColon(final String string) {
         return split(string, COLON_CODE_POINT);
@@ -947,7 +923,6 @@ public final class StringUtil {
      * @param string
      * @return true if the last character is a space char
      * @since 2.1.15
-     * @author WFF
      */
     public static boolean endsWithSpace(final String string) {
         return endsWith(string, SPACE_CODE_POINT);
@@ -959,7 +934,6 @@ public final class StringUtil {
      * @param string
      * @return true if the last character is a colon (:) char
      * @since 2.1.15
-     * @author WFF
      */
     public static boolean endsWithColon(final String string) {
         return endsWith(string, COLON_CODE_POINT);
@@ -971,7 +945,6 @@ public final class StringUtil {
      * @param string
      * @return true if the first character is a space char
      * @since 2.1.15
-     * @author WFF
      */
     public static boolean startsWithSpace(final String string) {
         return startsWith(string, SPACE_CODE_POINT);
@@ -997,7 +970,6 @@ public final class StringUtil {
      * @param string
      * @return true if the given string contains space char.
      * @since 2.1.15
-     * @author WFF
      */
     public static boolean containsSpace(final String string) {
         return contains(string, SPACE_CODE_POINT);
@@ -1010,7 +982,6 @@ public final class StringUtil {
      * @return true if the given string contains space char.
      * @since 3.0.1 initial implementation.
      * @since 3.0.15 it is unicode aware.
-     * @author WFF
      */
     public static boolean containsWhitespace(final String string) {
         if (string.length() == 0) {
@@ -1034,7 +1005,6 @@ public final class StringUtil {
      * @param string
      * @return true if the given string contains minus (-) char.
      * @since 2.1.15
-     * @author WFF
      */
     public static boolean containsMinus(final String string) {
         return contains(string, MINUS_CODE_POINT);
@@ -1046,7 +1016,6 @@ public final class StringUtil {
      * @param string
      * @return true if the given string contains plus (+) char.
      * @since 2.1.15
-     * @author WFF
      */
     public static boolean containsPlus(final String string) {
         return contains(string, PLUS_CODE_POINT);
@@ -1306,6 +1275,76 @@ public final class StringUtil {
         }
 
         return builder.toString();
+    }
+
+    /**
+     * @param string the string to split.
+     * @param delims to by which the given string to be split. It is the code point
+     *               values of chars.
+     * @return the array of strings split by the given charcodes.
+     * @since 3.0.15
+     */
+    public static String[] splitByAny(final String string, final int[] delims) {
+
+        if (string.length() == 0) {
+            return new String[] { string };
+        }
+
+        final int[] codePoints = string.codePoints().toArray();
+
+        final int[] delimPositionInit = new int[codePoints.length];
+
+        final int[] sortedDelims = Arrays.copyOf(delims, delims.length);
+        Arrays.sort(sortedDelims);
+
+        int delimCount = 0;
+        for (int i = 0; i < codePoints.length; i++) {
+            // NB: should be >= 0 it should not be != -1
+            if (Arrays.binarySearch(sortedDelims, codePoints[i]) >= 0) {
+                delimPositionInit[delimCount] = i;
+                delimCount++;
+            }
+        }
+
+        if (delimCount == 0) {
+            return new String[] { string };
+        }
+
+        final int[] delimPositionsFinal = new int[delimCount];
+
+        System.arraycopy(delimPositionInit, 0, delimPositionsFinal, 0, delimPositionsFinal.length);
+
+        final String[] splittedStrings = new String[delimCount + 1];
+
+        int startIndex = 0;
+        for (int i = 0; i < delimPositionsFinal.length; i++) {
+            final int delimPosition = delimPositionsFinal[i];
+
+            int range = codePoints.length - (codePoints.length - delimPosition);
+            range = range - startIndex;
+
+            if (range > 0) {
+                splittedStrings[i] = new String(codePoints, startIndex, range);
+            } else {
+                splittedStrings[i] = "";
+            }
+
+            startIndex = delimPosition + 1;
+        }
+
+        final int lastDelimPosition = delimPositionsFinal[delimPositionsFinal.length - 1];
+
+        startIndex = lastDelimPosition + 1;
+
+        final int range = codePoints.length - startIndex;
+
+        if (range > 0) {
+            splittedStrings[splittedStrings.length - 1] = new String(codePoints, startIndex, range);
+        } else {
+            splittedStrings[splittedStrings.length - 1] = "";
+        }
+
+        return splittedStrings;
     }
 
 }
