@@ -137,6 +137,25 @@ public final class UnicodeString {
     }
 
     /**
+     * @return true if it contains only whitespace otherwise false.
+     * @since 3.0.15
+     */
+    public boolean isBlank() {
+        if (codePoints == null || codePoints.length == 0) {
+            return true;
+        }
+
+        for (int i = 0; i < codePoints.length; i++) {
+            final int codePoint = codePoints[i];
+            if (!isWhitespace(codePoint)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * @param startIndex
      * @param endIndex   exclusive
      * @return the substring
