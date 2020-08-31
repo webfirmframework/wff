@@ -147,12 +147,14 @@ public class SharedTagContent<T> {
     }
 
     /**
-     * This is a record class for handling content in {@code SharedTagContent}
-     * object.
+     * This is a serializable record class for handling content in
+     * {@code SharedTagContent} object.
      *
      * @param <T>
      */
-    public static final class Content<T> {
+    public static final class Content<T> implements Serializable {
+
+        private static final long serialVersionUID = 1L;
 
         private final T content;
 
