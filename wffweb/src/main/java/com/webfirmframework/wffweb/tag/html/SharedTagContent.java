@@ -258,27 +258,117 @@ public class SharedTagContent<T> {
             this.formatter = formatter;
         }
 
+        /**
+         * @return the source tag
+         * @deprecated As it is record class no need to use getter method instead use
+         *             {@link ChangeEvent#sourceTag()}.This method will be removed in
+         *             future release.
+         */
+        @Deprecated
         public AbstractHtml getSourceTag() {
             return sourceTag;
         }
 
+        /**
+         * @return the sourceListener
+         * @deprecated As it is record class no need to use getter method instead use
+         *             {@link ChangeEvent#sourceListener()}.This method will be removed
+         *             in future release.
+         */
+        @Deprecated
         public ContentChangeListener<T> getSourceListener() {
             return sourceListener;
         }
 
+        /**
+         * @return the content before change event
+         * @deprecated As it is record class no need to use getter method instead use
+         *             {@link ChangeEvent#contentBefore()}.This method will be removed
+         *             in future release.
+         */
+        @Deprecated
         public Content<T> getContentBefore() {
             return contentBefore;
         }
 
+        /**
+         * @return the content after the change event
+         * @deprecated As it is record class no need to use getter method instead use
+         *             {@link ChangeEvent#contentAfter()}.This method will be removed in
+         *             future release.
+         */
+        @Deprecated
         public Content<T> getContentAfter() {
             return contentAfter;
         }
 
+        /**
+         * @return the applied content on tag
+         * @deprecated As it is record class no need to use getter method instead use
+         *             {@link ChangeEvent#contentApplied()}.This method will be removed
+         *             in future release.
+         */
+        @Deprecated
         public Content<String> getContentApplied() {
             return contentApplied;
         }
 
+        /**
+         * @return the formatter
+         * @deprecated As it is record class no need to use getter method instead use
+         *             {@link ChangeEvent#formatter()}.This method will be removed in
+         *             future release.
+         */
+        @Deprecated
         public ContentFormatter<T> getFormatter() {
+            return formatter;
+        }
+
+        /**
+         * @return the source tag
+         * @since 3.0.15
+         */
+        public AbstractHtml sourceTag() {
+            return sourceTag;
+        }
+
+        /**
+         * @return the sourceListener
+         * @since 3.0.15
+         */
+        public ContentChangeListener<T> sourceListener() {
+            return sourceListener;
+        }
+
+        /**
+         * @return the content before change event
+         * @since 3.0.15
+         */
+        public Content<T> contentBefore() {
+            return contentBefore;
+        }
+
+        /**
+         * @return the content after the change event
+         * @since 3.0.15
+         */
+        public Content<T> contentAfter() {
+            return contentAfter;
+        }
+
+        /**
+         * @return the applied content on tag
+         * @since 3.0.15
+         */
+        public Content<String> contentApplied() {
+            return contentApplied;
+        }
+
+        /**
+         * @return the formatter
+         * @since 3.0.15
+         */
+        public ContentFormatter<T> formatter() {
             return formatter;
         }
 
