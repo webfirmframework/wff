@@ -37,11 +37,13 @@ final class ReentrantStampedLock extends StampedLock {
 
     private final transient AtomicReference<Thread> lockHolder = new AtomicReference<>();
 
+    private final AtomicInteger readLockCount = new AtomicInteger(0);
+
+    private final AtomicInteger writeLockCount = new AtomicInteger(0);
+
     private class ReadLockView implements Lock {
 
         private final Lock lck;
-
-        private final AtomicInteger lockCount = new AtomicInteger(0);
 
         private ReadLockView() {
             lck = ReentrantStampedLock.super.asReadLock();
@@ -52,11 +54,11 @@ final class ReentrantStampedLock extends StampedLock {
             final Thread currentThread = Thread.currentThread();
             final boolean lockable = !currentThread.equals(lockHolder.get());
             if (lockable) {
-                if (lockCount.getAndIncrement() == 0) {
-                    lck.lock();
-                    lockHolder.getAndSet(currentThread);
-                }
-
+                lck.lock();
+                readLockCount.getAndIncrement();
+                lockHolder.getAndSet(currentThread);
+            } else {
+                readLockCount.getAndIncrement();
             }
 
         }
@@ -66,24 +68,17 @@ final class ReentrantStampedLock extends StampedLock {
             final Thread currentThread = Thread.currentThread();
             final boolean lockable = !currentThread.equals(lockHolder.get());
             if (lockable) {
-
-                if (lockCount.getAndIncrement() == 0) {
-                    try {
-                        lck.lockInterruptibly();
-                        lockHolder.getAndSet(currentThread);
-                    } catch (final InterruptedException e) {
-                        lockCount.decrementAndGet();
-                        throw e;
-                    }
-                }
-
+                lck.lockInterruptibly();
+                readLockCount.getAndIncrement();
+                lockHolder.getAndSet(currentThread);
+            } else {
+                readLockCount.getAndIncrement();
             }
         }
 
         @Override
         public Condition newCondition() {
-            final boolean lockable = !Thread.currentThread().equals(lockHolder.get());
-            if (lockable) {
+            if (Thread.currentThread().equals(lockHolder.get())) {
                 return lck.newCondition();
             }
             return null;
@@ -91,49 +86,52 @@ final class ReentrantStampedLock extends StampedLock {
 
         @Override
         public boolean tryLock() {
+
             final Thread currentThread = Thread.currentThread();
             final boolean lockable = !currentThread.equals(lockHolder.get());
             if (lockable) {
                 final boolean locked = lck.tryLock();
                 if (locked) {
-                    if (lockCount.getAndIncrement() == 0) {
-                        lockHolder.getAndSet(currentThread);
-                    }
-
+                    readLockCount.getAndIncrement();
+                    lockHolder.getAndSet(currentThread);
                 }
                 return locked;
             }
-            return false;
+
+            readLockCount.getAndIncrement();
+            return true;
         }
 
         @Override
         public boolean tryLock(final long time, final TimeUnit unit) throws InterruptedException {
+
             final Thread currentThread = Thread.currentThread();
             final boolean lockable = !currentThread.equals(lockHolder.get());
             if (lockable) {
                 final boolean locked = lck.tryLock(time, unit);
                 if (locked) {
-                    if (lockCount.getAndIncrement() == 0) {
-                        lockHolder.getAndSet(currentThread);
-                    }
+                    readLockCount.getAndIncrement();
+                    lockHolder.getAndSet(currentThread);
                 }
                 return locked;
             }
-            return false;
+
+            readLockCount.getAndIncrement();
+            return true;
         }
 
         @Override
         public void unlock() {
-            final boolean lockable = Thread.currentThread().equals(lockHolder.get());
-            if (lockable) {
-                final int count = lockCount.decrementAndGet();
+            final boolean unlockable = Thread.currentThread().equals(lockHolder.get());
+            if (unlockable) {
+                final int count = readLockCount.decrementAndGet();
                 if (count == 0) {
                     lockHolder.getAndSet(null);
                     lck.unlock();
-                } else if (count < 0) {
-                    lockCount.incrementAndGet();
                 }
-
+            } else {
+                // excess unlock should throw IllegalMonitorStateException
+                lck.unlock();
             }
         }
 
@@ -142,8 +140,6 @@ final class ReentrantStampedLock extends StampedLock {
     private class WriteLockView implements Lock {
 
         private final Lock lck;
-
-        private final AtomicInteger lockCount = new AtomicInteger(0);
 
         private WriteLockView() {
             lck = ReentrantStampedLock.super.asWriteLock();
@@ -154,13 +150,18 @@ final class ReentrantStampedLock extends StampedLock {
             final Thread currentThread = Thread.currentThread();
             final boolean lockable = !currentThread.equals(lockHolder.get());
             if (lockable) {
-                if (lockCount.getAndIncrement() == 0) {
+                lck.lock();
+                writeLockCount.getAndIncrement();
+                lockHolder.getAndSet(currentThread);
+            } else {
+                if (readLockCount.get() > 0) {
                     lck.lock();
+                    writeLockCount.getAndIncrement();
                     lockHolder.getAndSet(currentThread);
+                } else {
+                    writeLockCount.getAndIncrement();
                 }
-
             }
-
         }
 
         @Override
@@ -168,24 +169,17 @@ final class ReentrantStampedLock extends StampedLock {
             final Thread currentThread = Thread.currentThread();
             final boolean lockable = !currentThread.equals(lockHolder.get());
             if (lockable) {
-
-                if (lockCount.getAndIncrement() == 0) {
-                    try {
-                        lck.lockInterruptibly();
-                        lockHolder.getAndSet(currentThread);
-                    } catch (final InterruptedException e) {
-                        lockCount.decrementAndGet();
-                        throw e;
-                    }
-                }
-
+                lck.lockInterruptibly();
+                writeLockCount.getAndIncrement();
+                lockHolder.getAndSet(currentThread);
+            } else {
+                writeLockCount.getAndIncrement();
             }
         }
 
         @Override
         public Condition newCondition() {
-            final boolean lockable = !Thread.currentThread().equals(lockHolder.get());
-            if (lockable) {
+            if (Thread.currentThread().equals(lockHolder.get())) {
                 return lck.newCondition();
             }
             return null;
@@ -193,49 +187,66 @@ final class ReentrantStampedLock extends StampedLock {
 
         @Override
         public boolean tryLock() {
+
             final Thread currentThread = Thread.currentThread();
             final boolean lockable = !currentThread.equals(lockHolder.get());
             if (lockable) {
                 final boolean locked = lck.tryLock();
                 if (locked) {
-                    if (lockCount.getAndIncrement() == 0) {
-                        lockHolder.getAndSet(currentThread);
-                    }
-
+                    writeLockCount.getAndIncrement();
+                    lockHolder.getAndSet(currentThread);
+                }
+                return locked;
+            } else if (readLockCount.get() > 0) {
+                final boolean locked = lck.tryLock();
+                if (locked) {
+                    writeLockCount.getAndIncrement();
+                    lockHolder.getAndSet(currentThread);
                 }
                 return locked;
             }
-            return false;
+
+            writeLockCount.getAndIncrement();
+            return true;
         }
 
         @Override
         public boolean tryLock(final long time, final TimeUnit unit) throws InterruptedException {
+
             final Thread currentThread = Thread.currentThread();
             final boolean lockable = !currentThread.equals(lockHolder.get());
             if (lockable) {
                 final boolean locked = lck.tryLock(time, unit);
                 if (locked) {
-                    if (lockCount.getAndIncrement() == 0) {
-                        lockHolder.getAndSet(currentThread);
-                    }
+                    writeLockCount.getAndIncrement();
+                    lockHolder.getAndSet(currentThread);
+                }
+                return locked;
+            } else if (readLockCount.get() > 0) {
+                final boolean locked = lck.tryLock(time, unit);
+                if (locked) {
+                    writeLockCount.getAndIncrement();
+                    lockHolder.getAndSet(currentThread);
                 }
                 return locked;
             }
-            return false;
+
+            writeLockCount.getAndIncrement();
+            return true;
         }
 
         @Override
         public void unlock() {
-            final boolean lockable = Thread.currentThread().equals(lockHolder.get());
-            if (lockable) {
-                final int count = lockCount.decrementAndGet();
+            final boolean unlockable = Thread.currentThread().equals(lockHolder.get());
+            if (unlockable) {
+                final int count = writeLockCount.decrementAndGet();
                 if (count == 0) {
                     lockHolder.getAndSet(null);
                     lck.unlock();
-                } else if (count < 0) {
-                    lockCount.incrementAndGet();
                 }
-
+            } else {
+                // excess unlock should throw IllegalMonitorStateException
+                lck.unlock();
             }
         }
 
