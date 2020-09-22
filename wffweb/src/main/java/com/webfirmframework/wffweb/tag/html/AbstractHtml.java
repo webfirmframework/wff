@@ -793,6 +793,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
         try {
 
+            final Set<AbstractHtml> children = this.children;
             final AbstractHtml[] removedTags = children.toArray(new AbstractHtml[children.size()]);
             children.clear();
 
@@ -1918,12 +1919,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
         try {
 
-            final Iterator<AbstractHtml> iterator = this.children.iterator();
+            final Set<AbstractHtml> thisChildren = this.children;
+            final Iterator<AbstractHtml> iterator = thisChildren.iterator();
             if (iterator.hasNext()) {
                 final AbstractHtml firstChild = iterator.next();
 
-                final AbstractHtml[] removedParentChildren = this.children
-                        .toArray(new AbstractHtml[this.children.size()]);
+                final AbstractHtml[] removedParentChildren = thisChildren
+                        .toArray(new AbstractHtml[thisChildren.size()]);
 
                 results = firstChild.insertBefore(removedParentChildren, children);
 
@@ -5317,16 +5319,48 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     /**
      * Inserts the given tags before this tag. There must be a parent for this
-     * method tag.
+     * method tag otherwise throws NoParentException.
+     *
+     * @param abstractHtmls to insert before this tag
+     * @return true if inserted otherwise false.
+     * @throws NoParentException if this tag has no parent
+     * @author WFF
+     * @since 2.1.1
+     *
+     */
+    public boolean insertBefore(final AbstractHtml... abstractHtmls) throws NoParentException {
+        return insertBefore(false, abstractHtmls);
+    }
+
+    /**
+     * Inserts the given tags before this tag only if this tag has parent.
      *
      * @param abstractHtmls to insert before this tag
      * @return true if inserted otherwise false.
      * @author WFF
-     * @since 2.1.1
+     * @since 3.0.15
      */
-    public boolean insertBefore(final AbstractHtml... abstractHtmls) {
+    public boolean insertBeforeIfPossible(final AbstractHtml... abstractHtmls) {
+        return insertBefore(true, abstractHtmls);
+    }
 
+    /**
+     * Inserts the given tags before this tag. There must be a parent for this
+     * method tag.
+     *
+     * @param skipException skips NoParentException
+     * @param abstractHtmls to insert before this tag
+     * @return true if inserted otherwise false.
+     * @author WFF
+     * @since 3.0.15
+     */
+    private boolean insertBefore(final boolean skipException, final AbstractHtml... abstractHtmls) {
+
+        AbstractHtml parent = this.parent;
         if (parent == null) {
+            if (skipException) {
+                return false;
+            }
             throw new NoParentException("There must be a parent for this tag.");
         }
 
@@ -5339,6 +5373,14 @@ public abstract class AbstractHtml extends AbstractJsObject {
 //        lock.lock();
 
         try {
+
+            parent = this.parent;
+            if (parent == null) {
+                if (skipException) {
+                    return false;
+                }
+                throw new NoParentException("There must be a parent for this tag.");
+            }
 
             final AbstractHtml[] removedParentChildren = parent.children
                     .toArray(new AbstractHtml[parent.children.size()]);
@@ -5363,16 +5405,47 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     /**
      * Replaces this tag with the given tags. There must be a parent for this method
-     * tag. Obviously, this tag will be removed from its parent if this method is
-     * called.
+     * tag otherwise throws NoParentException. Obviously, this tag will be removed
+     * from its parent if this method is called.
      *
      * @param tags tags for the replacement of this tag
      * @return true if replace otherwise false.
+     * @throws NoParentException if this tag has no parent
      * @since 3.0.7
      */
-    public boolean replaceWith(final AbstractHtml... tags) {
+    public boolean replaceWith(final AbstractHtml... tags) throws NoParentException {
+        return replaceWith(false, tags);
+    }
 
+    /**
+     * Replaces this tag with the given tags only if it has a parent. Obviously,
+     * this tag will be removed from its parent if this method is called.
+     *
+     * @param tags tags for the replacement of this tag
+     * @return true if replace otherwise false.
+     * @since 3.0.15
+     */
+    public boolean replaceWithIfPossible(final AbstractHtml... tags) {
+        return replaceWith(true, tags);
+    }
+
+    /**
+     * Replaces this tag with the given tags. There must be a parent for this method
+     * tag. Obviously, this tag will be removed from its parent if this method is
+     * called.
+     *
+     * @param skipException skips NoParentException
+     * @param tags          tags for the replacement of this tag
+     * @return true if replace otherwise false.
+     * @since 3.0.15
+     */
+    private boolean replaceWith(final boolean skipException, final AbstractHtml... tags) {
+
+        AbstractHtml parent = this.parent;
         if (parent == null) {
+            if (skipException) {
+                return false;
+            }
             throw new NoParentException("There must be a parent for this tag.");
         }
 
@@ -5391,6 +5464,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
         final List<Lock> locks = TagUtil.lockAndGetWriteLocks(ACCESS_OBJECT, thisSharedObject, tags);
 
         try {
+            parent = this.parent;
+            if (parent == null) {
+                if (skipException) {
+                    return false;
+                }
+                throw new NoParentException("There must be a parent for this tag.");
+            }
 
             final AbstractHtml[] removedParentChildren = parent.children
                     .toArray(new AbstractHtml[parent.children.size()]);
@@ -5841,19 +5921,53 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     /**
      * Inserts the given tags after this tag. There must be a parent for this method
-     * tag. <br>
+     * tag otherwise throws NoParentException. <br>
      * Note : As promised this method is improved and works as performing and
      * reliable as insertBefore method.
      *
      * @param abstractHtmls to insert after this tag
      * @return true if inserted otherwise false.
+     * @throws NoParentException if this tag has no parent
      * @author WFF
      * @since 2.1.6
      * @since 3.0.7 better implementation
      */
     public boolean insertAfter(final AbstractHtml... abstractHtmls) {
+        return insertAfter(false, abstractHtmls);
+    }
 
+    /**
+     * Inserts the given tags after this tag only if this tag has a parent.<br>
+     *
+     *
+     * @param abstractHtmls to insert after this tag
+     * @return true if inserted otherwise false.
+     * @author WFF
+     * @since 3.0.15
+     */
+    public boolean insertAfterIfPossible(final AbstractHtml... abstractHtmls) {
+        return insertAfter(true, abstractHtmls);
+    }
+
+    /**
+     * Inserts the given tags after this tag. There must be a parent for this method
+     * tag. <br>
+     * Note : As promised this method is improved and works as performing and
+     * reliable as insertBefore method.
+     *
+     * @param skipException skips NoParentException
+     * @param abstractHtmls to insert after this tag
+     * @return true if inserted otherwise false.
+     * @author WFF
+     * @since 3.0.15 better implementation
+     */
+    private boolean insertAfter(final boolean skipException, final AbstractHtml... abstractHtmls) {
+
+        AbstractHtml parent = this.parent;
         if (parent == null) {
+            if (skipException) {
+                return false;
+            }
             throw new NoParentException("There must be a parent for this tag.");
         }
 
@@ -5869,6 +5983,14 @@ public abstract class AbstractHtml extends AbstractJsObject {
 //
 
         try {
+
+            parent = this.parent;
+            if (parent == null) {
+                if (skipException) {
+                    return false;
+                }
+                throw new NoParentException("There must be a parent for this tag.");
+            }
 
             final AbstractHtml[] removedParentChildren = parent.children
                     .toArray(new AbstractHtml[parent.children.size()]);
