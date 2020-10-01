@@ -120,9 +120,9 @@ public final class HeartbeatManager {
         // TODO verify it in deep if it is good for production
         if (!taskQLock.hasQueuedThreads() && !taskQ.isEmpty()) {
 
-            try {
+            taskQLock.acquireUninterruptibly();
 
-                taskQLock.acquireUninterruptibly();
+            try {
 
                 // wsPushInProgress must be implemented here and it is very
                 // important because multiple threads should not process
