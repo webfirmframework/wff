@@ -401,8 +401,9 @@ public abstract class BrowserPage implements Serializable {
                                 break;
                             }
 
-                            if (pushWffBMBytesQueueLock.hasQueuedThreads()
-                                    && waitingThreadRef.get().getPriority() >= taskThread.getPriority()) {
+                            final Thread waitingThread = waitingThreadRef.get();
+                            if (pushWffBMBytesQueueLock.hasQueuedThreads() && waitingThread != null
+                                    && waitingThread.getPriority() >= taskThread.getPriority()) {
                                 break;
                             }
 
