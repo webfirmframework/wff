@@ -37,11 +37,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executor;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 import java.util.concurrent.atomic.LongAdder;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -131,7 +131,8 @@ public abstract class BrowserPage implements Serializable {
 
     // there will be only one thread waiting for the lock so fairness must be
     // false and fairness may decrease the lock time
-    private final transient ReentrantLock taskFromClientQLock = new ReentrantLock(false);
+    // only one thread is allowed to gain lock so permit should be 1
+    private final transient Semaphore taskFromClientQLock = new Semaphore(1, false);
 
     // ConcurrentLinkedQueue give better performance than ConcurrentLinkedDeque
     // on benchmark
@@ -165,11 +166,13 @@ public abstract class BrowserPage implements Serializable {
 
     // there will be only one thread waiting for the lock so fairness must be
     // false and fairness may decrease the lock time
-    private final transient ReentrantLock pushWffBMBytesQueueLock = new ReentrantLock(false);
+    // only one thread is allowed to gain lock so permit should be 1
+    private final transient Semaphore pushWffBMBytesQueueLock = new Semaphore(1, false);
 
     // there will be only one thread waiting for the lock so fairness must be
     // false and fairness may decrease the lock time
-    private final transient ReentrantLock unholdPushLock = new ReentrantLock(false);
+    // only one thread is allowed to gain lock so permit should be 1
+    private final transient Semaphore unholdPushLock = new Semaphore(1, false);
 
     private final AtomicReference<Thread> waitingThreadRef = new AtomicReference<>();
 
@@ -343,9 +346,18 @@ public abstract class BrowserPage implements Serializable {
             if (!pushWffBMBytesQueueLock.hasQueuedThreads() && !wffBMBytesQueue.isEmpty()) {
 
                 Thread taskThread = null;
+                waitingThreadRef.getAndSet(Thread.currentThread());
                 try {
-                    waitingThreadRef.getAndSet(Thread.currentThread());
-                    pushWffBMBytesQueueLock.lock();
+                    pushWffBMBytesQueueLock.acquire();
+                } catch (final InterruptedException e) {
+                    waitingThreadRef.compareAndSet(taskThread, null);
+                    if (LOGGER.isLoggable(Level.SEVERE)) {
+                        LOGGER.log(Level.SEVERE, "Thread InterruptedException", e);
+                    }
+                    return;
+                }
+
+                try {
                     taskThread = Thread.currentThread();
 
                     // wsPushInProgress must be implemented here and it is very
@@ -403,8 +415,9 @@ public abstract class BrowserPage implements Serializable {
                 } finally {
                     // should be before unlock
                     waitingThreadRef.compareAndSet(taskThread, null);
-                    pushWffBMBytesQueueLock.unlock();
+                    pushWffBMBytesQueueLock.release();
                 }
+
             }
         } else {
             if (LOGGER.isLoggable(Level.WARNING) && !wsWarningDisabled) {
@@ -476,7 +489,7 @@ public abstract class BrowserPage implements Serializable {
 
             try {
 
-                taskFromClientQLock.lock();
+                taskFromClientQLock.acquireUninterruptibly();
 
                 // wsPushInProgress must be implemented here and it is very
                 // important because multiple threads should not process
@@ -519,7 +532,7 @@ public abstract class BrowserPage implements Serializable {
                 }
 
             } finally {
-                taskFromClientQLock.unlock();
+                taskFromClientQLock.release();
             }
         }
 
@@ -1505,23 +1518,26 @@ public abstract class BrowserPage implements Serializable {
                     afterRender(rootTag);
                     wsWarningDisabled = false;
                 } else {
-                    unholdPushLock.lock();
+
+                    unholdPushLock.acquireUninterruptibly();
                     try {
                         wffBMBytesQueue.clear();
                         pushQueueSize.reset();
                     } finally {
-                        unholdPushLock.unlock();
+                        unholdPushLock.release();
                     }
+
                 }
             }
 
         } else {
-            unholdPushLock.lock();
+
+            unholdPushLock.acquireUninterruptibly();
             try {
                 wffBMBytesQueue.clear();
                 pushQueueSize.reset();
             } finally {
-                unholdPushLock.unlock();
+                unholdPushLock.release();
             }
         }
 
@@ -1705,7 +1721,16 @@ public abstract class BrowserPage implements Serializable {
         boolean copied = false;
 
         if (!unholdPushLock.hasQueuedThreads()) {
-            unholdPushLock.lock();
+            try {
+                unholdPushLock.acquire();
+            } catch (final InterruptedException e) {
+                // NOP
+                if (LOGGER.isLoggable(Level.SEVERE)) {
+                    LOGGER.log(Level.SEVERE, "Thread InterruptedException", e);
+                }
+                return false;
+            }
+
             try {
 
                 ClientTasksWrapper clientTask = wffBMBytesHoldPushQueue.poll();
@@ -1754,8 +1779,9 @@ public abstract class BrowserPage implements Serializable {
                 }
 
             } finally {
-                unholdPushLock.unlock();
+                unholdPushLock.release();
             }
+
         }
 
         return copied;

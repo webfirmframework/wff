@@ -292,7 +292,7 @@ public enum BrowserPageContext {
     }
 
     /**
-     * this method should be called when the websocket is messagedS
+     * this method should be called when the websocket is messaged.
      *
      * @param wffInstanceId the wffInstanceId which can be retried from the request
      *                      parameter in websocket connection.

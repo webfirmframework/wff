@@ -19,7 +19,7 @@ import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executor;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -39,7 +39,8 @@ public final class HeartbeatManager {
 
     // there will be only one thread waiting for the lock so fairness must be
     // false and fairness may decrease the lock time
-    private final transient ReentrantLock taskQLock = new ReentrantLock(false);
+    // only one thread is allowed to gain lock so permit should be 1
+    private final transient Semaphore taskQLock = new Semaphore(1, false);
 
     // ConcurrentLinkedQueue give better performance than ConcurrentLinkedDeque
     // on benchmark
@@ -121,7 +122,7 @@ public final class HeartbeatManager {
 
             try {
 
-                taskQLock.lock();
+                taskQLock.acquireUninterruptibly();
 
                 // wsPushInProgress must be implemented here and it is very
                 // important because multiple threads should not process
@@ -160,7 +161,7 @@ public final class HeartbeatManager {
                 }
 
             } finally {
-                taskQLock.unlock();
+                taskQLock.release();
             }
         }
     }
