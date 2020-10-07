@@ -41,7 +41,7 @@ final class ReentrantStampedLock extends StampedLock {
 
     private final AtomicInteger writeLockCount = new AtomicInteger(0);
 
-    private class ReadLockView implements Lock {
+    private final class ReadLockView implements Lock {
 
         private final Lock lck;
 
@@ -137,7 +137,7 @@ final class ReentrantStampedLock extends StampedLock {
 
     }
 
-    private class WriteLockView implements Lock {
+    private final class WriteLockView implements Lock {
 
         private final Lock lck;
 
