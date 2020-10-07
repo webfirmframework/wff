@@ -787,9 +787,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
 //        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
 //        lock.lock();
 
-        final AbstractHtml5SharedObject sharedObject = this.sharedObject;
+        final List<Lock> locks = lockAndGetWriteLocks(innerHtmls);
 
-        final List<Lock> locks = TagUtil.lockAndGetWriteLocks(ACCESS_OBJECT, sharedObject, innerHtmls);
+        // sharedObject should be after locking
+        final AbstractHtml5SharedObject sharedObject = this.sharedObject;
 
         try {
 
@@ -1380,9 +1381,11 @@ public abstract class AbstractHtml extends AbstractJsObject {
         // because this method is called in constructors.
 //        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
 //        lock.lock();
-        final AbstractHtml5SharedObject sharedObject = this.sharedObject;
-        final List<Lock> locks = TagUtil.lockAndGetWriteLocks(ACCESS_OBJECT, sharedObject, child);
 
+        final List<Lock> locks = lockAndGetWriteLocks(child);
+
+        // sharedObject should be after locking
+        final AbstractHtml5SharedObject sharedObject = this.sharedObject;
         boolean result = false;
         try {
 
@@ -1420,7 +1423,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             removeDataWffIdFromHierarchy(sharedObject, child);
         }
 
-        result = addChild(child, true, false);
+        result = addChild(child, true);
         final PushQueue pushQueue = sharedObject.getPushQueue(ACCESS_OBJECT);
         if (pushQueue != null) {
             pushQueue.push();
@@ -1443,10 +1446,14 @@ public abstract class AbstractHtml extends AbstractJsObject {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
 
+//        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+//        lock.lock();
+
+        final List<Lock> locks = lockAndGetWriteLocks(child);
+
+        // sharedObject should be after locking
         final AbstractHtml5SharedObject sharedObject = this.sharedObject;
 
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
-        lock.lock();
         boolean result = false;
         try {
 
@@ -1463,7 +1470,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
             result = addChild(child, invokeListener);
         } finally {
-            lock.unlock();
+//            lock.unlock();
+            for (final Lock lck : locks) {
+                lck.unlock();
+            }
         }
         if (invokeListener) {
             final PushQueue pushQueue = sharedObject.getPushQueue(ACCESS_OBJECT);
@@ -1475,10 +1485,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     private boolean addChild(final AbstractHtml child, final boolean invokeListener) {
-        return addChild(child, invokeListener, true);
-    }
-
-    private boolean addChild(final AbstractHtml child, final boolean invokeListener, final boolean foreignLocking) {
 
         final boolean added = children.add(child);
         if (added) {
@@ -1491,31 +1497,37 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
             final AbstractHtml5SharedObject sharedObject = this.sharedObject;
 
-            if (foreignLocking) {
-                Lock foreignLock = null;
-                AbstractHtml5SharedObject foreignSO = child.sharedObject;
-                if (foreignSO != null && !sharedObject.equals(foreignSO)) {
-                    foreignLock = foreignSO.getLock(ACCESS_OBJECT).writeLock();
-                    foreignSO = null;
-                    foreignLock.lock();
-                }
-                try {
-                    if (alreadyHasParent) {
-                        child.parent.children.remove(child);
-                    }
-                    initParentAndSharedObject(child);
-                } finally {
-                    if (foreignLock != null) {
-                        foreignLock.unlock();
-                    }
-                }
+            // boolean foreignLocking method param
+//            if (foreignLocking) {
+//                Lock foreignLock = null;
+//                AbstractHtml5SharedObject foreignSO = child.sharedObject;
+//                if (foreignSO != null && !sharedObject.equals(foreignSO)) {
+//                    foreignLock = foreignSO.getLock(ACCESS_OBJECT).writeLock();
+//                    foreignSO = null;
+//                    foreignLock.lock();
+//                }
+//                try {
+//                    if (alreadyHasParent) {
+//                        child.parent.children.remove(child);
+//                    }
+//                    initParentAndSharedObject(child);
+//                } finally {
+//                    if (foreignLock != null) {
+//                        foreignLock.unlock();
+//                    }
+//                }
+//
+//            } else {
+//                if (alreadyHasParent) {
+//                    child.parent.children.remove(child);
+//                }
+//                initParentAndSharedObject(child);
+//            }
 
-            } else {
-                if (alreadyHasParent) {
-                    child.parent.children.remove(child);
-                }
-                initParentAndSharedObject(child);
+            if (alreadyHasParent) {
+                child.parent.children.remove(child);
             }
+            initParentAndSharedObject(child);
 
             if (invokeListener) {
 
@@ -1745,10 +1757,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
         boolean listenerInvoked = false;
 
-        final AbstractHtml5SharedObject sharedObject = this.sharedObject;
+        final List<Lock> locks = lockAndGetWriteLocks(children.toArray(new AbstractHtml[0]));
 
-        final List<Lock> locks = TagUtil.lockAndGetWriteLocks(ACCESS_OBJECT, sharedObject,
-                children.toArray(new AbstractHtml[0]));
+        // sharedObject should be after locking
+        final AbstractHtml5SharedObject sharedObject = this.sharedObject;
 
 //        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
 //        lock.lock();
@@ -1809,9 +1821,11 @@ public abstract class AbstractHtml extends AbstractJsObject {
         // this method in consumed in constructor
 
         boolean listenerInvoked = false;
-        final AbstractHtml5SharedObject sharedObject = this.sharedObject;
 
-        final List<Lock> locks = TagUtil.lockAndGetWriteLocks(ACCESS_OBJECT, sharedObject, children);
+        final List<Lock> locks = lockAndGetWriteLocks(children);
+
+        // sharedObject should be after locking
+        final AbstractHtml5SharedObject sharedObject = this.sharedObject;
 
 //        List<Lock> foreignLocks = TagUtil.lockAndGetWriteLocks(ACCESS_OBJECT, children);
 //        List<Lock> attrLocks = TagUtil.lockAndGetNestedAttributeWriteLocks(ACCESS_OBJECT, children);
@@ -1908,12 +1922,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     public void prependChildren(final AbstractHtml... children) {
 
-        final AbstractHtml5SharedObject sharedObject = this.sharedObject;
         // inserted, listener invoked
         boolean[] results = { false, false };
 
-        final List<Lock> locks = TagUtil.lockAndGetWriteLocks(ACCESS_OBJECT, sharedObject, children);
+        final List<Lock> locks = lockAndGetWriteLocks(children);
 
+        // sharedObject should be after locking
+        final AbstractHtml5SharedObject sharedObject = this.sharedObject;
 //        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
 //        lock.lock();
 
@@ -2018,7 +2033,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 removeDataWffIdFromHierarchy(sharedObject, child);
             }
 
-            if (addChild(child, false, false)) {
+            if (addChild(child, false)) {
                 results[0] = true;
             }
 
@@ -5366,8 +5381,11 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
         // inserted, listener invoked
         boolean[] results = { false, false };
+
+        final List<Lock> locks = lockAndGetWriteLocks(abstractHtmls);
+
+        // sharedObject should be after locking
         final AbstractHtml5SharedObject sharedObject = this.sharedObject;
-        final List<Lock> locks = TagUtil.lockAndGetWriteLocks(ACCESS_OBJECT, sharedObject, abstractHtmls);
 
 //        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
 //        lock.lock();
@@ -5459,10 +5477,11 @@ public abstract class AbstractHtml extends AbstractJsObject {
         // this.sharedObject will be different object after that and calling
         // this.sharedObject.getPushQueue is invalid. So keeping the right
         // object in thisSharedObject.
+
+        final List<Lock> locks = lockAndGetWriteLocks(tags);
+
+        // sharedObject should be after locking
         final AbstractHtml5SharedObject thisSharedObject = sharedObject;
-
-        final List<Lock> locks = TagUtil.lockAndGetWriteLocks(ACCESS_OBJECT, thisSharedObject, tags);
-
         try {
             parent = this.parent;
             if (parent == null) {
@@ -5974,9 +5993,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
         // inserted, listener invoked
         boolean[] results = { false, false };
 
-        final AbstractHtml5SharedObject sharedObject = this.sharedObject;
+        final List<Lock> locks = lockAndGetWriteLocks(abstractHtmls);
 
-        final List<Lock> locks = TagUtil.lockAndGetWriteLocks(ACCESS_OBJECT, sharedObject, abstractHtmls);
+        // sharedObject should be after locking
+        final AbstractHtml5SharedObject sharedObject = this.sharedObject;
 
 //        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
 //        lock.lock();
@@ -6305,6 +6325,31 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     protected Lock getWriteLock() {
         return sharedObject.getLock(ACCESS_OBJECT).writeLock();
+    }
+
+    /**
+     * NB: without this method this.sharedObject in the later execution of nested
+     * methods may be different than the lock acquired sharedObject, we have faced
+     * this issue that is why it is implemented.
+     *
+     * @param foreignTags
+     * @return the locks
+     */
+    private List<Lock> lockAndGetWriteLocks(final AbstractHtml... foreignTags) {
+
+        AbstractHtml5SharedObject currentSO;
+        List<Lock> locks = null;
+        do {
+            if (locks != null) {
+                for (final Lock lck : locks) {
+                    lck.unlock();
+                }
+            }
+            currentSO = sharedObject;
+            locks = TagUtil.lockAndGetWriteLocks(ACCESS_OBJECT, currentSO, foreignTags);
+        } while (!currentSO.equals(sharedObject));
+
+        return locks;
     }
 
     /**
