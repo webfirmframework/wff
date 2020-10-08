@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -1503,45 +1504,73 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         // lock must be called before using ownerTags
         ownerTagsWriteLock.lock();
 
-        // internally this.ownerTags.size() (WeakHashMap) contains synchronization so
-        // better avoid calling it
-        // normally there will be one sharedObject so the capacity may be
-        // considered as 1
+        boolean ownerTagModified = false;
+        Map<AbstractHtml, AbstractHtml5SharedObject> ownerTagSharedObjectMap = new HashMap<>(2);
+        List<Lock> writeLocks = null;
 
-        final Set<AbstractHtml5SharedObject> sharedObjectsSet = new HashSet<>(1);
+        do {
+            if (ownerTagModified) {
+                for (final Lock lock : writeLocks) {
+                    lock.unlock();
+                }
+                ownerTagSharedObjectMap.clear();
+            }
 
-        for (final AbstractHtml ownerTag : ownerTags) {
-            sharedObjectsSet.add(ownerTag.getSharedObject());
-        }
+            // internally this.ownerTags.size() (WeakHashMap) contains synchronization so
+            // better avoid calling it
+            // normally there will be one sharedObject so the capacity may be
+            // considered as 1
 
-        final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(sharedObjectsSet);
+            final Set<AbstractHtml5SharedObject> sharedObjectsSet = new HashSet<>(1);
 
-        sharedObjects.sort(Comparator.comparingLong(AbstractHtml5SharedObject::objectId));
+            for (final AbstractHtml ownerTag : ownerTags) {
+                final AbstractHtml5SharedObject sharedObject = ownerTag.getSharedObject();
+                sharedObjectsSet.add(sharedObject);
+                ownerTagSharedObjectMap.put(ownerTag, sharedObject);
+            }
 
-        final List<WriteLock> locks = new ArrayList<>(sharedObjects.size());
+            final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(sharedObjectsSet);
 
-        for (final AbstractHtml5SharedObject sharedObject : sharedObjects) {
-            locks.add(sharedObject.getLock(ACCESS_OBJECT).writeLock());
-        }
+            sharedObjects.sort(Comparator.comparingLong(AbstractHtml5SharedObject::objectId));
 
-        // should not be sorted because it should be in the order of objectId otherwise
-        // it may lead to deadlock
+            final List<WriteLock> locks = new ArrayList<>(sharedObjects.size());
+
+            for (final AbstractHtml5SharedObject sharedObject : sharedObjects) {
+                locks.add(sharedObject.getLock(ACCESS_OBJECT).writeLock());
+            }
+
+            // should not be sorted because it should be in the order of objectId otherwise
+            // it may lead to deadlock
 //        locks.sort((o1, o2) -> Integer.compare(o2.getHoldCount(), o1.getHoldCount()));
 
-        final List<Lock> writeLocks = new ArrayList<>(locks.size() + 1);
+            writeLocks = new ArrayList<>(locks.size() + 1);
+
+            // must be separately locked
+            // ownerTagsWriteLock is already locked so iterating over locksWithoutDuplicates
+            // object
+            for (final Lock writeLock : locks) {
+                writeLock.lock();
+                writeLocks.add(writeLock);
+            }
+
+            // NB: must reverse it before returning because its unlocking must be in the
+            // reverse order
+            Collections.reverse(writeLocks);
+
+            ownerTagModified = false;
+            for (final Entry<AbstractHtml, AbstractHtml5SharedObject> entry : ownerTagSharedObjectMap.entrySet()) {
+                if (!entry.getKey().getSharedObject().equals(entry.getValue())) {
+                    ownerTagModified = true;
+                    break;
+                }
+            }
+            if (!ownerTagModified) {
+                ownerTagSharedObjectMap = null;
+            }
+
+        } while (ownerTagModified);
+
         writeLocks.add(ownerTagsWriteLock);
-
-        // must be separately locked
-        // ownerTagsWriteLock is already locked so iterating over locksWithoutDuplicates
-        // object
-        for (final Lock writeLock : locks) {
-            writeLock.lock();
-            writeLocks.add(writeLock);
-        }
-
-        // NB: must reverse it before returning because its unlocking must be in the
-        // reverse order
-        Collections.reverse(writeLocks);
 
         return writeLocks;
     }
@@ -1558,40 +1587,67 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
         try {
 
-            // internally this.ownerTags.size() (WeakHashMap) contains synchronization so
-            // better avoid calling it
-            // normally there will be one sharedObject so the capacity may be
-            // considered as 1
-            final Set<AbstractHtml5SharedObject> sharedObjectsSet = new HashSet<>(1);
+            boolean ownerTagModified = false;
+            Map<AbstractHtml, AbstractHtml5SharedObject> ownerTagSharedObjectMap = new HashMap<>(2);
+            List<WriteLock> writeLocks = null;
 
-            for (final AbstractHtml ownerTag : ownerTags) {
-                sharedObjectsSet.add(ownerTag.getSharedObject());
-            }
+            do {
+                if (ownerTagModified) {
+                    for (final Lock lock : writeLocks) {
+                        lock.unlock();
+                    }
+                    ownerTagSharedObjectMap.clear();
+                }
 
-            final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(sharedObjectsSet);
+                // internally this.ownerTags.size() (WeakHashMap) contains synchronization so
+                // better avoid calling it
+                // normally there will be one sharedObject so the capacity may be
+                // considered as 1
+                final Set<AbstractHtml5SharedObject> sharedObjectsSet = new HashSet<>(1);
 
-            sharedObjects.sort(Comparator.comparingLong(AbstractHtml5SharedObject::objectId));
+                for (final AbstractHtml ownerTag : ownerTags) {
+                    final AbstractHtml5SharedObject sharedObject = ownerTag.getSharedObject();
+                    sharedObjectsSet.add(sharedObject);
+                    ownerTagSharedObjectMap.put(ownerTag, sharedObject);
+                }
 
-            final List<WriteLock> locks = new ArrayList<>(sharedObjects.size());
+                final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(sharedObjectsSet);
 
-            for (final AbstractHtml5SharedObject sharedObject : sharedObjects) {
-                locks.add(sharedObject.getLock(ACCESS_OBJECT).writeLock());
-            }
+                sharedObjects.sort(Comparator.comparingLong(AbstractHtml5SharedObject::objectId));
 
-            // should not be sorted because it should be in the order of objectId otherwise
-            // it may lead to deadlock
+                final List<WriteLock> locks = new ArrayList<>(sharedObjects.size());
+
+                for (final AbstractHtml5SharedObject sharedObject : sharedObjects) {
+                    locks.add(sharedObject.getLock(ACCESS_OBJECT).writeLock());
+                }
+
+                // should not be sorted because it should be in the order of objectId otherwise
+                // it may lead to deadlock
 //            locks.sort((o1, o2) -> Integer.compare(o2.getHoldCount(), o1.getHoldCount()));
 
-            final List<WriteLock> writeLocks = new ArrayList<>(locks);
+                writeLocks = new ArrayList<>(locks);
 
-            // must be separately locked
-            for (final WriteLock writeLock : writeLocks) {
-                writeLock.lock();
-            }
+                // must be separately locked
+                for (final WriteLock writeLock : writeLocks) {
+                    writeLock.lock();
+                }
 
-            // NB: must reverse it before returning because its unlocking must be in the
-            // reverse order
-            Collections.reverse(writeLocks);
+                // NB: must reverse it before returning because its unlocking must be in the
+                // reverse order
+                Collections.reverse(writeLocks);
+
+                ownerTagModified = false;
+                for (final Entry<AbstractHtml, AbstractHtml5SharedObject> entry : ownerTagSharedObjectMap.entrySet()) {
+                    if (!entry.getKey().getSharedObject().equals(entry.getValue())) {
+                        ownerTagModified = true;
+                        break;
+                    }
+                }
+                if (!ownerTagModified) {
+                    ownerTagSharedObjectMap = null;
+                }
+
+            } while (ownerTagModified);
 
             return writeLocks;
         } finally {
@@ -1613,40 +1669,69 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         // lock must be called before using ownerTags
         ownerTagsReadLock.lock();
 
-        // internally this.ownerTags.size() (WeakHashMap) contains synchronization
-        // better avoid calling it
-        // normally there will be one sharedObject so the capacity may be
-        // considered as 2 because the load factor is 0.75f
+        boolean ownerTagModified = false;
+        Map<AbstractHtml, AbstractHtml5SharedObject> ownerTagSharedObjectMap = new HashMap<>(2);
+        List<Lock> readLocks = null;
 
-        final Set<AbstractHtml5SharedObject> sharedObjectsSet = new HashSet<>(1);
+        do {
+            if (ownerTagModified) {
+                for (final Lock lock : readLocks) {
+                    lock.unlock();
+                }
 
-        for (final AbstractHtml ownerTag : ownerTags) {
-            sharedObjectsSet.add(ownerTag.getSharedObject());
-        }
+                ownerTagSharedObjectMap.clear();
+            }
 
-        final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(sharedObjectsSet);
+            // internally this.ownerTags.size() (WeakHashMap) contains synchronization
+            // better avoid calling it
+            // normally there will be one sharedObject so the capacity may be
+            // considered as 2 because the load factor is 0.75f
 
-        sharedObjects.sort(Comparator.comparingLong(AbstractHtml5SharedObject::objectId));
+            final Set<AbstractHtml5SharedObject> sharedObjectsSet = new HashSet<>(1);
 
-        final Collection<ReadLock> locks = new LinkedHashSet<>(sharedObjects.size());
+            for (final AbstractHtml ownerTag : ownerTags) {
+                final AbstractHtml5SharedObject sharedObject = ownerTag.getSharedObject();
+                sharedObjectsSet.add(sharedObject);
+                ownerTagSharedObjectMap.put(ownerTag, sharedObject);
+            }
 
-        for (final AbstractHtml5SharedObject sharedObject : sharedObjects) {
-            locks.add(sharedObject.getLock(ACCESS_OBJECT).readLock());
-        }
+            final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(sharedObjectsSet);
 
-        final List<Lock> readLocks = new ArrayList<>(locks.size() + 1);
+            sharedObjects.sort(Comparator.comparingLong(AbstractHtml5SharedObject::objectId));
+
+            final Collection<ReadLock> locks = new LinkedHashSet<>(sharedObjects.size());
+
+            for (final AbstractHtml5SharedObject sharedObject : sharedObjects) {
+                locks.add(sharedObject.getLock(ACCESS_OBJECT).readLock());
+            }
+
+            readLocks = new ArrayList<>(locks.size() + 1);
+
+            // must be separately locked
+            // ownerTagsReadLock is already locked so iterating over locks object
+            for (final Lock readLock : locks) {
+                readLock.lock();
+                readLocks.add(readLock);
+            }
+
+            // NB: must reverse it before returning because its unlocking must be in the
+            // reverse order
+            Collections.reverse(readLocks);
+
+            ownerTagModified = false;
+            for (final Entry<AbstractHtml, AbstractHtml5SharedObject> entry : ownerTagSharedObjectMap.entrySet()) {
+                if (!entry.getKey().getSharedObject().equals(entry.getValue())) {
+                    ownerTagModified = true;
+                    break;
+                }
+            }
+            if (!ownerTagModified) {
+                ownerTagSharedObjectMap = null;
+            }
+
+        } while (ownerTagModified);
+
         readLocks.add(ownerTagsReadLock);
-
-        // must be separately locked
-        // ownerTagsReadLock is already locked so iterating over locks object
-        for (final Lock readLock : locks) {
-            readLock.lock();
-            readLocks.add(readLock);
-        }
-
-        // NB: must reverse it before returning because its unlocking must be in the
-        // reverse order
-        Collections.reverse(readLocks);
 
         return readLocks;
     }
@@ -1663,37 +1748,65 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
         try {
 
-            // internally this.ownerTags.size() (WeakHashMap) contains synchronization
-            // better avoid calling it
-            // normally there will be one sharedObject so the capacity may be
-            // considered as 2 because the load factor is 0.75f
+            boolean ownerTagModified = false;
+            Map<AbstractHtml, AbstractHtml5SharedObject> ownerTagSharedObjectMap = new HashMap<>(2);
+            List<ReadLock> readLocks = null;
 
-            final Set<AbstractHtml5SharedObject> sharedObjectsSet = new HashSet<>(1);
+            do {
+                if (ownerTagModified) {
+                    for (final Lock lock : readLocks) {
+                        lock.unlock();
+                    }
+                    ownerTagSharedObjectMap.clear();
+                }
 
-            for (final AbstractHtml ownerTag : ownerTags) {
-                sharedObjectsSet.add(ownerTag.getSharedObject());
-            }
+                // internally this.ownerTags.size() (WeakHashMap) contains synchronization
+                // better avoid calling it
+                // normally there will be one sharedObject so the capacity may be
+                // considered as 2 because the load factor is 0.75f
 
-            final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(sharedObjectsSet);
+                final Set<AbstractHtml5SharedObject> sharedObjectsSet = new HashSet<>(1);
 
-            sharedObjects.sort(Comparator.comparingLong(AbstractHtml5SharedObject::objectId));
+                for (final AbstractHtml ownerTag : ownerTags) {
+                    final AbstractHtml5SharedObject sharedObject = ownerTag.getSharedObject();
+                    sharedObjectsSet.add(sharedObject);
+                    ownerTagSharedObjectMap.put(ownerTag, sharedObject);
+                }
 
-            final Collection<ReadLock> locks = new HashSet<>(2);
+                final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(sharedObjectsSet);
 
-            for (final AbstractHtml5SharedObject sharedObject : sharedObjects) {
-                locks.add(sharedObject.getLock(ACCESS_OBJECT).readLock());
-            }
+                sharedObjects.sort(Comparator.comparingLong(AbstractHtml5SharedObject::objectId));
 
-            final List<ReadLock> readLocks = new ArrayList<>(locks);
+                final Collection<ReadLock> locks = new HashSet<>(2);
 
-            // must be separately locked
-            for (final ReadLock readLock : readLocks) {
-                readLock.lock();
-            }
+                for (final AbstractHtml5SharedObject sharedObject : sharedObjects) {
+                    locks.add(sharedObject.getLock(ACCESS_OBJECT).readLock());
+                }
 
-            // NB: must reverse it before returning because its unlocking must be in the
-            // reverse order
-            Collections.reverse(readLocks);
+                readLocks = new ArrayList<>(locks);
+
+                // must be separately locked
+                for (final ReadLock readLock : readLocks) {
+                    readLock.lock();
+                }
+
+                // NB: must reverse it before returning because its unlocking must be in the
+                // reverse order
+                Collections.reverse(readLocks);
+
+                ownerTagModified = false;
+                for (final Entry<AbstractHtml, AbstractHtml5SharedObject> entry : ownerTagSharedObjectMap.entrySet()) {
+                    if (!entry.getKey().getSharedObject().equals(entry.getValue())) {
+                        ownerTagModified = true;
+                        break;
+                    }
+                }
+
+                if (!ownerTagModified) {
+                    ownerTagSharedObjectMap = null;
+                }
+
+            } while (ownerTagModified);
 
             return readLocks;
         } finally {
