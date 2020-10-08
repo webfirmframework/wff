@@ -1570,10 +1570,10 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             }
             if (!ownerTagModified) {
                 ownerTagSharedObjectMap = null;
-                sharedObjectsSet = null;
-                sharedObjects = null;
-                locks = null;
             }
+            sharedObjectsSet = null;
+            sharedObjects = null;
+            locks = null;
 
         } while (ownerTagModified);
 
@@ -1656,10 +1656,10 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 }
                 if (!ownerTagModified) {
                     ownerTagSharedObjectMap = null;
-                    sharedObjectsSet = null;
-                    sharedObjects = null;
-                    locks = null;
                 }
+                sharedObjectsSet = null;
+                sharedObjects = null;
+                locks = null;
 
             } while (ownerTagModified);
 
@@ -1745,10 +1745,10 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             }
             if (!ownerTagModified) {
                 ownerTagSharedObjectMap = null;
-                sharedObjectsSet = null;
-                sharedObjects = null;
-                locks = null;
             }
+            sharedObjectsSet = null;
+            sharedObjects = null;
+            locks = null;
 
         } while (ownerTagModified);
 
@@ -1829,10 +1829,10 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
                 if (!ownerTagModified) {
                     ownerTagSharedObjectMap = null;
-                    sharedObjectsSet = null;
-                    sharedObjects = null;
-                    locks = null;
                 }
+                sharedObjectsSet = null;
+                sharedObjects = null;
+                locks = null;
 
             } while (ownerTagModified);
 
