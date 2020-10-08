@@ -1504,6 +1504,10 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         // lock must be called before using ownerTags
         ownerTagsWriteLock.lock();
 
+        Set<AbstractHtml5SharedObject> sharedObjectsSet;
+        List<AbstractHtml5SharedObject> sharedObjects;
+        List<WriteLock> locks;
+
         boolean ownerTagModified = false;
         Map<AbstractHtml, AbstractHtml5SharedObject> ownerTagSharedObjectMap = new HashMap<>(2);
         List<Lock> writeLocks = null;
@@ -1521,7 +1525,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             // normally there will be one sharedObject so the capacity may be
             // considered as 1
 
-            final Set<AbstractHtml5SharedObject> sharedObjectsSet = new HashSet<>(1);
+            sharedObjectsSet = new HashSet<>(1);
 
             for (final AbstractHtml ownerTag : ownerTags) {
                 final AbstractHtml5SharedObject sharedObject = ownerTag.getSharedObject();
@@ -1529,11 +1533,11 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 ownerTagSharedObjectMap.put(ownerTag, sharedObject);
             }
 
-            final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(sharedObjectsSet);
+            sharedObjects = new ArrayList<>(sharedObjectsSet);
 
             sharedObjects.sort(Comparator.comparingLong(AbstractHtml5SharedObject::objectId));
 
-            final List<WriteLock> locks = new ArrayList<>(sharedObjects.size());
+            locks = new ArrayList<>(sharedObjects.size());
 
             for (final AbstractHtml5SharedObject sharedObject : sharedObjects) {
                 locks.add(sharedObject.getLock(ACCESS_OBJECT).writeLock());
@@ -1566,6 +1570,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             }
             if (!ownerTagModified) {
                 ownerTagSharedObjectMap = null;
+                sharedObjectsSet = null;
+                sharedObjects = null;
+                locks = null;
             }
 
         } while (ownerTagModified);
@@ -1587,6 +1594,10 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
         try {
 
+            Set<AbstractHtml5SharedObject> sharedObjectsSet;
+            List<AbstractHtml5SharedObject> sharedObjects;
+            List<WriteLock> locks;
+
             boolean ownerTagModified = false;
             Map<AbstractHtml, AbstractHtml5SharedObject> ownerTagSharedObjectMap = new HashMap<>(2);
             List<WriteLock> writeLocks = null;
@@ -1603,7 +1614,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 // better avoid calling it
                 // normally there will be one sharedObject so the capacity may be
                 // considered as 1
-                final Set<AbstractHtml5SharedObject> sharedObjectsSet = new HashSet<>(1);
+                sharedObjectsSet = new HashSet<>(1);
 
                 for (final AbstractHtml ownerTag : ownerTags) {
                     final AbstractHtml5SharedObject sharedObject = ownerTag.getSharedObject();
@@ -1611,11 +1622,11 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                     ownerTagSharedObjectMap.put(ownerTag, sharedObject);
                 }
 
-                final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(sharedObjectsSet);
+                sharedObjects = new ArrayList<>(sharedObjectsSet);
 
                 sharedObjects.sort(Comparator.comparingLong(AbstractHtml5SharedObject::objectId));
 
-                final List<WriteLock> locks = new ArrayList<>(sharedObjects.size());
+                locks = new ArrayList<>(sharedObjects.size());
 
                 for (final AbstractHtml5SharedObject sharedObject : sharedObjects) {
                     locks.add(sharedObject.getLock(ACCESS_OBJECT).writeLock());
@@ -1645,6 +1656,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 }
                 if (!ownerTagModified) {
                     ownerTagSharedObjectMap = null;
+                    sharedObjectsSet = null;
+                    sharedObjects = null;
+                    locks = null;
                 }
 
             } while (ownerTagModified);
@@ -1669,6 +1683,10 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         // lock must be called before using ownerTags
         ownerTagsReadLock.lock();
 
+        Set<AbstractHtml5SharedObject> sharedObjectsSet;
+        List<AbstractHtml5SharedObject> sharedObjects;
+        Collection<ReadLock> locks;
+
         boolean ownerTagModified = false;
         Map<AbstractHtml, AbstractHtml5SharedObject> ownerTagSharedObjectMap = new HashMap<>(2);
         List<Lock> readLocks = null;
@@ -1687,7 +1705,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             // normally there will be one sharedObject so the capacity may be
             // considered as 2 because the load factor is 0.75f
 
-            final Set<AbstractHtml5SharedObject> sharedObjectsSet = new HashSet<>(1);
+            sharedObjectsSet = new HashSet<>(1);
 
             for (final AbstractHtml ownerTag : ownerTags) {
                 final AbstractHtml5SharedObject sharedObject = ownerTag.getSharedObject();
@@ -1695,11 +1713,11 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 ownerTagSharedObjectMap.put(ownerTag, sharedObject);
             }
 
-            final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(sharedObjectsSet);
+            sharedObjects = new ArrayList<>(sharedObjectsSet);
 
             sharedObjects.sort(Comparator.comparingLong(AbstractHtml5SharedObject::objectId));
 
-            final Collection<ReadLock> locks = new LinkedHashSet<>(sharedObjects.size());
+            locks = new LinkedHashSet<>(sharedObjects.size());
 
             for (final AbstractHtml5SharedObject sharedObject : sharedObjects) {
                 locks.add(sharedObject.getLock(ACCESS_OBJECT).readLock());
@@ -1727,6 +1745,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             }
             if (!ownerTagModified) {
                 ownerTagSharedObjectMap = null;
+                sharedObjectsSet = null;
+                sharedObjects = null;
+                locks = null;
             }
 
         } while (ownerTagModified);
@@ -1748,6 +1769,10 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
         try {
 
+            Set<AbstractHtml5SharedObject> sharedObjectsSet;
+            List<AbstractHtml5SharedObject> sharedObjects;
+            Collection<ReadLock> locks;
+
             boolean ownerTagModified = false;
             Map<AbstractHtml, AbstractHtml5SharedObject> ownerTagSharedObjectMap = new HashMap<>(2);
             List<ReadLock> readLocks = null;
@@ -1765,7 +1790,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 // normally there will be one sharedObject so the capacity may be
                 // considered as 2 because the load factor is 0.75f
 
-                final Set<AbstractHtml5SharedObject> sharedObjectsSet = new HashSet<>(1);
+                sharedObjectsSet = new HashSet<>(1);
 
                 for (final AbstractHtml ownerTag : ownerTags) {
                     final AbstractHtml5SharedObject sharedObject = ownerTag.getSharedObject();
@@ -1773,11 +1798,11 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                     ownerTagSharedObjectMap.put(ownerTag, sharedObject);
                 }
 
-                final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(sharedObjectsSet);
+                sharedObjects = new ArrayList<>(sharedObjectsSet);
 
                 sharedObjects.sort(Comparator.comparingLong(AbstractHtml5SharedObject::objectId));
 
-                final Collection<ReadLock> locks = new HashSet<>(2);
+                locks = new HashSet<>(2);
 
                 for (final AbstractHtml5SharedObject sharedObject : sharedObjects) {
                     locks.add(sharedObject.getLock(ACCESS_OBJECT).readLock());
@@ -1804,6 +1829,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
                 if (!ownerTagModified) {
                     ownerTagSharedObjectMap = null;
+                    sharedObjectsSet = null;
+                    sharedObjects = null;
+                    locks = null;
                 }
 
             } while (ownerTagModified);
