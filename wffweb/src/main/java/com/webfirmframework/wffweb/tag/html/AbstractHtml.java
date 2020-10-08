@@ -694,14 +694,14 @@ public abstract class AbstractHtml extends AbstractJsObject {
     public void removeAllChildren() {
 
         boolean listenerInvoked = false;
+        final Lock lock = lockAndGetWriteLock();
+
+        // should be after locking
         final AbstractHtml5SharedObject sharedObject = this.sharedObject;
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
 
         try {
 
-            lock.lock();
-
-            final AbstractHtml[] removedAbstractHtmls = children.toArray(new AbstractHtml[children.size()]);
+            final AbstractHtml[] removedAbstractHtmls = children.toArray(new AbstractHtml[0]);
             children.clear();
 
             initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(removedAbstractHtmls);
@@ -713,6 +713,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
         } finally {
             lock.unlock();
+
         }
         if (listenerInvoked) {
             final PushQueue pushQueue = sharedObject.getPushQueue(ACCESS_OBJECT);
@@ -731,7 +732,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     ChildTagRemoveListenerData removeAllChildrenAndGetEventsLockless(final boolean updateClient) {
 
-        final AbstractHtml[] removedAbstractHtmls = children.toArray(new AbstractHtml[children.size()]);
+        final AbstractHtml[] removedAbstractHtmls = children.toArray(new AbstractHtml[0]);
         children.clear();
 
         initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(removedAbstractHtmls);
@@ -1137,8 +1138,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     private <T> void addInnerHtml(final boolean updateClient, final SharedTagContent<T> sharedTagContent,
             final SharedTagContent.ContentFormatter<T> formatter, final boolean subscribe) {
 
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
-        lock.lock();
+        final Lock lock = lockAndGetWriteLock();
         try {
             if (sharedTagContent != null) {
                 final AbstractHtml noTagInserted = sharedTagContent.addInnerHtml(updateClient, this, formatter,
@@ -1183,8 +1183,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     @SuppressWarnings("unchecked")
     public <T> SharedTagContent<T> getSharedTagContent() {
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
-        lock.lock();
+        final Lock lock = lockAndGetReadLock();
         try {
             if (children.size() == 1) {
                 final Iterator<AbstractHtml> iterator = children.iterator();
@@ -1212,8 +1211,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     public boolean isSubscribedToSharedTagContent() {
 
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
-        lock.lock();
+        final Lock lock = lockAndGetReadLock();
         try {
             if (children.size() == 1) {
                 final Iterator<AbstractHtml> iterator = children.iterator();
@@ -1246,8 +1244,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
         boolean listenerInvoked = false;
         boolean removed = false;
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
-        lock.lock();
+        final Lock lock = lockAndGetReadLock();
         try {
             if (children.size() == 1) {
                 final Iterator<AbstractHtml> iterator = children.iterator();
@@ -1301,14 +1298,24 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @author WFF
      */
     public boolean removeChildren(final Collection<AbstractHtml> children) {
+
+        final List<Lock> locks = lockAndGetWriteLocks(children.toArray(new AbstractHtml[0]));
+
+        // must be after locking
         final AbstractHtml5SharedObject sharedObject = this.sharedObject;
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+
+//        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+//        lock.lock();
         boolean result = false;
+
         try {
-            lock.lock();
+
             result = this.children.removeAll(children);
         } finally {
-            lock.unlock();
+//            lock.unlock();
+            for (final Lock lck : locks) {
+                lck.unlock();
+            }
         }
         final PushQueue pushQueue = sharedObject.getPushQueue(ACCESS_OBJECT);
         if (pushQueue != null) {
@@ -1339,13 +1346,16 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     public boolean removeChild(final AbstractHtml child) {
 
+        final List<Lock> locks = lockAndGetWriteLocks(children.toArray(new AbstractHtml[0]));
+
+        // must be after locking
         final AbstractHtml5SharedObject sharedObject = this.sharedObject;
 
         boolean listenerInvoked = false;
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+//        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+//        lock.lock();
         boolean removed = false;
         try {
-            lock.lock();
 
             removed = children.remove(child);
 
@@ -1364,7 +1374,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
             }
 
         } finally {
-            lock.unlock();
+//            lock.unlock();
+            for (final Lock lck : locks) {
+                lck.unlock();
+            }
         }
         if (listenerInvoked) {
             final PushQueue pushQueue = sharedObject.getPushQueue(ACCESS_OBJECT);
@@ -2128,9 +2141,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
         final List<Lock> attrLocks = AttributeUtil.lockAndGetWriteLocks(ACCESS_OBJECT, attributes);
 
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+        final Lock lock = lockAndGetWriteLock();
         try {
-            lock.lock();
             listenerInvoked = addAttributesLockless(updateClient, attributes.toArray(new AbstractAttribute[0]));
         } finally {
             lock.unlock();
@@ -2231,8 +2243,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             return null;
         }
 
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
-        lock.lock();
+        final Lock lock = lockAndGetReadLock();
 
         try {
             attributesMap = this.attributesMap;
@@ -2276,10 +2287,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
             return null;
         }
 
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
+        final Lock lock = lockAndGetReadLock();
         AbstractAttribute result = null;
         try {
-            lock.lock();
             attributesMap = this.attributesMap;
 
             if (attributesMap != null) {
@@ -2360,8 +2370,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
         boolean listenerInvoked = false;
         boolean removed = false;
 
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
-        lock.lock();
+        final Lock lock = lockAndGetWriteLock();
         try {
 
             final Map<String, AbstractAttribute> attributesMap = this.attributesMap;
@@ -2500,10 +2509,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
         boolean removed = false;
         boolean listenerInvoked = false;
+        final Lock lock = lockAndGetWriteLock();
         final AbstractHtml5SharedObject sharedObject = this.sharedObject;
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
         try {
-            lock.lock();
 
             if (attributesMap == null) {
                 return false;
@@ -2716,9 +2724,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     public List<AbstractHtml> getChildren() {
 
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
+        final Lock lock = lockAndGetReadLock();
         try {
-            lock.lock();
 
             return Collections.unmodifiableList(new ArrayList<>(children));
         } finally {
@@ -2771,10 +2778,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     public AbstractHtml[] getChildrenAsArray() {
 
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
+        final Lock lock = lockAndGetReadLock();
         try {
-            lock.lock();
-
             return children.toArray(new AbstractHtml[children.size()]);
         } finally {
             lock.unlock();
@@ -2799,9 +2804,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
         // }
         // it's been replaced with locking
 
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
+        final Lock lock = lockAndGetReadLock();
         try {
-            lock.lock();
 
             // this must be most efficient because the javadoc of findFirst says
             // "This is a short-circuiting terminal operation."
@@ -2839,9 +2843,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
         // }
         // it's been replaced with locking
 
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
+        final Lock lock = lockAndGetReadLock();
         try {
-            lock.lock();
 
             // this must be most efficient because the javadoc of findFirst says
             // "This is a short-circuiting terminal operation."
@@ -2870,9 +2873,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @since 3.0.1
      */
     public int getChildrenSize() {
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
+        final Lock lock = lockAndGetReadLock();
         try {
-            lock.lock();
 
             return children.size();
         } finally {
@@ -2906,10 +2908,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
         if (index < 0) {
             throw new ArrayIndexOutOfBoundsException(index);
         }
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
+        final Lock lock = lockAndGetReadLock();
         try {
-
-            lock.lock();
 
             final int size = children.size();
             if (size == 0 || index > (size - 1)) {
@@ -2946,9 +2946,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
         // to be updated. Removing/adding another tag can also affect the
         // childIndex of that tag so that needs to be handled.
 
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
+        final Lock lock = lockAndGetReadLock();
         try {
-            lock.lock();
             final Iterator<AbstractHtml> iterator = children.iterator();
             int index = 0;
             while (iterator.hasNext()) {
@@ -3010,10 +3009,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     public boolean containsChild(final AbstractHtml childTag) {
 
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
+        final Lock lock = lockAndGetReadLock();
         try {
-            lock.lock();
-
             return children.contains(childTag);
         } finally {
             lock.unlock();
@@ -3028,10 +3025,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     public final String getOpeningTag() {
         if (isRebuild() || isModified()) {
-            final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+            final Lock lock = lockAndGetWriteLock();
             try {
-                lock.lock();
-
                 buildOpeningTag(true);
             } finally {
                 lock.unlock();
@@ -3059,10 +3054,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     protected String getPrintStructure() {
         if (isRebuild() || isModified()) {
-            final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+            final Lock lock = lockAndGetWriteLock();
             try {
-                lock.lock();
-
                 final String printStructure = getPrintStructure(true);
                 setRebuild(false);
                 return printStructure;
@@ -3070,10 +3063,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 lock.unlock();
             }
         } else {
-            final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
+            final Lock lock = lockAndGetReadLock();
             try {
-                lock.lock();
-
                 final String html = tagBuilder.toString();
                 return html;
             } finally {
@@ -3094,9 +3085,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
         if (rebuild || isRebuild() || isModified()) {
 
-            final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+            final Lock lock = lockAndGetWriteLock();
             try {
-                lock.lock();
                 beforePrintStructure();
                 if (tagBuilder.length() > 0) {
                     tagBuilder.delete(0, tagBuilder.length());
@@ -3113,9 +3103,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 lock.unlock();
             }
         }
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
+        final Lock lock = lockAndGetReadLock();
         try {
-            lock.lock();
             final String html = tagBuilder.toString();
             return html;
         } finally {
@@ -3148,9 +3137,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
     protected int writePrintStructureToOutputStream(final OutputStream os, final boolean rebuild, final Charset charset,
             final boolean flushOnWrite) throws IOException {
 
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+        final Lock lock = lockAndGetWriteLock();
         try {
-            lock.lock();
 
             beforeWritePrintStructureToOutputStream();
             final int[] totalWritten = { 0 };
@@ -3174,9 +3162,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     protected void writePrintStructureToWffBinaryMessageOutputStream(final boolean rebuild) throws IOException {
 
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+        final Lock lock = lockAndGetWriteLock();
         try {
-            lock.lock();
 
             beforeWritePrintStructureToWffBinaryMessageOutputStream();
             // passed 2 instead of 1 because the load factor is 0.75f
@@ -3227,9 +3214,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     public String toBigHtmlString() {
 
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+        final Lock lock = lockAndGetWriteLock();
         try {
-            lock.lock();
 
             final String printStructure = getPrintStructureWithoutRecursive(getSharedObject().isChildModified());
 
@@ -3264,9 +3250,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
     private String getPrintStructureWithoutRecursive(final boolean rebuild) {
 
         if (rebuild || isRebuild() || isModified()) {
-            final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+            final Lock lock = lockAndGetWriteLock();
             try {
-                lock.lock();
 
                 beforePrintStructure();
                 if (tagBuilder.length() > 0) {
@@ -3283,9 +3268,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
             }
         }
 
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
+        final Lock lock = lockAndGetReadLock();
         try {
-            lock.lock();
             final String html = tagBuilder.toString();
             return html;
         } finally {
@@ -3451,9 +3435,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
     private int writePrintStructureToOSWithoutRecursive(final Charset charset, final OutputStream os,
             final boolean rebuild, final boolean flushOnWrite) throws IOException {
 
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+        final Lock lock = lockAndGetWriteLock();
         try {
-            lock.lock();
 
             beforeWritePrintStructureToOutputStream();
             final int[] totalWritten = { 0 };
@@ -3887,9 +3870,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     @Override
     public String toHtmlString() {
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+        final Lock lock = lockAndGetWriteLock();
         try {
-            lock.lock();
 
             final String printStructure = getPrintStructure(getSharedObject().isChildModified());
 
@@ -3911,10 +3893,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     @Override
     public String toHtmlString(final Charset charset) {
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+        final Lock lock = lockAndGetWriteLock();
         final Charset previousCharset = this.charset;
         try {
-            lock.lock();
             this.charset = charset;
             // assigning it to new variable is very important here as this
             // line of code should invoke before finally block
@@ -3934,10 +3915,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     @Override
     public String toHtmlString(final String charset) {
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+        final Lock lock = lockAndGetWriteLock();
         final Charset previousCharset = this.charset;
         try {
-            lock.lock();
             this.charset = Charset.forName(charset);
             // assigning it to new variable is very important here as this
             // line of code should invoke before finally block
@@ -3971,10 +3951,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     @Override
     public String toHtmlString(final boolean rebuild, final Charset charset) {
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+        final Lock lock = lockAndGetWriteLock();
         final Charset previousCharset = this.charset;
         try {
-            lock.lock();
             this.charset = charset;
             // assigning it to new variable is very important here as this
             // line of code should invoke before finally block
@@ -3994,10 +3973,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     @Override
     public String toHtmlString(final boolean rebuild, final String charset) {
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+        final Lock lock = lockAndGetWriteLock();
         final Charset previousCharset = this.charset;
         try {
-            lock.lock();
             this.charset = Charset.forName(charset);
             // assigning it to new variable is very important here as this
             // line of code should invoke before finally block
@@ -4020,9 +3998,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
     @Deprecated
     void toOutputStream(final boolean asWffBinaryMessage, final OutputStream os) throws IOException {
 
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+        final Lock lock = lockAndGetWriteLock();
         try {
-            lock.lock();
 
             if (asWffBinaryMessage) {
                 try {
@@ -4459,9 +4436,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     public AbstractHtml clone(final String... excludeAttributes) throws CloneNotSupportedException {
 
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
+        final Lock lock = lockAndGetReadLock();
         try {
-            lock.lock();
 
             final AbstractHtml clonedObject = deepClone(this);
 
@@ -4729,9 +4705,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
         final byte[] encodedBytesForAtChar = "@".getBytes(charset);
         final byte[] encodedBytesForHashChar = "#".getBytes(charset);
 
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
+        final Lock lock = lockAndGetReadLock();
         try {
-            lock.lock();
 
             final Deque<NameValue> nameValues = new ArrayDeque<>();
 
@@ -5316,9 +5291,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
             synchronized (this) {
                 if (this.dataWffId == null) {
 
-                    final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+                    final Lock lock = lockAndGetWriteLock();
                     try {
-                        lock.lock();
                         addAttributesLockless(false, dataWffId);
                         this.dataWffId = dataWffId;
                     } finally {
@@ -6272,9 +6246,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
             throw new InvalidTagException("Child tag cannot be reset");
         }
 
-        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+        final Lock lock = lockAndGetWriteLock();
         try {
-            lock.lock();
 
             loopThroughAllNestedChildren(child -> {
                 child.removeAttributes(false, DataWffId.ATTRIBUTE_NAME);
@@ -6350,6 +6323,52 @@ public abstract class AbstractHtml extends AbstractJsObject {
         } while (!currentSO.equals(sharedObject));
 
         return locks;
+    }
+
+    /**
+     * NB: without this method this.sharedObject in the later execution of nested
+     * methods may be different than the lock acquired sharedObject, we have faced
+     * this issue that is why it is implemented.
+     *
+     * @return the lock
+     */
+    private Lock lockAndGetWriteLock() {
+
+        AbstractHtml5SharedObject currentSO;
+        Lock lock = null;
+        do {
+            if (lock != null) {
+                lock.unlock();
+            }
+            currentSO = sharedObject;
+            lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+            lock.lock();
+        } while (!currentSO.equals(sharedObject));
+
+        return lock;
+    }
+
+    /**
+     * NB: without this method this.sharedObject in the later execution of nested
+     * methods may be different than the lock acquired sharedObject, we have faced
+     * this issue that is why it is implemented.
+     *
+     * @return the lock
+     */
+    private Lock lockAndGetReadLock() {
+
+        AbstractHtml5SharedObject currentSO;
+        Lock lock = null;
+        do {
+            if (lock != null) {
+                lock.unlock();
+            }
+            currentSO = sharedObject;
+            lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
+            lock.lock();
+        } while (!currentSO.equals(sharedObject));
+
+        return lock;
     }
 
     /**
