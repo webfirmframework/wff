@@ -345,8 +345,8 @@ public abstract class BrowserPage implements Serializable {
             // TODO verify it in deep if it is good for production
             if (!pushWffBMBytesQueueLock.hasQueuedThreads() && !wffBMBytesQueue.isEmpty()) {
 
-                Thread taskThread = null;
-                waitingThreadRef.getAndSet(Thread.currentThread());
+                final Thread taskThread = Thread.currentThread();
+                waitingThreadRef.getAndSet(taskThread);
                 try {
                     pushWffBMBytesQueueLock.acquire();
                 } catch (final InterruptedException e) {
@@ -358,7 +358,6 @@ public abstract class BrowserPage implements Serializable {
                 }
 
                 try {
-                    taskThread = Thread.currentThread();
 
                     // wsPushInProgress must be implemented here and it is very
                     // important because multiple threads should not push
