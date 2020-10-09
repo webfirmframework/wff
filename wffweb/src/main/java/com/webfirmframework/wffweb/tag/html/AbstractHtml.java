@@ -132,6 +132,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     private volatile Map<String, AbstractAttribute> attributesMap;
 
+    // NB never assign null, it should never be null
     private volatile AbstractHtml5SharedObject sharedObject;
 
     private boolean htmlStartSBAsFirst;
