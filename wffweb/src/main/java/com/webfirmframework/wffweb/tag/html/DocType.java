@@ -66,7 +66,7 @@ public abstract class DocType extends AbstractHtml {
     @Override
     public String toHtmlString() {
         if (prependDocType) {
-            return new String((docTypeTag + "\n" + super.toHtmlString()).getBytes(getCharset()), getCharset());
+            return new StringBuilder(docTypeTag).append('\n').append(super.toHtmlString()).toString();
         }
         return super.toHtmlString();
     }
@@ -79,7 +79,7 @@ public abstract class DocType extends AbstractHtml {
     @Override
     public String toBigHtmlString() {
         if (prependDocType) {
-            return new String((docTypeTag + "\n" + super.toBigHtmlString()).getBytes(getCharset()), getCharset());
+            return new StringBuilder(docTypeTag).append('\n').append(super.toBigHtmlString()).toString();
         }
         return super.toBigHtmlString();
     }
@@ -93,66 +93,9 @@ public abstract class DocType extends AbstractHtml {
     @Override
     public String toBigHtmlString(final boolean rebuild) {
         if (prependDocType) {
-            return new String((docTypeTag + "\n" + super.toBigHtmlString(rebuild)).getBytes(getCharset()),
-                    getCharset());
+            return new StringBuilder(docTypeTag).append('\n').append(super.toBigHtmlString(rebuild)).toString();
         }
         return super.toBigHtmlString(rebuild);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.webfirmframework.wffweb.tag.html.AbstractHtml#toHtmlString(java.nio.
-     * charset.Charset)
-     */
-    @Override
-    public String toHtmlString(final Charset charset) {
-        final Charset previousCharset = super.getCharset();
-        try {
-            super.setCharset(charset);
-            if (prependDocType) {
-                // assigning it to new variable is very important here as this
-                // line of code should invoke before finally block
-                final String htmlString = new String(
-                        (super.toHtmlString(super.getCharset())).getBytes(super.getCharset()), getCharset());
-                return htmlString;
-            }
-
-            // assigning it to new variable is very important here as this line
-            // of code should invoke before finally block
-            final String htmlString = super.toHtmlString(super.getCharset());
-            return htmlString;
-        } finally {
-            super.setCharset(previousCharset);
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.webfirmframework.wffweb.tag.html.AbstractHtml#toHtmlString(java.lang.
-     * String)
-     */
-    @Override
-    public String toHtmlString(final String charset) {
-        final Charset previousCharset = super.getCharset();
-        try {
-            super.setCharset(Charset.forName(charset));
-            if (prependDocType) {
-                // assigning it to new variable is very important here as this
-                // line of code should invoke before finally block
-                final String htmlString = new String(
-                        (super.toHtmlString(super.getCharset())).getBytes(super.getCharset()), getCharset());
-                return htmlString;
-            }
-            // assigning it to new variable is very important here as this
-            // line of code should invoke before finally block
-            final String htmlString = super.toHtmlString(super.getCharset());
-            return htmlString;
-        } finally {
-            super.setCharset(previousCharset);
-        }
     }
 
     /*
@@ -163,63 +106,9 @@ public abstract class DocType extends AbstractHtml {
     @Override
     public String toHtmlString(final boolean rebuild) {
         if (prependDocType) {
-            return new String((docTypeTag + "\n" + super.toHtmlString(rebuild)).getBytes(getCharset()), getCharset());
+            return new StringBuilder(docTypeTag).append('\n').append(super.toHtmlString(rebuild)).toString();
         }
         return super.toHtmlString(rebuild);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.webfirmframework.wffweb.tag.html.AbstractHtml#toHtmlString(boolean,
-     * java.nio.charset.Charset)
-     */
-    @Override
-    public String toHtmlString(final boolean rebuild, final Charset charset) {
-        final Charset previousCharset = super.getCharset();
-        try {
-            super.setCharset(charset);
-            if (prependDocType) {
-                // assigning it to new variable is very important here as this
-                // line of code should invoke before finally block
-                final String htmlString = new String(
-                        (super.toHtmlString(rebuild, super.getCharset())).getBytes(getCharset()), getCharset());
-                return htmlString;
-            }
-            // assigning it to new variable is very important here as this
-            // line of code should invoke before finally block
-            final String htmlString = super.toHtmlString(rebuild, super.getCharset());
-            return htmlString;
-        } finally {
-            super.setCharset(previousCharset);
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.webfirmframework.wffweb.tag.html.AbstractHtml#toHtmlString(boolean,
-     * java.lang.String)
-     */
-    @Override
-    public String toHtmlString(final boolean rebuild, final String charset) {
-        final Charset previousCharset = super.getCharset();
-        try {
-            super.setCharset(previousCharset);
-            if (prependDocType) {
-                // assigning it to new variable is very important here as this
-                // line of code should invoke before finally block
-                final String htmlString = new String(
-                        (super.toHtmlString(rebuild, super.getCharset())).getBytes(getCharset()), getCharset());
-                return htmlString;
-            }
-            // assigning it to new variable is very important here as this
-            // line of code should invoke before finally block
-            final String htmlString = super.toHtmlString(rebuild, super.getCharset());
-            return htmlString;
-        } finally {
-            super.setCharset(previousCharset);
-        }
     }
 
     /*
@@ -273,6 +162,9 @@ public abstract class DocType extends AbstractHtml {
             final byte[] docTypeTagBytes = (docTypeTag + "\n").getBytes(getCharset());
             os.write(docTypeTagBytes);
             docTypeTagLength = docTypeTagBytes.length;
+            if (flushOnWrite) {
+                os.flush();
+            }
         }
         return docTypeTagLength + super.toOutputStream(os, rebuild, flushOnWrite);
     }
@@ -317,6 +209,9 @@ public abstract class DocType extends AbstractHtml {
             final byte[] docTypeTagBytes = (docTypeTag + "\n").getBytes(charset);
             os.write(docTypeTagBytes);
             docTypeTagLength = docTypeTagBytes.length;
+            if (flushOnWrite) {
+                os.flush();
+            }
         }
         return docTypeTagLength + super.toOutputStream(os, charset, flushOnWrite);
     }
@@ -382,6 +277,9 @@ public abstract class DocType extends AbstractHtml {
             final byte[] docTypeTagBytes = (docTypeTag + "\n").getBytes(charset);
             os.write(docTypeTagBytes);
             docTypeTagLength = docTypeTagBytes.length;
+            if (flushOnWrite) {
+                os.flush();
+            }
         }
         return docTypeTagLength + super.toOutputStream(os, rebuild, charset, flushOnWrite);
     }
@@ -535,6 +433,9 @@ public abstract class DocType extends AbstractHtml {
             final byte[] docTypeTagBytes = (docTypeTag + "\n").getBytes(charset);
             os.write(docTypeTagBytes);
             docTypeTagLength = docTypeTagBytes.length;
+            if (flushOnWrite) {
+                os.flush();
+            }
         }
         return docTypeTagLength + super.toBigOutputStream(os, rebuild, charset, flushOnWrite);
 
