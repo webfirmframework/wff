@@ -1582,7 +1582,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
             // NB: must reverse it before returning because its unlocking must be in the
             // reverse order
-            Collections.reverse(writeLocks);
+            if (writeLocks.size() > 1) {
+                Collections.reverse(writeLocks);
+            }
 
             ownerTagModified = false;
             OwnerTagRecord ownerTagRecord = null;
@@ -1669,7 +1671,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
                 // NB: must reverse it before returning because its unlocking must be in the
                 // reverse order
-                Collections.reverse(writeLocks);
+                if (writeLocks.size() > 1) {
+                    Collections.reverse(writeLocks);
+                }
 
                 ownerTagModified = false;
                 OwnerTagRecord ownerTagRecord = null;
@@ -1759,7 +1763,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
             // NB: must reverse it before returning because its unlocking must be in the
             // reverse order
-            Collections.reverse(readLocks);
+            if (readLocks.size() > 1) {
+                Collections.reverse(readLocks);
+            }
 
             ownerTagModified = false;
 
@@ -1845,7 +1851,9 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
                 // NB: must reverse it before returning because its unlocking must be in the
                 // reverse order
-                Collections.reverse(readLocks);
+                if (readLocks.size() > 1) {
+                    Collections.reverse(readLocks);
+                }
 
                 ownerTagModified = false;
                 OwnerTagRecord ownerTagRecord = null;

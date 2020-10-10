@@ -157,7 +157,10 @@ public final class TagUtil {
             lock.lock();
             locks.add(lock);
         }
-        Collections.reverse(locks);
+
+        if (locks.size() > 1) {
+            Collections.reverse(locks);
+        }
 
         return locks;
     }
@@ -190,7 +193,9 @@ public final class TagUtil {
             lock.lock();
             locks.add(lock);
         }
-        Collections.reverse(locks);
+        if (locks.size() > 1) {
+            Collections.reverse(locks);
+        }
 
         return locks;
     }
@@ -224,7 +229,9 @@ public final class TagUtil {
             lock.lock();
             locks.add(lock);
         }
-        Collections.reverse(locks);
+        if (locks.size() > 1) {
+            Collections.reverse(locks);
+        }
 
         return locks;
     }

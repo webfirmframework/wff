@@ -363,7 +363,10 @@ public final class AttributeUtil {
             attrLocks.add(writeLock);
         }
 
-        Collections.reverse(attrLocks);
+        if (attrLocks.size() > 1) {
+            Collections.reverse(attrLocks);
+        }
+
         return attrLocks;
     }
 
@@ -394,7 +397,10 @@ public final class AttributeUtil {
             attrLocks.add(writeLock);
         }
 
-        Collections.reverse(attrLocks);
+        if (attrLocks.size() > 1) {
+            Collections.reverse(attrLocks);
+        }
+
         return attrLocks;
     }
 
