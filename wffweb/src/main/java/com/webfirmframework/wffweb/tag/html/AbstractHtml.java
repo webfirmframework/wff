@@ -6302,6 +6302,24 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
+     * @param sharedObject from which the lock to get
+     * @return the read lock object
+     * @since 3.0.15
+     */
+    protected static final Lock getReadLock(final AbstractHtml5SharedObject sharedObject) {
+        return sharedObject.getLock(ACCESS_OBJECT).readLock();
+    }
+
+    /**
+     * @param sharedObject from which the lock to get
+     * @return the write lock object
+     * @since 3.0.15
+     */
+    protected static final Lock getWriteLock(final AbstractHtml5SharedObject sharedObject) {
+        return sharedObject.getLock(ACCESS_OBJECT).writeLock();
+    }
+
+    /**
      * NB: without this method this.sharedObject in the later execution of nested
      * methods may be different than the lock acquired sharedObject, we have faced
      * this issue that is why it is implemented.

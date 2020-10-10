@@ -21,11 +21,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
+import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.stream.Stream;
 import java.util.stream.Stream.Builder;
@@ -39,6 +38,24 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMData;
  * @since 2.1.8
  */
 public abstract class AbstractHtmlRepository {
+
+    /**
+     *
+     * @since 3.0.15
+     *
+     */
+    private static final class TagRecord {
+
+        private final AbstractHtml tag;
+
+        private final AbstractHtml5SharedObject sharedObject;
+
+        private TagRecord(final AbstractHtml tag, final AbstractHtml5SharedObject sharedObject) {
+            super();
+            this.tag = tag;
+            this.sharedObject = sharedObject;
+        }
+    }
 
     /**
      * @param tag
@@ -86,7 +103,7 @@ public abstract class AbstractHtmlRepository {
      * @since 3.0.1
      */
     protected static Collection<Lock> getReadLocks(final AbstractHtml... fromTags) {
-        return extractReadLocks(fromTags);
+        return extractReadLocks(new ArrayDeque<>(), fromTags);
     }
 
     /**
@@ -96,41 +113,145 @@ public abstract class AbstractHtmlRepository {
      */
     protected final static Collection<Lock> lockAndGetReadLocks(final AbstractHtml... fromTags) {
 
-        final List<Lock> readLocks = extractReadLocks(fromTags);
-        for (final Lock lock : readLocks) {
-            lock.lock();
-        }
+        List<Lock> readLocks = null;
+        // ownerTag state before lock
+        Deque<TagRecord> tagRecords;
 
-        Collections.reverse(readLocks);
+        boolean tagModified = false;
+        do {
+            if (tagModified) {
+                for (final Lock lock : readLocks) {
+                    lock.unlock();
+                }
+            }
+
+            tagRecords = new ArrayDeque<>();
+
+            readLocks = extractReadLocks(tagRecords, fromTags);
+            for (final Lock lock : readLocks) {
+                lock.lock();
+            }
+            Collections.reverse(readLocks);
+
+            tagModified = false;
+            TagRecord tagRecord = null;
+            while ((tagRecord = tagRecords.poll()) != null) {
+                if (!tagRecord.sharedObject.equals(tagRecord.tag.getSharedObject())) {
+                    tagModified = true;
+                    break;
+                }
+            }
+
+            tagRecords = null;
+        } while (tagModified);
 
         return readLocks;
     }
 
-    private static List<Lock> extractReadLocks(final AbstractHtml... fromTags) {
+    private static List<Lock> extractReadLocks(final Deque<TagRecord> tagRecords, final AbstractHtml... fromTags) {
 
         if (fromTags == null || fromTags.length == 0) {
             return Collections.emptyList();
         }
 
         if (fromTags.length == 1) {
-            return Arrays.asList(fromTags[0].getReadLock());
+            final AbstractHtml tag = fromTags[0];
+            final AbstractHtml5SharedObject sharedObject = tag.getSharedObject();
+            tagRecords.add(new TagRecord(tag, sharedObject));
+            return Arrays.asList(AbstractHtml.getReadLock(sharedObject));
         }
 
-        final Map<AbstractHtml5SharedObject, AbstractHtml> sharedObjects = new HashMap<>(fromTags.length);
+        final Set<AbstractHtml5SharedObject> sharedObjectsSet = new HashSet<>(fromTags.length);
 
         for (final AbstractHtml tag : fromTags) {
-            sharedObjects.put(tag.getSharedObject(), tag);
+            final AbstractHtml5SharedObject sharedObject = tag.getSharedObject();
+            sharedObjectsSet.add(sharedObject);
+            tagRecords.add(new TagRecord(tag, sharedObject));
         }
 
-        final List<Entry<AbstractHtml5SharedObject, AbstractHtml>> sortedSharedObjects = new ArrayList<>(
-                sharedObjects.entrySet());
+        final List<AbstractHtml5SharedObject> sortedSharedObjects = new ArrayList<>(sharedObjectsSet);
 
-        sortedSharedObjects.sort(Comparator.comparingLong(o -> o.getKey().objectId()));
+        sortedSharedObjects.sort(Comparator.comparingLong(AbstractHtml5SharedObject::objectId));
 
         final List<Lock> readLocks = new ArrayList<>(sortedSharedObjects.size());
 
-        for (final Entry<AbstractHtml5SharedObject, AbstractHtml> entry : sortedSharedObjects) {
-            readLocks.add(entry.getValue().getReadLock());
+        for (final AbstractHtml5SharedObject sharedObject : sortedSharedObjects) {
+            readLocks.add(AbstractHtml.getReadLock(sharedObject));
+        }
+        return readLocks;
+    }
+
+    /**
+     * @param fromTags
+     * @return the list of write lock
+     * @since 3.0.15
+     */
+    protected final static Collection<Lock> lockAndGetWriteLocks(final AbstractHtml... fromTags) {
+
+        List<Lock> readLocks = null;
+        // ownerTag state before lock
+        Deque<TagRecord> tagRecords;
+
+        boolean tagModified = false;
+        do {
+            if (tagModified) {
+                for (final Lock lock : readLocks) {
+                    lock.unlock();
+                }
+            }
+
+            tagRecords = new ArrayDeque<>();
+
+            readLocks = extractWriteLocks(tagRecords, fromTags);
+            for (final Lock lock : readLocks) {
+                lock.lock();
+            }
+            Collections.reverse(readLocks);
+
+            tagModified = false;
+            TagRecord tagRecord = null;
+            while ((tagRecord = tagRecords.poll()) != null) {
+                if (!tagRecord.sharedObject.equals(tagRecord.tag.getSharedObject())) {
+                    tagModified = true;
+                    break;
+                }
+            }
+
+            tagRecords = null;
+        } while (tagModified);
+
+        return readLocks;
+    }
+
+    private static List<Lock> extractWriteLocks(final Deque<TagRecord> tagRecords, final AbstractHtml... fromTags) {
+
+        if (fromTags == null || fromTags.length == 0) {
+            return Collections.emptyList();
+        }
+
+        if (fromTags.length == 1) {
+            final AbstractHtml tag = fromTags[0];
+            final AbstractHtml5SharedObject sharedObject = tag.getSharedObject();
+            tagRecords.add(new TagRecord(tag, sharedObject));
+            return Arrays.asList(AbstractHtml.getWriteLock(sharedObject));
+        }
+
+        final Set<AbstractHtml5SharedObject> sharedObjectsSet = new HashSet<>(fromTags.length);
+
+        for (final AbstractHtml tag : fromTags) {
+            final AbstractHtml5SharedObject sharedObject = tag.getSharedObject();
+            sharedObjectsSet.add(sharedObject);
+            tagRecords.add(new TagRecord(tag, sharedObject));
+        }
+
+        final List<AbstractHtml5SharedObject> sortedSharedObjects = new ArrayList<>(sharedObjectsSet);
+
+        sortedSharedObjects.sort(Comparator.comparingLong(AbstractHtml5SharedObject::objectId));
+
+        final List<Lock> readLocks = new ArrayList<>(sortedSharedObjects.size());
+
+        for (final AbstractHtml5SharedObject sharedObject : sortedSharedObjects) {
+            readLocks.add(AbstractHtml.getWriteLock(sharedObject));
         }
         return readLocks;
     }
