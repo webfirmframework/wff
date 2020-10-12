@@ -340,6 +340,10 @@ public abstract class BrowserPage implements Serializable {
 
         if (wsListener != null) {
 
+            if (!wffBMBytesHoldPushQueue.isEmpty()) {
+                copyCachedBMBytesToMainQ();
+            }
+
             // hasQueuedThreads internally uses transient volatile Node
             // so it must be fine for production use but
             // TODO verify it in deep if it is good for production
@@ -1711,8 +1715,9 @@ public abstract class BrowserPage implements Serializable {
      */
     public final void unholdPush() {
         if (holdPush.get() > 0) {
-            holdPush.decrementAndGet();
-            if (copyCachedBMBytesToMainQ()) {
+            final int count = holdPush.decrementAndGet();
+            // count should be second checking
+            if (copyCachedBMBytesToMainQ() || count == 0) {
                 pushWffBMBytesQueue();
             }
         }
