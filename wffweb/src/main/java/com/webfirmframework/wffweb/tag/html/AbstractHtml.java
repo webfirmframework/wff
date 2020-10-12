@@ -6306,7 +6306,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @return the read lock object
      * @since 3.0.15
      */
-    protected static final Lock getReadLock(final AbstractHtml5SharedObject sharedObject) {
+    static final Lock getReadLock(final AbstractHtml5SharedObject sharedObject) {
         return sharedObject.getLock(ACCESS_OBJECT).readLock();
     }
 
@@ -6315,7 +6315,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @return the write lock object
      * @since 3.0.15
      */
-    protected static final Lock getWriteLock(final AbstractHtml5SharedObject sharedObject) {
+    static final Lock getWriteLock(final AbstractHtml5SharedObject sharedObject) {
         return sharedObject.getLock(ACCESS_OBJECT).writeLock();
     }
 
