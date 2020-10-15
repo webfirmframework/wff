@@ -1352,10 +1352,8 @@ public class SharedTagContent<T> {
                         contentApplied = formatter.format(contentAfter);
                         if (contentApplied != null) {
                             noTag = new NoTag(null, contentApplied.content, contentApplied.contentTypeHtml);
-
                         } else {
                             noTag = prevNoTag;
-                            contentApplied = null;
                         }
                     } catch (final RuntimeException e) {
                         contentApplied = new Content<>("", false);

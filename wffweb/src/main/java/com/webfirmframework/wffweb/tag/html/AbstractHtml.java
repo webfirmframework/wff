@@ -35,6 +35,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -240,19 +241,26 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 final boolean removedAll = super.removeAll(validChildren);
 
                 if (removedAll) {
-                    initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(removedAbstractHtmls);
+                    final List<Lock> newSOLocks = initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(
+                            removedAbstractHtmls);
 
-                    final ChildTagRemoveListener listener = sharedObject.getChildTagRemoveListener(ACCESS_OBJECT);
+                    try {
+                        final ChildTagRemoveListener listener = sharedObject.getChildTagRemoveListener(ACCESS_OBJECT);
 
-                    if (listener != null) {
-                        listener.childrenRemoved(
-                                new ChildTagRemoveListener.Event(AbstractHtml.this, removedAbstractHtmls));
+                        if (listener != null) {
+                            listener.childrenRemoved(
+                                    new ChildTagRemoveListener.Event(AbstractHtml.this, removedAbstractHtmls));
+                        }
+
+                        sharedObject.setChildModified(removedAll);
+                    } finally {
+                        for (final Lock newSOLock : newSOLocks) {
+                            newSOLock.unlock();
+                        }
                     }
 
                 }
-                if (removedAll) {
-                    sharedObject.setChildModified(removedAll);
-                }
+
                 return removedAll;
             }
 
@@ -699,13 +707,14 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
         // should be after locking
         final AbstractHtml5SharedObject sharedObject = this.sharedObject;
-
+        List<Lock> newSOLocks = null;
         try {
 
             final AbstractHtml[] removedAbstractHtmls = children.toArray(new AbstractHtml[0]);
             children.clear();
 
-            initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(removedAbstractHtmls);
+            newSOLocks = initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(removedAbstractHtmls);
+
             final ChildTagRemoveListener listener = sharedObject.getChildTagRemoveListener(ACCESS_OBJECT);
             if (listener != null) {
                 listener.allChildrenRemoved(new ChildTagRemoveListener.Event(this, removedAbstractHtmls));
@@ -713,6 +722,11 @@ public abstract class AbstractHtml extends AbstractJsObject {
             }
 
         } finally {
+            if (newSOLocks != null) {
+                for (final Lock newSOLock : newSOLocks) {
+                    newSOLock.unlock();
+                }
+            }
             lock.unlock();
 
         }
@@ -736,16 +750,22 @@ public abstract class AbstractHtml extends AbstractJsObject {
         final AbstractHtml[] removedAbstractHtmls = children.toArray(new AbstractHtml[0]);
         children.clear();
 
-        initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(removedAbstractHtmls);
+        final List<Lock> newSOLocks = initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(removedAbstractHtmls);
 
-        if (updateClient) {
-            final AbstractHtml5SharedObject sharedObject = this.sharedObject;
-            final ChildTagRemoveListener listener = sharedObject.getChildTagRemoveListener(ACCESS_OBJECT);
-            if (listener != null) {
+        try {
+            if (updateClient) {
+                final AbstractHtml5SharedObject sharedObject = this.sharedObject;
+                final ChildTagRemoveListener listener = sharedObject.getChildTagRemoveListener(ACCESS_OBJECT);
+                if (listener != null) {
 
-                final ChildTagRemoveListenerData listenerData = new ChildTagRemoveListenerData(sharedObject, listener,
-                        new ChildTagRemoveListener.Event(this, removedAbstractHtmls));
-                return listenerData;
+                    final ChildTagRemoveListenerData listenerData = new ChildTagRemoveListenerData(sharedObject,
+                            listener, new ChildTagRemoveListener.Event(this, removedAbstractHtmls));
+                    return listenerData;
+                }
+            }
+        } finally {
+            for (final Lock newSOLock : newSOLocks) {
+                newSOLock.unlock();
             }
         }
 
@@ -793,14 +813,14 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
         // sharedObject should be after locking
         final AbstractHtml5SharedObject sharedObject = this.sharedObject;
-
+        List<Lock> newSOLocks = null;
         try {
 
             final Set<AbstractHtml> children = this.children;
             final AbstractHtml[] removedTags = children.toArray(new AbstractHtml[children.size()]);
             children.clear();
 
-            initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(removedTags);
+            newSOLocks = initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(removedTags);
 
             final InnerHtmlAddListener listener = sharedObject.getInnerHtmlAddListener(ACCESS_OBJECT);
 
@@ -857,6 +877,12 @@ public abstract class AbstractHtml extends AbstractJsObject {
             }
 
         } finally {
+            if (newSOLocks != null) {
+                for (final Lock newSOLock : newSOLocks) {
+                    newSOLock.unlock();
+                }
+            }
+
 //            lock.unlock();
             for (final Lock lck : locks) {
                 lck.unlock();
@@ -895,7 +921,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
         final AbstractHtml[] removedAbstractHtmls = children.toArray(new AbstractHtml[children.size()]);
         children.clear();
 
-        initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(removedAbstractHtmls);
+        initNewSharedObjectInAllNestedTagsAndSetSuperParentNullLockless(removedAbstractHtmls);
 
         final InnerHtmlAddListener listener = sharedObject.getInnerHtmlAddListener(ACCESS_OBJECT);
 
@@ -1262,13 +1288,20 @@ public abstract class AbstractHtml extends AbstractJsObject {
                                     .toArray(new AbstractHtml[children.size()]);
                             children.clear();
 
-                            initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(removedAbstractHtmls);
-                            final ChildTagRemoveListener listener = sharedObject
-                                    .getChildTagRemoveListener(ACCESS_OBJECT);
-                            if (listener != null) {
-                                listener.allChildrenRemoved(
-                                        new ChildTagRemoveListener.Event(this, removedAbstractHtmls));
-                                listenerInvoked = true;
+                            final List<Lock> newSOLocks = initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(
+                                    removedAbstractHtmls);
+                            try {
+                                final ChildTagRemoveListener listener = sharedObject
+                                        .getChildTagRemoveListener(ACCESS_OBJECT);
+                                if (listener != null) {
+                                    listener.allChildrenRemoved(
+                                            new ChildTagRemoveListener.Event(this, removedAbstractHtmls));
+                                    listenerInvoked = true;
+                                }
+                            } finally {
+                                for (final Lock newSOLock : newSOLocks) {
+                                    newSOLock.unlock();
+                                }
                             }
                         }
 
@@ -1347,7 +1380,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     public boolean removeChild(final AbstractHtml child) {
 
-        final List<Lock> locks = lockAndGetWriteLocks(children.toArray(new AbstractHtml[0]));
+        final List<Lock> locks = lockAndGetWriteLocks(child);
 
         // must be after locking
         final AbstractHtml5SharedObject sharedObject = this.sharedObject;
@@ -1356,6 +1389,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
 //        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
 //        lock.lock();
         boolean removed = false;
+
+        Lock newSOLock = null;
         try {
 
             removed = children.remove(child);
@@ -1363,7 +1398,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             if (removed) {
 
                 // making child.parent = null inside the below method.
-                initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(child);
+                newSOLock = initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(child, true);
 
                 final ChildTagRemoveListener listener = sharedObject.getChildTagRemoveListener(ACCESS_OBJECT);
 
@@ -1375,6 +1410,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
             }
 
         } finally {
+            if (newSOLock != null) {
+                newSOLock.unlock();
+            }
 //            lock.unlock();
             for (final Lock lck : locks) {
                 lck.unlock();
@@ -4482,14 +4520,51 @@ public abstract class AbstractHtml extends AbstractJsObject {
         this.charset = charset;
     }
 
-    private void initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(final AbstractHtml[] removedAbstractHtmls) {
+    /**
+     * @param removedAbstractHtmls
+     * @return the locks after locking
+     */
+    private List<Lock> initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(
+            final AbstractHtml[] removedAbstractHtmls) {
+        final List<Lock> locks = new ArrayList<Lock>(removedAbstractHtmls.length);
         for (final AbstractHtml abstractHtml : removedAbstractHtmls) {
-            initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(abstractHtml);
-
+            final Lock lock = initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(abstractHtml, true);
+            locks.add(lock);
         }
+        return locks;
     }
 
-    private void initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(final AbstractHtml abstractHtml) {
+    /**
+     * @param removedAbstractHtmls
+     * @return the locks after locking
+     */
+    private void initNewSharedObjectInAllNestedTagsAndSetSuperParentNullLockless(
+            final AbstractHtml[] removedAbstractHtmls) {
+
+        for (final AbstractHtml abstractHtml : removedAbstractHtmls) {
+            initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(abstractHtml, false);
+        }
+
+    }
+
+    /**
+     * @param abstractHtml
+     * @param lockSO       true to lock newly created sharedObject
+     * @return the lock after locking
+     */
+    private Lock initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(final AbstractHtml abstractHtml,
+            final boolean lockSO) {
+
+        final AbstractHtml5SharedObject newSharedObject = new AbstractHtml5SharedObject(abstractHtml);
+        final WriteLock lock;
+        if (lockSO) {
+            lock = newSharedObject.getLock(ACCESS_OBJECT).writeLock();
+            lock.lock();
+        } else {
+            lock = null;
+        }
+
+        abstractHtml.sharedObject = newSharedObject;
 
         if (abstractHtml.parent != null) {
             abstractHtml.parent = null;
@@ -4497,8 +4572,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
         }
 
         final Map<String, AbstractHtml> tagByWffId = sharedObject.getTagByWffId(ACCESS_OBJECT);
-
-        abstractHtml.sharedObject = new AbstractHtml5SharedObject(abstractHtml);
 
         final Deque<Set<AbstractHtml>> removedTagsStack = new ArrayDeque<>();
         // passed 2 instead of 1 because the load factor is 0.75f
@@ -4531,6 +4604,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
             }
 
         }
+
+        return lock;
     }
 
     /**
@@ -5806,108 +5881,120 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
             int count = 0;
 
-            for (final AbstractHtml parentChild : removedParentChildren) {
+            final List<Lock> newSOLocks = new ArrayList<Lock>(1);
 
-                if (equals(parentChild)) {
+            try {
 
-                    // must be the first statement, the replacing tag and
-                    // replacement tag could be same
-                    initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(parentChild);
+                for (final AbstractHtml parentChild : removedParentChildren) {
 
-                    for (final AbstractHtml tagToInsert : abstractHtmls) {
+                    if (equals(parentChild)) {
 
-                        final boolean alreadyHasParent = tagToInsert.parent != null;
+                        // must be the first statement, the replacing tag and
+                        // replacement tag could be same
+                        final Lock newSOLock = initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(parentChild,
+                                true);
+                        newSOLocks.add(newSOLock);
 
-                        if (replaceListener != null) {
-                            AbstractHtml previousParent = null;
+                        for (final AbstractHtml tagToInsert : abstractHtmls) {
+
+                            final boolean alreadyHasParent = tagToInsert.parent != null;
+
+                            if (replaceListener != null) {
+                                AbstractHtml previousParent = null;
+
+                                if (alreadyHasParent) {
+                                    if (tagToInsert.parent.sharedObject == thisSharedObject) {
+                                        previousParent = tagToInsert.parent;
+                                    } else {
+
+                                        if (tagToInsert.parent.sharedObject.getReplaceListener(ACCESS_OBJECT) == null) {
+                                            removeFromTagByWffIdMap(tagToInsert,
+                                                    tagToInsert.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
+                                        } // else {TODO also write the code to push
+                                          // changes to the other BrowserPage}
+
+                                    }
+
+                                }
+
+                                // if parentChild == tagToInsert then
+                                // tagToInsert.parent i.e. previousParent
+                                // will be null (because we are calling
+                                // initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(parentChild))
+                                // that is useful for not removing it
+                                // from the browser UI.
+                                final ReplaceListener.Event event = new ReplaceListener.Event(tagToInsert,
+                                        previousParent);
+                                events[count] = event;
+                                count++;
+                            } else if (alreadyHasParent) {
+                                if (tagToInsert.parent.sharedObject.getReplaceListener(ACCESS_OBJECT) == null) {
+                                    removeFromTagByWffIdMap(tagToInsert,
+                                            tagToInsert.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
+                                } // else {TODO also write the code to push
+                                  // changes to the other BrowserPage}
+                            }
+
+                            // if alreadyHasParent = true then it means the
+                            // child is
+                            // moving from one tag to another.
 
                             if (alreadyHasParent) {
-                                if (tagToInsert.parent.sharedObject == thisSharedObject) {
-                                    previousParent = tagToInsert.parent;
-                                } else {
-
-                                    if (tagToInsert.parent.sharedObject.getReplaceListener(ACCESS_OBJECT) == null) {
-                                        removeFromTagByWffIdMap(tagToInsert,
-                                                tagToInsert.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
-                                    } // else {TODO also write the code to push
-                                      // changes to the other BrowserPage}
-
+                                Lock foreignLock = null;
+                                AbstractHtml5SharedObject foreignSO = tagToInsert.sharedObject;
+                                if (foreignSO != null && !thisSharedObject.equals(foreignSO)) {
+                                    foreignLock = foreignSO.getLock(ACCESS_OBJECT).writeLock();
+                                    foreignSO = null;
+                                    foreignLock.lock();
                                 }
-
+                                try {
+                                    tagToInsert.parent.children.remove(tagToInsert);
+                                    initSharedObject(tagToInsert, thisSharedObject);
+                                    tagToInsert.parent = thisParent;
+                                } finally {
+                                    if (foreignLock != null) {
+                                        foreignLock.unlock();
+                                    }
+                                }
+                            } else {
+                                Lock foreignLock = null;
+                                AbstractHtml5SharedObject foreignSO = tagToInsert.sharedObject;
+                                if (foreignSO != null && !thisSharedObject.equals(foreignSO)) {
+                                    foreignLock = foreignSO.getLock(ACCESS_OBJECT).writeLock();
+                                    foreignSO = null;
+                                    foreignLock.lock();
+                                }
+                                try {
+                                    removeDataWffIdFromHierarchyLockless(tagToInsert);
+                                    initSharedObject(tagToInsert, thisSharedObject);
+                                    tagToInsert.parent = thisParent;
+                                } finally {
+                                    if (foreignLock != null) {
+                                        foreignLock.unlock();
+                                    }
+                                }
                             }
 
-                            // if parentChild == tagToInsert then
-                            // tagToInsert.parent i.e. previousParent
-                            // will be null (because we are calling
-                            // initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(parentChild))
-                            // that is useful for not removing it
-                            // from the browser UI.
-                            final ReplaceListener.Event event = new ReplaceListener.Event(tagToInsert, previousParent);
-                            events[count] = event;
-                            count++;
-                        } else if (alreadyHasParent) {
-                            if (tagToInsert.parent.sharedObject.getReplaceListener(ACCESS_OBJECT) == null) {
-                                removeFromTagByWffIdMap(tagToInsert,
-                                        tagToInsert.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
-                            } // else {TODO also write the code to push
-                              // changes to the other BrowserPage}
+                            thisParent.children.add(tagToInsert);
                         }
 
-                        // if alreadyHasParent = true then it means the
-                        // child is
-                        // moving from one tag to another.
-
-                        if (alreadyHasParent) {
-                            Lock foreignLock = null;
-                            AbstractHtml5SharedObject foreignSO = tagToInsert.sharedObject;
-                            if (foreignSO != null && !thisSharedObject.equals(foreignSO)) {
-                                foreignLock = foreignSO.getLock(ACCESS_OBJECT).writeLock();
-                                foreignSO = null;
-                                foreignLock.lock();
-                            }
-                            try {
-                                tagToInsert.parent.children.remove(tagToInsert);
-                                initSharedObject(tagToInsert, thisSharedObject);
-                                tagToInsert.parent = thisParent;
-                            } finally {
-                                if (foreignLock != null) {
-                                    foreignLock.unlock();
-                                }
-                            }
-                        } else {
-                            Lock foreignLock = null;
-                            AbstractHtml5SharedObject foreignSO = tagToInsert.sharedObject;
-                            if (foreignSO != null && !thisSharedObject.equals(foreignSO)) {
-                                foreignLock = foreignSO.getLock(ACCESS_OBJECT).writeLock();
-                                foreignSO = null;
-                                foreignLock.lock();
-                            }
-                            try {
-                                removeDataWffIdFromHierarchyLockless(tagToInsert);
-                                initSharedObject(tagToInsert, thisSharedObject);
-                                tagToInsert.parent = thisParent;
-                            } finally {
-                                if (foreignLock != null) {
-                                    foreignLock.unlock();
-                                }
-                            }
-                        }
-
-                        thisParent.children.add(tagToInsert);
+                    } else {
+                        thisParent.children.add(parentChild);
                     }
 
-                } else {
-                    thisParent.children.add(parentChild);
                 }
 
-            }
+                if (replaceListener != null) {
+                    replaceListener.replacedWith(thisParent, this, events);
+                    results[1] = true;
+                }
 
-            if (replaceListener != null) {
-                replaceListener.replacedWith(thisParent, this, events);
-                results[1] = true;
+                results[0] = true;
+            } finally {
+                for (final Lock newSOLock : newSOLocks) {
+                    newSOLock.unlock();
+                }
             }
-
-            results[0] = true;
 
         }
         return results;
