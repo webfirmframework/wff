@@ -6360,7 +6360,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 lock.unlock();
             }
             currentSO = sharedObject;
-            lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+            lock = currentSO.getLock(ACCESS_OBJECT).writeLock();
             lock.lock();
         } while (!currentSO.equals(sharedObject));
 
@@ -6383,7 +6383,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 lock.unlock();
             }
             currentSO = sharedObject;
-            lock = sharedObject.getLock(ACCESS_OBJECT).readLock();
+            lock = currentSO.getLock(ACCESS_OBJECT).readLock();
             lock.lock();
         } while (!currentSO.equals(sharedObject));
 
