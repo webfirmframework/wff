@@ -4564,6 +4564,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
             lock = null;
         }
 
+        // NB: the following code is never expected to make an exception otherwise on
+        // exception the lock must be unlocked.
+
         abstractHtml.sharedObject = newSharedObject;
 
         if (abstractHtml.parent != null) {
@@ -4575,7 +4578,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
         final Deque<Set<AbstractHtml>> removedTagsStack = new ArrayDeque<>();
         // passed 2 instead of 1 because the load factor is 0.75f
-        final HashSet<AbstractHtml> initialSet = new HashSet<>(2);
+        final Set<AbstractHtml> initialSet = new HashSet<>(1);
         initialSet.add(abstractHtml);
         removedTagsStack.push(initialSet);
 
@@ -4594,7 +4597,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                     });
                 }
 
-                stackChild.sharedObject = abstractHtml.sharedObject;
+                stackChild.sharedObject = newSharedObject;
 
                 final Set<AbstractHtml> subChildren = stackChild.children;
 
@@ -4685,7 +4688,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             // ArrayDeque give better performance than Stack, LinkedList
             final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
             // passed 2 instead of 1 because the load factor is 0.75f
-            final HashSet<AbstractHtml> initialSet = new HashSet<>(2);
+            final Set<AbstractHtml> initialSet = new HashSet<>(2);
             initialSet.add(this);
             childrenStack.push(initialSet);
 
@@ -4789,7 +4792,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             // ArrayDeque give better performance than Stack, LinkedList
             final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
             // passed 2 instead of 1 because the load factor is 0.75f
-            final HashSet<AbstractHtml> initialSet = new HashSet<>(2);
+            final Set<AbstractHtml> initialSet = new HashSet<>(2);
             initialSet.add(this);
             childrenStack.push(initialSet);
 
@@ -4953,7 +4956,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             // ArrayDeque give better performance than Stack, LinkedList
             final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
             // passed 2 instead of 1 because the load factor is 0.75f
-            final HashSet<AbstractHtml> initialSet = new HashSet<>(2);
+            final Set<AbstractHtml> initialSet = new HashSet<>(2);
             initialSet.add(this);
             childrenStack.push(initialSet);
 
@@ -5477,7 +5480,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * from its parent if this method is called.
      *
      * @param tags tags for the replacement of this tag
-     * @return true if replace otherwise false.
+     * @return true if replaced otherwise false.
      * @throws NoParentException if this tag has no parent
      * @since 3.0.7
      */
@@ -5490,7 +5493,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * this tag will be removed from its parent if this method is called.
      *
      * @param tags tags for the replacement of this tag
-     * @return true if replace otherwise false.
+     * @return true if replaced otherwise false.
      * @since 3.0.15
      */
     public boolean replaceWithIfPossible(final AbstractHtml... tags) {
@@ -5504,7 +5507,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *
      * @param skipException skips NoParentException
      * @param tags          tags for the replacement of this tag
-     * @return true if replace otherwise false.
+     * @return true if replaced otherwise false.
      * @since 3.0.15
      */
     private boolean replaceWith(final boolean skipException, final AbstractHtml... tags) {
