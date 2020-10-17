@@ -387,24 +387,28 @@ public abstract class AbstractHtml extends AbstractJsObject {
         tagNameIndexBytes = null;
         noTagContentTypeHtml = false;
 
-        final Lock parentLock;
+        final List<Lock> parentLocks;
         final Lock childLock;
 
         if (base == null) {
             sharedObject = new AbstractHtml5SharedObject(this);
-            parentLock = null;
+            parentLocks = null;
             childLock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+            if (childLock != null) {
+                childLock.lock();
+            }
         } else {
-            parentLock = base.sharedObject.getLock(ACCESS_OBJECT).writeLock();
+
+            // parentLock = base.sharedObject.getLock(ACCESS_OBJECT).writeLock();
             childLock = sharedObject != null ? sharedObject.getLock(ACCESS_OBJECT).writeLock() : null;
+
+            if (childLock != null) {
+                childLock.lock();
+            }
+
+            parentLocks = TagUtil.lockAndGetWriteLocks(base, ACCESS_OBJECT, children);
         }
 
-        if (parentLock != null) {
-            parentLock.lock();
-        }
-        if (childLock != null) {
-            childLock.lock();
-        }
         try {
 
             initInConstructor();
@@ -427,8 +431,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
             appendChildrenLockless(children);
             // childAppended(parent, this);
         } finally {
-            if (parentLock != null) {
-                parentLock.unlock();
+            if (parentLocks != null) {
+                for (final Lock parentLock : parentLocks) {
+                    parentLock.unlock();
+                }
             }
             if (childLock != null) {
                 childLock.unlock();
@@ -6419,19 +6425,19 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     private List<Lock> lockAndGetWriteLocks(final AbstractHtml... foreignTags) {
 
-        AbstractHtml5SharedObject currentSO;
-        List<Lock> locks = null;
-        do {
-            if (locks != null) {
-                for (final Lock lck : locks) {
-                    lck.unlock();
-                }
-            }
-            currentSO = sharedObject;
-            locks = TagUtil.lockAndGetWriteLocks(ACCESS_OBJECT, currentSO, foreignTags);
-        } while (!currentSO.equals(sharedObject));
+//        AbstractHtml5SharedObject currentSO;
+//        List<Lock> locks = null;
+//        do {
+//            if (locks != null) {
+//                for (final Lock lck : locks) {
+//                    lck.unlock();
+//                }
+//            }
+//            currentSO = sharedObject;
+//            locks = TagUtil.lockAndGetWriteLocks(this, ACCESS_OBJECT, foreignTags);
+//        } while (!currentSO.equals(sharedObject));
 
-        return locks;
+        return TagUtil.lockAndGetWriteLocks(this, ACCESS_OBJECT, foreignTags);
     }
 
     /**
