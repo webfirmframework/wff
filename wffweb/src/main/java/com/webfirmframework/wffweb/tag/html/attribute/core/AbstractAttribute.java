@@ -1541,14 +1541,14 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 }
             }
 
-            ownerTagRecords = new ArrayDeque<>();
+            ownerTagRecords = new ArrayDeque<>(2);
 
             // internally this.ownerTags.size() (WeakHashMap) contains synchronization so
             // better avoid calling it
             // normally there will be one sharedObject so the capacity may be
             // considered as 1
 
-            sharedObjectsSet = new HashSet<>(1);
+            sharedObjectsSet = new HashSet<>(2);
 
             for (final AbstractHtml ownerTag : ownerTags) {
                 final AbstractHtml5SharedObject sharedObject = ownerTag.getSharedObject();
@@ -1634,13 +1634,13 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                     }
                 }
 
-                ownerTagRecords = new ArrayDeque<>();
+                ownerTagRecords = new ArrayDeque<>(2);
 
                 // internally this.ownerTags.size() (WeakHashMap) contains synchronization so
                 // better avoid calling it
                 // normally there will be one sharedObject so the capacity may be
                 // considered as 1
-                sharedObjectsSet = new HashSet<>(1);
+                sharedObjectsSet = new HashSet<>(2);
 
                 for (final AbstractHtml ownerTag : ownerTags) {
                     final AbstractHtml5SharedObject sharedObject = ownerTag.getSharedObject();
@@ -1727,14 +1727,14 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 }
             }
 
-            ownerTagRecords = new ArrayDeque<>();
+            ownerTagRecords = new ArrayDeque<>(2);
 
             // internally this.ownerTags.size() (WeakHashMap) contains synchronization
             // better avoid calling it
             // normally there will be one sharedObject so the capacity may be
             // considered as 2 because the load factor is 0.75f
 
-            sharedObjectsSet = new HashSet<>(1);
+            sharedObjectsSet = new HashSet<>(2);
 
             for (final AbstractHtml ownerTag : ownerTags) {
                 final AbstractHtml5SharedObject sharedObject = ownerTag.getSharedObject();
@@ -1817,14 +1817,14 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                     }
                 }
 
-                ownerTagRecords = new ArrayDeque<>();
+                ownerTagRecords = new ArrayDeque<>(2);
 
                 // internally this.ownerTags.size() (WeakHashMap) contains synchronization
                 // better avoid calling it
                 // normally there will be one sharedObject so the capacity may be
                 // considered as 2 because the load factor is 0.75f
 
-                sharedObjectsSet = new HashSet<>(1);
+                sharedObjectsSet = new HashSet<>(2);
 
                 for (final AbstractHtml ownerTag : ownerTags) {
                     final AbstractHtml5SharedObject sharedObject = ownerTag.getSharedObject();

@@ -171,7 +171,7 @@ public final class TagUtil {
                     lock.unlock();
                 }
             }
-            ownerTagRecords = new ArrayDeque<>();
+            ownerTagRecords = new ArrayDeque<>(foreignTags.length + 1);
             sharedObjectsSet = new LinkedHashSet<>(foreignTags.length + 1);
 
             for (final AbstractHtml eachTag : foreignTags) {
