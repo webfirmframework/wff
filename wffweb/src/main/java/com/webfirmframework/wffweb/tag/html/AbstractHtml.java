@@ -388,24 +388,15 @@ public abstract class AbstractHtml extends AbstractJsObject {
         noTagContentTypeHtml = false;
 
         final List<Lock> parentLocks;
-        final Lock childLock;
+        final Lock lock;
 
         if (base == null) {
             sharedObject = new AbstractHtml5SharedObject(this);
             parentLocks = null;
-            childLock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
-            if (childLock != null) {
-                childLock.lock();
-            }
+            lock = lockAndGetWriteLock();
+
         } else {
-
-            // parentLock = base.sharedObject.getLock(ACCESS_OBJECT).writeLock();
-            childLock = sharedObject != null ? sharedObject.getLock(ACCESS_OBJECT).writeLock() : null;
-
-            if (childLock != null) {
-                childLock.lock();
-            }
-
+            lock = null;
             parentLocks = TagUtil.lockAndGetWriteLocks(base, ACCESS_OBJECT, children);
         }
 
@@ -436,8 +427,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
                     parentLock.unlock();
                 }
             }
-            if (childLock != null) {
-                childLock.unlock();
+            if (lock != null) {
+                lock.unlock();
             }
         }
     }
@@ -454,23 +445,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
         tagNameIndexBytes = null;
         this.noTagContentTypeHtml = noTagContentTypeHtml;
 
-        final Lock parentLock;
-        final Lock childLock;
+        final Lock lock;
 
         if (base == null) {
             sharedObject = new AbstractHtml5SharedObject(this);
-            parentLock = null;
-            childLock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+            lock = lockAndGetWriteLock();
         } else {
-            parentLock = base.sharedObject.getLock(ACCESS_OBJECT).writeLock();
-            childLock = sharedObject != null ? sharedObject.getLock(ACCESS_OBJECT).writeLock() : null;
-        }
-
-        if (parentLock != null) {
-            parentLock.lock();
-        }
-        if (childLock != null) {
-            childLock.lock();
+            lock = base.lockAndGetWriteLock();
         }
 
         try {
@@ -498,12 +479,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             // childAppended(parent, this);
 
         } finally {
-            if (parentLock != null) {
-                parentLock.unlock();
-            }
-            if (childLock != null) {
-                childLock.unlock();
-            }
+            lock.unlock();
         }
     }
 
@@ -532,23 +508,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
         final List<Lock> attrLocks = AttributeUtil.lockAndGetWriteLocks(ACCESS_OBJECT, attributes);
 
-        final Lock parentLock;
-        final Lock childLock;
+        final Lock lock;
 
         if (base == null) {
             sharedObject = new AbstractHtml5SharedObject(this);
-            parentLock = null;
-            childLock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+            lock = lockAndGetWriteLock();
         } else {
-            parentLock = base.sharedObject.getLock(ACCESS_OBJECT).writeLock();
-            childLock = sharedObject != null ? sharedObject.getLock(ACCESS_OBJECT).writeLock() : null;
-        }
-
-        if (parentLock != null) {
-            parentLock.lock();
-        }
-        if (childLock != null) {
-            childLock.lock();
+            lock = base.lockAndGetWriteLock();
         }
 
         try {
@@ -575,15 +541,11 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
             // childAppended(parent, this);
         } finally {
-            if (parentLock != null) {
-                parentLock.unlock();
-            }
-            if (childLock != null) {
-                childLock.unlock();
-            }
+            lock.unlock();
+
             if (attrLocks != null) {
-                for (final Lock lock : attrLocks) {
-                    lock.unlock();
+                for (final Lock attrLock : attrLocks) {
+                    attrLock.unlock();
                 }
             }
         }
@@ -608,24 +570,21 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
         final List<Lock> attrLocks = AttributeUtil.lockAndGetWriteLocks(ACCESS_OBJECT, attributes);
 
-        final Lock parentLock;
-        final Lock childLock;
+        final Lock lock;
 
         if (base == null) {
             sharedObject = new AbstractHtml5SharedObject(this);
-            parentLock = null;
-            childLock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+            lock = lockAndGetWriteLock();
         } else {
-            parentLock = base.sharedObject.getLock(ACCESS_OBJECT).writeLock();
-            childLock = sharedObject != null ? sharedObject.getLock(ACCESS_OBJECT).writeLock() : null;
+            lock = base.lockAndGetWriteLock();
         }
 
-        if (parentLock != null) {
-            parentLock.lock();
-        }
-        if (childLock != null) {
-            childLock.lock();
-        }
+//        if (parentLock != null) {
+//            parentLock.lock();
+//        }
+//        if (childLock != null) {
+//            childLock.lock();
+//        }
 
         try {
 
@@ -652,15 +611,11 @@ public abstract class AbstractHtml extends AbstractJsObject {
             // childAppended(parent, this);
 
         } finally {
-            if (parentLock != null) {
-                parentLock.unlock();
-            }
-            if (childLock != null) {
-                childLock.unlock();
-            }
+            lock.unlock();
+
             if (attrLocks != null) {
-                for (final Lock lock : attrLocks) {
-                    lock.unlock();
+                for (final Lock attrLock : attrLocks) {
+                    attrLock.unlock();
                 }
             }
 
@@ -2643,24 +2598,15 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
         final List<Lock> attrLocks = AttributeUtil.lockAndGetWriteLocks(ACCESS_OBJECT, attributes);
 
-        final Lock parentLock;
-        final Lock childLock;
+        final Lock lock;
 
         if (base == null) {
             sharedObject = new AbstractHtml5SharedObject(this);
-            parentLock = null;
-            childLock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+            lock = lockAndGetWriteLock();
         } else {
-            parentLock = base.sharedObject.getLock(ACCESS_OBJECT).writeLock();
-            childLock = sharedObject != null ? sharedObject.getLock(ACCESS_OBJECT).writeLock() : null;
+            lock = base.lockAndGetWriteLock();
         }
 
-        if (parentLock != null) {
-            parentLock.lock();
-        }
-        if (childLock != null) {
-            childLock.lock();
-        }
         try {
 
             initAttributes(attributes);
@@ -2686,15 +2632,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
             // }
 
         } finally {
-            if (parentLock != null) {
-                parentLock.unlock();
-            }
-            if (childLock != null) {
-                childLock.unlock();
-            }
+            lock.unlock();
             if (attrLocks != null) {
-                for (final Lock lock : attrLocks) {
-                    lock.unlock();
+                for (final Lock attrLock : attrLocks) {
+                    attrLock.unlock();
                 }
             }
         }
