@@ -1534,6 +1534,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         boolean ownerTagModified = false;
         List<Lock> writeLocks = null;
 
+        int capacity = 2;
+
         do {
             if (ownerTagModified) {
                 for (final Lock lock : writeLocks) {
@@ -1541,14 +1543,14 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 }
             }
 
-            ownerTagRecords = new ArrayDeque<>(2);
+            ownerTagRecords = new ArrayDeque<>(capacity);
 
             // internally this.ownerTags.size() (WeakHashMap) contains synchronization so
             // better avoid calling it
             // normally there will be one sharedObject so the capacity may be
             // considered as 1
 
-            sharedObjectsSet = new HashSet<>(2);
+            sharedObjectsSet = new HashSet<>(capacity);
 
             for (final AbstractHtml ownerTag : ownerTags) {
                 final AbstractHtml5SharedObject sharedObject = ownerTag.getSharedObject();
@@ -1557,6 +1559,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             }
 
             sharedObjects = new ArrayList<>(sharedObjectsSet);
+            capacity = sharedObjects.size();
 
             sharedObjects.sort(Comparator.comparingLong(AbstractHtml5SharedObject::objectId));
 
@@ -1627,6 +1630,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             boolean ownerTagModified = false;
             List<WriteLock> writeLocks = null;
 
+            int capacity = 2;
+
             do {
                 if (ownerTagModified) {
                     for (final Lock lock : writeLocks) {
@@ -1634,13 +1639,13 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                     }
                 }
 
-                ownerTagRecords = new ArrayDeque<>(2);
+                ownerTagRecords = new ArrayDeque<>(capacity);
 
                 // internally this.ownerTags.size() (WeakHashMap) contains synchronization so
                 // better avoid calling it
                 // normally there will be one sharedObject so the capacity may be
                 // considered as 1
-                sharedObjectsSet = new HashSet<>(2);
+                sharedObjectsSet = new HashSet<>(capacity);
 
                 for (final AbstractHtml ownerTag : ownerTags) {
                     final AbstractHtml5SharedObject sharedObject = ownerTag.getSharedObject();
@@ -1649,6 +1654,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 }
 
                 sharedObjects = new ArrayList<>(sharedObjectsSet);
+                capacity = sharedObjects.size();
 
                 sharedObjects.sort(Comparator.comparingLong(AbstractHtml5SharedObject::objectId));
 
@@ -1719,7 +1725,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         Deque<OwnerTagRecord> ownerTagRecords;
         boolean ownerTagModified = false;
         List<Lock> readLocks = null;
-
+        int capacity = 2;
         do {
             if (ownerTagModified) {
                 for (final Lock lock : readLocks) {
@@ -1727,14 +1733,14 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 }
             }
 
-            ownerTagRecords = new ArrayDeque<>(2);
+            ownerTagRecords = new ArrayDeque<>(capacity);
 
             // internally this.ownerTags.size() (WeakHashMap) contains synchronization
             // better avoid calling it
             // normally there will be one sharedObject so the capacity may be
             // considered as 2 because the load factor is 0.75f
 
-            sharedObjectsSet = new HashSet<>(2);
+            sharedObjectsSet = new HashSet<>(capacity);
 
             for (final AbstractHtml ownerTag : ownerTags) {
                 final AbstractHtml5SharedObject sharedObject = ownerTag.getSharedObject();
@@ -1743,6 +1749,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             }
 
             sharedObjects = new ArrayList<>(sharedObjectsSet);
+            capacity = sharedObjects.size();
 
             sharedObjects.sort(Comparator.comparingLong(AbstractHtml5SharedObject::objectId));
 
@@ -1809,6 +1816,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             Deque<OwnerTagRecord> ownerTagRecords;
             boolean ownerTagModified = false;
             List<ReadLock> readLocks = null;
+            int capacity = 2;
 
             do {
                 if (ownerTagModified) {
@@ -1817,14 +1825,14 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                     }
                 }
 
-                ownerTagRecords = new ArrayDeque<>(2);
+                ownerTagRecords = new ArrayDeque<>(capacity);
 
                 // internally this.ownerTags.size() (WeakHashMap) contains synchronization
                 // better avoid calling it
                 // normally there will be one sharedObject so the capacity may be
                 // considered as 2 because the load factor is 0.75f
 
-                sharedObjectsSet = new HashSet<>(2);
+                sharedObjectsSet = new HashSet<>(capacity);
 
                 for (final AbstractHtml ownerTag : ownerTags) {
                     final AbstractHtml5SharedObject sharedObject = ownerTag.getSharedObject();
@@ -1833,6 +1841,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 }
 
                 sharedObjects = new ArrayList<>(sharedObjectsSet);
+                capacity = sharedObjects.size();
 
                 sharedObjects.sort(Comparator.comparingLong(AbstractHtml5SharedObject::objectId));
 
