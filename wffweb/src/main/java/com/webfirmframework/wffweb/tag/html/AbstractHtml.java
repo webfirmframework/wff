@@ -2130,11 +2130,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
     public void addAttributes(final boolean updateClient, final Collection<AbstractAttribute> attributes) {
 
         boolean listenerInvoked = false;
-        final AbstractHtml5SharedObject sharedObject = this.sharedObject;
 
         final List<Lock> attrLocks = AttributeUtil.lockAndGetWriteLocks(ACCESS_OBJECT, attributes);
 
         final Lock lock = lockAndGetWriteLock();
+
+        final AbstractHtml5SharedObject sharedObject = this.sharedObject;
+
         try {
             listenerInvoked = addAttributesLockless(updateClient, attributes.toArray(new AbstractAttribute[0]));
         } finally {
@@ -2359,11 +2361,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     public boolean removeAttributes(final boolean updateClient, final AbstractAttribute... attributes) {
 
-        final AbstractHtml5SharedObject sharedObject = this.sharedObject;
         boolean listenerInvoked = false;
         boolean removed = false;
 
+        final List<Lock> attrLocks = AttributeUtil.lockAndGetWriteLocks(ACCESS_OBJECT, attributes);
+
         final Lock lock = lockAndGetWriteLock();
+        final AbstractHtml5SharedObject sharedObject = this.sharedObject;
         try {
 
             final Map<String, AbstractAttribute> attributesMap = this.attributesMap;
@@ -2376,14 +2380,15 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
             for (final AbstractAttribute attribute : attributes) {
 
-                if (attribute.unsetOwnerTag(this)) {
-                    final String attributeName = attribute.getAttributeName();
-                    attributesMap.remove(attributeName);
-                    removed = true;
+                if (AttributeUtil.unassignOwnerTag(ACCESS_OBJECT, attribute, this)
+                        && attributesMap.remove(attribute.getAttributeName()) != null) {
+
                     removedAttributes.add(attribute);
                 }
 
             }
+
+            removed = removedAttributes.size() > 0;
 
             if (removed) {
                 this.attributes = attributesMap.values().toArray(new AbstractAttribute[attributesMap.size()]);
@@ -2405,6 +2410,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
             }
         } finally {
             lock.unlock();
+            for (final Lock attrLock : attrLocks) {
+                attrLock.unlock();
+            }
         }
 
         if (listenerInvoked) {
@@ -2434,7 +2442,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             return false;
         }
 
-        if (thisDataWffId.unsetOwnerTag(this)) {
+        if (AttributeUtil.unassignOwnerTag(ACCESS_OBJECT, thisDataWffId, this)) {
             final String attributeName = thisDataWffId.getAttributeName();
             final AbstractAttribute prev = thisAttributesMap.remove(attributeName);
             removed = prev != null;
@@ -2500,27 +2508,59 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     public boolean removeAttributes(final boolean updateClient, final String... attributeNames) {
 
+        Lock lock = lockAndGetReadLock();
+
+        final Set<AbstractAttribute> attributesToRemove = new HashSet<AbstractAttribute>(attributeNames.length);
+
+        try {
+            if (attributesMap == null) {
+                return false;
+            }
+            for (final String attributeName : attributeNames) {
+
+                final AbstractAttribute attribute = attributesMap.get(attributeName);
+
+                if (attribute != null) {
+                    attributesToRemove.add(attribute);
+                }
+
+//                if (attribute != null) {
+//                    attribute.unsetOwnerTag(this);
+//                    attributesMap.remove(attributeName);
+//                    removed = true;
+//                }
+
+            }
+
+        } finally {
+            lock.unlock();
+        }
+
         boolean removed = false;
         boolean listenerInvoked = false;
-        final Lock lock = lockAndGetWriteLock();
+
+        final List<Lock> attrLocks = AttributeUtil.lockAndGetWriteLocks(ACCESS_OBJECT,
+                attributesToRemove.toArray(new AbstractAttribute[attributesToRemove.size()]));
+
+        lock = lockAndGetWriteLock();
         final AbstractHtml5SharedObject sharedObject = this.sharedObject;
+
         try {
 
             if (attributesMap == null) {
                 return false;
             }
 
-            for (final String attributeName : attributeNames) {
+            final List<String> removedAttributeNames = new ArrayList<String>(attributesToRemove.size());
 
-                final AbstractAttribute attribute = attributesMap.get(attributeName);
-
-                if (attribute != null) {
-                    attribute.unsetOwnerTag(this);
-                    attributesMap.remove(attributeName);
-                    removed = true;
+            for (final AbstractAttribute attribute : attributesToRemove) {
+                if (AttributeUtil.unassignOwnerTag(ACCESS_OBJECT, attribute, this)
+                        && attributesMap.remove(attribute.getAttributeName()) != null) {
+                    removedAttributeNames.add(attribute.getAttributeName());
                 }
-
             }
+
+            removed = removedAttributeNames.size() > 0;
 
             if (removed) {
                 attributes = attributesMap.values().toArray(new AbstractAttribute[attributesMap.size()]);
@@ -2532,7 +2572,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                     final AttributeRemoveListener listener = sharedObject.getAttributeRemoveListener(ACCESS_OBJECT);
                     if (listener != null) {
                         final AttributeRemoveListener.RemovedEvent event = new AttributeRemoveListener.RemovedEvent(
-                                this, attributeNames);
+                                this, removedAttributeNames.toArray(new String[removedAttributeNames.size()]));
 
                         listener.removedAttributes(event);
                         listenerInvoked = true;
@@ -2540,6 +2580,12 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 }
             }
         } finally {
+            if (attrLocks != null) {
+                for (final Lock attrLock : attrLocks) {
+                    attrLock.unlock();
+                }
+            }
+
             lock.unlock();
         }
 
