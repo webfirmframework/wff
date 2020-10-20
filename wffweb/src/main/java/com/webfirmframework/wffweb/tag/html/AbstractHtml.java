@@ -2536,6 +2536,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
             lock.unlock();
         }
 
+        if (attributesToRemove.size() == 0) {
+            return false;
+        }
+
         boolean removed = false;
         boolean listenerInvoked = false;
 
