@@ -43,13 +43,13 @@ public abstract class AbstractHtmlRepository {
      * @since 3.0.15
      *
      */
-    private static final class TagRecord {
+    private static final class TagContractRecord {
 
         private final AbstractHtml tag;
 
         private final AbstractHtml5SharedObject sharedObject;
 
-        private TagRecord(final AbstractHtml tag, final AbstractHtml5SharedObject sharedObject) {
+        private TagContractRecord(final AbstractHtml tag, final AbstractHtml5SharedObject sharedObject) {
             super();
             this.tag = tag;
             this.sharedObject = sharedObject;
@@ -57,6 +57,10 @@ public abstract class AbstractHtmlRepository {
 
         private long objectId() {
             return sharedObject.objectId();
+        }
+
+        private boolean isValid() {
+            return sharedObject.equals(tag.getSharedObject());
         }
     }
 
@@ -133,7 +137,7 @@ public abstract class AbstractHtmlRepository {
             return Collections.emptyList();
         }
 
-        List<TagRecord> tagRecords;
+        List<TagContractRecord> tagContractRecords;
         boolean tagModified = false;
         List<Lock> locks = null;
         do {
@@ -144,24 +148,30 @@ public abstract class AbstractHtmlRepository {
                 }
             }
 
-            tagRecords = new ArrayList<>(fromTags.length);
+            tagContractRecords = new ArrayList<>(fromTags.length);
 
             for (final AbstractHtml tag : fromTags) {
                 final AbstractHtml5SharedObject sharedObject = tag.getSharedObject();
-                tagRecords.add(new TagRecord(tag, sharedObject));
+                tagContractRecords.add(new TagContractRecord(tag, sharedObject));
             }
 
-            tagRecords.sort(Comparator.comparingLong(TagRecord::objectId));
+            tagContractRecords.sort(Comparator.comparingLong(TagContractRecord::objectId));
 
-            locks = new ArrayList<>(tagRecords.size());
+            locks = new ArrayList<>(tagContractRecords.size());
 
             tagModified = false;
-            for (final TagRecord tagRecord : tagRecords) {
-                final Lock lock = writeLock ? AbstractHtml.getWriteLock(tagRecord.sharedObject)
-                        : AbstractHtml.getReadLock(tagRecord.sharedObject);
+            for (final TagContractRecord tagContractRecord : tagContractRecords) {
+                if (!tagContractRecord.isValid()) {
+                    tagModified = true;
+                    break;
+                }
+
+                final Lock lock = writeLock ? AbstractHtml.getWriteLock(tagContractRecord.sharedObject)
+                        : AbstractHtml.getReadLock(tagContractRecord.sharedObject);
                 lock.lock();
                 locks.add(lock);
-                if (!tagRecord.sharedObject.equals(tagRecord.tag.getSharedObject())) {
+
+                if (!tagContractRecord.isValid()) {
                     tagModified = true;
                     break;
                 }
@@ -178,7 +188,8 @@ public abstract class AbstractHtmlRepository {
         return locks;
     }
 
-    private static List<Lock> extractReadLocks(final Deque<TagRecord> tagRecords, final AbstractHtml... fromTags) {
+    private static List<Lock> extractReadLocks(final Deque<TagContractRecord> tagContractRecords,
+            final AbstractHtml... fromTags) {
 
         if (fromTags == null || fromTags.length == 0) {
             return Collections.emptyList();
@@ -187,7 +198,7 @@ public abstract class AbstractHtmlRepository {
         if (fromTags.length == 1) {
             final AbstractHtml tag = fromTags[0];
             final AbstractHtml5SharedObject sharedObject = tag.getSharedObject();
-            tagRecords.add(new TagRecord(tag, sharedObject));
+            tagContractRecords.add(new TagContractRecord(tag, sharedObject));
 
             final List<Lock> locks = new ArrayList<>(1);
             locks.add(AbstractHtml.getReadLock(sharedObject));
@@ -199,7 +210,7 @@ public abstract class AbstractHtmlRepository {
         for (final AbstractHtml tag : fromTags) {
             final AbstractHtml5SharedObject sharedObject = tag.getSharedObject();
             sharedObjectsSet.add(sharedObject);
-            tagRecords.add(new TagRecord(tag, sharedObject));
+            tagContractRecords.add(new TagContractRecord(tag, sharedObject));
         }
 
         final List<AbstractHtml5SharedObject> sortedSharedObjects = new ArrayList<>(sharedObjectsSet);

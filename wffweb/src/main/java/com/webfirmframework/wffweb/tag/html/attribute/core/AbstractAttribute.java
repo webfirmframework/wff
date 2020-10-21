@@ -119,20 +119,24 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @since 3.0.15
      *
      */
-    private static final class OwnerTagRecord {
+    private static final class TagContractRecord {
 
-        private final AbstractHtml ownerTag;
+        private final AbstractHtml tag;
 
         private final AbstractHtml5SharedObject sharedObject;
 
-        private OwnerTagRecord(final AbstractHtml ownerTag, final AbstractHtml5SharedObject sharedObject) {
+        private TagContractRecord(final AbstractHtml tag, final AbstractHtml5SharedObject sharedObject) {
             super();
-            this.ownerTag = ownerTag;
+            this.tag = tag;
             this.sharedObject = sharedObject;
         }
 
         private long objectId() {
             return sharedObject.objectId();
+        }
+
+        private boolean isValid() {
+            return sharedObject.equals(tag.getSharedObject());
         }
     }
 
@@ -1528,7 +1532,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         ownerTagsWriteLock.lock();
 
         // ownerTag state before lock
-        List<OwnerTagRecord> ownerTagRecords;
+        List<TagContractRecord> tagContractRecords;
         boolean ownerTagModified = false;
         List<Lock> writeLocks = null;
 
@@ -1541,7 +1545,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 }
             }
 
-            ownerTagRecords = new ArrayList<>(capacity);
+            tagContractRecords = new ArrayList<>(capacity);
 
             // internally this.ownerTags.size() (WeakHashMap) contains synchronization so
             // better avoid calling it
@@ -1549,21 +1553,25 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             // considered as 1
 
             for (final AbstractHtml ownerTag : ownerTags) {
-                final AbstractHtml5SharedObject sharedObject = ownerTag.getSharedObject();
-                ownerTagRecords.add(new OwnerTagRecord(ownerTag, sharedObject));
+                tagContractRecords.add(new TagContractRecord(ownerTag, ownerTag.getSharedObject()));
             }
 
-            ownerTagRecords.sort(Comparator.comparingLong(OwnerTagRecord::objectId));
-            capacity = ownerTagRecords.size();
+            tagContractRecords.sort(Comparator.comparingLong(TagContractRecord::objectId));
+            capacity = tagContractRecords.size();
 
-            writeLocks = new ArrayList<>(ownerTagRecords.size() + 1);
+            writeLocks = new ArrayList<>(tagContractRecords.size() + 1);
             ownerTagModified = false;
-            for (final OwnerTagRecord ownerTagRecord : ownerTagRecords) {
-                final WriteLock lock = ownerTagRecord.sharedObject.getLock(ACCESS_OBJECT).writeLock();
+            for (final TagContractRecord tagContractRecord : tagContractRecords) {
+                if (!tagContractRecord.isValid()) {
+                    ownerTagModified = true;
+                    break;
+                }
+
+                final WriteLock lock = tagContractRecord.sharedObject.getLock(ACCESS_OBJECT).writeLock();
                 lock.lock();
                 writeLocks.add(lock);
 
-                if (!ownerTagRecord.sharedObject.equals(ownerTagRecord.ownerTag.getSharedObject())) {
+                if (!tagContractRecord.isValid()) {
                     ownerTagModified = true;
                     break;
                 }
@@ -1595,7 +1603,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         try {
 
             // ownerTag state before lock
-            List<OwnerTagRecord> ownerTagRecords;
+            List<TagContractRecord> tagContractRecords;
             boolean ownerTagModified = false;
             List<WriteLock> writeLocks = null;
 
@@ -1608,28 +1616,32 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                     }
                 }
 
-                ownerTagRecords = new ArrayList<>(capacity);
+                tagContractRecords = new ArrayList<>(capacity);
 
                 // internally this.ownerTags.size() (WeakHashMap) contains synchronization so
                 // better avoid calling it
                 // normally there will be one sharedObject so the capacity may be
                 // considered as 1
                 for (final AbstractHtml ownerTag : ownerTags) {
-                    final AbstractHtml5SharedObject sharedObject = ownerTag.getSharedObject();
-                    ownerTagRecords.add(new OwnerTagRecord(ownerTag, sharedObject));
+                    tagContractRecords.add(new TagContractRecord(ownerTag, ownerTag.getSharedObject()));
                 }
 
-                ownerTagRecords.sort(Comparator.comparingLong(OwnerTagRecord::objectId));
-                capacity = ownerTagRecords.size();
+                tagContractRecords.sort(Comparator.comparingLong(TagContractRecord::objectId));
+                capacity = tagContractRecords.size();
 
-                writeLocks = new ArrayList<>(ownerTagRecords.size());
+                writeLocks = new ArrayList<>(tagContractRecords.size());
                 ownerTagModified = false;
-                for (final OwnerTagRecord ownerTagRecord : ownerTagRecords) {
-                    final WriteLock lock = ownerTagRecord.sharedObject.getLock(ACCESS_OBJECT).writeLock();
+                for (final TagContractRecord tagContractRecord : tagContractRecords) {
+                    if (!tagContractRecord.isValid()) {
+                        ownerTagModified = true;
+                        break;
+                    }
+
+                    final WriteLock lock = tagContractRecord.sharedObject.getLock(ACCESS_OBJECT).writeLock();
                     lock.lock();
                     writeLocks.add(lock);
 
-                    if (!ownerTagRecord.sharedObject.equals(ownerTagRecord.ownerTag.getSharedObject())) {
+                    if (!tagContractRecord.isValid()) {
                         ownerTagModified = true;
                         break;
                     }
@@ -1664,7 +1676,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         ownerTagsReadLock.lock();
 
         // ownerTag state before lock
-        List<OwnerTagRecord> ownerTagRecords;
+        List<TagContractRecord> tagContractRecords;
         boolean ownerTagModified = false;
         List<Lock> readLocks = null;
         int capacity = ownerTags.size();
@@ -1675,7 +1687,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 }
             }
 
-            ownerTagRecords = new ArrayList<>(capacity);
+            tagContractRecords = new ArrayList<>(capacity);
 
             // internally this.ownerTags.size() (WeakHashMap) contains synchronization so
             // better avoid calling it
@@ -1683,21 +1695,25 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             // considered as 1
 
             for (final AbstractHtml ownerTag : ownerTags) {
-                final AbstractHtml5SharedObject sharedObject = ownerTag.getSharedObject();
-                ownerTagRecords.add(new OwnerTagRecord(ownerTag, sharedObject));
+                tagContractRecords.add(new TagContractRecord(ownerTag, ownerTag.getSharedObject()));
             }
 
-            ownerTagRecords.sort(Comparator.comparingLong(OwnerTagRecord::objectId));
-            capacity = ownerTagRecords.size();
+            tagContractRecords.sort(Comparator.comparingLong(TagContractRecord::objectId));
+            capacity = tagContractRecords.size();
 
-            readLocks = new ArrayList<>(ownerTagRecords.size() + 1);
+            readLocks = new ArrayList<>(tagContractRecords.size() + 1);
             ownerTagModified = false;
-            for (final OwnerTagRecord ownerTagRecord : ownerTagRecords) {
-                final ReadLock lock = ownerTagRecord.sharedObject.getLock(ACCESS_OBJECT).readLock();
+            for (final TagContractRecord tagContractRecord : tagContractRecords) {
+                if (!tagContractRecord.isValid()) {
+                    ownerTagModified = true;
+                    break;
+                }
+
+                final ReadLock lock = tagContractRecord.sharedObject.getLock(ACCESS_OBJECT).readLock();
                 lock.lock();
                 readLocks.add(lock);
 
-                if (!ownerTagRecord.sharedObject.equals(ownerTagRecord.ownerTag.getSharedObject())) {
+                if (!tagContractRecord.isValid()) {
                     ownerTagModified = true;
                     break;
                 }
@@ -1729,7 +1745,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         try {
 
             // ownerTag state before lock
-            List<OwnerTagRecord> ownerTagRecords;
+            List<TagContractRecord> tagContractRecords;
             boolean ownerTagModified = false;
             List<ReadLock> readLocks = null;
             int capacity = ownerTags.size();
@@ -1741,7 +1757,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                     }
                 }
 
-                ownerTagRecords = new ArrayList<>(capacity);
+                tagContractRecords = new ArrayList<>(capacity);
 
                 // internally this.ownerTags.size() (WeakHashMap) contains synchronization so
                 // better avoid calling it
@@ -1749,21 +1765,25 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 // considered as 1
 
                 for (final AbstractHtml ownerTag : ownerTags) {
-                    final AbstractHtml5SharedObject sharedObject = ownerTag.getSharedObject();
-                    ownerTagRecords.add(new OwnerTagRecord(ownerTag, sharedObject));
+                    tagContractRecords.add(new TagContractRecord(ownerTag, ownerTag.getSharedObject()));
                 }
 
-                ownerTagRecords.sort(Comparator.comparingLong(OwnerTagRecord::objectId));
-                capacity = ownerTagRecords.size();
+                tagContractRecords.sort(Comparator.comparingLong(TagContractRecord::objectId));
+                capacity = tagContractRecords.size();
 
-                readLocks = new ArrayList<>(ownerTagRecords.size());
+                readLocks = new ArrayList<>(tagContractRecords.size());
                 ownerTagModified = false;
-                for (final OwnerTagRecord ownerTagRecord : ownerTagRecords) {
-                    final ReadLock lock = ownerTagRecord.sharedObject.getLock(ACCESS_OBJECT).readLock();
+                for (final TagContractRecord tagContractRecord : tagContractRecords) {
+                    if (!tagContractRecord.isValid()) {
+                        ownerTagModified = true;
+                        break;
+                    }
+
+                    final ReadLock lock = tagContractRecord.sharedObject.getLock(ACCESS_OBJECT).readLock();
                     lock.lock();
                     readLocks.add(lock);
 
-                    if (!ownerTagRecord.sharedObject.equals(ownerTagRecord.ownerTag.getSharedObject())) {
+                    if (!tagContractRecord.isValid()) {
                         ownerTagModified = true;
                         break;
                     }

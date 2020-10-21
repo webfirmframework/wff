@@ -43,13 +43,13 @@ public final class TagUtil {
      * @since 3.0.15
      *
      */
-    private static final class TagRecord {
+    private static final class TagContractRecord {
 
         private final AbstractHtml tag;
 
         private final AbstractHtml5SharedObject sharedObject;
 
-        private TagRecord(final AbstractHtml ownerTag, final AbstractHtml5SharedObject sharedObject) {
+        private TagContractRecord(final AbstractHtml ownerTag, final AbstractHtml5SharedObject sharedObject) {
             super();
             tag = ownerTag;
             this.sharedObject = sharedObject;
@@ -57,6 +57,10 @@ public final class TagUtil {
 
         private long objectId() {
             return sharedObject.objectId();
+        }
+
+        private boolean isValid() {
+            return sharedObject.equals(tag.getSharedObject());
         }
     }
 
@@ -160,7 +164,7 @@ public final class TagUtil {
         List<Lock> locks = null;
 
         // tag state before lock
-        List<TagRecord> tagRecords;
+        List<TagContractRecord> tagContractRecords;
         boolean tagModified = false;
 
         do {
@@ -171,28 +175,34 @@ public final class TagUtil {
                 }
             }
 
-            tagRecords = new ArrayList<>(foreignTags.length + 1);
+            tagContractRecords = new ArrayList<>(foreignTags.length + 1);
 
             for (final AbstractHtml eachTag : foreignTags) {
-                tagRecords.add(new TagRecord(eachTag, eachTag.getSharedObjectLockless()));
+                tagContractRecords.add(new TagContractRecord(eachTag, eachTag.getSharedObjectLockless()));
             }
 
-            tagRecords.add(new TagRecord(currentTag, currentTag.getSharedObjectLockless()));
+            tagContractRecords.add(new TagContractRecord(currentTag, currentTag.getSharedObjectLockless()));
 
             // lock should be called on the order of objectId otherwise there will be
             // deadlock
-            tagRecords.sort(Comparator.comparingLong(TagRecord::objectId));
+            tagContractRecords.sort(Comparator.comparingLong(TagContractRecord::objectId));
 
-            locks = new ArrayList<>(tagRecords.size());
+            locks = new ArrayList<>(tagContractRecords.size());
 
             tagModified = false;
 
-            for (final TagRecord tagRecord : tagRecords) {
-                final Lock lock = tagRecord.sharedObject.getLock(accessObject).writeLock();
+            for (final TagContractRecord tagContractRecord : tagContractRecords) {
+
+                if (!tagContractRecord.isValid()) {
+                    tagModified = true;
+                    break;
+                }
+
+                final Lock lock = tagContractRecord.sharedObject.getLock(accessObject).writeLock();
                 lock.lock();
                 locks.add(lock);
 
-                if (!tagRecord.sharedObject.equals(tagRecord.tag.getSharedObject())) {
+                if (!tagContractRecord.isValid()) {
                     tagModified = true;
                     break;
                 }
