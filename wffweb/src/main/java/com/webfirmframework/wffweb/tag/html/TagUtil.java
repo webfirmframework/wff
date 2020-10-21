@@ -49,9 +49,9 @@ public final class TagUtil {
 
         private final AbstractHtml5SharedObject sharedObject;
 
-        private TagContractRecord(final AbstractHtml ownerTag, final AbstractHtml5SharedObject sharedObject) {
+        private TagContractRecord(final AbstractHtml tag, final AbstractHtml5SharedObject sharedObject) {
             super();
-            tag = ownerTag;
+            this.tag = tag;
             this.sharedObject = sharedObject;
         }
 
