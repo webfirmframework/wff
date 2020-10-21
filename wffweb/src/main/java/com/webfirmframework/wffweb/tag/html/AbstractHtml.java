@@ -4248,6 +4248,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
+     * NB: it will not always return the same object as could be modified by the
+     * framework at any time.
+     *
      * @return the sharedObject
      * @author WFF
      * @since 1.0.0

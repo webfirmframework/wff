@@ -177,7 +177,7 @@ public final class TagUtil {
                 tagRecords.add(new TagRecord(eachTag, eachTag.getSharedObjectLockless()));
             }
 
-            tagRecords.add(new TagRecord(currentTag, currentTag.getSharedObject()));
+            tagRecords.add(new TagRecord(currentTag, currentTag.getSharedObjectLockless()));
 
             // lock should be called on the order of objectId otherwise there will be
             // deadlock
