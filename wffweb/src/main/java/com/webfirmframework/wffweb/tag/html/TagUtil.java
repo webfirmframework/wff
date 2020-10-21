@@ -161,11 +161,11 @@ public final class TagUtil {
 
         // tag state before lock
         List<TagRecord> tagRecords;
-        boolean ownerTagModified = false;
+        boolean tagModified = false;
 
         do {
 
-            if (ownerTagModified) {
+            if (tagModified) {
                 for (final Lock lock : locks) {
                     lock.unlock();
                 }
@@ -185,7 +185,7 @@ public final class TagUtil {
 
             locks = new ArrayList<>(tagRecords.size());
 
-            ownerTagModified = false;
+            tagModified = false;
 
             for (final TagRecord tagRecord : tagRecords) {
                 final Lock lock = tagRecord.sharedObject.getLock(accessObject).writeLock();
@@ -193,7 +193,7 @@ public final class TagUtil {
                 locks.add(lock);
 
                 if (!tagRecord.sharedObject.equals(tagRecord.tag.getSharedObject())) {
-                    ownerTagModified = true;
+                    tagModified = true;
                     break;
                 }
             }
@@ -202,7 +202,7 @@ public final class TagUtil {
                 Collections.reverse(locks);
             }
 
-        } while (ownerTagModified);
+        } while (tagModified);
 
         return locks;
     }
