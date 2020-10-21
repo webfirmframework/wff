@@ -54,6 +54,10 @@ public abstract class AbstractHtmlRepository {
             this.tag = tag;
             this.sharedObject = sharedObject;
         }
+
+        private long objectId() {
+            return sharedObject.objectId();
+        }
     }
 
     /**
@@ -111,42 +115,67 @@ public abstract class AbstractHtmlRepository {
      * @since 3.0.15
      */
     protected final static Collection<Lock> lockAndGetReadLocks(final AbstractHtml... fromTags) {
+        return lockAndGetLocks(false, fromTags);
+    }
 
-        List<Lock> readLocks = null;
-        // ownerTag state before lock
-        Deque<TagRecord> tagRecords;
+    /**
+     * @param fromTags
+     * @return the list of write lock
+     * @since 3.0.15
+     */
+    protected final static Collection<Lock> lockAndGetWriteLocks(final AbstractHtml... fromTags) {
+        return lockAndGetLocks(true, fromTags);
+    }
 
+    private static Collection<Lock> lockAndGetLocks(final boolean writeLock, final AbstractHtml... fromTags) {
+
+        if (fromTags == null || fromTags.length == 0) {
+            return Collections.emptyList();
+        }
+
+        List<TagRecord> tagRecords;
         boolean tagModified = false;
+        List<Lock> locks = null;
         do {
+
             if (tagModified) {
-                for (final Lock lock : readLocks) {
+                for (final Lock lock : locks) {
                     lock.unlock();
                 }
             }
 
-            tagRecords = new ArrayDeque<>();
+            tagRecords = new ArrayList<>(fromTags.length);
 
-            readLocks = extractReadLocks(tagRecords, fromTags);
-            for (final Lock lock : readLocks) {
-                lock.lock();
+            for (final AbstractHtml tag : fromTags) {
+                final AbstractHtml5SharedObject sharedObject = tag.getSharedObject();
+                tagRecords.add(new TagRecord(tag, sharedObject));
             }
-            if (readLocks.size() > 1) {
-                Collections.reverse(readLocks);
-            }
+
+            tagRecords.sort(Comparator.comparingLong(TagRecord::objectId));
+
+            locks = new ArrayList<>(tagRecords.size());
 
             tagModified = false;
-            TagRecord tagRecord = null;
-            while ((tagRecord = tagRecords.poll()) != null) {
+            for (final TagRecord tagRecord : tagRecords) {
+                final Lock lock = writeLock ? AbstractHtml.getWriteLock(tagRecord.sharedObject)
+                        : AbstractHtml.getReadLock(tagRecord.sharedObject);
+                lock.lock();
+                locks.add(lock);
                 if (!tagRecord.sharedObject.equals(tagRecord.tag.getSharedObject())) {
                     tagModified = true;
                     break;
                 }
             }
 
-            tagRecords = null;
+            // NB: must reverse it before returning because its unlocking must be in the
+            // reverse order
+            if (locks.size() > 1) {
+                Collections.reverse(locks);
+            }
+
         } while (tagModified);
 
-        return readLocks;
+        return locks;
     }
 
     private static List<Lock> extractReadLocks(final Deque<TagRecord> tagRecords, final AbstractHtml... fromTags) {
@@ -183,85 +212,6 @@ public abstract class AbstractHtmlRepository {
             readLocks.add(AbstractHtml.getReadLock(sharedObject));
         }
         return readLocks;
-    }
-
-    /**
-     * @param fromTags
-     * @return the list of write lock
-     * @since 3.0.15
-     */
-    protected final static Collection<Lock> lockAndGetWriteLocks(final AbstractHtml... fromTags) {
-
-        List<Lock> writeLocks = null;
-        // ownerTag state before lock
-        Deque<TagRecord> tagRecords;
-
-        boolean tagModified = false;
-        do {
-            if (tagModified) {
-                for (final Lock lock : writeLocks) {
-                    lock.unlock();
-                }
-            }
-
-            tagRecords = new ArrayDeque<>();
-
-            writeLocks = extractWriteLocks(tagRecords, fromTags);
-            for (final Lock lock : writeLocks) {
-                lock.lock();
-            }
-            if (writeLocks.size() > 1) {
-                Collections.reverse(writeLocks);
-            }
-
-            tagModified = false;
-            TagRecord tagRecord = null;
-            while ((tagRecord = tagRecords.poll()) != null) {
-                if (!tagRecord.sharedObject.equals(tagRecord.tag.getSharedObject())) {
-                    tagModified = true;
-                    break;
-                }
-            }
-
-            tagRecords = null;
-        } while (tagModified);
-
-        return writeLocks;
-    }
-
-    private static List<Lock> extractWriteLocks(final Deque<TagRecord> tagRecords, final AbstractHtml... fromTags) {
-
-        if (fromTags == null || fromTags.length == 0) {
-            return Collections.emptyList();
-        }
-
-        if (fromTags.length == 1) {
-            final AbstractHtml tag = fromTags[0];
-            final AbstractHtml5SharedObject sharedObject = tag.getSharedObject();
-            tagRecords.add(new TagRecord(tag, sharedObject));
-            final List<Lock> locks = new ArrayList<>(1);
-            locks.add(AbstractHtml.getWriteLock(sharedObject));
-            return locks;
-        }
-
-        final Set<AbstractHtml5SharedObject> sharedObjectsSet = new HashSet<>(fromTags.length);
-
-        for (final AbstractHtml tag : fromTags) {
-            final AbstractHtml5SharedObject sharedObject = tag.getSharedObject();
-            sharedObjectsSet.add(sharedObject);
-            tagRecords.add(new TagRecord(tag, sharedObject));
-        }
-
-        final List<AbstractHtml5SharedObject> sortedSharedObjects = new ArrayList<>(sharedObjectsSet);
-
-        sortedSharedObjects.sort(Comparator.comparingLong(AbstractHtml5SharedObject::objectId));
-
-        final List<Lock> writeLocks = new ArrayList<>(sortedSharedObjects.size());
-
-        for (final AbstractHtml5SharedObject sharedObject : sortedSharedObjects) {
-            writeLocks.add(AbstractHtml.getWriteLock(sharedObject));
-        }
-        return writeLocks;
     }
 
     /**

@@ -17,13 +17,10 @@
 package com.webfirmframework.wffweb.tag.html;
 
 import java.nio.charset.Charset;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Deque;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
@@ -46,16 +43,20 @@ public final class TagUtil {
      * @since 3.0.15
      *
      */
-    private static final class OwnerTagRecord {
+    private static final class TagRecord {
 
-        private final AbstractHtml ownerTag;
+        private final AbstractHtml tag;
 
         private final AbstractHtml5SharedObject sharedObject;
 
-        private OwnerTagRecord(final AbstractHtml ownerTag, final AbstractHtml5SharedObject sharedObject) {
+        private TagRecord(final AbstractHtml ownerTag, final AbstractHtml5SharedObject sharedObject) {
             super();
-            this.ownerTag = ownerTag;
+            tag = ownerTag;
             this.sharedObject = sharedObject;
+        }
+
+        private long objectId() {
+            return sharedObject.objectId();
         }
     }
 
@@ -156,12 +157,10 @@ public final class TagUtil {
     static List<Lock> lockAndGetWriteLocks(final AbstractHtml currentTag, final Object accessObject,
             final AbstractHtml... foreignTags) {
 
-        Set<AbstractHtml5SharedObject> sharedObjectsSet;
-        List<AbstractHtml5SharedObject> sharedObjects;
         List<Lock> locks = null;
 
-        // ownerTag state before lock
-        Deque<OwnerTagRecord> ownerTagRecords;
+        // tag state before lock
+        List<TagRecord> tagRecords;
         boolean ownerTagModified = false;
 
         do {
@@ -171,47 +170,38 @@ public final class TagUtil {
                     lock.unlock();
                 }
             }
-            ownerTagRecords = new ArrayDeque<>(foreignTags.length + 1);
-            sharedObjectsSet = new LinkedHashSet<>(foreignTags.length + 1);
+
+            tagRecords = new ArrayList<>(foreignTags.length + 1);
 
             for (final AbstractHtml eachTag : foreignTags) {
-                final AbstractHtml5SharedObject foreignSO = eachTag.getSharedObjectLockless();
-                sharedObjectsSet.add(foreignSO);
-                ownerTagRecords.add(new OwnerTagRecord(eachTag, foreignSO));
+                tagRecords.add(new TagRecord(eachTag, eachTag.getSharedObjectLockless()));
             }
 
-            final AbstractHtml5SharedObject currentSO = currentTag.getSharedObject();
-            sharedObjectsSet.add(currentSO);
-            ownerTagRecords.add(new OwnerTagRecord(currentTag, currentSO));
-
-            sharedObjects = new ArrayList<>(sharedObjectsSet);
+            tagRecords.add(new TagRecord(currentTag, currentTag.getSharedObject()));
 
             // lock should be called on the order of objectId otherwise there will be
             // deadlock
-            sharedObjects.sort(Comparator.comparingLong(AbstractHtml5SharedObject::objectId));
+            tagRecords.sort(Comparator.comparingLong(TagRecord::objectId));
 
-            locks = new ArrayList<>(sharedObjects.size());
-            for (final AbstractHtml5SharedObject sharedObject : sharedObjects) {
-                final Lock lock = sharedObject.getLock(accessObject).writeLock();
+            locks = new ArrayList<>(tagRecords.size());
+
+            ownerTagModified = false;
+
+            for (final TagRecord tagRecord : tagRecords) {
+                final Lock lock = tagRecord.sharedObject.getLock(accessObject).writeLock();
                 lock.lock();
                 locks.add(lock);
+
+                if (!tagRecord.sharedObject.equals(tagRecord.tag.getSharedObject())) {
+                    ownerTagModified = true;
+                    break;
+                }
             }
 
             if (locks.size() > 1) {
                 Collections.reverse(locks);
             }
 
-            ownerTagModified = false;
-            OwnerTagRecord ownerTagRecord = null;
-            while ((ownerTagRecord = ownerTagRecords.poll()) != null) {
-                if (!ownerTagRecord.sharedObject.equals(ownerTagRecord.ownerTag.getSharedObject())) {
-                    ownerTagModified = true;
-                    break;
-                }
-            }
-            ownerTagRecords = null;
-            sharedObjectsSet = null;
-            sharedObjects = null;
         } while (ownerTagModified);
 
         return locks;

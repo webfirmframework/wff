@@ -19,12 +19,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.charset.Charset;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -131,6 +129,10 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             super();
             this.ownerTag = ownerTag;
             this.sharedObject = sharedObject;
+        }
+
+        private long objectId() {
+            return sharedObject.objectId();
         }
     }
 
@@ -1525,16 +1527,12 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         // lock must be called before using ownerTags
         ownerTagsWriteLock.lock();
 
-        Set<AbstractHtml5SharedObject> sharedObjectsSet;
-        List<AbstractHtml5SharedObject> sharedObjects;
-        List<WriteLock> locks;
-
         // ownerTag state before lock
-        Deque<OwnerTagRecord> ownerTagRecords;
+        List<OwnerTagRecord> ownerTagRecords;
         boolean ownerTagModified = false;
         List<Lock> writeLocks = null;
 
-        int capacity = 2;
+        int capacity = ownerTags.size();
 
         do {
             if (ownerTagModified) {
@@ -1543,44 +1541,32 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 }
             }
 
-            ownerTagRecords = new ArrayDeque<>(capacity);
+            ownerTagRecords = new ArrayList<>(capacity);
 
             // internally this.ownerTags.size() (WeakHashMap) contains synchronization so
             // better avoid calling it
             // normally there will be one sharedObject so the capacity may be
             // considered as 1
 
-            sharedObjectsSet = new HashSet<>(capacity);
-
             for (final AbstractHtml ownerTag : ownerTags) {
                 final AbstractHtml5SharedObject sharedObject = ownerTag.getSharedObject();
-                sharedObjectsSet.add(sharedObject);
                 ownerTagRecords.add(new OwnerTagRecord(ownerTag, sharedObject));
             }
 
-            sharedObjects = new ArrayList<>(sharedObjectsSet);
-            capacity = sharedObjects.size();
+            ownerTagRecords.sort(Comparator.comparingLong(OwnerTagRecord::objectId));
+            capacity = ownerTagRecords.size();
 
-            sharedObjects.sort(Comparator.comparingLong(AbstractHtml5SharedObject::objectId));
+            writeLocks = new ArrayList<>(ownerTagRecords.size() + 1);
+            ownerTagModified = false;
+            for (final OwnerTagRecord ownerTagRecord : ownerTagRecords) {
+                final WriteLock lock = ownerTagRecord.sharedObject.getLock(ACCESS_OBJECT).writeLock();
+                lock.lock();
+                writeLocks.add(lock);
 
-            locks = new ArrayList<>(sharedObjects.size());
-
-            for (final AbstractHtml5SharedObject sharedObject : sharedObjects) {
-                locks.add(sharedObject.getLock(ACCESS_OBJECT).writeLock());
-            }
-
-            // should not be sorted because it should be in the order of objectId otherwise
-            // it may lead to deadlock
-//        locks.sort((o1, o2) -> Integer.compare(o2.getHoldCount(), o1.getHoldCount()));
-
-            writeLocks = new ArrayList<>(locks.size() + 1);
-
-            // must be separately locked
-            // ownerTagsWriteLock is already locked so iterating over locksWithoutDuplicates
-            // object
-            for (final Lock writeLock : locks) {
-                writeLock.lock();
-                writeLocks.add(writeLock);
+                if (!ownerTagRecord.sharedObject.equals(ownerTagRecord.ownerTag.getSharedObject())) {
+                    ownerTagModified = true;
+                    break;
+                }
             }
 
             // NB: must reverse it before returning because its unlocking must be in the
@@ -1588,19 +1574,6 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             if (writeLocks.size() > 1) {
                 Collections.reverse(writeLocks);
             }
-
-            ownerTagModified = false;
-            OwnerTagRecord ownerTagRecord = null;
-            while ((ownerTagRecord = ownerTagRecords.poll()) != null) {
-                if (!ownerTagRecord.sharedObject.equals(ownerTagRecord.ownerTag.getSharedObject())) {
-                    ownerTagModified = true;
-                    break;
-                }
-            }
-            ownerTagRecords = null;
-            sharedObjectsSet = null;
-            sharedObjects = null;
-            locks = null;
 
         } while (ownerTagModified);
 
@@ -1621,16 +1594,12 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
         try {
 
-            Set<AbstractHtml5SharedObject> sharedObjectsSet;
-            List<AbstractHtml5SharedObject> sharedObjects;
-            List<WriteLock> locks;
-
             // ownerTag state before lock
-            Deque<OwnerTagRecord> ownerTagRecords;
+            List<OwnerTagRecord> ownerTagRecords;
             boolean ownerTagModified = false;
             List<WriteLock> writeLocks = null;
 
-            int capacity = 2;
+            int capacity = ownerTags.size();
 
             do {
                 if (ownerTagModified) {
@@ -1639,40 +1608,31 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                     }
                 }
 
-                ownerTagRecords = new ArrayDeque<>(capacity);
+                ownerTagRecords = new ArrayList<>(capacity);
 
                 // internally this.ownerTags.size() (WeakHashMap) contains synchronization so
                 // better avoid calling it
                 // normally there will be one sharedObject so the capacity may be
                 // considered as 1
-                sharedObjectsSet = new HashSet<>(capacity);
-
                 for (final AbstractHtml ownerTag : ownerTags) {
                     final AbstractHtml5SharedObject sharedObject = ownerTag.getSharedObject();
-                    sharedObjectsSet.add(sharedObject);
                     ownerTagRecords.add(new OwnerTagRecord(ownerTag, sharedObject));
                 }
 
-                sharedObjects = new ArrayList<>(sharedObjectsSet);
-                capacity = sharedObjects.size();
+                ownerTagRecords.sort(Comparator.comparingLong(OwnerTagRecord::objectId));
+                capacity = ownerTagRecords.size();
 
-                sharedObjects.sort(Comparator.comparingLong(AbstractHtml5SharedObject::objectId));
+                writeLocks = new ArrayList<>(ownerTagRecords.size());
+                ownerTagModified = false;
+                for (final OwnerTagRecord ownerTagRecord : ownerTagRecords) {
+                    final WriteLock lock = ownerTagRecord.sharedObject.getLock(ACCESS_OBJECT).writeLock();
+                    lock.lock();
+                    writeLocks.add(lock);
 
-                locks = new ArrayList<>(sharedObjects.size());
-
-                for (final AbstractHtml5SharedObject sharedObject : sharedObjects) {
-                    locks.add(sharedObject.getLock(ACCESS_OBJECT).writeLock());
-                }
-
-                // should not be sorted because it should be in the order of objectId otherwise
-                // it may lead to deadlock
-//            locks.sort((o1, o2) -> Integer.compare(o2.getHoldCount(), o1.getHoldCount()));
-
-                writeLocks = new ArrayList<>(locks);
-
-                // must be separately locked
-                for (final WriteLock writeLock : writeLocks) {
-                    writeLock.lock();
+                    if (!ownerTagRecord.sharedObject.equals(ownerTagRecord.ownerTag.getSharedObject())) {
+                        ownerTagModified = true;
+                        break;
+                    }
                 }
 
                 // NB: must reverse it before returning because its unlocking must be in the
@@ -1680,20 +1640,6 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 if (writeLocks.size() > 1) {
                     Collections.reverse(writeLocks);
                 }
-
-                ownerTagModified = false;
-                OwnerTagRecord ownerTagRecord = null;
-                while ((ownerTagRecord = ownerTagRecords.poll()) != null) {
-                    if (!ownerTagRecord.sharedObject.equals(ownerTagRecord.ownerTag.getSharedObject())) {
-                        ownerTagModified = true;
-                        break;
-                    }
-                }
-
-                ownerTagRecords = null;
-                sharedObjectsSet = null;
-                sharedObjects = null;
-                locks = null;
 
             } while (ownerTagModified);
 
@@ -1717,15 +1663,11 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         // lock must be called before using ownerTags
         ownerTagsReadLock.lock();
 
-        Set<AbstractHtml5SharedObject> sharedObjectsSet;
-        List<AbstractHtml5SharedObject> sharedObjects;
-        Collection<ReadLock> locks;
-
         // ownerTag state before lock
-        Deque<OwnerTagRecord> ownerTagRecords;
+        List<OwnerTagRecord> ownerTagRecords;
         boolean ownerTagModified = false;
         List<Lock> readLocks = null;
-        int capacity = 2;
+        int capacity = ownerTags.size();
         do {
             if (ownerTagModified) {
                 for (final Lock lock : readLocks) {
@@ -1733,39 +1675,32 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 }
             }
 
-            ownerTagRecords = new ArrayDeque<>(capacity);
+            ownerTagRecords = new ArrayList<>(capacity);
 
-            // internally this.ownerTags.size() (WeakHashMap) contains synchronization
+            // internally this.ownerTags.size() (WeakHashMap) contains synchronization so
             // better avoid calling it
             // normally there will be one sharedObject so the capacity may be
-            // considered as 2 because the load factor is 0.75f
-
-            sharedObjectsSet = new HashSet<>(capacity);
+            // considered as 1
 
             for (final AbstractHtml ownerTag : ownerTags) {
                 final AbstractHtml5SharedObject sharedObject = ownerTag.getSharedObject();
-                sharedObjectsSet.add(sharedObject);
                 ownerTagRecords.add(new OwnerTagRecord(ownerTag, sharedObject));
             }
 
-            sharedObjects = new ArrayList<>(sharedObjectsSet);
-            capacity = sharedObjects.size();
+            ownerTagRecords.sort(Comparator.comparingLong(OwnerTagRecord::objectId));
+            capacity = ownerTagRecords.size();
 
-            sharedObjects.sort(Comparator.comparingLong(AbstractHtml5SharedObject::objectId));
+            readLocks = new ArrayList<>(ownerTagRecords.size() + 1);
+            ownerTagModified = false;
+            for (final OwnerTagRecord ownerTagRecord : ownerTagRecords) {
+                final ReadLock lock = ownerTagRecord.sharedObject.getLock(ACCESS_OBJECT).readLock();
+                lock.lock();
+                readLocks.add(lock);
 
-            locks = new LinkedHashSet<>(sharedObjects.size());
-
-            for (final AbstractHtml5SharedObject sharedObject : sharedObjects) {
-                locks.add(sharedObject.getLock(ACCESS_OBJECT).readLock());
-            }
-
-            readLocks = new ArrayList<>(locks.size() + 1);
-
-            // must be separately locked
-            // ownerTagsReadLock is already locked so iterating over locks object
-            for (final Lock readLock : locks) {
-                readLock.lock();
-                readLocks.add(readLock);
+                if (!ownerTagRecord.sharedObject.equals(ownerTagRecord.ownerTag.getSharedObject())) {
+                    ownerTagModified = true;
+                    break;
+                }
             }
 
             // NB: must reverse it before returning because its unlocking must be in the
@@ -1773,21 +1708,6 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             if (readLocks.size() > 1) {
                 Collections.reverse(readLocks);
             }
-
-            ownerTagModified = false;
-
-            OwnerTagRecord ownerTagRecord = null;
-            while ((ownerTagRecord = ownerTagRecords.poll()) != null) {
-                if (!ownerTagRecord.sharedObject.equals(ownerTagRecord.ownerTag.getSharedObject())) {
-                    ownerTagModified = true;
-                    break;
-                }
-            }
-
-            ownerTagRecords = null;
-            sharedObjectsSet = null;
-            sharedObjects = null;
-            locks = null;
 
         } while (ownerTagModified);
 
@@ -1808,15 +1728,11 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
         try {
 
-            Set<AbstractHtml5SharedObject> sharedObjectsSet;
-            List<AbstractHtml5SharedObject> sharedObjects;
-            Collection<ReadLock> locks;
-
             // ownerTag state before lock
-            Deque<OwnerTagRecord> ownerTagRecords;
+            List<OwnerTagRecord> ownerTagRecords;
             boolean ownerTagModified = false;
             List<ReadLock> readLocks = null;
-            int capacity = 2;
+            int capacity = ownerTags.size();
 
             do {
                 if (ownerTagModified) {
@@ -1825,37 +1741,32 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                     }
                 }
 
-                ownerTagRecords = new ArrayDeque<>(capacity);
+                ownerTagRecords = new ArrayList<>(capacity);
 
-                // internally this.ownerTags.size() (WeakHashMap) contains synchronization
+                // internally this.ownerTags.size() (WeakHashMap) contains synchronization so
                 // better avoid calling it
                 // normally there will be one sharedObject so the capacity may be
-                // considered as 2 because the load factor is 0.75f
-
-                sharedObjectsSet = new HashSet<>(capacity);
+                // considered as 1
 
                 for (final AbstractHtml ownerTag : ownerTags) {
                     final AbstractHtml5SharedObject sharedObject = ownerTag.getSharedObject();
-                    sharedObjectsSet.add(sharedObject);
                     ownerTagRecords.add(new OwnerTagRecord(ownerTag, sharedObject));
                 }
 
-                sharedObjects = new ArrayList<>(sharedObjectsSet);
-                capacity = sharedObjects.size();
+                ownerTagRecords.sort(Comparator.comparingLong(OwnerTagRecord::objectId));
+                capacity = ownerTagRecords.size();
 
-                sharedObjects.sort(Comparator.comparingLong(AbstractHtml5SharedObject::objectId));
+                readLocks = new ArrayList<>(ownerTagRecords.size());
+                ownerTagModified = false;
+                for (final OwnerTagRecord ownerTagRecord : ownerTagRecords) {
+                    final ReadLock lock = ownerTagRecord.sharedObject.getLock(ACCESS_OBJECT).readLock();
+                    lock.lock();
+                    readLocks.add(lock);
 
-                locks = new HashSet<>(2);
-
-                for (final AbstractHtml5SharedObject sharedObject : sharedObjects) {
-                    locks.add(sharedObject.getLock(ACCESS_OBJECT).readLock());
-                }
-
-                readLocks = new ArrayList<>(locks);
-
-                // must be separately locked
-                for (final ReadLock readLock : readLocks) {
-                    readLock.lock();
+                    if (!ownerTagRecord.sharedObject.equals(ownerTagRecord.ownerTag.getSharedObject())) {
+                        ownerTagModified = true;
+                        break;
+                    }
                 }
 
                 // NB: must reverse it before returning because its unlocking must be in the
@@ -1863,20 +1774,6 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 if (readLocks.size() > 1) {
                     Collections.reverse(readLocks);
                 }
-
-                ownerTagModified = false;
-                OwnerTagRecord ownerTagRecord = null;
-                while ((ownerTagRecord = ownerTagRecords.poll()) != null) {
-                    if (!ownerTagRecord.sharedObject.equals(ownerTagRecord.ownerTag.getSharedObject())) {
-                        ownerTagModified = true;
-                        break;
-                    }
-                }
-
-                ownerTagRecords = null;
-                sharedObjectsSet = null;
-                sharedObjects = null;
-                locks = null;
 
             } while (ownerTagModified);
 
