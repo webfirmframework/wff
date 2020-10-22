@@ -55,8 +55,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  * @see WffBMByteArray
  *
  */
-public class WffBMObject extends LinkedHashMap<String, ValueValueType>
-        implements WffBMData {
+public class WffBMObject extends LinkedHashMap<String, ValueValueType> implements WffBMData {
 
     private static final long serialVersionUID = 1L;
 
@@ -75,7 +74,7 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
         try {
             initWffBMObject(bMBytes, true);
             this.bMBytes = bMBytes;
-        } catch (final UnsupportedEncodingException e) {
+        } catch (final RuntimeException e) {
             throw new WffRuntimeException("Could not create wff bm object", e);
         }
     }
@@ -84,7 +83,7 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
         try {
             initWffBMObject(bMBytes, outer);
             this.bMBytes = bMBytes;
-        } catch (final UnsupportedEncodingException e) {
+        } catch (final RuntimeException e) {
             throw new WffRuntimeException("Could not create wff bm object", e);
         }
     }
@@ -95,37 +94,47 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
         // as the cloned object returns true
         // with its equals method
         if (this == value.getValue()) {
-            throw new InvalidValueException(
-                    "The same instance cannot be passed as value in ValueValueType");
+            throw new InvalidValueException("The same instance cannot be passed as value in ValueValueType");
         }
         return super.put(key, value);
     }
 
-    public void put(final String key, final BMValueType valueType,
-            final Object value) {
+    public void put(final String key, final BMValueType valueType, final Object value) {
         // should be == here
         // as the cloned object returns true
         // with its equals method
         if (this == value) {
-            throw new InvalidValueException(
-                    "The same instance cannot be passed as value");
+            throw new InvalidValueException("The same instance cannot be passed as value");
         }
         super.put(key, new ValueValueType(key, valueType.getType(), value));
     }
 
     /**
      * @return
-     * @throws UnsupportedEncodingException
-     *                                          throwing this exception will be
-     *                                          removed in future version
-     *                                          because its internal
-     *                                          implementation will never make
-     *                                          this exception due to the code
-     *                                          changes since 3.0.1.
+     * @throws UnsupportedEncodingException throwing this exception will be removed
+     *                                      in future version because its internal
+     *                                      implementation will never make this
+     *                                      exception due to the code changes since
+     *                                      3.0.1.
      * @since 1.1.5
      * @author WFF
+     * @deprecated building bytes implementation doesn't throw
+     *             UnsupportedEncodingException so deprecated this method. The same
+     *             goal can be achieved using buildBytes method.
      */
+    @Deprecated
     public byte[] build() throws UnsupportedEncodingException {
+        return buildBytes(outer);
+    }
+
+    /**
+     * replacement method for build() method.
+     *
+     * @return
+     *
+     * @since 3.0.15
+     */
+    public byte[] buildBytes() {
         return buildBytes(outer);
     }
 
@@ -134,22 +143,19 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
      *
      * @param outer
      * @return the bytes representation of the object
-     * @throws UnsupportedEncodingException
-     *                                          throwing this exception will be
-     *                                          removed in future version
-     *                                          because its internal
-     *                                          implementation will never make
-     *                                          this exception due to the code
-     *                                          changes since 3.0.1.
+     * @throws UnsupportedEncodingException throwing this exception will be removed
+     *                                      in future version because its internal
+     *                                      implementation will never make this
+     *                                      exception due to the code changes since
+     *                                      3.0.1.
      * @since 1.1.5
      * @deprecated building bytes implementation doesn't throw
-     *             UnsupportedEncodingException so deprecated this method. The
-     *             same goal can be achieved using buildBytes method.
+     *             UnsupportedEncodingException so deprecated this method. The same
+     *             goal can be achieved using buildBytes method.
      */
     @Deprecated
     @Override
-    public byte[] build(final boolean outer)
-            throws UnsupportedEncodingException {
+    public byte[] build(final boolean outer) throws UnsupportedEncodingException {
         return buildBytes(outer);
     }
 
@@ -165,8 +171,7 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
 
         final Set<Entry<String, ValueValueType>> superEntrySet = super.entrySet();
 
-        final int capacity = outer ? superEntrySet.size() + 1
-                : superEntrySet.size();
+        final int capacity = outer ? superEntrySet.size() + 1 : superEntrySet.size();
 
         final Deque<NameValue> nameValues = new ArrayDeque<>(capacity);
 
@@ -190,14 +195,12 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
 
                 final String value = (String) valueValueType.getValue();
 
-                nameValue.setValues(new byte[] { valueType },
-                        value.getBytes(StandardCharsets.UTF_8));
+                nameValue.setValues(new byte[] { valueType }, value.getBytes(StandardCharsets.UTF_8));
 
             } else if (valueType == BMValueType.NUMBER.getType()) {
 
                 final Number value = (Number) valueValueType.getValue();
-                final byte[] valueBytes = WffBinaryMessageUtil
-                        .getOptimizedBytesFromDouble(value.doubleValue());
+                final byte[] valueBytes = WffBinaryMessageUtil.getOptimizedBytesFromDouble(value.doubleValue());
                 nameValue.setValues(new byte[] { valueType }, valueBytes);
 
             } else if (valueType == BMValueType.UNDEFINED.getType()) {
@@ -211,13 +214,11 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
             } else if (valueType == BMValueType.BOOLEAN.getType()) {
 
                 final Boolean value = (Boolean) valueValueType.getValue();
-                final byte[] valueBytes = {
-                        (byte) (value.booleanValue() ? 1 : 0) };
+                final byte[] valueBytes = { (byte) (value.booleanValue() ? 1 : 0) };
                 nameValue.setValues(new byte[] { valueType }, valueBytes);
             } else if (valueType == BMValueType.BM_OBJECT.getType()) {
 
-                final WffBMObject value = (WffBMObject) valueValueType
-                        .getValue();
+                final WffBMObject value = (WffBMObject) valueValueType.getValue();
                 final byte[] valueBytes = value.buildBytes(false);
                 nameValue.setValues(new byte[] { valueType }, valueBytes);
 
@@ -229,21 +230,18 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
 
             } else if (valueType == BMValueType.BM_BYTE_ARRAY.getType()) {
 
-                final WffBMByteArray value = (WffBMByteArray) valueValueType
-                        .getValue();
+                final WffBMByteArray value = (WffBMByteArray) valueValueType.getValue();
                 final byte[] valueBytes = value.build(false);
                 nameValue.setValues(new byte[] { valueType }, valueBytes);
 
             } else if (valueType == BMValueType.REG_EXP.getType()) {
                 final String value = (String) valueValueType.getValue();
-                nameValue.setValues(new byte[] { valueType },
-                        value.getBytes(StandardCharsets.UTF_8));
+                nameValue.setValues(new byte[] { valueType }, value.getBytes(StandardCharsets.UTF_8));
             } else if (valueType == BMValueType.FUNCTION.getType()) {
 
                 final String value = (String) valueValueType.getValue();
 
-                nameValue.setValues(new byte[] { valueType },
-                        value.getBytes(StandardCharsets.UTF_8));
+                nameValue.setValues(new byte[] { valueType }, value.getBytes(StandardCharsets.UTF_8));
 
             } else if (valueType == BMValueType.INTERNAL_BYTE.getType()) {
                 throw new WffRuntimeException(
@@ -252,28 +250,19 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
 
         }
 
-        return WffBinaryMessageUtil.VERSION_1
-                .getWffBinaryMessageBytes(nameValues);
+        return WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues);
     }
 
     /**
      * @param bmObjectBytes
      * @param outer
-     * @throws UnsupportedEncodingException
-     *                                          throwing this exception will be
-     *                                          removed in future version
-     *                                          because its internal
-     *                                          implementation will never make
-     *                                          this exception due to the code
-     *                                          changes since 3.0.1.
+     *
      */
-    private void initWffBMObject(final byte[] bmObjectBytes,
-            final boolean outer) throws UnsupportedEncodingException {
+    private void initWffBMObject(final byte[] bmObjectBytes, final boolean outer) {
 
         final WffBMObject wffBMObject = this;
 
-        final List<NameValue> bmObject = WffBinaryMessageUtil.VERSION_1
-                .parse(bmObjectBytes);
+        final List<NameValue> bmObject = WffBinaryMessageUtil.VERSION_1.parse(bmObjectBytes);
 
         final Iterator<NameValue> iterator = bmObject.iterator();
         if (iterator.hasNext()) {
@@ -283,68 +272,56 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
                 if (typeNameValue.getName()[0] == BMType.OBJECT.getType()) {
                     wffBMObject.outer = true;
                 } else {
-                    throw new WffRuntimeException(
-                            "Not a valid Wff BM Object bytes");
+                    throw new WffRuntimeException("Not a valid Wff BM Object bytes");
                 }
             }
 
             while (iterator.hasNext()) {
                 final NameValue nameValue = iterator.next();
-                final String name = new String(nameValue.getName(),
-                        StandardCharsets.UTF_8);
+                final String name = new String(nameValue.getName(), StandardCharsets.UTF_8);
                 final byte[][] values = nameValue.getValues();
                 final byte valueType = values[0][0];
                 final byte[] value = values[1];
 
                 if (valueType == BMValueType.STRING.getType()) {
-                    final ValueValueType valueValueType = new ValueValueType(
-                            name, valueType,
+                    final ValueValueType valueValueType = new ValueValueType(name, valueType,
                             new String(value, StandardCharsets.UTF_8));
                     wffBMObject.put(name, valueValueType);
                 } else if (valueType == BMValueType.NUMBER.getType()) {
 
-                    final double doubleValue = ByteBuffer.wrap(value)
-                            .getDouble(0);
+                    final double doubleValue = ByteBuffer.wrap(value).getDouble(0);
 
-                    final ValueValueType valueValueType = new ValueValueType(
-                            name, valueType, doubleValue);
+                    final ValueValueType valueValueType = new ValueValueType(name, valueType, doubleValue);
                     wffBMObject.put(name, valueValueType);
                 } else if (valueType == BMValueType.UNDEFINED.getType()) {
-                    final ValueValueType valueValueType = new ValueValueType(
-                            name, valueType, null);
+                    final ValueValueType valueValueType = new ValueValueType(name, valueType, null);
                     wffBMObject.put(name, valueValueType);
                 } else if (valueType == BMValueType.NULL.getType()) {
-                    final ValueValueType valueValueType = new ValueValueType(
-                            name, valueType, null);
+                    final ValueValueType valueValueType = new ValueValueType(name, valueType, null);
                     wffBMObject.put(name, valueValueType);
                 } else if (valueType == BMValueType.BOOLEAN.getType()) {
-                    final ValueValueType valueValueType = new ValueValueType(
-                            name, valueType, value[0] == 1);
+                    final ValueValueType valueValueType = new ValueValueType(name, valueType, value[0] == 1);
                     wffBMObject.put(name, valueValueType);
                 } else if (valueType == BMValueType.BM_OBJECT.getType()) {
 
-                    final ValueValueType valueValueType = new ValueValueType(
-                            name, valueType, new WffBMObject(value, false));
+                    final ValueValueType valueValueType = new ValueValueType(name, valueType,
+                            new WffBMObject(value, false));
                     wffBMObject.put(name, valueValueType);
 
                 } else if (valueType == BMValueType.BM_ARRAY.getType()) {
-                    final ValueValueType valueValueType = new ValueValueType(
-                            name, valueType, new WffBMArray(value, false));
+                    final ValueValueType valueValueType = new ValueValueType(name, valueType,
+                            new WffBMArray(value, false));
                     wffBMObject.put(name, valueValueType);
                 } else if (valueType == BMValueType.BM_BYTE_ARRAY.getType()) {
-                    final WffBMByteArray byteArray = new WffBMByteArray(value,
-                            false);
-                    final ValueValueType valueValueType = new ValueValueType(
-                            name, valueType, byteArray);
+                    final WffBMByteArray byteArray = new WffBMByteArray(value, false);
+                    final ValueValueType valueValueType = new ValueValueType(name, valueType, byteArray);
                     wffBMObject.put(name, valueValueType);
                 } else if (valueType == BMValueType.REG_EXP.getType()) {
-                    final ValueValueType valueValueType = new ValueValueType(
-                            name, valueType,
+                    final ValueValueType valueValueType = new ValueValueType(name, valueType,
                             new String(value, StandardCharsets.UTF_8));
                     wffBMObject.put(name, valueValueType);
                 } else if (valueType == BMValueType.FUNCTION.getType()) {
-                    final ValueValueType valueValueType = new ValueValueType(
-                            name, valueType,
+                    final ValueValueType valueValueType = new ValueValueType(name, valueType,
                             new String(value, StandardCharsets.UTF_8));
                     wffBMObject.put(name, valueValueType);
                 } else if (valueType == BMValueType.INTERNAL_BYTE.getType()) {
@@ -370,8 +347,7 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType>
     }
 
     /**
-     * @param key
-     *                the key name
+     * @param key the key name
      * @since 2.0.0
      * @author WFF
      */

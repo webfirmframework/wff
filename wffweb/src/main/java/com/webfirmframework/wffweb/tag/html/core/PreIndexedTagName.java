@@ -28,7 +28,8 @@ import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
  */
 public enum PreIndexedTagName {
 
-    // NB: order should not be changed it is ordered by length
+    // NB: order should not be changed it is ordered by length in ascending and
+    // then by name in ascending
 
     /**
      * not a tag name. For internal purpose only
@@ -54,29 +55,13 @@ public enum PreIndexedTagName {
 
     U(TagNameConstants.U),
 
-    HR(TagNameConstants.HR),
-
-    RP(TagNameConstants.RP),
-
-    RT(TagNameConstants.RT),
-
     BR(TagNameConstants.BR),
-
-    TD(TagNameConstants.TD),
-
-    TH(TagNameConstants.TH),
-
-    LI(TagNameConstants.LI),
-
-    TR(TagNameConstants.TR),
 
     DD(TagNameConstants.DD),
 
     DL(TagNameConstants.DL),
 
     DT(TagNameConstants.DT),
-
-    UL(TagNameConstants.UL),
 
     EM(TagNameConstants.EM),
 
@@ -92,25 +77,23 @@ public enum PreIndexedTagName {
 
     H6(TagNameConstants.H6),
 
+    HR(TagNameConstants.HR),
+
+    LI(TagNameConstants.LI),
+
     OL(TagNameConstants.OL),
 
-    WBR(TagNameConstants.WBR),
+    RP(TagNameConstants.RP),
 
-    DEL(TagNameConstants.DEL),
+    RT(TagNameConstants.RT),
 
-    NAV(TagNameConstants.NAV),
+    TD(TagNameConstants.TD),
 
-    VAR(TagNameConstants.VAR),
+    TH(TagNameConstants.TH),
 
-    DFN(TagNameConstants.DFN),
+    TR(TagNameConstants.TR),
 
-    SUB(TagNameConstants.SUB),
-
-    SUP(TagNameConstants.SUP),
-
-    MAP(TagNameConstants.MAP),
-
-    SVG(TagNameConstants.SVG),
+    UL(TagNameConstants.UL),
 
     BDI(TagNameConstants.BDI),
 
@@ -118,140 +101,164 @@ public enum PreIndexedTagName {
 
     COL(TagNameConstants.COL),
 
-    DIV(TagNameConstants.DIV),
+    DEL(TagNameConstants.DEL),
 
-    PRE(TagNameConstants.PRE),
+    DFN(TagNameConstants.DFN),
+
+    DIV(TagNameConstants.DIV),
 
     IMG(TagNameConstants.IMG),
 
+    INS(TagNameConstants.INS),
+
     KBD(TagNameConstants.KBD),
 
-    INS(TagNameConstants.INS),
+    MAP(TagNameConstants.MAP),
+
+    NAV(TagNameConstants.NAV),
+
+    PRE(TagNameConstants.PRE),
 
     QFN(TagNameConstants.QFN),
 
-    PATH(TagNameConstants.PATH),
+    SUB(TagNameConstants.SUB),
 
-    TEXT(TagNameConstants.TEXT),
+    SUP(TagNameConstants.SUP),
+
+    SVG(TagNameConstants.SVG),
+
+    VAR(TagNameConstants.VAR),
+
+    WBR(TagNameConstants.WBR),
 
     ABBR(TagNameConstants.ABBR),
 
-    META(TagNameConstants.META),
+    AREA(TagNameConstants.AREA),
 
-    MATH(TagNameConstants.MATH),
-
-    SAMP(TagNameConstants.SAMP),
-
-    MENU(TagNameConstants.MENU),
-
-    CITE(TagNameConstants.CITE),
-
-    SPAN(TagNameConstants.SPAN),
-
-    DATA(TagNameConstants.DATA),
-
-    MAIN(TagNameConstants.MAIN),
+    BASE(TagNameConstants.BASE),
 
     BODY(TagNameConstants.BODY),
 
-    HTML(TagNameConstants.HTML),
-
-    AREA(TagNameConstants.AREA),
+    CITE(TagNameConstants.CITE),
 
     CODE(TagNameConstants.CODE),
+
+    DATA(TagNameConstants.DATA),
+
+    FORM(TagNameConstants.FORM),
+
+    HEAD(TagNameConstants.HEAD),
+
+    HTML(TagNameConstants.HTML),
 
     LINE(TagNameConstants.LINE),
 
     LINK(TagNameConstants.LINK),
 
-    HEAD(TagNameConstants.HEAD),
+    MAIN(TagNameConstants.MAIN),
+
+    MARK(TagNameConstants.MARK),
+
+    MATH(TagNameConstants.MATH),
+
+    MENU(TagNameConstants.MENU),
+
+    META(TagNameConstants.META),
+
+    PATH(TagNameConstants.PATH),
 
     RECT(TagNameConstants.RECT),
 
     RUBY(TagNameConstants.RUBY),
 
-    FORM(TagNameConstants.FORM),
+    SAMP(TagNameConstants.SAMP),
+
+    SPAN(TagNameConstants.SPAN),
+
+    TEXT(TagNameConstants.TEXT),
 
     TIME(TagNameConstants.TIME),
 
-    MARK(TagNameConstants.MARK),
+    ASIDE(TagNameConstants.ASIDE),
 
-    BASE(TagNameConstants.BASE),
+    AUDIO(TagNameConstants.AUDIO),
 
     EMBED(TagNameConstants.EMBED),
 
     INPUT(TagNameConstants.INPUT),
 
-    STYLE(TagNameConstants.STYLE),
-
-    AUDIO(TagNameConstants.AUDIO),
-
-    TABLE(TagNameConstants.TABLE),
-
-    TFOOT(TagNameConstants.TFOOT),
-
-    SMALL(TagNameConstants.SMALL),
-
-    TBODY(TagNameConstants.TBODY),
+    LABEL(TagNameConstants.LABEL),
 
     METER(TagNameConstants.METER),
 
-    ASIDE(TagNameConstants.ASIDE),
+    PARAM(TagNameConstants.PARAM),
+
+    SMALL(TagNameConstants.SMALL),
+
+    STYLE(TagNameConstants.STYLE),
+
+    TABLE(TagNameConstants.TABLE),
+
+    TBODY(TagNameConstants.TBODY),
+
+    TFOOT(TagNameConstants.TFOOT),
 
     THEAD(TagNameConstants.THEAD),
-
-    VIDEO(TagNameConstants.VIDEO),
 
     /**
      * title
      */
     TITLE(TagNameConstants.TITLE_TAG),
 
-    PARAM(TagNameConstants.PARAM),
-
     TRACK(TagNameConstants.TRACK),
 
-    LABEL(TagNameConstants.LABEL),
+    VIDEO(TagNameConstants.VIDEO),
 
-    SELECT(TagNameConstants.SELECT),
-
-    LEGEND(TagNameConstants.LEGEND),
-
-    OUTPUT(TagNameConstants.OUTPUT),
+    BUTTON(TagNameConstants.BUTTON),
 
     CANVAS(TagNameConstants.CANVAS),
 
-    SCRIPT(TagNameConstants.SCRIPT),
-
     CIRCLE(TagNameConstants.CIRCLE),
-
-    OBJECT(TagNameConstants.OBJECT),
-
-    STRONG(TagNameConstants.STRONG),
-
-    HGROUP(TagNameConstants.HGROUP),
-
-    IFRAME(TagNameConstants.IFRAME),
-
-    SOURCE(TagNameConstants.SOURCE),
-
-    HEADER(TagNameConstants.HEADER),
-
-    OPTION(TagNameConstants.OPTION),
-
-    FOOTER(TagNameConstants.FOOTER),
-
-    KEYGEN(TagNameConstants.KEYGEN),
-
-    BUTTON(TagNameConstants.BUTTON),
 
     DIALOG(TagNameConstants.DIALOG),
 
     FIGURE(TagNameConstants.FIGURE),
 
-    CAPTION(TagNameConstants.CAPTION),
+    FOOTER(TagNameConstants.FOOTER),
+
+    HEADER(TagNameConstants.HEADER),
+
+    HGROUP(TagNameConstants.HGROUP),
+
+    IFRAME(TagNameConstants.IFRAME),
+
+    KEYGEN(TagNameConstants.KEYGEN),
+
+    LEGEND(TagNameConstants.LEGEND),
+
+    OBJECT(TagNameConstants.OBJECT),
+
+    OPTION(TagNameConstants.OPTION),
+
+    OUTPUT(TagNameConstants.OUTPUT),
+
+    SCRIPT(TagNameConstants.SCRIPT),
+
+    SELECT(TagNameConstants.SELECT),
+
+    SOURCE(TagNameConstants.SOURCE),
+
+    STRONG(TagNameConstants.STRONG),
 
     ADDRESS(TagNameConstants.ADDRESS),
+
+    ARTICLE(TagNameConstants.ARTICLE),
+
+    CAPTION(TagNameConstants.CAPTION),
+
+    DETAILS(TagNameConstants.DETAILS),
+
+    ELLIPSE(TagNameConstants.ELLIPSE),
 
     PICTURE(TagNameConstants.PICTURE),
 
@@ -259,35 +266,29 @@ public enum PreIndexedTagName {
 
     SECTION(TagNameConstants.SECTION),
 
-    DETAILS(TagNameConstants.DETAILS),
-
-    ELLIPSE(TagNameConstants.ELLIPSE),
-
-    ARTICLE(TagNameConstants.ARTICLE),
-
     SUMMARY(TagNameConstants.SUMMARY),
-
-    TEXTAREA(TagNameConstants.TEXTAREA),
-
-    TEMPLATE(TagNameConstants.TEMPLATE),
-
-    PROGRESS(TagNameConstants.PROGRESS),
-
-    OPTGROUP(TagNameConstants.OPTGROUP),
-
-    FIELDSET(TagNameConstants.FIELDSET),
-
-    NOSCRIPT(TagNameConstants.NOSCRIPT),
-
-    POLYLINE(TagNameConstants.POLYLINE),
 
     BASEFONT(TagNameConstants.BASEFONT),
 
-    DATALIST(TagNameConstants.DATALIST),
-
     COLGROUP(TagNameConstants.COLGROUP),
 
+    DATALIST(TagNameConstants.DATALIST),
+
+    FIELDSET(TagNameConstants.FIELDSET),
+
     MENUITEM(TagNameConstants.MENUITEM),
+
+    NOSCRIPT(TagNameConstants.NOSCRIPT),
+
+    OPTGROUP(TagNameConstants.OPTGROUP),
+
+    POLYLINE(TagNameConstants.POLYLINE),
+
+    PROGRESS(TagNameConstants.PROGRESS),
+
+    TEMPLATE(TagNameConstants.TEMPLATE),
+
+    TEXTAREA(TagNameConstants.TEXTAREA),
 
     BLOCKQUOTE(TagNameConstants.BLOCKQUOTE),
 
@@ -337,8 +338,7 @@ public enum PreIndexedTagName {
         } else if (indexBytes.length == 3) {
             return new byte[] { indexBytes[0], indexBytes[1], indexBytes[2] };
         } else if (indexBytes.length == 4) {
-            return new byte[] { indexBytes[0], indexBytes[1], indexBytes[2],
-                    indexBytes[3] };
+            return new byte[] { indexBytes[0], indexBytes[1], indexBytes[2], indexBytes[3] };
         }
         return Arrays.copyOf(indexBytes, indexBytes.length);
     }
@@ -350,10 +350,9 @@ public enum PreIndexedTagName {
      * @since 3.0.6
      */
     public byte[] internalIndexBytes(final Object accessObject) {
-        if (accessObject == null || !((SecurityClassConstants.ABSTRACT_HTML
-                .equals(accessObject.getClass().getName())))) {
-            throw new WffSecurityException(
-                    "Not allowed to consume this method. This method is for internal use.");
+        if (accessObject == null
+                || !((SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName())))) {
+            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
         return indexBytes;
     }

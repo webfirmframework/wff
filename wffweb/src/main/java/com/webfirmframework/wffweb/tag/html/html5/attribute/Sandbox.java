@@ -90,8 +90,7 @@ public class Sandbox extends AbstractAttribute implements IFrameAttributable {
     /**
      * sets the value for this attribute
      *
-     * @param value
-     *                  the value for the attribute.
+     * @param value the value for the attribute.
      * @since 3.0.1
      */
     public void setValue(final String value) {
@@ -101,12 +100,10 @@ public class Sandbox extends AbstractAttribute implements IFrameAttributable {
     /**
      * sets the value for this attribute
      *
-     * @param updateClient
-     *                         true to update client browser page if it is
-     *                         available. The default value is true but it will
-     *                         be ignored if there is no client browser page.
-     * @param value
-     *                         the value for the attribute.
+     * @param updateClient true to update client browser page if it is available.
+     *                     The default value is true but it will be ignored if there
+     *                     is no client browser page.
+     * @param value        the value for the attribute.
      * @since 3.0.1
      * @author WFF
      */

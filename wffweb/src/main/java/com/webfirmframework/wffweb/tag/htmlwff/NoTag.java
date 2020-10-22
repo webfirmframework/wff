@@ -25,6 +25,7 @@ import com.webfirmframework.wffweb.MethodNotImplementedException;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.SharedTagContent;
 import com.webfirmframework.wffweb.tag.html.SharedTagContent.ContentFormatter;
+import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
  * It's a tag which makes child content without any opening closing tag. <br>
@@ -49,10 +50,8 @@ public class NoTag extends AbstractHtml {
 
     /**
      *
-     * @param base
-     *                     i.e. parent tag of this tag
-     * @param children
-     *                     An array of {@code AbstractHtml}
+     * @param base     i.e. parent tag of this tag
+     * @param children An array of {@code AbstractHtml}
      *
      * @since 1.0.0
      */
@@ -62,22 +61,18 @@ public class NoTag extends AbstractHtml {
 
     /**
      *
-     * @param base
-     *                     i.e. parent tag of this tag
-     * @param children
-     *                     An array of {@code AbstractHtml}
+     * @param base     i.e. parent tag of this tag
+     * @param children An array of {@code AbstractHtml}
      *
      * @since 1.0.0
      */
-    public NoTag(final AbstractHtml base,
-            final Collection<? extends AbstractHtml> children) {
+    public NoTag(final AbstractHtml base, final Collection<? extends AbstractHtml> children) {
         super(base, children);
     }
 
     /**
      *
-     * @param base
-     *                         i.e. parent tag of this tag
+     * @param base         i.e. parent tag of this tag
      * @param childContent
      *
      * @since 1.0.0
@@ -88,16 +83,13 @@ public class NoTag extends AbstractHtml {
 
     /**
      *
-     * @param base
-     *                            i.e. parent tag of this tag
+     * @param base            i.e. parent tag of this tag
      * @param childContent
-     * @param contentTypeHtml
-     *                            true if the given childContent is HTML. by
-     *                            default it is false.
+     * @param contentTypeHtml true if the given childContent is HTML. by default it
+     *                        is false.
      * @since 3.0.2
      */
-    public NoTag(final AbstractHtml base, final String childContent,
-            final boolean contentTypeHtml) {
+    public NoTag(final AbstractHtml base, final String childContent, final boolean contentTypeHtml) {
         super(base, childContent, contentTypeHtml);
     }
 
@@ -166,7 +158,7 @@ public class NoTag extends AbstractHtml {
     public void removeChild(final String child) {
         final StringBuilder htmlMiddleSB = getHtmlMiddleSB();
         final String sb = htmlMiddleSB.toString();
-        final String replaced = sb.replace(child, "");
+        final String replaced = StringUtil.replace(sb, child, "");
         final int lastIndex = htmlMiddleSB.length() - 1;
         htmlMiddleSB.delete(0, lastIndex);
         htmlMiddleSB.append(replaced);
@@ -217,11 +209,9 @@ public class NoTag extends AbstractHtml {
      */
     @Deprecated
     @Override
-    public <T> void subscribeTo(final boolean updateClient,
-            final SharedTagContent<T> sharedTagContent,
+    public <T> void subscribeTo(final boolean updateClient, final SharedTagContent<T> sharedTagContent,
             final ContentFormatter<T> formatter) {
-        throw new MethodNotImplementedException(
-                "sharedTagContent is not allowed to apply in NoTag or Blank tag");
+        throw new MethodNotImplementedException("sharedTagContent is not allowed to apply in NoTag or Blank tag");
     }
 
     /**
@@ -229,11 +219,9 @@ public class NoTag extends AbstractHtml {
      */
     @Deprecated
     @Override
-    public <T> void addInnerHtml(final boolean updateClient,
-            final SharedTagContent<T> sharedTagContent,
+    public <T> void addInnerHtml(final boolean updateClient, final SharedTagContent<T> sharedTagContent,
             final ContentFormatter<T> formatter) {
-        throw new MethodNotImplementedException(
-                "sharedTagContent is not allowed to apply in NoTag or Blank tag");
+        throw new MethodNotImplementedException("sharedTagContent is not allowed to apply in NoTag or Blank tag");
     }
 
     /**
@@ -242,8 +230,7 @@ public class NoTag extends AbstractHtml {
     @Deprecated
     @Override
     public <T extends AbstractHtml> T give(final Consumer<T> consumer) {
-        throw new MethodNotImplementedException(
-                "give is not allowed to use in NoTag or Blank tag");
+        throw new MethodNotImplementedException("give is not allowed to use in NoTag or Blank tag");
     }
 
     /**
@@ -251,10 +238,8 @@ public class NoTag extends AbstractHtml {
      */
     @Deprecated
     @Override
-    public <R extends AbstractHtml, C> R give(
-            final BiFunction<R, C, R> consumer, final C input) {
-        throw new MethodNotImplementedException(
-                "give is not allowed to use in NoTag or Blank tag");
+    public <R extends AbstractHtml, C> R give(final BiFunction<R, C, R> consumer, final C input) {
+        throw new MethodNotImplementedException("give is not allowed to use in NoTag or Blank tag");
     }
 
 }

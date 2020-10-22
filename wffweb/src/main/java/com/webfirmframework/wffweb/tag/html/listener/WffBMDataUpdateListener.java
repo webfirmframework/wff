@@ -30,8 +30,7 @@ public interface WffBMDataUpdateListener extends Serializable {
 
         private final AbstractHtml tag;
 
-        public UpdateEvent(final AbstractHtml tag, final String key,
-                final WffBMData wffBMData) {
+        public UpdateEvent(final AbstractHtml tag, final String key, final WffBMData wffBMData) {
             super();
             this.tag = tag;
             this.key = key;

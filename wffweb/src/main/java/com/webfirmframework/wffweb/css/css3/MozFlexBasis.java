@@ -52,8 +52,7 @@ public class MozFlexBasis extends AbstractCssProperty<MozFlexBasis> {
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays
-            .asList(INITIAL, INHERIT, AUTO);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(INITIAL, INHERIT, AUTO);
 
     private String cssValue;
     private Float value;
@@ -67,18 +66,16 @@ public class MozFlexBasis extends AbstractCssProperty<MozFlexBasis> {
     }
 
     /**
-     * @param cssValue
-     *                     the css value to set.
+     * @param cssValue the css value to set.
      */
     public MozFlexBasis(final String cssValue) {
         setCssValue(cssValue);
     }
 
     /**
-     * @param mozFlexBasis
-     *                         the {@code MozFlexBasis} object from which the
-     *                         cssValue to set.And, {@code null} will throw
-     *                         {@code NullValueException}
+     * @param mozFlexBasis the {@code MozFlexBasis} object from which the cssValue
+     *                     to set.And, {@code null} will throw
+     *                     {@code NullValueException}
      */
     public MozFlexBasis(final MozFlexBasis mozFlexBasis) {
         if (mozFlexBasis == null) {
@@ -88,9 +85,8 @@ public class MozFlexBasis extends AbstractCssProperty<MozFlexBasis> {
     }
 
     /**
-     * @param percent
-     *                    the percentage value to set. The cssLengthUnit will
-     *                    automatically set to %.
+     * @param percent the percentage value to set. The cssLengthUnit will
+     *                automatically set to %.
      * @since 1.0.0
      * @author WFF
      */
@@ -117,8 +113,7 @@ public class MozFlexBasis extends AbstractCssProperty<MozFlexBasis> {
      * @since 1.0.0
      * @author WFF
      */
-    public MozFlexBasis setValue(final float value,
-            final CssLengthUnit cssLengthUnit) {
+    public MozFlexBasis setValue(final float value, final CssLengthUnit cssLengthUnit) {
         this.value = value;
         this.cssLengthUnit = cssLengthUnit;
         cssValue = String.valueOf(value) + cssLengthUnit;
@@ -129,8 +124,7 @@ public class MozFlexBasis extends AbstractCssProperty<MozFlexBasis> {
     }
 
     /**
-     * @param percent
-     *                    the percent to set
+     * @param percent the percent to set
      * @since 1.0.0
      * @author WFF
      */
@@ -177,11 +171,11 @@ public class MozFlexBasis extends AbstractCssProperty<MozFlexBasis> {
     }
 
     /**
-     * gets the width in float value. {@code MozFlexBasis#getUnit()} should be
-     * used to get the cssLengthUnit for this value.
+     * gets the width in float value. {@code MozFlexBasis#getUnit()} should be used
+     * to get the cssLengthUnit for this value.
      *
-     * @return the value in float or null if the cssValue is
-     *         <code>initial</code> or <code>inherit</code>.
+     * @return the value in float or null if the cssValue is <code>initial</code> or
+     *         <code>inherit</code>.
      * @since 1.0.0
      * @author WFF
      */
@@ -200,11 +194,9 @@ public class MozFlexBasis extends AbstractCssProperty<MozFlexBasis> {
     }
 
     /**
-     * @param cssValue
-     *                     the value should be in the format of
-     *                     <code>55px</code> or <code>95%</code>. {@code null}
-     *                     is considered as an invalid value and it will throw
-     *                     {@code NullValueException}.
+     * @param cssValue the value should be in the format of <code>55px</code> or
+     *                 <code>95%</code>. {@code null} is considered as an invalid
+     *                 value and it will throw {@code NullValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -217,12 +209,10 @@ public class MozFlexBasis extends AbstractCssProperty<MozFlexBasis> {
             } else {
                 final String trimmedCssValue = StringUtil.strip(cssValue);
                 boolean invalidValue = true;
-                for (final CssLengthUnit cssLengthUnit : CssLengthUnit
-                        .values()) {
+                for (final CssLengthUnit cssLengthUnit : CssLengthUnit.values()) {
                     final String unit = cssLengthUnit.getUnit();
                     if (trimmedCssValue.endsWith(unit)) {
-                        final String valueOnly = trimmedCssValue
-                                .replaceFirst(unit, "");
+                        final String valueOnly = trimmedCssValue.replaceFirst(unit, "");
                         try {
                             value = Float.parseFloat(valueOnly);
                         } catch (final NumberFormatException e) {
@@ -234,8 +224,7 @@ public class MozFlexBasis extends AbstractCssProperty<MozFlexBasis> {
                         break;
                     }
                 }
-                if (trimmedCssValue.equalsIgnoreCase(INITIAL)
-                        || trimmedCssValue.equalsIgnoreCase(INHERIT)
+                if (trimmedCssValue.equalsIgnoreCase(INITIAL) || trimmedCssValue.equalsIgnoreCase(INHERIT)
                         || trimmedCssValue.equalsIgnoreCase(AUTO)) {
                     this.cssValue = trimmedCssValue.toLowerCase();
                     cssLengthUnit = null;
@@ -292,16 +281,14 @@ public class MozFlexBasis extends AbstractCssProperty<MozFlexBasis> {
     /**
      * validates if the given cssValue is valid for this class.
      *
-     * @param cssValue
-     *                     the value to check.
+     * @param cssValue the value to check.
      * @return true if valid and false if invalid.
      * @author WFF
      * @since 1.0.0
      */
     public static boolean isValid(final String cssValue) {
 
-        final String trimmedCssValue = TagStringUtil
-                .toLowerCase(StringUtil.strip(cssValue));
+        final String trimmedCssValue = TagStringUtil.toLowerCase(StringUtil.strip(cssValue));
 
         if (StringUtil.containsSpace(trimmedCssValue)) {
             return false;

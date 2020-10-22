@@ -37,8 +37,7 @@ public class MinWidth extends AbstractCssProperty<MinWidth> {
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays
-            .asList(INITIAL, INHERIT);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(INITIAL, INHERIT);
 
     private String cssValue;
     private Float value;
@@ -53,18 +52,15 @@ public class MinWidth extends AbstractCssProperty<MinWidth> {
     }
 
     /**
-     * @param cssValue
-     *                     the css value to set.
+     * @param cssValue the css value to set.
      */
     public MinWidth(final String cssValue) {
         setCssValue(cssValue);
     }
 
     /**
-     * @param minWidth
-     *                     the {@code MinWidth} object from which the cssValue
-     *                     to set.And, {@code null} will throw
-     *                     {@code NullValueException}
+     * @param minWidth the {@code MinWidth} object from which the cssValue to
+     *                 set.And, {@code null} will throw {@code NullValueException}
      */
     public MinWidth(final MinWidth minWidth) {
         if (minWidth == null) {
@@ -74,9 +70,8 @@ public class MinWidth extends AbstractCssProperty<MinWidth> {
     }
 
     /**
-     * @param percent
-     *                    the percentage value to set. The cssLengthUnit will
-     *                    automatically set to %.
+     * @param percent the percentage value to set. The cssLengthUnit will
+     *                automatically set to %.
      * @since 1.0.0
      * @author WFF
      */
@@ -103,8 +98,7 @@ public class MinWidth extends AbstractCssProperty<MinWidth> {
      * @since 1.0.0
      * @author WFF
      */
-    public MinWidth setValue(final float value,
-            final CssLengthUnit cssLengthUnit) {
+    public MinWidth setValue(final float value, final CssLengthUnit cssLengthUnit) {
         this.value = value;
         this.cssLengthUnit = cssLengthUnit;
         cssValue = String.valueOf(value) + cssLengthUnit;
@@ -115,8 +109,7 @@ public class MinWidth extends AbstractCssProperty<MinWidth> {
     }
 
     /**
-     * @param percent
-     *                    the percent to set
+     * @param percent the percent to set
      * @since 1.0.0
      * @author WFF
      */
@@ -163,11 +156,11 @@ public class MinWidth extends AbstractCssProperty<MinWidth> {
     }
 
     /**
-     * gets the min-width in float value. {@code MinWidth#getUnit()} should be
-     * used to get the cssLengthUnit for this value.
+     * gets the min-width in float value. {@code MinWidth#getUnit()} should be used
+     * to get the cssLengthUnit for this value.
      *
-     * @return the value in float or null if the cssValue is
-     *         <code>initial</code> or <code>inherit</code>.
+     * @return the value in float or null if the cssValue is <code>initial</code> or
+     *         <code>inherit</code>.
      * @since 1.0.0
      * @author WFF
      */
@@ -186,11 +179,9 @@ public class MinWidth extends AbstractCssProperty<MinWidth> {
     }
 
     /**
-     * @param cssValue
-     *                     the value should be in the format of
-     *                     <code>55px</code> or <code>95%</code>. {@code null}
-     *                     is considered as an invalid value and it will throw
-     *                     {@code NullValueException}.
+     * @param cssValue the value should be in the format of <code>55px</code> or
+     *                 <code>95%</code>. {@code null} is considered as an invalid
+     *                 value and it will throw {@code NullValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -203,12 +194,10 @@ public class MinWidth extends AbstractCssProperty<MinWidth> {
             } else {
                 final String trimmedCssValue = StringUtil.strip(cssValue);
                 boolean invalidValue = true;
-                for (final CssLengthUnit cssLengthUnit : CssLengthUnit
-                        .values()) {
+                for (final CssLengthUnit cssLengthUnit : CssLengthUnit.values()) {
                     final String unit = cssLengthUnit.getUnit();
                     if (trimmedCssValue.endsWith(unit)) {
-                        final String valueOnly = trimmedCssValue
-                                .replaceFirst(unit, "");
+                        final String valueOnly = trimmedCssValue.replaceFirst(unit, "");
                         try {
                             value = Float.parseFloat(valueOnly);
                         } catch (final NumberFormatException e) {
@@ -220,8 +209,7 @@ public class MinWidth extends AbstractCssProperty<MinWidth> {
                         break;
                     }
                 }
-                if (trimmedCssValue.equalsIgnoreCase(INITIAL)
-                        || trimmedCssValue.equalsIgnoreCase(INHERIT)) {
+                if (trimmedCssValue.equalsIgnoreCase(INITIAL) || trimmedCssValue.equalsIgnoreCase(INHERIT)) {
                     this.cssValue = trimmedCssValue.toLowerCase();
                     cssLengthUnit = null;
                     value = null;
@@ -267,16 +255,14 @@ public class MinWidth extends AbstractCssProperty<MinWidth> {
     /**
      * validates if the given cssValue is valid for this class.
      *
-     * @param cssValue
-     *                     the value to check.
+     * @param cssValue the value to check.
      * @return true if valid and false if invalid.
      * @author WFF
      * @since 1.0.0
      */
     public static boolean isValid(final String cssValue) {
 
-        final String trimmedCssValue = TagStringUtil
-                .toLowerCase(StringUtil.strip(cssValue));
+        final String trimmedCssValue = TagStringUtil.toLowerCase(StringUtil.strip(cssValue));
 
         if (StringUtil.containsSpace(trimmedCssValue)) {
             return false;

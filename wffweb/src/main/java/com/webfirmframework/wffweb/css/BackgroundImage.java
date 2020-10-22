@@ -52,8 +52,7 @@ import com.webfirmframework.wffweb.util.StringUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class BackgroundImage extends AbstractCssProperty<BackgroundImage>
-        implements StateChangeInformer<Bean> {
+public class BackgroundImage extends AbstractCssProperty<BackgroundImage> implements StateChangeInformer<Bean> {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -61,11 +60,9 @@ public class BackgroundImage extends AbstractCssProperty<BackgroundImage>
     public static final String INHERIT = "inherit";
     public static final String NONE = "none";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays
-            .asList(INITIAL, INHERIT, NONE);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(INITIAL, INHERIT, NONE);
 
-    private static final Logger LOGGER = Logger
-            .getLogger(BackgroundImage.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(BackgroundImage.class.getName());
 
     private String cssValue;
 
@@ -87,9 +84,8 @@ public class BackgroundImage extends AbstractCssProperty<BackgroundImage>
     }
 
     /**
-     * @param cssValue
-     *                     the cssValue to set. eg:-
-     *                     {@code url(images/BackgroundDesign.png)}
+     * @param cssValue the cssValue to set. eg:-
+     *                 {@code url(images/BackgroundDesign.png)}
      * @author WFF
      */
     public BackgroundImage(final String cssValue) {
@@ -97,9 +93,8 @@ public class BackgroundImage extends AbstractCssProperty<BackgroundImage>
     }
 
     /**
-     * @param backgroundImage
-     *                            the {@code BackgroundImage} object from which
-     *                            the cssName and cssValue to set.
+     * @param backgroundImage the {@code BackgroundImage} object from which the
+     *                        cssName and cssValue to set.
      * @author WFF
      */
     public BackgroundImage(final BackgroundImage backgroundImage) {
@@ -107,8 +102,7 @@ public class BackgroundImage extends AbstractCssProperty<BackgroundImage>
             throw new NullValueException("customCss can not be null");
         }
         if (backgroundImage.getCssName() == null) {
-            throw new NullValueException(
-                    "customCss.getCssName() can not be null");
+            throw new NullValueException("customCss.getCssName() can not be null");
         }
         setCssValue(backgroundImage.getCssValue());
     }
@@ -116,17 +110,15 @@ public class BackgroundImage extends AbstractCssProperty<BackgroundImage>
     /**
      *
      * sample code :- {@code new BackgroundImage("Test.gif", "TestImage.png")}
-     * creates
-     * <code>background-image: url("Test.gif"), url("TestImage.png");</code> .
-     * For css3 syntax method please use
+     * creates <code>background-image: url("Test.gif"), url("TestImage.png");</code>
+     * . For css3 syntax method please use
      * {@code new BackgroundImage(UrlCss3Value... urlCss3Values)} or
      * {@code setImageUrls(UrlCss3Value... urlCss3Values)} method.
      *
-     * @param imageUrls
-     *                      an array of backgroundImage urls, eg:-
-     *                      {@code backgroundImage.setImageUrls("Test.gif", "TestImage.png")}
-     *                      and the generated css will be
-     *                      <code>background-image: url("Test.gif"), url("TestImage.png");</code>
+     * @param imageUrls an array of backgroundImage urls, eg:-
+     *                  {@code backgroundImage.setImageUrls("Test.gif", "TestImage.png")}
+     *                  and the generated css will be
+     *                  <code>background-image: url("Test.gif"), url("TestImage.png");</code>
      * @since 1.0.0
      * @author WFF
      */
@@ -135,8 +127,7 @@ public class BackgroundImage extends AbstractCssProperty<BackgroundImage>
     }
 
     /**
-     * @param urlCss3Values
-     *                          an array of {@code UrlCss3Value} objects.
+     * @param urlCss3Values an array of {@code UrlCss3Value} objects.
      * @author WFF
      */
     public BackgroundImage(final UrlCss3Value... urlCss3Values) {
@@ -177,8 +168,7 @@ public class BackgroundImage extends AbstractCssProperty<BackgroundImage>
     }
 
     /**
-     * @param cssValue
-     *                     {@code null} is considered as an invalid value.
+     * @param cssValue {@code null} is considered as an invalid value.
      * @since 1.0.0
      * @author WFF
      */
@@ -205,8 +195,7 @@ public class BackgroundImage extends AbstractCssProperty<BackgroundImage>
             if (urlCss3Values == null) {
                 urlCss3Values = new UrlCss3Value[cssValueParts.length];
                 for (int i = 0; i < cssValueParts.length; i++) {
-                    final UrlCss3Value urlCss3Value = new UrlCss3Value(
-                            cssValueParts[i]);
+                    final UrlCss3Value urlCss3Value = new UrlCss3Value(cssValueParts[i]);
                     urlCss3Value.setAlreadyInUse(true);
                     urlCss3Value.setStateChangeInformer(this);
                     urlCss3Values[i] = urlCss3Value;
@@ -270,15 +259,14 @@ public class BackgroundImage extends AbstractCssProperty<BackgroundImage>
     /**
      * sample code :-
      * {@code backgroundImage.setImageUrls("Test.gif", "TestImage.png")} creates
-     * <code>background-image: url("Test.gif"), url("TestImage.png");</code>.
-     * For css3 syntax method please use
+     * <code>background-image: url("Test.gif"), url("TestImage.png");</code>. For
+     * css3 syntax method please use
      * {@code setImageUrls(UrlCss3Value... urlCss3Values)} method.
      *
-     * @param imageUrls
-     *                      an array of backgroundImage urls, eg:-
-     *                      {@code backgroundImage.setImageUrls("Test.gif", "TestImage.png")}
-     *                      and the generated css will be
-     *                      <code>background-image: url("Test.gif"), url("TestImage.png");</code>
+     * @param imageUrls an array of backgroundImage urls, eg:-
+     *                  {@code backgroundImage.setImageUrls("Test.gif", "TestImage.png")}
+     *                  and the generated css will be
+     *                  <code>background-image: url("Test.gif"), url("TestImage.png");</code>
      * @since 1.0.0
      * @author WFF
      */
@@ -300,9 +288,7 @@ public class BackgroundImage extends AbstractCssProperty<BackgroundImage>
     }
 
     /**
-     * @param urlCss3Values
-     *                          urlCss3Values an array of {@code UrlCss3Value}
-     *                          objects.
+     * @param urlCss3Values urlCss3Values an array of {@code UrlCss3Value} objects.
      * @since 1.0.0
      * @author WFF
      */
@@ -324,14 +310,12 @@ public class BackgroundImage extends AbstractCssProperty<BackgroundImage>
             if (urlCss3Value.isAlreadyInUse()) {
                 try {
                     final UrlCss3Value clonedUrlCss3Value = CloneUtil
-                            .<UrlCss3Value> deepCloneOnlyIfDoesNotContain(
-                                    urlCss3Value, this.urlCss3Values);
+                            .<UrlCss3Value>deepCloneOnlyIfDoesNotContain(urlCss3Value, this.urlCss3Values);
                     if (!Objects.equals(clonedUrlCss3Value, urlCss3Value)) {
                         urlCss3Value = clonedUrlCss3Value;
                         if (LOGGER.isLoggable(Level.WARNING)) {
-                            LOGGER.warning("cloned urlCss3Value " + urlCss3Value
-                                    + "(hashcode: " + urlCss3Value.hashCode()
-                                    + ") as it is already used by another object");
+                            LOGGER.warning("cloned urlCss3Value " + urlCss3Value + "(hashcode: "
+                                    + urlCss3Value.hashCode() + ") as it is already used by another object");
                         }
                     }
                 } catch (final CloneNotSupportedException e) {
@@ -366,8 +350,8 @@ public class BackgroundImage extends AbstractCssProperty<BackgroundImage>
     }
 
     /**
-     * @return a new object of unmodifiable {@code List<UrlCss3Value>} whenever
-     *         this method is called. Or null.
+     * @return a new object of unmodifiable {@code List<UrlCss3Value>} whenever this
+     *         method is called. Or null.
      *
      * @author WFF
      * @since 1.0.0
@@ -406,12 +390,10 @@ public class BackgroundImage extends AbstractCssProperty<BackgroundImage>
 
     @Override
     public void stateChanged(final Bean stateChangedObject) {
-        if (urlCss3Values != null
-                && stateChangedObject instanceof UrlCss3Value) {
+        if (urlCss3Values != null && stateChangedObject instanceof UrlCss3Value) {
             final UrlCss3Value urlCss3Value = (UrlCss3Value) stateChangedObject;
             if (urlCss3Value.getX() > -1 || urlCss3Value.getY() > -1) {
-                throw new InvalidValueException(
-                        "urlCss3Value cannot be set with x or y values.");
+                throw new InvalidValueException("urlCss3Value cannot be set with x or y values.");
             }
             setImageUrls(urlCss3Values);
             if (getStateChangeInformer() != null) {

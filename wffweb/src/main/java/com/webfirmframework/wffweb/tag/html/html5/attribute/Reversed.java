@@ -33,8 +33,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.OlAttributable;
  * @author WFF
  * @since 2.1.9
  */
-public class Reversed extends AbstractAttribute
-        implements BooleanAttribute, OlAttributable {
+public class Reversed extends AbstractAttribute implements BooleanAttribute, OlAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -52,8 +51,8 @@ public class Reversed extends AbstractAttribute
     }
 
     /**
-     * sets the default value as <code>reversed</code> . If value is not
-     * required then use <code>new Reversed(null)</code>.
+     * sets the default value as <code>reversed</code> . If value is not required
+     * then use <code>new Reversed(null)</code>.
      *
      * @since 2.1.9
      * @author WFF

@@ -52,12 +52,9 @@ public class AnimationIteration extends AbstractEventAttribute {
         setServerAsyncMethod(null, serverAsyncMethod, null, null);
     }
 
-    public AnimationIteration(final String preJsFunctionBody,
-            final ServerAsyncMethod serverAsyncMethod,
-            final String jsFilterFunctionBody,
-            final String postJsFunctionBody) {
-        setServerAsyncMethod(preJsFunctionBody, serverAsyncMethod,
-                jsFilterFunctionBody, postJsFunctionBody);
+    public AnimationIteration(final String jsPreFunctionBody, final ServerAsyncMethod serverAsyncMethod,
+            final String jsFilterFunctionBody, final String jsPostFunctionBody) {
+        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody);
     }
 
     public AnimationIteration(final String value) {
@@ -69,26 +66,22 @@ public class AnimationIteration extends AbstractEventAttribute {
      * @param serverSideData
      * @since 3.0.2
      */
-    public AnimationIteration(final ServerAsyncMethod serverAsyncMethod,
-            final Object serverSideData) {
-        setServerAsyncMethod(null, serverAsyncMethod, null, null,
-                serverSideData);
+    public AnimationIteration(final ServerAsyncMethod serverAsyncMethod, final Object serverSideData) {
+        setServerAsyncMethod(null, serverAsyncMethod, null, null, serverSideData);
     }
 
     /**
-     * @param preJsFunctionBody
+     * @param jsPreFunctionBody
      * @param serverAsyncMethod
      * @param jsFilterFunctionBody
-     * @param postJsFunctionBody
+     * @param jsPostFunctionBody
      * @param serverSideData
      * @since 3.0.2
      */
-    public AnimationIteration(final String preJsFunctionBody,
-            final ServerAsyncMethod serverAsyncMethod,
-            final String jsFilterFunctionBody, final String postJsFunctionBody,
-            final Object serverSideData) {
-        setServerAsyncMethod(preJsFunctionBody, serverAsyncMethod,
-                jsFilterFunctionBody, postJsFunctionBody, serverSideData);
+    public AnimationIteration(final String jsPreFunctionBody, final ServerAsyncMethod serverAsyncMethod,
+            final String jsFilterFunctionBody, final String jsPostFunctionBody, final Object serverSideData) {
+        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody,
+                serverSideData);
     }
 
     /**

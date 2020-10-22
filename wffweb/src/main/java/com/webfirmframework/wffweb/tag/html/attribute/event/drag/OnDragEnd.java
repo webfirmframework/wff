@@ -53,12 +53,9 @@ public class OnDragEnd extends AbstractEventAttribute {
         setServerAsyncMethod(null, serverAsyncMethod, null, null);
     }
 
-    public OnDragEnd(final String preJsFunctionBody,
-            final ServerAsyncMethod serverAsyncMethod,
-            final String jsFilterFunctionBody,
-            final String postJsFunctionBody) {
-        setServerAsyncMethod(preJsFunctionBody, serverAsyncMethod,
-                jsFilterFunctionBody, postJsFunctionBody);
+    public OnDragEnd(final String jsPreFunctionBody, final ServerAsyncMethod serverAsyncMethod,
+            final String jsFilterFunctionBody, final String jsPostFunctionBody) {
+        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody);
     }
 
     public OnDragEnd(final String value) {
@@ -70,26 +67,22 @@ public class OnDragEnd extends AbstractEventAttribute {
      * @param serverSideData
      * @since 3.0.2
      */
-    public OnDragEnd(final ServerAsyncMethod serverAsyncMethod,
-            final Object serverSideData) {
-        setServerAsyncMethod(null, serverAsyncMethod, null, null,
-                serverSideData);
+    public OnDragEnd(final ServerAsyncMethod serverAsyncMethod, final Object serverSideData) {
+        setServerAsyncMethod(null, serverAsyncMethod, null, null, serverSideData);
     }
 
     /**
-     * @param preJsFunctionBody
+     * @param jsPreFunctionBody
      * @param serverAsyncMethod
      * @param jsFilterFunctionBody
-     * @param postJsFunctionBody
+     * @param jsPostFunctionBody
      * @param serverSideData
      * @since 3.0.2
      */
-    public OnDragEnd(final String preJsFunctionBody,
-            final ServerAsyncMethod serverAsyncMethod,
-            final String jsFilterFunctionBody, final String postJsFunctionBody,
-            final Object serverSideData) {
-        setServerAsyncMethod(preJsFunctionBody, serverAsyncMethod,
-                jsFilterFunctionBody, postJsFunctionBody, serverSideData);
+    public OnDragEnd(final String jsPreFunctionBody, final ServerAsyncMethod serverAsyncMethod,
+            final String jsFilterFunctionBody, final String jsPostFunctionBody, final Object serverSideData) {
+        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody,
+                serverSideData);
     }
 
     /**

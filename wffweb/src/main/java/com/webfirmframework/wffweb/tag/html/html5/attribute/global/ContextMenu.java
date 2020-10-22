@@ -34,8 +34,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
  * @author WFF
  *
  */
-public class ContextMenu extends AbstractAttribute
-        implements GlobalAttributable {
+public class ContextMenu extends AbstractAttribute implements GlobalAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -85,8 +84,7 @@ public class ContextMenu extends AbstractAttribute
     }
 
     /**
-     * @param menuId
-     *                   the menuId to set
+     * @param menuId the menuId to set
      * @author WFF
      * @since 1.0.0
      */

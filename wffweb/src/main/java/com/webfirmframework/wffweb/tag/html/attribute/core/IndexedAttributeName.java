@@ -36,8 +36,7 @@ public enum IndexedAttributeName {
     private final Map<String, Integer> indexedAttrNames;
 
     private IndexedAttributeName() {
-        final PreIndexedAttributeName[] values = PreIndexedAttributeName
-                .values();
+        final PreIndexedAttributeName[] values = PreIndexedAttributeName.values();
 
         final int initialCapacity = values.length;
 

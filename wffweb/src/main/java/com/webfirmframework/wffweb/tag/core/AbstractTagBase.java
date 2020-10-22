@@ -40,8 +40,7 @@ public abstract class AbstractTagBase implements TagBase {
     }
 
     /**
-     * @param rebuild
-     *                    the rebuild to set
+     * @param rebuild the rebuild to set
      * @since 1.0.0
      * @author WFF
      */
@@ -71,8 +70,7 @@ public abstract class AbstractTagBase implements TagBase {
     /**
      * set true whenever this object's state is modified.
      *
-     * @param modified
-     *                     the modified to set
+     * @param modified the modified to set
      * @since 1.0.0
      * @author WFF
      */
@@ -81,9 +79,9 @@ public abstract class AbstractTagBase implements TagBase {
     }
 
     /**
-     * Gets the given data set by {@code setData}. This is merely a
-     * getter-setter methods of data property. The developer can set and get any
-     * data using these methods.
+     * Gets the given data set by {@code setData}. This is merely a getter-setter
+     * methods of data property. The developer can set and get any data using these
+     * methods.
      *
      * @return the data set by {@code setCode} method.
      * @since 2.1.4
@@ -94,8 +92,8 @@ public abstract class AbstractTagBase implements TagBase {
     }
 
     /**
-     * Sets the given data. This is merely a getter-setter methods of data
-     * property. The developer can set and get any data using these methods.
+     * Sets the given data. This is merely a getter-setter methods of data property.
+     * The developer can set and get any data using these methods.
      *
      * @param data
      * @since 2.1.4

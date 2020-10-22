@@ -46,8 +46,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  * @see WffBMArray
  * @see WffBMObject
  */
-public class WffBMByteArray extends ByteArrayOutputStream
-        implements Serializable {
+public class WffBMByteArray extends ByteArrayOutputStream implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -96,8 +95,7 @@ public class WffBMByteArray extends ByteArrayOutputStream
         this.outer = outer;
     }
 
-    private void initWffBMObject(final byte[] bmArrayBytes, final boolean outer)
-            throws IOException {
+    private void initWffBMObject(final byte[] bmArrayBytes, final boolean outer) throws IOException {
 
         if (bmArrayBytes.length == 0 && !outer) {
             // if the inner WffBMByteArray is an empty array then the
@@ -106,8 +104,7 @@ public class WffBMByteArray extends ByteArrayOutputStream
             return;
         }
 
-        final List<NameValue> bmObject = WffBinaryMessageUtil.VERSION_1
-                .parse(bmArrayBytes);
+        final List<NameValue> bmObject = WffBinaryMessageUtil.VERSION_1.parse(bmArrayBytes);
 
         final Iterator<NameValue> iterator = bmObject.iterator();
         if (iterator.hasNext()) {
@@ -117,8 +114,7 @@ public class WffBMByteArray extends ByteArrayOutputStream
                 if (typeNameValue.getName()[0] == BMType.ARRAY.getType()) {
                     this.outer = true;
                 } else {
-                    throw new WffRuntimeException(
-                            "Not a valid Wff BM Array bytes");
+                    throw new WffRuntimeException("Not a valid Wff BM Array bytes");
                 }
             }
 
@@ -135,8 +131,7 @@ public class WffBMByteArray extends ByteArrayOutputStream
 
                     }
                 } else {
-                    throw new WffRuntimeException(
-                            "The array value is not byte type");
+                    throw new WffRuntimeException("The array value is not byte type");
                 }
 
             }
@@ -178,8 +173,7 @@ public class WffBMByteArray extends ByteArrayOutputStream
         final byte[][] values = { toByteArray() };
         nameValue.setValues(values);
 
-        return WffBinaryMessageUtil.VERSION_1
-                .getWffBinaryMessageBytes(nameValues);
+        return WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues);
     }
 
 }

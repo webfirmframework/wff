@@ -43,8 +43,7 @@ import com.webfirmframework.wffweb.util.StringUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class Cursor extends AbstractCssProperty<Cursor>
-        implements StateChangeInformer<Bean> {
+public class Cursor extends AbstractCssProperty<Cursor> implements StateChangeInformer<Bean> {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -89,8 +88,7 @@ public class Cursor extends AbstractCssProperty<Cursor>
 
     private static final List<String> ALL_CURSORTYPES;
 
-    private static final Logger LOGGER = Logger
-            .getLogger(Cursor.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Cursor.class.getName());
 
     static {
         ALL_CURSORTYPES = new ArrayList<>();
@@ -146,8 +144,7 @@ public class Cursor extends AbstractCssProperty<Cursor>
     }
 
     /**
-     * @param cssValue
-     *                     the cssValue to set. eg:- {@code Cursor.ALIAS}
+     * @param cssValue the cssValue to set. eg:- {@code Cursor.ALIAS}
      * @author WFF
      */
     public Cursor(final String cssValue) {
@@ -155,9 +152,8 @@ public class Cursor extends AbstractCssProperty<Cursor>
     }
 
     /**
-     * @param cursor
-     *                   the {@code Cursor} object from which the cssName and
-     *                   cssValue to set.
+     * @param cursor the {@code Cursor} object from which the cssName and cssValue
+     *               to set.
      * @author WFF
      */
     public Cursor(final Cursor cursor) {
@@ -165,12 +161,10 @@ public class Cursor extends AbstractCssProperty<Cursor>
             throw new NullValueException("customCss can not be null");
         }
         if (cursor.getCssName() == null) {
-            throw new NullValueException(
-                    "customCss.getCssName() can not be null");
+            throw new NullValueException("customCss.getCssName() can not be null");
         }
         if (StringUtil.endsWithColon(cursor.getCssName())) {
-            throw new InvalidValueException(
-                    "customCss.getCssName() can not end with : (colon)");
+            throw new InvalidValueException("customCss.getCssName() can not end with : (colon)");
         }
         setCssValue(cursor.getCssValue());
     }
@@ -178,23 +172,20 @@ public class Cursor extends AbstractCssProperty<Cursor>
     /**
      * This constructor is for CSS 2.1 cursor syntax. <br>
      * sample code :- {@code new Cursor("auto", "Test.gif", "TestImage.png")}
-     * creates <code>cursor: url("Test.gif"), url("TestImage.png"), auto;</code>
-     * . For css3 syntax method please use
+     * creates <code>cursor: url("Test.gif"), url("TestImage.png"), auto;</code> .
+     * For css3 syntax method please use
      * {@code new Cursor(String cursorType, UrlCss3Value... urlCss3Values)} or
      * {@code setCursorUrls(String cursorType, UrlCss3Value... urlCss3Values)}
      * method.
      *
-     * @param cursorType
-     *                       This will be the last value, eg:- <code>auto</code>
-     *                       in
-     *                       <code>cursor: url(Test.gif), url(TestImage.png), auto;</code>.
-     *                       This value can not be null. And, it will throw
-     *                       {@code NullValueException} for null value.
-     * @param cursorUrls
-     *                       an array of cursor urls, eg:-
-     *                       {@code cursor.setCursorUrls("auto", "Test.gif", "TestImage.png")}
-     *                       and the generated css will be
-     *                       <code>cursor: url("Test.gif"), url("TestImage.png"), auto;</code>
+     * @param cursorType This will be the last value, eg:- <code>auto</code> in
+     *                   <code>cursor: url(Test.gif), url(TestImage.png), auto;</code>.
+     *                   This value can not be null. And, it will throw
+     *                   {@code NullValueException} for null value.
+     * @param cursorUrls an array of cursor urls, eg:-
+     *                   {@code cursor.setCursorUrls("auto", "Test.gif", "TestImage.png")}
+     *                   and the generated css will be
+     *                   <code>cursor: url("Test.gif"), url("TestImage.png"), auto;</code>
      * @since 1.0.0
      * @author WFF
      */
@@ -203,15 +194,12 @@ public class Cursor extends AbstractCssProperty<Cursor>
     }
 
     /**
-     * @param cursorType
-     *                          the any of the inbuilt cursor types. It will
-     *                          come as the last one in the css value.
-     * @param urlCss3Values
-     *                          an array of {@code UrlCss3Value} objects.
+     * @param cursorType    the any of the inbuilt cursor types. It will come as the
+     *                      last one in the css value.
+     * @param urlCss3Values an array of {@code UrlCss3Value} objects.
      * @author WFF
      */
-    public Cursor(final String cursorType,
-            final UrlCss3Value... urlCss3Values) {
+    public Cursor(final String cursorType, final UrlCss3Value... urlCss3Values) {
         setCursorUrls(cursorType, urlCss3Values);
     }
 
@@ -249,8 +237,7 @@ public class Cursor extends AbstractCssProperty<Cursor>
     }
 
     /**
-     * @param cssValue
-     *                     {@code null} is considered as an invalid value.
+     * @param cssValue {@code null} is considered as an invalid value.
      * @since 1.0.0
      * @author WFF
      */
@@ -261,32 +248,27 @@ public class Cursor extends AbstractCssProperty<Cursor>
         }
         final String trimmedCssValue = StringUtil.strip(cssValue);
         final int cssValueLength = trimmedCssValue.length();
-        if (cssValueLength > 0 && (trimmedCssValue.charAt(0) == ':'
-                || trimmedCssValue.charAt(cssValueLength - 1) == ';')) {
-            throw new InvalidValueException(
-                    "cssValue can not start with : (colon) or end with ; (semicolon)");
+        if (cssValueLength > 0
+                && (trimmedCssValue.charAt(0) == ':' || trimmedCssValue.charAt(cssValueLength - 1) == ';')) {
+            throw new InvalidValueException("cssValue can not start with : (colon) or end with ; (semicolon)");
         }
 
         final String[] cssValueParts = StringUtil.splitByComma(trimmedCssValue);
-        final String cursorType = StringUtil
-                .strip(cssValueParts[cssValueParts.length - 1]).toLowerCase();
+        final String cursorType = StringUtil.strip(cssValueParts[cssValueParts.length - 1]).toLowerCase();
         if (!ALL_CURSORTYPES.contains(StringUtil.strip(cursorType))) {
-            throw new InvalidValueException(
-                    "The last cursor should be the inbuild cursor like auto, default etc..");
+            throw new InvalidValueException("The last cursor should be the inbuild cursor like auto, default etc..");
         }
         if (cssValueParts.length > 1) {
             final StringBuilder cssValueBuilder = new StringBuilder();
             if (urlCss3Values == null) {
                 urlCss3Values = new UrlCss3Value[cssValueParts.length - 1];
                 for (int i = 0; i < cssValueParts.length - 1; i++) {
-                    final UrlCss3Value urlCss3Value = new UrlCss3Value(
-                            cssValueParts[i]);
+                    final UrlCss3Value urlCss3Value = new UrlCss3Value(cssValueParts[i]);
                     urlCss3Value.setAlreadyInUse(true);
                     urlCss3Value.setStateChangeInformer(this);
                     urlCss3Values[i] = urlCss3Value;
 
-                    cssValueBuilder.append(urlCss3Value.getValue())
-                            .append(", ");
+                    cssValueBuilder.append(urlCss3Value.getValue()).append(", ");
                 }
             } else {
 
@@ -294,8 +276,7 @@ public class Cursor extends AbstractCssProperty<Cursor>
                 if ((cssValueParts.length - 1) == urlCss3Values.length) {
                     urlCss3ValuesTemp = urlCss3Values;
                 } else {
-                    urlCss3ValuesTemp = new UrlCss3Value[cssValueParts.length
-                            - 1];
+                    urlCss3ValuesTemp = new UrlCss3Value[cssValueParts.length - 1];
                 }
                 for (int i = 0; i < cssValueParts.length - 1; i++) {
                     final UrlCss3Value urlCss3Value;
@@ -309,12 +290,10 @@ public class Cursor extends AbstractCssProperty<Cursor>
                     urlCss3Value.setAlreadyInUse(true);
                     urlCss3Value.setStateChangeInformer(this);
                     urlCss3ValuesTemp[i] = urlCss3Value;
-                    cssValueBuilder.append(urlCss3Value.getValue())
-                            .append(", ");
+                    cssValueBuilder.append(urlCss3Value.getValue()).append(", ");
                 }
 
-                for (int i = cssValueParts.length
-                        - 1; i < urlCss3Values.length; i++) {
+                for (int i = cssValueParts.length - 1; i < urlCss3Values.length; i++) {
                     urlCss3Values[i].setAlreadyInUse(false);
                 }
 
@@ -338,9 +317,8 @@ public class Cursor extends AbstractCssProperty<Cursor>
     }
 
     /**
-     * @param cursorType
-     *                       it should be one of the following
-     *                       <code> Cursor.ALL_SCROLL ,
+     * @param cursorType it should be one of the following
+     *                   <code> Cursor.ALL_SCROLL ,
      *            Cursor.AUTO , Cursor.CELL , Cursor.CONTEXT_MENU ,
      *            Cursor.COL_RESIZE , Cursor.COPY , Cursor.CROSSHAIR ,
      *            Cursor.DEFAULT , Cursor.E_RESIZE , Cursor.EW_RESIZE ,
@@ -362,8 +340,7 @@ public class Cursor extends AbstractCssProperty<Cursor>
         if (ALL_CURSORTYPES.contains(cursor)) {
             setCssValue(cursor);
         } else {
-            throw new InvalidValueException(cursorType
-                    + " is invalid. use Cursor.DEFAULT or Cursor.WAIT etc..");
+            throw new InvalidValueException(cursorType + " is invalid. use Cursor.DEFAULT or Cursor.WAIT etc..");
         }
     }
 
@@ -378,9 +355,9 @@ public class Cursor extends AbstractCssProperty<Cursor>
 
     /**
      * @return the cursor urls as an array set by
-     *         {@code Cursor#setCursorUrls(String, String...)} method. The
-     *         returned array is just a copy of the cursor urls, modifying it
-     *         will not affect the {@code Cursor} object.
+     *         {@code Cursor#setCursorUrls(String, String...)} method. The returned
+     *         array is just a copy of the cursor urls, modifying it will not affect
+     *         the {@code Cursor} object.
      * @since 1.0.0
      * @author WFF
      */
@@ -392,35 +369,30 @@ public class Cursor extends AbstractCssProperty<Cursor>
      * This method is for CSS 2.1 cursor syntax. <br>
      * sample code :-
      * {@code cursor.setCursorUrls("auto", "Test.gif", "TestImage.png")} creates
-     * <code>cursor: url("Test.gif"), url("TestImage.png"), auto;</code>. For
-     * css3 syntax method please use
+     * <code>cursor: url("Test.gif"), url("TestImage.png"), auto;</code>. For css3
+     * syntax method please use
      * {@code setCursorUrls(String cursorType, UrlCss3Value... urlCss3Values)}
      * method.
      *
-     * @param cursorType
-     *                       This will be the last value, eg:- <code>auto</code>
-     *                       in
-     *                       <code>cursor: url(Test.gif), url(TestImage.png), auto;</code>.
-     *                       This value can not be null. And, it will throw
-     *                       {@code NullValueException} for null value.
-     * @param cursorUrls
-     *                       an array of cursor urls, eg:-
-     *                       {@code cursor.setCursorUrls("auto", "Test.gif", "TestImage.png")}
-     *                       and the generated css will be
-     *                       <code>cursor: url("Test.gif"), url("TestImage.png"), auto;</code>
+     * @param cursorType This will be the last value, eg:- <code>auto</code> in
+     *                   <code>cursor: url(Test.gif), url(TestImage.png), auto;</code>.
+     *                   This value can not be null. And, it will throw
+     *                   {@code NullValueException} for null value.
+     * @param cursorUrls an array of cursor urls, eg:-
+     *                   {@code cursor.setCursorUrls("auto", "Test.gif", "TestImage.png")}
+     *                   and the generated css will be
+     *                   <code>cursor: url("Test.gif"), url("TestImage.png"), auto;</code>
      * @since 1.0.0
      * @author WFF
      */
-    public void setCursorUrls(final String cursorType,
-            final String... cursorUrls) {
+    public void setCursorUrls(final String cursorType, final String... cursorUrls) {
         if (cursorType == null) {
             throw new NullValueException("cursorType is null");
         }
         if (cursorUrls == null) {
             throw new NullValueException("cursorUrls is null");
         }
-        if (!ALL_CURSORTYPES
-                .contains(StringUtil.strip(cursorType).toLowerCase())) {
+        if (!ALL_CURSORTYPES.contains(StringUtil.strip(cursorType).toLowerCase())) {
             throw new InvalidValueException(cursorType
                     + " is invalid. The cursorType should be any predefined cursor type, eg default, auto etc..");
         }
@@ -431,8 +403,7 @@ public class Cursor extends AbstractCssProperty<Cursor>
         }
         String cssValue = sb.toString();
 
-        cssValue = cssValue.endsWith(", ") ? cssValue.concat(cursorType)
-                : cursorType;
+        cssValue = cssValue.endsWith(", ") ? cssValue.concat(cursorType) : cursorType;
 
         setCssValue(cssValue);
         this.cursorType = cursorType;
@@ -440,25 +411,20 @@ public class Cursor extends AbstractCssProperty<Cursor>
     }
 
     /**
-     * @param cursorType
-     *                          * the any of the inbuilt cursor types. It will
-     *                          come as the last one in the css value.
-     * @param urlCss3Values
-     *                          urlCss3Values an array of {@code UrlCss3Value}
-     *                          objects.
+     * @param cursorType    * the any of the inbuilt cursor types. It will come as
+     *                      the last one in the css value.
+     * @param urlCss3Values urlCss3Values an array of {@code UrlCss3Value} objects.
      * @since 1.0.0
      * @author WFF
      */
-    public void setCursorUrls(final String cursorType,
-            final UrlCss3Value... urlCss3Values) {
+    public void setCursorUrls(final String cursorType, final UrlCss3Value... urlCss3Values) {
         if (cursorType == null) {
             throw new NullValueException("cursorType is null");
         }
         if (urlCss3Values == null) {
             throw new NullValueException("urlCss3Values is null");
         }
-        if (!ALL_CURSORTYPES
-                .contains(StringUtil.strip(cursorType).toLowerCase())) {
+        if (!ALL_CURSORTYPES.contains(StringUtil.strip(cursorType).toLowerCase())) {
             throw new InvalidValueException(cursorType
                     + " is invalid. The cursorType should be any predefined cursor type, eg default, auto etc..");
         }
@@ -473,15 +439,13 @@ public class Cursor extends AbstractCssProperty<Cursor>
             if (urlCss3Value.isAlreadyInUse()) {
                 try {
                     final UrlCss3Value clonedUrlCss3Value = CloneUtil
-                            .<UrlCss3Value> deepCloneOnlyIfDoesNotContain(
-                                    urlCss3Value, this.urlCss3Values);
+                            .<UrlCss3Value>deepCloneOnlyIfDoesNotContain(urlCss3Value, this.urlCss3Values);
 
                     if (!Objects.equals(clonedUrlCss3Value, urlCss3Value)) {
                         urlCss3Value = clonedUrlCss3Value;
                         if (LOGGER.isLoggable(Level.WARNING)) {
-                            LOGGER.warning("cloned urlCss3Value " + urlCss3Value
-                                    + "(hashcode: " + urlCss3Value.hashCode()
-                                    + ") as it is already used by another object");
+                            LOGGER.warning("cloned urlCss3Value " + urlCss3Value + "(hashcode: "
+                                    + urlCss3Value.hashCode() + ") as it is already used by another object");
                         }
                     }
                 } catch (final CloneNotSupportedException e) {
@@ -513,8 +477,8 @@ public class Cursor extends AbstractCssProperty<Cursor>
     }
 
     /**
-     * @return a new object of unmodifiable {@code List<UrlCss3Value>} whenever
-     *         this method is called. Or null.
+     * @return a new object of unmodifiable {@code List<UrlCss3Value>} whenever this
+     *         method is called. Or null.
      *
      * @author WFF
      * @since 1.0.0

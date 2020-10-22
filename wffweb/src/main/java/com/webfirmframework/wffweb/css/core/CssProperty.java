@@ -26,8 +26,8 @@ import java.io.Serializable;
 public interface CssProperty extends Serializable, Cloneable {
 
     /**
-     * @return the name portion in style, eg <code>align-content</code> for
-     *         style <code>align-content: center</code>.
+     * @return the name portion in style, eg <code>align-content</code> for style
+     *         <code>align-content: center</code>.
      * @since 1.0.0
      * @author WFF
      */

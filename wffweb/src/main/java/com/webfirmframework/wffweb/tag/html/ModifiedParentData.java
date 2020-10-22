@@ -33,8 +33,7 @@ final class ModifiedParentData<T> {
 
     private final SharedTagContent.ContentFormatter<T> formatter;
 
-    public ModifiedParentData(final AbstractHtml parent,
-            final Content<String> contentApplied,
+    public ModifiedParentData(final AbstractHtml parent, final Content<String> contentApplied,
             final ContentFormatter<T> formatter) {
         super();
         this.parent = parent;

@@ -38,8 +38,7 @@ public interface InnerHtmlAddListener extends Serializable {
             throw new AssertionError();
         }
 
-        public Event(final AbstractHtml parentTag,
-                final AbstractHtml innerHtmlTag,
+        public Event(final AbstractHtml parentTag, final AbstractHtml innerHtmlTag,
                 final AbstractHtml previousParentTag) {
             super();
             this.parentTag = parentTag;
@@ -71,8 +70,7 @@ public interface InnerHtmlAddListener extends Serializable {
         }
 
         /**
-         * @param previousParentTag
-         *                              the previousParentTag to set
+         * @param previousParentTag the previousParentTag to set
          */
         public void setPreviousParentTag(final AbstractHtml previousParentTag) {
             this.previousParentTag = previousParentTag;
@@ -82,7 +80,6 @@ public interface InnerHtmlAddListener extends Serializable {
 
     public void innerHtmlAdded(Event event);
 
-    public ClientTasksWrapper innerHtmlsAdded(AbstractHtml parentTag,
-            Event... events);
+    public ClientTasksWrapper innerHtmlsAdded(AbstractHtml parentTag, Event... events);
 
 }

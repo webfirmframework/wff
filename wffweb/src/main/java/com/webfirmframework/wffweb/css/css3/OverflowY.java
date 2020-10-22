@@ -35,11 +35,9 @@ public enum OverflowY implements CssProperty {
 
     VISIBLE, HIDDEN, SCROLL, AUTO, INITIAL, INHERIT;
 
-    private final String upperCaseSuperToString = super.toString().replace('_',
-            '-');
+    private final String upperCaseSuperToString = super.toString().replace('_', '-');
 
-    private final String superToString = TagStringUtil
-            .toLowerCase(upperCaseSuperToString);
+    private final String superToString = TagStringUtil.toLowerCase(upperCaseSuperToString);
 
     private final String toString = getCssName() + ": " + getCssValue();
 
@@ -67,8 +65,7 @@ public enum OverflowY implements CssProperty {
         LOWEST_LENGTH = min;
         HIGHEST_LENGTH = max;
         if (values().length > 10) {
-            upperCaseSuperToStringsTemp = new HashSet<>(
-                    upperCaseSuperToStringsTemp);
+            upperCaseSuperToStringsTemp = new HashSet<>(upperCaseSuperToStringsTemp);
         }
         UPPER_CASE_SUPER_TO_STRINGS = upperCaseSuperToStringsTemp;
     }
@@ -101,25 +98,22 @@ public enum OverflowY implements CssProperty {
      * @author WFF
      */
     public static boolean isValid(final String cssValue) {
-        return CssEnumUtil.contains(cssValue, UPPER_CASE_SUPER_TO_STRINGS,
-                LOWEST_LENGTH, HIGHEST_LENGTH);
+        return CssEnumUtil.contains(cssValue, UPPER_CASE_SUPER_TO_STRINGS, LOWEST_LENGTH, HIGHEST_LENGTH);
     }
 
     /**
      * gets the corresponding object for the given {@code cssValue} or null for
      * invalid cssValue.
      *
-     * @param cssValue
-     *                     the css property value without including
-     *                     <code>!important</code> in it.
-     * @return the corresponding object for the given {@code cssValue} or null
-     *         for invalid cssValue.
+     * @param cssValue the css property value without including
+     *                 <code>!important</code> in it.
+     * @return the corresponding object for the given {@code cssValue} or null for
+     *         invalid cssValue.
      * @since 1.0.0
      * @author WFF
      */
     public static OverflowY getThis(final String cssValue) {
-        final String enumString = TagStringUtil.toUpperCase(cssValue)
-                .replace('-', '_');
+        final String enumString = TagStringUtil.toUpperCase(cssValue).replace('-', '_');
 
         OverflowY correspondingObject = null;
         try {

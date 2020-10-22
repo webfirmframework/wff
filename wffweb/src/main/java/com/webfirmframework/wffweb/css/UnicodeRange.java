@@ -54,8 +54,7 @@ public class UnicodeRange extends AbstractCssProperty<UnicodeRange> {
     }
 
     /**
-     * @param cssValue
-     *                     the css value to set.
+     * @param cssValue the css value to set.
      */
     public UnicodeRange(final String cssValue) {
         setCssValue(cssValue);
@@ -68,8 +67,7 @@ public class UnicodeRange extends AbstractCssProperty<UnicodeRange> {
      *
      * </pre>
      *
-     * @param unicodeChars
-     *                         the unicodeChars to set
+     * @param unicodeChars the unicodeChars to set
      * @author WFF
      * @since 1.1.2
      */
@@ -83,8 +81,8 @@ public class UnicodeRange extends AbstractCssProperty<UnicodeRange> {
 
     /**
      * @param unicodeChars
-     * @return Defines the range of unicode characters the font supports.
-     *         Default value is "U+0-10FFFF"
+     * @return Defines the range of unicode characters the font supports. Default
+     *         value is "U+0-10FFFF"
      * @author WFF
      * @since 1.1.2
      */
@@ -103,10 +101,8 @@ public class UnicodeRange extends AbstractCssProperty<UnicodeRange> {
     }
 
     /**
-     * @param fontFamily
-     *                       the {@code FontFamily} object from which the
-     *                       cssValue to set.And, {@code null} will throw
-     *                       {@code NullValueException}
+     * @param fontFamily the {@code FontFamily} object from which the cssValue to
+     *                   set.And, {@code null} will throw {@code NullValueException}
      */
     public UnicodeRange(final UnicodeRange fontFamily) {
         if (fontFamily == null) {
@@ -149,16 +145,14 @@ public class UnicodeRange extends AbstractCssProperty<UnicodeRange> {
     }
 
     /**
-     * @param cssValue
-     *                     The value should be a unicodeChars sequence.
+     * @param cssValue The value should be a unicodeChars sequence.
      * @since 1.1.2
      * @author WFF
      */
     @Override
     public UnicodeRange setCssValue(final String cssValue) {
         if (cssValue == null) {
-            throw new NullValueException(
-                    "null is an invalid value. The value should be a unicodeChars sequence.");
+            throw new NullValueException("null is an invalid value. The value should be a unicodeChars sequence.");
         } else {
 
             final String trimmedCssValue = StringUtil.strip(cssValue);
@@ -184,8 +178,7 @@ public class UnicodeRange extends AbstractCssProperty<UnicodeRange> {
      *
      * </pre>
      *
-     * @param unicodeChars
-     *                         the unicodeChars to set
+     * @param unicodeChars the unicodeChars to set
      * @author WFF
      * @since 1.1.2
      */
@@ -203,8 +196,8 @@ public class UnicodeRange extends AbstractCssProperty<UnicodeRange> {
     }
 
     /**
-     * gets the unicodeChars as an array and if here is no value set then
-     * returns an empty array.
+     * gets the unicodeChars as an array and if here is no value set then returns an
+     * empty array.
      *
      * <pre>
      * Note: it will never return null.

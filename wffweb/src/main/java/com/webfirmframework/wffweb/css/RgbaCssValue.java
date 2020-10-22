@@ -45,8 +45,7 @@ public class RgbaCssValue extends AbstractBean<RgbaCssValue> {
     }
 
     /**
-     * @param rgbaCssValue
-     *                         eg:- <code> rgba(15, 55, 155, 1) </code>
+     * @param rgbaCssValue eg:- <code> rgba(15, 55, 155, 1) </code>
      */
     public RgbaCssValue(final String rgbaCssValue) {
         super();
@@ -64,8 +63,7 @@ public class RgbaCssValue extends AbstractBean<RgbaCssValue> {
     }
 
     /**
-     * @param rgba
-     *                 eg:- <code> rgba(15, 55, 155, 0.5) </code>
+     * @param rgba eg:- <code> rgba(15, 55, 155, 0.5) </code>
      *
      * @since 1.0.0
      * @author WFF
@@ -81,17 +79,13 @@ public class RgbaCssValue extends AbstractBean<RgbaCssValue> {
      */
     private void extractAndAssign(final String rgbaString) {
 
-        final String rgbaStringLowerCase = rgbaString.replace(" ", "")
-                .toLowerCase();
+        final String rgbaStringLowerCase = rgbaString.replace(" ", "").toLowerCase();
 
-        if (rgbaStringLowerCase.startsWith("rgba(")
-                && rgbaStringLowerCase.contains(")")) {
+        if (rgbaStringLowerCase.startsWith("rgba(") && rgbaStringLowerCase.contains(")")) {
             final String rgba = rgbaStringLowerCase.replace(",", ", ");
 
-            final String[] rgbaStringParts = StringUtil
-                    .splitByComma(rgbaStringLowerCase.substring(
-                            rgbaStringLowerCase.indexOf('(') + 1,
-                            rgbaStringLowerCase.lastIndexOf(')')));
+            final String[] rgbaStringParts = StringUtil.splitByComma(rgbaStringLowerCase
+                    .substring(rgbaStringLowerCase.indexOf('(') + 1, rgbaStringLowerCase.lastIndexOf(')')));
 
             if (rgbaStringParts.length == 4) {
                 r = Integer.parseInt(rgbaStringParts[0]);
@@ -126,21 +120,15 @@ public class RgbaCssValue extends AbstractBean<RgbaCssValue> {
     }
 
     /**
-     * @param r
-     *              red value. accepts values only from 0 to 255.
-     * @param g
-     *              green value. accepts values only from 0 to 255.
-     * @param b
-     *              blue value. accepts values only from 0 to 255.
-     * @param a
-     *              alpha value. accepts values only from 0 to 1.
+     * @param r red value. accepts values only from 0 to 255.
+     * @param g green value. accepts values only from 0 to 255.
+     * @param b blue value. accepts values only from 0 to 255.
+     * @param a alpha value. accepts values only from 0 to 1.
      */
     public RgbaCssValue(final int r, final int g, final int b, final float a) {
         super();
-        if ((r < 0 || r > 255) || (g < 0 || g > 255) || (b < 0 || b > 255)
-                || (a < 0 || a > 1)) {
-            throw new InvalidValueException(
-                    "r, b and g paramater accept values only from 0 to 255.");
+        if ((r < 0 || r > 255) || (g < 0 || g > 255) || (b < 0 || b > 255) || (a < 0 || a > 1)) {
+            throw new InvalidValueException("r, b and g paramater accept values only from 0 to 255.");
         }
 
         this.r = r;
@@ -162,15 +150,13 @@ public class RgbaCssValue extends AbstractBean<RgbaCssValue> {
     /**
      * to set the red value which is in between 0 to 255.
      *
-     * @param r
-     *              represents red
+     * @param r represents red
      * @author WFF
      * @since 1.0.0
      */
     public void setR(final int r) {
         if (r < 0 || r > 255) {
-            throw new InvalidValueException(
-                    "r paramater accept values only from 0 to 255.");
+            throw new InvalidValueException("r paramater accept values only from 0 to 255.");
         }
         this.r = r;
         rgba = "rgba(" + r + ", " + g + ", " + b + ", " + a + ")";
@@ -191,15 +177,13 @@ public class RgbaCssValue extends AbstractBean<RgbaCssValue> {
     /**
      * to set the green value which is in between 0 to 255.
      *
-     * @param g
-     *              represents green
+     * @param g represents green
      * @author WFF
      * @since 1.0.0
      */
     public void setG(final int g) {
         if (g < 0 || g > 255) {
-            throw new InvalidValueException(
-                    "g paramater accept values only from 0 to 255.");
+            throw new InvalidValueException("g paramater accept values only from 0 to 255.");
         }
         this.g = g;
         rgba = "rgba(" + r + ", " + g + ", " + b + ", " + a + ")";
@@ -235,8 +219,7 @@ public class RgbaCssValue extends AbstractBean<RgbaCssValue> {
      */
     public void setB(final int b) {
         if (b < 0 || b > 255) {
-            throw new InvalidValueException(
-                    "b paramater accept values only from 0 to 255.");
+            throw new InvalidValueException("b paramater accept values only from 0 to 255.");
         }
         this.b = b;
         rgba = "rgba(" + r + ", " + g + ", " + b + ", " + a + ")";
@@ -254,8 +237,7 @@ public class RgbaCssValue extends AbstractBean<RgbaCssValue> {
      */
     public void setA(final float a) {
         if (a < 0 || a > 1) {
-            throw new InvalidValueException(
-                    "a paramater accept values only from 0 to 255.");
+            throw new InvalidValueException("a paramater accept values only from 0 to 255.");
         }
         this.a = a;
         rgba = "rgba(" + r + ", " + g + ", " + b + ", " + a + ")";
@@ -280,23 +262,18 @@ public class RgbaCssValue extends AbstractBean<RgbaCssValue> {
     }
 
     /**
-     * @param rgbaString
-     *                       eg:- rgba(25, 155, 55, 0.2)
+     * @param rgbaString eg:- rgba(25, 155, 55, 0.2)
      * @return true if valid and false for invalid.
      * @since 1.0.0
      * @author WFF
      */
     public static boolean isValid(final String rgbaString) {
         try {
-            final String rgbaStringLowerCase = rgbaString.replace(" ", "")
-                    .toLowerCase();
-            if (rgbaStringLowerCase.startsWith("rgba(")
-                    && rgbaStringLowerCase.contains(")")) {
+            final String rgbaStringLowerCase = rgbaString.replace(" ", "").toLowerCase();
+            if (rgbaStringLowerCase.startsWith("rgba(") && rgbaStringLowerCase.contains(")")) {
 
-                final String[] rgbaStringParts = StringUtil
-                        .splitByComma(rgbaStringLowerCase.substring(
-                                rgbaStringLowerCase.indexOf('(') + 1,
-                                rgbaStringLowerCase.lastIndexOf(')')));
+                final String[] rgbaStringParts = StringUtil.splitByComma(rgbaStringLowerCase
+                        .substring(rgbaStringLowerCase.indexOf('(') + 1, rgbaStringLowerCase.lastIndexOf(')')));
 
                 if (rgbaStringParts.length == 4) {
                     final int r = Integer.parseInt(rgbaStringParts[0]);

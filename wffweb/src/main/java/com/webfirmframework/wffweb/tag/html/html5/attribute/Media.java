@@ -48,13 +48,12 @@ public class Media extends AbstractAttribute implements AAttributable {
     }
 
     /**
-     * This attribute specifies the media which the linked resource applies to.
-     * Its value must be a media query. This attribute is mainly useful when
-     * linking to external stylesheets by allowing the user agent to pick the
-     * best adapted one for the device it runs on.
+     * This attribute specifies the media which the linked resource applies to. Its
+     * value must be a media query. This attribute is mainly useful when linking to
+     * external stylesheets by allowing the user agent to pick the best adapted one
+     * for the device it runs on.
      *
-     * @param value
-     *                  the value for the attribute
+     * @param value the value for the attribute
      * @since 1.0.0
      * @author WFF
      */
@@ -65,8 +64,7 @@ public class Media extends AbstractAttribute implements AAttributable {
     /**
      * sets the value for this attribute
      *
-     * @param value
-     *                  the value for the attribute.
+     * @param value the value for the attribute.
      * @since 1.0.0
      * @author WFF
      */
@@ -77,12 +75,10 @@ public class Media extends AbstractAttribute implements AAttributable {
     /**
      * sets the value for this attribute
      *
-     * @param updateClient
-     *                         true to update client browser page if it is
-     *                         available. The default value is true but it will
-     *                         be ignored if there is no client browser page.
-     * @param value
-     *                         the value for the attribute.
+     * @param updateClient true to update client browser page if it is available.
+     *                     The default value is true but it will be ignored if there
+     *                     is no client browser page.
+     * @param value        the value for the attribute.
      * @since 2.1.15
      * @author WFF
      */

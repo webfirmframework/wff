@@ -35,14 +35,12 @@ public interface ChildTagAppendListener extends Serializable {
             throw new AssertionError();
         }
 
-        public Event(final AbstractHtml parentTag,
-                final AbstractHtml appendedChildTag) {
+        public Event(final AbstractHtml parentTag, final AbstractHtml appendedChildTag) {
             this.parentTag = parentTag;
             this.appendedChildTag = appendedChildTag;
         }
 
-        public Event(final AbstractHtml parentTag,
-                final Collection<? extends AbstractHtml> appendedChildrenTags) {
+        public Event(final AbstractHtml parentTag, final Collection<? extends AbstractHtml> appendedChildrenTags) {
             this.parentTag = parentTag;
             this.appendedChildrenTags = appendedChildrenTags;
         }
@@ -55,8 +53,7 @@ public interface ChildTagAppendListener extends Serializable {
         }
 
         /**
-         * @param appendedChildTag
-         *                             the appendedChildTag to set
+         * @param appendedChildTag the appendedChildTag to set
          */
         public void setAppendedChildTag(final AbstractHtml appendedChildTag) {
             this.appendedChildTag = appendedChildTag;
@@ -70,8 +67,7 @@ public interface ChildTagAppendListener extends Serializable {
         }
 
         /**
-         * @param parentTag
-         *                      the parentTag to set
+         * @param parentTag the parentTag to set
          */
         public void setParentTag(final AbstractHtml parentTag) {
             this.parentTag = parentTag;
@@ -85,11 +81,9 @@ public interface ChildTagAppendListener extends Serializable {
         }
 
         /**
-         * @param appendedChildrenTags
-         *                                 the appendedChildrenTags to set
+         * @param appendedChildrenTags the appendedChildrenTags to set
          */
-        public void setAppendedChildrenTags(
-                final Collection<AbstractHtml> appendedChildrenTags) {
+        public void setAppendedChildrenTags(final Collection<AbstractHtml> appendedChildrenTags) {
             this.appendedChildrenTags = appendedChildrenTags;
         }
 
@@ -108,8 +102,7 @@ public interface ChildTagAppendListener extends Serializable {
             throw new AssertionError();
         }
 
-        public ChildMovedEvent(final AbstractHtml previousParentTag,
-                final AbstractHtml currentParentTag,
+        public ChildMovedEvent(final AbstractHtml previousParentTag, final AbstractHtml currentParentTag,
                 final AbstractHtml movedChildTag) {
             super();
             this.previousParentTag = previousParentTag;

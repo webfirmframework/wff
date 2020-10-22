@@ -43,16 +43,15 @@ public enum TagContent {
     }
 
     /**
-     * Adds inner content for the given parent object, children of parent will
-     * be removed if already exists.
+     * Adds inner content for the given parent object, children of parent will be
+     * removed if already exists.
      *
      * @param parent
      * @param content
      * @return parent
      * @since 3.0.13
      */
-    public static <R extends AbstractHtml> R text(final R parent,
-            final String content) {
+    public static <R extends AbstractHtml> R text(final R parent, final String content) {
         TagContent.TEXT.addInnerContent(parent, content);
         return parent;
     }
@@ -64,8 +63,7 @@ public enum TagContent {
      * @return parent
      * @since 3.0.13
      */
-    public static <R extends AbstractHtml> R prependText(final R parent,
-            final String content) {
+    public static <R extends AbstractHtml> R prependText(final R parent, final String content) {
         TagContent.TEXT.prependChild(parent, content);
         return parent;
     }
@@ -77,59 +75,54 @@ public enum TagContent {
      * @return parent
      * @since 3.0.13
      */
-    public static <R extends AbstractHtml> R appendText(final R parent,
-            final String content) {
+    public static <R extends AbstractHtml> R appendText(final R parent, final String content) {
         TagContent.TEXT.appendChild(parent, content);
         return parent;
     }
 
     /**
-     * Adds inner content for the given parent object, children of parent will
-     * be removed if already exists. It internally marks the given content type
-     * as html.
+     * Adds inner content for the given parent object, children of parent will be
+     * removed if already exists. It internally marks the given content type as
+     * html.
      *
      * @param parent
      * @return parent
      * @since 3.0.13
      */
-    public static <R extends AbstractHtml> R html(final R parent,
-            final String content) {
+    public static <R extends AbstractHtml> R html(final R parent, final String content) {
         TagContent.HTML.addInnerContent(parent, content);
         return parent;
     }
 
     /**
-     * Prepends content in the given parent object as the first child. It
-     * internally marks the given content type as html.
+     * Prepends content in the given parent object as the first child. It internally
+     * marks the given content type as html.
      *
      * @param parent
      * @return parent
      * @since 3.0.13
      */
-    public static <R extends AbstractHtml> R prependHtml(final R parent,
-            final String content) {
+    public static <R extends AbstractHtml> R prependHtml(final R parent, final String content) {
         TagContent.HTML.prependChild(parent, content);
         return parent;
     }
 
     /**
-     * Appends content in the given parent object as the last child. It
-     * internally marks the given content type as html.
+     * Appends content in the given parent object as the last child. It internally
+     * marks the given content type as html.
      *
      * @param parent
      * @return parent
      * @since 3.0.13
      */
-    public static <R extends AbstractHtml> R appendHtml(final R parent,
-            final String content) {
+    public static <R extends AbstractHtml> R appendHtml(final R parent, final String content) {
         TagContent.HTML.appendChild(parent, content);
         return parent;
     }
 
     private void checkCompatibility(final AbstractHtml tag) {
         if (TagUtil.isTagless(tag)) {
-            throw new InvalidTagException(
-                    "The given tag instance is not supported for this operation.");
+            throw new InvalidTagException("The given tag instance is not supported for this operation.");
         }
     }
 
@@ -137,18 +130,14 @@ public enum TagContent {
      * appends the given contents on the given parent tag either as text or HTML
      * based on the enum constant
      *
-     * @param parent
-     *                     the tag on which the operation to be done.
-     * @param contents
-     *                     contents to append to the given parent tag.
+     * @param parent   the tag on which the operation to be done.
+     * @param contents contents to append to the given parent tag.
      *
-     * @throws InvalidTagException
-     *                                 if the given tag instance is not
-     *                                 supported for this operation.
+     * @throws InvalidTagException if the given tag instance is not supported for
+     *                             this operation.
      * @since 3.0.2
      */
-    public void appendChildren(final AbstractHtml parent,
-            final String... contents) {
+    public void appendChildren(final AbstractHtml parent, final String... contents) {
 
         checkCompatibility(parent);
 
@@ -165,18 +154,14 @@ public enum TagContent {
      * appends the given content on the given parent tag either as text or HTML
      * based on the enum constant
      *
-     * @param parent
-     *                    the tag on which the operation to be done.
-     * @param content
-     *                    content to append to the given parent tag.
+     * @param parent  the tag on which the operation to be done.
+     * @param content content to append to the given parent tag.
      * @return true if appended
-     * @throws InvalidTagException
-     *                                 if the given tag instance is not
-     *                                 supported for this operation.
+     * @throws InvalidTagException if the given tag instance is not supported for
+     *                             this operation.
      * @since 3.0.2
      */
-    public boolean appendChild(final AbstractHtml parent,
-            final String content) {
+    public boolean appendChild(final AbstractHtml parent, final String content) {
         checkCompatibility(parent);
         return parent.appendChild(new NoTag(null, content, contentTypeHtml));
     }
@@ -185,13 +170,10 @@ public enum TagContent {
      * prepends the given content on the given parent tag either as text or HTML
      * based on the enum constant
      *
-     * @param parent
-     *                    the tag on which the operation to be done.
-     * @param content
-     *                    content to prepend to the given parent tag.
-     * @throws InvalidTagException
-     *                                 if the given tag instance is not
-     *                                 supported for this operation.
+     * @param parent  the tag on which the operation to be done.
+     * @param content content to prepend to the given parent tag.
+     * @throws InvalidTagException if the given tag instance is not supported for
+     *                             this operation.
      * @since 3.0.2
      */
     public void prependChild(final AbstractHtml parent, final String content) {
@@ -200,20 +182,16 @@ public enum TagContent {
     }
 
     /**
-     * prepends the given contents on the given parent tag either as text or
-     * HTML based on the enum constant
+     * prepends the given contents on the given parent tag either as text or HTML
+     * based on the enum constant
      *
-     * @param parent
-     *                     the tag on which the operation to be done.
-     * @param contents
-     *                     contents to prepend to the given parent tag.
-     * @throws InvalidTagException
-     *                                 if the given tag instance is not
-     *                                 supported for this operation.
+     * @param parent   the tag on which the operation to be done.
+     * @param contents contents to prepend to the given parent tag.
+     * @throws InvalidTagException if the given tag instance is not supported for
+     *                             this operation.
      * @since 3.0.2
      */
-    public void prependChildren(final AbstractHtml parent,
-            final String... contents) {
+    public void prependChildren(final AbstractHtml parent, final String... contents) {
         checkCompatibility(parent);
         final NoTag[] noTags = new NoTag[contents.length];
         int index = 0;
@@ -226,35 +204,27 @@ public enum TagContent {
 
     /**
      * Inserts the given content before given parent tag either as text or HTML
-     * based on the enum constant. There must be a parent for the given parent
-     * tag.
+     * based on the enum constant. There must be a parent for the given parent tag.
      *
-     * @param parent
-     *                    the tag on which the operation to be done.
-     * @param content
-     *                    content to insert before the given parent tag.
+     * @param parent  the tag on which the operation to be done.
+     * @param content content to insert before the given parent tag.
      * @return true if inserted
      * @since 3.0.2
      */
-    public boolean insertBefore(final AbstractHtml parent,
-            final String content) {
+    public boolean insertBefore(final AbstractHtml parent, final String content) {
         return parent.insertBefore(new NoTag(null, content, contentTypeHtml));
     }
 
     /**
      * Inserts the given contents before given parent tag either as text or HTML
-     * based on the enum constant. There must be a parent for the given parent
-     * tag.
+     * based on the enum constant. There must be a parent for the given parent tag.
      *
-     * @param parent
-     *                     the tag on which the operation to be done.
-     * @param contents
-     *                     contents to insert before the given parent tag.
+     * @param parent   the tag on which the operation to be done.
+     * @param contents contents to insert before the given parent tag.
      * @return true if inserted
      * @since 3.0.2
      */
-    public boolean insertBefore(final AbstractHtml parent,
-            final String... contents) {
+    public boolean insertBefore(final AbstractHtml parent, final String... contents) {
         final NoTag[] noTags = new NoTag[contents.length];
         int index = 0;
         for (final String content : contents) {
@@ -265,36 +235,28 @@ public enum TagContent {
     }
 
     /**
-     * Inserts the given content after given parent tag either as text or HTML
-     * based on the enum constant. There must be a parent for the given parent
-     * tag.
+     * Inserts the given content after given parent tag either as text or HTML based
+     * on the enum constant. There must be a parent for the given parent tag.
      *
-     * @param parent
-     *                    the tag on which the operation to be done.
-     * @param content
-     *                    content to insert after the given parent tag.
+     * @param parent  the tag on which the operation to be done.
+     * @param content content to insert after the given parent tag.
      * @return true if inserted
      * @since 3.0.2
      */
-    public boolean insertAfter(final AbstractHtml parent,
-            final String content) {
+    public boolean insertAfter(final AbstractHtml parent, final String content) {
         return parent.insertAfter(new NoTag(null, content, contentTypeHtml));
     }
 
     /**
      * Inserts the given contents after given parent tag either as text or HTML
-     * based on the enum constant. There must be a parent for the given parent
-     * tag.
+     * based on the enum constant. There must be a parent for the given parent tag.
      *
-     * @param parent
-     *                     the tag on which the operation to be done.
-     * @param contents
-     *                     contents to insert after the given parent tag.
+     * @param parent   the tag on which the operation to be done.
+     * @param contents contents to insert after the given parent tag.
      * @return true if inserted
      * @since 3.0.2
      */
-    public boolean insertAfter(final AbstractHtml parent,
-            final String... contents) {
+    public boolean insertAfter(final AbstractHtml parent, final String... contents) {
         final NoTag[] noTags = new NoTag[contents.length];
         int index = 0;
         for (final String content : contents) {
@@ -305,46 +267,33 @@ public enum TagContent {
     }
 
     /**
-     * Removes all children from the given parent tag and appends the given
-     * content on the given parent tag either as text or HTML based on the enum
-     * constant
+     * Removes all children from the given parent tag and appends the given content
+     * on the given parent tag either as text or HTML based on the enum constant
      *
-     * @param parent
-     *                    the tag on which the operation to be done.
-     * @param content
-     *                    replacement content for the children of the given
-     *                    parent.
-     * @throws InvalidTagException
-     *                                 if the given tag instance is not
-     *                                 supported for this operation.
-     * @throws InvalidTagException
-     *                                 if the given tag instance is not
-     *                                 supported for this operation.
+     * @param parent  the tag on which the operation to be done.
+     * @param content replacement content for the children of the given parent.
+     * @throws InvalidTagException if the given tag instance is not supported for
+     *                             this operation.
+     * @throws InvalidTagException if the given tag instance is not supported for
+     *                             this operation.
      * @since 3.0.2
      */
-    public void replaceChildren(final AbstractHtml parent,
-            final String content) {
+    public void replaceChildren(final AbstractHtml parent, final String content) {
         checkCompatibility(parent);
         parent.addInnerHtmls(new NoTag(null, content, contentTypeHtml));
     }
 
     /**
-     * Removes all children from the given parent tag and appends the given
-     * contents on the given parent tag either as text or HTML based on the enum
-     * constant
+     * Removes all children from the given parent tag and appends the given contents
+     * on the given parent tag either as text or HTML based on the enum constant
      *
-     * @param parent
-     *                     the tag on which the operation to be done.
-     * @param contents
-     *                     replacement contents for the children of the given
-     *                     parent.
-     * @throws InvalidTagException
-     *                                 if the given tag instance is not
-     *                                 supported for this operation.
+     * @param parent   the tag on which the operation to be done.
+     * @param contents replacement contents for the children of the given parent.
+     * @throws InvalidTagException if the given tag instance is not supported for
+     *                             this operation.
      * @since 3.0.2
      */
-    public void replaceChildren(final AbstractHtml parent,
-            final String... contents) {
+    public void replaceChildren(final AbstractHtml parent, final String... contents) {
         checkCompatibility(parent);
         final NoTag[] noTags = new NoTag[contents.length];
         int index = 0;
@@ -356,42 +305,30 @@ public enum TagContent {
     }
 
     /**
-     * Removes all children from the given parent tag and appends the given
-     * content on the given parent tag either as text or HTML based on the enum
-     * constant
+     * Removes all children from the given parent tag and appends the given content
+     * on the given parent tag either as text or HTML based on the enum constant
      *
-     * @param parent
-     *                    the tag on which the operation to be done.
-     * @param content
-     *                    replacement content for the children of the given
-     *                    parent.
-     * @throws InvalidTagException
-     *                                 if the given tag instance is not
-     *                                 supported for this operation.
+     * @param parent  the tag on which the operation to be done.
+     * @param content replacement content for the children of the given parent.
+     * @throws InvalidTagException if the given tag instance is not supported for
+     *                             this operation.
      * @since 3.0.2
      */
-    public void addInnerContent(final AbstractHtml parent,
-            final String content) {
+    public void addInnerContent(final AbstractHtml parent, final String content) {
         replaceChildren(parent, content);
     }
 
     /**
-     * Removes all children from the given parent tag and appends the given
-     * contents on the given parent tag either as text or HTML based on the enum
-     * constant
+     * Removes all children from the given parent tag and appends the given contents
+     * on the given parent tag either as text or HTML based on the enum constant
      *
-     * @param parent
-     *                     the tag on which the operation to be done.
-     * @param contents
-     *                     replacement contents for the children of the given
-     *                     parent.
-     * @throws InvalidTagException
-     *                                 if the given tag instance is not
-     *                                 supported for this operation.
+     * @param parent   the tag on which the operation to be done.
+     * @param contents replacement contents for the children of the given parent.
+     * @throws InvalidTagException if the given tag instance is not supported for
+     *                             this operation.
      * @since 3.0.2
      */
-    public void addInnerContents(final AbstractHtml parent,
-            final String... contents) {
+    public void addInnerContents(final AbstractHtml parent, final String... contents) {
         replaceChildren(parent, contents);
     }
 

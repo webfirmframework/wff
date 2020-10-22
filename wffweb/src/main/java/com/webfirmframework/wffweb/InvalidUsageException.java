@@ -32,8 +32,8 @@ public class InvalidUsageException extends WffRuntimeException {
         super();
     }
 
-    public InvalidUsageException(final String message, final Throwable cause,
-            final boolean enableSuppression, final boolean writableStackTrace) {
+    public InvalidUsageException(final String message, final Throwable cause, final boolean enableSuppression,
+            final boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 

@@ -50,8 +50,7 @@ public class MozFlexGrow extends AbstractCssProperty<MozFlexGrow> {
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays
-            .asList(INITIAL, INHERIT);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(INITIAL, INHERIT);
 
     private String cssValue;
     private Float value;
@@ -68,18 +67,16 @@ public class MozFlexGrow extends AbstractCssProperty<MozFlexGrow> {
     }
 
     /**
-     * @param cssValue
-     *                     the css value to set.
+     * @param cssValue the css value to set.
      */
     public MozFlexGrow(final String cssValue) {
         setCssValue(cssValue);
     }
 
     /**
-     * @param mozFlexGrow
-     *                        the {@code mozFlexGrow} object from which the
-     *                        cssValue to set.And, {@code null} will throw
-     *                        {@code NullValueException}
+     * @param mozFlexGrow the {@code mozFlexGrow} object from which the cssValue to
+     *                    set.And, {@code null} will throw
+     *                    {@code NullValueException}
      */
     public MozFlexGrow(final MozFlexGrow mozFlexGrow) {
         if (mozFlexGrow == null) {
@@ -132,8 +129,8 @@ public class MozFlexGrow extends AbstractCssProperty<MozFlexGrow> {
     /**
      * gets the mozFlexGrow in {@code Float} value.
      *
-     * @return the value in float or null if the cssValue is
-     *         <code>initial</code> or <code>inherit</code>.
+     * @return the value in float or null if the cssValue is <code>initial</code> or
+     *         <code>inherit</code>.
      * @since 1.0.0
      * @author WFF
      */
@@ -142,8 +139,7 @@ public class MozFlexGrow extends AbstractCssProperty<MozFlexGrow> {
     }
 
     /**
-     * @param value
-     *                  the value to set
+     * @param value the value to set
      * @author WFF
      * @since 1.0.0
      */
@@ -156,11 +152,10 @@ public class MozFlexGrow extends AbstractCssProperty<MozFlexGrow> {
     }
 
     /**
-     * @param cssValue
-     *                     the value should be in the format of
-     *                     <code>0.5</code>, <code>initial/inherit</code>.
-     *                     {@code null} is considered as an invalid value and it
-     *                     will throw {@code NullValueException}.
+     * @param cssValue the value should be in the format of <code>0.5</code>,
+     *                 <code>initial/inherit</code>. {@code null} is considered as
+     *                 an invalid value and it will throw
+     *                 {@code NullValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -171,11 +166,9 @@ public class MozFlexGrow extends AbstractCssProperty<MozFlexGrow> {
                     "null is an invalid value. The value format should be as for example 0.5, initial/inherit.");
         } else {
 
-            final String trimmedCssValue = TagStringUtil
-                    .toLowerCase(StringUtil.strip(cssValue));
+            final String trimmedCssValue = TagStringUtil.toLowerCase(StringUtil.strip(cssValue));
 
-            if (INITIAL.equals(trimmedCssValue)
-                    || INHERIT.equals(trimmedCssValue)) {
+            if (INITIAL.equals(trimmedCssValue) || INHERIT.equals(trimmedCssValue)) {
                 this.cssValue = trimmedCssValue;
                 value = null;
             } else {
@@ -219,15 +212,13 @@ public class MozFlexGrow extends AbstractCssProperty<MozFlexGrow> {
     /**
      * validates if the given cssValue is valid for this class.
      *
-     * @param cssValue
-     *                     the value to check.
+     * @param cssValue the value to check.
      * @return true if valid and false if invalid.
      * @author WFF
      * @since 1.0.0
      */
     public static boolean isValid(final String cssValue) {
-        final String trimmedCssValue = TagStringUtil
-                .toLowerCase(StringUtil.strip(cssValue));
+        final String trimmedCssValue = TagStringUtil.toLowerCase(StringUtil.strip(cssValue));
         if (StringUtil.containsSpace(trimmedCssValue)) {
             return false;
         }

@@ -38,29 +38,23 @@ public class Base extends AbstractHtml {
 
     /**
      *
-     * @param base
-     *                       i.e. parent tag of this tag
-     * @param attributes
-     *                       An array of {@code AbstractAttribute}
+     * @param base       i.e. parent tag of this tag
+     * @param attributes An array of {@code AbstractAttribute}
      *
      * @since 1.0.0
      */
-    public Base(final AbstractHtml base,
-            final AbstractAttribute... attributes) {
+    public Base(final AbstractHtml base, final AbstractAttribute... attributes) {
         super(tagType, PRE_INDEXED_TAG_NAME, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }
     }
 
-    private static void warnForUnsupportedAttributes(
-            final AbstractAttribute... attributes) {
+    private static void warnForUnsupportedAttributes(final AbstractAttribute... attributes) {
         for (final AbstractAttribute abstractAttribute : attributes) {
-            if (!(abstractAttribute != null
-                    && (abstractAttribute instanceof BaseAttributable
-                            || abstractAttribute instanceof GlobalAttributable))) {
-                LOGGER.warning(abstractAttribute
-                        + " is not an instance of BaseAttribute");
+            if (!(abstractAttribute != null && (abstractAttribute instanceof BaseAttributable
+                    || abstractAttribute instanceof GlobalAttributable))) {
+                LOGGER.warning(abstractAttribute + " is not an instance of BaseAttribute");
             }
         }
     }
@@ -76,10 +70,9 @@ public class Base extends AbstractHtml {
     }
 
     /**
-     * @param selfClosing
-     *                        <code>true</code> to set as self closing tag and
-     *                        <code>false</code> for not to set as self closing
-     *                        tag. The default value is <code>true</code>.
+     * @param selfClosing <code>true</code> to set as self closing tag and
+     *                    <code>false</code> for not to set as self closing tag. The
+     *                    default value is <code>true</code>.
      * @since 1.0.0
      * @author WFF
      */
@@ -88,10 +81,9 @@ public class Base extends AbstractHtml {
     }
 
     /**
-     * @param nonClosing
-     *                       <code>true</code> to set as self closing tag and
-     *                       <code>false</code> for not to set as self closing
-     *                       tag. The default value is <code>true</code>.
+     * @param nonClosing <code>true</code> to set as self closing tag and
+     *                   <code>false</code> for not to set as self closing tag. The
+     *                   default value is <code>true</code>.
      * @since 1.0.0
      * @author WFF
      */

@@ -36,8 +36,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.AreaAttributable;
  * @author WFF
  * @since 1.0.0
  */
-public class Download extends AbstractAttribute
-        implements AAttributable, AreaAttributable {
+public class Download extends AbstractAttribute implements AAttributable, AreaAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -56,20 +55,19 @@ public class Download extends AbstractAttribute
 
     /**
      *
-     * This attribute, if present, indicates that the author intends the
-     * hyperlink to be used for downloading a resource so that when the user
-     * clicks on the link they will be prompted to save it as a local file. If
-     * the attribute has a value, the value will be used as the pre-filled file
-     * name in the Save prompt that opens when the user clicks on the link (the
-     * user can change the name before actually saving the file of course).
-     * There are no restrictions on allowed values (though / and \ will be
-     * converted to underscores, preventing specific path hints), but you should
-     * consider that most file systems have limitations with regard to what
-     * punctuation is supported in file names, and browsers are likely to adjust
-     * file names accordingly.
+     * This attribute, if present, indicates that the author intends the hyperlink
+     * to be used for downloading a resource so that when the user clicks on the
+     * link they will be prompted to save it as a local file. If the attribute has a
+     * value, the value will be used as the pre-filled file name in the Save prompt
+     * that opens when the user clicks on the link (the user can change the name
+     * before actually saving the file of course). There are no restrictions on
+     * allowed values (though / and \ will be converted to underscores, preventing
+     * specific path hints), but you should consider that most file systems have
+     * limitations with regard to what punctuation is supported in file names, and
+     * browsers are likely to adjust file names accordingly.
      *
-     * It creates attribute without value therefore the original filename (eg:
-     * from {@code <a>} tag) will be used for the downloading file.
+     * It creates attribute without value therefore the original filename (eg: from
+     * {@code <a>} tag) will be used for the downloading file.
      *
      * @since 1.0.0
      * @author WFF
@@ -79,20 +77,18 @@ public class Download extends AbstractAttribute
     }
 
     /**
-     * This attribute, if present, indicates that the author intends the
-     * hyperlink to be used for downloading a resource so that when the user
-     * clicks on the link they will be prompted to save it as a local file. If
-     * the attribute has a value, the value will be used as the pre-filled file
-     * name in the Save prompt that opens when the user clicks on the link (the
-     * user can change the name before actually saving the file of course).
-     * There are no restrictions on allowed values (though / and \ will be
-     * converted to underscores, preventing specific path hints), but you should
-     * consider that most file systems have limitations with regard to what
-     * punctuation is supported in file names, and browsers are likely to adjust
-     * file names accordingly.
+     * This attribute, if present, indicates that the author intends the hyperlink
+     * to be used for downloading a resource so that when the user clicks on the
+     * link they will be prompted to save it as a local file. If the attribute has a
+     * value, the value will be used as the pre-filled file name in the Save prompt
+     * that opens when the user clicks on the link (the user can change the name
+     * before actually saving the file of course). There are no restrictions on
+     * allowed values (though / and \ will be converted to underscores, preventing
+     * specific path hints), but you should consider that most file systems have
+     * limitations with regard to what punctuation is supported in file names, and
+     * browsers are likely to adjust file names accordingly.
      *
-     * @param filename
-     *                     the filename for the downloading file.
+     * @param filename the filename for the downloading file.
      * @since 1.0.0
      * @author WFF
      */
@@ -103,8 +99,7 @@ public class Download extends AbstractAttribute
     /**
      * sets the value for this attribute
      *
-     * @param filename
-     *                     the filename for the downloading file.
+     * @param filename the filename for the downloading file.
      * @since 1.0.0
      * @author WFF
      */

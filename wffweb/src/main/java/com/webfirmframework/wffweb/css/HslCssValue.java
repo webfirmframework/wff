@@ -38,8 +38,7 @@ public class HslCssValue extends AbstractBean<HslCssValue> {
     }
 
     /**
-     * @param hslCssValue
-     *                        eg:- <code>hsl(155, 55%, 75%)</code>
+     * @param hslCssValue eg:- <code>hsl(155, 55%, 75%)</code>
      */
     public HslCssValue(final String hslCssValue) {
         super();
@@ -52,8 +51,7 @@ public class HslCssValue extends AbstractBean<HslCssValue> {
     }
 
     /**
-     * @param hsl
-     *                eg:- <code> hsl(155, 55%, 75%) </code>
+     * @param hsl eg:- <code> hsl(155, 55%, 75%) </code>
      *
      * @since 1.0.0
      * @author WFF
@@ -69,17 +67,13 @@ public class HslCssValue extends AbstractBean<HslCssValue> {
      */
     private void extractAndAssign(final String hslString) {
 
-        final String hslStringLowerCase = hslString.replace(" ", "")
-                .toLowerCase();
+        final String hslStringLowerCase = hslString.replace(" ", "").toLowerCase();
 
-        if (hslStringLowerCase.startsWith("hsl(")
-                && hslStringLowerCase.contains(")")) {
+        if (hslStringLowerCase.startsWith("hsl(") && hslStringLowerCase.contains(")")) {
             final String hsl = hslStringLowerCase.replace(",", ", ");
 
-            final String[] hslStringParts = StringUtil
-                    .splitByComma(hslStringLowerCase.substring(
-                            hslStringLowerCase.indexOf('(') + 1,
-                            hslStringLowerCase.lastIndexOf(')')));
+            final String[] hslStringParts = StringUtil.splitByComma(hslStringLowerCase
+                    .substring(hslStringLowerCase.indexOf('(') + 1, hslStringLowerCase.lastIndexOf(')')));
 
             if (hslStringParts.length == 3) {
                 h = Integer.parseInt(hslStringParts[0]);
@@ -109,18 +103,14 @@ public class HslCssValue extends AbstractBean<HslCssValue> {
     }
 
     /**
-     * @param h
-     *              hue value. accepts values only from 0 to 360.
-     * @param s
-     *              saturation value. accepts values only from 0 to 100.
-     * @param l
-     *              lightness value. accepts values only from 0 to 100.
+     * @param h hue value. accepts values only from 0 to 360.
+     * @param s saturation value. accepts values only from 0 to 100.
+     * @param l lightness value. accepts values only from 0 to 100.
      */
     public HslCssValue(final int h, final float s, final float l) {
         super();
         if ((h < 0 || h > 360) || (s < 0 || s > 100) || (l < 0 || l > 100)) {
-            throw new InvalidValueException(
-                    "h should be in between 0 - 360 and s & l should be in between 0 - 100.");
+            throw new InvalidValueException("h should be in between 0 - 360 and s & l should be in between 0 - 100.");
         }
         this.h = h;
         this.s = s;
@@ -133,15 +123,13 @@ public class HslCssValue extends AbstractBean<HslCssValue> {
     }
 
     /**
-     * @param h
-     *              the hue value, it should be in between 0 to 360.
+     * @param h the hue value, it should be in between 0 to 360.
      * @author WFF
      * @since 1.0.0
      */
     public void setH(final int h) {
         if (h < 0 || h > 360) {
-            throw new InvalidValueException(
-                    "h paramater accept values only from 0 to 360.");
+            throw new InvalidValueException("h paramater accept values only from 0 to 360.");
         }
         this.h = h;
         hsl = "hsl(" + h + ", " + s + "%, " + l + "%)";
@@ -160,15 +148,13 @@ public class HslCssValue extends AbstractBean<HslCssValue> {
     }
 
     /**
-     * @param s
-     *              the saturation value, it should be in between 0 to 100.
+     * @param s the saturation value, it should be in between 0 to 100.
      * @author WFF
      * @since 1.0.0
      */
     public void setS(final float s) {
         if (s < 0 || s > 100) {
-            throw new InvalidValueException(
-                    "s paramater accept values only from 0 to 100.");
+            throw new InvalidValueException("s paramater accept values only from 0 to 100.");
         }
         this.s = s;
         hsl = "hsl(" + h + ", " + s + "%, " + l + "%)";
@@ -207,15 +193,13 @@ public class HslCssValue extends AbstractBean<HslCssValue> {
     }
 
     /**
-     * @param l
-     *              the lightness value, it should be in between 0 to 100.
+     * @param l the lightness value, it should be in between 0 to 100.
      * @author WFF
      * @since 1.0.0
      */
     public void setL(final float l) {
         if (l < 0 || l > 100) {
-            throw new InvalidValueException(
-                    "l paramater accept values only from 0 to 100.");
+            throw new InvalidValueException("l paramater accept values only from 0 to 100.");
         }
         this.l = l;
         hsl = "hsl(" + h + ", " + s + "%, " + l + "%)";
@@ -240,24 +224,19 @@ public class HslCssValue extends AbstractBean<HslCssValue> {
     }
 
     /**
-     * @param hslString
-     *                      eg:- hsl(125, 55%, 75%)
+     * @param hslString eg:- hsl(125, 55%, 75%)
      * @return true if valid and false for invalid.
      * @since 1.0.0
      * @author WFF
      */
     public static boolean isValid(final String hslString) {
         try {
-            final String hslStringLowerCase = hslString.replace(" ", "")
-                    .toLowerCase();
+            final String hslStringLowerCase = hslString.replace(" ", "").toLowerCase();
 
-            if (hslStringLowerCase.startsWith("hsl(")
-                    && hslStringLowerCase.contains(")")) {
+            if (hslStringLowerCase.startsWith("hsl(") && hslStringLowerCase.contains(")")) {
 
-                final String[] hslStringParts = StringUtil
-                        .splitByComma(hslStringLowerCase.substring(
-                                hslStringLowerCase.indexOf('(') + 1,
-                                hslStringLowerCase.lastIndexOf(')')));
+                final String[] hslStringParts = StringUtil.splitByComma(hslStringLowerCase
+                        .substring(hslStringLowerCase.indexOf('(') + 1, hslStringLowerCase.lastIndexOf(')')));
 
                 if (hslStringParts.length == 3) {
                     final int r = Integer.parseInt(hslStringParts[0]);
@@ -267,8 +246,7 @@ public class HslCssValue extends AbstractBean<HslCssValue> {
                     if (!hslStringParts[1].endsWith("%")) {
                         return false;
                     }
-                    final float g = Float
-                            .parseFloat(hslStringParts[1].replace("%", ""));
+                    final float g = Float.parseFloat(hslStringParts[1].replace("%", ""));
                     if (g < 0 || g > 100) {
                         return false;
                     }
@@ -276,8 +254,7 @@ public class HslCssValue extends AbstractBean<HslCssValue> {
                         return false;
                     }
 
-                    final float b = Float
-                            .parseFloat(hslStringParts[2].replace("%", ""));
+                    final float b = Float.parseFloat(hslStringParts[2].replace("%", ""));
 
                     return !(b < 0 || b > 100);
                 }

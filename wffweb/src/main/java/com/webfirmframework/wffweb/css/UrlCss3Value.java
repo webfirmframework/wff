@@ -42,9 +42,8 @@ public class UrlCss3Value extends AbstractBean<UrlCss3Value> {
     }
 
     /**
-     * @param urlCssValue
-     *                        eg:- <code> url(\"Test.png\")75 158 </code> or
-     *                        <code> url(\"Test.png\")</code>
+     * @param urlCssValue eg:- <code> url(\"Test.png\")75 158 </code> or
+     *                    <code> url(\"Test.png\")</code>
      * @param urlCssValue
      */
     public UrlCss3Value(final String urlCssValue) {
@@ -66,45 +65,36 @@ public class UrlCss3Value extends AbstractBean<UrlCss3Value> {
 
         final String urlStringTrimmed = StringUtil.strip(urlString);
 
-        final int lastIndexOfClosingParentheses = urlStringTrimmed
-                .lastIndexOf(')');
+        final int lastIndexOfClosingParentheses = urlStringTrimmed.lastIndexOf(')');
 
-        if (urlStringTrimmed.startsWith("url(")
-                && lastIndexOfClosingParentheses != -1) {
+        if (urlStringTrimmed.startsWith("url(") && lastIndexOfClosingParentheses != -1) {
 
-            final String urlPart = urlStringTrimmed.substring(0,
-                    lastIndexOfClosingParentheses);
+            final String urlPart = urlStringTrimmed.substring(0, lastIndexOfClosingParentheses);
 
             final int indexOfOpeningParantheses = urlPart.indexOf('(');
 
             String extractedUrl = "";
 
             if (indexOfOpeningParantheses + 1 < urlPart.length()) {
-                extractedUrl = StringUtil.strip(
-                        urlPart.substring(indexOfOpeningParantheses + 1));
+                extractedUrl = StringUtil.strip(urlPart.substring(indexOfOpeningParantheses + 1));
             }
 
-            extractedUrl = extractedUrl.length() > 0
-                    && extractedUrl.charAt(0) == '"' ? extractedUrl.substring(1)
-                            : extractedUrl;
-            extractedUrl = extractedUrl.endsWith("\"")
-                    ? extractedUrl.substring(0, extractedUrl.length() - 1)
+            extractedUrl = extractedUrl.length() > 0 && extractedUrl.charAt(0) == '"' ? extractedUrl.substring(1)
+                    : extractedUrl;
+            extractedUrl = extractedUrl.endsWith("\"") ? extractedUrl.substring(0, extractedUrl.length() - 1)
                     : extractedUrl;
 
             url = extractedUrl;
 
-            final int beginIndexCoordinatesPart = lastIndexOfClosingParentheses
-                    + 1;
+            final int beginIndexCoordinatesPart = lastIndexOfClosingParentheses + 1;
 
             if (beginIndexCoordinatesPart < urlStringTrimmed.length()) {
 
-                final String coordinatesPart = StringUtil
-                        .strip(urlStringTrimmed
-                                .substring(beginIndexCoordinatesPart))
-                        .replaceAll("\\s+", " ");
+                // .replaceAll("\\s+", " ")
+                final String coordinatesPart = StringUtil.convertWhitespacesToSingleSpace(
+                        StringUtil.strip(urlStringTrimmed.substring(beginIndexCoordinatesPart)));
 
-                final String[] coordinatesStringParts = StringUtil
-                        .splitBySpace(coordinatesPart);
+                final String[] coordinatesStringParts = StringUtil.splitBySpace(coordinatesPart);
 
                 if (coordinatesStringParts.length == 2) {
                     x = Integer.parseInt(coordinatesStringParts[0]);
@@ -118,14 +108,9 @@ public class UrlCss3Value extends AbstractBean<UrlCss3Value> {
     }
 
     /**
-     * @param url
-     *                eg:- Test.png
-     * @param x
-     *                x coordinate value. give -1 if no value needs to be
-     *                defined.
-     * @param y
-     *                y coordinate value. give -1 if no value needs to be
-     *                defined.
+     * @param url eg:- Test.png
+     * @param x   x coordinate value. give -1 if no value needs to be defined.
+     * @param y   y coordinate value. give -1 if no value needs to be defined.
      */
     public UrlCss3Value(final String url, final int x, final int y) {
         super();

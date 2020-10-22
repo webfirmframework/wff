@@ -128,7 +128,7 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
     public WffBMArray(final byte[] bmArrayBytes) {
         try {
             valueType = initWffBMObject(bmArrayBytes, true);
-        } catch (final UnsupportedEncodingException e) {
+        } catch (final RuntimeException e) {
             throw new WffRuntimeException("Invalid Wff BM Array bytes", e);
         }
     }
@@ -136,7 +136,7 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
     public WffBMArray(final byte[] bmArrayBytes, final boolean outer) {
         try {
             valueType = initWffBMObject(bmArrayBytes, outer);
-        } catch (final UnsupportedEncodingException e) {
+        } catch (final RuntimeException e) {
             throw new WffRuntimeException("Invalid Wff BM Array bytes", e);
         }
     }
@@ -145,16 +145,9 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
      * @param bmArrayBytes
      * @param outer
      * @return
-     * @throws UnsupportedEncodingException
-     *                                          throwing this exception will be
-     *                                          removed in future version
-     *                                          because its internal
-     *                                          implementation will never make
-     *                                          this exception due to the code
-     *                                          changes since 3.0.1.
+     *
      */
-    private BMValueType initWffBMObject(final byte[] bmArrayBytes,
-            final boolean outer) throws UnsupportedEncodingException {
+    private BMValueType initWffBMObject(final byte[] bmArrayBytes, final boolean outer) {
 
         if (bmArrayBytes.length == 0 && !outer) {
             // if the inner WffBMArray is an empty array then the bmArrayBytes
@@ -165,8 +158,7 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
             return null;
         }
 
-        final List<NameValue> bmObject = WffBinaryMessageUtil.VERSION_1
-                .parse(bmArrayBytes);
+        final List<NameValue> bmObject = WffBinaryMessageUtil.VERSION_1.parse(bmArrayBytes);
 
         final Iterator<NameValue> iterator = bmObject.iterator();
         if (iterator.hasNext()) {
@@ -176,8 +168,7 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
                 if (typeNameValue.getName()[0] == BMType.ARRAY.getType()) {
                     this.outer = true;
                 } else {
-                    throw new WffRuntimeException(
-                            "Not a valid Wff BM Array bytes");
+                    throw new WffRuntimeException("Not a valid Wff BM Array bytes");
                 }
             }
 
@@ -194,8 +185,7 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
                 } else if (valueType == BMValueType.NUMBER.getType()) {
 
                     for (final byte[] value : values) {
-                        final double doubleValue = ByteBuffer.wrap(value)
-                                .getDouble(0);
+                        final double doubleValue = ByteBuffer.wrap(value).getDouble(0);
 
                         this.add(doubleValue);
                     }
@@ -268,8 +258,7 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
         try {
             return buildBytes(outer);
         } catch (final Exception e) {
-            throw new WffRuntimeException("Could not build wff bm array bytes",
-                    e);
+            throw new WffRuntimeException("Could not build wff bm array bytes", e);
         }
     }
 
@@ -278,22 +267,19 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
      *
      * @param outer
      * @return the bytes representation of the object
-     * @throws UnsupportedEncodingException
-     *                                          throwing this exception will be
-     *                                          removed in future version
-     *                                          because its internal
-     *                                          implementation will never make
-     *                                          this exception due to the code
-     *                                          changes since 3.0.1.
+     * @throws UnsupportedEncodingException throwing this exception will be removed
+     *                                      in future version because its internal
+     *                                      implementation will never make this
+     *                                      exception due to the code changes since
+     *                                      3.0.1.
      * @since 1.1.5
      * @deprecated building bytes implementation doesn't throw
-     *             UnsupportedEncodingException so deprecated this method. The
-     *             same goal can be achieved using buildBytes method.
+     *             UnsupportedEncodingException so deprecated this method. The same
+     *             goal can be achieved using buildBytes method.
      */
     @Deprecated
     @Override
-    public byte[] build(final boolean outer)
-            throws UnsupportedEncodingException {
+    public byte[] build(final boolean outer) throws UnsupportedEncodingException {
         return buildBytes(outer);
     }
 
@@ -334,8 +320,7 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
             int count = 0;
             for (final Object eachValue : this) {
                 final Number value = (Number) eachValue;
-                values[count] = WffBinaryMessageUtil
-                        .getOptimizedBytesFromDouble(value.doubleValue());
+                values[count] = WffBinaryMessageUtil.getOptimizedBytesFromDouble(value.doubleValue());
                 count++;
             }
 
@@ -354,8 +339,7 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
             int count = 0;
             for (final Object eachValue : this) {
                 final Boolean value = (Boolean) eachValue;
-                final byte[] valueBytes = {
-                        (byte) (value.booleanValue() ? 1 : 0) };
+                final byte[] valueBytes = { (byte) (value.booleanValue() ? 1 : 0) };
                 values[count] = valueBytes;
                 count++;
             }
@@ -405,13 +389,12 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
                     "BMValueType.BYTE is only for internal use, use WffBMByteArray for row bytes.");
         }
 
-        return WffBinaryMessageUtil.VERSION_1
-                .getWffBinaryMessageBytes(nameValues);
+        return WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues);
     }
 
     /**
-     * gets value type of this array only if it contains any value otherwise
-     * returns <code>null</code>.
+     * gets value type of this array only if it contains any value otherwise returns
+     * <code>null</code>.
      *
      * @return the value type of this array
      * @since 2.1.0

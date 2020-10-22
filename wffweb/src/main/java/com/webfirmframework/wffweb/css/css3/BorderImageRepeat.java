@@ -55,8 +55,7 @@ public class BorderImageRepeat extends AbstractCssProperty<BorderImageRepeat> {
     public static final String REPEAT = "repeat";
     public static final String ROUND = "round";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays
-            .asList(INITIAL, INHERIT, STRETCH, REPEAT, ROUND);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(INITIAL, INHERIT, STRETCH, REPEAT, ROUND);
 
     private String cssValue;
 
@@ -71,18 +70,16 @@ public class BorderImageRepeat extends AbstractCssProperty<BorderImageRepeat> {
     }
 
     /**
-     * @param cssValue
-     *                     the css value to set.
+     * @param cssValue the css value to set.
      */
     public BorderImageRepeat(final String cssValue) {
         setCssValue(cssValue);
     }
 
     /**
-     * @param borderImageRepeat
-     *                              the {@code BorderImageRepeat} object from
-     *                              which the cssValue to set.And, {@code null}
-     *                              will throw {@code NullValueException}
+     * @param borderImageRepeat the {@code BorderImageRepeat} object from which the
+     *                          cssValue to set.And, {@code null} will throw
+     *                          {@code NullValueException}
      */
     public BorderImageRepeat(final BorderImageRepeat borderImageRepeat) {
         if (borderImageRepeat == null) {
@@ -125,11 +122,10 @@ public class BorderImageRepeat extends AbstractCssProperty<BorderImageRepeat> {
     }
 
     /**
-     * @param cssValue
-     *                     the value should be in the format of
-     *                     <code>round stretch</code> or <code>round</code>.
-     *                     {@code null} is considered as an invalid value and it
-     *                     will throw {@code NullValueException}.
+     * @param cssValue the value should be in the format of
+     *                 <code>round stretch</code> or <code>round</code>.
+     *                 {@code null} is considered as an invalid value and it will
+     *                 throw {@code NullValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -144,37 +140,31 @@ public class BorderImageRepeat extends AbstractCssProperty<BorderImageRepeat> {
                         "null is an invalid value. The value format should be as for example 'round stretch'/'round'. Or, initial/inherit.");
             } else {
 
-                final String trimmedCssValue = StringUtil.convertToSingleSpace(
-                        TagStringUtil.toLowerCase(StringUtil.strip(cssValue)));
+                final String trimmedCssValue = StringUtil
+                        .convertWhitespacesToSingleSpace(TagStringUtil.toLowerCase(StringUtil.strip(cssValue)));
 
-                final String[] verticalHorzontal = StringUtil
-                        .splitBySpace(trimmedCssValue);
+                final String[] verticalHorzontal = StringUtil.splitBySpace(trimmedCssValue);
 
                 if (verticalHorzontal.length == 1) {
-                    if (trimmedCssValue.equalsIgnoreCase(INITIAL)
-                            || trimmedCssValue.equalsIgnoreCase(INHERIT)) {
+                    if (trimmedCssValue.equalsIgnoreCase(INITIAL) || trimmedCssValue.equalsIgnoreCase(INHERIT)) {
                         this.cssValue = trimmedCssValue;
                         vertical = null;
                         horizontal = null;
-                    } else if (PREDEFINED_CONSTANTS
-                            .contains(verticalHorzontal[0])) {
+                    } else if (PREDEFINED_CONSTANTS.contains(verticalHorzontal[0])) {
                         vertical = horizontal = verticalHorzontal[0];
                         this.cssValue = trimmedCssValue;
                     } else {
-                        throw new InvalidValueException("the given cssValue '"
-                                + cssValue + "' is invalid");
+                        throw new InvalidValueException("the given cssValue '" + cssValue + "' is invalid");
                     }
                 } else if (verticalHorzontal.length == 2) {
 
                     if (PREDEFINED_CONSTANTS.contains(verticalHorzontal[0])
-                            && PREDEFINED_CONSTANTS
-                                    .contains(verticalHorzontal[1])) {
+                            && PREDEFINED_CONSTANTS.contains(verticalHorzontal[1])) {
                         horizontal = verticalHorzontal[0];
                         vertical = verticalHorzontal[1];
                         this.cssValue = trimmedCssValue;
                     } else {
-                        throw new InvalidValueException("the given cssValue '"
-                                + cssValue
+                        throw new InvalidValueException("the given cssValue '" + cssValue
                                 + "' is invalid. The value format should be as for example 'round stretch'/'round'. Or, initial/inherit.");
                     }
                 } else {
@@ -197,8 +187,7 @@ public class BorderImageRepeat extends AbstractCssProperty<BorderImageRepeat> {
     }
 
     /**
-     * @param vertical
-     *                     the vertical to set
+     * @param vertical the vertical to set
      * @author WFF
      * @since 1.0.0
      */
@@ -206,8 +195,7 @@ public class BorderImageRepeat extends AbstractCssProperty<BorderImageRepeat> {
         if (vertical == null) {
             throw new NullValueException("The vertical value cannot be null.");
         }
-        final String inputVertical = TagStringUtil
-                .toLowerCase(StringUtil.strip(vertical));
+        final String inputVertical = TagStringUtil.toLowerCase(StringUtil.strip(vertical));
         if (!INITIAL.equals(vertical) && !INHERIT.equals(inputVertical)
                 && PREDEFINED_CONSTANTS.contains(inputVertical)) {
             this.vertical = inputVertical;
@@ -217,14 +205,12 @@ public class BorderImageRepeat extends AbstractCssProperty<BorderImageRepeat> {
                 cssValue = inputVertical;
             }
         } else {
-            throw new InvalidValueException(
-                    "The given vertical value '" + vertical + "' is invalid.");
+            throw new InvalidValueException("The given vertical value '" + vertical + "' is invalid.");
         }
     }
 
     /**
-     * @param horizontal
-     *                       the horizontal to set
+     * @param horizontal the horizontal to set
      * @author WFF
      * @since 1.0.0
      */
@@ -232,8 +218,7 @@ public class BorderImageRepeat extends AbstractCssProperty<BorderImageRepeat> {
         if (horizontal == null) {
             throw new NullValueException("The vertical value cannot be null.");
         }
-        final String inputHorizontal = TagStringUtil
-                .toLowerCase(StringUtil.strip(horizontal));
+        final String inputHorizontal = TagStringUtil.toLowerCase(StringUtil.strip(horizontal));
         if (!INITIAL.equals(vertical) && !INHERIT.equals(inputHorizontal)
                 && PREDEFINED_CONSTANTS.contains(inputHorizontal)) {
             this.horizontal = inputHorizontal;
@@ -243,8 +228,7 @@ public class BorderImageRepeat extends AbstractCssProperty<BorderImageRepeat> {
                 cssValue = inputHorizontal;
             }
         } else {
-            throw new InvalidValueException(
-                    "The given vertical value '" + vertical + "' is invalid.");
+            throw new InvalidValueException("The given vertical value '" + vertical + "' is invalid.");
         }
     }
 
@@ -289,15 +273,13 @@ public class BorderImageRepeat extends AbstractCssProperty<BorderImageRepeat> {
     /**
      * validates if the given cssValue is valid for this class.
      *
-     * @param cssValue
-     *                     the value to check.
+     * @param cssValue the value to check.
      * @return true if valid and false if invalid.
      * @author WFF
      * @since 1.0.0
      */
     public static boolean isValid(final String cssValue) {
-        final String trimmedCssValue = TagStringUtil
-                .toLowerCase(StringUtil.strip(cssValue));
+        final String trimmedCssValue = TagStringUtil.toLowerCase(StringUtil.strip(cssValue));
 
         final String[] cssValueParts = StringUtil.splitBySpace(trimmedCssValue);
         if (cssValueParts.length > 2) {
@@ -313,8 +295,7 @@ public class BorderImageRepeat extends AbstractCssProperty<BorderImageRepeat> {
             if (!PREDEFINED_CONSTANTS.contains(each)) {
                 return false;
             }
-            if ((INITIAL.equals(each) || INHERIT.equals(each))
-                    && cssValueParts.length == 2) {
+            if ((INITIAL.equals(each) || INHERIT.equals(each)) && cssValueParts.length == 2) {
                 return false;
 
             }

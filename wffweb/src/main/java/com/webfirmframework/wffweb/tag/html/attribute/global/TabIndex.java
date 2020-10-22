@@ -54,8 +54,7 @@ public class TabIndex extends AbstractAttribute implements GlobalAttributable {
     }
 
     /**
-     * @param index
-     *                  the index
+     * @param index the index
      * @since 1.1.3
      * @author WFF
      */
@@ -65,8 +64,7 @@ public class TabIndex extends AbstractAttribute implements GlobalAttributable {
     }
 
     /**
-     * @param index
-     *                  the index
+     * @param index the index
      * @since 1.1.3
      * @author WFF
      */
@@ -95,8 +93,7 @@ public class TabIndex extends AbstractAttribute implements GlobalAttributable {
     }
 
     /**
-     * @param index
-     *                  the index to set
+     * @param index the index to set
      * @author WFF
      * @since 1.0.0
      */

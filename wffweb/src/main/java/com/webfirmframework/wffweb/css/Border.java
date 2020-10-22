@@ -47,13 +47,11 @@ import com.webfirmframework.wffweb.util.StringUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class Border extends AbstractCssProperty<Border>
-        implements StateChangeInformer<Bean> {
+public class Border extends AbstractCssProperty<Border> implements StateChangeInformer<Bean> {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    private static final Logger LOGGER = Logger
-            .getLogger(Border.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Border.class.getName());
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
@@ -67,8 +65,7 @@ public class Border extends AbstractCssProperty<Border>
     private BorderColorCssValues borderColorCssValues;
 
     /**
-     * The value <code>medium none #000000</code> will be assigned as the
-     * cssValue.
+     * The value <code>medium none #000000</code> will be assigned as the cssValue.
      *
      * @author WFF
      * @since 1.0.0
@@ -78,18 +75,15 @@ public class Border extends AbstractCssProperty<Border>
     }
 
     /**
-     * @param cssValue
-     *                     the css value to set.
+     * @param cssValue the css value to set.
      */
     public Border(final String cssValue) {
         setCssValue(cssValue);
     }
 
     /**
-     * @param border
-     *                   the {@code border} object from which the cssValue to
-     *                   set.And, {@code null} will throw
-     *                   {@code NullValueException}
+     * @param border the {@code border} object from which the cssValue to set.And,
+     *               {@code null} will throw {@code NullValueException}
      */
     public Border(final Border border) {
         if (border == null) {
@@ -132,11 +126,9 @@ public class Border extends AbstractCssProperty<Border>
     }
 
     /**
-     * @param cssValue
-     *                     the value should be in the format of
-     *                     <code>55px</code> or <code>95%</code>. {@code null}
-     *                     is considered as an invalid value and it will throw
-     *                     {@code NullValueException}.
+     * @param cssValue the value should be in the format of <code>55px</code> or
+     *                 <code>95%</code>. {@code null} is considered as an invalid
+     *                 value and it will throw {@code NullValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -162,8 +154,7 @@ public class Border extends AbstractCssProperty<Border>
                 throw new InvalidValueException(
                         "The string 'inherit' makes the given cssValue invalid, please remove 'inherit' from it and try.");
             }
-        } else if (INITIAL.equals(trimmedCssValue)
-                || INHERIT.equals(trimmedCssValue)) {
+        } else if (INITIAL.equals(trimmedCssValue) || INHERIT.equals(trimmedCssValue)) {
             this.cssValue = trimmedCssValue;
             if (borderColorCssValues != null) {
                 borderColorCssValues.setAlreadyInUse(false);
@@ -188,8 +179,7 @@ public class Border extends AbstractCssProperty<Border>
                 borderWidthValue = new BorderTopWidth(eachPart).getCssValue();
             } else if (borderStyle == null && BorderStyle.isValid(eachPart)) {
                 borderStyle = BorderStyle.getThis(eachPart);
-            } else if (borderColorCssValues == null
-                    && BorderColorCssValues.isValid(eachPart)) {
+            } else if (borderColorCssValues == null && BorderColorCssValues.isValid(eachPart)) {
                 if (this.borderColorCssValues == null) {
                     borderColorCssValues = new BorderColorCssValues(eachPart);
                     borderColorCssValues.setStateChangeInformer(this);
@@ -242,20 +232,17 @@ public class Border extends AbstractCssProperty<Border>
     public static boolean isValid(final String cssValue) {
         // TODO modify to make a strict validation
         final String trimmedCssValue;
-        if (cssValue == null
-                || (trimmedCssValue = StringUtil.strip(cssValue)).isEmpty()) {
+        if (cssValue == null || (trimmedCssValue = StringUtil.strip(cssValue)).isEmpty()) {
             return false;
         }
 
-        if (INITIAL.equals(trimmedCssValue)
-                || INHERIT.equals(trimmedCssValue)) {
+        if (INITIAL.equals(trimmedCssValue) || INHERIT.equals(trimmedCssValue)) {
             return true;
         }
 
         final List<String> cssValueParts = CssValueUtil.split(trimmedCssValue);
 
-        if (cssValueParts.size() > 1 && (trimmedCssValue.contains(INITIAL)
-                || trimmedCssValue.contains(INHERIT))) {
+        if (cssValueParts.size() > 1 && (trimmedCssValue.contains(INITIAL) || trimmedCssValue.contains(INHERIT))) {
             return false;
         }
 
@@ -271,8 +258,7 @@ public class Border extends AbstractCssProperty<Border>
             } else if (borderStyle == null && BorderStyle.isValid(eachPart)) {
                 borderStyle = BorderStyle.getThis(eachPart);
                 invalid = false;
-            } else if (borderColorCssValues == null
-                    && BorderColorCssValues.isValid(eachPart)) {
+            } else if (borderColorCssValues == null && BorderColorCssValues.isValid(eachPart)) {
                 borderColorCssValues = new BorderColorCssValues(eachPart);
                 invalid = false;
             }
@@ -333,11 +319,9 @@ public class Border extends AbstractCssProperty<Border>
         final StringBuilder cssValueBuilder = new StringBuilder();
 
         if (borderWidthValue != null) {
-            if (INITIAL.equals(borderWidthValue)
-                    || INHERIT.equals(borderWidthValue)
+            if (INITIAL.equals(borderWidthValue) || INHERIT.equals(borderWidthValue)
                     || !BorderTopWidth.isValid(borderWidthValue)) {
-                throw new InvalidValueException("The given value '"
-                        + borderWidthValue
+                throw new InvalidValueException("The given value '" + borderWidthValue
                         + "' is not valid, please try with a valid value like medium/thin/thick or 75px");
             }
             cssValueBuilder.append(borderWidthValue).append(' ');
@@ -350,8 +334,7 @@ public class Border extends AbstractCssProperty<Border>
             cssValueBuilder.append(borderColorCssValues.getValue()).append(' ');
         }
 
-        final String trimmedCssValue = StringBuilderUtil
-                .getTrimmedString(cssValueBuilder).toString();
+        final String trimmedCssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder).toString();
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
         this.borderWidthValue = borderWidthValue;
@@ -372,10 +355,8 @@ public class Border extends AbstractCssProperty<Border>
      */
     public Border setBorderStyle(final BorderStyle borderStyle) {
 
-        if (borderStyle == BorderStyle.INITIAL
-                || borderStyle == BorderStyle.INHERIT) {
-            throw new InvalidValueException("the given borderStyle cannot be "
-                    + borderStyle.getCssValue());
+        if (borderStyle == BorderStyle.INITIAL || borderStyle == BorderStyle.INHERIT) {
+            throw new InvalidValueException("the given borderStyle cannot be " + borderStyle.getCssValue());
         }
 
         final StringBuilder cssValueBuilder = new StringBuilder();
@@ -392,8 +373,7 @@ public class Border extends AbstractCssProperty<Border>
             cssValueBuilder.append(borderColorCssValues.getValue()).append(' ');
         }
 
-        final String trimmedCssValue = StringBuilderUtil
-                .getTrimmedString(cssValueBuilder).toString();
+        final String trimmedCssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder).toString();
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
         this.borderStyle = borderStyle;
@@ -405,14 +385,12 @@ public class Border extends AbstractCssProperty<Border>
     }
 
     /**
-     * @param borderColorCssValues
-     *                                 to set the border color.
+     * @param borderColorCssValues to set the border color.
      * @return the current object
      * @author WFF
      * @since 1.0.0
      */
-    public Border setBorderColorCssValues(
-            final BorderColorCssValues borderColorCssValues) {
+    public Border setBorderColorCssValues(final BorderColorCssValues borderColorCssValues) {
 
         final StringBuilder cssValueBuilder = new StringBuilder();
 
@@ -425,19 +403,15 @@ public class Border extends AbstractCssProperty<Border>
         }
 
         if (borderColorCssValues != null) {
-            final String borderColorCssValuesCssValue = borderColorCssValues
-                    .getValue();
+            final String borderColorCssValuesCssValue = borderColorCssValues.getValue();
             cssValueBuilder.append(borderColorCssValuesCssValue);
         }
 
-        final String trimmedCssValue = StringBuilderUtil
-                .getTrimmedString(cssValueBuilder).toString();
+        final String trimmedCssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder).toString();
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
-        if (borderColorCssValues != null
-                && borderColorCssValues.isAlreadyInUse()
-                && !Objects.equals(this.borderColorCssValues,
-                        borderColorCssValues)) {
+        if (borderColorCssValues != null && borderColorCssValues.isAlreadyInUse()
+                && !Objects.equals(this.borderColorCssValues, borderColorCssValues)) {
             if (LOGGER.isLoggable(Level.WARNING)) {
                 LOGGER.warning(
                         "the given borderColorCssValues is already used by another object so a new object or the previous object (if it exists) of BorderColorCssValues will be used");

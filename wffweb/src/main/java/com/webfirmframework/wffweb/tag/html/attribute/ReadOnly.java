@@ -32,8 +32,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.BooleanAttribute;
  * @author WFF
  * @since 1.0.0
  */
-public class ReadOnly extends AbstractAttribute
-        implements AudioAttributable, BooleanAttribute {
+public class ReadOnly extends AbstractAttribute implements AudioAttributable, BooleanAttribute {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -51,8 +50,8 @@ public class ReadOnly extends AbstractAttribute
     }
 
     /**
-     * sets the default value as <code>readonly</code> (since 2.1.5). If value
-     * is not required then use <code>new ReadOnly(null)</code>.
+     * sets the default value as <code>readonly</code> (since 2.1.5). If value is
+     * not required then use <code>new ReadOnly(null)</code>.
      *
      * @since 1.0.0
      * @author WFF

@@ -72,8 +72,7 @@ public class MaxLength extends AbstractAttribute implements InputAttributable {
 
     /**
      *
-     * @param value
-     *                  should be number
+     * @param value should be number
      * @since 1.1.4
      * @author WFF
      */
@@ -85,8 +84,7 @@ public class MaxLength extends AbstractAttribute implements InputAttributable {
 
     /**
      *
-     * @param value
-     *                  the value for the attribute
+     * @param value the value for the attribute
      * @since 1.0.0
      */
     public MaxLength(final int value) {
@@ -97,8 +95,7 @@ public class MaxLength extends AbstractAttribute implements InputAttributable {
     /**
      * sets the value for this attribute
      *
-     * @param value
-     *                  the value for the attribute.
+     * @param value the value for the attribute.
      * @since 1.0.0
      */
     public void setValue(final int value) {

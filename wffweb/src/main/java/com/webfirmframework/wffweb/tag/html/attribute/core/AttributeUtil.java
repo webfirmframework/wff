@@ -22,9 +22,18 @@ package com.webfirmframework.wffweb.tag.html.attribute.core;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.locks.Lock;
 
 import com.webfirmframework.wffweb.WffSecurityException;
 import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
+import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 
@@ -49,8 +58,7 @@ public final class AttributeUtil {
      * @author WFF
      * @since 1.0.0
      */
-    public static String getAttributeHtmlString(final boolean rebuild,
-            final AbstractAttribute... attributes) {
+    public static String getAttributeHtmlString(final boolean rebuild, final AbstractAttribute... attributes) {
         if (attributes != null) {
 
             // prefix + total delimiters
@@ -78,14 +86,13 @@ public final class AttributeUtil {
     /**
      * @param rebuild
      * @param attributes
-     * @param charset
-     *                       the charset
+     * @param charset    the charset
      * @return the attributes string starting with a space.
      * @author WFF
      * @since 1.0.0
      */
-    public static String getAttributeHtmlString(final boolean rebuild,
-            final Charset charset, final AbstractAttribute... attributes) {
+    public static String getAttributeHtmlString(final boolean rebuild, final Charset charset,
+            final AbstractAttribute... attributes) {
         if (attributes != null) {
 
             // prefix + total delimiters
@@ -95,8 +102,7 @@ public final class AttributeUtil {
 
             final String[] htmlStrings = new String[attributes.length];
             for (int i = 0; i < attributes.length; i++) {
-                final String htmlString = attributes[i].toHtmlString(rebuild,
-                        charset);
+                final String htmlString = attributes[i].toHtmlString(rebuild, charset);
                 htmlStrings[i] = htmlString;
                 capacity += htmlString.length();
             }
@@ -114,15 +120,13 @@ public final class AttributeUtil {
     /**
      * @param rebuild
      * @param attributes
-     * @param charset
-     *                       the charset
+     * @param charset    the charset
      * @return the attributes bytes array compressed by index
      * @author WFF
      * @throws IOException
      * @since 1.1.3
      */
-    public static byte[][] getAttributeHtmlBytesCompressedByIndex(
-            final boolean rebuild, final Charset charset,
+    public static byte[][] getAttributeHtmlBytesCompressedByIndex(final boolean rebuild, final Charset charset,
             final AbstractAttribute... attributes) throws IOException {
 
         if (attributes != null) {
@@ -130,8 +134,7 @@ public final class AttributeUtil {
 
             for (int i = 0; i < attributesArray.length; i++) {
                 final AbstractAttribute attribute = attributes[i];
-                attributesArray[i] = attribute.toCompressedBytesByIndex(rebuild,
-                        charset);
+                attributesArray[i] = attribute.toCompressedBytesByIndex(rebuild, charset);
             }
             return attributesArray;
 
@@ -141,35 +144,29 @@ public final class AttributeUtil {
 
     /**
      * @param attributes
-     * @param charset
-     *                       the charset
+     * @param charset    the charset
      * @return the wff attributes strings bytes array.
      * @author WFF
-     * @throws UnsupportedEncodingException
-     *                                          throwing this exception will be
-     *                                          removed in future version
-     *                                          because its internal
-     *                                          implementation will never make
-     *                                          this exception due to the code
-     *                                          changes since 3.0.1.
+     * @throws UnsupportedEncodingException throwing this exception will be removed
+     *                                      in future version because its internal
+     *                                      implementation will never make this
+     *                                      exception due to the code changes since
+     *                                      3.0.1.
      * @since 2.0.0
      */
-    public static byte[][] getWffAttributeBytes(final String charset,
-            final AbstractAttribute... attributes)
+    public static byte[][] getWffAttributeBytes(final String charset, final AbstractAttribute... attributes)
             throws UnsupportedEncodingException {
         return getWffAttributeBytes(Charset.forName(charset), attributes);
     }
 
     /**
      * @param attributes
-     * @param charset
-     *                       the charset
+     * @param charset    the charset
      * @return the wff attributes strings bytes array.
      * @author WFF
      * @since 3.0.1
      */
-    public static byte[][] getWffAttributeBytes(final Charset charset,
-            final AbstractAttribute... attributes) {
+    public static byte[][] getWffAttributeBytes(final Charset charset, final AbstractAttribute... attributes) {
 
         if (attributes != null) {
             final byte[][] attributesArray = new byte[attributes.length][0];
@@ -189,8 +186,8 @@ public final class AttributeUtil {
      * @return the array of attributes built from bytes
      * @since 3.0.3
      */
-    public static AbstractAttribute[] parseExactAttributeHtmlBytesCompressedByIndex(
-            final byte[][] attributesBytes, final Charset charset) {
+    public static AbstractAttribute[] parseExactAttributeHtmlBytesCompressedByIndex(final byte[][] attributesBytes,
+            final Charset charset) {
 
         final AbstractAttribute[] attributes = new AbstractAttribute[attributesBytes.length];
 
@@ -201,29 +198,20 @@ public final class AttributeUtil {
 
             if (lengthOfOptimizedBytesOfAttrNameIndex > 0) {
                 final byte[] tagNameIndexBytes = new byte[lengthOfOptimizedBytesOfAttrNameIndex];
-                System.arraycopy(compressedBytesByIndex, 1, tagNameIndexBytes,
-                        0, lengthOfOptimizedBytesOfAttrNameIndex);
+                System.arraycopy(compressedBytesByIndex, 1, tagNameIndexBytes, 0,
+                        lengthOfOptimizedBytesOfAttrNameIndex);
 
-                final int attrNameIndex = WffBinaryMessageUtil
-                        .getIntFromOptimizedBytes(tagNameIndexBytes);
+                final int attrNameIndex = WffBinaryMessageUtil.getIntFromOptimizedBytes(tagNameIndexBytes);
 
-                final String attrValue = new String(compressedBytesByIndex,
-                        compressedBytesByIndex[0] + 1,
-                        compressedBytesByIndex.length
-                                - (compressedBytesByIndex[0] + 1),
-                        charset);
+                final String attrValue = new String(compressedBytesByIndex, compressedBytesByIndex[0] + 1,
+                        compressedBytesByIndex.length - (compressedBytesByIndex[0] + 1), charset);
 
-                attributes[index] = AttributeRegistry
-                        .getNewAttributeInstanceOrNullIfFailed(attrNameIndex,
-                                attrValue);
+                attributes[index] = AttributeRegistry.getNewAttributeInstanceOrNullIfFailed(attrNameIndex, attrValue);
 
             } else {
 
-                final String attrNameValue = new String(compressedBytesByIndex,
-                        compressedBytesByIndex[0] + 1,
-                        compressedBytesByIndex.length
-                                - (compressedBytesByIndex[0] + 1),
-                        charset);
+                final String attrNameValue = new String(compressedBytesByIndex, compressedBytesByIndex[0] + 1,
+                        compressedBytesByIndex.length - (compressedBytesByIndex[0] + 1), charset);
 
                 final int indexOfEqualChar = attrNameValue.indexOf('=');
 
@@ -235,16 +223,13 @@ public final class AttributeUtil {
                     attrValue = null;
                 } else {
                     attrName = attrNameValue.substring(0, indexOfEqualChar);
-                    attrValue = attrNameValue.substring(indexOfEqualChar + 1,
-                            attrNameValue.length());
+                    attrValue = attrNameValue.substring(indexOfEqualChar + 1, attrNameValue.length());
                 }
 
                 final AbstractAttribute newAttributeInstance = AttributeRegistry
-                        .getNewAttributeInstanceOrNullIfFailed(attrName,
-                                attrValue);
+                        .getNewAttributeInstanceOrNullIfFailed(attrName, attrValue);
 
-                attributes[index] = newAttributeInstance != null
-                        ? newAttributeInstance
+                attributes[index] = newAttributeInstance != null ? newAttributeInstance
                         : new CustomAttribute(attrName, attrValue);
 
             }
@@ -264,26 +249,21 @@ public final class AttributeUtil {
      * @return
      * @since 3.0.6
      */
-    private static byte[] getAttrNameBytesCompressedByIndex(
-            final Object accessObject, final String attrName,
+    private static byte[] getAttrNameBytesCompressedByIndex(final Object accessObject, final String attrName,
             final byte[] attrNameIndexBytes, final Charset charset) {
 
-        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE
-                .equals(accessObject.getClass().getName()))) {
-            throw new WffSecurityException(
-                    "Not allowed to consume this method. This method is for internal use.");
+        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
 
         if (attrNameIndexBytes == null) {
             final byte[] rowNodeNameBytes = attrName.getBytes(charset);
-            final byte[] wffAttrNameBytes = new byte[rowNodeNameBytes.length
-                    + 1];
+            final byte[] wffAttrNameBytes = new byte[rowNodeNameBytes.length + 1];
             // if zero there is no optimized int bytes for index
             // because there is no tagNameIndex. second byte
             // onwards the bytes of tag name
             wffAttrNameBytes[0] = 0;
-            System.arraycopy(rowNodeNameBytes, 0, wffAttrNameBytes, 1,
-                    rowNodeNameBytes.length);
+            System.arraycopy(rowNodeNameBytes, 0, wffAttrNameBytes, 1, rowNodeNameBytes.length);
 
             return wffAttrNameBytes;
 
@@ -303,8 +283,7 @@ public final class AttributeUtil {
         } else {
             wffAttrNameBytes = new byte[attrNameIndexBytes.length + 1];
             wffAttrNameBytes[0] = (byte) attrNameIndexBytes.length;
-            System.arraycopy(attrNameIndexBytes, 0, wffAttrNameBytes, 1,
-                    attrNameIndexBytes.length);
+            System.arraycopy(attrNameIndexBytes, 0, wffAttrNameBytes, 1, attrNameIndexBytes.length);
         }
 
         return wffAttrNameBytes;
@@ -319,12 +298,10 @@ public final class AttributeUtil {
      * @return
      * @since 3.0.6
      */
-    public static byte[] getAttrNameBytesCompressedByIndex(
-            final Object accessObject, final String attrName,
+    public static byte[] getAttrNameBytesCompressedByIndex(final Object accessObject, final String attrName,
             final Charset charset) {
 
-        final PreIndexedAttributeName attr = PreIndexedAttributeName
-                .forAttrName(attrName);
+        final PreIndexedAttributeName attr = PreIndexedAttributeName.forAttrName(attrName);
 
         final byte[] attrNameIndexBytes;
         if (attr != null) {
@@ -333,8 +310,7 @@ public final class AttributeUtil {
             attrNameIndexBytes = null;
         }
 
-        return getAttrNameBytesCompressedByIndex(accessObject, attrName,
-                attrNameIndexBytes, charset);
+        return getAttrNameBytesCompressedByIndex(accessObject, attrName, attrNameIndexBytes, charset);
     }
 
     /**
@@ -346,11 +322,137 @@ public final class AttributeUtil {
      * @return
      * @since 3.0.6
      */
-    public static byte[] getAttrNameBytesCompressedByIndex(
-            final Object accessObject, final AbstractAttribute attr,
+    public static byte[] getAttrNameBytesCompressedByIndex(final Object accessObject, final AbstractAttribute attr,
             final Charset charset) {
-        return getAttrNameBytesCompressedByIndex(accessObject,
-                attr.getAttributeName(), attr.getAttrNameIndexBytes(), charset);
+        return getAttrNameBytesCompressedByIndex(accessObject, attr.getAttributeName(), attr.getAttrNameIndexBytes(),
+                charset);
+    }
+
+    /**
+     * @param accessObject
+     * @param attributes
+     * @return
+     * @since 3.0.15
+     */
+    public static List<Lock> lockAndGetWriteLocks(final Object accessObject, final AbstractAttribute... attributes) {
+
+        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
+        }
+
+        if (attributes == null || attributes.length == 0) {
+            return null;
+        }
+
+        final Set<AbstractAttribute> attributesSet = new HashSet<>(attributes.length);
+        for (final AbstractAttribute attr : attributes) {
+            attributesSet.add(attr);
+        }
+
+        final List<AbstractAttribute> attributesList = new ArrayList<AbstractAttribute>(attributesSet);
+
+        // lock should be called on the order of objectId otherwise there will be
+        // deadlock
+        attributesList.sort(Comparator.comparingLong(AbstractAttribute::objectId));
+
+        final List<Lock> attrLocks = new ArrayList<Lock>(attributesList.size());
+
+        for (final AbstractAttribute attr : attributesList) {
+            final Lock writeLock = attr.getObjectWriteLock();
+            writeLock.lock();
+            attrLocks.add(writeLock);
+        }
+
+        if (attrLocks.size() > 1) {
+            Collections.reverse(attrLocks);
+        }
+
+        return attrLocks;
+    }
+
+    /**
+     * @param accessObject
+     * @param attributes
+     * @return
+     * @since 3.0.15
+     */
+    public static List<Lock> lockAndGetWriteLocks(final Object accessObject,
+            final Collection<AbstractAttribute> attributes) {
+
+        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
+        }
+
+        final List<AbstractAttribute> attributesList = new ArrayList<AbstractAttribute>(new HashSet<>(attributes));
+
+        // lock should be called on the order of objectId otherwise there will be
+        // deadlock
+        attributesList.sort(Comparator.comparingLong(AbstractAttribute::objectId));
+
+        final List<Lock> attrLocks = new ArrayList<Lock>(attributesList.size());
+
+        for (final AbstractAttribute attr : attributesList) {
+            final Lock writeLock = attr.getObjectWriteLock();
+            writeLock.lock();
+            attrLocks.add(writeLock);
+        }
+
+        if (attrLocks.size() > 1) {
+            Collections.reverse(attrLocks);
+        }
+
+        return attrLocks;
+    }
+
+    /**
+     * @param accessObject
+     * @param attribute
+     * @return the lock object
+     * @since 3.0.15
+     */
+    public static Lock lockAndGetWriteLock(final Object accessObject, final AbstractAttribute attribute) {
+
+        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
+        }
+
+        final Lock writeLock = attribute.getObjectWriteLock();
+        writeLock.lock();
+
+        return writeLock;
+    }
+
+    /**
+     * for internal use only.
+     *
+     * @param accessObject
+     * @param attribute
+     * @param ownerTag
+     * @return
+     * @since 3.0.15
+     */
+    public static boolean unassignOwnerTag(final Object accessObject, final AbstractAttribute attribute,
+            final AbstractHtml ownerTag) {
+        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
+        }
+        return attribute.unsetOwnerTagLockless(ownerTag);
+    }
+
+    /**
+     * for internal use only.
+     *
+     * @param accessObject
+     * @param attribute
+     * @param ownerTag
+     * @since 3.0.15
+     */
+    public static void assignOwnerTag(final Object accessObject, final AbstractAttribute attribute,
+            final AbstractHtml ownerTag) {
+        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
+        }
+        attribute.setOwnerTagLockless(ownerTag);
     }
 
 }

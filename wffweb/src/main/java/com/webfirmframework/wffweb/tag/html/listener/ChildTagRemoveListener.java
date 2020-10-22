@@ -34,14 +34,12 @@ public interface ChildTagRemoveListener extends Serializable {
             throw new AssertionError();
         }
 
-        public Event(final AbstractHtml parentTag,
-                final AbstractHtml removedChildTag) {
+        public Event(final AbstractHtml parentTag, final AbstractHtml removedChildTag) {
             this.parentTag = parentTag;
             this.removedChildTag = removedChildTag;
         }
 
-        public Event(final AbstractHtml parentTag,
-                final AbstractHtml[] removedChildrenTags) {
+        public Event(final AbstractHtml parentTag, final AbstractHtml[] removedChildrenTags) {
             this.parentTag = parentTag;
             this.removedChildrenTags = removedChildrenTags;
         }
@@ -54,8 +52,7 @@ public interface ChildTagRemoveListener extends Serializable {
         }
 
         /**
-         * @param parentTag
-         *                      the parentTag to set
+         * @param parentTag the parentTag to set
          */
         public void setParentTag(final AbstractHtml parentTag) {
             this.parentTag = parentTag;
@@ -69,8 +66,7 @@ public interface ChildTagRemoveListener extends Serializable {
         }
 
         /**
-         * @param removedChildTag
-         *                            the removedChildTag to set
+         * @param removedChildTag the removedChildTag to set
          */
         public void setRemovedChildTag(final AbstractHtml removedChildTag) {
             this.removedChildTag = removedChildTag;
@@ -84,11 +80,9 @@ public interface ChildTagRemoveListener extends Serializable {
         }
 
         /**
-         * @param removedChildrenTags
-         *                                the removedChildrenTags to set
+         * @param removedChildrenTags the removedChildrenTags to set
          */
-        public void setRemovedChildrenTags(
-                final AbstractHtml[] removedChildrenTags) {
+        public void setRemovedChildrenTags(final AbstractHtml[] removedChildrenTags) {
             this.removedChildrenTags = removedChildrenTags;
         }
 

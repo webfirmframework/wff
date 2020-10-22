@@ -40,8 +40,7 @@ final class InsertedTagData<T> implements Comparable<InsertedTagData<T>> {
 
     private volatile WeakReference<ClientTasksWrapper> lastClientTaskRef;
 
-    InsertedTagData(final long ordinal, final ContentFormatter<T> formatter,
-            final boolean subscribed) {
+    InsertedTagData(final long ordinal, final ContentFormatter<T> formatter, final boolean subscribed) {
         super();
         this.ordinal = ordinal;
         this.formatter = formatter;
@@ -67,8 +66,7 @@ final class InsertedTagData<T> implements Comparable<InsertedTagData<T>> {
     }
 
     /**
-     * @param lastClientTask
-     *                           the lastClientTask to set
+     * @param lastClientTask the lastClientTask to set
      */
     void lastClientTask(final ClientTasksWrapper lastClientTask) {
         lastClientTaskRef = new WeakReference<>(lastClientTask);

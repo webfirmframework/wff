@@ -19,8 +19,7 @@ public class CustomTag extends AbstractHtml {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    private static final Logger LOGGER = Logger
-            .getLogger(CustomTag.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(CustomTag.class.getName());
 
     private TagType tagType = TagType.OPENING_CLOSING;
 
@@ -30,21 +29,17 @@ public class CustomTag extends AbstractHtml {
 
     /**
      *
-     * @param tagName
-     *                       the tag name
-     * @param tagType
-     *                       the tag type for eg:
-     *                       {@code AbstractHtml.TagType.SELF_CLOSING}
+     * @param tagName    the tag name
+     * @param tagType    the tag type for eg:
+     *                   {@code AbstractHtml.TagType.SELF_CLOSING}
      *
-     * @param base
-     *                       i.e. parent tag of this tag
-     * @param attributes
-     *                       An array of {@code AbstractAttribute}
+     * @param base       i.e. parent tag of this tag
+     * @param attributes An array of {@code AbstractAttribute}
      *
      * @since 1.0.0
      */
-    public CustomTag(final String tagName, final TagType tagType,
-            final AbstractHtml base, final AbstractAttribute... attributes) {
+    public CustomTag(final String tagName, final TagType tagType, final AbstractHtml base,
+            final AbstractAttribute... attributes) {
         super(tagType, tagName, base, attributes);
         this.tagType = tagType;
         if (WffConfiguration.isDirectionWarningOn()) {
@@ -52,15 +47,12 @@ public class CustomTag extends AbstractHtml {
         }
     }
 
-    private static void warnForUnsupportedAttributes(
-            final AbstractAttribute... attributes) {
+    private static void warnForUnsupportedAttributes(final AbstractAttribute... attributes) {
         if (LOGGER.isLoggable(Level.WARNING)) {
             for (final AbstractAttribute abstractAttribute : attributes) {
-                if (!(abstractAttribute != null
-                        && (abstractAttribute instanceof BaseAttributable
-                                || abstractAttribute instanceof GlobalAttributable))) {
-                    LOGGER.warning(abstractAttribute
-                            + " is not an instance of BaseAttribute");
+                if (!(abstractAttribute != null && (abstractAttribute instanceof BaseAttributable
+                        || abstractAttribute instanceof GlobalAttributable))) {
+                    LOGGER.warning(abstractAttribute + " is not an instance of BaseAttribute");
                 }
             }
         }
@@ -68,18 +60,14 @@ public class CustomTag extends AbstractHtml {
 
     /**
      *
-     * @param tagName
-     *                       the tag name
+     * @param tagName    the tag name
      *
-     * @param base
-     *                       i.e. parent tag of this tag
-     * @param attributes
-     *                       An array of {@code AbstractAttribute}
+     * @param base       i.e. parent tag of this tag
+     * @param attributes An array of {@code AbstractAttribute}
      *
      * @since 1.0.0
      */
-    public CustomTag(final String tagName, final AbstractHtml base,
-            final AbstractAttribute... attributes) {
+    public CustomTag(final String tagName, final AbstractHtml base, final AbstractAttribute... attributes) {
         super(TagType.OPENING_CLOSING, tagName, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);

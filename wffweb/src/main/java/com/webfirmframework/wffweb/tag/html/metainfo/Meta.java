@@ -38,29 +38,23 @@ public class Meta extends AbstractHtml {
 
     /**
      *
-     * @param base
-     *                       i.e. parent tag of this tag
-     * @param attributes
-     *                       An array of {@code AbstractAttribute}
+     * @param base       i.e. parent tag of this tag
+     * @param attributes An array of {@code AbstractAttribute}
      *
      * @since 1.0.0
      */
-    public Meta(final AbstractHtml base,
-            final AbstractAttribute... attributes) {
+    public Meta(final AbstractHtml base, final AbstractAttribute... attributes) {
         super(tagType, PRE_INDEXED_TAG_NAME, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }
     }
 
-    private static void warnForUnsupportedAttributes(
-            final AbstractAttribute... attributes) {
+    private static void warnForUnsupportedAttributes(final AbstractAttribute... attributes) {
         for (final AbstractAttribute abstractAttribute : attributes) {
-            if (!(abstractAttribute != null
-                    && (abstractAttribute instanceof MetaAttributable
-                            || abstractAttribute instanceof GlobalAttributable))) {
-                LOGGER.warning(abstractAttribute
-                        + " is not an instance of MetaAttribute");
+            if (!(abstractAttribute != null && (abstractAttribute instanceof MetaAttributable
+                    || abstractAttribute instanceof GlobalAttributable))) {
+                LOGGER.warning(abstractAttribute + " is not an instance of MetaAttribute");
             }
         }
     }
@@ -76,10 +70,9 @@ public class Meta extends AbstractHtml {
     }
 
     /**
-     * @param selfClosing
-     *                        <code>true</code> to set as self closing tag and
-     *                        <code>false</code> for not to set as self closing
-     *                        tag. The default value is <code>true</code>.
+     * @param selfClosing <code>true</code> to set as self closing tag and
+     *                    <code>false</code> for not to set as self closing tag. The
+     *                    default value is <code>true</code>.
      * @since 1.0.0
      * @author WFF
      */
@@ -88,10 +81,9 @@ public class Meta extends AbstractHtml {
     }
 
     /**
-     * @param nonClosing
-     *                       <code>true</code> to set as self closing tag and
-     *                       <code>false</code> for not to set as self closing
-     *                       tag. The default value is <code>true</code>.
+     * @param nonClosing <code>true</code> to set as self closing tag and
+     *                   <code>false</code> for not to set as self closing tag. The
+     *                   default value is <code>true</code>.
      * @since 1.0.0
      * @author WFF
      */

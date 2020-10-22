@@ -53,12 +53,9 @@ public class OnDragStart extends AbstractEventAttribute {
         setServerAsyncMethod(null, serverAsyncMethod, null, null);
     }
 
-    public OnDragStart(final String preJsFunctionBody,
-            final ServerAsyncMethod serverAsyncMethod,
-            final String jsFilterFunctionBody,
-            final String postJsFunctionBody) {
-        setServerAsyncMethod(preJsFunctionBody, serverAsyncMethod,
-                jsFilterFunctionBody, postJsFunctionBody);
+    public OnDragStart(final String jsPreFunctionBody, final ServerAsyncMethod serverAsyncMethod,
+            final String jsFilterFunctionBody, final String jsPostFunctionBody) {
+        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody);
     }
 
     public OnDragStart(final String value) {
@@ -70,26 +67,22 @@ public class OnDragStart extends AbstractEventAttribute {
      * @param serverSideData
      * @since 3.0.2
      */
-    public OnDragStart(final ServerAsyncMethod serverAsyncMethod,
-            final Object serverSideData) {
-        setServerAsyncMethod(null, serverAsyncMethod, null, null,
-                serverSideData);
+    public OnDragStart(final ServerAsyncMethod serverAsyncMethod, final Object serverSideData) {
+        setServerAsyncMethod(null, serverAsyncMethod, null, null, serverSideData);
     }
 
     /**
-     * @param preJsFunctionBody
+     * @param jsPreFunctionBody
      * @param serverAsyncMethod
      * @param jsFilterFunctionBody
-     * @param postJsFunctionBody
+     * @param jsPostFunctionBody
      * @param serverSideData
      * @since 3.0.2
      */
-    public OnDragStart(final String preJsFunctionBody,
-            final ServerAsyncMethod serverAsyncMethod,
-            final String jsFilterFunctionBody, final String postJsFunctionBody,
-            final Object serverSideData) {
-        setServerAsyncMethod(preJsFunctionBody, serverAsyncMethod,
-                jsFilterFunctionBody, postJsFunctionBody, serverSideData);
+    public OnDragStart(final String jsPreFunctionBody, final ServerAsyncMethod serverAsyncMethod,
+            final String jsFilterFunctionBody, final String jsPostFunctionBody, final Object serverSideData) {
+        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody,
+                serverSideData);
     }
 
     /**

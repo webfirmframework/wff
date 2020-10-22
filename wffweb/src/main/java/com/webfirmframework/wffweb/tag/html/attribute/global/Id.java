@@ -230,8 +230,7 @@ public class Id extends AbstractAttribute implements GlobalAttributable {
     /**
      * To set {@code UUID} as id value.
      *
-     * @param uuid
-     *                 the {@code UUID} object
+     * @param uuid the {@code UUID} object
      * @since 1.0.0
      * @author WFF
      */

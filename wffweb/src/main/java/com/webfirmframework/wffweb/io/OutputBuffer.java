@@ -81,8 +81,7 @@ public class OutputBuffer {
     }
 
     /**
-     * @param rebuild
-     *                    the rebuild to set
+     * @param rebuild the rebuild to set
      * @since 1.0.0
      * @author WFF
      */
@@ -91,10 +90,9 @@ public class OutputBuffer {
     }
 
     /**
-     * @param newLength
-     *                      sets the length to the output buffer so that the
-     *                      first chars up to newLength will be kept and the
-     *                      remaining will be removed.
+     * @param newLength sets the length to the output buffer so that the first chars
+     *                  up to newLength will be kept and the remaining will be
+     *                  removed.
      * @since 1.0.0
      * @author WFF
      */

@@ -37,40 +37,35 @@ public final class CssTimeUtil {
     }
 
     /**
-     * gets the time value and unit as an array. For a cssValue
-     * <code>555ms</code>, the returned array may be used as
+     * gets the time value and unit as an array. For a cssValue <code>555ms</code>,
+     * the returned array may be used as
      *
      * <pre>
-     * Object[] timeValueAsPremitiveAndUnit = CssTimeUtil
-     *         .getTimeValueAsPremitiveAndUnit(&quot;555ms&quot;);
+     * Object[] timeValueAsPremitiveAndUnit = CssTimeUtil.getTimeValueAsPremitiveAndUnit(&quot;555ms&quot;);
      * float value = (float) timeValueAsPremitiveAndUnit[0];
      *
      * // the object will be equal to CssTimeUnit.MS
      * CssTimeUnit unit = (CssTimeUnit) timeValueAsPremitiveAndUnit[1];
      * </pre>
      *
-     * @param cssValue
-     *                     the value from which the time value and unit required
-     *                     to be parsed, Eg:- <code>555ms</code>.
+     * @param cssValue the value from which the time value and unit required to be
+     *                 parsed, Eg:- <code>555ms</code>.
      * @return an array containing time and unit. The time will be in the zeroth
      *         index as {@code float} (primitive type) type and its unit in the
      *         first index as an object of {@code CssTimeUnit}. If the given
-     *         cssValue is not a combination of time value and unit then an
-     *         empty array (having time zero) will be returned. It will never
-     *         return null.
+     *         cssValue is not a combination of time value and unit then an empty
+     *         array (having time zero) will be returned. It will never return null.
      *
      * @author WFF
      * @since 1.0.0
      */
-    public static Object[] getTimeValueAsPremitiveAndUnit(
-            final String cssValue) {
+    public static Object[] getTimeValueAsPremitiveAndUnit(final String cssValue) {
         for (final CssTimeUnit cssTimeUnit : CssTimeUnit.values()) {
             final String unit = cssTimeUnit.getUnit();
             if (cssValue.endsWith(unit)) {
                 final String valueOnly = cssValue.replaceFirst(unit, "");
                 try {
-                    return new Object[] { Float.parseFloat(valueOnly),
-                            cssTimeUnit };
+                    return new Object[] { Float.parseFloat(valueOnly), cssTimeUnit };
                 } catch (final NumberFormatException e) {
                     return new Object[0];
                 }
@@ -80,8 +75,8 @@ public final class CssTimeUtil {
     }
 
     /**
-     * gets the time value and unit as an array. For a cssValue
-     * <code>555ms</code>, the returned array may be used as
+     * gets the time value and unit as an array. For a cssValue <code>555ms</code>,
+     * the returned array may be used as
      *
      * <pre>
      * Object[] timeValueAndUnit = CssTimeUtil.getTimeValueAndUnit(&quot;555ms&quot;);
@@ -91,15 +86,13 @@ public final class CssTimeUtil {
      * CssTimeUnit unit = (CssTimeUnit) timeValueAndUnit[1];
      * </pre>
      *
-     * @param cssValue
-     *                     the value from which the time value and unit required
-     *                     to be parsed, Eg:- <code>555ms</code>.
+     * @param cssValue the value from which the time value and unit required to be
+     *                 parsed, Eg:- <code>555ms</code>.
      * @return an array containing time and unit. The time will be in the zeroth
-     *         index as {@code Float} (wrapper type) type and its unit in the
-     *         first index as an object of {@code CssTimeUnit}. If the given
-     *         cssValue is not a combination of time value and unit then an
-     *         empty array (having time zero) will be returned. It will never
-     *         return null.
+     *         index as {@code Float} (wrapper type) type and its unit in the first
+     *         index as an object of {@code CssTimeUnit}. If the given cssValue is
+     *         not a combination of time value and unit then an empty array (having
+     *         time zero) will be returned. It will never return null.
      *
      * @author WFF
      * @since 1.0.0
@@ -110,8 +103,7 @@ public final class CssTimeUtil {
             if (cssValue.endsWith(unit)) {
                 final String valueOnly = cssValue.replaceFirst(unit, "");
                 try {
-                    return new Object[] { Float.valueOf(valueOnly),
-                            cssTimeUnit };
+                    return new Object[] { Float.valueOf(valueOnly), cssTimeUnit };
                 } catch (final NumberFormatException e) {
                     return new Object[0];
                 }

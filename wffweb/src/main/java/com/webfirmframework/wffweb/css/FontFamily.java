@@ -107,8 +107,7 @@ public class FontFamily extends AbstractCssProperty<FontFamily> {
     }
 
     /**
-     * @param cssValue
-     *                     the css value to set.
+     * @param cssValue the css value to set.
      */
     public FontFamily(final String cssValue) {
         setCssValue(cssValue);
@@ -121,8 +120,7 @@ public class FontFamily extends AbstractCssProperty<FontFamily> {
      *
      * </pre>
      *
-     * @param fontFamilyNames
-     *                            the font family names.
+     * @param fontFamilyNames the font family names.
      */
     public FontFamily(final String... fontFamilyNames) {
         this.fontFamilyNames = StringUtil.cloneArray(fontFamilyNames);
@@ -156,10 +154,8 @@ public class FontFamily extends AbstractCssProperty<FontFamily> {
     }
 
     /**
-     * @param fontFamily
-     *                       the {@code FontFamily} object from which the
-     *                       cssValue to set.And, {@code null} will throw
-     *                       {@code NullValueException}
+     * @param fontFamily the {@code FontFamily} object from which the cssValue to
+     *                   set.And, {@code null} will throw {@code NullValueException}
      */
     public FontFamily(final FontFamily fontFamily) {
         if (fontFamily == null) {
@@ -202,10 +198,8 @@ public class FontFamily extends AbstractCssProperty<FontFamily> {
     }
 
     /**
-     * @param cssValue
-     *                     The value should be a fontFamilies sequence for
-     *                     example \ "Times New Roman\", Georgia, Serif Or
-     *                     initial/inherit.
+     * @param cssValue The value should be a fontFamilies sequence for example \
+     *                 "Times New Roman\", Georgia, Serif Or initial/inherit.
      * @since 1.0.0
      * @author WFF
      */
@@ -221,8 +215,7 @@ public class FontFamily extends AbstractCssProperty<FontFamily> {
                 fontFamilyNames = null;
             } else {
                 fontFamilyNames = getExtractedFamilyNames(trimmedCssValue,
-                        validateFontFamilyName
-                                || validateFontFamilyNameGlobally);
+                        validateFontFamilyName || validateFontFamilyNameGlobally);
             }
             this.cssValue = trimmedCssValue;
 
@@ -235,14 +228,12 @@ public class FontFamily extends AbstractCssProperty<FontFamily> {
 
     /**
      * @param familyNames
-     * @param validate
-     *                        TODO
+     * @param validate    TODO
      * @return an array containing extracted family names from the given input.
      * @author WFF
      * @since 1.0.0
      */
-    protected static String[] getExtractedFamilyNames(final String familyNames,
-            final boolean validate) {
+    protected static String[] getExtractedFamilyNames(final String familyNames, final boolean validate) {
         final String[] parts = StringUtil.splitByComma(familyNames);
 
         int count = 0;
@@ -275,8 +266,7 @@ public class FontFamily extends AbstractCssProperty<FontFamily> {
 
             final String familyName = trimmed.substring(begin, end);
 
-            if (validate && !FONT_FAMILY_NAMES
-                    .contains(TagStringUtil.toLowerCase(familyName))) {
+            if (validate && !FONT_FAMILY_NAMES.contains(TagStringUtil.toLowerCase(familyName))) {
                 throw new InvalidValueException("font-family name " + familyName
                         + " is not valid against the family names added by addFontFamilyName and addFontFamilyNames methods");
             }
@@ -295,8 +285,7 @@ public class FontFamily extends AbstractCssProperty<FontFamily> {
      *
      * </pre>
      *
-     * @param fontFamilyNames
-     *                            the fontFamilyNames to set
+     * @param fontFamilyNames the fontFamilyNames to set
      * @author WFF
      * @since 1.0.0
      */
@@ -321,8 +310,8 @@ public class FontFamily extends AbstractCssProperty<FontFamily> {
      * Note: it will never return null.
      * </pre>
      *
-     * @return the fontFamilyNames. If there is no family name set then returns
-     *         an empty array instead of null.
+     * @return the fontFamilyNames. If there is no family name set then returns an
+     *         empty array instead of null.
      * @author WFF
      * @since 1.0.0
      */
@@ -355,8 +344,7 @@ public class FontFamily extends AbstractCssProperty<FontFamily> {
 
     /**
      *
-     * @param fontFamilyName
-     *                           the supported font-family.
+     * @param fontFamilyName the supported font-family.
      * @author WFF
      * @since 1.0.0
      */
@@ -365,13 +353,11 @@ public class FontFamily extends AbstractCssProperty<FontFamily> {
     }
 
     /**
-     * @param fontFamilyNames
-     *                            the supported font-family names.
+     * @param fontFamilyNames the supported font-family names.
      * @author WFF
      * @since 1.0.0
      */
-    public static void addFontFamilyNames(
-            final Collection<String> fontFamilyNames) {
+    public static void addFontFamilyNames(final Collection<String> fontFamilyNames) {
         FONT_FAMILY_NAMES.addAll(fontFamilyNames);
     }
 
@@ -397,13 +383,11 @@ public class FontFamily extends AbstractCssProperty<FontFamily> {
     }
 
     /**
-     * @param validateFontFamilyName
-     *                                   the validateFontFamilyName to set
+     * @param validateFontFamilyName the validateFontFamilyName to set
      * @author WFF
      * @since 1.0.0
      */
-    public void setValidateFontFamilyName(
-            final boolean validateFontFamilyName) {
+    public void setValidateFontFamilyName(final boolean validateFontFamilyName) {
         this.validateFontFamilyName = validateFontFamilyName;
     }
 
@@ -417,31 +401,26 @@ public class FontFamily extends AbstractCssProperty<FontFamily> {
     }
 
     /**
-     * @param validateFontFamilyNameGlobally
-     *                                           the
-     *                                           validateFontFamilyNameGlobally
-     *                                           to set
+     * @param validateFontFamilyNameGlobally the validateFontFamilyNameGlobally to
+     *                                       set
      * @author WFF
      * @since 1.0.0
      */
-    public static void setValidateFontFamilyNameGlobally(
-            final boolean validateFontFamilyNameGlobally) {
+    public static void setValidateFontFamilyNameGlobally(final boolean validateFontFamilyNameGlobally) {
         FontFamily.validateFontFamilyNameGlobally = validateFontFamilyNameGlobally;
     }
 
     /**
-     * @return true if the given cssValue is validate. It also checks whether
-     *         the font-family names added by
+     * @return true if the given cssValue is validate. It also checks whether the
+     *         font-family names added by
      *         {@code FontFamily#addFontFamilyName(String)} and
-     *         {@code FontFamily#addFontFamilyNames(Collection)} methods contain
-     *         the given cssValue.
+     *         {@code FontFamily#addFontFamilyNames(Collection)} methods contain the
+     *         given cssValue.
      * @author WFF
      * @since 1.0.0
      */
     public static boolean isValid(final String cssValue) {
-        final String cssValueLC = TagStringUtil
-                .toLowerCase(StringUtil.strip(cssValue));
-        return INITIAL.equals(cssValueLC) || INHERIT.equals(cssValueLC)
-                || FONT_FAMILY_NAMES.contains(cssValueLC);
+        final String cssValueLC = TagStringUtil.toLowerCase(StringUtil.strip(cssValue));
+        return INITIAL.equals(cssValueLC) || INHERIT.equals(cssValueLC) || FONT_FAMILY_NAMES.contains(cssValueLC);
     }
 }

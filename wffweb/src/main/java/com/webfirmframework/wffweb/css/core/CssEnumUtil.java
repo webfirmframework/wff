@@ -36,33 +36,25 @@ public final class CssEnumUtil {
      * checks whether the given {@code cssValues} contains the given
      * {@code cssValue}.
      *
-     * @param cssValue
-     *                          the value to be checked.
-     * @param cssValues
-     *                          the {@code cssValue} will be checked in this
-     *                          {@code cssValues} .
-     * @param lowestLength
-     *                          the lowest length of the string contained in the
-     *                          given {@code cssValues}.
-     * @param highestLength
-     *                          the highest length of the string contained in
-     *                          the given {@code cssValues}.
+     * @param cssValue      the value to be checked.
+     * @param cssValues     the {@code cssValue} will be checked in this
+     *                      {@code cssValues} .
+     * @param lowestLength  the lowest length of the string contained in the given
+     *                      {@code cssValues}.
+     * @param highestLength the highest length of the string contained in the given
+     *                      {@code cssValues}.
      * @return true if the given {@code cssValues} contains the given
-     *         {@code cssValue}, and the length of {@code cssValue} is not less
-     *         than {@code lowestLength} and not greater than
-     *         {@code highestLength}.
+     *         {@code cssValue}, and the length of {@code cssValue} is not less than
+     *         {@code lowestLength} and not greater than {@code highestLength}.
      * @since 1.0.0
      * @author WFF
      */
-    public static boolean contains(final String cssValue,
-            final Collection<String> cssValues, final int lowestLength,
+    public static boolean contains(final String cssValue, final Collection<String> cssValues, final int lowestLength,
             final int highestLength) {
-        if (cssValue == null || cssValue.length() < lowestLength
-                || cssValue.length() > highestLength) {
+        if (cssValue == null || cssValue.length() < lowestLength || cssValue.length() > highestLength) {
             return false;
         }
-        final boolean contains = cssValues
-                .contains(TagStringUtil.toUpperCase(cssValue));
+        final boolean contains = cssValues.contains(TagStringUtil.toUpperCase(cssValue));
         return contains;
     }
 

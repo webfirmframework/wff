@@ -15,28 +15,47 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute.core;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
-import java.util.logging.Level;
 
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.InvalidValueException;
-import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.InternalAttrNameConstants;
+import com.webfirmframework.wffweb.tag.html.attribute.event.EventAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Style;
-import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
-import com.webfirmframework.wffweb.tag.html.core.TagRegistry;
-import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataAttribute;
-import com.webfirmframework.wffweb.tag.htmlwff.CustomTag;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 
+
 public class AttributeRegistryTest {
+    
+    @Test
+    public void testEventAttr() throws Exception {
+        final Map<String, Class<?>> attributeClassByAttrName = AttributeRegistry.getAttributeClassByAttrName();
+        for (final PreIndexedAttributeName each : PreIndexedAttributeName
+                .alleventattributes()) {
+            if (each.eventAttr()) {
+                final Class<?> cls = attributeClassByAttrName
+                        .get(each.attrName());
+
+                if (cls == null
+                        || !EventAttribute.class.isAssignableFrom(cls)) {
+                    org.junit.Assert.fail(each.attrName() + " is not an event attribute");
+                }
+            }
+        }
+    }
 
     @Test
     public void testIfAllAttributeNamesAreReffered() throws Exception {
@@ -184,5 +203,37 @@ public class AttributeRegistryTest {
             assertEquals(attrName, attrNameByIndex);
         }
     }
+    
+    @Test
+    public void testPreIndexedAttributeNameOrder() {
+
+        //it is always used so its length must be kept 1
+        assertEquals(1, PreIndexedAttributeName.DATA_WFF_ID.indexBytes().length);
+        List<String> names = new ArrayList<>();
+        for (PreIndexedAttributeName each : PreIndexedAttributeName.values()) {
+            names.add(each.attrName());
+        }
+
+        List<String> multiSortedNames = new ArrayList<>(names);
+        multiSortedNames
+                .sort(Comparator.comparingInt(String::length).thenComparing(String::compareTo));
+        assertEquals(multiSortedNames, names);
+    }
+    
+    @Test
+    public void testSortedBooleanAttrNames() {
+
+        final List<String> booleanAttributeNames = AttributeRegistry.getBooleanAttributeNames();
+        Set<String> set = new HashSet<>(booleanAttributeNames);
+
+        List<String> names = new ArrayList<>();
+        for (PreIndexedAttributeName each : PreIndexedAttributeName.values()) {
+            if (set.contains(each.attrName())) {
+                names.add(each.attrName());
+            }
+        }
+        assertEquals(names, booleanAttributeNames);
+    }
+
 
 }

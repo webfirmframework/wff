@@ -453,7 +453,7 @@ var wffClientCRUDUtil = new function() {
 			location.reload(true);
 		} else if (taskValue == wffGlobal.taskValues.RELOAD_BROWSER_FROM_CACHE) {
 			location.reload();
-		} else if (taskValue == wffGlobal.taskValues.EXECURE_JS) {
+		} else if (taskValue == wffGlobal.taskValues.EXEC_JS) {
 			
 			var js = getStringFromBytes(taskNameValue.values[1]);
 			

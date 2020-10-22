@@ -57,8 +57,7 @@ public class PerspectiveOrigin extends AbstractCssProperty<PerspectiveOrigin> {
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays
-            .asList(INITIAL, INHERIT);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(INITIAL, INHERIT);
 
     private String cssValue;
     private Float xAxis;
@@ -75,18 +74,16 @@ public class PerspectiveOrigin extends AbstractCssProperty<PerspectiveOrigin> {
     }
 
     /**
-     * @param cssValue
-     *                     the css value to set.
+     * @param cssValue the css value to set.
      */
     public PerspectiveOrigin(final String cssValue) {
         setCssValue(cssValue);
     }
 
     /**
-     * @param backgroundSize
-     *                           the {@code PerspectiveOrigin} object from which
-     *                           the cssValue to set.And, {@code null} will
-     *                           throw {@code NullValueException}
+     * @param backgroundSize the {@code PerspectiveOrigin} object from which the
+     *                       cssValue to set.And, {@code null} will throw
+     *                       {@code NullValueException}
      */
     public PerspectiveOrigin(final PerspectiveOrigin backgroundSize) {
         if (backgroundSize == null) {
@@ -96,15 +93,12 @@ public class PerspectiveOrigin extends AbstractCssProperty<PerspectiveOrigin> {
     }
 
     /**
-     * @param xyAxis
-     *                          the value to set.
-     * @param cssLengthUnit
-     *                          the value unit to set.
+     * @param xyAxis        the value to set.
+     * @param cssLengthUnit the value unit to set.
      * @since 1.0.0
      * @author WFF
      */
-    public PerspectiveOrigin(final float xyAxis,
-            final CssLengthUnit cssLengthUnit) {
+    public PerspectiveOrigin(final float xyAxis, final CssLengthUnit cssLengthUnit) {
 
         xAxis = yAxis = Float.valueOf(xyAxis);
         xAxisCssLengthUnit = yAxisCssLengthUnit = cssLengthUnit;
@@ -120,8 +114,7 @@ public class PerspectiveOrigin extends AbstractCssProperty<PerspectiveOrigin> {
      * @author WFF
      * @since 1.0.0
      */
-    public PerspectiveOrigin(final float xAxis,
-            final CssLengthUnit xAxisCssLengthUnit, final float yAxis,
+    public PerspectiveOrigin(final float xAxis, final CssLengthUnit xAxisCssLengthUnit, final float yAxis,
             final CssLengthUnit yAxisCssLengthUnit) {
 
         this.xAxis = Float.valueOf(xAxis);
@@ -130,13 +123,10 @@ public class PerspectiveOrigin extends AbstractCssProperty<PerspectiveOrigin> {
         this.xAxisCssLengthUnit = xAxisCssLengthUnit;
         this.yAxisCssLengthUnit = yAxisCssLengthUnit;
 
-        if (xAxis == yAxis
-                && Objects.equals(xAxisCssLengthUnit, yAxisCssLengthUnit)) {
-            cssValue = String.valueOf(xAxis)
-                    .concat(xAxisCssLengthUnit.toString());
+        if (xAxis == yAxis && Objects.equals(xAxisCssLengthUnit, yAxisCssLengthUnit)) {
+            cssValue = String.valueOf(xAxis).concat(xAxisCssLengthUnit.toString());
         } else {
-            cssValue = new StringBuilder().append(xAxis)
-                    .append(xAxisCssLengthUnit).append(' ').append(yAxis)
+            cssValue = new StringBuilder().append(xAxis).append(xAxisCssLengthUnit).append(' ').append(yAxis)
                     .append(yAxisCssLengthUnit).toString();
 
         }
@@ -151,8 +141,7 @@ public class PerspectiveOrigin extends AbstractCssProperty<PerspectiveOrigin> {
      * @author WFF
      * @since 1.0.0
      */
-    public PerspectiveOrigin setValue(final float xAxis,
-            final CssLengthUnit xAxisCssLengthUnit, final float yAxis,
+    public PerspectiveOrigin setValue(final float xAxis, final CssLengthUnit xAxisCssLengthUnit, final float yAxis,
             final CssLengthUnit yAxisCssLengthUnit) {
 
         this.xAxis = Float.valueOf(xAxis);
@@ -161,13 +150,10 @@ public class PerspectiveOrigin extends AbstractCssProperty<PerspectiveOrigin> {
         this.xAxisCssLengthUnit = xAxisCssLengthUnit;
         this.yAxisCssLengthUnit = yAxisCssLengthUnit;
 
-        if (xAxis == yAxis
-                && Objects.equals(xAxisCssLengthUnit, yAxisCssLengthUnit)) {
-            cssValue = String.valueOf(xAxis)
-                    .concat(xAxisCssLengthUnit.toString());
+        if (xAxis == yAxis && Objects.equals(xAxisCssLengthUnit, yAxisCssLengthUnit)) {
+            cssValue = String.valueOf(xAxis).concat(xAxisCssLengthUnit.toString());
         } else {
-            cssValue = new StringBuilder().append(xAxis)
-                    .append(xAxisCssLengthUnit).append(' ').append(yAxis)
+            cssValue = new StringBuilder().append(xAxis).append(xAxisCssLengthUnit).append(' ').append(yAxis)
                     .append(yAxisCssLengthUnit).toString();
         }
 
@@ -184,8 +170,7 @@ public class PerspectiveOrigin extends AbstractCssProperty<PerspectiveOrigin> {
      * @since 1.0.0
      * @author WFF
      */
-    public PerspectiveOrigin setValue(final float xyAxis,
-            final CssLengthUnit cssLengthUnit) {
+    public PerspectiveOrigin setValue(final float xyAxis, final CssLengthUnit cssLengthUnit) {
 
         xAxis = yAxis = Float.valueOf(xyAxis);
         xAxisCssLengthUnit = yAxisCssLengthUnit = cssLengthUnit;
@@ -280,11 +265,9 @@ public class PerspectiveOrigin extends AbstractCssProperty<PerspectiveOrigin> {
     }
 
     /**
-     * @param cssValue
-     *                     the value should be in the format of
-     *                     <code>55px</code> or <code>95%</code>. {@code null}
-     *                     is considered as an invalid value and it will throw
-     *                     {@code NullValueException}.
+     * @param cssValue the value should be in the format of <code>55px</code> or
+     *                 <code>95%</code>. {@code null} is considered as an invalid
+     *                 value and it will throw {@code NullValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -295,16 +278,13 @@ public class PerspectiveOrigin extends AbstractCssProperty<PerspectiveOrigin> {
                 throw new NullValueException(
                         "null is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit.");
             } else {
-                final String trimmedCssValue = TagStringUtil
-                        .toLowerCase(StringUtil.strip(cssValue));
+                final String trimmedCssValue = TagStringUtil.toLowerCase(StringUtil.strip(cssValue));
                 boolean invalidValue = true;
 
-                final String[] lengthValues = StringUtil
-                        .splitBySpace(trimmedCssValue);
+                final String[] lengthValues = StringUtil.splitBySpace(trimmedCssValue);
 
                 if (lengthValues.length == 1) {
-                    if (trimmedCssValue.equalsIgnoreCase(INITIAL)
-                            || trimmedCssValue.equalsIgnoreCase(INHERIT)) {
+                    if (trimmedCssValue.equalsIgnoreCase(INITIAL) || trimmedCssValue.equalsIgnoreCase(INHERIT)) {
                         this.cssValue = trimmedCssValue;
                         xAxis = null;
                         yAxis = null;
@@ -323,14 +303,11 @@ public class PerspectiveOrigin extends AbstractCssProperty<PerspectiveOrigin> {
                         }
                     }
                 } else if (lengthValues.length == 2) {
-                    final Object[] lengthValueAndUnitHorizontal = CssLengthUtil
-                            .getLengthValueAndUnit(lengthValues[0]);
+                    final Object[] lengthValueAndUnitHorizontal = CssLengthUtil.getLengthValueAndUnit(lengthValues[0]);
 
-                    final Object[] lengthValueAndUnitVertical = CssLengthUtil
-                            .getLengthValueAndUnit(lengthValues[1]);
+                    final Object[] lengthValueAndUnitVertical = CssLengthUtil.getLengthValueAndUnit(lengthValues[1]);
 
-                    if (lengthValueAndUnitHorizontal.length == 2
-                            && lengthValueAndUnitVertical.length == 2) {
+                    if (lengthValueAndUnitHorizontal.length == 2 && lengthValueAndUnitVertical.length == 2) {
                         xAxis = (Float) lengthValueAndUnitHorizontal[0];
                         xAxisCssLengthUnit = (CssLengthUnit) lengthValueAndUnitHorizontal[1];
                         yAxis = (Float) lengthValueAndUnitVertical[0];
@@ -338,20 +315,16 @@ public class PerspectiveOrigin extends AbstractCssProperty<PerspectiveOrigin> {
 
                         // nano optimized way to check if both xAxis
                         // and yAxis are equal.
-                        if (Float.floatToIntBits(xAxis.floatValue()) == Float
-                                .floatToIntBits(xAxis.floatValue())
-                                && Objects.equals(xAxisCssLengthUnit,
-                                        yAxisCssLengthUnit)) {
-                            this.cssValue = String.valueOf(xAxis)
-                                    + yAxisCssLengthUnit;
+                        if (Float.floatToIntBits(xAxis.floatValue()) == Float.floatToIntBits(xAxis.floatValue())
+                                && Objects.equals(xAxisCssLengthUnit, yAxisCssLengthUnit)) {
+                            this.cssValue = String.valueOf(xAxis) + yAxisCssLengthUnit;
                         } else {
                             this.cssValue = trimmedCssValue;
                         }
                         invalidValue = false;
                     }
                 } else {
-                    throw new InvalidValueException(
-                            "The given cssValue should not contain more that 2 length values.");
+                    throw new InvalidValueException("The given cssValue should not contain more that 2 length values.");
                 }
 
                 if (invalidValue) {
@@ -394,15 +367,13 @@ public class PerspectiveOrigin extends AbstractCssProperty<PerspectiveOrigin> {
     /**
      * validates if the given cssValue is valid for this class.
      *
-     * @param cssValue
-     *                     the value to check.
+     * @param cssValue the value to check.
      * @return true if valid and false if invalid.
      * @author WFF
      * @since 1.0.0
      */
     public static boolean isValid(final String cssValue) {
-        final String trimmedCssValue = TagStringUtil
-                .toLowerCase(StringUtil.strip(cssValue));
+        final String trimmedCssValue = TagStringUtil.toLowerCase(StringUtil.strip(cssValue));
 
         final String[] cssValueParts = StringUtil.splitBySpace(trimmedCssValue);
         if (cssValueParts.length > 2) {
@@ -414,8 +385,7 @@ public class PerspectiveOrigin extends AbstractCssProperty<PerspectiveOrigin> {
 
         boolean valid = false;
         for (final String each : cssValueParts) {
-            final Object[] lengthValueAndUnit = CssLengthUtil
-                    .getLengthValueAsPremitiveAndUnit(each);
+            final Object[] lengthValueAndUnit = CssLengthUtil.getLengthValueAsPremitiveAndUnit(each);
             if (lengthValueAndUnit.length != 2) {
                 return false;
             }

@@ -67,18 +67,16 @@ public class WebkitColumnRule extends AbstractCssProperty<WebkitColumnRule>
     }
 
     /**
-     * @param cssValue
-     *                     the css value to set.
+     * @param cssValue the css value to set.
      */
     public WebkitColumnRule(final String cssValue) {
         setCssValue(cssValue);
     }
 
     /**
-     * @param webkitColumnRule
-     *                             the {@code WebkitColumnRule} object from
-     *                             which the cssValue to set.And, {@code null}
-     *                             will throw {@code NullValueException}
+     * @param webkitColumnRule the {@code WebkitColumnRule} object from which the
+     *                         cssValue to set.And, {@code null} will throw
+     *                         {@code NullValueException}
      */
     public WebkitColumnRule(final WebkitColumnRule webkitColumnRule) {
         if (webkitColumnRule == null) {
@@ -88,8 +86,8 @@ public class WebkitColumnRule extends AbstractCssProperty<WebkitColumnRule>
     }
 
     /**
-     * the color/color code to set. The alternative method {@code setCssValue}
-     * can also be used.
+     * the color/color code to set. The alternative method {@code setCssValue} can
+     * also be used.
      *
      * @param value
      * @return the current object
@@ -135,8 +133,8 @@ public class WebkitColumnRule extends AbstractCssProperty<WebkitColumnRule>
     }
 
     /**
-     * gets the value, {@code getCssValue} method can also be used to get the
-     * same value.
+     * gets the value, {@code getCssValue} method can also be used to get the same
+     * value.
      *
      * @return the value in String.
      * @since 1.0.0
@@ -147,13 +145,12 @@ public class WebkitColumnRule extends AbstractCssProperty<WebkitColumnRule>
     }
 
     /**
-     * @param cssValue
-     *                     the value should be for example
-     *                     <code>medium none #0000ff</code>. {@code null} is
-     *                     considered as an invalid value and it will throw
-     *                     {@code NullValueException}.And an empty string is
-     *                     also considered as an invalid value and it will throw
-     *                     {@code InvalidValueException}.
+     * @param cssValue the value should be for example
+     *                 <code>medium none #0000ff</code>. {@code null} is considered
+     *                 as an invalid value and it will throw
+     *                 {@code NullValueException}.And an empty string is also
+     *                 considered as an invalid value and it will throw
+     *                 {@code InvalidValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -168,33 +165,26 @@ public class WebkitColumnRule extends AbstractCssProperty<WebkitColumnRule>
         } else {
 
             final String trimmedCssValue = StringUtil.strip(cssValue);
-            final String[] cssValueParts = StringUtil
-                    .splitBySpace(trimmedCssValue);
+            final String[] cssValueParts = StringUtil.splitBySpace(trimmedCssValue);
 
             if (cssValueParts.length > 1) {
                 WebkitColumnRuleWidth webkitColumnRuleWidth = null;
                 WebkitColumnRuleStyle webkitColumnRuleStyle = null;
                 WebkitColumnRuleColor webkitColumnRuleColor = null;
                 for (final String eachPart : cssValueParts) {
-                    if (webkitColumnRuleWidth == null
-                            && WebkitColumnRuleWidth.isValid(eachPart)) {
+                    if (webkitColumnRuleWidth == null && WebkitColumnRuleWidth.isValid(eachPart)) {
                         if (this.webkitColumnRuleWidth == null) {
-                            webkitColumnRuleWidth = new WebkitColumnRuleWidth(
-                                    eachPart);
+                            webkitColumnRuleWidth = new WebkitColumnRuleWidth(eachPart);
                             webkitColumnRuleWidth.setStateChangeInformer(this);
                             webkitColumnRuleWidth.setAlreadyInUse(true);
                         } else {
                             this.webkitColumnRuleWidth.setCssValue(eachPart);
                             webkitColumnRuleWidth = this.webkitColumnRuleWidth;
                         }
-                    } else if (webkitColumnRuleStyle == null
-                            && WebkitColumnRuleStyle.isValid(eachPart)) {
-                        webkitColumnRuleStyle = WebkitColumnRuleStyle
-                                .getThis(eachPart);
-                    } else if (webkitColumnRuleColor == null
-                            && WebkitColumnRuleColor.isValid(eachPart)) {
-                        webkitColumnRuleColor = new WebkitColumnRuleColor(
-                                eachPart);
+                    } else if (webkitColumnRuleStyle == null && WebkitColumnRuleStyle.isValid(eachPart)) {
+                        webkitColumnRuleStyle = WebkitColumnRuleStyle.getThis(eachPart);
+                    } else if (webkitColumnRuleColor == null && WebkitColumnRuleColor.isValid(eachPart)) {
+                        webkitColumnRuleColor = new WebkitColumnRuleColor(eachPart);
                         webkitColumnRuleColor.setStateChangeInformer(this);
                         webkitColumnRuleColor.setAlreadyInUse(true);
                     }
@@ -202,20 +192,17 @@ public class WebkitColumnRule extends AbstractCssProperty<WebkitColumnRule>
                 final StringBuilder cssValueBuilder = new StringBuilder();
                 boolean invalid = true;
                 if (webkitColumnRuleWidth != null) {
-                    cssValueBuilder.append(webkitColumnRuleWidth.getCssValue())
-                            .append(' ');
+                    cssValueBuilder.append(webkitColumnRuleWidth.getCssValue()).append(' ');
                     invalid = false;
                 } else if (this.webkitColumnRuleWidth != null) {
                     this.webkitColumnRuleWidth.setAlreadyInUse(false);
                 }
                 if (webkitColumnRuleStyle != null) {
-                    cssValueBuilder.append(webkitColumnRuleStyle.getCssValue())
-                            .append(' ');
+                    cssValueBuilder.append(webkitColumnRuleStyle.getCssValue()).append(' ');
                     invalid = false;
                 }
                 if (webkitColumnRuleColor != null) {
-                    cssValueBuilder.append(webkitColumnRuleColor.getCssValue())
-                            .append(' ');
+                    cssValueBuilder.append(webkitColumnRuleColor.getCssValue()).append(' ');
                     invalid = false;
                 } else if (this.webkitColumnRuleColor != null) {
                     this.webkitColumnRuleColor.setAlreadyInUse(false);
@@ -224,8 +211,7 @@ public class WebkitColumnRule extends AbstractCssProperty<WebkitColumnRule>
                     throw new InvalidValueException(cssValue
                             + " is an invalid value. The value format should be as for example '25px dotted green'. Or, initial/inherit.");
                 }
-                this.cssValue = StringBuilderUtil
-                        .getTrimmedString(cssValueBuilder);
+                this.cssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder);
                 this.webkitColumnRuleWidth = webkitColumnRuleWidth;
                 this.webkitColumnRuleStyle = webkitColumnRuleStyle;
                 this.webkitColumnRuleColor = webkitColumnRuleColor;
@@ -278,32 +264,27 @@ public class WebkitColumnRule extends AbstractCssProperty<WebkitColumnRule>
     }
 
     /**
-     * @param webkitColumnRuleWidth
-     *                                  the webkitColumnRuleWidth to set
+     * @param webkitColumnRuleWidth the webkitColumnRuleWidth to set
      * @since 1.0.0
      * @author WFF
      */
-    public WebkitColumnRule setWebkitColumnRuleWidth(
-            final WebkitColumnRuleWidth webkitColumnRuleWidth) {
+    public WebkitColumnRule setWebkitColumnRuleWidth(final WebkitColumnRuleWidth webkitColumnRuleWidth) {
 
         final StringBuilder cssValueBuilder = new StringBuilder();
 
         if (webkitColumnRuleWidth != null) {
-            cssValueBuilder.append(webkitColumnRuleWidth.getCssValue())
-                    .append(' ');
+            cssValueBuilder.append(webkitColumnRuleWidth.getCssValue()).append(' ');
         }
 
         if (webkitColumnRuleStyle != null) {
-            cssValueBuilder.append(webkitColumnRuleStyle.getCssValue())
-                    .append(' ');
+            cssValueBuilder.append(webkitColumnRuleStyle.getCssValue()).append(' ');
         }
 
         if (webkitColumnRuleColor != null) {
             cssValueBuilder.append(webkitColumnRuleColor.getCssValue());
         }
 
-        final String trimmedCssValue = StringBuilderUtil
-                .getTrimmedString(cssValueBuilder).toString();
+        final String trimmedCssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder).toString();
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
         if (this.webkitColumnRuleWidth != null) {
@@ -334,33 +315,28 @@ public class WebkitColumnRule extends AbstractCssProperty<WebkitColumnRule>
     }
 
     /**
-     * @param webkitColunmRuleStyle
-     *                                  the webkitColunmRuleStyle to set
+     * @param webkitColunmRuleStyle the webkitColunmRuleStyle to set
      * @since 1.0.0
      * @author WFF
      * @return
      */
-    public WebkitColumnRule setWebkitColumnRuleStyle(
-            final WebkitColumnRuleStyle webkitColunmRuleStyle) {
+    public WebkitColumnRule setWebkitColumnRuleStyle(final WebkitColumnRuleStyle webkitColunmRuleStyle) {
 
         final StringBuilder cssValueBuilder = new StringBuilder();
 
         if (webkitColumnRuleWidth != null) {
-            cssValueBuilder.append(webkitColumnRuleWidth.getCssValue())
-                    .append(' ');
+            cssValueBuilder.append(webkitColumnRuleWidth.getCssValue()).append(' ');
         }
 
         if (webkitColunmRuleStyle != null) {
-            cssValueBuilder.append(webkitColunmRuleStyle.getCssValue())
-                    .append(' ');
+            cssValueBuilder.append(webkitColunmRuleStyle.getCssValue()).append(' ');
         }
 
         if (webkitColumnRuleColor != null) {
             cssValueBuilder.append(webkitColumnRuleColor.getCssValue());
         }
 
-        final String trimmedCssValue = StringBuilderUtil
-                .getTrimmedString(cssValueBuilder).toString();
+        final String trimmedCssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder).toString();
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
         webkitColumnRuleStyle = webkitColunmRuleStyle;
@@ -382,33 +358,28 @@ public class WebkitColumnRule extends AbstractCssProperty<WebkitColumnRule>
     }
 
     /**
-     * @param webkitColumnRuleColor
-     *                                  the webkitColumnRuleColor to set
+     * @param webkitColumnRuleColor the webkitColumnRuleColor to set
      * @since 1.0.0
      * @author WFF
      * @return the current instance.
      */
-    public WebkitColumnRule setWebkitColumnRuleColor(
-            final WebkitColumnRuleColor webkitColumnRuleColor) {
+    public WebkitColumnRule setWebkitColumnRuleColor(final WebkitColumnRuleColor webkitColumnRuleColor) {
 
         final StringBuilder cssValueBuilder = new StringBuilder();
 
         if (webkitColumnRuleWidth != null) {
-            cssValueBuilder.append(webkitColumnRuleWidth.getCssValue())
-                    .append(' ');
+            cssValueBuilder.append(webkitColumnRuleWidth.getCssValue()).append(' ');
         }
 
         if (webkitColumnRuleStyle != null) {
-            cssValueBuilder.append(webkitColumnRuleStyle.getCssValue())
-                    .append(' ');
+            cssValueBuilder.append(webkitColumnRuleStyle.getCssValue()).append(' ');
         }
 
         if (webkitColumnRuleColor != null) {
             cssValueBuilder.append(webkitColumnRuleColor.getCssValue());
         }
 
-        final String trimmedCssValue = StringBuilderUtil
-                .getTrimmedString(cssValueBuilder).toString();
+        final String trimmedCssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder).toString();
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
         if (this.webkitColumnRuleColor != null) {
@@ -432,13 +403,11 @@ public class WebkitColumnRule extends AbstractCssProperty<WebkitColumnRule>
     @Override
     public void stateChanged(final CssProperty stateChangedObject) {
         if (stateChangedObject instanceof WebkitColumnRuleColor) {
-            setWebkitColumnRuleColor(
-                    (WebkitColumnRuleColor) stateChangedObject);
+            setWebkitColumnRuleColor((WebkitColumnRuleColor) stateChangedObject);
         }
 
         if (stateChangedObject instanceof WebkitColumnRuleWidth) {
-            setWebkitColumnRuleWidth(
-                    (WebkitColumnRuleWidth) stateChangedObject);
+            setWebkitColumnRuleWidth((WebkitColumnRuleWidth) stateChangedObject);
         }
     }
 

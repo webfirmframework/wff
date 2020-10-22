@@ -28,8 +28,7 @@ public class AttributeAddListenerImpl implements AttributeAddListener {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Logger LOGGER = Logger
-            .getLogger(AttributeAddListenerImpl.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(AttributeAddListenerImpl.class.getName());
 
     private final BrowserPage browserPage;
 
@@ -40,8 +39,7 @@ public class AttributeAddListenerImpl implements AttributeAddListener {
         throw new AssertionError();
     }
 
-    AttributeAddListenerImpl(final BrowserPage browserPage,
-            final Object accessObject) {
+    AttributeAddListenerImpl(final BrowserPage browserPage, final Object accessObject) {
         this.browserPage = browserPage;
         this.accessObject = accessObject;
     }
@@ -51,11 +49,14 @@ public class AttributeAddListenerImpl implements AttributeAddListener {
 
         try {
 
-          //@formatter:off
+            // @formatter:off
             // removed attribute task format :-
-            // { "name": task_byte, "values" : [ADDED_ATTRIBUTES_byte_from_Task_enum]}, { "name": MANY_TO_ONE_byte, "values" : [ tagName, its_data-wff-id, attribute_name=value1, attribute_name2=value2 ]}
-            // { "name": 2, "values" : [[1]]}, { "name":[2], "values" : ["div", "C55", "style=color:green", "name=hello"]}
-            //@formatter:on
+            // { "name": task_byte, "values" : [ADDED_ATTRIBUTES_byte_from_Task_enum]}, {
+            // "name": MANY_TO_ONE_byte, "values" : [ tagName, its_data-wff-id,
+            // attribute_name=value1, attribute_name2=value2 ]}
+            // { "name": 2, "values" : [[1]]}, { "name":[2], "values" : ["div", "C55",
+            // "style=color:green", "name=hello"]}
+            // @formatter:on
 
             final NameValue task = Task.ADDED_ATTRIBUTES.getTaskNameValue();
 
@@ -64,11 +65,9 @@ public class AttributeAddListenerImpl implements AttributeAddListener {
             nameValue.setName(Task.MANY_TO_ONE.getValueByte());
 
             final AbstractHtml addedToTag = event.getAddedToTag();
-            final byte[][] tagNameAndWffId = DataWffIdUtil
-                    .getIndexedTagNameAndWffId(accessObject, addedToTag);
+            final byte[][] tagNameAndWffId = DataWffIdUtil.getIndexedTagNameAndWffId(accessObject, addedToTag);
 
-            final AbstractAttribute[] addedAttributes = event
-                    .getAddedAttributes();
+            final AbstractAttribute[] addedAttributes = event.getAddedAttributes();
 
             final int totalValues = addedAttributes.length + 2;
 
@@ -89,8 +88,7 @@ public class AttributeAddListenerImpl implements AttributeAddListener {
                 // }
                 // values[i] = attrNameValue.getBytes(StandardCharsets.UTF_8);
 
-                values[i] = addedAttributes[i - 2].toCompressedBytesByIndex(
-                        false, StandardCharsets.UTF_8);
+                values[i] = addedAttributes[i - 2].toCompressedBytesByIndex(false, StandardCharsets.UTF_8);
             }
 
             nameValue.setValues(values);

@@ -35,8 +35,7 @@ public class Circle extends AbstractHtml {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    private static final Logger LOGGER = Logger
-            .getLogger(Circle.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Circle.class.getName());
 
     private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
 
@@ -53,28 +52,22 @@ public class Circle extends AbstractHtml {
 
     /**
      *
-     * @param base
-     *                       i.e. parent tag of this tag
-     * @param attributes
-     *                       An array of {@code AbstractAttribute}
+     * @param base       i.e. parent tag of this tag
+     * @param attributes An array of {@code AbstractAttribute}
      *
      */
-    public Circle(final AbstractHtml base,
-            final AbstractAttribute... attributes) {
+    public Circle(final AbstractHtml base, final AbstractAttribute... attributes) {
         super(PRE_INDEXED_TAG_NAME, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }
     }
 
-    private static void warnForUnsupportedAttributes(
-            final AbstractAttribute... attributes) {
+    private static void warnForUnsupportedAttributes(final AbstractAttribute... attributes) {
         for (final AbstractAttribute abstractAttribute : attributes) {
-            if (!(abstractAttribute != null
-                    && (abstractAttribute instanceof CircleAttributable
-                            || abstractAttribute instanceof GlobalAttributable))) {
-                LOGGER.warning(abstractAttribute
-                        + " is not an instance of CircleAttributable");
+            if (!(abstractAttribute != null && (abstractAttribute instanceof CircleAttributable
+                    || abstractAttribute instanceof GlobalAttributable))) {
+                LOGGER.warning(abstractAttribute + " is not an instance of CircleAttributable");
             }
         }
     }

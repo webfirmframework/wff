@@ -32,8 +32,7 @@ class ServerMethod implements Serializable {
 
     private final Object serverSideData;
 
-    public ServerMethod(final ServerAsyncMethod serverAsyncMethod,
-            final Object serverSideData) {
+    public ServerMethod(final ServerAsyncMethod serverAsyncMethod, final Object serverSideData) {
         this.serverAsyncMethod = serverAsyncMethod;
         this.serverSideData = serverSideData;
     }

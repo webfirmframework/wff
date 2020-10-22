@@ -23,11 +23,9 @@ package com.webfirmframework.wffweb.util;
  */
 public final class TagStringUtil {
 
-    private static final char[] UPPER_CASE_CHARS = CharsetUtil
-            .getUpperCaseCharset(512);
+    private static final char[] UPPER_CASE_CHARS = CharsetUtil.getUpperCaseCharset(512);
 
-    private static final char[] LOWER_CASE_CHARS = CharsetUtil
-            .getLowerCaseCharset(512);
+    private static final char[] LOWER_CASE_CHARS = CharsetUtil.getLowerCaseCharset(512);
 
     private TagStringUtil() {
         throw new AssertionError();
@@ -35,12 +33,10 @@ public final class TagStringUtil {
 
     /**
      * In html, the tag characters are supposed to use a limited number of
-     * characters like 'a'-'z', 'A'-'Z', '0'-'9', '.', ',', '-' etc... only. *
-     * This method gains performance than the native
-     * {@code String.toLowerCase()} method.
+     * characters like 'a'-'z', 'A'-'Z', '0'-'9', '.', ',', '-' etc... only. * This
+     * method gains performance than the native {@code String.toLowerCase()} method.
      *
-     * @param value
-     *                  The String to lower case
+     * @param value The String to lower case
      * @return The lower case string
      * @author WFF
      */
@@ -57,11 +53,10 @@ public final class TagStringUtil {
     /**
      * In html, the tag characters are supposed to use a limited number of
      * characters like 'a'-'z', 'A'-'Z', '0'-'9', '.', ',', '-' etc...<br>
-     * This method gains performance than the native
-     * {@code String.toUpperCase()} method.
+     * This method gains performance than the native {@code String.toUpperCase()}
+     * method.
      *
-     * @param value
-     *                  The String to lower case
+     * @param value The String to lower case
      * @return The upper case string
      * @author WFF
      */

@@ -35,10 +35,8 @@ public class P extends AbstractHtml {
 
     /**
      *
-     * @param base
-     *                       i.e. parent tag of this tag
-     * @param attributes
-     *                       An array of {@code AbstractAttribute}
+     * @param base       i.e. parent tag of this tag
+     * @param attributes An array of {@code AbstractAttribute}
      *
      * @since 1.0.0
      */
@@ -49,14 +47,11 @@ public class P extends AbstractHtml {
         }
     }
 
-    private static void warnForUnsupportedAttributes(
-            final AbstractAttribute... attributes) {
+    private static void warnForUnsupportedAttributes(final AbstractAttribute... attributes) {
         for (final AbstractAttribute abstractAttribute : attributes) {
-            if (!(abstractAttribute != null
-                    && (abstractAttribute instanceof PAttributable
-                            || abstractAttribute instanceof GlobalAttributable))) {
-                LOGGER.warning(abstractAttribute
-                        + " is not an instance of PAttribute");
+            if (!(abstractAttribute != null && (abstractAttribute instanceof PAttributable
+                    || abstractAttribute instanceof GlobalAttributable))) {
+                LOGGER.warning(abstractAttribute + " is not an instance of PAttribute");
             }
         }
     }

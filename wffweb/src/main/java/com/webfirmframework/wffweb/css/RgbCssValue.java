@@ -38,8 +38,7 @@ public class RgbCssValue extends AbstractBean<RgbCssValue> {
     }
 
     /**
-     * @param rgbCssValue
-     *                        eg:- <code> rgb(15, 55, 155) </code>
+     * @param rgbCssValue eg:- <code> rgb(15, 55, 155) </code>
      */
     public RgbCssValue(final String rgbCssValue) {
         super();
@@ -52,8 +51,7 @@ public class RgbCssValue extends AbstractBean<RgbCssValue> {
     }
 
     /**
-     * @param rgb
-     *                eg:- <code> rgb(15, 55, 155) </code>
+     * @param rgb eg:- <code> rgb(15, 55, 155) </code>
      *
      * @since 1.0.0
      * @author WFF
@@ -69,17 +67,13 @@ public class RgbCssValue extends AbstractBean<RgbCssValue> {
      */
     private void extractAndAssign(final String rgbString) {
 
-        final String rgbStringLowerCase = rgbString.replace(" ", "")
-                .toLowerCase();
+        final String rgbStringLowerCase = rgbString.replace(" ", "").toLowerCase();
 
-        if (rgbStringLowerCase.startsWith("rgb(")
-                && rgbStringLowerCase.contains(")")) {
+        if (rgbStringLowerCase.startsWith("rgb(") && rgbStringLowerCase.contains(")")) {
             final String rgb = rgbStringLowerCase.replace(",", ", ");
 
-            final String[] rgbStringParts = StringUtil
-                    .splitByComma(rgbStringLowerCase.substring(
-                            rgbStringLowerCase.indexOf('(') + 1,
-                            rgbStringLowerCase.lastIndexOf(')')));
+            final String[] rgbStringParts = StringUtil.splitByComma(rgbStringLowerCase
+                    .substring(rgbStringLowerCase.indexOf('(') + 1, rgbStringLowerCase.lastIndexOf(')')));
 
             if (rgbStringParts.length == 3) {
                 r = Integer.parseInt(rgbStringParts[0]);
@@ -103,24 +97,20 @@ public class RgbCssValue extends AbstractBean<RgbCssValue> {
                         + " is not a valid rgb string. It should be in the format of rgb(255, 25, 15)");
             }
         } else {
-            throw new InvalidValueException(rgbStringLowerCase
-                    + " is not a valid rgb string. It should be in the format of rgb(255, 25, 15)");
+            throw new InvalidValueException(
+                    rgbStringLowerCase + " is not a valid rgb string. It should be in the format of rgb(255, 25, 15)");
         }
     }
 
     /**
-     * @param r
-     *              red value. accepts values only from 0 to 255.
-     * @param g
-     *              green value. accepts values only from 0 to 255.
-     * @param b
-     *              blue value. accepts values only from 0 to 255.
+     * @param r red value. accepts values only from 0 to 255.
+     * @param g green value. accepts values only from 0 to 255.
+     * @param b blue value. accepts values only from 0 to 255.
      */
     public RgbCssValue(final int r, final int g, final int b) {
         super();
         if ((r < 0 || r > 255) || (g < 0 || g > 255) || (b < 0 || b > 255)) {
-            throw new InvalidValueException(
-                    "r, b and g paramater accept values only from 0 to 255.");
+            throw new InvalidValueException("r, b and g paramater accept values only from 0 to 255.");
         }
         this.r = r;
         this.g = g;
@@ -134,8 +124,7 @@ public class RgbCssValue extends AbstractBean<RgbCssValue> {
 
     public void setR(final int r) {
         if (r < 0 || r > 255) {
-            throw new InvalidValueException(
-                    "r paramater accept values only from 0 to 255.");
+            throw new InvalidValueException("r paramater accept values only from 0 to 255.");
         }
         this.r = r;
         rgb = "rgb(" + r + ", " + g + ", " + b + ")";
@@ -150,8 +139,7 @@ public class RgbCssValue extends AbstractBean<RgbCssValue> {
 
     public void setG(final int g) {
         if (g < 0 || g > 255) {
-            throw new InvalidValueException(
-                    "g paramater accept values only from 0 to 255.");
+            throw new InvalidValueException("g paramater accept values only from 0 to 255.");
         }
         this.g = g;
         rgb = "rgb(" + r + ", " + g + ", " + b + ")";
@@ -166,8 +154,7 @@ public class RgbCssValue extends AbstractBean<RgbCssValue> {
 
     public void setB(final int b) {
         if (b < 0 || b > 255) {
-            throw new InvalidValueException(
-                    "b paramater accept values only from 0 to 255.");
+            throw new InvalidValueException("b paramater accept values only from 0 to 255.");
         }
         this.b = b;
         rgb = "rgb(" + r + ", " + g + ", " + b + ")";
@@ -192,23 +179,18 @@ public class RgbCssValue extends AbstractBean<RgbCssValue> {
     }
 
     /**
-     * @param rgbString
-     *                      eg:- rgb(25, 155, 55)
+     * @param rgbString eg:- rgb(25, 155, 55)
      * @return true if valid and false for invalid.
      * @since 1.0.0
      * @author WFF
      */
     public static boolean isValid(final String rgbString) {
         try {
-            final String rgbStringLowerCase = rgbString.replace(" ", "")
-                    .toLowerCase();
-            if (rgbStringLowerCase.startsWith("rgb(")
-                    && rgbStringLowerCase.contains(")")) {
+            final String rgbStringLowerCase = rgbString.replace(" ", "").toLowerCase();
+            if (rgbStringLowerCase.startsWith("rgb(") && rgbStringLowerCase.contains(")")) {
 
-                final String[] rgbStringParts = StringUtil
-                        .splitByComma(rgbStringLowerCase.substring(
-                                rgbStringLowerCase.indexOf('(') + 1,
-                                rgbStringLowerCase.lastIndexOf(')')));
+                final String[] rgbStringParts = StringUtil.splitByComma(rgbStringLowerCase
+                        .substring(rgbStringLowerCase.indexOf('(') + 1, rgbStringLowerCase.lastIndexOf(')')));
 
                 if (rgbStringParts.length == 3) {
                     final int r = Integer.parseInt(rgbStringParts[0]);

@@ -147,16 +147,13 @@ public abstract class AbstractHtmlView implements HtmlView {
      * done by invoking methods like {@code AbstractHtmlView#toHtmlString()} and
      * {@code AbstractHtmlView#toHtmlString(boolean)}.
      *
-     * @param preserveOutputBufferContent
-     *                                        <code>true</code> to preserve and
-     *                                        <code>false</code> for not to
-     *                                        preserve. The default values is
-     *                                        <code>false</code>.
+     * @param preserveOutputBufferContent <code>true</code> to preserve and
+     *                                    <code>false</code> for not to preserve.
+     *                                    The default values is <code>false</code>.
      *
      *
      */
-    public void setPreserveOutputBufferContent(
-            final boolean preserveOutputBufferContent) {
+    public void setPreserveOutputBufferContent(final boolean preserveOutputBufferContent) {
         this.preserveOutputBufferContent = preserveOutputBufferContent;
     }
 

@@ -55,19 +55,16 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class Outline extends AbstractCssProperty<Outline>
-        implements StateChangeInformer<CssProperty> {
+public class Outline extends AbstractCssProperty<Outline> implements StateChangeInformer<CssProperty> {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    private static final Logger LOGGER = Logger
-            .getLogger(Outline.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Outline.class.getName());
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays
-            .asList(INITIAL, INHERIT);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(INITIAL, INHERIT);
 
     private String cssValue;
 
@@ -78,8 +75,7 @@ public class Outline extends AbstractCssProperty<Outline>
     private OutlineWidth outlineWidth;
 
     /**
-     * The value <code>medium none black</code> will be assigned as the
-     * cssValue.
+     * The value <code>medium none black</code> will be assigned as the cssValue.
      *
      * @author WFF
      * @since 1.0.0
@@ -89,18 +85,15 @@ public class Outline extends AbstractCssProperty<Outline>
     }
 
     /**
-     * @param cssValue
-     *                     the css value to set.
+     * @param cssValue the css value to set.
      */
     public Outline(final String cssValue) {
         setCssValue(cssValue);
     }
 
     /**
-     * @param outline
-     *                    the {@code Outline} object from which the cssValue to
-     *                    set.And, {@code null} will throw
-     *                    {@code NullValueException}
+     * @param outline the {@code Outline} object from which the cssValue to set.And,
+     *                {@code null} will throw {@code NullValueException}
      */
     public Outline(final Outline outline) {
         if (outline == null) {
@@ -143,12 +136,10 @@ public class Outline extends AbstractCssProperty<Outline>
     }
 
     /**
-     * @param cssValue
-     *                     the value should be in the format of
-     *                     <code>medium none color</code>, <code>initial</code>
-     *                     or <code>inherit</code>. {@code null} is considered
-     *                     as an invalid value and it will throw
-     *                     {@code NullValueException}.
+     * @param cssValue the value should be in the format of
+     *                 <code>medium none color</code>, <code>initial</code> or
+     *                 <code>inherit</code>. {@code null} is considered as an
+     *                 invalid value and it will throw {@code NullValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -158,8 +149,7 @@ public class Outline extends AbstractCssProperty<Outline>
         if (cssValue == null) {
             throw new NullValueException(
                     "null is an invalid value. The value format should be as for example medium none color Or initial/inherit.");
-        } else if ((trimmedCssValue = TagStringUtil
-                .toLowerCase(StringUtil.strip(cssValue))).isEmpty()) {
+        } else if ((trimmedCssValue = TagStringUtil.toLowerCase(StringUtil.strip(cssValue))).isEmpty()) {
             throw new NullValueException(cssValue
                     + " is an invalid value. The value format should be as for example medium none color Or initial/inherit.");
         }
@@ -302,8 +292,7 @@ public class Outline extends AbstractCssProperty<Outline>
             }
         }
 
-        return outlineWidth != null || outlineStyle != null
-                || outlineColor != null;
+        return outlineWidth != null || outlineStyle != null || outlineColor != null;
     }
 
     /**
@@ -355,19 +344,16 @@ public class Outline extends AbstractCssProperty<Outline>
             final String outlineWidthCssValue = outlineWidth.getCssValue();
             if (OutlineWidth.INITIAL.equals(outlineWidthCssValue)
                     || OutlineWidth.INHERIT.equals(outlineWidthCssValue)) {
-                throw new InvalidValueException(
-                        "outlineWidth cannot have initial/inherit as its cssValue");
+                throw new InvalidValueException("outlineWidth cannot have initial/inherit as its cssValue");
             }
 
             cssValueBuilder.append(outlineWidth.getCssValue());
         }
 
-        final String trimmedCssValue = StringBuilderUtil
-                .getTrimmedString(cssValueBuilder).toString();
+        final String trimmedCssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder).toString();
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
-        if (outlineWidth != null && outlineWidth.isAlreadyInUse()
-                && this.outlineWidth != outlineWidth) {
+        if (outlineWidth != null && outlineWidth.isAlreadyInUse() && this.outlineWidth != outlineWidth) {
             if (LOGGER.isLoggable(Level.WARNING)) {
                 LOGGER.warning(
                         "the given outlineWidth is already used by another object so a new object or the previous object (if it exists) of OutlineWidth will be used");
@@ -408,8 +394,7 @@ public class Outline extends AbstractCssProperty<Outline>
             cssValueBuilder.append(outlineWidth.getCssValue());
         }
 
-        final String trimmedCssValue = StringBuilderUtil
-                .getTrimmedString(cssValueBuilder).toString();
+        final String trimmedCssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder).toString();
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
         this.outlineStyle = outlineStyle;
@@ -428,8 +413,7 @@ public class Outline extends AbstractCssProperty<Outline>
             final String outlineColorCssValue = outlineColor.getCssValue();
             if (OutlineColor.INITIAL.equals(outlineColorCssValue)
                     || OutlineColor.INHERIT.equals(outlineColorCssValue)) {
-                throw new InvalidValueException(
-                        "outlineColor cannot have initial/inherit as its cssValue");
+                throw new InvalidValueException("outlineColor cannot have initial/inherit as its cssValue");
             }
             cssValueBuilder.append(outlineColorCssValue).append(' ');
         }
@@ -441,12 +425,10 @@ public class Outline extends AbstractCssProperty<Outline>
             cssValueBuilder.append(outlineWidth.getCssValue());
         }
 
-        final String trimmedCssValue = StringBuilderUtil
-                .getTrimmedString(cssValueBuilder).toString();
+        final String trimmedCssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder).toString();
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
-        if (outlineColor != null && outlineColor.isAlreadyInUse()
-                && this.outlineColor != outlineColor) {
+        if (outlineColor != null && outlineColor.isAlreadyInUse() && this.outlineColor != outlineColor) {
             if (LOGGER.isLoggable(Level.WARNING)) {
                 LOGGER.warning(
                         "the given outlineColor is already used by another object so a new object or the previous object (if it exists) of OutlineColor will be used");
@@ -479,10 +461,8 @@ public class Outline extends AbstractCssProperty<Outline>
 
             final String cssValue = outlineColor.getCssValue();
 
-            if (OutlineColor.INITIAL.equals(cssValue)
-                    || OutlineColor.INHERIT.equals(cssValue)) {
-                throw new InvalidValueException(
-                        "initial/inherit cannot be set as outlineColor cssValue");
+            if (OutlineColor.INITIAL.equals(cssValue) || OutlineColor.INHERIT.equals(cssValue)) {
+                throw new InvalidValueException("initial/inherit cannot be set as outlineColor cssValue");
             }
 
             setOutlineColor(outlineColor);

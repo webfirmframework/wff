@@ -35,8 +35,8 @@ public enum BMValueType {
     NUMBER,
 
     /**
-     * to assign unidentified in JavaScript value, the value can be null for
-     * this data type.
+     * to assign unidentified in JavaScript value, the value can be null for this
+     * data type.
      */
     UNDEFINED,
 
@@ -79,8 +79,8 @@ public enum BMValueType {
     FUNCTION,
 
     /**
-     * to initialize binary data. In java it's byte data type and in JavaScript
-     * it's Int8Array.
+     * to initialize binary data. In java it's byte data type and in JavaScript it's
+     * Int8Array.
      */
     BM_BYTE_ARRAY,
 

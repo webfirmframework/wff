@@ -36,8 +36,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.BooleanAttribute;
  * @author WFF
  * @since 2.1.9
  */
-public class Open extends AbstractAttribute
-        implements BooleanAttribute, DetailsAttributable, DialogAttributable {
+public class Open extends AbstractAttribute implements BooleanAttribute, DetailsAttributable, DialogAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -55,8 +54,8 @@ public class Open extends AbstractAttribute
     }
 
     /**
-     * sets the default value as <code>open</code> . If value is not required
-     * then use <code>new Open(null)</code>.
+     * sets the default value as <code>open</code> . If value is not required then
+     * use <code>new Open(null)</code>.
      *
      * @since 2.1.9
      * @author WFF

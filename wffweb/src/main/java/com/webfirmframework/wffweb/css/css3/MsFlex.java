@@ -55,20 +55,17 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class MsFlex extends AbstractCssProperty<MsFlex>
-        implements StateChangeInformer<CssProperty> {
+public class MsFlex extends AbstractCssProperty<MsFlex> implements StateChangeInformer<CssProperty> {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    private static final Logger LOGGER = Logger
-            .getLogger(MsFlex.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(MsFlex.class.getName());
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
     public static final String AUTO = "auto";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays
-            .asList(INITIAL, INHERIT, AUTO);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(INITIAL, INHERIT, AUTO);
 
     private String cssValue;
 
@@ -89,18 +86,15 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
     }
 
     /**
-     * @param cssValue
-     *                     the css value to set.
+     * @param cssValue the css value to set.
      */
     public MsFlex(final String cssValue) {
         setCssValue(cssValue);
     }
 
     /**
-     * @param msFlex
-     *                   the {@code Flex} object from which the cssValue to
-     *                   set.And, {@code null} will throw
-     *                   {@code NullValueException}
+     * @param msFlex the {@code Flex} object from which the cssValue to set.And,
+     *               {@code null} will throw {@code NullValueException}
      */
     public MsFlex(final MsFlex msFlex) {
         if (msFlex == null) {
@@ -143,11 +137,9 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
     }
 
     /**
-     * @param cssValue
-     *                     the value should be in the format of
-     *                     <code>1 1 auto</code> or <code>1 1 15px</code>.
-     *                     {@code null} is considered as an invalid value and it
-     *                     will throw {@code NullValueException}.
+     * @param cssValue the value should be in the format of <code>1 1 auto</code> or
+     *                 <code>1 1 15px</code>. {@code null} is considered as an
+     *                 invalid value and it will throw {@code NullValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -157,8 +149,7 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
         if (cssValue == null) {
             throw new NullValueException(
                     "null is an invalid value. The value format should be as for example \"0 1 auto\" or initial/inherit.");
-        } else if ((trimmedCssValue = TagStringUtil
-                .toLowerCase(StringUtil.strip(cssValue))).isEmpty()) {
+        } else if ((trimmedCssValue = TagStringUtil.toLowerCase(StringUtil.strip(cssValue))).isEmpty()) {
             throw new NullValueException(cssValue
                     + " is an invalid value. The value format should be as for example \"0 1 auto\" or initial/inherit.");
         }
@@ -266,8 +257,7 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
 
         if (flexBasis == null) {
             if (cssValueParts.length == 3) {
-                throw new InvalidValueException(
-                        "the given cssValue contains invalid flex-basis value.");
+                throw new InvalidValueException("the given cssValue contains invalid flex-basis value.");
             }
             if (this.flexBasis == null) {
                 flexBasis = new FlexBasis(0);
@@ -407,8 +397,7 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
         if (this.flexGrow != null) {
             this.flexGrow.setCssValue(flexGrow.getCssValue());
             if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.warning(
-                        "copied the cssValue from the given flexGrow to the existing flexGrow object.");
+                LOGGER.warning("copied the cssValue from the given flexGrow to the existing flexGrow object.");
             }
         } else {
             if (flexGrow.isAlreadyInUse()) {
@@ -474,8 +463,7 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
         if (this.flexShrink != null) {
             this.flexShrink.setCssValue(flexShrink.getCssValue());
             if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.warning(
-                        "copied the cssValue from the given flexShrink to the existing flexShrink object.");
+                LOGGER.warning("copied the cssValue from the given flexShrink to the existing flexShrink object.");
             }
         } else {
             if (flexShrink.isAlreadyInUse()) {
@@ -541,8 +529,7 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
         if (this.flexBasis != null) {
             this.flexBasis.setCssValue(flexBasis.getCssValue());
             if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.warning(
-                        "copied the cssValue from the given flexBasis to the existing flexBasis object.");
+                LOGGER.warning("copied the cssValue from the given flexBasis to the existing flexBasis object.");
             }
         } else {
             if (flexBasis.isAlreadyInUse()) {
@@ -576,28 +563,22 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
 
             final String cssValue = flexGrow.getCssValue();
 
-            if (FlexGrow.INITIAL.equals(cssValue)
-                    || FlexGrow.INHERIT.equals(cssValue)) {
-                throw new InvalidValueException(
-                        "initial/inherit cannot be set as flexGrow cssValue");
+            if (FlexGrow.INITIAL.equals(cssValue) || FlexGrow.INHERIT.equals(cssValue)) {
+                throw new InvalidValueException("initial/inherit cannot be set as flexGrow cssValue");
             }
-            this.cssValue = new StringBuilder(flexGrow.getCssValue())
-                    .append(' ').append(flexShrink.getCssValue()).append(' ')
-                    .append(flexBasis.getCssValue()).toString();
+            this.cssValue = new StringBuilder(flexGrow.getCssValue()).append(' ').append(flexShrink.getCssValue())
+                    .append(' ').append(flexBasis.getCssValue()).toString();
         } else if (stateChangedObject instanceof FlexShrink) {
 
             final FlexShrink flexShrink = (FlexShrink) stateChangedObject;
 
             final String cssValue = flexShrink.getCssValue();
 
-            if (FlexShrink.INITIAL.equals(cssValue)
-                    || FlexShrink.INHERIT.equals(cssValue)) {
-                throw new InvalidValueException(
-                        "initial/inherit cannot be set as flexShrink cssValue");
+            if (FlexShrink.INITIAL.equals(cssValue) || FlexShrink.INHERIT.equals(cssValue)) {
+                throw new InvalidValueException("initial/inherit cannot be set as flexShrink cssValue");
             }
-            this.cssValue = new StringBuilder(flexGrow.getCssValue())
-                    .append(' ').append(flexShrink.getCssValue()).append(' ')
-                    .append(flexBasis.getCssValue()).toString();
+            this.cssValue = new StringBuilder(flexGrow.getCssValue()).append(' ').append(flexShrink.getCssValue())
+                    .append(' ').append(flexBasis.getCssValue()).toString();
 
         } else if (stateChangedObject instanceof FlexBasis) {
 
@@ -605,15 +586,12 @@ public class MsFlex extends AbstractCssProperty<MsFlex>
 
             final String cssValue = flexBasis.getCssValue();
 
-            if (FlexBasis.INITIAL.equals(cssValue)
-                    || FlexBasis.INHERIT.equals(cssValue)) {
-                throw new InvalidValueException(
-                        "initial/inherit cannot be set as flexBasis cssValue");
+            if (FlexBasis.INITIAL.equals(cssValue) || FlexBasis.INHERIT.equals(cssValue)) {
+                throw new InvalidValueException("initial/inherit cannot be set as flexBasis cssValue");
             }
 
-            this.cssValue = new StringBuilder(flexGrow.getCssValue())
-                    .append(' ').append(flexShrink.getCssValue()).append(' ')
-                    .append(flexBasis.getCssValue()).toString();
+            this.cssValue = new StringBuilder(flexGrow.getCssValue()).append(' ').append(flexShrink.getCssValue())
+                    .append(' ').append(flexBasis.getCssValue()).toString();
         }
     }
 

@@ -32,14 +32,12 @@ public class MethodNotImplementedException extends WffRuntimeException {
         super();
     }
 
-    public MethodNotImplementedException(final String message,
-            final Throwable cause, final boolean enableSuppression,
+    public MethodNotImplementedException(final String message, final Throwable cause, final boolean enableSuppression,
             final boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 
-    public MethodNotImplementedException(final String message,
-            final Throwable cause) {
+    public MethodNotImplementedException(final String message, final Throwable cause) {
         super(message, cause);
     }
 

@@ -55,20 +55,17 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
-        implements StateChangeInformer<CssProperty> {
+public class WebkitFlex extends AbstractCssProperty<WebkitFlex> implements StateChangeInformer<CssProperty> {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    private static final Logger LOGGER = Logger
-            .getLogger(WebkitFlex.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(WebkitFlex.class.getName());
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
     public static final String AUTO = "auto";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays
-            .asList(INITIAL, INHERIT, AUTO);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(INITIAL, INHERIT, AUTO);
 
     private String cssValue;
 
@@ -89,18 +86,15 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
     }
 
     /**
-     * @param cssValue
-     *                     the css value to set.
+     * @param cssValue the css value to set.
      */
     public WebkitFlex(final String cssValue) {
         setCssValue(cssValue);
     }
 
     /**
-     * @param webkitFlex
-     *                       the {@code Flex} object from which the cssValue to
-     *                       set.And, {@code null} will throw
-     *                       {@code NullValueException}
+     * @param webkitFlex the {@code Flex} object from which the cssValue to set.And,
+     *                   {@code null} will throw {@code NullValueException}
      */
     public WebkitFlex(final WebkitFlex webkitFlex) {
         if (webkitFlex == null) {
@@ -143,11 +137,9 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
     }
 
     /**
-     * @param cssValue
-     *                     the value should be in the format of
-     *                     <code>1 1 auto</code> or <code>1 1 15px</code>.
-     *                     {@code null} is considered as an invalid value and it
-     *                     will throw {@code NullValueException}.
+     * @param cssValue the value should be in the format of <code>1 1 auto</code> or
+     *                 <code>1 1 15px</code>. {@code null} is considered as an
+     *                 invalid value and it will throw {@code NullValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -157,8 +149,7 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
         if (cssValue == null) {
             throw new NullValueException(
                     "null is an invalid value. The value format should be as for example \"0 1 auto\" or initial/inherit.");
-        } else if ((trimmedCssValue = TagStringUtil
-                .toLowerCase(StringUtil.strip(cssValue))).isEmpty()) {
+        } else if ((trimmedCssValue = TagStringUtil.toLowerCase(StringUtil.strip(cssValue))).isEmpty()) {
             throw new NullValueException(cssValue
                     + " is an invalid value. The value format should be as for example \"0 1 auto\" or initial/inherit.");
         }
@@ -211,8 +202,7 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
                     this.webkitFlexGrow.setCssValue(eachPart);
                     webkitFlexGrow = this.webkitFlexGrow;
                 }
-            } else if (webkitFlexShrink == null
-                    && WebkitFlexShrink.isValid(eachPart)) {
+            } else if (webkitFlexShrink == null && WebkitFlexShrink.isValid(eachPart)) {
                 if (this.webkitFlexGrow == null) {
                     webkitFlexShrink = new WebkitFlexShrink(eachPart);
                     webkitFlexShrink.setStateChangeInformer(this);
@@ -221,8 +211,7 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
                     this.webkitFlexShrink.setCssValue(eachPart);
                     webkitFlexShrink = this.webkitFlexShrink;
                 }
-            } else if (webkitFlexBasis == null
-                    && WebkitFlexBasis.isValid(eachPart)) {
+            } else if (webkitFlexBasis == null && WebkitFlexBasis.isValid(eachPart)) {
                 if (this.webkitFlexBasis == null) {
                     webkitFlexBasis = new WebkitFlexBasis(eachPart);
                     webkitFlexBasis.setStateChangeInformer(this);
@@ -268,8 +257,7 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
 
         if (webkitFlexBasis == null) {
             if (cssValueParts.length == 3) {
-                throw new InvalidValueException(
-                        "the given cssValue contains invalid flex-basis value.");
+                throw new InvalidValueException("the given cssValue contains invalid flex-basis value.");
             }
             if (this.webkitFlexBasis == null) {
                 webkitFlexBasis = new WebkitFlexBasis(0);
@@ -338,12 +326,10 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
             if (webkitFlexGrow == null && WebkitFlexGrow.isValid(eachPart)) {
                 webkitFlexGrow = new WebkitFlexGrow(eachPart);
                 invalid = false;
-            } else if (webkitFlexShrink == null
-                    && WebkitFlexShrink.isValid(eachPart)) {
+            } else if (webkitFlexShrink == null && WebkitFlexShrink.isValid(eachPart)) {
                 webkitFlexShrink = new WebkitFlexShrink(eachPart);
                 invalid = false;
-            } else if (webkitFlexBasis == null
-                    && WebkitFlexBasis.isValid(eachPart)) {
+            } else if (webkitFlexBasis == null && WebkitFlexBasis.isValid(eachPart)) {
                 webkitFlexBasis = new WebkitFlexBasis(eachPart);
                 invalid = false;
             }
@@ -352,8 +338,7 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
             }
         }
 
-        return webkitFlexGrow != null || webkitFlexShrink != null
-                || webkitFlexBasis != null;
+        return webkitFlexGrow != null || webkitFlexShrink != null || webkitFlexBasis != null;
     }
 
     /**
@@ -457,8 +442,7 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
         return this;
     }
 
-    public WebkitFlex setWebkitFlexShrink(
-            final WebkitFlexShrink webkitFlexShrink) {
+    public WebkitFlex setWebkitFlexShrink(final WebkitFlexShrink webkitFlexShrink) {
         if (webkitFlexShrink == null) {
             throw new InvalidValueException("webkitFlexShrink cannot be null");
         }
@@ -517,8 +501,7 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
         return this;
     }
 
-    public WebkitFlex setWebkitFlexBasis(
-            final WebkitFlexBasis webkitFlexBasis) {
+    public WebkitFlex setWebkitFlexBasis(final WebkitFlexBasis webkitFlexBasis) {
         if (webkitFlexBasis == null) {
             throw new InvalidValueException("webkitFlexBasis cannot be null");
         }
@@ -585,14 +568,11 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
 
             final String cssValue = webkitFlexGrow.getCssValue();
 
-            if (WebkitFlexGrow.INITIAL.equals(cssValue)
-                    || WebkitFlexGrow.INHERIT.equals(cssValue)) {
-                throw new InvalidValueException(
-                        "initial/inherit cannot be set as webkitFlexGrow cssValue");
+            if (WebkitFlexGrow.INITIAL.equals(cssValue) || WebkitFlexGrow.INHERIT.equals(cssValue)) {
+                throw new InvalidValueException("initial/inherit cannot be set as webkitFlexGrow cssValue");
             }
-            this.cssValue = new StringBuilder(webkitFlexGrow.getCssValue())
-                    .append(' ').append(webkitFlexShrink.getCssValue())
-                    .append(' ').append(webkitFlexBasis.getCssValue())
+            this.cssValue = new StringBuilder(webkitFlexGrow.getCssValue()).append(' ')
+                    .append(webkitFlexShrink.getCssValue()).append(' ').append(webkitFlexBasis.getCssValue())
                     .toString();
         } else if (stateChangedObject instanceof WebkitFlexShrink) {
 
@@ -600,14 +580,11 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
 
             final String cssValue = webkitFlexShrink.getCssValue();
 
-            if (WebkitFlexShrink.INITIAL.equals(cssValue)
-                    || WebkitFlexShrink.INHERIT.equals(cssValue)) {
-                throw new InvalidValueException(
-                        "initial/inherit cannot be set as webkitFlexShrink cssValue");
+            if (WebkitFlexShrink.INITIAL.equals(cssValue) || WebkitFlexShrink.INHERIT.equals(cssValue)) {
+                throw new InvalidValueException("initial/inherit cannot be set as webkitFlexShrink cssValue");
             }
-            this.cssValue = new StringBuilder(webkitFlexGrow.getCssValue())
-                    .append(' ').append(webkitFlexShrink.getCssValue())
-                    .append(' ').append(webkitFlexBasis.getCssValue())
+            this.cssValue = new StringBuilder(webkitFlexGrow.getCssValue()).append(' ')
+                    .append(webkitFlexShrink.getCssValue()).append(' ').append(webkitFlexBasis.getCssValue())
                     .toString();
 
         } else if (stateChangedObject instanceof WebkitFlexBasis) {
@@ -616,15 +593,12 @@ public class WebkitFlex extends AbstractCssProperty<WebkitFlex>
 
             final String cssValue = webkitFlexBasis.getCssValue();
 
-            if (WebkitFlexBasis.INITIAL.equals(cssValue)
-                    || WebkitFlexBasis.INHERIT.equals(cssValue)) {
-                throw new InvalidValueException(
-                        "initial/inherit cannot be set as webkitFlexBasis cssValue");
+            if (WebkitFlexBasis.INITIAL.equals(cssValue) || WebkitFlexBasis.INHERIT.equals(cssValue)) {
+                throw new InvalidValueException("initial/inherit cannot be set as webkitFlexBasis cssValue");
             }
 
-            this.cssValue = new StringBuilder(webkitFlexGrow.getCssValue())
-                    .append(' ').append(webkitFlexShrink.getCssValue())
-                    .append(' ').append(webkitFlexBasis.getCssValue())
+            this.cssValue = new StringBuilder(webkitFlexGrow.getCssValue()).append(' ')
+                    .append(webkitFlexShrink.getCssValue()).append(' ').append(webkitFlexBasis.getCssValue())
                     .toString();
         }
     }

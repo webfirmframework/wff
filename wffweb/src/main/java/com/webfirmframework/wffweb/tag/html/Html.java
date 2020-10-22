@@ -51,33 +51,26 @@ public class Html extends DocType {
     /**
      * Represents the root of an HTML or XHTML document. All other tags must be
      * descendants of this tag in case of building a complete HTML document. All
-     * tags can also be used independently i.e. without being a child of this
-     * tag.
+     * tags can also be used independently i.e. without being a child of this tag.
      *
-     * @param base
-     *                       i.e. parent tag of this tag
-     * @param attributes
-     *                       An array of {@code AbstractAttribute}
+     * @param base       i.e. parent tag of this tag
+     * @param attributes An array of {@code AbstractAttribute}
      *
      * @author WFF
      * @since 1.0.0
      */
-    public Html(final AbstractHtml base,
-            final AbstractAttribute... attributes) {
+    public Html(final AbstractHtml base, final AbstractAttribute... attributes) {
         super(PRE_INDEXED_TAG_NAME, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }
     }
 
-    private static void warnForUnsupportedAttributes(
-            final AbstractAttribute... attributes) {
+    private static void warnForUnsupportedAttributes(final AbstractAttribute... attributes) {
         for (final AbstractAttribute abstractAttribute : attributes) {
-            if (!(abstractAttribute != null
-                    && (abstractAttribute instanceof HtmlAttributable
-                            || abstractAttribute instanceof GlobalAttributable))) {
-                LOGGER.warning(abstractAttribute
-                        + " is not an instance of HtmlAttribute");
+            if (!(abstractAttribute != null && (abstractAttribute instanceof HtmlAttributable
+                    || abstractAttribute instanceof GlobalAttributable))) {
+                LOGGER.warning(abstractAttribute + " is not an instance of HtmlAttribute");
             }
         }
     }
@@ -86,17 +79,14 @@ public class Html extends DocType {
      * constructor for testing
      *
      * @since 1.0.0
-     * @deprecated this constructor is used for testing purpose, it should not
-     *             be used/consumed for development because it may be removed
-     *             later.
+     * @deprecated this constructor is used for testing purpose, it should not be
+     *             used/consumed for development because it may be removed later.
      */
     // TODO should be removed later
     @Deprecated
-    public Html(final int id, final AbstractHtml base,
-            final AbstractAttribute... attributes) {
+    public Html(final int id, final AbstractHtml base, final AbstractAttribute... attributes) {
         // this is just for testing purpose so not indexing
-        super(Html.class.getSimpleName().toLowerCase() + String.valueOf(id),
-                base, attributes);
+        super(Html.class.getSimpleName().toLowerCase() + String.valueOf(id), base, attributes);
     }
 
     /**

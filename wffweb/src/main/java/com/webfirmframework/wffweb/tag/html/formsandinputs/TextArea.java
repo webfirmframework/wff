@@ -36,8 +36,7 @@ public class TextArea extends AbstractHtml {
 
     private static final long serialVersionUID = 1_0_1L;
 
-    private static final Logger LOGGER = Logger
-            .getLogger(TextArea.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(TextArea.class.getName());
 
     private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
 
@@ -54,29 +53,23 @@ public class TextArea extends AbstractHtml {
 
     /**
      *
-     * @param base
-     *                       i.e. parent tag of this tag
-     * @param attributes
-     *                       An array of {@code AbstractAttribute}
+     * @param base       i.e. parent tag of this tag
+     * @param attributes An array of {@code AbstractAttribute}
      *
      * @since 1.0.0
      */
-    public TextArea(final AbstractHtml base,
-            final AbstractAttribute... attributes) {
+    public TextArea(final AbstractHtml base, final AbstractAttribute... attributes) {
         super(PRE_INDEXED_TAG_NAME, base, attributes);
         if (WffConfiguration.isDirectionWarningOn()) {
             warnForUnsupportedAttributes(attributes);
         }
     }
 
-    private static void warnForUnsupportedAttributes(
-            final AbstractAttribute... attributes) {
+    private static void warnForUnsupportedAttributes(final AbstractAttribute... attributes) {
         for (final AbstractAttribute abstractAttribute : attributes) {
-            if (!(abstractAttribute != null
-                    && (abstractAttribute instanceof TextAreaAttributable
-                            || abstractAttribute instanceof GlobalAttributable))) {
-                LOGGER.warning(abstractAttribute
-                        + " is not an instance of TextAreaAttribute");
+            if (!(abstractAttribute != null && (abstractAttribute instanceof TextAreaAttributable
+                    || abstractAttribute instanceof GlobalAttributable))) {
+                LOGGER.warning(abstractAttribute + " is not an instance of TextAreaAttribute");
             }
         }
     }
@@ -94,8 +87,7 @@ public class TextArea extends AbstractHtml {
     /**
      * sets the child text for this tag.
      *
-     * @param text
-     *                 String which needs to be shown as a child of this tag.
+     * @param text String which needs to be shown as a child of this tag.
      * @since 2.1.4
      */
     public void setChildText(final String text) {
@@ -109,14 +101,11 @@ public class TextArea extends AbstractHtml {
     /**
      * sets the child text for this tag.
      *
-     * @param updateClient
-     *                         true to update client browser page if it is
-     *                         available. The default value is true but it will
-     *                         be ignored if there is no client browser page.
+     * @param updateClient true to update client browser page if it is available.
+     *                     The default value is true but it will be ignored if there
+     *                     is no client browser page.
      *
-     * @param text
-     *                         String which needs to be shown as a child of this
-     *                         tag.
+     * @param text         String which needs to be shown as a child of this tag.
      * @since 2.1.15
      */
     public void setChildText(final boolean updateClient, final String text) {
