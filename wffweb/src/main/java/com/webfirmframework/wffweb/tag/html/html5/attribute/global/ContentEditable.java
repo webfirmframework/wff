@@ -33,8 +33,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
  * @author WFF
  *
  */
-public class ContentEditable extends AbstractAttribute
-        implements GlobalAttributable {
+public class ContentEditable extends AbstractAttribute implements GlobalAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
     private boolean editable;
@@ -65,8 +64,7 @@ public class ContentEditable extends AbstractAttribute
     /**
      *
      *
-     * @param value
-     *                  the value should be either true or false
+     * @param value the value should be either true or false
      * @author WFF
      * @since 1.1.4
      */
@@ -74,8 +72,7 @@ public class ContentEditable extends AbstractAttribute
         if ("true".equals(value) || "false".equals(value)) {
             editable = Boolean.parseBoolean(value);
         } else {
-            throw new InvalidValueException(
-                    "the value should be either true or false");
+            throw new InvalidValueException("the value should be either true or false");
         }
         super.setAttributeValue(value);
     }
@@ -110,8 +107,7 @@ public class ContentEditable extends AbstractAttribute
     }
 
     /**
-     * @param editable
-     *                     the editable to set
+     * @param editable the editable to set
      * @author WFF
      * @since 1.0.0
      */

@@ -41,8 +41,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class WebkitColumnRuleColor
-        extends AbstractCssProperty<WebkitColumnRuleColor> {
+public class WebkitColumnRuleColor extends AbstractCssProperty<WebkitColumnRuleColor> {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -59,22 +58,18 @@ public class WebkitColumnRuleColor
     }
 
     /**
-     * @param cssValue
-     *                     the css value to set.
+     * @param cssValue the css value to set.
      */
     public WebkitColumnRuleColor(final String cssValue) {
         setCssValue(cssValue);
     }
 
     /**
-     * @param webkitColumnRuleColor
-     *                                  the {@code WebkitColumnRuleColor} object
-     *                                  from which the cssValue to set.And,
-     *                                  {@code null} will throw
-     *                                  {@code NullValueException}
+     * @param webkitColumnRuleColor the {@code WebkitColumnRuleColor} object from
+     *                              which the cssValue to set.And, {@code null} will
+     *                              throw {@code NullValueException}
      */
-    public WebkitColumnRuleColor(
-            final WebkitColumnRuleColor webkitColumnRuleColor) {
+    public WebkitColumnRuleColor(final WebkitColumnRuleColor webkitColumnRuleColor) {
         if (webkitColumnRuleColor == null) {
             throw new NullValueException("columnRuleColor can not be null");
         }
@@ -82,8 +77,8 @@ public class WebkitColumnRuleColor
     }
 
     /**
-     * the color/color code to set. The alternative method {@code setCssValue}
-     * can also be used.
+     * the color/color code to set. The alternative method {@code setCssValue} can
+     * also be used.
      *
      * @param value
      * @return the current object
@@ -129,8 +124,8 @@ public class WebkitColumnRuleColor
     }
 
     /**
-     * gets the value, {@code getCssValue} method can also be used to get the
-     * same value.
+     * gets the value, {@code getCssValue} method can also be used to get the same
+     * value.
      *
      * @return the value in String.
      * @since 1.0.0
@@ -141,13 +136,12 @@ public class WebkitColumnRuleColor
     }
 
     /**
-     * @param cssValue
-     *                     the value should be a color/color code, for example
-     *                     <code>#0000ff</code>. {@code null} is considered as
-     *                     an invalid value and it will throw
-     *                     {@code NullValueException}.And an empty string is
-     *                     also considered as an invalid value and it will throw
-     *                     {@code InvalidValueException}.
+     * @param cssValue the value should be a color/color code, for example
+     *                 <code>#0000ff</code>. {@code null} is considered as an
+     *                 invalid value and it will throw
+     *                 {@code NullValueException}.And an empty string is also
+     *                 considered as an invalid value and it will throw
+     *                 {@code InvalidValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -206,11 +200,9 @@ public class WebkitColumnRuleColor
             return false;
         }
 
-        final String trimmedCssValueLowerCase = TagStringUtil
-                .toLowerCase(trimmedCssValue);
+        final String trimmedCssValueLowerCase = TagStringUtil.toLowerCase(trimmedCssValue);
 
-        if (INITIAL.equals(trimmedCssValueLowerCase)
-                || INHERIT.equals(trimmedCssValueLowerCase)) {
+        if (INITIAL.equals(trimmedCssValueLowerCase) || INHERIT.equals(trimmedCssValueLowerCase)) {
             return true;
         }
 
@@ -219,8 +211,7 @@ public class WebkitColumnRuleColor
         }
 
         try {
-            if (trimmedCssValue.length() == 0
-                    || trimmedCssValue.charAt(0) != '#') {
+            if (trimmedCssValue.length() == 0 || trimmedCssValue.charAt(0) != '#') {
                 return false;
             }
             final long value = Long.parseLong(trimmedCssValue.substring(1), 16);

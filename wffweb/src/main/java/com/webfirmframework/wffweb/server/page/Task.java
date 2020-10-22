@@ -15,8 +15,12 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 import com.webfirmframework.wffweb.util.data.NameValue;
 
@@ -66,7 +70,7 @@ public enum Task {
 
     INVOKE_POST_FUNCTION,
 
-    EXECURE_JS,
+    EXEC_JS,
 
     RELOAD_BROWSER,
 
@@ -116,8 +120,7 @@ public enum Task {
     private Task() {
         valueByte = (byte) ordinal();
         shortName = "T".concat(String.valueOf(ordinal()));
-        jsNameValue = SHORT_NAME_ENABLED
-                ? shortName.concat(":").concat(String.valueOf(ordinal()))
+        jsNameValue = SHORT_NAME_ENABLED ? shortName.concat(":").concat(String.valueOf(ordinal()))
                 : name().concat(":").concat(String.valueOf(ordinal()));
     }
 
@@ -129,8 +132,8 @@ public enum Task {
     }
 
     /**
-     * @return nameValue with name as TASK byte value and values as the the
-     *         current task/object byte value.
+     * @return nameValue with name as TASK byte value and values as the the current
+     *         task/object byte value.
      * @since 2.0.0
      * @author WFF
      */
@@ -142,8 +145,7 @@ public enum Task {
     }
 
     /**
-     * @return nameValue with name as TASK_OF_TASKS byte value and values as
-     *         null
+     * @return nameValue with name as TASK_OF_TASKS byte value and values as null
      * @since 2.1.3
      * @author WFF
      */
@@ -200,9 +202,10 @@ public enum Task {
     }
 
     /**
-     * @return the sorted set of tasks in the descending order of the name of
-     *         task length.
+     * @return the sorted set of tasks in the descending order of the length of task
+     *         name.
      * @since 2.1.10
+     * @since 3.0.15 bug fix
      * @author WFF
      */
     public static Set<Task> getSortedTasks() {
@@ -221,14 +224,18 @@ public enum Task {
         // return -1;
         // });
 
-        final Set<Task> sortedTaskNames = new TreeSet<>((o1, o2) -> Integer
-                .compare(o2.name().length(), o1.name().length()));
-
-        for (final Task task : Task.values()) {
-            sortedTaskNames.add(task);
+        final Task[] values = Task.values();
+        final List<Task> tasks = new ArrayList<>(values.length);
+        for (final Task task : values) {
+            tasks.add(task);
         }
+        final Comparator<Task> asc = (o1, o2) -> Integer.compare(o1.name().length(), o2.name().length());
 
-        return sortedTaskNames;
+        tasks.sort(asc.thenComparing(Task::name));
+
+        Collections.reverse(tasks);
+
+        return new LinkedHashSet<>(tasks);
     }
 
 }

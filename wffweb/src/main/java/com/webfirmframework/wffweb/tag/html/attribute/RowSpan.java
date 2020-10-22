@@ -31,8 +31,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.ThAttributable;
  * @author WFF
  *
  */
-public class RowSpan extends AbstractAttribute
-        implements ThAttributable, TdAttributable {
+public class RowSpan extends AbstractAttribute implements ThAttributable, TdAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -56,8 +55,7 @@ public class RowSpan extends AbstractAttribute
     }
 
     /**
-     * @param value
-     *                  the the number of rows to span
+     * @param value the the number of rows to span
      * @since 1.1.3
      * @author WFF
      */
@@ -67,8 +65,7 @@ public class RowSpan extends AbstractAttribute
     }
 
     /**
-     * @param value
-     *                  the the number of rows to span
+     * @param value the the number of rows to span
      * @since 1.1.3
      * @author WFF
      */
@@ -98,8 +95,7 @@ public class RowSpan extends AbstractAttribute
     }
 
     /**
-     * @param value
-     *                  the the number of rows to span
+     * @param value the the number of rows to span
      * @author WFF
      * @since 1.1.3
      */

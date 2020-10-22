@@ -98,8 +98,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
  * @author WFF
  * @since 1.0.0
  */
-public class AutoComplete extends AbstractValueSetAttribute
-        implements InputAttributable {
+public class AutoComplete extends AbstractValueSetAttribute implements InputAttributable {
 
     public static final String ON = "on";
 
@@ -258,9 +257,8 @@ public class AutoComplete extends AbstractValueSetAttribute
     public static final String TEL_EXTENSION = "tel-extension";
 
     /**
-     * Home page or other Web page corresponding to the company, person,
-     * address, or contact information in the other fields associated with this
-     * field.
+     * Home page or other Web page corresponding to the company, person, address, or
+     * contact information in the other fields associated with this field.
      */
     public static final String URL = "url";
 
@@ -327,9 +325,8 @@ public class AutoComplete extends AbstractValueSetAttribute
 
     /**
      *
-     * @param value
-     *                  the value for the attribute. The value string can
-     *                  contain values separated by space.
+     * @param value the value for the attribute. The value string can contain values
+     *              separated by space.
      * @since 1.0.0
      */
     public AutoComplete(final String value) {
@@ -338,9 +335,8 @@ public class AutoComplete extends AbstractValueSetAttribute
 
     /**
      *
-     * @param values
-     *                   the value for the attribute. The value string can
-     *                   contain values separated by space.
+     * @param values the value for the attribute. The value string can contain
+     *               values separated by space.
      * @since 2.1.15
      */
     public AutoComplete(final String... values) {
@@ -394,8 +390,7 @@ public class AutoComplete extends AbstractValueSetAttribute
     /**
      * sets the value for this attribute
      *
-     * @param value
-     *                  the value for the attribute.
+     * @param value the value for the attribute.
      * @since 1.0.0
      */
     public void setValue(final String value) {
@@ -405,18 +400,14 @@ public class AutoComplete extends AbstractValueSetAttribute
     /**
      * sets the value for this attribute
      *
-     * @param updateClient
-     *                           true to update client browser page if it is
-     *                           available. The default value is true but it
-     *                           will be ignored if there is no client browser
-     *                           page.
-     * @param attributeValue
-     *                           the value for the attribute.
+     * @param updateClient   true to update client browser page if it is available.
+     *                       The default value is true but it will be ignored if
+     *                       there is no client browser page.
+     * @param attributeValue the value for the attribute.
      * @since 2.1.15
      * @author WFF
      */
-    public void setValue(final boolean updateClient,
-            final String attributeValue) {
+    public void setValue(final boolean updateClient, final String attributeValue) {
         super.setAttributeValue(updateClient, attributeValue);
     }
 

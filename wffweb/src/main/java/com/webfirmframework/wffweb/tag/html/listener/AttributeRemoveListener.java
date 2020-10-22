@@ -34,8 +34,7 @@ public interface AttributeRemoveListener extends Serializable {
         public RemovedEvent() {
         }
 
-        public RemovedEvent(final AbstractHtml removedFromTag,
-                final String... removedAttributeNames) {
+        public RemovedEvent(final AbstractHtml removedFromTag, final String... removedAttributeNames) {
             super();
             this.removedFromTag = removedFromTag;
             this.removedAttributeNames = removedAttributeNames;
@@ -46,8 +45,7 @@ public interface AttributeRemoveListener extends Serializable {
          * @param removedAttributes
          * @since 3.0.6
          */
-        public RemovedEvent(final AbstractHtml removedFromTag,
-                final List<AbstractAttribute> removedAttributes) {
+        public RemovedEvent(final AbstractHtml removedFromTag, final List<AbstractAttribute> removedAttributes) {
             super();
             this.removedFromTag = removedFromTag;
             this.removedAttributes = removedAttributes;
@@ -65,8 +63,7 @@ public interface AttributeRemoveListener extends Serializable {
             return removedAttributeNames;
         }
 
-        public void setRemovedAttributeNames(
-                final String[] removedAttributeNames) {
+        public void setRemovedAttributeNames(final String[] removedAttributeNames) {
             this.removedAttributeNames = removedAttributeNames;
         }
 

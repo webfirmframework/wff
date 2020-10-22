@@ -37,8 +37,7 @@ public interface InsertTagsBeforeListener extends Serializable {
             throw new AssertionError();
         }
 
-        public Event(final AbstractHtml insertedTag,
-                final AbstractHtml previousParentTag) {
+        public Event(final AbstractHtml insertedTag, final AbstractHtml previousParentTag) {
             this.insertedTag = insertedTag;
             this.previousParentTag = previousParentTag;
         }
@@ -59,8 +58,7 @@ public interface InsertTagsBeforeListener extends Serializable {
         }
 
         /**
-         * @param previousParentTag
-         *                              the previousParentTag to set
+         * @param previousParentTag the previousParentTag to set
          */
         public void setPreviousParentTag(final AbstractHtml previousParentTag) {
             this.previousParentTag = previousParentTag;
@@ -77,7 +75,6 @@ public interface InsertTagsBeforeListener extends Serializable {
      * @since 3.0.7
      * @author WFF
      */
-    public void insertedBefore(final AbstractHtml parentTag,
-            final AbstractHtml beforeTag, final Event... events);
+    public void insertedBefore(final AbstractHtml parentTag, final AbstractHtml beforeTag, final Event... events);
 
 }

@@ -20,15 +20,18 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.StampedLock;
 import java.util.logging.Level;
@@ -73,16 +76,14 @@ import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
  * &lt;div&gt;&lt;span&gt;Content Changed&lt;/span&gt;&lt;span&gt;Content Changed&lt;/span&gt;&lt;/div&gt;
  * </pre>
  *
- * @param <T>
- *            class type of content in this SharedTagContent object
+ * @param <T> class type of content in this SharedTagContent object
  * @author WFF
  * @since 3.0.6
  *
  */
 public class SharedTagContent<T> {
 
-    private static final Logger LOGGER = Logger
-            .getLogger(SharedTagContent.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(SharedTagContent.class.getName());
 
     private static final Security ACCESS_OBJECT;
 
@@ -91,12 +92,11 @@ public class SharedTagContent<T> {
 
     // NB Using ReentrantReadWriteLock causes
     // java.lang.IllegalMonitorStateException in production app
-    private final StampedLock lock = new StampedLock();
+    private final transient StampedLock lock = new StampedLock();
 
     private volatile long ordinal = 0L;
 
-    private final Map<NoTag, InsertedTagData<T>> insertedTags = new WeakHashMap<>(
-            4, 0.75F);
+    private final Map<NoTag, InsertedTagData<T>> insertedTags = new WeakHashMap<>(4, 0.75F);
 
     private volatile Map<AbstractHtml, Set<ContentChangeListener<T>>> contentChangeListeners;
 
@@ -112,31 +112,124 @@ public class SharedTagContent<T> {
 
     private volatile boolean updateClient = true;
 
+    private volatile Executor executor;
+
+    /**
+     * Represents the behavior of push operation of BrowserPage to client.
+     * {@code ALLOW_ASYNC_PARALLEL} is the default in the {@code SharedTagContent}
+     * object unless it is explicitly specified. In future after the arrival of Java
+     * Virtual thread there will be two more types named
+     * {@code ALLOW_VIRTUAL_PARALLEL} and {@code ALLOW_VIRTUAL_ASYNC_PARALLEL} and
+     * {@code ALLOW_VIRTUAL_ASYNC_PARALLEL} may be the default.
+     *
+     */
     public static enum UpdateClientNature {
-        ALLOW_ASYNC_PARALLEL, ALLOW_PARALLEL, SEQUENTIAL;
+
+        /**
+         * Allows parallel operation in the background for pushing changes to client
+         * browser page.
+         */
+        ALLOW_ASYNC_PARALLEL,
+
+        /**
+         * Allows parallel operation but will wait for the push to finish to exit the
+         * setContent method.
+         */
+        ALLOW_PARALLEL,
+
+        /**
+         * Does each browser page push operation one by one.
+         */
+        SEQUENTIAL;
+
         private UpdateClientNature() {
         }
     }
 
-    public static final class Content<T> {
+    /**
+     * This is a serializable record class for handling content in
+     * {@code SharedTagContent} object.
+     *
+     * @param <T>
+     */
+    public static final class Content<T> implements Serializable {
+
+        private static final long serialVersionUID = 1L;
 
         private final T content;
+
         private final boolean contentTypeHtml;
 
+        /**
+         * @param content         the content to be embedded in the consumer tags.
+         * @param contentTypeHtml true to treat the content as HTML when embedding in
+         *                        the consumer tags otherwise false. Default value is
+         *                        false.
+         */
         public Content(final T content, final boolean contentTypeHtml) {
             super();
             this.content = content;
             this.contentTypeHtml = contentTypeHtml;
         }
 
+        /**
+         * @return the content
+         * @deprecated As it is record class no need to use getter method instead use
+         *             {@link Content#content()}.This method will be removed in future
+         *             release.
+         */
+        @Deprecated
         public T getContent() {
             return content;
         }
 
+        /**
+         * @return true or false
+         * @deprecated As it is record class no need to use getter method instead use
+         *             {@link Content#contentTypeHtml()}. This method will be removed in
+         *             future release.
+         *
+         */
+        @Deprecated
         public boolean isContentTypeHtml() {
             return contentTypeHtml;
         }
 
+        /**
+         * @return the content
+         * @since 3.0.15
+         */
+        public T content() {
+            return content;
+        }
+
+        /**
+         * Denotes whether the content type to be treated as HTML when embedding in the
+         * consumer tags.
+         *
+         * @return true or false
+         * @since 3.0.15
+         */
+        public boolean contentTypeHtml() {
+            return contentTypeHtml;
+        }
+
+        @Override
+        public boolean equals(final Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            final Content<?> content1 = (Content<?>) o;
+            return contentTypeHtml == content1.contentTypeHtml && Objects.equals(content, content1.content);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(content, contentTypeHtml);
+        }
     }
 
     @FunctionalInterface
@@ -153,10 +246,8 @@ public class SharedTagContent<T> {
         private final Content<String> contentApplied;
         private final ContentFormatter<T> formatter;
 
-        private ChangeEvent(final AbstractHtml sourceTag,
-                final ContentChangeListener<T> sourceListener,
-                final Content<T> contentBefore, final Content<T> contentAfter,
-                final Content<String> contentApplied,
+        private ChangeEvent(final AbstractHtml sourceTag, final ContentChangeListener<T> sourceListener,
+                final Content<T> contentBefore, final Content<T> contentAfter, final Content<String> contentApplied,
                 final ContentFormatter<T> formatter) {
             super();
             this.sourceTag = sourceTag;
@@ -167,27 +258,117 @@ public class SharedTagContent<T> {
             this.formatter = formatter;
         }
 
+        /**
+         * @return the source tag
+         * @deprecated As it is record class no need to use getter method instead use
+         *             {@link ChangeEvent#sourceTag()}.This method will be removed in
+         *             future release.
+         */
+        @Deprecated
         public AbstractHtml getSourceTag() {
             return sourceTag;
         }
 
+        /**
+         * @return the sourceListener
+         * @deprecated As it is record class no need to use getter method instead use
+         *             {@link ChangeEvent#sourceListener()}.This method will be removed
+         *             in future release.
+         */
+        @Deprecated
         public ContentChangeListener<T> getSourceListener() {
             return sourceListener;
         }
 
+        /**
+         * @return the content before change event
+         * @deprecated As it is record class no need to use getter method instead use
+         *             {@link ChangeEvent#contentBefore()}.This method will be removed
+         *             in future release.
+         */
+        @Deprecated
         public Content<T> getContentBefore() {
             return contentBefore;
         }
 
+        /**
+         * @return the content after the change event
+         * @deprecated As it is record class no need to use getter method instead use
+         *             {@link ChangeEvent#contentAfter()}.This method will be removed in
+         *             future release.
+         */
+        @Deprecated
         public Content<T> getContentAfter() {
             return contentAfter;
         }
 
+        /**
+         * @return the applied content on tag
+         * @deprecated As it is record class no need to use getter method instead use
+         *             {@link ChangeEvent#contentApplied()}.This method will be removed
+         *             in future release.
+         */
+        @Deprecated
         public Content<String> getContentApplied() {
             return contentApplied;
         }
 
+        /**
+         * @return the formatter
+         * @deprecated As it is record class no need to use getter method instead use
+         *             {@link ChangeEvent#formatter()}.This method will be removed in
+         *             future release.
+         */
+        @Deprecated
         public ContentFormatter<T> getFormatter() {
+            return formatter;
+        }
+
+        /**
+         * @return the source tag
+         * @since 3.0.15
+         */
+        public AbstractHtml sourceTag() {
+            return sourceTag;
+        }
+
+        /**
+         * @return the sourceListener
+         * @since 3.0.15
+         */
+        public ContentChangeListener<T> sourceListener() {
+            return sourceListener;
+        }
+
+        /**
+         * @return the content before change event
+         * @since 3.0.15
+         */
+        public Content<T> contentBefore() {
+            return contentBefore;
+        }
+
+        /**
+         * @return the content after the change event
+         * @since 3.0.15
+         */
+        public Content<T> contentAfter() {
+            return contentAfter;
+        }
+
+        /**
+         * @return the applied content on tag
+         * @since 3.0.15
+         */
+        public Content<String> contentApplied() {
+            return contentApplied;
+        }
+
+        /**
+         * @return the formatter
+         * @since 3.0.15
+         */
+        public ContentFormatter<T> formatter() {
             return formatter;
         }
 
@@ -201,20 +382,17 @@ public class SharedTagContent<T> {
     @FunctionalInterface
     public static interface ContentChangeListener<T> {
         /**
-         * NB: Do not call any methods of this SharedTagContent inside
-         * contentChanged method, instead write it inside the returning Runnable
-         * object (Runnable.run).
+         * NB: Do not call any methods of this SharedTagContent inside contentChanged
+         * method, instead write it inside the returning Runnable object (Runnable.run).
          *
          * @param changeEvent
-         * @return Write code to run after contentChanged invoked. It doesn't
-         *         guarantee the order of execution as the order of
-         *         contentChanged method execution. This is just like a post
-         *         function for this method. If any methods of this
-         *         SharedTagContent object to be called it must be written
-         *         inside this returning Runnable object (Runnable.run).
+         * @return Write code to run after contentChanged invoked. It doesn't guarantee
+         *         the order of execution as the order of contentChanged method
+         *         execution. This is just like a post function for this method. If any
+         *         methods of this SharedTagContent object to be called it must be
+         *         written inside this returning Runnable object (Runnable.run).
          */
-        public abstract Runnable contentChanged(
-                final ChangeEvent<T> changeEvent);
+        public abstract Runnable contentChanged(final ChangeEvent<T> changeEvent);
     }
 
     public static final class DetachEvent<T> {
@@ -223,8 +401,7 @@ public class SharedTagContent<T> {
         private final DetachListener<T> sourceListener;
         private final Content<T> content;
 
-        private DetachEvent(final AbstractHtml sourceTag,
-                final DetachListener<T> sourceListener,
+        private DetachEvent(final AbstractHtml sourceTag, final DetachListener<T> sourceListener,
                 final Content<T> content) {
             super();
             this.sourceListener = sourceListener;
@@ -253,16 +430,15 @@ public class SharedTagContent<T> {
     @FunctionalInterface
     public static interface DetachListener<T> {
         /**
-         * NB: Do not call any methods of this SharedTagContent inside detached,
-         * instead write it inside the returning Runnable object (Runnable.run).
+         * NB: Do not call any methods of this SharedTagContent inside detached, instead
+         * write it inside the returning Runnable object (Runnable.run).
          *
          * @param detachEvent
-         * @return Write code to run after detached invoked. It doen't guarantee
-         *         the order of execution as the order of detached method
-         *         execution. This is just like a post function for this method.
-         *         If any methods of this SharedTagContent object to be called
-         *         it must be written inside this returning Runnable object
-         *         (Runnable.run).
+         * @return Write code to run after detached invoked. It doen't guarantee the
+         *         order of execution as the order of detached method execution. This is
+         *         just like a post function for this method. If any methods of this
+         *         SharedTagContent object to be called it must be written inside this
+         *         returning Runnable object (Runnable.run).
          */
         public abstract Runnable detached(final DetachEvent<T> detachEvent);
     }
@@ -281,118 +457,531 @@ public class SharedTagContent<T> {
     }
 
     /**
+     * @param executor           the executor object for async push or null if no
+     *                           preference. This executor object will be used only
+     *                           if the {@code updateClientNature} is
+     *                           {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL} or
+     *                           {@link UpdateClientNature#ALLOW_PARALLEL}.
+     *
+     *                           <br>
+     *                           NB: You may need only one copy of executor object
+     *                           for all sharedTagContent instances in the project.
+     *                           So it could be declared as a static final object.
+     *                           Eg: <br>
+     *
+     *                           <pre>
+     * <code>
+     *
+     * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                           </pre>
+     *
+     *                           When Java releases Virtual Thread we may be able to
+     *                           use as follows
+     *
+     *                           <pre>
+     * <code>
+     * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                           </pre>
+     *
+     * @param updateClientNature
+     *
+     *                           If this SharedTagContent object has to update
+     *                           content of tags from multiple BrowserPage
+     *                           instances, UpdateClientNature.ALLOW_ASYNC_PARALLEL
+     *                           will allow parallel operation in the background for
+     *                           pushing changes to client browser page and
+     *                           UpdateClientNature.ALLOW_PARALLEL will allow
+     *                           parallel operation but will wait for the push to
+     *                           finish to exit the setContent method.
+     *                           UpdateClientNature.SEQUENTIAL will sequentially do
+     *                           each browser page push operation.
+     * @param shared             true to share its content across all consuming tags
+     *                           when {@link SharedTagContent#setContent} is called.
+     * @param content            the content to embed in the consumer tags.
+     * @param contentTypeHtml    true to treat the given content as HTML otherwise
+     *                           false.
+     * @since 3.0.15
+     */
+    public SharedTagContent(final Executor executor, final UpdateClientNature updateClientNature, final boolean shared,
+            final T content, final boolean contentTypeHtml) {
+        if (updateClientNature != null) {
+            this.updateClientNature = updateClientNature;
+        }
+        this.shared = shared;
+        this.executor = executor;
+        this.content = content;
+        this.contentTypeHtml = contentTypeHtml;
+    }
+
+    /**
+     * or null if no preference.
+     *
+     * @param updateClientNature
+     *
+     *                           If this SharedTagContent object has to update
+     *                           content of tags from multiple BrowserPage
+     *                           instances, UpdateClientNature.ALLOW_ASYNC_PARALLEL
+     *                           will allow parallel operation in the background for
+     *                           pushing changes to client browser page and
+     *                           UpdateClientNature.ALLOW_PARALLEL will allow
+     *                           parallel operation but will wait for the push to
+     *                           finish to exit the setContent method.
+     *                           UpdateClientNature.SEQUENTIAL will sequentially do
+     *                           each browser page push operation.
+     * @param shared             true to share its content across all consuming tags
+     *                           when {@link SharedTagContent#setContent} is called.
+     * @param content            the content to embed in the consumer tags.
+     * @param contentTypeHtml    true to treat the given content as HTML otherwise
+     *                           false.
+     * @since 3.0.15
+     */
+    public SharedTagContent(final UpdateClientNature updateClientNature, final boolean shared, final T content,
+            final boolean contentTypeHtml) {
+        this(null, updateClientNature, shared, content, contentTypeHtml);
+    }
+
+    /**
      * plain text content with updateClientNature as
      * UpdateClientNature.ALLOW_ASYNC_PARALLEL.
      *
-     * @param content
-     *                    the content its content type will be considered as
-     *                    plain text, i.e. contentTypeHtml will be false.
+     * @param executor the executor object for async push or null if no preference.
+     *                 This executor object will be used only if the
+     *                 {@code updateClientNature} is
+     *                 {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL} or
+     *                 {@link UpdateClientNature#ALLOW_PARALLEL}.
+     *
+     *                 <br>
+     *                 NB: You may need only one copy of executor object for all
+     *                 sharedTagContent instances in the project. So it could be
+     *                 declared as a static final object. Eg: <br>
+     *
+     *                 <pre>
+     * <code>
+     *
+     * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                 </pre>
+     *
+     *                 When Java releases Virtual Thread we may be able to use as
+     *                 follows
+     *
+     *                 <pre>
+     * <code>
+     * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                 </pre>
+     *
+     * @param content  the content its content type will be considered as plain
+     *                 text, i.e. contentTypeHtml will be false.
+     * @since 3.0.15
+     */
+    public SharedTagContent(final Executor executor, final T content) {
+        this(executor, null, true, content, false);
+    }
+
+    /**
+     * plain text content with updateClientNature as
+     * UpdateClientNature.ALLOW_ASYNC_PARALLEL.
+     *
+     * @param content the content its content type will be considered as plain text,
+     *                i.e. contentTypeHtml will be false.
      * @since 3.0.6
      */
     public SharedTagContent(final T content) {
-        this.content = content;
-        contentTypeHtml = false;
+        this(null, null, true, content, false);
     }
 
     /**
      * @param updateClientNature
      *
-     *                               If this SharedTagContent object has to
-     *                               update content of tags from multiple
-     *                               BrowserPage instances,
-     *                               UpdateClientNature.ALLOW_ASYNC_PARALLEL
-     *                               will allow parallel operation in the
-     *                               background for pushing changes to client
-     *                               browser page and
-     *                               UpdateClientNature.ALLOW_PARALLEL will
-     *                               allow parallel operation but will wait for
-     *                               the push to finish to exit the setContent
-     *                               method. UpdateClientNature.SEQUENTIAL will
-     *                               sequentially do each browser page push
-     *                               operation.
-     * @param content
-     *                               the content its content type will be
-     *                               considered as plain text, i.e.
-     *                               contentTypeHtml will be false.
+     *                           If this SharedTagContent object has to update
+     *                           content of tags from multiple BrowserPage
+     *                           instances, UpdateClientNature.ALLOW_ASYNC_PARALLEL
+     *                           will allow parallel operation in the background for
+     *                           pushing changes to client browser page and
+     *                           UpdateClientNature.ALLOW_PARALLEL will allow
+     *                           parallel operation but will wait for the push to
+     *                           finish to exit the setContent method.
+     *                           UpdateClientNature.SEQUENTIAL will sequentially do
+     *                           each browser page push operation.
+     * @param content            the content its content type will be considered as
+     *                           plain text, i.e. contentTypeHtml will be false.
      * @since 3.0.6
      */
-    public SharedTagContent(final UpdateClientNature updateClientNature,
-            final T content) {
-        if (updateClientNature != null) {
-            this.updateClientNature = updateClientNature;
-        }
-        this.content = content;
-        contentTypeHtml = false;
+    public SharedTagContent(final UpdateClientNature updateClientNature, final T content) {
+        this(null, updateClientNature, true, content, false);
+    }
+
+    /**
+     * @param executor           the executor object for async push or null if no
+     *                           preference. This executor object will be used only
+     *                           if the {@code updateClientNature} is
+     *                           {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL} or
+     *                           {@link UpdateClientNature#ALLOW_PARALLEL}.
+     *
+     *                           <br>
+     *                           NB: You may need only one copy of executor object
+     *                           for all sharedTagContent instances in the project.
+     *                           So it could be declared as a static final object.
+     *                           Eg: <br>
+     *
+     *                           <pre>
+     * <code>
+     *
+     * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                           </pre>
+     *
+     *                           When Java releases Virtual Thread we may be able to
+     *                           use as follows
+     *
+     *                           <pre>
+     * <code>
+     * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                           </pre>
+     *
+     * @param updateClientNature
+     *
+     *                           If this SharedTagContent object has to update
+     *                           content of tags from multiple BrowserPage
+     *                           instances, UpdateClientNature.ALLOW_ASYNC_PARALLEL
+     *                           will allow parallel operation in the background for
+     *                           pushing changes to client browser page and
+     *                           UpdateClientNature.ALLOW_PARALLEL will allow
+     *                           parallel operation but will wait for the push to
+     *                           finish to exit the setContent method.
+     *                           UpdateClientNature.SEQUENTIAL will sequentially do
+     *                           each browser page push operation.
+     * @param content            the content its content type will be considered as
+     *                           plain text, i.e. contentTypeHtml will be false.
+     * @since 3.0.15
+     */
+    public SharedTagContent(final Executor executor, final UpdateClientNature updateClientNature, final T content) {
+        this(executor, updateClientNature, true, content, false);
     }
 
     /**
      * The default value of updateClientNature is
      * UpdateClientNature.ALLOW_ASYNC_PARALLEL.
      *
-     * @param content
-     * @param contentTypeHtml
+     * @param content         the content to embed in the consumer tags.
+     * @param contentTypeHtml true to treat the given content as HTML otherwise
+     *                        false.
      * @since 3.0.6
      */
     public SharedTagContent(final T content, final boolean contentTypeHtml) {
-        this.content = content;
-        this.contentTypeHtml = contentTypeHtml;
+        this(null, null, true, content, contentTypeHtml);
+    }
+
+    /**
+     * The default value of updateClientNature is
+     * UpdateClientNature.ALLOW_ASYNC_PARALLEL.
+     *
+     * @param executor        the executor object for async push or null if no
+     *                        preference. This executor object will be used only if
+     *                        the {@code updateClientNature} is
+     *                        {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL} or
+     *                        {@link UpdateClientNature#ALLOW_PARALLEL}.
+     *
+     *                        <br>
+     *                        NB: You may need only one copy of executor object for
+     *                        all sharedTagContent instances in the project. So it
+     *                        could be declared as a static final object. Eg: <br>
+     *
+     *                        <pre>
+     * <code>
+     *
+     * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                        </pre>
+     *
+     *                        When Java releases Virtual Thread we may be able to
+     *                        use as follows
+     *
+     *                        <pre>
+     * <code>
+     * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                        </pre>
+     *
+     * @param content         the content to embed in the consumer tags.
+     * @param contentTypeHtml true to treat the given content as HTML otherwise
+     *                        false.
+     * @since 3.0.15
+     */
+    public SharedTagContent(final Executor executor, final T content, final boolean contentTypeHtml) {
+        this(executor, null, true, content, contentTypeHtml);
     }
 
     /**
      * @param updateClientNature
      *
-     *                               If this SharedTagContent object has to
-     *                               update content of tags from multiple
-     *                               BrowserPage instances,
-     *                               UpdateClientNature.ALLOW_ASYNC_PARALLEL
-     *                               will allow parallel operation in the
-     *                               background for pushing changes to client
-     *                               browser page and
-     *                               UpdateClientNature.ALLOW_PARALLEL will
-     *                               allow parallel operation but will wait for
-     *                               the push to finish to exit the setContent
-     *                               method. UpdateClientNature.SEQUENTIAL will
-     *                               sequentially do each browser page push
-     *                               operation.
-     * @param content
-     * @param contentTypeHtml
+     *                           If this SharedTagContent object has to update
+     *                           content of tags from multiple BrowserPage
+     *                           instances, UpdateClientNature.ALLOW_ASYNC_PARALLEL
+     *                           will allow parallel operation in the background for
+     *                           pushing changes to client browser page and
+     *                           UpdateClientNature.ALLOW_PARALLEL will allow
+     *                           parallel operation but will wait for the push to
+     *                           finish to exit the setContent method.
+     *                           UpdateClientNature.SEQUENTIAL will sequentially do
+     *                           each browser page push operation.
+     * @param content            the content to embed in the consumer tags.
+     * @param contentTypeHtml    true to treat the given content as HTML otherwise
+     *                           false.
      * @since 3.0.6
      */
-    public SharedTagContent(final UpdateClientNature updateClientNature,
-            final T content, final boolean contentTypeHtml) {
-        if (updateClientNature != null) {
-            this.updateClientNature = updateClientNature;
-        }
-        this.content = content;
-        this.contentTypeHtml = contentTypeHtml;
-    }
-
-    /**
-     * @param shared
-     *                            true to share its content across all consuming
-     *                            tags when {@link SharedTagContent#setContent}
-     *                            is called.
-     * @param content
-     * @param contentTypeHtml
-     * @since 3.0.6
-     */
-    public SharedTagContent(final boolean shared, final T content,
+    public SharedTagContent(final UpdateClientNature updateClientNature, final T content,
             final boolean contentTypeHtml) {
-        this.shared = shared;
-        this.content = content;
-        this.contentTypeHtml = contentTypeHtml;
+        this(null, updateClientNature, true, content, contentTypeHtml);
     }
 
     /**
-     * @param shared
-     *                    true to share its content across all consuming tags
-     *                    when {@link SharedTagContent#setContent} is called.
-     * @param content
+     * @param executor           the executor object for async push or null if no
+     *                           preference. This executor object will be used only
+     *                           if the {@code updateClientNature} is
+     *                           {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL} or
+     *                           {@link UpdateClientNature#ALLOW_PARALLEL}.
+     *
+     *                           <br>
+     *                           NB: You may need only one copy of executor object
+     *                           for all sharedTagContent instances in the project.
+     *                           So it could be declared as a static final object.
+     *                           Eg: <br>
+     *
+     *                           <pre>
+     * <code>
+     *
+     * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                           </pre>
+     *
+     *                           When Java releases Virtual Thread we may be able to
+     *                           use as follows
+     *
+     *                           <pre>
+     * <code>
+     * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                           </pre>
+     *
+     * @param updateClientNature
+     *
+     *                           If this SharedTagContent object has to update
+     *                           content of tags from multiple BrowserPage
+     *                           instances, UpdateClientNature.ALLOW_ASYNC_PARALLEL
+     *                           will allow parallel operation in the background for
+     *                           pushing changes to client browser page and
+     *                           UpdateClientNature.ALLOW_PARALLEL will allow
+     *                           parallel operation but will wait for the push to
+     *                           finish to exit the setContent method.
+     *                           UpdateClientNature.SEQUENTIAL will sequentially do
+     *                           each browser page push operation.
+     * @param content            the content to embed in the consumer tags.
+     * @param contentTypeHtml    true to treat the given content as HTML otherwise
+     *                           false.
+     * @since 3.0.15
+     */
+    public SharedTagContent(final Executor executor, final UpdateClientNature updateClientNature, final T content,
+            final boolean contentTypeHtml) {
+        this(executor, updateClientNature, true, content, contentTypeHtml);
+    }
+
+    /**
+     * @param updateClientNature
+     *
+     *                           If this SharedTagContent object has to update
+     *                           content of tags from multiple BrowserPage
+     *                           instances, UpdateClientNature.ALLOW_ASYNC_PARALLEL
+     *                           will allow parallel operation in the background for
+     *                           pushing changes to client browser page and
+     *                           UpdateClientNature.ALLOW_PARALLEL will allow
+     *                           parallel operation but will wait for the push to
+     *                           finish to exit the setContent method.
+     *                           UpdateClientNature.SEQUENTIAL will sequentially do
+     *                           each browser page push operation.
+     * @param shared             true to share its content across all consuming tags
+     *                           when {@link SharedTagContent#setContent} is called.
+     * @param content            the content which will be treated as plain text in
+     *                           the consumer tags.
+     *
+     * @since 3.0.15
+     */
+    public SharedTagContent(final UpdateClientNature updateClientNature, final boolean shared, final T content) {
+        this(null, updateClientNature, shared, content, false);
+    }
+
+    /**
+     * @param executor           the executor object for async push or null if no
+     *                           preference. This executor object will be used only
+     *                           if the {@code updateClientNature} is
+     *                           {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL} or
+     *                           {@link UpdateClientNature#ALLOW_PARALLEL}.
+     *
+     *                           <br>
+     *                           NB: You may need only one copy of executor object
+     *                           for all sharedTagContent instances in the project.
+     *                           So it could be declared as a static final object.
+     *                           Eg: <br>
+     *
+     *                           <pre>
+     * <code>
+     *
+     * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                           </pre>
+     *
+     *                           When Java releases Virtual Thread we may be able to
+     *                           use as follows
+     *
+     *                           <pre>
+     * <code>
+     * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                           </pre>
+     *
+     * @param updateClientNature
+     *
+     *                           If this SharedTagContent object has to update
+     *                           content of tags from multiple BrowserPage
+     *                           instances, UpdateClientNature.ALLOW_ASYNC_PARALLEL
+     *                           will allow parallel operation in the background for
+     *                           pushing changes to client browser page and
+     *                           UpdateClientNature.ALLOW_PARALLEL will allow
+     *                           parallel operation but will wait for the push to
+     *                           finish to exit the setContent method.
+     *                           UpdateClientNature.SEQUENTIAL will sequentially do
+     *                           each browser page push operation.
+     * @param shared             true to share its content across all consuming tags
+     *                           when {@link SharedTagContent#setContent} is called.
+     * @param content            the content which will be treated as plain text in
+     *                           the consumer tags.
+     *
+     * @since 3.0.15
+     */
+    public SharedTagContent(final Executor executor, final UpdateClientNature updateClientNature, final boolean shared,
+            final T content) {
+        this(executor, updateClientNature, shared, content, false);
+    }
+
+    /**
+     * @param shared          true to share its content across all consuming tags
+     *                        when {@link SharedTagContent#setContent} is called.
+     * @param content         the content to embed in the consumer tags.
+     * @param contentTypeHtml true to treat the given content as HTML otherwise
+     *                        false.
+     * @since 3.0.6
+     */
+    public SharedTagContent(final boolean shared, final T content, final boolean contentTypeHtml) {
+        this(null, null, shared, content, contentTypeHtml);
+    }
+
+    /**
+     * @param executor        the executor object for async push or null if no
+     *                        preference. This executor object will be used only if
+     *                        the {@code updateClientNature} is
+     *                        {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL} or
+     *                        {@link UpdateClientNature#ALLOW_PARALLEL}.
+     *
+     *                        <br>
+     *                        NB: You may need only one copy of executor object for
+     *                        all sharedTagContent instances in the project. So it
+     *                        could be declared as a static final object. Eg: <br>
+     *
+     *                        <pre>
+     * <code>
+     *
+     * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                        </pre>
+     *
+     *                        When Java releases Virtual Thread we may be able to
+     *                        use as follows
+     *
+     *                        <pre>
+     * <code>
+     * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                        </pre>
+     *
+     * @param shared          true to share its content across all consuming tags
+     *                        when {@link SharedTagContent#setContent} is called.
+     * @param content         the content to embed in the consumer tags.
+     * @param contentTypeHtml true to treat the given content as HTML otherwise
+     *                        false.
+     * @since 3.0.15
+     */
+    public SharedTagContent(final Executor executor, final boolean shared, final T content,
+            final boolean contentTypeHtml) {
+        this(executor, null, shared, content, contentTypeHtml);
+    }
+
+    /**
+     * @param shared  true to share its content across all consuming tags when
+     *                {@link SharedTagContent#setContent} is called.
+     * @param content the content which will be treated as plain text in the
+     *                consumer tags.
      * @since 3.0.6
      */
     public SharedTagContent(final boolean shared, final T content) {
-        this.shared = shared;
-        this.content = content;
+        this(null, null, shared, content, false);
+    }
+
+    /**
+     * @param executor the executor object for async push or null if no preference.
+     *                 This executor object will be used only if the
+     *                 {@code updateClientNature} is
+     *                 {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL} or
+     *                 {@link UpdateClientNature#ALLOW_PARALLEL}.
+     *
+     *                 <br>
+     *                 NB: You may need only one copy of executor object for all
+     *                 sharedTagContent instances in the project. So it could be
+     *                 declared as a static final object. Eg: <br>
+     *
+     *                 <pre>
+     * <code>
+     *
+     * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                 </pre>
+     *
+     *                 When Java releases Virtual Thread we may be able to use as
+     *                 follows
+     *
+     *                 <pre>
+     * <code>
+     * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                 </pre>
+     *
+     * @param shared   true to share its content across all consuming tags when
+     *                 {@link SharedTagContent#setContent} is called.
+     * @param content  the content which will be treated as plain text in the
+     *                 consumer tags.
+     * @since 3.0.15
+     */
+    public SharedTagContent(final Executor executor, final boolean shared, final T content) {
+        this(executor, null, shared, content, false);
     }
 
     /**
@@ -421,8 +1010,7 @@ public class SharedTagContent<T> {
 
     /**
      *
-     * Refer {@link #setUpdateClientNature(UpdateClientNature)} for more
-     * details.
+     * Refer {@link #setUpdateClientNature(UpdateClientNature)} for more details.
      *
      * @return UpdateClientNature which specifies the nature.
      * @since 3.0.6
@@ -434,26 +1022,21 @@ public class SharedTagContent<T> {
     /**
      * @param updateClientNature
      *
-     *                               If this SharedTagContent object has to
-     *                               update content of tags from multiple
-     *                               BrowserPage instances,
-     *                               UpdateClientNature.ALLOW_ASYNC_PARALLEL
-     *                               will allow parallel operation in the
-     *                               background for pushing changes to client
-     *                               browser page and
-     *                               UpdateClientNature.ALLOW_PARALLEL will
-     *                               allow parallel operation but will wait for
-     *                               the push to finish to exit the setContent
-     *                               method. UpdateClientNature.SEQUENTIAL will
-     *                               sequentially do each browser page push
-     *                               operation.
+     *                           If this SharedTagContent object has to update
+     *                           content of tags from multiple BrowserPage
+     *                           instances, UpdateClientNature.ALLOW_ASYNC_PARALLEL
+     *                           will allow parallel operation in the background for
+     *                           pushing changes to client browser page and
+     *                           UpdateClientNature.ALLOW_PARALLEL will allow
+     *                           parallel operation but will wait for the push to
+     *                           finish to exit the setContent method.
+     *                           UpdateClientNature.SEQUENTIAL will sequentially do
+     *                           each browser page push operation.
      * @since 3.0.6
      */
-    public void setUpdateClientNature(
-            final UpdateClientNature updateClientNature) {
+    public void setUpdateClientNature(final UpdateClientNature updateClientNature) {
 
-        if (updateClientNature != null
-                && !updateClientNature.equals(this.updateClientNature)) {
+        if (updateClientNature != null && !updateClientNature.equals(this.updateClientNature)) {
             final long stamp = lock.writeLock();
             try {
                 this.updateClientNature = updateClientNature;
@@ -474,9 +1057,16 @@ public class SharedTagContent<T> {
     }
 
     /**
-     * @param updateClient
-     *                         true to turn on updating client browser page. By
-     *                         default it is true.
+     * @return the Executor object.
+     * @since 3.0.15
+     */
+    public Executor getExecutor() {
+        return executor;
+    }
+
+    /**
+     * @param updateClient true to turn on updating client browser page. By default
+     *                     it is true.
      * @since 3.0.6
      */
     public void setUpdateClient(final boolean updateClient) {
@@ -492,17 +1082,59 @@ public class SharedTagContent<T> {
     }
 
     /**
-     * @param shared
-     *                   true to make content of this SharedTagContent object
-     *                   across all consuming tags while
-     *                   {@link SharedTagContent#setContent(Object)} is called.
+     * @param shared true to make content of this SharedTagContent object across all
+     *               consuming tags while
+     *               {@link SharedTagContent#setContent(Object)} is called.
      * @since 3.0.6
      */
     public void setShared(final boolean shared) {
-        if (this.shared = shared) {
+        if (this.shared != shared) {
             final long stamp = lock.writeLock();
             try {
                 this.shared = shared;
+            } finally {
+                lock.unlockWrite(stamp);
+            }
+        }
+    }
+
+    /**
+     * @param executor the executor object for async push or null if no preference.
+     *                 This executor object will be used only if the
+     *                 {@code updateClientNature} is
+     *                 {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL} or
+     *                 {@link UpdateClientNature#ALLOW_PARALLEL}.
+     *
+     *                 <br>
+     *                 NB: You may need only one copy of executor object for all
+     *                 sharedTagContent instances in the project. So it could be
+     *                 declared as a static final object. Eg: <br>
+     *
+     *                 <pre>
+     * <code>
+     *
+     * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                 </pre>
+     *
+     *                 When Java releases Virtual Thread we may be able to use as
+     *                 follows
+     *
+     *                 <pre>
+     * <code>
+     * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                 </pre>
+     *
+     * @since 3.0.15
+     */
+    public void setExecutor(final Executor executor) {
+        if (this.executor != executor) {
+            final long stamp = lock.writeLock();
+            try {
+                this.executor = executor;
             } finally {
                 lock.unlockWrite(stamp);
             }
@@ -526,223 +1158,178 @@ public class SharedTagContent<T> {
     }
 
     /**
-     * @param content
-     *                    content to be reflected in all consuming tags.
+     * @param content content to be reflected in all consuming tags.
      * @since 3.0.6
      */
     public void setContent(final T content) {
-        setContent(updateClient, updateClientNature, null, content,
-                contentTypeHtml);
+        setContent(updateClient, updateClientNature, null, content, contentTypeHtml);
     }
 
     /**
      * @param updateClientNature
      *
-     *                               If this SharedTagContent object has to
-     *                               update content of tags from multiple
-     *                               BrowserPage instances,
-     *                               UpdateClientNature.ALLOW_ASYNC_PARALLEL
-     *                               will allow parallel operation in the
-     *                               background for pushing changes to client
-     *                               browser page and
-     *                               UpdateClientNature.ALLOW_PARALLEL will
-     *                               allow parallel operation but will wait for
-     *                               the push to finish to exit the setContent
-     *                               method. UpdateClientNature.SEQUENTIAL will
-     *                               sequentially do each browser page push
-     *                               operation.
-     * @param content
-     *                               content to be reflected in all consuming
-     *                               tags.
+     *                           If this SharedTagContent object has to update
+     *                           content of tags from multiple BrowserPage
+     *                           instances, UpdateClientNature.ALLOW_ASYNC_PARALLEL
+     *                           will allow parallel operation in the background for
+     *                           pushing changes to client browser page and
+     *                           UpdateClientNature.ALLOW_PARALLEL will allow
+     *                           parallel operation but will wait for the push to
+     *                           finish to exit the setContent method.
+     *                           UpdateClientNature.SEQUENTIAL will sequentially do
+     *                           each browser page push operation.
+     * @param content            content to be reflected in all consuming tags.
      * @since 3.0.6
      */
-    public void setContent(final UpdateClientNature updateClientNature,
-            final T content) {
-        setContent(updateClient,
-                (updateClientNature != null ? updateClientNature
-                        : this.updateClientNature),
-                null, content, contentTypeHtml);
+    public void setContent(final UpdateClientNature updateClientNature, final T content) {
+        setContent(updateClient, (updateClientNature != null ? updateClientNature : this.updateClientNature), null,
+                content, contentTypeHtml);
     }
 
     /**
-     * @param content
-     *                            content to be reflected in all consuming tags
-     * @param contentTypeHtml
-     *                            true if the content type is HTML or false if
-     *                            plain text
+     * @param content         content to be reflected in all consuming tags
+     * @param contentTypeHtml true if the content type is HTML or false if plain
+     *                        text
      * @since 3.0.6
      */
     public void setContent(final T content, final boolean contentTypeHtml) {
-        setContent(updateClient, updateClientNature, null, content,
-                contentTypeHtml);
+        setContent(updateClient, updateClientNature, null, content, contentTypeHtml);
     }
 
     /**
      * @param updateClientNature
      *
-     *                               If this SharedTagContent object has to
-     *                               update content of tags from multiple
-     *                               BrowserPage instances,
-     *                               UpdateClientNature.ALLOW_ASYNC_PARALLEL
-     *                               will allow parallel operation in the
-     *                               background for pushing changes to client
-     *                               browser page and
-     *                               UpdateClientNature.ALLOW_PARALLEL will
-     *                               allow parallel operation but will wait for
-     *                               the push to finish to exit the setContent
-     *                               method. UpdateClientNature.SEQUENTIAL will
-     *                               sequentially do each browser page push
-     *                               operation.
-     * @param content
-     *                               content to be reflected in all consuming
-     *                               tags
-     * @param contentTypeHtml
-     *                               true if the content type is HTML or false
-     *                               if plain text
+     *                           If this SharedTagContent object has to update
+     *                           content of tags from multiple BrowserPage
+     *                           instances, UpdateClientNature.ALLOW_ASYNC_PARALLEL
+     *                           will allow parallel operation in the background for
+     *                           pushing changes to client browser page and
+     *                           UpdateClientNature.ALLOW_PARALLEL will allow
+     *                           parallel operation but will wait for the push to
+     *                           finish to exit the setContent method.
+     *                           UpdateClientNature.SEQUENTIAL will sequentially do
+     *                           each browser page push operation.
+     * @param content            content to be reflected in all consuming tags
+     * @param contentTypeHtml    true if the content type is HTML or false if plain
+     *                           text
      * @since 3.0.6
      */
-    public void setContent(final UpdateClientNature updateClientNature,
-            final T content, final boolean contentTypeHtml) {
-        setContent(updateClient,
-                (updateClientNature != null ? updateClientNature
-                        : this.updateClientNature),
-                null, content, contentTypeHtml);
-    }
-
-    /**
-     * @param exclusionTags
-     *                          tags to be excluded only from client update. It
-     *                          means that the content of all consumer tags will
-     *                          be kept updated at server side so their content
-     *                          content formatter and change listeners will be
-     *                          invoked.
-     * @param content
-     * @since 3.0.6
-     */
-    public void setContent(final Set<AbstractHtml> exclusionTags,
-            final T content) {
-        setContent(updateClient, updateClientNature, exclusionTags, content,
-                contentTypeHtml);
-    }
-
-    /**
-     * @param exclusionTags
-     *                            tags to be excluded only from client update.
-     *                            It means that the content of all consumer tags
-     *                            will be kept updated at server side so their
-     *                            content content formatter and change listeners
-     *                            will be invoked.
-     * @param content
-     * @param contentTypeHtml
-     * @since 3.0.6
-     */
-    public void setContent(final Set<AbstractHtml> exclusionTags,
-            final T content, final boolean contentTypeHtml) {
-        setContent(updateClient, updateClientNature, exclusionTags, content,
-                contentTypeHtml);
-    }
-
-    /**
-     * @param updateClient
-     * @param updateClientNature
-     *
-     *                               If this SharedTagContent object has to
-     *                               update content of tags from multiple
-     *                               BrowserPage instances,
-     *                               UpdateClientNature.ALLOW_ASYNC_PARALLEL
-     *                               will allow parallel operation in the
-     *                               background for pushing changes to client
-     *                               browser page and
-     *                               UpdateClientNature.ALLOW_PARALLEL will
-     *                               allow parallel operation but will wait for
-     *                               the push to finish to exit the setContent
-     *                               method. UpdateClientNature.SEQUENTIAL will
-     *                               sequentially do each browser page push
-     *                               operation.
-     * @param exclusionTags
-     *                               tags to be excluded only from client
-     *                               update. It means that the content of all
-     *                               consumer tags will be kept updated at
-     *                               server side so their content content
-     *                               formatter and change listeners will be
-     *                               invoked.
-     * @param content
-     * @param contentTypeHtml
-     */
-    private void setContent(final boolean updateClient,
-            final UpdateClientNature updateClientNature,
-            final Set<AbstractHtml> exclusionTags, final T content,
+    public void setContent(final UpdateClientNature updateClientNature, final T content,
             final boolean contentTypeHtml) {
-        setContent(updateClient, updateClientNature, exclusionTags, content,
-                contentTypeHtml, shared);
+        setContent(updateClient, (updateClientNature != null ? updateClientNature : this.updateClientNature), null,
+                content, contentTypeHtml);
+    }
+
+    /**
+     * @param exclusionTags tags to be excluded only from client update. It means
+     *                      that the content of all consumer tags will be kept
+     *                      updated at server side so their content content
+     *                      formatter and change listeners will be invoked.
+     * @param content
+     * @since 3.0.6
+     */
+    public void setContent(final Set<AbstractHtml> exclusionTags, final T content) {
+        setContent(updateClient, updateClientNature, exclusionTags, content, contentTypeHtml);
+    }
+
+    /**
+     * @param exclusionTags   tags to be excluded only from client update. It means
+     *                        that the content of all consumer tags will be kept
+     *                        updated at server side so their content content
+     *                        formatter and change listeners will be invoked.
+     * @param content
+     * @param contentTypeHtml
+     * @since 3.0.6
+     */
+    public void setContent(final Set<AbstractHtml> exclusionTags, final T content, final boolean contentTypeHtml) {
+        setContent(updateClient, updateClientNature, exclusionTags, content, contentTypeHtml);
     }
 
     /**
      * @param updateClient
      * @param updateClientNature
      *
-     *                               If this SharedTagContent object has to
-     *                               update content of tags from multiple
-     *                               BrowserPage instances,
-     *                               UpdateClientNature.ALLOW_ASYNC_PARALLEL
-     *                               will allow parallel operation in the
-     *                               background for pushing changes to client
-     *                               browser page and
-     *                               UpdateClientNature.ALLOW_PARALLEL will
-     *                               allow parallel operation but will wait for
-     *                               the push to finish to exit the setContent
-     *                               method. UpdateClientNature.SEQUENTIAL will
-     *                               sequentially do each browser page push
-     *                               operation.
-     * @param exclusionTags
-     *                               tags to be excluded only from client
-     *                               update. It means that the content of all
-     *                               consumer tags will be kept updated at
-     *                               server side so their content content
-     *                               formatter and change listeners will be
-     *                               invoked.
+     *                           If this SharedTagContent object has to update
+     *                           content of tags from multiple BrowserPage
+     *                           instances, UpdateClientNature.ALLOW_ASYNC_PARALLEL
+     *                           will allow parallel operation in the background for
+     *                           pushing changes to client browser page and
+     *                           UpdateClientNature.ALLOW_PARALLEL will allow
+     *                           parallel operation but will wait for the push to
+     *                           finish to exit the setContent method.
+     *                           UpdateClientNature.SEQUENTIAL will sequentially do
+     *                           each browser page push operation.
+     * @param exclusionTags      tags to be excluded only from client update. It
+     *                           means that the content of all consumer tags will be
+     *                           kept updated at server side so their content
+     *                           content formatter and change listeners will be
+     *                           invoked.
+     * @param content
+     * @param contentTypeHtml
+     */
+    private void setContent(final boolean updateClient, final UpdateClientNature updateClientNature,
+            final Set<AbstractHtml> exclusionTags, final T content, final boolean contentTypeHtml) {
+        setContent(updateClient, updateClientNature, exclusionTags, content, contentTypeHtml, shared);
+    }
+
+    /**
+     * @param updateClient       true or false
+     * @param updateClientNature
+     *
+     *                           If this SharedTagContent object has to update
+     *                           content of tags from multiple BrowserPage
+     *                           instances, UpdateClientNature.ALLOW_ASYNC_PARALLEL
+     *                           will allow parallel operation in the background for
+     *                           pushing changes to client browser page and
+     *                           UpdateClientNature.ALLOW_PARALLEL will allow
+     *                           parallel operation but will wait for the push to
+     *                           finish to exit the setContent method.
+     *                           UpdateClientNature.SEQUENTIAL will sequentially do
+     *                           each browser page push operation.
+     * @param exclusionTags      tags to be excluded only from client update. It
+     *                           means that the content of all consumer tags will be
+     *                           kept updated at server side so their content
+     *                           content formatter and change listeners will be
+     *                           invoked.
      * @param content
      * @param contentTypeHtml
      * @param shared
      */
-    private void setContent(final boolean updateClient,
-            final UpdateClientNature updateClientNature,
-            final Set<AbstractHtml> exclusionTags, final T content,
-            final boolean contentTypeHtml, final boolean shared) {
+    private void setContent(final boolean updateClient, final UpdateClientNature updateClientNature,
+            final Set<AbstractHtml> exclusionTags, final T content, final boolean contentTypeHtml,
+            final boolean shared) {
 
         if (shared) {
 
-            final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(
-                    4);
+            final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(4);
             List<Runnable> runnables = null;
             final long stamp = lock.writeLock();
             try {
 
-                final Content<T> contentBefore = new Content<>(this.content,
-                        this.contentTypeHtml);
-                final Content<T> contentAfter = new Content<>(content,
-                        contentTypeHtml);
+                final Content<T> contentBefore = new Content<>(this.content, this.contentTypeHtml);
+                final Content<T> contentAfter = new Content<>(content, contentTypeHtml);
 
                 this.updateClientNature = updateClientNature;
                 this.content = content;
                 this.contentTypeHtml = contentTypeHtml;
                 this.shared = shared;
+                // this.executor = executor;
 
-                final List<Map.Entry<NoTag, InsertedTagData<T>>> insertedTagsEntries = insertedTags
-                        .entrySet().stream()
-                        .sorted(Map.Entry.comparingByValue())
-                        .collect(Collectors.toList());
+                final List<Map.Entry<NoTag, InsertedTagData<T>>> insertedTagsEntries = insertedTags.entrySet().stream()
+                        .sorted(Map.Entry.comparingByValue()).collect(Collectors.toList());
 
                 insertedTags.clear();
 
-                final Map<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> tagsGroupedBySharedObject = new LinkedHashMap<>();
+                // LinkedHashMap is irrelevant after the implementation of sharedObject.objectId
+                // grouping
+                Map<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> tagsGroupedBySO = new HashMap<>(
+                        insertedTagsEntries.size());
 
                 for (final Entry<NoTag, InsertedTagData<T>> entry : insertedTagsEntries) {
 
                     final NoTag prevNoTag = entry.getKey();
                     final InsertedTagData<T> insertedTagData = entry.getValue();
-                    final ContentFormatter<T> formatter = insertedTagData
-                            .formatter();
+                    final ContentFormatter<T> formatter = insertedTagData.formatter();
 
                     final AbstractHtml parentTag = prevNoTag.getParent();
 
@@ -750,60 +1337,49 @@ public class SharedTagContent<T> {
                         continue;
                     }
 
-                    final AbstractHtml prevNoTagAsBase = prevNoTag;
-                    // noTagAsBase.isParentNullifiedOnce() == true
-                    // means the parent of this tag has already been changed
-                    // at least once
-                    if (prevNoTagAsBase.isParentNullifiedOnce()) {
+                    // the condition isParentNullifiedOnce true means the parent
+                    // of this tag has already been changed at least once
+                    if (((AbstractHtml) prevNoTag).isParentNullifiedOnce()) {
                         continue;
                     }
 
-                    List<ParentNoTagData<T>> dataList = tagsGroupedBySharedObject
-                            .get(parentTag.getSharedObject());
+                    final List<ParentNoTagData<T>> dataList = tagsGroupedBySO
+                            .computeIfAbsent(parentTag.getSharedObject(), k -> new ArrayList<>(4));
 
-                    if (dataList == null) {
-                        dataList = new ArrayList<>(4);
-                        tagsGroupedBySharedObject
-                                .put(parentTag.getSharedObject(), dataList);
-                    }
                     NoTag noTag;
                     Content<String> contentApplied;
                     try {
                         contentApplied = formatter.format(contentAfter);
                         if (contentApplied != null) {
-                            noTag = new NoTag(null, contentApplied.getContent(),
-                                    contentApplied.isContentTypeHtml());
-
+                            noTag = new NoTag(null, contentApplied.content, contentApplied.contentTypeHtml);
                         } else {
                             noTag = prevNoTag;
-                            contentApplied = null;
                         }
                     } catch (final RuntimeException e) {
                         contentApplied = new Content<>("", false);
-                        noTag = new NoTag(null, contentApplied.getContent(),
-                                contentApplied.isContentTypeHtml());
-                        LOGGER.log(Level.SEVERE,
-                                "Exception while ContentFormatter.format", e);
+                        noTag = new NoTag(null, contentApplied.content, contentApplied.contentTypeHtml);
+                        LOGGER.log(Level.SEVERE, "Exception while ContentFormatter.format", e);
                     }
 
                     final AbstractHtml noTagAsBase = noTag;
                     noTagAsBase.setSharedTagContent(this);
-                    dataList.add(new ParentNoTagData<>(prevNoTag, parentTag,
-                            noTag, insertedTagData, contentApplied));
+                    dataList.add(new ParentNoTagData<>(prevNoTag, parentTag, noTag, insertedTagData, contentApplied));
 
                 }
+                final List<Entry<AbstractHtml5SharedObject, List<ParentNoTagData<T>>>> tagsGroupedBySOEntries = new ArrayList<>(
+                        tagsGroupedBySO.entrySet());
 
-                final List<ModifiedParentData<T>> modifiedParents = new ArrayList<>(
-                        4);
+                tagsGroupedBySO = null;
 
-                for (final Entry<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> entry : tagsGroupedBySharedObject
-                        .entrySet()) {
+                tagsGroupedBySOEntries.sort(Comparator.comparingLong(o -> o.getKey().objectId()));
 
-                    final AbstractHtml5SharedObject sharedObject = entry
-                            .getKey();
+                final List<ModifiedParentData<T>> modifiedParents = new ArrayList<>(4);
 
-                    final List<ParentNoTagData<T>> parentNoTagDatas = entry
-                            .getValue();
+                for (final Entry<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> entry : tagsGroupedBySOEntries) {
+
+                    final AbstractHtml5SharedObject sharedObject = entry.getKey();
+
+                    final List<ParentNoTagData<T>> parentNoTagDatas = entry.getValue();
 
                     // pushing using first parent object makes bug (got bug when
                     // singleton SharedTagContent object is used under multiple
@@ -812,8 +1388,7 @@ public class SharedTagContent<T> {
                     // changed
                     // before lock
 
-                    final Lock parentLock = sharedObject.getLock(ACCESS_OBJECT)
-                            .writeLock();
+                    final Lock parentLock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
                     parentLock.lock();
 
                     try {
@@ -837,8 +1412,7 @@ public class SharedTagContent<T> {
                             // means the parent of this tag has already been
                             // changed
                             // at least once
-                            final AbstractHtml previousNoTag = parentNoTagData
-                                    .previousNoTag();
+                            final AbstractHtml previousNoTag = parentNoTagData.previousNoTag();
 
                             // to get safety of lock it is executed before
                             // addInnerHtmlsAndGetEventsLockless
@@ -846,48 +1420,34 @@ public class SharedTagContent<T> {
                             // SharedTagContent will not reuse the same NoTag
                             previousNoTag.setSharedTagContent(null);
 
-                            if (parentNoTagData.parent().getSharedObject()
-                                    .equals(sharedObject)
-                                    && parentNoTagData.parent()
-                                            .getChildrenSizeLockless() == 1
+                            if (parentNoTagData.parent().getSharedObject().equals(sharedObject)
+                                    && parentNoTagData.parent().getChildrenSizeLockless() == 1
                                     && !previousNoTag.isParentNullifiedOnce()) {
 
                                 if (parentNoTagData.contentApplied() != null) {
 
-                                    insertedTags.put(parentNoTagData.getNoTag(),
-                                            parentNoTagData.insertedTagData());
+                                    insertedTags.put(parentNoTagData.getNoTag(), parentNoTagData.insertedTagData());
 
-                                    modifiedParents
-                                            .add(new ModifiedParentData<>(
-                                                    parentNoTagData.parent(),
-                                                    parentNoTagData
-                                                            .contentApplied(),
-                                                    parentNoTagData
-                                                            .insertedTagData()
-                                                            .formatter()));
+                                    modifiedParents.add(new ModifiedParentData<>(parentNoTagData.parent(),
+                                            parentNoTagData.contentApplied(),
+                                            parentNoTagData.insertedTagData().formatter()));
 
                                     boolean updateClientTagSpecific = updateClient;
                                     if (updateClient && exclusionTags != null
-                                            && exclusionTags.contains(
-                                                    parentNoTagData.parent())) {
+                                            && exclusionTags.contains(parentNoTagData.parent())) {
                                         updateClientTagSpecific = false;
                                     }
 
-                                    final InnerHtmlListenerData listenerData = parentNoTagData
-                                            .parent()
-                                            .addInnerHtmlsAndGetEventsLockless(
-                                                    updateClientTagSpecific,
+                                    final InnerHtmlListenerData listenerData = parentNoTagData.parent()
+                                            .addInnerHtmlsAndGetEventsLockless(updateClientTagSpecific,
                                                     parentNoTagData.getNoTag());
 
                                     if (listenerData != null) {
 
                                         // subscribed and offline
-                                        if (parentNoTagData.insertedTagData()
-                                                .subscribed()
-                                                && !sharedObject
-                                                        .isActiveWSListener()) {
-                                            final ClientTasksWrapper lastClientTask = parentNoTagData
-                                                    .insertedTagData()
+                                        if (parentNoTagData.insertedTagData().subscribed()
+                                                && !sharedObject.isActiveWSListener()) {
+                                            final ClientTasksWrapper lastClientTask = parentNoTagData.insertedTagData()
                                                     .lastClientTask();
                                             if (lastClientTask != null) {
                                                 lastClientTask.nullifyTasks();
@@ -899,14 +1459,10 @@ public class SharedTagContent<T> {
                                         // parents after verifying feasibility
                                         // of
                                         // considering rich notag content
-                                        final ClientTasksWrapper clientTask = listenerData
-                                                .listener().innerHtmlsAdded(
-                                                        parentNoTagData
-                                                                .parent(),
-                                                        listenerData.events());
+                                        final ClientTasksWrapper clientTask = listenerData.listener()
+                                                .innerHtmlsAdded(parentNoTagData.parent(), listenerData.events());
 
-                                        parentNoTagData.insertedTagData()
-                                                .lastClientTask(clientTask);
+                                        parentNoTagData.insertedTagData().lastClientTask(clientTask);
 
                                         // push is require only if listener
                                         // invoked
@@ -917,17 +1473,11 @@ public class SharedTagContent<T> {
                                     }
 
                                 } else {
-                                    insertedTags.put(parentNoTagData.getNoTag(),
-                                            parentNoTagData.insertedTagData());
+                                    insertedTags.put(parentNoTagData.getNoTag(), parentNoTagData.insertedTagData());
 
-                                    modifiedParents
-                                            .add(new ModifiedParentData<>(
-                                                    parentNoTagData.parent(),
-                                                    parentNoTagData
-                                                            .contentApplied(),
-                                                    parentNoTagData
-                                                            .insertedTagData()
-                                                            .formatter()));
+                                    modifiedParents.add(new ModifiedParentData<>(parentNoTagData.parent(),
+                                            parentNoTagData.contentApplied(),
+                                            parentNoTagData.insertedTagData().formatter()));
                                 }
                             }
 
@@ -939,28 +1489,21 @@ public class SharedTagContent<T> {
 
                 if (contentChangeListeners != null) {
                     for (final ModifiedParentData<T> modifiedParentData : modifiedParents) {
-                        final AbstractHtml modifiedParent = modifiedParentData
-                                .parent();
-                        final Set<ContentChangeListener<T>> listeners = contentChangeListeners
-                                .get(modifiedParent);
+                        final AbstractHtml modifiedParent = modifiedParentData.parent();
+                        final Set<ContentChangeListener<T>> listeners = contentChangeListeners.get(modifiedParent);
                         if (listeners != null) {
                             runnables = new ArrayList<>(listeners.size());
                             for (final ContentChangeListener<T> listener : listeners) {
-                                final ChangeEvent<T> changeEvent = new ChangeEvent<>(
-                                        modifiedParent, listener, contentBefore,
-                                        contentAfter,
-                                        modifiedParentData.contentApplied(),
+                                final ChangeEvent<T> changeEvent = new ChangeEvent<>(modifiedParent, listener,
+                                        contentBefore, contentAfter, modifiedParentData.contentApplied(),
                                         modifiedParentData.formatter());
                                 try {
-                                    final Runnable runnable = listener
-                                            .contentChanged(changeEvent);
+                                    final Runnable runnable = listener.contentChanged(changeEvent);
                                     if (runnable != null) {
                                         runnables.add(runnable);
                                     }
                                 } catch (final RuntimeException e) {
-                                    LOGGER.log(Level.SEVERE,
-                                            "Exception while ContentChangeListener.contentChanged",
-                                            e);
+                                    LOGGER.log(Level.SEVERE, "Exception while ContentChangeListener.contentChanged", e);
                                 }
                             }
                         }
@@ -971,7 +1514,7 @@ public class SharedTagContent<T> {
                 lock.unlockWrite(stamp);
             }
 
-            pushQueue(updateClientNature, sharedObjects);
+            pushQueue(executor, updateClientNature, sharedObjects);
 
             if (runnables != null) {
                 for (final Runnable runnable : runnables) {
@@ -979,8 +1522,7 @@ public class SharedTagContent<T> {
                         runnable.run();
                     } catch (final RuntimeException e) {
                         LOGGER.log(Level.SEVERE,
-                                "Exception while Runnable.run returned by ContentChangeListener.contentChanged",
-                                e);
+                                "Exception while Runnable.run returned by ContentChangeListener.contentChanged", e);
                     }
                 }
             }
@@ -999,35 +1541,88 @@ public class SharedTagContent<T> {
     }
 
     /**
+     * @param executor           the executor object for async push or null if no
+     *                           preference. This executor object will be used only
+     *                           if the {@code updateClientNature} is
+     *                           {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL} or
+     *                           {@link UpdateClientNature#ALLOW_PARALLEL}.
+     *
+     *                           <br>
+     *                           NB: You may need only one copy of executor object
+     *                           for all sharedTagContent instances in the project.
+     *                           So it could be declared as a static final object.
+     *                           Eg: <br>
+     *
+     *                           <pre>
+     * <code>
+     *
+     * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                           </pre>
+     *
+     *                           When Java releases Virtual Thread we may be able to
+     *                           use as follows
+     *
+     *                           <pre>
+     * <code>
+     * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                           </pre>
+     *
      * @param updateClientNature
      * @param sharedObjects
-     *
      * @since 3.0.6
+     * @since 3.0.15 introduced executor
      */
-    private void pushQueue(final UpdateClientNature updateClientNature,
+    private void pushQueue(final Executor executor, final UpdateClientNature updateClientNature,
             final List<AbstractHtml5SharedObject> sharedObjects) {
 
-        final List<PushQueue> pushQueues = new ArrayList<>(
-                sharedObjects.size());
+        final List<PushQueue> pushQueues = new ArrayList<>(sharedObjects.size());
         for (final AbstractHtml5SharedObject sharedObject : sharedObjects) {
-            final PushQueue pushQueue = sharedObject
-                    .getPushQueue(ACCESS_OBJECT);
+            final PushQueue pushQueue = sharedObject.getPushQueue(ACCESS_OBJECT);
             if (pushQueue != null) {
                 pushQueues.add(pushQueue);
             }
         }
 
         if (pushQueues.size() > 1) {
-            if (UpdateClientNature.ALLOW_ASYNC_PARALLEL
-                    .equals(updateClientNature)) {
-                for (final PushQueue pushQueue : pushQueues) {
-                    CompletableFuture.runAsync(() -> pushQueue.push());
+            if (UpdateClientNature.ALLOW_ASYNC_PARALLEL.equals(updateClientNature)) {
+                if (executor != null) {
+                    for (final PushQueue pushQueue : pushQueues) {
+                        executor.execute(pushQueue::push);
+                    }
+                } else {
+                    for (final PushQueue pushQueue : pushQueues) {
+                        CompletableFuture.runAsync(pushQueue::push);
+                    }
                 }
-            } else if (UpdateClientNature.ALLOW_PARALLEL
-                    .equals(updateClientNature)) {
-                pushQueues.parallelStream().forEach((pushQueue) -> {
-                    pushQueue.push();
-                });
+
+            } else if (UpdateClientNature.ALLOW_PARALLEL.equals(updateClientNature)) {
+
+                if (executor != null) {
+                    final List<CompletableFuture<Boolean>> cfList = new ArrayList<>(pushQueues.size());
+                    for (final PushQueue pushQueue : pushQueues) {
+                        final CompletableFuture<Boolean> cf = CompletableFuture.supplyAsync(() -> {
+                            pushQueue.push();
+                            return true;
+                        }, executor);
+                        cfList.add(cf);
+                    }
+
+                    for (final CompletableFuture<Boolean> each : cfList) {
+                        try {
+                            each.get();
+                        } catch (InterruptedException | ExecutionException e) {
+                            // NOP
+                        }
+                    }
+
+                } else {
+                    pushQueues.parallelStream().forEach(PushQueue::push);
+                }
+
             } else {
                 // UpdateClientNature.SEQUENTIAL.equals(updateClientNature)
                 for (final PushQueue pushQueue : pushQueues) {
@@ -1056,55 +1651,46 @@ public class SharedTagContent<T> {
      * @param updateClient
      * @param applicableTag
      * @param formatter
-     * @param subscribe
-     *                          if true then updateClient will be true only if
-     *                          activeWSListener is true otherwise updateClient
-     *                          will be false at the time of content update.
+     * @param subscribe     if true then updateClient will be true only if
+     *                      activeWSListener is true otherwise updateClient will be
+     *                      false at the time of content update.
      * @return the NoTag inserted
      * @since 3.0.6
      */
-    AbstractHtml addInnerHtml(final boolean updateClient,
-            final AbstractHtml applicableTag,
+    AbstractHtml addInnerHtml(final boolean updateClient, final AbstractHtml applicableTag,
             final ContentFormatter<T> formatter, final boolean subscribe) {
 
-        final ContentFormatter<T> cFormatter = formatter != null ? formatter
-                : DEFAULT_CONTENT_FORMATTER;
+        final ContentFormatter<T> cFormatter = formatter != null ? formatter : DEFAULT_CONTENT_FORMATTER;
 
         final long stamp = lock.writeLock();
-        final AbstractHtml5SharedObject sharedObject = applicableTag
-                .getSharedObject();
+        final AbstractHtml5SharedObject sharedObject = applicableTag.getSharedObject();
 
         boolean listenerInvoked = false;
         NoTag noTagInserted = null;
         try {
 
-            final Content<T> contentLocal = new Content<>(content,
-                    contentTypeHtml);
+            final Content<T> contentLocal = new Content<>(content, contentTypeHtml);
 
             NoTag noTag;
             try {
-                final Content<String> formattedContent = cFormatter
-                        .format(contentLocal);
+                final Content<String> formattedContent = cFormatter.format(contentLocal);
                 if (formattedContent != null) {
-                    noTag = new NoTag(null, formattedContent.getContent(),
-                            formattedContent.isContentTypeHtml());
+                    noTag = new NoTag(null, formattedContent.content, formattedContent.contentTypeHtml);
                 } else {
                     noTag = new NoTag(null, "", false);
                 }
 
             } catch (final RuntimeException e) {
                 noTag = new NoTag(null, "", false);
-                LOGGER.log(Level.SEVERE,
-                        "Exception while ContentFormatter.format", e);
+                LOGGER.log(Level.SEVERE, "Exception while ContentFormatter.format", e);
             }
 
-            final InnerHtmlListenerData listenerData = applicableTag
-                    .addInnerHtmlsAndGetEventsLockless(updateClient, noTag);
+            final InnerHtmlListenerData listenerData = applicableTag.addInnerHtmlsAndGetEventsLockless(updateClient,
+                    noTag);
 
             noTagInserted = noTag;
 
-            final InsertedTagData<T> insertedTagData = new InsertedTagData<>(
-                    ordinal, cFormatter, subscribe);
+            final InsertedTagData<T> insertedTagData = new InsertedTagData<>(ordinal, cFormatter, subscribe);
 
             // AtomicLong is not required as it is under lock
             ordinal++;
@@ -1113,8 +1699,8 @@ public class SharedTagContent<T> {
             if (listenerData != null) {
                 // TODO declare new innerHtmlsAdded for multiple parents after
                 // verifying feasibility of considering rich notag content
-                final ClientTasksWrapper clientTask = listenerData.listener()
-                        .innerHtmlsAdded(applicableTag, listenerData.events());
+                final ClientTasksWrapper clientTask = listenerData.listener().innerHtmlsAdded(applicableTag,
+                        listenerData.events());
                 insertedTagData.lastClientTask(clientTask);
                 listenerInvoked = true;
             }
@@ -1132,15 +1718,12 @@ public class SharedTagContent<T> {
     /**
      * NB: Only for internal use
      *
-     * @param insertedTag
-     *                        instance of NoTag
-     * @param parentTag
-     *                        parent tag of NoTag
+     * @param insertedTag instance of NoTag
+     * @param parentTag   parent tag of NoTag
      * @return true if removed otherwise false
      * @since 3.0.6
      */
-    boolean remove(final AbstractHtml insertedTag,
-            final AbstractHtml parentTag) {
+    boolean remove(final AbstractHtml insertedTag, final AbstractHtml parentTag) {
         final long stamp = lock.writeLock();
         try {
 
@@ -1162,8 +1745,8 @@ public class SharedTagContent<T> {
     /**
      * @param noTag
      * @return true if the parent of this NoTag was added by
-     *         AbstractHtml.subscribedTo method but it doesn't mean the NoTag is
-     *         not changed from parent or parent is modified.
+     *         AbstractHtml.subscribedTo method but it doesn't mean the NoTag is not
+     *         changed from parent or parent is modified.
      * @since 3.0.6
      */
     boolean isSubscribed(final AbstractHtml noTag) {
@@ -1179,9 +1762,8 @@ public class SharedTagContent<T> {
     /**
      * Detaches without removing contents from consuming tags.
      *
-     * @param exclusionTags
-     *                          excluded tags from detachment of this
-     *                          SharedTagConent object
+     * @param exclusionTags excluded tags from detachment of this SharedTagConent
+     *                      object
      *
      * @since 3.0.6
      */
@@ -1190,9 +1772,8 @@ public class SharedTagContent<T> {
     }
 
     /**
-     * @param removeContent
-     *                          true to remove content from the attached tags or
-     *                          false not to remove but will detach
+     * @param removeContent true to remove content from the attached tags or false
+     *                      not to remove but will detach
      *
      *
      * @since 3.0.6
@@ -1202,51 +1783,40 @@ public class SharedTagContent<T> {
     }
 
     /**
-     * @param removeContent
-     *                          true to remove content from the attached tags or
-     *                          false not to remove but will detach
-     * @param exclusionTags
-     *                          excluded tags from detachment of this
-     *                          SharedTagConent object
+     * @param removeContent true to remove content from the attached tags or false
+     *                      not to remove but will detach
+     * @param exclusionTags excluded tags from detachment of this SharedTagConent
+     *                      object
      *
      * @since 3.0.6
      */
-    public void detach(final boolean removeContent,
-            final Set<AbstractHtml> exclusionTags) {
+    public void detach(final boolean removeContent, final Set<AbstractHtml> exclusionTags) {
         detach(removeContent, exclusionTags, null);
     }
 
     /**
-     * @param removeContent
-     *                                      true to remove content from the
-     *                                      attached tags or false not to remove
-     *                                      but will detach
-     * @param exclusionTags
-     *                                      excluded tags from detachment of
-     *                                      this SharedTagConent object
-     * @param exclusionClientUpdateTags
-     *                                      these tags will be excluded for
-     *                                      client update
+     * @param removeContent             true to remove content from the attached
+     *                                  tags or false not to remove but will detach
+     * @param exclusionTags             excluded tags from detachment of this
+     *                                  SharedTagConent object
+     * @param exclusionClientUpdateTags these tags will be excluded for client
+     *                                  update
      * @since 3.0.6
      */
-    public void detach(final boolean removeContent,
-            final Set<AbstractHtml> exclusionTags,
+    public void detach(final boolean removeContent, final Set<AbstractHtml> exclusionTags,
             final Set<AbstractHtml> exclusionClientUpdateTags) {
 
-        final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(
-                4);
+        final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(4);
         List<Runnable> runnables = null;
 
         final long stamp = lock.writeLock();
         try {
 
-            final Content<T> contentBefore = new Content<>(content,
-                    contentTypeHtml);
+            final Content<T> contentBefore = new Content<>(content, contentTypeHtml);
 
-            final Map<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> tagsGroupedBySharedObject = new HashMap<>();
+            Map<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> tagsGroupedBySO = new HashMap<>();
 
-            for (final Entry<NoTag, InsertedTagData<T>> entry : insertedTags
-                    .entrySet()) {
+            for (final Entry<NoTag, InsertedTagData<T>> entry : insertedTags.entrySet()) {
                 if (entry == null) {
                     continue;
                 }
@@ -1261,42 +1831,38 @@ public class SharedTagContent<T> {
                     continue;
                 }
 
-                final AbstractHtml prevNoTagAsBase = prevNoTag;
-                // noTagAsBase.isParentNullifiedOnce() == true
-                // means the parent of this tag has already been changed
-                // at least once
-                if (prevNoTagAsBase.isParentNullifiedOnce()) {
+                // the condition isParentNullifiedOnce true means the parent of
+                // this tag has already been changed at least once
+                if (((AbstractHtml) prevNoTag).isParentNullifiedOnce()) {
                     continue;
                 }
 
-                List<ParentNoTagData<T>> dataList = tagsGroupedBySharedObject
-                        .get(parentTag.getSharedObject());
-
-                if (dataList == null) {
-                    dataList = new ArrayList<>(4);
-                    tagsGroupedBySharedObject.put(parentTag.getSharedObject(),
-                            dataList);
-                }
+                final List<ParentNoTagData<T>> dataList = tagsGroupedBySO.computeIfAbsent(parentTag.getSharedObject(),
+                        k -> new ArrayList<>(4));
 
                 // final NoTag noTag = new NoTag(null, content,
                 // contentTypeHtml);
                 // not inserting NoTag so need not pass
 
-                dataList.add(new ParentNoTagData<>(prevNoTag, parentTag,
-                        insertedTagData));
+                dataList.add(new ParentNoTagData<>(prevNoTag, parentTag, insertedTagData));
             }
 
             insertedTags.clear();
 
+            final List<Entry<AbstractHtml5SharedObject, List<ParentNoTagData<T>>>> tagsGroupedBySOEntries = new ArrayList<>(
+                    tagsGroupedBySO.entrySet());
+
+            tagsGroupedBySO = null;
+
+            tagsGroupedBySOEntries.sort(Comparator.comparingLong(o -> o.getKey().objectId()));
+
             final List<AbstractHtml> modifiedParents = new ArrayList<>(4);
 
-            for (final Entry<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> entry : tagsGroupedBySharedObject
-                    .entrySet()) {
+            for (final Entry<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> entry : tagsGroupedBySOEntries) {
 
                 final AbstractHtml5SharedObject sharedObject = entry.getKey();
 
-                final List<ParentNoTagData<T>> parentNoTagDatas = entry
-                        .getValue();
+                final List<ParentNoTagData<T>> parentNoTagDatas = entry.getValue();
 
                 // pushing using first parent object makes bug (got bug when
                 // singleton SharedTagContent object is used under multiple
@@ -1304,8 +1870,7 @@ public class SharedTagContent<T> {
                 // may be because the sharedObject in the parent can be changed
                 // before lock
 
-                final Lock parentLock = sharedObject.getLock(ACCESS_OBJECT)
-                        .writeLock();
+                final Lock parentLock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
                 parentLock.lock();
 
                 try {
@@ -1326,28 +1891,20 @@ public class SharedTagContent<T> {
                         // noTagAsBase.isParentNullifiedOnce() == true
                         // means the parent of this tag has already been changed
                         // at least once
-                        final AbstractHtml previousNoTag = parentNoTagData
-                                .previousNoTag();
+                        final AbstractHtml previousNoTag = parentNoTagData.previousNoTag();
 
-                        if (parentNoTagData.parent().getSharedObject()
-                                .equals(sharedObject)
-                                && parentNoTagData.parent()
-                                        .getChildrenSizeLockless() == 1
+                        if (parentNoTagData.parent().getSharedObject().equals(sharedObject)
+                                && parentNoTagData.parent().getChildrenSizeLockless() == 1
                                 && !previousNoTag.isParentNullifiedOnce()) {
 
-                            if (exclusionTags != null && exclusionTags
-                                    .contains(parentNoTagData.parent())) {
-                                insertedTags.put(
-                                        parentNoTagData.previousNoTag(),
-                                        parentNoTagData.insertedTagData());
+                            if (exclusionTags != null && exclusionTags.contains(parentNoTagData.parent())) {
+                                insertedTags.put(parentNoTagData.previousNoTag(), parentNoTagData.insertedTagData());
                             } else {
                                 modifiedParents.add(parentNoTagData.parent());
 
                                 boolean updateClientTagSpecific = updateClient;
-                                if (updateClient
-                                        && exclusionClientUpdateTags != null
-                                        && exclusionClientUpdateTags.contains(
-                                                parentNoTagData.parent())) {
+                                if (updateClient && exclusionClientUpdateTags != null
+                                        && exclusionClientUpdateTags.contains(parentNoTagData.parent())) {
                                     updateClientTagSpecific = false;
                                 }
 
@@ -1359,10 +1916,8 @@ public class SharedTagContent<T> {
                                 previousNoTag.setSharedTagContent(null);
 
                                 if (removeContent) {
-                                    final ChildTagRemoveListenerData listenerData = parentNoTagData
-                                            .parent()
-                                            .removeAllChildrenAndGetEventsLockless(
-                                                    updateClientTagSpecific);
+                                    final ChildTagRemoveListenerData listenerData = parentNoTagData.parent()
+                                            .removeAllChildrenAndGetEventsLockless(updateClientTagSpecific);
 
                                     if (listenerData != null) {
                                         // TODO declare new innerHtmlsAdded for
@@ -1370,9 +1925,7 @@ public class SharedTagContent<T> {
                                         // parents after verifying feasibility
                                         // of
                                         // considering rich notag content
-                                        listenerData.getListener()
-                                                .allChildrenRemoved(listenerData
-                                                        .getEvent());
+                                        listenerData.getListener().allChildrenRemoved(listenerData.getEvent());
 
                                         // push is require only if listener
                                         // invoked
@@ -1395,23 +1948,19 @@ public class SharedTagContent<T> {
 
             if (detachListeners != null) {
                 for (final AbstractHtml modifiedParent : modifiedParents) {
-                    final Set<DetachListener<T>> listeners = detachListeners
-                            .get(modifiedParent);
+                    final Set<DetachListener<T>> listeners = detachListeners.get(modifiedParent);
                     if (listeners != null) {
                         runnables = new ArrayList<>(listeners.size());
                         for (final DetachListener<T> listener : listeners) {
-                            final DetachEvent<T> detachEvent = new DetachEvent<>(
-                                    modifiedParent, listener, contentBefore);
+                            final DetachEvent<T> detachEvent = new DetachEvent<>(modifiedParent, listener,
+                                    contentBefore);
                             try {
-                                final Runnable runnable = listener
-                                        .detached(detachEvent);
+                                final Runnable runnable = listener.detached(detachEvent);
                                 if (runnable != null) {
                                     runnables.add(runnable);
                                 }
                             } catch (final RuntimeException e) {
-                                LOGGER.log(Level.SEVERE,
-                                        "Exception while DetachListener.detached",
-                                        e);
+                                LOGGER.log(Level.SEVERE, "Exception while DetachListener.detached", e);
                             }
                         }
 
@@ -1423,16 +1972,14 @@ public class SharedTagContent<T> {
             lock.unlockWrite(stamp);
         }
 
-        pushQueue(updateClientNature, sharedObjects);
+        pushQueue(executor, updateClientNature, sharedObjects);
 
         if (runnables != null) {
             for (final Runnable runnable : runnables) {
                 try {
                     runnable.run();
                 } catch (final RuntimeException e) {
-                    LOGGER.log(Level.SEVERE,
-                            "Exception while Runnable.run returned by DetachListener.detached",
-                            e);
+                    LOGGER.log(Level.SEVERE, "Exception while Runnable.run returned by DetachListener.detached", e);
                 }
             }
         }
@@ -1440,15 +1987,12 @@ public class SharedTagContent<T> {
     }
 
     /**
-     * @param tag
-     *                                  the tag on which the content change to
-     *                                  be listened
-     * @param contentChangeListener
-     *                                  to be added
+     * @param tag                   the tag on which the content change to be
+     *                              listened
+     * @param contentChangeListener to be added
      * @since 3.0.6
      */
-    public void addContentChangeListener(final AbstractHtml tag,
-            final ContentChangeListener<T> contentChangeListener) {
+    public void addContentChangeListener(final AbstractHtml tag, final ContentChangeListener<T> contentChangeListener) {
         final long stamp = lock.writeLock();
 
         try {
@@ -1458,8 +2002,7 @@ public class SharedTagContent<T> {
                 contentChangeListeners = new WeakHashMap<>(4, 0.75F);
                 contentChangeListeners.put(tag, listeners);
             } else {
-                listeners = contentChangeListeners.computeIfAbsent(tag,
-                        k -> new LinkedHashSet<>(4));
+                listeners = contentChangeListeners.computeIfAbsent(tag, k -> new LinkedHashSet<>(4));
             }
 
             listeners.add(contentChangeListener);
@@ -1473,8 +2016,7 @@ public class SharedTagContent<T> {
      * @param detachListener
      * @since 3.0.6
      */
-    public void addDetachListener(final AbstractHtml tag,
-            final DetachListener<T> detachListener) {
+    public void addDetachListener(final AbstractHtml tag, final DetachListener<T> detachListener) {
         final long stamp = lock.writeLock();
 
         try {
@@ -1484,8 +2026,7 @@ public class SharedTagContent<T> {
                 detachListeners = new WeakHashMap<>(4, 0.75F);
                 detachListeners.put(tag, listeners);
             } else {
-                listeners = detachListeners.computeIfAbsent(tag,
-                        k -> new LinkedHashSet<>(4));
+                listeners = detachListeners.computeIfAbsent(tag, k -> new LinkedHashSet<>(4));
             }
 
             listeners.add(detachListener);
@@ -1498,19 +2039,16 @@ public class SharedTagContent<T> {
      * NB: this method will traverse through all consumer tags of this
      * SharedTagContent instance.
      *
-     * @param contentChangeListener
-     *                                  to be removed from all linked tags
+     * @param contentChangeListener to be removed from all linked tags
      * @since 3.0.6
      */
-    public void removeContentChangeListener(
-            final ContentChangeListener<T> contentChangeListener) {
+    public void removeContentChangeListener(final ContentChangeListener<T> contentChangeListener) {
         final long stamp = lock.writeLock();
 
         try {
             if (contentChangeListeners != null) {
 
-                for (final Set<ContentChangeListener<T>> listeners : contentChangeListeners
-                        .values()) {
+                for (final Set<ContentChangeListener<T>> listeners : contentChangeListeners.values()) {
                     if (listeners != null) {
                         listeners.remove(contentChangeListener);
                     }
@@ -1523,11 +2061,8 @@ public class SharedTagContent<T> {
     }
 
     /**
-     * @param tag
-     *                                  the tag from which the listener to be
-     *                                  removed
-     * @param contentChangeListener
-     *                                  to be removed
+     * @param tag                   the tag from which the listener to be removed
+     * @param contentChangeListener to be removed
      * @since 3.0.6
      */
     public void removeContentChangeListener(final AbstractHtml tag,
@@ -1536,8 +2071,7 @@ public class SharedTagContent<T> {
 
         try {
             if (contentChangeListeners != null) {
-                final Set<ContentChangeListener<T>> listeners = contentChangeListeners
-                        .get(tag);
+                final Set<ContentChangeListener<T>> listeners = contentChangeListeners.get(tag);
                 if (listeners != null) {
                     listeners.remove(contentChangeListener);
                 }
@@ -1552,8 +2086,7 @@ public class SharedTagContent<T> {
      * NB: this method will traverse through all consumer tags of this
      * SharedTagContent instance.
      *
-     * @param detachListener
-     *                           to be removed from all linked tags
+     * @param detachListener to be removed from all linked tags
      * @since 3.0.6
      */
     public void removeDetachListener(final DetachListener<T> detachListener) {
@@ -1562,8 +2095,7 @@ public class SharedTagContent<T> {
         try {
             if (detachListeners != null) {
 
-                for (final Set<DetachListener<T>> listeners : detachListeners
-                        .values()) {
+                for (final Set<DetachListener<T>> listeners : detachListeners.values()) {
                     if (listeners != null) {
                         listeners.remove(detachListener);
                     }
@@ -1580,14 +2112,12 @@ public class SharedTagContent<T> {
      * @param detachListener
      * @since 3.0.6
      */
-    public void removeDetachListener(final AbstractHtml tag,
-            final DetachListener<T> detachListener) {
+    public void removeDetachListener(final AbstractHtml tag, final DetachListener<T> detachListener) {
         final long stamp = lock.writeLock();
 
         try {
             if (detachListeners != null) {
-                final Set<DetachListener<T>> listeners = detachListeners
-                        .get(tag);
+                final Set<DetachListener<T>> listeners = detachListeners.get(tag);
                 if (listeners != null) {
                     listeners.remove(detachListener);
                 }
@@ -1599,11 +2129,8 @@ public class SharedTagContent<T> {
     }
 
     /**
-     * @param tag
-     *                                   the tag from which the listener to be
-     *                                   removed
-     * @param contentChangeListeners
-     *                                   to be removed
+     * @param tag                    the tag from which the listener to be removed
+     * @param contentChangeListeners to be removed
      * @since 3.0.6
      */
     public void removeContentChangeListeners(final AbstractHtml tag,
@@ -1614,8 +2141,7 @@ public class SharedTagContent<T> {
         try {
             if (this.contentChangeListeners != null) {
 
-                final Set<ContentChangeListener<T>> listeners = this.contentChangeListeners
-                        .get(tag);
+                final Set<ContentChangeListener<T>> listeners = this.contentChangeListeners.get(tag);
 
                 if (listeners != null) {
                     for (final ContentChangeListener<T> each : contentChangeListeners) {
@@ -1634,16 +2160,14 @@ public class SharedTagContent<T> {
      * @param detachListeners
      * @since 3.0.6
      */
-    public void removeDetachListeners(final AbstractHtml tag,
-            final Collection<DetachListener<T>> detachListeners) {
+    public void removeDetachListeners(final AbstractHtml tag, final Collection<DetachListener<T>> detachListeners) {
 
         final long stamp = lock.writeLock();
 
         try {
             if (this.detachListeners != null) {
 
-                final Set<DetachListener<T>> listeners = this.detachListeners
-                        .get(tag);
+                final Set<DetachListener<T>> listeners = this.detachListeners.get(tag);
 
                 if (listeners != null) {
                     for (final DetachListener<T> each : detachListeners) {
@@ -1658,8 +2182,7 @@ public class SharedTagContent<T> {
     }
 
     /**
-     * @param tag
-     *                the tag from which all listeners to be removed
+     * @param tag the tag from which all listeners to be removed
      * @since 3.0.6
      */
     public void removeAllContentChangeListeners(final AbstractHtml tag) {
@@ -1694,8 +2217,7 @@ public class SharedTagContent<T> {
     }
 
     /**
-     * @param tag
-     *                the tag from which all listeners to be removed
+     * @param tag the tag from which all listeners to be removed
      * @since 3.0.6
      */
     public void removeAllDetachListeners(final AbstractHtml tag) {
@@ -1730,8 +2252,7 @@ public class SharedTagContent<T> {
     }
 
     /**
-     * @param tag
-     *                the tag whose ContentFormatter to be got.
+     * @param tag the tag whose ContentFormatter to be got.
      * @return the ContentFormatter object set for the given tag.
      * @since 3.0.11
      */
@@ -1740,8 +2261,7 @@ public class SharedTagContent<T> {
         if (firstChild != null) {
             final long stamp = lock.readLock();
             try {
-                final InsertedTagData<T> insertedTagData = insertedTags
-                        .get(firstChild);
+                final InsertedTagData<T> insertedTagData = insertedTags.get(firstChild);
                 if (insertedTagData != null) {
                     return insertedTagData.formatter();
                 }
@@ -1753,20 +2273,16 @@ public class SharedTagContent<T> {
     }
 
     /**
-     * @param tag
-     *                tag from which the listeners to be got.
+     * @param tag tag from which the listeners to be got.
      * @return the ContentChangeListeners for the given tag.
      * @since 3.0.11
      */
-    public Set<ContentChangeListener<T>> getContentChangeListeners(
-            final AbstractHtml tag) {
+    public Set<ContentChangeListener<T>> getContentChangeListeners(final AbstractHtml tag) {
         final long stamp = lock.readLock();
         try {
-            final Set<ContentChangeListener<T>> listeners = contentChangeListeners
-                    .get(tag);
+            final Set<ContentChangeListener<T>> listeners = contentChangeListeners.get(tag);
             if (listeners != null) {
-                final Set<ContentChangeListener<T>> unmodifiableSet = Collections
-                        .unmodifiableSet(listeners);
+                final Set<ContentChangeListener<T>> unmodifiableSet = Collections.unmodifiableSet(listeners);
                 return unmodifiableSet;
             }
 
@@ -1777,8 +2293,7 @@ public class SharedTagContent<T> {
     }
 
     /**
-     * @param tag
-     *                tag from which the listeners to be got.
+     * @param tag tag from which the listeners to be got.
      * @return the DetachListeners for the given tag.
      * @since 3.0.11
      */
@@ -1787,8 +2302,7 @@ public class SharedTagContent<T> {
         try {
             final Set<DetachListener<T>> listeners = detachListeners.get(tag);
             if (listeners != null) {
-                final Set<DetachListener<T>> unmodifiableSet = Collections
-                        .unmodifiableSet(listeners);
+                final Set<DetachListener<T>> unmodifiableSet = Collections.unmodifiableSet(listeners);
                 return unmodifiableSet;
             }
         } finally {

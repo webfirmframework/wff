@@ -32,18 +32,15 @@ public abstract class AbstractValueSetAttribute extends AbstractAttribute {
     /**
      * sets the value for this attribute
      *
-     * @param updateClient
-     *                         true to update client browser page if it is
-     *                         available. The default value is true but it will
-     *                         be ignored if there is no client browser page.
-     * @param value
-     *                         the value for the attribute.
+     * @param updateClient true to update client browser page if it is available.
+     *                     The default value is true but it will be ignored if there
+     *                     is no client browser page.
+     * @param value        the value for the attribute.
      * @since 2.1.15
      * @author WFF
      */
     @Override
-    protected void setAttributeValue(final boolean updateClient,
-            final String value) {
+    protected void setAttributeValue(final boolean updateClient, final String value) {
         if (value != null) {
             final Collection<String> allValues = extractValues(value);
             super.replaceAllInAttributeValueSet(updateClient, allValues);
@@ -68,8 +65,7 @@ public abstract class AbstractValueSetAttribute extends AbstractAttribute {
      * sets the value for this attribute
      *
      *
-     * @param value
-     *                  the value for the attribute.
+     * @param value the value for the attribute.
      * @since 2.1.15
      * @author WFF
      */
@@ -83,8 +79,7 @@ public abstract class AbstractValueSetAttribute extends AbstractAttribute {
     /**
      * Checks if the value is a part of this attribute value.
      *
-     * @param value
-     *                  the value to be checked
+     * @param value the value to be checked
      * @return true if the given value is contained in the value string of this
      *         attribute.
      * @since 2.1.15
@@ -97,10 +92,9 @@ public abstract class AbstractValueSetAttribute extends AbstractAttribute {
     /**
      * Checks if the values are part of this attribute value.
      *
-     * @param values
-     *                   the values to be checked
-     * @return true if the given values are contained in the value string of
-     *         this attribute.
+     * @param values the values to be checked
+     * @return true if the given values are contained in the value string of this
+     *         attribute.
      * @since 2.1.15
      * @author WFF
      */
@@ -124,13 +118,10 @@ public abstract class AbstractValueSetAttribute extends AbstractAttribute {
             final Collection<String> allValues = new ArrayDeque<>();
             for (final String attrValue : attrValues) {
                 String trimmmedValue = null;
-                if (attrValue != null
-                        && !(trimmmedValue = StringUtil.strip(attrValue))
-                                .isEmpty()) {
+                if (attrValue != null && !(trimmmedValue = StringUtil.strip(attrValue)).isEmpty()) {
                     // As per Collections.addAll's doc it is faster than
                     // allValues.addAll(Arrays.asList(values));
-                    Collections.addAll(allValues,
-                            StringUtil.splitBySpace(trimmmedValue));
+                    Collections.addAll(allValues, StringUtil.splitBySpace(trimmmedValue));
                 }
             }
 
@@ -139,8 +130,8 @@ public abstract class AbstractValueSetAttribute extends AbstractAttribute {
     }
 
     /**
-     * Removes all values from the attributeValueSet and adds the given
-     * attribute values.
+     * Removes all values from the attributeValueSet and adds the given attribute
+     * values.
      *
      * @param attrValues
      * @since 3.0.1
@@ -150,15 +141,14 @@ public abstract class AbstractValueSetAttribute extends AbstractAttribute {
     }
 
     /**
-     * Removes all values from the attributeValueSet and adds the given
-     * attribute values.
+     * Removes all values from the attributeValueSet and adds the given attribute
+     * values.
      *
      * @param updateClient
      * @param attrValues
      * @since 3.0.1
      */
-    protected void replaceAllInAttributeValueSet(final boolean updateClient,
-            final String... attrValues) {
+    protected void replaceAllInAttributeValueSet(final boolean updateClient, final String... attrValues) {
         if (attrValues != null) {
 
             final Collection<String> allValues = new ArrayDeque<>();

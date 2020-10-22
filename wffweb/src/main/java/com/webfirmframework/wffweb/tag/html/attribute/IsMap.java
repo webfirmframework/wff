@@ -26,8 +26,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.ImgAttributable;
  * @author WFF
  * @since 3.0.1
  */
-public class IsMap extends AbstractAttribute
-        implements ImgAttributable, BooleanAttribute {
+public class IsMap extends AbstractAttribute implements ImgAttributable, BooleanAttribute {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -45,9 +44,9 @@ public class IsMap extends AbstractAttribute
     }
 
     /**
-     * sets the default value as <code>ismap</code>. If value is not required
-     * then use <code>new IsMap(null)</code>. Note : There might be some issue
-     * in dynamically changing state of tag if there is no default value.
+     * sets the default value as <code>ismap</code>. If value is not required then
+     * use <code>new IsMap(null)</code>. Note : There might be some issue in
+     * dynamically changing state of tag if there is no default value.
      *
      */
     public IsMap() {

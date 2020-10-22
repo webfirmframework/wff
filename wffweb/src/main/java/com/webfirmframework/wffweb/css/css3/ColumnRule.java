@@ -43,8 +43,7 @@ import com.webfirmframework.wffweb.util.StringUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class ColumnRule extends AbstractCssProperty<ColumnRule>
-        implements StateChangeInformer<CssProperty> {
+public class ColumnRule extends AbstractCssProperty<ColumnRule> implements StateChangeInformer<CssProperty> {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -67,18 +66,15 @@ public class ColumnRule extends AbstractCssProperty<ColumnRule>
     }
 
     /**
-     * @param cssValue
-     *                     the css value to set.
+     * @param cssValue the css value to set.
      */
     public ColumnRule(final String cssValue) {
         setCssValue(cssValue);
     }
 
     /**
-     * @param columnRule
-     *                       the {@code ColumnRule} object from which the
-     *                       cssValue to set.And, {@code null} will throw
-     *                       {@code NullValueException}
+     * @param columnRule the {@code ColumnRule} object from which the cssValue to
+     *                   set.And, {@code null} will throw {@code NullValueException}
      */
     public ColumnRule(final ColumnRule columnRule) {
         if (columnRule == null) {
@@ -88,8 +84,8 @@ public class ColumnRule extends AbstractCssProperty<ColumnRule>
     }
 
     /**
-     * the color/color code to set. The alternative method {@code setCssValue}
-     * can also be used.
+     * the color/color code to set. The alternative method {@code setCssValue} can
+     * also be used.
      *
      * @param value
      * @return the current object
@@ -135,8 +131,8 @@ public class ColumnRule extends AbstractCssProperty<ColumnRule>
     }
 
     /**
-     * gets the value, {@code getCssValue} method can also be used to get the
-     * same value.
+     * gets the value, {@code getCssValue} method can also be used to get the same
+     * value.
      *
      * @return the value in String.
      * @since 1.0.0
@@ -147,13 +143,12 @@ public class ColumnRule extends AbstractCssProperty<ColumnRule>
     }
 
     /**
-     * @param cssValue
-     *                     the value should be for example
-     *                     <code>medium none #0000ff</code>. {@code null} is
-     *                     considered as an invalid value and it will throw
-     *                     {@code NullValueException}.And an empty string is
-     *                     also considered as an invalid value and it will throw
-     *                     {@code InvalidValueException}.
+     * @param cssValue the value should be for example
+     *                 <code>medium none #0000ff</code>. {@code null} is considered
+     *                 as an invalid value and it will throw
+     *                 {@code NullValueException}.And an empty string is also
+     *                 considered as an invalid value and it will throw
+     *                 {@code InvalidValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -175,8 +170,7 @@ public class ColumnRule extends AbstractCssProperty<ColumnRule>
             ColumnRuleStyle columnRuleStyle = null;
             ColumnRuleColor columnRuleColor = null;
             for (final String eachPart : cssValueParts) {
-                if (columnRuleWidth == null
-                        && ColumnRuleWidth.isValid(eachPart)) {
+                if (columnRuleWidth == null && ColumnRuleWidth.isValid(eachPart)) {
                     if (this.columnRuleWidth == null) {
                         columnRuleWidth = new ColumnRuleWidth(eachPart);
                         columnRuleWidth.setStateChangeInformer(this);
@@ -185,11 +179,9 @@ public class ColumnRule extends AbstractCssProperty<ColumnRule>
                         this.columnRuleWidth.setCssValue(eachPart);
                         columnRuleWidth = this.columnRuleWidth;
                     }
-                } else if (columnRuleStyle == null
-                        && ColumnRuleStyle.isValid(eachPart)) {
+                } else if (columnRuleStyle == null && ColumnRuleStyle.isValid(eachPart)) {
                     columnRuleStyle = ColumnRuleStyle.getThis(eachPart);
-                } else if (columnRuleColor == null
-                        && ColumnRuleColor.isValid(eachPart)) {
+                } else if (columnRuleColor == null && ColumnRuleColor.isValid(eachPart)) {
                     columnRuleColor = new ColumnRuleColor(eachPart);
                     columnRuleColor.setStateChangeInformer(this);
                     columnRuleColor.setAlreadyInUse(true);
@@ -198,20 +190,17 @@ public class ColumnRule extends AbstractCssProperty<ColumnRule>
             final StringBuilder cssValueBuilder = new StringBuilder();
             boolean invalid = true;
             if (columnRuleWidth != null) {
-                cssValueBuilder.append(columnRuleWidth.getCssValue())
-                        .append(' ');
+                cssValueBuilder.append(columnRuleWidth.getCssValue()).append(' ');
                 invalid = false;
             } else if (this.columnRuleWidth != null) {
                 this.columnRuleWidth.setAlreadyInUse(false);
             }
             if (columnRuleStyle != null) {
-                cssValueBuilder.append(columnRuleStyle.getCssValue())
-                        .append(' ');
+                cssValueBuilder.append(columnRuleStyle.getCssValue()).append(' ');
                 invalid = false;
             }
             if (columnRuleColor != null) {
-                cssValueBuilder.append(columnRuleColor.getCssValue())
-                        .append(' ');
+                cssValueBuilder.append(columnRuleColor.getCssValue()).append(' ');
                 invalid = false;
             } else if (this.columnRuleColor != null) {
                 this.columnRuleColor.setAlreadyInUse(false);
@@ -272,13 +261,11 @@ public class ColumnRule extends AbstractCssProperty<ColumnRule>
     }
 
     /**
-     * @param columnRuleWidth
-     *                            the columnRuleWidth to set
+     * @param columnRuleWidth the columnRuleWidth to set
      * @since 1.0.0
      * @author WFF
      */
-    public ColumnRule setColumnRuleWidth(
-            final ColumnRuleWidth columnRuleWidth) {
+    public ColumnRule setColumnRuleWidth(final ColumnRuleWidth columnRuleWidth) {
 
         final StringBuilder cssValueBuilder = new StringBuilder();
 
@@ -295,8 +282,7 @@ public class ColumnRule extends AbstractCssProperty<ColumnRule>
             cssValueBuilder.append(columnRuleColor.getCssValue());
         }
 
-        final String trimmedCssValue = StringBuilderUtil
-                .getTrimmedString(cssValueBuilder).toString();
+        final String trimmedCssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder).toString();
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
         if (this.columnRuleWidth != null) {
@@ -327,14 +313,12 @@ public class ColumnRule extends AbstractCssProperty<ColumnRule>
     }
 
     /**
-     * @param columnRuleStyle
-     *                            the colunmRuleStyle to set
+     * @param columnRuleStyle the colunmRuleStyle to set
      * @since 1.0.0
      * @author WFF
      * @return
      */
-    public ColumnRule setColumnRuleStyle(
-            final ColumnRuleStyle columnRuleStyle) {
+    public ColumnRule setColumnRuleStyle(final ColumnRuleStyle columnRuleStyle) {
 
         final StringBuilder cssValueBuilder = new StringBuilder();
 
@@ -350,8 +334,7 @@ public class ColumnRule extends AbstractCssProperty<ColumnRule>
             cssValueBuilder.append(columnRuleColor.getCssValue());
         }
 
-        final String trimmedCssValue = StringBuilderUtil
-                .getTrimmedString(cssValueBuilder).toString();
+        final String trimmedCssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder).toString();
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
         this.columnRuleStyle = columnRuleStyle;
@@ -373,14 +356,12 @@ public class ColumnRule extends AbstractCssProperty<ColumnRule>
     }
 
     /**
-     * @param columnRuleColor
-     *                            the columnRuleColor to set
+     * @param columnRuleColor the columnRuleColor to set
      * @since 1.0.0
      * @author WFF
      * @return the current instance.
      */
-    public ColumnRule setColumnRuleColor(
-            final ColumnRuleColor columnRuleColor) {
+    public ColumnRule setColumnRuleColor(final ColumnRuleColor columnRuleColor) {
 
         final StringBuilder cssValueBuilder = new StringBuilder();
 
@@ -396,8 +377,7 @@ public class ColumnRule extends AbstractCssProperty<ColumnRule>
             cssValueBuilder.append(columnRuleColor.getCssValue());
         }
 
-        final String trimmedCssValue = StringBuilderUtil
-                .getTrimmedString(cssValueBuilder).toString();
+        final String trimmedCssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder).toString();
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
         if (this.columnRuleColor != null) {

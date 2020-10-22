@@ -54,8 +54,7 @@ public class Loop extends AbstractAttribute implements AudioAttributable {
     }
 
     /**
-     * @param value
-     *                  the value may be <code>loop</code>
+     * @param value the value may be <code>loop</code>
      * @since 1.1.4
      * @author WFF
      */
@@ -78,8 +77,7 @@ public class Loop extends AbstractAttribute implements AudioAttributable {
         if (loop == null) {
             super.setAttributeValue(null);
         } else {
-            super.setAttributeValue(
-                    loop.booleanValue() ? "loop" : String.valueOf(loop));
+            super.setAttributeValue(loop.booleanValue() ? "loop" : String.valueOf(loop));
         }
         this.loop = loop;
     }
@@ -104,8 +102,7 @@ public class Loop extends AbstractAttribute implements AudioAttributable {
     }
 
     /**
-     * @param loop
-     *                 the loop to set. {@code null} will remove the value.
+     * @param loop the loop to set. {@code null} will remove the value.
      * @author WFF
      * @since 1.0.0
      */
@@ -113,8 +110,7 @@ public class Loop extends AbstractAttribute implements AudioAttributable {
         if (loop == null) {
             super.setAttributeValue(null);
         } else {
-            super.setAttributeValue(
-                    loop.booleanValue() ? "loop" : String.valueOf(loop));
+            super.setAttributeValue(loop.booleanValue() ? "loop" : String.valueOf(loop));
         }
         this.loop = loop;
     }

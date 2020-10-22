@@ -19,18 +19,14 @@ public class CustomEventAttribute extends AbstractEventAttribute {
 
     private static final long serialVersionUID = 1L;
 
-    public CustomEventAttribute(final String attributeName,
-            final ServerAsyncMethod serverAsyncMethod) {
+    public CustomEventAttribute(final String attributeName, final ServerAsyncMethod serverAsyncMethod) {
         super(attributeName, null, serverAsyncMethod, null, null);
     }
 
-    public CustomEventAttribute(final String attributeName,
-            final String preJsFunctionBody,
-            final ServerAsyncMethod serverAsyncMethod,
-            final String jsFilterFunctionBody,
-            final String postJsFunctionBody) {
-        super(attributeName, preJsFunctionBody, serverAsyncMethod,
-                jsFilterFunctionBody, postJsFunctionBody);
+    public CustomEventAttribute(final String attributeName, final String jsPreFunctionBody,
+            final ServerAsyncMethod serverAsyncMethod, final String jsFilterFunctionBody,
+            final String jsPostFunctionBody) {
+        super(attributeName, jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody);
     }
 
     /**
@@ -39,29 +35,84 @@ public class CustomEventAttribute extends AbstractEventAttribute {
      * @param serverSideData
      * @since 3.0.2
      */
-    public CustomEventAttribute(final String attributeName,
-            final ServerAsyncMethod serverAsyncMethod,
+    public CustomEventAttribute(final String attributeName, final ServerAsyncMethod serverAsyncMethod,
             final Object serverSideData) {
-        super(attributeName, null, serverAsyncMethod, null, null,
+        super(attributeName, null, serverAsyncMethod, null, null, serverSideData);
+    }
+
+    /**
+     * @param attributeName
+     * @param jsPreFunctionBody
+     * @param serverAsyncMethod
+     * @param jsFilterFunctionBody
+     * @param jsPostFunctionBody
+     * @param serverSideData
+     * @since 3.0.2
+     */
+    public CustomEventAttribute(final String attributeName, final String jsPreFunctionBody,
+            final ServerAsyncMethod serverAsyncMethod, final String jsFilterFunctionBody,
+            final String jsPostFunctionBody, final Object serverSideData) {
+        super(attributeName, jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody,
                 serverSideData);
     }
 
     /**
      * @param attributeName
-     * @param preJsFunctionBody
+     * @param preventDefault       true to call event.preventDefault(); on event
+     *                             otherwise false. In almost all cases this may not
+     *                             be required.
+     * @param jsPreFunctionBody
      * @param serverAsyncMethod
      * @param jsFilterFunctionBody
-     * @param postJsFunctionBody
+     * @param jsPostFunctionBody
      * @param serverSideData
-     * @since 3.0.2
+     * @since 3.0.15
      */
-    public CustomEventAttribute(final String attributeName,
-            final String preJsFunctionBody,
-            final ServerAsyncMethod serverAsyncMethod,
-            final String jsFilterFunctionBody, final String postJsFunctionBody,
-            final Object serverSideData) {
-        super(attributeName, preJsFunctionBody, serverAsyncMethod,
-                jsFilterFunctionBody, postJsFunctionBody, serverSideData);
+    public CustomEventAttribute(final String attributeName, final boolean preventDefault,
+            final String jsPreFunctionBody, final ServerAsyncMethod serverAsyncMethod,
+            final String jsFilterFunctionBody, final String jsPostFunctionBody, final Object serverSideData) {
+        super(attributeName, preventDefault, jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody,
+                jsPostFunctionBody, serverSideData);
+    }
+
+    /**
+     * @param attributeName
+     * @param preventDefault       true to call event.preventDefault(); on event
+     *                             otherwise false. In almost all cases this may not
+     *                             be required.
+     * @param jsPreFunctionBody
+     * @param serverAsyncMethod
+     * @param jsFilterFunctionBody
+     * @param jsPostFunctionBody
+     * @since 3.0.15
+     */
+    public CustomEventAttribute(final String attributeName, final boolean preventDefault,
+            final String jsPreFunctionBody, final ServerAsyncMethod serverAsyncMethod,
+            final String jsFilterFunctionBody, final String jsPostFunctionBody) {
+        super(attributeName, preventDefault, jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody,
+                jsPostFunctionBody, null);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.webfirmframework.wffweb.tag.html.attribute.event.
+     * AbstractEventAttribute#isPreventDefault()
+     */
+    @Override
+    public boolean isPreventDefault() {
+        return super.isPreventDefault();
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.webfirmframework.wffweb.tag.html.attribute.event.
+     * AbstractEventAttribute#setPreventDefault(boolean)
+     */
+    @Override
+    public void setPreventDefault(final boolean preventDefault) {
+        super.setPreventDefault(preventDefault);
     }
 
 }

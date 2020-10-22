@@ -45,19 +45,16 @@ import com.webfirmframework.wffweb.util.StringUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class Columns extends AbstractCssProperty<Columns>
-        implements StateChangeInformer<CssProperty> {
+public class Columns extends AbstractCssProperty<Columns> implements StateChangeInformer<CssProperty> {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    private static final Logger LOGGER = Logger
-            .getLogger(Columns.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Columns.class.getName());
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays
-            .asList(INITIAL, INHERIT);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(INITIAL, INHERIT);
 
     private String cssValue;
 
@@ -76,18 +73,15 @@ public class Columns extends AbstractCssProperty<Columns>
     }
 
     /**
-     * @param cssValue
-     *                     the css value to set.
+     * @param cssValue the css value to set.
      */
     public Columns(final String cssValue) {
         setCssValue(cssValue);
     }
 
     /**
-     * @param columns
-     *                    the {@code Columns} object from which the cssValue to
-     *                    set.And, {@code null} will throw
-     *                    {@code NullValueException}
+     * @param columns the {@code Columns} object from which the cssValue to set.And,
+     *                {@code null} will throw {@code NullValueException}
      */
     public Columns(final Columns columns) {
         if (columns == null) {
@@ -130,11 +124,9 @@ public class Columns extends AbstractCssProperty<Columns>
     }
 
     /**
-     * @param cssValue
-     *                     the value should be in the format of
-     *                     <code>55px</code> or <code>95%</code>. {@code null}
-     *                     is considered as an invalid value and it will throw
-     *                     {@code NullValueException}.
+     * @param cssValue the value should be in the format of <code>55px</code> or
+     *                 <code>95%</code>. {@code null} is considered as an invalid
+     *                 value and it will throw {@code NullValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -310,10 +302,8 @@ public class Columns extends AbstractCssProperty<Columns>
 
         if (columnWidth != null) {
             final String columnWidthCssValue = columnWidth.getCssValue();
-            if (ColumnWidth.INITIAL.equals(columnWidthCssValue)
-                    || ColumnWidth.INHERIT.equals(columnWidthCssValue)) {
-                throw new InvalidValueException(
-                        "columnWidth cannot have initial/inherit as its cssValue");
+            if (ColumnWidth.INITIAL.equals(columnWidthCssValue) || ColumnWidth.INHERIT.equals(columnWidthCssValue)) {
+                throw new InvalidValueException("columnWidth cannot have initial/inherit as its cssValue");
             }
             cssValueBuilder.append(columnWidthCssValue).append(' ');
         }
@@ -323,12 +313,10 @@ public class Columns extends AbstractCssProperty<Columns>
             cssValueBuilder.append(columnWidthCssValue);
         }
 
-        final String trimmedCssValue = StringBuilderUtil
-                .getTrimmedString(cssValueBuilder);
+        final String trimmedCssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder);
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
-        if (columnWidth != null && columnWidth.isAlreadyInUse()
-                && this.columnWidth != columnWidth) {
+        if (columnWidth != null && columnWidth.isAlreadyInUse() && this.columnWidth != columnWidth) {
             if (LOGGER.isLoggable(Level.WARNING)) {
                 LOGGER.warning(
                         "the given columnWidth is already used by another object so a new object or the previous object (if it exists) of ColumnWidth will be used");
@@ -364,20 +352,16 @@ public class Columns extends AbstractCssProperty<Columns>
 
         if (columnCount != null) {
             final String columnWidthCssValue = columnCount.getCssValue();
-            if (ColumnCount.INITIAL.equals(columnWidthCssValue)
-                    || ColumnCount.INHERIT.equals(columnWidthCssValue)) {
-                throw new InvalidValueException(
-                        "columnWidth cannot have initial/inherit as its cssValue");
+            if (ColumnCount.INITIAL.equals(columnWidthCssValue) || ColumnCount.INHERIT.equals(columnWidthCssValue)) {
+                throw new InvalidValueException("columnWidth cannot have initial/inherit as its cssValue");
             }
             cssValueBuilder.append(columnWidthCssValue);
         }
 
-        final String trimmedCssValue = StringBuilderUtil
-                .getTrimmedString(cssValueBuilder);
+        final String trimmedCssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder);
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
-        if (columnCount != null && columnCount.isAlreadyInUse()
-                && this.columnCount != columnCount) {
+        if (columnCount != null && columnCount.isAlreadyInUse() && this.columnCount != columnCount) {
             if (LOGGER.isLoggable(Level.WARNING)) {
                 LOGGER.warning(
                         "the given columnCount is already used by another object so a new object or the previous object (if it exists) of ColumnWidth will be used");
@@ -410,10 +394,8 @@ public class Columns extends AbstractCssProperty<Columns>
 
             final String cssValue = columnWidth.getCssValue();
 
-            if (ColumnWidth.INITIAL.equals(cssValue)
-                    || ColumnWidth.INHERIT.equals(cssValue)) {
-                throw new InvalidValueException(
-                        "initial/inherit cannot be set as columnWidth cssValue");
+            if (ColumnWidth.INITIAL.equals(cssValue) || ColumnWidth.INHERIT.equals(cssValue)) {
+                throw new InvalidValueException("initial/inherit cannot be set as columnWidth cssValue");
             }
 
             setColumnWidth(columnWidth);
@@ -423,10 +405,8 @@ public class Columns extends AbstractCssProperty<Columns>
 
             final String cssValue = columnCount.getCssValue();
 
-            if (ColumnCount.INITIAL.equals(cssValue)
-                    || ColumnCount.INHERIT.equals(cssValue)) {
-                throw new InvalidValueException(
-                        "initial/inherit cannot be set as columnCount cssValue");
+            if (ColumnCount.INITIAL.equals(cssValue) || ColumnCount.INHERIT.equals(cssValue)) {
+                throw new InvalidValueException("initial/inherit cannot be set as columnCount cssValue");
             }
 
             setColumnCount(columnCount);

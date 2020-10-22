@@ -47,8 +47,7 @@ public class MarginBottom extends AbstractCssProperty<MarginBottom> {
     public static final String INHERIT = "inherit";
     public static final String AUTO = "auto";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays
-            .asList(INITIAL, INHERIT, AUTO);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(INITIAL, INHERIT, AUTO);
 
     private String cssValue;
     private Float value;
@@ -62,18 +61,16 @@ public class MarginBottom extends AbstractCssProperty<MarginBottom> {
     }
 
     /**
-     * @param cssValue
-     *                     the css value to set.
+     * @param cssValue the css value to set.
      */
     public MarginBottom(final String cssValue) {
         setCssValue(cssValue);
     }
 
     /**
-     * @param marginBottom
-     *                         the {@code MarginBottom} object from which the
-     *                         cssValue to set.And, {@code null} will throw
-     *                         {@code NullValueException}
+     * @param marginBottom the {@code MarginBottom} object from which the cssValue
+     *                     to set.And, {@code null} will throw
+     *                     {@code NullValueException}
      */
     public MarginBottom(final MarginBottom marginBottom) {
         if (marginBottom == null) {
@@ -83,9 +80,8 @@ public class MarginBottom extends AbstractCssProperty<MarginBottom> {
     }
 
     /**
-     * @param percent
-     *                    the percentage value to set. The cssLengthUnit will
-     *                    automatically set to %.
+     * @param percent the percentage value to set. The cssLengthUnit will
+     *                automatically set to %.
      * @since 1.0.0
      * @author WFF
      */
@@ -112,8 +108,7 @@ public class MarginBottom extends AbstractCssProperty<MarginBottom> {
      * @since 1.0.0
      * @author WFF
      */
-    public MarginBottom setValue(final float value,
-            final CssLengthUnit cssLengthUnit) {
+    public MarginBottom setValue(final float value, final CssLengthUnit cssLengthUnit) {
         this.value = value;
         this.cssLengthUnit = cssLengthUnit;
         cssValue = String.valueOf(value) + cssLengthUnit;
@@ -124,8 +119,7 @@ public class MarginBottom extends AbstractCssProperty<MarginBottom> {
     }
 
     /**
-     * @param percent
-     *                    the percent to set
+     * @param percent the percent to set
      * @since 1.0.0
      * @author WFF
      */
@@ -172,11 +166,11 @@ public class MarginBottom extends AbstractCssProperty<MarginBottom> {
     }
 
     /**
-     * gets the width in float value. {@code MarginBottom#getUnit()} should be
-     * used to get the cssLengthUnit for this value.
+     * gets the width in float value. {@code MarginBottom#getUnit()} should be used
+     * to get the cssLengthUnit for this value.
      *
-     * @return the value in float or null if the cssValue is
-     *         <code>initial</code> or <code>inherit</code>.
+     * @return the value in float or null if the cssValue is <code>initial</code> or
+     *         <code>inherit</code>.
      * @since 1.0.0
      * @author WFF
      */
@@ -195,11 +189,9 @@ public class MarginBottom extends AbstractCssProperty<MarginBottom> {
     }
 
     /**
-     * @param cssValue
-     *                     the value should be in the format of
-     *                     <code>55px</code> or <code>95%</code>. {@code null}
-     *                     is considered as an invalid value and it will throw
-     *                     {@code NullValueException}.
+     * @param cssValue the value should be in the format of <code>55px</code> or
+     *                 <code>95%</code>. {@code null} is considered as an invalid
+     *                 value and it will throw {@code NullValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -213,12 +205,10 @@ public class MarginBottom extends AbstractCssProperty<MarginBottom> {
             } else {
                 final String trimmedCssValue = StringUtil.strip(cssValue);
                 boolean invalidValue = true;
-                for (final CssLengthUnit cssLengthUnit : CssLengthUnit
-                        .values()) {
+                for (final CssLengthUnit cssLengthUnit : CssLengthUnit.values()) {
                     final String unit = cssLengthUnit.getUnit();
                     if (trimmedCssValue.endsWith(unit)) {
-                        final String valueOnly = trimmedCssValue
-                                .replaceFirst(unit, "");
+                        final String valueOnly = trimmedCssValue.replaceFirst(unit, "");
                         try {
                             value = Float.parseFloat(valueOnly);
                             // it could be -ve when it comes as sub
@@ -235,8 +225,7 @@ public class MarginBottom extends AbstractCssProperty<MarginBottom> {
                         break;
                     }
                 }
-                if (trimmedCssValue.equalsIgnoreCase(INITIAL)
-                        || trimmedCssValue.equalsIgnoreCase(INHERIT)
+                if (trimmedCssValue.equalsIgnoreCase(INITIAL) || trimmedCssValue.equalsIgnoreCase(INHERIT)
                         || trimmedCssValue.equalsIgnoreCase(AUTO)) {
                     this.cssValue = trimmedCssValue.toLowerCase();
                     cssLengthUnit = null;
@@ -297,8 +286,7 @@ public class MarginBottom extends AbstractCssProperty<MarginBottom> {
     /**
      * validates if the given cssValue is valid for this class.
      *
-     * @param cssValue
-     *                     the value to check.
+     * @param cssValue the value to check.
      * @return true if valid and false if invalid.
      * @author WFF
      * @since 1.0.0

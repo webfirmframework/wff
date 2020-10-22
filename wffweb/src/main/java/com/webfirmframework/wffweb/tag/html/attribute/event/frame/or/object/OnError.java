@@ -31,8 +31,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.TextAreaAttributable;
  * @author WFF
  *
  */
-public class OnError extends AbstractEventAttribute
-        implements InputAttributable, TextAreaAttributable {
+public class OnError extends AbstractEventAttribute implements InputAttributable, TextAreaAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -56,12 +55,9 @@ public class OnError extends AbstractEventAttribute
         setServerAsyncMethod(null, serverAsyncMethod, null, null);
     }
 
-    public OnError(final String preJsFunctionBody,
-            final ServerAsyncMethod serverAsyncMethod,
-            final String jsFilterFunctionBody,
-            final String postJsFunctionBody) {
-        setServerAsyncMethod(preJsFunctionBody, serverAsyncMethod,
-                jsFilterFunctionBody, postJsFunctionBody);
+    public OnError(final String jsPreFunctionBody, final ServerAsyncMethod serverAsyncMethod,
+            final String jsFilterFunctionBody, final String jsPostFunctionBody) {
+        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody);
     }
 
     public OnError(final String value) {
@@ -73,26 +69,22 @@ public class OnError extends AbstractEventAttribute
      * @param serverSideData
      * @since 3.0.2
      */
-    public OnError(final ServerAsyncMethod serverAsyncMethod,
-            final Object serverSideData) {
-        setServerAsyncMethod(null, serverAsyncMethod, null, null,
-                serverSideData);
+    public OnError(final ServerAsyncMethod serverAsyncMethod, final Object serverSideData) {
+        setServerAsyncMethod(null, serverAsyncMethod, null, null, serverSideData);
     }
 
     /**
-     * @param preJsFunctionBody
+     * @param jsPreFunctionBody
      * @param serverAsyncMethod
      * @param jsFilterFunctionBody
-     * @param postJsFunctionBody
+     * @param jsPostFunctionBody
      * @param serverSideData
      * @since 3.0.2
      */
-    public OnError(final String preJsFunctionBody,
-            final ServerAsyncMethod serverAsyncMethod,
-            final String jsFilterFunctionBody, final String postJsFunctionBody,
-            final Object serverSideData) {
-        setServerAsyncMethod(preJsFunctionBody, serverAsyncMethod,
-                jsFilterFunctionBody, postJsFunctionBody, serverSideData);
+    public OnError(final String jsPreFunctionBody, final ServerAsyncMethod serverAsyncMethod,
+            final String jsFilterFunctionBody, final String jsPostFunctionBody, final Object serverSideData) {
+        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody,
+                serverSideData);
     }
 
     /**

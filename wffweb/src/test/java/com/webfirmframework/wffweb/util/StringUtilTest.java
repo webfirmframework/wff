@@ -22,6 +22,8 @@ import java.util.logging.Logger;
 
 import org.junit.Test;
 
+import com.webfirmframework.wffweb.lang.UnicodeString;
+
 /**
  * @author WFF
  * @since 1.0.0
@@ -35,11 +37,134 @@ public class StringUtilTest {
 
     /**
      * Test method for
-     * {@link com.webfirmframework.wffweb.util.StringUtil#convertToSingleSpace(java.lang.String)}.
+     * {@link com.webfirmframework.wffweb.util.StringUtil#convertWhitespacesToSingleSpace(java.lang.String)}.
      */
     @Test
     public void testConvertToSingleSpace() {
         assertEquals("a b", StringUtil.convertToSingleSpace("a   b"));
+        
+        assertEquals("a b", StringUtil.convertToSingleSpace("a \n  b"));
+        
+        assertEquals("a b", StringUtil.convertToSingleSpace("a\n  b"));
+        
+        assertEquals("a b", StringUtil.convertToSingleSpace("a\n\n  b"));
+        
+        assertEquals("a b", StringUtil.convertToSingleSpace("a\n\n   b"));
+        
+        assertEquals("a \nb", StringUtil.convertToSingleSpace("a \nb"));
+        
+        assertEquals("a\n b", StringUtil.convertToSingleSpace("a\n b"));
+    }
+    
+    @Test
+    public void testConvertToSingleSpacePerformance() {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < 1000; i++) {
+            builder.append('a');
+            for (int j = 0; j < 1000; j++) {
+                builder.append(' ');
+            }
+        }
+        StringUtil.convertToSingleSpace(builder.toString());
+    }
+    
+    @Test
+    public void testConvertWhitespacesToSingleSpacePerformance() {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < 1000; i++) {
+            builder.append('a');
+            for (int j = 0; j < 1000; j++) {
+                builder.append(' ');
+            }
+        }
+        StringUtil.convertToSingleSpace(builder.toString());
+    }
+    
+    @Test
+    public void testConvertSpacesToSingleSpace() {
+        assertEquals(" a b ", StringUtil.convertSpacesToSingleSpace("  a   b   "));
+        
+        assertEquals("a b", StringUtil.convertSpacesToSingleSpace("a   b"));
+        
+        assertEquals("a \n b", StringUtil.convertSpacesToSingleSpace("a \n  b"));
+        
+        assertEquals("a\n b", StringUtil.convertSpacesToSingleSpace("a\n  b"));
+        
+        assertEquals("a\n\n b", StringUtil.convertSpacesToSingleSpace("a\n\n  b"));
+        
+        assertEquals("a\n\n b", StringUtil.convertSpacesToSingleSpace("a\n\n   b"));
+        
+        assertEquals("a \nb", StringUtil.convertSpacesToSingleSpace("a \nb"));
+        
+        assertEquals("a\n b", StringUtil.convertSpacesToSingleSpace("a\n b"));
+    }
+    
+    @Test
+    public void testConvertWhitespacesToSingleSpace() {
+        assertEquals("a b", StringUtil.convertWhitespacesToSingleSpace("a   b"));
+        
+        assertEquals("a b", StringUtil.convertWhitespacesToSingleSpace("a \n  b"));
+        
+        assertEquals("a b", StringUtil.convertWhitespacesToSingleSpace("a\n  b"));
+        
+        assertEquals("a b", StringUtil.convertWhitespacesToSingleSpace("a\n\n  b"));
+        
+        assertEquals("a b", StringUtil.convertWhitespacesToSingleSpace("a\n\n   b"));
+        
+        assertEquals("a b", StringUtil.convertWhitespacesToSingleSpace("a \nb"));
+        
+        assertEquals("a b", StringUtil.convertWhitespacesToSingleSpace("a\n b"));
+    }
+    
+    @Test
+    public void testRemoveSpaces() {
+
+        assertEquals("ab", StringUtil.removeSpaces("a   b"));
+
+        assertEquals("a\nb", StringUtil.removeSpaces("a \n b"));
+        
+        assertEquals("a\nb", StringUtil.removeSpaces("a \n  b"));
+        
+        assertEquals("a\nb", StringUtil.removeSpaces("a  \n b"));
+        
+        assertEquals("a\nb", StringUtil.removeSpaces("a  \n  b"));
+
+        assertEquals("a\nb", StringUtil.removeSpaces("a\n  b"));
+
+        assertEquals("a\n\nb", StringUtil.removeSpaces("a\n\n  b"));
+
+        assertEquals("a\n\nb", StringUtil.removeSpaces("a\n\n   b"));
+
+        assertEquals("a\nb", StringUtil.removeSpaces("a \nb"));
+
+        assertEquals("a\nb", StringUtil.removeSpaces("a\n b"));
+
+    }
+    
+    
+    @Test
+    public void testRemoveWhitespaces() {
+
+        assertEquals("ab", StringUtil.removeWhitespaces("a   b"));
+
+        assertEquals("ab", StringUtil.removeWhitespaces("a \n b"));
+        
+        assertEquals("ab", StringUtil.removeWhitespaces("a \n  b"));
+        
+        assertEquals("ab", StringUtil.removeWhitespaces("a  \n b"));
+        
+        assertEquals("ab", StringUtil.removeWhitespaces("a  \n  b"));
+
+        assertEquals("ab", StringUtil.removeWhitespaces("a\n  b"));
+
+        assertEquals("ab", StringUtil.removeWhitespaces("a\n\n  b"));
+
+        assertEquals("ab", StringUtil.removeWhitespaces("a\n\n   b"));
+
+        assertEquals("ab", StringUtil.removeWhitespaces("a \nb"));
+
+        assertEquals("ab", StringUtil.removeWhitespaces("a\n b"));
+
     }
 
     /**
@@ -218,6 +343,17 @@ public class StringUtilTest {
         assertTrue(StringUtil.isEqual(obj1, obj2));
         assertTrue(StringUtil.isEqual("hi", "hi"));
     }
+    
+    @Test
+    public void testSplitByAny() {
+        assertArrayEquals(new String[] {new String("one"), new String("two"), new String("three"), new String("")}, StringUtil.splitByAny("one;two;three;", new int[] {';'}));
+        assertArrayEquals(new String[] {new String("one"), new String("two"), new String("three"), new String("")}, StringUtil.splitByAny("one:two;three;", new int[] {';', ':'}));
+        assertArrayEquals(new String[] {new String("one"), new String("two"), new String(""), new String("")}, StringUtil.splitByAny("one:two;;", new int[] {';', ':'}));
+        assertArrayEquals(new String[] {new String("one"), new String("two;;")}, StringUtil.splitByAny("one:two;;", new int[] {':'}));
+        
+        assertArrayEquals(new String[] {new String("one:two;;")}, StringUtil.splitByAny("one:two;;", new int[0]));
+        assertArrayEquals(new String[] {new String("")}, StringUtil.splitByAny("", new int[0]));
+    }
 
     @SuppressWarnings("unused")
     @Test
@@ -252,11 +388,176 @@ public class StringUtilTest {
         }
 
     }
+    
+    @Test
+    public void testEndsWithWhitespace() throws Exception {
+        String valContainingUnicodeChar = "yes😀 ";
+        assertTrue(StringUtil.endsWithWhitespace(valContainingUnicodeChar));
+        assertTrue(StringUtil.endsWithWhitespace(" yes😀 "));
+        
+        assertTrue(StringUtil.endsWithWhitespace("yes "));
+        
+        assertFalse(StringUtil.endsWithWhitespace(" yes😀"));
+        assertFalse(StringUtil.endsWithWhitespace("yes😀"));
+    }
+    
+    @Test
+    public void testStartsWithWhitespace() throws Exception {
+        String valContainingUnicodeChar = " yes😀 ";
+        assertTrue(StringUtil.startsWithWhitespace(valContainingUnicodeChar));
+        
+        assertTrue(StringUtil.startsWithWhitespace(" yes😀"));
+        assertFalse(StringUtil.startsWithWhitespace("yes😀 "));
+        
+    }
+    
+    @Test
+    public void testSplitByCodePoint() throws Exception {
+        
+        
+        
+        assertArrayEquals(new String[] {"one", "two", "three"}, StringUtil.split("one/two/three", "/".codePoints().toArray()[0]));
+        assertArrayEquals(new String[] {"one", "two", "three"}, "one/two/three".split("[ /]"));
+        assertArrayEquals(new String[] {"one", "two", "three"}, "one two three".split("[ /]"));
+        assertArrayEquals(new String[] {"one", "two", "three"}, "one two/three".split("[ /]"));
+        
+        //FYI 
+        //U+1F600
+        String unicodeVal = "😀";
+        assertEquals(2, unicodeVal.length());        
+        assertEquals(2, unicodeVal.toCharArray().length);        
+        assertEquals(1, unicodeVal.codePoints().toArray().length); 
+        
+        char c = unicodeVal.toCharArray()[0];
+        
+        assertEquals("a" + unicodeVal.toCharArray()[1], unicodeVal.replace(c, 'a'));
+        
+        assertTrue(unicodeVal.contains(c + ""));
+        String valueContainingUnicode =  "one😀two😀three";
+        
+        
+        //regex based String.split works well, it considers unicode        
+        String[] stringRegExSplit = ("a" + unicodeVal).split("["+unicodeVal.toCharArray()[0]+"]");
+        assertEquals(1, stringRegExSplit.length);
+        assertEquals("a😀", stringRegExSplit[0]);        
+        
+        
+        
+        String[] expected = {"one", "two", "three"};
+        
+        int deli = Character.codePointAt(";", 0);
+        
+        assertEquals("one;two;three", StringUtil.split("one;two;three", ':')[0]);
+        
+        assertEquals("without", StringUtil.split("without", deli)[0]);
+        
+        assertEquals("", StringUtil.split("", deli)[0]);
+        
+        assertEquals("", StringUtil.split(";", deli)[0]);
+        
+        assertEquals("one", StringUtil.split("one;two;three", deli)[0]);
+        
+        assertEquals("two", StringUtil.split("one;two;three", deli)[1]);
+        
+        assertEquals("three", StringUtil.split("one;two;three", deli)[2]);
+        
+        assertEquals("", StringUtil.split(";two;three", deli)[0]);
+        
+        assertEquals("", StringUtil.split("one;;three", deli)[1]);
+        
+        assertEquals("", StringUtil.split("one;two;", deli)[2]);
+        
+        assertArrayEquals(new String[] {"one", ""}, StringUtil.split("one;", deli));
+        
+        assertArrayEquals(new String[] {"", "one"}, StringUtil.split(";one", deli));
+        
+        assertArrayEquals(new String[] {"one"}, StringUtil.split("one", deli));
+        
+        assertArrayEquals(new String[] {""}, StringUtil.split("", deli));
+        
+        assertArrayEquals(new String[] {"", "two", "three", ""}, StringUtil.split(";two;three;", deli));
+        
+        assertArrayEquals(new String[] {"", "", "three", ""}, StringUtil.split(";;three;", deli));
+        
+        assertArrayEquals(new String[] {"", "", "", ""}, StringUtil.split(";;;", deli));
+        
+        assertArrayEquals(expected, StringUtil.split("one;two;three", deli));
+        
+        assertArrayEquals(new String[] {"one", "two", "three", ""}, StringUtil.split("one;two;three;", deli));
+        
+        assertArrayEquals(new String[] {" one ", " two ", " three ", " "}, StringUtil.split(" one ; two ; three ; ", deli));
+        
+        deli = ';';
+        
+        assertArrayEquals(expected, StringUtil.split("one;two;three", deli));
+        
+        assertArrayEquals(new String[] {"one", "two", "three", ""}, StringUtil.split("one;two;three;", deli));
+        
+        assertArrayEquals(new String[] {" one ", " two ", " three ", " "}, StringUtil.split(" one ; two ; three ; ", deli));
+        
+        deli = unicodeVal.codePointAt(0);
+        
+        assertEquals("without", StringUtil.split("without", deli)[0]);
+        
+        assertEquals("", StringUtil.split("", deli)[0]);
+        
+        assertEquals("", StringUtil.split("😀", deli)[0]);
+        
+        assertEquals("one", StringUtil.split(valueContainingUnicode, deli)[0]);
+        
+        assertEquals("two", StringUtil.split(valueContainingUnicode, deli)[1]);
+        
+        assertEquals("three", StringUtil.split(valueContainingUnicode, deli)[2]);
+        
+        assertEquals("", StringUtil.split("😀two😀three", deli)[0]);
+        
+        assertEquals("", StringUtil.split("one😀😀three", deli)[1]);
+        
+        assertEquals("", StringUtil.split("one😀two😀", deli)[2]);
+        
+        assertArrayEquals(new String[] {"one", ""}, StringUtil.split("one😀", deli));
+        
+        assertArrayEquals(new String[] {"", "one"}, StringUtil.split("😀one", deli));
+        
+        assertArrayEquals(new String[] {"one"}, StringUtil.split("one", deli));
+        
+        assertArrayEquals(new String[] {""}, StringUtil.split("", deli));
+        
+        assertArrayEquals(new String[] {"", "two", "three", ""}, StringUtil.split("😀two😀three😀", deli));
+        
+        assertArrayEquals(new String[] {"", "", "three", ""}, StringUtil.split("😀😀three😀", deli));
+        
+        assertArrayEquals(new String[] {"", "", "", ""}, StringUtil.split("😀😀😀", deli));
+        
+        assertArrayEquals(new String[] {"one", "two", "three", ""}, StringUtil.split("one😀two😀three😀", deli));
+        
+        assertArrayEquals(new String[] {" one ", " two ", " three ", " "}, StringUtil.split(" one 😀 two 😀 three 😀 ", deli));
+        
+        assertEquals("one", StringUtil.split(valueContainingUnicode, deli)[0]);
+        
+        assertEquals("two", StringUtil.split(valueContainingUnicode, deli)[1]);
+        
+        assertEquals("three", StringUtil.split(valueContainingUnicode, deli)[2]);
+        
+        assertArrayEquals(expected, StringUtil.split(valueContainingUnicode, deli));       
+        
+        assertArrayEquals(new String[] {"one", "two", "three", ""}, StringUtil.split("one😀two😀three😀", deli));
+        
+        assertArrayEquals(new String[] {" one ", " two ", " three ", " "}, StringUtil.split(" one 😀 two 😀 three 😀 ", deli));
+    }
 
     @Test
     public void testEndsWithSpace() {
         assertFalse(StringUtil.endsWithSpace("something"));
         assertTrue(StringUtil.endsWithSpace("something "));
+    }
+    
+    @Test
+    public void testStartsWith() {
+        int unicode = "😀".codePointAt(0);
+        assertTrue(StringUtil.startsWith("something", (int) 's' ));
+        assertTrue(StringUtil.startsWith("😀something", unicode ));
+        assertFalse(StringUtil.startsWith("something", (int) 'g' ));
     }
 
     @Test
@@ -287,6 +588,14 @@ public class StringUtilTest {
         assertTrue(StringUtil.containsPlus("+something"));
         assertTrue(StringUtil.containsPlus("something+"));
         assertTrue(StringUtil.containsPlus("some+thing"));
+    }
+    
+    @Test
+    public void testEndsWith() {
+        int unicode = "😀".codePointAt(0);
+        assertTrue(StringUtil.endsWith("something", (int) 'g' ));
+        assertTrue(StringUtil.endsWith("something😀", unicode ));
+        assertFalse(StringUtil.endsWith("something", (int) 's' ));
     }
 
     @Test
@@ -347,6 +656,10 @@ public class StringUtilTest {
     
     @Test
     public void testStrip() throws Exception {
+        assertEquals("", StringUtil.strip(""));
+        assertEquals("one", StringUtil.strip("one"));
+        assertEquals("one", StringUtil.strip(" one "));
+        assertEquals("o n e", StringUtil.strip(" o n e "));
         assertEquals("one", StringUtil.strip("    one      "));
         assertEquals("one", StringUtil.strip("\none\n"));
         assertEquals("one", StringUtil.strip("\r\none\r\n"));
@@ -354,6 +667,49 @@ public class StringUtilTest {
         assertEquals("one", StringUtil.strip("\t\tone\t\t\t"));
         assertEquals("_", StringUtil.strip("\t\t_\t\t\t"));
         assertEquals("", StringUtil.strip(" \t\r\r\n  "));
+    }
+    
+    @Test
+    public void testReplace() {
+        assertEquals("12cdefg", StringUtil.replace("abcdefg", "ab".codePoints().toArray(), "12"));
+        assertEquals("abcdefg", StringUtil.replace("abcdefg", "ab".codePoints().toArray(), "ab"));
+        assertEquals("abcdefgcdefg", StringUtil.replace("abcdefg", "ab".codePoints().toArray(), "abcdefg"));
+        assertEquals("abcdefg", StringUtil.replace("abcdefg", "abcdefg".codePoints().toArray(), "abcdefg"));
+        assertEquals("abcdefg", StringUtil.replace("abcdefg", "abcdefgh".codePoints().toArray(), "a"));
+        assertEquals("abcdefg", StringUtil.replace("abcdefg", "abcdefghi".codePoints().toArray(), "abcdefghi"));
+        assertEquals("a", StringUtil.replace("abcdefg", "abcdefg".codePoints().toArray(), "a"));
+        assertEquals("a", StringUtil.replace("a", "abcdefg".codePoints().toArray(), "b"));
+        assertEquals("c", StringUtil.replace("a", "a".codePoints().toArray(), "c"));
+        assertEquals("abcdefg", StringUtil.replace("a", "a".codePoints().toArray(), "abcdefg"));
+
+        assertEquals("abcdefg", StringUtil.replace("😀", "😀".codePoints().toArray(), "abcdefg"));
+
+        assertEquals("ab1cd", StringUtil.replace("ab😀cd", "😀".codePoints().toArray(), "1"));
+
+        assertEquals("😀😀😀😀😀😀😀", StringUtil.replace("aaaaaaa", "a".codePoints().toArray(), "😀"));
+
+        assertEquals("bcdefg", StringUtil.replace("abcdefg", "a".codePoints().toArray(), ""));
+        assertEquals("ab", StringUtil.replace("abc", "c".codePoints().toArray(), ""));
+        assertEquals("", StringUtil.replace("a", "a".codePoints().toArray(), ""));
+        assertEquals("", StringUtil.replace("ab", "ab".codePoints().toArray(), ""));
+        assertEquals("", StringUtil.replace("abc", "abc".codePoints().toArray(), ""));
+        assertEquals("bc", StringUtil.replace("abc", "a".codePoints().toArray(), ""));
+        assertEquals("c", StringUtil.replace("bc", "b".codePoints().toArray(), ""));
+
+        assertNull(StringUtil.replace(null, "b".codePoints().toArray(), "abcd"));
+        assertEquals("abc", StringUtil.replace("abc", (int[]) null, ""));
+        assertEquals("abc", StringUtil.replace("abc", "b".codePoints().toArray(), null));
+        assertEquals("green ", StringUtil.replace("green !important", "!important".codePoints().toArray(), ""));
+        assertEquals(" green", StringUtil.replace("!important green", "!important".codePoints().toArray(), ""));
+        
+        assertEquals("aaaaaaa", StringUtil.replace("😀aaaaaaa😀", "😀".codePoints().toArray(), ""));
+        assertEquals("aaaaaaa", StringUtil.replace("baaaaaaab", "b".codePoints().toArray(), ""));
+        assertEquals("aaaaaaa", StringUtil.replace("baaaaaaa", "b".codePoints().toArray(), ""));
+        assertEquals("aaaaaaa", StringUtil.replace("aaaaaaab", "b".codePoints().toArray(), ""));
+        assertEquals("aaaaaaa", StringUtil.replace("aaaaaaa", "b".codePoints().toArray(), ""));
+        assertEquals("", StringUtil.replace("", "a".codePoints().toArray(), "b"));
+        assertEquals("b", StringUtil.replace("", "".codePoints().toArray(), "b"));
+        assertEquals("", StringUtil.replace("", "".codePoints().toArray(), ""));
     }
 
 }

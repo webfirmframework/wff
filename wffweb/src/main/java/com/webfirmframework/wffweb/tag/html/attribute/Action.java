@@ -60,8 +60,7 @@ public class Action extends AbstractAttribute implements FormAttributable {
 
     /**
      *
-     * @param value
-     *                  the value for the attribute
+     * @param value the value for the attribute
      * @since 1.1.4
      * @author WFF
      */
@@ -72,8 +71,7 @@ public class Action extends AbstractAttribute implements FormAttributable {
     /**
      * sets the value for this attribute
      *
-     * @param value
-     *                  the value for the attribute.
+     * @param value the value for the attribute.
      * @since 1.1.4
      * @author WFF
      */
@@ -84,12 +82,10 @@ public class Action extends AbstractAttribute implements FormAttributable {
     /**
      * sets the value for this attribute
      *
-     * @param updateClient
-     *                         true to update client browser page if it is
-     *                         available. The default value is true but it will
-     *                         be ignored if there is no client browser page.
-     * @param value
-     *                         the value for the attribute.
+     * @param updateClient true to update client browser page if it is available.
+     *                     The default value is true but it will be ignored if there
+     *                     is no client browser page.
+     * @param value        the value for the attribute.
      * @since 2.1.15
      * @author WFF
      */

@@ -55,23 +55,20 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class MozFlex extends AbstractCssProperty<MozFlex>
-        implements StateChangeInformer<CssProperty> {
+public class MozFlex extends AbstractCssProperty<MozFlex> implements StateChangeInformer<CssProperty> {
 
     private static final long serialVersionUID = 1_0_0L;
 
     // NB : it should not override equals and hashcode methods as its objects
     // are equalized by Objects.equals(obj1, obj2) method in some places.
 
-    private static final Logger LOGGER = Logger
-            .getLogger(MozFlex.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(MozFlex.class.getName());
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
     public static final String AUTO = "auto";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays
-            .asList(INITIAL, INHERIT, AUTO);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(INITIAL, INHERIT, AUTO);
 
     private String cssValue;
 
@@ -92,18 +89,15 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
     }
 
     /**
-     * @param cssValue
-     *                     the css value to set.
+     * @param cssValue the css value to set.
      */
     public MozFlex(final String cssValue) {
         setCssValue(cssValue);
     }
 
     /**
-     * @param mozFlex
-     *                    the {@code Flex} object from which the cssValue to
-     *                    set.And, {@code null} will throw
-     *                    {@code NullValueException}
+     * @param mozFlex the {@code Flex} object from which the cssValue to set.And,
+     *                {@code null} will throw {@code NullValueException}
      */
     public MozFlex(final MozFlex mozFlex) {
         if (mozFlex == null) {
@@ -146,11 +140,9 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
     }
 
     /**
-     * @param cssValue
-     *                     the value should be in the format of
-     *                     <code>1 1 auto</code> or <code>1 1 15px</code>.
-     *                     {@code null} is considered as an invalid value and it
-     *                     will throw {@code NullValueException}.
+     * @param cssValue the value should be in the format of <code>1 1 auto</code> or
+     *                 <code>1 1 15px</code>. {@code null} is considered as an
+     *                 invalid value and it will throw {@code NullValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -160,8 +152,7 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
         if (cssValue == null) {
             throw new NullValueException(
                     "null is an invalid value. The value format should be as for example \"0 1 auto\" or initial/inherit.");
-        } else if ((trimmedCssValue = TagStringUtil
-                .toLowerCase(StringUtil.strip(cssValue))).isEmpty()) {
+        } else if ((trimmedCssValue = TagStringUtil.toLowerCase(StringUtil.strip(cssValue))).isEmpty()) {
             throw new NullValueException(cssValue
                     + " is an invalid value. The value format should be as for example \"0 1 auto\" or initial/inherit.");
         }
@@ -214,8 +205,7 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
                     this.mozFlexGrow.setCssValue(eachPart);
                     mozFlexGrow = this.mozFlexGrow;
                 }
-            } else if (mozFlexShrink == null
-                    && MozFlexShrink.isValid(eachPart)) {
+            } else if (mozFlexShrink == null && MozFlexShrink.isValid(eachPart)) {
                 if (this.mozFlexGrow == null) {
                     mozFlexShrink = new MozFlexShrink(eachPart);
                     mozFlexShrink.setStateChangeInformer(this);
@@ -270,8 +260,7 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
 
         if (mozFlexBasis == null) {
             if (cssValueParts.length == 3) {
-                throw new InvalidValueException(
-                        "the given cssValue contains invalid flex-basis value.");
+                throw new InvalidValueException("the given cssValue contains invalid flex-basis value.");
             }
             if (this.mozFlexBasis == null) {
                 mozFlexBasis = new MozFlexBasis(0);
@@ -340,8 +329,7 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
             if (mozFlexGrow == null && MozFlexGrow.isValid(eachPart)) {
                 mozFlexGrow = new MozFlexGrow(eachPart);
                 invalid = false;
-            } else if (mozFlexShrink == null
-                    && MozFlexShrink.isValid(eachPart)) {
+            } else if (mozFlexShrink == null && MozFlexShrink.isValid(eachPart)) {
                 mozFlexShrink = new MozFlexShrink(eachPart);
                 invalid = false;
             } else if (mozFlexBasis == null && MozFlexBasis.isValid(eachPart)) {
@@ -353,8 +341,7 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
             }
         }
 
-        return mozFlexGrow != null || mozFlexShrink != null
-                || mozFlexBasis != null;
+        return mozFlexGrow != null || mozFlexShrink != null || mozFlexBasis != null;
     }
 
     /**
@@ -413,8 +400,7 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
         if (this.mozFlexGrow != null) {
             this.mozFlexGrow.setCssValue(mozFlexGrow.getCssValue());
             if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.warning(
-                        "copied the cssValue from the given mozFlexGrow to the existing mozFlexGrow object.");
+                LOGGER.warning("copied the cssValue from the given mozFlexGrow to the existing mozFlexGrow object.");
             }
         } else {
             if (mozFlexGrow.isAlreadyInUse()) {
@@ -547,8 +533,7 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
         if (this.mozFlexBasis != null) {
             this.mozFlexBasis.setCssValue(mozFlexBasis.getCssValue());
             if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.warning(
-                        "copied the cssValue from the given mozFlexBasis to the existing mozFlexBasis object.");
+                LOGGER.warning("copied the cssValue from the given mozFlexBasis to the existing mozFlexBasis object.");
             }
         } else {
             if (mozFlexBasis.isAlreadyInUse()) {
@@ -584,28 +569,22 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
 
             final String cssValue = mozFlexGrow.getCssValue();
 
-            if (MozFlexGrow.INITIAL.equals(cssValue)
-                    || MozFlexGrow.INHERIT.equals(cssValue)) {
-                throw new InvalidValueException(
-                        "initial/inherit cannot be set as mozFlexGrow cssValue");
+            if (MozFlexGrow.INITIAL.equals(cssValue) || MozFlexGrow.INHERIT.equals(cssValue)) {
+                throw new InvalidValueException("initial/inherit cannot be set as mozFlexGrow cssValue");
             }
-            this.cssValue = new StringBuilder(mozFlexGrow.getCssValue())
-                    .append(' ').append(mozFlexShrink.getCssValue()).append(' ')
-                    .append(mozFlexBasis.getCssValue()).toString();
+            this.cssValue = new StringBuilder(mozFlexGrow.getCssValue()).append(' ').append(mozFlexShrink.getCssValue())
+                    .append(' ').append(mozFlexBasis.getCssValue()).toString();
         } else if (stateChangedObject instanceof MozFlexShrink) {
 
             final MozFlexShrink mozFlexShrink = (MozFlexShrink) stateChangedObject;
 
             final String cssValue = mozFlexShrink.getCssValue();
 
-            if (MozFlexShrink.INITIAL.equals(cssValue)
-                    || MozFlexShrink.INHERIT.equals(cssValue)) {
-                throw new InvalidValueException(
-                        "initial/inherit cannot be set as mozFlexShrink cssValue");
+            if (MozFlexShrink.INITIAL.equals(cssValue) || MozFlexShrink.INHERIT.equals(cssValue)) {
+                throw new InvalidValueException("initial/inherit cannot be set as mozFlexShrink cssValue");
             }
-            this.cssValue = new StringBuilder(mozFlexGrow.getCssValue())
-                    .append(' ').append(mozFlexShrink.getCssValue()).append(' ')
-                    .append(mozFlexBasis.getCssValue()).toString();
+            this.cssValue = new StringBuilder(mozFlexGrow.getCssValue()).append(' ').append(mozFlexShrink.getCssValue())
+                    .append(' ').append(mozFlexBasis.getCssValue()).toString();
 
         } else if (stateChangedObject instanceof MozFlexBasis) {
 
@@ -613,15 +592,12 @@ public class MozFlex extends AbstractCssProperty<MozFlex>
 
             final String cssValue = mozFlexBasis.getCssValue();
 
-            if (MozFlexBasis.INITIAL.equals(cssValue)
-                    || MozFlexBasis.INHERIT.equals(cssValue)) {
-                throw new InvalidValueException(
-                        "initial/inherit cannot be set as mozFlexBasis cssValue");
+            if (MozFlexBasis.INITIAL.equals(cssValue) || MozFlexBasis.INHERIT.equals(cssValue)) {
+                throw new InvalidValueException("initial/inherit cannot be set as mozFlexBasis cssValue");
             }
 
-            this.cssValue = new StringBuilder(mozFlexGrow.getCssValue())
-                    .append(' ').append(mozFlexShrink.getCssValue()).append(' ')
-                    .append(mozFlexBasis.getCssValue()).toString();
+            this.cssValue = new StringBuilder(mozFlexGrow.getCssValue()).append(' ').append(mozFlexShrink.getCssValue())
+                    .append(' ').append(mozFlexBasis.getCssValue()).toString();
         }
     }
 

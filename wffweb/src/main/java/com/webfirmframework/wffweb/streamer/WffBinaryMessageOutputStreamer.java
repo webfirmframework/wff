@@ -39,9 +39,8 @@ public class WffBinaryMessageOutputStreamer {
     private int chunkSize;
 
     /**
-     * @param os
-     *               the output stream object to which the wff binary message
-     *               bytes will be written
+     * @param os the output stream object to which the wff binary message bytes will
+     *           be written
      * @since 1.0.0
      * @author WFF
      */
@@ -52,14 +51,12 @@ public class WffBinaryMessageOutputStreamer {
     }
 
     /**
-     * @param os
-     *               the output stream object to which the wff binary message
-     *               bytes will be written
+     * @param os the output stream object to which the wff binary message bytes will
+     *           be written
      * @since 1.1.2
      * @author WFF
      */
-    public WffBinaryMessageOutputStreamer(final OutputStream os,
-            final WffBinaryMessageVersion version) {
+    public WffBinaryMessageOutputStreamer(final OutputStream os, final WffBinaryMessageVersion version) {
         this.os = os;
         this.version = version;
         // by default it's considered as version 1.
@@ -104,8 +101,7 @@ public class WffBinaryMessageOutputStreamer {
     }
 
     /**
-     * @param nameValue
-     *                      the nameValue to be written to the output stream
+     * @param nameValue the nameValue to be written to the output stream
      * @return the number of bytes written to the output stream
      * @throws IOException
      * @since 1.1.2
@@ -119,16 +115,14 @@ public class WffBinaryMessageOutputStreamer {
         int totalBytesWritten = 0;
 
         if (firstWrite) {
-            writeByChunk(
-                    new byte[] { maxNoNameLengthBytes, maxNoValueLengthBytes });
+            writeByChunk(new byte[] { maxNoNameLengthBytes, maxNoValueLengthBytes });
             totalBytesWritten = 2;
             firstWrite = false;
         }
 
         final byte[] name = nameValue.getName();
 
-        final byte[] nameLegthBytes = WffBinaryMessageUtil
-                .getBytesFromInt(name.length);
+        final byte[] nameLegthBytes = WffBinaryMessageUtil.getBytesFromInt(name.length);
 
         writeByChunk(nameLegthBytes);
 
@@ -152,8 +146,7 @@ public class WffBinaryMessageOutputStreamer {
 
             valueLegth += (maxNoValueLengthBytes * values.length);
 
-            byte[] valueLegthBytes = WffBinaryMessageUtil
-                    .getBytesFromInt(valueLegth);
+            byte[] valueLegthBytes = WffBinaryMessageUtil.getBytesFromInt(valueLegth);
 
             writeByChunk(valueLegthBytes);
 
@@ -161,8 +154,7 @@ public class WffBinaryMessageOutputStreamer {
 
             for (final byte[] value : values) {
 
-                valueLegthBytes = WffBinaryMessageUtil
-                        .getBytesFromInt(value.length);
+                valueLegthBytes = WffBinaryMessageUtil.getBytesFromInt(value.length);
 
                 writeByChunk(valueLegthBytes);
 
@@ -183,9 +175,8 @@ public class WffBinaryMessageOutputStreamer {
     }
 
     /**
-     * @param chunkSize
-     *                      the wff message bytes will be written maximum with
-     *                      the given chuck size.
+     * @param chunkSize the wff message bytes will be written maximum with the given
+     *                  chuck size.
      * @since 1.1.2
      * @author WFF
      */

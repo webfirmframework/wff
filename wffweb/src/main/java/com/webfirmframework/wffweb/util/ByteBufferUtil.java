@@ -58,23 +58,18 @@ public final class ByteBufferUtil {
      * true
      * </pre>
      *
-     * @param data
-     *                         ByteBuffer to be sliced
-     * @param maxSliceSize
-     *                         the maximum size of ByteBuffer of the sliced
-     *                         part.
-     * @param slice
-     *                         the Slice functional interface. The method
-     *                         Slice.each must return true to continue slicing.
+     * @param data         ByteBuffer to be sliced
+     * @param maxSliceSize the maximum size of ByteBuffer of the sliced part.
+     * @param slice        the Slice functional interface. The method Slice.each
+     *                     must return true to continue slicing.
      * @return the total number of slices made. NB: it is just the count of
      *         invocation of Slice.each method. If the Slice.each returned false
      *         while the last (second param in Slice.each) is false then the
-     *         returned slice count will be less than the probable number of
-     *         slices in the input data.
+     *         returned slice count will be less than the probable number of slices
+     *         in the input data.
      * @since 3.0.1
      */
-    public static int slice(final ByteBuffer data, final int maxSliceSize,
-            final Slice<ByteBuffer> slice) {
+    public static int slice(final ByteBuffer data, final int maxSliceSize, final Slice<ByteBuffer> slice) {
 
         ByteBuffer d = data;
 
@@ -82,12 +77,9 @@ public final class ByteBufferUtil {
         int sliceCount = 0;
         while ((remaining = d.remaining()) > 0) {
             sliceCount++;
-            final byte[] bytes = new byte[maxSliceSize < remaining
-                    ? maxSliceSize
-                    : remaining];
+            final byte[] bytes = new byte[maxSliceSize < remaining ? maxSliceSize : remaining];
 
-            final boolean goOn = slice.each(ByteBuffer.wrap(bytes),
-                    d.get(bytes).remaining() == 0);
+            final boolean goOn = slice.each(ByteBuffer.wrap(bytes), d.get(bytes).remaining() == 0);
 
             if (!goOn) {
                 break;
@@ -101,10 +93,10 @@ public final class ByteBufferUtil {
 
     /**
      *
-     * It slices only if required, i.e. if the capacity of input data is equal
-     * to the remaining data in the buffer and the capacity is less than or
-     * equal to the maxSliceSize then the Slice.each method will reuse the same
-     * input data as the first argument. <br>
+     * It slices only if required, i.e. if the capacity of input data is equal to
+     * the remaining data in the buffer and the capacity is less than or equal to
+     * the maxSliceSize then the Slice.each method will reuse the same input data as
+     * the first argument. <br>
      * <br>
      * Eg:
      *
@@ -135,23 +127,18 @@ public final class ByteBufferUtil {
      * true
      * </pre>
      *
-     * @param data
-     *                         ByteBuffer to be sliced
-     * @param maxSliceSize
-     *                         the maximum size of ByteBuffer of the sliced
-     *                         part.
-     * @param slice
-     *                         the Slice functional interface. The method
-     *                         Slice.each must return true to continue slicing.
+     * @param data         ByteBuffer to be sliced
+     * @param maxSliceSize the maximum size of ByteBuffer of the sliced part.
+     * @param slice        the Slice functional interface. The method Slice.each
+     *                     must return true to continue slicing.
      * @return the total number of slices made. NB: it is just the count of
      *         invocation of Slice.each method. If the Slice.each returned false
      *         while the last (second param in Slice.each) is false then the
-     *         returned slice count will be less than the probable number of
-     *         slices in the input data.
+     *         returned slice count will be less than the probable number of slices
+     *         in the input data.
      * @since 3.0.1
      */
-    public static int sliceIfRequired(final ByteBuffer data,
-            final int maxSliceSize, final Slice<ByteBuffer> slice) {
+    public static int sliceIfRequired(final ByteBuffer data, final int maxSliceSize, final Slice<ByteBuffer> slice) {
 
         final int capacity = data.capacity();
         if (capacity == data.remaining() && capacity <= maxSliceSize) {
@@ -165,12 +152,9 @@ public final class ByteBufferUtil {
         int sliceCount = 0;
         while ((remaining = d.remaining()) > 0) {
             sliceCount++;
-            final byte[] bytes = new byte[maxSliceSize < remaining
-                    ? maxSliceSize
-                    : remaining];
+            final byte[] bytes = new byte[maxSliceSize < remaining ? maxSliceSize : remaining];
 
-            final boolean goOn = slice.each(ByteBuffer.wrap(bytes),
-                    d.get(bytes).remaining() == 0);
+            final boolean goOn = slice.each(ByteBuffer.wrap(bytes), d.get(bytes).remaining() == 0);
 
             if (!goOn) {
                 break;
@@ -183,11 +167,10 @@ public final class ByteBufferUtil {
     }
 
     /**
-     * Merges and returns ByteBuffer from the given dataArray. The ByteBuffer
-     * will be returned after flip.
+     * Merges and returns ByteBuffer from the given dataArray. The ByteBuffer will
+     * be returned after flip.
      *
-     * @param dataArray
-     *                      the ByteByffers to merge
+     * @param dataArray the ByteByffers to merge
      * @return a single ByteBuffer after flip merged from all ByteBuffer objects
      *         from dataArray.
      *

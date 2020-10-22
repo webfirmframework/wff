@@ -38,8 +38,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
  * @author WFF
  *
  */
-public class SpellCheck extends AbstractAttribute
-        implements GlobalAttributable {
+public class SpellCheck extends AbstractAttribute implements GlobalAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -71,8 +70,7 @@ public class SpellCheck extends AbstractAttribute
     /**
      *
      *
-     * @param value
-     *                  the value should be either true or false
+     * @param value the value should be either true or false
      * @author WFF
      * @since 1.1.4
      */
@@ -80,15 +78,13 @@ public class SpellCheck extends AbstractAttribute
         if ("true".equals(value) || "false".equals(value)) {
             check = Boolean.parseBoolean(value);
         } else {
-            throw new InvalidValueException(
-                    "the value should be either true or false");
+            throw new InvalidValueException("the value should be either true or false");
         }
         setAttributeValue(value);
     }
 
     /**
-     * @param check
-     *                  true/false
+     * @param check true/false
      * @since 1.0.0
      * @author WFF
      */
@@ -117,8 +113,7 @@ public class SpellCheck extends AbstractAttribute
     }
 
     /**
-     * @param check
-     *                  the check to set.
+     * @param check the check to set.
      * @author WFF
      * @since 1.0.0
      */

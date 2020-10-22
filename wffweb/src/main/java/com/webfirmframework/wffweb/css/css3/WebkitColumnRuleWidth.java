@@ -42,8 +42,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class WebkitColumnRuleWidth
-        extends AbstractCssProperty<WebkitColumnRuleWidth> {
+public class WebkitColumnRuleWidth extends AbstractCssProperty<WebkitColumnRuleWidth> {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -65,22 +64,18 @@ public class WebkitColumnRuleWidth
     }
 
     /**
-     * @param cssValue
-     *                     the css value to set.
+     * @param cssValue the css value to set.
      */
     public WebkitColumnRuleWidth(final String cssValue) {
         setCssValue(cssValue);
     }
 
     /**
-     * @param webkitColumnRuleWidth
-     *                                  the {@code WebkitColumnRuleWidth} object
-     *                                  from which the cssValue to set.And,
-     *                                  {@code null} will throw
-     *                                  {@code NullValueException}
+     * @param webkitColumnRuleWidth the {@code WebkitColumnRuleWidth} object from
+     *                              which the cssValue to set.And, {@code null} will
+     *                              throw {@code NullValueException}
      */
-    public WebkitColumnRuleWidth(
-            final WebkitColumnRuleWidth webkitColumnRuleWidth) {
+    public WebkitColumnRuleWidth(final WebkitColumnRuleWidth webkitColumnRuleWidth) {
         if (webkitColumnRuleWidth == null) {
             throw new NullValueException("columnRuleWidth can not be null");
         }
@@ -88,9 +83,8 @@ public class WebkitColumnRuleWidth
     }
 
     /**
-     * @param percent
-     *                    the percentage value to set. The cssLengthUnit will
-     *                    automatically set to %.
+     * @param percent the percentage value to set. The cssLengthUnit will
+     *                automatically set to %.
      * @since 1.0.0
      * @author WFF
      */
@@ -104,8 +98,7 @@ public class WebkitColumnRuleWidth
      * @param value
      * @param cssLengthUnit
      */
-    public WebkitColumnRuleWidth(final float value,
-            final CssLengthUnit cssLengthUnit) {
+    public WebkitColumnRuleWidth(final float value, final CssLengthUnit cssLengthUnit) {
         this.value = value;
         this.cssLengthUnit = cssLengthUnit;
         cssValue = String.valueOf(value) + cssLengthUnit;
@@ -118,8 +111,7 @@ public class WebkitColumnRuleWidth
      * @since 1.0.0
      * @author WFF
      */
-    public WebkitColumnRuleWidth setValue(final float value,
-            final CssLengthUnit cssLengthUnit) {
+    public WebkitColumnRuleWidth setValue(final float value, final CssLengthUnit cssLengthUnit) {
         this.value = value;
         this.cssLengthUnit = cssLengthUnit;
         cssValue = String.valueOf(value) + cssLengthUnit;
@@ -130,8 +122,7 @@ public class WebkitColumnRuleWidth
     }
 
     /**
-     * @param percent
-     *                    the percent to set
+     * @param percent the percent to set
      * @since 1.0.0
      * @author WFF
      */
@@ -182,8 +173,8 @@ public class WebkitColumnRuleWidth
      * {@code WebkitColumnRuleWidth#getUnit()} should be used to get the
      * cssLengthUnit for this value.
      *
-     * @return the value in float or null if the cssValue is
-     *         <code>initial</code> or <code>inherit</code>.
+     * @return the value in float or null if the cssValue is <code>initial</code> or
+     *         <code>inherit</code>.
      * @since 1.0.0
      * @author WFF
      */
@@ -202,11 +193,9 @@ public class WebkitColumnRuleWidth
     }
 
     /**
-     * @param cssValue
-     *                     the value should be in the format of
-     *                     <code>55px</code> or <code>95%</code>. {@code null}
-     *                     is considered as an invalid value and it will throw
-     *                     {@code NullValueException}.
+     * @param cssValue the value should be in the format of <code>55px</code> or
+     *                 <code>95%</code>. {@code null} is considered as an invalid
+     *                 value and it will throw {@code NullValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -219,12 +208,10 @@ public class WebkitColumnRuleWidth
             } else {
                 final String trimmedCssValue = StringUtil.strip(cssValue);
                 boolean invalidValue = true;
-                for (final CssLengthUnit cssLengthUnit : CssLengthUnit
-                        .values()) {
+                for (final CssLengthUnit cssLengthUnit : CssLengthUnit.values()) {
                     final String unit = cssLengthUnit.getUnit();
                     if (trimmedCssValue.endsWith(unit)) {
-                        final String valueOnly = cssValue.replaceFirst(unit,
-                                "");
+                        final String valueOnly = cssValue.replaceFirst(unit, "");
                         try {
                             value = Float.parseFloat(valueOnly);
                         } catch (final NumberFormatException e) {
@@ -236,10 +223,8 @@ public class WebkitColumnRuleWidth
                         break;
                     }
                 }
-                if (trimmedCssValue.equalsIgnoreCase(INITIAL)
-                        || trimmedCssValue.equalsIgnoreCase(INHERIT)
-                        || trimmedCssValue.equalsIgnoreCase(MEDIUM)
-                        || trimmedCssValue.equalsIgnoreCase(THIN)
+                if (trimmedCssValue.equalsIgnoreCase(INITIAL) || trimmedCssValue.equalsIgnoreCase(INHERIT)
+                        || trimmedCssValue.equalsIgnoreCase(MEDIUM) || trimmedCssValue.equalsIgnoreCase(THIN)
                         || trimmedCssValue.equalsIgnoreCase(THICK)) {
                     this.cssValue = trimmedCssValue.toLowerCase();
                     cssLengthUnit = null;
@@ -329,12 +314,9 @@ public class WebkitColumnRuleWidth
             return false;
         }
 
-        final String trimmedCssValueLowerCase = TagStringUtil
-                .toLowerCase(trimmedCssValue);
-        if (MEDIUM.equals(trimmedCssValueLowerCase)
-                || THIN.equals(trimmedCssValueLowerCase)
-                || THICK.equals(trimmedCssValueLowerCase)
-                || INITIAL.equals(trimmedCssValueLowerCase)
+        final String trimmedCssValueLowerCase = TagStringUtil.toLowerCase(trimmedCssValue);
+        if (MEDIUM.equals(trimmedCssValueLowerCase) || THIN.equals(trimmedCssValueLowerCase)
+                || THICK.equals(trimmedCssValueLowerCase) || INITIAL.equals(trimmedCssValueLowerCase)
                 || INHERIT.equals(trimmedCssValueLowerCase)) {
             return true;
         }

@@ -32,8 +32,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.ObjectTagAttributable;
  * @author WFF
  *
  */
-public class UseMap extends AbstractAttribute
-        implements ImgAttributable, InputAttributable, ObjectTagAttributable {
+public class UseMap extends AbstractAttribute implements ImgAttributable, InputAttributable, ObjectTagAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -52,8 +51,7 @@ public class UseMap extends AbstractAttribute
 
     /**
      *
-     * @param value
-     *                  the value for the attribute
+     * @param value the value for the attribute
      * @since 3.0.1
      * @author WFF
      */
@@ -64,8 +62,7 @@ public class UseMap extends AbstractAttribute
     /**
      * sets the value for this attribute
      *
-     * @param value
-     *                  the value for the attribute.
+     * @param value the value for the attribute.
      * @since 3.0.1
      * @author WFF
      */
@@ -76,12 +73,10 @@ public class UseMap extends AbstractAttribute
     /**
      * sets the value for this attribute
      *
-     * @param updateClient
-     *                         true to update client browser page if it is
-     *                         available. The default value is true but it will
-     *                         be ignored if there is no client browser page.
-     * @param value
-     *                         the value for the attribute.
+     * @param updateClient true to update client browser page if it is available.
+     *                     The default value is true but it will be ignored if there
+     *                     is no client browser page.
+     * @param value        the value for the attribute.
      * @since 3.0.1
      * @author WFF
      */

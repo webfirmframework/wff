@@ -47,8 +47,7 @@ public class MarginLeft extends AbstractCssProperty<MarginLeft> {
     public static final String INHERIT = "inherit";
     public static final String AUTO = "auto";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays
-            .asList(INITIAL, INHERIT, AUTO);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(INITIAL, INHERIT, AUTO);
 
     private String cssValue;
     private Float value;
@@ -62,18 +61,15 @@ public class MarginLeft extends AbstractCssProperty<MarginLeft> {
     }
 
     /**
-     * @param cssValue
-     *                     the css value to set.
+     * @param cssValue the css value to set.
      */
     public MarginLeft(final String cssValue) {
         setCssValue(cssValue);
     }
 
     /**
-     * @param marginLeft
-     *                       the {@code MarginLeft} object from which the
-     *                       cssValue to set.And, {@code null} will throw
-     *                       {@code NullValueException}
+     * @param marginLeft the {@code MarginLeft} object from which the cssValue to
+     *                   set.And, {@code null} will throw {@code NullValueException}
      */
     public MarginLeft(final MarginLeft marginLeft) {
         if (marginLeft == null) {
@@ -83,9 +79,8 @@ public class MarginLeft extends AbstractCssProperty<MarginLeft> {
     }
 
     /**
-     * @param percent
-     *                    the percentage value to set. The cssLengthUnit will
-     *                    automatically set to %.
+     * @param percent the percentage value to set. The cssLengthUnit will
+     *                automatically set to %.
      * @since 1.0.0
      * @author WFF
      */
@@ -112,8 +107,7 @@ public class MarginLeft extends AbstractCssProperty<MarginLeft> {
      * @since 1.0.0
      * @author WFF
      */
-    public MarginLeft setValue(final float value,
-            final CssLengthUnit cssLengthUnit) {
+    public MarginLeft setValue(final float value, final CssLengthUnit cssLengthUnit) {
         this.value = value;
         this.cssLengthUnit = cssLengthUnit;
         cssValue = String.valueOf(value) + cssLengthUnit;
@@ -124,8 +118,7 @@ public class MarginLeft extends AbstractCssProperty<MarginLeft> {
     }
 
     /**
-     * @param percent
-     *                    the percent to set
+     * @param percent the percent to set
      * @since 1.0.0
      * @author WFF
      */
@@ -172,8 +165,8 @@ public class MarginLeft extends AbstractCssProperty<MarginLeft> {
     }
 
     /**
-     * gets the width in float value. {@code MarginLeft#getUnit()} should be
-     * used to get the cssLengthUnit for this value.
+     * gets the width in float value. {@code MarginLeft#getUnit()} should be used to
+     * get the cssLengthUnit for this value.
      *
      * @return the value in float.
      * @since 1.0.0
@@ -194,11 +187,9 @@ public class MarginLeft extends AbstractCssProperty<MarginLeft> {
     }
 
     /**
-     * @param cssValue
-     *                     the value should be in the format of
-     *                     <code>55px</code> or <code>95%</code>. {@code null}
-     *                     is considered as an invalid value and it will throw
-     *                     {@code NullValueException}.
+     * @param cssValue the value should be in the format of <code>55px</code> or
+     *                 <code>95%</code>. {@code null} is considered as an invalid
+     *                 value and it will throw {@code NullValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -212,12 +203,10 @@ public class MarginLeft extends AbstractCssProperty<MarginLeft> {
             } else {
                 final String trimmedCssValue = StringUtil.strip(cssValue);
                 boolean invalidValue = true;
-                for (final CssLengthUnit cssLengthUnit : CssLengthUnit
-                        .values()) {
+                for (final CssLengthUnit cssLengthUnit : CssLengthUnit.values()) {
                     final String unit = cssLengthUnit.getUnit();
                     if (trimmedCssValue.endsWith(unit)) {
-                        final String valueOnly = trimmedCssValue
-                                .replaceFirst(unit, "");
+                        final String valueOnly = trimmedCssValue.replaceFirst(unit, "");
                         try {
                             value = Float.parseFloat(valueOnly);
                             // it could be -ve when it comes as sub
@@ -234,8 +223,7 @@ public class MarginLeft extends AbstractCssProperty<MarginLeft> {
                         break;
                     }
                 }
-                if (trimmedCssValue.equalsIgnoreCase(INITIAL)
-                        || trimmedCssValue.equalsIgnoreCase(INHERIT)
+                if (trimmedCssValue.equalsIgnoreCase(INITIAL) || trimmedCssValue.equalsIgnoreCase(INHERIT)
                         || trimmedCssValue.equalsIgnoreCase(AUTO)) {
                     this.cssValue = trimmedCssValue.toLowerCase();
                     cssLengthUnit = null;
@@ -296,8 +284,7 @@ public class MarginLeft extends AbstractCssProperty<MarginLeft> {
     /**
      * validates if the given cssValue is valid for this class.
      *
-     * @param cssValue
-     *                     the value to check.
+     * @param cssValue the value to check.
      * @return true if valid and false if invalid.
      * @author WFF
      * @since 1.0.0

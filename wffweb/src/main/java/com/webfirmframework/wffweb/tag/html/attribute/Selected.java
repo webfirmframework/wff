@@ -33,8 +33,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.OptionAttributable;
  * @author WFF
  * @since 2.1.4
  */
-public class Selected extends AbstractAttribute
-        implements OptionAttributable, BooleanAttribute {
+public class Selected extends AbstractAttribute implements OptionAttributable, BooleanAttribute {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -52,10 +51,9 @@ public class Selected extends AbstractAttribute
     }
 
     /**
-     * sets the default value as <code>selected</code> (since 2.1.5). If value
-     * is not required then use <code>new Selected(null)</code>. Note : There
-     * might be some issue in dynamically changing state of tag if there is no
-     * default value.
+     * sets the default value as <code>selected</code> (since 2.1.5). If value is
+     * not required then use <code>new Selected(null)</code>. Note : There might be
+     * some issue in dynamically changing state of tag if there is no default value.
      *
      * @since 2.1.4
      * @author WFF

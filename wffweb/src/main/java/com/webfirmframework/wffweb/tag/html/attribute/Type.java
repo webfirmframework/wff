@@ -18,9 +18,15 @@ package com.webfirmframework.wffweb.tag.html.attribute;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
+import com.webfirmframework.wffweb.tag.html.html5.identifier.EmbedAttributable;
+import com.webfirmframework.wffweb.tag.html.html5.identifier.MenuAttributable;
+import com.webfirmframework.wffweb.tag.html.html5.identifier.SourceAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.AreaAttributable;
+import com.webfirmframework.wffweb.tag.html.identifier.ButtonAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
+import com.webfirmframework.wffweb.tag.html.identifier.LinkAttributable;
+import com.webfirmframework.wffweb.tag.html.identifier.ObjectTagAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.ScriptAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.StyleAttributable;
 
@@ -88,11 +94,11 @@ import com.webfirmframework.wffweb.tag.html.identifier.StyleAttributable;
  * @author WFF
  *
  */
-public class Type extends AbstractAttribute
-        implements AAttributable, AreaAttributable, InputAttributable,
-        ScriptAttributable, StyleAttributable {
+public class Type extends AbstractAttribute implements AAttributable, AreaAttributable, InputAttributable,
+        ScriptAttributable, StyleAttributable, ButtonAttributable, EmbedAttributable, LinkAttributable,
+        MenuAttributable, ObjectTagAttributable, SourceAttributable {
 
-    private static final long serialVersionUID = 1_0_0L;
+    private static final long serialVersionUID = 1_0_1L;
 
     public static final String BUTTON = "button";
 
@@ -167,8 +173,7 @@ public class Type extends AbstractAttribute
 
     /**
      *
-     * @param value
-     *                  the value for the attribute
+     * @param value the value for the attribute
      * @since 1.0.0
      * @author WFF
      */
@@ -179,8 +184,7 @@ public class Type extends AbstractAttribute
     /**
      * sets the value for this attribute
      *
-     * @param value
-     *                  the value for the attribute.
+     * @param value the value for the attribute.
      * @since 1.0.0
      * @author WFF
      */
@@ -191,12 +195,10 @@ public class Type extends AbstractAttribute
     /**
      * sets the value for this attribute
      *
-     * @param updateClient
-     *                         true to update client browser page if it is
-     *                         available. The default value is true but it will
-     *                         be ignored if there is no client browser page.
-     * @param value
-     *                         the value for the attribute.
+     * @param updateClient true to update client browser page if it is available.
+     *                     The default value is true but it will be ignored if there
+     *                     is no client browser page.
+     * @param value        the value for the attribute.
      * @since 2.1.15
      * @author WFF
      */

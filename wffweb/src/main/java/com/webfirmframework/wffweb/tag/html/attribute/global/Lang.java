@@ -66,8 +66,7 @@ public class Lang extends AbstractAttribute implements GlobalAttributable {
     }
 
     /**
-     * @param lang
-     *                 eg: fr
+     * @param lang eg: fr
      * @author WFF
      */
     public Lang(final String lang) {
@@ -75,8 +74,7 @@ public class Lang extends AbstractAttribute implements GlobalAttributable {
     }
 
     /**
-     * @param locale
-     *                   eg: Locale.JAPAN
+     * @param locale eg: Locale.JAPAN
      * @author WFF
      */
     public Lang(final Locale locale) {
@@ -94,8 +92,7 @@ public class Lang extends AbstractAttribute implements GlobalAttributable {
     }
 
     /**
-     * @param lang
-     *                 eg: fr
+     * @param lang eg: fr
      * @since 1.0.0
      * @author WFF
      */

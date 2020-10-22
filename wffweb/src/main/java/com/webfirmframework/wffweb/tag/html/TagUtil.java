@@ -17,9 +17,19 @@
 package com.webfirmframework.wffweb.tag.html;
 
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.locks.Lock;
 
 import com.webfirmframework.wffweb.WffSecurityException;
 import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
+import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeUtil;
+import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 
 /**
  * @author WFF
@@ -27,6 +37,32 @@ import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
  *
  */
 public final class TagUtil {
+
+    /**
+     *
+     * @since 3.0.15
+     *
+     */
+    private static final class TagContractRecord {
+
+        private final AbstractHtml tag;
+
+        private final AbstractHtml5SharedObject sharedObject;
+
+        private TagContractRecord(final AbstractHtml tag, final AbstractHtml5SharedObject sharedObject) {
+            super();
+            this.tag = tag;
+            this.sharedObject = sharedObject;
+        }
+
+        private long objectId() {
+            return sharedObject.objectId();
+        }
+
+        private boolean isValid() {
+            return sharedObject.equals(tag.getSharedObject());
+        }
+    }
 
     private TagUtil() {
         throw new AssertionError();
@@ -63,14 +99,11 @@ public final class TagUtil {
      * @return bytes
      * @since 3.0.6
      */
-    public static byte[] getTagNameBytesCompressedByIndex(
-            final Object accessObject, final AbstractHtml tag,
+    public static byte[] getTagNameBytesCompressedByIndex(final Object accessObject, final AbstractHtml tag,
             final Charset charset) {
 
-        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE
-                .equals(accessObject.getClass().getName()))) {
-            throw new WffSecurityException(
-                    "Not allowed to consume this method. This method is for internal use.");
+        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName()))) {
+            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
 
         // NB: if this method is modified then
@@ -85,14 +118,12 @@ public final class TagUtil {
 
         if (tagNameIndexBytes == null) {
             final byte[] rowNodeNameBytes = tagName.getBytes(charset);
-            final byte[] wffTagNameBytes = new byte[rowNodeNameBytes.length
-                    + 1];
+            final byte[] wffTagNameBytes = new byte[rowNodeNameBytes.length + 1];
             // if zero there is no optimized int bytes for index
             // because there is no tagNameIndex. second byte
             // onwards the bytes of tag name
             wffTagNameBytes[0] = 0;
-            System.arraycopy(rowNodeNameBytes, 0, wffTagNameBytes, 1,
-                    rowNodeNameBytes.length);
+            System.arraycopy(rowNodeNameBytes, 0, wffTagNameBytes, 1, rowNodeNameBytes.length);
 
             return wffTagNameBytes;
 
@@ -112,11 +143,96 @@ public final class TagUtil {
         } else {
             wffTagNameBytes = new byte[tagNameIndexBytes.length + 1];
             wffTagNameBytes[0] = (byte) tagNameIndexBytes.length;
-            System.arraycopy(tagNameIndexBytes, 0, wffTagNameBytes, 1,
-                    tagNameIndexBytes.length);
+            System.arraycopy(tagNameIndexBytes, 0, wffTagNameBytes, 1, tagNameIndexBytes.length);
         }
 
         return wffTagNameBytes;
+    }
+
+    /**
+     * only for internal use
+     *
+     * @param currentTag
+     * @param accessObject
+     * @param foreignTags
+     * @return the collection of locks
+     * @since 3.0.15
+     */
+    static List<Lock> lockAndGetWriteLocks(final AbstractHtml currentTag, final Object accessObject,
+            final AbstractHtml... foreignTags) {
+
+        List<Lock> locks = null;
+
+        // tag state before lock
+        List<TagContractRecord> tagContractRecords;
+        boolean tagModified = false;
+
+        do {
+
+            if (tagModified) {
+                for (final Lock lock : locks) {
+                    lock.unlock();
+                }
+            }
+
+            tagContractRecords = new ArrayList<>(foreignTags.length + 1);
+
+            for (final AbstractHtml eachTag : foreignTags) {
+                tagContractRecords.add(new TagContractRecord(eachTag, eachTag.getSharedObjectLockless()));
+            }
+
+            tagContractRecords.add(new TagContractRecord(currentTag, currentTag.getSharedObjectLockless()));
+
+            // lock should be called on the order of objectId otherwise there will be
+            // deadlock
+            tagContractRecords.sort(Comparator.comparingLong(TagContractRecord::objectId));
+
+            locks = new ArrayList<>(tagContractRecords.size());
+
+            tagModified = false;
+
+            for (final TagContractRecord tagContractRecord : tagContractRecords) {
+
+                if (!tagContractRecord.isValid()) {
+                    tagModified = true;
+                    break;
+                }
+
+                final Lock lock = tagContractRecord.sharedObject.getLock(accessObject).writeLock();
+                lock.lock();
+                locks.add(lock);
+
+                if (!tagContractRecord.isValid()) {
+                    tagModified = true;
+                    break;
+                }
+            }
+
+            if (locks.size() > 1) {
+                Collections.reverse(locks);
+            }
+
+        } while (tagModified);
+
+        return locks;
+    }
+
+    /**
+     * @param accessObject
+     * @param tags
+     * @return the locks
+     * @since 3.0.15
+     */
+    static List<Lock> lockAndGetNestedAttributeWriteLocks(final Object accessObject, final AbstractHtml... tags) {
+        final Set<AbstractAttribute> allNestedAttributes = new HashSet<>();
+        AbstractHtml.loopThroughAllNestedChildren(child -> {
+
+            allNestedAttributes.addAll(child.getAttributesLockless());
+
+            return true;
+        }, true, tags);
+
+        return AttributeUtil.lockAndGetWriteLocks(accessObject, allNestedAttributes);
     }
 
 }

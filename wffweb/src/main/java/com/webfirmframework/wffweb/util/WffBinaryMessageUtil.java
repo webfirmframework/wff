@@ -24,13 +24,13 @@ import com.webfirmframework.wffweb.util.data.NameValue;
 public enum WffBinaryMessageUtil {
 
     /**
-     * A wff binary message is a collection of name-value pairs where both name
-     * and value can be a binary data. It can have duplicate names.<br>
+     * A wff binary message is a collection of name-value pairs where both name and
+     * value can be a binary data. It can have duplicate names.<br>
      *
      * The wff binary message is composed as follows :- <br>
-     * The first byte represents the maximum number of bytes for name length
-     * bytes. The second byte represents the maximum number of bytes for the
-     * values length bytes. The remaining bytes represent the name-values pairs.
+     * The first byte represents the maximum number of bytes for name length bytes.
+     * The second byte represents the maximum number of bytes for the values length
+     * bytes. The remaining bytes represent the name-values pairs.
      *
      * <table border="1">
      * <caption>Name values pair</caption> <tbody>
@@ -47,8 +47,8 @@ public enum WffBinaryMessageUtil {
      * Here, the name length bytes is the length of name bytes and values length
      * bytes is the length of values bytes.<br>
      *
-     * The values in name-values pair is an array of value, the values is
-     * composed as follows
+     * The values in name-values pair is an array of value, the values is composed
+     * as follows
      *
      * <table border="1">
      * <caption>Value as an array</caption> <tbody>
@@ -61,8 +61,8 @@ public enum WffBinaryMessageUtil {
      * </tr>
      * </tbody>
      * </table>
-     * Here, total values length bytes = sum of (value length bytes + value
-     * bytes + value length bytes + value bytes) no. of bytes.
+     * Here, total values length bytes = sum of (value length bytes + value bytes +
+     * value length bytes + value bytes) no. of bytes.
      *
      *
      *
@@ -72,10 +72,8 @@ public enum WffBinaryMessageUtil {
     VERSION_1 {
 
         @Override
-        public byte[] getWffBinaryMessageBytes(
-                final Collection<NameValue> nameValues) {
-            return getWffBinaryMessageBytes(
-                    nameValues.toArray(new NameValue[nameValues.size()]));
+        public byte[] getWffBinaryMessageBytes(final Collection<NameValue> nameValues) {
+            return getWffBinaryMessageBytes(nameValues.toArray(new NameValue[nameValues.size()]));
         }
 
         @Override
@@ -103,14 +101,11 @@ public enum WffBinaryMessageUtil {
 
                     }
 
-                    final int maxBytesLengthFromTotalBytes = getLengthOfOptimizedBytesFromInt(
-                            maxValuesBytesLength);
+                    final int maxBytesLengthFromTotalBytes = getLengthOfOptimizedBytesFromInt(maxValuesBytesLength);
 
-                    final int maxBytesLengthForAllValues = values.length
-                            * maxBytesLengthFromTotalBytes;
+                    final int maxBytesLengthForAllValues = values.length * maxBytesLengthFromTotalBytes;
 
-                    final int totalNoOfBytesForAllValues = maxValuesBytesLength
-                            + maxBytesLengthForAllValues;
+                    final int totalNoOfBytesForAllValues = maxValuesBytesLength + maxBytesLengthForAllValues;
 
                     if (totalNoOfBytesForAllValues > maxNoOfValuesBytes) {
                         maxNoOfValuesBytes = totalNoOfBytesForAllValues;
@@ -120,19 +115,16 @@ public enum WffBinaryMessageUtil {
 
             }
 
-            final byte maxNoNameLengthBytes = (byte) getLengthOfOptimizedBytesFromInt(
-                    maxNoOfNameBytes);
+            final byte maxNoNameLengthBytes = (byte) getLengthOfOptimizedBytesFromInt(maxNoOfNameBytes);
 
-            final byte maxNoValueLengthBytes = (byte) getLengthOfOptimizedBytesFromInt(
-                    maxNoOfValuesBytes);
+            final byte maxNoValueLengthBytes = (byte) getLengthOfOptimizedBytesFromInt(maxNoOfValuesBytes);
 
             int totalLengthOfBinaryMessage = 2;
 
             for (final NameValue nameValue : nameValues) {
                 final byte[] name = nameValue.getName();
 
-                totalLengthOfBinaryMessage += maxNoNameLengthBytes
-                        + name.length;
+                totalLengthOfBinaryMessage += maxNoNameLengthBytes + name.length;
 
                 final byte[][] values = nameValue.getValues();
 
@@ -141,16 +133,14 @@ public enum WffBinaryMessageUtil {
                 } else {
 
                     // values will always be an array
-                    final int totalNoOfValueLengthBytes = maxNoValueLengthBytes
-                            * values.length;
+                    final int totalNoOfValueLengthBytes = maxNoValueLengthBytes * values.length;
                     int totalNoOfValueBytes = 0;
 
                     for (final byte[] value : values) {
                         totalNoOfValueBytes += value.length;
                     }
 
-                    totalLengthOfBinaryMessage += totalNoOfValueLengthBytes
-                            + totalNoOfValueBytes;
+                    totalLengthOfBinaryMessage += totalNoOfValueLengthBytes + totalNoOfValueBytes;
 
                     totalLengthOfBinaryMessage += maxNoValueLengthBytes;
 
@@ -169,24 +159,21 @@ public enum WffBinaryMessageUtil {
 
                 final byte[] name = nameValue.getName();
 
-                final byte[] nameLegthBytes = getLastBytesFromInt(name.length,
-                        maxNoNameLengthBytes);
+                final byte[] nameLegthBytes = getLastBytesFromInt(name.length, maxNoNameLengthBytes);
 
-                System.arraycopy(nameLegthBytes, 0, wffBinaryMessageBytes,
-                        wffBinaryMessageBytesIndex, nameLegthBytes.length);
+                System.arraycopy(nameLegthBytes, 0, wffBinaryMessageBytes, wffBinaryMessageBytesIndex,
+                        nameLegthBytes.length);
 
                 wffBinaryMessageBytesIndex += nameLegthBytes.length;
 
-                System.arraycopy(name, 0, wffBinaryMessageBytes,
-                        wffBinaryMessageBytesIndex, name.length);
+                System.arraycopy(name, 0, wffBinaryMessageBytes, wffBinaryMessageBytesIndex, name.length);
 
                 wffBinaryMessageBytesIndex += name.length;
 
                 final byte[][] values = nameValue.getValues();
 
                 if (values.length == 0) {
-                    System.arraycopy(new byte[] { 0, 0, 0, 0 }, 0,
-                            wffBinaryMessageBytes, wffBinaryMessageBytesIndex,
+                    System.arraycopy(new byte[] { 0, 0, 0, 0 }, 0, wffBinaryMessageBytes, wffBinaryMessageBytesIndex,
                             maxNoValueLengthBytes);
                     wffBinaryMessageBytesIndex += maxNoValueLengthBytes;
                 } else {
@@ -199,28 +186,23 @@ public enum WffBinaryMessageUtil {
 
                     valueLegth += (maxNoValueLengthBytes * values.length);
 
-                    byte[] valueLegthBytes = getLastBytesFromInt(valueLegth,
-                            maxNoValueLengthBytes);
+                    byte[] valueLegthBytes = getLastBytesFromInt(valueLegth, maxNoValueLengthBytes);
 
-                    System.arraycopy(valueLegthBytes, 0, wffBinaryMessageBytes,
-                            wffBinaryMessageBytesIndex, valueLegthBytes.length);
+                    System.arraycopy(valueLegthBytes, 0, wffBinaryMessageBytes, wffBinaryMessageBytesIndex,
+                            valueLegthBytes.length);
 
                     wffBinaryMessageBytesIndex += valueLegthBytes.length;
 
                     for (final byte[] value : values) {
 
-                        valueLegthBytes = getLastBytesFromInt(value.length,
-                                maxNoValueLengthBytes);
+                        valueLegthBytes = getLastBytesFromInt(value.length, maxNoValueLengthBytes);
 
-                        System.arraycopy(valueLegthBytes, 0,
-                                wffBinaryMessageBytes,
-                                wffBinaryMessageBytesIndex,
+                        System.arraycopy(valueLegthBytes, 0, wffBinaryMessageBytes, wffBinaryMessageBytesIndex,
                                 valueLegthBytes.length);
 
                         wffBinaryMessageBytesIndex += valueLegthBytes.length;
 
-                        System.arraycopy(value, 0, wffBinaryMessageBytes,
-                                wffBinaryMessageBytesIndex, value.length);
+                        System.arraycopy(value, 0, wffBinaryMessageBytes, wffBinaryMessageBytesIndex, value.length);
                         wffBinaryMessageBytesIndex += value.length;
                     }
 
@@ -247,8 +229,7 @@ public enum WffBinaryMessageUtil {
 
                 final NameValue nameValue = new NameValue();
 
-                System.arraycopy(message, messageIndex, nameLengthBytes, 0,
-                        nameLengthBytesLength);
+                System.arraycopy(message, messageIndex, nameLengthBytes, 0, nameLengthBytesLength);
                 messageIndex = messageIndex + nameLengthBytesLength;
                 // nameToFetch = false;
                 // valueToFetch = true;
@@ -256,25 +237,22 @@ public enum WffBinaryMessageUtil {
                 int fromByteArray = getIntFromOptimizedBytes(nameLengthBytes);
                 final byte[] nameBytes = new byte[fromByteArray];
 
-                System.arraycopy(message, messageIndex, nameBytes, 0,
-                        nameBytes.length);
+                System.arraycopy(message, messageIndex, nameBytes, 0, nameBytes.length);
                 messageIndex = messageIndex + nameBytes.length;
 
                 nameValue.setName(nameBytes);
 
-                System.arraycopy(message, messageIndex, valueLengthBytes, 0,
-                        valueLengthBytesLength);
+                System.arraycopy(message, messageIndex, valueLengthBytes, 0, valueLengthBytesLength);
                 messageIndex = messageIndex + valueLengthBytesLength;
                 fromByteArray = getIntFromOptimizedBytes(valueLengthBytes);
                 final byte[] valueBytes = new byte[fromByteArray];
 
-                System.arraycopy(message, messageIndex, valueBytes, 0,
-                        valueBytes.length);
+                System.arraycopy(message, messageIndex, valueBytes, 0, valueBytes.length);
                 messageIndex = messageIndex + valueBytes.length - 1;
 
                 // process array values
-                final byte[][] extractEachValueBytes = extractValuesFromArray(
-                        valueLengthBytes, valueLengthBytesLength, valueBytes);
+                final byte[][] extractEachValueBytes = extractValuesFromArray(valueLengthBytes, valueLengthBytesLength,
+                        valueBytes);
                 nameValue.setValues(extractEachValueBytes);
 
                 nameValues.add(nameValue);
@@ -284,17 +262,15 @@ public enum WffBinaryMessageUtil {
             return nameValues;
         }
 
-        private byte[][] extractValuesFromArray(final byte[] valueLengthBytes,
-                final int valueLengthBytesLength, final byte[] valueBytes) {
+        private byte[][] extractValuesFromArray(final byte[] valueLengthBytes, final int valueLengthBytesLength,
+                final byte[] valueBytes) {
             final int[] valueBytesIndex = { 0 };
             final int[] eachValueBytesCount = { 0 };
             final int[] finalValuesIndex = { 0 };
             final byte[][][] finalValues = new byte[1][0][0];
 
-            final byte[][] extractEachValueBytes = extractEachValueBytes(
-                    valueLengthBytes, valueLengthBytesLength, valueBytes,
-                    valueBytesIndex, eachValueBytesCount, finalValues,
-                    finalValuesIndex);
+            final byte[][] extractEachValueBytes = extractEachValueBytes(valueLengthBytes, valueLengthBytesLength,
+                    valueBytes, valueBytesIndex, eachValueBytesCount, finalValues, finalValuesIndex);
             return extractEachValueBytes;
         }
 
@@ -303,29 +279,24 @@ public enum WffBinaryMessageUtil {
     private WffBinaryMessageUtil() {
     }
 
-    private static byte[][] extractEachValueBytes(final byte[] valueLengthBytes,
-            final int valueLengthBytesLength, final byte[] valueBytes,
-            final int[] valueBytesIndex, final int[] eachValueBytesCount,
+    private static byte[][] extractEachValueBytes(final byte[] valueLengthBytes, final int valueLengthBytesLength,
+            final byte[] valueBytes, final int[] valueBytesIndex, final int[] eachValueBytesCount,
             final byte[][][] finalValues, final int[] finalValuesIndex) {
 
         for (; valueBytesIndex[0] < valueBytes.length; valueBytesIndex[0]++) {
-            System.arraycopy(valueBytes, valueBytesIndex[0], valueLengthBytes,
-                    0, valueLengthBytesLength);
+            System.arraycopy(valueBytes, valueBytesIndex[0], valueLengthBytes, 0, valueLengthBytesLength);
             valueBytesIndex[0] += valueLengthBytesLength;
-            final int eachValueBytesLength = getIntFromOptimizedBytes(
-                    valueLengthBytes);
+            final int eachValueBytesLength = getIntFromOptimizedBytes(valueLengthBytes);
             final byte[] eachValueBytes = new byte[eachValueBytesLength];
 
-            System.arraycopy(valueBytes, valueBytesIndex[0], eachValueBytes, 0,
-                    eachValueBytes.length);
+            System.arraycopy(valueBytes, valueBytesIndex[0], eachValueBytes, 0, eachValueBytes.length);
             eachValueBytesCount[0]++;
 
             valueBytesIndex[0] += eachValueBytesLength - 1;
 
             valueBytesIndex[0]++;
-            extractEachValueBytes(valueLengthBytes, valueLengthBytesLength,
-                    valueBytes, valueBytesIndex, eachValueBytesCount,
-                    finalValues, finalValuesIndex);
+            extractEachValueBytes(valueLengthBytes, valueLengthBytesLength, valueBytes, valueBytesIndex,
+                    eachValueBytesCount, finalValues, finalValuesIndex);
             if (finalValues[0].length == 0) {
                 finalValuesIndex[0] = eachValueBytesCount[0] - 1;
                 finalValues[0] = new byte[eachValueBytesCount[0]][1];
@@ -339,8 +310,7 @@ public enum WffBinaryMessageUtil {
     }
 
     /**
-     * @param message
-     *                    the wff binary message bytes
+     * @param message the wff binary message bytes
      * @return the list of name value pairs
      * @since 1.0.0
      * @author WFF
@@ -355,8 +325,7 @@ public enum WffBinaryMessageUtil {
      * @since 1.0.0
      * @author WFF
      */
-    public byte[] getWffBinaryMessageBytes(
-            final Collection<NameValue> nameValues) {
+    public byte[] getWffBinaryMessageBytes(final Collection<NameValue> nameValues) {
         throw new AssertionError();
     }
 
@@ -371,47 +340,39 @@ public enum WffBinaryMessageUtil {
     }
 
     /**
-     * @param bytes
-     *                  from which the integer value will be obtained
+     * @param bytes from which the integer value will be obtained
      * @return the integer value from the given bytes
      * @since 1.0.0
      * @author WFF
      */
     public static int getIntFromBytes(final byte[] bytes) {
-        return bytes[0] << 24 | (bytes[1] & 0xFF) << 16 | (bytes[2] & 0xFF) << 8
-                | (bytes[3] & 0xFF);
+        return bytes[0] << 24 | (bytes[1] & 0xFF) << 16 | (bytes[2] & 0xFF) << 8 | (bytes[3] & 0xFF);
     }
 
     /**
-     * @param bytes
-     *                  the optimized bytes from which the integer value will be
-     *                  obtained
+     * @param bytes the optimized bytes from which the integer value will be
+     *              obtained
      * @return the integer value from the given bytes
      * @since 1.1.3
      * @author WFF
      */
     public static int getIntFromOptimizedBytes(final byte[] bytes) {
         if (bytes.length == 4) {
-            return bytes[0] << 24 | (bytes[1] & 0xFF) << 16
-                    | (bytes[2] & 0xFF) << 8 | (bytes[3] & 0xFF);
+            return bytes[0] << 24 | (bytes[1] & 0xFF) << 16 | (bytes[2] & 0xFF) << 8 | (bytes[3] & 0xFF);
         } else if (bytes.length == 3) {
-            return (bytes[0] & 0xFF) << 16 | (bytes[1] & 0xFF) << 8
-                    | (bytes[2] & 0xFF);
+            return (bytes[0] & 0xFF) << 16 | (bytes[1] & 0xFF) << 8 | (bytes[2] & 0xFF);
         } else if (bytes.length == 2) {
             return (bytes[0] & 0xFF) << 8 | (bytes[1] & 0xFF);
         } else if (bytes.length == 1) {
             return (bytes[0] & 0xFF);
         }
-        return bytes[0] << 24 | (bytes[1] & 0xFF) << 16 | (bytes[2] & 0xFF) << 8
-                | (bytes[3] & 0xFF);
+        return bytes[0] << 24 | (bytes[1] & 0xFF) << 16 | (bytes[2] & 0xFF) << 8 | (bytes[3] & 0xFF);
     }
 
     /**
      * NB: not fully tested yet
      *
-     * @param bytes
-     *                  the optimized bytes from which the long value will be
-     *                  obtained
+     * @param bytes the optimized bytes from which the long value will be obtained
      * @return the long value from the given bytes
      * @since 3.0.6
      * @author WFF
@@ -477,8 +438,7 @@ public enum WffBinaryMessageUtil {
             final long i4 = bytes[4] & 0xFF;
             final long i5 = bytes[5] & 0xFF;
             final long i6 = bytes[6] & 0xFF;
-            return i0 << 48 | i1 << 40 | i2 << 32 | i3 << 24 | i4 << 16
-                    | i5 << 8 | i6;
+            return i0 << 48 | i1 << 40 | i2 << 32 | i3 << 24 | i4 << 16 | i5 << 8 | i6;
         } else if (bytes.length == 8) {
             final long i0 = bytes[0];
             final long i1 = bytes[1] & 0xFF;
@@ -488,8 +448,7 @@ public enum WffBinaryMessageUtil {
             final long i5 = bytes[5] & 0xFF;
             final long i6 = bytes[6] & 0xFF;
             final long i7 = bytes[7] & 0xFF;
-            return i0 << 56 | i1 << 48 | i2 << 40 | i3 << 32 | i4 << 24
-                    | i5 << 16 | i6 << 8 | i7;
+            return i0 << 56 | i1 << 48 | i2 << 40 | i3 << 32 | i4 << 24 | i5 << 16 | i6 << 8 | i7;
         }
 
         final long i0 = bytes[0];
@@ -500,16 +459,13 @@ public enum WffBinaryMessageUtil {
         final long i5 = bytes[5] & 0xFF;
         final long i6 = bytes[6] & 0xFF;
         final long i7 = bytes[7] & 0xFF;
-        return i0 << 56 | i1 << 48 | i2 << 40 | i3 << 32 | i4 << 24 | i5 << 16
-                | i6 << 8 | i7;
+        return i0 << 56 | i1 << 48 | i2 << 40 | i3 << 32 | i4 << 24 | i5 << 16 | i6 << 8 | i7;
     }
 
     /**
      * NB: not fully tested yet
      *
-     * @param bytes
-     *                  the optimized bytes from which the long value will be
-     *                  obtained
+     * @param bytes the optimized bytes from which the long value will be obtained
      * @return the long value from the given bytes
      * @since 3.0.6
      * @author WFF
@@ -575,8 +531,7 @@ public enum WffBinaryMessageUtil {
             final long i4 = bytes[4] & 0xFF;
             final long i5 = bytes[5] & 0xFF;
             final long i6 = bytes[6] & 0xFF;
-            return i0 << 48 | i1 << 40 | i2 << 32 | i3 << 24 | i4 << 16
-                    | i5 << 8 | i6;
+            return i0 << 48 | i1 << 40 | i2 << 32 | i3 << 24 | i4 << 16 | i5 << 8 | i6;
         }
 
         final long i0 = bytes[0];
@@ -586,8 +541,7 @@ public enum WffBinaryMessageUtil {
         final long i4 = bytes[4] & 0xFF;
         final long i5 = bytes[5] & 0xFF;
         final long i6 = bytes[6] & 0xFF;
-        return i0 << 48 | i1 << 40 | i2 << 32 | i3 << 24 | i4 << 16 | i5 << 8
-                | i6;
+        return i0 << 48 | i1 << 40 | i2 << 32 | i3 << 24 | i4 << 16 | i5 << 8 | i6;
     }
 
     /**
@@ -635,28 +589,24 @@ public enum WffBinaryMessageUtil {
                                 }
                                 return new byte[] { sixthIndex, seventhIndex };
                             }
-                            return new byte[] { fifthIndex, sixthIndex,
-                                    seventhIndex };
+                            return new byte[] { fifthIndex, sixthIndex, seventhIndex };
                         }
 
-                        return new byte[] { fourthIndex, fifthIndex, sixthIndex,
-                                seventhIndex };
+                        return new byte[] { fourthIndex, fifthIndex, sixthIndex, seventhIndex };
                     }
 
-                    return new byte[] { thirdIndex, fourthIndex, fifthIndex,
-                            sixthIndex, seventhIndex };
+                    return new byte[] { thirdIndex, fourthIndex, fifthIndex, sixthIndex, seventhIndex };
                 }
 
-                return new byte[] { secondIndex, thirdIndex, fourthIndex,
-                        fifthIndex, sixthIndex, seventhIndex };
+                return new byte[] { secondIndex, thirdIndex, fourthIndex, fifthIndex, sixthIndex, seventhIndex };
             }
 
-            return new byte[] { firstIndex, secondIndex, thirdIndex,
-                    fourthIndex, fifthIndex, sixthIndex, seventhIndex };
+            return new byte[] { firstIndex, secondIndex, thirdIndex, fourthIndex, fifthIndex, sixthIndex,
+                    seventhIndex };
         }
 
-        return new byte[] { zerothIndex, firstIndex, secondIndex, thirdIndex,
-                fourthIndex, fifthIndex, sixthIndex, seventhIndex };
+        return new byte[] { zerothIndex, firstIndex, secondIndex, thirdIndex, fourthIndex, fifthIndex, sixthIndex,
+                seventhIndex };
     }
 
     /**
@@ -693,43 +643,35 @@ public enum WffBinaryMessageUtil {
                             }
                             return new byte[] { fifthIndex, sixthIndex };
                         }
-                        return new byte[] { fourthIndex, fifthIndex,
-                                sixthIndex };
+                        return new byte[] { fourthIndex, fifthIndex, sixthIndex };
                     }
 
-                    return new byte[] { thirdIndex, fourthIndex, fifthIndex,
-                            sixthIndex };
+                    return new byte[] { thirdIndex, fourthIndex, fifthIndex, sixthIndex };
                 }
 
-                return new byte[] { secondIndex, thirdIndex, fourthIndex,
-                        fifthIndex, sixthIndex };
+                return new byte[] { secondIndex, thirdIndex, fourthIndex, fifthIndex, sixthIndex };
             }
 
-            return new byte[] { firstIndex, secondIndex, thirdIndex,
-                    fourthIndex, fifthIndex, sixthIndex };
+            return new byte[] { firstIndex, secondIndex, thirdIndex, fourthIndex, fifthIndex, sixthIndex };
         }
 
-        return new byte[] { zerothIndex, firstIndex, secondIndex, thirdIndex,
-                fourthIndex, fifthIndex, sixthIndex };
+        return new byte[] { zerothIndex, firstIndex, secondIndex, thirdIndex, fourthIndex, fifthIndex, sixthIndex };
     }
 
     /**
-     * @param value
-     *                  the integer value to be converted to bytes.
+     * @param value the integer value to be converted to bytes.
      * @return the bytes for the corresponding integer given.
      * @since 1.0.0
      * @author WFF
      */
     public static byte[] getBytesFromInt(final int value) {
-        return new byte[] { (byte) (value >> 24), (byte) (value >> 16),
-                (byte) (value >> 8), (byte) value };
+        return new byte[] { (byte) (value >> 24), (byte) (value >> 16), (byte) (value >> 8), (byte) value };
     }
 
     /**
-     * @param value
-     *                  the integer value to be converted to optimized bytes.
-     *                  Optimized bytes means the minimum bytes required to
-     *                  represent the given integer value.
+     * @param value the integer value to be converted to optimized bytes. Optimized
+     *              bytes means the minimum bytes required to represent the given
+     *              integer value.
      * @return the bytes for the corresponding integer given.
      * @since 1.1.3
      * @author WFF
@@ -760,12 +702,10 @@ public enum WffBinaryMessageUtil {
     }
 
     /**
-     * @param value
-     *                  the integer value to be converted to optimized bytes.
-     *                  Optimized bytes means the minimum bytes required to
-     *                  represent the given integer value.
-     * @return the array length of the bytes for the corresponding integer
-     *         given.
+     * @param value the integer value to be converted to optimized bytes. Optimized
+     *              bytes means the minimum bytes required to represent the given
+     *              integer value.
+     * @return the array length of the bytes for the corresponding integer given.
      * @since 1.1.5
      * @author WFF
      */
@@ -804,19 +744,16 @@ public enum WffBinaryMessageUtil {
     }
 
     /**
-     * @param value
-     *                          the integer value to be converted to optimized
-     *                          bytes. Optimized bytes means the minimum bytes
-     *                          required to represent the given integer value.
-     * @param lastNoOfBytes
-     *                          the last no of bytes to be returned. Expected
-     *                          inputs are 1, 2, 3 or 4.
+     * @param value         the integer value to be converted to optimized bytes.
+     *                      Optimized bytes means the minimum bytes required to
+     *                      represent the given integer value.
+     * @param lastNoOfBytes the last no of bytes to be returned. Expected inputs are
+     *                      1, 2, 3 or 4.
      * @return the bytes for the corresponding integer given.
      * @since 1.1.5
      * @author WFF
      */
-    public static byte[] getLastBytesFromInt(final int value,
-            final int lastNoOfBytes) {
+    public static byte[] getLastBytesFromInt(final int value, final int lastNoOfBytes) {
 
         final byte zerothIndex = (byte) (value >> 24);
         final byte firstIndex = (byte) (value >> 16);

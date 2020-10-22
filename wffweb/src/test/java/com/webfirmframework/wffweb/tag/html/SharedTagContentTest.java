@@ -786,8 +786,8 @@ public class SharedTagContentTest {
                 @Override
                 public Runnable contentChanged(ChangeEvent<String> changeEvent) {
                     listenerInvoked.set(true);
-                    assertEquals("Test content", changeEvent.getContentBefore().getContent());
-                    assertEquals("Content Changed", changeEvent.getContentAfter().getContent());
+                    assertEquals("Test content", changeEvent.getContentBefore().content());
+                    assertEquals("Content Changed", changeEvent.getContentAfter().content());
                     CompletableFuture.runAsync(() -> {assertEquals("Content Changed", stc.getContent());});
                     return () -> { assertEquals("Content Changed", stc.getContent());};
                 }
@@ -824,7 +824,7 @@ public class SharedTagContentTest {
                 @Override
                 public Runnable detached(DetachEvent<String> detachEvent) {
                     listenerInvoked.set(true);
-                    assertEquals("Test content", detachEvent.getContent().getContent());
+                    assertEquals("Test content", detachEvent.getContent().content());
                     
                     return () -> { assertEquals("Test content", stc.getContent());};
                 }
@@ -873,7 +873,7 @@ public class SharedTagContentTest {
                 @Override
                 public Runnable detached(DetachEvent<String> detachEvent) {
                     listenerInvoked.set(true);
-                    assertEquals("Test content", detachEvent.getContent().getContent());
+                    assertEquals("Test content", detachEvent.getContent().content());
                     
                     return () -> { assertEquals("Test content", stc.getContent());};
                 }
@@ -1224,16 +1224,16 @@ public class SharedTagContentTest {
             
             @Override
             public SharedTagContent.Content<String> format(SharedTagContent.Content<String> content) {
-                assertEquals("Test Content", content.getContent());
-                return new SharedTagContent.Content<>("Formatted content", content.isContentTypeHtml());
+                assertEquals("Test Content", content.content());
+                return new SharedTagContent.Content<>("Formatted content", content.contentTypeHtml());
             }
         });
         pChild2.addInnerHtml(stc, new SharedTagContent.ContentFormatter<String>() {
             
             @Override
             public SharedTagContent.Content<String> format(SharedTagContent.Content<String> content) {
-                assertEquals("Test Content", content.getContent());
-                return new SharedTagContent.Content<>("Formatted content", content.isContentTypeHtml());
+                assertEquals("Test Content", content.content());
+                return new SharedTagContent.Content<>("Formatted content", content.contentTypeHtml());
             }
         });
         assertEquals(stc, spanChild1.getSharedTagContent());
@@ -1254,8 +1254,8 @@ public class SharedTagContentTest {
             
             @Override
             public SharedTagContent.Content<String> format(SharedTagContent.Content<String> content) {
-                assertEquals("Test Content", content.getContent());
-                return new SharedTagContent.Content<>("Formatted1 Content", content.isContentTypeHtml());
+                assertEquals("Test Content", content.content());
+                return new SharedTagContent.Content<>("Formatted1 Content", content.contentTypeHtml());
             }
         });
         
@@ -1263,8 +1263,8 @@ public class SharedTagContentTest {
             
             @Override
             public SharedTagContent.Content<String> format(SharedTagContent.Content<String> content) {
-                assertEquals("Test Content", content.getContent());
-                return new SharedTagContent.Content<>("Formatted2 Content", content.isContentTypeHtml());
+                assertEquals("Test Content", content.content());
+                return new SharedTagContent.Content<>("Formatted2 Content", content.contentTypeHtml());
             }
         });
         assertEquals(stc, spanChild1.getSharedTagContent());
@@ -1282,10 +1282,10 @@ public class SharedTagContentTest {
             @Override
             public SharedTagContent.Content<String> format(SharedTagContent.Content<String> content) {
                 
-                if ("return null".equals(content.getContent())) {
+                if ("return null".equals(content.content())) {
                     return null;
                 } else {
-                    assertEquals("Test Content", content.getContent());
+                    assertEquals("Test Content", content.content());
                 }
                 return new SharedTagContent.Content<>("Formatted1 Content", false);
             }
@@ -1296,10 +1296,10 @@ public class SharedTagContentTest {
             @Override
             public SharedTagContent.Content<String> format(SharedTagContent.Content<String> content) {
                 
-                if ("return null".equals(content.getContent())) {
+                if ("return null".equals(content.content())) {
                     return null;
                 } else {
-                    assertEquals("Test Content", content.getContent());    
+                    assertEquals("Test Content", content.content());    
                 }
                 return new SharedTagContent.Content<>("Formatted2 Content", false);
             }
@@ -1323,7 +1323,7 @@ public class SharedTagContentTest {
             
             @Override
             public SharedTagContent.Content<String> format(SharedTagContent.Content<String> content) {
-                assertEquals("return null", content.getContent());
+                assertEquals("return null", content.content());
                 return null;
             }
         });
@@ -1332,7 +1332,7 @@ public class SharedTagContentTest {
             
             @Override
             public SharedTagContent.Content<String> format(SharedTagContent.Content<String> content) {
-                assertEquals("return null", content.getContent());
+                assertEquals("return null", content.content());
                 return null;
             }
         });

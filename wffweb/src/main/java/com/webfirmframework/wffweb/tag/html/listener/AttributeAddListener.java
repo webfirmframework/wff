@@ -31,8 +31,7 @@ public interface AttributeAddListener extends Serializable {
         public AddEvent() {
         }
 
-        public AddEvent(final AbstractHtml addedToTag,
-                final AbstractAttribute... addedAttributes) {
+        public AddEvent(final AbstractHtml addedToTag, final AbstractAttribute... addedAttributes) {
             super();
             this.addedToTag = addedToTag;
             this.addedAttributes = addedAttributes;
@@ -50,8 +49,7 @@ public interface AttributeAddListener extends Serializable {
             return addedAttributes;
         }
 
-        public void setAddedAttributes(
-                final AbstractAttribute... addedAttributes) {
+        public void setAddedAttributes(final AbstractAttribute... addedAttributes) {
             this.addedAttributes = addedAttributes;
         }
 

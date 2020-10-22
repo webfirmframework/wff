@@ -55,8 +55,7 @@ public class FontSizeAdjust extends AbstractCssProperty<FontSizeAdjust> {
     public static final String INHERIT = "inherit";
     public static final String NONE = "none";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays
-            .asList(INITIAL, INHERIT, NONE);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(INITIAL, INHERIT, NONE);
 
     private String cssValue;
     private Float value;
@@ -72,18 +71,16 @@ public class FontSizeAdjust extends AbstractCssProperty<FontSizeAdjust> {
     }
 
     /**
-     * @param cssValue
-     *                     the css value to set.
+     * @param cssValue the css value to set.
      */
     public FontSizeAdjust(final String cssValue) {
         setCssValue(cssValue);
     }
 
     /**
-     * @param fontSizeAdjust
-     *                           the {@code FontSizeAdjust} object from which
-     *                           the cssValue to set.And, {@code null} will
-     *                           throw {@code NullValueException}
+     * @param fontSizeAdjust the {@code FontSizeAdjust} object from which the
+     *                       cssValue to set.And, {@code null} will throw
+     *                       {@code NullValueException}
      */
     public FontSizeAdjust(final FontSizeAdjust fontSizeAdjust) {
         if (fontSizeAdjust == null) {
@@ -136,8 +133,8 @@ public class FontSizeAdjust extends AbstractCssProperty<FontSizeAdjust> {
     /**
      * gets the fontSizeAdjust in {@code Float} value.
      *
-     * @return the value in float or null if the cssValue is
-     *         <code>initial</code> or <code>inherit</code>.
+     * @return the value in float or null if the cssValue is <code>initial</code> or
+     *         <code>inherit</code>.
      * @since 1.0.0
      * @author WFF
      */
@@ -146,8 +143,7 @@ public class FontSizeAdjust extends AbstractCssProperty<FontSizeAdjust> {
     }
 
     /**
-     * @param value
-     *                  the value to set
+     * @param value the value to set
      * @author WFF
      * @since 1.0.0
      */
@@ -160,11 +156,10 @@ public class FontSizeAdjust extends AbstractCssProperty<FontSizeAdjust> {
     }
 
     /**
-     * @param cssValue
-     *                     the value should be in the format of
-     *                     <code>0.5</code>, <code>initial/inherit</code>.
-     *                     {@code null} is considered as an invalid value and it
-     *                     will throw {@code NullValueException}.
+     * @param cssValue the value should be in the format of <code>0.5</code>,
+     *                 <code>initial/inherit</code>. {@code null} is considered as
+     *                 an invalid value and it will throw
+     *                 {@code NullValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -175,8 +170,7 @@ public class FontSizeAdjust extends AbstractCssProperty<FontSizeAdjust> {
                     "null is an invalid value. The value format should be as for example 0.5, initial/inherit.");
         } else {
 
-            final String trimmedCssValue = TagStringUtil
-                    .toLowerCase(StringUtil.strip(cssValue));
+            final String trimmedCssValue = TagStringUtil.toLowerCase(StringUtil.strip(cssValue));
 
             if (PREDEFINED_CONSTANTS.contains(trimmedCssValue)) {
                 this.cssValue = trimmedCssValue;
@@ -232,15 +226,13 @@ public class FontSizeAdjust extends AbstractCssProperty<FontSizeAdjust> {
     /**
      * validates if the given cssValue is valid for this class.
      *
-     * @param cssValue
-     *                     the value to check.
+     * @param cssValue the value to check.
      * @return true if valid and false if invalid.
      * @author WFF
      * @since 1.0.0
      */
     public static boolean isValid(final String cssValue) {
-        final String trimmedCssValue = TagStringUtil
-                .toLowerCase(StringUtil.strip(cssValue));
+        final String trimmedCssValue = TagStringUtil.toLowerCase(StringUtil.strip(cssValue));
         if (StringUtil.containsSpace(trimmedCssValue)) {
             return false;
         }

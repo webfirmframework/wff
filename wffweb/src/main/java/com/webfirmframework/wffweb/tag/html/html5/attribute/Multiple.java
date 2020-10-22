@@ -34,8 +34,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
  * @author WFF
  * @since 1.0.0
  */
-public class Multiple extends AbstractAttribute
-        implements BooleanAttribute, InputAttributable {
+public class Multiple extends AbstractAttribute implements BooleanAttribute, InputAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -53,10 +52,9 @@ public class Multiple extends AbstractAttribute
     }
 
     /**
-     * sets the default value as <code>multiple</code> (since 3.0.1). If value
-     * is not required then use <code>new Multiple(null)</code>. Note : There
-     * might be some issue in dynamically changing state of tag if there is no
-     * default value.
+     * sets the default value as <code>multiple</code> (since 3.0.1). If value is
+     * not required then use <code>new Multiple(null)</code>. Note : There might be
+     * some issue in dynamically changing state of tag if there is no default value.
      */
     public Multiple() {
         setAttributeValue(AttributeNameConstants.MULTIPLE);
@@ -73,12 +71,10 @@ public class Multiple extends AbstractAttribute
     /**
      * sets the value for this attribute
      *
-     * @param updateClient
-     *                         true to update client browser page if it is
-     *                         available. The default value is true but it will
-     *                         be ignored if there is no client browser page.
-     * @param value
-     *                         the value for the attribute.
+     * @param updateClient true to update client browser page if it is available.
+     *                     The default value is true but it will be ignored if there
+     *                     is no client browser page.
+     * @param value        the value for the attribute.
      * @since 2.1.15
      * @author WFF
      */

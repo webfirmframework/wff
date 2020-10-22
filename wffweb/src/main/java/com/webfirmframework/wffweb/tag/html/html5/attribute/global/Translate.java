@@ -62,10 +62,9 @@ public class Translate extends AbstractAttribute implements GlobalAttributable {
     }
 
     /**
-     * @param translation
-     *                        the translation to set. The argument {@code true }
-     *                        or {@code false } will set {@code yes} or
-     *                        {@code no} respectively.
+     * @param translation the translation to set. The argument {@code true } or
+     *                    {@code false } will set {@code yes} or {@code no}
+     *                    respectively.
      * @author WFF
      * @since 1.0.0
      */
@@ -75,9 +74,8 @@ public class Translate extends AbstractAttribute implements GlobalAttributable {
     }
 
     /**
-     * @param value
-     *                  the translation to set. The argument should be
-     *                  {@code yes } or {@code no }.
+     * @param value the translation to set. The argument should be {@code yes } or
+     *              {@code no }.
      * @author WFF
      * @since 1.1.4
      */
@@ -114,10 +112,9 @@ public class Translate extends AbstractAttribute implements GlobalAttributable {
     }
 
     /**
-     * @param translation
-     *                        the translation to set. The argument {@code true }
-     *                        or {@code false } will set {@code yes} or
-     *                        {@code no} respectively.
+     * @param translation the translation to set. The argument {@code true } or
+     *                    {@code false } will set {@code yes} or {@code no}
+     *                    respectively.
      * @author WFF
      * @since 1.0.0
      */

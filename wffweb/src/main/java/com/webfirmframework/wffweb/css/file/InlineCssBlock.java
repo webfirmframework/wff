@@ -39,11 +39,9 @@ public final class InlineCssBlock extends AbstractCssFileBlock {
     }
 
     /**
-     * Internally calls setExcludeCssBlock method and returns the current
-     * instance.
+     * Internally calls setExcludeCssBlock method and returns the current instance.
      *
-     * @param excludeCssBlock
-     *                            true or false
+     * @param excludeCssBlock true or false
      * @return the current instance
      * @since 3.0.8
      */
@@ -65,8 +63,7 @@ public final class InlineCssBlock extends AbstractCssFileBlock {
      * @return a new instance of InlineCssBlock with the applied properties.
      * @since 3.0.8
      */
-    public static InlineCssBlock load(final String selectors,
-            final Consumer<Set<CssProperty>> consumer) {
+    public static InlineCssBlock load(final String selectors, final Consumer<Set<CssProperty>> consumer) {
         final InlineCssBlock inlineCssBlock = new InlineCssBlock(selectors);
         inlineCssBlock.consumer = consumer;
         return inlineCssBlock;

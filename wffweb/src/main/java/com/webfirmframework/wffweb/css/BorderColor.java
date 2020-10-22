@@ -67,20 +67,17 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class BorderColor extends AbstractCssProperty<BorderColor>
-        implements StateChangeInformer<CssProperty> {
+public class BorderColor extends AbstractCssProperty<BorderColor> implements StateChangeInformer<CssProperty> {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    private static final Logger LOGGER = Logger
-            .getLogger(BorderColor.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(BorderColor.class.getName());
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
     public static final String TRANSPARENT = "transparent";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays
-            .asList(INITIAL, INHERIT, TRANSPARENT);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(INITIAL, INHERIT, TRANSPARENT);
 
     private String cssValue;
 
@@ -97,18 +94,16 @@ public class BorderColor extends AbstractCssProperty<BorderColor>
     }
 
     /**
-     * @param cssValue
-     *                     the css value to set.
+     * @param cssValue the css value to set.
      */
     public BorderColor(final String cssValue) {
         setCssValue(cssValue);
     }
 
     /**
-     * @param borderBottomColor
-     *                              the {@code BorderBottomColor} object from
-     *                              which the cssValue to set.And, {@code null}
-     *                              will throw {@code NullValueException}
+     * @param borderBottomColor the {@code BorderBottomColor} object from which the
+     *                          cssValue to set.And, {@code null} will throw
+     *                          {@code NullValueException}
      */
     public BorderColor(final BorderColor borderBottomColor) {
         if (borderBottomColor == null) {
@@ -118,8 +113,8 @@ public class BorderColor extends AbstractCssProperty<BorderColor>
     }
 
     /**
-     * the color/color code to set. The alternative method {@code setCssValue}
-     * can also be used.
+     * the color/color code to set. The alternative method {@code setCssValue} can
+     * also be used.
      *
      * @param value
      * @return the current object
@@ -165,8 +160,8 @@ public class BorderColor extends AbstractCssProperty<BorderColor>
     }
 
     /**
-     * gets the value, {@code getCssValue} method can also be used to get the
-     * same value.
+     * gets the value, {@code getCssValue} method can also be used to get the same
+     * value.
      *
      * @return the value in String.
      * @since 1.0.0
@@ -177,13 +172,12 @@ public class BorderColor extends AbstractCssProperty<BorderColor>
     }
 
     /**
-     * @param cssValue
-     *                     the value should be a color/color code, for example
-     *                     <code>#0000ff</code>. {@code null} is considered as
-     *                     an invalid value and it will throw
-     *                     {@code NullValueException}.And an empty string is
-     *                     also considered as an invalid value and it will throw
-     *                     {@code InvalidValueException}.
+     * @param cssValue the value should be a color/color code, for example
+     *                 <code>#0000ff</code>. {@code null} is considered as an
+     *                 invalid value and it will throw
+     *                 {@code NullValueException}.And an empty string is also
+     *                 considered as an invalid value and it will throw
+     *                 {@code InvalidValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -223,11 +217,9 @@ public class BorderColor extends AbstractCssProperty<BorderColor>
                 return this;
             }
 
-            final String borderColorString = StringUtil
-                    .convertToSingleSpace(trimmedCssValue);
+            final String borderColorString = StringUtil.convertWhitespacesToSingleSpace(trimmedCssValue);
 
-            final List<String> extractedColors = CssValueUtil
-                    .split(borderColorString);
+            final List<String> extractedColors = CssValueUtil.split(borderColorString);
 
             if (extractedColors.size() == 1) {
                 if (borderTopColor == null) {
@@ -238,24 +230,21 @@ public class BorderColor extends AbstractCssProperty<BorderColor>
                     borderTopColor.setCssValue(extractedColors.get(0));
                 }
                 if (borderRightColor == null) {
-                    borderRightColor = new BorderRightColor(
-                            extractedColors.get(0));
+                    borderRightColor = new BorderRightColor(extractedColors.get(0));
                     borderRightColor.setStateChangeInformer(this);
                     borderRightColor.setAlreadyInUse(true);
                 } else {
                     borderRightColor.setCssValue(extractedColors.get(0));
                 }
                 if (borderBottomColor == null) {
-                    borderBottomColor = new BorderBottomColor(
-                            extractedColors.get(0));
+                    borderBottomColor = new BorderBottomColor(extractedColors.get(0));
                     borderBottomColor.setStateChangeInformer(this);
                     borderBottomColor.setAlreadyInUse(true);
                 } else {
                     borderBottomColor.setCssValue(extractedColors.get(0));
                 }
                 if (borderLeftColor == null) {
-                    borderLeftColor = new BorderLeftColor(
-                            extractedColors.get(0));
+                    borderLeftColor = new BorderLeftColor(extractedColors.get(0));
                     borderLeftColor.setStateChangeInformer(this);
                     borderLeftColor.setAlreadyInUse(true);
                 } else {
@@ -270,24 +259,21 @@ public class BorderColor extends AbstractCssProperty<BorderColor>
                     borderTopColor.setCssValue(extractedColors.get(0));
                 }
                 if (borderBottomColor == null) {
-                    borderBottomColor = new BorderBottomColor(
-                            extractedColors.get(0));
+                    borderBottomColor = new BorderBottomColor(extractedColors.get(0));
                     borderBottomColor.setStateChangeInformer(this);
                     borderBottomColor.setAlreadyInUse(true);
                 } else {
                     borderBottomColor.setCssValue(extractedColors.get(0));
                 }
                 if (borderRightColor == null) {
-                    borderRightColor = new BorderRightColor(
-                            extractedColors.get(1));
+                    borderRightColor = new BorderRightColor(extractedColors.get(1));
                     borderRightColor.setStateChangeInformer(this);
                     borderRightColor.setAlreadyInUse(true);
                 } else {
                     borderRightColor.setCssValue(extractedColors.get(1));
                 }
                 if (borderLeftColor == null) {
-                    borderLeftColor = new BorderLeftColor(
-                            extractedColors.get(1));
+                    borderLeftColor = new BorderLeftColor(extractedColors.get(1));
                     borderLeftColor.setStateChangeInformer(this);
                     borderLeftColor.setAlreadyInUse(true);
                 } else {
@@ -302,24 +288,21 @@ public class BorderColor extends AbstractCssProperty<BorderColor>
                     borderTopColor.setCssValue(extractedColors.get(0));
                 }
                 if (borderRightColor == null) {
-                    borderRightColor = new BorderRightColor(
-                            extractedColors.get(1));
+                    borderRightColor = new BorderRightColor(extractedColors.get(1));
                     borderRightColor.setStateChangeInformer(this);
                     borderRightColor.setAlreadyInUse(true);
                 } else {
                     borderRightColor.setCssValue(extractedColors.get(1));
                 }
                 if (borderLeftColor == null) {
-                    borderLeftColor = new BorderLeftColor(
-                            extractedColors.get(1));
+                    borderLeftColor = new BorderLeftColor(extractedColors.get(1));
                     borderLeftColor.setStateChangeInformer(this);
                     borderLeftColor.setAlreadyInUse(true);
                 } else {
                     borderLeftColor.setCssValue(extractedColors.get(1));
                 }
                 if (borderBottomColor == null) {
-                    borderBottomColor = new BorderBottomColor(
-                            extractedColors.get(2));
+                    borderBottomColor = new BorderBottomColor(extractedColors.get(2));
                     borderBottomColor.setStateChangeInformer(this);
                     borderBottomColor.setAlreadyInUse(true);
                 } else {
@@ -334,32 +317,28 @@ public class BorderColor extends AbstractCssProperty<BorderColor>
                     borderTopColor.setCssValue(extractedColors.get(0));
                 }
                 if (borderRightColor == null) {
-                    borderRightColor = new BorderRightColor(
-                            extractedColors.get(1));
+                    borderRightColor = new BorderRightColor(extractedColors.get(1));
                     borderRightColor.setStateChangeInformer(this);
                     borderRightColor.setAlreadyInUse(true);
                 } else {
                     borderRightColor.setCssValue(extractedColors.get(1));
                 }
                 if (borderBottomColor == null) {
-                    borderBottomColor = new BorderBottomColor(
-                            extractedColors.get(2));
+                    borderBottomColor = new BorderBottomColor(extractedColors.get(2));
                     borderBottomColor.setStateChangeInformer(this);
                     borderBottomColor.setAlreadyInUse(true);
                 } else {
                     borderBottomColor.setCssValue(extractedColors.get(2));
                 }
                 if (borderLeftColor == null) {
-                    borderLeftColor = new BorderLeftColor(
-                            extractedColors.get(3));
+                    borderLeftColor = new BorderLeftColor(extractedColors.get(3));
                     borderLeftColor.setStateChangeInformer(this);
                     borderLeftColor.setAlreadyInUse(true);
                 } else {
                     borderLeftColor.setCssValue(extractedColors.get(3));
                 }
             } else {
-                throw new InvalidValueException(
-                        "the given cssValue is invalid");
+                throw new InvalidValueException("the given cssValue is invalid");
             }
 
             this.cssValue = borderColorString;
@@ -417,29 +396,20 @@ public class BorderColor extends AbstractCssProperty<BorderColor>
      * @author WFF
      * @since 1.0.0
      */
-    public void setBorderColor(final BorderTopColor borderTopColor,
-            final BorderRightColor borderRightColor,
-            final BorderBottomColor borderBottomColor,
-            final BorderLeftColor borderLeftColor) {
+    public void setBorderColor(final BorderTopColor borderTopColor, final BorderRightColor borderRightColor,
+            final BorderBottomColor borderBottomColor, final BorderLeftColor borderLeftColor) {
 
-        if (borderTopColor != null && borderRightColor != null
-                && borderBottomColor != null && borderLeftColor != null) {
+        if (borderTopColor != null && borderRightColor != null && borderBottomColor != null
+                && borderLeftColor != null) {
 
             if (BorderTopColor.INITIAL.equals(borderTopColor.getCssValue())
-                    || BorderTopColor.INHERIT
-                            .equals(borderTopColor.getCssValue())
-                    || BorderRightColor.INITIAL
-                            .equals(borderRightColor.getCssValue())
-                    || BorderRightColor.INHERIT
-                            .equals(borderRightColor.getCssValue())
-                    || BorderBottomColor.INITIAL
-                            .equals(borderBottomColor.getCssValue())
-                    || BorderBottomColor.INHERIT
-                            .equals(borderBottomColor.getCssValue())
-                    || BorderLeftColor.INITIAL
-                            .equals(borderLeftColor.getCssValue())
-                    || BorderLeftColor.INHERIT
-                            .equals(borderLeftColor.getCssValue())) {
+                    || BorderTopColor.INHERIT.equals(borderTopColor.getCssValue())
+                    || BorderRightColor.INITIAL.equals(borderRightColor.getCssValue())
+                    || BorderRightColor.INHERIT.equals(borderRightColor.getCssValue())
+                    || BorderBottomColor.INITIAL.equals(borderBottomColor.getCssValue())
+                    || BorderBottomColor.INHERIT.equals(borderBottomColor.getCssValue())
+                    || BorderLeftColor.INITIAL.equals(borderLeftColor.getCssValue())
+                    || BorderLeftColor.INHERIT.equals(borderLeftColor.getCssValue())) {
                 throw new InvalidValueException(
                         "Any or all of the given arguments have initial/inherit constant value as its cssValue");
             }
@@ -452,8 +422,7 @@ public class BorderColor extends AbstractCssProperty<BorderColor>
 
                 if (this.borderTopColor != null) {
 
-                    assignProducedCssValue(borderTopColor, borderRightColor,
-                            borderBottomColor, borderLeftColor);
+                    assignProducedCssValue(borderTopColor, borderRightColor, borderBottomColor, borderLeftColor);
 
                     this.borderTopColor.setAlreadyInUse(false);
                     this.borderRightColor.setAlreadyInUse(false);
@@ -519,8 +488,7 @@ public class BorderColor extends AbstractCssProperty<BorderColor>
                 borderLeftColorTemp.setAlreadyInUse(true);
                 borderLeftColorTemp.setStateChangeInformer(this);
 
-                assignProducedCssValue(borderTopColor, borderRightColor,
-                        borderBottomColor, borderLeftColor);
+                assignProducedCssValue(borderTopColor, borderRightColor, borderBottomColor, borderLeftColor);
 
                 this.borderTopColor = borderTopColorTemp;
                 this.borderRightColor = borderRightColorTemp;
@@ -571,15 +539,12 @@ public class BorderColor extends AbstractCssProperty<BorderColor>
      * @author WFF
      * @since 1.0.0
      */
-    private void assignProducedCssValue(final BorderTopColor borderTopColor,
-            final BorderRightColor borderRightColor,
-            final BorderBottomColor borderBottomColor,
-            final BorderLeftColor borderLeftColor) {
+    private void assignProducedCssValue(final BorderTopColor borderTopColor, final BorderRightColor borderRightColor,
+            final BorderBottomColor borderBottomColor, final BorderLeftColor borderLeftColor) {
 
         final String borderTopColorCssValue = borderTopColor.getCssValue();
         final String borderRightColorCssValue = borderRightColor.getCssValue();
-        final String borderBottomColorCssValue = borderBottomColor
-                .getCssValue();
+        final String borderBottomColorCssValue = borderBottomColor.getCssValue();
         final String borderLeftColorCssValue = borderLeftColor.getCssValue();
 
         if (borderTopColorCssValue.equals(borderRightColorCssValue)
@@ -595,8 +560,8 @@ public class BorderColor extends AbstractCssProperty<BorderColor>
         } else if (borderTopColorCssValue.equals(borderBottomColorCssValue)
                 && borderRightColorCssValue.equals(borderLeftColorCssValue)) {
 
-            cssValue = new StringBuilder(borderTopColorCssValue).append(' ')
-                    .append(borderRightColorCssValue).toString();
+            cssValue = new StringBuilder(borderTopColorCssValue).append(' ').append(borderRightColorCssValue)
+                    .toString();
 
             final StateChangeInformer<CssProperty> stateChangeInformer = getStateChangeInformer();
             if (stateChangeInformer != null) {
@@ -605,19 +570,17 @@ public class BorderColor extends AbstractCssProperty<BorderColor>
 
         } else if (borderRightColorCssValue.equals(borderLeftColorCssValue)) {
 
-            cssValue = new StringBuilder(borderTopColorCssValue).append(' ')
-                    .append(borderRightColorCssValue).append(' ')
-                    .append(borderBottomColorCssValue).toString();
+            cssValue = new StringBuilder(borderTopColorCssValue).append(' ').append(borderRightColorCssValue)
+                    .append(' ').append(borderBottomColorCssValue).toString();
 
             final StateChangeInformer<CssProperty> stateChangeInformer = getStateChangeInformer();
             if (stateChangeInformer != null) {
                 stateChangeInformer.stateChanged(this);
             }
         } else {
-            cssValue = new StringBuilder(borderTopColorCssValue).append(' ')
-                    .append(borderRightColorCssValue).append(' ')
-                    .append(borderBottomColorCssValue).append(' ')
-                    .append(borderLeftColorCssValue).toString();
+            cssValue = new StringBuilder(borderTopColorCssValue).append(' ').append(borderRightColorCssValue)
+                    .append(' ').append(borderBottomColorCssValue).append(' ').append(borderLeftColorCssValue)
+                    .toString();
 
             final StateChangeInformer<CssProperty> stateChangeInformer = getStateChangeInformer();
             if (stateChangeInformer != null) {
@@ -629,8 +592,7 @@ public class BorderColor extends AbstractCssProperty<BorderColor>
     /*
      * (non-Javadoc)
      *
-     * @see
-     * com.webfirmframework.wffweb.informer.StateChangeInformer#stateChanged(
+     * @see com.webfirmframework.wffweb.informer.StateChangeInformer#stateChanged(
      * java.lang .Object)
      */
     @Override
@@ -639,40 +601,30 @@ public class BorderColor extends AbstractCssProperty<BorderColor>
         if (stateChangedObject instanceof BorderTopColor) {
             final BorderTopColor borderTopColor = (BorderTopColor) stateChangedObject;
             if (BorderTopColor.INITIAL.equals(borderTopColor.getCssValue())
-                    || BorderTopColor.INHERIT
-                            .equals(borderTopColor.getCssValue())) {
-                throw new InvalidValueException(
-                        "borderTopColor cannot have initial/inherit as its cssValue");
+                    || BorderTopColor.INHERIT.equals(borderTopColor.getCssValue())) {
+                throw new InvalidValueException("borderTopColor cannot have initial/inherit as its cssValue");
             }
         } else if (stateChangedObject instanceof BorderRightColor) {
             final BorderRightColor borderRightColor = (BorderRightColor) stateChangedObject;
             if (BorderRightColor.INITIAL.equals(borderRightColor.getCssValue())
-                    || BorderRightColor.INHERIT
-                            .equals(borderRightColor.getCssValue())) {
-                throw new InvalidValueException(
-                        "borderRightColor cannot have initial/inherit as its cssValue");
+                    || BorderRightColor.INHERIT.equals(borderRightColor.getCssValue())) {
+                throw new InvalidValueException("borderRightColor cannot have initial/inherit as its cssValue");
             }
         } else if (stateChangedObject instanceof BorderBottomColor) {
             final BorderBottomColor borderBottomColor = (BorderBottomColor) stateChangedObject;
-            if (BorderBottomColor.INITIAL
-                    .equals(borderBottomColor.getCssValue())
-                    || BorderBottomColor.INHERIT
-                            .equals(borderBottomColor.getCssValue())) {
-                throw new InvalidValueException(
-                        "borderBottomColor cannot have initial/inherit as its cssValue");
+            if (BorderBottomColor.INITIAL.equals(borderBottomColor.getCssValue())
+                    || BorderBottomColor.INHERIT.equals(borderBottomColor.getCssValue())) {
+                throw new InvalidValueException("borderBottomColor cannot have initial/inherit as its cssValue");
             }
         } else if (stateChangedObject instanceof BorderLeftColor) {
             final BorderLeftColor borderLeftColor = (BorderLeftColor) stateChangedObject;
             if (BorderLeftColor.INITIAL.equals(borderLeftColor.getCssValue())
-                    || BorderLeftColor.INHERIT
-                            .equals(borderLeftColor.getCssValue())) {
-                throw new InvalidValueException(
-                        "borderLeftColor cannot have initial/inherit as its cssValue");
+                    || BorderLeftColor.INHERIT.equals(borderLeftColor.getCssValue())) {
+                throw new InvalidValueException("borderLeftColor cannot have initial/inherit as its cssValue");
             }
         }
 
-        assignProducedCssValue(borderTopColor, borderRightColor,
-                borderBottomColor, borderLeftColor);
+        assignProducedCssValue(borderTopColor, borderRightColor, borderBottomColor, borderLeftColor);
 
     }
 
@@ -693,12 +645,10 @@ public class BorderColor extends AbstractCssProperty<BorderColor>
      */
     public static boolean isValid(final String cssValue) {
         final String trimmedCssValue;
-        if (cssValue == null || (trimmedCssValue = TagStringUtil
-                .toLowerCase(StringUtil.strip(cssValue))).isEmpty()) {
+        if (cssValue == null || (trimmedCssValue = TagStringUtil.toLowerCase(StringUtil.strip(cssValue))).isEmpty()) {
             return false;
         }
-        if (INITIAL.equalsIgnoreCase(trimmedCssValue)
-                || INHERIT.equalsIgnoreCase(trimmedCssValue)) {
+        if (INITIAL.equalsIgnoreCase(trimmedCssValue) || INHERIT.equalsIgnoreCase(trimmedCssValue)) {
             return true;
         }
 
@@ -706,9 +656,7 @@ public class BorderColor extends AbstractCssProperty<BorderColor>
 
         for (final String eachPart : cssValueParts) {
             final boolean valid = BorderTopColor.isValid(eachPart);
-            if ((valid
-                    && (INITIAL.equals(eachPart) || INHERIT.equals(eachPart)))
-                    || !valid) {
+            if ((valid && (INITIAL.equals(eachPart) || INHERIT.equals(eachPart))) || !valid) {
                 return false;
             }
         }

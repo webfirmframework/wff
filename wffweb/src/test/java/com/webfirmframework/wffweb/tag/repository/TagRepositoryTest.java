@@ -25,6 +25,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.InvalidTagException;
+import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.WffSecurityException;
 import com.webfirmframework.wffweb.server.page.BrowserPage;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
@@ -45,8 +46,13 @@ import com.webfirmframework.wffweb.tag.html.formsandinputs.TextArea;
 import com.webfirmframework.wffweb.tag.html.metainfo.Head;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Span;
+import com.webfirmframework.wffweb.tag.html.tables.TBody;
+import com.webfirmframework.wffweb.tag.html.tables.Table;
+import com.webfirmframework.wffweb.tag.html.tables.Td;
+import com.webfirmframework.wffweb.tag.html.tables.Tr;
 import com.webfirmframework.wffweb.tag.htmlwff.Blank;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
+import com.webfirmframework.wffweb.tag.htmlwff.TagContent;
 import com.webfirmframework.wffweb.wffbm.data.BMValueType;
 import com.webfirmframework.wffweb.wffbm.data.WffBMArray;
 import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
@@ -855,6 +861,102 @@ public class TagRepositoryTest {
         }};
         
         TagRepository.findTagsAssignableToTag(Blank.class, html);
+    }
+    
+
+    @Test
+    public void testFindFirstParentTagAssignableToTag() throws Exception {
+        Html html = new Html(null).give(t -> {
+            new Head(t).give(head -> {
+                new TitleTag(head).give(TagContent::text, "some title");
+            });
+            new Body(t, new Id("one")).give(body -> {
+                
+                new Div(body).give(topDv -> {
+                    new Div(topDv).give(dv -> {
+                        new Table(dv).give(table -> {                        
+                           new TBody(table).give(tBody -> {
+                               new Tr(tBody).give(tr -> {
+                                   Td td1 = new Td(tr).give(TagContent::text, "col1"); 
+                                   Td td2 = new Td(tr).give(TagContent::text, "col2"); 
+                                   
+                                   TBody tBdy = TagRepository.findFirstParentTagAssignableToTag(TBody.class, td1);
+                                   assertNotNull(tBdy);
+                                   assertEquals(tBody, tBdy);
+                                   
+                                   tBdy = TagRepository.findFirstParentTagAssignableToTag(TBody.class, td2);
+                                   assertNotNull(tBdy);
+                                   assertEquals(tBody, tBdy);
+                                   
+                                   //firstChild is NoTag("col2")
+                                   final AbstractHtml firstChild = td2.getFirstChild();
+                                   assertEquals(NoTag.class, firstChild.getClass());
+                                   tBdy = TagRepository.findFirstParentTagAssignableToTag(TBody.class, firstChild);
+                                   assertNotNull(tBdy);
+                                   assertEquals(tBody, tBdy);
+                                   
+                                   Div firstParentDv = TagRepository.findFirstParentTagAssignableToTag(Div.class, td1);
+                                   assertNotNull(firstParentDv);
+                                   assertEquals(dv, firstParentDv);
+                                   
+                                   firstParentDv = TagRepository.findFirstParentTagAssignableToTag(Div.class, dv);
+                                   assertNotNull(firstParentDv);
+                                   assertEquals(topDv, firstParentDv);
+                                   
+                                   Head head = TagRepository.findFirstParentTagAssignableToTag(Head.class, td1);
+                                   assertNull(head);
+                               });
+                           }); 
+                        });
+                    });
+                });
+                
+            });
+        });
+        Html parentOfHtml = TagRepository.findFirstParentTagAssignableToTag(Html.class, html);
+        assertNull(parentOfHtml);
+    }
+    
+    @Test(expected = NullValueException.class)
+    public void testFindFirstParentTagAssignableToTagExp1() {
+        TagRepository.findFirstParentTagAssignableToTag(Html.class, null);
+    }
+    
+    @Test(expected = NullValueException.class)
+    public void testFindFirstParentTagAssignableToTagExp2() {
+        TagRepository.findFirstParentTagAssignableToTag(null, new Div(null));
+    }
+    
+    @Test(expected = InvalidTagException.class)
+    public void testFindFirstParentTagAssignableToTagExp3() {
+        TagRepository.findFirstParentTagAssignableToTag(NoTag.class, null);
+    }
+    
+    @Test
+    public void testParallel() throws Exception {
+        Html html = new Html(null).give(t -> {
+            new Head(t).give(head -> {
+                new TitleTag(head).give(TagContent::text, "some title");
+            });
+            new Body(t, new Id("one")).give(body -> {
+
+                new Div(body).give(topDv -> {
+                    new Div(topDv).give(dv -> {
+                        for (int i = 0; i < 100; i++) {
+                            new Div(dv);
+                        }
+                        new Div(dv, new Id("someDivId"));
+                    });
+                });
+
+            });
+        });
+        
+        AbstractHtml tag = TagRepository.findTagById(true, "someDivId", html);
+        assertNotNull(tag);
+        assertEquals("<div id=\"someDivId\"></div>", tag.toHtmlString());
+        
+        //TODO test other methods with parallel true
     }
 
 }

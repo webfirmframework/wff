@@ -32,8 +32,7 @@ class AttributeValueChangeListenerImpl implements AttributeValueChangeListener {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Logger LOGGER = Logger
-            .getLogger(AttributeValueChangeListenerImpl.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(AttributeValueChangeListenerImpl.class.getName());
 
     private BrowserPage browserPage;
 
@@ -44,8 +43,7 @@ class AttributeValueChangeListenerImpl implements AttributeValueChangeListener {
         throw new AssertionError();
     }
 
-    AttributeValueChangeListenerImpl(final BrowserPage browserPage,
-            final Map<String, AbstractHtml> tagByWffId) {
+    AttributeValueChangeListenerImpl(final BrowserPage browserPage, final Map<String, AbstractHtml> tagByWffId) {
         this.browserPage = browserPage;
         this.tagByWffId = tagByWffId;
     }
@@ -56,11 +54,13 @@ class AttributeValueChangeListenerImpl implements AttributeValueChangeListener {
         // in this listener, pushing value change of attribute to the
         // client
         try {
-            //@formatter:off
+            // @formatter:off
             // update attribute task format :-
-            // { "name": task_byte, "values" : [update_attribute_byte_from_Task_enum]}, { "name": attribute_name, "values" : [ data-wff-id, data-wff-id ]}
-            // { "name": 2, "values" : [[1]]}, { "name":"style=color:green", "values" : ["C55", "S555"]}
-            //@formatter:on
+            // { "name": task_byte, "values" : [update_attribute_byte_from_Task_enum]}, {
+            // "name": attribute_name, "values" : [ data-wff-id, data-wff-id ]}
+            // { "name": 2, "values" : [[1]]}, { "name":"style=color:green", "values" :
+            // ["C55", "S555"]}
+            // @formatter:on
 
             final NameValue task = Task.ATTRIBUTE_UPDATED.getTaskNameValue();
             final NameValue nameValue = new NameValue();
@@ -75,11 +75,9 @@ class AttributeValueChangeListenerImpl implements AttributeValueChangeListener {
             // }
             // nameValue.setName(attrNameValue.getBytes(StandardCharsets.UTF_8));
 
-            nameValue.setName(event.getSourceAttribute()
-                    .toCompressedBytesByIndex(false, StandardCharsets.UTF_8));
+            nameValue.setName(event.getSourceAttribute().toCompressedBytesByIndex(false, StandardCharsets.UTF_8));
 
-            final Set<AbstractHtml> ownerTags = new HashSet<>(
-                    event.getOwnerTags());
+            final Set<AbstractHtml> ownerTags = new HashSet<>(event.getOwnerTags());
 
             final Collection<AbstractHtml> uiTags = tagByWffId.values();
             if (uiTags.size() > 10) {
@@ -110,8 +108,7 @@ class AttributeValueChangeListenerImpl implements AttributeValueChangeListener {
 
                 if (dataWffId != null) {
 
-                    final byte[] dataWffIdBytes = DataWffIdUtil
-                            .getDataWffIdBytes(dataWffId.getValue());
+                    final byte[] dataWffIdBytes = DataWffIdUtil.getDataWffIdBytes(dataWffId.getValue());
 
                     dataWffIds[count] = dataWffIdBytes;
                     count++;

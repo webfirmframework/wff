@@ -40,37 +40,34 @@ import com.webfirmframework.wffweb.tag.html.identifier.BaseAttributable;
  * @author WFF
  * @since 1.0.0
  */
-public class Target extends AbstractAttribute
-        implements AAttributable, AreaAttributable, BaseAttributable {
+public class Target extends AbstractAttribute implements AAttributable, AreaAttributable, BaseAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
     /**
-     * Load the response into a new unnamed HTML4 window or HTML5 browsing
-     * context.
+     * Load the response into a new unnamed HTML4 window or HTML5 browsing context.
      */
     public static final String BLANK = "_blank";
 
     /**
-     * Load the response into the same HTML4 frame (or HTML5 browsing context)
-     * as the current one. This value is the default if the attribute is not
-     * specified.
+     * Load the response into the same HTML4 frame (or HTML5 browsing context) as
+     * the current one. This value is the default if the attribute is not specified.
      */
     public static final String SELF = "_self";
 
     /**
      * Load the response into the HTML4 frameset parent of the current frame or
-     * HTML5 parent browsing context of the current one. If there is no parent,
-     * this option behaves the same way as _self.
+     * HTML5 parent browsing context of the current one. If there is no parent, this
+     * option behaves the same way as _self.
      */
     public static final String PARENT = "_parent";
 
     /**
      * In HTML4: Load the response into the full, original window, canceling all
-     * other frames. In HTML5: Load the response into the top-level browsing
-     * context (that is, the browsing context that is an ancestor of the current
-     * one, and has no parent). If there is no parent, this option behaves the
-     * same way as _self.
+     * other frames. In HTML5: Load the response into the top-level browsing context
+     * (that is, the browsing context that is an ancestor of the current one, and
+     * has no parent). If there is no parent, this option behaves the same way as
+     * _self.
      */
     public static final String TOP = "_top";
 
@@ -89,8 +86,7 @@ public class Target extends AbstractAttribute
 
     /**
      *
-     * @param value
-     *                  the value for the attribute
+     * @param value the value for the attribute
      * @since 1.0.0
      * @author WFF
      */
@@ -101,8 +97,7 @@ public class Target extends AbstractAttribute
     /**
      * sets the value for this attribute
      *
-     * @param value
-     *                  the value for the attribute.
+     * @param value the value for the attribute.
      * @since 1.0.0
      * @author WFF
      */
@@ -113,12 +108,10 @@ public class Target extends AbstractAttribute
     /**
      * sets the value for this attribute
      *
-     * @param updateClient
-     *                         true to update client browser page if it is
-     *                         available. The default value is true but it will
-     *                         be ignored if there is no client browser page.
-     * @param value
-     *                         the value for the attribute.
+     * @param updateClient true to update client browser page if it is available.
+     *                     The default value is true but it will be ignored if there
+     *                     is no client browser page.
+     * @param value        the value for the attribute.
      * @since 2.1.15
      * @author WFF
      */

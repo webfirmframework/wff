@@ -37,11 +37,8 @@ public class NameValue implements Serializable {
     }
 
     /**
-     * @param name
-     *                   an array of bytes
-     * @param values
-     *                   an array of bytes array, i.e. a two dimensional array
-     *                   of bytes.
+     * @param name   an array of bytes
+     * @param values an array of bytes array, i.e. a two dimensional array of bytes.
      * @author WFF
      */
     public NameValue(final byte[] name, final byte[][] values) {

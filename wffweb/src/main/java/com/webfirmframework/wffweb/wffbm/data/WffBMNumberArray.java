@@ -78,8 +78,7 @@ public class WffBMNumberArray<T extends Number> extends WffBMArray {
     }
 
     @Override
-    public boolean addAll(final int index,
-            final Collection<? extends Object> c) {
+    public boolean addAll(final int index, final Collection<? extends Object> c) {
         for (final Object object : c) {
             if (!(object instanceof Number)) {
                 throw new WffRuntimeException(

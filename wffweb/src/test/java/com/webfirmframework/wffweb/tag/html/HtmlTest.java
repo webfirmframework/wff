@@ -27,6 +27,7 @@ import org.junit.Test;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Span;
+import com.webfirmframework.wffweb.tag.htmlwff.TagContent;
 
 @SuppressWarnings("serial")
 public class HtmlTest {
@@ -36,180 +37,151 @@ public class HtmlTest {
 
         Html html = new Html(null) {
             {
-                new Div(this, new Id("id"));
+                new Div(this, new Id("id")).give(TagContent::text, "ä, ö, and ü are Umlauts. 😀");
             }
         };
 
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                html.toHtmlString());
+        final String expected = "<html><div id=\"id\">ä, ö, and ü are Umlauts. 😀</div></html>";
+        Assert.assertEquals(expected, html.toHtmlString());
 
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                html.toHtmlString(true));
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                html.toHtmlString(false));
+        Assert.assertEquals(expected, html.toHtmlString(true));
+        Assert.assertEquals(expected, html.toHtmlString(false));
 
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                html.toHtmlString(StandardCharsets.UTF_8));
+        Assert.assertEquals(expected, html.toHtmlString(StandardCharsets.UTF_8));
 
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                html.toHtmlString(StandardCharsets.UTF_8.name()));
+        Assert.assertEquals(expected, html.toHtmlString(StandardCharsets.UTF_8.name()));
 
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                html.toHtmlString(true, StandardCharsets.UTF_8));
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                html.toHtmlString(false, StandardCharsets.UTF_8));
+        Assert.assertEquals(expected, html.toHtmlString(true, StandardCharsets.UTF_8));
+        Assert.assertEquals(expected, html.toHtmlString(false, StandardCharsets.UTF_8));
 
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
+        Assert.assertEquals(expected,
                 html.toHtmlString(true, StandardCharsets.UTF_8.name()));
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
+        Assert.assertEquals(expected,
                 html.toHtmlString(false, StandardCharsets.UTF_8.name()));
 
         html.setPrependDocType(true);
 
-        Assert.assertEquals(
-                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
-                html.toHtmlString(false));
+        final String expected2 = "<!DOCTYPE html>\n<html><div id=\"id\">ä, ö, and ü are Umlauts. 😀</div></html>";
+        Assert.assertEquals(expected2, html.toHtmlString(false));
 
-        Assert.assertEquals(
-                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
-                html.toHtmlString());
+        Assert.assertEquals(expected2, html.toHtmlString());
 
-        Assert.assertEquals(
-                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
-                html.toHtmlString(true));
+        Assert.assertEquals(expected2, html.toHtmlString(true));
 
-        Assert.assertEquals(
-                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
+        Assert.assertEquals(expected2,
                 html.toHtmlString(StandardCharsets.UTF_8));
 
-        Assert.assertEquals(
-                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
+        Assert.assertEquals(expected2,
                 html.toHtmlString(StandardCharsets.UTF_8.name()));
 
-        Assert.assertEquals(
-                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
+        Assert.assertEquals(expected2,
                 html.toHtmlString(true, StandardCharsets.UTF_8));
-        Assert.assertEquals(
-                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
+        Assert.assertEquals(expected2,
                 html.toHtmlString(false, StandardCharsets.UTF_8));
 
-        Assert.assertEquals(
-                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
+        Assert.assertEquals(expected2,
                 html.toHtmlString(true, StandardCharsets.UTF_8.name()));
-        Assert.assertEquals(
-                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
+        Assert.assertEquals(expected2,
                 html.toHtmlString(false, StandardCharsets.UTF_8.name()));
 
         html.setPrependDocType(false);
 
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                html.toHtmlString(false));
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                html.toHtmlString());
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                html.toHtmlString(true));
+        Assert.assertEquals(expected, html.toHtmlString(false));
+        Assert.assertEquals(expected, html.toHtmlString());
+        Assert.assertEquals(expected, html.toHtmlString(true));
 
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                html.toHtmlString(StandardCharsets.UTF_8));
+        Assert.assertEquals(expected, html.toHtmlString(StandardCharsets.UTF_8));
 
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                html.toHtmlString(StandardCharsets.UTF_8.name()));
+        Assert.assertEquals(expected, html.toHtmlString(StandardCharsets.UTF_8.name()));
 
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                html.toHtmlString(true, StandardCharsets.UTF_8));
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                html.toHtmlString(false, StandardCharsets.UTF_8));
+        Assert.assertEquals(expected, html.toHtmlString(true, StandardCharsets.UTF_8));
+        Assert.assertEquals(expected, html.toHtmlString(false, StandardCharsets.UTF_8));
 
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
+        Assert.assertEquals(expected,
                 html.toHtmlString(true, StandardCharsets.UTF_8.name()));
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
+        Assert.assertEquals(expected,
                 html.toHtmlString(false, StandardCharsets.UTF_8.name()));
 
     }
 
     @Test
-    public void testHtmlToBigOutputStreamSetPrependDocType()
-            throws IOException {
+    public void testHtmlToBigOutputStreamSetPrependDocType() throws IOException {
 
         Html html = new Html(null) {
             {
-                new Div(this, new Id("id"));
+                new Div(this, new Id("id")).give(TagContent::text, "ä, ö, and ü are Umlauts. 😀");
             }
         };
 
-        String expected = "<html><div id=\"id\"></div></html>";
+        String expected = "<html><div id=\"id\">ä, ö, and ü are Umlauts. 😀</div></html>";
         {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             int written = html.toBigOutputStream(os);
-            Assert.assertEquals(expected.length(), written);
+            Assert.assertEquals(expected.getBytes().length, written);
             Assert.assertEquals(expected, os.toString());
         }
 
         {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             int written = html.toBigOutputStream(os, true);
-            Assert.assertEquals(expected.length(), written);
+            Assert.assertEquals(expected.getBytes().length, written);
             Assert.assertEquals(expected, os.toString());
         }
         {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             int written = html.toBigOutputStream(os, true);
-            Assert.assertEquals(expected.length(), written);
+            Assert.assertEquals(expected.getBytes().length, written);
             Assert.assertEquals(expected, os.toString());
         }
 
         {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             int written = html.toBigOutputStream(os, StandardCharsets.UTF_8);
-            Assert.assertEquals(expected.length(), written);
+            Assert.assertEquals(expected.getBytes(StandardCharsets.UTF_8).length, written);
             Assert.assertEquals(expected, os.toString("UTF-8"));
         }
 
         {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
-            int written = html.toBigOutputStream(os,
-                    StandardCharsets.UTF_8.name());
-            Assert.assertEquals(expected.length(), written);
+            int written = html.toBigOutputStream(os, StandardCharsets.UTF_8.name());
+            Assert.assertEquals(expected.getBytes(StandardCharsets.UTF_8.name()).length, written);
             Assert.assertEquals(expected, os.toString("UTF-8"));
         }
 
         {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
-            int written = html.toBigOutputStream(os, true,
-                    StandardCharsets.UTF_8);
-            Assert.assertEquals(expected.length(), written);
+            int written = html.toBigOutputStream(os, true, StandardCharsets.UTF_8);
+            Assert.assertEquals(expected.getBytes(StandardCharsets.UTF_8).length, written);
             Assert.assertEquals(expected, os.toString("UTF-8"));
         }
 
         {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
-            int written = html.toBigOutputStream(os, false,
-                    StandardCharsets.UTF_8);
-            Assert.assertEquals(expected.length(), written);
+            int written = html.toBigOutputStream(os, false, StandardCharsets.UTF_8);
+            Assert.assertEquals(expected.getBytes(StandardCharsets.UTF_8).length, written);
             Assert.assertEquals(expected, os.toString("UTF-8"));
         }
 
         {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
-            int written = html.toBigOutputStream(os, true,
-                    StandardCharsets.UTF_8.name());
-            Assert.assertEquals(expected.length(), written);
+            int written = html.toBigOutputStream(os, true, StandardCharsets.UTF_8.name());
+            Assert.assertEquals(expected.getBytes(StandardCharsets.UTF_8.name()).length, written);
             Assert.assertEquals(expected, os.toString("UTF-8"));
         }
         {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
-            int written = html.toBigOutputStream(os, false,
-                    StandardCharsets.UTF_8.name());
-            Assert.assertEquals(expected.length(), written);
+            int written = html.toBigOutputStream(os, false, StandardCharsets.UTF_8.name());
+            Assert.assertEquals(expected.getBytes(StandardCharsets.UTF_8.name()).length, written);
             Assert.assertEquals(expected, os.toString("UTF-8"));
         }
+
         html.setPrependDocType(true);
 
-        String expected2 = "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>";
+        String expected2 = "<!DOCTYPE html>\n<html><div id=\"id\">ä, ö, and ü are Umlauts. 😀</div></html>";
         {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             int written = html.toBigOutputStream(os, false);
-            Assert.assertEquals(expected2.length(), written);
+            Assert.assertEquals(expected2.getBytes().length, written);
             Assert.assertEquals(expected2, os.toString());
 
         }
@@ -217,61 +189,56 @@ public class HtmlTest {
         {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             int written = html.toBigOutputStream(os);
-            Assert.assertEquals(expected2.length(), written);
+            Assert.assertEquals(expected2.getBytes().length, written);
             Assert.assertEquals(expected2, os.toString());
         }
 
         {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             int written = html.toBigOutputStream(os, true);
-            Assert.assertEquals(expected2.length(), written);
+            Assert.assertEquals(expected2.getBytes().length, written);
             Assert.assertEquals(expected2, os.toString());
         }
 
         {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             int written = html.toBigOutputStream(os, StandardCharsets.UTF_8);
-            Assert.assertEquals(expected2.length(), written);
+            Assert.assertEquals(expected2.getBytes(StandardCharsets.UTF_8).length, written);
             Assert.assertEquals(expected2, os.toString("UTF-8"));
         }
 
         {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
-            int written = html.toBigOutputStream(os,
-                    StandardCharsets.UTF_8.name());
-            Assert.assertEquals(expected2.length(), written);
+            int written = html.toBigOutputStream(os, StandardCharsets.UTF_8.name());
+            Assert.assertEquals(expected2.getBytes(StandardCharsets.UTF_8).length, written);
             Assert.assertEquals(expected2, os.toString("UTF-8"));
         }
 
         {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
-            int written = html.toBigOutputStream(os, true,
-                    StandardCharsets.UTF_8);
-            Assert.assertEquals(expected2.length(), written);
+            int written = html.toBigOutputStream(os, true, StandardCharsets.UTF_8);
+            Assert.assertEquals(expected2.getBytes(StandardCharsets.UTF_8).length, written);
             Assert.assertEquals(expected2, os.toString("UTF-8"));
         }
 
         {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
-            int written = html.toBigOutputStream(os, false,
-                    StandardCharsets.UTF_8);
-            Assert.assertEquals(expected2.length(), written);
+            int written = html.toBigOutputStream(os, false, StandardCharsets.UTF_8);
+            Assert.assertEquals(expected2.getBytes(StandardCharsets.UTF_8).length, written);
             Assert.assertEquals(expected2, os.toString("UTF-8"));
         }
 
         {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
-            int written = html.toBigOutputStream(os, true,
-                    StandardCharsets.UTF_8.name());
-            Assert.assertEquals(expected2.length(), written);
+            int written = html.toBigOutputStream(os, true, StandardCharsets.UTF_8.name());
+            Assert.assertEquals(expected2.getBytes(StandardCharsets.UTF_8.name()).length, written);
             Assert.assertEquals(expected2, os.toString("UTF-8"));
         }
 
         {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
-            int written = html.toBigOutputStream(os, false,
-                    StandardCharsets.UTF_8.name());
-            Assert.assertEquals(expected2.length(), written);
+            int written = html.toBigOutputStream(os, false, StandardCharsets.UTF_8.name());
+            Assert.assertEquals(expected2.getBytes(StandardCharsets.UTF_8).length, written);
             Assert.assertEquals(expected2, os.toString("UTF-8"));
         }
 
@@ -280,65 +247,60 @@ public class HtmlTest {
         {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             int written = html.toBigOutputStream(os, false);
-            Assert.assertEquals(expected.length(), written);
+            Assert.assertEquals(expected.getBytes().length, written);
             Assert.assertEquals(expected, os.toString());
         }
         {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             int written = html.toBigOutputStream(os);
-            Assert.assertEquals(expected.length(), written);
+            Assert.assertEquals(expected.getBytes().length, written);
             Assert.assertEquals(expected, os.toString());
         }
         {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             int written = html.toBigOutputStream(os, true);
-            Assert.assertEquals(expected.length(), written);
+            Assert.assertEquals(expected.getBytes().length, written);
             Assert.assertEquals(expected, os.toString());
         }
         {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             int written = html.toBigOutputStream(os, StandardCharsets.UTF_8);
-            Assert.assertEquals(expected.length(), written);
+            Assert.assertEquals(expected.getBytes(StandardCharsets.UTF_8).length, written);
             Assert.assertEquals(expected, os.toString("UTF-8"));
         }
         {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
-            int written = html.toBigOutputStream(os,
-                    StandardCharsets.UTF_8.name());
-            Assert.assertEquals(expected.length(), written);
+            int written = html.toBigOutputStream(os, StandardCharsets.UTF_8.name());
+            Assert.assertEquals(expected.getBytes(StandardCharsets.UTF_8).length, written);
             Assert.assertEquals(expected, os.toString("UTF-8"));
         }
         {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
-            int written = html.toBigOutputStream(os, true,
-                    StandardCharsets.UTF_8);
-            Assert.assertEquals(expected.length(), written);
+            int written = html.toBigOutputStream(os, true, StandardCharsets.UTF_8);
+            Assert.assertEquals(expected.getBytes(StandardCharsets.UTF_8).length, written);
             Assert.assertEquals(expected, os.toString("UTF-8"));
         }
         {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
-            int written = html.toBigOutputStream(os, false,
-                    StandardCharsets.UTF_8);
-            Assert.assertEquals(expected.length(), written);
+            int written = html.toBigOutputStream(os, false, StandardCharsets.UTF_8);
+            Assert.assertEquals(expected.getBytes(StandardCharsets.UTF_8).length, written);
             Assert.assertEquals(expected, os.toString("UTF-8"));
         }
         {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
-            int written = html.toBigOutputStream(os, true,
-                    StandardCharsets.UTF_8.name());
-            Assert.assertEquals(expected.length(), written);
+            int written = html.toBigOutputStream(os, true, StandardCharsets.UTF_8.name());
+            Assert.assertEquals(expected.getBytes(StandardCharsets.UTF_8.name()).length, written);
             Assert.assertEquals(expected, os.toString("UTF-8"));
         }
         {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
-            int written = html.toBigOutputStream(os, false,
-                    StandardCharsets.UTF_8.name());
-            Assert.assertEquals(expected.length(), written);
+            int written = html.toBigOutputStream(os, false, StandardCharsets.UTF_8.name());
+            Assert.assertEquals(expected.getBytes(StandardCharsets.UTF_8.name()).length, written);
             Assert.assertEquals(expected, os.toString("UTF-8"));
         }
 
     }
-    
+
     @Test
     public void testConstructorLock() throws Exception {
         Html html = new Html(null) {
@@ -355,107 +317,71 @@ public class HtmlTest {
             Html html = new Html(null);
             Assert.assertEquals("<html></html>", html.toBigHtmlString(true));
             html.setPrependDocType(true);
-            Assert.assertEquals("<!DOCTYPE html>\n<html></html>",
-                    html.toBigHtmlString(true));
+            Assert.assertEquals("<!DOCTYPE html>\n<html></html>", html.toBigHtmlString(true));
         }
         {
             Div div = new Div(null);
             Assert.assertEquals("<div></div>", div.toBigHtmlString(true));
             div.appendChild(new Span(null));
-            Assert.assertEquals("<div><span></span></div>",
-                    div.toBigHtmlString(true));
+            Assert.assertEquals("<div><span></span></div>", div.toBigHtmlString(true));
         }
 
         Html html = new Html(null) {
             {
-                new Div(this, new Id("id"));
+                new Div(this, new Id("id")).give(TagContent::text, "ä, ö, and ü are Umlauts. 😀");
             }
         };
 
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                html.toBigHtmlString());
+        final String expected = "<html><div id=\"id\">ä, ö, and ü are Umlauts. 😀</div></html>";
+        Assert.assertEquals(expected, html.toBigHtmlString());
 
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                html.toBigHtmlString(true));
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                html.toBigHtmlString(false));
+        Assert.assertEquals(expected, html.toBigHtmlString(true));
+        Assert.assertEquals(expected, html.toBigHtmlString(false));
 
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                html.toBigHtmlString(true));
+        Assert.assertEquals(expected, html.toBigHtmlString(true));
 
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                html.toBigHtmlString());
+        Assert.assertEquals(expected, html.toBigHtmlString());
 
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                html.toBigHtmlString(true));
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                html.toBigHtmlString(false));
+        Assert.assertEquals(expected, html.toBigHtmlString(true));
+        Assert.assertEquals(expected, html.toBigHtmlString(false));
 
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                html.toBigHtmlString(true));
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                html.toBigHtmlString(false));
+        Assert.assertEquals(expected, html.toBigHtmlString(true));
+        Assert.assertEquals(expected, html.toBigHtmlString(false));
 
         html.setPrependDocType(true);
 
-        Assert.assertEquals(
-                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
-                html.toBigHtmlString(false));
+        final String expected2 = "<!DOCTYPE html>\n<html><div id=\"id\">ä, ö, and ü are Umlauts. 😀</div></html>";
+        Assert.assertEquals(expected2, html.toBigHtmlString(false));
 
-        Assert.assertEquals(
-                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
-                html.toBigHtmlString());
+        Assert.assertEquals(expected2, html.toBigHtmlString());
 
-        Assert.assertEquals(
-                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
-                html.toBigHtmlString(true));
+        Assert.assertEquals(expected2, html.toBigHtmlString(true));
 
-        Assert.assertEquals(
-                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
-                html.toBigHtmlString());
+        Assert.assertEquals(expected2, html.toBigHtmlString());
 
-        Assert.assertEquals(
-                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
-                html.toBigHtmlString());
+        Assert.assertEquals(expected2, html.toBigHtmlString());
 
-        Assert.assertEquals(
-                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
-                html.toBigHtmlString(true));
-        Assert.assertEquals(
-                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
-                html.toBigHtmlString(false));
+        Assert.assertEquals(expected2, html.toBigHtmlString(true));
+        Assert.assertEquals(expected2, html.toBigHtmlString(false));
 
-        Assert.assertEquals(
-                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
-                html.toBigHtmlString(true));
-        Assert.assertEquals(
-                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
-                html.toBigHtmlString(false));
+        Assert.assertEquals(expected2, html.toBigHtmlString(true));
+        Assert.assertEquals(expected2, html.toBigHtmlString(false));
 
         html.setPrependDocType(false);
 
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                html.toBigHtmlString(false));
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                html.toBigHtmlString());
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                html.toBigHtmlString(true));
+        Assert.assertEquals(expected, html.toBigHtmlString(false));
+        Assert.assertEquals(expected, html.toBigHtmlString());
+        Assert.assertEquals(expected, html.toBigHtmlString(true));
 
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                html.toBigHtmlString());
+        Assert.assertEquals(expected, html.toBigHtmlString());
 
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                html.toBigHtmlString());
+        Assert.assertEquals(expected, html.toBigHtmlString());
 
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                html.toBigHtmlString(true));
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                html.toBigHtmlString(false));
+        Assert.assertEquals(expected, html.toBigHtmlString(true));
+        Assert.assertEquals(expected, html.toBigHtmlString(false));
 
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                html.toBigHtmlString(true));
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                html.toBigHtmlString(false));
+        Assert.assertEquals(expected, html.toBigHtmlString(true));
+        Assert.assertEquals(expected, html.toBigHtmlString(false));
 
     }
 
@@ -464,7 +390,7 @@ public class HtmlTest {
 
         Html html = new Html(null) {
             {
-                new Div(this, new Id("id"));
+                new Div(this, new Id("id")).give(TagContent::text, "ä, ö, and ü are Umlauts. 😀");
             }
         };
 
@@ -472,151 +398,117 @@ public class HtmlTest {
 
         baos.reset();
         html.toOutputStream(baos);
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                new String(baos.toByteArray()));
+        final String expected = "<html><div id=\"id\">ä, ö, and ü are Umlauts. 😀</div></html>";
+        Assert.assertEquals(expected, new String(baos.toByteArray()));
 
         baos.reset();
         html.toOutputStream(baos, true);
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                new String(baos.toByteArray()));
+        Assert.assertEquals(expected, new String(baos.toByteArray()));
 
         baos.reset();
         html.toOutputStream(baos, false);
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                new String(baos.toByteArray()));
+        Assert.assertEquals(expected, new String(baos.toByteArray()));
 
         baos.reset();
         html.toOutputStream(baos, StandardCharsets.UTF_8);
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                new String(baos.toByteArray()));
+        Assert.assertEquals(expected, new String(baos.toByteArray()));
 
         baos.reset();
         html.toOutputStream(baos, StandardCharsets.UTF_8.name());
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                new String(baos.toByteArray()));
+        Assert.assertEquals(expected, new String(baos.toByteArray()));
 
         baos.reset();
         html.toOutputStream(baos, true, StandardCharsets.UTF_8);
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                new String(baos.toByteArray()));
+        Assert.assertEquals(expected, new String(baos.toByteArray()));
 
         baos.reset();
         html.toOutputStream(baos, false, StandardCharsets.UTF_8);
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                new String(baos.toByteArray()));
+        Assert.assertEquals(expected, new String(baos.toByteArray()));
 
         baos.reset();
         html.toOutputStream(baos, true, StandardCharsets.UTF_8.name());
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                new String(baos.toByteArray()));
+        Assert.assertEquals(expected, new String(baos.toByteArray()));
 
         baos.reset();
         html.toOutputStream(baos, false, StandardCharsets.UTF_8.name());
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                new String(baos.toByteArray()));
+        Assert.assertEquals(expected, new String(baos.toByteArray()));
 
         html.setPrependDocType(true);
 
         baos.reset();
         html.toOutputStream(baos);
-        Assert.assertEquals(
-                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
-                new String(baos.toByteArray()));
+        final String expected2 = "<!DOCTYPE html>\n<html><div id=\"id\">ä, ö, and ü are Umlauts. 😀</div></html>";
+        Assert.assertEquals(expected2, new String(baos.toByteArray()));
 
         baos.reset();
         html.toOutputStream(baos, true);
-        Assert.assertEquals(
-                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
-                new String(baos.toByteArray()));
+        Assert.assertEquals(expected2, new String(baos.toByteArray()));
 
         baos.reset();
         html.toOutputStream(baos, false);
-        Assert.assertEquals(
-                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
-                new String(baos.toByteArray()));
+        Assert.assertEquals(expected2, new String(baos.toByteArray()));
 
         baos.reset();
         html.toOutputStream(baos, StandardCharsets.UTF_8);
-        Assert.assertEquals(
-                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
-                new String(baos.toByteArray()));
+        Assert.assertEquals(expected2, new String(baos.toByteArray()));
 
         baos.reset();
         html.toOutputStream(baos, StandardCharsets.UTF_8.name());
-        Assert.assertEquals(
-                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
-                new String(baos.toByteArray()));
+        Assert.assertEquals(expected2, new String(baos.toByteArray()));
 
         baos.reset();
         html.toOutputStream(baos, true, StandardCharsets.UTF_8);
-        Assert.assertEquals(
-                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
-                new String(baos.toByteArray()));
+        Assert.assertEquals(expected2, new String(baos.toByteArray()));
 
         baos.reset();
         html.toOutputStream(baos, false, StandardCharsets.UTF_8);
-        Assert.assertEquals(
-                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
-                new String(baos.toByteArray()));
+        Assert.assertEquals(expected2, new String(baos.toByteArray()));
 
         baos.reset();
         html.toOutputStream(baos, true, StandardCharsets.UTF_8.name());
-        Assert.assertEquals(
-                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
-                new String(baos.toByteArray()));
+        Assert.assertEquals(expected2, new String(baos.toByteArray()));
 
         baos.reset();
         html.toOutputStream(baos, false, StandardCharsets.UTF_8.name());
-        Assert.assertEquals(
-                "<!DOCTYPE html>\n<html><div id=\"id\"></div></html>",
-                new String(baos.toByteArray()));
+        Assert.assertEquals(expected2, new String(baos.toByteArray()));
 
         html.setPrependDocType(false);
 
         baos.reset();
         html.toOutputStream(baos);
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                new String(baos.toByteArray()));
+        Assert.assertEquals(expected, new String(baos.toByteArray()));
 
         baos.reset();
         html.toOutputStream(baos, true);
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                new String(baos.toByteArray()));
+        Assert.assertEquals(expected, new String(baos.toByteArray()));
 
         baos.reset();
         html.toOutputStream(baos, false);
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                new String(baos.toByteArray()));
+        Assert.assertEquals(expected, new String(baos.toByteArray()));
 
         baos.reset();
         html.toOutputStream(baos, StandardCharsets.UTF_8);
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                new String(baos.toByteArray()));
+        Assert.assertEquals(expected, new String(baos.toByteArray()));
 
         baos.reset();
         html.toOutputStream(baos, StandardCharsets.UTF_8.name());
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                new String(baos.toByteArray()));
+        Assert.assertEquals(expected, new String(baos.toByteArray()));
 
         baos.reset();
         html.toOutputStream(baos, true, StandardCharsets.UTF_8);
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                new String(baos.toByteArray()));
+        Assert.assertEquals(expected, new String(baos.toByteArray()));
 
         baos.reset();
         html.toOutputStream(baos, false, StandardCharsets.UTF_8);
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                new String(baos.toByteArray()));
+        Assert.assertEquals(expected, new String(baos.toByteArray()));
 
         baos.reset();
         html.toOutputStream(baos, true, StandardCharsets.UTF_8.name());
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                new String(baos.toByteArray()));
+        Assert.assertEquals(expected, new String(baos.toByteArray()));
 
         baos.reset();
         html.toOutputStream(baos, false, StandardCharsets.UTF_8.name());
-        Assert.assertEquals("<html><div id=\"id\"></div></html>",
-                new String(baos.toByteArray()));
+        Assert.assertEquals(expected, new String(baos.toByteArray()));
 
     }
 

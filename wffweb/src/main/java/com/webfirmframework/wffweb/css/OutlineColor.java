@@ -50,13 +50,11 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  * @version
  * @since 1.0.0
  */
-public class OutlineColor extends AbstractCssProperty<OutlineColor>
-        implements StateChangeInformer<Bean> {
+public class OutlineColor extends AbstractCssProperty<OutlineColor> implements StateChangeInformer<Bean> {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    private static final Logger LOGGER = Logger
-            .getLogger(OutlineColor.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(OutlineColor.class.getName());
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
@@ -77,18 +75,16 @@ public class OutlineColor extends AbstractCssProperty<OutlineColor>
     }
 
     /**
-     * @param cssValue
-     *                     the css value to set.
+     * @param cssValue the css value to set.
      */
     public OutlineColor(final String cssValue) {
         setCssValue(cssValue);
     }
 
     /**
-     * @param outlineColor
-     *                         the {@code OutlineColor} object from which the
-     *                         cssValue to set.And, {@code null} will throw
-     *                         {@code NullValueException}
+     * @param outlineColor the {@code OutlineColor} object from which the cssValue
+     *                     to set.And, {@code null} will throw
+     *                     {@code NullValueException}
      */
     public OutlineColor(final OutlineColor outlineColor) {
         if (outlineColor == null) {
@@ -105,8 +101,8 @@ public class OutlineColor extends AbstractCssProperty<OutlineColor>
     }
 
     /**
-     * the color/color code to set. The alternative method {@code setCssValue}
-     * can also be used.
+     * the color/color code to set. The alternative method {@code setCssValue} can
+     * also be used.
      *
      * @param value
      * @return the current object
@@ -152,8 +148,8 @@ public class OutlineColor extends AbstractCssProperty<OutlineColor>
     }
 
     /**
-     * gets the value, {@code getCssValue} method can also be used to get the
-     * same value.
+     * gets the value, {@code getCssValue} method can also be used to get the same
+     * value.
      *
      * @return the value in String.
      * @since 1.0.0
@@ -164,13 +160,12 @@ public class OutlineColor extends AbstractCssProperty<OutlineColor>
     }
 
     /**
-     * @param cssValue
-     *                     the value should be a color/color code/rgb, for
-     *                     example <code>#0000ff</code>. {@code null} is
-     *                     considered as an invalid value and it will throw
-     *                     {@code NullValueException}.And an empty string is
-     *                     also considered as an invalid value and it will throw
-     *                     {@code InvalidValueException}.
+     * @param cssValue the value should be a color/color code/rgb, for example
+     *                 <code>#0000ff</code>. {@code null} is considered as an
+     *                 invalid value and it will throw
+     *                 {@code NullValueException}.And an empty string is also
+     *                 considered as an invalid value and it will throw
+     *                 {@code InvalidValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -283,11 +278,9 @@ public class OutlineColor extends AbstractCssProperty<OutlineColor>
             return false;
         }
 
-        final String trimmedCssValueLowerCase = TagStringUtil
-                .toLowerCase(trimmedCssValue);
+        final String trimmedCssValueLowerCase = TagStringUtil.toLowerCase(trimmedCssValue);
 
-        if (INITIAL.equals(trimmedCssValueLowerCase)
-                || INHERIT.equals(trimmedCssValueLowerCase)
+        if (INITIAL.equals(trimmedCssValueLowerCase) || INHERIT.equals(trimmedCssValueLowerCase)
                 || INVERT.equals(trimmedCssValueLowerCase)) {
             return true;
         }
@@ -313,8 +306,7 @@ public class OutlineColor extends AbstractCssProperty<OutlineColor>
         }
 
         try {
-            if (trimmedCssValue.length() == 0
-                    || trimmedCssValue.charAt(0) != '#') {
+            if (trimmedCssValue.length() == 0 || trimmedCssValue.charAt(0) != '#') {
                 return false;
             }
 
@@ -372,8 +364,7 @@ public class OutlineColor extends AbstractCssProperty<OutlineColor>
     }
 
     /**
-     * @param rgbCssValue
-     *                        the rgbCssValue to set
+     * @param rgbCssValue the rgbCssValue to set
      * @since 1.0.0
      * @author WFF
      */
@@ -383,16 +374,13 @@ public class OutlineColor extends AbstractCssProperty<OutlineColor>
         }
         if (this.rgbCssValue != null) {
             if (rgbCssValue.isAlreadyInUse()
-                    && this.rgbCssValue.getStateChangeInformer() != rgbCssValue
-                            .getStateChangeInformer()) {
+                    && this.rgbCssValue.getStateChangeInformer() != rgbCssValue.getStateChangeInformer()) {
                 try {
-                    final RgbCssValue rgbCssValueClone = CloneUtil
-                            .deepClone(rgbCssValue);
+                    final RgbCssValue rgbCssValueClone = CloneUtil.deepClone(rgbCssValue);
                     this.rgbCssValue.setAlreadyInUse(false);
                     this.rgbCssValue = rgbCssValueClone;
                     if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.warning("cloned rgbCssValue " + rgbCssValue
-                                + "(hashcode: " + rgbCssValue.hashCode()
+                        LOGGER.warning("cloned rgbCssValue " + rgbCssValue + "(hashcode: " + rgbCssValue.hashCode()
                                 + ") as it is already used by another object");
                     }
                 } catch (final CloneNotSupportedException e) {
@@ -407,8 +395,7 @@ public class OutlineColor extends AbstractCssProperty<OutlineColor>
                 try {
                     this.rgbCssValue = CloneUtil.deepClone(rgbCssValue);
                     if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.warning("cloned rgbCssValue " + rgbCssValue
-                                + "(hashcode: " + rgbCssValue.hashCode()
+                        LOGGER.warning("cloned rgbCssValue " + rgbCssValue + "(hashcode: " + rgbCssValue.hashCode()
                                 + ") as it is already used by another object");
                     }
                 } catch (final CloneNotSupportedException e) {
@@ -427,8 +414,7 @@ public class OutlineColor extends AbstractCssProperty<OutlineColor>
     }
 
     /**
-     * @param rgbaCssValue
-     *                         the rgbaCssValue to set
+     * @param rgbaCssValue the rgbaCssValue to set
      * @since 1.0.0
      * @author WFF
      */
@@ -437,17 +423,14 @@ public class OutlineColor extends AbstractCssProperty<OutlineColor>
             throw new NullValueException(" rgbaCssVal can not be null");
         }
         if (this.rgbaCssValue != null) {
-            if (rgbaCssValue.isAlreadyInUse() && this.rgbaCssValue
-                    .getStateChangeInformer() != rgbaCssValue
-                            .getStateChangeInformer()) {
+            if (rgbaCssValue.isAlreadyInUse()
+                    && this.rgbaCssValue.getStateChangeInformer() != rgbaCssValue.getStateChangeInformer()) {
                 try {
-                    final RgbaCssValue rgbaCssValueClone = CloneUtil
-                            .deepClone(rgbaCssValue);
+                    final RgbaCssValue rgbaCssValueClone = CloneUtil.deepClone(rgbaCssValue);
                     this.rgbaCssValue.setAlreadyInUse(false);
                     this.rgbaCssValue = rgbaCssValueClone;
                     if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.warning("cloned rgbaCssValue " + rgbaCssValue
-                                + "(hashcode: " + rgbaCssValue.hashCode()
+                        LOGGER.warning("cloned rgbaCssValue " + rgbaCssValue + "(hashcode: " + rgbaCssValue.hashCode()
                                 + ") as it is already used by another object");
                     }
                 } catch (final CloneNotSupportedException e) {
@@ -462,8 +445,7 @@ public class OutlineColor extends AbstractCssProperty<OutlineColor>
                 try {
                     this.rgbaCssValue = CloneUtil.deepClone(rgbaCssValue);
                     if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.warning("cloned rgbaCssValue " + rgbaCssValue
-                                + "(hashcode: " + rgbaCssValue.hashCode()
+                        LOGGER.warning("cloned rgbaCssValue " + rgbaCssValue + "(hashcode: " + rgbaCssValue.hashCode()
                                 + ") as it is already used by another object");
                     }
                 } catch (final CloneNotSupportedException e) {
@@ -482,8 +464,7 @@ public class OutlineColor extends AbstractCssProperty<OutlineColor>
     }
 
     /**
-     * @param hslCssValue
-     *                        the hslCssValue to set
+     * @param hslCssValue the hslCssValue to set
      * @since 1.0.0
      * @author WFF
      */
@@ -493,16 +474,13 @@ public class OutlineColor extends AbstractCssProperty<OutlineColor>
         }
         if (this.hslCssValue != null) {
             if (hslCssValue.isAlreadyInUse()
-                    && this.hslCssValue.getStateChangeInformer() != hslCssValue
-                            .getStateChangeInformer()) {
+                    && this.hslCssValue.getStateChangeInformer() != hslCssValue.getStateChangeInformer()) {
                 try {
-                    final HslCssValue hslCssValueClone = CloneUtil
-                            .deepClone(hslCssValue);
+                    final HslCssValue hslCssValueClone = CloneUtil.deepClone(hslCssValue);
                     this.hslCssValue.setAlreadyInUse(false);
                     this.hslCssValue = hslCssValueClone;
                     if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.warning("cloned hslCssValue " + hslCssValue
-                                + "(hashcode: " + hslCssValue.hashCode()
+                        LOGGER.warning("cloned hslCssValue " + hslCssValue + "(hashcode: " + hslCssValue.hashCode()
                                 + ") as it is already used by another object");
                     }
                 } catch (final CloneNotSupportedException e) {
@@ -517,8 +495,7 @@ public class OutlineColor extends AbstractCssProperty<OutlineColor>
                 try {
                     this.hslCssValue = CloneUtil.deepClone(hslCssValue);
                     if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.warning("cloned hslCssValue " + hslCssValue
-                                + "(hashcode: " + hslCssValue.hashCode()
+                        LOGGER.warning("cloned hslCssValue " + hslCssValue + "(hashcode: " + hslCssValue.hashCode()
                                 + ") as it is already used by another object");
                     }
                 } catch (final CloneNotSupportedException e) {
@@ -537,8 +514,7 @@ public class OutlineColor extends AbstractCssProperty<OutlineColor>
     }
 
     /**
-     * @param hslaCssValue
-     *                         the hslaCssValue to set
+     * @param hslaCssValue the hslaCssValue to set
      * @since 1.0.0
      * @author WFF
      */
@@ -547,17 +523,14 @@ public class OutlineColor extends AbstractCssProperty<OutlineColor>
             throw new NullValueException("hslaCssValue can not be null");
         }
         if (this.hslaCssValue != null) {
-            if (hslaCssValue.isAlreadyInUse() && this.hslaCssValue
-                    .getStateChangeInformer() != hslaCssValue
-                            .getStateChangeInformer()) {
+            if (hslaCssValue.isAlreadyInUse()
+                    && this.hslaCssValue.getStateChangeInformer() != hslaCssValue.getStateChangeInformer()) {
                 try {
-                    final HslaCssValue hslaCssValueClone = CloneUtil
-                            .deepClone(hslaCssValue);
+                    final HslaCssValue hslaCssValueClone = CloneUtil.deepClone(hslaCssValue);
                     this.hslaCssValue.setAlreadyInUse(false);
                     this.hslaCssValue = hslaCssValueClone;
                     if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.warning("cloned hslaCssValue " + hslaCssValue
-                                + "(hashcode: " + hslaCssValue.hashCode()
+                        LOGGER.warning("cloned hslaCssValue " + hslaCssValue + "(hashcode: " + hslaCssValue.hashCode()
                                 + ") as it is already used by another object");
                     }
                 } catch (final CloneNotSupportedException e) {
@@ -572,8 +545,7 @@ public class OutlineColor extends AbstractCssProperty<OutlineColor>
                 try {
                     this.hslaCssValue = CloneUtil.deepClone(hslaCssValue);
                     if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.warning("cloned hslaCssValue " + hslaCssValue
-                                + "(hashcode: " + hslaCssValue.hashCode()
+                        LOGGER.warning("cloned hslaCssValue " + hslaCssValue + "(hashcode: " + hslaCssValue.hashCode()
                                 + ") as it is already used by another object");
                     }
                 } catch (final CloneNotSupportedException e) {

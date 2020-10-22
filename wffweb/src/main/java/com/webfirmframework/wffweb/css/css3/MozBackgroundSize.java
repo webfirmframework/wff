@@ -54,8 +54,7 @@ public class MozBackgroundSize extends AbstractCssProperty<MozBackgroundSize> {
     public static final String COVER = "cover";
     public static final String CONTAIN = "contain";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays
-            .asList(INITIAL, INHERIT, AUTO, COVER, CONTAIN);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(INITIAL, INHERIT, AUTO, COVER, CONTAIN);
 
     private String cssValue;
     private Float width;
@@ -72,18 +71,16 @@ public class MozBackgroundSize extends AbstractCssProperty<MozBackgroundSize> {
     }
 
     /**
-     * @param cssValue
-     *                     the css value to set.
+     * @param cssValue the css value to set.
      */
     public MozBackgroundSize(final String cssValue) {
         setCssValue(cssValue);
     }
 
     /**
-     * @param backgroundSize
-     *                           the {@code backgroundSize} object from which
-     *                           the cssValue to set.And, {@code null} will
-     *                           throw {@code NullValueException}
+     * @param backgroundSize the {@code backgroundSize} object from which the
+     *                       cssValue to set.And, {@code null} will throw
+     *                       {@code NullValueException}
      */
     public MozBackgroundSize(final MozBackgroundSize backgroundSize) {
         if (backgroundSize == null) {
@@ -93,15 +90,12 @@ public class MozBackgroundSize extends AbstractCssProperty<MozBackgroundSize> {
     }
 
     /**
-     * @param horizontalHeight
-     *                             the value to set.
-     * @param cssLengthUnit
-     *                             the value unit to set.
+     * @param horizontalHeight the value to set.
+     * @param cssLengthUnit    the value unit to set.
      * @since 1.0.0
      * @author WFF
      */
-    public MozBackgroundSize(final float horizontalHeight,
-            final CssLengthUnit cssLengthUnit) {
+    public MozBackgroundSize(final float horizontalHeight, final CssLengthUnit cssLengthUnit) {
 
         width = height = Float.valueOf(horizontalHeight);
         widthCssLengthUnit = heightCssLengthUnit = cssLengthUnit;
@@ -117,8 +111,7 @@ public class MozBackgroundSize extends AbstractCssProperty<MozBackgroundSize> {
      * @author WFF
      * @since 1.0.0
      */
-    public MozBackgroundSize(final float width,
-            final CssLengthUnit widthCssLengthUnit, final float height,
+    public MozBackgroundSize(final float width, final CssLengthUnit widthCssLengthUnit, final float height,
             final CssLengthUnit heightCssLengthUnit) {
 
         this.width = Float.valueOf(width);
@@ -127,12 +120,10 @@ public class MozBackgroundSize extends AbstractCssProperty<MozBackgroundSize> {
         this.widthCssLengthUnit = widthCssLengthUnit;
         this.heightCssLengthUnit = heightCssLengthUnit;
 
-        if (width == height
-                && Objects.equals(widthCssLengthUnit, heightCssLengthUnit)) {
+        if (width == height && Objects.equals(widthCssLengthUnit, heightCssLengthUnit)) {
             cssValue = String.valueOf(width) + widthCssLengthUnit;
         } else {
-            cssValue = new StringBuilder().append(width)
-                    .append(widthCssLengthUnit).append(' ').append(height)
+            cssValue = new StringBuilder().append(width).append(widthCssLengthUnit).append(' ').append(height)
                     .append(heightCssLengthUnit).toString();
 
         }
@@ -147,8 +138,7 @@ public class MozBackgroundSize extends AbstractCssProperty<MozBackgroundSize> {
      * @author WFF
      * @since 1.0.0
      */
-    public MozBackgroundSize setValue(final float width,
-            final CssLengthUnit widthCssLengthUnit, final float height,
+    public MozBackgroundSize setValue(final float width, final CssLengthUnit widthCssLengthUnit, final float height,
             final CssLengthUnit heightCssLengthUnit) {
 
         this.width = Float.valueOf(width);
@@ -157,12 +147,10 @@ public class MozBackgroundSize extends AbstractCssProperty<MozBackgroundSize> {
         this.widthCssLengthUnit = widthCssLengthUnit;
         this.heightCssLengthUnit = heightCssLengthUnit;
 
-        if (width == height
-                && Objects.equals(widthCssLengthUnit, heightCssLengthUnit)) {
+        if (width == height && Objects.equals(widthCssLengthUnit, heightCssLengthUnit)) {
             cssValue = String.valueOf(width) + widthCssLengthUnit;
         } else {
-            cssValue = new StringBuilder().append(width)
-                    .append(widthCssLengthUnit).append(' ').append(height)
+            cssValue = new StringBuilder().append(width).append(widthCssLengthUnit).append(' ').append(height)
                     .append(heightCssLengthUnit).toString();
 
         }
@@ -180,8 +168,7 @@ public class MozBackgroundSize extends AbstractCssProperty<MozBackgroundSize> {
      * @since 1.0.0
      * @author WFF
      */
-    public MozBackgroundSize setValue(final float widthHeight,
-            final CssLengthUnit cssLengthUnit) {
+    public MozBackgroundSize setValue(final float widthHeight, final CssLengthUnit cssLengthUnit) {
 
         width = height = Float.valueOf(widthHeight);
         widthCssLengthUnit = heightCssLengthUnit = cssLengthUnit;
@@ -229,8 +216,8 @@ public class MozBackgroundSize extends AbstractCssProperty<MozBackgroundSize> {
 
     /**
      * gets the horizontal value in float value.
-     * {@code BackgroundSize#getWidthUnit()} should be used to get the
-     * cssLengthUnit for this value.
+     * {@code BackgroundSize#getWidthUnit()} should be used to get the cssLengthUnit
+     * for this value.
      *
      * @return the horizontal value in float or {@code null} if the value is any
      *         inbuilt value like {@code inherit}.
@@ -276,11 +263,9 @@ public class MozBackgroundSize extends AbstractCssProperty<MozBackgroundSize> {
     }
 
     /**
-     * @param cssValue
-     *                     the value should be in the format of
-     *                     <code>55px</code> or <code>95%</code>. {@code null}
-     *                     is considered as an invalid value and it will throw
-     *                     {@code NullValueException}.
+     * @param cssValue the value should be in the format of <code>55px</code> or
+     *                 <code>95%</code>. {@code null} is considered as an invalid
+     *                 value and it will throw {@code NullValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -291,16 +276,13 @@ public class MozBackgroundSize extends AbstractCssProperty<MozBackgroundSize> {
                 throw new NullValueException(
                         "null is an invalid value. The value format should be as for example 75px or 85%. Or, initial/inherit.");
             } else {
-                final String trimmedCssValue = TagStringUtil
-                        .toLowerCase(StringUtil.strip(cssValue));
+                final String trimmedCssValue = TagStringUtil.toLowerCase(StringUtil.strip(cssValue));
                 boolean invalidValue = true;
 
-                final String[] lengthValues = StringUtil
-                        .splitBySpace(trimmedCssValue);
+                final String[] lengthValues = StringUtil.splitBySpace(trimmedCssValue);
 
                 if (lengthValues.length == 1) {
-                    if (trimmedCssValue.equalsIgnoreCase(INITIAL)
-                            || trimmedCssValue.equalsIgnoreCase(INHERIT)) {
+                    if (trimmedCssValue.equalsIgnoreCase(INITIAL) || trimmedCssValue.equalsIgnoreCase(INHERIT)) {
                         this.cssValue = trimmedCssValue;
                         width = null;
                         height = null;
@@ -319,14 +301,11 @@ public class MozBackgroundSize extends AbstractCssProperty<MozBackgroundSize> {
                         }
                     }
                 } else if (lengthValues.length == 2) {
-                    final Object[] lengthValueAndUnitHorizontal = CssLengthUtil
-                            .getLengthValueAndUnit(lengthValues[0]);
+                    final Object[] lengthValueAndUnitHorizontal = CssLengthUtil.getLengthValueAndUnit(lengthValues[0]);
 
-                    final Object[] lengthValueAndUnitVertical = CssLengthUtil
-                            .getLengthValueAndUnit(lengthValues[1]);
+                    final Object[] lengthValueAndUnitVertical = CssLengthUtil.getLengthValueAndUnit(lengthValues[1]);
 
-                    if (lengthValueAndUnitHorizontal.length == 2
-                            && lengthValueAndUnitVertical.length == 2) {
+                    if (lengthValueAndUnitHorizontal.length == 2 && lengthValueAndUnitVertical.length == 2) {
                         width = (Float) lengthValueAndUnitHorizontal[0];
                         widthCssLengthUnit = (CssLengthUnit) lengthValueAndUnitHorizontal[1];
                         height = (Float) lengthValueAndUnitVertical[0];
@@ -334,20 +313,16 @@ public class MozBackgroundSize extends AbstractCssProperty<MozBackgroundSize> {
 
                         // nano optimized way to check if both width
                         // and height are equal.
-                        if (Float.floatToIntBits(width.floatValue()) == Float
-                                .floatToIntBits(width.floatValue())
-                                && Objects.equals(widthCssLengthUnit,
-                                        heightCssLengthUnit)) {
-                            this.cssValue = String.valueOf(width)
-                                    + heightCssLengthUnit;
+                        if (Float.floatToIntBits(width.floatValue()) == Float.floatToIntBits(width.floatValue())
+                                && Objects.equals(widthCssLengthUnit, heightCssLengthUnit)) {
+                            this.cssValue = String.valueOf(width) + heightCssLengthUnit;
                         } else {
                             this.cssValue = trimmedCssValue;
                         }
                         invalidValue = false;
                     }
                 } else {
-                    throw new InvalidValueException(
-                            "The given cssValue should not contain more that 2 length values.");
+                    throw new InvalidValueException("The given cssValue should not contain more that 2 length values.");
                 }
 
                 if (invalidValue) {
@@ -390,15 +365,13 @@ public class MozBackgroundSize extends AbstractCssProperty<MozBackgroundSize> {
     /**
      * validates if the given cssValue is valid for this class.
      *
-     * @param cssValue
-     *                     the value to check.
+     * @param cssValue the value to check.
      * @return true if valid and false if invalid.
      * @author WFF
      * @since 1.0.0
      */
     public static boolean isValid(final String cssValue) {
-        final String trimmedCssValue = TagStringUtil
-                .toLowerCase(StringUtil.strip(cssValue));
+        final String trimmedCssValue = TagStringUtil.toLowerCase(StringUtil.strip(cssValue));
 
         final String[] cssValueParts = StringUtil.splitBySpace(trimmedCssValue);
         if (cssValueParts.length > 2) {
@@ -410,8 +383,7 @@ public class MozBackgroundSize extends AbstractCssProperty<MozBackgroundSize> {
 
         boolean valid = false;
         for (final String each : cssValueParts) {
-            final Object[] lengthValueAndUnit = CssLengthUtil
-                    .getLengthValueAsPremitiveAndUnit(each);
+            final Object[] lengthValueAndUnit = CssLengthUtil.getLengthValueAsPremitiveAndUnit(each);
             if (lengthValueAndUnit.length != 2) {
                 return false;
             }

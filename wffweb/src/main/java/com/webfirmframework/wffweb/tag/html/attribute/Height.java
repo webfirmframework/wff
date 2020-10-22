@@ -16,8 +16,7 @@ import com.webfirmframework.wffweb.util.CssLengthUtil;
  * @since 1.0.0
  *
  */
-public class Height extends AbstractAttribute
-        implements InputAttributable, RectAttributable {
+public class Height extends AbstractAttribute implements InputAttributable, RectAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -72,8 +71,7 @@ public class Height extends AbstractAttribute
     }
 
     /**
-     * @param percent
-     *                    the percentage value to set.
+     * @param percent the percentage value to set.
      * @since 1.1.4
      */
     public Height(final int percent) {
@@ -84,8 +82,7 @@ public class Height extends AbstractAttribute
     }
 
     /**
-     * @param percent
-     *                    the percentage value to set.
+     * @param percent the percentage value to set.
      * @since 1.0.0
      */
     public Height(final float percent) {
@@ -96,10 +93,8 @@ public class Height extends AbstractAttribute
     }
 
     /**
-     * @param value
-     *                          the value to set
-     * @param cssLengthUnit
-     *                          the unit for the value.
+     * @param value         the value to set
+     * @param cssLengthUnit the unit for the value.
      * @since 1.0.0
      */
     public Height(final int value, final CssLengthUnit cssLengthUnit) {
@@ -110,12 +105,9 @@ public class Height extends AbstractAttribute
     }
 
     /**
-     * @param value
-     *                       the value to set
-     * @param lengthUnit
-     *                       The length unit. It may be an enum class which
-     *                       implements {@code LengthUnit} interface. the unit
-     *                       for the value.
+     * @param value      the value to set
+     * @param lengthUnit The length unit. It may be an enum class which implements
+     *                   {@code LengthUnit} interface. the unit for the value.
      * @since 1.0.0
      */
     public Height(final int value, final LengthUnit lengthUnit) {
@@ -130,8 +122,7 @@ public class Height extends AbstractAttribute
     }
 
     /**
-     * @param percent
-     *                    the percent to set
+     * @param percent the percent to set
      * @since 1.0.0
      */
     public void setPercent(final float percent) {
@@ -141,11 +132,9 @@ public class Height extends AbstractAttribute
     }
 
     /**
-     * @param value
-     *                          the value to set
-     * @param cssLengthUnit
-     *                          the unit for the value. return the current
-     *                          object will be returned.
+     * @param value         the value to set
+     * @param cssLengthUnit the unit for the value. return the current object will
+     *                      be returned.
      * @since 1.0.0
      */
     public Height setValue(final int value, final CssLengthUnit cssLengthUnit) {
@@ -157,12 +146,10 @@ public class Height extends AbstractAttribute
     }
 
     /**
-     * @param value
-     *                       the value to set
-     * @param lengthUnit
-     *                       the unit for the value. It may be an enum class
-     *                       which implements {@code LengthUnit} interface.
-     *                       return the current object will be returned.
+     * @param value      the value to set
+     * @param lengthUnit the unit for the value. It may be an enum class which
+     *                   implements {@code LengthUnit} interface. return the current
+     *                   object will be returned.
      * @since 1.0.0
      */
     public Height setValue(final int value, final LengthUnit lengthUnit) {
@@ -174,15 +161,12 @@ public class Height extends AbstractAttribute
     }
 
     /**
-     * @param value
-     *                          the value to set
-     * @param cssLengthUnit
-     *                          the unit for the value. return the current
-     *                          object will be returned.
+     * @param value         the value to set
+     * @param cssLengthUnit the unit for the value. return the current object will
+     *                      be returned.
      * @since 1.0.0
      */
-    public Height setValue(final float value,
-            final CssLengthUnit cssLengthUnit) {
+    public Height setValue(final float value, final CssLengthUnit cssLengthUnit) {
         this.value = value;
         this.cssLengthUnit = cssLengthUnit;
         htmlString = String.valueOf(value) + cssLengthUnit.getUnit();
@@ -191,11 +175,9 @@ public class Height extends AbstractAttribute
     }
 
     /**
-     * @param value
-     *                       the value to set
-     * @param lengthUnit
-     *                       the unit for the value. return the current object
-     *                       will be returned.
+     * @param value      the value to set
+     * @param lengthUnit the unit for the value. return the current object will be
+     *                   returned.
      * @since 1.0.0
      */
     public Height setValue(final float value, final LengthUnit lengthUnit) {
@@ -224,8 +206,7 @@ public class Height extends AbstractAttribute
 
     private void assignValues(final String attributeValue) {
 
-        final Object[] lengthValueAsPremitiveAndUnit = CssLengthUtil
-                .getLengthValueAsPremitiveAndUnit(attributeValue);
+        final Object[] lengthValueAsPremitiveAndUnit = CssLengthUtil.getLengthValueAsPremitiveAndUnit(attributeValue);
 
         if (lengthValueAsPremitiveAndUnit.length == 2) {
             value = (float) lengthValueAsPremitiveAndUnit[0];
@@ -235,8 +216,7 @@ public class Height extends AbstractAttribute
             value = (float) lengthValueAsPremitiveAndUnit[0];
             cssLengthUnit = CssLengthUnit.PER;
         } else {
-            throw new InvalidValueException(
-                    "the value should be in the format for eg: 100%");
+            throw new InvalidValueException("the value should be in the format for eg: 100%");
         }
 
         htmlString = attributeValue;

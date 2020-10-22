@@ -40,8 +40,7 @@ final class ChildTagAppendListenerImpl implements ChildTagAppendListener {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Logger LOGGER = Logger
-            .getLogger(ChildTagRemoveListenerImpl.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ChildTagRemoveListenerImpl.class.getName());
 
     private final Object accessObject;
 
@@ -54,8 +53,7 @@ final class ChildTagAppendListenerImpl implements ChildTagAppendListener {
         throw new AssertionError();
     }
 
-    ChildTagAppendListenerImpl(final BrowserPage browserPage,
-            final Object accessObject,
+    ChildTagAppendListenerImpl(final BrowserPage browserPage, final Object accessObject,
             final Map<String, AbstractHtml> tagByWffId) {
         this.browserPage = browserPage;
         this.accessObject = accessObject;
@@ -88,8 +86,7 @@ final class ChildTagAppendListenerImpl implements ChildTagAppendListener {
                         tagByWffId.put(child.getDataWffId().getValue(), child);
                     }
 
-                    final Set<AbstractHtml> subChildren = child
-                            .getChildren(accessObject);
+                    final Set<AbstractHtml> subChildren = child.getChildren(accessObject);
                     if (subChildren != null && subChildren.size() > 0) {
                         childrenStack.push(subChildren);
                     }
@@ -100,22 +97,22 @@ final class ChildTagAppendListenerImpl implements ChildTagAppendListener {
             final DataWffId dataWffId = parentTag.getDataWffId();
 
             if (dataWffId == null && LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.warning(
-                        "Could not find data-wff-id from direct parent tag");
+                LOGGER.warning("Could not find data-wff-id from direct parent tag");
             }
 
-            //@formatter:off
-                // appended child task format :-
-                // { "name": task_byte, "values" : [invoke_method_byte_from_Task_enum]}, { "name": data-wff-id, "values" : [ parent_tag_name, html_string ]}
-                // { "name": 2, "values" : [[3]]}, { "name":"C55", "values" : ["body", "<div><div></div></div>"]}
-                //@formatter:on
+            // @formatter:off
+            // appended child task format :-
+            // { "name": task_byte, "values" : [invoke_method_byte_from_Task_enum]}, {
+            // "name": data-wff-id, "values" : [ parent_tag_name, html_string ]}
+            // { "name": 2, "values" : [[3]]}, { "name":"C55", "values" : ["body",
+            // "<div><div></div></div>"]}
+            // @formatter:on
 
             final NameValue task = Task.APPENDED_CHILD_TAG.getTaskNameValue();
 
             final NameValue nameValue = new NameValue();
 
-            final byte[][] tagNameAndWffId = DataWffIdUtil
-                    .getIndexedTagNameAndWffId(accessObject, parentTag);
+            final byte[][] tagNameAndWffId = DataWffIdUtil.getIndexedTagNameAndWffId(accessObject, parentTag);
 
             final byte[] parentWffIdBytes = tagNameAndWffId[1];
 
@@ -124,21 +121,18 @@ final class ChildTagAppendListenerImpl implements ChildTagAppendListener {
             final byte[] parentTagName = tagNameAndWffId[0];
 
             if (WffJsFile.COMPRESSED_WFF_DATA) {
-                nameValue.setValues(parentTagName, appendedChildTag
-                        .toCompressedWffBMBytesV2(StandardCharsets.UTF_8));
-            } else {
                 nameValue.setValues(parentTagName,
-                        appendedChildTag.toWffBMBytes(StandardCharsets.UTF_8));
+                        appendedChildTag.toCompressedWffBMBytesV2(StandardCharsets.UTF_8, accessObject));
+            } else {
+                nameValue.setValues(parentTagName, appendedChildTag.toWffBMBytes(StandardCharsets.UTF_8, accessObject));
             }
 
             browserPage.push(task, nameValue);
 
         } catch (final InvalidTagException e) {
             if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.log(Level.WARNING,
-                        "Do not append/add an empty NoTag as child tag, eg: new NoTag(null, \"\").\n"
-                                .concat("To make a tag's children as empty then invoke removeAllChildren() method in it."),
-                        e);
+                LOGGER.log(Level.WARNING, "Do not append/add an empty NoTag as child tag, eg: new NoTag(null, \"\").\n"
+                        .concat("To make a tag's children as empty then invoke removeAllChildren() method in it."), e);
             }
         }
 
@@ -148,8 +142,7 @@ final class ChildTagAppendListenerImpl implements ChildTagAppendListener {
     public void childrenAppended(final Event event) {
 
         final AbstractHtml parentTag = event.getParentTag();
-        final Collection<? extends AbstractHtml> appendedChildTags = event
-                .getAppendedChildrenTags();
+        final Collection<? extends AbstractHtml> appendedChildTags = event.getAppendedChildrenTags();
 
         // add data-wff-id to all tags including nested tags
         final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
@@ -166,8 +159,7 @@ final class ChildTagAppendListenerImpl implements ChildTagAppendListener {
                     tagByWffId.put(child.getDataWffId().getValue(), child);
                 }
 
-                final Set<AbstractHtml> subChildren = child
-                        .getChildren(accessObject);
+                final Set<AbstractHtml> subChildren = child.getChildren(accessObject);
                 if (subChildren != null && subChildren.size() > 0) {
                     childrenStack.push(subChildren);
                 }
@@ -181,24 +173,24 @@ final class ChildTagAppendListenerImpl implements ChildTagAppendListener {
             LOGGER.warning("Could not find data-wff-id from direct parent tag");
         }
 
-        //@formatter:off
-                // appended child task format :-
-                // { "name": task_byte, "values" : [invoke_method_byte_from_Task_enum]}, { "name": data-wff-id, "values" : [ parent_tag_name, html_string ]}
-                // { "name": 2, "values" : [[3]]}, { "name":"C55", "values" : ["body", "<div><div></div></div>"]}
-                //@formatter:on
+        // @formatter:off
+        // appended child task format :-
+        // { "name": task_byte, "values" : [invoke_method_byte_from_Task_enum]}, {
+        // "name": data-wff-id, "values" : [ parent_tag_name, html_string ]}
+        // { "name": 2, "values" : [[3]]}, { "name":"C55", "values" : ["body",
+        // "<div><div></div></div>"]}
+        // @formatter:on
 
         final NameValue task = Task.APPENDED_CHILDREN_TAGS.getTaskNameValue();
 
-        final Deque<NameValue> nameValues = new ArrayDeque<>(
-                appendedChildTags.size() + 1);
+        final Deque<NameValue> nameValues = new ArrayDeque<>(appendedChildTags.size() + 1);
         nameValues.add(task);
 
         for (final AbstractHtml appendedChildTag : appendedChildTags) {
 
             final NameValue nameValue = new NameValue();
 
-            final byte[][] tagNameAndWffId = DataWffIdUtil
-                    .getIndexedTagNameAndWffId(accessObject, parentTag);
+            final byte[][] tagNameAndWffId = DataWffIdUtil.getIndexedTagNameAndWffId(accessObject, parentTag);
 
             final byte[] parentWffIdBytes = tagNameAndWffId[1];
 
@@ -208,18 +200,18 @@ final class ChildTagAppendListenerImpl implements ChildTagAppendListener {
 
             try {
                 if (WffJsFile.COMPRESSED_WFF_DATA) {
-                    nameValue.setValues(parentTagName, appendedChildTag
-                            .toCompressedWffBMBytesV2(StandardCharsets.UTF_8));
+                    nameValue.setValues(parentTagName,
+                            appendedChildTag.toCompressedWffBMBytesV2(StandardCharsets.UTF_8, accessObject));
                 } else {
-                    nameValue.setValues(parentTagName, appendedChildTag
-                            .toWffBMBytes(StandardCharsets.UTF_8));
+                    nameValue.setValues(parentTagName,
+                            appendedChildTag.toWffBMBytes(StandardCharsets.UTF_8, accessObject));
                 }
 
             } catch (final InvalidTagException e) {
                 if (LOGGER.isLoggable(Level.WARNING)) {
                     LOGGER.log(Level.WARNING,
-                            "Do not append/add an empty NoTag as child tag, eg: new NoTag(null, \"\").\n"
-                                    .concat("To make a tag's children as empty then invoke removeAllChildren() method in it."),
+                            "Do not append/add an empty NoTag as child tag, eg: new NoTag(null, \"\").\n".concat(
+                                    "To make a tag's children as empty then invoke removeAllChildren() method in it."),
                             e);
                 }
                 continue;
@@ -259,8 +251,7 @@ final class ChildTagAppendListenerImpl implements ChildTagAppendListener {
                     }
                 }
 
-                final Set<AbstractHtml> subChildren = child
-                        .getChildren(accessObject);
+                final Set<AbstractHtml> subChildren = child.getChildren(accessObject);
                 if (subChildren != null && subChildren.size() > 0) {
                     childrenStack.push(subChildren);
                 }
@@ -273,26 +264,29 @@ final class ChildTagAppendListenerImpl implements ChildTagAppendListener {
     @Override
     public void childMoved(final ChildMovedEvent event) {
 
-        //@formatter:off
-        // moved children tags from some parents to another task format (in this method moving only one child) :-
-        // { "name": task_byte, "values" : [MOVED_CHILDREN_TAGS_byte_from_Task_enum]}, { "name": new_parent_data-wff-id, "values" : [ new_parent_tag_name, child_data-wff-id, child_tag_name ]}
-        // { "name": 2, "values" : [[3]]}, { "name":"C55", "values" : ["div", "S255", "span"]}
-        //@formatter:on
+        // @formatter:off
+        // moved children tags from some parents to another task format (in this method
+        // moving only one child) :-
+        // { "name": task_byte, "values" : [MOVED_CHILDREN_TAGS_byte_from_Task_enum]}, {
+        // "name": new_parent_data-wff-id, "values" : [ new_parent_tag_name,
+        // child_data-wff-id, child_tag_name ]}
+        // { "name": 2, "values" : [[3]]}, { "name":"C55", "values" : ["div", "S255",
+        // "span"]}
+        // @formatter:on
 
         final AbstractHtml currentParentTag = event.getCurrentParentTag();
         final AbstractHtml movedChildTag = event.getMovedChildTag();
 
         final NameValue task = Task.MOVED_CHILDREN_TAGS.getTaskNameValue();
 
-        final DataWffId currentParentDataWffIdAttr = currentParentTag
-                .getDataWffId();
+        final DataWffId currentParentDataWffIdAttr = currentParentTag.getDataWffId();
 
         if (currentParentDataWffIdAttr != null) {
 
             final NameValue nameValue = new NameValue();
 
-            final byte[][] currentParentTagNameAndWffId = DataWffIdUtil
-                    .getIndexedTagNameAndWffId(accessObject, currentParentTag);
+            final byte[][] currentParentTagNameAndWffId = DataWffIdUtil.getIndexedTagNameAndWffId(accessObject,
+                    currentParentTag);
 
             final byte[] parentWffIdBytes = currentParentTagNameAndWffId[1];
 
@@ -300,15 +294,14 @@ final class ChildTagAppendListenerImpl implements ChildTagAppendListener {
 
             final byte[] currentTagName = currentParentTagNameAndWffId[0];
 
-            final byte[][] movedChildTagNameAndWffId = DataWffIdUtil
-                    .getIndexedTagNameAndWffId(accessObject, movedChildTag);
+            final byte[][] movedChildTagNameAndWffId = DataWffIdUtil.getIndexedTagNameAndWffId(accessObject,
+                    movedChildTag);
 
             final byte[] movedChildWffIdBytes = movedChildTagNameAndWffId[1];
 
             final byte[] movedChildTagName = movedChildTagNameAndWffId[0];
 
-            nameValue.setValues(currentTagName, movedChildWffIdBytes,
-                    movedChildTagName);
+            nameValue.setValues(currentTagName, movedChildWffIdBytes, movedChildTagName);
 
             browserPage.push(task, nameValue);
 
@@ -321,14 +314,17 @@ final class ChildTagAppendListenerImpl implements ChildTagAppendListener {
     }
 
     @Override
-    public void childrendAppendedOrMoved(
-            final Collection<ChildMovedEvent> events) {
+    public void childrendAppendedOrMoved(final Collection<ChildMovedEvent> events) {
 
-        //@formatter:off
-        // moved children tags from some parents to another task format (in this method moving only one child) :-
-        // { "name": task_byte, "values" : [MOVED_CHILDREN_TAGS_byte_from_Task_enum]}, { "name": new_parent_data-wff-id, "values" : [ new_parent_tag_name, child_data-wff-id, child_tag_name ]}
-        // { "name": 2, "values" : [[3]]}, { "name":"C55", "values" : ["div", "S255", "span"]}
-        //@formatter:on
+        // @formatter:off
+        // moved children tags from some parents to another task format (in this method
+        // moving only one child) :-
+        // { "name": task_byte, "values" : [MOVED_CHILDREN_TAGS_byte_from_Task_enum]}, {
+        // "name": new_parent_data-wff-id, "values" : [ new_parent_tag_name,
+        // child_data-wff-id, child_tag_name ]}
+        // { "name": 2, "values" : [[3]]}, { "name":"C55", "values" : ["div", "S255",
+        // "span"]}
+        // @formatter:on
 
         try {
 
@@ -342,22 +338,18 @@ final class ChildTagAppendListenerImpl implements ChildTagAppendListener {
                 // if previousParentTag == null it means it's appending a new
                 // child tag
                 // this checking is done at client side
-                final AbstractHtml previousParentTag = event
-                        .getPreviousParentTag();
-                final AbstractHtml currentParentTag = event
-                        .getCurrentParentTag();
+                final AbstractHtml previousParentTag = event.getPreviousParentTag();
+                final AbstractHtml currentParentTag = event.getCurrentParentTag();
                 final AbstractHtml movedChildTag = event.getMovedChildTag();
 
-                final DataWffId currentParentDataWffIdAttr = currentParentTag
-                        .getDataWffId();
+                final DataWffId currentParentDataWffIdAttr = currentParentTag.getDataWffId();
 
                 if (currentParentDataWffIdAttr != null) {
 
                     final NameValue nameValue = new NameValue();
 
-                    final byte[][] currentParentTagNameAndWffId = DataWffIdUtil
-                            .getIndexedTagNameAndWffId(accessObject,
-                                    currentParentTag);
+                    final byte[][] currentParentTagNameAndWffId = DataWffIdUtil.getIndexedTagNameAndWffId(accessObject,
+                            currentParentTag);
 
                     final byte[] parentWffIdBytes = currentParentTagNameAndWffId[1];
 
@@ -367,10 +359,8 @@ final class ChildTagAppendListenerImpl implements ChildTagAppendListener {
 
                     final boolean noTag = movedChildTag.getTagName() == null;
 
-                    final byte[][] movedChildTagNameAndWffId = noTag
-                            ? DataWffIdUtil.getTagNameAndWffIdForNoTag()
-                            : DataWffIdUtil.getIndexedTagNameAndWffId(
-                                    accessObject, movedChildTag);
+                    final byte[][] movedChildTagNameAndWffId = noTag ? DataWffIdUtil.getTagNameAndWffIdForNoTag()
+                            : DataWffIdUtil.getIndexedTagNameAndWffId(accessObject, movedChildTag);
 
                     final byte[] movedChildWffIdBytes = movedChildTagNameAndWffId[1];
 
@@ -382,15 +372,11 @@ final class ChildTagAppendListenerImpl implements ChildTagAppendListener {
                             // new
                             // tag
                             if (WffJsFile.COMPRESSED_WFF_DATA) {
-                                nameValue.setValues(currentTagName,
-                                        movedChildWffIdBytes, movedChildTagName,
-                                        movedChildTag.toCompressedWffBMBytesV2(
-                                                StandardCharsets.UTF_8));
+                                nameValue.setValues(currentTagName, movedChildWffIdBytes, movedChildTagName,
+                                        movedChildTag.toCompressedWffBMBytesV2(StandardCharsets.UTF_8, accessObject));
                             } else {
-                                nameValue.setValues(currentTagName,
-                                        movedChildWffIdBytes, movedChildTagName,
-                                        movedChildTag.toWffBMBytes(
-                                                StandardCharsets.UTF_8));
+                                nameValue.setValues(currentTagName, movedChildWffIdBytes, movedChildTagName,
+                                        movedChildTag.toWffBMBytes(StandardCharsets.UTF_8, accessObject));
                             }
 
                         } catch (final InvalidTagException e) {
@@ -403,8 +389,7 @@ final class ChildTagAppendListenerImpl implements ChildTagAppendListener {
                             continue;
                         }
                     } else {
-                        nameValue.setValues(currentTagName,
-                                movedChildWffIdBytes, movedChildTagName);
+                        nameValue.setValues(currentTagName, movedChildWffIdBytes, movedChildTagName);
                     }
 
                     nameValues.add(nameValue);
@@ -412,21 +397,17 @@ final class ChildTagAppendListenerImpl implements ChildTagAppendListener {
                     addInWffIdMap(movedChildTag);
 
                 } else {
-                    LOGGER.severe(
-                            "Could not find data-wff-id from previousParentTag");
+                    LOGGER.severe("Could not find data-wff-id from previousParentTag");
                 }
 
             }
 
-            browserPage
-                    .push(nameValues.toArray(new NameValue[nameValues.size()]));
+            browserPage.push(nameValues.toArray(new NameValue[nameValues.size()]));
 
         } catch (final NoSuchElementException e) {
             if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.log(Level.WARNING,
-                        "Do not append/add an empty NoTag as child tag, eg: new NoTag(null, \"\").\n"
-                                .concat("To make a tag's children as empty then invoke removeAllChildren() method in it."),
-                        e);
+                LOGGER.log(Level.WARNING, "Do not append/add an empty NoTag as child tag, eg: new NoTag(null, \"\").\n"
+                        .concat("To make a tag's children as empty then invoke removeAllChildren() method in it."), e);
             }
         } catch (final UnsupportedEncodingException e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {

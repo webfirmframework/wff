@@ -467,6 +467,7 @@ public class AbstractHtmlTest {
 
     }
     
+    @SuppressWarnings("unused")
     @Test
     public void testReplaceWith2() {
         
@@ -1594,10 +1595,219 @@ public class AbstractHtmlTest {
             ;
 
     }
+    
+    @Test
+    public void testThreadSafetyOfGetLastChild1() {
+
+        // uncomment synchronized (children) in getFirstChild to reproduce the
+        // bug
+
+        final Div div = new Div(null, new Id("one"));
+        final H1 insertedLastTag = new H1(null);
+
+        div.appendChild(insertedLastTag);
+
+        Thread threadOne = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+//                System.out.println("threadOne started");
+                for (int i = 0; i < 150; i++) {
+                    try {
+                        insertedLastTag
+                                .insertAfter(new CustomTag("tag" + i, null));
+//                        System.out.println("inserted a tag before");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Assert.fail("threadOne this method is not thread safe");
+                    }
+                    try {
+                        Thread.sleep(1);
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                        Assert.fail(
+                                "threadOne this method may not be thread safe");
+                    }
+                }
+
+            }
+        });
+
+        Thread threadTwo = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+//                System.out.println("threadTwo started");
+                for (int i = 0; i < 150; i++) {
+                    try {
+                        final AbstractHtml lastChild = div.getLastChild();
+                        Assert.assertNotNull(lastChild);
+//                        System.out.println(
+//                                "lastChild: " + lastChild.toHtmlString());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Assert.fail("threadTwo this method is not thread safe");
+                    }
+                    try {
+                        Thread.sleep(1);
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                        Assert.fail(
+                                "threadTwo this method may not be thread safe");
+                    }
+                }
+
+            }
+        });
+
+        threadTwo.start();
+        threadOne.start();
+
+        while (threadOne.isAlive() || threadTwo.isAlive())
+            ;
+
+    }
+    
+    @Test
+    public void testThreadSafetyOfGetLastChild2() {
+
+        // uncomment synchronized (children) in getFirstChild to reproduce the
+        // bug
+
+        final Div div = new Div(null, new Id("one"));
+        final H1 insertedLastTag = new H1(null);
+
+        div.appendChild(insertedLastTag);
+
+        Thread threadOne = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                AbstractHtml currentLastTag = insertedLastTag;
+//                System.out.println("threadOne started");
+                for (int i = 0; i < 150; i++) {
+                    try {
+                        final CustomTag customTag = new CustomTag("tag" + i,
+                                null);
+                        currentLastTag.insertBefore(customTag);
+                        currentLastTag = customTag;
+//                        System.out.println("inserted a tag before");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Assert.fail("threadOne this method is not thread safe");
+                    }
+                    try {
+                        Thread.sleep(1);
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                        Assert.fail(
+                                "threadOne this method may not be thread safe");
+                    }
+                }
+
+            }
+        });
+
+        Thread threadTwo = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+//                System.out.println("threadTwo started");
+                for (int i = 0; i < 150; i++) {
+                    try {
+                        final AbstractHtml lastChild = div.getLastChild();
+                        // got null for  lastChild when the getLastChild
+                        // internal implementation is not synchronized
+                        Assert.assertNotNull(lastChild);
+//                        System.out.println(
+//                                "lastChild: " + lastChild.toHtmlString());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Assert.fail("threadTwo this method is not thread safe");
+                    }
+                    try {
+                        Thread.sleep(1);
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                        Assert.fail(
+                                "threadTwo this method may not be thread safe");
+                    }
+                }
+
+            }
+        });
+
+        threadTwo.start();
+        threadOne.start();
+
+        while (threadOne.isAlive() || threadTwo.isAlive())
+            ;
+
+    }
 
     public static void main(String[] args) {
         new AbstractHtmlTest().testThreadSafetyOfGetFirstChild1();
         new AbstractHtmlTest().testThreadSafetyOfGetFirstChild2();
+        new AbstractHtmlTest().testThreadSafetyOfGetLastChild1();
+        new AbstractHtmlTest().testThreadSafetyOfGetLastChild2();
+    }
+    
+    @Test
+    public void testGetLastChild() {
+        {
+
+            // with multiple children
+
+            final Div div = new Div(null, new Id("one"));
+
+            final H1 insertedLastTag = new H1(null);
+
+            div.appendChild(new H2(null));
+            div.appendChild(new H3(null));
+            div.appendChild(new H4(null));
+            div.appendChild(new H5(null));
+            div.appendChild(new H6(null));
+            div.appendChild(new A(null));
+            div.appendChild(new B(null));
+            div.appendChild(insertedLastTag);
+
+            {
+                final AbstractHtml lastChildH1 = div.getLastChild();
+                Assert.assertNotNull(lastChildH1);
+            }
+
+            final H1 lastChildH1 = (H1) div.getLastChild();
+            Assert.assertEquals(insertedLastTag, lastChildH1);
+        }
+        {
+            // with empty children
+            final Div div = new Div(null, new Id("two"));
+            Assert.assertNull(div.getLastChild());
+        }
+
+        {
+            // with only one child
+            final Div div = new Div(null, new Id("one"));
+            final H1 insertedLastTag = new H1(null);
+            div.appendChild(insertedLastTag);
+            Assert.assertEquals(insertedLastTag, div.getLastChild());
+        }
+
+    }
+    
+    @Test(expected = ClassCastException.class)
+    public void testGetLastChildClassCastException() {
+        final Div div = new Div(null, new Id("one"));
+        final H1 insertedFirstTag = new H1(null);
+        div.appendChild(insertedFirstTag);
+
+        // this should throw ClassCastException
+        @SuppressWarnings("unused")
+        final NoTag firstChildH1 = (NoTag) div.getLastChild();
     }
 
     @Test

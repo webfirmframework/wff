@@ -38,8 +38,7 @@ public class Wrap extends AbstractAttribute implements TextAreaAttributable {
 
     /**
      * to be wrapped when submitted in a form. It will create new lines in the
-     * content. Cols attribute must be specified to textarea if using this
-     * value.
+     * content. Cols attribute must be specified to textarea if using this value.
      */
     public static final String HARD = "hard";
 
@@ -72,8 +71,7 @@ public class Wrap extends AbstractAttribute implements TextAreaAttributable {
     /**
      * sets the value for this attribute
      *
-     * @param value
-     *                  the value for the attribute.
+     * @param value the value for the attribute.
      * @since 3.0.1
      */
     public void setValue(final String value) {
@@ -83,12 +81,10 @@ public class Wrap extends AbstractAttribute implements TextAreaAttributable {
     /**
      * sets the value for this attribute
      *
-     * @param updateClient
-     *                         true to update client browser page if it is
-     *                         available. The default value is true but it will
-     *                         be ignored if there is no client browser page.
-     * @param value
-     *                         the value for the attribute.
+     * @param updateClient true to update client browser page if it is available.
+     *                     The default value is true but it will be ignored if there
+     *                     is no client browser page.
+     * @param value        the value for the attribute.
      * @since 3.0.1
      * @author WFF
      */

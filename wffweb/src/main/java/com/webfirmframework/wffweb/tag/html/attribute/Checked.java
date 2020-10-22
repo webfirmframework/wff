@@ -35,8 +35,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
  * @author WFF
  * @since 1.0.0
  */
-public class Checked extends AbstractAttribute
-        implements InputAttributable, BooleanAttribute {
+public class Checked extends AbstractAttribute implements InputAttributable, BooleanAttribute {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -54,10 +53,9 @@ public class Checked extends AbstractAttribute
     }
 
     /**
-     * sets the default value as <code>checked</code> (since 2.1.5). If value is
-     * not required then use <code>new Selected(null)</code>. Note : There might
-     * be some issue in dynamically changing state of tag if there is no default
-     * value.
+     * sets the default value as <code>checked</code> (since 2.1.5). If value is not
+     * required then use <code>new Selected(null)</code>. Note : There might be some
+     * issue in dynamically changing state of tag if there is no default value.
      *
      * @since 1.0.0
      * @author WFF

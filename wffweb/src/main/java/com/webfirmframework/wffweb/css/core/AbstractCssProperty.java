@@ -34,10 +34,8 @@ public abstract class AbstractCssProperty<EXTENDEDCLASS extends AbstractCssPrope
     private boolean alreadyInUse;
 
     /**
-     * @param value
-     *                  to set the value portion in style, eg
-     *                  <code>center</code> for style
-     *                  <code>align-content: center</code>.
+     * @param value to set the value portion in style, eg <code>center</code> for
+     *              style <code>align-content: center</code>.
      * @since 1.0.0
      * @author WFF
      * @return the current object.
@@ -54,13 +52,11 @@ public abstract class AbstractCssProperty<EXTENDEDCLASS extends AbstractCssPrope
     }
 
     /**
-     * @param stateChangeInformer
-     *                                the stateChangeInformer to set
+     * @param stateChangeInformer the stateChangeInformer to set
      * @since 1.0.0
      * @author WFF
      */
-    public void setStateChangeInformer(
-            final StateChangeInformer<CssProperty> stateChangeInformer) {
+    public void setStateChangeInformer(final StateChangeInformer<CssProperty> stateChangeInformer) {
         this.stateChangeInformer = stateChangeInformer;
     }
 
@@ -70,8 +66,7 @@ public abstract class AbstractCssProperty<EXTENDEDCLASS extends AbstractCssPrope
         // TODO optimize later as we can create a new object (by
         // this.newInstance()) and assign cssValue using setCssValue. Confirm
         // and modify based on the performance test result.
-        return (EXTENDEDCLASS) CloneUtil
-                .<AbstractCssProperty<EXTENDEDCLASS>> deepClone(this);
+        return (EXTENDEDCLASS) CloneUtil.<AbstractCssProperty<EXTENDEDCLASS>>deepClone(this);
     }
 
     /**
@@ -84,11 +79,10 @@ public abstract class AbstractCssProperty<EXTENDEDCLASS extends AbstractCssPrope
     }
 
     /**
-     * To set whether this object is used by any other object. It also
-     * dereferences stateChangeInformer object if the given argument is false.
+     * To set whether this object is used by any other object. It also dereferences
+     * stateChangeInformer object if the given argument is false.
      *
-     * @param alreadyInUse
-     *                         the alreadyInUse to set
+     * @param alreadyInUse the alreadyInUse to set
      * @since 1.0.0
      * @author WFF
      */

@@ -34,14 +34,12 @@ public interface AttributeValueChangeListener extends Serializable {
         public Event() {
         }
 
-        public Event(final AbstractAttribute sourceAttribute,
-                final Set<AbstractHtml> ownerTags) {
+        public Event(final AbstractAttribute sourceAttribute, final Set<AbstractHtml> ownerTags) {
             this.sourceAttribute = sourceAttribute;
             this.ownerTags = ownerTags;
         }
 
-        public Event(final AbstractAttribute sourceAttribute,
-                final Set<AbstractHtml> ownerTags,
+        public Event(final AbstractAttribute sourceAttribute, final Set<AbstractHtml> ownerTags,
                 final boolean changedByClient) {
             this.sourceAttribute = sourceAttribute;
             this.ownerTags = ownerTags;
@@ -56,11 +54,9 @@ public interface AttributeValueChangeListener extends Serializable {
         }
 
         /**
-         * @param sourceAttribute
-         *                            the sourceAttribute to set
+         * @param sourceAttribute the sourceAttribute to set
          */
-        public void setSourceAttribute(
-                final AbstractAttribute sourceAttribute) {
+        public void setSourceAttribute(final AbstractAttribute sourceAttribute) {
             this.sourceAttribute = sourceAttribute;
         }
 
@@ -72,8 +68,7 @@ public interface AttributeValueChangeListener extends Serializable {
         }
 
         /**
-         * @param ownerTags
-         *                      the ownerTags to set
+         * @param ownerTags the ownerTags to set
          */
         public void setOwnerTags(final Set<AbstractHtml> ownerTags) {
             this.ownerTags = ownerTags;
@@ -87,8 +82,7 @@ public interface AttributeValueChangeListener extends Serializable {
         }
 
         /**
-         * @param changedByClient
-         *                            the changedByClient to set
+         * @param changedByClient the changedByClient to set
          */
         public void setChangedByClient(final boolean changedByClient) {
             this.changedByClient = changedByClient;

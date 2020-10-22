@@ -35,8 +35,7 @@ public class PayloadProcessor implements Serializable {
     // for the saved bytes
     private final Queue<ByteBuffer> wsMessageChunks = new ConcurrentLinkedQueue<>();
 
-    private final AtomicInteger wsMessageChunksTotalCapacity = new AtomicInteger(
-            0);
+    private final AtomicInteger wsMessageChunksTotalCapacity = new AtomicInteger(0);
 
     private final BrowserPage browserPage;
 
@@ -49,12 +48,10 @@ public class PayloadProcessor implements Serializable {
 
     /**
      * @param browserPage
-     * @param singleThreaded
-     *                           to be used under single thread.
+     * @param singleThreaded to be used under single thread.
      * @since 3.0.3
      */
-    public PayloadProcessor(final BrowserPage browserPage,
-            final boolean singleThreaded) {
+    public PayloadProcessor(final BrowserPage browserPage, final boolean singleThreaded) {
         this.browserPage = browserPage;
         this.singleThreaded = singleThreaded;
     }
@@ -62,8 +59,7 @@ public class PayloadProcessor implements Serializable {
     /**
      * Merges and returns byte array from the given dataArray.
      *
-     * @param dataArray
-     *                      the ByteByffers to merge
+     * @param dataArray the ByteByffers to merge
      * @return a single ByteBuffer after flip merged from all ByteBuffer objects
      *         from dataArray.
      *
@@ -71,8 +67,7 @@ public class PayloadProcessor implements Serializable {
      */
     // for testing purpose the method visibility is changed to package level
     // (default)
-    static byte[] pollAndConvertToByteArray(final int totalCapacity,
-            final Queue<ByteBuffer> dataArray) {
+    static byte[] pollAndConvertToByteArray(final int totalCapacity, final Queue<ByteBuffer> dataArray) {
 
         final byte[] wholeData = new byte[totalCapacity];
 
@@ -93,19 +88,16 @@ public class PayloadProcessor implements Serializable {
 
     /**
      * This method will be useful when the WebSocket server receives messages as
-     * chucks. A WebSocket server may have a max size of byte array that can be
-     * sent or receive as a single object. eg: websocket
-     * session.getMaxBinaryMessageBufferSize may limit it. In such case this
-     * method can be used to get the complete data as chucks.
+     * chucks. A WebSocket server may have a max size of byte array that can be sent
+     * or receive as a single object. eg: websocket
+     * session.getMaxBinaryMessageBufferSize may limit it. In such case this method
+     * can be used to get the complete data as chucks.
      *
-     * @param messagePart
-     *                        message part
-     * @param last
-     *                        true if it is the last part of the message
+     * @param messagePart message part
+     * @param last        true if it is the last part of the message
      * @since 3.0.2
      */
-    public void webSocketMessaged(final ByteBuffer messagePart,
-            final boolean last) {
+    public void webSocketMessaged(final ByteBuffer messagePart, final boolean last) {
 
         if (last && wsMessageChunksTotalCapacity.get() == 0) {
             browserPage.webSocketMessaged(messagePart.array());
@@ -126,15 +118,12 @@ public class PayloadProcessor implements Serializable {
      * @param last
      * @since 3.0.3
      */
-    private void transferToBrowserPageWS(final ByteBuffer messagePart,
-            final boolean last) {
+    private void transferToBrowserPageWS(final ByteBuffer messagePart, final boolean last) {
         if (last) {
             wsMessageChunks.add(messagePart);
-            final int totalCapacity = wsMessageChunksTotalCapacity.getAndSet(0)
-                    + messagePart.capacity();
+            final int totalCapacity = wsMessageChunksTotalCapacity.getAndSet(0) + messagePart.capacity();
 
-            browserPage.webSocketMessaged(
-                    pollAndConvertToByteArray(totalCapacity, wsMessageChunks));
+            browserPage.webSocketMessaged(pollAndConvertToByteArray(totalCapacity, wsMessageChunks));
         } else {
             wsMessageChunks.add(messagePart);
             wsMessageChunksTotalCapacity.addAndGet(messagePart.capacity());

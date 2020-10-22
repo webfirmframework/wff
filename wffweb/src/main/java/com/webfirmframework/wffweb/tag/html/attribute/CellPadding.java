@@ -31,8 +31,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.TableAttributable;
  * @author WFF
  * @since 1.1.5
  */
-public class CellPadding extends AbstractAttribute
-        implements TableAttributable {
+public class CellPadding extends AbstractAttribute implements TableAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -56,8 +55,7 @@ public class CellPadding extends AbstractAttribute
     }
 
     /**
-     * @param value
-     *                  the the number of pixels
+     * @param value the the number of pixels
      * @since 1.1.5
      * @author WFF
      */
@@ -67,8 +65,7 @@ public class CellPadding extends AbstractAttribute
     }
 
     /**
-     * @param value
-     *                  the the number of pixels
+     * @param value the the number of pixels
      * @since 1.1.5
      * @author WFF
      */
@@ -98,8 +95,7 @@ public class CellPadding extends AbstractAttribute
     }
 
     /**
-     * @param value
-     *                  the the number of pixels
+     * @param value the the number of pixels
      * @author WFF
      * @since 1.1.5
      */

@@ -17,73 +17,162 @@ var wffServerMethods = new function () {
 
 	var encoder = wffGlobal.encoder;
 	
-	this.invokeAsync = function(event, tag, attr) {
-		console.log('invokeAsync tag', tag);
+	var getAttrBytesForServer = function(attrNmOrNdx) {
+		
+		var attrBytes = [];
+		
+		if (typeof attrNmOrNdx === 'string') {
+			var ndx = wffGlobal.NDXD_VNT_ATRBS.indexOf(attrNmOrNdx);
+			if (ndx != -1) {
+				var ndxByts = wffBMUtil.getOptimizedBytesFromInt(ndx);
+				//0 represents rest of the bytes are optimized int bytes 
+				attrBytes.push(0);
+	            for (var i = 0; i < ndxByts.length; i++) {
+	            	attrBytes.push(ndxByts[i]);
+				}
+			} else {
+				//0 (byte value) is a null char in charset so no need to start with 0 (byte value)
+				// an attr name will never start with 0 (byte value)
+				attrBytes = encoder.encode(attrNmOrNdx);
+			}
+		} else {
+			var ndxByts = wffBMUtil.getOptimizedBytesFromInt(attrNmOrNdx);
+			//0 represents rest of the bytes are optimized int bytes
+			attrBytes.push(0);
+			for (var i = 0; i < ndxByts.length; i++) {
+	            attrBytes.push(ndxByts[i]);
+			}
+		}
+		return attrBytes;
+	};
+	
+	//PD for preventDefault
+	var invokeAsyncPD = function(event, tag, attrNmOrNdx, prvntDflt) {
+		
+		if(prvntDflt) {
+			event.preventDefault();
+		}	
+		
 		var taskNameValue = wffTaskUtil.getTaskNameValue(wffGlobal.taskValues.TASK, wffGlobal.taskValues.INVOKE_ASYNC_METHOD);
 
-		
-		var attrBytes = encoder.encode(attr);
+		var attrBytes = getAttrBytesForServer(attrNmOrNdx);
 		
 		var nameValue = {'name':wffTagUtil.getWffIdBytesFromTag(tag), 'values':[attrBytes]};
 		var nameValues = [taskNameValue, nameValue];
 		var wffBM = wffBMUtil.getWffBinaryMessageBytes(nameValues);
 		wffWS.send(wffBM);
 	};	
-	//never ever rename ia
-	this.ia = this.invokeAsync ;
+	//never ever rename iapd
+	this.b = function(event, tag, attrNmOrNdx) {
+		invokeAsyncPD(event, tag, attrNmOrNdx, true);
+	};
 	
-	this.invokeAsyncWithPreFun = function(event, tag, attr, preFun) {
-		console.log('invokeAsync tag', tag);
+	var invokeAsync = function(event, tag, attrNmOrNdx) {
+		invokeAsyncPD(event, tag, attrNmOrNdx, false);
+	};
+	//never ever rename ia
+	this.a = invokeAsync;
+	
+	var invokeAsyncWithPreFunPD = function(event, tag, attrNmOrNdx, preFun, prvntDflt) {
+		if(prvntDflt) {
+			event.preventDefault();
+		}
 		
-		if (preFun(event, tag)) {
+		var invoked = false;
+		var actionPerform = function() {
+			invoked = true;
 			var taskNameValue = wffTaskUtil.getTaskNameValue(wffGlobal.taskValues.TASK, wffGlobal.taskValues.INVOKE_ASYNC_METHOD);
-
-			
-			var attrBytes = encoder.encode(attr);
+			var attrBytes = getAttrBytesForServer(attrNmOrNdx);
 			
 			var nameValue = {'name':wffTagUtil.getWffIdBytesFromTag(tag), 'values':[attrBytes]};
 			var nameValues = [taskNameValue, nameValue];
 			var wffBM = wffBMUtil.getWffBinaryMessageBytes(nameValues);
 			wffWS.send(wffBM);
+		};
+		
+		//a wrapper object is important to avoid script injection
+		var action = new function() {
+			this.perform = function() {
+				actionPerform();
+			};
+		};
+		
+		if (preFun(event, tag, action)) {
+			if(!invoked) {
+				actionPerform();
+			}			
 		}
 		
 	};
-	//never ever rename iawpf
-	this.iawpf = this.invokeAsyncWithPreFun;
+	//never ever rename iawpfpd
+	this.f = function(event, tag, attrNmOrNdx, preFun) {
+		invokeAsyncWithPreFunPD(event, tag, attrNmOrNdx, preFun, true);
+	};
 	
-	this.invokeAsyncWithPreFilterFun = function(event, tag, attr, preFun, filterFun) {
-		console.log('invokeAsyncWithPreFilterFun tag', tag);
+	var invokeAsyncWithPreFun = function(event, tag, attrNmOrNdx, preFun) {
+		invokeAsyncWithPreFunPD(event, tag, attrNmOrNdx, preFun, false);
+	};
+	
+	//never ever rename iawpf
+	this.e = invokeAsyncWithPreFun;
+	
+	var invokeAsyncWithPreFilterFunPD = function(event, tag, attrNmOrNdx, preFun, filterFun, prvntDflt) {
+		if(prvntDflt) {
+			event.preventDefault();
+		}
 		
-		if (preFun(event, tag)) {
+		var invoked = false;
+		var actionPerform = function() {
+			invoked = true;
 			var taskNameValue = wffTaskUtil.getTaskNameValue(wffGlobal.taskValues.TASK, wffGlobal.taskValues.INVOKE_ASYNC_METHOD);
 
-			
-			var attrBytes = encoder.encode(attr);
-			
+			var attrBytes = getAttrBytesForServer(attrNmOrNdx);
+
 			var jsObject = filterFun(event, tag);
 			var argumentBMObject = new WffBMObject(jsObject);
 			var argBytes = argumentBMObject.getBMBytes();
-			
+					
 			var nameValue = {'name':wffTagUtil.getWffIdBytesFromTag(tag), 'values':[attrBytes, argBytes]};
 			var nameValues = [taskNameValue, nameValue];
 			var wffBM = wffBMUtil.getWffBinaryMessageBytes(nameValues);
-			
-			
-			
+
 			wffWS.send(wffBM);
+		};		
+			
+		//a wrapper object is important to avoid script injection
+		var action = new function() {
+			this.perform = function() {				
+				actionPerform();
+			};			
+		};
+		
+		if (preFun(event, tag, action)) {
+			if (!invoked) {
+				actionPerform();	
+			}			
 		}
 		
 	};	
-	//never ever rename iawpff
-	this.iawpff = this.invokeAsyncWithPreFilterFun;
 	
-	this.invokeAsyncWithFilterFun = function(event, tag, attr, filterFun) {
-		console.log('invokeAsyncWithFilterFun tag', tag);
+	//never ever rename iawpffpd
+	this.h = function(event, tag, attrNmOrNdx, preFun, filterFun) {
+		invokeAsyncWithPreFilterFunPD(event, tag, attrNmOrNdx, preFun, filterFun, true);
+	};
+	
+	var invokeAsyncWithPreFilterFun = function(event, tag, attrNmOrNdx, preFun, filterFun) {
+		invokeAsyncWithPreFilterFunPD(event, tag, attrNmOrNdx, preFun, filterFun, false);
+	};
+	//never ever rename iawpff
+	this.g = invokeAsyncWithPreFilterFun;
+	
+	var invokeAsyncWithFilterFunPD = function(event, tag, attrNmOrNdx, filterFun, prvntDflt) {
+		if(prvntDflt) {
+			event.preventDefault();
+		}
 		
 		var taskNameValue = wffTaskUtil.getTaskNameValue(wffGlobal.taskValues.TASK, wffGlobal.taskValues.INVOKE_ASYNC_METHOD);
 
-		
-		var attrBytes = encoder.encode(attr);
+		var attrBytes = getAttrBytesForServer(attrNmOrNdx);
 		
 		var jsObject = filterFun(event, tag);
 		var argumentBMObject = new WffBMObject(jsObject);
@@ -93,39 +182,19 @@ var wffServerMethods = new function () {
 		var nameValues = [taskNameValue, nameValue];
 		var wffBM = wffBMUtil.getWffBinaryMessageBytes(nameValues);
 		
-		
-		
 		wffWS.send(wffBM);
-		
 	};
-	//never ever rename iawff
-	this.iawff = this.invokeAsyncWithFilterFun;
+	//never ever rename iawffpd
+	this.d = function(event, tag, attrNmOrNdx, filterFun) {
+		invokeAsyncWithFilterFunPD(event, tag, attrNmOrNdx, filterFun, true);
+	};
 	
-	//TODO
-//	this.invokeAsyncWithPreFilterPostFun = function(tag, attr, preFun, filterFun, postFun) {
-//		console.log('invokeAsyncWithPreFilterFun tag', tag);
-//		
-//		if (preFun(tag)) {
-//			var taskNameValue = wffTaskUtil.getTaskNameValue(wffGlobal.taskValues.TASK, wffGlobal.taskValues.INVOKE_ASYNC_METHOD);
-//
-//			
-//			var attrBytes = encoder.encode(attr);
-//			
-//			var argumentBMObject = filterFun(tag);
-//			
-//			var argBytes = argumentBMObject.getBMBytes();
-//			
-//			var nameValue = {'name':wffTagUtil.getWffIdBytesFromTag(tag), 'values':[attrBytes, argBytes]};
-//			var nameValues = [taskNameValue, nameValue];
-//			var wffBM = wffBMUtil.getWffBinaryMessageBytes(nameValues);
-//			
-//			
-//			
-//			wffWS.send(wffBM);
-//		}
-//		
-//	};
-
+	var invokeAsyncWithFilterFun = function(event, tag, attrNmOrNdx, filterFun) {
+		invokeAsyncWithFilterFunPD(event, tag, attrNmOrNdx, filterFun, false);
+	};
+	
+	//never ever rename iawff
+	this.c = invokeAsyncWithFilterFun;
 	
 };
 //never ever rename ia

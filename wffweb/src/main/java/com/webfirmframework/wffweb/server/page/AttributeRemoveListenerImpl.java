@@ -31,8 +31,7 @@ public class AttributeRemoveListenerImpl implements AttributeRemoveListener {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Logger LOGGER = Logger
-            .getLogger(AttributeRemoveListenerImpl.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(AttributeRemoveListenerImpl.class.getName());
 
     private final BrowserPage browserPage;
 
@@ -45,8 +44,7 @@ public class AttributeRemoveListenerImpl implements AttributeRemoveListener {
         throw new AssertionError();
     }
 
-    AttributeRemoveListenerImpl(final BrowserPage browserPage,
-            final Object accessObject,
+    AttributeRemoveListenerImpl(final BrowserPage browserPage, final Object accessObject,
             final Map<String, AbstractHtml> tagByWffId) {
         this.browserPage = browserPage;
         this.accessObject = accessObject;
@@ -60,16 +58,19 @@ public class AttributeRemoveListenerImpl implements AttributeRemoveListener {
 
             final AbstractHtml removedFromTag = event.getRemovedFromTag();
 
-            if (removedFromTag.getDataWffId() == null || !tagByWffId
-                    .containsKey(removedFromTag.getDataWffId().getValue())) {
+            if (removedFromTag.getDataWffId() == null
+                    || !tagByWffId.containsKey(removedFromTag.getDataWffId().getValue())) {
                 return;
             }
 
-            //@formatter:off
+            // @formatter:off
             // removed attribute task format :-
-            // { "name": task_byte, "values" : [REMOVED_ATTRIBUTES_byte_from_Task_enum]}, { "name": MANY_TO_ONE_byte, "values" : [ tagName, its_data-wff-id, attribute_name1, attribute_name2 ]}
-            // { "name": 2, "values" : [[1]]}, { "name":[2], "values" : ["div", "C55", "style", "name"]}
-            //@formatter:on
+            // { "name": task_byte, "values" : [REMOVED_ATTRIBUTES_byte_from_Task_enum]}, {
+            // "name": MANY_TO_ONE_byte, "values" : [ tagName, its_data-wff-id,
+            // attribute_name1, attribute_name2 ]}
+            // { "name": 2, "values" : [[1]]}, { "name":[2], "values" : ["div", "C55",
+            // "style", "name"]}
+            // @formatter:on
 
             final NameValue task = Task.REMOVED_ATTRIBUTES.getTaskNameValue();
 
@@ -77,11 +78,9 @@ public class AttributeRemoveListenerImpl implements AttributeRemoveListener {
             // many attributes to one tag
             nameValue.setName(Task.MANY_TO_ONE.getValueByte());
 
-            final byte[][] tagNameAndWffId = DataWffIdUtil
-                    .getIndexedTagNameAndWffId(accessObject, removedFromTag);
+            final byte[][] tagNameAndWffId = DataWffIdUtil.getIndexedTagNameAndWffId(accessObject, removedFromTag);
 
-            final List<AbstractAttribute> removedAttributes = event
-                    .getRemovedAttributes();
+            final List<AbstractAttribute> removedAttributes = event.getRemovedAttributes();
 
             if (removedAttributes != null) {
 
@@ -98,16 +97,14 @@ public class AttributeRemoveListenerImpl implements AttributeRemoveListener {
                     // .getBytes(StandardCharsets.UTF_8);
                     // values[i] = attrNameBytes;
 
-                    values[i] = AttributeUtil.getAttrNameBytesCompressedByIndex(
-                            accessObject, removedAttributes.get(i - 2),
-                            StandardCharsets.UTF_8);
+                    values[i] = AttributeUtil.getAttrNameBytesCompressedByIndex(accessObject,
+                            removedAttributes.get(i - 2), StandardCharsets.UTF_8);
                 }
 
                 nameValue.setValues(values);
 
             } else {
-                final String[] removedAttributeNames = event
-                        .getRemovedAttributeNames();
+                final String[] removedAttributeNames = event.getRemovedAttributeNames();
 
                 final int totalValues = removedAttributeNames.length + 2;
 
@@ -122,9 +119,8 @@ public class AttributeRemoveListenerImpl implements AttributeRemoveListener {
                     // .getBytes(StandardCharsets.UTF_8);
                     // values[i] = attrNameBytes;
 
-                    values[i] = AttributeUtil.getAttrNameBytesCompressedByIndex(
-                            accessObject, removedAttributeNames[i - 2],
-                            StandardCharsets.UTF_8);
+                    values[i] = AttributeUtil.getAttrNameBytesCompressedByIndex(accessObject,
+                            removedAttributeNames[i - 2], StandardCharsets.UTF_8);
                 }
 
                 nameValue.setValues(values);

@@ -40,19 +40,16 @@ import com.webfirmframework.wffweb.util.StringUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class ListStyle extends AbstractCssProperty<ListStyle>
-        implements StateChangeInformer<CssProperty> {
+public class ListStyle extends AbstractCssProperty<ListStyle> implements StateChangeInformer<CssProperty> {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    private static final Logger LOGGER = Logger
-            .getLogger(ListStyle.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ListStyle.class.getName());
 
     public static final String INITIAL = "initial";
     public static final String INHERIT = "inherit";
 
-    private static final List<String> PREDEFINED_CONSTANTS = Arrays
-            .asList(INITIAL, INHERIT);
+    private static final List<String> PREDEFINED_CONSTANTS = Arrays.asList(INITIAL, INHERIT);
 
     private String cssValue;
 
@@ -63,8 +60,7 @@ public class ListStyle extends AbstractCssProperty<ListStyle>
     private ListStyleImage listStyleImage;
 
     /**
-     * The value <code>disc outside none</code> will be assigned as the
-     * cssValue.
+     * The value <code>disc outside none</code> will be assigned as the cssValue.
      *
      * @author WFF
      * @since 1.0.0
@@ -74,18 +70,15 @@ public class ListStyle extends AbstractCssProperty<ListStyle>
     }
 
     /**
-     * @param cssValue
-     *                     the css value to set.
+     * @param cssValue the css value to set.
      */
     public ListStyle(final String cssValue) {
         setCssValue(cssValue);
     }
 
     /**
-     * @param listStyle
-     *                      the {@code ListStyle} object from which the cssValue
-     *                      to set.And, {@code null} will throw
-     *                      {@code NullValueException}
+     * @param listStyle the {@code ListStyle} object from which the cssValue to
+     *                  set.And, {@code null} will throw {@code NullValueException}
      */
     public ListStyle(final ListStyle listStyle) {
         if (listStyle == null) {
@@ -128,11 +121,9 @@ public class ListStyle extends AbstractCssProperty<ListStyle>
     }
 
     /**
-     * @param cssValue
-     *                     the value should be in the format of
-     *                     <code>55px</code> or <code>95%</code>. {@code null}
-     *                     is considered as an invalid value and it will throw
-     *                     {@code NullValueException}.
+     * @param cssValue the value should be in the format of <code>55px</code> or
+     *                 <code>95%</code>. {@code null} is considered as an invalid
+     *                 value and it will throw {@code NullValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -184,11 +175,9 @@ public class ListStyle extends AbstractCssProperty<ListStyle>
         for (final String eachPart : cssValueParts) {
             if (listStyleType == null && ListStyleType.isValid(eachPart)) {
                 listStyleType = ListStyleType.getThis(eachPart);
-            } else if (listStylePosition == null
-                    && ListStylePosition.isValid(eachPart)) {
+            } else if (listStylePosition == null && ListStylePosition.isValid(eachPart)) {
                 listStylePosition = ListStylePosition.getThis(eachPart);
-            } else if (listStyleImage == null
-                    && ListStyleImage.isValid(eachPart)) {
+            } else if (listStyleImage == null && ListStyleImage.isValid(eachPart)) {
                 if (this.listStyleImage == null) {
                     listStyleImage = new ListStyleImage(eachPart);
                     listStyleImage.setStateChangeInformer(this);
@@ -259,12 +248,10 @@ public class ListStyle extends AbstractCssProperty<ListStyle>
             if (listStyleType == null && ListStyleType.isValid(eachPart)) {
                 listStyleType = ListStyleType.getThis(eachPart);
                 invalid = false;
-            } else if (listStylePosition == null
-                    && ListStylePosition.isValid(eachPart)) {
+            } else if (listStylePosition == null && ListStylePosition.isValid(eachPart)) {
                 listStylePosition = ListStylePosition.getThis(eachPart);
                 invalid = false;
-            } else if (listStyleImage == null
-                    && ListStyleImage.isValid(eachPart)) {
+            } else if (listStyleImage == null && ListStyleImage.isValid(eachPart)) {
                 listStyleImage = new ListStyleImage(eachPart);
                 invalid = false;
             }
@@ -273,8 +260,7 @@ public class ListStyle extends AbstractCssProperty<ListStyle>
             }
         }
 
-        return listStyleType != null || listStylePosition != null
-                || listStyleImage != null;
+        return listStyleType != null || listStylePosition != null || listStyleImage != null;
     }
 
     /**
@@ -324,8 +310,7 @@ public class ListStyle extends AbstractCssProperty<ListStyle>
             cssValueBuilder.append(listStyleImage.getCssValue()).append(' ');
         }
 
-        final String trimmedCssValue = StringBuilderUtil
-                .getTrimmedString(cssValueBuilder);
+        final String trimmedCssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder);
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
         this.listStyleType = listStyleType;
@@ -336,8 +321,7 @@ public class ListStyle extends AbstractCssProperty<ListStyle>
         return this;
     }
 
-    public ListStyle setListStylePosition(
-            final ListStylePosition listStylePosition) {
+    public ListStyle setListStylePosition(final ListStylePosition listStylePosition) {
 
         final StringBuilder cssValueBuilder = new StringBuilder();
 
@@ -353,8 +337,7 @@ public class ListStyle extends AbstractCssProperty<ListStyle>
             cssValueBuilder.append(listStyleImage.getCssValue()).append(' ');
         }
 
-        final String trimmedCssValue = StringBuilderUtil
-                .getTrimmedString(cssValueBuilder);
+        final String trimmedCssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder);
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
         this.listStylePosition = listStylePosition;
@@ -381,18 +364,15 @@ public class ListStyle extends AbstractCssProperty<ListStyle>
             final String listStyleImageCssValue = listStyleImage.getCssValue();
             if (ListStyleImage.INITIAL.equals(listStyleImageCssValue)
                     || ListStyleImage.INHERIT.equals(listStyleImageCssValue)) {
-                throw new InvalidValueException(
-                        "listStyleImage cannot have initial/inherit as its cssValue");
+                throw new InvalidValueException("listStyleImage cannot have initial/inherit as its cssValue");
             }
             cssValueBuilder.append(listStyleImageCssValue);
         }
 
-        final String trimmedCssValue = StringBuilderUtil
-                .getTrimmedString(cssValueBuilder);
+        final String trimmedCssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder);
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
-        if (listStyleImage != null && listStyleImage.isAlreadyInUse()
-                && this.listStyleImage != listStyleImage) {
+        if (listStyleImage != null && listStyleImage.isAlreadyInUse() && this.listStyleImage != listStyleImage) {
             if (LOGGER.isLoggable(Level.WARNING)) {
                 LOGGER.warning(
                         "the given listStyleImage is already used by another object so a new object or the previous object (if it exists) of ListStyleImage will be used");
@@ -425,10 +405,8 @@ public class ListStyle extends AbstractCssProperty<ListStyle>
 
             final String cssValue = listStyleImage.getCssValue();
 
-            if (ListStyleImage.INITIAL.equals(cssValue)
-                    || ListStyleImage.INHERIT.equals(cssValue)) {
-                throw new InvalidValueException(
-                        "initial/inherit cannot be set as listStyleImage cssValue");
+            if (ListStyleImage.INITIAL.equals(cssValue) || ListStyleImage.INHERIT.equals(cssValue)) {
+                throw new InvalidValueException("initial/inherit cannot be set as listStyleImage cssValue");
             }
 
             setListStyleImage(listStyleImage);

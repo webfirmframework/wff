@@ -21,6 +21,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.webfirmframework.wffweb.common.performance.test.CodePerformanceTest;
+import com.webfirmframework.wffweb.concurrent.ReentrantStampedLockTest;
 import com.webfirmframework.wffweb.css.BackgroundColorTest;
 import com.webfirmframework.wffweb.css.BackgroundImageTest;
 import com.webfirmframework.wffweb.css.BorderBottomColorTest;
@@ -129,6 +130,10 @@ import com.webfirmframework.wffweb.css.css3.WebkitFlexShrinkTest;
 import com.webfirmframework.wffweb.css.css3.WebkitFlexTest;
 import com.webfirmframework.wffweb.css.file.CssFileTest;
 import com.webfirmframework.wffweb.js.JsUtilTest;
+import com.webfirmframework.wffweb.lang.UnicodeStringTest;
+import com.webfirmframework.wffweb.security.object.SecurityClassConstantsTest;
+import com.webfirmframework.wffweb.server.page.TaskTest;
+import com.webfirmframework.wffweb.server.page.js.WffJsFileTest;
 import com.webfirmframework.wffweb.streamer.WffBinaryMessageOutputStreamerTest;
 import com.webfirmframework.wffweb.tag.html.AbstractHtmlRepositoryTest;
 import com.webfirmframework.wffweb.tag.html.AbstractHtmlTest;
@@ -159,6 +164,7 @@ import com.webfirmframework.wffweb.util.CssLengthUtilTest;
 import com.webfirmframework.wffweb.util.CssValueUtilTest;
 import com.webfirmframework.wffweb.util.HashUtilTest;
 import com.webfirmframework.wffweb.util.ObjectUtilTest;
+import com.webfirmframework.wffweb.util.StringBuilderUtilTest;
 import com.webfirmframework.wffweb.util.StringUtilTest;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtilTest;
 import com.webfirmframework.wffweb.wffbm.data.WffBMObjectArrayTest;
@@ -169,64 +175,43 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObjectArrayTest;
  * @since 1.0.0
  */
 @RunWith(Suite.class)
-@SuiteClasses({ HtmlTest.class, TagPrintTest.class, CssPropertyEnumTests.class,
-        AlignContentTest.class, StyleTest.class, CursorTest.class,
-        ListStyleImageTest.class, WordSpacingTest.class,
-        BorderBottomWidthTest.class, BorderLeftWidthTest.class,
-        BorderRightWidthTest.class, BorderTopWidthTest.class,
-        ColumnRuleWidthTest.class, WebkitColumnRuleWidthTest.class,
-        MozColumnRuleWidthTest.class, ColumnWidthTest.class,
-        WebkitColumnWidthTest.class, MozColumnWidthTest.class,
-        ColumnRuleColorTest.class, WebkitColumnRuleColorTest.class,
-        MozColumnRuleColorTest.class, ColumnRuleTest.class,
-        MozColumnRuleTest.class, WebkitColumnRuleTest.class,
-        BackgroundColorTest.class, BorderBottomColorTest.class,
-        BorderTopColorTest.class, BorderLeftColorTest.class,
-        BorderRightColorTest.class, BorderColorTest.class, ColorTest.class,
-        OutlineColorTest.class, OutlineWidthTest.class, OutlineOffsetTest.class,
-        BorderWidthTest.class, WidthCssTest.class,
-        BorderColorCssValuesTest.class, HslCssValueTest.class,
-        RgbCssValueTest.class, HslaCssValueTest.class, RgbaCssValueTest.class,
-        BorderTest.class, PaddingTopTest.class, PaddingRightTest.class,
-        PaddingBottomTest.class, PaddingLeftTest.class, PaddingTest.class,
-        StringUtilTest.class, CssValueUtilTest.class, BorderTopTest.class,
-        BorderRightTest.class, BorderBottomTest.class, BorderLeftTest.class,
-        MarginTopTest.class, MarginRightTest.class, MarginBottomTest.class,
-        MarginLeftTest.class, MarginTest.class, OutlineTest.class,
-        TopTest.class, RightTest.class, BottomTest.class, LeftTest.class,
-        ColumnGapTest.class, MozColumnGapTest.class, WebkitColumnGapTest.class,
-        LetterSpacingTest.class, LineHeightTest.class, BorderSpacingTest.class,
-        BackgroundSizeTest.class, WebkitBackgroundSizeTest.class,
-        MozBackgroundSizeTest.class, OBackgroundSizeTest.class,
-        OpacityTest.class, PerspectiveTest.class, PerspectiveOriginTest.class,
-        BackgroundImageTest.class, IconTest.class, FlexBasisTest.class,
-        WebkitFlexBasisTest.class, MozFlexBasisTest.class,
-        AnimationIterationCountTest.class, FlexGrowTest.class,
-        WebkitFlexGrowTest.class, MozFlexGrowTest.class, FlexShrinkTest.class,
-        MozFlexShrinkTest.class, WebkitFlexShrinkTest.class,
-        FontSizeAdjustTest.class, ColumnCountTest.class,
-        MozColumnCountTest.class, WebkitColumnCountTest.class, FlexTest.class,
-        WebkitFlexTest.class, MozFlexTest.class, MsFlexTest.class,
-        FontFamilyTest.class, FontSizeTest.class, FontTest.class,
-        ColumnsTest.class, CssLengthUtilTest.class, ObjectUtilTest.class,
-        BorderImageRepeatTest.class, BorderImageWidthTest.class,
-        BorderImageOutsetTest.class, BorderImageSliceTest.class,
-        BorderImageSourceTest.class, WffBinaryMessageUtilTest.class,
-        ColumnCountTest.class, WebkitColumnSpanTest.class,
-        ClassAttributeTest.class, ImgTest.class, HrTest.class, InputTest.class,
-        CssFileTest.class, WffBinaryMessageOutputStreamerTest.class,
-        NoTagTest.class, BlankTest.class, TagRegistryTest.class,
-        AttributeRegistryTest.class, AttributeUtilTest.class,
-        AbstractHtmlTest.class, AbstractAttributeTest.class, JsUtilTest.class,
-        TextAreaTest.class, SelectedTest.class, CheckedTest.class,
-        FormTest.class, TagRepositoryTest.class, SrcCssPropertyTest.class,
-        UrlCss3ValueTest.class, WffBMObjectArrayTest.class, RelTest.class,
-        AbstractHtml5SharedObjectTest.class, HeightCssTest.class,
-        AutoCompleteTest.class, AbstractHtmlRepositoryTest.class,
-        CodePerformanceTest.class, HashUtilTest.class,
-        AbstractHtml5SharedObjectTest.class, ByteBufferUtilTest.class,
-        UnicodeRangeTest.class, DataWffIdTest.class,
-        SharedTagContentTest.class, CssColorNameTest.class })
+@SuiteClasses({ HtmlTest.class, TagPrintTest.class, CssPropertyEnumTests.class, AlignContentTest.class, StyleTest.class,
+        CursorTest.class, ListStyleImageTest.class, WordSpacingTest.class, BorderBottomWidthTest.class,
+        BorderLeftWidthTest.class, BorderRightWidthTest.class, BorderTopWidthTest.class, ColumnRuleWidthTest.class,
+        WebkitColumnRuleWidthTest.class, MozColumnRuleWidthTest.class, ColumnWidthTest.class,
+        WebkitColumnWidthTest.class, MozColumnWidthTest.class, ColumnRuleColorTest.class,
+        WebkitColumnRuleColorTest.class, MozColumnRuleColorTest.class, ColumnRuleTest.class, MozColumnRuleTest.class,
+        WebkitColumnRuleTest.class, BackgroundColorTest.class, BorderBottomColorTest.class, BorderTopColorTest.class,
+        BorderLeftColorTest.class, BorderRightColorTest.class, BorderColorTest.class, ColorTest.class,
+        OutlineColorTest.class, OutlineWidthTest.class, OutlineOffsetTest.class, BorderWidthTest.class,
+        WidthCssTest.class, BorderColorCssValuesTest.class, HslCssValueTest.class, RgbCssValueTest.class,
+        HslaCssValueTest.class, RgbaCssValueTest.class, BorderTest.class, PaddingTopTest.class, PaddingRightTest.class,
+        PaddingBottomTest.class, PaddingLeftTest.class, PaddingTest.class, StringUtilTest.class, CssValueUtilTest.class,
+        BorderTopTest.class, BorderRightTest.class, BorderBottomTest.class, BorderLeftTest.class, MarginTopTest.class,
+        MarginRightTest.class, MarginBottomTest.class, MarginLeftTest.class, MarginTest.class, OutlineTest.class,
+        TopTest.class, RightTest.class, BottomTest.class, LeftTest.class, ColumnGapTest.class, MozColumnGapTest.class,
+        WebkitColumnGapTest.class, LetterSpacingTest.class, LineHeightTest.class, BorderSpacingTest.class,
+        BackgroundSizeTest.class, WebkitBackgroundSizeTest.class, MozBackgroundSizeTest.class,
+        OBackgroundSizeTest.class, OpacityTest.class, PerspectiveTest.class, PerspectiveOriginTest.class,
+        BackgroundImageTest.class, IconTest.class, FlexBasisTest.class, WebkitFlexBasisTest.class,
+        MozFlexBasisTest.class, AnimationIterationCountTest.class, FlexGrowTest.class, WebkitFlexGrowTest.class,
+        MozFlexGrowTest.class, FlexShrinkTest.class, MozFlexShrinkTest.class, WebkitFlexShrinkTest.class,
+        FontSizeAdjustTest.class, ColumnCountTest.class, MozColumnCountTest.class, WebkitColumnCountTest.class,
+        FlexTest.class, WebkitFlexTest.class, MozFlexTest.class, MsFlexTest.class, FontFamilyTest.class,
+        FontSizeTest.class, FontTest.class, ColumnsTest.class, CssLengthUtilTest.class, ObjectUtilTest.class,
+        BorderImageRepeatTest.class, BorderImageWidthTest.class, BorderImageOutsetTest.class,
+        BorderImageSliceTest.class, BorderImageSourceTest.class, WffBinaryMessageUtilTest.class, ColumnCountTest.class,
+        WebkitColumnSpanTest.class, ClassAttributeTest.class, ImgTest.class, HrTest.class, InputTest.class,
+        CssFileTest.class, WffBinaryMessageOutputStreamerTest.class, NoTagTest.class, BlankTest.class,
+        TagRegistryTest.class, AttributeRegistryTest.class, AttributeUtilTest.class, AbstractHtmlTest.class,
+        AbstractAttributeTest.class, JsUtilTest.class, TextAreaTest.class, SelectedTest.class, CheckedTest.class,
+        FormTest.class, TagRepositoryTest.class, SrcCssPropertyTest.class, UrlCss3ValueTest.class,
+        WffBMObjectArrayTest.class, RelTest.class, AbstractHtml5SharedObjectTest.class, HeightCssTest.class,
+        AutoCompleteTest.class, AbstractHtmlRepositoryTest.class, CodePerformanceTest.class, HashUtilTest.class,
+        AbstractHtml5SharedObjectTest.class, ByteBufferUtilTest.class, UnicodeRangeTest.class, DataWffIdTest.class,
+        SharedTagContentTest.class, CssColorNameTest.class, TaskTest.class, WffJsFileTest.class,
+        StringBuilderUtilTest.class, SecurityClassConstantsTest.class, ReentrantStampedLockTest.class,
+        UnicodeStringTest.class })
 public class AllTests {
 
 }

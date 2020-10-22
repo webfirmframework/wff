@@ -38,9 +38,8 @@ public abstract class CodeExecutor implements Serializable, Cloneable {
     }
 
     /**
-     * @param base
-     *                 the base tag object, usually it is <code>this</code>
-     *                 (i.e. current object).
+     * @param base the base tag object, usually it is <code>this</code> (i.e.
+     *             current object).
      */
     public CodeExecutor(final AbstractHtml base) {
         if (base == null) {
@@ -52,8 +51,7 @@ public abstract class CodeExecutor implements Serializable, Cloneable {
     /**
      * To execute any piece of code.
      *
-     * @param base
-     *                 the base tag object
+     * @param base the base tag object
      * @since 1.0.0
      * @author WFF
      */

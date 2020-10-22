@@ -28,8 +28,7 @@ public class DataWffId extends DataAttribute {
     private static final String ATTRIBUTE_NAME_EXTENSION = "wff-id";
 
     // must be kept final to provide atomic consistency across multiple threads
-    public static final String ATTRIBUTE_NAME = AttributeNameConstants.DATA
-            .concat(ATTRIBUTE_NAME_EXTENSION);
+    public static final String ATTRIBUTE_NAME = AttributeNameConstants.DATA.concat(ATTRIBUTE_NAME_EXTENSION);
 
     // must be kept final to provide atomic consistency across multiple threads
     /**
@@ -50,8 +49,7 @@ public class DataWffId extends DataAttribute {
     }
 
     /**
-     * @param value
-     *                  the value for the attribute
+     * @param value the value for the attribute
      * @since 2.0.0
      * @author WFF
      */
@@ -68,8 +66,7 @@ public class DataWffId extends DataAttribute {
     /*
      * (non-Javadoc)
      *
-     * @see
-     * com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute#
+     * @see com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute#
      * getAttributeName()
      */
     @Override
@@ -82,8 +79,7 @@ public class DataWffId extends DataAttribute {
     /*
      * (non-Javadoc)
      *
-     * @see
-     * com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute#
+     * @see com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute#
      * getAttributeValue()
      */
     @Override
@@ -109,21 +105,17 @@ public class DataWffId extends DataAttribute {
 
     @Override
     protected void setAttributeValue(final String attributeValue) {
-        throw new WffSecurityException(
-                "Not allowed to change value for data-wff-id");
+        throw new WffSecurityException("Not allowed to change value for data-wff-id");
     }
 
     @Override
     protected void setAttributeName(final String attributeName) {
-        throw new WffSecurityException(
-                "Not allowed to change value for data-wff-id");
+        throw new WffSecurityException("Not allowed to change value for data-wff-id");
     }
 
     @Override
-    protected void setAttributeValue(final boolean updateClient,
-            final String attributeValue) {
-        throw new WffSecurityException(
-                "Not allowed to change value for data-wff-id");
+    protected void setAttributeValue(final boolean updateClient, final String attributeValue) {
+        throw new WffSecurityException("Not allowed to change value for data-wff-id");
     }
 
     // for testing

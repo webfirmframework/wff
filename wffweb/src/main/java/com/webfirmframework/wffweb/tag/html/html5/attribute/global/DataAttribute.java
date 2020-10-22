@@ -26,8 +26,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
  * @author WFF
  *
  */
-public class DataAttribute extends AbstractAttribute
-        implements GlobalAttributable {
+public class DataAttribute extends AbstractAttribute implements GlobalAttributable {
 
     // NB: this class should always super keyword to refer super class methods
     // otherwise DataWffId will make bug, see its implementation
@@ -39,40 +38,32 @@ public class DataAttribute extends AbstractAttribute
 
     public DataAttribute(final String attributeNameExension) {
         if (attributeNameExension == null) {
-            throw new NullValueException(
-                    "attributeNameExension can not be null");
+            throw new NullValueException("attributeNameExension can not be null");
         }
-        super.setAttributeName(
-                AttributeNameConstants.DATA.concat(attributeNameExension));
+        super.setAttributeName(AttributeNameConstants.DATA.concat(attributeNameExension));
         super.setAttributeValue(null);
     }
 
-    public DataAttribute(final String attributeNameExension,
-            final String value) {
+    public DataAttribute(final String attributeNameExension, final String value) {
         if (attributeNameExension == null) {
-            throw new NullValueException(
-                    "attributeNameExension can not be null");
+            throw new NullValueException("attributeNameExension can not be null");
         }
-        super.setAttributeName(
-                AttributeNameConstants.DATA.concat(attributeNameExension));
+        super.setAttributeName(AttributeNameConstants.DATA.concat(attributeNameExension));
         super.setAttributeValue(value);
     }
 
     /**
-     * NB: only for internal use. Signature of this constructor may be modified
-     * in future version.
+     * NB: only for internal use. Signature of this constructor may be modified in
+     * future version.
      *
-     * @param attrNameIndex
-     *                          only if there is constant for this in
-     *                          PreIndexedAttributeName.
+     * @param attrNameIndex only if there is constant for this in
+     *                      PreIndexedAttributeName.
      * @param value
      * @since 3.0.3
      */
-    protected DataAttribute(final PreIndexedAttributeName attrNameIndex,
-            final String value) {
+    protected DataAttribute(final PreIndexedAttributeName attrNameIndex, final String value) {
         if (attrNameIndex == null) {
-            throw new NullValueException(
-                    "PreIndexedAttributeName can not be null");
+            throw new NullValueException("PreIndexedAttributeName can not be null");
         }
         super.setPreIndexedAttribute(attrNameIndex);
         super.setAttributeValue(value);
@@ -98,8 +89,7 @@ public class DataAttribute extends AbstractAttribute
     }
 
     /**
-     * @param value
-     *                  the value to set
+     * @param value the value to set
      * @author WFF
      * @since 1.0.0
      */

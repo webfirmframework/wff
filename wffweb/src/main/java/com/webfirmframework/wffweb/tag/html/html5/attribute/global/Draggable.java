@@ -66,8 +66,7 @@ public class Draggable extends AbstractAttribute implements GlobalAttributable {
     /**
      *
      *
-     * @param value
-     *                  the value should be either true or false
+     * @param value the value should be either true or false
      * @author WFF
      * @since 1.1.4
      */
@@ -75,16 +74,14 @@ public class Draggable extends AbstractAttribute implements GlobalAttributable {
         if ("true".equals(value) || "false".equals(value)) {
             draggable = Boolean.parseBoolean(value);
         } else {
-            throw new InvalidValueException(
-                    "the value should be either true or false");
+            throw new InvalidValueException("the value should be either true or false");
         }
         setAttributeValue(value);
     }
 
     /**
-     * @param draggable
-     *                      the draggable to set, true/false/null. The null will
-     *                      set <code>auto</code> for draggable value.
+     * @param draggable the draggable to set, true/false/null. The null will set
+     *                  <code>auto</code> for draggable value.
      * @author WFF
      * @since 1.0.0
      */
@@ -108,8 +105,8 @@ public class Draggable extends AbstractAttribute implements GlobalAttributable {
     }
 
     /**
-     * @return the draggable true/false/null. <code>null</code> means the value
-     *         is <code>auto</code>.
+     * @return the draggable true/false/null. <code>null</code> means the value is
+     *         <code>auto</code>.
      * @author WFF
      * @since 1.0.0
      */
@@ -118,9 +115,8 @@ public class Draggable extends AbstractAttribute implements GlobalAttributable {
     }
 
     /**
-     * @param draggable
-     *                      the draggable to set, true/false/null. The null will
-     *                      set <code>auto</code> for draggable value.
+     * @param draggable the draggable to set, true/false/null. The null will set
+     *                  <code>auto</code> for draggable value.
      * @author WFF
      * @since 1.0.0
      */

@@ -43,8 +43,7 @@ import com.webfirmframework.wffweb.util.StringUtil;
  * @author WFF
  * @since 1.0.0
  */
-public class MozColumnRule extends AbstractCssProperty<MozColumnRule>
-        implements StateChangeInformer<CssProperty> {
+public class MozColumnRule extends AbstractCssProperty<MozColumnRule> implements StateChangeInformer<CssProperty> {
 
     private static final long serialVersionUID = 1_0_0L;
 
@@ -67,18 +66,16 @@ public class MozColumnRule extends AbstractCssProperty<MozColumnRule>
     }
 
     /**
-     * @param cssValue
-     *                     the css value to set.
+     * @param cssValue the css value to set.
      */
     public MozColumnRule(final String cssValue) {
         setCssValue(cssValue);
     }
 
     /**
-     * @param mozColumnRule
-     *                          the {@code MozColumnRule} object from which the
-     *                          cssValue to set.And, {@code null} will throw
-     *                          {@code NullValueException}
+     * @param mozColumnRule the {@code MozColumnRule} object from which the cssValue
+     *                      to set.And, {@code null} will throw
+     *                      {@code NullValueException}
      */
     public MozColumnRule(final MozColumnRule mozColumnRule) {
         if (mozColumnRule == null) {
@@ -88,8 +85,8 @@ public class MozColumnRule extends AbstractCssProperty<MozColumnRule>
     }
 
     /**
-     * the color/color code to set. The alternative method {@code setCssValue}
-     * can also be used.
+     * the color/color code to set. The alternative method {@code setCssValue} can
+     * also be used.
      *
      * @param value
      * @return the current object
@@ -135,8 +132,8 @@ public class MozColumnRule extends AbstractCssProperty<MozColumnRule>
     }
 
     /**
-     * gets the value, {@code getCssValue} method can also be used to get the
-     * same value.
+     * gets the value, {@code getCssValue} method can also be used to get the same
+     * value.
      *
      * @return the value in String.
      * @since 1.0.0
@@ -147,13 +144,12 @@ public class MozColumnRule extends AbstractCssProperty<MozColumnRule>
     }
 
     /**
-     * @param cssValue
-     *                     the value should be for example
-     *                     <code>medium none #0000ff</code>. {@code null} is
-     *                     considered as an invalid value and it will throw
-     *                     {@code NullValueException}.And an empty string is
-     *                     also considered as an invalid value and it will throw
-     *                     {@code InvalidValueException}.
+     * @param cssValue the value should be for example
+     *                 <code>medium none #0000ff</code>. {@code null} is considered
+     *                 as an invalid value and it will throw
+     *                 {@code NullValueException}.And an empty string is also
+     *                 considered as an invalid value and it will throw
+     *                 {@code InvalidValueException}.
      * @since 1.0.0
      * @author WFF
      */
@@ -168,31 +164,25 @@ public class MozColumnRule extends AbstractCssProperty<MozColumnRule>
         } else {
 
             final String trimmedCssValue = StringUtil.strip(cssValue);
-            final String[] cssValueParts = StringUtil
-                    .splitBySpace(trimmedCssValue);
+            final String[] cssValueParts = StringUtil.splitBySpace(trimmedCssValue);
 
             if (cssValueParts.length > 1) {
                 MozColumnRuleWidth mozColumnRuleWidth = null;
                 MozColumnRuleStyle mozColumnRuleStyle = null;
                 MozColumnRuleColor mozColumnRuleColor = null;
                 for (final String eachPart : cssValueParts) {
-                    if (mozColumnRuleWidth == null
-                            && MozColumnRuleWidth.isValid(eachPart)) {
+                    if (mozColumnRuleWidth == null && MozColumnRuleWidth.isValid(eachPart)) {
                         if (this.mozColumnRuleWidth == null) {
-                            mozColumnRuleWidth = new MozColumnRuleWidth(
-                                    eachPart);
+                            mozColumnRuleWidth = new MozColumnRuleWidth(eachPart);
                             mozColumnRuleWidth.setStateChangeInformer(this);
                             mozColumnRuleWidth.setAlreadyInUse(true);
                         } else {
                             this.mozColumnRuleWidth.setCssValue(eachPart);
                             mozColumnRuleWidth = this.mozColumnRuleWidth;
                         }
-                    } else if (mozColumnRuleStyle == null
-                            && MozColumnRuleStyle.isValid(eachPart)) {
-                        mozColumnRuleStyle = MozColumnRuleStyle
-                                .getThis(eachPart);
-                    } else if (mozColumnRuleColor == null
-                            && MozColumnRuleColor.isValid(eachPart)) {
+                    } else if (mozColumnRuleStyle == null && MozColumnRuleStyle.isValid(eachPart)) {
+                        mozColumnRuleStyle = MozColumnRuleStyle.getThis(eachPart);
+                    } else if (mozColumnRuleColor == null && MozColumnRuleColor.isValid(eachPart)) {
                         mozColumnRuleColor = new MozColumnRuleColor(eachPart);
                         mozColumnRuleColor.setStateChangeInformer(this);
                         mozColumnRuleColor.setAlreadyInUse(true);
@@ -201,20 +191,17 @@ public class MozColumnRule extends AbstractCssProperty<MozColumnRule>
                 final StringBuilder cssValueBuilder = new StringBuilder();
                 boolean invalid = true;
                 if (mozColumnRuleWidth != null) {
-                    cssValueBuilder.append(mozColumnRuleWidth.getCssValue())
-                            .append(' ');
+                    cssValueBuilder.append(mozColumnRuleWidth.getCssValue()).append(' ');
                     invalid = false;
                 } else if (this.mozColumnRuleWidth != null) {
                     this.mozColumnRuleWidth.setAlreadyInUse(false);
                 }
                 if (mozColumnRuleStyle != null) {
-                    cssValueBuilder.append(mozColumnRuleStyle.getCssValue())
-                            .append(' ');
+                    cssValueBuilder.append(mozColumnRuleStyle.getCssValue()).append(' ');
                     invalid = false;
                 }
                 if (mozColumnRuleColor != null) {
-                    cssValueBuilder.append(mozColumnRuleColor.getCssValue())
-                            .append(' ');
+                    cssValueBuilder.append(mozColumnRuleColor.getCssValue()).append(' ');
                     invalid = false;
                 } else if (this.mozColumnRuleColor != null) {
                     this.mozColumnRuleColor.setAlreadyInUse(false);
@@ -223,8 +210,7 @@ public class MozColumnRule extends AbstractCssProperty<MozColumnRule>
                     throw new InvalidValueException(cssValue
                             + " is an invalid value. The value format should be as for example '25px dotted green'. Or, initial/inherit.");
                 }
-                this.cssValue = StringBuilderUtil
-                        .getTrimmedString(cssValueBuilder);
+                this.cssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder);
                 this.mozColumnRuleWidth = mozColumnRuleWidth;
                 this.mozColumnRuleStyle = mozColumnRuleStyle;
                 this.mozColumnRuleColor = mozColumnRuleColor;
@@ -277,32 +263,27 @@ public class MozColumnRule extends AbstractCssProperty<MozColumnRule>
     }
 
     /**
-     * @param mozColumnRuleWidth
-     *                               the mozColumnRuleWidth to set
+     * @param mozColumnRuleWidth the mozColumnRuleWidth to set
      * @since 1.0.0
      * @author WFF
      */
-    public MozColumnRule setMozColumnRuleWidth(
-            final MozColumnRuleWidth mozColumnRuleWidth) {
+    public MozColumnRule setMozColumnRuleWidth(final MozColumnRuleWidth mozColumnRuleWidth) {
 
         final StringBuilder cssValueBuilder = new StringBuilder();
 
         if (mozColumnRuleWidth != null) {
-            cssValueBuilder.append(mozColumnRuleWidth.getCssValue())
-                    .append(' ');
+            cssValueBuilder.append(mozColumnRuleWidth.getCssValue()).append(' ');
         }
 
         if (mozColumnRuleStyle != null) {
-            cssValueBuilder.append(mozColumnRuleStyle.getCssValue())
-                    .append(' ');
+            cssValueBuilder.append(mozColumnRuleStyle.getCssValue()).append(' ');
         }
 
         if (mozColumnRuleColor != null) {
             cssValueBuilder.append(mozColumnRuleColor.getCssValue());
         }
 
-        final String trimmedCssValue = StringBuilderUtil
-                .getTrimmedString(cssValueBuilder).toString();
+        final String trimmedCssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder).toString();
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
         if (this.mozColumnRuleWidth != null) {
@@ -333,33 +314,28 @@ public class MozColumnRule extends AbstractCssProperty<MozColumnRule>
     }
 
     /**
-     * @param mozColunmRuleStyle
-     *                               the mozColunmRuleStyle to set
+     * @param mozColunmRuleStyle the mozColunmRuleStyle to set
      * @since 1.0.0
      * @author WFF
      * @return
      */
-    public MozColumnRule setMozColumnRuleStyle(
-            final MozColumnRuleStyle mozColunmRuleStyle) {
+    public MozColumnRule setMozColumnRuleStyle(final MozColumnRuleStyle mozColunmRuleStyle) {
 
         final StringBuilder cssValueBuilder = new StringBuilder();
 
         if (mozColumnRuleWidth != null) {
-            cssValueBuilder.append(mozColumnRuleWidth.getCssValue())
-                    .append(' ');
+            cssValueBuilder.append(mozColumnRuleWidth.getCssValue()).append(' ');
         }
 
         if (mozColunmRuleStyle != null) {
-            cssValueBuilder.append(mozColunmRuleStyle.getCssValue())
-                    .append(' ');
+            cssValueBuilder.append(mozColunmRuleStyle.getCssValue()).append(' ');
         }
 
         if (mozColumnRuleColor != null) {
             cssValueBuilder.append(mozColumnRuleColor.getCssValue());
         }
 
-        final String trimmedCssValue = StringBuilderUtil
-                .getTrimmedString(cssValueBuilder).toString();
+        final String trimmedCssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder).toString();
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
         mozColumnRuleStyle = mozColunmRuleStyle;
@@ -381,33 +357,28 @@ public class MozColumnRule extends AbstractCssProperty<MozColumnRule>
     }
 
     /**
-     * @param mozColumnRuleColor
-     *                               the mozColumnRuleColor to set
+     * @param mozColumnRuleColor the mozColumnRuleColor to set
      * @since 1.0.0
      * @author WFF
      * @return the current instance.
      */
-    public MozColumnRule setMozColumnRuleColor(
-            final MozColumnRuleColor mozColumnRuleColor) {
+    public MozColumnRule setMozColumnRuleColor(final MozColumnRuleColor mozColumnRuleColor) {
 
         final StringBuilder cssValueBuilder = new StringBuilder();
 
         if (mozColumnRuleWidth != null) {
-            cssValueBuilder.append(mozColumnRuleWidth.getCssValue())
-                    .append(' ');
+            cssValueBuilder.append(mozColumnRuleWidth.getCssValue()).append(' ');
         }
 
         if (mozColumnRuleStyle != null) {
-            cssValueBuilder.append(mozColumnRuleStyle.getCssValue())
-                    .append(' ');
+            cssValueBuilder.append(mozColumnRuleStyle.getCssValue()).append(' ');
         }
 
         if (mozColumnRuleColor != null) {
             cssValueBuilder.append(mozColumnRuleColor.getCssValue());
         }
 
-        final String trimmedCssValue = StringBuilderUtil
-                .getTrimmedString(cssValueBuilder).toString();
+        final String trimmedCssValue = StringBuilderUtil.getTrimmedString(cssValueBuilder).toString();
         cssValue = trimmedCssValue.isEmpty() ? INHERIT : trimmedCssValue;
 
         if (this.mozColumnRuleColor != null) {

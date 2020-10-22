@@ -54,23 +54,20 @@ public final class CssLengthUtil {
      *
      * </pre>
      *
-     * @param cssValue
-     *                     the value from which the length value and unit
-     *                     required to be parsed, Eg:- <code>555px</code>.
-     * @return an array containing length and unit. The length will be in the
-     *         zeroth index as {@code float} (primitive type) type and its unit
-     *         in the first index as an object of {@code CssLengthUnit}. If the
-     *         given cssValue doesn't contain unit but contains value then an
-     *         array containing only length value (i.e. array having length one)
-     *         will be returned. For any invalid value it will return an empty
-     *         array (having length zero), specifically it will never return
-     *         null.
+     * @param cssValue the value from which the length value and unit required to be
+     *                 parsed, Eg:- <code>555px</code>.
+     * @return an array containing length and unit. The length will be in the zeroth
+     *         index as {@code float} (primitive type) type and its unit in the
+     *         first index as an object of {@code CssLengthUnit}. If the given
+     *         cssValue doesn't contain unit but contains value then an array
+     *         containing only length value (i.e. array having length one) will be
+     *         returned. For any invalid value it will return an empty array (having
+     *         length zero), specifically it will never return null.
      *
      * @author WFF
      * @since 1.0.0
      */
-    public static Object[] getLengthValueAsPremitiveAndUnit(
-            final String cssValue) {
+    public static Object[] getLengthValueAsPremitiveAndUnit(final String cssValue) {
 
         final String trimmedCssValue = StringUtil.strip(cssValue);
         final char[] cssValueChars = trimmedCssValue.toCharArray();
@@ -89,26 +86,22 @@ public final class CssLengthUtil {
 
         }
 
-        final String value = StringUtil
-                .strip(trimmedCssValue.substring(0, lengthSeparationIndex + 1));
+        final String value = StringUtil.strip(trimmedCssValue.substring(0, lengthSeparationIndex + 1));
 
         try {
             if (lengthSeparationIndex == (cssValueChars.length - 1)) {
                 return new Object[] { Float.parseFloat(value) };
             }
 
-            String unit = StringUtil.strip(
-                    trimmedCssValue.substring(lengthSeparationIndex + 1));
+            String unit = StringUtil.strip(trimmedCssValue.substring(lengthSeparationIndex + 1));
 
             if (unit.length() == 1 && unit.charAt(0) == '%') {
-                return new Object[] { Float.parseFloat(value),
-                        CssLengthUnit.PER };
+                return new Object[] { Float.parseFloat(value), CssLengthUnit.PER };
             } else {
                 unit = unit.toUpperCase();
             }
 
-            return new Object[] { Float.parseFloat(value),
-                    CssLengthUnit.valueOf(unit) };
+            return new Object[] { Float.parseFloat(value), CssLengthUnit.valueOf(unit) };
         } catch (final IllegalArgumentException e) {
             // there will be IllegalArgumentException if the CssLengthUtil is
             // invalid
@@ -125,25 +118,22 @@ public final class CssLengthUtil {
      * <code>555px</code>, the returned array may be used as
      *
      * <pre>
-     * Object[] lengthValueAndUnit = CssLengthUtil
-     *         .getLengthValueAndUnit(&quot;555px&quot;);
+     * Object[] lengthValueAndUnit = CssLengthUtil.getLengthValueAndUnit(&quot;555px&quot;);
      * Float value = (Float) lengthValueAndUnit[0];
      *
      * // the object will be equal to CssLengthUnit.PX
      * CssLengthUnit unit = (CssLengthUnit) lengthValueAndUnit[1];
      * </pre>
      *
-     * @param cssValue
-     *                     the value from which the length value and unit
-     *                     required to be parsed, Eg:- <code>555px</code>.
-     * @return an array containing length and unit. The length will be in the
-     *         zeroth index as {@code Float} (wrapper type) type and its unit in
-     *         the first index as an object of {@code CssLengthUnit}. If the
-     *         given cssValue doesn't contain unit but contains value then an
-     *         array containing only length value (i.e. array having length one)
-     *         will be returned. For any invalid value it will return an empty
-     *         array (having length zero), specifically it will never return
-     *         null.
+     * @param cssValue the value from which the length value and unit required to be
+     *                 parsed, Eg:- <code>555px</code>.
+     * @return an array containing length and unit. The length will be in the zeroth
+     *         index as {@code Float} (wrapper type) type and its unit in the first
+     *         index as an object of {@code CssLengthUnit}. If the given cssValue
+     *         doesn't contain unit but contains value then an array containing only
+     *         length value (i.e. array having length one) will be returned. For any
+     *         invalid value it will return an empty array (having length zero),
+     *         specifically it will never return null.
      *
      * @author WFF
      * @since 1.0.0
@@ -167,16 +157,14 @@ public final class CssLengthUtil {
 
         }
 
-        final String value = StringUtil
-                .strip(trimmedCssValue.substring(0, lengthSeparationIndex + 1));
+        final String value = StringUtil.strip(trimmedCssValue.substring(0, lengthSeparationIndex + 1));
 
         try {
             if (lengthSeparationIndex == (cssValueChars.length - 1)) {
                 return new Object[] { Float.valueOf(value) };
             }
 
-            String unit = StringUtil.strip(
-                    trimmedCssValue.substring(lengthSeparationIndex + 1));
+            String unit = StringUtil.strip(trimmedCssValue.substring(lengthSeparationIndex + 1));
 
             if (unit.length() == 1 && unit.charAt(0) == '%') {
                 return new Object[] { Float.valueOf(value), CssLengthUnit.PER };
@@ -184,8 +172,7 @@ public final class CssLengthUtil {
                 unit = unit.toUpperCase();
             }
 
-            return new Object[] { Float.valueOf(value),
-                    CssLengthUnit.valueOf(unit) };
+            return new Object[] { Float.valueOf(value), CssLengthUnit.valueOf(unit) };
         } catch (final IllegalArgumentException e) {
             // there will be IllegalArgumentException if the CssLengthUtil is
             // invalid

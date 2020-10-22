@@ -18,6 +18,8 @@ package com.webfirmframework.wffweb.tag.html.core;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -26,10 +28,6 @@ import org.junit.Test;
 
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
-import com.webfirmframework.wffweb.tag.html.AbstractHtml.TagType;
-import com.webfirmframework.wffweb.tag.html.attribute.InternalAttrNameConstants;
-import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeRegistry;
-import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
 import com.webfirmframework.wffweb.tag.htmlwff.CustomTag;
@@ -147,6 +145,20 @@ public class TagRegistryTest {
             final String tagNameByIndex = tagNames.get(indexByTagName);
             assertEquals(tagName, tagNameByIndex);
         }
-    }
 
+    }
+    @Test
+    public void testSortOrderOfTagName()  {
+
+
+        List<String> names = new ArrayList<>();
+        for (PreIndexedTagName each : PreIndexedTagName.values()) {
+            names.add(each.tagName());
+        }
+
+        List<String> multiSortedNames = new ArrayList<>(names);
+        multiSortedNames
+                .sort(Comparator.comparingInt(String::length).thenComparing(String::compareTo));
+        assertEquals(multiSortedNames, names);
+    }
 }
