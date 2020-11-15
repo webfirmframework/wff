@@ -28,14 +28,14 @@ import com.webfirmframework.wffweb.NullValueException;
 /**
  *
  * It makes sure that the task is invoked only once in the specified interval of
- * time even if the {@link HeartbeatManager#runAsync()} methods is called by
+ * time even if the {@link MinIntervalExecutor#runAsync()} methods is called by
  * multiple threads less than the interval of specified time.
  *
- * @since 3.0.15
+ * @since 3.0.16
  */
-public final class HeartbeatManager {
+public final class MinIntervalExecutor {
 
-    private static final Logger LOGGER = Logger.getLogger(HeartbeatManager.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(MinIntervalExecutor.class.getName());
 
     // there will be only one thread waiting for the lock so fairness must be
     // false and fairness may decrease the lock time
@@ -55,21 +55,14 @@ public final class HeartbeatManager {
     private final Runnable task;
 
     /**
-     * the last accessed time of this {@code HeartbeatManager} object
-     */
-    private volatile long lastAccessedTime;
-
-    /**
      * @param executor    the executor object to use thread from it.
      * @param minInterval in milliseconds. It keeps the minimum interval between the
      *                    task execution.
-     * @param task        the Runnable object which makes a request with sessionid
-     *                    to the heartbeat url for keeping http session alive.
+     * @param task        the Runnable object to execute.
      */
-    public HeartbeatManager(final Executor executor, final long minInterval, final Runnable task) {
+    public MinIntervalExecutor(final Executor executor, final long minInterval, final Runnable task) {
         this.executor = executor;
         this.minInterval = minInterval;
-        lastAccessedTime = System.currentTimeMillis();
         this.task = task;
         if (task == null) {
             throw new NullValueException("task cannot be null");
@@ -79,10 +72,9 @@ public final class HeartbeatManager {
     /**
      * @param minInterval in milliseconds. It keeps the minimum interval between the
      *                    task execution.
-     * @param task        the Runnable object which makes a request with sessionid
-     *                    to the heartbeat url for keeping http session alive.
+     * @param task        the Runnable object to execute.
      */
-    public HeartbeatManager(final long minInterval, final Runnable task) {
+    public MinIntervalExecutor(final long minInterval, final Runnable task) {
         executor = null;
         this.minInterval = minInterval;
         this.task = task;
@@ -94,7 +86,7 @@ public final class HeartbeatManager {
     /**
      * Runs the task given in the constructor in an asynchronous mode.
      *
-     * @since 3.0.15
+     * @since 3.0.16
      */
     public void runAsync() {
         runAsync(task);
@@ -102,7 +94,6 @@ public final class HeartbeatManager {
 
     private void runAsync(final Runnable runnable) {
         final long currentTime = System.currentTimeMillis();
-        lastAccessedTime = currentTime;
         if ((currentTime - lastExecTime) >= minInterval) {
             if (taskQ.isEmpty()) {
                 taskQ.offer(runnable);
@@ -118,7 +109,7 @@ public final class HeartbeatManager {
     }
 
     /**
-     * @since 3.0.15
+     * @since 3.0.16
      */
     private void executeTasksFromQ(final long currentTime) {
 
@@ -173,23 +164,11 @@ public final class HeartbeatManager {
         }
     }
 
-    void accessed() {
-        lastAccessedTime = System.currentTimeMillis();
-    }
-
-    /**
-     * @return the lastAccessedTime
-     * @since 3.0.16
-     */
-    long getLastAccessedTime() {
-        return lastAccessedTime;
-    }
-
     /**
      * @return the minInterval
      * @since 3.0.16
      */
-    long minInterval() {
+    public long minInterval() {
         return minInterval;
     }
 

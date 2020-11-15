@@ -16,8 +16,17 @@
 package com.webfirmframework.wffweb.server.page;
 
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -56,11 +65,23 @@ public enum BrowserPageContext {
      */
     private final Map<String, String> instanceIdHttpSessionId;
 
+    /**
+     * key:- httpSessionId value:- HeartbeatManager
+     */
+    private final Map<String, HeartbeatManager> heartbeatManagers;
+
+    private ScheduledExecutorService scheduledExecutorService;
+
+    private ScheduledFuture<?> autoCleanScheduled;
+
+    private volatile MinIntervalExecutor autoCleanTaskExecutor;
+
     private BrowserPageContext() {
         httpSessionIdBrowserPages = new ConcurrentHashMap<>();
         instanceIdBrowserPage = new ConcurrentHashMap<>();
         instanceIdBPForWS = new ConcurrentHashMap<>();
         instanceIdHttpSessionId = new ConcurrentHashMap<>();
+        heartbeatManagers = new ConcurrentHashMap<>();
     }
 
     /**
@@ -77,11 +98,17 @@ public enum BrowserPageContext {
         final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.computeIfAbsent(httpSessionId,
                 key -> new ConcurrentHashMap<>(4));
 
-        browserPages.put(browserPage.getInstanceId(), browserPage);
+        browserPages.computeIfAbsent(browserPage.getInstanceId(), k -> {
+            instanceIdBrowserPage.put(browserPage.getInstanceId(), browserPage);
+            instanceIdHttpSessionId.put(browserPage.getInstanceId(), httpSessionId);
+            return browserPage;
+        });
 
-        instanceIdBrowserPage.put(browserPage.getInstanceId(), browserPage);
+        final MinIntervalExecutor autoCleanTaskExecutor = this.autoCleanTaskExecutor;
 
-        instanceIdHttpSessionId.put(browserPage.getInstanceId(), httpSessionId);
+        if (autoCleanTaskExecutor != null) {
+            autoCleanTaskExecutor.runAsync();
+        }
 
         return browserPage.getInstanceId();
     }
@@ -143,28 +170,7 @@ public enum BrowserPageContext {
      * @author WFF
      */
     public void destroyContext(final String httpSessionId) {
-        final Map<String, BrowserPage> httpSessionIdBrowserPage = httpSessionIdBrowserPages.remove(httpSessionId);
-
-        if (httpSessionIdBrowserPage != null) {
-
-            for (final BrowserPage browserPage : httpSessionIdBrowserPage.values()) {
-                instanceIdHttpSessionId.remove(browserPage.getInstanceId());
-                final BrowserPage removedBP = instanceIdBrowserPage.remove(browserPage.getInstanceId());
-                if (removedBP != null) {
-                    try {
-                        browserPage.removedFromContext();
-                    } catch (final Throwable e) {
-                        if (LOGGER.isLoggable(Level.WARNING)) {
-                            LOGGER.log(Level.WARNING,
-                                    "The overridden method BrowserPage#removedFromContext threw an exception.", e);
-                        }
-                    }
-                }
-            }
-
-            httpSessionIdBrowserPage.clear();
-        }
-
+        httpSessionClosed(httpSessionId);
     }
 
     /**
@@ -193,6 +199,272 @@ public enum BrowserPageContext {
             }
         }
 
+        return null;
+    }
+
+    /**
+     * this method should be called when the websocket is opened
+     *
+     * @param wffInstanceId           the wffInstanceId which can be retried from
+     *                                the request parameter in websocket connection
+     * @param computeHeartbeatManager the function to compute
+     *                                {@code HeartbeatManager}.
+     * @since 3.0.16
+     * @return the {@code WebSocketOpenedRecord} object. It contains
+     *         {@code BrowserPage} object associated with this {@code wffInstanceId}
+     *         and {@code HeartbeatManager} associated with its http session id. If
+     *         the {@code wffInstanceId} is associated with a closed http session
+     *         this method will return {@code null}.
+     */
+    public WebSocketOpenedRecord webSocketOpened(final String wffInstanceId,
+            final Function<String, HeartbeatManager> computeHeartbeatManager) {
+
+        final String httpSessionId = instanceIdHttpSessionId.get(wffInstanceId);
+
+        if (httpSessionId != null) {
+            final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.get(httpSessionId);
+            if (browserPages != null) {
+                final BrowserPage browserPage = browserPages.get(wffInstanceId);
+                if (browserPage != null) {
+                    instanceIdBPForWS.put(browserPage.getInstanceId(), browserPage);
+                    return new WebSocketOpenedRecord(browserPage,
+                            heartbeatManagers.computeIfAbsent(httpSessionId, k -> {
+                                final HeartbeatManager hbm = computeHeartbeatManager.apply(k);
+                                hbm.accessed();
+                                return hbm;
+                            }));
+                }
+            }
+            return new WebSocketOpenedRecord(null, heartbeatManagers.computeIfAbsent(httpSessionId, k -> {
+                final HeartbeatManager hbm = computeHeartbeatManager.apply(k);
+                hbm.accessed();
+                return hbm;
+            }));
+        }
+
+        return null;
+    }
+
+    /**
+     * No need to call this method unless there is a special case like extending the
+     * functionality of {@code BrowserPageContext} instance.
+     *
+     * @param wffInstanceId the instance id of {@code BrowserPage}.
+     * @since 3.0.16
+     */
+    public void removeBrowserPage(final String wffInstanceId) {
+
+        final String httpSessionId = instanceIdHttpSessionId.get(wffInstanceId);
+
+        final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.get(httpSessionId);
+
+        browserPages.computeIfPresent(wffInstanceId, (k, v) -> {
+            instanceIdHttpSessionId.remove(wffInstanceId);
+            instanceIdBrowserPage.remove(wffInstanceId);
+            return null;
+        });
+
+    }
+
+    /**
+     * If any object is idle for a time which is greater than or equal the given
+     * {@code maxIdleTimeout} it will be removed from the
+     * {@code BrowserPageContext}. Usually may not need to call this method directly
+     * because once {@code BrowserPageContext#startAutoClean} is called it is
+     * internally calling this {@code clean} method.
+     *
+     * @param maxIdleTimeout the max idle time to remove the objects. It is usually
+     *                       equal to the {@code maxIdleTimeout} of websocket
+     *                       session. It should be greater than the minInterval
+     *                       given in the {@code HeartbeatManager}.
+     * @since 3.0.16
+     */
+    public void clean(final long maxIdleTimeout) {
+
+        final long currentTime = System.currentTimeMillis();
+
+        for (final Entry<String, Map<String, BrowserPage>> entry : httpSessionIdBrowserPages.entrySet()) {
+
+            final String httpSessionId = entry.getKey();
+
+            final HeartbeatManager heartbeatManager = heartbeatManagers.get(httpSessionId);
+
+            if (heartbeatManager == null || heartbeatManager.minInterval() < maxIdleTimeout) {
+
+                final Map<String, BrowserPage> browserPages = entry.getValue();
+
+                boolean hbmExpired = true;
+
+                for (final Entry<String, BrowserPage> bpEntry : browserPages.entrySet()) {
+                    if ((currentTime - bpEntry.getValue().getLastWSMessageTime()) < maxIdleTimeout) {
+                        hbmExpired = false;
+                        break;
+                    }
+                }
+
+                if (hbmExpired) {
+                    // to atomically remove hbm if expired
+                    heartbeatManagers.computeIfPresent(httpSessionId, (k, hbm) -> {
+                        if ((currentTime - hbm.getLastAccessedTime()) >= maxIdleTimeout
+                                && hbm.minInterval() < maxIdleTimeout) {
+                            return null;
+                        }
+                        return hbm;
+                    });
+                }
+
+                final List<String> expiredWffInstanceIds = new LinkedList<>();
+                for (final Entry<String, BrowserPage> bpEntry : browserPages.entrySet()) {
+                    if ((currentTime - bpEntry.getValue().getLastWSMessageTime()) >= maxIdleTimeout) {
+                        expiredWffInstanceIds.add(bpEntry.getKey());
+                    }
+                }
+
+                for (final String wffInstanceId : expiredWffInstanceIds) {
+                    browserPages.computeIfPresent(wffInstanceId, (k, bp) -> {
+                        if ((currentTime - bp.getLastWSMessageTime()) >= maxIdleTimeout) {
+                            instanceIdHttpSessionId.remove(wffInstanceId);
+                            instanceIdBrowserPage.remove(wffInstanceId);
+                            return null;
+                        }
+                        return bp;
+                    });
+                }
+
+            }
+
+        }
+
+    }
+
+//    /**
+//     * Runs a periodic clean operation when idle time of objects like
+//     * {@code BrowserPage}, {@code HeartbeatManager} etc.. are greater than or equal
+//     * to the given {@code maxIdleTimeout}.
+//     *
+//     * @param maxIdleTimeout the max idle time to remove the objects. It is usually
+//     *                       equal to the {@code maxIdleTimeout} of websocket
+//     *                       session. It should be greater than the minInterval
+//     *                       given in the {@code HeartbeatManager}.
+//     * @param period         cleaning period in milliseconds.
+//     * @since 3.0.16
+//     */
+//    public void startAutoClean(final long maxIdleTimeout, final long period) {
+//        autoCleanStartOrCancel(maxIdleTimeout, period, false);
+//    }
+
+    /**
+     * Runs a periodic clean operation when idle time of objects like
+     * {@code BrowserPage}, {@code HeartbeatManager} etc.. are greater than or equal
+     * to the given {@code maxIdleTimeout}. If it is started it will do the clean
+     * operation whenever appropriate, there is no fixed interval of time for this
+     * execution.
+     *
+     * @param maxIdleTimeout the max idle time to remove the objects. It is usually
+     *                       equal to the {@code maxIdleTimeout} of websocket
+     *                       session. It should be greater than the minInterval
+     *                       given in the {@code HeartbeatManager}.
+     * @since 3.0.16
+     */
+    public void enableAutoClean(final long maxIdleTimeout) {
+        autoCleanTaskExecutor = new MinIntervalExecutor(maxIdleTimeout, () -> {
+            clean(maxIdleTimeout);
+        });
+    }
+
+    /**
+     * Runs a periodic clean operation when idle time of objects like
+     * {@code BrowserPage}, {@code HeartbeatManager} etc.. are greater than or equal
+     * to the given {@code maxIdleTimeout}. If it is started it will do the clean
+     * operation whenever appropriate, there is no fixed interval of time for this
+     * execution.
+     *
+     * @param maxIdleTimeout the max idle time to remove the objects. It is usually
+     *                       equal to the {@code maxIdleTimeout} of websocket
+     *                       session. It should be greater than the minInterval
+     *                       given in the {@code HeartbeatManager}.
+     * @param executor       the executor object from which the thread will be
+     *                       obtained to run the clean process.
+     * @since 3.0.16
+     */
+    public void enableAutoClean(final long maxIdleTimeout, final Executor executor) {
+        autoCleanTaskExecutor = new MinIntervalExecutor(maxIdleTimeout, () -> {
+            clean(maxIdleTimeout);
+        });
+    }
+
+    /**
+     * @since 3.0.16
+     */
+    public void disableAutoClean() {
+        autoCleanTaskExecutor = null;
+    }
+
+    /**
+     * @return true if the auto clean is enabled by {@code enableAutoClean} method.
+     * @since 3.0.16
+     */
+    public boolean isAutoCleanEnabled() {
+        return autoCleanTaskExecutor != null;
+    }
+
+    @SuppressWarnings("unused")
+    private synchronized void autoCleanStartOrCancel(final long maxIdleTimeout, final long period,
+            final boolean cancelAutoClean) {
+
+        if (period < maxIdleTimeout) {
+            throw new IllegalArgumentException("period cannot be less than maxIdleTimeout.");
+        }
+
+        // to avoid executing startAutoClean and cancelAutoClean methods simultaneously
+        // both method implementations are put together inside a single method.
+
+        if (cancelAutoClean) {
+            if (autoCleanScheduled != null && !autoCleanScheduled.isCancelled()) {
+                autoCleanScheduled.cancel(false);
+                autoCleanScheduled = null;
+                if (scheduledExecutorService != null) {
+                    scheduledExecutorService.shutdown();
+                    scheduledExecutorService = null;
+                }
+            }
+        } else {
+            if (scheduledExecutorService == null) {
+                scheduledExecutorService = Executors.newScheduledThreadPool(1);
+            }
+
+            final ScheduledFuture<?> autoCleanScheduledLocal = autoCleanScheduled;
+
+            if (autoCleanScheduledLocal == null || autoCleanScheduledLocal.isCancelled()) {
+                autoCleanScheduled = scheduledExecutorService.scheduleAtFixedRate(() -> {
+                    clean(maxIdleTimeout);
+                }, 0, maxIdleTimeout, TimeUnit.MILLISECONDS);
+            }
+        }
+
+    }
+
+    /**
+     * @param httpSessionId
+     * @return the {@code HeartbeatManager} associated with this
+     *         {@code httpSessionId} or {@code null} if not available.
+     * @since 3.0.16
+     */
+    public HeartbeatManager getHeartbeatManagerForHttpSession(final String httpSessionId) {
+        return heartbeatManagers.get(httpSessionId);
+    }
+
+    /**
+     * @param wffInstanceId the wffInstanceId of {@code BrowserPage}.
+     * @return the {@code HeartbeatManager} for this {@code wffInstanceId} or
+     *         {@code null} if not available.
+     * @since 3.0.16
+     */
+    public HeartbeatManager getHeartbeatManagerForBrowserPage(final String wffInstanceId) {
+        final String httpSessionId = instanceIdHttpSessionId.get(wffInstanceId);
+        if (httpSessionId != null) {
+            return heartbeatManagers.get(httpSessionId);
+        }
         return null;
     }
 
@@ -245,7 +517,7 @@ public enum BrowserPageContext {
     public void httpSessionClosed(final String httpSessionId) {
 
         if (httpSessionId != null) {
-            final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.get(httpSessionId);
+            final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.remove(httpSessionId);
             if (browserPages != null) {
 
                 for (final String instanceId : browserPages.keySet()) {
@@ -264,9 +536,8 @@ public enum BrowserPageContext {
                     }
                 }
 
-                httpSessionIdBrowserPages.remove(httpSessionId);
-
             }
+            browserPages.clear();
         } else {
             if (LOGGER.isLoggable(Level.WARNING)) {
                 LOGGER.warning("The associatd HttpSession is alread closed for this instance id");
@@ -335,23 +606,21 @@ public enum BrowserPageContext {
 
             final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.get(httpSessionId);
             if (browserPages != null) {
-                final BrowserPage removedBrowserPage = browserPages.remove(instanceId);
 
-                if (removedBrowserPage != null) {
+                browserPages.computeIfPresent(instanceId, (k, bp) -> {
+                    instanceIdBrowserPage.remove(instanceId);
+                    instanceIdHttpSessionId.remove(instanceId);
                     try {
-                        removedBrowserPage.removedFromContext();
+                        bp.removedFromContext();
                     } catch (final Throwable e) {
                         if (LOGGER.isLoggable(Level.WARNING)) {
                             LOGGER.log(Level.WARNING,
                                     "The overridden method BrowserPage#removedFromContext threw an exception.", e);
                         }
                     }
-                }
-
+                    return null;
+                });
             }
-
-            instanceIdBrowserPage.remove(instanceId);
-
         } else {
             if (LOGGER.isLoggable(Level.WARNING)) {
                 LOGGER.warning("The callerInstanceId " + callerInstanceId + " tried to remove instanceId " + instanceId

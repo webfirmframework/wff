@@ -180,6 +180,8 @@ public abstract class BrowserPage implements Serializable {
 
     private Executor executor;
 
+    private volatile long lastWSMessageTime;
+
     // to make it GC friendly, it is made as static
     private static final ThreadLocal<PayloadProcessor> PALYLOAD_PROCESSOR_TL = new ThreadLocal<>();
 
@@ -452,12 +454,17 @@ public abstract class BrowserPage implements Serializable {
         webSocketMessaged(message);
     }
 
+    long getLastWSMessageTime() {
+        return lastWSMessageTime;
+    }
+
     /**
      * @param message the bytes the received in onmessage
      * @since 2.1.0
      * @author WFF
      */
     public final void webSocketMessaged(final byte[] message) {
+        lastWSMessageTime = System.currentTimeMillis();
         // minimum number of an empty bm message length is 4
         // below that length is not a valid bm message so check
         // message.length < 4
