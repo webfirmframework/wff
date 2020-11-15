@@ -180,7 +180,9 @@ public abstract class BrowserPage implements Serializable {
 
     private Executor executor;
 
-    private volatile long lastWSMessageTime;
+    private volatile long lastWSMessageTime = -1;
+
+    private final long objectCreatedTime = System.currentTimeMillis();
 
     // to make it GC friendly, it is made as static
     private static final ThreadLocal<PayloadProcessor> PALYLOAD_PROCESSOR_TL = new ThreadLocal<>();
@@ -456,6 +458,10 @@ public abstract class BrowserPage implements Serializable {
 
     long getLastWSMessageTime() {
         return lastWSMessageTime;
+    }
+
+    long objectCreatedTime() {
+        return objectCreatedTime;
     }
 
     /**

@@ -293,7 +293,11 @@ public enum BrowserPageContext {
                 boolean hbmExpired = true;
 
                 for (final Entry<String, BrowserPage> bpEntry : browserPages.entrySet()) {
-                    if ((currentTime - bpEntry.getValue().getLastWSMessageTime()) < maxIdleTimeout) {
+                    final BrowserPage bp = bpEntry.getValue();
+                    final long lastWSMessageTimeTmp = bp.getLastWSMessageTime();
+                    final long lastWSMessageTime = lastWSMessageTimeTmp > 0 ? lastWSMessageTimeTmp
+                            : bp.objectCreatedTime();
+                    if ((currentTime - lastWSMessageTime) < maxIdleTimeout) {
                         hbmExpired = false;
                         break;
                     }
@@ -312,14 +316,21 @@ public enum BrowserPageContext {
 
                 final List<String> expiredWffInstanceIds = new LinkedList<>();
                 for (final Entry<String, BrowserPage> bpEntry : browserPages.entrySet()) {
-                    if ((currentTime - bpEntry.getValue().getLastWSMessageTime()) >= maxIdleTimeout) {
+                    final BrowserPage bp = bpEntry.getValue();
+                    final long lastWSMessageTimeTmp = bp.getLastWSMessageTime();
+                    final long lastWSMessageTime = lastWSMessageTimeTmp > 0 ? lastWSMessageTimeTmp
+                            : bp.objectCreatedTime();
+                    if ((currentTime - lastWSMessageTime) >= maxIdleTimeout) {
                         expiredWffInstanceIds.add(bpEntry.getKey());
                     }
                 }
 
                 for (final String wffInstanceId : expiredWffInstanceIds) {
                     browserPages.computeIfPresent(wffInstanceId, (k, bp) -> {
-                        if ((currentTime - bp.getLastWSMessageTime()) >= maxIdleTimeout) {
+                        final long lastWSMessageTimeTmp = bp.getLastWSMessageTime();
+                        final long lastWSMessageTime = lastWSMessageTimeTmp > 0 ? lastWSMessageTimeTmp
+                                : bp.objectCreatedTime();
+                        if ((currentTime - lastWSMessageTime) >= maxIdleTimeout) {
                             instanceIdHttpSessionId.remove(wffInstanceId);
                             instanceIdBrowserPage.remove(wffInstanceId);
                             return null;
