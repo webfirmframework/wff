@@ -105,11 +105,7 @@ public enum BrowserPageContext {
             return browserPage;
         });
 
-        final MinIntervalExecutor autoCleanTaskExecutor = this.autoCleanTaskExecutor;
-
-        if (autoCleanTaskExecutor != null) {
-            autoCleanTaskExecutor.runAsync();
-        }
+        runAutoClean();
 
         return browserPage.getInstanceId();
     }
@@ -409,6 +405,13 @@ public enum BrowserPageContext {
         return autoCleanTaskExecutor != null;
     }
 
+    private void runAutoClean() {
+        final MinIntervalExecutor autoCleanTaskExecutor = this.autoCleanTaskExecutor;
+        if (autoCleanTaskExecutor != null) {
+            autoCleanTaskExecutor.runAsync();
+        }
+    }
+
     @SuppressWarnings("unused")
     private synchronized void autoCleanStartOrCancel(final long maxIdleTimeout, final long period,
             final boolean cancelAutoClean) {
@@ -544,7 +547,7 @@ public enum BrowserPageContext {
                 LOGGER.warning("The associatd HttpSession is alread closed for the id");
             }
         }
-
+        runAutoClean();
     }
 
     /**
