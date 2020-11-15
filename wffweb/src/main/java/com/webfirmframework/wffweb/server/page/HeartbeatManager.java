@@ -74,6 +74,9 @@ public final class HeartbeatManager {
         if (task == null) {
             throw new NullValueException("task cannot be null");
         }
+        if (minInterval < 0) {
+            throw new IllegalArgumentException("minInterval cannot be less than 0");
+        }
     }
 
     /**
@@ -88,6 +91,9 @@ public final class HeartbeatManager {
         this.task = task;
         if (task == null) {
             throw new NullValueException("task cannot be null");
+        }
+        if (minInterval < 0) {
+            throw new IllegalArgumentException("minInterval cannot be less than 0");
         }
     }
 

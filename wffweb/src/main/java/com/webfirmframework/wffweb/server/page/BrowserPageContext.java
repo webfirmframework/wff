@@ -364,6 +364,9 @@ public enum BrowserPageContext {
      * @since 3.0.16
      */
     public void enableAutoClean(final long maxIdleTimeout) {
+        if (maxIdleTimeout <= 0) {
+            throw new IllegalArgumentException("maxIdleTimeout must be greater than 0");
+        }
         autoCleanTaskExecutor = new MinIntervalExecutor(maxIdleTimeout, () -> {
             clean(maxIdleTimeout);
         });
@@ -385,6 +388,9 @@ public enum BrowserPageContext {
      * @since 3.0.16
      */
     public void enableAutoClean(final long maxIdleTimeout, final Executor executor) {
+        if (maxIdleTimeout <= 0) {
+            throw new IllegalArgumentException("maxIdleTimeout must be greater than 0");
+        }
         autoCleanTaskExecutor = new MinIntervalExecutor(maxIdleTimeout, () -> {
             clean(maxIdleTimeout);
         });
