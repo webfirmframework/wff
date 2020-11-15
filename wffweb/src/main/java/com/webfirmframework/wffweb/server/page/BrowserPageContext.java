@@ -536,9 +536,9 @@ public enum BrowserPageContext {
                         }
                     }
                 }
-
+                browserPages.clear();
             }
-            browserPages.clear();
+
         } else {
             if (LOGGER.isLoggable(Level.WARNING)) {
                 LOGGER.warning("The associatd HttpSession is alread closed for this instance id");
