@@ -290,29 +290,14 @@ public enum BrowserPageContext {
 
                 final Map<String, BrowserPage> browserPages = entry.getValue();
 
+                final List<String> expiredWffInstanceIds = new LinkedList<>();
                 boolean hbmExpired = true;
-
                 for (final Entry<String, BrowserPage> bpEntry : browserPages.entrySet()) {
                     if ((currentTime - bpEntry.getValue().getTimeOfLastWSMessageOrObjectCreated()) < maxIdleTimeout) {
-                        hbmExpired = false;
-                        break;
-                    }
-                }
-
-                if (hbmExpired) {
-                    // to atomically remove hbm if expired
-                    heartbeatManagers.computeIfPresent(httpSessionId, (k, hbm) -> {
-                        if ((currentTime - hbm.getLastAccessedTime()) >= maxIdleTimeout
-                                && hbm.minInterval() < maxIdleTimeout) {
-                            return null;
+                        if (hbmExpired) {
+                            hbmExpired = false;
                         }
-                        return hbm;
-                    });
-                }
-
-                final List<String> expiredWffInstanceIds = new LinkedList<>();
-                for (final Entry<String, BrowserPage> bpEntry : browserPages.entrySet()) {
-                    if ((currentTime - bpEntry.getValue().getTimeOfLastWSMessageOrObjectCreated()) >= maxIdleTimeout) {
+                    } else {
                         expiredWffInstanceIds.add(bpEntry.getKey());
                     }
                 }
@@ -325,6 +310,17 @@ public enum BrowserPageContext {
                             return null;
                         }
                         return bp;
+                    });
+                }
+
+                if (hbmExpired) {
+                    // to atomically remove hbm if expired
+                    heartbeatManagers.computeIfPresent(httpSessionId, (k, hbm) -> {
+                        if ((currentTime - hbm.getLastAccessedTime()) >= maxIdleTimeout
+                                && hbm.minInterval() < maxIdleTimeout) {
+                            return null;
+                        }
+                        return hbm;
                     });
                 }
 
