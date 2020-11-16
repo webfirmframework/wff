@@ -15,6 +15,10 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
+/**
+ * @since 3.0.16
+ *
+ */
 public class WebSocketOpenedRecord {
 
     private final BrowserPage browserPage;
