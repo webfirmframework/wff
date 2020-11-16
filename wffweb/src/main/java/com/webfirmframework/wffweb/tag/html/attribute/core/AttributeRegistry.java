@@ -740,7 +740,7 @@ public class AttributeRegistry {
                 try {
                     final Object[] initargs = { null };
                     newInstance = (AbstractAttribute) attrClass.getConstructor(String.class).newInstance(initargs);
-                } catch (final Exception e1) {
+                } catch (final RuntimeException e1) {
                     try {
                         newInstance = (AbstractAttribute) attrClass.getConstructor(int.class).newInstance(1);
                     } catch (final Exception e2) {
@@ -794,7 +794,7 @@ public class AttributeRegistry {
                 final Object[] initargs = { "1" };
                 newInstance = (AbstractAttribute) attrClass.getConstructor(String.class).newInstance(initargs);
                 expectedHtmlString += "\"1\"";
-            } catch (final Exception e) {
+            } catch (final RuntimeException e) {
 
                 try {
                     final Object[] initargs = { "true" };

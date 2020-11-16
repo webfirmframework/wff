@@ -33,7 +33,7 @@ public class PayloadProcessor implements Serializable {
 
     // ByteBuffer will be useful if we are planning for any memory optimization
     // for the saved bytes
-    private final Queue<ByteBuffer> wsMessageChunks = new ConcurrentLinkedQueue<>();
+    private transient final Queue<ByteBuffer> wsMessageChunks = new ConcurrentLinkedQueue<>();
 
     private final AtomicInteger wsMessageChunksTotalCapacity = new AtomicInteger(0);
 

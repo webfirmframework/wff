@@ -67,7 +67,7 @@ public class WffBMByteArray extends ByteArrayOutputStream implements Serializabl
         super(bmArrayBytes.length);
         valueType = BMValueType.INTERNAL_BYTE;
         try {
-            initWffBMObject(bmArrayBytes, outer);
+            initWffBMObject(bmArrayBytes, false);
         } catch (final IOException e) {
             throw new WffRuntimeException(e.getMessage(), e);
         }

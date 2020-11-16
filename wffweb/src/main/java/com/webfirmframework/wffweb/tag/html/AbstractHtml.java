@@ -417,7 +417,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
             // sharedObject = new AbstractHtml5SharedObject(this);
             // }
             // this.children.addAll(children);
-            appendChildrenLockless(children);
+            if (children != null) {
+                appendChildrenLockless(children);
+            }
             // childAppended(parent, this);
         } finally {
             for (final Lock lock : locks) {

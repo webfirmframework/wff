@@ -69,13 +69,13 @@ public enum BrowserPageContext {
     /**
      * key:- httpSessionId value:- HeartbeatManager
      */
-    private final Map<String, HeartbeatManager> heartbeatManagers;
+    private transient final Map<String, HeartbeatManager> heartbeatManagers;
 
-    private ScheduledExecutorService scheduledExecutorService;
+    private transient ScheduledExecutorService scheduledExecutorService;
 
-    private ScheduledFuture<?> autoCleanScheduled;
+    private transient ScheduledFuture<?> autoCleanScheduled;
 
-    private volatile MinIntervalExecutor autoCleanTaskExecutor;
+    private transient volatile MinIntervalExecutor autoCleanTaskExecutor;
 
     private BrowserPageContext() {
         httpSessionIdBrowserPages = new ConcurrentHashMap<>();
@@ -363,9 +363,7 @@ public enum BrowserPageContext {
         if (maxIdleTimeout <= 0) {
             throw new IllegalArgumentException("maxIdleTimeout must be greater than 0");
         }
-        autoCleanTaskExecutor = new MinIntervalExecutor(maxIdleTimeout, () -> {
-            clean(maxIdleTimeout);
-        });
+        autoCleanTaskExecutor = new MinIntervalExecutor(maxIdleTimeout, () -> clean(maxIdleTimeout));
     }
 
     /**
@@ -387,9 +385,7 @@ public enum BrowserPageContext {
         if (maxIdleTimeout <= 0) {
             throw new IllegalArgumentException("maxIdleTimeout must be greater than 0");
         }
-        autoCleanTaskExecutor = new MinIntervalExecutor(maxIdleTimeout, () -> {
-            clean(maxIdleTimeout);
-        });
+        autoCleanTaskExecutor = new MinIntervalExecutor(maxIdleTimeout, () -> clean(maxIdleTimeout));
     }
 
     /**
@@ -442,9 +438,8 @@ public enum BrowserPageContext {
             final ScheduledFuture<?> autoCleanScheduledLocal = autoCleanScheduled;
 
             if (autoCleanScheduledLocal == null || autoCleanScheduledLocal.isCancelled()) {
-                autoCleanScheduled = scheduledExecutorService.scheduleAtFixedRate(() -> {
-                    clean(maxIdleTimeout);
-                }, 0, maxIdleTimeout, TimeUnit.MILLISECONDS);
+                autoCleanScheduled = scheduledExecutorService.scheduleAtFixedRate(() -> clean(maxIdleTimeout), 0,
+                        maxIdleTimeout, TimeUnit.MILLISECONDS);
             }
         }
 

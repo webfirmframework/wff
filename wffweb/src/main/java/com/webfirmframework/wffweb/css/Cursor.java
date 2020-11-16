@@ -362,7 +362,10 @@ public class Cursor extends AbstractCssProperty<Cursor> implements StateChangeIn
      * @author WFF
      */
     public String[] getCursorUrls() {
-        return cursorUrls;
+        if (cursorUrls != null) {
+            return Arrays.copyOf(cursorUrls, cursorUrls.length);
+        }
+        return null;
     }
 
     /**

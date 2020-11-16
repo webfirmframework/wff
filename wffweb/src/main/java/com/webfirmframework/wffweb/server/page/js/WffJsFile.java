@@ -394,16 +394,14 @@ public enum WffJsFile {
 
     private String buildOptimizedFileContent() {
 
-        try {
+        try (final InputStream in = WffJsFile.class.getResourceAsStream(filename);
+                final BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));) {
 
             // this might make java.nio.file.FileSystemNotFoundException in
             // production server.
             // final List<String> allLines = Files.readAllLines(
             // Paths.get(WffJsFile.class.getResource(filename).toURI()),
             // StandardCharsets.UTF_8);
-
-            final InputStream in = WffJsFile.class.getResourceAsStream(filename);
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
 
             // this will might java.nio.file.FileSystemNotFoundException in
             // production server.
