@@ -286,6 +286,22 @@ public abstract class BrowserPage implements Serializable {
         }
     }
 
+    /**
+     * removes all WebSocket listeners added
+     *
+     * @since 3.0.16
+     * @author WFF
+     */
+    final void clearWSListeners() {
+        // remove all
+        wsListeners.clear();
+
+        wsListener = wsListeners.peek();
+        if (rootTag != null) {
+            rootTag.getSharedObject().setActiveWSListener(wsListener != null, ACCESS_OBJECT);
+        }
+    }
+
     public final WebSocketPushListener getWsListener() {
         return wsListener;
     }

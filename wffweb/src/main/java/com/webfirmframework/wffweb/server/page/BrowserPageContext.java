@@ -26,6 +26,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -255,11 +256,26 @@ public enum BrowserPageContext {
 
         final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.get(httpSessionId);
 
-        browserPages.computeIfPresent(wffInstanceId, (k, v) -> {
+        final AtomicReference<BrowserPage> bpRef = new AtomicReference<>();
+        browserPages.computeIfPresent(wffInstanceId, (k, bp) -> {
             instanceIdHttpSessionId.remove(wffInstanceId);
             instanceIdBrowserPage.remove(wffInstanceId);
+            instanceIdBPForWS.remove(wffInstanceId);
+            bpRef.set(bp);
             return null;
         });
+        final BrowserPage bp = bpRef.get();
+        if (bp != null) {
+            try {
+                bp.removedFromContext();
+            } catch (final Throwable e) {
+                if (LOGGER.isLoggable(Level.WARNING)) {
+                    LOGGER.log(Level.WARNING,
+                            "The overridden method BrowserPage#removedFromContext threw an exception.", e);
+                }
+            }
+            bp.clearWSListeners();
+        }
 
     }
 
@@ -303,14 +319,30 @@ public enum BrowserPageContext {
                 }
 
                 for (final String wffInstanceId : expiredWffInstanceIds) {
+                    final AtomicReference<BrowserPage> bpRef = new AtomicReference<>();
                     browserPages.computeIfPresent(wffInstanceId, (k, bp) -> {
                         if ((currentTime - bp.getTimeOfLastWSMessageOrObjectCreated()) >= maxIdleTimeout) {
                             instanceIdHttpSessionId.remove(wffInstanceId);
                             instanceIdBrowserPage.remove(wffInstanceId);
+                            instanceIdBPForWS.remove(wffInstanceId);
+                            bpRef.set(bp);
                             return null;
                         }
                         return bp;
                     });
+                    final BrowserPage bp = bpRef.get();
+                    if (bp != null) {
+                        try {
+                            bp.removedFromContext();
+                        } catch (final Throwable e) {
+                            if (LOGGER.isLoggable(Level.WARNING)) {
+                                LOGGER.log(Level.WARNING,
+                                        "The overridden method BrowserPage#removedFromContext threw an exception.", e);
+                            }
+                        }
+                        bp.clearWSListeners();
+                    }
+
                 }
 
                 if (hbmExpired) {
@@ -524,8 +556,8 @@ public enum BrowserPageContext {
                 for (final String instanceId : browserPages.keySet()) {
                     instanceIdHttpSessionId.remove(instanceId);
                     final BrowserPage removedBrowserPage = instanceIdBrowserPage.remove(instanceId);
+                    instanceIdBPForWS.remove(instanceId);
                     if (removedBrowserPage != null) {
-
                         try {
                             removedBrowserPage.removedFromContext();
                         } catch (final Throwable e) {
@@ -534,6 +566,7 @@ public enum BrowserPageContext {
                                         "The overridden method BrowserPage#removedFromContext threw an exception.", e);
                             }
                         }
+                        removedBrowserPage.clearWSListeners();
                     }
                 }
                 browserPages.clear();
@@ -608,9 +641,17 @@ public enum BrowserPageContext {
             final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.get(httpSessionId);
             if (browserPages != null) {
 
+                final AtomicReference<BrowserPage> bpRef = new AtomicReference<>();
+
                 browserPages.computeIfPresent(instanceId, (k, bp) -> {
                     instanceIdBrowserPage.remove(instanceId);
                     instanceIdHttpSessionId.remove(instanceId);
+                    instanceIdBPForWS.remove(instanceId);
+                    bpRef.set(bp);
+                    return null;
+                });
+                final BrowserPage bp = bpRef.get();
+                if (bp != null) {
                     try {
                         bp.removedFromContext();
                     } catch (final Throwable e) {
@@ -619,8 +660,8 @@ public enum BrowserPageContext {
                                     "The overridden method BrowserPage#removedFromContext threw an exception.", e);
                         }
                     }
-                    return null;
-                });
+                    bp.clearWSListeners();
+                }
             }
         } else {
             if (LOGGER.isLoggable(Level.WARNING)) {
