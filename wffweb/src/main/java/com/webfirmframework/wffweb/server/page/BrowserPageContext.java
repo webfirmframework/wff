@@ -385,10 +385,11 @@ public enum BrowserPageContext {
      * operation whenever appropriate, there is no fixed interval of time for this
      * execution.
      *
-     * @param maxIdleTimeout the max idle time to remove the objects. It is usually
-     *                       equal to the {@code maxIdleTimeout} of websocket
-     *                       session. It should be greater than the minInterval
-     *                       given in the {@code HeartbeatManager}.
+     * @param maxIdleTimeout the max idle time in milliseconds to remove the
+     *                       objects. It is usually equal to the
+     *                       {@code maxIdleTimeout} of websocket session. It should
+     *                       be greater than the minInterval given in the
+     *                       {@code HeartbeatManager}.
      * @since 3.0.16
      */
     public void enableAutoClean(final long maxIdleTimeout) {
@@ -405,10 +406,11 @@ public enum BrowserPageContext {
      * operation whenever appropriate, there is no fixed interval of time for this
      * execution.
      *
-     * @param maxIdleTimeout the max idle time to remove the objects. It is usually
-     *                       equal to the {@code maxIdleTimeout} of websocket
-     *                       session. It should be greater than the minInterval
-     *                       given in the {@code HeartbeatManager}.
+     * @param maxIdleTimeout the max idle time in milliseconds to remove the
+     *                       objects. It is usually equal to the
+     *                       {@code maxIdleTimeout} of websocket session. It should
+     *                       be greater than the minInterval given in the
+     *                       {@code HeartbeatManager}.
      * @param executor       the executor object from which the thread will be
      *                       obtained to run the clean process.
      * @since 3.0.16
@@ -480,11 +482,23 @@ public enum BrowserPageContext {
     /**
      * @param httpSessionId
      * @return the {@code HeartbeatManager} associated with this
-     *         {@code httpSessionId} or {@code null} if not available.
+     *         {@code httpSessionId} or {@code null} if not available. If the last
+     *         usage time of {@code HeartbeatManager} of this http session is
+     *         greater than or equal to {@code maxIdleTimeout} given in the
+     *         {@code BrowserPageContext#enableAutoClean(long)} then this method
+     *         will return {@code null}.
      * @since 3.0.16
      */
     public HeartbeatManager getHeartbeatManagerForHttpSession(final String httpSessionId) {
+        final long currentTime = System.currentTimeMillis();
         return heartbeatManagers.computeIfPresent(httpSessionId, (k, hbm) -> {
+            final MinIntervalExecutor autoCleanTaskExecutor = this.autoCleanTaskExecutor;
+            if (autoCleanTaskExecutor != null) {
+                final long maxIdleTimeout = autoCleanTaskExecutor.minInterval();
+                if ((currentTime - hbm.getLastAccessedTime()) >= maxIdleTimeout && hbm.minInterval() < maxIdleTimeout) {
+                    return null;
+                }
+            }
             hbm.accessed();
             return hbm;
         });
@@ -492,17 +506,18 @@ public enum BrowserPageContext {
 
     /**
      * @param wffInstanceId the wffInstanceId of {@code BrowserPage}.
-     * @return the {@code HeartbeatManager} for this {@code wffInstanceId} or
-     *         {@code null} if not available.
+     * @return the {@code HeartbeatManager} associated with this
+     *         {@code httpSessionId} or {@code null} if not available. If the last
+     *         usage time of {@code HeartbeatManager} of this http session is
+     *         greater than or equal to {@code maxIdleTimeout} given in the
+     *         {@code BrowserPageContext#enableAutoClean(long)} then this method
+     *         will return {@code null}.
      * @since 3.0.16
      */
     public HeartbeatManager getHeartbeatManagerForBrowserPage(final String wffInstanceId) {
         final String httpSessionId = instanceIdHttpSessionId.get(wffInstanceId);
         if (httpSessionId != null) {
-            return heartbeatManagers.computeIfPresent(httpSessionId, (k, hbm) -> {
-                hbm.accessed();
-                return hbm;
-            });
+            return getHeartbeatManagerForHttpSession(httpSessionId);
         }
         return null;
     }
