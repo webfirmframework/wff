@@ -217,6 +217,9 @@ public enum BrowserPageContext {
     public WebSocketOpenedRecord webSocketOpened(final String wffInstanceId,
             final Function<String, HeartbeatManager> computeHeartbeatManager) {
 
+        // NB: not directly saving computeHeartbeatManager to avoid GC prevention as it
+        // is an external object which could have dependency over its outer class.
+
         final String httpSessionId = instanceIdHttpSessionId.get(wffInstanceId);
 
         if (httpSessionId != null) {
@@ -225,19 +228,16 @@ public enum BrowserPageContext {
                 final BrowserPage browserPage = browserPages.get(wffInstanceId);
                 if (browserPage != null) {
                     instanceIdBPForWS.put(browserPage.getInstanceId(), browserPage);
-                    return new WebSocketOpenedRecord(browserPage,
-                            heartbeatManagers.computeIfAbsent(httpSessionId, k -> {
-                                final HeartbeatManager hbm = computeHeartbeatManager.apply(k);
-                                hbm.accessed();
-                                return hbm;
-                            }));
+                    final HeartbeatManager hbManager = heartbeatManagers.computeIfAbsent(httpSessionId,
+                            k -> computeHeartbeatManager.apply(k));
+                    hbManager.accessed();
+                    return new WebSocketOpenedRecord(browserPage, hbManager);
                 }
             }
-            return new WebSocketOpenedRecord(null, heartbeatManagers.computeIfAbsent(httpSessionId, k -> {
-                final HeartbeatManager hbm = computeHeartbeatManager.apply(k);
-                hbm.accessed();
-                return hbm;
-            }));
+            final HeartbeatManager hbManager = heartbeatManagers.computeIfAbsent(httpSessionId,
+                    k -> computeHeartbeatManager.apply(k));
+            hbManager.accessed();
+            return new WebSocketOpenedRecord(null, hbManager);
         }
 
         return null;
@@ -484,7 +484,10 @@ public enum BrowserPageContext {
      * @since 3.0.16
      */
     public HeartbeatManager getHeartbeatManagerForHttpSession(final String httpSessionId) {
-        return heartbeatManagers.get(httpSessionId);
+        return heartbeatManagers.computeIfPresent(httpSessionId, (k, hbm) -> {
+            hbm.accessed();
+            return hbm;
+        });
     }
 
     /**
@@ -496,7 +499,10 @@ public enum BrowserPageContext {
     public HeartbeatManager getHeartbeatManagerForBrowserPage(final String wffInstanceId) {
         final String httpSessionId = instanceIdHttpSessionId.get(wffInstanceId);
         if (httpSessionId != null) {
-            return heartbeatManagers.get(httpSessionId);
+            return heartbeatManagers.computeIfPresent(httpSessionId, (k, hbm) -> {
+                hbm.accessed();
+                return hbm;
+            });
         }
         return null;
     }
