@@ -211,8 +211,11 @@ public enum BrowserPageContext {
      * @return the {@code WebSocketOpenedRecord} object. It contains
      *         {@code BrowserPage} object associated with this {@code wffInstanceId}
      *         and {@code HeartbeatManager} associated with its http session id. If
-     *         the {@code wffInstanceId} is associated with a closed http session
-     *         this method will return {@code null}.
+     *         the {@code wffInstanceId} is associated with a closed http session or
+     *         {@code wffInstanceId} is associated with the {@code BrowserPage} is
+     *         already removed from the context then this method will return
+     *         {@code null}. If this method returns {@code null}, the given
+     *         {@code computeHeartbeatManager} will be ignored.
      */
     public WebSocketOpenedRecord webSocketOpened(final String wffInstanceId,
             final Function<String, HeartbeatManager> computeHeartbeatManager) {
@@ -234,10 +237,6 @@ public enum BrowserPageContext {
                     return new WebSocketOpenedRecord(browserPage, hbManager);
                 }
             }
-            final HeartbeatManager hbManager = heartbeatManagers.computeIfAbsent(httpSessionId,
-                    k -> computeHeartbeatManager.apply(k));
-            hbManager.accessed();
-            return new WebSocketOpenedRecord(null, hbManager);
         }
 
         return null;
