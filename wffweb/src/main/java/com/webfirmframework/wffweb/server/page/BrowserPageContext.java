@@ -192,6 +192,7 @@ public enum BrowserPageContext {
                 final BrowserPage browserPage = browserPages.get(wffInstanceId);
                 if (browserPage != null) {
                     instanceIdBPForWS.put(browserPage.getInstanceId(), browserPage);
+                    browserPage.setLastClientAccessedTime(System.currentTimeMillis());
                 }
                 return browserPage;
             }
@@ -231,9 +232,11 @@ public enum BrowserPageContext {
                 final BrowserPage browserPage = browserPages.get(wffInstanceId);
                 if (browserPage != null) {
                     instanceIdBPForWS.put(browserPage.getInstanceId(), browserPage);
+                    final long lastAccessedTime = System.currentTimeMillis();
+                    browserPage.setLastClientAccessedTime(lastAccessedTime);
                     final HeartbeatManager hbManager = heartbeatManagers.computeIfAbsent(httpSessionId,
                             k -> computeHeartbeatManager.apply(k));
-                    hbManager.accessed();
+                    hbManager.setLastAccessedTime(lastAccessedTime);
                     return new WebSocketOpenedRecord(browserPage, hbManager);
                 }
             }
@@ -308,7 +311,7 @@ public enum BrowserPageContext {
                 final List<String> expiredWffInstanceIds = new LinkedList<>();
                 boolean hbmExpired = true;
                 for (final Entry<String, BrowserPage> bpEntry : browserPages.entrySet()) {
-                    if ((currentTime - bpEntry.getValue().getTimeOfLastWSMessageOrObjectCreated()) < maxIdleTimeout) {
+                    if ((currentTime - bpEntry.getValue().getLastClientAccessedTime()) < maxIdleTimeout) {
                         if (hbmExpired) {
                             hbmExpired = false;
                         }
@@ -320,7 +323,7 @@ public enum BrowserPageContext {
                 for (final String wffInstanceId : expiredWffInstanceIds) {
                     final AtomicReference<BrowserPage> bpRef = new AtomicReference<>();
                     browserPages.computeIfPresent(wffInstanceId, (k, bp) -> {
-                        if ((currentTime - bp.getTimeOfLastWSMessageOrObjectCreated()) >= maxIdleTimeout) {
+                        if ((currentTime - bp.getLastClientAccessedTime()) >= maxIdleTimeout) {
                             instanceIdHttpSessionId.remove(wffInstanceId);
                             instanceIdBrowserPage.remove(wffInstanceId);
                             instanceIdBPForWS.remove(wffInstanceId);
@@ -489,16 +492,17 @@ public enum BrowserPageContext {
      * @since 3.0.16
      */
     public HeartbeatManager getHeartbeatManagerForHttpSession(final String httpSessionId) {
-        final long currentTime = System.currentTimeMillis();
+
         return heartbeatManagers.computeIfPresent(httpSessionId, (k, hbm) -> {
             final MinIntervalExecutor autoCleanTaskExecutor = this.autoCleanTaskExecutor;
+            final long currentTime = System.currentTimeMillis();
             if (autoCleanTaskExecutor != null) {
                 final long maxIdleTimeout = autoCleanTaskExecutor.minInterval();
                 if ((currentTime - hbm.getLastAccessedTime()) >= maxIdleTimeout && hbm.minInterval() < maxIdleTimeout) {
                     return null;
                 }
             }
-            hbm.accessed();
+            hbm.setLastAccessedTime(currentTime);
             return hbm;
         });
     }

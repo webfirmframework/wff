@@ -180,7 +180,7 @@ public abstract class BrowserPage implements Serializable {
 
     private Executor executor;
 
-    private volatile long timeOfLastWSMessageOrObjectCreated = System.currentTimeMillis();
+    private volatile long lastClientAccessedTime = System.currentTimeMillis();
 
     // to make it GC friendly, it is made as static
     private static final ThreadLocal<PayloadProcessor> PALYLOAD_PROCESSOR_TL = new ThreadLocal<>();
@@ -471,12 +471,20 @@ public abstract class BrowserPage implements Serializable {
     }
 
     /**
-     * @return the time of websocket message received from client or the object
-     *         created time.
+     * @return the time of websocket message received from client, websocket opened,
+     *         or the object created time.
      * @since 3.0.16
      */
-    long getTimeOfLastWSMessageOrObjectCreated() {
-        return timeOfLastWSMessageOrObjectCreated;
+    final long getLastClientAccessedTime() {
+        return lastClientAccessedTime;
+    }
+
+    /**
+     * @param timeMillis
+     * @since 3.0.16
+     */
+    final void setLastClientAccessedTime(final long timeMillis) {
+        lastClientAccessedTime = timeMillis;
     }
 
     /**
@@ -485,7 +493,7 @@ public abstract class BrowserPage implements Serializable {
      * @author WFF
      */
     public final void webSocketMessaged(final byte[] message) {
-        timeOfLastWSMessageOrObjectCreated = System.currentTimeMillis();
+        lastClientAccessedTime = System.currentTimeMillis();
         // minimum number of an empty bm message length is 4
         // below that length is not a valid bm message so check
         // message.length < 4

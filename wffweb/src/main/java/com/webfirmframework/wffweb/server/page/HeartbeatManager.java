@@ -179,8 +179,12 @@ public final class HeartbeatManager {
         }
     }
 
-    void accessed() {
-        lastAccessedTime = System.currentTimeMillis();
+    /**
+     * @param lastAccessedTime
+     * @since 3.0.16
+     */
+    final void setLastAccessedTime(final long timeMillis) {
+        lastAccessedTime = timeMillis;
     }
 
     /**
