@@ -29,7 +29,7 @@ import com.webfirmframework.wffweb.tag.html.SharedTagContent.ContentFormatter;
  */
 final class InsertedTagData<T> implements Comparable<InsertedTagData<T>> {
 
-    private final Long ordinal;
+    private final long ordinal;
 
     private final ContentFormatter<T> formatter;
 
@@ -74,7 +74,7 @@ final class InsertedTagData<T> implements Comparable<InsertedTagData<T>> {
 
     @Override
     public int compareTo(final InsertedTagData<T> o) {
-        return this.ordinal.compareTo(o.ordinal);
+        return Long.compare(ordinal, o.ordinal);
     }
 
 }
