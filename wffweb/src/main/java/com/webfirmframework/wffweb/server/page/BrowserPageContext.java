@@ -78,7 +78,7 @@ public enum BrowserPageContext {
 
     private transient volatile MinIntervalExecutor autoCleanTaskExecutor;
 
-    private BrowserPageContext() {
+    BrowserPageContext() {
         httpSessionIdBrowserPages = new ConcurrentHashMap<>();
         instanceIdBrowserPage = new ConcurrentHashMap<>();
         instanceIdBPForWS = new ConcurrentHashMap<>();
@@ -90,8 +90,8 @@ public enum BrowserPageContext {
      * @param httpSessionId
      * @param browserPage
      * @return the instance id (unique) of the browser page.
-     * @since 2.0.0
      * @author WFF
+     * @since 2.0.0
      */
     public String addBrowserPage(final String httpSessionId, final BrowserPage browserPage) {
 
@@ -115,8 +115,8 @@ public enum BrowserPageContext {
      * @param httpSessionId
      * @param instanceId
      * @return
-     * @since 2.0.0
      * @author WFF
+     * @since 2.0.0
      */
     public BrowserPage getBrowserPage(final String httpSessionId, final String instanceId) {
 
@@ -140,8 +140,8 @@ public enum BrowserPageContext {
      *         is not greater than or equal to the time set by
      *         {@link BrowserPageContext#enableAutoClean} methods otherwise
      *         {@code null}.
-     * @since 3.0.16
      * @author WFF
+     * @since 3.0.16
      */
     public BrowserPage getBrowserPageIfValid(final String httpSessionId, final String instanceId) {
 
@@ -150,7 +150,8 @@ public enum BrowserPageContext {
             final BrowserPage browserPage = browserPages.get(instanceId);
             final MinIntervalExecutor autoCleanTaskExecutor = this.autoCleanTaskExecutor;
             if (autoCleanTaskExecutor != null) {
-                if (browserPage.getLastClientAccessedTime() >= autoCleanTaskExecutor.minInterval()) {
+                if ((System.currentTimeMillis() - browserPage.getLastClientAccessedTime()) >= autoCleanTaskExecutor
+                        .minInterval()) {
                     return null;
                 }
             }
@@ -166,8 +167,8 @@ public enum BrowserPageContext {
      *
      * @param instanceId
      * @return browser page object if it exists otherwise null.
-     * @since 2.0.0
      * @author WFF
+     * @since 2.0.0
      */
     public BrowserPage getBrowserPage(final String instanceId) {
         return instanceIdBrowserPage.get(instanceId);
@@ -187,14 +188,15 @@ public enum BrowserPageContext {
      *         is not greater than or equal to the time set by
      *         {@link BrowserPageContext#enableAutoClean} methods otherwise
      *         {@code null}.
-     * @since 3.0.16
      * @author WFF
+     * @since 3.0.16
      */
     public BrowserPage getBrowserPageIfValid(final String instanceId) {
         final BrowserPage browserPage = instanceIdBrowserPage.get(instanceId);
         final MinIntervalExecutor autoCleanTaskExecutor = this.autoCleanTaskExecutor;
         if (autoCleanTaskExecutor != null) {
-            if (browserPage.getLastClientAccessedTime() >= autoCleanTaskExecutor.minInterval()) {
+            if ((System.currentTimeMillis() - browserPage.getLastClientAccessedTime()) >= autoCleanTaskExecutor
+                    .minInterval()) {
                 return null;
             }
         }
@@ -205,10 +207,10 @@ public enum BrowserPageContext {
      * Gets all browser pages associated with this session.
      *
      * @param httpSessionId
-     * @since 2.0.2
-     * @author WFF
      * @return an unmodifiable map of BrowserPages associated with this session
      *         where key as instanceId and value as BrowserPage.
+     * @author WFF
+     * @since 2.0.2
      */
     public Map<String, BrowserPage> getBrowserPages(final String httpSessionId) {
 
@@ -224,8 +226,8 @@ public enum BrowserPageContext {
      * This should be called when the http session is closed
      *
      * @param httpSessionId the session id of http session
-     * @since 2.0.0
      * @author WFF
+     * @since 2.0.0
      */
     public void destroyContext(final String httpSessionId) {
         httpSessionClosed(httpSessionId);
@@ -236,11 +238,11 @@ public enum BrowserPageContext {
      *
      * @param wffInstanceId the wffInstanceId which can be retried from the request
      *                      parameter in websocket connection
-     * @since 2.0.0
-     * @author WFF
      * @return the {@code BrowserPage} object associated with this instance id, if
      *         the instanceId is associated with a closed http session it will
      *         return null.
+     * @author WFF
+     * @since 2.0.0
      */
     public BrowserPage webSocketOpened(final String wffInstanceId) {
 
@@ -268,7 +270,6 @@ public enum BrowserPageContext {
      *                                the request parameter in websocket connection
      * @param computeHeartbeatManager the function to compute
      *                                {@code HeartbeatManager}.
-     * @since 3.0.16
      * @return the {@code WebSocketOpenedRecord} object. It contains
      *         {@code BrowserPage} object associated with this {@code wffInstanceId}
      *         and {@code HeartbeatManager} associated with its http session id. If
@@ -277,6 +278,7 @@ public enum BrowserPageContext {
      *         already removed from the context then this method will return
      *         {@code null}. If this method returns {@code null}, the given
      *         {@code computeHeartbeatManager} will be ignored.
+     * @since 3.0.16
      */
     public WebSocketOpenedRecord webSocketOpened(final String wffInstanceId,
             final Function<String, HeartbeatManager> computeHeartbeatManager) {
@@ -590,8 +592,8 @@ public enum BrowserPageContext {
      *
      * @param wffInstanceId the wffInstanceId which can be retried from the request
      *                      parameter in websocket connection
-     * @since 2.0.0
      * @author WFF
+     * @since 2.0.0
      * @deprecated this method is for future development
      */
     @Deprecated
@@ -607,9 +609,9 @@ public enum BrowserPageContext {
      * @param sessionId     the websocket session id, i.e. the unique id of the
      *                      websocket session which is given in
      *                      {@code BrowserPage#addWebSocketPushListener} method.
-     * @since 2.1.0
-     * @author WFF
      * @return browserPage instance associated with this wffInstanceId
+     * @author WFF
+     * @since 2.1.0
      */
     public BrowserPage webSocketClosed(final String wffInstanceId, final String sessionId) {
         final BrowserPage bp = instanceIdBPForWS.get(wffInstanceId);
@@ -628,8 +630,8 @@ public enum BrowserPageContext {
      * should be passed as an argument.
      *
      * @param httpSessionId
-     * @since 2.0.0
      * @author WFF
+     * @since 2.0.0
      */
     public void httpSessionClosed(final String httpSessionId) {
 
@@ -670,9 +672,9 @@ public enum BrowserPageContext {
      *
      * @param wffInstanceId the wffInstanceId which can be retried from the request
      *                      parameter in websocket connection.
-     * @since 2.0.0
-     * @param message the message received from websocket
+     * @param message       the message received from websocket
      * @author WFF
+     * @since 2.0.0
      * @deprecated use webSocketMessaged which does the same job.
      */
     @Deprecated
@@ -686,8 +688,8 @@ public enum BrowserPageContext {
      * @param wffInstanceId the wffInstanceId which can be retried from the request
      *                      parameter in websocket connection.
      * @param message       the message received from websocket
-     * @since 2.1.0
      * @author WFF
+     * @since 2.1.0
      */
     public BrowserPage webSocketMessaged(final String wffInstanceId, final byte[] message) {
 
@@ -762,8 +764,8 @@ public enum BrowserPageContext {
      * @param browserPage
      * @return true if the given browserPage exists in the BrowserPageContext.
      * @throws NullValueException if the given browserPage instance is null
-     * @since 2.1.13
      * @author WFF
+     * @since 2.1.13
      */
     public boolean exists(final BrowserPage browserPage) throws NullValueException {
         if (browserPage == null) {
@@ -787,8 +789,8 @@ public enum BrowserPageContext {
      *         to the time set by {@link BrowserPageContext#enableAutoClean}
      *         methods.
      * @throws NullValueException if the given browserPage instance is null
-     * @since 3.0.16
      * @author WFF
+     * @since 3.0.16
      */
     public boolean existsAndValid(final BrowserPage browserPage) throws NullValueException {
         if (browserPage == null) {
@@ -797,7 +799,8 @@ public enum BrowserPageContext {
 
         final MinIntervalExecutor autoCleanTaskExecutor = this.autoCleanTaskExecutor;
         if (autoCleanTaskExecutor != null) {
-            if (browserPage.getLastClientAccessedTime() >= autoCleanTaskExecutor.minInterval()) {
+            if ((System.currentTimeMillis() - browserPage.getLastClientAccessedTime()) >= autoCleanTaskExecutor
+                    .minInterval()) {
                 return false;
             }
         }
