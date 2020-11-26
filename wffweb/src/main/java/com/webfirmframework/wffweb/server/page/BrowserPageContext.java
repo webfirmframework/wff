@@ -128,7 +128,39 @@ public enum BrowserPageContext {
     }
 
     /**
-     * gets the browserPage object for the given instance id.
+     * Gets the browserPage object for the given instance id. It also checks if the
+     * {@code browserPage} is valid.
+     * {@link BrowserPage#getBrowserPgeIfValid(httpSessionId, instanceId)} method is
+     * better than this method in terms of performance. <br>
+     * Note: this operation is not atomic.
+     *
+     * @param httpSessionId
+     * @param instanceId
+     * @return the {@code browserPage} object if exists and its internal idle time
+     *         is not greater than or equal to the time set by
+     *         {@link BrowserPageContext#enableAutoClean} methods otherwise
+     *         {@code null}.
+     * @since 3.0.16
+     * @author WFF
+     */
+    public BrowserPage getBrowserPageIfValid(final String httpSessionId, final String instanceId) {
+
+        final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.get(httpSessionId);
+        if (browserPages != null) {
+            final BrowserPage browserPage = browserPages.get(instanceId);
+            final MinIntervalExecutor autoCleanTaskExecutor = this.autoCleanTaskExecutor;
+            if (autoCleanTaskExecutor != null) {
+                if (browserPage.getLastClientAccessedTime() >= autoCleanTaskExecutor.minInterval()) {
+                    return null;
+                }
+            }
+            return browserPage;
+        }
+        return null;
+    }
+
+    /**
+     * Gets the browserPage object for the given instance id.
      * BrowserPage#getBrowserPge(httpSessionId, instanceId) method is better than
      * this method in terms of performance.
      *
@@ -139,6 +171,34 @@ public enum BrowserPageContext {
      */
     public BrowserPage getBrowserPage(final String instanceId) {
         return instanceIdBrowserPage.get(instanceId);
+    }
+
+    /**
+     * gets the browserPage object for the given instance id. It also checks if the
+     * {@code browserPage} is valid.
+     * {@link BrowserPage#getBrowserPgeIfValid(httpSessionId, instanceId)} method is
+     * better than this method in terms of performance.
+     *
+     * <br>
+     * Note: this operation is not atomic.
+     *
+     * @param instanceId
+     * @return the {@code browserPage} object if exists and its internal idle time
+     *         is not greater than or equal to the time set by
+     *         {@link BrowserPageContext#enableAutoClean} methods otherwise
+     *         {@code null}.
+     * @since 3.0.16
+     * @author WFF
+     */
+    public BrowserPage getBrowserPageIfValid(final String instanceId) {
+        final BrowserPage browserPage = instanceIdBrowserPage.get(instanceId);
+        final MinIntervalExecutor autoCleanTaskExecutor = this.autoCleanTaskExecutor;
+        if (autoCleanTaskExecutor != null) {
+            if (browserPage.getLastClientAccessedTime() >= autoCleanTaskExecutor.minInterval()) {
+                return null;
+            }
+        }
+        return browserPage;
     }
 
     /**
@@ -697,7 +757,7 @@ public enum BrowserPageContext {
     }
 
     /**
-     * Checks the existence of browserPage in this context.
+     * Checks the existence of {@code browserPage} in this context.
      *
      * @param browserPage
      * @return true if the given browserPage exists in the BrowserPageContext.
@@ -709,6 +769,39 @@ public enum BrowserPageContext {
         if (browserPage == null) {
             throw new NullValueException("browserPage instance cannot be null");
         }
+        return browserPage.equals(instanceIdBrowserPage.get(browserPage.getInstanceId()));
+    }
+
+    /**
+     * Checks the existence of valid {@code browserPage} in this context.
+     *
+     * <br>
+     * Note: this operation is not atomic. The validity is time dependent, even if
+     * the method returns true {@code browserPage} could be invalid in the next
+     * moment. However, if it returns false it is trust worthy.
+     *
+     * @param browserPage
+     * @return true if the given browserPage exists in the BrowserPageContext and
+     *         has not expired. The {@code browserPage} instance will be considered
+     *         as invalid if the internal idle time of it is greater than or equal
+     *         to the time set by {@link BrowserPageContext#enableAutoClean}
+     *         methods.
+     * @throws NullValueException if the given browserPage instance is null
+     * @since 3.0.16
+     * @author WFF
+     */
+    public boolean existsAndValid(final BrowserPage browserPage) throws NullValueException {
+        if (browserPage == null) {
+            throw new NullValueException("browserPage instance cannot be null");
+        }
+
+        final MinIntervalExecutor autoCleanTaskExecutor = this.autoCleanTaskExecutor;
+        if (autoCleanTaskExecutor != null) {
+            if (browserPage.getLastClientAccessedTime() >= autoCleanTaskExecutor.minInterval()) {
+                return false;
+            }
+        }
+
         return browserPage.equals(instanceIdBrowserPage.get(browserPage.getInstanceId()));
     }
 
