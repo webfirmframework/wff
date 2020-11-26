@@ -130,8 +130,8 @@ public enum BrowserPageContext {
     /**
      * Gets the browserPage object for the given instance id. It also checks if the
      * {@code browserPage} is valid.
-     * {@link BrowserPage#getBrowserPageIfValid(httpSessionId, instanceId)} method
-     * is better than this method in terms of performance. <br>
+     * {@link BrowserPageContext#getBrowserPageIfValid(httpSessionId, instanceId)}
+     * method is better than this method in terms of performance. <br>
      * Note: this operation is not atomic.
      *
      * @param httpSessionId
@@ -161,8 +161,8 @@ public enum BrowserPageContext {
 
     /**
      * Gets the browserPage object for the given instance id.
-     * BrowserPage#getBrowserPage(httpSessionId, instanceId) method is better than
-     * this method in terms of performance.
+     * BrowserPageContext#getBrowserPage(httpSessionId, instanceId) method is better
+     * than this method in terms of performance.
      *
      * @param instanceId
      * @return browser page object if it exists otherwise null.
@@ -176,8 +176,8 @@ public enum BrowserPageContext {
     /**
      * gets the browserPage object for the given instance id. It also checks if the
      * {@code browserPage} is valid.
-     * {@link BrowserPage#getBrowserPageIfValid(httpSessionId, instanceId)} method
-     * is better than this method in terms of performance.
+     * {@link BrowserPageContext#getBrowserPageIfValid(httpSessionId, instanceId)}
+     * method is better than this method in terms of performance.
      *
      * <br>
      * Note: this operation is not atomic.
