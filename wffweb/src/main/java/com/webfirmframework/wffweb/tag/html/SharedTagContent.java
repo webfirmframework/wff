@@ -222,8 +222,8 @@ public class SharedTagContent<T> {
             if (o == null || getClass() != o.getClass()) {
                 return false;
             }
-            final Content<?> content1 = (Content<?>) o;
-            return contentTypeHtml == content1.contentTypeHtml && Objects.equals(content, content1.content);
+            final Content<?> c = (Content<?>) o;
+            return contentTypeHtml == c.contentTypeHtml && Objects.equals(content, c.content);
         }
 
         @Override
