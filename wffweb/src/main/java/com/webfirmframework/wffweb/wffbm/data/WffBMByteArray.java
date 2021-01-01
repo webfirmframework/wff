@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 Web Firm Framework
+ * Copyright 2014-2021 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,7 +67,7 @@ public class WffBMByteArray extends ByteArrayOutputStream implements Serializabl
         super(bmArrayBytes.length);
         valueType = BMValueType.INTERNAL_BYTE;
         try {
-            initWffBMObject(bmArrayBytes, outer);
+            initWffBMObject(bmArrayBytes, false);
         } catch (final IOException e) {
             throw new WffRuntimeException(e.getMessage(), e);
         }

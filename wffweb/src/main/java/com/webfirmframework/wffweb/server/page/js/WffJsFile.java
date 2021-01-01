@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 Web Firm Framework
+ * Copyright 2014-2021 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -394,16 +394,15 @@ public enum WffJsFile {
 
     private String buildOptimizedFileContent() {
 
-        try {
+        try (final InputStream in = WffJsFile.class.getResourceAsStream(filename);
+                InputStreamReader isr = new InputStreamReader(in, StandardCharsets.UTF_8);
+                final BufferedReader reader = new BufferedReader(isr);) {
 
             // this might make java.nio.file.FileSystemNotFoundException in
             // production server.
             // final List<String> allLines = Files.readAllLines(
             // Paths.get(WffJsFile.class.getResource(filename).toURI()),
             // StandardCharsets.UTF_8);
-
-            final InputStream in = WffJsFile.class.getResourceAsStream(filename);
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
 
             // this will might java.nio.file.FileSystemNotFoundException in
             // production server.

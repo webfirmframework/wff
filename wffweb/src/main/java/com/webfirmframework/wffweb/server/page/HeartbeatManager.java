@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 Web Firm Framework
+ * Copyright 2014-2021 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,6 +55,11 @@ public final class HeartbeatManager {
     private final Runnable task;
 
     /**
+     * the last accessed time of this {@code HeartbeatManager} object
+     */
+    private volatile long lastAccessedTime;
+
+    /**
      * @param executor    the executor object to use thread from it.
      * @param minInterval in milliseconds. It keeps the minimum interval between the
      *                    task execution.
@@ -64,9 +69,13 @@ public final class HeartbeatManager {
     public HeartbeatManager(final Executor executor, final long minInterval, final Runnable task) {
         this.executor = executor;
         this.minInterval = minInterval;
+        lastAccessedTime = System.currentTimeMillis();
         this.task = task;
         if (task == null) {
             throw new NullValueException("task cannot be null");
+        }
+        if (minInterval < 0) {
+            throw new IllegalArgumentException("minInterval cannot be less than 0");
         }
     }
 
@@ -83,6 +92,9 @@ public final class HeartbeatManager {
         if (task == null) {
             throw new NullValueException("task cannot be null");
         }
+        if (minInterval < 0) {
+            throw new IllegalArgumentException("minInterval cannot be less than 0");
+        }
     }
 
     /**
@@ -96,6 +108,7 @@ public final class HeartbeatManager {
 
     private void runAsync(final Runnable runnable) {
         final long currentTime = System.currentTimeMillis();
+        lastAccessedTime = currentTime;
         if ((currentTime - lastExecTime) >= minInterval) {
             if (taskQ.isEmpty()) {
                 taskQ.offer(runnable);
@@ -165,4 +178,29 @@ public final class HeartbeatManager {
             }
         }
     }
+
+    /**
+     * @param lastAccessedTime
+     * @since 3.0.16
+     */
+    final void setLastAccessedTime(final long timeMillis) {
+        lastAccessedTime = timeMillis;
+    }
+
+    /**
+     * @return the lastAccessedTime
+     * @since 3.0.16
+     */
+    long getLastAccessedTime() {
+        return lastAccessedTime;
+    }
+
+    /**
+     * @return the minInterval
+     * @since 3.0.16
+     */
+    long minInterval() {
+        return minInterval;
+    }
+
 }

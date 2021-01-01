@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 Web Firm Framework
+ * Copyright 2014-2021 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -417,7 +417,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
             // sharedObject = new AbstractHtml5SharedObject(this);
             // }
             // this.children.addAll(children);
-            appendChildrenLockless(children);
+            if (children != null) {
+                appendChildrenLockless(children);
+            }
             // childAppended(parent, this);
         } finally {
             for (final Lock lock : locks) {

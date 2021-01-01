@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 Web Firm Framework
+ * Copyright 2014-2021 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package com.webfirmframework.wffweb.server.page.action;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 import com.webfirmframework.wffweb.js.JsUtil;
 import com.webfirmframework.wffweb.server.page.Task;
@@ -54,7 +55,7 @@ public enum BrowserPageAction {
      * @author WFF
      */
     public byte[] getActionBytes() {
-        return actionBytes;
+        return Arrays.copyOf(actionBytes, actionBytes.length);
     }
 
     /**

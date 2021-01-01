@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 Web Firm Framework
+ * Copyright 2014-2021 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,13 @@ import com.webfirmframework.wffweb.server.page.ClientTasksWrapper;
 import com.webfirmframework.wffweb.tag.html.SharedTagContent.ContentFormatter;
 
 /**
- * NB: only for internal use
+ * Note: this class has a natural ordering that is inconsistent with equals.
+ * <br>
+ * NB: only for internal use. No need to keep equals and compareTo contract by
+ * overriding {@code equals} and {@code hashcode} methods, if we refer
+ * {@code BigDecimal} we can see it is just based on the requirement. However,
+ * this object should be unique for a particular {@code SharedTagContent} object
+ * and should be used only in its scope.
  *
  * @author WFF
  * @since 3.0.6
@@ -29,7 +35,7 @@ import com.webfirmframework.wffweb.tag.html.SharedTagContent.ContentFormatter;
  */
 final class InsertedTagData<T> implements Comparable<InsertedTagData<T>> {
 
-    private final Long ordinal;
+    private final long ordinal;
 
     private final ContentFormatter<T> formatter;
 
@@ -74,7 +80,7 @@ final class InsertedTagData<T> implements Comparable<InsertedTagData<T>> {
 
     @Override
     public int compareTo(final InsertedTagData<T> o) {
-        return this.ordinal.compareTo(o.ordinal);
+        return Long.compare(ordinal, o.ordinal);
     }
 
 }
