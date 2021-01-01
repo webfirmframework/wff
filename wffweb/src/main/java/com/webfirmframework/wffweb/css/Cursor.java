@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 Web Firm Framework
+ * Copyright 2014-2021 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -362,7 +362,10 @@ public class Cursor extends AbstractCssProperty<Cursor> implements StateChangeIn
      * @author WFF
      */
     public String[] getCursorUrls() {
-        return cursorUrls;
+        if (cursorUrls != null) {
+            return Arrays.copyOf(cursorUrls, cursorUrls.length);
+        }
+        return null;
     }
 
     /**

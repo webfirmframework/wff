@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 Web Firm Framework
+ * Copyright 2014-2021 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -740,7 +740,7 @@ public class AttributeRegistry {
                 try {
                     final Object[] initargs = { null };
                     newInstance = (AbstractAttribute) attrClass.getConstructor(String.class).newInstance(initargs);
-                } catch (final Exception e1) {
+                } catch (final InvocationTargetException e1) {
                     try {
                         newInstance = (AbstractAttribute) attrClass.getConstructor(int.class).newInstance(1);
                     } catch (final Exception e2) {
@@ -794,7 +794,7 @@ public class AttributeRegistry {
                 final Object[] initargs = { "1" };
                 newInstance = (AbstractAttribute) attrClass.getConstructor(String.class).newInstance(initargs);
                 expectedHtmlString += "\"1\"";
-            } catch (final Exception e) {
+            } catch (final InvocationTargetException e) {
 
                 try {
                     final Object[] initargs = { "true" };

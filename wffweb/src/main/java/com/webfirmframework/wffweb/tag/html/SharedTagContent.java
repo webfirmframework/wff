@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 Web Firm Framework
+ * Copyright 2014-2021 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -222,8 +222,8 @@ public class SharedTagContent<T> {
             if (o == null || getClass() != o.getClass()) {
                 return false;
             }
-            final Content<?> content1 = (Content<?>) o;
-            return contentTypeHtml == content1.contentTypeHtml && Objects.equals(content, content1.content);
+            final Content<?> c = (Content<?>) o;
+            return contentTypeHtml == c.contentTypeHtml && Objects.equals(content, c.content);
         }
 
         @Override

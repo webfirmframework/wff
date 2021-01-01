@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 Web Firm Framework
+ * Copyright 2014-2021 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -180,6 +180,8 @@ public abstract class BrowserPage implements Serializable {
 
     private Executor executor;
 
+    private volatile long lastClientAccessedTime = System.currentTimeMillis();
+
     // to make it GC friendly, it is made as static
     private static final ThreadLocal<PayloadProcessor> PALYLOAD_PROCESSOR_TL = new ThreadLocal<>();
 
@@ -277,6 +279,22 @@ public abstract class BrowserPage implements Serializable {
         // remove all
         while (wsListeners.remove(removedListener)) {
         }
+
+        wsListener = wsListeners.peek();
+        if (rootTag != null) {
+            rootTag.getSharedObject().setActiveWSListener(wsListener != null, ACCESS_OBJECT);
+        }
+    }
+
+    /**
+     * removes all WebSocket listeners added
+     *
+     * @since 3.0.16
+     * @author WFF
+     */
+    final void clearWSListeners() {
+        // remove all
+        wsListeners.clear();
 
         wsListener = wsListeners.peek();
         if (rootTag != null) {
@@ -453,11 +471,29 @@ public abstract class BrowserPage implements Serializable {
     }
 
     /**
+     * @return the time of websocket message received from client, websocket opened,
+     *         or the object created time.
+     * @since 3.0.16
+     */
+    final long getLastClientAccessedTime() {
+        return lastClientAccessedTime;
+    }
+
+    /**
+     * @param timeMillis
+     * @since 3.0.16
+     */
+    final void setLastClientAccessedTime(final long timeMillis) {
+        lastClientAccessedTime = timeMillis;
+    }
+
+    /**
      * @param message the bytes the received in onmessage
      * @since 2.1.0
      * @author WFF
      */
     public final void webSocketMessaged(final byte[] message) {
+        lastClientAccessedTime = System.currentTimeMillis();
         // minimum number of an empty bm message length is 4
         // below that length is not a valid bm message so check
         // message.length < 4

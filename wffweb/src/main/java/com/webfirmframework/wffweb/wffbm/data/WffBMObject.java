@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 Web Firm Framework
+ * Copyright 2014-2021 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -334,8 +335,21 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
 
     }
 
+    /**
+     * @return the bmBytes
+     * @deprecated use {@link WffBMObject#getBMBytes()}
+     */
+    @Deprecated
     public byte[] getbMBytes() {
-        return bMBytes;
+        return getBMBytes();
+    }
+
+    /**
+     * @return the bmBytes
+     * @since 3.0.16
+     */
+    public byte[] getBMBytes() {
+        return Arrays.copyOf(bMBytes, bMBytes.length);
     }
 
     public boolean isOuter() {
