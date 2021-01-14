@@ -19,8 +19,8 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
-import com.webfirmframework.wffweb.js.JsUtil;
 import com.webfirmframework.wffweb.server.page.Task;
+import com.webfirmframework.wffweb.util.StringUtil;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 import com.webfirmframework.wffweb.util.data.NameValue;
 
@@ -113,7 +113,7 @@ public enum BrowserPageAction {
         // method accross multiple versions.
         // handling JsUtil.toDynamicJs at server side is much better otherwise if the
         // script is huge the client browser page might get frozen.
-        values[taskValue.length] = JsUtil.toDynamicJs(js).getBytes(StandardCharsets.UTF_8);
+        values[taskValue.length] = StringUtil.strip(js).getBytes(StandardCharsets.UTF_8);
 
         taskNameValue.setValues(values);
 

@@ -51,7 +51,6 @@ import com.webfirmframework.wffweb.NotRenderedException;
 import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.PushFailedException;
 import com.webfirmframework.wffweb.WffRuntimeException;
-import com.webfirmframework.wffweb.js.JsUtil;
 import com.webfirmframework.wffweb.server.page.js.WffJsFile;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.Html;
@@ -71,6 +70,7 @@ import com.webfirmframework.wffweb.tag.html.programming.Script;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 import com.webfirmframework.wffweb.tag.repository.TagRepository;
 import com.webfirmframework.wffweb.util.HashUtil;
+import com.webfirmframework.wffweb.util.StringUtil;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 import com.webfirmframework.wffweb.util.data.NameValue;
 import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
@@ -736,7 +736,7 @@ public abstract class BrowserPage implements Serializable {
 
                         // handling JsUtil.toDynamicJs at server side is much better otherwise if the
                         // script is huge the client browser page might get frozen.
-                        nameValue.setName(JsUtil.toDynamicJs(jsPostFunctionBody).getBytes(StandardCharsets.UTF_8));
+                        nameValue.setName(StringUtil.strip(jsPostFunctionBody).getBytes(StandardCharsets.UTF_8));
 
                         if (returnedObject != null) {
                             nameValue.setValues(new byte[][] { returnedObject.buildBytes(true) });

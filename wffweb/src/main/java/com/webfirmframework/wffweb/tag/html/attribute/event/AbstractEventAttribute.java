@@ -18,9 +18,9 @@ package com.webfirmframework.wffweb.tag.html.attribute.event;
 
 import java.util.logging.Logger;
 
-import com.webfirmframework.wffweb.js.JsUtil;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
+import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
  * All event attributes will be extend by this class. It contains some common
@@ -400,7 +400,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
 
     private static String getPreparedJsPreFunctionBody(final String jsFunctionBody) {
 
-        final String functionBody = JsUtil.toDynamicJs(jsFunctionBody);
+        final String functionBody = StringUtil.strip(jsFunctionBody);
         final StringBuilder builder = new StringBuilder(26);
 
         builder.append("function(event,source,action){").append(functionBody);
@@ -413,7 +413,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
 
     private static String getPreparedJsFilterFunctionBody(final String jsFunctionBody) {
 
-        final String functionBody = JsUtil.toDynamicJs(jsFunctionBody);
+        final String functionBody = StringUtil.strip(jsFunctionBody);
         final StringBuilder builder = new StringBuilder(26);
 
         builder.append("function(event,source){").append(functionBody);
