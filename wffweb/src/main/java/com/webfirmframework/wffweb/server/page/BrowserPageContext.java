@@ -331,6 +331,7 @@ public enum BrowserPageContext {
         final BrowserPage bp = bpRef.get();
         if (bp != null) {
             try {
+            	bp.deleteExternalDriveDir();
                 bp.removedFromContext();
             } catch (final Throwable e) {
                 if (LOGGER.isLoggable(Level.WARNING)) {
@@ -397,6 +398,7 @@ public enum BrowserPageContext {
                     final BrowserPage bp = bpRef.get();
                     if (bp != null) {
                         try {
+                        	bp.deleteExternalDriveDir();
                             bp.removedFromContext();
                         } catch (final Throwable e) {
                             if (LOGGER.isLoggable(Level.WARNING)) {
@@ -645,6 +647,7 @@ public enum BrowserPageContext {
                     instanceIdBPForWS.remove(instanceId);
                     if (removedBrowserPage != null) {
                         try {
+                        	removedBrowserPage.deleteExternalDriveDir();
                             removedBrowserPage.removedFromContext();
                         } catch (final Throwable e) {
                             if (LOGGER.isLoggable(Level.WARNING)) {
@@ -739,6 +742,7 @@ public enum BrowserPageContext {
                 final BrowserPage bp = bpRef.get();
                 if (bp != null) {
                     try {
+                    	bp.deleteExternalDriveDir();
                         bp.removedFromContext();
                     } catch (final Throwable e) {
                         if (LOGGER.isLoggable(Level.WARNING)) {
