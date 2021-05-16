@@ -70,6 +70,7 @@ public class ExternalDriveClientTasksWrapperQueueTest {
 
 			q.deleteDir();
 		} catch (IOException e) {
+			e.printStackTrace();
 			Assert.fail("ExternalDriveClientTasksWrapperQueue failed due to IOException");
 		}
 	}

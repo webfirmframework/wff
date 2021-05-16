@@ -35,38 +35,43 @@ public class ExternalDriveByteArrayQueueTest {
 	public void testExternalDriveByteArrayQueue() throws IOException, InterruptedException, ExecutionException {
 		// String defaultBaseDir = System.getProperty("java.io.tmpdir");
 
-		final ExternalDriveByteArrayQueue q = new ExternalDriveByteArrayQueue(
-		        Files.createTempDirectory(this.getClass().getSimpleName()).toString(), dirName, "in");
+		try {
+			final ExternalDriveByteArrayQueue q = new ExternalDriveByteArrayQueue(
+			        Files.createTempDirectory(this.getClass().getSimpleName()).toString(), dirName, "in");
 
-		List<Integer> expectedResult = new ArrayList<>(100);
+			List<Integer> expectedResult = new ArrayList<>(100);
 
-		List<CompletableFuture<Boolean>> results = new ArrayList<>();
-		for (int i = 0; i < 100; i++) {
-			final int count = i;
-			expectedResult.add(count);
-			CompletableFuture<Boolean> supplyAsync = CompletableFuture.supplyAsync(() -> {
-				q.offer((String.valueOf(count)).getBytes(StandardCharsets.UTF_8));
-				return true;
-			});
-			results.add(supplyAsync);
+			List<CompletableFuture<Boolean>> results = new ArrayList<>();
+			for (int i = 0; i < 100; i++) {
+				final int count = i;
+				expectedResult.add(count);
+				CompletableFuture<Boolean> supplyAsync = CompletableFuture.supplyAsync(() -> {
+					q.offer((String.valueOf(count)).getBytes(StandardCharsets.UTF_8));
+					return true;
+				});
+				results.add(supplyAsync);
+			}
+
+			for (CompletableFuture<Boolean> completableFuture : results) {
+				completableFuture.get();
+			}
+
+			List<Integer> actualResult = new ArrayList<>(100);
+
+			byte[] polled = null;
+			while ((polled = q.poll()) != null) {
+				actualResult.add(Integer.parseInt(new String(polled, StandardCharsets.UTF_8)));
+			}
+
+			Collections.sort(actualResult);
+
+			q.deleteDir();
+
+			Assert.assertArrayEquals(expectedResult.toArray(), actualResult.toArray());
+		} catch (IOException e) {
+			e.printStackTrace();
+			Assert.fail("testExternalDriveByteArrayQueue failed due to IOException");
 		}
-
-		for (CompletableFuture<Boolean> completableFuture : results) {
-			completableFuture.get();
-		}
-
-		List<Integer> actualResult = new ArrayList<>(100);
-
-		byte[] polled = null;
-		while ((polled = q.poll()) != null) {
-			actualResult.add(Integer.parseInt(new String(polled, StandardCharsets.UTF_8)));
-		}
-
-		Collections.sort(actualResult);
-
-		q.deleteDir();
-
-		Assert.assertArrayEquals(expectedResult.toArray(), actualResult.toArray());
 	}
 	
 
