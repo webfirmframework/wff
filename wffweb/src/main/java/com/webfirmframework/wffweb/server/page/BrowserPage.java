@@ -275,7 +275,7 @@ public abstract class BrowserPage implements Serializable {
 
 		if (externalDrivePath != null) {
 			try {
-				return new ExternalDriveClientTasksWrapperDeque(externalDrivePath, instanceId, subDir);
+				return new ExternalDriveClientTasksWrapperQueue(externalDrivePath, instanceId, subDir);
 			} catch (IOException e) {
 				LOGGER.severe(
 				        "The given path by useExternalDrivePath is invalid or it doesn't have read/write permission.");

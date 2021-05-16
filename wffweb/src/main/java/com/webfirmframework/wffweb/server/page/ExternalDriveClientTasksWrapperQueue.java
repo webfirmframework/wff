@@ -25,8 +25,7 @@ import java.util.Collection;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.Queue;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 import java.util.logging.Level;
@@ -42,9 +41,9 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  * @since 3.0.18
  *
  */
-class ExternalDriveClientTasksWrapperDeque implements Deque<ClientTasksWrapper> {
+class ExternalDriveClientTasksWrapperQueue implements Queue<ClientTasksWrapper> {
 
-	private static final Logger LOGGER = Logger.getLogger(ExternalDriveClientTasksWrapperDeque.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(ExternalDriveClientTasksWrapperQueue.class.getName());
 
 	private static final String fileNamePrefix = "";
 
@@ -60,9 +59,7 @@ class ExternalDriveClientTasksWrapperDeque implements Deque<ClientTasksWrapper> 
 
 	private final String subDirName;
 
-	private final Deque<Long> firstUnreadIds = new ConcurrentLinkedDeque<>();
-
-	ExternalDriveClientTasksWrapperDeque(final String path, final String dirName, final String subDirName)
+	ExternalDriveClientTasksWrapperQueue(final String path, final String dirName, final String subDirName)
 	        throws IOException {
 		basePath = path;
 		this.dirName = dirName;
@@ -114,82 +111,45 @@ class ExternalDriveClientTasksWrapperDeque implements Deque<ClientTasksWrapper> 
 	 */
 	@Override
 	public ClientTasksWrapper poll() {
-
-		final Long unreadId = firstUnreadIds.poll();
-		if (unreadId != null) {
-			return getByReadId(unreadId);
-		}
-
 		if (readId.get() < writeId.get()) {
 			final long id = readId.incrementAndGet();
-			return getByReadId(id);
-		}
+			final Path filePath = Paths.get(basePath, dirName, subDirName, fileNamePrefix + id + fileNameSuffix);
+			if (Files.exists(filePath)) {
 
-		return null;
-	}
+				try {
 
-	private ClientTasksWrapper getByReadId(final long id) {
-		final Path filePath = Paths.get(basePath, dirName, subDirName, fileNamePrefix + id + fileNameSuffix);
-		if (Files.exists(filePath)) {
+					final List<NameValue> nameValues = WffBinaryMessageUtil.VERSION_1
+					        .parse(Files.readAllBytes(filePath));
+					final NameValue nameValue = nameValues.get(0);
 
-			try {
+					final byte[][] byteArrayTasks = nameValue.getValues();
 
-				final List<NameValue> nameValues = WffBinaryMessageUtil.VERSION_1.parse(Files.readAllBytes(filePath));
-				final NameValue nameValue = nameValues.get(0);
+					final ByteBuffer[] byteBufferTasks = new ByteBuffer[byteArrayTasks.length];
+					for (int i = 0; i < byteArrayTasks.length; i++) {
+						byteBufferTasks[i] = ByteBuffer.wrap(byteArrayTasks[i]);
+					}
 
-				final byte[][] byteArrayTasks = nameValue.getValues();
+					Files.deleteIfExists(filePath);
 
-				final ByteBuffer[] byteBufferTasks = new ByteBuffer[byteArrayTasks.length];
-				for (int i = 0; i < byteArrayTasks.length; i++) {
-					byteBufferTasks[i] = ByteBuffer.wrap(byteArrayTasks[i]);
+					return new ClientTasksWrapper(id, byteBufferTasks);
+				} catch (final IOException e) {
+					// NOP
+					LOGGER.log(Level.SEVERE, e.getMessage(), e);
 				}
-
-				Files.deleteIfExists(filePath);
-
-				return new ClientTasksWrapper(id, byteBufferTasks);
-			} catch (final IOException e) {
-				// NOP
-				LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			}
 		}
+
 		return null;
-	}
-
-	@Override
-	public ClientTasksWrapper pollFirst() {
-		return poll();
-	}
-
-	@Override
-	public boolean offerLast(final ClientTasksWrapper tasksWrapper) {
-		return offerAt(tasksWrapper, writeId.incrementAndGet());
-	}
-
-	@Override
-	public boolean offerFirst(final ClientTasksWrapper tasksWrapper) {
-		final Long queueEntryId = tasksWrapper.queueEntryId();
-		firstUnreadIds.offer(queueEntryId);
-		return offerAt(tasksWrapper, queueEntryId);
 	}
 
 	@Override
 	public boolean offer(final ClientTasksWrapper tasksWrapper) {
-		return offerLast(tasksWrapper);
-	}
-
-	@Override
-	public void addFirst(final ClientTasksWrapper tasksWrapper) {
-		offerFirst(tasksWrapper);
-	}
-
-	@Override
-	public void addLast(final ClientTasksWrapper tasksWrapper) {
-		offerLast(tasksWrapper);
+		return offerAt(tasksWrapper, writeId.incrementAndGet());
 	}
 
 	@Override
 	public boolean add(final ClientTasksWrapper tasksWrapper) {
-		return offerLast(tasksWrapper);
+		return offerAt(tasksWrapper, writeId.incrementAndGet());
 	}
 
 	private boolean offerAt(final ClientTasksWrapper tasksWrapper, final long id) {
@@ -222,21 +182,12 @@ class ExternalDriveClientTasksWrapperDeque implements Deque<ClientTasksWrapper> 
 
 	@Override
 	public boolean isEmpty() {
-		return readId.get() == writeId.get() && firstUnreadIds.isEmpty();
+		return readId.get() == writeId.get();
 	}
 
 	@Override
 	public int size() {
-		return ((int) (writeId.get() - readId.get())) + firstUnreadIds.size();
-	}
-
-	@Override
-	public ClientTasksWrapper pop() {
-		final ClientTasksWrapper e = poll();
-		if (e == null) {
-			throw new NoSuchElementException();
-		}
-		return e;
+		return (int) (writeId.get() - readId.get());
 	}
 
 	@Override
@@ -303,61 +254,6 @@ class ExternalDriveClientTasksWrapperDeque implements Deque<ClientTasksWrapper> 
 
 	@Override
 	public ClientTasksWrapper peek() {
-		throw new MethodNotImplementedException();
-	}
-
-	@Override
-	public ClientTasksWrapper removeFirst() {
-		throw new MethodNotImplementedException();
-	}
-
-	@Override
-	public ClientTasksWrapper removeLast() {
-		throw new MethodNotImplementedException();
-	}
-
-	@Override
-	public ClientTasksWrapper pollLast() {
-		throw new MethodNotImplementedException();
-	}
-
-	@Override
-	public ClientTasksWrapper getFirst() {
-		throw new MethodNotImplementedException();
-	}
-
-	@Override
-	public ClientTasksWrapper getLast() {
-		throw new MethodNotImplementedException();
-	}
-
-	@Override
-	public ClientTasksWrapper peekFirst() {
-		throw new MethodNotImplementedException();
-	}
-
-	@Override
-	public ClientTasksWrapper peekLast() {
-		throw new MethodNotImplementedException();
-	}
-
-	@Override
-	public boolean removeFirstOccurrence(final Object o) {
-		throw new MethodNotImplementedException();
-	}
-
-	@Override
-	public boolean removeLastOccurrence(final Object o) {
-		throw new MethodNotImplementedException();
-	}
-
-	@Override
-	public void push(final ClientTasksWrapper e) {
-		throw new MethodNotImplementedException();
-	}
-
-	@Override
-	public Iterator<ClientTasksWrapper> descendingIterator() {
 		throw new MethodNotImplementedException();
 	}
 
