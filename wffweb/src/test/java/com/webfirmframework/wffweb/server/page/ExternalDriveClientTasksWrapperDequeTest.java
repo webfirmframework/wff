@@ -27,48 +27,51 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class ExternalDriveClientTasksWrapperDequeTest {
-	
+
 	private static final String dirName = "a3f9540a-026f-460a-a050-45303920d4f0";
 
 	@Test
-	public void testExternalDriveClientTasksWrapperDeque() throws IOException {
-		ExternalDriveClientTasksWrapperDeque q = new ExternalDriveClientTasksWrapperDeque(
-				Files.createTempDirectory(this.getClass().getSimpleName()).toString(),
-		        dirName, "in");
-		
-		List<String> expectedResult = new ArrayList<>(100);
-		
-		for (int i = 0; i < 100; i++) {
-			String first = "first string " + i;
-			String second = "second string " + i;
-			String third = "third string " + i;
-			String fourth = "fourth string " + i;
-			ClientTasksWrapper wrapper = new ClientTasksWrapper(
-					ByteBuffer.wrap(first.getBytes(StandardCharsets.UTF_8)), 
-					ByteBuffer.wrap(second.getBytes(StandardCharsets.UTF_8)),
-					ByteBuffer.wrap(third.getBytes(StandardCharsets.UTF_8)),
-					ByteBuffer.wrap(fourth.getBytes(StandardCharsets.UTF_8)));
-			
-			q.offerLast(wrapper);
-			expectedResult.add(first);
-			expectedResult.add(second);
-			expectedResult.add(third);
-			expectedResult.add(fourth);
-		}
-		
-		List<String> actualResult = new ArrayList<>(100);
-		
-		ClientTasksWrapper polled = null;
-		while ((polled = q.poll()) != null) {
-			AtomicReferenceArray<ByteBuffer> tasks = polled.tasks();
-			for (int i = 0; i < tasks.length(); i++) {
-				actualResult.add(new String(tasks.get(i).array(), StandardCharsets.UTF_8));
+	public void testExternalDriveClientTasksWrapperDeque() {
+		try {
+			ExternalDriveClientTasksWrapperDeque q = new ExternalDriveClientTasksWrapperDeque(
+			        Files.createTempDirectory(this.getClass().getSimpleName()).toString(), dirName, "in");
+
+			List<String> expectedResult = new ArrayList<>(100);
+
+			for (int i = 0; i < 100; i++) {
+				String first = "first string " + i;
+				String second = "second string " + i;
+				String third = "third string " + i;
+				String fourth = "fourth string " + i;
+				ClientTasksWrapper wrapper = new ClientTasksWrapper(
+				        ByteBuffer.wrap(first.getBytes(StandardCharsets.UTF_8)),
+				        ByteBuffer.wrap(second.getBytes(StandardCharsets.UTF_8)),
+				        ByteBuffer.wrap(third.getBytes(StandardCharsets.UTF_8)),
+				        ByteBuffer.wrap(fourth.getBytes(StandardCharsets.UTF_8)));
+
+				q.offerLast(wrapper);
+				expectedResult.add(first);
+				expectedResult.add(second);
+				expectedResult.add(third);
+				expectedResult.add(fourth);
 			}
+
+			List<String> actualResult = new ArrayList<>(100);
+
+			ClientTasksWrapper polled = null;
+			while ((polled = q.poll()) != null) {
+				AtomicReferenceArray<ByteBuffer> tasks = polled.tasks();
+				for (int i = 0; i < tasks.length(); i++) {
+					actualResult.add(new String(tasks.get(i).array(), StandardCharsets.UTF_8));
+				}
+			}
+
+			Assert.assertArrayEquals(expectedResult.toArray(), actualResult.toArray());
+
+			q.deleteDir();
+		} catch (IOException e) {
+			Assert.fail("testExternalDriveClientTasksWrapperDeque failed due to IOException");
 		}
-		
-		Assert.assertArrayEquals(expectedResult.toArray(), actualResult.toArray());
-		
-		q.deleteDir();
 	}
-	
+
 }
