@@ -125,10 +125,12 @@ public abstract class BrowserPage implements Serializable {
 
 	// ConcurrentLinkedQueue give better performance than ConcurrentLinkedDeque
 	// on benchmark
+	// NB: not all methods of Queue is implemented, ensure before using it.
 	private final Deque<ClientTasksWrapper> wffBMBytesQueue = buildClientTasksWrapperDeque("out_main");
 
 	// ConcurrentLinkedQueue give better performance than ConcurrentLinkedDeque
 	// on benchmark
+	// NB: not all methods of Queue is implemented, ensure before using it.
 	private final Queue<ClientTasksWrapper> wffBMBytesHoldPushQueue = buildClientTasksWrapperQueue("out_hp");
 
 	// there will be only one thread waiting for the lock so fairness must be
@@ -138,7 +140,8 @@ public abstract class BrowserPage implements Serializable {
 
 	// ConcurrentLinkedQueue give better performance than ConcurrentLinkedDeque
 	// on benchmark
-	private final Queue<byte[]> taskFromClientQ = buildByteArrayQ();
+	// NB: not all methods of Queue is implemented, ensure before using it.
+	private final Queue<byte[]> taskFromClientQ = buildByteArrayQ("in");
 
 	private static final Security ACCESS_OBJECT = new Security();
 
@@ -232,11 +235,11 @@ public abstract class BrowserPage implements Serializable {
 	 * @return the Queue
 	 * @since 3.0.18
 	 */
-	private Queue<byte[]> buildByteArrayQ() {
+	private Queue<byte[]> buildByteArrayQ(String subDirName) {
 
 		if (externalDrivePath != null) {
 			try {
-				return new ExternalDriveByteArrayQueue(externalDrivePath, instanceId, "in");
+				return new ExternalDriveByteArrayQueue(externalDrivePath, instanceId, subDirName);
 			} catch (IOException e) {
 				LOGGER.severe(
 				        "The given path by useExternalDrivePath is invalid or it doesn't have read/write permission.");
@@ -247,7 +250,7 @@ public abstract class BrowserPage implements Serializable {
 	}
 
 	/**
-	 * @return the Queue
+	 * @return the Deque
 	 * @since 3.0.18
 	 */
 	private Deque<ClientTasksWrapper> buildClientTasksWrapperDeque(final String subDir) {

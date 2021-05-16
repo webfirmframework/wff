@@ -139,6 +139,11 @@ class ExternalDriveByteArrayQueue implements Queue<byte[]> {
 	}
 
 	@Override
+	public boolean add(final byte[] bytes) {
+		return offer(bytes);
+	}
+
+	@Override
 	public boolean isEmpty() {
 		return readId.get() == writeId.get();
 	}
@@ -146,6 +151,13 @@ class ExternalDriveByteArrayQueue implements Queue<byte[]> {
 	@Override
 	public int size() {
 		return (int) (writeId.get() - readId.get());
+	}
+
+	@Override
+	public void clear() {
+		while ((poll()) != null) {
+//NOP
+		}
 	}
 
 	@Override
@@ -190,17 +202,6 @@ class ExternalDriveByteArrayQueue implements Queue<byte[]> {
 
 	@Override
 	public boolean retainAll(final Collection<?> c) {
-		throw new MethodNotImplementedException();
-	}
-
-	@Override
-	public void clear() {
-		throw new MethodNotImplementedException();
-
-	}
-
-	@Override
-	public boolean add(final byte[] e) {
 		throw new MethodNotImplementedException();
 	}
 

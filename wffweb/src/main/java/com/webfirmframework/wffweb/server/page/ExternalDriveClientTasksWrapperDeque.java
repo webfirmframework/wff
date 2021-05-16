@@ -158,18 +158,23 @@ class ExternalDriveClientTasksWrapperDeque implements Deque<ClientTasksWrapper> 
 	}
 
 	@Override
-	public boolean offer(final ClientTasksWrapper e) {
-		return offerLast(e);
+	public boolean offer(final ClientTasksWrapper tasksWrapper) {
+		return offerLast(tasksWrapper);
 	}
 
 	@Override
-	public void addFirst(final ClientTasksWrapper e) {
-		offerFirst(e);
+	public void addFirst(final ClientTasksWrapper tasksWrapper) {
+		offerFirst(tasksWrapper);
 	}
 
 	@Override
-	public void addLast(final ClientTasksWrapper e) {
-		offerLast(e);
+	public void addLast(final ClientTasksWrapper tasksWrapper) {
+		offerLast(tasksWrapper);
+	}
+
+	@Override
+	public boolean add(final ClientTasksWrapper tasksWrapper) {
+		return offerLast(tasksWrapper);
 	}
 
 	private boolean offerAt(final ClientTasksWrapper tasksWrapper, final long id) {
@@ -220,6 +225,18 @@ class ExternalDriveClientTasksWrapperDeque implements Deque<ClientTasksWrapper> 
 	}
 
 	@Override
+	public void clear() {
+		while ((poll()) != null) {
+			// NOP
+		}
+	}
+
+	@Override
+	public boolean addAll(final Collection<? extends ClientTasksWrapper> taskWrappers) {
+		throw new MethodNotImplementedException();
+	}
+
+	@Override
 	public boolean contains(final Object o) {
 		throw new MethodNotImplementedException();
 	}
@@ -250,27 +267,12 @@ class ExternalDriveClientTasksWrapperDeque implements Deque<ClientTasksWrapper> 
 	}
 
 	@Override
-	public boolean addAll(final Collection<? extends ClientTasksWrapper> c) {
-		throw new MethodNotImplementedException();
-	}
-
-	@Override
 	public boolean removeAll(final Collection<?> c) {
 		throw new MethodNotImplementedException();
 	}
 
 	@Override
 	public boolean retainAll(final Collection<?> c) {
-		throw new MethodNotImplementedException();
-	}
-
-	@Override
-	public void clear() {
-		throw new MethodNotImplementedException();
-	}
-
-	@Override
-	public boolean add(final ClientTasksWrapper e) {
 		throw new MethodNotImplementedException();
 	}
 
