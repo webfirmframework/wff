@@ -132,6 +132,7 @@ import com.webfirmframework.wffweb.css.file.CssFileTest;
 import com.webfirmframework.wffweb.js.JsUtilTest;
 import com.webfirmframework.wffweb.lang.UnicodeStringTest;
 import com.webfirmframework.wffweb.security.object.SecurityClassConstantsTest;
+import com.webfirmframework.wffweb.server.page.ExternalDriveByteArrayQueueTest;
 import com.webfirmframework.wffweb.server.page.TaskTest;
 import com.webfirmframework.wffweb.server.page.js.WffJsFileTest;
 import com.webfirmframework.wffweb.streamer.WffBinaryMessageOutputStreamerTest;
@@ -211,7 +212,7 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObjectArrayTest;
         AbstractHtml5SharedObjectTest.class, ByteBufferUtilTest.class, UnicodeRangeTest.class, DataWffIdTest.class,
         SharedTagContentTest.class, CssColorNameTest.class, TaskTest.class, WffJsFileTest.class,
         StringBuilderUtilTest.class, SecurityClassConstantsTest.class, ReentrantStampedLockTest.class,
-        UnicodeStringTest.class })
+        UnicodeStringTest.class, ExternalDriveByteArrayQueueTest.class, ExternalDriveByteArrayQueueTest.class })
 public class AllTests {
 
 }
