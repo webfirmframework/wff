@@ -75,8 +75,8 @@ class ExternalDriveByteArrayQueue implements Queue<byte[]> {
 		final Path dirPath = Paths.get(basePath, dirName);
 		if (Files.exists(dirPath)) {
 			try {
-				final Deque<Path> q = new ArrayDeque<>(Files.list(dirPath).collect(Collectors.toList()));
-				Path each = null;
+				final Deque<Path> q = Files.list(dirPath).collect(Collectors.toCollection(ArrayDeque::new));
+				Path each;
 				while ((each = q.poll()) != null) {
 					if (Files.isDirectory(each)) {
 						final List<Path> paths = Files.list(each).collect(Collectors.toList());
@@ -101,22 +101,23 @@ class ExternalDriveByteArrayQueue implements Queue<byte[]> {
 		}
 	}
 
-	/**
-	 * NB: this method should be used by only one thread at a time.
-	 */
 	@Override
 	public byte[] poll() {
-		if (readId.get() < writeId.get()) {
-			final Path filePath = Paths.get(basePath, dirName, subDirName,
-			        fileNamePrefix + readId.incrementAndGet() + fileNameSuffix);
-			if (Files.exists(filePath)) {
-				try {
-					final byte[] bytes = Files.readAllBytes(filePath);
-					Files.deleteIfExists(filePath);
-					return bytes;
-				} catch (final IOException e) {
-					// NOP
-					LOGGER.log(Level.SEVERE, e.getMessage(), e);
+		long rId;
+		while ((rId = readId.get()) < writeId.get()) {
+			final long newReadId = rId + 1;
+			if (readId.compareAndSet(rId, newReadId)) {
+				final Path filePath = Paths.get(basePath, dirName, subDirName,
+				        fileNamePrefix + newReadId + fileNameSuffix);
+				if (Files.exists(filePath)) {
+					try {
+						final byte[] bytes = Files.readAllBytes(filePath);
+						Files.deleteIfExists(filePath);
+						return bytes;
+					} catch (final IOException e) {
+						// NOP
+						LOGGER.log(Level.SEVERE, e.getMessage(), e);
+					}
 				}
 			}
 		}

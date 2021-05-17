@@ -80,8 +80,8 @@ class ExternalDriveClientTasksWrapperQueue implements Queue<ClientTasksWrapper> 
 		final Path dirPath = Paths.get(basePath, dirName);
 		if (Files.exists(dirPath)) {
 			try {
-				final Deque<Path> q = new ArrayDeque<>(Files.list(dirPath).collect(Collectors.toList()));
-				Path each = null;
+				final Deque<Path> q = Files.list(dirPath).collect(Collectors.toCollection(ArrayDeque::new));
+				Path each;
 				while ((each = q.poll()) != null) {
 					if (Files.isDirectory(each)) {
 						final List<Path> paths = Files.list(each).collect(Collectors.toList());

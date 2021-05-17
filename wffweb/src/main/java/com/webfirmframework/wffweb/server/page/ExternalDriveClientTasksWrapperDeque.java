@@ -102,7 +102,7 @@ class ExternalDriveClientTasksWrapperDeque extends ExternalDriveClientTasksWrapp
 	@Override
 	public void clear() {
 
-		Long unreadId = null;
+		Long unreadId;
 		while ((unreadId = firstUnreadIds.poll()) != null) {
 			deleteByReadId(unreadId);
 		}
