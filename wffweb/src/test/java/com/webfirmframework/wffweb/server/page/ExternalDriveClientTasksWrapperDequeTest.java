@@ -163,4 +163,49 @@ public class ExternalDriveClientTasksWrapperDequeTest {
 		q.offerFirst(wrapper);
 	}
 
+	@Test
+	public void testClear() {
+		try {
+			final ExternalDriveClientTasksWrapperDeque q = new ExternalDriveClientTasksWrapperDeque(
+			        Files.createTempDirectory(this.getClass().getSimpleName()).toString(), dirName, "in");
+
+			for (int i = 0; i < 100; i++) {
+				final String first = "first string " + i;
+				final String second = "second string " + i;
+				final String third = "third string " + i;
+				final String fourth = "fourth string " + i;
+				final ClientTasksWrapper wrapper = new ClientTasksWrapper(
+				        ByteBuffer.wrap(first.getBytes(StandardCharsets.UTF_8)),
+				        ByteBuffer.wrap(second.getBytes(StandardCharsets.UTF_8)),
+				        ByteBuffer.wrap(third.getBytes(StandardCharsets.UTF_8)),
+				        ByteBuffer.wrap(fourth.getBytes(StandardCharsets.UTF_8)));
+
+				q.offerLast(wrapper);
+			}
+
+			Assert.assertEquals(100, q.size());
+
+			q.offerFirst(q.poll());
+			q.offerFirst(q.poll());
+			q.offerFirst(q.poll());
+			q.offerFirst(q.poll());
+			q.offerFirst(q.poll());
+
+			Assert.assertEquals(100, q.size());
+
+			Assert.assertFalse(q.isEmpty());
+
+			q.clear();
+
+			Assert.assertNull(q.poll());
+
+			Assert.assertTrue(q.isEmpty());
+
+			q.deleteDir();
+		} catch (final IOException e) {
+			e.printStackTrace();
+			Assert.fail("testExternalDriveClientTasksWrapperDeque failed due to IOException");
+		}
+	}
+
 }

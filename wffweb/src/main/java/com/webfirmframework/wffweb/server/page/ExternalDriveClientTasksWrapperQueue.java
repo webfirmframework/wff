@@ -106,40 +106,55 @@ class ExternalDriveClientTasksWrapperQueue implements Queue<ClientTasksWrapper> 
 		}
 	}
 
-	/**
-	 * NB: this method should be used by only one thread at a time.
-	 */
 	@Override
 	public ClientTasksWrapper poll() {
-		if (readId.get() < writeId.get()) {
-			final long id = readId.incrementAndGet();
-			final Path filePath = Paths.get(basePath, dirName, subDirName, fileNamePrefix + id + fileNameSuffix);
-			if (Files.exists(filePath)) {
-
-				try {
-
-					final List<NameValue> nameValues = WffBinaryMessageUtil.VERSION_1
-					        .parse(Files.readAllBytes(filePath));
-					final NameValue nameValue = nameValues.get(0);
-
-					final byte[][] byteArrayTasks = nameValue.getValues();
-
-					final ByteBuffer[] byteBufferTasks = new ByteBuffer[byteArrayTasks.length];
-					for (int i = 0; i < byteArrayTasks.length; i++) {
-						byteBufferTasks[i] = ByteBuffer.wrap(byteArrayTasks[i]);
-					}
-
-					Files.deleteIfExists(filePath);
-
-					return new ClientTasksWrapper(id, byteBufferTasks);
-				} catch (final IOException e) {
-					// NOP
-					LOGGER.log(Level.SEVERE, e.getMessage(), e);
-				}
+		long rId;
+		while ((rId = readId.get()) < writeId.get()) {
+			final long newReadId = rId + 1;
+			if (readId.compareAndSet(rId, newReadId)) {
+				return pollByReadId(newReadId);
 			}
 		}
 
 		return null;
+	}
+
+	ClientTasksWrapper pollByReadId(final long id) {
+		final Path filePath = Paths.get(basePath, dirName, subDirName, fileNamePrefix + id + fileNameSuffix);
+		if (Files.exists(filePath)) {
+
+			try {
+
+				final List<NameValue> nameValues = WffBinaryMessageUtil.VERSION_1.parse(Files.readAllBytes(filePath));
+				final NameValue nameValue = nameValues.get(0);
+
+				final byte[][] byteArrayTasks = nameValue.getValues();
+
+				final ByteBuffer[] byteBufferTasks = new ByteBuffer[byteArrayTasks.length];
+				for (int i = 0; i < byteArrayTasks.length; i++) {
+					byteBufferTasks[i] = ByteBuffer.wrap(byteArrayTasks[i]);
+				}
+
+				Files.deleteIfExists(filePath);
+
+				return new ClientTasksWrapper(id, byteBufferTasks);
+			} catch (final IOException e) {
+				// NOP
+				LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			}
+		}
+		return null;
+	}
+
+	boolean deleteByReadId(final long id) {
+		final Path filePath = Paths.get(basePath, dirName, subDirName, fileNamePrefix + id + fileNameSuffix);
+		try {
+			return Files.deleteIfExists(filePath);
+		} catch (final IOException e) {
+			// NOP
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+		}
+		return false;
 	}
 
 	@Override
@@ -152,7 +167,7 @@ class ExternalDriveClientTasksWrapperQueue implements Queue<ClientTasksWrapper> 
 		return offerAt(tasksWrapper, writeId.incrementAndGet());
 	}
 
-	private boolean offerAt(final ClientTasksWrapper tasksWrapper, final long id) {
+	boolean offerAt(final ClientTasksWrapper tasksWrapper, final long id) {
 		final AtomicReferenceArray<ByteBuffer> tasks = tasksWrapper.tasks();
 
 		final int length = tasks.length();
@@ -192,8 +207,13 @@ class ExternalDriveClientTasksWrapperQueue implements Queue<ClientTasksWrapper> 
 
 	@Override
 	public void clear() {
-		while ((poll()) != null) {
-			// NOP
+		long rId;
+		while ((rId = readId.get()) < writeId.get()) {
+			final long newReadId = rId + 1;
+			if (readId.compareAndSet(rId, newReadId)) {
+				rId++;
+				deleteByReadId(newReadId);
+			}
 		}
 	}
 
