@@ -105,7 +105,7 @@ class ExternalDriveByteArrayQueue implements Queue<byte[]> {
 	public byte[] poll() {
 		long rId;
 		while ((rId = readId.get()) < writeId.get()) {
-			final long newReadId = rId + 1;
+			final long newReadId = rId + 1L;
 			if (readId.compareAndSet(rId, newReadId)) {
 				final Path filePath = Paths.get(basePath, dirName, subDirName,
 				        fileNamePrefix + newReadId + fileNameSuffix);

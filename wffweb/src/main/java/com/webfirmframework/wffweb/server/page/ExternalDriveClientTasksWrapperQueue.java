@@ -110,7 +110,7 @@ class ExternalDriveClientTasksWrapperQueue implements Queue<ClientTasksWrapper> 
 	public ClientTasksWrapper poll() {
 		long rId;
 		while ((rId = readId.get()) < writeId.get()) {
-			final long newReadId = rId + 1;
+			final long newReadId = rId + 1L;
 			if (readId.compareAndSet(rId, newReadId)) {
 				return pollByReadId(newReadId);
 			}
@@ -209,7 +209,7 @@ class ExternalDriveClientTasksWrapperQueue implements Queue<ClientTasksWrapper> 
 	public void clear() {
 		long rId;
 		while ((rId = readId.get()) < writeId.get()) {
-			final long newReadId = rId + 1;
+			final long newReadId = rId + 1L;
 			if (readId.compareAndSet(rId, newReadId)) {
 				deleteByReadId(newReadId);
 			}
