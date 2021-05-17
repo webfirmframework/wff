@@ -121,8 +121,7 @@ class ExternalDriveClientTasksWrapperDeque implements Deque<ClientTasksWrapper> 
 		}
 
 		if (readId.get() < writeId.get()) {
-			final long id = readId.incrementAndGet();
-			return getByReadId(id);
+			return getByReadId(readId.incrementAndGet());
 		}
 
 		return null;
@@ -168,7 +167,10 @@ class ExternalDriveClientTasksWrapperDeque implements Deque<ClientTasksWrapper> 
 	@Override
 	public boolean offerFirst(final ClientTasksWrapper tasksWrapper) {
 		final Long queueEntryId = tasksWrapper.queueEntryId();
-		firstUnreadIds.offer(queueEntryId);
+		if (queueEntryId == null) {
+			return false;
+		}
+		firstUnreadIds.offerFirst(queueEntryId);
 		return offerAt(tasksWrapper, queueEntryId);
 	}
 
