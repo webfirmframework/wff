@@ -33,6 +33,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.MethodNotImplementedException;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 import com.webfirmframework.wffweb.util.data.NameValue;
@@ -168,7 +169,7 @@ class ExternalDriveClientTasksWrapperDeque implements Deque<ClientTasksWrapper> 
 	public boolean offerFirst(final ClientTasksWrapper tasksWrapper) {
 		final Long queueEntryId = tasksWrapper.queueEntryId();
 		if (queueEntryId == null) {
-			return false;
+			throw new InvalidValueException("ClientTasksWrapper doesn't contain queueEntryId property");
 		}
 		firstUnreadIds.offerFirst(queueEntryId);
 		return offerAt(tasksWrapper, queueEntryId);
