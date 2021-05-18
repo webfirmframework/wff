@@ -71,7 +71,7 @@ public class ExternalDriveClientTasksWrapperDequeTest {
 
 			Assert.assertArrayEquals(expectedResult.toArray(), actualResult.toArray());
 
-			q.deleteDir();
+			q.deleteBaseDirStructure();
 		} catch (final IOException e) {
 			e.printStackTrace();
 			Assert.fail("testExternalDriveClientTasksWrapperDeque failed due to IOException");
@@ -137,7 +137,7 @@ public class ExternalDriveClientTasksWrapperDequeTest {
 
 			Assert.assertArrayEquals(expectedResult.toArray(), actualResult.toArray());
 
-			q.deleteDir();
+			q.deleteBaseDirStructure();
 		} catch (final IOException e) {
 			e.printStackTrace();
 			Assert.fail("testExternalDriveClientTasksWrapperDeque failed due to IOException");
@@ -201,7 +201,7 @@ public class ExternalDriveClientTasksWrapperDequeTest {
 
 			Assert.assertTrue(q.isEmpty());
 
-			q.deleteDir();
+			q.deleteBaseDirStructure();
 		} catch (final IOException e) {
 			e.printStackTrace();
 			Assert.fail("testExternalDriveClientTasksWrapperDeque failed due to IOException");

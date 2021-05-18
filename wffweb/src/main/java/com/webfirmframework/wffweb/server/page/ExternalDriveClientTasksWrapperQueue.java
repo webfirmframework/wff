@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.server.page;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayDeque;
@@ -66,24 +67,24 @@ class ExternalDriveClientTasksWrapperQueue implements Queue<ClientTasksWrapper> 
 
 	private final String subDirName;
 
-	ExternalDriveClientTasksWrapperQueue(final String path, final String dirName, final String subDirName)
+	ExternalDriveClientTasksWrapperQueue(final String basePath, final String dirName, final String subDirName)
 	        throws IOException {
-		basePath = path;
+		this.basePath = basePath;
 		this.dirName = dirName;
 		this.subDirName = subDirName;
-		init();
+		createInitialDirStructure();
 	}
 
-	private void init() throws IOException {
+	private boolean createInitialDirStructure() throws IOException {
 		final Path dirPath = Paths.get(basePath, dirName, subDirName);
-
 		if (Files.notExists(dirPath)) {
 			Files.createDirectories(dirPath);
+			return true;
 		}
-
+		return false;
 	}
 
-	void deleteDir() {
+	void deleteBaseDirStructure() {
 		final Path dirPath = Paths.get(basePath, dirName);
 		if (Files.exists(dirPath)) {
 			try {
@@ -223,6 +224,7 @@ class ExternalDriveClientTasksWrapperQueue implements Queue<ClientTasksWrapper> 
 	}
 
 	boolean offerAt(final ClientTasksWrapper tasksWrapper, final long id) {
+
 		final AtomicReferenceArray<ByteBuffer> tasks = tasksWrapper.tasks();
 
 		final int length = tasks.length();
@@ -243,6 +245,21 @@ class ExternalDriveClientTasksWrapperQueue implements Queue<ClientTasksWrapper> 
 			Files.write(filePath, WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValue));
 			writeIdInProgressStates.remove(id);
 			return true;
+		} catch (final NoSuchFileException e) {
+
+			try {
+				if (createInitialDirStructure()) {
+					Files.write(filePath, WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValue));
+					writeIdInProgressStates.remove(id);
+					deleteBaseDirStructure();
+					return true;
+				}
+
+			} catch (final IOException e1) {
+				// NOP
+				LOGGER.log(Level.SEVERE, e1.getMessage(), e1);
+			}
+
 		} catch (final IOException e) {
 			// NOP
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);

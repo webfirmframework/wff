@@ -1952,7 +1952,7 @@ public abstract class BrowserPage implements Serializable {
 	void deleteExternalDriveDir() {
 		if (taskFromClientQ instanceof ExternalDriveByteArrayQueue) {
 			ExternalDriveByteArrayQueue q = (ExternalDriveByteArrayQueue) taskFromClientQ;
-			q.deleteDir();
+			q.deleteBaseDirStructure();
 		}
 	}
 

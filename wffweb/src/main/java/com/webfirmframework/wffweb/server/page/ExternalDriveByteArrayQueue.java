@@ -17,6 +17,7 @@ package com.webfirmframework.wffweb.server.page;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayDeque;
@@ -62,23 +63,24 @@ class ExternalDriveByteArrayQueue implements Queue<byte[]> {
 
 	private final String subDirName;
 
-	ExternalDriveByteArrayQueue(final String path, final String dirName, final String subDirName) throws IOException {
-		basePath = path;
+	ExternalDriveByteArrayQueue(final String basePath, final String dirName, final String subDirName)
+	        throws IOException {
+		this.basePath = basePath;
 		this.dirName = dirName;
 		this.subDirName = subDirName;
-		init();
+		createInitialDirStructure();
 	}
 
-	private void init() throws IOException {
+	private boolean createInitialDirStructure() throws IOException {
 		final Path dirPath = Paths.get(basePath, dirName, subDirName);
-
 		if (Files.notExists(dirPath)) {
 			Files.createDirectories(dirPath);
+			return true;
 		}
-
+		return false;
 	}
 
-	void deleteDir() {
+	void deleteBaseDirStructure() {
 		final Path dirPath = Paths.get(basePath, dirName);
 		if (Files.exists(dirPath)) {
 			try {
@@ -151,16 +153,28 @@ class ExternalDriveByteArrayQueue implements Queue<byte[]> {
 
 	@Override
 	public boolean offer(final byte[] bytes) {
+
+		final long newWId = generateWriteId();
+		final Path filePath = Paths.get(basePath, dirName, subDirName, fileNamePrefix + newWId + fileNameSuffix);
+
 		try {
-
-			final long newWId = generateWriteId();
-
-			final Path filePath = Paths.get(basePath, dirName, subDirName, fileNamePrefix + newWId + fileNameSuffix);
 			Files.write(filePath, bytes);
-
 			writeIdInProgressStates.remove(newWId);
-
 			return true;
+		} catch (final NoSuchFileException e) {
+
+			try {
+				if (createInitialDirStructure()) {
+					Files.write(filePath, bytes);
+					writeIdInProgressStates.remove(newWId);
+					deleteBaseDirStructure();
+					return true;
+				}
+			} catch (final IOException e1) {
+				// NOP
+				LOGGER.log(Level.SEVERE, e1.getMessage(), e1);
+			}
+
 		} catch (final IOException e) {
 			// NOP
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);

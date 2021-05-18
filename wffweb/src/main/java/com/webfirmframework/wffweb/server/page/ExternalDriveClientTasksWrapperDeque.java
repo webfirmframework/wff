@@ -34,9 +34,9 @@ class ExternalDriveClientTasksWrapperDeque extends ExternalDriveClientTasksWrapp
 
 	private final Deque<Long> firstUnreadIds = new ConcurrentLinkedDeque<>();
 
-	ExternalDriveClientTasksWrapperDeque(final String path, final String dirName, final String subDirName)
+	ExternalDriveClientTasksWrapperDeque(final String basePath, final String dirName, final String subDirName)
 	        throws IOException {
-		super(path, dirName, subDirName);
+		super(basePath, dirName, subDirName);
 	}
 
 	@Override

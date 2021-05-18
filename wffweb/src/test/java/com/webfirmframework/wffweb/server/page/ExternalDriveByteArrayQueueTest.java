@@ -74,7 +74,7 @@ public class ExternalDriveByteArrayQueueTest {
 			q.clear();
 			assertEquals(0, q.size());
 			
-			q.deleteDir();
+			q.deleteBaseDirStructure();
 
 			Assert.assertArrayEquals(expectedResult.toArray(), actualResult.toArray());
 		} catch (IOException e) {
