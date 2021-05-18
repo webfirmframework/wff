@@ -253,7 +253,7 @@ class ExternalDriveClientTasksWrapperQueue implements Queue<ClientTasksWrapper> 
 
 	@Override
 	public boolean isEmpty() {
-		return readId.get() == writeId.get();
+		return size() == 0 && writeIdInProgressStates.size() == 0;
 	}
 
 	@Override
