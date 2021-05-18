@@ -52,6 +52,10 @@ class ExternalDriveByteArrayQueue implements Queue<byte[]> {
 
 	private final AtomicLong writeId = new AtomicLong();
 
+	private final Map<Long, Boolean> writeIdInProgressStates = new ConcurrentHashMap<>(1);
+
+	private final Semaphore mapLock = new Semaphore(1, true);
+
 	private final String basePath;
 
 	private final String dirName;
@@ -163,10 +167,6 @@ class ExternalDriveByteArrayQueue implements Queue<byte[]> {
 		}
 		return false;
 	}
-
-	private final Map<Long, Boolean> writeIdInProgressStates = new ConcurrentHashMap<>(1);
-
-	private final Semaphore mapLock = new Semaphore(1, true);
 
 	private long generateWriteId() {
 

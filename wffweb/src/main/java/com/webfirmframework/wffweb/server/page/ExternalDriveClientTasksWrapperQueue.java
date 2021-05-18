@@ -56,6 +56,10 @@ class ExternalDriveClientTasksWrapperQueue implements Queue<ClientTasksWrapper> 
 
 	private final AtomicLong writeId = new AtomicLong();
 
+	private final Map<Long, Boolean> writeIdInProgressStates = new ConcurrentHashMap<>(1);
+
+	private final Semaphore mapLock = new Semaphore(1, true);
+
 	private final String basePath;
 
 	private final String dirName;
@@ -175,10 +179,6 @@ class ExternalDriveClientTasksWrapperQueue implements Queue<ClientTasksWrapper> 
 		final long newWId = generateWriteId();
 		return offerAt(tasksWrapper, newWId);
 	}
-
-	private final Map<Long, Boolean> writeIdInProgressStates = new ConcurrentHashMap<>(1);
-
-	private final Semaphore mapLock = new Semaphore(1, true);
 
 	private long generateWriteId() {
 
