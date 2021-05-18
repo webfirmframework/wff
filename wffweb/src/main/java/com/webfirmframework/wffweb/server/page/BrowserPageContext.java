@@ -115,11 +115,13 @@ public enum BrowserPageContext {
 		});
 
 		final String externalDrivePath = browserPage.getExternalDrivePath();
-		final String instanceId = browserPage.getInstanceId();
 
-		gcTaskForBrowserPageRef.put(new PhantomReference<>(browserPage, browserPageRQ), () -> {
-			ExternalDriveClientTasksWrapperQueue.deleteBaseDirStructure(externalDrivePath, instanceId);
-		});
+		if (externalDrivePath != null) {
+			final String instanceId = browserPage.getInstanceId();
+			gcTaskForBrowserPageRef.put(new PhantomReference<>(browserPage, browserPageRQ), () -> {
+				ExternalDriveClientTasksWrapperQueue.deleteBaseDirStructure(externalDrivePath, instanceId);
+			});
+		}
 
 		runAutoClean();
 
