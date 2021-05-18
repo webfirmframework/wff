@@ -93,6 +93,23 @@ public enum BrowserPageContext {
 		instanceIdHttpSessionId = new ConcurrentHashMap<>();
 		heartbeatManagers = new ConcurrentHashMap<>();
 		gcTaskForBrowserPageRef = new ConcurrentHashMap<>();
+		initConfig();
+	}
+
+	private void initConfig() {
+		Runtime.getRuntime().addShutdownHook(new Thread(this::triggeredJVMShutdown));
+	}
+
+	private void triggeredJVMShutdown() {
+		// write all tasks to be executed on JVM shutdown
+		executeGCTasksForBrowserPage();
+
+		for (final BrowserPage browserPage : instanceIdBrowserPage.values()) {
+			final String externalDrivePath = browserPage.getExternalDrivePath();
+			if (externalDrivePath != null) {
+				FileUtil.removeDirRecursively(externalDrivePath, browserPage.getInstanceId());
+			}
+		}
 	}
 
 	/**
@@ -118,9 +135,8 @@ public enum BrowserPageContext {
 		final String externalDrivePath = browserPage.getExternalDrivePath();
 
 		if (externalDrivePath != null) {
-			final String instanceId = browserPage.getInstanceId();
 			gcTaskForBrowserPageRef.put(new PhantomReference<>(browserPage, browserPageRQ),
-			        () -> FileUtil.removeDirRecursively(externalDrivePath, instanceId));
+			        () -> FileUtil.removeDirRecursively(externalDrivePath, browserPage.getInstanceId()));
 		}
 
 		runAutoClean();
@@ -441,12 +457,15 @@ public enum BrowserPageContext {
 
 		}
 
+		executeGCTasksForBrowserPage();
+	}
+
+	private void executeGCTasksForBrowserPage() {
 		Reference<? extends BrowserPage> browserPageRef;
 		while ((browserPageRef = browserPageRQ.poll()) != null) {
 			gcTaskForBrowserPageRef.get(browserPageRef).run();
 			gcTaskForBrowserPageRef.remove(browserPageRef);
 		}
-
 	}
 
 //    /**
