@@ -18,7 +18,6 @@ package com.webfirmframework.wffweb.server.page;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayDeque;
@@ -84,10 +83,10 @@ class ExternalDriveClientTasksWrapperQueue implements Queue<ClientTasksWrapper> 
 		return false;
 	}
 
-	void deleteBaseDirStructure() {
-		final Path dirPath = Paths.get(basePath, dirName);
-		if (Files.exists(dirPath)) {
-			try {
+	static final void deleteBaseDirStructure(final String basePath, final String... more) {
+		final Path dirPath = Paths.get(basePath, more);
+		try {
+			if (Files.exists(dirPath)) {
 				final Deque<Path> q = Files.list(dirPath).collect(Collectors.toCollection(ArrayDeque::new));
 				Path each;
 				while ((each = q.poll()) != null) {
@@ -107,11 +106,15 @@ class ExternalDriveClientTasksWrapperQueue implements Queue<ClientTasksWrapper> 
 					}
 				}
 				Files.deleteIfExists(dirPath);
-			} catch (final IOException e) {
-				LOGGER.log(Level.SEVERE, e.getMessage(), e);
-				// NOP
 			}
+		} catch (final IOException e) {
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			// NOP
 		}
+	}
+
+	void deleteBaseDirStructure() {
+		ExternalDriveClientTasksWrapperQueue.deleteBaseDirStructure(basePath, dirName);
 	}
 
 	@Override
@@ -245,21 +248,6 @@ class ExternalDriveClientTasksWrapperQueue implements Queue<ClientTasksWrapper> 
 			Files.write(filePath, WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValue));
 			writeIdInProgressStates.remove(id);
 			return true;
-		} catch (final NoSuchFileException e) {
-
-			try {
-				if (createInitialDirStructure()) {
-					Files.write(filePath, WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValue));
-					writeIdInProgressStates.remove(id);
-					deleteBaseDirStructure();
-					return true;
-				}
-
-			} catch (final IOException e1) {
-				// NOP
-				LOGGER.log(Level.SEVERE, e1.getMessage(), e1);
-			}
-
 		} catch (final IOException e) {
 			// NOP
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);

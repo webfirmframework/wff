@@ -17,7 +17,6 @@ package com.webfirmframework.wffweb.server.page;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayDeque;
@@ -161,20 +160,6 @@ class ExternalDriveByteArrayQueue implements Queue<byte[]> {
 			Files.write(filePath, bytes);
 			writeIdInProgressStates.remove(newWId);
 			return true;
-		} catch (final NoSuchFileException e) {
-
-			try {
-				if (createInitialDirStructure()) {
-					Files.write(filePath, bytes);
-					writeIdInProgressStates.remove(newWId);
-					deleteBaseDirStructure();
-					return true;
-				}
-			} catch (final IOException e1) {
-				// NOP
-				LOGGER.log(Level.SEVERE, e1.getMessage(), e1);
-			}
-
 		} catch (final IOException e) {
 			// NOP
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);

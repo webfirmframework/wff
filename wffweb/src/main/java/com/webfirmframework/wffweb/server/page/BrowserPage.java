@@ -1947,13 +1947,11 @@ public abstract class BrowserPage implements Serializable {
 	}
 
 	/**
+	 * @return the externalDrivePath
 	 * @since 3.0.18
 	 */
-	void deleteExternalDriveDir() {
-		if (taskFromClientQ instanceof ExternalDriveByteArrayQueue) {
-			ExternalDriveByteArrayQueue q = (ExternalDriveByteArrayQueue) taskFromClientQ;
-			q.deleteBaseDirStructure();
-		}
+	String getExternalDrivePath() {
+		return externalDrivePath;
 	}
 
 	/**
