@@ -207,7 +207,7 @@ class ExternalDriveByteArrayQueue implements Queue<byte[]> {
 
 	@Override
 	public boolean isEmpty() {
-		return size() == 0 && writeIdInProgressStates.size() == 0;
+		return size() == 0 && writeIdInProgressStates.isEmpty();
 	}
 
 	@Override
