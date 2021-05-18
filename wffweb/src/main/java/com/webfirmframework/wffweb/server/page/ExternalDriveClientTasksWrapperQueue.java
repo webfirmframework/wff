@@ -266,6 +266,10 @@ class ExternalDriveClientTasksWrapperQueue implements Queue<ClientTasksWrapper> 
 		long rId;
 		while ((rId = readId.get()) < writeId.get()) {
 			final long newReadId = rId + 1L;
+			if (writeIdInProgressStates.get(newReadId) != null) {
+				// writing is inprogress so break
+				break;
+			}
 			if (readId.compareAndSet(rId, newReadId)) {
 				deleteByReadId(newReadId);
 			}
