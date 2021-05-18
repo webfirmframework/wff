@@ -20,9 +20,7 @@ import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayDeque;
 import java.util.Collection;
-import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -33,9 +31,9 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import com.webfirmframework.wffweb.MethodNotImplementedException;
+import com.webfirmframework.wffweb.util.FileUtil;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 import com.webfirmframework.wffweb.util.data.NameValue;
 
@@ -83,38 +81,8 @@ class ExternalDriveClientTasksWrapperQueue implements Queue<ClientTasksWrapper> 
 		return false;
 	}
 
-	static final void deleteBaseDirStructure(final String basePath, final String... more) {
-		final Path dirPath = Paths.get(basePath, more);
-		try {
-			if (Files.exists(dirPath)) {
-				final Deque<Path> q = Files.list(dirPath).collect(Collectors.toCollection(ArrayDeque::new));
-				Path each;
-				while ((each = q.poll()) != null) {
-					if (Files.isDirectory(each)) {
-						final List<Path> paths = Files.list(each).collect(Collectors.toList());
-						if (paths.size() > 0) {
-							for (final Path path : paths) {
-								q.addFirst(path);
-							}
-							q.addLast(each);
-						} else {
-							Files.deleteIfExists(each);
-						}
-
-					} else if (Files.isRegularFile(each)) {
-						Files.deleteIfExists(each);
-					}
-				}
-				Files.deleteIfExists(dirPath);
-			}
-		} catch (final IOException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
-			// NOP
-		}
-	}
-
 	void deleteBaseDirStructure() {
-		ExternalDriveClientTasksWrapperQueue.deleteBaseDirStructure(basePath, dirName);
+		FileUtil.removeDirRecursively(basePath, dirName);
 	}
 
 	@Override

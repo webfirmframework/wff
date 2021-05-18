@@ -19,11 +19,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayDeque;
 import java.util.Collection;
-import java.util.Deque;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,9 +28,9 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import com.webfirmframework.wffweb.MethodNotImplementedException;
+import com.webfirmframework.wffweb.util.FileUtil;
 
 /**
  * @author WFF
@@ -80,33 +77,7 @@ class ExternalDriveByteArrayQueue implements Queue<byte[]> {
 	}
 
 	void deleteBaseDirStructure() {
-		final Path dirPath = Paths.get(basePath, dirName);
-		if (Files.exists(dirPath)) {
-			try {
-				final Deque<Path> q = Files.list(dirPath).collect(Collectors.toCollection(ArrayDeque::new));
-				Path each;
-				while ((each = q.poll()) != null) {
-					if (Files.isDirectory(each)) {
-						final List<Path> paths = Files.list(each).collect(Collectors.toList());
-						if (paths.size() > 0) {
-							for (final Path path : paths) {
-								q.addFirst(path);
-							}
-							q.addLast(each);
-						} else {
-							Files.deleteIfExists(each);
-						}
-
-					} else if (Files.isRegularFile(each)) {
-						Files.deleteIfExists(each);
-					}
-				}
-				Files.deleteIfExists(dirPath);
-			} catch (final IOException e) {
-				LOGGER.log(Level.SEVERE, e.getMessage(), e);
-				// NOP
-			}
-		}
+		FileUtil.removeDirRecursively(basePath, dirName);
 	}
 
 	@Override

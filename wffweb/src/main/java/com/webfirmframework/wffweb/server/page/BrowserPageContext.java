@@ -36,6 +36,7 @@ import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.concurrent.MinIntervalExecutor;
+import com.webfirmframework.wffweb.util.FileUtil;
 
 /**
  * @author WFF
@@ -118,7 +119,8 @@ public enum BrowserPageContext {
 
 		if (externalDrivePath != null) {
 			final String instanceId = browserPage.getInstanceId();
-			gcTaskForBrowserPageRef.put(new PhantomReference<>(browserPage, browserPageRQ), () -> ExternalDriveClientTasksWrapperQueue.deleteBaseDirStructure(externalDrivePath, instanceId));
+			gcTaskForBrowserPageRef.put(new PhantomReference<>(browserPage, browserPageRQ),
+			        () -> FileUtil.removeDirRecursively(externalDrivePath, instanceId));
 		}
 
 		runAutoClean();
@@ -442,6 +444,7 @@ public enum BrowserPageContext {
 		Reference<? extends BrowserPage> browserPageRef;
 		while ((browserPageRef = browserPageRQ.poll()) != null) {
 			gcTaskForBrowserPageRef.get(browserPageRef).run();
+			gcTaskForBrowserPageRef.remove(browserPageRef);
 		}
 
 	}
