@@ -44,7 +44,7 @@ class ExternalDriveClientTasksWrapperDeque extends ExternalDriveClientTasksWrapp
 
 		final Long unreadId = firstUnreadIds.poll();
 		if (unreadId != null) {
-			return pollByReadId(unreadId);
+			return super.pollByReadId(unreadId);
 		}
 
 		return super.poll();
@@ -66,8 +66,9 @@ class ExternalDriveClientTasksWrapperDeque extends ExternalDriveClientTasksWrapp
 		if (queueEntryId == null) {
 			throw new InvalidValueException("ClientTasksWrapper doesn't contain queueEntryId property");
 		}
+		super.writingInProgress(queueEntryId);
 		firstUnreadIds.offerFirst(queueEntryId);
-		return offerAt(tasksWrapper, queueEntryId);
+		return super.offerAt(tasksWrapper, queueEntryId);
 	}
 
 	@Override

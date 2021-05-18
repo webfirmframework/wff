@@ -15,6 +15,8 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -65,6 +67,13 @@ public class ExternalDriveByteArrayQueueTest {
 
 			Collections.sort(actualResult);
 
+			for (int i = 0; i < 100; i++) {
+				q.offer((String.valueOf(i)).getBytes(StandardCharsets.UTF_8));
+			}
+			assertEquals(100, q.size());
+			q.clear();
+			assertEquals(0, q.size());
+			
 			q.deleteDir();
 
 			Assert.assertArrayEquals(expectedResult.toArray(), actualResult.toArray());

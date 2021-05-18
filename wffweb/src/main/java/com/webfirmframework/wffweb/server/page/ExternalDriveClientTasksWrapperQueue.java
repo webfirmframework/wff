@@ -25,7 +25,10 @@ import java.util.Collection;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 import java.util.logging.Level;
@@ -111,6 +114,12 @@ class ExternalDriveClientTasksWrapperQueue implements Queue<ClientTasksWrapper> 
 		long rId;
 		while ((rId = readId.get()) < writeId.get()) {
 			final long newReadId = rId + 1L;
+
+			if (writeIdInProgressStates.get(newReadId) != null) {
+				// writing is inprogress so return null
+				return null;
+			}
+
 			if (readId.compareAndSet(rId, newReadId)) {
 				return pollByReadId(newReadId);
 			}
@@ -120,6 +129,10 @@ class ExternalDriveClientTasksWrapperQueue implements Queue<ClientTasksWrapper> 
 	}
 
 	ClientTasksWrapper pollByReadId(final long id) {
+		if (writeIdInProgressStates.get(id) != null) {
+			// writing is inprogress so return null
+			return null;
+		}
 		final Path filePath = Paths.get(basePath, dirName, subDirName, fileNamePrefix + id + fileNameSuffix);
 		if (Files.exists(filePath)) {
 
@@ -159,12 +172,54 @@ class ExternalDriveClientTasksWrapperQueue implements Queue<ClientTasksWrapper> 
 
 	@Override
 	public boolean offer(final ClientTasksWrapper tasksWrapper) {
-		return offerAt(tasksWrapper, writeId.incrementAndGet());
+		final long newWId = generateWriteId();
+		return offerAt(tasksWrapper, newWId);
+	}
+
+	private final Map<Long, Boolean> writeIdInProgressStates = new ConcurrentHashMap<>(1);
+
+	private final Semaphore mapLock = new Semaphore(1, true);
+
+	private long generateWriteId() {
+
+		mapLock.acquireUninterruptibly();
+
+		try {
+			long newWId;
+			boolean idAvailable;
+			do {
+
+				idAvailable = false;
+
+				final long lastWId = writeId.get();
+
+				newWId = lastWId + 1L;
+
+				if (writeIdInProgressStates.get(newWId) == null) {
+					writeIdInProgressStates.put(newWId, true);
+					idAvailable = writeId.compareAndSet(lastWId, newWId);
+					if (!idAvailable) {
+						writeIdInProgressStates.remove(newWId);
+					}
+				}
+
+			} while (!idAvailable);
+
+			return newWId;
+		} finally {
+			mapLock.release();
+		}
+
+	}
+
+	void writingInProgress(final long id) {
+		writeIdInProgressStates.put(id, true);
 	}
 
 	@Override
 	public boolean add(final ClientTasksWrapper tasksWrapper) {
-		return offerAt(tasksWrapper, writeId.incrementAndGet());
+		final long newWId = generateWriteId();
+		return offerAt(tasksWrapper, newWId);
 	}
 
 	boolean offerAt(final ClientTasksWrapper tasksWrapper, final long id) {
@@ -186,6 +241,7 @@ class ExternalDriveClientTasksWrapperQueue implements Queue<ClientTasksWrapper> 
 
 		try {
 			Files.write(filePath, WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValue));
+			writeIdInProgressStates.remove(id);
 			return true;
 		} catch (final IOException e) {
 			// NOP
