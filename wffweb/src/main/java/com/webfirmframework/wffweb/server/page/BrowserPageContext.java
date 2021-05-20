@@ -15,7 +15,6 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
-import java.lang.ref.PhantomReference;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.util.Collections;
@@ -23,7 +22,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -82,9 +83,9 @@ public enum BrowserPageContext {
 
 	private transient volatile MinIntervalExecutor autoCleanTaskExecutor;
 
-	private transient final ReferenceQueue<BrowserPage> browserPageRQ = new ReferenceQueue<>();
+	private transient final ReferenceQueue<BrowserPage> browserPageRQ;
 
-	private transient final Map<Reference<? extends BrowserPage>, Runnable> gcTaskForBrowserPageRef;
+	private transient final Queue<BrowserPageGCTask> browserPageGCTasks;
 
 	BrowserPageContext() {
 		httpSessionIdBrowserPages = new ConcurrentHashMap<>();
@@ -92,7 +93,9 @@ public enum BrowserPageContext {
 		instanceIdBPForWS = new ConcurrentHashMap<>();
 		instanceIdHttpSessionId = new ConcurrentHashMap<>();
 		heartbeatManagers = new ConcurrentHashMap<>();
-		gcTaskForBrowserPageRef = new ConcurrentHashMap<>();
+		browserPageRQ = new ReferenceQueue<>();
+		browserPageGCTasks = new ConcurrentLinkedQueue<>();
+
 		initConfig();
 	}
 
@@ -102,7 +105,7 @@ public enum BrowserPageContext {
 
 	private void triggeredJVMShutdown() {
 		// write all tasks to be executed on JVM shutdown
-		executeGCTasksForBrowserPage();
+		runGCTasksForBrowserPage();
 
 		for (final BrowserPage browserPage : instanceIdBrowserPage.values()) {
 			final String externalDrivePath = browserPage.getExternalDrivePath();
@@ -132,11 +135,8 @@ public enum BrowserPageContext {
 			return browserPage;
 		});
 
-		final String externalDrivePath = browserPage.getExternalDrivePath();
-
-		if (externalDrivePath != null) {
-			gcTaskForBrowserPageRef.put(new PhantomReference<>(browserPage, browserPageRQ),
-			        () -> FileUtil.removeDirRecursively(externalDrivePath, browserPage.getInstanceId()));
+		if (browserPage.getExternalDrivePath() != null) {
+			new BrowserPageGCTask(browserPage, browserPageRQ);
 		}
 
 		runAutoClean();
@@ -457,14 +457,19 @@ public enum BrowserPageContext {
 
 		}
 
-		executeGCTasksForBrowserPage();
+		Reference<? extends BrowserPage> gcTask;
+		while ((gcTask = browserPageRQ.poll()) != null) {
+			gcTask.clear();
+			browserPageGCTasks.offer((BrowserPageGCTask) gcTask);
+		}
+
+		runGCTasksForBrowserPage();
 	}
 
-	private void executeGCTasksForBrowserPage() {
-		Reference<? extends BrowserPage> browserPageRef;
-		while ((browserPageRef = browserPageRQ.poll()) != null) {
-			gcTaskForBrowserPageRef.get(browserPageRef).run();
-			gcTaskForBrowserPageRef.remove(browserPageRef);
+	private void runGCTasksForBrowserPage() {
+		BrowserPageGCTask gcTask;
+		while ((gcTask = browserPageGCTasks.poll()) != null) {
+			gcTask.run();
 		}
 	}
 
@@ -548,6 +553,12 @@ public enum BrowserPageContext {
 		final MinIntervalExecutor autoCleanTaskExecutor = this.autoCleanTaskExecutor;
 		if (autoCleanTaskExecutor != null) {
 			autoCleanTaskExecutor.runAsync();
+		} else {
+			Reference<? extends BrowserPage> gcTask;
+			while ((gcTask = browserPageRQ.poll()) != null) {
+				gcTask.clear();
+				browserPageGCTasks.offer((BrowserPageGCTask) gcTask);
+			}
 		}
 	}
 
