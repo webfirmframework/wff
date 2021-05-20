@@ -550,15 +550,14 @@ public enum BrowserPageContext {
 	}
 
 	private void runAutoClean() {
+		Reference<? extends BrowserPage> gcTask;
+		while ((gcTask = browserPageRQ.poll()) != null) {
+			gcTask.clear();
+			browserPageGCTasks.offer((BrowserPageGCTask) gcTask);
+		}
 		final MinIntervalExecutor autoCleanTaskExecutor = this.autoCleanTaskExecutor;
 		if (autoCleanTaskExecutor != null) {
 			autoCleanTaskExecutor.runAsync();
-		} else {
-			Reference<? extends BrowserPage> gcTask;
-			while ((gcTask = browserPageRQ.poll()) != null) {
-				gcTask.clear();
-				browserPageGCTasks.offer((BrowserPageGCTask) gcTask);
-			}
 		}
 	}
 
