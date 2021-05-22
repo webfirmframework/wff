@@ -15,7 +15,6 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
-import java.lang.ref.PhantomReference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 
