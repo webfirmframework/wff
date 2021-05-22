@@ -17,6 +17,7 @@ package com.webfirmframework.wffweb.server.page;
 
 import java.lang.ref.PhantomReference;
 import java.lang.ref.ReferenceQueue;
+import java.lang.ref.WeakReference;
 
 import com.webfirmframework.wffweb.util.FileUtil;
 
@@ -25,7 +26,7 @@ import com.webfirmframework.wffweb.util.FileUtil;
  * @since 3.0.18
  *
  */
-class BrowserPageGCTask extends PhantomReference<BrowserPage> {
+class BrowserPageGCTask extends WeakReference<BrowserPage> {
 
 	private final String externalDrivePath;
 
