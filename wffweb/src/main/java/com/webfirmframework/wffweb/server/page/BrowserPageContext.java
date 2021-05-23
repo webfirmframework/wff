@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executor;
@@ -85,7 +86,12 @@ public enum BrowserPageContext {
 
 	private transient final ReferenceQueue<BrowserPage> browserPageRQ;
 
-	private transient final Queue<BrowserPageGCTask> browserPageGCTasks;
+	private transient final Queue<BrowserPageGCTask> browserPageGCTasksQ;
+
+	// NB: this caching is required trigger to enqueue to ReferenceQueue when
+	// BrowserPageGCTask object is GCed
+	// also remove it from this cache when polled from browserPageRQ
+	private transient final Set<BrowserPageGCTask> browserPageGCTasksCache;
 
 	BrowserPageContext() {
 		httpSessionIdBrowserPages = new ConcurrentHashMap<>();
@@ -94,7 +100,8 @@ public enum BrowserPageContext {
 		instanceIdHttpSessionId = new ConcurrentHashMap<>();
 		heartbeatManagers = new ConcurrentHashMap<>();
 		browserPageRQ = new ReferenceQueue<>();
-		browserPageGCTasks = new ConcurrentLinkedQueue<>();
+		browserPageGCTasksQ = new ConcurrentLinkedQueue<>();
+		browserPageGCTasksCache = Collections.newSetFromMap(new ConcurrentHashMap<>(2));
 
 		initConfig();
 	}
@@ -136,7 +143,10 @@ public enum BrowserPageContext {
 		});
 
 		if (browserPage.getExternalDrivePath() != null) {
-			new BrowserPageGCTask(browserPage, browserPageRQ);
+			// NB: this caching is required trigger to enqueue to ReferenceQueue when
+			// BrowserPageGCTask object is GCed
+			// also remove it from this cache when polled from browserPageRQ
+			browserPageGCTasksCache.add(new BrowserPageGCTask(browserPage, browserPageRQ));
 		}
 
 		runAutoClean();
@@ -460,7 +470,7 @@ public enum BrowserPageContext {
 		Reference<? extends BrowserPage> gcTask;
 		while ((gcTask = browserPageRQ.poll()) != null) {
 			gcTask.clear();
-			browserPageGCTasks.offer((BrowserPageGCTask) gcTask);
+			browserPageGCTasksQ.offer((BrowserPageGCTask) gcTask);
 		}
 
 		runGCTasksForBrowserPage();
@@ -468,7 +478,8 @@ public enum BrowserPageContext {
 
 	private void runGCTasksForBrowserPage() {
 		BrowserPageGCTask gcTask;
-		while ((gcTask = browserPageGCTasks.poll()) != null) {
+		while ((gcTask = browserPageGCTasksQ.poll()) != null) {
+			browserPageGCTasksCache.remove(gcTask);
 			gcTask.run();
 		}
 	}
@@ -553,7 +564,7 @@ public enum BrowserPageContext {
 		Reference<? extends BrowserPage> gcTask;
 		while ((gcTask = browserPageRQ.poll()) != null) {
 			gcTask.clear();
-			browserPageGCTasks.offer((BrowserPageGCTask) gcTask);
+			browserPageGCTasksQ.offer((BrowserPageGCTask) gcTask);
 		}
 		final MinIntervalExecutor autoCleanTaskExecutor = this.autoCleanTaskExecutor;
 		if (autoCleanTaskExecutor != null) {
