@@ -33,6 +33,10 @@ import com.webfirmframework.wffweb.MethodNotImplementedException;
 import com.webfirmframework.wffweb.util.FileUtil;
 
 /**
+ * Note: Designed only for {@code BrowserPage} requirements, all methods are not
+ * implemented and some methods are partially implemented just to satisfy the
+ * requirement.
+ *
  * @author WFF
  * @since 3.0.18
  *

@@ -96,9 +96,7 @@ public abstract class BrowserPage implements Serializable {
 
 	private final String externalDrivePath = useExternalDrivePath();
 
-	private AttributeValueChangeListener valueChangeListener;
-
-	private Map<String, AbstractHtml> tagByWffId;
+	private volatile Map<String, AbstractHtml> tagByWffId;
 
 	private volatile AbstractHtml rootTag;
 
@@ -110,14 +108,14 @@ public abstract class BrowserPage implements Serializable {
 
 	private volatile WebSocketPushListener wsListener;
 
-	private DataWffId wffScriptTagId;
+	private volatile DataWffId wffScriptTagId;
 
 	/**
 	 * it's true by default since 3.0.1
 	 */
-	private boolean enableDeferOnWffScript = true;
+	private volatile boolean enableDeferOnWffScript = true;
 
-	private Nonce nonceForWffScriptTag;
+	private volatile Nonce nonceForWffScriptTag;
 
 	private boolean autoremoveWffScript = true;
 
@@ -146,10 +144,10 @@ public abstract class BrowserPage implements Serializable {
 	private static final Security ACCESS_OBJECT = new Security();
 
 	// by default the push queue should be enabled
-	private boolean pushQueueEnabled = true;
+	private volatile boolean pushQueueEnabled = true;
 
 	// by default the pushQueueOnNewWebSocketListener should be enabled
-	private boolean pushQueueOnNewWebSocketListener = true;
+	private volatile boolean pushQueueOnNewWebSocketListener = true;
 
 	private final AtomicInteger holdPush = new AtomicInteger(0);
 
@@ -975,12 +973,7 @@ public abstract class BrowserPage implements Serializable {
 	}
 
 	private void addAttrValueChangeListener(final AbstractHtml abstractHtml) {
-
-		if (valueChangeListener == null) {
-			valueChangeListener = new AttributeValueChangeListenerImpl(this, tagByWffId);
-		}
-
-		abstractHtml.getSharedObject().setValueChangeListener(valueChangeListener, ACCESS_OBJECT);
+		abstractHtml.getSharedObject().setValueChangeListener(new AttributeValueChangeListenerImpl(this, tagByWffId), ACCESS_OBJECT);
 	}
 
 	private void addDataWffIdAttribute(final AbstractHtml abstractHtml) {

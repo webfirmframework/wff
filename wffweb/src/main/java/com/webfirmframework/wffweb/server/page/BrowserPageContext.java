@@ -50,6 +50,8 @@ public enum BrowserPageContext {
 
 	private static final Logger LOGGER = Logger.getLogger(BrowserPageContext.class.getName());
 
+	private static volatile boolean DEBUG_MODE = false;
+
 	/**
 	 * key httpSessionId, value : (key: instanceId, value: BrowserPage)
 	 */
@@ -782,41 +784,43 @@ public enum BrowserPageContext {
 
 		final String httpSessionId = instanceIdHttpSessionId.get(instanceId);
 
-		// this is a security checking
-		// the caller session id must be
-		// same as the session id of the instanceId
-		// otherwise it's considered as a hacking.
-		if (httpSessionId != null && httpSessionId.equals(callerHttpSessionId)) {
+		if (httpSessionId != null) {
+			// this is a security checking
+			// the caller session id must be
+			// same as the session id of the instanceId
+			// otherwise it's considered as a hacking.
+			if (httpSessionId.equals(callerHttpSessionId)) {
 
-			final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.get(httpSessionId);
-			if (browserPages != null) {
+				final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.get(httpSessionId);
+				if (browserPages != null) {
 
-				final AtomicReference<BrowserPage> bpRef = new AtomicReference<>();
+					final AtomicReference<BrowserPage> bpRef = new AtomicReference<>();
 
-				browserPages.computeIfPresent(instanceId, (k, bp) -> {
-					instanceIdBrowserPage.remove(instanceId);
-					instanceIdHttpSessionId.remove(instanceId);
-					instanceIdBPForWS.remove(instanceId);
-					bpRef.set(bp);
-					return null;
-				});
-				final BrowserPage bp = bpRef.get();
-				if (bp != null) {
-					try {
-						bp.removedFromContext();
-					} catch (final Throwable e) {
-						if (LOGGER.isLoggable(Level.WARNING)) {
-							LOGGER.log(Level.WARNING,
-							        "The overridden method BrowserPage#removedFromContext threw an exception.", e);
+					browserPages.computeIfPresent(instanceId, (k, bp) -> {
+						instanceIdBrowserPage.remove(instanceId);
+						instanceIdHttpSessionId.remove(instanceId);
+						instanceIdBPForWS.remove(instanceId);
+						bpRef.set(bp);
+						return null;
+					});
+					final BrowserPage bp = bpRef.get();
+					if (bp != null) {
+						try {
+							bp.removedFromContext();
+						} catch (final Throwable e) {
+							if (LOGGER.isLoggable(Level.WARNING)) {
+								LOGGER.log(Level.WARNING,
+								        "The overridden method BrowserPage#removedFromContext threw an exception.", e);
+							}
 						}
+						bp.clearWSListeners();
 					}
-					bp.clearWSListeners();
 				}
-			}
-		} else {
-			if (LOGGER.isLoggable(Level.WARNING)) {
-				LOGGER.warning("The callerInstanceId " + callerInstanceId + " tried to remove instanceId " + instanceId
-				        + " BrowserPageContext");
+			} else {
+				if (DEBUG_MODE && LOGGER.isLoggable(Level.WARNING)) {
+					LOGGER.warning("The callerInstanceId " + callerInstanceId + " tried to remove instanceId "
+					        + instanceId + " from BrowserPageContext");
+				}
 			}
 		}
 
@@ -870,6 +874,22 @@ public enum BrowserPageContext {
 		}
 
 		return browserPage.equals(instanceIdBrowserPage.get(browserPage.getInstanceId()));
+	}
+
+	/**
+	 * @return true if enabled otherwise false
+	 * @since 3.0.18
+	 */
+	public static boolean isDebugMode() {
+		return DEBUG_MODE;
+	}
+
+	/**
+	 * @param enabled
+	 * @since 3.0.18
+	 */
+	public static void setDebugMode(final boolean enabled) {
+		DEBUG_MODE = enabled;
 	}
 
 }
