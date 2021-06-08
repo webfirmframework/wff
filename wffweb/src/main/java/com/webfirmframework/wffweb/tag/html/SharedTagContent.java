@@ -1745,27 +1745,6 @@ public class SharedTagContent<T> {
 	}
 
 	/**
-	 * NB: Only for internal use
-	 *
-	 * @param insertedTag instance of NoTag
-	 * @param parentTag   parent tag of NoTag
-	 * @return true if removed otherwise false
-	 * @since 3.0.6
-	 */
-	boolean removeLockless(final AbstractHtml insertedTag, final AbstractHtml parentTag) {
-		final boolean removed = insertedTags.remove(insertedTag) != null;
-		if (removed) {
-			if (detachListeners != null) {
-				detachListeners.remove(parentTag);
-			}
-			if (contentChangeListeners != null) {
-				contentChangeListeners.remove(parentTag);
-			}
-		}
-		return removed;
-	}
-
-	/**
 	 * @param noTag
 	 * @return true if the parent of this NoTag was added by
 	 *         AbstractHtml.subscribedTo method but it doesn't mean the NoTag is not
@@ -1971,7 +1950,7 @@ public class SharedTagContent<T> {
 
 			if (detachListeners != null) {
 				for (final AbstractHtml modifiedParent : modifiedParents) {
-					final Set<DetachListener<T>> listeners = detachListeners.get(modifiedParent);
+					final Set<DetachListener<T>> listeners = detachListeners.remove(modifiedParent);
 					if (listeners != null) {
 						runnables = new ArrayList<>(listeners.size());
 						for (final DetachListener<T> listener : listeners) {
@@ -1990,6 +1969,11 @@ public class SharedTagContent<T> {
 					}
 				}
 
+			}
+			if (contentChangeListeners != null) {
+				for (final AbstractHtml modifiedParent : modifiedParents) {
+					contentChangeListeners.remove(modifiedParent);
+				}
 			}
 		} finally {
 			lock.unlockWrite(stamp);
@@ -2014,6 +1998,8 @@ public class SharedTagContent<T> {
 	 *                              listened
 	 * @param contentChangeListener to be added
 	 * @since 3.0.6
+	 * @since 3.0.18 the contentChangeListener object will be removed from this
+	 *        SharedTagContent when the tag is detached from this SharedTagContent.
 	 */
 	public void addContentChangeListener(final AbstractHtml tag, final ContentChangeListener<T> contentChangeListener) {
 		final long stamp = lock.writeLock();
@@ -2038,6 +2024,8 @@ public class SharedTagContent<T> {
 	 * @param tag
 	 * @param detachListener
 	 * @since 3.0.6
+	 * @since 3.0.18 the detachListener object will be removed from this
+	 *        SharedTagContent when the tag is detached from this SharedTagContent.
 	 */
 	public void addDetachListener(final AbstractHtml tag, final DetachListener<T> detachListener) {
 		final long stamp = lock.writeLock();

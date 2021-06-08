@@ -4561,17 +4561,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
 			lock = null;
 		}
 
-		if (TagUtil.isTagless(abstractHtml) && abstractHtml instanceof NoTag) {
-			@SuppressWarnings("rawtypes")
-			final SharedTagContent sharedTagContent = abstractHtml.sharedTagContent;
-			if (sharedTagContent != null) {
-				if (lockSO) {
-					sharedTagContent.remove(abstractHtml, this);	
-				} else {
-					sharedTagContent.removeLockless(abstractHtml, this);
-				}				
-				abstractHtml.sharedTagContent = null;
-			}
+		if (TagUtil.isTagless(abstractHtml) && abstractHtml instanceof NoTag) {			
+			abstractHtml.sharedTagContent = null;
 		}
 
 		// NB: the following code is never expected to make an exception otherwise on
