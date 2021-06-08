@@ -652,6 +652,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
 		return true;
 	}
 	
+	/**
+	 * @param abstractHtmls
+	 * @since 3.0.18
+	 */
 	private void removeFromSharedTagContent(final AbstractHtml... abstractHtmls) {
 		for (final AbstractHtml abstractHtml : abstractHtmls) {
 			if (TagUtil.isTagless(abstractHtml) && abstractHtml instanceof NoTag) {
