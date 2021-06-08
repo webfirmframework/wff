@@ -237,6 +237,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
 				final AbstractHtml[] removedAbstractHtmls = validChildren
 				        .toArray(new AbstractHtml[validChildren.size()]);
+				removeFromSharedTagContent(removedAbstractHtmls);
 
 				final boolean removedAll = super.removeAll(validChildren);
 
@@ -650,6 +651,18 @@ public abstract class AbstractHtml extends AbstractJsObject {
 		appendChildren(child);
 		return true;
 	}
+	
+	private void removeFromSharedTagContent(final AbstractHtml... abstractHtmls) {
+		for (final AbstractHtml abstractHtml : abstractHtmls) {
+			if (TagUtil.isTagless(abstractHtml) && abstractHtml instanceof NoTag) {
+				@SuppressWarnings("rawtypes")
+				final SharedTagContent sharedTagContent = abstractHtml.sharedTagContent;
+				if (sharedTagContent != null) {
+					sharedTagContent.remove(abstractHtml, this);
+				}
+			}
+		}
+	}
 
 	/**
 	 * Removes all children from this tag.
@@ -668,6 +681,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
 			final AbstractHtml[] removedAbstractHtmls = children.toArray(new AbstractHtml[0]);
 			children.clear();
+			
+			removeFromSharedTagContent(removedAbstractHtmls);
 
 			newSOLocks = initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(removedAbstractHtmls);
 
@@ -1350,11 +1365,11 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
 		Lock newSOLock = null;
 		try {
-
+			
 			removed = children.remove(child);
 
 			if (removed) {
-
+				removeFromSharedTagContent(child);
 				// making child.parent = null inside the below method.
 				newSOLock = initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(child, true);
 
