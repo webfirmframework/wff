@@ -1741,6 +1741,27 @@ public class SharedTagContent<T> {
             lock.unlockWrite(stamp);
         }
     }
+    
+    /**
+     * NB: Only for internal use
+     *
+     * @param insertedTag instance of NoTag
+     * @param parentTag   parent tag of NoTag
+     * @return true if removed otherwise false
+     * @since 3.0.6
+     */
+    boolean removeLockless(final AbstractHtml insertedTag, final AbstractHtml parentTag) {
+    	final boolean removed = insertedTags.remove(insertedTag) != null;
+        if (removed) {
+            if (detachListeners != null) {
+                detachListeners.remove(parentTag);
+            }
+            if (contentChangeListeners != null) {
+                contentChangeListeners.remove(parentTag);
+            }
+        }
+        return removed;
+    }
 
     /**
      * @param noTag

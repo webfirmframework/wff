@@ -4565,7 +4565,11 @@ public abstract class AbstractHtml extends AbstractJsObject {
 			@SuppressWarnings("rawtypes")
 			final SharedTagContent sharedTagContent = abstractHtml.sharedTagContent;
 			if (sharedTagContent != null) {
-				sharedTagContent.remove(abstractHtml, this);
+				if (lockSO) {
+					sharedTagContent.remove(abstractHtml, this);	
+				} else {
+					sharedTagContent.removeLockless(abstractHtml, this);
+				}				
 				abstractHtml.sharedTagContent = null;
 			}
 		}
