@@ -6615,7 +6615,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
 		}
 		synchronized (this) {
 			if (this.id == 0) {
-				this.id = ID_GENERATOR.incrementAndGet();
+				do {
+					this.id = ID_GENERATOR.incrementAndGet();
+				} while (this.id == 0);
 			}
 			return this.id;
 		}
