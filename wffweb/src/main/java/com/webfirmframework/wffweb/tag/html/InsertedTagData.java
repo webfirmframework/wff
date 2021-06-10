@@ -40,7 +40,7 @@ final class InsertedTagData<T> implements Comparable<InsertedTagData<T>> {
 	 */
 	private final long ordinal;
 
-	private final ContentFormatter<T> formatter;
+	private final WeakReference<ContentFormatter<T>> formatter;
 
 	/**
 	 * true if if SharedTagContent inserted by AbstractHtml.subscribeTo
@@ -52,12 +52,12 @@ final class InsertedTagData<T> implements Comparable<InsertedTagData<T>> {
 	InsertedTagData(final long ordinal, final ContentFormatter<T> formatter, final boolean subscribed) {
 		super();
 		this.ordinal = ordinal;
-		this.formatter = formatter;
+		this.formatter = new WeakReference<>(formatter);
 		this.subscribed = subscribed;
 	}
 
 	ContentFormatter<T> formatter() {
-		return formatter;
+		return formatter.get();
 	}
 
 	long id() {

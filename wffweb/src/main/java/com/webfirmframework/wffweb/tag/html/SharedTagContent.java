@@ -1344,8 +1344,6 @@ public class SharedTagContent<T> {
 
 					final NoTag prevNoTag = entry.getKey();
 					final InsertedTagData<T> insertedTagData = entry.getValue();
-//					final ContentFormatter<T> formatter = insertedTagData.formatter();
-					final ContentFormatter<T> formatter = contentFormatterByInsertedTagDataId.get(insertedTagData.id());
 
 					final AbstractHtml parentTag = prevNoTag.getParent();
 
@@ -1361,6 +1359,12 @@ public class SharedTagContent<T> {
 
 					final List<ParentNoTagData<T>> dataList = tagsGroupedBySO
 					        .computeIfAbsent(parentTag.getSharedObject(), k -> new ArrayList<>(4));
+
+					final ContentFormatter<T> formatter = insertedTagData.formatter();
+
+					// no need to get by
+					// final ContentFormatter<T> formatter =
+					// contentFormatterByInsertedTagDataId.get(insertedTagData.id());
 
 					NoTag noTag;
 					Content<String> contentApplied;
@@ -1442,13 +1446,13 @@ public class SharedTagContent<T> {
 
 								if (parentNoTagData.contentApplied() != null) {
 
-									final ContentFormatter<T> formatter = contentFormatterByInsertedTagDataId
-									        .get(parentNoTagData.insertedTagData().id());
+									// no need to get by
+//									final ContentFormatter<T> formatter = contentFormatterByInsertedTagDataId
+//									        .get(parentNoTagData.insertedTagData().id());
 
-									// final ContentFormatter<T> formatter =
-									// parentNoTagData.insertedTagData().formatter();
 									modifiedParents.add(new ModifiedParentData<>(parentNoTagData.parent(),
-									        parentNoTagData.contentApplied(), formatter));
+									        parentNoTagData.contentApplied(),
+									        parentNoTagData.insertedTagData().formatter()));
 
 									boolean updateClientTagSpecific = updateClient;
 									if (updateClient && exclusionTags != null
@@ -1495,11 +1499,12 @@ public class SharedTagContent<T> {
 
 								} else {
 									insertedTags.put(parentNoTagData.getNoTag(), parentNoTagData.insertedTagData());
-									final ContentFormatter<T> formatter = contentFormatterByInsertedTagDataId
-									        .get(parentNoTagData.insertedTagData().id());
-//									final ContentFormatter<T> formatter = parentNoTagData.insertedTagData().formatter();
+									// no need to get by
+//									final ContentFormatter<T> formatter = contentFormatterByInsertedTagDataId
+//									        .get(parentNoTagData.insertedTagData().id());
 									modifiedParents.add(new ModifiedParentData<>(parentNoTagData.parent(),
-									        parentNoTagData.contentApplied(), formatter));
+									        parentNoTagData.contentApplied(),
+									        parentNoTagData.insertedTagData().formatter()));
 								}
 							}
 
@@ -1725,8 +1730,10 @@ public class SharedTagContent<T> {
 
 			noTagInserted = noTag;
 
-			final InsertedTagData<T> insertedTagData = new InsertedTagData<>(ordinal, null, subscribe);
+			// for GC task, InsertedTagData contains WeakReference of cFormatter to prevent
+			// it from GC it is kept in map and removed on GC cleanup
 			contentFormatterByInsertedTagDataId.put(ordinal, cFormatter);
+			final InsertedTagData<T> insertedTagData = new InsertedTagData<>(ordinal, cFormatter, subscribe);
 
 			insertedTags.put(noTag, insertedTagData);
 			final InsertedTagGCTask<T> insertedTagGCTask = new InsertedTagGCTask<>(noTag, tagGCTasksRQ, this, ordinal);
@@ -2351,8 +2358,9 @@ public class SharedTagContent<T> {
 			try {
 				final InsertedTagData<T> insertedTagData = insertedTags.get(firstChild);
 				if (insertedTagData != null) {
-//					return insertedTagData.formatter();
-					return contentFormatterByInsertedTagDataId.get(insertedTagData.id());
+					// no need to get by
+					// contentFormatterByInsertedTagDataId.get(insertedTagData.id())
+					return insertedTagData.formatter();
 				}
 			} finally {
 				lock.unlockRead(stamp);
