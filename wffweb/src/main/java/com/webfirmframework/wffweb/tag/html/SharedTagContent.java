@@ -1680,7 +1680,22 @@ public class SharedTagContent<T> {
 		}
 	}
 
+	/**
+	 * @since 3.0.18
+	 */
 	private void cleanup() {
+		final Executor executor = this.executor;
+		if (executor != null) {
+			executor.execute(this::clearGCTasksRQ);
+		} else {
+			clearGCTasksRQ();
+		}
+	}
+
+	/**
+	 * @since 3.0.18
+	 */
+	private void clearGCTasksRQ() {
 		Reference<?> reference;
 		while ((reference = tagGCTasksRQ.poll()) != null) {
 			reference.clear();
@@ -1692,7 +1707,6 @@ public class SharedTagContent<T> {
 			final Runnable task = (Runnable) reference;
 			task.run();
 		}
-
 	}
 
 	/**
