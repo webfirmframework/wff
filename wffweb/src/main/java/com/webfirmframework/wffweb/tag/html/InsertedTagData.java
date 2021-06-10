@@ -35,52 +35,59 @@ import com.webfirmframework.wffweb.tag.html.SharedTagContent.ContentFormatter;
  */
 final class InsertedTagData<T> implements Comparable<InsertedTagData<T>> {
 
-    private final long ordinal;
+	/**
+	 * it should be unique as it also acts as id
+	 */
+	private final long ordinal;
 
-    private final ContentFormatter<T> formatter;
+	private final ContentFormatter<T> formatter;
 
-    /**
-     * true if if SharedTagContent inserted by AbstractHtml.subscribeTo
-     */
-    private final boolean subscribed;
+	/**
+	 * true if if SharedTagContent inserted by AbstractHtml.subscribeTo
+	 */
+	private final boolean subscribed;
 
-    private volatile WeakReference<ClientTasksWrapper> lastClientTaskRef;
+	private volatile WeakReference<ClientTasksWrapper> lastClientTaskRef;
 
-    InsertedTagData(final long ordinal, final ContentFormatter<T> formatter, final boolean subscribed) {
-        super();
-        this.ordinal = ordinal;
-        this.formatter = formatter;
-        this.subscribed = subscribed;
-    }
+	InsertedTagData(final long ordinal, final ContentFormatter<T> formatter, final boolean subscribed) {
+		super();
+		this.ordinal = ordinal;
+		this.formatter = formatter;
+		this.subscribed = subscribed;
+	}
 
-    ContentFormatter<T> formatter() {
-        return formatter;
-    }
+	ContentFormatter<T> formatter() {
+		return formatter;
+	}
 
-    boolean subscribed() {
-        return subscribed;
-    }
+	long id() {
+		return ordinal;
+	}
 
-    /**
-     * @return the lastClientTask
-     */
-    ClientTasksWrapper lastClientTask() {
-        if (lastClientTaskRef != null) {
-            return lastClientTaskRef.get();
-        }
-        return null;
-    }
+	boolean subscribed() {
+		return subscribed;
+	}
 
-    /**
-     * @param lastClientTask the lastClientTask to set
-     */
-    void lastClientTask(final ClientTasksWrapper lastClientTask) {
-        lastClientTaskRef = new WeakReference<>(lastClientTask);
-    }
+	/**
+	 * @return the lastClientTask
+	 */
+	ClientTasksWrapper lastClientTask() {
+		if (lastClientTaskRef != null) {
+			return lastClientTaskRef.get();
+		}
+		return null;
+	}
 
-    @Override
-    public int compareTo(final InsertedTagData<T> o) {
-        return Long.compare(ordinal, o.ordinal);
-    }
+	/**
+	 * @param lastClientTask the lastClientTask to set
+	 */
+	void lastClientTask(final ClientTasksWrapper lastClientTask) {
+		lastClientTaskRef = new WeakReference<>(lastClientTask);
+	}
+
+	@Override
+	public int compareTo(final InsertedTagData<T> o) {
+		return Long.compare(ordinal, o.ordinal);
+	}
 
 }

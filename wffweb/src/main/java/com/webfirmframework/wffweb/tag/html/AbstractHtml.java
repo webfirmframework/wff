@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import java.util.function.BiFunction;
@@ -155,6 +156,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
 	@SuppressWarnings("rawtypes")
 	private volatile SharedTagContent sharedTagContent;
+	
+	private volatile long id;
+
+	private static final AtomicLong ID_GENERATOR = new AtomicLong(0L);
 
 	public static enum TagType {
 		OPENING_CLOSING, SELF_CLOSING, NON_CLOSING;
@@ -651,18 +656,20 @@ public abstract class AbstractHtml extends AbstractJsObject {
 		appendChildren(child);
 		return true;
 	}
-	
+
 	/**
-	 * @param abstractHtmls
+	 * @param children
 	 * @since 3.0.18
 	 */
-	private void removeFromSharedTagContent(final AbstractHtml... abstractHtmls) {
-		for (final AbstractHtml abstractHtml : abstractHtmls) {
-			if (TagUtil.isTagless(abstractHtml) && abstractHtml instanceof NoTag) {
+	private void removeFromSharedTagContent(final AbstractHtml... children) {
+		final long id = this.id;
+		if (id > 0 && children.length > 0) {
+			final AbstractHtml firstChild = children[0];
+			if (TagUtil.isTagless(firstChild) && firstChild instanceof NoTag) {
 				@SuppressWarnings("rawtypes")
-				final SharedTagContent sharedTagContent = abstractHtml.sharedTagContent;
+				final SharedTagContent sharedTagContent = firstChild.sharedTagContent;
 				if (sharedTagContent != null) {
-					sharedTagContent.remove(abstractHtml, this);
+					sharedTagContent.removeListenersLockless(id);
 				}
 			}
 		}
@@ -685,7 +692,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
 			final AbstractHtml[] removedAbstractHtmls = children.toArray(new AbstractHtml[0]);
 			children.clear();
-			
+
 			removeFromSharedTagContent(removedAbstractHtmls);
 
 			newSOLocks = initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(removedAbstractHtmls);
@@ -1256,10 +1263,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
 					        && firstChild instanceof NoTag) {
 
 						removed = firstChild.sharedTagContent.remove(firstChild, this);
-
+						firstChild.sharedTagContent = null;
 						if (removed && removeContent) {
-
-							firstChild.sharedTagContent = null;
 
 							final AbstractHtml[] removedAbstractHtmls = children
 							        .toArray(new AbstractHtml[children.size()]);
@@ -1369,7 +1374,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
 		Lock newSOLock = null;
 		try {
-			
+
 			removed = children.remove(child);
 
 			if (removed) {
@@ -4580,7 +4585,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 			lock = null;
 		}
 
-		if (TagUtil.isTagless(abstractHtml) && abstractHtml instanceof NoTag) {			
+		if (TagUtil.isTagless(abstractHtml) && abstractHtml instanceof NoTag) {
 			abstractHtml.sharedTagContent = null;
 		}
 
@@ -6598,4 +6603,19 @@ public abstract class AbstractHtml extends AbstractJsObject {
 		return consumer.apply((R) this, input);
 	}
 
+	/**
+	 * @return the unique id for this tag object, the uniqueness is maintained only
+	 *         among {@code AbstractHtml} type objects.
+	 * @since 3.0.18
+	 */
+	public long getId() {
+		if (id == 0) {
+			synchronized (this) {
+				if (id == 0) {
+					id = ID_GENERATOR.incrementAndGet();
+				}
+			}
+		}
+		return id;
+	}
 }
