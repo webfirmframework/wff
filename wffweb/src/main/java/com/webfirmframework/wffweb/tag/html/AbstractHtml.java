@@ -156,7 +156,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
 	@SuppressWarnings("rawtypes")
 	private volatile SharedTagContent sharedTagContent;
-	
+
 	private volatile long id;
 
 	private static final AtomicLong ID_GENERATOR = new AtomicLong(0L);
@@ -6609,13 +6609,15 @@ public abstract class AbstractHtml extends AbstractJsObject {
 	 * @since 3.0.18
 	 */
 	public long getId() {
-		if (id == 0) {
-			synchronized (this) {
-				if (id == 0) {
-					id = ID_GENERATOR.incrementAndGet();
-				}
-			}
+		final long id = this.id;
+		if (id != 0) {
+			return id;
 		}
-		return id;
+		synchronized (this) {
+			if (this.id == 0) {
+				this.id = ID_GENERATOR.incrementAndGet();
+			}
+			return this.id;
+		}
 	}
 }
