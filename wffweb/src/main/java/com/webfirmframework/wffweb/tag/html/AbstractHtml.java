@@ -6608,7 +6608,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 	 *         among {@code AbstractHtml} type objects.
 	 * @since 3.0.18
 	 */
-	public long getId() {
+	public final long getId() {
 		final long id = this.id;
 		if (id != 0) {
 			return id;
