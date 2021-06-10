@@ -119,11 +119,14 @@ public class SharedTagContent<T> {
 
 	final Map<Long, ContentFormatter<T>> contentFormatterByInsertedTagDataId = new ConcurrentHashMap<>(4, 0.75F);
 
-	final Set<InsertedTagGCTask<T>> insertedTagGCTasksCache = Collections.newSetFromMap(new ConcurrentHashMap<>());
+	final Set<InsertedTagDataGCTask<T>> insertedTagDataGCTasksCache = Collections
+	        .newSetFromMap(new ConcurrentHashMap<>());
 
 	final Set<ApplicableTagGCTask<T>> applicableTagGCTasksCache = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
 	private final ReferenceQueue<? super AbstractHtml> tagGCTasksRQ = new ReferenceQueue<>();
+
+	private final ReferenceQueue<? super InsertedTagData<T>> insertedTagDataGCTasksRQ = new ReferenceQueue<>();
 
 	/**
 	 * Represents the behavior of push operation of BrowserPage to client.
@@ -1678,12 +1681,18 @@ public class SharedTagContent<T> {
 	}
 
 	private void cleanup() {
-		Reference<?> tagGCTask;
-		while ((tagGCTask = tagGCTasksRQ.poll()) != null) {
-			tagGCTask.clear();
-			final Runnable task = (Runnable) tagGCTask;
+		Reference<?> reference;
+		while ((reference = tagGCTasksRQ.poll()) != null) {
+			reference.clear();
+			final Runnable task = (Runnable) reference;
 			task.run();
 		}
+		while ((reference = insertedTagDataGCTasksRQ.poll()) != null) {
+			reference.clear();
+			final Runnable task = (Runnable) reference;
+			task.run();
+		}
+
 	}
 
 	/**
@@ -1736,8 +1745,9 @@ public class SharedTagContent<T> {
 			final InsertedTagData<T> insertedTagData = new InsertedTagData<>(ordinal, cFormatter, subscribe);
 
 			insertedTags.put(noTag, insertedTagData);
-			final InsertedTagGCTask<T> insertedTagGCTask = new InsertedTagGCTask<>(noTag, tagGCTasksRQ, this, ordinal);
-			insertedTagGCTasksCache.add(insertedTagGCTask);
+			final InsertedTagDataGCTask<T> insertedTagDataGCTask = new InsertedTagDataGCTask<>(insertedTagData,
+			        insertedTagDataGCTasksRQ, this, ordinal);
+			insertedTagDataGCTasksCache.add(insertedTagDataGCTask);
 
 			// AtomicLong is not required as it is under lock
 			ordinal++;
