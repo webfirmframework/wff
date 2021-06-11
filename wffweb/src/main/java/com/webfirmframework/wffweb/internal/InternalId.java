@@ -22,7 +22,7 @@ import java.io.Serializable;
  *
  * @since 3.0.18
  */
-public class InternalId implements Serializable {
+public final class InternalId implements Serializable {
     public InternalId() {
     }
 }
