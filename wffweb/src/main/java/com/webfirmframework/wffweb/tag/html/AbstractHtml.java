@@ -47,6 +47,7 @@ import com.webfirmframework.wffweb.NoParentException;
 import com.webfirmframework.wffweb.WffRuntimeException;
 import com.webfirmframework.wffweb.WffSecurityException;
 import com.webfirmframework.wffweb.clone.CloneUtil;
+import com.webfirmframework.wffweb.internal.InternalId;
 import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
 import com.webfirmframework.wffweb.streamer.WffBinaryMessageOutputStreamer;
 import com.webfirmframework.wffweb.tag.core.AbstractJsObject;
@@ -157,9 +158,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 	@SuppressWarnings("rawtypes")
 	private volatile SharedTagContent sharedTagContent;
 
-	private volatile long id;
-
-	private static final AtomicLong ID_GENERATOR = new AtomicLong(0L);
+	private final InternalId internalId = new InternalId();
 
 	public static enum TagType {
 		OPENING_CLOSING, SELF_CLOSING, NON_CLOSING;
@@ -662,14 +661,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
 	 * @since 3.0.18
 	 */
 	private void removeFromSharedTagContent(final AbstractHtml... children) {
-		final long id = this.id;
-		if (id > 0 && children.length > 0) {
+		if (children.length > 0) {
 			final AbstractHtml firstChild = children[0];
-			if (TagUtil.isTagless(firstChild) && firstChild instanceof NoTag) {
+			if (!firstChild.parentNullifiedOnce && TagUtil.isTagless(firstChild) && firstChild instanceof NoTag) {
 				@SuppressWarnings("rawtypes")
 				final SharedTagContent sharedTagContent = firstChild.sharedTagContent;
 				if (sharedTagContent != null) {
-					sharedTagContent.removeListenersLockless(id);
+					sharedTagContent.removeListenersLockless(this.internalId);
 				}
 			}
 		}
@@ -6604,22 +6602,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
 	}
 
 	/**
-	 * @return the unique id for this tag object, the uniqueness is maintained only
-	 *         among {@code AbstractHtml} type objects.
+	 * @return the unique id for this object.
 	 * @since 3.0.18
 	 */
-	public final long getId() {
-		final long id = this.id;
-		if (id != 0) {
-			return id;
-		}
-		synchronized (this) {
-			if (this.id == 0) {
-				do {
-					this.id = ID_GENERATOR.incrementAndGet();
-				} while (this.id == 0);
-			}
-			return this.id;
-		}
+	public final InternalId internalId() {
+		return internalId;
 	}
 }

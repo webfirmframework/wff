@@ -41,6 +41,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import com.webfirmframework.wffweb.internal.InternalId;
 import com.webfirmframework.wffweb.server.page.ClientTasksWrapper;
 import com.webfirmframework.wffweb.tag.html.listener.PushQueue;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
@@ -101,9 +102,9 @@ public class SharedTagContent<T> {
 
 	private final Map<NoTag, InsertedTagData<T>> insertedTags = new WeakHashMap<>(4, 0.75F);
 
-	volatile Map<Long, Set<ContentChangeListener<T>>> contentChangeListeners;
+	volatile Map<InternalId, Set<ContentChangeListener<T>>> contentChangeListeners;
 
-	volatile Map<Long, Set<DetachListener<T>>> detachListeners;
+	volatile Map<InternalId, Set<DetachListener<T>>> detachListeners;
 
 	private volatile T content;
 
@@ -117,7 +118,7 @@ public class SharedTagContent<T> {
 
 	private volatile Executor executor;
 
-	final Map<Long, ContentFormatter<T>> contentFormatterByInsertedTagDataId = new ConcurrentHashMap<>(4, 0.75F);
+	final Map<InternalId, ContentFormatter<T>> contentFormatterByInsertedTagDataId = new ConcurrentHashMap<>(4, 0.75F);
 
 	final Set<InsertedTagDataGCTask<T>> insertedTagDataGCTasksCache = Collections
 	        .newSetFromMap(new ConcurrentHashMap<>());
@@ -1521,7 +1522,7 @@ public class SharedTagContent<T> {
 					for (final ModifiedParentData<T> modifiedParentData : modifiedParents) {
 						final AbstractHtml modifiedParent = modifiedParentData.parent();
 						final Set<ContentChangeListener<T>> listeners = contentChangeListeners
-						        .get(modifiedParent.getId());
+						        .get(modifiedParent.internalId());
 						if (listeners != null) {
 							runnables = new ArrayList<>(listeners.size());
 							for (final ContentChangeListener<T> listener : listeners) {
@@ -1753,14 +1754,15 @@ public class SharedTagContent<T> {
 
 			noTagInserted = noTag;
 
+			final InsertedTagData<T> insertedTagData = new InsertedTagData<>(ordinal, cFormatter, subscribe);
 			// for GC task, InsertedTagData contains WeakReference of cFormatter to prevent
 			// it from GC it is kept in map and removed on GC cleanup
-			contentFormatterByInsertedTagDataId.put(ordinal, cFormatter);
-			final InsertedTagData<T> insertedTagData = new InsertedTagData<>(ordinal, cFormatter, subscribe);
+			final InternalId insertedTagDataId = insertedTagData.internalId();
+			contentFormatterByInsertedTagDataId.put(insertedTagDataId, cFormatter);
 
 			insertedTags.put(noTag, insertedTagData);
 			final InsertedTagDataGCTask<T> insertedTagDataGCTask = new InsertedTagDataGCTask<>(insertedTagData,
-			        insertedTagDataGCTasksRQ, this, ordinal);
+			        insertedTagDataGCTasksRQ, this, insertedTagDataId);
 			insertedTagDataGCTasksCache.add(insertedTagDataGCTask);
 
 			// AtomicLong is not required as it is under lock
@@ -1801,10 +1803,10 @@ public class SharedTagContent<T> {
 			final boolean removed = insertedTags.remove(insertedTag) != null;
 			if (removed) {
 				if (detachListeners != null) {
-					detachListeners.remove(parentTag.getId());
+					detachListeners.remove(parentTag.internalId());
 				}
 				if (contentChangeListeners != null) {
-					contentChangeListeners.remove(parentTag.getId());
+					contentChangeListeners.remove(parentTag.internalId());
 				}
 			}
 
@@ -1820,7 +1822,7 @@ public class SharedTagContent<T> {
 	 *
 	 * @param tagId
 	 */
-	void removeListenersLockless(final long tagId) {
+	void removeListenersLockless(final InternalId tagId) {
 		if (detachListeners != null) {
 			detachListeners.remove(tagId);
 		}
@@ -2036,7 +2038,7 @@ public class SharedTagContent<T> {
 
 			if (detachListeners != null) {
 				for (final AbstractHtml modifiedParent : modifiedParents) {
-					final Set<DetachListener<T>> listeners = detachListeners.remove(modifiedParent.getId());
+					final Set<DetachListener<T>> listeners = detachListeners.remove(modifiedParent.internalId());
 					if (listeners != null) {
 						runnables = new ArrayList<>(listeners.size());
 						for (final DetachListener<T> listener : listeners) {
@@ -2058,7 +2060,7 @@ public class SharedTagContent<T> {
 			}
 			if (contentChangeListeners != null) {
 				for (final AbstractHtml modifiedParent : modifiedParents) {
-					contentChangeListeners.remove(modifiedParent.getId());
+					contentChangeListeners.remove(modifiedParent.internalId());
 				}
 			}
 
@@ -2097,10 +2099,10 @@ public class SharedTagContent<T> {
 			if (contentChangeListeners == null) {
 				listeners = new LinkedHashSet<>(4);
 				contentChangeListeners = new ConcurrentHashMap<>(4, 0.75F);
-				contentChangeListeners.put(tag.getId(), listeners);
+				contentChangeListeners.put(tag.internalId(), listeners);
 				applicableTagGCTasksCache.add(new ApplicableTagGCTask<>(tag, tagGCTasksRQ, this));
 			} else {
-				listeners = contentChangeListeners.computeIfAbsent(tag.getId(), k -> {
+				listeners = contentChangeListeners.computeIfAbsent(tag.internalId(), k -> {
 					applicableTagGCTasksCache.add(new ApplicableTagGCTask<>(tag, tagGCTasksRQ, this));
 					return new LinkedHashSet<>(4);
 				});
@@ -2128,10 +2130,10 @@ public class SharedTagContent<T> {
 			if (detachListeners == null) {
 				listeners = new LinkedHashSet<>(4);
 				detachListeners = new ConcurrentHashMap<>(4, 0.75F);
-				detachListeners.put(tag.getId(), listeners);
+				detachListeners.put(tag.internalId(), listeners);
 				applicableTagGCTasksCache.add(new ApplicableTagGCTask<>(tag, tagGCTasksRQ, this));
 			} else {
-				listeners = detachListeners.computeIfAbsent(tag.getId(), k -> {
+				listeners = detachListeners.computeIfAbsent(tag.internalId(), k -> {
 					applicableTagGCTasksCache.add(new ApplicableTagGCTask<>(tag, tagGCTasksRQ, this));
 					return new LinkedHashSet<>(4);
 				});
@@ -2181,7 +2183,7 @@ public class SharedTagContent<T> {
 
 		try {
 			if (contentChangeListeners != null) {
-				final Set<ContentChangeListener<T>> listeners = contentChangeListeners.get(tag.getId());
+				final Set<ContentChangeListener<T>> listeners = contentChangeListeners.get(tag.internalId());
 				if (listeners != null) {
 					listeners.remove(contentChangeListener);
 				}
@@ -2229,7 +2231,7 @@ public class SharedTagContent<T> {
 
 		try {
 			if (detachListeners != null) {
-				final Set<DetachListener<T>> listeners = detachListeners.get(tag.getId());
+				final Set<DetachListener<T>> listeners = detachListeners.get(tag.internalId());
 				if (listeners != null) {
 					listeners.remove(detachListener);
 				}
@@ -2254,7 +2256,7 @@ public class SharedTagContent<T> {
 		try {
 			if (this.contentChangeListeners != null) {
 
-				final Set<ContentChangeListener<T>> listeners = this.contentChangeListeners.get(tag.getId());
+				final Set<ContentChangeListener<T>> listeners = this.contentChangeListeners.get(tag.internalId());
 
 				if (listeners != null) {
 					for (final ContentChangeListener<T> each : contentChangeListeners) {
@@ -2281,7 +2283,7 @@ public class SharedTagContent<T> {
 		try {
 			if (this.detachListeners != null) {
 
-				final Set<DetachListener<T>> listeners = this.detachListeners.get(tag.getId());
+				final Set<DetachListener<T>> listeners = this.detachListeners.get(tag.internalId());
 
 				if (listeners != null) {
 					for (final DetachListener<T> each : detachListeners) {
@@ -2305,7 +2307,7 @@ public class SharedTagContent<T> {
 
 		try {
 			if (contentChangeListeners != null) {
-				contentChangeListeners.remove(tag.getId());
+				contentChangeListeners.remove(tag.internalId());
 			}
 
 		} finally {
@@ -2342,7 +2344,7 @@ public class SharedTagContent<T> {
 
 		try {
 			if (detachListeners != null) {
-				detachListeners.remove(tag.getId());
+				detachListeners.remove(tag.internalId());
 			}
 
 		} finally {
@@ -2401,7 +2403,7 @@ public class SharedTagContent<T> {
 	public Set<ContentChangeListener<T>> getContentChangeListeners(final AbstractHtml tag) {
 		final long stamp = lock.readLock();
 		try {
-			final Set<ContentChangeListener<T>> listeners = contentChangeListeners.get(tag.getId());
+			final Set<ContentChangeListener<T>> listeners = contentChangeListeners.get(tag.internalId());
 			if (listeners != null) {
 				final Set<ContentChangeListener<T>> unmodifiableSet = Collections.unmodifiableSet(listeners);
 				return unmodifiableSet;
@@ -2421,7 +2423,7 @@ public class SharedTagContent<T> {
 	public Set<DetachListener<T>> getDetachListeners(final AbstractHtml tag) {
 		final long stamp = lock.readLock();
 		try {
-			final Set<DetachListener<T>> listeners = detachListeners.get(tag.getId());
+			final Set<DetachListener<T>> listeners = detachListeners.get(tag.internalId());
 			if (listeners != null) {
 				final Set<DetachListener<T>> unmodifiableSet = Collections.unmodifiableSet(listeners);
 				return unmodifiableSet;
