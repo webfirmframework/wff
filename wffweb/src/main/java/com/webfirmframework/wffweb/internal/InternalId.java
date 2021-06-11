@@ -23,6 +23,9 @@ import java.io.Serializable;
  * @since 3.0.18
  */
 public final class InternalId implements Serializable {
-    public InternalId() {
-    }
+
+	private static final long serialVersionUID = 1L;
+
+	public InternalId() {
+	}
 }
