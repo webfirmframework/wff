@@ -34,7 +34,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import java.util.function.BiFunction;
@@ -88,7 +87,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 	// if this class' is refactored then SecurityClassConstants should be
 	// updated.
 
-	private static final long serialVersionUID = 3_0_1L;
+	private static final long serialVersionUID = 3_0_18L;
 
 	private static final Security ACCESS_OBJECT;
 
@@ -156,7 +155,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 	protected final boolean noTagContentTypeHtml;
 
 	@SuppressWarnings("rawtypes")
-	private volatile SharedTagContent sharedTagContent;
+	private transient volatile SharedTagContent sharedTagContent;
 
 	private final InternalId internalId = new InternalId();
 
