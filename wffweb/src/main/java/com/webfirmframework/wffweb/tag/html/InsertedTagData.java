@@ -17,7 +17,6 @@ package com.webfirmframework.wffweb.tag.html;
 
 import java.lang.ref.WeakReference;
 
-import com.webfirmframework.wffweb.internal.InternalId;
 import com.webfirmframework.wffweb.server.page.ClientTasksWrapper;
 import com.webfirmframework.wffweb.tag.html.SharedTagContent.ContentFormatter;
 
@@ -40,8 +39,6 @@ final class InsertedTagData<T> implements Comparable<InsertedTagData<T>> {
 	 * it should be unique as it also acts as id
 	 */
 	private final long ordinal;
-
-	private final InternalId internalId = new InternalId();
 
 	private final WeakReference<ContentFormatter<T>> formatter;
 
@@ -93,7 +90,4 @@ final class InsertedTagData<T> implements Comparable<InsertedTagData<T>> {
 		return Long.compare(ordinal, o.ordinal);
 	}
 
-	InternalId internalId() {
-		return internalId;
-	}
 }

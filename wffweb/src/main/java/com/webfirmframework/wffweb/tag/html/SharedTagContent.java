@@ -118,11 +118,6 @@ public class SharedTagContent<T> {
 
 	private volatile Executor executor;
 
-	final Map<InternalId, ContentFormatter<T>> contentFormatterByInsertedTagDataId = new ConcurrentHashMap<>(4, 0.75F);
-
-	final Set<InsertedTagDataGCTask<T>> insertedTagDataGCTasksCache = Collections
-	        .newSetFromMap(new ConcurrentHashMap<>());
-
 	final Set<ApplicableTagGCTask<T>> applicableTagGCTasksCache = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
 	private final ReferenceQueue<? super AbstractHtml> tagGCTasksRQ = new ReferenceQueue<>();
@@ -1347,19 +1342,22 @@ public class SharedTagContent<T> {
 				for (final Entry<NoTag, InsertedTagData<T>> entry : insertedTagsEntries) {
 
 					final NoTag prevNoTag = entry.getKey();
+					if (prevNoTag == null) {
+						continue;
+					}
 					final InsertedTagData<T> insertedTagData = entry.getValue();
 
 					final AbstractHtml parentTag = prevNoTag.getParent();
 
 					if (parentTag == null) {
-						contentFormatterByInsertedTagDataId.remove(insertedTagData.internalId());
+						prevNoTag.setCacheSTCFormatter(null, ACCESS_OBJECT);
 						continue;
 					}
 
 					// the condition isParentNullifiedOnce true means the parent
 					// of this tag has already been changed at least once
 					if (((AbstractHtml) prevNoTag).isParentNullifiedOnce()) {
-						contentFormatterByInsertedTagDataId.remove(insertedTagData.internalId());
+						prevNoTag.setCacheSTCFormatter(null, ACCESS_OBJECT);
 						continue;
 					}
 
@@ -1377,15 +1375,19 @@ public class SharedTagContent<T> {
 					try {
 						contentApplied = formatter.format(contentAfter);
 						if (contentApplied != null) {
+							prevNoTag.setCacheSTCFormatter(null, ACCESS_OBJECT);
 							noTag = new NoTag(null, contentApplied.content, contentApplied.contentTypeHtml);
 						} else {
 							noTag = prevNoTag;
 						}
 					} catch (final RuntimeException e) {
 						contentApplied = new Content<>("", false);
+						prevNoTag.setCacheSTCFormatter(null, ACCESS_OBJECT);
 						noTag = new NoTag(null, contentApplied.content, contentApplied.contentTypeHtml);
 						LOGGER.log(Level.SEVERE, "Exception while ContentFormatter.format", e);
 					}
+
+					noTag.setCacheSTCFormatter(formatter, ACCESS_OBJECT);
 
 					final AbstractHtml noTagAsBase = noTag;
 					noTagAsBase.setSharedTagContent(this);
@@ -1512,9 +1514,6 @@ public class SharedTagContent<T> {
 									        parentNoTagData.contentApplied(),
 									        parentNoTagData.insertedTagData().formatter()));
 								}
-							} else {
-								contentFormatterByInsertedTagDataId
-								        .remove(parentNoTagData.insertedTagData().internalId());
 							}
 
 						}
@@ -1761,14 +1760,10 @@ public class SharedTagContent<T> {
 
 			final InsertedTagData<T> insertedTagData = new InsertedTagData<>(ordinal, cFormatter, subscribe);
 			// for GC task, InsertedTagData contains WeakReference of cFormatter to prevent
-			// it from GC it is kept in map and removed on GC cleanup
-			final InternalId insertedTagDataId = insertedTagData.internalId();
-			contentFormatterByInsertedTagDataId.put(insertedTagDataId, cFormatter);
+			// it from GC it is kept in noTag
+			noTag.setCacheSTCFormatter(cFormatter, ACCESS_OBJECT);
 
 			insertedTags.put(noTag, insertedTagData);
-			final InsertedTagDataGCTask<T> insertedTagDataGCTask = new InsertedTagDataGCTask<>(insertedTagData,
-			        insertedTagDataGCTasksRQ, this, insertedTagDataId);
-			insertedTagDataGCTasksCache.add(insertedTagDataGCTask);
 
 			// AtomicLong is not required as it is under lock
 			ordinal++;
@@ -1805,8 +1800,7 @@ public class SharedTagContent<T> {
 		final long stamp = lock.writeLock();
 		try {
 
-			final InsertedTagData<T> removedInsertedTagData = insertedTags.remove(insertedTag);
-			final boolean removed = removedInsertedTagData != null;
+			final boolean removed = insertedTags.remove(insertedTag) != null;
 			if (removed) {
 				if (detachListeners != null) {
 					detachListeners.remove(parentTag.internalId());
@@ -1814,7 +1808,8 @@ public class SharedTagContent<T> {
 				if (contentChangeListeners != null) {
 					contentChangeListeners.remove(parentTag.internalId());
 				}
-				contentFormatterByInsertedTagDataId.remove(removedInsertedTagData.internalId());
+				final NoTag noTag = (NoTag) insertedTag;
+				noTag.setCacheSTCFormatter(null, ACCESS_OBJECT);
 			}
 
 			return removed;
@@ -1919,28 +1914,20 @@ public class SharedTagContent<T> {
 				}
 				final NoTag prevNoTag = entry.getKey();
 				if (prevNoTag == null) {
-					final InsertedTagData<T> insertedTagData = entry.getValue();
-					if (insertedTagData != null) {
-						contentFormatterByInsertedTagDataId.remove(insertedTagData.internalId());
-					}
 					continue;
 				}
 				final InsertedTagData<T> insertedTagData = entry.getValue();
 				final AbstractHtml parentTag = prevNoTag.getParent();
 
 				if (parentTag == null) {
-					if (insertedTagData != null) {
-						contentFormatterByInsertedTagDataId.remove(insertedTagData.internalId());
-					}
+					prevNoTag.setCacheSTCFormatter(null, ACCESS_OBJECT);
 					continue;
 				}
 
 				// the condition isParentNullifiedOnce true means the parent of
 				// this tag has already been changed at least once
 				if (((AbstractHtml) prevNoTag).isParentNullifiedOnce()) {
-					if (insertedTagData != null) {
-						contentFormatterByInsertedTagDataId.remove(insertedTagData.internalId());
-					}
+					prevNoTag.setCacheSTCFormatter(null, ACCESS_OBJECT);
 					continue;
 				}
 
@@ -2008,8 +1995,6 @@ public class SharedTagContent<T> {
 								insertedTags.put(parentNoTagData.previousNoTag(), parentNoTagData.insertedTagData());
 							} else {
 								modifiedParents.add(parentNoTagData.parent());
-								contentFormatterByInsertedTagDataId
-								        .remove(parentNoTagData.insertedTagData().internalId());
 
 								boolean updateClientTagSpecific = updateClient;
 								if (updateClient && exclusionClientUpdateTags != null

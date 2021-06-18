@@ -22,6 +22,8 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 import com.webfirmframework.wffweb.MethodNotImplementedException;
+import com.webfirmframework.wffweb.WffSecurityException;
+import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.SharedTagContent;
 import com.webfirmframework.wffweb.tag.html.SharedTagContent.ContentFormatter;
@@ -40,206 +42,225 @@ import com.webfirmframework.wffweb.util.StringUtil;
  */
 public class NoTag extends AbstractHtml {
 
-    // TODO This class needs to be tested properly
+	// TODO This class needs to be tested properly
 
-    private static final long serialVersionUID = 1_0_0L;
+	private static final long serialVersionUID = 1_0_0L;
 
-    {
-        init();
-    }
+	// just for caching
+	@SuppressWarnings("unused")
+	private Object cachedStcFormatter;
 
-    /**
-     *
-     * @param base     i.e. parent tag of this tag
-     * @param children An array of {@code AbstractHtml}
-     *
-     * @since 1.0.0
-     */
-    public NoTag(final AbstractHtml base, final AbstractHtml... children) {
-        super(base, children);
-    }
+	{
+		init();
+	}
 
-    /**
-     *
-     * @param base     i.e. parent tag of this tag
-     * @param children An array of {@code AbstractHtml}
-     *
-     * @since 1.0.0
-     */
-    public NoTag(final AbstractHtml base, final Collection<? extends AbstractHtml> children) {
-        super(base, children);
-    }
+	/**
+	 *
+	 * @param base     i.e. parent tag of this tag
+	 * @param children An array of {@code AbstractHtml}
+	 *
+	 * @since 1.0.0
+	 */
+	public NoTag(final AbstractHtml base, final AbstractHtml... children) {
+		super(base, children);
+	}
 
-    /**
-     *
-     * @param base         i.e. parent tag of this tag
-     * @param childContent
-     *
-     * @since 1.0.0
-     */
-    public NoTag(final AbstractHtml base, final String childContent) {
-        super(base, childContent, false);
-    }
+	/**
+	 *
+	 * @param base     i.e. parent tag of this tag
+	 * @param children An array of {@code AbstractHtml}
+	 *
+	 * @since 1.0.0
+	 */
+	public NoTag(final AbstractHtml base, final Collection<? extends AbstractHtml> children) {
+		super(base, children);
+	}
 
-    /**
-     *
-     * @param base            i.e. parent tag of this tag
-     * @param childContent
-     * @param contentTypeHtml true if the given childContent is HTML. by default it
-     *                        is false.
-     * @since 3.0.2
-     */
-    public NoTag(final AbstractHtml base, final String childContent, final boolean contentTypeHtml) {
-        super(base, childContent, contentTypeHtml);
-    }
+	/**
+	 *
+	 * @param base         i.e. parent tag of this tag
+	 * @param childContent
+	 *
+	 * @since 1.0.0
+	 */
+	public NoTag(final AbstractHtml base, final String childContent) {
+		super(base, childContent, false);
+	}
 
-    /**
-     * invokes only once per object
-     *
-     * @author WFF
-     * @since 1.0.0
-     */
-    protected void init() {
-        // to override and use this method
-    }
+	/**
+	 *
+	 * @param base            i.e. parent tag of this tag
+	 * @param childContent
+	 * @param contentTypeHtml true if the given childContent is HTML. by default it
+	 *                        is false.
+	 * @since 3.0.2
+	 */
+	public NoTag(final AbstractHtml base, final String childContent, final boolean contentTypeHtml) {
+		super(base, childContent, contentTypeHtml);
+	}
 
-    /**
-     * adds {@code AbstractHtml}s as children.
-     *
-     * @param children
-     * @since 1.0.0
-     * @author WFF
-     */
-    public void addChildren(final List<AbstractHtml> children) {
-        super.appendChildren(children);
-    }
+	/**
+	 * invokes only once per object
+	 *
+	 * @author WFF
+	 * @since 1.0.0
+	 */
+	protected void init() {
+		// to override and use this method
+	}
 
-    /**
-     * adds {@code AbstractHtml}s as children.
-     *
-     * @param child
-     * @since 1.0.0
-     * @author WFF
-     */
-    public void addChild(final AbstractHtml child) {
-        super.appendChild(child);
-    }
+	/**
+	 * adds {@code AbstractHtml}s as children.
+	 *
+	 * @param children
+	 * @since 1.0.0
+	 * @author WFF
+	 */
+	public void addChildren(final List<AbstractHtml> children) {
+		super.appendChildren(children);
+	}
 
-    /**
-     * adds {@code AbstractHtml}s as children.
-     *
-     * @param children
-     * @since 1.0.0
-     * @author WFF
-     */
-    public void removeChildren(final List<AbstractHtml> children) {
-        super.removeChildren(children);
-    }
+	/**
+	 * adds {@code AbstractHtml}s as children.
+	 *
+	 * @param child
+	 * @since 1.0.0
+	 * @author WFF
+	 */
+	public void addChild(final AbstractHtml child) {
+		super.appendChild(child);
+	}
 
-    /**
-     * adds {@code AbstractHtml}s as children.
-     *
-     * @param child
-     * @since 1.0.0
-     * @author WFF
-     */
-    @Override
-    public boolean removeChild(final AbstractHtml child) {
-        return super.removeChild(child);
-    }
+	/**
+	 * adds {@code AbstractHtml}s as children.
+	 *
+	 * @param children
+	 * @since 1.0.0
+	 * @author WFF
+	 */
+	public void removeChildren(final List<AbstractHtml> children) {
+		super.removeChildren(children);
+	}
 
-    /**
-     * removes the the child content.
-     *
-     * @param child
-     * @since 1.0.0
-     * @author WFF
-     */
-    public void removeChild(final String child) {
-        final StringBuilder htmlMiddleSB = getHtmlMiddleSB();
-        final String sb = htmlMiddleSB.toString();
-        final String replaced = StringUtil.replace(sb, child, "");
-        final int lastIndex = htmlMiddleSB.length() - 1;
-        htmlMiddleSB.delete(0, lastIndex);
-        htmlMiddleSB.append(replaced);
-    }
+	/**
+	 * adds {@code AbstractHtml}s as children.
+	 *
+	 * @param child
+	 * @since 1.0.0
+	 * @author WFF
+	 */
+	@Override
+	public boolean removeChild(final AbstractHtml child) {
+		return super.removeChild(child);
+	}
 
-    /**
-     * adds {@code AbstractHtml}s as children.
-     *
-     * @param child
-     * @since 1.0.0
-     * @author WFF
-     */
-    public void addChild(final String child) {
-        super.getChildren().add(new NoTag(this, child));
-    }
+	/**
+	 * removes the the child content.
+	 *
+	 * @param child
+	 * @since 1.0.0
+	 * @author WFF
+	 */
+	public void removeChild(final String child) {
+		final StringBuilder htmlMiddleSB = getHtmlMiddleSB();
+		final String sb = htmlMiddleSB.toString();
+		final String replaced = StringUtil.replace(sb, child, "");
+		final int lastIndex = htmlMiddleSB.length() - 1;
+		htmlMiddleSB.delete(0, lastIndex);
+		htmlMiddleSB.append(replaced);
+	}
 
-    /**
-     * gets child content
-     *
-     * @return
-     * @since 1.0.0
-     * @author WFF
-     */
-    public String getChildContent() {
-        return getHtmlMiddleSB().toString();
-    }
+	/**
+	 * adds {@code AbstractHtml}s as children.
+	 *
+	 * @param child
+	 * @since 1.0.0
+	 * @author WFF
+	 */
+	public void addChild(final String child) {
+		super.getChildren().add(new NoTag(this, child));
+	}
 
-    /**
-     * @return true if the child content is considered to be HTML
-     * @since 3.0.2
-     */
-    public boolean isChildContentTypeHtml() {
-        return noTagContentTypeHtml;
-    }
+	/**
+	 * gets child content
+	 *
+	 * @return
+	 * @since 1.0.0
+	 * @author WFF
+	 */
+	public String getChildContent() {
+		return getHtmlMiddleSB().toString();
+	}
 
-    /**
-     * @deprecated this method is not allowed in NoTag or Blank class.
-     */
-    @Deprecated
-    @Override
-    public boolean removeSharedTagContent(final boolean removeContent) {
-        throw new MethodNotImplementedException(
-                "sharedTagContent is not allowed in NoTag or Blank tag so calling removeSharedTagContent is invalid");
-    }
+	/**
+	 * @return true if the child content is considered to be HTML
+	 * @since 3.0.2
+	 */
+	public boolean isChildContentTypeHtml() {
+		return noTagContentTypeHtml;
+	}
 
-    /**
-     * @deprecated this method is not allowed in NoTag or Blank class.
-     */
-    @Deprecated
-    @Override
-    public <T> void subscribeTo(final boolean updateClient, final SharedTagContent<T> sharedTagContent,
-            final ContentFormatter<T> formatter) {
-        throw new MethodNotImplementedException("sharedTagContent is not allowed to apply in NoTag or Blank tag");
-    }
+	/**
+	 * @deprecated this method is not allowed in NoTag or Blank class.
+	 */
+	@Deprecated
+	@Override
+	public boolean removeSharedTagContent(final boolean removeContent) {
+		throw new MethodNotImplementedException(
+		        "sharedTagContent is not allowed in NoTag or Blank tag so calling removeSharedTagContent is invalid");
+	}
 
-    /**
-     * @deprecated this method is not allowed in NoTag or Blank class.
-     */
-    @Deprecated
-    @Override
-    public <T> void addInnerHtml(final boolean updateClient, final SharedTagContent<T> sharedTagContent,
-            final ContentFormatter<T> formatter) {
-        throw new MethodNotImplementedException("sharedTagContent is not allowed to apply in NoTag or Blank tag");
-    }
+	/**
+	 * @deprecated this method is not allowed in NoTag or Blank class.
+	 */
+	@Deprecated
+	@Override
+	public <T> void subscribeTo(final boolean updateClient, final SharedTagContent<T> sharedTagContent,
+	        final ContentFormatter<T> formatter) {
+		throw new MethodNotImplementedException("sharedTagContent is not allowed to apply in NoTag or Blank tag");
+	}
 
-    /**
-     * @deprecated this method is not allowed in NoTag or Blank class.
-     */
-    @Deprecated
-    @Override
-    public <T extends AbstractHtml> T give(final Consumer<T> consumer) {
-        throw new MethodNotImplementedException("give is not allowed to use in NoTag or Blank tag");
-    }
+	/**
+	 * @deprecated this method is not allowed in NoTag or Blank class.
+	 */
+	@Deprecated
+	@Override
+	public <T> void addInnerHtml(final boolean updateClient, final SharedTagContent<T> sharedTagContent,
+	        final ContentFormatter<T> formatter) {
+		throw new MethodNotImplementedException("sharedTagContent is not allowed to apply in NoTag or Blank tag");
+	}
 
-    /**
-     * @deprecated this method is not allowed in NoTag or Blank class.
-     */
-    @Deprecated
-    @Override
-    public <R extends AbstractHtml, C> R give(final BiFunction<R, C, R> consumer, final C input) {
-        throw new MethodNotImplementedException("give is not allowed to use in NoTag or Blank tag");
-    }
+	/**
+	 * @deprecated this method is not allowed in NoTag or Blank class.
+	 */
+	@Deprecated
+	@Override
+	public <T extends AbstractHtml> T give(final Consumer<T> consumer) {
+		throw new MethodNotImplementedException("give is not allowed to use in NoTag or Blank tag");
+	}
+
+	/**
+	 * @deprecated this method is not allowed in NoTag or Blank class.
+	 */
+	@Deprecated
+	@Override
+	public <R extends AbstractHtml, C> R give(final BiFunction<R, C, R> consumer, final C input) {
+		throw new MethodNotImplementedException("give is not allowed to use in NoTag or Blank tag");
+	}
+
+	/**
+	 * Only for internal use
+	 *
+	 * @param contentFormatter
+	 * @param accessObject
+	 * @param <T>
+	 * @since 3.0.18
+	 */
+	public <T> void setCacheSTCFormatter(final ContentFormatter<T> contentFormatter, final Object accessObject) {
+		if (!SecurityClassConstants.SHARED_TAG_CONTENT.equals(accessObject.getClass().getName())) {
+			throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
+		}
+		cachedStcFormatter = contentFormatter;
+	}
 
 }
