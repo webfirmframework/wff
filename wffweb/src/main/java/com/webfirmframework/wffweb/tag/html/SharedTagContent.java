@@ -1352,12 +1352,14 @@ public class SharedTagContent<T> {
 					final AbstractHtml parentTag = prevNoTag.getParent();
 
 					if (parentTag == null) {
+						contentFormatterByInsertedTagDataId.remove(insertedTagData.internalId());
 						continue;
 					}
 
 					// the condition isParentNullifiedOnce true means the parent
 					// of this tag has already been changed at least once
 					if (((AbstractHtml) prevNoTag).isParentNullifiedOnce()) {
+						contentFormatterByInsertedTagDataId.remove(insertedTagData.internalId());
 						continue;
 					}
 
@@ -1510,6 +1512,9 @@ public class SharedTagContent<T> {
 									        parentNoTagData.contentApplied(),
 									        parentNoTagData.insertedTagData().formatter()));
 								}
+							} else {
+								contentFormatterByInsertedTagDataId
+								        .remove(parentNoTagData.insertedTagData().internalId());
 							}
 
 						}
@@ -1800,7 +1805,8 @@ public class SharedTagContent<T> {
 		final long stamp = lock.writeLock();
 		try {
 
-			final boolean removed = insertedTags.remove(insertedTag) != null;
+			final InsertedTagData<T> removedInsertedTagData = insertedTags.remove(insertedTag);
+			final boolean removed = removedInsertedTagData != null;
 			if (removed) {
 				if (detachListeners != null) {
 					detachListeners.remove(parentTag.internalId());
@@ -1808,6 +1814,7 @@ public class SharedTagContent<T> {
 				if (contentChangeListeners != null) {
 					contentChangeListeners.remove(parentTag.internalId());
 				}
+				contentFormatterByInsertedTagDataId.remove(removedInsertedTagData.internalId());
 			}
 
 			return removed;
@@ -1912,18 +1919,28 @@ public class SharedTagContent<T> {
 				}
 				final NoTag prevNoTag = entry.getKey();
 				if (prevNoTag == null) {
+					final InsertedTagData<T> insertedTagData = entry.getValue();
+					if (insertedTagData != null) {
+						contentFormatterByInsertedTagDataId.remove(insertedTagData.internalId());
+					}
 					continue;
 				}
 				final InsertedTagData<T> insertedTagData = entry.getValue();
 				final AbstractHtml parentTag = prevNoTag.getParent();
 
 				if (parentTag == null) {
+					if (insertedTagData != null) {
+						contentFormatterByInsertedTagDataId.remove(insertedTagData.internalId());
+					}
 					continue;
 				}
 
 				// the condition isParentNullifiedOnce true means the parent of
 				// this tag has already been changed at least once
 				if (((AbstractHtml) prevNoTag).isParentNullifiedOnce()) {
+					if (insertedTagData != null) {
+						contentFormatterByInsertedTagDataId.remove(insertedTagData.internalId());
+					}
 					continue;
 				}
 
@@ -1991,6 +2008,8 @@ public class SharedTagContent<T> {
 								insertedTags.put(parentNoTagData.previousNoTag(), parentNoTagData.insertedTagData());
 							} else {
 								modifiedParents.add(parentNoTagData.parent());
+								contentFormatterByInsertedTagDataId
+								        .remove(parentNoTagData.insertedTagData().internalId());
 
 								boolean updateClientTagSpecific = updateClient;
 								if (updateClient && exclusionClientUpdateTags != null
