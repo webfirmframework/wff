@@ -154,6 +154,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
 	protected final boolean noTagContentTypeHtml;
 
+	// just for caching formatter in NoTag object
+	@SuppressWarnings("unused")
+	private Object cachedStcFormatter;
+
 	@SuppressWarnings("rawtypes")
 	private transient volatile SharedTagContent sharedTagContent;
 
@@ -6607,4 +6611,20 @@ public abstract class AbstractHtml extends AbstractJsObject {
 	public final InternalId internalId() {
 		return internalId;
 	}
+
+	/**
+	 * Only for internal use
+	 *
+	 * @param contentFormatter
+	 * @param accessObject
+	 * @param <T>
+	 * @since 3.0.18
+	 */
+	<T> void setCacheSTCFormatter(final SharedTagContent.ContentFormatter<T> contentFormatter, final Object accessObject) {
+		if (!SecurityClassConstants.SHARED_TAG_CONTENT.equals(accessObject.getClass().getName())) {
+			throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
+		}
+		cachedStcFormatter = contentFormatter;
+	}
+
 }

@@ -1350,14 +1350,14 @@ public class SharedTagContent<T> {
 					final AbstractHtml parentTag = prevNoTag.getParent();
 
 					if (parentTag == null) {
-						prevNoTag.setCacheSTCFormatter(null, ACCESS_OBJECT);
+						((AbstractHtml) prevNoTag).setCacheSTCFormatter(null, ACCESS_OBJECT);
 						continue;
 					}
 
 					// the condition isParentNullifiedOnce true means the parent
 					// of this tag has already been changed at least once
 					if (((AbstractHtml) prevNoTag).isParentNullifiedOnce()) {
-						prevNoTag.setCacheSTCFormatter(null, ACCESS_OBJECT);
+						((AbstractHtml) prevNoTag).setCacheSTCFormatter(null, ACCESS_OBJECT);
 						continue;
 					}
 
@@ -1375,21 +1375,21 @@ public class SharedTagContent<T> {
 					try {
 						contentApplied = formatter.format(contentAfter);
 						if (contentApplied != null) {
-							prevNoTag.setCacheSTCFormatter(null, ACCESS_OBJECT);
+							((AbstractHtml) prevNoTag).setCacheSTCFormatter(null, ACCESS_OBJECT);
 							noTag = new NoTag(null, contentApplied.content, contentApplied.contentTypeHtml);
 						} else {
 							noTag = prevNoTag;
 						}
 					} catch (final RuntimeException e) {
 						contentApplied = new Content<>("", false);
-						prevNoTag.setCacheSTCFormatter(null, ACCESS_OBJECT);
+						((AbstractHtml) prevNoTag).setCacheSTCFormatter(null, ACCESS_OBJECT);
 						noTag = new NoTag(null, contentApplied.content, contentApplied.contentTypeHtml);
 						LOGGER.log(Level.SEVERE, "Exception while ContentFormatter.format", e);
 					}
 
-					noTag.setCacheSTCFormatter(formatter, ACCESS_OBJECT);
-
 					final AbstractHtml noTagAsBase = noTag;
+					noTagAsBase.setCacheSTCFormatter(formatter, ACCESS_OBJECT);
+
 					noTagAsBase.setSharedTagContent(this);
 					dataList.add(new ParentNoTagData<>(prevNoTag, parentTag, noTag, insertedTagData, contentApplied));
 
@@ -1761,7 +1761,7 @@ public class SharedTagContent<T> {
 			final InsertedTagData<T> insertedTagData = new InsertedTagData<>(ordinal, cFormatter, subscribe);
 			// for GC task, InsertedTagData contains WeakReference of cFormatter to prevent
 			// it from GC it is kept in noTag
-			noTag.setCacheSTCFormatter(cFormatter, ACCESS_OBJECT);
+			((AbstractHtml) noTag).setCacheSTCFormatter(cFormatter, ACCESS_OBJECT);
 
 			insertedTags.put(noTag, insertedTagData);
 
@@ -1808,8 +1808,7 @@ public class SharedTagContent<T> {
 				if (contentChangeListeners != null) {
 					contentChangeListeners.remove(parentTag.internalId());
 				}
-				final NoTag noTag = (NoTag) insertedTag;
-				noTag.setCacheSTCFormatter(null, ACCESS_OBJECT);
+				insertedTag.setCacheSTCFormatter(null, ACCESS_OBJECT);
 			}
 
 			return removed;
@@ -1920,14 +1919,14 @@ public class SharedTagContent<T> {
 				final AbstractHtml parentTag = prevNoTag.getParent();
 
 				if (parentTag == null) {
-					prevNoTag.setCacheSTCFormatter(null, ACCESS_OBJECT);
+					((AbstractHtml) prevNoTag).setCacheSTCFormatter(null, ACCESS_OBJECT);
 					continue;
 				}
 
 				// the condition isParentNullifiedOnce true means the parent of
 				// this tag has already been changed at least once
 				if (((AbstractHtml) prevNoTag).isParentNullifiedOnce()) {
-					prevNoTag.setCacheSTCFormatter(null, ACCESS_OBJECT);
+					((AbstractHtml) prevNoTag).setCacheSTCFormatter(null, ACCESS_OBJECT);
 					continue;
 				}
 

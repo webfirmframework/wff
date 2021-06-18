@@ -22,8 +22,6 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 import com.webfirmframework.wffweb.MethodNotImplementedException;
-import com.webfirmframework.wffweb.WffSecurityException;
-import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.SharedTagContent;
 import com.webfirmframework.wffweb.tag.html.SharedTagContent.ContentFormatter;
@@ -45,10 +43,6 @@ public class NoTag extends AbstractHtml {
 	// TODO This class needs to be tested properly
 
 	private static final long serialVersionUID = 1_0_0L;
-
-	// just for caching
-	@SuppressWarnings("unused")
-	private Object cachedStcFormatter;
 
 	{
 		init();
@@ -246,21 +240,6 @@ public class NoTag extends AbstractHtml {
 	@Override
 	public <R extends AbstractHtml, C> R give(final BiFunction<R, C, R> consumer, final C input) {
 		throw new MethodNotImplementedException("give is not allowed to use in NoTag or Blank tag");
-	}
-
-	/**
-	 * Only for internal use
-	 *
-	 * @param contentFormatter
-	 * @param accessObject
-	 * @param <T>
-	 * @since 3.0.18
-	 */
-	public <T> void setCacheSTCFormatter(final ContentFormatter<T> contentFormatter, final Object accessObject) {
-		if (!SecurityClassConstants.SHARED_TAG_CONTENT.equals(accessObject.getClass().getName())) {
-			throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
-		}
-		cachedStcFormatter = contentFormatter;
 	}
 
 }
