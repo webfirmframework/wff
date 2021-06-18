@@ -2442,7 +2442,7 @@ public class SharedTagContent<T> {
 	 * 
 	 * @since 3.0.18
 	 */
-	protected final void clearTempCache() {
+	protected void clearTempCache() {
 		clearGCTasksRQ();
 	}
 
