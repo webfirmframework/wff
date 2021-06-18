@@ -29,4 +29,3 @@ script: mvn -B verify -U -Dmaven.javadoc.skip=true
 branches:
   only:
     - master
-    - dev
