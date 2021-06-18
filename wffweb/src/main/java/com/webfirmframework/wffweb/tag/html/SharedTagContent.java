@@ -2437,4 +2437,13 @@ public class SharedTagContent<T> {
 		return null;
 	}
 
+	/**
+	 * Clears the unwanted objects from the temporary cache only if required.
+	 * 
+	 * @since 3.0.18
+	 */
+	protected final void clearTempCache() {
+		clearGCTasksRQ();
+	}
+
 }
