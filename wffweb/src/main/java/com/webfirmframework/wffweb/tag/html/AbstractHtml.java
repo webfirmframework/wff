@@ -670,8 +670,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
 				@SuppressWarnings("rawtypes")
 				final SharedTagContent sharedTagContent = firstChild.sharedTagContent;
 				if (sharedTagContent != null) {
-					sharedTagContent.removeListenersLockless(this.internalId);
-				}
+					sharedTagContent.removeListenersLockless(this.internalId);					
+				}				
 			}
 		}
 	}
@@ -1164,6 +1164,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 							        && firstChild.sharedTagContent != null) {
 								firstChild.sharedTagContent.remove(firstChild, this);
 								firstChild.sharedTagContent = null;
+								firstChild.cachedStcFormatter = null;
 							}
 						}
 
@@ -1265,6 +1266,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
 						removed = firstChild.sharedTagContent.remove(firstChild, this);
 						firstChild.sharedTagContent = null;
+						firstChild.cachedStcFormatter = null;
 						if (removed && removeContent) {
 
 							final AbstractHtml[] removedAbstractHtmls = children
@@ -4588,6 +4590,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
 		if (TagUtil.isTagless(abstractHtml) && abstractHtml instanceof NoTag) {
 			abstractHtml.sharedTagContent = null;
+			abstractHtml.cachedStcFormatter = null;
 		}
 
 		// NB: the following code is never expected to make an exception otherwise on
