@@ -586,7 +586,7 @@ public abstract class BrowserPage implements Serializable {
      * {@code BrowserPage#afterRender(AbstractHtml)} is invoked before this method
      * (and just after the {@code BrowserPage#render()} method) regardless of the
      * client is able to communicate to the server or not.
-     * 
+     * @param rootTag the root of the {@code BrowserPage}
      * @since 3.0.18
      */
     protected void onInitialClientPing(AbstractHtml rootTag) {
