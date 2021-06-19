@@ -26,34 +26,34 @@ import com.webfirmframework.wffweb.tag.html.SharedTagContent.DetachListener;
 
 class InsertedTagDataGCTask<T> extends WeakReference<InsertedTagData<T>> implements Runnable {
 
-	private volatile SharedTagContent<T> stc;
+    private volatile SharedTagContent<T> stc;
 
-	private final InternalId applicableTagId;
+    private final InternalId applicableTagId;
 
-	InsertedTagDataGCTask(final InsertedTagData<T> referent, final ReferenceQueue<? super InsertedTagData<T>> q,
-	        final SharedTagContent<T> stc, final InternalId applicableTagId) {
-		super(referent, q);
-		this.stc = stc;
-		this.applicableTagId = applicableTagId;
-	}
+    InsertedTagDataGCTask(final InsertedTagData<T> referent, final ReferenceQueue<? super InsertedTagData<T>> q,
+            final SharedTagContent<T> stc, final InternalId applicableTagId) {
+        super(referent, q);
+        this.stc = stc;
+        this.applicableTagId = applicableTagId;
+    }
 
-	@Override
-	public void run() {
-		final SharedTagContent<T> sharedTagContent = this.stc;
-		if (sharedTagContent != null) {
+    @Override
+    public void run() {
+        final SharedTagContent<T> sharedTagContent = this.stc;
+        if (sharedTagContent != null) {
 
-			sharedTagContent.insertedTagDataGCTasksCache.remove(this);
+            sharedTagContent.insertedTagDataGCTasksCache.remove(this);
 
-			final Map<InternalId, Set<ContentChangeListener<T>>> contentChangeListeners = sharedTagContent.contentChangeListeners;
-			final Map<InternalId, Set<DetachListener<T>>> detachListeners = sharedTagContent.detachListeners;
+            final Map<InternalId, Set<ContentChangeListener<T>>> contentChangeListeners = sharedTagContent.contentChangeListeners;
+            final Map<InternalId, Set<DetachListener<T>>> detachListeners = sharedTagContent.detachListeners;
 
-			if (contentChangeListeners != null) {
-				contentChangeListeners.remove(applicableTagId);
-			}
-			if (detachListeners != null) {
-				detachListeners.remove(applicableTagId);
-			}
-			this.stc = null;
-		}
-	}
+            if (contentChangeListeners != null) {
+                contentChangeListeners.remove(applicableTagId);
+            }
+            if (detachListeners != null) {
+                detachListeners.remove(applicableTagId);
+            }
+            this.stc = null;
+        }
+    }
 }

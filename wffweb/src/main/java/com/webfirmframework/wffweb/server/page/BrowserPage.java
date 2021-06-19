@@ -589,7 +589,7 @@ public abstract class BrowserPage implements Serializable {
      * @param rootTag the root of the {@code BrowserPage}
      * @since 3.0.18
      */
-    protected void onInitialClientPing(AbstractHtml rootTag) {
+    protected void onInitialClientPing(final AbstractHtml rootTag) {
 
     }
 
