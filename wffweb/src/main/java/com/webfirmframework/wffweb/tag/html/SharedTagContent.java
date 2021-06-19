@@ -120,6 +120,9 @@ public class SharedTagContent<T> {
 
 	final Set<ApplicableTagGCTask<T>> applicableTagGCTasksCache = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
+	final Set<InsertedTagDataGCTask<T>> insertedTagDataGCTasksCache = Collections
+	        .newSetFromMap(new ConcurrentHashMap<>());
+
 	private final ReferenceQueue<? super AbstractHtml> tagGCTasksRQ = new ReferenceQueue<>();
 
 	private final ReferenceQueue<? super InsertedTagData<T>> insertedTagDataGCTasksRQ = new ReferenceQueue<>();
@@ -1763,6 +1766,10 @@ public class SharedTagContent<T> {
 			// it from GC it is kept in noTag
 			((AbstractHtml) noTag).setCacheSTCFormatter(cFormatter, ACCESS_OBJECT);
 
+			final InsertedTagDataGCTask<T> insertedTagDataGCTask = new InsertedTagDataGCTask<>(insertedTagData,
+			        insertedTagDataGCTasksRQ, this, applicableTag.internalId());
+			insertedTagDataGCTasksCache.add(insertedTagDataGCTask);
+
 			insertedTags.put(noTag, insertedTagData);
 
 			// AtomicLong is not required as it is under lock
@@ -2438,11 +2445,13 @@ public class SharedTagContent<T> {
 	}
 
 	/**
-	 * Clears the unwanted objects from the temporary cache only if required.
-	 * 
+	 * Clears the unwanted objects from the temporary cache only if required. The
+	 * unwanted objects are automatically cleared from the temp cache but this
+	 * method is for manually clearing it.
+	 *
 	 * @since 3.0.18
 	 */
-	protected void clearTempCache() {
+	public void clearTempCache() {
 		clearGCTasksRQ();
 	}
 
