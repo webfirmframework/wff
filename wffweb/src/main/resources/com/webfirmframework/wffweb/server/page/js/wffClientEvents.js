@@ -5,6 +5,11 @@ document.addEventListener("DOMContentLoaded",
 		function(event) {
 			console.log('DOMContentLoaded');
 			
+			if (typeof window.wffInitialWSOpenInvoked === 'undefined') {
+			    window.wffInitialWSOpenInvoked = true;
+			    wffBMClientEvents.wffInitialWSOpen();
+			}
+			
 			wffWS.openSocket(wffGlobal.WS_URL);
 			
 			window.wffOnWindowClosed = false;

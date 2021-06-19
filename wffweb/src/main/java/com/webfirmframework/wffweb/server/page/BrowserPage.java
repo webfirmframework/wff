@@ -182,6 +182,8 @@ public abstract class BrowserPage implements Serializable {
 
     private volatile Executor executor;
 
+    private volatile boolean onInitialClientPingInvoked;
+
     private volatile long lastClientAccessedTime = System.currentTimeMillis();
 
     // to make it GC friendly, it is made as static
@@ -545,7 +547,7 @@ public abstract class BrowserPage implements Serializable {
      * @author WFF
      * @since 2.0.0
      * @deprecated alternative method webSocketMessaged is available for the same
-     * job.
+     *             job.
      */
     @Deprecated
     public final void websocketMessaged(final byte[] message) {
@@ -554,7 +556,7 @@ public abstract class BrowserPage implements Serializable {
 
     /**
      * @return the time of websocket message received from client, websocket opened,
-     * or the object created time.
+     *         or the object created time.
      * @since 3.0.16
      */
     final long getLastClientAccessedTime() {
@@ -567,6 +569,28 @@ public abstract class BrowserPage implements Serializable {
      */
     final void setLastClientAccessedTime(final long timeMillis) {
         lastClientAccessedTime = timeMillis;
+    }
+
+    /**
+     * It invokes on the first websocket ping, it invokes only once in the whole
+     * lifetime of this {@code BrowserPage} object. All other client events will be
+     * received only after invoking this method. It doesn't have any relation to the
+     * websocket heartbeat interval or reconnect interval time so changing such
+     * configurations will not have any effect on it. Note: It will not invoke
+     * whenever the websocket client reconnects to the server but only once in the
+     * whole lifetime. <br>
+     * <br>
+     * Override this method to build the UI instead of
+     * {@code BrowserPage#afterRender(AbstractHtml)} if you want to build the UI
+     * only if the client is able to communication to the server. The
+     * {@code BrowserPage#afterRender(AbstractHtml)} is invoked before this method
+     * (and just after the {@code BrowserPage#render()} method) regardless of the
+     * client is able to communicate to the server or not.
+     * 
+     * @since 3.0.18
+     */
+    protected void onInitialClientPing(AbstractHtml rootTag) {
+
     }
 
     /**
@@ -680,7 +704,7 @@ public abstract class BrowserPage implements Serializable {
      * page. This method invokes only once per object in all of its life time.
      *
      * @return the object of {@link Html} class which needs to be displayed in the
-     * client browser page.
+     *         client browser page.
      * @author WFF
      */
     public abstract AbstractHtml render();
@@ -818,7 +842,7 @@ public abstract class BrowserPage implements Serializable {
                         nameValue.setName(StringUtil.strip(jsPostFunctionBody).getBytes(StandardCharsets.UTF_8));
 
                         if (returnedObject != null) {
-                            nameValue.setValues(new byte[][]{returnedObject.buildBytes(true)});
+                            nameValue.setValues(new byte[][] { returnedObject.buildBytes(true) });
                         }
 
                         push(invokePostFunTask, nameValue);
@@ -920,7 +944,7 @@ public abstract class BrowserPage implements Serializable {
                 nameValue.setName(callbackFunId.getBytes(StandardCharsets.UTF_8));
 
                 if (returnedObject != null) {
-                    nameValue.setValues(new byte[][]{returnedObject.buildBytes(true)});
+                    nameValue.setValues(new byte[][] { returnedObject.buildBytes(true) });
                 }
 
                 push(invokeCallbackFuncTask, nameValue);
@@ -973,6 +997,19 @@ public abstract class BrowserPage implements Serializable {
 
                 removeBrowserPageFromContext(nameValues);
 
+            } else if (taskValue == Task.INITIAL_WS_OPEN.getValueByte()) {
+                if (!onInitialClientPingInvoked) {
+                    try {
+                        synchronized (this) {
+                            onInitialClientPingInvoked = true;
+                            onInitialClientPing(rootTag);
+                        }
+                    } catch (final Exception e) {
+                        if (LOGGER.isLoggable(Level.SEVERE)) {
+                            LOGGER.log(Level.SEVERE, "Exception while executing onInitialWSOpen", e);
+                        }
+                    }
+                }
             }
 
         }
@@ -980,7 +1017,8 @@ public abstract class BrowserPage implements Serializable {
     }
 
     private void addAttrValueChangeListener(final AbstractHtml abstractHtml) {
-        abstractHtml.getSharedObject().setValueChangeListener(new AttributeValueChangeListenerImpl(this, tagByWffId), ACCESS_OBJECT);
+        abstractHtml.getSharedObject().setValueChangeListener(new AttributeValueChangeListenerImpl(this, tagByWffId),
+                ACCESS_OBJECT);
     }
 
     private void addDataWffIdAttribute(final AbstractHtml abstractHtml) {
@@ -1033,8 +1071,7 @@ public abstract class BrowserPage implements Serializable {
 
         Set<AbstractHtml> children;
 
-        outerLoop:
-        while ((children = childrenStack.poll()) != null) {
+        outerLoop: while ((children = childrenStack.poll()) != null) {
 
             for (final AbstractHtml child : children) {
 
@@ -1188,7 +1225,7 @@ public abstract class BrowserPage implements Serializable {
      * method.
      *
      * @return {@code String} equalent to the html string of the tag including the
-     * child tags.
+     *         child tags.
      * @author WFF
      */
     public String toHtmlString() {
@@ -1212,7 +1249,7 @@ public abstract class BrowserPage implements Serializable {
      *
      * @param rebuild true to rebuild &amp; false to return previously built string.
      * @return {@code String} equalent to the html string of the tag including the
-     * child tags.
+     *         child tags.
      * @author WFF
      * @since 2.1.4
      */
@@ -1235,7 +1272,7 @@ public abstract class BrowserPage implements Serializable {
      *
      * @param charset the charset
      * @return {@code String} equalent to the html string of the tag including the
-     * child tags.
+     *         child tags.
      * @author WFF
      */
     public String toHtmlString(final String charset) {
@@ -1261,7 +1298,7 @@ public abstract class BrowserPage implements Serializable {
      * @param charset the charset to set for the returning value, eg:
      *                {@code StandardCharsets.UTF_8.name()}
      * @return {@code String} equalent to the html string of the tag including the
-     * child tags.
+     *         child tags.
      * @author WFF
      * @since 2.1.4
      */
@@ -1439,7 +1476,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 3.0.2
      */
     public int toOutputStream(final OutputStream os, final boolean rebuild, final Charset charset,
-                              final boolean flushOnWrite) throws IOException {
+            final boolean flushOnWrite) throws IOException {
         initAbstractHtml();
         wsWarningDisabled = true;
         beforeToHtml(rootTag);
@@ -1510,7 +1547,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 3.0.15
      */
     public int toBigOutputStream(final OutputStream os, final boolean rebuild, final Charset charset,
-                                 final boolean flushOnWrite) throws IOException {
+            final boolean flushOnWrite) throws IOException {
         initAbstractHtml();
         wsWarningDisabled = true;
         beforeToHtml(rootTag);
@@ -1709,7 +1746,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 3.0.2
      */
     public final void addServerMethod(final String methodName, final ServerAsyncMethod serverAsyncMethod,
-                                      final Object serverSideData) {
+            final Object serverSideData) {
         serverMethods.put(methodName, new ServerMethod(serverAsyncMethod, serverSideData));
     }
 
@@ -1742,7 +1779,7 @@ public abstract class BrowserPage implements Serializable {
 
     /**
      * @return the pushQueueOnNewWebSocketListener true if it's enabled otherwise
-     * false. By default it's set as true.
+     *         false. By default it's set as true.
      * @since 2.1.1
      */
     public final boolean isPushQueueOnNewWebSocketListener() {
@@ -1962,7 +1999,7 @@ public abstract class BrowserPage implements Serializable {
      *
      * @param tag the tag object to be checked.
      * @return true if the given tag contains in the BrowserPage i.e. UI. false if
-     * the given tag was removed or was not already added in the UI.
+     *         the given tag was removed or was not already added in the UI.
      * @throws NullValueException   throws this exception if the given tag is null.
      * @throws NotRenderedException if the {@code BrowserPage} object is not
      *                              rendered. i.e. if
@@ -2011,7 +2048,7 @@ public abstract class BrowserPage implements Serializable {
 
     /**
      * @return the interval value set by
-     * {@code BrowserPage#setWebSocketHeartbeatInterval(int)} method.
+     *         {@code BrowserPage#setWebSocketHeartbeatInterval(int)} method.
      * @author WFF
      * @since 2.1.8
      */
@@ -2038,7 +2075,7 @@ public abstract class BrowserPage implements Serializable {
 
     /**
      * @return the interval value set by {@code setWebSocketDefultHeartbeatInterval}
-     * method.
+     *         method.
      * @author WFF
      * @since 2.1.8
      */
@@ -2066,7 +2103,7 @@ public abstract class BrowserPage implements Serializable {
 
     /**
      * @return the interval value set by {@code setWebSocketDefultReconnectInterval}
-     * method.
+     *         method.
      * @author WFF
      * @since 2.1.8
      */
@@ -2095,7 +2132,7 @@ public abstract class BrowserPage implements Serializable {
 
     /**
      * @return the interval value set by
-     * {@code BrowserPage#setWebSocketReconnectInterval(int)} method.
+     *         {@code BrowserPage#setWebSocketReconnectInterval(int)} method.
      * @author WFF
      * @since 2.1.8
      */
@@ -2108,8 +2145,8 @@ public abstract class BrowserPage implements Serializable {
      * specific to this BrowserPage instance.
      *
      * @return the TagRepository object to do different tag operations. Or null if
-     * any one of the BrowserPage#toString or BrowserPage#toOutputStream
-     * methods is not called.
+     *         any one of the BrowserPage#toString or BrowserPage#toOutputStream
+     *         methods is not called.
      * @author WFF
      * @since 2.1.8
      */
@@ -2169,7 +2206,7 @@ public abstract class BrowserPage implements Serializable {
     /**
      * @param algo eg: HashUtil.SHA_256
      * @return the base64 encoded string of the hash generated with the given algo
-     * for the wff script (text/javascript) content.
+     *         for the wff script (text/javascript) content.
      * @since 3.0.1
      */
     private String getWffScriptHashInBase64(final String algo) {
@@ -2202,7 +2239,7 @@ public abstract class BrowserPage implements Serializable {
      * {@link BrowserPage#render()} method.
      *
      * @return the wff script (text/javascript) content converted to SHA-256 hash
-     * encoded in base64 string.
+     *         encoded in base64 string.
      * @since 3.0.1
      */
     public final String getWffScriptSHA256InBase64() {
@@ -2216,7 +2253,7 @@ public abstract class BrowserPage implements Serializable {
      * {@link BrowserPage#render()} method.
      *
      * @return the wff script (text/javascript) content converted to SHA-384 hash
-     * encoded in base64 string.
+     *         encoded in base64 string.
      * @since 3.0.1
      */
     public final String getWffScriptSHA384InBase64() {
@@ -2230,7 +2267,7 @@ public abstract class BrowserPage implements Serializable {
      * {@link BrowserPage#render()} method.
      *
      * @return the wff script (text/javascript) content converted to SHA-512 hash
-     * encoded in base64 string.
+     *         encoded in base64 string.
      * @since 3.0.1
      */
     public final String getWffScriptSHA512InBase64() {
@@ -2289,8 +2326,8 @@ public abstract class BrowserPage implements Serializable {
      * @return new instance of PayloadProcessor/thread
      * @since 3.0.2
      * @deprecated this method call may make deadlock somewhere in the application
-     * while using multiple threads. Use
-     * {@code BrowserPage#newPayloadProcessor()}.
+     *             while using multiple threads. Use
+     *             {@code BrowserPage#newPayloadProcessor()}.
      */
     @Deprecated
     public final PayloadProcessor getPayloadProcessor() {

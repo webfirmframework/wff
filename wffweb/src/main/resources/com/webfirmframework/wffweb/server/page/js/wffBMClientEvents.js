@@ -62,6 +62,20 @@ var wffBMClientEvents = new function() {
 		sessionStorage.setItem('WFF_INSTANCE_ID', wffGlobal.INSTANCE_ID);
 	};
 	
-	
+	this.wffInitialWSOpen = function() {
+		var nameValues = [];
 
+		//taskNameValue
+		var tnv = wffTaskUtil.getTaskNameValue(
+				wffGlobal.taskValues.TASK,
+				wffGlobal.taskValues.INITIAL_WS_OPEN);
+
+		nameValues.push(tnv);
+
+		var wffBM = wffBMUtil.getWffBinaryMessageBytes(nameValues);
+
+		wffWS.send(wffBM);
+	};
+	
+	
 };
