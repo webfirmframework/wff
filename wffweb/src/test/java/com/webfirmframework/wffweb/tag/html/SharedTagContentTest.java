@@ -1600,11 +1600,14 @@ public class SharedTagContentTest {
         stc.setContent("some stc content");
         
         assertNotNull(div.getFirstChild().getCachedStcFormatter());
+        
         assertEquals(formatter, div.getFirstChild().getCachedStcFormatter());
         
         //scenario 6
         assertNotNull(stc.getContentChangeListeners(div));
+        AbstractHtml firstChild = div.getFirstChild();
         div.addInnerHtml(new NoTag(null, ""));
+        assertNull(firstChild.getCachedStcFormatter());
         assertNotNull(stc.getContentChangeListeners(div));
         formatter = new ContentFormatter<String>() {
 
@@ -1619,6 +1622,19 @@ public class SharedTagContentTest {
         
         assertNotNull(div.getFirstChild().getCachedStcFormatter());
         assertEquals(formatter, div.getFirstChild().getCachedStcFormatter());
+        
+        //scenario 7        
+        firstChild = div.getFirstChild();
+        div.appendChildren(new NoTag(null, ""));
+        assertNull(firstChild.getCachedStcFormatter());
+       
+        div.subscribeTo(stc, formatter);
+        
+        stc.setContent("some stc content2");
+        
+        assertNotNull(div.getFirstChild().getCachedStcFormatter());
+        assertEquals(formatter, div.getFirstChild().getCachedStcFormatter());
+        
         
     }
     
@@ -1716,7 +1732,7 @@ public class SharedTagContentTest {
     }
     
     @Test
-    public void testListenersLifeCycle3() throws Exception {        
+    public void testListenersLifeCycle3() throws Exception {
         
         Div div = new Div(null);
         
@@ -1765,7 +1781,7 @@ public class SharedTagContentTest {
        
         
         //scenario 4
-        div.removeSharedTagContent(false);
+        div.removeChildren(Arrays.asList(div.getFirstChild()));
         
         assertNull(stc.getContentChangeListeners(div));
         
@@ -1803,6 +1819,107 @@ public class SharedTagContentTest {
         
         stc.setContent("some stc content2");
         
+        assertNotNull(div.getFirstChild().getCachedStcFormatter());
+        assertEquals(formatter, div.getFirstChild().getCachedStcFormatter());
+        
+    }
+    
+    
+    @Test
+    public void testListenersLifeCycle4() throws Exception {
+        
+        Div div = new Div(null);
+        
+        SharedTagContent<String> stc = new SharedTagContent<String>("initial content");
+        
+        ContentChangeListener<String> contentChangeListener = new ContentChangeListener<String>() {
+            
+            @Override
+            public Runnable contentChanged(ChangeEvent<String> changeEvent) {
+                return null;
+            }
+        };
+        
+        stc.addContentChangeListener(div, contentChangeListener);
+        
+        div.subscribeTo(stc);
+        
+        assertNotNull(stc.getContentChangeListeners(div));
+        assertEquals(1, stc.getContentChangeListeners(div).size());
+        
+        div.prependChildren(new NoTag(null, ""));
+        
+        assertNull(stc.getContentChangeListeners(div));
+        
+        //scenario 1
+        stc.addContentChangeListener(div, contentChangeListener);
+        
+        assertNotNull(stc.getContentChangeListeners(div));
+        
+        div.subscribeTo(stc);
+        
+        assertNotNull(stc.getContentChangeListeners(div));
+        assertEquals(1, stc.getContentChangeListeners(div).size());
+      
+        //scenario 2
+        div.appendChild(new NoTag(null, ""));
+        
+        assertNull(stc.getContentChangeListeners(div));
+        
+        //scenario 3
+        stc.addContentChangeListener(div, contentChangeListener);
+        
+        div.subscribeTo(stc);
+        
+        stc.setContent("some stc content");
+       
+        
+        //scenario 4
+        div.removeChild(div.getFirstChild());
+        
+        assertNull(stc.getContentChangeListeners(div));
+        
+        //scenario 5
+        
+        stc.addContentChangeListener(div, contentChangeListener);
+        
+        ContentFormatter<String> formatter = new ContentFormatter<String>() {
+
+            @Override
+            public Content<String> format(Content<String> content) {
+                return null;
+            }
+        };
+        div.subscribeTo(stc, formatter);
+        
+        stc.setContent("some stc content");
+        
+        assertNotNull(div.getFirstChild().getCachedStcFormatter());
+        assertEquals(formatter, div.getFirstChild().getCachedStcFormatter());
+        
+        //scenario 6
+        assertNotNull(stc.getContentChangeListeners(div));
+        div.removeChild(div.getFirstChild());
+        assertNotNull(stc.getContentChangeListeners(div));
+        
+        formatter = new ContentFormatter<String>() {
+
+            @Override
+            public Content<String> format(Content<String> content) {
+                return new Content<String>("another content", false);
+            }
+        };
+        div.subscribeTo(stc, formatter);
+        
+        stc.setContent("some stc content2");
+        
+        assertNotNull(div.getFirstChild().getCachedStcFormatter());
+        assertEquals(formatter, div.getFirstChild().getCachedStcFormatter());
+        
+        //scenario 7
+        AbstractHtml firstChild = div.getFirstChild();
+        div.removeChild(new NoTag(null, ""));
+        assertEquals(firstChild, div.getFirstChild());
         assertNotNull(div.getFirstChild().getCachedStcFormatter());
         assertEquals(formatter, div.getFirstChild().getCachedStcFormatter());
         

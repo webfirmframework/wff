@@ -670,15 +670,17 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * @param children
+     * @param child
      * @since 3.0.18
      */
     private void removeFromSharedTagContent(final AbstractHtml firstChild) {
-        if (!firstChild.parentNullifiedOnce && TagUtil.isTagless(firstChild) && firstChild instanceof NoTag) {
+        if (TagUtil.isTagless(firstChild) && !firstChild.parentNullifiedOnce) {
             @SuppressWarnings("rawtypes")
             final SharedTagContent sharedTagContent = firstChild.sharedTagContent;
-            if (sharedTagContent != null) {
+            if (sharedTagContent != null && firstChild instanceof NoTag) {
                 sharedTagContent.removeListenersLockless(this.internalId);
+                firstChild.sharedTagContent = null;
+                firstChild.cachedStcFormatter = null;
             }
         }
     }
@@ -1989,6 +1991,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
             final Iterator<AbstractHtml> iterator = thisChildren.iterator();
             if (iterator.hasNext()) {
                 final AbstractHtml firstChild = iterator.next();
+
+                removeFromSharedTagContent(firstChild);
 
                 final AbstractHtml[] removedParentChildren = thisChildren
                         .toArray(new AbstractHtml[thisChildren.size()]);
