@@ -125,7 +125,7 @@ public class SharedTagContent<T> {
 
     private final ReferenceQueue<? super AbstractHtml> tagGCTasksRQ = new ReferenceQueue<>();
 
-    private final ReferenceQueue<? super InsertedTagData<T>> insertedTagDataGCTasksRQ = new ReferenceQueue<>();
+//    private final ReferenceQueue<? super InsertedTagData<T>> insertedTagDataGCTasksRQ = new ReferenceQueue<>();
 
     /**
      * Represents the behavior of push operation of BrowserPage to client.
@@ -1703,11 +1703,11 @@ public class SharedTagContent<T> {
             final Runnable task = (Runnable) reference;
             task.run();
         }
-        while ((reference = insertedTagDataGCTasksRQ.poll()) != null) {
-            reference.clear();
-            final Runnable task = (Runnable) reference;
-            task.run();
-        }
+//        while ((reference = insertedTagDataGCTasksRQ.poll()) != null) {
+//            reference.clear();
+//            final Runnable task = (Runnable) reference;
+//            task.run();
+//        }
     }
 
     /**
