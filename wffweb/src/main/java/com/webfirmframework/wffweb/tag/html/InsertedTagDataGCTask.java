@@ -42,7 +42,7 @@ class InsertedTagDataGCTask<T> extends WeakReference<InsertedTagData<T>> impleme
         final SharedTagContent<T> sharedTagContent = this.stc;
         if (sharedTagContent != null) {
 
-            sharedTagContent.insertedTagDataGCTasksCache.remove(this);
+//            sharedTagContent.insertedTagDataGCTasksCache.remove(this);
 
             final Map<InternalId, Set<ContentChangeListener<T>>> contentChangeListeners = sharedTagContent.contentChangeListeners;
             final Map<InternalId, Set<DetachListener<T>>> detachListeners = sharedTagContent.detachListeners;

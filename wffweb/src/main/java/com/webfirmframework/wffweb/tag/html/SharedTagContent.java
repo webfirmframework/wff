@@ -120,8 +120,8 @@ public class SharedTagContent<T> {
 
     final Set<ApplicableTagGCTask<T>> applicableTagGCTasksCache = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
-    final Set<InsertedTagDataGCTask<T>> insertedTagDataGCTasksCache = Collections
-            .newSetFromMap(new ConcurrentHashMap<>());
+//    final Set<InsertedTagDataGCTask<T>> insertedTagDataGCTasksCache = Collections
+//            .newSetFromMap(new ConcurrentHashMap<>());
 
     private final ReferenceQueue<? super AbstractHtml> tagGCTasksRQ = new ReferenceQueue<>();
 
@@ -1369,10 +1369,6 @@ public class SharedTagContent<T> {
 
                     final ContentFormatter<T> formatter = insertedTagData.formatter();
 
-                    // no need to get by
-                    // final ContentFormatter<T> formatter =
-                    // contentFormatterByInsertedTagDataId.get(insertedTagData.id());
-
                     NoTag noTag;
                     Content<String> contentApplied;
                     try {
@@ -1457,10 +1453,6 @@ public class SharedTagContent<T> {
 
                                 if (parentNoTagData.contentApplied() != null) {
 
-                                    // no need to get by
-//									final ContentFormatter<T> formatter = contentFormatterByInsertedTagDataId
-//									        .get(parentNoTagData.insertedTagData().id());
-
                                     modifiedParents.add(new ModifiedParentData<>(parentNoTagData.parent(),
                                             parentNoTagData.contentApplied(),
                                             parentNoTagData.insertedTagData().formatter()));
@@ -1510,13 +1502,14 @@ public class SharedTagContent<T> {
 
                                 } else {
                                     insertedTags.put(parentNoTagData.getNoTag(), parentNoTagData.insertedTagData());
-                                    // no need to get by
-//									final ContentFormatter<T> formatter = contentFormatterByInsertedTagDataId
-//									        .get(parentNoTagData.insertedTagData().id());
+
                                     modifiedParents.add(new ModifiedParentData<>(parentNoTagData.parent(),
                                             parentNoTagData.contentApplied(),
                                             parentNoTagData.insertedTagData().formatter()));
                                 }
+                            } else {
+                                final AbstractHtml noTagAsBase = parentNoTagData.getNoTag();
+                                noTagAsBase.setCacheSTCFormatter(null, ACCESS_OBJECT);
                             }
 
                         }
@@ -1766,9 +1759,18 @@ public class SharedTagContent<T> {
             // it from GC it is kept in noTag
             ((AbstractHtml) noTag).setCacheSTCFormatter(cFormatter, ACCESS_OBJECT);
 
-            final InsertedTagDataGCTask<T> insertedTagDataGCTask = new InsertedTagDataGCTask<>(insertedTagData,
-                    insertedTagDataGCTasksRQ, this, applicableTag.internalId());
-            insertedTagDataGCTasksCache.add(insertedTagDataGCTask);
+            // Note: if we are asynchronously remove listeners it will remove a valid
+            // applicableTag entry
+            // eg: stc.addListener for applicableTag then stc.subscribeTo(stc) then
+            // applicableTag.removeAllChildren() then
+            // after some time stc.addListener for applicableTag then stc.subscribeTo(stc),
+            // so if the previously created insertedTagData
+            // is enqueued after that then this valid entry for applicableTag will be
+            // removed from the map
+
+//            final InsertedTagDataGCTask<T> insertedTagDataGCTask = new InsertedTagDataGCTask<>(insertedTagData,
+//                    insertedTagDataGCTasksRQ, this, applicableTag.internalId());
+//            insertedTagDataGCTasksCache.add(insertedTagDataGCTask);
 
             insertedTags.put(noTag, insertedTagData);
 
@@ -2394,8 +2396,6 @@ public class SharedTagContent<T> {
             try {
                 final InsertedTagData<T> insertedTagData = insertedTags.get(firstChild);
                 if (insertedTagData != null) {
-                    // no need to get by
-                    // contentFormatterByInsertedTagDataId.get(insertedTagData.id())
                     return insertedTagData.formatter();
                 }
             } finally {

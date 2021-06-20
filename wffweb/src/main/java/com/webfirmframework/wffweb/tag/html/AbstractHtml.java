@@ -155,7 +155,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
 	protected final boolean noTagContentTypeHtml;
 
 	// just for caching formatter in NoTag object
-	@SuppressWarnings("unused")
 	private Object cachedStcFormatter;
 
 	@SuppressWarnings("rawtypes")
@@ -802,6 +801,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
 			final Set<AbstractHtml> children = this.children;
 			final AbstractHtml[] removedTags = children.toArray(new AbstractHtml[children.size()]);
 			children.clear();
+			
+			removeFromSharedTagContent(removedTags);
 
 			newSOLocks = initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(removedTags);
 
@@ -1870,6 +1871,11 @@ public abstract class AbstractHtml extends AbstractJsObject {
 //        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
 //        lock.lock();
 		try {
+		    final Iterator<AbstractHtml> iterator = this.children.iterator();
+            if (iterator.hasNext()) {
+                final AbstractHtml firstExistingChild = iterator.next();
+                removeFromSharedTagContent(firstExistingChild);
+            }
 
 			final Collection<ChildMovedEvent> movedOrAppended = new ArrayDeque<>(children.length);
 
@@ -6623,11 +6629,21 @@ public abstract class AbstractHtml extends AbstractJsObject {
 	 * @param <T>
 	 * @since 3.0.18
 	 */
-	<T> void setCacheSTCFormatter(final SharedTagContent.ContentFormatter<T> contentFormatter, final Object accessObject) {
+	final <T> void setCacheSTCFormatter(final SharedTagContent.ContentFormatter<T> contentFormatter, final Object accessObject) {
 		if (!SecurityClassConstants.SHARED_TAG_CONTENT.equals(accessObject.getClass().getName())) {
 			throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
 		}
 		cachedStcFormatter = contentFormatter;
 	}
-
+	
+	
+    /**
+     * Note: only for testing purpose
+     * 
+     * @return
+     */
+    final Object getCachedStcFormatter() {
+        return cachedStcFormatter;
+    }
+	
 }
