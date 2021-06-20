@@ -1833,9 +1833,11 @@ public class SharedTagContent<T> {
      * @param tagId
      */
     void removeListenersLockless(final InternalId tagId) {
+        final Map<InternalId, Set<DetachListener<T>>> detachListeners = this.detachListeners;
         if (detachListeners != null) {
             detachListeners.remove(tagId);
         }
+        final Map<InternalId, Set<ContentChangeListener<T>>> contentChangeListeners = this.contentChangeListeners;
         if (contentChangeListeners != null) {
             contentChangeListeners.remove(tagId);
         }
