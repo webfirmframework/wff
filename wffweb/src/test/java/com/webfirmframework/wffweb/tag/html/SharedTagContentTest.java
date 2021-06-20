@@ -1924,6 +1924,183 @@ public class SharedTagContentTest {
         assertEquals(formatter, div.getFirstChild().getCachedStcFormatter());
         
     }
+    
+    @Test
+    public void testListenersLifeCycle5() throws Exception {
+        
+        P p = new P(null);
+        Div div = new Div(p);
+        
+        SharedTagContent<String> stc = new SharedTagContent<String>("initial content");
+        
+        ContentChangeListener<String> contentChangeListener = new ContentChangeListener<String>() {
+            
+            @Override
+            public Runnable contentChanged(ChangeEvent<String> changeEvent) {
+                return null;
+            }
+        };
+        
+        stc.addContentChangeListener(div, contentChangeListener);
+        
+        div.subscribeTo(stc);
+        
+        assertNotNull(stc.getContentChangeListeners(div));
+        assertEquals(1, stc.getContentChangeListeners(div).size());
+        
+        div.replaceWith(new NoTag(null, ""));
+        
+        assertNotNull(stc.getContentChangeListeners(div));
+        assertEquals(1, stc.getContentChangeListeners(div).size());
+        
+        
+        ContentFormatter<String> formatter = new ContentFormatter<String>() {
+
+            @Override
+            public Content<String> format(Content<String> content) {
+                return null;
+            }
+        };
+        div.subscribeTo(stc, formatter);
+        
+        stc.setContent("some stc content");
+        
+        assertNotNull(div.getFirstChild().getCachedStcFormatter());
+        assertEquals(formatter, div.getFirstChild().getCachedStcFormatter());        
+        
+        formatter = new ContentFormatter<String>() {
+
+            @Override
+            public Content<String> format(Content<String> content) {
+                return null;
+            }
+        };
+        div.subscribeTo(stc, formatter);
+        
+        stc.setContent("some stc content");
+        
+        assertNotNull(div.getFirstChild().getCachedStcFormatter());
+        assertEquals(formatter, div.getFirstChild().getCachedStcFormatter());
+        
+    }
+    
+    @Test
+    public void testListenersLifeCycle6() throws Exception {
+        
+        P p = new P(null);
+        Div div = new Div(p);
+        
+        SharedTagContent<String> stc = new SharedTagContent<String>("initial content");
+        
+        ContentChangeListener<String> contentChangeListener = new ContentChangeListener<String>() {
+            
+            @Override
+            public Runnable contentChanged(ChangeEvent<String> changeEvent) {
+                return null;
+            }
+        };
+        
+        stc.addContentChangeListener(div, contentChangeListener);
+        
+        div.subscribeTo(stc);
+        
+        assertNotNull(stc.getContentChangeListeners(div));
+        assertEquals(1, stc.getContentChangeListeners(div).size());
+        
+        div.insertBefore(new NoTag(null, "before"));
+        
+        assertNotNull(stc.getContentChangeListeners(div));
+        assertEquals(1, stc.getContentChangeListeners(div).size());
+        
+        
+        ContentFormatter<String> formatter = new ContentFormatter<String>() {
+
+            @Override
+            public Content<String> format(Content<String> content) {
+                return null;
+            }
+        };
+        div.subscribeTo(stc, formatter);
+        
+        stc.setContent("some stc content");
+        
+        assertNotNull(div.getFirstChild().getCachedStcFormatter());
+        assertEquals(formatter, div.getFirstChild().getCachedStcFormatter());        
+        
+        formatter = new ContentFormatter<String>() {
+
+            @Override
+            public Content<String> format(Content<String> content) {
+                return null;
+            }
+        };
+        div.subscribeTo(stc, formatter);
+        
+        stc.setContent("some stc content");
+        
+        assertNotNull(div.getFirstChild().getCachedStcFormatter());
+        assertEquals(formatter, div.getFirstChild().getCachedStcFormatter());
+        
+    }
+    
+    @Test
+    public void testListenersLifeCycle7() throws Exception {
+        
+        P p = new P(null);
+        Div div = new Div(p);
+        
+        SharedTagContent<String> stc = new SharedTagContent<String>("initial content");
+        
+        ContentChangeListener<String> contentChangeListener = new ContentChangeListener<String>() {
+            
+            @Override
+            public Runnable contentChanged(ChangeEvent<String> changeEvent) {
+                return null;
+            }
+        };
+        
+        stc.addContentChangeListener(div, contentChangeListener);
+        
+        div.subscribeTo(stc);
+        
+        assertNotNull(stc.getContentChangeListeners(div));
+        assertEquals(1, stc.getContentChangeListeners(div).size());
+        
+        div.insertAfter(new NoTag(null, "before"));
+        
+        assertNotNull(stc.getContentChangeListeners(div));
+        assertEquals(1, stc.getContentChangeListeners(div).size());
+        
+        
+        ContentFormatter<String> formatter = new ContentFormatter<String>() {
+
+            @Override
+            public Content<String> format(Content<String> content) {
+                return null;
+            }
+        };
+        div.subscribeTo(stc, formatter);
+        
+        stc.setContent("some stc content");
+        
+        assertNotNull(div.getFirstChild().getCachedStcFormatter());
+        assertEquals(formatter, div.getFirstChild().getCachedStcFormatter());        
+        
+        formatter = new ContentFormatter<String>() {
+
+            @Override
+            public Content<String> format(Content<String> content) {
+                return null;
+            }
+        };
+        div.subscribeTo(stc, formatter);
+        
+        stc.setContent("some stc content");
+        
+        assertNotNull(div.getFirstChild().getCachedStcFormatter());
+        assertEquals(formatter, div.getFirstChild().getCachedStcFormatter());
+        
+    }
             
 
 }
