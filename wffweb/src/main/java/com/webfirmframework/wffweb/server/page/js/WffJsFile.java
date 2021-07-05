@@ -218,6 +218,7 @@ public enum WffJsFile {
             functionNameList.add("getValueTypeByte");
             functionNameList.add("onWffWindowClose");
             functionNameList.add("getValueTypeByte");
+            functionNameList.add("wffInitialWSOpen");
             functionNameList.add("getIntFromBytes");
             functionNameList.add("getBytesFromInt");
             functionNameList.add("getTagByWffId");

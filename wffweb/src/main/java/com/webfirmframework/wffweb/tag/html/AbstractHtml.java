@@ -46,6 +46,7 @@ import com.webfirmframework.wffweb.NoParentException;
 import com.webfirmframework.wffweb.WffRuntimeException;
 import com.webfirmframework.wffweb.WffSecurityException;
 import com.webfirmframework.wffweb.clone.CloneUtil;
+import com.webfirmframework.wffweb.internal.InternalId;
 import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
 import com.webfirmframework.wffweb.streamer.WffBinaryMessageOutputStreamer;
 import com.webfirmframework.wffweb.tag.core.AbstractJsObject;
@@ -86,7 +87,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     // if this class' is refactored then SecurityClassConstants should be
     // updated.
 
-    private static final long serialVersionUID = 3_0_1L;
+    private static final long serialVersionUID = 3_0_18L;
 
     private static final Security ACCESS_OBJECT;
 
@@ -153,8 +154,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     protected final boolean noTagContentTypeHtml;
 
+    // just for caching formatter in NoTag object
+    private Object cachedStcFormatter;
+
     @SuppressWarnings("rawtypes")
-    private volatile SharedTagContent sharedTagContent;
+    private transient volatile SharedTagContent sharedTagContent;
+
+    private final InternalId internalId = new InternalId();
 
     public static enum TagType {
         OPENING_CLOSING, SELF_CLOSING, NON_CLOSING;
@@ -237,6 +243,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                 final AbstractHtml[] removedAbstractHtmls = validChildren
                         .toArray(new AbstractHtml[validChildren.size()]);
+                removeFromSharedTagContent(removedAbstractHtmls);
 
                 final boolean removedAll = super.removeAll(validChildren);
 
@@ -652,6 +659,33 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
+     * @param children
+     * @since 3.0.18
+     */
+    private void removeFromSharedTagContent(final AbstractHtml... children) {
+        if (children.length > 0) {
+            final AbstractHtml firstChild = children[0];
+            removeFromSharedTagContent(firstChild);
+        }
+    }
+
+    /**
+     * @param child
+     * @since 3.0.18
+     */
+    private void removeFromSharedTagContent(final AbstractHtml firstChild) {
+        if (TagUtil.isTagless(firstChild) && !firstChild.parentNullifiedOnce) {
+            @SuppressWarnings("rawtypes")
+            final SharedTagContent sharedTagContent = firstChild.sharedTagContent;
+            if (sharedTagContent != null && firstChild instanceof NoTag) {
+                sharedTagContent.removeListenersLockless(this.internalId);
+                firstChild.sharedTagContent = null;
+                firstChild.cachedStcFormatter = null;
+            }
+        }
+    }
+
+    /**
      * Removes all children from this tag.
      *
      * @author WFF
@@ -668,6 +702,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
             final AbstractHtml[] removedAbstractHtmls = children.toArray(new AbstractHtml[0]);
             children.clear();
+
+            removeFromSharedTagContent(removedAbstractHtmls);
 
             newSOLocks = initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(removedAbstractHtmls);
 
@@ -775,6 +811,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
             final Set<AbstractHtml> children = this.children;
             final AbstractHtml[] removedTags = children.toArray(new AbstractHtml[children.size()]);
             children.clear();
+
+            removeFromSharedTagContent(removedTags);
 
             newSOLocks = initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(removedTags);
 
@@ -1137,6 +1175,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                                     && firstChild.sharedTagContent != null) {
                                 firstChild.sharedTagContent.remove(firstChild, this);
                                 firstChild.sharedTagContent = null;
+                                firstChild.cachedStcFormatter = null;
                             }
                         }
 
@@ -1237,7 +1276,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
                             && firstChild instanceof NoTag) {
 
                         removed = firstChild.sharedTagContent.remove(firstChild, this);
-
+                        firstChild.sharedTagContent = null;
+                        firstChild.cachedStcFormatter = null;
                         if (removed && removeContent) {
 
                             final AbstractHtml[] removedAbstractHtmls = children
@@ -1352,7 +1392,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             removed = children.remove(child);
 
             if (removed) {
-
+                removeFromSharedTagContent(child);
                 // making child.parent = null inside the below method.
                 newSOLock = initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(child, true);
 
@@ -1841,6 +1881,11 @@ public abstract class AbstractHtml extends AbstractJsObject {
 //        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
 //        lock.lock();
         try {
+            final Iterator<AbstractHtml> iterator = this.children.iterator();
+            if (iterator.hasNext()) {
+                final AbstractHtml firstExistingChild = iterator.next();
+                removeFromSharedTagContent(firstExistingChild);
+            }
 
             final Collection<ChildMovedEvent> movedOrAppended = new ArrayDeque<>(children.length);
 
@@ -1946,6 +1991,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
             final Iterator<AbstractHtml> iterator = thisChildren.iterator();
             if (iterator.hasNext()) {
                 final AbstractHtml firstChild = iterator.next();
+
+                removeFromSharedTagContent(firstChild);
 
                 final AbstractHtml[] removedParentChildren = thisChildren
                         .toArray(new AbstractHtml[thisChildren.size()]);
@@ -4559,6 +4606,11 @@ public abstract class AbstractHtml extends AbstractJsObject {
             lock = null;
         }
 
+        if (TagUtil.isTagless(abstractHtml) && abstractHtml instanceof NoTag) {
+            abstractHtml.sharedTagContent = null;
+            abstractHtml.cachedStcFormatter = null;
+        }
+
         // NB: the following code is never expected to make an exception otherwise on
         // exception the lock must be unlocked.
 
@@ -6571,6 +6623,39 @@ public abstract class AbstractHtml extends AbstractJsObject {
     @SuppressWarnings("unchecked")
     public <R extends AbstractHtml, I> R give(final BiFunction<R, I, R> consumer, final I input) {
         return consumer.apply((R) this, input);
+    }
+
+    /**
+     * @return the unique id for this object.
+     * @since 3.0.18
+     */
+    public final InternalId internalId() {
+        return internalId;
+    }
+
+    /**
+     * Only for internal use
+     *
+     * @param contentFormatter
+     * @param accessObject
+     * @param <T>
+     * @since 3.0.18
+     */
+    final <T> void setCacheSTCFormatter(final SharedTagContent.ContentFormatter<T> contentFormatter,
+            final Object accessObject) {
+        if (!SecurityClassConstants.SHARED_TAG_CONTENT.equals(accessObject.getClass().getName())) {
+            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
+        }
+        cachedStcFormatter = contentFormatter;
+    }
+
+    /**
+     * Note: only for testing purpose
+     * 
+     * @return
+     */
+    final Object getCachedStcFormatter() {
+        return cachedStcFormatter;
     }
 
 }

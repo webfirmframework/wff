@@ -4,11 +4,13 @@ language: java
 
 jdk:
   
+  - oraclejdk16
   - oraclejdk15
   - oraclejdk14
   - oraclejdk13
   - oraclejdk11
   - openjdk-ea
+  - openjdk16
   - openjdk15
   - openjdk14
   - openjdk13
@@ -27,4 +29,3 @@ script: mvn -B verify -U -Dmaven.javadoc.skip=true
 branches:
   only:
     - master
-    - dev

@@ -31,6 +31,8 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  * @since 2.0.0
  */
 public enum Task {
+	
+	INITIAL_WS_OPEN,
 
     INVOKE_ASYNC_METHOD,
 
