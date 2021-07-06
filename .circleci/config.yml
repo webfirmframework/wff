@@ -25,39 +25,7 @@ jobs:
           name: Test
           command: mvn test
           
-  build-and-test-jdk-9:  
-    docker:
-      - image: cimg/openjdk:9
-    working_directory: ~/wff/wffweb
-    steps:
-      # Checkout the code as the first step.
-      - checkout:
-          path: ~/wff
-      # Use mvn clean and package as the standard maven build phase
-      - run:
-          name: Build
-          command: mvn -B -DskipTests clean package
-      # Then run your tests!
-      - run:
-          name: Test
-          command: mvn test
           
-  build-and-test-jdk-10:  
-    docker:
-      - image: cimg/openjdk:10.0
-    working_directory: ~/wff/wffweb
-    steps:
-      # Checkout the code as the first step.
-      - checkout:
-          path: ~/wff
-      # Use mvn clean and package as the standard maven build phase
-      - run:
-          name: Build
-          command: mvn -B -DskipTests clean package
-      # Then run your tests!
-      - run:
-          name: Test
-          command: mvn test
 
   build-and-test-jdk-11:  
     docker:
@@ -171,8 +139,6 @@ workflows:
   sample: 
     jobs:
       - build-and-test-jdk-8
-      - build-and-test-jdk-9
-      - build-and-test-jdk-10
       - build-and-test-jdk-11
       - build-and-test-jdk-12
       - build-and-test-jdk-13
