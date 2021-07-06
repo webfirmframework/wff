@@ -27,7 +27,7 @@ jobs:
           
   build-and-test-jdk-9:  
     docker:
-      - image: cimg/openjdk:9.0
+      - image: cimg/openjdk:9
     working_directory: ~/wff/wffweb
     steps:
       # Checkout the code as the first step.
