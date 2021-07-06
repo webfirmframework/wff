@@ -24,26 +24,6 @@ jobs:
       - run:
           name: Test
           command: mvn test
-          
-          
-
-  build-and-test-openjdk-10:  
-    docker:
-      - image: openjdk:10.0
-    working_directory: ~/wff/wffweb
-    steps:
-      # Checkout the code as the first step.
-      - checkout:
-          path: ~/wff
-      # Use mvn clean and package as the standard maven build phase
-      - run:
-          name: Build
-          command: mvn -B -DskipTests clean package
-      # Then run your tests!
-      - run:
-          name: Test
-          command: mvn test
-
 
 
   build-and-test-openjdk-11:  
@@ -158,7 +138,6 @@ workflows:
   sample: 
     jobs:
       - build-and-test-openjdk-8
-      - build-and-test-openjdk-10
       - build-and-test-openjdk-11
       - build-and-test-openjdk-12
       - build-and-test-openjdk-13
