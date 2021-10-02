@@ -13,32 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.webfirmframework.wffweb.tag.html.listener;
+package com.webfirmframework.wffweb.internal.tag.html.listener;
 
 import java.io.Serializable;
 
+import com.webfirmframework.wffweb.server.page.WffBMDataUpdateListenerImpl;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.wffbm.data.WffBMData;
 
-/**
- * @author WFF
- * @since 3.0.7
- *
- */
-public interface ReplaceListener extends Serializable {
+public sealed interface WffBMDataUpdateListener extends Serializable permits WffBMDataUpdateListenerImpl {
 
-    public static record Event(AbstractHtml insertedTag, AbstractHtml previousParentTag) {
+    public static final record UpdateEvent(AbstractHtml tag, String key, WffBMData wffData) {
 
     }
 
-    /**
-     * Tags insertedTags inserted before tag beforeTag having parent parentTag.
-     *
-     * @param parentTag
-     * @param replacingTag
-     * @param events
-     * @since 3.0.7
-     * @author WFF
-     */
-    public void replacedWith(final AbstractHtml parentTag, final AbstractHtml replacingTag, final Event... events);
+    public void updatedWffData(UpdateEvent event);
 
 }

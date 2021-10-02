@@ -13,24 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.webfirmframework.wffweb.tag.html.listener;
+package com.webfirmframework.wffweb.internal.tag.html.listener;
 
 import java.io.Serializable;
+import java.util.List;
 
-import com.webfirmframework.wffweb.server.page.ChildTagRemoveListenerImpl;
+import com.webfirmframework.wffweb.server.page.AttributeRemoveListenerImpl;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 
-public sealed interface ChildTagRemoveListener extends Serializable permits ChildTagRemoveListenerImpl {
+public sealed interface AttributeRemoveListener extends Serializable permits AttributeRemoveListenerImpl {
 
-    public static record Event(AbstractHtml parentTag, AbstractHtml removedChildTag,
-            AbstractHtml[] removedChildrenTags) {
+    public static record RemovedEvent(AbstractHtml removedFromTag, List<AbstractAttribute> removedAttributes,
+            String[] removedAttributeNames) {
 
     }
 
-    public void childRemoved(Event event);
-
-    public void childrenRemoved(Event event);
-
-    public void allChildrenRemoved(Event event);
-
+    public void removedAttributes(RemovedEvent event);
 }

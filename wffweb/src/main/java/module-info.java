@@ -62,7 +62,6 @@ module com.webfirmframework.wffweb {
     exports com.webfirmframework.wffweb.tag.html.identifier;
     exports com.webfirmframework.wffweb.tag.html.images;
     exports com.webfirmframework.wffweb.tag.html.links;
-    exports com.webfirmframework.wffweb.tag.html.listener;
     exports com.webfirmframework.wffweb.tag.html.lists;
     exports com.webfirmframework.wffweb.tag.html.metainfo;
     exports com.webfirmframework.wffweb.tag.html.model;

@@ -20,10 +20,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.webfirmframework.wffweb.InvalidTagException;
+import com.webfirmframework.wffweb.internal.tag.html.listener.PushQueue;
+import com.webfirmframework.wffweb.internal.tag.html.listener.WffBMDataDeleteListener;
+import com.webfirmframework.wffweb.internal.tag.html.listener.WffBMDataUpdateListener;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
-import com.webfirmframework.wffweb.tag.html.listener.PushQueue;
-import com.webfirmframework.wffweb.tag.html.listener.WffBMDataDeleteListener;
-import com.webfirmframework.wffweb.tag.html.listener.WffBMDataUpdateListener;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 import com.webfirmframework.wffweb.wffbm.data.WffBMData;
 

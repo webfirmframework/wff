@@ -41,8 +41,8 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import com.webfirmframework.wffweb.internal.InternalId;
+import com.webfirmframework.wffweb.internal.tag.html.listener.PushQueue;
 import com.webfirmframework.wffweb.server.page.ClientTasksWrapper;
-import com.webfirmframework.wffweb.tag.html.listener.PushQueue;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 

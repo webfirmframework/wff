@@ -13,33 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.webfirmframework.wffweb.tag.html.listener;
+package com.webfirmframework.wffweb.internal.tag.html.listener;
 
 import java.io.Serializable;
 
-import com.webfirmframework.wffweb.server.page.InsertTagsBeforeListenerImpl;
+import com.webfirmframework.wffweb.server.page.InsertBeforeListenerImpl;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 
-/**
- * @author WFF
- * @since 3.0.7
- *
- */
-public sealed interface InsertTagsBeforeListener extends Serializable permits InsertTagsBeforeListenerImpl {
+public sealed interface InsertBeforeListener extends Serializable permits InsertBeforeListenerImpl {
 
-    public static record Event(AbstractHtml insertedTag, AbstractHtml previousParentTag) {
+    public static record Event(AbstractHtml parentTag, AbstractHtml insertedTag, AbstractHtml beforeTag,
+            AbstractHtml previousParentTag) {
 
     }
 
     /**
-     * inserts tags beforeTag having parent parentTag.
+     * Tags insertedTags inserted before tag beforeTag having parent parentTag.
      *
-     * @param parentTag
-     * @param beforeTag
      * @param events
-     * @since 3.0.7
+     * @since 2.1.1
      * @author WFF
      */
-    public void insertedBefore(final AbstractHtml parentTag, final AbstractHtml beforeTag, final Event... events);
+    public void insertedBefore(Event... events);
 
 }

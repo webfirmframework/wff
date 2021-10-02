@@ -13,32 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.webfirmframework.wffweb.tag.html.listener;
+package com.webfirmframework.wffweb.internal.tag.html.listener;
 
 import java.io.Serializable;
 
-import com.webfirmframework.wffweb.server.page.InsertAfterListenerImpl;
+import com.webfirmframework.wffweb.server.page.WffBMDataDeleteListenerImpl;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 
-/**
- * @author WFF
- * @since 3.0.7
- *
- */
-public sealed interface InsertAfterListener extends Serializable permits InsertAfterListenerImpl {
+public sealed interface WffBMDataDeleteListener extends Serializable permits WffBMDataDeleteListenerImpl {
 
-    public static record Event(AbstractHtml insertedTag, AbstractHtml previousParentTag) {
+    public static final record DeleteEvent(AbstractHtml tag, String key) {
     }
 
-    /**
-     * inserts tags after afterTag having parent parentTag.
-     *
-     * @param parentTag
-     * @param afterTag
-     * @param events
-     * @since 3.0.7
-     * @author WFF
-     */
-    public void insertedAfter(final AbstractHtml parentTag, final AbstractHtml afterTag, final Event... events);
+    public void deletedWffData(DeleteEvent event);
 
 }

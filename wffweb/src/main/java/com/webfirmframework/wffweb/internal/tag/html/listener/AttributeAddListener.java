@@ -13,13 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.webfirmframework.wffweb.tag.html.listener;
+package com.webfirmframework.wffweb.internal.tag.html.listener;
 
 import java.io.Serializable;
 
-@FunctionalInterface
-public interface PushQueue extends Serializable {
+import com.webfirmframework.wffweb.server.page.AttributeAddListenerImpl;
+import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 
-    public abstract void push();
+public sealed interface AttributeAddListener extends Serializable permits AttributeAddListenerImpl {
+
+    public static final record AddEvent(AbstractHtml addedToTag, AbstractAttribute... addedAttributes) {
+
+    }
+
+    public void addedAttributes(AddEvent event);
 
 }
