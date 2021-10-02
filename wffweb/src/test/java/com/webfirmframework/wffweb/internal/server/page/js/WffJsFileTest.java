@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.webfirmframework.wffweb.server.page.js;
+package com.webfirmframework.wffweb.internal.server.page.js;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+
+import com.webfirmframework.wffweb.internal.server.page.js.WffJsFile;
 
 public class WffJsFileTest {
     

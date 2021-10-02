@@ -2,6 +2,7 @@ module com.webfirmframework.wffweb {
 
     requires java.base;
     requires java.logging;
+    
 
     exports com.webfirmframework.wffweb;
     exports com.webfirmframework.wffweb.clone;
@@ -21,7 +22,6 @@ module com.webfirmframework.wffweb {
     exports com.webfirmframework.wffweb.security.object;
     exports com.webfirmframework.wffweb.server.page;
     exports com.webfirmframework.wffweb.server.page.action;
-    exports com.webfirmframework.wffweb.server.page.js;
     exports com.webfirmframework.wffweb.settings;
     exports com.webfirmframework.wffweb.streamer;
     exports com.webfirmframework.wffweb.tag.core;
