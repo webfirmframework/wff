@@ -1590,7 +1590,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                     final ChildTagAppendListener listener = sharedObject.getChildTagAppendListener(ACCESS_OBJECT);
                     if (listener != null) {
-                        final ChildTagAppendListener.Event event = new ChildTagAppendListener.Event(this, child);
+                        final ChildTagAppendListener.Event event = new ChildTagAppendListener.Event(this, child, null);
                         listener.childAppended(event);
                     }
                 }

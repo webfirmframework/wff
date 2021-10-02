@@ -65,8 +65,8 @@ final class ChildTagAppendListenerImpl implements ChildTagAppendListener {
 
         try {
 
-            final AbstractHtml parentTag = event.getParentTag();
-            final AbstractHtml appendedChildTag = event.getAppendedChildTag();
+            final AbstractHtml parentTag = event.parentTag();
+            final AbstractHtml appendedChildTag = event.appendedChildTag();
 
             // add data-wff-id to all tags including nested tags
             final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
@@ -141,8 +141,8 @@ final class ChildTagAppendListenerImpl implements ChildTagAppendListener {
     @Override
     public void childrenAppended(final Event event) {
 
-        final AbstractHtml parentTag = event.getParentTag();
-        final Collection<? extends AbstractHtml> appendedChildTags = event.getAppendedChildrenTags();
+        final AbstractHtml parentTag = event.parentTag();
+        final Collection<? extends AbstractHtml> appendedChildTags = event.appendedChildrenTags();
 
         // add data-wff-id to all tags including nested tags
         final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
