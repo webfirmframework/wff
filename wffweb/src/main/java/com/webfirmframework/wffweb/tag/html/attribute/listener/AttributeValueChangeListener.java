@@ -18,10 +18,11 @@ package com.webfirmframework.wffweb.tag.html.attribute.listener;
 import java.io.Serializable;
 import java.util.Set;
 
+import com.webfirmframework.wffweb.server.page.AttributeValueChangeListenerImpl;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 
-public interface AttributeValueChangeListener extends Serializable {
+public sealed interface AttributeValueChangeListener extends Serializable permits AttributeValueChangeListenerImpl{
 
     public static record Event(AbstractAttribute sourceAttribute, Set<AbstractHtml> ownerTags,
             boolean changedByClient) {

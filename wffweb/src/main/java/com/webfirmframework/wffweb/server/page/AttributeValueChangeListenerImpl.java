@@ -28,7 +28,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.listener.AttributeValueCha
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.util.data.NameValue;
 
-final class AttributeValueChangeListenerImpl implements AttributeValueChangeListener {
+public final class AttributeValueChangeListenerImpl implements AttributeValueChangeListener {
 
     private static final long serialVersionUID = 1L;
 
