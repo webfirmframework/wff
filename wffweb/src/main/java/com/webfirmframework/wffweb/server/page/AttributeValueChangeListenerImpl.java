@@ -66,7 +66,7 @@ class AttributeValueChangeListenerImpl implements AttributeValueChangeListener {
             final NameValue nameValue = new NameValue();
 
             // should be name=somevalue
-            // String attrNameValue = event.getSourceAttribute()
+            // String attrNameValue = event.sourceAttribute()
             // .toHtmlString(StandardCharsets.UTF_8)
             // .replaceFirst("[=][\"]", "=");
             // if (attrNameValue.charAt(attrNameValue.length() - 1) == '"') {
@@ -75,9 +75,9 @@ class AttributeValueChangeListenerImpl implements AttributeValueChangeListener {
             // }
             // nameValue.setName(attrNameValue.getBytes(StandardCharsets.UTF_8));
 
-            nameValue.setName(event.getSourceAttribute().toCompressedBytesByIndex(false, StandardCharsets.UTF_8));
+            nameValue.setName(event.sourceAttribute().toCompressedBytesByIndex(false, StandardCharsets.UTF_8));
 
-            final Set<AbstractHtml> ownerTags = new HashSet<>(event.getOwnerTags());
+            final Set<AbstractHtml> ownerTags = new HashSet<>(event.ownerTags());
 
             final Collection<AbstractHtml> uiTags = tagByWffId.values();
             if (uiTags.size() > 10) {

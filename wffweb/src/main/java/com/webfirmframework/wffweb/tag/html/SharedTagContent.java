@@ -273,31 +273,8 @@ public class SharedTagContent<T> {
         public abstract Runnable contentChanged(final ChangeEvent<T> changeEvent);
     }
 
-    public static final class DetachEvent<T> {
-
-        private final AbstractHtml sourceTag;
-        private final DetachListener<T> sourceListener;
-        private final Content<T> content;
-
-        private DetachEvent(final AbstractHtml sourceTag, final DetachListener<T> sourceListener,
-                final Content<T> content) {
-            super();
-            this.sourceListener = sourceListener;
-            this.sourceTag = sourceTag;
-            this.content = content;
-        }
-
-        public AbstractHtml getSourceTag() {
-            return sourceTag;
-        }
-
-        public DetachListener<T> getSourceListener() {
-            return sourceListener;
-        }
-
-        public Content<T> getContent() {
-            return content;
-        }
+    public static final record DetachEvent<T> (AbstractHtml sourceTag, DetachListener<T> sourceListener,
+            Content<T> content) {
     }
 
     /**

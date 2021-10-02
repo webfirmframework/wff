@@ -158,7 +158,7 @@ public class AttributeRemoveListenerImpl implements AttributeRemoveListener {
     // final NameValue nameValue = new NameValue();
     //
     // // should be name
-    // String attrName = event.getSourceAttribute().getAttributeName();
+    // String attrName = event.sourceAttribute().getAttributeName();
     //
     // nameValue.setName(attrName.getBytes("UTF-8"));
     //

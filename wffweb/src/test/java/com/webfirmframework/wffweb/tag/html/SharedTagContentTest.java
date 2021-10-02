@@ -840,7 +840,7 @@ public class SharedTagContentTest {
                 @Override
                 public Runnable detached(DetachEvent<String> detachEvent) {
                     listenerInvoked.set(true);
-                    assertEquals("Test content", detachEvent.getContent().content());
+                    assertEquals("Test content", detachEvent.content().content());
                     
                     return () -> { assertEquals("Test content", stc.getContent());};
                 }
@@ -889,7 +889,7 @@ public class SharedTagContentTest {
                 @Override
                 public Runnable detached(DetachEvent<String> detachEvent) {
                     listenerInvoked.set(true);
-                    assertEquals("Test content", detachEvent.getContent().content());
+                    assertEquals("Test content", detachEvent.content().content());
                     
                     return () -> { assertEquals("Test content", stc.getContent());};
                 }

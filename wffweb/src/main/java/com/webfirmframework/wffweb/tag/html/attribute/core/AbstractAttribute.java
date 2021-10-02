@@ -659,7 +659,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 // skipped it making unmodifiable to gain
                 // performance
                 final AttributeValueChangeListener.Event event = new AttributeValueChangeListener.Event(this,
-                        ownerTags);
+                        ownerTags, false);
                 valueChangeListener.valueChanged(event);
             }
         }
@@ -667,7 +667,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
         if (valueChangeListeners != null) {
             for (final AttributeValueChangeListener listener : valueChangeListeners) {
                 final AttributeValueChangeListener.Event event = new AttributeValueChangeListener.Event(this,
-                        ownerTags);
+                        ownerTags, false);
                 listener.valueChanged(event);
             }
         }
