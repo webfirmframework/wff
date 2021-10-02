@@ -23,53 +23,8 @@ import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 
 public interface AttributeRemoveListener extends Serializable {
 
-    public static class RemovedEvent {
-
-        private AbstractHtml removedFromTag;
-
-        private String[] removedAttributeNames;
-
-        private List<AbstractAttribute> removedAttributes;
-
-        public RemovedEvent() {
-        }
-
-        public RemovedEvent(final AbstractHtml removedFromTag, final String... removedAttributeNames) {
-            super();
-            this.removedFromTag = removedFromTag;
-            this.removedAttributeNames = removedAttributeNames;
-        }
-
-        /**
-         * @param removedFromTag
-         * @param removedAttributes
-         * @since 3.0.6
-         */
-        public RemovedEvent(final AbstractHtml removedFromTag, final List<AbstractAttribute> removedAttributes) {
-            super();
-            this.removedFromTag = removedFromTag;
-            this.removedAttributes = removedAttributes;
-        }
-
-        public AbstractHtml getRemovedFromTag() {
-            return removedFromTag;
-        }
-
-        public void setRemovedFromTag(final AbstractHtml removedFromTag) {
-            this.removedFromTag = removedFromTag;
-        }
-
-        public String[] getRemovedAttributeNames() {
-            return removedAttributeNames;
-        }
-
-        public void setRemovedAttributeNames(final String[] removedAttributeNames) {
-            this.removedAttributeNames = removedAttributeNames;
-        }
-
-        public List<AbstractAttribute> getRemovedAttributes() {
-            return removedAttributes;
-        }
+    public static record RemovedEvent(AbstractHtml removedFromTag, List<AbstractAttribute> removedAttributes,
+            String[] removedAttributeNames) {
 
     }
 

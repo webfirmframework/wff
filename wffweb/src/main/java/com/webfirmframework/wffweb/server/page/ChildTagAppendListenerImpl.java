@@ -274,8 +274,8 @@ final class ChildTagAppendListenerImpl implements ChildTagAppendListener {
         // "span"]}
         // @formatter:on
 
-        final AbstractHtml currentParentTag = event.getCurrentParentTag();
-        final AbstractHtml movedChildTag = event.getMovedChildTag();
+        final AbstractHtml currentParentTag = event.currentParentTag();
+        final AbstractHtml movedChildTag = event.movedChildTag();
 
         final NameValue task = Task.MOVED_CHILDREN_TAGS.getTaskNameValue();
 
@@ -338,9 +338,9 @@ final class ChildTagAppendListenerImpl implements ChildTagAppendListener {
                 // if previousParentTag == null it means it's appending a new
                 // child tag
                 // this checking is done at client side
-                final AbstractHtml previousParentTag = event.getPreviousParentTag();
-                final AbstractHtml currentParentTag = event.getCurrentParentTag();
-                final AbstractHtml movedChildTag = event.getMovedChildTag();
+                final AbstractHtml previousParentTag = event.previousParentTag();
+                final AbstractHtml currentParentTag = event.currentParentTag();
+                final AbstractHtml movedChildTag = event.movedChildTag();
 
                 final DataWffId currentParentDataWffIdAttr = currentParentTag.getDataWffId();
 

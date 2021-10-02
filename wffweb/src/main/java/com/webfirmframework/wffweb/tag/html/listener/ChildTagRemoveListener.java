@@ -21,70 +21,8 @@ import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 
 public interface ChildTagRemoveListener extends Serializable {
 
-    public static class Event {
-
-        private AbstractHtml removedChildTag;
-
-        private AbstractHtml[] removedChildrenTags;
-
-        private AbstractHtml parentTag;
-
-        @SuppressWarnings("unused")
-        private Event() {
-            throw new AssertionError();
-        }
-
-        public Event(final AbstractHtml parentTag, final AbstractHtml removedChildTag) {
-            this.parentTag = parentTag;
-            this.removedChildTag = removedChildTag;
-        }
-
-        public Event(final AbstractHtml parentTag, final AbstractHtml[] removedChildrenTags) {
-            this.parentTag = parentTag;
-            this.removedChildrenTags = removedChildrenTags;
-        }
-
-        /**
-         * @return the parentTag
-         */
-        public AbstractHtml getParentTag() {
-            return parentTag;
-        }
-
-        /**
-         * @param parentTag the parentTag to set
-         */
-        public void setParentTag(final AbstractHtml parentTag) {
-            this.parentTag = parentTag;
-        }
-
-        /**
-         * @return the removedChildTag
-         */
-        public AbstractHtml getRemovedChildTag() {
-            return removedChildTag;
-        }
-
-        /**
-         * @param removedChildTag the removedChildTag to set
-         */
-        public void setRemovedChildTag(final AbstractHtml removedChildTag) {
-            this.removedChildTag = removedChildTag;
-        }
-
-        /**
-         * @return the removedChildrenTags
-         */
-        public AbstractHtml[] getRemovedChildrenTags() {
-            return removedChildrenTags;
-        }
-
-        /**
-         * @param removedChildrenTags the removedChildrenTags to set
-         */
-        public void setRemovedChildrenTags(final AbstractHtml[] removedChildrenTags) {
-            this.removedChildrenTags = removedChildrenTags;
-        }
+    public static record Event(AbstractHtml parentTag, AbstractHtml removedChildTag,
+            AbstractHtml[] removedChildrenTags) {
 
     }
 

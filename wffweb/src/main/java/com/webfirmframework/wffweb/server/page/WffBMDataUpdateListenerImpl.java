@@ -63,8 +63,8 @@ final class WffBMDataUpdateListenerImpl implements WffBMDataUpdateListener {
             // bytes] }
             // @formatter:on
 
-            final AbstractHtml tag = event.getTag();
-            final WffBMData wffBMData = event.getWffData();
+            final AbstractHtml tag = event.tag();
+            final WffBMData wffBMData = event.wffData();
             final NameValue task;
 
             if (BMType.OBJECT.equals(wffBMData.getBMType())) {
@@ -85,7 +85,7 @@ final class WffBMDataUpdateListenerImpl implements WffBMDataUpdateListener {
 
             final byte[] dataWffIdBytes = DataWffIdUtil.getDataWffIdBytes(tag.getDataWffId().getValue());
 
-            nameValue.setValues(new byte[][] { dataWffIdBytes, event.getKey().getBytes(StandardCharsets.UTF_8),
+            nameValue.setValues(new byte[][] { dataWffIdBytes, event.key().getBytes(StandardCharsets.UTF_8),
                     wffBMData.buildBytes(true) });
 
             browserPage.push(nameValues);

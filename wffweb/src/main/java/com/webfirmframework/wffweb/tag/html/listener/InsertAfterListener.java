@@ -26,44 +26,7 @@ import com.webfirmframework.wffweb.tag.html.AbstractHtml;
  */
 public interface InsertAfterListener extends Serializable {
 
-    public static class Event {
-
-        private AbstractHtml insertedTag;
-
-        private AbstractHtml previousParentTag;
-
-        @SuppressWarnings("unused")
-        private Event() {
-            throw new AssertionError();
-        }
-
-        public Event(final AbstractHtml insertedTag, final AbstractHtml previousParentTag) {
-            this.insertedTag = insertedTag;
-            this.previousParentTag = previousParentTag;
-        }
-
-        public AbstractHtml getInsertedTag() {
-            return insertedTag;
-        }
-
-        public void setInsertedTag(final AbstractHtml insertedTag) {
-            this.insertedTag = insertedTag;
-        }
-
-        /**
-         * @return the previousParentTag
-         */
-        public AbstractHtml getPreviousParentTag() {
-            return previousParentTag;
-        }
-
-        /**
-         * @param previousParentTag the previousParentTag to set
-         */
-        public void setPreviousParentTag(final AbstractHtml previousParentTag) {
-            this.previousParentTag = previousParentTag;
-        }
-
+    public static record Event(AbstractHtml insertedTag, AbstractHtml previousParentTag) {
     }
 
     /**

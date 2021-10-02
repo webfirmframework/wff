@@ -256,7 +256,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                         if (listener != null) {
                             listener.childrenRemoved(
-                                    new ChildTagRemoveListener.Event(AbstractHtml.this, removedAbstractHtmls));
+                                    new ChildTagRemoveListener.Event(AbstractHtml.this, null, removedAbstractHtmls));
                         }
 
                         sharedObject.setChildModified(removedAll);
@@ -709,7 +709,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
             final ChildTagRemoveListener listener = sharedObject.getChildTagRemoveListener(ACCESS_OBJECT);
             if (listener != null) {
-                listener.allChildrenRemoved(new ChildTagRemoveListener.Event(this, removedAbstractHtmls));
+                listener.allChildrenRemoved(new ChildTagRemoveListener.Event(this, null, removedAbstractHtmls));
                 listenerInvoked = true;
             }
 
@@ -751,7 +751,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 if (listener != null) {
 
                     final ChildTagRemoveListenerData listenerData = new ChildTagRemoveListenerData(sharedObject,
-                            listener, new ChildTagRemoveListener.Event(this, removedAbstractHtmls));
+                            listener, new ChildTagRemoveListener.Event(this, null, removedAbstractHtmls));
                     return listenerData;
                 }
             }
@@ -1291,7 +1291,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                                         .getChildTagRemoveListener(ACCESS_OBJECT);
                                 if (listener != null) {
                                     listener.allChildrenRemoved(
-                                            new ChildTagRemoveListener.Event(this, removedAbstractHtmls));
+                                            new ChildTagRemoveListener.Event(this, null, removedAbstractHtmls));
                                     listenerInvoked = true;
                                 }
                             } finally {
@@ -1399,7 +1399,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 final ChildTagRemoveListener listener = sharedObject.getChildTagRemoveListener(ACCESS_OBJECT);
 
                 if (listener != null) {
-                    listener.childRemoved(new ChildTagRemoveListener.Event(this, child));
+                    listener.childRemoved(new ChildTagRemoveListener.Event(this, child, null));
                     listenerInvoked = true;
                 }
 
@@ -2264,9 +2264,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
         if (updateClient) {
             final AttributeAddListener attributeAddListener = sharedObject.getAttributeAddListener(ACCESS_OBJECT);
             if (attributeAddListener != null) {
-                final AttributeAddListener.AddEvent event = new AttributeAddListener.AddEvent();
-                event.setAddedToTag(this);
-                event.setAddedAttributes(attributes);
+                final AttributeAddListener.AddEvent event = new AttributeAddListener.AddEvent(this, attributes);
                 attributeAddListener.addedAttributes(event);
                 listenerInvoked = true;
             }
@@ -2449,7 +2447,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                     final AttributeRemoveListener listener = sharedObject.getAttributeRemoveListener(ACCESS_OBJECT);
                     if (listener != null) {
                         final AttributeRemoveListener.RemovedEvent event = new AttributeRemoveListener.RemovedEvent(
-                                this, removedAttributes);
+                                this, removedAttributes, null);
 
                         listener.removedAttributes(event);
                         listenerInvoked = true;
@@ -2625,7 +2623,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                     final AttributeRemoveListener listener = sharedObject.getAttributeRemoveListener(ACCESS_OBJECT);
                     if (listener != null) {
                         final AttributeRemoveListener.RemovedEvent event = new AttributeRemoveListener.RemovedEvent(
-                                this, removedAttributeNames.toArray(new String[removedAttributeNames.size()]));
+                                this, null, removedAttributeNames.toArray(new String[removedAttributeNames.size()]));
 
                         listener.removedAttributes(event);
                         listenerInvoked = true;

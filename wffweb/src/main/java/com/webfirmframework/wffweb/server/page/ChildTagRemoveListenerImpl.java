@@ -88,7 +88,7 @@ final class ChildTagRemoveListenerImpl implements ChildTagRemoveListener {
     @Override
     public void childRemoved(final Event event) {
 
-        final AbstractHtml removedChildTag = event.getRemovedChildTag();
+        final AbstractHtml removedChildTag = event.removedChildTag();
 
         removeChildren(new AbstractHtml[] { removedChildTag });
 
@@ -144,13 +144,13 @@ final class ChildTagRemoveListenerImpl implements ChildTagRemoveListener {
 
     @Override
     public void childrenRemoved(final Event event) {
-        removeChildren(event.getRemovedChildrenTags());
+        removeChildren(event.removedChildrenTags());
     }
 
     @Override
     public void allChildrenRemoved(final Event event) {
 
-        final AbstractHtml parentTag = event.getParentTag();
+        final AbstractHtml parentTag = event.parentTag();
 
         // @formatter:off
         // removed all children tags task format :-
@@ -179,7 +179,7 @@ final class ChildTagRemoveListenerImpl implements ChildTagRemoveListener {
 
             browserPage.push(task, nameValue);
 
-            for (final AbstractHtml each : event.getRemovedChildrenTags()) {
+            for (final AbstractHtml each : event.removedChildrenTags()) {
                 removeFromTagByWffIdMap(each);
             }
         } else {

@@ -147,9 +147,9 @@ final class ReplaceListenerImpl implements ReplaceListener {
             // inserted tags data
             for (final Event event : events) {
 
-                final AbstractHtml insertedTag = event.getInsertedTag();
+                final AbstractHtml insertedTag = event.insertedTag();
 
-                final AbstractHtml previousParentTag = event.getPreviousParentTag();
+                final AbstractHtml previousParentTag = event.previousParentTag();
 
                 final NameValue nameValue = new NameValue();
 

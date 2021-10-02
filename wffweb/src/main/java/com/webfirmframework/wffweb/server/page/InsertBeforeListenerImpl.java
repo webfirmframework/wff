@@ -117,13 +117,13 @@ final class InsertBeforeListenerImpl implements InsertBeforeListener {
 
         for (final Event event : events) {
 
-            final AbstractHtml parentTag = event.getParentTag();
+            final AbstractHtml parentTag = event.parentTag();
 
-            final AbstractHtml insertedTag = event.getInsertedTag();
+            final AbstractHtml insertedTag = event.insertedTag();
 
-            final AbstractHtml beforeTag = event.getBeforeTag();
+            final AbstractHtml beforeTag = event.beforeTag();
 
-            final AbstractHtml previousParentTag = event.getPreviousParentTag();
+            final AbstractHtml previousParentTag = event.previousParentTag();
 
             final DataWffId dataWffId = parentTag.getDataWffId();
 

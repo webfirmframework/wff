@@ -40,11 +40,6 @@ public interface ChildTagAppendListener extends Serializable {
             this.appendedChildTag = appendedChildTag;
         }
 
-        public Event(final AbstractHtml parentTag, final Collection<? extends AbstractHtml> appendedChildrenTags) {
-            this.parentTag = parentTag;
-            this.appendedChildrenTags = appendedChildrenTags;
-        }
-
         /**
          * @return the appendedChildTag
          */
@@ -89,50 +84,8 @@ public interface ChildTagAppendListener extends Serializable {
 
     }
 
-    public static class ChildMovedEvent {
-
-        private AbstractHtml previousParentTag;
-
-        private AbstractHtml movedChildTag;
-
-        private AbstractHtml currentParentTag;
-
-        @SuppressWarnings("unused")
-        private ChildMovedEvent() {
-            throw new AssertionError();
-        }
-
-        public ChildMovedEvent(final AbstractHtml previousParentTag, final AbstractHtml currentParentTag,
-                final AbstractHtml movedChildTag) {
-            super();
-            this.previousParentTag = previousParentTag;
-            this.currentParentTag = currentParentTag;
-            this.movedChildTag = movedChildTag;
-        }
-
-        public AbstractHtml getPreviousParentTag() {
-            return previousParentTag;
-        }
-
-        public void setPreviousParentTag(final AbstractHtml previousParentTag) {
-            this.previousParentTag = previousParentTag;
-        }
-
-        public AbstractHtml getMovedChildTag() {
-            return movedChildTag;
-        }
-
-        public void setMovedChildTag(final AbstractHtml movedChildTag) {
-            this.movedChildTag = movedChildTag;
-        }
-
-        public AbstractHtml getCurrentParentTag() {
-            return currentParentTag;
-        }
-
-        public void setCurrentParentTag(final AbstractHtml currentParentTag) {
-            this.currentParentTag = currentParentTag;
-        }
+    public static record ChildMovedEvent(AbstractHtml previousParentTag, AbstractHtml currentParentTag,
+            AbstractHtml movedChildTag) {
 
     }
 

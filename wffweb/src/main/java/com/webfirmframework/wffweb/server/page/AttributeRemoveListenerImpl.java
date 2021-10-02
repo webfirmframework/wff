@@ -56,7 +56,7 @@ public class AttributeRemoveListenerImpl implements AttributeRemoveListener {
 
         try {
 
-            final AbstractHtml removedFromTag = event.getRemovedFromTag();
+            final AbstractHtml removedFromTag = event.removedFromTag();
 
             if (removedFromTag.getDataWffId() == null
                     || !tagByWffId.containsKey(removedFromTag.getDataWffId().getValue())) {
@@ -80,7 +80,7 @@ public class AttributeRemoveListenerImpl implements AttributeRemoveListener {
 
             final byte[][] tagNameAndWffId = DataWffIdUtil.getIndexedTagNameAndWffId(accessObject, removedFromTag);
 
-            final List<AbstractAttribute> removedAttributes = event.getRemovedAttributes();
+            final List<AbstractAttribute> removedAttributes = event.removedAttributes();
 
             if (removedAttributes != null) {
 
@@ -104,7 +104,7 @@ public class AttributeRemoveListenerImpl implements AttributeRemoveListener {
                 nameValue.setValues(values);
 
             } else {
-                final String[] removedAttributeNames = event.getRemovedAttributeNames();
+                final String[] removedAttributeNames = event.removedAttributeNames();
 
                 final int totalValues = removedAttributeNames.length + 2;
 

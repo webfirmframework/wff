@@ -22,36 +22,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 
 public interface AttributeAddListener extends Serializable {
 
-    public static final class AddEvent {
-
-        private AbstractHtml addedToTag;
-
-        private AbstractAttribute[] addedAttributes;
-
-        public AddEvent() {
-        }
-
-        public AddEvent(final AbstractHtml addedToTag, final AbstractAttribute... addedAttributes) {
-            super();
-            this.addedToTag = addedToTag;
-            this.addedAttributes = addedAttributes;
-        }
-
-        public AbstractHtml getAddedToTag() {
-            return addedToTag;
-        }
-
-        public void setAddedToTag(final AbstractHtml addedToTag) {
-            this.addedToTag = addedToTag;
-        }
-
-        public AbstractAttribute[] getAddedAttributes() {
-            return addedAttributes;
-        }
-
-        public void setAddedAttributes(final AbstractAttribute... addedAttributes) {
-            this.addedAttributes = addedAttributes;
-        }
+    public static final record AddEvent(AbstractHtml addedToTag, AbstractAttribute... addedAttributes) {
 
     }
 

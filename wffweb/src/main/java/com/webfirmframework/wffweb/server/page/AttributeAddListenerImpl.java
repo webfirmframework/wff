@@ -64,10 +64,10 @@ public class AttributeAddListenerImpl implements AttributeAddListener {
             // many attributes to one tag
             nameValue.setName(Task.MANY_TO_ONE.getValueByte());
 
-            final AbstractHtml addedToTag = event.getAddedToTag();
+            final AbstractHtml addedToTag = event.addedToTag();
             final byte[][] tagNameAndWffId = DataWffIdUtil.getIndexedTagNameAndWffId(accessObject, addedToTag);
 
-            final AbstractAttribute[] addedAttributes = event.getAddedAttributes();
+            final AbstractAttribute[] addedAttributes = event.addedAttributes();
 
             final int totalValues = addedAttributes.length + 2;
 

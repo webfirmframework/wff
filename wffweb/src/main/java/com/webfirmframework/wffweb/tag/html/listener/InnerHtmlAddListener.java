@@ -22,59 +22,10 @@ import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 
 public interface InnerHtmlAddListener extends Serializable {
 
-    public static class Event {
-
-        private AbstractHtml innerHtmlTag;
-
-        private AbstractHtml parentTag;
-
-        /**
-         * previous parent tag of inner html
-         */
-        private AbstractHtml previousParentTag;
-
-        @SuppressWarnings("unused")
-        private Event() {
-            throw new AssertionError();
-        }
-
-        public Event(final AbstractHtml parentTag, final AbstractHtml innerHtmlTag,
-                final AbstractHtml previousParentTag) {
-            super();
-            this.parentTag = parentTag;
-            this.innerHtmlTag = innerHtmlTag;
-            this.previousParentTag = previousParentTag;
-        }
-
-        public AbstractHtml getInnerHtmlTag() {
-            return innerHtmlTag;
-        }
-
-        public void setInnerHtmlTag(final AbstractHtml innerHtmlTag) {
-            this.innerHtmlTag = innerHtmlTag;
-        }
-
-        public AbstractHtml getParentTag() {
-            return parentTag;
-        }
-
-        public void setParentTag(final AbstractHtml parentTag) {
-            this.parentTag = parentTag;
-        }
-
-        /**
-         * @return the previousParentTag
-         */
-        public AbstractHtml getPreviousParentTag() {
-            return previousParentTag;
-        }
-
-        /**
-         * @param previousParentTag the previousParentTag to set
-         */
-        public void setPreviousParentTag(final AbstractHtml previousParentTag) {
-            this.previousParentTag = previousParentTag;
-        }
+    public static record Event(AbstractHtml parentTag, AbstractHtml innerHtmlTag, /**
+                                                                                   * previous parent tag of inner html
+                                                                                   */
+    AbstractHtml previousParentTag) {
 
     }
 

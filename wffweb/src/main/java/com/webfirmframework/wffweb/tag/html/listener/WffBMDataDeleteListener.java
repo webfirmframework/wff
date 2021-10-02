@@ -21,26 +21,7 @@ import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 
 public interface WffBMDataDeleteListener extends Serializable {
 
-    public static final class DeleteEvent {
-
-        private final String key;
-
-        private final AbstractHtml tag;
-
-        public DeleteEvent(final AbstractHtml tag, final String key) {
-            super();
-            this.tag = tag;
-            this.key = key;
-        }
-
-        public String getKey() {
-            return key;
-        }
-
-        public AbstractHtml getTag() {
-            return tag;
-        }
-
+    public static final record DeleteEvent(AbstractHtml tag, String key) {
     }
 
     public void deletedWffData(DeleteEvent event);

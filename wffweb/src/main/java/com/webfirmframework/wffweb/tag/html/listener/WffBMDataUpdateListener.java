@@ -22,32 +22,7 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMData;
 
 public interface WffBMDataUpdateListener extends Serializable {
 
-    public static final class UpdateEvent {
-
-        private final String key;
-
-        private final WffBMData wffBMData;
-
-        private final AbstractHtml tag;
-
-        public UpdateEvent(final AbstractHtml tag, final String key, final WffBMData wffBMData) {
-            super();
-            this.tag = tag;
-            this.key = key;
-            this.wffBMData = wffBMData;
-        }
-
-        public String getKey() {
-            return key;
-        }
-
-        public WffBMData getWffData() {
-            return wffBMData;
-        }
-
-        public AbstractHtml getTag() {
-            return tag;
-        }
+    public static final record UpdateEvent(AbstractHtml tag, String key, WffBMData wffData) {
 
     }
 

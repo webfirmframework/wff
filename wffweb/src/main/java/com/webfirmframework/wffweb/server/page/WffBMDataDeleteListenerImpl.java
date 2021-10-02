@@ -60,7 +60,7 @@ final class WffBMDataDeleteListenerImpl implements WffBMDataDeleteListener {
             // { "name": [tag name bytes], "values" : [[wff id bytes], [key bytes] }
             // @formatter:on
 
-            final AbstractHtml tag = event.getTag();
+            final AbstractHtml tag = event.tag();
             final NameValue task = Task.DEL_BM_OBJ_OR_ARR_FROM_TAG.getTaskNameValue();
 
             final NameValue nameValue = new NameValue();
@@ -73,7 +73,7 @@ final class WffBMDataDeleteListenerImpl implements WffBMDataDeleteListener {
 
             final byte[] dataWffIdBytes = DataWffIdUtil.getDataWffIdBytes(tag.getDataWffId().getValue());
 
-            nameValue.setValues(new byte[][] { dataWffIdBytes, event.getKey().getBytes(StandardCharsets.UTF_8) });
+            nameValue.setValues(new byte[][] { dataWffIdBytes, event.key().getBytes(StandardCharsets.UTF_8) });
 
             browserPage.push(nameValues);
 

@@ -21,66 +21,8 @@ import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 
 public interface InsertBeforeListener extends Serializable {
 
-    public static class Event {
-
-        private AbstractHtml parentTag;
-
-        private AbstractHtml beforeTag;
-
-        private AbstractHtml insertedTag;
-
-        private AbstractHtml previousParentTag;
-
-        @SuppressWarnings("unused")
-        private Event() {
-            throw new AssertionError();
-        }
-
-        public Event(final AbstractHtml parentTag, final AbstractHtml insertedTag, final AbstractHtml beforeTag,
-                final AbstractHtml previousParentTag) {
-            this.parentTag = parentTag;
-            this.insertedTag = insertedTag;
-            this.beforeTag = beforeTag;
-            this.previousParentTag = previousParentTag;
-        }
-
-        public AbstractHtml getParentTag() {
-            return parentTag;
-        }
-
-        public void setParentTag(final AbstractHtml parentTag) {
-            this.parentTag = parentTag;
-        }
-
-        public AbstractHtml getBeforeTag() {
-            return beforeTag;
-        }
-
-        public void setBeforeTag(final AbstractHtml beforeTag) {
-            this.beforeTag = beforeTag;
-        }
-
-        public AbstractHtml getInsertedTag() {
-            return insertedTag;
-        }
-
-        public void setInsertedTag(final AbstractHtml insertedTag) {
-            this.insertedTag = insertedTag;
-        }
-
-        /**
-         * @return the previousParentTag
-         */
-        public AbstractHtml getPreviousParentTag() {
-            return previousParentTag;
-        }
-
-        /**
-         * @param previousParentTag the previousParentTag to set
-         */
-        public void setPreviousParentTag(final AbstractHtml previousParentTag) {
-            this.previousParentTag = previousParentTag;
-        }
+    public static record Event(AbstractHtml parentTag, AbstractHtml insertedTag, AbstractHtml beforeTag,
+            AbstractHtml previousParentTag) {
 
     }
 

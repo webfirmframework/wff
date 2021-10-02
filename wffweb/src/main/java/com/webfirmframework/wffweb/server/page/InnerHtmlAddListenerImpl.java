@@ -132,8 +132,8 @@ final class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
 
         for (final Event event : events) {
 
-            final AbstractHtml innerHtmlTag = event.getInnerHtmlTag();
-            final AbstractHtml previousParentTag = event.getPreviousParentTag();
+            final AbstractHtml innerHtmlTag = event.innerHtmlTag();
+            final AbstractHtml previousParentTag = event.previousParentTag();
 
             final NameValue nameValue = new NameValue();
 
@@ -195,7 +195,7 @@ final class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
 
     @Override
     public void innerHtmlAdded(final Event event) {
-        innerHtmlsAdded(event.getParentTag(), event);
+        innerHtmlsAdded(event.parentTag(), event);
     }
 
 }
