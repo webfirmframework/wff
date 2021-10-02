@@ -40,9 +40,6 @@ public interface ServerAsyncMethod extends Serializable {
             Object serverSideData) {
 
         /**
-         * NB: The deprecated {@link Event#setSourceTag(AbstractHtml)} will not affect
-         * the value of this method.
-         *
          * @return the sourceTag
          * @since 3.0.15
          */
