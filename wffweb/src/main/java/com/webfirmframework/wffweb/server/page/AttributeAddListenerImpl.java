@@ -24,7 +24,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.listener.AttributeAddListener;
 import com.webfirmframework.wffweb.util.data.NameValue;
 
-public class AttributeAddListenerImpl implements AttributeAddListener {
+public final class AttributeAddListenerImpl implements AttributeAddListener {
 
     private static final long serialVersionUID = 1L;
 

@@ -17,9 +17,10 @@ package com.webfirmframework.wffweb.tag.html.listener;
 
 import java.io.Serializable;
 
+import com.webfirmframework.wffweb.server.page.ChildTagRemoveListenerImpl;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 
-public interface ChildTagRemoveListener extends Serializable {
+public sealed interface ChildTagRemoveListener extends Serializable permits ChildTagRemoveListenerImpl {
 
     public static record Event(AbstractHtml parentTag, AbstractHtml removedChildTag,
             AbstractHtml[] removedChildrenTags) {

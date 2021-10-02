@@ -17,9 +17,10 @@ package com.webfirmframework.wffweb.tag.html.listener;
 
 import java.io.Serializable;
 
+import com.webfirmframework.wffweb.server.page.InsertBeforeListenerImpl;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 
-public interface InsertBeforeListener extends Serializable {
+public sealed interface InsertBeforeListener extends Serializable permits InsertBeforeListenerImpl {
 
     public static record Event(AbstractHtml parentTag, AbstractHtml insertedTag, AbstractHtml beforeTag,
             AbstractHtml previousParentTag) {

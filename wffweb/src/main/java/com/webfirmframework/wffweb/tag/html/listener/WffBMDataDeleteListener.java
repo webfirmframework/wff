@@ -17,9 +17,10 @@ package com.webfirmframework.wffweb.tag.html.listener;
 
 import java.io.Serializable;
 
+import com.webfirmframework.wffweb.server.page.WffBMDataDeleteListenerImpl;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 
-public interface WffBMDataDeleteListener extends Serializable {
+public sealed interface WffBMDataDeleteListener extends Serializable permits WffBMDataDeleteListenerImpl {
 
     public static final record DeleteEvent(AbstractHtml tag, String key) {
     }

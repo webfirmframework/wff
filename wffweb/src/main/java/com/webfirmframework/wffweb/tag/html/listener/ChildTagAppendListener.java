@@ -18,9 +18,10 @@ package com.webfirmframework.wffweb.tag.html.listener;
 import java.io.Serializable;
 import java.util.Collection;
 
+import com.webfirmframework.wffweb.server.page.ChildTagAppendListenerImpl;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 
-public interface ChildTagAppendListener extends Serializable {
+public sealed interface ChildTagAppendListener extends Serializable permits ChildTagAppendListenerImpl {
 
     public static record Event(AbstractHtml parentTag, AbstractHtml appendedChildTag,
             Collection<? extends AbstractHtml> appendedChildrenTags) {

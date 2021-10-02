@@ -17,10 +17,11 @@ package com.webfirmframework.wffweb.tag.html.listener;
 
 import java.io.Serializable;
 
+import com.webfirmframework.wffweb.server.page.WffBMDataUpdateListenerImpl;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.wffbm.data.WffBMData;
 
-public interface WffBMDataUpdateListener extends Serializable {
+public sealed interface WffBMDataUpdateListener extends Serializable permits WffBMDataUpdateListenerImpl {
 
     public static final record UpdateEvent(AbstractHtml tag, String key, WffBMData wffData) {
 

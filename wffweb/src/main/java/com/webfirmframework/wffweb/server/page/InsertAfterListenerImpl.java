@@ -37,7 +37,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  * @author WFF
  * @since 3.0.7
  */
-final class InsertAfterListenerImpl implements InsertAfterListener {
+public final class InsertAfterListenerImpl implements InsertAfterListener {
 
     private static final long serialVersionUID = 1L;
 

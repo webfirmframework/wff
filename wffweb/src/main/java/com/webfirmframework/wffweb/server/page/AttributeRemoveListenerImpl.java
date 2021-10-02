@@ -27,7 +27,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeUtil;
 import com.webfirmframework.wffweb.tag.html.listener.AttributeRemoveListener;
 import com.webfirmframework.wffweb.util.data.NameValue;
 
-public class AttributeRemoveListenerImpl implements AttributeRemoveListener {
+public final class AttributeRemoveListenerImpl implements AttributeRemoveListener {
 
     private static final long serialVersionUID = 1L;
 

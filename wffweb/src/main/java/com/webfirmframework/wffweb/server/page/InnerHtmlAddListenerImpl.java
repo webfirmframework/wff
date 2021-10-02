@@ -34,7 +34,7 @@ import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.tag.html.listener.InnerHtmlAddListener;
 import com.webfirmframework.wffweb.util.data.NameValue;
 
-final class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
+public final class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
 
     private static final long serialVersionUID = 1L;
 

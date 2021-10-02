@@ -17,10 +17,11 @@ package com.webfirmframework.wffweb.tag.html.listener;
 
 import java.io.Serializable;
 
+import com.webfirmframework.wffweb.server.page.AttributeAddListenerImpl;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 
-public interface AttributeAddListener extends Serializable {
+public sealed interface AttributeAddListener extends Serializable permits AttributeAddListenerImpl {
 
     public static final record AddEvent(AbstractHtml addedToTag, AbstractAttribute... addedAttributes) {
 

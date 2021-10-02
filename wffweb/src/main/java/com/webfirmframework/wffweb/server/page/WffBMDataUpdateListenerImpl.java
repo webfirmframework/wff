@@ -30,7 +30,7 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMData;
  * @author WFF
  * @since 2.1.8
  */
-final class WffBMDataUpdateListenerImpl implements WffBMDataUpdateListener {
+public final class WffBMDataUpdateListenerImpl implements WffBMDataUpdateListener {
 
     private static final long serialVersionUID = 1L;
 

@@ -18,10 +18,11 @@ package com.webfirmframework.wffweb.tag.html.listener;
 import java.io.Serializable;
 import java.util.List;
 
+import com.webfirmframework.wffweb.server.page.AttributeRemoveListenerImpl;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 
-public interface AttributeRemoveListener extends Serializable {
+public sealed interface AttributeRemoveListener extends Serializable permits AttributeRemoveListenerImpl {
 
     public static record RemovedEvent(AbstractHtml removedFromTag, List<AbstractAttribute> removedAttributes,
             String[] removedAttributeNames) {

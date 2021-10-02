@@ -28,7 +28,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  * @author WFF
  * @since 2.1.8
  */
-final class WffBMDataDeleteListenerImpl implements WffBMDataDeleteListener {
+public final class WffBMDataDeleteListenerImpl implements WffBMDataDeleteListener {
 
     private static final long serialVersionUID = 1L;
 

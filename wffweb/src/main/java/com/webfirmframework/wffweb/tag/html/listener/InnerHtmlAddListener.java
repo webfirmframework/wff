@@ -18,9 +18,10 @@ package com.webfirmframework.wffweb.tag.html.listener;
 import java.io.Serializable;
 
 import com.webfirmframework.wffweb.server.page.ClientTasksWrapper;
+import com.webfirmframework.wffweb.server.page.InnerHtmlAddListenerImpl;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 
-public interface InnerHtmlAddListener extends Serializable {
+public sealed interface InnerHtmlAddListener extends Serializable permits InnerHtmlAddListenerImpl {
 
     public static record Event(AbstractHtml parentTag, AbstractHtml innerHtmlTag, /**
                                                                                    * previous parent tag of inner html
