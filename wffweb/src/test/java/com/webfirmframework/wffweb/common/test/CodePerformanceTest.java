@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.webfirmframework.wffweb;
+package com.webfirmframework.wffweb.common.test;
 
 import java.util.ArrayDeque;
 import java.util.Arrays;

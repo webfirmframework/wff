@@ -20,7 +20,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.webfirmframework.wffweb.CodePerformanceTest;
 import com.webfirmframework.wffweb.concurrent.ReentrantStampedLockTest;
 import com.webfirmframework.wffweb.css.BackgroundColorTest;
 import com.webfirmframework.wffweb.css.BackgroundImageTest;
