@@ -41,9 +41,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
  */
 public class Hidden extends AbstractAttribute implements GlobalAttributable, BooleanAttribute {
 
-    private static final long serialVersionUID = 1_0_0L;
-
-    private Boolean hidden;
+    private static final long serialVersionUID = 1_0_1L;
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
@@ -69,24 +67,22 @@ public class Hidden extends AbstractAttribute implements GlobalAttributable, Boo
     /**
      *
      *
-     * @param value the value should be either true or false
+     * @param value the value should be hidden, true, empty string or null
      * @author WFF
      * @since 1.1.4
      */
     public Hidden(final String value) {
-        if ("hidden".equals(value) || value == null) {
-            hidden = true;
+        if (AttributeNameConstants.HIDDEN.equals(value) || value == null || value.isBlank()) {
+            setAttributeValue(value);
         } else if ("true".equals(value) || "false".equals(value)) {
-            hidden = Boolean.parseBoolean(value);
+            setAttributeValue(Boolean.parseBoolean(value) ? AttributeNameConstants.HIDDEN : null);
         } else {
-            throw new InvalidValueException("the value should be either true or false");
+            throw new InvalidValueException("the value should be hidden, true, empty string or null");
         }
-        setAttributeValue(value);
     }
 
     public Hidden(final boolean hidden) {
-        setAttributeValue(hidden ? "hidden" : String.valueOf(hidden));
-        this.hidden = hidden;
+        setAttributeValue(hidden ? AttributeNameConstants.HIDDEN : "");
     }
 
     /**
@@ -97,35 +93,6 @@ public class Hidden extends AbstractAttribute implements GlobalAttributable, Boo
      */
     protected void init() {
         // to override and use this method
-    }
-
-    /**
-     * @return the hidden
-     * @author WFF
-     * @since 1.0.0
-     * @deprecated as there is no affect of boolean values for this attribute this
-     *             method will be removed later.
-     */
-    @Deprecated
-    public boolean isHidden() {
-        return hidden == null || hidden.booleanValue() ? true : false;
-    }
-
-    /**
-     * @param hidden the hidden to set. {@code null} will remove the value.
-     * @author WFF
-     * @since 1.0.0
-     * @deprecated as there is no affect of boolean values for this attribute this
-     *             method will be removed later.
-     */
-    @Deprecated
-    public void setHidden(final Boolean hidden) {
-        if (hidden == null) {
-            setAttributeValue(null);
-        } else {
-            setAttributeValue(hidden.booleanValue() ? "hidden" : String.valueOf(hidden));
-        }
-        this.hidden = hidden;
     }
 
 }

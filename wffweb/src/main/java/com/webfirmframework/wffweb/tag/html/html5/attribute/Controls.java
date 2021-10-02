@@ -17,6 +17,7 @@
 package com.webfirmframework.wffweb.tag.html.html5.attribute;
 
 import com.webfirmframework.wffweb.InvalidValueException;
+import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.html5.identifier.AudioAttributable;
@@ -34,9 +35,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.BooleanAttribute;
  */
 public class Controls extends AbstractAttribute implements AudioAttributable, BooleanAttribute {
 
-    private static final long serialVersionUID = 1_0_0L;
-
-    private Boolean controls;
+    private static final long serialVersionUID = 1_0_1L;
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
@@ -56,25 +55,25 @@ public class Controls extends AbstractAttribute implements AudioAttributable, Bo
     }
 
     /**
-     * @param value true or false
+     * @param value the value should be controls, true, empty string or null
      * @since 3.0.2
      */
     public Controls(final String value) {
-        if ("true".equals(value) || "false".equals(value)) {
-            controls = Boolean.parseBoolean(value);
+        if (AttributeNameConstants.CONTROLS.equals(value) || value == null || value.isBlank()) {
+            setAttributeValue(value);
+        } else if ("true".equals(value) || "false".equals(value)) {
+            setAttributeValue(Boolean.parseBoolean(value) ? AttributeNameConstants.CONTROLS : null);
         } else {
-            throw new InvalidValueException("the value should be either true or false");
+            throw new InvalidValueException("the value should be controls, true, empty string or null");
         }
-        setAttributeValue(value);
     }
 
     public Controls(final Boolean controls) {
         if (controls == null) {
             setAttributeValue(null);
         } else {
-            setAttributeValue(String.valueOf(controls));
+            setAttributeValue(controls.booleanValue() ? "controls" : null);
         }
-        this.controls = controls;
     }
 
     /**
@@ -85,29 +84,6 @@ public class Controls extends AbstractAttribute implements AudioAttributable, Bo
      */
     protected void init() {
         // to override and use this method
-    }
-
-    /**
-     * @return the controls
-     * @author WFF
-     * @since 1.0.0
-     */
-    public boolean isControls() {
-        return controls == null || controls.booleanValue() ? true : false;
-    }
-
-    /**
-     * @param controls the controls to set. {@code null} will remove the value.
-     * @author WFF
-     * @since 1.0.0
-     */
-    public void setControls(final Boolean controls) {
-        if (controls == null) {
-            setAttributeValue(null);
-        } else {
-            setAttributeValue(String.valueOf(controls));
-        }
-        this.controls = controls;
     }
 
 }

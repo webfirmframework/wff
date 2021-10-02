@@ -138,20 +138,6 @@ public class Headers extends AbstractValueSetAttribute implements ThAttributable
      * removes the given header id
      *
      * @param headerId the header id to remove
-     * @since 1.1.3
-     * @author WFF
-     * @deprecated this method will be removed in the future release, use
-     *             removeHeaderId instead of it.
-     */
-    @Deprecated
-    public void removeClassName(final String headerId) {
-        super.removeFromAttributeValueSet(headerId);
-    }
-
-    /**
-     * removes the given header id
-     *
-     * @param headerId the header id to remove
      * @since 3.0.1
      * @author WFF
      */

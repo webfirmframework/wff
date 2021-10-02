@@ -186,8 +186,6 @@ public abstract class BrowserPage implements Serializable {
 
     private volatile long lastClientAccessedTime = System.currentTimeMillis();
 
-    // to make it GC friendly, it is made as static
-    private static final ThreadLocal<PayloadProcessor> PALYLOAD_PROCESSOR_TL = new ThreadLocal<>();
 
     // NB: this non-static initialization makes BrowserPage and PayloadProcessor
     // never to get GCd. It leads to memory leak. It seems to be a bug.
@@ -541,20 +539,6 @@ public abstract class BrowserPage implements Serializable {
     }
 
     /**
-     * This method will be remove later. Use {@code webSocketMessaged}.
-     *
-     * @param message the bytes the received in onmessage
-     * @author WFF
-     * @since 2.0.0
-     * @deprecated alternative method webSocketMessaged is available for the same
-     *             job.
-     */
-    @Deprecated
-    public final void websocketMessaged(final byte[] message) {
-        webSocketMessaged(message);
-    }
-
-    /**
      * @return the time of websocket message received from client, websocket opened,
      *         or the object created time.
      * @since 3.0.16
@@ -806,7 +790,7 @@ public abstract class BrowserPage implements Serializable {
 
                     final ServerAsyncMethod serverAsyncMethod = eventAttr.getServerAsyncMethod();
 
-                    final ServerAsyncMethod.Event event = new ServerAsyncMethod.Event(methodTag, attributeByName,
+                    final ServerAsyncMethod.Event event = new ServerAsyncMethod.Event(methodTag, attributeByName, null,
                             eventAttr.getServerSideData());
 
                     final WffBMObject returnedObject;
@@ -923,7 +907,7 @@ public abstract class BrowserPage implements Serializable {
                     // java memory
                     // model
                     returnedObject = serverMethod.getServerAsyncMethod().asyncMethod(wffBMObject,
-                            new ServerAsyncMethod.Event(methodName, serverMethod.getServerSideData()));
+                            new ServerAsyncMethod.Event(null, null, methodName, serverMethod.getServerSideData()));
                 }
 
             } catch (final Exception e) {
@@ -2315,41 +2299,6 @@ public abstract class BrowserPage implements Serializable {
      */
     protected final void setAutoremoveWffScript(final boolean autoremoveWffScript) {
         this.autoremoveWffScript = autoremoveWffScript;
-    }
-
-    /**
-     * Gets the same instance of {@code PayloadProcessor} per caller thread for this
-     * browser page. This PayloadProcessor can process incoming partial bytes from
-     * WebSocket. To manually create new PayloadProcessor use <em>new
-     * PayloadProcessor(browserPage)</em>.
-     *
-     * @return new instance of PayloadProcessor/thread
-     * @since 3.0.2
-     * @deprecated this method call may make deadlock somewhere in the application
-     *             while using multiple threads. Use
-     *             {@code BrowserPage#newPayloadProcessor()}.
-     */
-    @Deprecated
-    public final PayloadProcessor getPayloadProcessor() {
-        PayloadProcessor payloadProcessor = PALYLOAD_PROCESSOR_TL.get();
-        if (payloadProcessor == null) {
-            payloadProcessor = new PayloadProcessor(this, true);
-            PALYLOAD_PROCESSOR_TL.set(payloadProcessor);
-        }
-        return payloadProcessor;
-    }
-
-    /**
-     * Removes the current instance of {@code PayloadProcessor} of this caller
-     * thread for this browser page and new instance will be reinitialized when
-     * calling {@link #getPayloadProcessor()} by the same thread.
-     *
-     * @since 3.0.2
-     * @deprecated this method call may make deadlock.
-     */
-    @Deprecated
-    public final void removePayloadProcessor() {
-        PALYLOAD_PROCESSOR_TL.remove();
     }
 
     /**

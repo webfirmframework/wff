@@ -99,14 +99,7 @@ public enum WffJsFile {
     private static final String NDXD_VNT_ATRBS;
 
     // java record class is perfect for such use case
-    private static final class FunctionOrVarName {
-        private final String name;
-        private final boolean function;
-
-        private FunctionOrVarName(final String name, final boolean function) {
-            this.name = name;
-            this.function = function;
-        }
+    private static final record FunctionOrVarName(String name, boolean function) {
     }
 
     static {

@@ -247,7 +247,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
      *             remove this method later.
      */
     @Deprecated
-    public Set<AbstractTagBase> getRebuiltTags(final Object accessObject) {
+    Set<AbstractTagBase> getRebuiltTags(final Object accessObject) {
 
         // TODO remove this method later
         if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName()))) {
@@ -457,7 +457,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
      *             with InsertTagsBeforeListener
      */
     @Deprecated
-    public InsertBeforeListener getInsertBeforeListener(final Object accessObject) {
+    InsertBeforeListener getInsertBeforeListener(final Object accessObject) {
 
         if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
@@ -476,7 +476,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
      *             with InsertTagsBeforeListener
      */
     @Deprecated
-    public void setInsertBeforeListener(final InsertBeforeListener insertBeforeListener, final Object accessObject) {
+    void setInsertBeforeListener(final InsertBeforeListener insertBeforeListener, final Object accessObject) {
 
         if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");

@@ -30,14 +30,6 @@ public class DataWffId extends DataAttribute {
     // must be kept final to provide atomic consistency across multiple threads
     public static final String ATTRIBUTE_NAME = AttributeNameConstants.DATA.concat(ATTRIBUTE_NAME_EXTENSION);
 
-    // must be kept final to provide atomic consistency across multiple threads
-    /**
-     * @deprecated incorrect naming, the correct naming is ATTRIBUTE_NAME. This
-     *             constant variable will be removed in the later version, use
-     *             {@link DataWffId#ATTRIBUTE_NAME} constant instead of this.
-     */
-    @Deprecated
-    public static final String TAG_NAME = ATTRIBUTE_NAME;
 
     // must be kept final to provide atomic consistency across multiple threads
     private final String attributeValue;

@@ -984,30 +984,6 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     }
 
     /**
-     * @return one of the ownerTags
-     * @author WFF
-     * @since 1.0.0
-     * @deprecated this method may be removed later as there could be multiple owner
-     *             tags.
-     */
-    @Deprecated
-    public AbstractHtml getOwnerTag() {
-
-        final long stamp = ownerTagsLock.readLock();
-        try {
-            final AbstractHtml tag;
-            if (ownerTags.iterator().hasNext()) {
-                tag = ownerTags.iterator().next();
-            } else {
-                tag = null;
-            }
-            return tag;
-        } finally {
-            ownerTagsLock.unlockRead(stamp);
-        }
-    }
-
-    /**
      * Please know that the AbstractAttribute class doesn't prevent its consumer
      * tags to be garbage collected. So, this is a weak method. i.e. if the consumer
      * tags are garbage collected they will not be included in the array.

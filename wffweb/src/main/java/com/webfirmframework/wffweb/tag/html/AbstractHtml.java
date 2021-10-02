@@ -2784,18 +2784,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * @param parent
-     * @author WFF
-     * @since 2.0.0
-     * @deprecated This method is not allowed to use. It's not implemented.
-     */
-    @Deprecated
-    public void setParent(final AbstractHtml parent) {
-        throw new MethodNotImplementedException("This method is not implemented");
-        // this.parent = parent;
-    }
-
-    /**
      * @return the unmodifiable list of children
      * @author WFF
      * @since 2.0.0

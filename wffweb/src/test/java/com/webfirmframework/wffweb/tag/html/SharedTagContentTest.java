@@ -802,8 +802,8 @@ public class SharedTagContentTest {
                 @Override
                 public Runnable contentChanged(ChangeEvent<String> changeEvent) {
                     listenerInvoked.set(true);
-                    assertEquals("Test content", changeEvent.getContentBefore().content());
-                    assertEquals("Content Changed", changeEvent.getContentAfter().content());
+                    assertEquals("Test content", changeEvent.contentBefore().content());
+                    assertEquals("Content Changed", changeEvent.contentAfter().content());
                     CompletableFuture.runAsync(() -> {assertEquals("Content Changed", stc.getContent());});
                     return () -> { assertEquals("Content Changed", stc.getContent());};
                 }

@@ -654,20 +654,6 @@ public enum BrowserPageContext {
 	}
 
 	/**
-	 * this method should be called when the websocket is closed
-	 *
-	 * @param wffInstanceId the wffInstanceId which can be retried from the request
-	 *                      parameter in websocket connection
-	 * @author WFF
-	 * @since 2.0.0
-	 * @deprecated this method is for future development
-	 */
-	@Deprecated
-	public void webSocketClosed(final String wffInstanceId) {
-		// NOP for future development
-	}
-
-	/**
 	 * this method should be called when the websocket is closed.
 	 *
 	 * @param wffInstanceId the wffInstanceId which can be retried from the request
@@ -730,22 +716,6 @@ public enum BrowserPageContext {
 			}
 		}
 		runAutoClean();
-	}
-
-	/**
-	 * This method is will be removed in the next version. Use
-	 * {@code webSocketMessaged} method instead of this method.
-	 *
-	 * @param wffInstanceId the wffInstanceId which can be retried from the request
-	 *                      parameter in websocket connection.
-	 * @param message       the message received from websocket
-	 * @author WFF
-	 * @since 2.0.0
-	 * @deprecated use webSocketMessaged which does the same job.
-	 */
-	@Deprecated
-	public BrowserPage websocketMessaged(final String wffInstanceId, final byte[] message) {
-		return webSocketMessaged(wffInstanceId, message);
 	}
 
 	/**

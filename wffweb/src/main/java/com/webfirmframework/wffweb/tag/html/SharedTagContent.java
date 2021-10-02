@@ -170,7 +170,7 @@ public class SharedTagContent<T> {
      */
     public static final record Content<T> (T content, boolean contentTypeHtml) implements Serializable {
 
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 2L;
 
         /**
          * @return the content
@@ -198,92 +198,9 @@ public class SharedTagContent<T> {
         public abstract Content<String> format(final Content<T> content);
     }
 
-    public static final class ChangeEvent<T> {
-
-        private final AbstractHtml sourceTag;
-        private final ContentChangeListener<T> sourceListener;
-        private final Content<T> contentBefore;
-        private final Content<T> contentAfter;
-        private final Content<String> contentApplied;
-        private final ContentFormatter<T> formatter;
-
-        private ChangeEvent(final AbstractHtml sourceTag, final ContentChangeListener<T> sourceListener,
-                final Content<T> contentBefore, final Content<T> contentAfter, final Content<String> contentApplied,
-                final ContentFormatter<T> formatter) {
-            super();
-            this.sourceTag = sourceTag;
-            this.sourceListener = sourceListener;
-            this.contentBefore = contentBefore;
-            this.contentAfter = contentAfter;
-            this.contentApplied = contentApplied;
-            this.formatter = formatter;
-        }
-
-        /**
-         * @return the source tag
-         * @deprecated As it is record class no need to use getter method instead use
-         *             {@link ChangeEvent#sourceTag()}.This method will be removed in
-         *             future release.
-         */
-        @Deprecated
-        public AbstractHtml getSourceTag() {
-            return sourceTag;
-        }
-
-        /**
-         * @return the sourceListener
-         * @deprecated As it is record class no need to use getter method instead use
-         *             {@link ChangeEvent#sourceListener()}.This method will be removed
-         *             in future release.
-         */
-        @Deprecated
-        public ContentChangeListener<T> getSourceListener() {
-            return sourceListener;
-        }
-
-        /**
-         * @return the content before change event
-         * @deprecated As it is record class no need to use getter method instead use
-         *             {@link ChangeEvent#contentBefore()}.This method will be removed
-         *             in future release.
-         */
-        @Deprecated
-        public Content<T> getContentBefore() {
-            return contentBefore;
-        }
-
-        /**
-         * @return the content after the change event
-         * @deprecated As it is record class no need to use getter method instead use
-         *             {@link ChangeEvent#contentAfter()}.This method will be removed in
-         *             future release.
-         */
-        @Deprecated
-        public Content<T> getContentAfter() {
-            return contentAfter;
-        }
-
-        /**
-         * @return the applied content on tag
-         * @deprecated As it is record class no need to use getter method instead use
-         *             {@link ChangeEvent#contentApplied()}.This method will be removed
-         *             in future release.
-         */
-        @Deprecated
-        public Content<String> getContentApplied() {
-            return contentApplied;
-        }
-
-        /**
-         * @return the formatter
-         * @deprecated As it is record class no need to use getter method instead use
-         *             {@link ChangeEvent#formatter()}.This method will be removed in
-         *             future release.
-         */
-        @Deprecated
-        public ContentFormatter<T> getFormatter() {
-            return formatter;
-        }
+    public static final record ChangeEvent<T> (AbstractHtml sourceTag, ContentChangeListener<T> sourceListener,
+            Content<T> contentBefore, Content<T> contentAfter, Content<String> contentApplied,
+            ContentFormatter<T> formatter) {
 
         /**
          * @return the source tag

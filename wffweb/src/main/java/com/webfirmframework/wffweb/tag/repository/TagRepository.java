@@ -66,27 +66,6 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
 
     private final Map<String, AbstractHtml> tagByWffId;
 
-    /**
-     * This constructor is only for internal use. To get an object of
-     * {@code TagRepository} use {@code BrowserPage#getTagRepository()} method.
-     *
-     * @param browserPage the instance of {@code BrowserPage}
-     * @param rootTags    the rootTags in the browserPage instance.
-     * @since 2.1.8
-     * @author WFF
-     * @deprecated since 3.0.0
-     */
-    @Deprecated
-    public TagRepository(final Object accessObject, final BrowserPage browserPage, final AbstractHtml... rootTags) {
-
-        if (accessObject == null || !((SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName()))
-                || (SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName())))) {
-            throw new WffSecurityException("Not allowed to consume this constructor. This method is for internal use.");
-        }
-        tagByWffId = null;
-        this.browserPage = browserPage;
-        this.rootTags = rootTags;
-    }
 
     /**
      * This constructor is only for internal use. To get an object of

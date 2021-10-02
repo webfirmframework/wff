@@ -97,17 +97,13 @@ final class DataWffIdUtil {
      * @param abstractHtml
      * @return array containing tagName bytes and dataWffIdBytes of the given
      *         argument or its parent.
-     * @throws UnsupportedEncodingException throwing this exception will be removed
-     *                                      in future version because its internal
-     *                                      implementation will never make this
-     *                                      exception due to the code changes since
-     *                                      3.0.1.
+     * 
      * @since 2.0.0
      * @author WFF
      * @deprecated this method will be removed in future
      */
     @Deprecated
-    static byte[][] getTagNameAndWffId(final AbstractHtml abstractHtml) throws UnsupportedEncodingException {
+    static byte[][] getTagNameAndWffId(final AbstractHtml abstractHtml) {
 
         final Deque<AbstractHtml> parentStack = new ArrayDeque<>();
         parentStack.push(abstractHtml);
