@@ -30,10 +30,10 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.webfirmframework.wffweb.DataWffIdOutOfRangeError;
 import com.webfirmframework.wffweb.WffSecurityException;
+import com.webfirmframework.wffweb.internal.tag.html.attribute.listener.AttributeValueChangeListener;
 import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
 import com.webfirmframework.wffweb.tag.core.AbstractTagBase;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
-import com.webfirmframework.wffweb.tag.html.attribute.listener.AttributeValueChangeListener;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.tag.html.listener.AttributeAddListener;
 import com.webfirmframework.wffweb.tag.html.listener.AttributeRemoveListener;

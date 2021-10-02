@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.webfirmframework.wffweb.tag.html.attribute.listener;
+package com.webfirmframework.wffweb.internal.tag.html.attribute.listener;
 
 import java.io.Serializable;
 import java.util.Set;

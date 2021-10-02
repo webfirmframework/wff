@@ -42,7 +42,6 @@ module com.webfirmframework.wffweb {
     exports com.webfirmframework.wffweb.tag.html.attribute.event.touch;
     exports com.webfirmframework.wffweb.tag.html.attribute.event.transition;
     exports com.webfirmframework.wffweb.tag.html.attribute.global;
-    exports com.webfirmframework.wffweb.tag.html.attribute.listener;
     exports com.webfirmframework.wffweb.tag.html.attributewff;
     exports com.webfirmframework.wffweb.tag.html.core;
     exports com.webfirmframework.wffweb.tag.html.formatting;
