@@ -6629,7 +6629,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @return the unique id for this object.
      * @since 3.0.18
      */
-    public final InternalId internalId() {
+    final InternalId internalId() {
         return internalId;
     }
 
