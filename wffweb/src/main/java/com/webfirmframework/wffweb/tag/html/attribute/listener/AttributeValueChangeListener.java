@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.webfirmframework.wffweb.internal.tag.html.attribute.listener;
+package com.webfirmframework.wffweb.tag.html.attribute.listener;
 
 import java.io.Serializable;
 import java.util.Set;
 
-import com.webfirmframework.wffweb.server.page.AttributeValueChangeListenerImpl;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 
-public sealed interface AttributeValueChangeListener extends Serializable permits AttributeValueChangeListenerImpl{
+public interface AttributeValueChangeListener extends Serializable {
 
     public static record Event(AbstractAttribute sourceAttribute, Set<AbstractHtml> ownerTags,
             boolean changedByClient) {

@@ -74,6 +74,7 @@ module com.webfirmframework.wffweb {
     exports com.webfirmframework.wffweb.util.data;
     exports com.webfirmframework.wffweb.view;
     exports com.webfirmframework.wffweb.wffbm.data;
+    exports com.webfirmframework.wffweb.tag.html.attribute.listener;
   
 
 }

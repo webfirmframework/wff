@@ -23,12 +23,12 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.webfirmframework.wffweb.internal.tag.html.attribute.listener.AttributeValueChangeListener;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.attribute.listener.AttributeValueChangeListener;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.util.data.NameValue;
 
-public final class AttributeValueChangeListenerImpl implements AttributeValueChangeListener {
+final class AttributeValueChangeListenerImpl implements AttributeValueChangeListener {
 
     private static final long serialVersionUID = 1L;
 
