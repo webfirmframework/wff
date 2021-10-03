@@ -43,8 +43,6 @@ public class Hidden extends AbstractAttribute implements GlobalAttributable, Boo
 
     private static final long serialVersionUID = 1_0_0L;
 
-    private Boolean hidden;
-
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
     static {
@@ -79,21 +77,13 @@ public class Hidden extends AbstractAttribute implements GlobalAttributable, Boo
 
         if (AttributeNameConstants.HIDDEN.equals(value) || value == null || value.isBlank()) {
             setAttributeValue(value);
-            hidden = true;
         } else if ("true".equals(value) || "false".equals(value)) {
             boolean yes = Boolean.parseBoolean(value);
             setAttributeValue(yes ? AttributeNameConstants.HIDDEN : null);
-            hidden = yes;
         } else {
             throw new InvalidValueException("the value should be hidden, true, empty string or null");
         }
 
-    }
-
-    @Deprecated
-    public Hidden(final boolean hidden) {
-        setAttributeValue(hidden ? AttributeNameConstants.HIDDEN : "");
-        this.hidden = hidden;
     }
 
     /**
@@ -106,33 +96,5 @@ public class Hidden extends AbstractAttribute implements GlobalAttributable, Boo
         // to override and use this method
     }
 
-    /**
-     * @return the hidden
-     * @author WFF
-     * @since 1.0.0
-     * @deprecated as there is no affect of boolean values for this attribute. this
-     *             method will be removed later.
-     */
-    @Deprecated
-    public boolean isHidden() {
-        return hidden == null || hidden.booleanValue() ? true : false;
-    }
-
-    /**
-     * @param hidden the hidden to set. {@code null} will remove the value.
-     * @author WFF
-     * @since 1.0.0
-     * @deprecated as there is no affect of boolean values for this attribute. this
-     *             method will be removed later.
-     */
-    @Deprecated
-    public void setHidden(final Boolean hidden) {
-        if (hidden == null) {
-            setAttributeValue(null);
-        } else {
-            setAttributeValue(hidden.booleanValue() ? "hidden" : String.valueOf(hidden));
-        }
-        this.hidden = hidden;
-    }
 
 }
