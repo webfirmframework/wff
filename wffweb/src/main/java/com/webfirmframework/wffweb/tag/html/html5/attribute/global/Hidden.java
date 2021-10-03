@@ -69,23 +69,30 @@ public class Hidden extends AbstractAttribute implements GlobalAttributable, Boo
     /**
      *
      *
-     * @param value the value should be either true or false
+     * @param value the value should be hidden, true, empty string or null
      * @author WFF
      * @since 1.1.4
+     * @since 3.0.19 internal hidden property value will be set as false only if
+     *        false value is passed.
      */
     public Hidden(final String value) {
-        if ("hidden".equals(value) || value == null) {
+
+        if (AttributeNameConstants.HIDDEN.equals(value) || value == null || value.isBlank()) {
+            setAttributeValue(value);
             hidden = true;
         } else if ("true".equals(value) || "false".equals(value)) {
-            hidden = Boolean.parseBoolean(value);
+            boolean yes = Boolean.parseBoolean(value);
+            setAttributeValue(yes ? AttributeNameConstants.HIDDEN : null);
+            hidden = yes;
         } else {
-            throw new InvalidValueException("the value should be either true or false");
+            throw new InvalidValueException("the value should be hidden, true, empty string or null");
         }
-        setAttributeValue(value);
+
     }
 
+    @Deprecated
     public Hidden(final boolean hidden) {
-        setAttributeValue(hidden ? "hidden" : String.valueOf(hidden));
+        setAttributeValue(hidden ? AttributeNameConstants.HIDDEN : "");
         this.hidden = hidden;
     }
 
