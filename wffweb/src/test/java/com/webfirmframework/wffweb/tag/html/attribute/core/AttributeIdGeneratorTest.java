@@ -17,30 +17,49 @@ package com.webfirmframework.wffweb.tag.html.attribute.core;
 
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.Test;
 
 public class AttributeIdGeneratorTest {
 
     @Test
-    public void testNextId() {
+    public void testNextId() throws InterruptedException, ExecutionException {
         
         Set<Object> ids = Collections.newSetFromMap(new ConcurrentHashMap<>());
         ExecutorService threadPool = Executors.newCachedThreadPool();
         
+        List<CompletableFuture<Void>> tasks = new ArrayList<>(1000);
+        
+        AtomicBoolean alreadyExists = new AtomicBoolean(false);
+        
         for (int i = 0; i < 1000; i++) {
-            threadPool.execute(() -> {
+            CompletableFuture<Void> task = CompletableFuture.runAsync(() -> {
                 final String id = AttributeIdGenerator.nextId();
-                if (ids.contains(id)) {
-                    fail("Not yet implemented");
+                
+                if (!alreadyExists.get()) {
+                    alreadyExists.set(ids.contains(id));    
                 }
+                
                 ids.add(id);
-            });
+            }, threadPool);
+            
+            tasks.add(task);
+        }
+        for (CompletableFuture<Void> task : tasks) {
+            task.get();
+        }
+        if (alreadyExists.get()) {
+            fail("AttributeIdGenerator.nextId generated a duplicate value");
         }
         
     }
