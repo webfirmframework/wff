@@ -15,7 +15,7 @@
  */
 package com.webfirmframework.wffweb.tag.html.model;
 
-import com.webfirmframework.wffweb.internal.IndexedClassType;
+import java.util.UUID;
 
 /**
  * Note: only for internal use. It should be specifically for AbstractAttribute
@@ -27,12 +27,12 @@ import com.webfirmframework.wffweb.internal.IndexedClassType;
  */
 final class SharedObjectIdGenerator {
 
-    private static final int CLASS_TYPE_INDEX = IndexedClassType.ABSTRACT_HTML5_SHARED_OBJECT.ordinal();
-
-    private static volatile long count;
+//    private static final int CLASS_TYPE_INDEX = IndexedClassType.ABSTRACT_HTML5_SHARED_OBJECT.ordinal();
+    
+//    private static volatile long count;
 
     static String nextId() {
-        return (++count) + "_" + Thread.currentThread().getId() + "_" + CLASS_TYPE_INDEX;
+        return UUID.randomUUID().toString();
     }
 
 }
