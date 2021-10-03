@@ -65,8 +65,7 @@ public class Controls extends AbstractAttribute implements AudioAttributable, Bo
         if (AttributeNameConstants.CONTROLS.equals(value) || value == null || value.isBlank()) {
             setAttributeValue(value);
         } else if ("true".equals(value) || "false".equals(value)) {
-            boolean yes = Boolean.parseBoolean(value);
-            setAttributeValue(yes ? AttributeNameConstants.CONTROLS : null);
+            setAttributeValue(Boolean.parseBoolean(value) ? AttributeNameConstants.CONTROLS : null);
         } else {
             throw new InvalidValueException("the value should be controls, true, empty string or null");
         }       
