@@ -35,7 +35,9 @@ import com.webfirmframework.wffweb.tag.html.identifier.BooleanAttribute;
  */
 public class Controls extends AbstractAttribute implements AudioAttributable, BooleanAttribute {
 
-    private static final long serialVersionUID = 1_0_1L;
+    private static final long serialVersionUID = 1_0_0L;
+
+    private Boolean controls;
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
@@ -55,25 +57,39 @@ public class Controls extends AbstractAttribute implements AudioAttributable, Bo
     }
 
     /**
-     * @param value the value should be controls, true, empty string or null
+     * @param value true or false
      * @since 3.0.2
+     * @since 3.0.19 internal controls property value will be set as false only if
+     *        false value is passed.
      */
     public Controls(final String value) {
+        
         if (AttributeNameConstants.CONTROLS.equals(value) || value == null || value.isBlank()) {
             setAttributeValue(value);
+            controls = true;
         } else if ("true".equals(value) || "false".equals(value)) {
-            setAttributeValue(Boolean.parseBoolean(value) ? AttributeNameConstants.CONTROLS : null);
+            boolean yes = Boolean.parseBoolean(value);
+            setAttributeValue(yes ? AttributeNameConstants.CONTROLS : null);
+            controls = yes;
         } else {
             throw new InvalidValueException("the value should be controls, true, empty string or null");
-        }
+        }       
+        
     }
 
+    /**
+     * @param controls
+     * @deprecated as there is no affect of boolean values for this attribute. this
+     *             method will be removed later.
+     */
+    @Deprecated
     public Controls(final Boolean controls) {
         if (controls == null) {
             setAttributeValue(null);
         } else {
             setAttributeValue(controls.booleanValue() ? "controls" : null);
         }
+        this.controls = controls;
     }
 
     /**
@@ -84,6 +100,35 @@ public class Controls extends AbstractAttribute implements AudioAttributable, Bo
      */
     protected void init() {
         // to override and use this method
+    }
+
+    /**
+     * @return the controls
+     * @author WFF
+     * @since 1.0.0
+     * @deprecated as there is no affect of boolean values for this attribute. this
+     *             method will be removed later.
+     */
+    @Deprecated
+    public boolean isControls() {
+        return controls == null || controls.booleanValue() ? true : false;
+    }
+
+    /**
+     * @param controls the controls to set. {@code null} will remove the value.
+     * @author WFF
+     * @since 1.0.0
+     * @deprecated as there is no affect of boolean values for this attribute. this
+     *             method will be removed later.
+     */
+    @Deprecated
+    public void setControls(final Boolean controls) {
+        if (controls == null) {
+            setAttributeValue(null);
+        } else {
+            setAttributeValue(String.valueOf(controls));
+        }
+        this.controls = controls;
     }
 
 }
