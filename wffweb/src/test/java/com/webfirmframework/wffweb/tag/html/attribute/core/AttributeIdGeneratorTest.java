@@ -36,7 +36,7 @@ public class AttributeIdGeneratorTest {
         for (int i = 0; i < 1000; i++) {
             threadPool.execute(() -> {
                 final String id = AttributeIdGenerator.nextId();
-                if (ids.contains(ids)) {
+                if (ids.contains(id)) {
                     fail("Not yet implemented");
                 }
                 ids.add(id);
