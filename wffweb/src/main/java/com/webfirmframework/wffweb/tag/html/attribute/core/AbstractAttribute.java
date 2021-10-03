@@ -129,7 +129,12 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             this.sharedObject = sharedObject;
         }
 
-        private long objectId() {
+        /**
+         * @since 3.0.15 returns long value type
+         * @since 3.0.19 returns string value type
+         * @return objectId
+         */
+        private String objectId() {
             return sharedObject.objectId();
         }
 
@@ -1530,7 +1535,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 tagContractRecords.add(new TagContractRecord(ownerTag, ownerTag.getSharedObject()));
             }
 
-            tagContractRecords.sort(Comparator.comparingLong(TagContractRecord::objectId));
+            tagContractRecords.sort(Comparator.comparing(TagContractRecord::objectId));
             capacity = tagContractRecords.size();
 
             writeLocks = new ArrayList<>(tagContractRecords.size() + 1);
@@ -1600,7 +1605,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                     tagContractRecords.add(new TagContractRecord(ownerTag, ownerTag.getSharedObject()));
                 }
 
-                tagContractRecords.sort(Comparator.comparingLong(TagContractRecord::objectId));
+                tagContractRecords.sort(Comparator.comparing(TagContractRecord::objectId));
                 capacity = tagContractRecords.size();
 
                 writeLocks = new ArrayList<>(tagContractRecords.size());
@@ -1672,7 +1677,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 tagContractRecords.add(new TagContractRecord(ownerTag, ownerTag.getSharedObject()));
             }
 
-            tagContractRecords.sort(Comparator.comparingLong(TagContractRecord::objectId));
+            tagContractRecords.sort(Comparator.comparing(TagContractRecord::objectId));
             capacity = tagContractRecords.size();
 
             readLocks = new ArrayList<>(tagContractRecords.size() + 1);
@@ -1742,7 +1747,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                     tagContractRecords.add(new TagContractRecord(ownerTag, ownerTag.getSharedObject()));
                 }
 
-                tagContractRecords.sort(Comparator.comparingLong(TagContractRecord::objectId));
+                tagContractRecords.sort(Comparator.comparing(TagContractRecord::objectId));
                 capacity = tagContractRecords.size();
 
                 readLocks = new ArrayList<>(tagContractRecords.size());
@@ -1804,7 +1809,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
             final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(sharedObjectsSet);
 
-            sharedObjects.sort(Comparator.comparingLong(AbstractHtml5SharedObject::objectId));
+            sharedObjects.sort(Comparator.comparing(AbstractHtml5SharedObject::objectId));
 
             final List<WriteLock> locks = new ArrayList<>(sharedObjects.size());
 
@@ -1846,7 +1851,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
             final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(sharedObjectsSet);
 
-            sharedObjects.sort(Comparator.comparingLong(AbstractHtml5SharedObject::objectId));
+            sharedObjects.sort(Comparator.comparing(AbstractHtml5SharedObject::objectId));
 
             final Collection<ReadLock> readLocks = new HashSet<>(sharedObjects.size());
 

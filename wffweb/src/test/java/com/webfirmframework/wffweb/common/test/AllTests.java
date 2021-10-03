@@ -159,6 +159,7 @@ import com.webfirmframework.wffweb.tag.html.html5.attribute.AutoCompleteTest;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffIdTest;
 import com.webfirmframework.wffweb.tag.html.images.ImgTest;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObjectTest;
+import com.webfirmframework.wffweb.tag.html.model.SharedObjectIdGeneratorTest;
 import com.webfirmframework.wffweb.tag.htmlwff.BlankTest;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTagTest;
 import com.webfirmframework.wffweb.tag.repository.TagRepositoryTest;
@@ -215,7 +216,7 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObjectArrayTest;
         SharedTagContentTest.class, CssColorNameTest.class, TaskTest.class, WffJsFileTest.class,
         StringBuilderUtilTest.class, SecurityClassConstantsTest.class, ReentrantStampedLockTest.class,
         UnicodeStringTest.class, ExternalDriveByteArrayQueueTest.class, ExternalDriveClientTasksWrapperDequeTest.class,
-        ExternalDriveClientTasksWrapperQueueTest.class, AttributeIdGeneratorTest.class })
+        ExternalDriveClientTasksWrapperQueueTest.class, AttributeIdGeneratorTest.class, SharedObjectIdGeneratorTest.class })
 public class AllTests {
 
 }

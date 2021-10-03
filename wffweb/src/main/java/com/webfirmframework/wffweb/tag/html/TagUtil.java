@@ -55,7 +55,12 @@ public final class TagUtil {
             this.sharedObject = sharedObject;
         }
 
-        private long objectId() {
+        /**
+         * @since 3.0.15 returns long value type
+         * @since 3.0.19 returns string value type
+         * @return objectId
+         */
+        private String objectId() {
             return sharedObject.objectId();
         }
 
@@ -185,7 +190,7 @@ public final class TagUtil {
 
             // lock should be called on the order of objectId otherwise there will be
             // deadlock
-            tagContractRecords.sort(Comparator.comparingLong(TagContractRecord::objectId));
+            tagContractRecords.sort(Comparator.comparing(TagContractRecord::objectId));
 
             locks = new ArrayList<>(tagContractRecords.size());
 

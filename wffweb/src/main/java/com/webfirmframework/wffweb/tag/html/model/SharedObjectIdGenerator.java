@@ -13,19 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.webfirmframework.wffweb.internal;
+package com.webfirmframework.wffweb.tag.html.model;
+
+import com.webfirmframework.wffweb.internal.IndexedClassType;
 
 /**
- * Note: Only for internal use.
+ * Note: only for internal use. It should be specifically for AbstractAttribute
+ * class id generation.
  * 
  * @author WFF
  * @since 3.0.19
  *
  */
-public enum IndexedClassType {
+final class SharedObjectIdGenerator {
 
-    ABSTRACT_ATTRIBUTE, ABSTRACT_HTML5_SHARED_OBJECT;
+    private static final int CLASS_TYPE_INDEX = IndexedClassType.ABSTRACT_HTML5_SHARED_OBJECT.ordinal();
 
-    private IndexedClassType() {
+    private static volatile long count;
+
+    static String nextId() {
+        return (++count) + "_" + Thread.currentThread().getId() + "_" + CLASS_TYPE_INDEX;
     }
+
 }

@@ -1240,7 +1240,7 @@ public class SharedTagContent<T> {
 
                 tagsGroupedBySO = null;
 
-                tagsGroupedBySOEntries.sort(Comparator.comparingLong(o -> o.getKey().objectId()));
+                tagsGroupedBySOEntries.sort(Comparator.comparing(o -> o.getKey().objectId()));
 
                 final List<ModifiedParentData<T>> modifiedParents = new ArrayList<>(4);
 
@@ -1800,7 +1800,7 @@ public class SharedTagContent<T> {
 
             tagsGroupedBySO = null;
 
-            tagsGroupedBySOEntries.sort(Comparator.comparingLong(o -> o.getKey().objectId()));
+            tagsGroupedBySOEntries.sort(Comparator.comparing(o -> o.getKey().objectId()));
 
             final List<AbstractHtml> modifiedParents = new ArrayList<>(4);
 
