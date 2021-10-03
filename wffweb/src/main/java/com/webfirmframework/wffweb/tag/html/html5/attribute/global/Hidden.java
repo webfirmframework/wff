@@ -110,7 +110,7 @@ public class Hidden extends AbstractAttribute implements GlobalAttributable, Boo
      * @return the hidden
      * @author WFF
      * @since 1.0.0
-     * @deprecated as there is no affect of boolean values for this attribute this
+     * @deprecated as there is no affect of boolean values for this attribute. this
      *             method will be removed later.
      */
     @Deprecated
@@ -122,7 +122,7 @@ public class Hidden extends AbstractAttribute implements GlobalAttributable, Boo
      * @param hidden the hidden to set. {@code null} will remove the value.
      * @author WFF
      * @since 1.0.0
-     * @deprecated as there is no affect of boolean values for this attribute this
+     * @deprecated as there is no affect of boolean values for this attribute. this
      *             method will be removed later.
      */
     @Deprecated
