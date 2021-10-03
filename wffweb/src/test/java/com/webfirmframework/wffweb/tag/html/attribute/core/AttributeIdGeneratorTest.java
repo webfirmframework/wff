@@ -46,10 +46,8 @@ public class AttributeIdGeneratorTest {
             CompletableFuture<Void> task = CompletableFuture.runAsync(() -> {
                 final String id = AttributeIdGenerator.nextId();
                 
-                if (!alreadyExists.get()) {
-                    alreadyExists.set(ids.contains(id));    
-                }
-                
+                alreadyExists.set(alreadyExists.get() || ids.contains(id));
+
                 ids.add(id);
             }, threadPool);
             
