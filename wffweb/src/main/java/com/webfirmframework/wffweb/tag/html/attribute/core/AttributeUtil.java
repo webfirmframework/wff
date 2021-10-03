@@ -353,7 +353,7 @@ public final class AttributeUtil {
 
         // lock should be called on the order of objectId otherwise there will be
         // deadlock
-        attributesList.sort(Comparator.comparingLong(AbstractAttribute::objectId));
+        attributesList.sort(Comparator.comparing(AbstractAttribute::objectId));
 
         final List<Lock> attrLocks = new ArrayList<Lock>(attributesList.size());
 
@@ -387,7 +387,7 @@ public final class AttributeUtil {
 
         // lock should be called on the order of objectId otherwise there will be
         // deadlock
-        attributesList.sort(Comparator.comparingLong(AbstractAttribute::objectId));
+        attributesList.sort(Comparator.comparing(AbstractAttribute::objectId));
 
         final List<Lock> attrLocks = new ArrayList<Lock>(attributesList.size());
 
