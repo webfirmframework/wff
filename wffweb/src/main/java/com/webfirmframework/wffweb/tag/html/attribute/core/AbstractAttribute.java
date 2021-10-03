@@ -79,13 +79,12 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
     private volatile byte[] compressedBytes;
 
-    private static transient final AtomicLong OBJECT_ID_GENERATOR = new AtomicLong(0);
 
     /**
      * NB: do not generate equals and hashcode base on this as the deserialized
      * object can lead to bug.
      */
-    private final long objectId;
+    private final String objectId;
 
     // for security purpose, the class name should not be modified
     private static final class Security implements Serializable {
@@ -156,7 +155,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
     public AbstractAttribute() {
         nullableAttrValueMapValue = false;
-        objectId = OBJECT_ID_GENERATOR.incrementAndGet();
+        objectId = AttributeIdGenerator.nextId();
     }
 
     /**
@@ -167,7 +166,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected AbstractAttribute(final boolean nullableAttrValueMapValue) {
         this.nullableAttrValueMapValue = nullableAttrValueMapValue;
-        objectId = OBJECT_ID_GENERATOR.incrementAndGet();
+        objectId = AttributeIdGenerator.nextId();
     }
 
     /**
@@ -1900,7 +1899,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @return the objectId
      * @since 3.0.15
      */
-    final long objectId() {
+    final String objectId() {
         return objectId;
     }
 
