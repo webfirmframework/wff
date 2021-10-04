@@ -29,10 +29,6 @@ import com.webfirmframework.wffweb.internal.ObjectId;
  */
 final class SharedObjectIdGenerator {
 
-//    private static final int CLASS_TYPE_INDEX = IndexedClassType.ABSTRACT_HTML5_SHARED_OBJECT.ordinal();
-    
-//    private static volatile long count;
-
     static ObjectId nextId() {
         final UUID uuid = UUID.randomUUID();
         return new ObjectId(uuid.getMostSignificantBits(), uuid.getLeastSignificantBits());

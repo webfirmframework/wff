@@ -29,11 +29,6 @@ import com.webfirmframework.wffweb.internal.ObjectId;
  */
 final class AttributeIdGenerator {
 
-//    private static final int CLASS_TYPE_INDEX = IndexedClassType.ABSTRACT_ATTRIBUTE.ordinal();
-
-//    private static volatile long count;
-    
-
     static ObjectId nextId() {
         final UUID uuid = UUID.randomUUID();
         return new ObjectId(uuid.getMostSignificantBits(), uuid.getLeastSignificantBits());

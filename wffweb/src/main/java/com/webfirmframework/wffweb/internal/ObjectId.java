@@ -26,6 +26,8 @@ import java.util.UUID;
  */
 public final class ObjectId implements Comparable<ObjectId>, Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private final long mostSigBits;
 
     private final long leastSigBits;
