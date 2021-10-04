@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.concurrent.locks.Lock;
 
 import com.webfirmframework.wffweb.WffSecurityException;
+import com.webfirmframework.wffweb.internal.ObjectId;
 import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeUtil;
@@ -57,10 +58,10 @@ public final class TagUtil {
 
         /**
          * @since 3.0.15 returns long value type
-         * @since 3.0.19 returns string value type
+         * @since 3.0.19 returns ObjectId value type
          * @return objectId
          */
-        private String objectId() {
+        private ObjectId objectId() {
             return sharedObject.objectId();
         }
 

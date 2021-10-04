@@ -29,6 +29,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.webfirmframework.wffweb.DataWffIdOutOfRangeError;
 import com.webfirmframework.wffweb.WffSecurityException;
+import com.webfirmframework.wffweb.internal.ObjectId;
 import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
 import com.webfirmframework.wffweb.tag.core.AbstractTagBase;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
@@ -131,7 +132,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
      * NB: do not generate equals and hashcode base on this as the deserialized
      * object can lead to bug.
      */
-    private final String objectId;
+    private final ObjectId objectId;
 
     public AbstractHtml5SharedObject(final AbstractHtml rootTag) {
         this.rootTag = rootTag;
@@ -748,9 +749,9 @@ public final class AbstractHtml5SharedObject implements Serializable {
      *
      * @since 3.0.15
      * returns long value type
-     * @since 3.0.19 returns string value type
+     * @since 3.0.19 returns ObjectId value type
      */
-    public final String objectId() {
+    public final ObjectId objectId() {
         return objectId;
     }
 

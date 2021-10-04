@@ -37,6 +37,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import java.util.concurrent.locks.StampedLock;
 
+import com.webfirmframework.wffweb.internal.ObjectId;
 import com.webfirmframework.wffweb.tag.core.AbstractTagBase;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attribute.listener.AttributeValueChangeListener;
@@ -83,7 +84,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * NB: do not generate equals and hashcode base on this as the deserialized
      * object can lead to bug.
      */
-    private final String objectId;
+    private final ObjectId objectId;
 
     // for security purpose, the class name should not be modified
     private static final class Security implements Serializable {
@@ -131,10 +132,10 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
         /**
          * @since 3.0.15 returns long value type
-         * @since 3.0.19 returns string value type
+         * @since 3.0.19 returns ObjectId value type
          * @return objectId
          */
-        private String objectId() {
+        private ObjectId objectId() {
             return sharedObject.objectId();
         }
 
@@ -1903,7 +1904,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @return the objectId
      * @since 3.0.15
      */
-    final String objectId() {
+    final ObjectId objectId() {
         return objectId;
     }
 
