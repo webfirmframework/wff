@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.internal;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
@@ -23,7 +24,7 @@ import java.util.UUID;
  * @author WFF
  * @since 3.0.19
  */
-public final class ObjectId implements Comparable<ObjectId> {
+public final class ObjectId implements Comparable<ObjectId>, Serializable {
 
     private final long mostSigBits;
 
