@@ -82,7 +82,7 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
  * @version 3.0.1
  * @since 1.0.0
  */
-public abstract class AbstractHtml extends AbstractJsObject {
+public abstract non-sealed class AbstractHtml extends AbstractJsObject {
 
     // if this class' is refactored then SecurityClassConstants should be
     // updated.

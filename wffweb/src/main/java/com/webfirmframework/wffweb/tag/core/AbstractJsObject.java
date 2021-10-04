@@ -31,7 +31,7 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMData;
  * @author WFF
  * @since 2.1.8
  */
-public abstract class AbstractJsObject extends AbstractTagBase {
+public abstract sealed class AbstractJsObject extends AbstractTagBase permits AbstractHtml {
 
     private static final long serialVersionUID = 1L;
 

@@ -45,7 +45,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.listener.AttributeValueCha
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 import com.webfirmframework.wffweb.util.StringBuilderUtil;
 
-public abstract class AbstractAttribute extends AbstractTagBase {
+public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
 
     private static final long serialVersionUID = 1_1_1L;
 
