@@ -17,6 +17,8 @@ package com.webfirmframework.wffweb.tag.html.model;
 
 import java.util.UUID;
 
+import com.webfirmframework.wffweb.internal.ObjectId;
+
 /**
  * Note: only for internal use. It should be specifically for AbstractAttribute
  * class id generation.
@@ -31,8 +33,9 @@ final class SharedObjectIdGenerator {
     
 //    private static volatile long count;
 
-    static String nextId() {
-        return UUID.randomUUID().toString();
+    static ObjectId nextId() {
+        final UUID uuid = UUID.randomUUID();
+        return new ObjectId(uuid.getMostSignificantBits(), uuid.getLeastSignificantBits());
     }
 
 }

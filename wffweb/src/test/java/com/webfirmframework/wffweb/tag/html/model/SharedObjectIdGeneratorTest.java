@@ -45,7 +45,7 @@ public class SharedObjectIdGeneratorTest {
         
         for (int i = 0; i < 1000; i++) {
             CompletableFuture<Void> task = CompletableFuture.runAsync(() -> {
-                final String id = SharedObjectIdGenerator.nextId();
+                final String id = SharedObjectIdGenerator.nextId().id();
                 
                 alreadyExists.set(alreadyExists.get() || ids.contains(id));
                 

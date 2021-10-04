@@ -28,6 +28,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.stream.Stream;
 import java.util.stream.Stream.Builder;
 
+import com.webfirmframework.wffweb.internal.ObjectId;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 import com.webfirmframework.wffweb.wffbm.data.WffBMData;
@@ -57,10 +58,10 @@ public abstract class AbstractHtmlRepository {
 
         /**
          * @since 3.0.15 returns long value type
-         * @since 3.0.19 returns string value type
+         * @since 3.0.19 returns ObjectId value type
          * @return objectId
          */
-        private String objectId() {
+        private ObjectId objectId() {
             return sharedObject.objectId();
         }
 
