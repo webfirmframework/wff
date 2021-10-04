@@ -422,15 +422,58 @@ public class SharedTagContent<T> {
             this.content = content;
         }
 
+        /**
+         * @return
+         * the source tag
+         * @deprecated As it is record class no need to use getter method instead use
+         *             {@link DetachEvent#sourceTag()}.This method will be removed in future
+         *             release.
+         */
         public AbstractHtml getSourceTag() {
             return sourceTag;
         }
 
+        /**
+         * @return the source listener
+         * @deprecated As it is record class no need to use getter method instead use
+         *             {@link DetachEvent#sourceListener()}.This method will be removed in future
+         *             release.
+         */
         public DetachListener<T> getSourceListener() {
             return sourceListener;
         }
 
+        /**
+         * @return the content
+         * @deprecated As it is record class no need to use getter method instead use
+         *             {@link DetachEvent#content()}.This method will be removed in future
+         *             release.
+         */
         public Content<T> getContent() {
+            return content;
+        }
+        
+        /**
+         * @return the source tag
+         * @since 3.0.19
+         */
+        public AbstractHtml sourceTag() {
+            return sourceTag;
+        }
+
+        /**
+         * @return the source listener
+         * @since 3.0.19
+         */
+        public DetachListener<T> sourceListener() {
+            return sourceListener;
+        }
+
+        /**
+         * @return the content
+         * @since 3.0.19
+         */
+        public Content<T> content() {
             return content;
         }
     }
