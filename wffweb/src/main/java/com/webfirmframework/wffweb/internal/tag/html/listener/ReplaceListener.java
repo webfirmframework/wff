@@ -17,6 +17,7 @@ package com.webfirmframework.wffweb.internal.tag.html.listener;
 
 import java.io.Serializable;
 
+import com.webfirmframework.wffweb.server.page.ReplaceListenerImpl;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 
 /**
@@ -24,7 +25,7 @@ import com.webfirmframework.wffweb.tag.html.AbstractHtml;
  * @since 3.0.7
  *
  */
-public interface ReplaceListener extends Serializable {
+public sealed interface ReplaceListener extends Serializable permits ReplaceListenerImpl {
 
     public static record Event(AbstractHtml insertedTag, AbstractHtml previousParentTag) {
 

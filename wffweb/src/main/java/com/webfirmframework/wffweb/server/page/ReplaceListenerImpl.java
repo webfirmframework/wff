@@ -37,7 +37,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  * @author WFF
  * @since 3.0.7
  */
-final class ReplaceListenerImpl implements ReplaceListener {
+public final class ReplaceListenerImpl implements ReplaceListener {
 
     private static final long serialVersionUID = 1L;
 
