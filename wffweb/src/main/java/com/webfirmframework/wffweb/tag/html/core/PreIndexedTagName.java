@@ -18,7 +18,7 @@ package com.webfirmframework.wffweb.tag.html.core;
 import java.util.Arrays;
 
 import com.webfirmframework.wffweb.WffSecurityException;
-import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
+import com.webfirmframework.wffweb.internal.security.object.SecurityClassConstants;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 

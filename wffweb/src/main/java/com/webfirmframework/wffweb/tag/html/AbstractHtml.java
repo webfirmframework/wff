@@ -47,6 +47,7 @@ import com.webfirmframework.wffweb.WffRuntimeException;
 import com.webfirmframework.wffweb.WffSecurityException;
 import com.webfirmframework.wffweb.clone.CloneUtil;
 import com.webfirmframework.wffweb.internal.InternalId;
+import com.webfirmframework.wffweb.internal.security.object.SecurityClassConstants;
 import com.webfirmframework.wffweb.internal.tag.html.listener.AttributeAddListener;
 import com.webfirmframework.wffweb.internal.tag.html.listener.AttributeRemoveListener;
 import com.webfirmframework.wffweb.internal.tag.html.listener.ChildTagAppendListener;
@@ -57,7 +58,6 @@ import com.webfirmframework.wffweb.internal.tag.html.listener.InsertAfterListene
 import com.webfirmframework.wffweb.internal.tag.html.listener.InsertTagsBeforeListener;
 import com.webfirmframework.wffweb.internal.tag.html.listener.PushQueue;
 import com.webfirmframework.wffweb.internal.tag.html.listener.ReplaceListener;
-import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
 import com.webfirmframework.wffweb.streamer.WffBinaryMessageOutputStreamer;
 import com.webfirmframework.wffweb.tag.core.AbstractJsObject;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;

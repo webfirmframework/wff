@@ -31,7 +31,7 @@ import java.util.stream.Stream;
 import com.webfirmframework.wffweb.InvalidTagException;
 import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.WffSecurityException;
-import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
+import com.webfirmframework.wffweb.internal.security.object.SecurityClassConstants;
 import com.webfirmframework.wffweb.server.page.BrowserPage;
 import com.webfirmframework.wffweb.server.page.action.BrowserPageAction;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;

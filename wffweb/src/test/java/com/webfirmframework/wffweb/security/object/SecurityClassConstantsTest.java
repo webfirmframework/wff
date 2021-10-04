@@ -22,6 +22,8 @@ import java.util.logging.Logger;
 
 import org.junit.Test;
 
+import com.webfirmframework.wffweb.internal.security.object.SecurityClassConstants;
+
 public class SecurityClassConstantsTest {
     
     private static final Logger LOGGER = Logger.getLogger(SecurityClassConstantsTest.class.getName());

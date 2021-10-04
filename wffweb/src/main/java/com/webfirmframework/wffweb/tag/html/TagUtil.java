@@ -27,7 +27,7 @@ import java.util.concurrent.locks.Lock;
 
 import com.webfirmframework.wffweb.WffSecurityException;
 import com.webfirmframework.wffweb.internal.ObjectId;
-import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
+import com.webfirmframework.wffweb.internal.security.object.SecurityClassConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeUtil;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;

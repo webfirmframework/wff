@@ -18,7 +18,6 @@ module com.webfirmframework.wffweb {
     exports com.webfirmframework.wffweb.io;
     exports com.webfirmframework.wffweb.js;
     exports com.webfirmframework.wffweb.lang;
-    exports com.webfirmframework.wffweb.security.object;
     exports com.webfirmframework.wffweb.server.page;
     exports com.webfirmframework.wffweb.server.page.action;
     exports com.webfirmframework.wffweb.settings;

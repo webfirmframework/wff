@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.webfirmframework.wffweb.security.object;
+package com.webfirmframework.wffweb.internal.security.object;
 
 /**
  * Only for internal purpose.

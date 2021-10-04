@@ -32,7 +32,7 @@ import java.util.Set;
 import java.util.concurrent.locks.Lock;
 
 import com.webfirmframework.wffweb.WffSecurityException;
-import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
+import com.webfirmframework.wffweb.internal.security.object.SecurityClassConstants;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
