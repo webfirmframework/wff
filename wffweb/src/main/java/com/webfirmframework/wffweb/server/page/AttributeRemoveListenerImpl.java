@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.internal.tag.html.listener.AttributeRemoveListener;
+import com.webfirmframework.wffweb.internal.tag.html.listener.AttributeRemoveListener.RemovedEvent;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeUtil;
