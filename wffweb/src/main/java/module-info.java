@@ -7,7 +7,6 @@ module com.webfirmframework.wffweb {
     exports com.webfirmframework.wffweb;
     exports com.webfirmframework.wffweb.clone;
     exports com.webfirmframework.wffweb.concurrent;
-    exports com.webfirmframework.wffweb.core.constants;
     exports com.webfirmframework.wffweb.css;
     exports com.webfirmframework.wffweb.css.core;
     exports com.webfirmframework.wffweb.css.css3;
