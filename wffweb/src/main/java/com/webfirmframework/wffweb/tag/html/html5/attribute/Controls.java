@@ -22,6 +22,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.html5.identifier.AudioAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.BooleanAttribute;
+import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
  * {@code <element controls> }
@@ -64,7 +65,7 @@ public class Controls extends AbstractAttribute implements AudioAttributable, Bo
      */
     public Controls(final String value) {
         
-        if (AttributeNameConstants.CONTROLS.equals(value) || value == null || value.isBlank()) {
+        if (AttributeNameConstants.CONTROLS.equals(value) || value == null || StringUtil.isBlank(value)) {
             setAttributeValue(value);
             controls = true;
         } else if ("true".equals(value) || "false".equals(value)) {

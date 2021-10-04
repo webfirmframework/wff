@@ -22,6 +22,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.identifier.BooleanAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
+import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
  * {@code <element hidden> }
@@ -77,7 +78,7 @@ public class Hidden extends AbstractAttribute implements GlobalAttributable, Boo
      */
     public Hidden(final String value) {
 
-        if (AttributeNameConstants.HIDDEN.equals(value) || value == null || value.isBlank()) {
+        if (AttributeNameConstants.HIDDEN.equals(value) || value == null || StringUtil.isBlank(value)) {
             setAttributeValue(value);
             hidden = true;
         } else if ("true".equals(value) || "false".equals(value)) {

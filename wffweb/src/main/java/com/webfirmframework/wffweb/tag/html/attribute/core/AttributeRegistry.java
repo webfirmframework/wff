@@ -789,6 +789,21 @@ public class AttributeRegistry {
                 }
                 continue;
             }
+            
+            if (BooleanAttribute.class.isAssignableFrom(attrClass)) {
+                String expectedAttrValue = "\"" + attrClass.getSimpleName().toLowerCase() + "\"";
+                final Object[] initargs = { attrClass.getSimpleName().toLowerCase() };
+                newInstance = (AbstractAttribute) attrClass.getConstructor(String.class).newInstance(initargs);
+                final String actualHtmlString = newInstance.toHtmlString();
+                final String expectedHtmlStringTmp = expectedHtmlString + expectedAttrValue;
+                if ((expectedHtmlStringTmp).equals(actualHtmlString)) {
+                    expectedHtmlString = expectedHtmlStringTmp;
+                    continue;
+                } else {
+                    throw new InvalidValueException(
+                            "expectedHtmlString: " + expectedHtmlStringTmp + " actualHtmlString: " + actualHtmlString);
+                }          
+            }
 
             try {
                 final Object[] initargs = { "1" };

@@ -186,14 +186,14 @@ public abstract class CssFile implements Serializable, Cloneable {
                 if (AbstractCssFileBlock.class.isAssignableFrom(field.getType())
                         && !field.isAnnotationPresent(ExcludeCssBlock.class)) {
 
-                    final boolean accessible = field.canAccess(this);
+                    final boolean accessible = field.isAccessible();
                     field.setAccessible(true);
                     final AbstractCssFileBlock abstractCssFileBlock = (AbstractCssFileBlock) field.get(this);
                     cssBlocks.add(abstractCssFileBlock);
                     field.setAccessible(accessible);
                 } else if (CssFile.class.isAssignableFrom(field.getType())
                         && field.isAnnotationPresent(ImportCssFile.class)) {
-                    final boolean accessible = field.canAccess(this);
+                    final boolean accessible = field.isAccessible();
                     field.setAccessible(true);
                     final CssFile cssFile = (CssFile) field.get(this);
 
