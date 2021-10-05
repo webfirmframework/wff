@@ -26,7 +26,7 @@ public interface ServerAsyncMethod extends Serializable {
 
     /**
      * Contains event data for
-     * {@link ServerAsyncMethod#asyncMethod(WffBMObject, Event)}. This class might
+     * {@link ServerAsyncMethod#orderedRun(Event)}. This class might
      * be replaced with java record class in future if the minimal java version of
      * this framework is upgraded to record supported version.
      * 
@@ -36,7 +36,7 @@ public interface ServerAsyncMethod extends Serializable {
      * @param serverSideData
      *
      */
-    public static record Event(AbstractHtml sourceTag, AbstractAttribute sourceAttribute, String serverMethodName,
+    public static record Event(WffBMObject data, AbstractHtml sourceTag, AbstractAttribute sourceAttribute, String serverMethodName,
             Object serverSideData) {
 
         /**
@@ -73,8 +73,20 @@ public interface ServerAsyncMethod extends Serializable {
             return serverMethodName;
         }
 
+        /**
+         * @return data from the consumer i.e. usually from the browser client.
+         */
+        @Override
+        public WffBMObject data() {
+            return data;
+        }
     }
 
-    public abstract WffBMObject asyncMethod(WffBMObject data, Event event);
+    /**
+     * Runs in the same order of the event occurred.
+     * @param event
+     * @return
+     */
+    public abstract WffBMObject orderedRun(final Event event);
 
 }
