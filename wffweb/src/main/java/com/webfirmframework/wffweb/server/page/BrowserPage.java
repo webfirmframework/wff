@@ -63,6 +63,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.Type;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeRegistry;
 import com.webfirmframework.wffweb.tag.html.attribute.event.EventAttribute;
+import com.webfirmframework.wffweb.tag.html.attribute.event.RemoteMethod;
 import com.webfirmframework.wffweb.tag.html.attribute.event.ServerAsyncMethod;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.tag.html.programming.Script;
@@ -804,7 +805,12 @@ public abstract class BrowserPage implements Serializable {
                             // per
                             // java memory
                             // model
-                            returnedObject = serverAsyncMethod.asyncMethod(wffBMObject, event);
+                            if (serverAsyncMethod instanceof RemoteMethod) {
+                                final RemoteMethod remoteMethod = (RemoteMethod) serverAsyncMethod;
+                                returnedObject = remoteMethod.orderedRun(event);
+                            } else {
+                                returnedObject = serverAsyncMethod.asyncMethod(wffBMObject, event);    
+                            }                            
                         }
 
                     } catch (final Exception e) {
@@ -906,8 +912,15 @@ public abstract class BrowserPage implements Serializable {
                     // per
                     // java memory
                     // model
-                    returnedObject = serverMethod.getServerAsyncMethod().asyncMethod(
-                            wffBMObject, new ServerAsyncMethod.Event(wffBMObject, null, null, methodName, serverMethod.getServerSideData()));
+                    final ServerAsyncMethod serverAsyncMethod = serverMethod.getServerAsyncMethod();
+                    if (serverAsyncMethod instanceof RemoteMethod) {
+                        final RemoteMethod remoteMethod = (RemoteMethod) serverAsyncMethod;
+                        returnedObject = remoteMethod.orderedRun(new ServerAsyncMethod.Event(wffBMObject, null, null,
+                                methodName, serverMethod.getServerSideData()));
+                    } else {
+                        returnedObject = serverAsyncMethod.asyncMethod(wffBMObject, new ServerAsyncMethod.Event(
+                                wffBMObject, null, null, methodName, serverMethod.getServerSideData()));
+                    }                
                 }
 
             } catch (final Exception e) {
