@@ -806,7 +806,7 @@ public abstract class BrowserPage implements Serializable {
 
                     final ServerAsyncMethod serverAsyncMethod = eventAttr.getServerAsyncMethod();
 
-                    final ServerAsyncMethod.Event event = new ServerAsyncMethod.Event(null, methodTag, attributeByName,
+                    final ServerAsyncMethod.Event event = new ServerAsyncMethod.Event(wffBMObject, methodTag, attributeByName,
                             null, eventAttr.getServerSideData());
 
                     final WffBMObject returnedObject;
@@ -923,7 +923,7 @@ public abstract class BrowserPage implements Serializable {
                     // java memory
                     // model
                     returnedObject = serverMethod.getServerAsyncMethod().asyncMethod(wffBMObject,
-                            new ServerAsyncMethod.Event(null, null, null, methodName,
+                            new ServerAsyncMethod.Event(wffBMObject, null, null, methodName,
                                     serverMethod.getServerSideData()));
                 }
 
