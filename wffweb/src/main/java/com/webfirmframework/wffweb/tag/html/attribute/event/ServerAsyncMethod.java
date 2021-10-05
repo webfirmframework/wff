@@ -279,7 +279,7 @@ public interface ServerAsyncMethod extends Serializable {
          * contain the same object. The first parameter from
          * {@link ServerAsyncMethod#asyncMethod(WffBMObject, Event)} method will be
          * removed in future version so its signature will be like
-         * {@link ServerAsyncMethod#asyncMethod(Event)}.
+         * {@code ServerAsyncMethod#asyncMethod(Event)}.
          * 
          * @return the data
          */
@@ -294,9 +294,9 @@ public interface ServerAsyncMethod extends Serializable {
      * @param data  the data received from the consumer i.e usually client browser.
      *              But, it is recommended to use {@link Event#data()} method to get
      *              the same data as the first parameter from
-     *              {@link ServerAsyncMethod#asyncMethod(WffBMObject, Event)} method
+     *              {@link asyncMethod(WffBMObject, Event)} method
      *              will be removed in future version so its signature will be like
-     *              {@link ServerAsyncMethod#asyncMethod(Event)}.
+     *              {@code ServerAsyncMethod#asyncMethod(Event)}.
      * @param event
      * @return the data to the consumer i.e usually client browser.
      */
