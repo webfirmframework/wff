@@ -804,7 +804,7 @@ public abstract class BrowserPage implements Serializable {
                             // per
                             // java memory
                             // model
-                            returnedObject = serverAsyncMethod.orderedRun(event);
+                            returnedObject = serverAsyncMethod.asyncMethod(wffBMObject, event);
                         }
 
                     } catch (final Exception e) {
@@ -906,8 +906,8 @@ public abstract class BrowserPage implements Serializable {
                     // per
                     // java memory
                     // model
-                    returnedObject = serverMethod.getServerAsyncMethod().orderedRun(
-                            new ServerAsyncMethod.Event(wffBMObject, null, null, methodName, serverMethod.getServerSideData()));
+                    returnedObject = serverMethod.getServerAsyncMethod().asyncMethod(
+                            wffBMObject, new ServerAsyncMethod.Event(wffBMObject, null, null, methodName, serverMethod.getServerSideData()));
                 }
 
             } catch (final Exception e) {
@@ -2326,7 +2326,7 @@ public abstract class BrowserPage implements Serializable {
     }
 
     /**
-     * Sets the executor to run {@link ServerAsyncMethod#orderedRun}, <br>
+     * Sets the executor to run {@link ServerAsyncMethod#asyncMethod}, <br>
      *
      * <br>
      * NB: You may need only one copy of executor object for all browserPage

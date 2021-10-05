@@ -26,7 +26,7 @@ public interface ServerAsyncMethod extends Serializable {
 
     /**
      * Contains event data for
-     * {@link ServerAsyncMethod#orderedRun(Event)}. This class might
+     * {@link ServerAsyncMethod#asyncMethod(WffBMObject, Event)}. This class might
      * be replaced with java record class in future if the minimal java version of
      * this framework is upgraded to record supported version.
      * 
@@ -84,9 +84,11 @@ public interface ServerAsyncMethod extends Serializable {
 
     /**
      * Runs in the same order of the event occurred.
+     *
+     * @param data
      * @param event
      * @return
      */
-    public abstract WffBMObject orderedRun(final Event event);
+    public abstract WffBMObject asyncMethod(WffBMObject data, final Event event);
 
 }
