@@ -16,6 +16,7 @@
 package com.webfirmframework.wffweb.internal;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -39,6 +40,19 @@ public final class ObjectId implements Comparable<ObjectId>, Serializable {
 
     public String id() {
         return new UUID(mostSigBits, leastSigBits).toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ObjectId objectId = (ObjectId) o;
+        return mostSigBits == objectId.mostSigBits && leastSigBits == objectId.leastSigBits;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(mostSigBits, leastSigBits);
     }
 
     public int compareTo(ObjectId that) {
