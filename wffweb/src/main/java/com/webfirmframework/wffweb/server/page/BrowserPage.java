@@ -805,8 +805,7 @@ public abstract class BrowserPage implements Serializable {
                             // per
                             // java memory
                             // model
-                            if (serverAsyncMethod instanceof RemoteMethod) {
-                                final RemoteMethod remoteMethod = (RemoteMethod) serverAsyncMethod;
+                            if (serverAsyncMethod instanceof RemoteMethod remoteMethod) {
                                 returnedObject = remoteMethod.orderedRun(event);
                             } else {
                                 returnedObject = serverAsyncMethod.asyncMethod(wffBMObject, event);    
@@ -913,8 +912,7 @@ public abstract class BrowserPage implements Serializable {
                     // java memory
                     // model
                     final ServerAsyncMethod serverAsyncMethod = serverMethod.getServerAsyncMethod();
-                    if (serverAsyncMethod instanceof RemoteMethod) {
-                        final RemoteMethod remoteMethod = (RemoteMethod) serverAsyncMethod;
+                    if (serverAsyncMethod instanceof RemoteMethod remoteMethod) {
                         returnedObject = remoteMethod.orderedRun(new ServerAsyncMethod.Event(wffBMObject, null, null,
                                 methodName, serverMethod.getServerSideData()));
                     } else {
