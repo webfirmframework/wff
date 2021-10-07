@@ -24,8 +24,8 @@ import java.io.Serializable;
  */
 public final class InternalId implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public InternalId() {
-	}
+    public InternalId() {
+    }
 }

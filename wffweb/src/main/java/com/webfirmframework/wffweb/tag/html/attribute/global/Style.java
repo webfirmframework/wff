@@ -1224,7 +1224,6 @@ public class Style extends AbstractAttribute implements GlobalAttributable, Stat
         }
     }
 
-
     /**
      * marks as important. i.e. it will add {@code !important} from the
      * corresponding styleName value

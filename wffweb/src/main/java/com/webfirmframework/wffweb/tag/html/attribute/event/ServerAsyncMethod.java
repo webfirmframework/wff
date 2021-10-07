@@ -27,15 +27,15 @@ public interface ServerAsyncMethod extends Serializable {
     /**
      * Contains event data for
      * {@link ServerAsyncMethod#asyncMethod(WffBMObject, Event)}.
-     * 
+     *
      * @param sourceTag
      * @param sourceAttribute
      * @param serverMethodName
      * @param serverSideData
      *
      */
-    public static record Event(WffBMObject data, AbstractHtml sourceTag, AbstractAttribute sourceAttribute, String serverMethodName,
-            Object serverSideData) {
+    public static record Event(WffBMObject data, AbstractHtml sourceTag, AbstractAttribute sourceAttribute,
+            String serverMethodName, Object serverSideData) {
 
         /**
          * @return the sourceTag

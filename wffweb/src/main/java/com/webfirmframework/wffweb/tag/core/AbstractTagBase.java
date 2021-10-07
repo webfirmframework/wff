@@ -22,7 +22,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
  * @author WFF
  *
  */
-public abstract sealed class AbstractTagBase implements TagBase permits AbstractJsObject, AbstractAttribute {
+public abstract sealed class AbstractTagBase implements TagBase permits AbstractJsObject,AbstractAttribute {
 
     private static final long serialVersionUID = 1_0_0L;
 

@@ -21,7 +21,7 @@ import java.util.UUID;
 
 /**
  * Note: only for internal use
- * 
+ *
  * @author WFF
  * @since 3.0.19
  */
@@ -43,10 +43,14 @@ public final class ObjectId implements Comparable<ObjectId>, Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ObjectId objectId = (ObjectId) o;
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final ObjectId objectId = (ObjectId) o;
         return mostSigBits == objectId.mostSigBits && leastSigBits == objectId.leastSigBits;
     }
 
@@ -55,11 +59,11 @@ public final class ObjectId implements Comparable<ObjectId>, Serializable {
         return Objects.hash(mostSigBits, leastSigBits);
     }
 
-    public int compareTo(ObjectId that) {
-        return (this.mostSigBits < that.mostSigBits ? -1
-                : (this.mostSigBits > that.mostSigBits ? 1
-                        : (this.leastSigBits < that.leastSigBits ? -1
-                                : (this.leastSigBits > that.leastSigBits ? 1 : 0))));
+    @Override
+    public int compareTo(final ObjectId that) {
+        return (mostSigBits < that.mostSigBits ? -1
+                : (mostSigBits > that.mostSigBits ? 1
+                        : (leastSigBits < that.leastSigBits ? -1 : (leastSigBits > that.leastSigBits ? 1 : 0))));
     }
 
 }

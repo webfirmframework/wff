@@ -39,7 +39,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  */
 public enum FontWeight implements CssProperty {
 
-    NORMAL("normal"), BOLD("bold"), BOLDER("bolder"), LIGHTER("lighter"),    
+    NORMAL("normal"), BOLD("bold"), BOLDER("bolder"), LIGHTER("lighter"),
 
     INITIAL("initial"),
 

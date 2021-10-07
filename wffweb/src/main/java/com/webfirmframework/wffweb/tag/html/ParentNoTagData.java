@@ -43,7 +43,7 @@ final class ParentNoTagData<T> {
         this.parent = parent;
         this.noTag = null;
         this.insertedTagData = insertedTagData;
-        this.contentApplied = null;
+        contentApplied = null;
     }
 
     ParentNoTagData(final NoTag previousNoTag, final AbstractHtml parent, final NoTag noTag,

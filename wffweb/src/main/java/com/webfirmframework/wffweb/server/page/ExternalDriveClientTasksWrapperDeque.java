@@ -36,138 +36,138 @@ import com.webfirmframework.wffweb.MethodNotImplementedException;
 class ExternalDriveClientTasksWrapperDeque extends ExternalDriveClientTasksWrapperQueue
         implements Deque<ClientTasksWrapper> {
 
-	private final Deque<Long> firstUnreadIds = new ConcurrentLinkedDeque<>();
+    private final Deque<Long> firstUnreadIds = new ConcurrentLinkedDeque<>();
 
-	ExternalDriveClientTasksWrapperDeque(final String basePath, final String dirName, final String subDirName)
-	        throws IOException {
-		super(basePath, dirName, subDirName);
-	}
+    ExternalDriveClientTasksWrapperDeque(final String basePath, final String dirName, final String subDirName)
+            throws IOException {
+        super(basePath, dirName, subDirName);
+    }
 
-	@Override
-	public ClientTasksWrapper poll() {
+    @Override
+    public ClientTasksWrapper poll() {
 
-		final Long unreadId = firstUnreadIds.poll();
-		if (unreadId != null) {
-			return super.pollByReadId(unreadId);
-		}
+        final Long unreadId = firstUnreadIds.poll();
+        if (unreadId != null) {
+            return super.pollByReadId(unreadId);
+        }
 
-		return super.poll();
-	}
+        return super.poll();
+    }
 
-	@Override
-	public ClientTasksWrapper pollFirst() {
-		return poll();
-	}
+    @Override
+    public ClientTasksWrapper pollFirst() {
+        return poll();
+    }
 
-	@Override
-	public boolean offerLast(final ClientTasksWrapper tasksWrapper) {
-		return super.offer(tasksWrapper);
-	}
+    @Override
+    public boolean offerLast(final ClientTasksWrapper tasksWrapper) {
+        return super.offer(tasksWrapper);
+    }
 
-	@Override
-	public boolean offerFirst(final ClientTasksWrapper tasksWrapper) {
-		final Long queueEntryId = tasksWrapper.queueEntryId();
-		if (queueEntryId == null) {
-			throw new InvalidValueException("ClientTasksWrapper doesn't contain queueEntryId property");
-		}
-		super.writingInProgress(queueEntryId);
-		firstUnreadIds.offerFirst(queueEntryId);
-		return super.offerAt(tasksWrapper, queueEntryId);
-	}
+    @Override
+    public boolean offerFirst(final ClientTasksWrapper tasksWrapper) {
+        final Long queueEntryId = tasksWrapper.queueEntryId();
+        if (queueEntryId == null) {
+            throw new InvalidValueException("ClientTasksWrapper doesn't contain queueEntryId property");
+        }
+        super.writingInProgress(queueEntryId);
+        firstUnreadIds.offerFirst(queueEntryId);
+        return super.offerAt(tasksWrapper, queueEntryId);
+    }
 
-	@Override
-	public void addFirst(final ClientTasksWrapper tasksWrapper) {
-		offerFirst(tasksWrapper);
-	}
+    @Override
+    public void addFirst(final ClientTasksWrapper tasksWrapper) {
+        offerFirst(tasksWrapper);
+    }
 
-	@Override
-	public void addLast(final ClientTasksWrapper tasksWrapper) {
-		super.offer(tasksWrapper);
-	}
+    @Override
+    public void addLast(final ClientTasksWrapper tasksWrapper) {
+        super.offer(tasksWrapper);
+    }
 
-	@Override
-	public boolean isEmpty() {
-		return super.isEmpty() && firstUnreadIds.isEmpty();
-	}
+    @Override
+    public boolean isEmpty() {
+        return super.isEmpty() && firstUnreadIds.isEmpty();
+    }
 
-	@Override
-	public int size() {
-		return super.size() + firstUnreadIds.size();
-	}
+    @Override
+    public int size() {
+        return super.size() + firstUnreadIds.size();
+    }
 
-	@Override
-	public ClientTasksWrapper pop() {
-		final ClientTasksWrapper e = poll();
-		if (e == null) {
-			throw new NoSuchElementException();
-		}
-		return e;
-	}
+    @Override
+    public ClientTasksWrapper pop() {
+        final ClientTasksWrapper e = poll();
+        if (e == null) {
+            throw new NoSuchElementException();
+        }
+        return e;
+    }
 
-	@Override
-	public void clear() {
+    @Override
+    public void clear() {
 
-		Long unreadId;
-		while ((unreadId = firstUnreadIds.poll()) != null) {
-			deleteByReadId(unreadId);
-		}
+        Long unreadId;
+        while ((unreadId = firstUnreadIds.poll()) != null) {
+            deleteByReadId(unreadId);
+        }
 
-		super.clear();
-	}
+        super.clear();
+    }
 
-	@Override
-	public ClientTasksWrapper removeFirst() {
-		throw new MethodNotImplementedException();
-	}
+    @Override
+    public ClientTasksWrapper removeFirst() {
+        throw new MethodNotImplementedException();
+    }
 
-	@Override
-	public ClientTasksWrapper removeLast() {
-		throw new MethodNotImplementedException();
-	}
+    @Override
+    public ClientTasksWrapper removeLast() {
+        throw new MethodNotImplementedException();
+    }
 
-	@Override
-	public ClientTasksWrapper pollLast() {
-		throw new MethodNotImplementedException();
-	}
+    @Override
+    public ClientTasksWrapper pollLast() {
+        throw new MethodNotImplementedException();
+    }
 
-	@Override
-	public ClientTasksWrapper getFirst() {
-		throw new MethodNotImplementedException();
-	}
+    @Override
+    public ClientTasksWrapper getFirst() {
+        throw new MethodNotImplementedException();
+    }
 
-	@Override
-	public ClientTasksWrapper getLast() {
-		throw new MethodNotImplementedException();
-	}
+    @Override
+    public ClientTasksWrapper getLast() {
+        throw new MethodNotImplementedException();
+    }
 
-	@Override
-	public ClientTasksWrapper peekFirst() {
-		throw new MethodNotImplementedException();
-	}
+    @Override
+    public ClientTasksWrapper peekFirst() {
+        throw new MethodNotImplementedException();
+    }
 
-	@Override
-	public ClientTasksWrapper peekLast() {
-		throw new MethodNotImplementedException();
-	}
+    @Override
+    public ClientTasksWrapper peekLast() {
+        throw new MethodNotImplementedException();
+    }
 
-	@Override
-	public boolean removeFirstOccurrence(final Object o) {
-		throw new MethodNotImplementedException();
-	}
+    @Override
+    public boolean removeFirstOccurrence(final Object o) {
+        throw new MethodNotImplementedException();
+    }
 
-	@Override
-	public boolean removeLastOccurrence(final Object o) {
-		throw new MethodNotImplementedException();
-	}
+    @Override
+    public boolean removeLastOccurrence(final Object o) {
+        throw new MethodNotImplementedException();
+    }
 
-	@Override
-	public void push(final ClientTasksWrapper e) {
-		throw new MethodNotImplementedException();
-	}
+    @Override
+    public void push(final ClientTasksWrapper e) {
+        throw new MethodNotImplementedException();
+    }
 
-	@Override
-	public Iterator<ClientTasksWrapper> descendingIterator() {
-		throw new MethodNotImplementedException();
-	}
+    @Override
+    public Iterator<ClientTasksWrapper> descendingIterator() {
+        throw new MethodNotImplementedException();
+    }
 
 }

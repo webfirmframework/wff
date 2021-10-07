@@ -1194,14 +1194,9 @@ public class SharedTagContent<T> {
 
                     final AbstractHtml parentTag = prevNoTag.getParent();
 
-                    if (parentTag == null) {
-                        ((AbstractHtml) prevNoTag).setCacheSTCFormatter(null, ACCESS_OBJECT);
-                        continue;
-                    }
-
                     // the condition isParentNullifiedOnce true means the parent
                     // of this tag has already been changed at least once
-                    if (((AbstractHtml) prevNoTag).isParentNullifiedOnce()) {
+                    if ((parentTag == null) || ((AbstractHtml) prevNoTag).isParentNullifiedOnce()) {
                         ((AbstractHtml) prevNoTag).setCacheSTCFormatter(null, ACCESS_OBJECT);
                         continue;
                     }
@@ -1771,14 +1766,9 @@ public class SharedTagContent<T> {
                 final InsertedTagData<T> insertedTagData = entry.getValue();
                 final AbstractHtml parentTag = prevNoTag.getParent();
 
-                if (parentTag == null) {
-                    ((AbstractHtml) prevNoTag).setCacheSTCFormatter(null, ACCESS_OBJECT);
-                    continue;
-                }
-
                 // the condition isParentNullifiedOnce true means the parent of
                 // this tag has already been changed at least once
-                if (((AbstractHtml) prevNoTag).isParentNullifiedOnce()) {
+                if ((parentTag == null) || ((AbstractHtml) prevNoTag).isParentNullifiedOnce()) {
                     ((AbstractHtml) prevNoTag).setCacheSTCFormatter(null, ACCESS_OBJECT);
                     continue;
                 }

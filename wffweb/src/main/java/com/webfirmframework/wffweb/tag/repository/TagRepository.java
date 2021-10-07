@@ -66,7 +66,6 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
 
     private final Map<String, AbstractHtml> tagByWffId;
 
-
     /**
      * This constructor is only for internal use. To get an object of
      * {@code TagRepository} use {@code BrowserPage#getTagRepository()} method.

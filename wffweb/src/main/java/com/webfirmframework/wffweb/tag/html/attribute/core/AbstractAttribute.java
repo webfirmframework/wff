@@ -79,7 +79,6 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
 
     private volatile byte[] compressedBytes;
 
-
     /**
      * NB: do not generate equals and hashcode base on this as the deserialized
      * object can lead to bug.
@@ -662,16 +661,16 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
                 // part, here
                 // skipped it making unmodifiable to gain
                 // performance
-                final AttributeValueChangeListener.Event event = new AttributeValueChangeListener.Event(this,
-                        ownerTags, false);
+                final AttributeValueChangeListener.Event event = new AttributeValueChangeListener.Event(this, ownerTags,
+                        false);
                 valueChangeListener.valueChanged(event);
             }
         }
 
         if (valueChangeListeners != null) {
             for (final AttributeValueChangeListener listener : valueChangeListeners) {
-                final AttributeValueChangeListener.Event event = new AttributeValueChangeListener.Event(this,
-                        ownerTags, false);
+                final AttributeValueChangeListener.Event event = new AttributeValueChangeListener.Event(this, ownerTags,
+                        false);
                 listener.valueChanged(event);
             }
         }

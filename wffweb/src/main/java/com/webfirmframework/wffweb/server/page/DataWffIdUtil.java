@@ -97,7 +97,7 @@ final class DataWffIdUtil {
      * @param abstractHtml
      * @return array containing tagName bytes and dataWffIdBytes of the given
      *         argument or its parent.
-     * 
+     *
      * @since 2.0.0
      * @author WFF
      * @deprecated this method will be removed in future

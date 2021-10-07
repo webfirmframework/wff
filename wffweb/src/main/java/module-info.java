@@ -2,7 +2,6 @@ module com.webfirmframework.wffweb {
 
     requires java.base;
     requires java.logging;
-    
 
     exports com.webfirmframework.wffweb;
     exports com.webfirmframework.wffweb.clone;
@@ -73,6 +72,5 @@ module com.webfirmframework.wffweb {
     exports com.webfirmframework.wffweb.view;
     exports com.webfirmframework.wffweb.wffbm.data;
     exports com.webfirmframework.wffweb.tag.html.attribute.listener;
-  
 
 }

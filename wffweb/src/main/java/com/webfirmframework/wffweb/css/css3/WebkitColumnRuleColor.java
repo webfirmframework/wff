@@ -202,11 +202,8 @@ public class WebkitColumnRuleColor extends AbstractCssProperty<WebkitColumnRuleC
 
         final String trimmedCssValueLowerCase = TagStringUtil.toLowerCase(trimmedCssValue);
 
-        if (INITIAL.equals(trimmedCssValueLowerCase) || INHERIT.equals(trimmedCssValueLowerCase)) {
-            return true;
-        }
-
-        if (CssColorName.isValid(trimmedCssValue)) {
+        if (INITIAL.equals(trimmedCssValueLowerCase) || INHERIT.equals(trimmedCssValueLowerCase)
+                || CssColorName.isValid(trimmedCssValue)) {
             return true;
         }
 

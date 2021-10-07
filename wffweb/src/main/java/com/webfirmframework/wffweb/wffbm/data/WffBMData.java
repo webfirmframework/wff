@@ -28,7 +28,6 @@ public interface WffBMData extends WffData {
      */
     public abstract BMType getBMType();
 
-
     /**
      *
      * @param outer

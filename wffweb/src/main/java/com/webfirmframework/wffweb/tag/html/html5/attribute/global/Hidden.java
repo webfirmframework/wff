@@ -95,5 +95,4 @@ public class Hidden extends AbstractAttribute implements GlobalAttributable, Boo
         // to override and use this method
     }
 
-
 }

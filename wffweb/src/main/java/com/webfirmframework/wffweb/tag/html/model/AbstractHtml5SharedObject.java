@@ -745,10 +745,10 @@ public final class AbstractHtml5SharedObject implements Serializable {
 
     /**
      * Note: only for internal use.
+     *
      * @return the object id for this object
      *
-     * @since 3.0.15
-     * returns long value type
+     * @since 3.0.15 returns long value type
      * @since 3.0.19 returns ObjectId value type
      */
     public final ObjectId objectId() {

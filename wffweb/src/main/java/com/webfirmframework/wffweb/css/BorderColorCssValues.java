@@ -334,24 +334,11 @@ public class BorderColorCssValues extends AbstractBean<BorderColorCssValues> imp
 
         final String trimmedCssValueLowerCase = TagStringUtil.toLowerCase(trimmedCssValue);
 
-        if (TRANSPARENT.equals(trimmedCssValueLowerCase)) {
+        if (TRANSPARENT.equals(trimmedCssValueLowerCase) || CssColorName.isValid(trimmedCssValue)
+                || RgbCssValue.isValid(trimmedCssValue) || RgbaCssValue.isValid(trimmedCssValue)) {
             return true;
         }
-
-        if (CssColorName.isValid(trimmedCssValue)) {
-            return true;
-        }
-
-        if (RgbCssValue.isValid(trimmedCssValue)) {
-            return true;
-        }
-        if (RgbaCssValue.isValid(trimmedCssValue)) {
-            return true;
-        }
-        if (HslCssValue.isValid(trimmedCssValue)) {
-            return true;
-        }
-        if (HslaCssValue.isValid(trimmedCssValue)) {
+        if (HslCssValue.isValid(trimmedCssValue) || HslaCssValue.isValid(trimmedCssValue)) {
             return true;
         }
 

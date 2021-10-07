@@ -789,9 +789,9 @@ public class AttributeRegistry {
                 }
                 continue;
             }
-            
+
             if (BooleanAttribute.class.isAssignableFrom(attrClass)) {
-                String expectedAttrValue = "\"" + attrClass.getSimpleName().toLowerCase() + "\"";
+                final String expectedAttrValue = "\"" + attrClass.getSimpleName().toLowerCase() + "\"";
                 final Object[] initargs = { attrClass.getSimpleName().toLowerCase() };
                 newInstance = (AbstractAttribute) attrClass.getConstructor(String.class).newInstance(initargs);
                 final String actualHtmlString = newInstance.toHtmlString();
@@ -802,7 +802,7 @@ public class AttributeRegistry {
                 } else {
                     throw new InvalidValueException(
                             "expectedHtmlString: " + expectedHtmlStringTmp + " actualHtmlString: " + actualHtmlString);
-                }          
+                }
             }
 
             try {

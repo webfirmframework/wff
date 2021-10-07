@@ -30,7 +30,6 @@ public class DataWffId extends DataAttribute {
     // must be kept final to provide atomic consistency across multiple threads
     public static final String ATTRIBUTE_NAME = AttributeNameConstants.DATA.concat(ATTRIBUTE_NAME_EXTENSION);
 
-
     // must be kept final to provide atomic consistency across multiple threads
     private final String attributeValue;
 

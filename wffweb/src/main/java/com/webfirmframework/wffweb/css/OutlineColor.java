@@ -281,27 +281,12 @@ public class OutlineColor extends AbstractCssProperty<OutlineColor> implements S
         final String trimmedCssValueLowerCase = TagStringUtil.toLowerCase(trimmedCssValue);
 
         if (INITIAL.equals(trimmedCssValueLowerCase) || INHERIT.equals(trimmedCssValueLowerCase)
-                || INVERT.equals(trimmedCssValueLowerCase)) {
+                || INVERT.equals(trimmedCssValueLowerCase) || CssColorName.isValid(trimmedCssValue)) {
             return true;
         }
 
-        if (CssColorName.isValid(trimmedCssValue)) {
-            return true;
-        }
-
-        if (RgbCssValue.isValid(trimmedCssValue)) {
-            return true;
-        }
-
-        if (RgbaCssValue.isValid(trimmedCssValue)) {
-            return true;
-        }
-
-        if (HslCssValue.isValid(trimmedCssValue)) {
-            return true;
-        }
-
-        if (HslaCssValue.isValid(trimmedCssValue)) {
+        if (RgbCssValue.isValid(trimmedCssValue) || RgbaCssValue.isValid(trimmedCssValue)
+                || HslCssValue.isValid(trimmedCssValue) || HslaCssValue.isValid(trimmedCssValue)) {
             return true;
         }
 

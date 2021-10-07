@@ -22,7 +22,7 @@ import com.webfirmframework.wffweb.internal.ObjectId;
 /**
  * Note: only for internal use. It should be specifically for AbstractAttribute
  * class id generation.
- * 
+ *
  * @author WFF
  * @since 3.0.19
  *
