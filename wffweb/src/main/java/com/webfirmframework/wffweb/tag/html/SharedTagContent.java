@@ -423,12 +423,12 @@ public class SharedTagContent<T> {
         }
 
         /**
-         * @return
-         * the source tag
+         * @return the source tag
          * @deprecated As it is record class no need to use getter method instead use
-         *             {@link DetachEvent#sourceTag()}.This method will be removed in future
-         *             release.
+         *             {@link DetachEvent#sourceTag()}.This method will be removed in
+         *             future release.
          */
+        @Deprecated
         public AbstractHtml getSourceTag() {
             return sourceTag;
         }
@@ -436,9 +436,10 @@ public class SharedTagContent<T> {
         /**
          * @return the source listener
          * @deprecated As it is record class no need to use getter method instead use
-         *             {@link DetachEvent#sourceListener()}.This method will be removed in future
-         *             release.
+         *             {@link DetachEvent#sourceListener()}.This method will be removed
+         *             in future release.
          */
+        @Deprecated
         public DetachListener<T> getSourceListener() {
             return sourceListener;
         }
@@ -446,13 +447,14 @@ public class SharedTagContent<T> {
         /**
          * @return the content
          * @deprecated As it is record class no need to use getter method instead use
-         *             {@link DetachEvent#content()}.This method will be removed in future
-         *             release.
+         *             {@link DetachEvent#content()}.This method will be removed in
+         *             future release.
          */
+        @Deprecated
         public Content<T> getContent() {
             return content;
         }
-        
+
         /**
          * @return the source tag
          * @since 3.0.19
@@ -1395,14 +1397,9 @@ public class SharedTagContent<T> {
 
                     final AbstractHtml parentTag = prevNoTag.getParent();
 
-                    if (parentTag == null) {
-                        ((AbstractHtml) prevNoTag).setCacheSTCFormatter(null, ACCESS_OBJECT);
-                        continue;
-                    }
-
                     // the condition isParentNullifiedOnce true means the parent
                     // of this tag has already been changed at least once
-                    if (((AbstractHtml) prevNoTag).isParentNullifiedOnce()) {
+                    if ((parentTag == null) || ((AbstractHtml) prevNoTag).isParentNullifiedOnce()) {
                         ((AbstractHtml) prevNoTag).setCacheSTCFormatter(null, ACCESS_OBJECT);
                         continue;
                     }
@@ -1972,14 +1969,9 @@ public class SharedTagContent<T> {
                 final InsertedTagData<T> insertedTagData = entry.getValue();
                 final AbstractHtml parentTag = prevNoTag.getParent();
 
-                if (parentTag == null) {
-                    ((AbstractHtml) prevNoTag).setCacheSTCFormatter(null, ACCESS_OBJECT);
-                    continue;
-                }
-
                 // the condition isParentNullifiedOnce true means the parent of
                 // this tag has already been changed at least once
-                if (((AbstractHtml) prevNoTag).isParentNullifiedOnce()) {
+                if ((parentTag == null) || ((AbstractHtml) prevNoTag).isParentNullifiedOnce()) {
                     ((AbstractHtml) prevNoTag).setCacheSTCFormatter(null, ACCESS_OBJECT);
                     continue;
                 }

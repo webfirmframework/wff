@@ -240,17 +240,11 @@ public class HslCssValue extends AbstractBean<HslCssValue> {
 
                 if (hslStringParts.length == 3) {
                     final int r = Integer.parseInt(hslStringParts[0]);
-                    if (r < 0 || r > 360) {
-                        return false;
-                    }
-                    if (!hslStringParts[1].endsWith("%")) {
+                    if (r < 0 || r > 360 || !hslStringParts[1].endsWith("%")) {
                         return false;
                     }
                     final float g = Float.parseFloat(hslStringParts[1].replace("%", ""));
-                    if (g < 0 || g > 100) {
-                        return false;
-                    }
-                    if (!hslStringParts[2].endsWith("%")) {
+                    if (g < 0 || g > 100 || !hslStringParts[2].endsWith("%")) {
                         return false;
                     }
 

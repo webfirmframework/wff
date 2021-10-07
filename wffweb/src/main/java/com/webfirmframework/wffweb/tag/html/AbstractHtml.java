@@ -678,7 +678,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             @SuppressWarnings("rawtypes")
             final SharedTagContent sharedTagContent = firstChild.sharedTagContent;
             if (sharedTagContent != null && firstChild instanceof NoTag) {
-                sharedTagContent.removeListenersLockless(this.internalId);
+                sharedTagContent.removeListenersLockless(internalId);
                 firstChild.sharedTagContent = null;
                 firstChild.cachedStcFormatter = null;
             }
@@ -6651,7 +6651,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     /**
      * Note: only for testing purpose
-     * 
+     *
      * @return
      */
     final Object getCachedStcFormatter() {

@@ -33,50 +33,50 @@ import java.util.stream.Collectors;
  */
 public class FileUtil {
 
-	private static final Logger LOGGER = Logger.getLogger(FileUtil.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(FileUtil.class.getName());
 
-	private FileUtil() {
-		throw new AssertionError();
-	}
+    private FileUtil() {
+        throw new AssertionError();
+    }
 
-	/**
-	 * Deletes the basePath directory even if it is not empty.
-	 *
-	 * @param basePath
-	 * @param more     sub-directories
-	 * @return true if the basePath directory is deleted
-	 * @since 3.0.18
-	 */
-	public static final boolean removeDirRecursively(final String basePath, final String... more) {
-		final Path dirPath = Paths.get(basePath, more);
-		boolean deleted = false;
-		try {
-			if (Files.exists(dirPath)) {
-				final Deque<Path> q = Files.list(dirPath).collect(Collectors.toCollection(ArrayDeque::new));
-				Path each;
-				while ((each = q.poll()) != null) {
-					if (Files.isDirectory(each)) {
-						final List<Path> paths = Files.list(each).collect(Collectors.toList());
-						if (paths.size() > 0) {
-							for (final Path path : paths) {
-								q.addFirst(path);
-							}
-							q.addLast(each);
-						} else {
-							Files.deleteIfExists(each);
-						}
+    /**
+     * Deletes the basePath directory even if it is not empty.
+     *
+     * @param basePath
+     * @param more     sub-directories
+     * @return true if the basePath directory is deleted
+     * @since 3.0.18
+     */
+    public static final boolean removeDirRecursively(final String basePath, final String... more) {
+        final Path dirPath = Paths.get(basePath, more);
+        boolean deleted = false;
+        try {
+            if (Files.exists(dirPath)) {
+                final Deque<Path> q = Files.list(dirPath).collect(Collectors.toCollection(ArrayDeque::new));
+                Path each;
+                while ((each = q.poll()) != null) {
+                    if (Files.isDirectory(each)) {
+                        final List<Path> paths = Files.list(each).collect(Collectors.toList());
+                        if (paths.size() > 0) {
+                            for (final Path path : paths) {
+                                q.addFirst(path);
+                            }
+                            q.addLast(each);
+                        } else {
+                            Files.deleteIfExists(each);
+                        }
 
-					} else {
-						Files.deleteIfExists(each);
-					}
-				}
-				deleted = Files.deleteIfExists(dirPath);
-			}
-		} catch (final IOException e) {
-			// NOP
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
-		}
-		return deleted;
-	}
+                    } else {
+                        Files.deleteIfExists(each);
+                    }
+                }
+                deleted = Files.deleteIfExists(dirPath);
+            }
+        } catch (final IOException e) {
+            // NOP
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+        }
+        return deleted;
+    }
 
 }

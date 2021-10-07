@@ -27,7 +27,7 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
  * {@link ServerAsyncMethod#asyncMethod(WffBMObject, Event)} method as the
  * signature of the method will be changed to a single parameter method in next
  * major version.
- * 
+ *
  * @author WFF
  */
 @FunctionalInterface
@@ -62,6 +62,7 @@ public interface ServerAsyncMethod extends Serializable {
          * @deprecated use {@link Event(WffBMObject, AbstractHtml, AbstractAttribute,
          *             String, Object)}
          */
+        @Deprecated
         public Event(final String serverMethodName) {
             this.serverMethodName = serverMethodName;
             serverMethodNameFinal = serverMethodName;
@@ -78,6 +79,7 @@ public interface ServerAsyncMethod extends Serializable {
          * @deprecated use {@link Event(WffBMObject, AbstractHtml, AbstractAttribute,
          *             String, Object)}
          */
+        @Deprecated
         public Event(final AbstractHtml sourceTag, final AbstractAttribute sourceAttribute) {
             super();
             this.sourceTag = sourceTag;
@@ -96,6 +98,7 @@ public interface ServerAsyncMethod extends Serializable {
          * @deprecated use {@link Event(WffBMObject, AbstractHtml, AbstractAttribute,
          *             String, Object)}
          */
+        @Deprecated
         public Event(final String serverMethodName, final Object serverSideData) {
             sourceAttribute = null;
             srcTag = null;
@@ -289,7 +292,7 @@ public interface ServerAsyncMethod extends Serializable {
          * method to get the same data as the signature of
          * {@link ServerAsyncMethod#asyncMethod(WffBMObject, Event)} method will be
          * changed to a single parameter method in next major version.
-         * 
+         *
          * @return the data
          */
         public WffBMObject data() {

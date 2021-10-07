@@ -27,18 +27,18 @@ import com.webfirmframework.wffweb.util.FileUtil;
  */
 class BrowserPageGCTask extends WeakReference<BrowserPage> {
 
-	private final String externalDrivePath;
+    private final String externalDrivePath;
 
-	private final String subDirName;
+    private final String subDirName;
 
-	BrowserPageGCTask(final BrowserPage referent, final ReferenceQueue<? super BrowserPage> q) {
-		super(referent, q);
-		externalDrivePath = referent.getExternalDrivePath();
-		subDirName = referent.getInstanceId();
-	}
+    BrowserPageGCTask(final BrowserPage referent, final ReferenceQueue<? super BrowserPage> q) {
+        super(referent, q);
+        externalDrivePath = referent.getExternalDrivePath();
+        subDirName = referent.getInstanceId();
+    }
 
-	void run() {
-		FileUtil.removeDirRecursively(externalDrivePath, subDirName);
-	}
+    void run() {
+        FileUtil.removeDirRecursively(externalDrivePath, subDirName);
+    }
 
 }

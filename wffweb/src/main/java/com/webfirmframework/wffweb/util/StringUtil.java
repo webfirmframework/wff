@@ -67,10 +67,7 @@ public final class StringUtil {
      * @since 1.0.0
      */
     public static String convertToSingleSpace(final String input) {
-        if (input.length() == 0) {
-            return input;
-        }
-        if (!input.contains("  ")) {
+        if ((input.length() == 0) || !input.contains("  ")) {
             return input;
         }
         return input.replaceAll("\\s+", " ");

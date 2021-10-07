@@ -292,24 +292,12 @@ public class Color extends AbstractCssProperty<Color> implements StateChangeInfo
 
         final String trimmedCssValueLowerCase = TagStringUtil.toLowerCase(trimmedCssValue);
 
-        if (INITIAL.equals(trimmedCssValueLowerCase) || INHERIT.equals(trimmedCssValueLowerCase)) {
+        if (INITIAL.equals(trimmedCssValueLowerCase) || INHERIT.equals(trimmedCssValueLowerCase)
+                || CssColorName.isValid(trimmedCssValue) || RgbCssValue.isValid(trimmedCssValue)) {
             return true;
         }
-
-        if (CssColorName.isValid(trimmedCssValue)) {
-            return true;
-        }
-
-        if (RgbCssValue.isValid(trimmedCssValue)) {
-            return true;
-        }
-        if (RgbaCssValue.isValid(trimmedCssValue)) {
-            return true;
-        }
-        if (HslCssValue.isValid(trimmedCssValue)) {
-            return true;
-        }
-        if (HslaCssValue.isValid(trimmedCssValue)) {
+        if (RgbaCssValue.isValid(trimmedCssValue) || HslCssValue.isValid(trimmedCssValue)
+                || HslaCssValue.isValid(trimmedCssValue)) {
             return true;
         }
 

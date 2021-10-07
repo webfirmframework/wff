@@ -79,7 +79,6 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
     private volatile byte[] compressedBytes;
 
-
     /**
      * NB: do not generate equals and hashcode base on this as the deserialized
      * object can lead to bug.

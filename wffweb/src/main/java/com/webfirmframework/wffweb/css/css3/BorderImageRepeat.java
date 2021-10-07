@@ -292,10 +292,8 @@ public class BorderImageRepeat extends AbstractCssProperty<BorderImageRepeat> {
         boolean valid = false;
         for (final String each : cssValueParts) {
 
-            if (!PREDEFINED_CONSTANTS.contains(each)) {
-                return false;
-            }
-            if ((INITIAL.equals(each) || INHERIT.equals(each)) && cssValueParts.length == 2) {
+            if (!PREDEFINED_CONSTANTS.contains(each)
+                    || ((INITIAL.equals(each) || INHERIT.equals(each)) && cssValueParts.length == 2)) {
                 return false;
 
             }

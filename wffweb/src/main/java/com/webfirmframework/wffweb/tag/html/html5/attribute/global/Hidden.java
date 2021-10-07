@@ -82,7 +82,7 @@ public class Hidden extends AbstractAttribute implements GlobalAttributable, Boo
             setAttributeValue(value);
             hidden = true;
         } else if ("true".equals(value) || "false".equals(value)) {
-            boolean yes = Boolean.parseBoolean(value);
+            final boolean yes = Boolean.parseBoolean(value);
             setAttributeValue(yes ? AttributeNameConstants.HIDDEN : null);
             hidden = yes;
         } else {

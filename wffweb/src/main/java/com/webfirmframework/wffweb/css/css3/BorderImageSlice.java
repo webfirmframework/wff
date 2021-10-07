@@ -801,11 +801,8 @@ public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
         }
 
         final String[] cssValueParts = StringUtil.splitBySpace(trimmedCssValue);
-        if (cssValueParts.length > 5) {
-            return false;
-        }
-
-        if ((cssValue.length() - StringUtil.replace(cssValue, FILL, "").length()) > FILL.length()) {
+        if ((cssValueParts.length > 5)
+                || ((cssValue.length() - StringUtil.replace(cssValue, FILL, "").length()) > FILL.length())) {
             return false;
         }
 
