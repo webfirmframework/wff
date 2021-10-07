@@ -22,9 +22,11 @@ import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
 
 /**
- * Note: It is recommended to use {@link RemoteMethod} instead of this interface
- * as its visibility will be reduced to internal framework's module level in
- * next major version.
+ * Note: It is recommended to use event.data() method instead of first data
+ * (WffBMObject) parameter from
+ * {@link ServerAsyncMethod#asyncMethod(WffBMObject, Event)} method as the
+ * signature of the method will be changed to a single parameter method in next
+ * major version.
  * 
  * @author WFF
  */
@@ -284,12 +286,9 @@ public interface ServerAsyncMethod extends Serializable {
          * Use this method to get data instead of the first parameter from
          * {@link ServerAsyncMethod#asyncMethod(WffBMObject, Event)} method, both
          * contain the same object. But, it is recommended to use {@link Event#data()}
-         * method to get the same data as the existing code to be compatible with
-         * functional interface {@link RemoteMethod}, its method signature is
-         * {@link RemoteMethod#orderedRun(Event)}. Additionally, it is recommended to
-         * use {@link RemoteMethod} functional interface because the visibility of
-         * {@link ServerAsyncMethod} functional interface will be reduced to internal
-         * framework's module level in next major version.
+         * method to get the same data as the signature of
+         * {@link ServerAsyncMethod#asyncMethod(WffBMObject, Event)} method will be
+         * changed to a single parameter method in next major version.
          * 
          * @return the data
          */
@@ -302,13 +301,10 @@ public interface ServerAsyncMethod extends Serializable {
     /**
      * @param data  the data received from the consumer i.e usually client browser.
      *              But, it is recommended to use {@link Event#data()} method to get
-     *              the same data as the existing code to be compatible with
-     *              functional interface {@link RemoteMethod}, its method signature
-     *              is {@link RemoteMethod#orderedRun(Event)}. Additionally, it is
-     *              recommended to use {@link RemoteMethod} functional interface
-     *              because the visibility of {@link ServerAsyncMethod} functional
-     *              interface will be reduced to internal framework's module level
-     *              in next major version.
+     *              the same data as the signature of
+     *              {@link ServerAsyncMethod#asyncMethod(WffBMObject, Event)} method
+     *              will be changed to a single parameter method in next major
+     *              version.
      * @param event
      * @return the data to the consumer i.e usually client browser.
      */
