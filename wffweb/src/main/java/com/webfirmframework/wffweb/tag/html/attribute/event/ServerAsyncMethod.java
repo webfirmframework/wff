@@ -26,9 +26,7 @@ public interface ServerAsyncMethod extends Serializable {
 
     /**
      * Contains event data for
-     * {@link ServerAsyncMethod#asyncMethod(WffBMObject, Event)}. This class might
-     * be replaced with java record class in future if the minimal java version of
-     * this framework is upgraded to record supported version.
+     * {@link ServerAsyncMethod#asyncMethod(WffBMObject, Event)}.
      * 
      * @param sourceTag
      * @param sourceAttribute
