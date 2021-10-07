@@ -25,8 +25,7 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
 public interface ServerAsyncMethod extends Serializable {
 
     /**
-     * Contains event data for
-     * {@link ServerAsyncMethod#asyncMethod(WffBMObject, Event)}.
+     * Contains event data for {@link ServerAsyncMethod#asyncMethod(Event)}.
      *
      * @param sourceTag
      * @param sourceAttribute
@@ -83,10 +82,10 @@ public interface ServerAsyncMethod extends Serializable {
     /**
      * Runs in the same order of the event occurred.
      *
-     * @param data
      * @param event
+     *
      * @return
      */
-    public abstract WffBMObject asyncMethod(final WffBMObject data, final Event event);
+    public abstract WffBMObject asyncMethod(final Event event);
 
 }

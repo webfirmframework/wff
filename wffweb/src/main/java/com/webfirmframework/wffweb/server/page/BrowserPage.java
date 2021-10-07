@@ -804,7 +804,7 @@ public abstract class BrowserPage implements Serializable {
                             // per
                             // java memory
                             // model
-                            returnedObject = serverAsyncMethod.asyncMethod(wffBMObject, event);
+                            returnedObject = serverAsyncMethod.asyncMethod(event);
                         }
 
                     } catch (final Exception e) {
@@ -906,9 +906,8 @@ public abstract class BrowserPage implements Serializable {
                     // per
                     // java memory
                     // model
-                    returnedObject = serverMethod.getServerAsyncMethod().asyncMethod(wffBMObject,
-                            new ServerAsyncMethod.Event(wffBMObject, null, null, methodName,
-                                    serverMethod.getServerSideData()));
+                    returnedObject = serverMethod.getServerAsyncMethod().asyncMethod(new ServerAsyncMethod.Event(
+                            wffBMObject, null, null, methodName, serverMethod.getServerSideData()));
                 }
 
             } catch (final Exception e) {
