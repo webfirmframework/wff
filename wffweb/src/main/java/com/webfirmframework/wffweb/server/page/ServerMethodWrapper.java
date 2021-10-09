@@ -22,9 +22,9 @@ import com.webfirmframework.wffweb.tag.html.attribute.event.ServerAsyncMethod;
 /**
  * @author WFF
  * @since 3.0.2
- *
+ * @since 3.0.19 renamed ServerMethod to ServerMethodWrapper
  */
-class ServerMethod implements Serializable {
+final class ServerMethodWrapper implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -32,7 +32,7 @@ class ServerMethod implements Serializable {
 
     private final Object serverSideData;
 
-    public ServerMethod(final ServerAsyncMethod serverAsyncMethod, final Object serverSideData) {
+    ServerMethodWrapper(final ServerAsyncMethod serverAsyncMethod, final Object serverSideData) {
         this.serverAsyncMethod = serverAsyncMethod;
         this.serverSideData = serverSideData;
     }
@@ -40,14 +40,14 @@ class ServerMethod implements Serializable {
     /**
      * @return the serverAsyncMethod
      */
-    ServerAsyncMethod getServerAsyncMethod() {
+    ServerAsyncMethod serverAsyncMethod() {
         return serverAsyncMethod;
     }
 
     /**
      * @return the serverSideData
      */
-    Object getServerSideData() {
+    Object serverSideData() {
         return serverSideData;
     }
 
