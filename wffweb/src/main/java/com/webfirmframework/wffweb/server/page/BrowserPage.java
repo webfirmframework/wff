@@ -150,7 +150,7 @@ public abstract class BrowserPage implements Serializable {
 
     private final AtomicInteger holdPush = new AtomicInteger(0);
 
-    private final Map<String, ServerMethod> serverMethods = new ConcurrentHashMap<>();
+    private final Map<String, ServerMethodWrapper> serverMethods = new ConcurrentHashMap<>();
 
     private boolean removeFromBrowserContextOnTabClose = true;
 
@@ -887,7 +887,7 @@ public abstract class BrowserPage implements Serializable {
         final NameValue methodNameAndArg = nameValues.get(1);
         final String methodName = new String(methodNameAndArg.getName(), StandardCharsets.UTF_8);
 
-        final ServerMethod serverMethod = serverMethods.get(methodName);
+        final ServerMethodWrapper serverMethod = serverMethods.get(methodName);
 
         if (serverMethod != null) {
 
@@ -906,8 +906,8 @@ public abstract class BrowserPage implements Serializable {
                     // per
                     // java memory
                     // model
-                    returnedObject = serverMethod.getServerAsyncMethod().asyncMethod(new ServerAsyncMethod.Event(
-                            wffBMObject, null, null, methodName, serverMethod.getServerSideData()));
+                    returnedObject = serverMethod.serverAsyncMethod().asyncMethod(new ServerAsyncMethod.Event(
+                            wffBMObject, null, null, methodName, serverMethod.serverSideData()));
                 }
 
             } catch (final Exception e) {
@@ -1718,7 +1718,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.0
      */
     public final void addServerMethod(final String methodName, final ServerAsyncMethod serverAsyncMethod) {
-        serverMethods.put(methodName, new ServerMethod(serverAsyncMethod, null));
+        serverMethods.put(methodName, new ServerMethodWrapper(serverAsyncMethod, null));
     }
 
     /**
@@ -1731,7 +1731,7 @@ public abstract class BrowserPage implements Serializable {
      */
     public final void addServerMethod(final String methodName, final ServerAsyncMethod serverAsyncMethod,
             final Object serverSideData) {
-        serverMethods.put(methodName, new ServerMethod(serverAsyncMethod, serverSideData));
+        serverMethods.put(methodName, new ServerMethodWrapper(serverAsyncMethod, serverSideData));
     }
 
     /**
