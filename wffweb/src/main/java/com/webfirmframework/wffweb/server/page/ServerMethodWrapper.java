@@ -24,10 +24,10 @@ import com.webfirmframework.wffweb.tag.html.attribute.event.ServerAsyncMethod;
  * @since 3.0.2
  * @since 3.0.19 renamed ServerMethod to ServerMethodWrapper
  */
-final record ServerMethodWrapper(ServerAsyncMethod serverAsyncMethod,
+record ServerMethodWrapper(ServerAsyncMethod serverAsyncMethod,
                     Object serverSideData) implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 12_0L;
 
     /**
      * @return the serverAsyncMethod
