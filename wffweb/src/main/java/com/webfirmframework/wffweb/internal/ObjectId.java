@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.internal;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
@@ -27,7 +28,13 @@ import java.util.UUID;
  */
 public final class ObjectId implements Comparable<ObjectId>, Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
+
+    //thread-safety not required, duplicate value is also fine
+    private static volatile long ORDER_COUNTER;
+
+    private final long order;
 
     private final long mostSigBits;
 
@@ -36,6 +43,8 @@ public final class ObjectId implements Comparable<ObjectId>, Serializable {
     public ObjectId(final long mostSigBits, final long leastSigBits) {
         this.mostSigBits = mostSigBits;
         this.leastSigBits = leastSigBits;
+        //thread-safety not required, duplicate value is also fine
+        order = ++ORDER_COUNTER;
     }
 
     public String id() {
@@ -43,27 +52,25 @@ public final class ObjectId implements Comparable<ObjectId>, Serializable {
     }
 
     @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        final ObjectId objectId = (ObjectId) o;
-        return mostSigBits == objectId.mostSigBits && leastSigBits == objectId.leastSigBits;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ObjectId objectId = (ObjectId) o;
+        return order == objectId.order && mostSigBits == objectId.mostSigBits && leastSigBits == objectId.leastSigBits;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(mostSigBits, leastSigBits);
+        return Objects.hash(order, mostSigBits, leastSigBits);
     }
 
     @Override
     public int compareTo(final ObjectId that) {
-        return (mostSigBits < that.mostSigBits ? -1
+        return (order < that.order ? -1
+                : order > that.order ? 1
+                : (mostSigBits < that.mostSigBits ? -1
                 : (mostSigBits > that.mostSigBits ? 1
-                        : (leastSigBits < that.leastSigBits ? -1 : (leastSigBits > that.leastSigBits ? 1 : 0))));
+                : (leastSigBits < that.leastSigBits ? -1 : (leastSigBits > that.leastSigBits ? 1 : 0)))));
     }
 
 }
