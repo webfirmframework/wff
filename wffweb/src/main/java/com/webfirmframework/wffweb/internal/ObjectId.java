@@ -69,11 +69,11 @@ public final class ObjectId implements Comparable<ObjectId>, Serializable {
     @Override
     public int compareTo(final ObjectId that) {
         return (order < that.order ? -1
-                : order > that.order ? 1
+                : (order > that.order ? 1
                         : (mostSigBits < that.mostSigBits ? -1
                                 : (mostSigBits > that.mostSigBits ? 1
                                         : (leastSigBits < that.leastSigBits ? -1
-                                                : (leastSigBits > that.leastSigBits ? 1 : 0)))));
+                                                : (leastSigBits > that.leastSigBits ? 1 : 0))))));
     }
 
 }
