@@ -17,6 +17,7 @@ package com.webfirmframework.wffweb.server.page;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Serial;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
@@ -83,6 +84,7 @@ public abstract class BrowserPage implements Serializable {
     // if this class' is refactored then SecurityClassConstants should be
     // updated.
 
+    @Serial
     private static final long serialVersionUID = 1_0_1L;
 
     private static final Logger LOGGER = Logger.getLogger(BrowserPage.class.getName());
@@ -195,6 +197,7 @@ public abstract class BrowserPage implements Serializable {
     // for security purpose, the class name should not be modified
     private static final class Security implements Serializable {
 
+        @Serial
         private static final long serialVersionUID = 1L;
 
         private Security() {

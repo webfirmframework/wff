@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.tag.core;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -33,6 +34,7 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMData;
  */
 public abstract sealed class AbstractJsObject extends AbstractTagBase permits AbstractHtml {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private static final Security ACCESS_OBJECT;

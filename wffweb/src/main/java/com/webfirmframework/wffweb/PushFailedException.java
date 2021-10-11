@@ -16,6 +16,8 @@
  */
 package com.webfirmframework.wffweb;
 
+import java.io.Serial;
+
 /**
  *
  * @author WFF
@@ -23,6 +25,7 @@ package com.webfirmframework.wffweb;
  */
 public class PushFailedException extends WffRuntimeException {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     public PushFailedException() {

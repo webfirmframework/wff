@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.internal;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -24,6 +25,7 @@ import java.io.Serializable;
  */
 public final class InternalId implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     public InternalId() {

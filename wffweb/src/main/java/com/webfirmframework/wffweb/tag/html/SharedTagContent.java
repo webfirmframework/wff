@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.tag.html;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
@@ -170,6 +171,7 @@ public class SharedTagContent<T> {
      */
     public static final record Content<T> (T content, boolean contentTypeHtml) implements Serializable {
 
+        @Serial
         private static final long serialVersionUID = 2L;
 
         /**
@@ -301,6 +303,7 @@ public class SharedTagContent<T> {
     // for security purpose, the class name should not be modified
     private static final class Security implements Serializable {
 
+        @Serial
         private static final long serialVersionUID = 1L;
 
         private Security() {

@@ -16,6 +16,8 @@
  */
 package com.webfirmframework.wffweb;
 
+import java.io.Serial;
+
 /**
  *
  * @author WFF
@@ -26,6 +28,7 @@ public class NoParentException extends WffRuntimeException {
     /**
      *
      */
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     public NoParentException() {

@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.css.file;
 
+import java.io.Serial;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -32,6 +33,7 @@ import com.webfirmframework.wffweb.css.core.CssProperty;
  */
 public abstract class AbstractCssFileBlock implements CssFileBlock {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     private final CssPropertySet cssProperties;

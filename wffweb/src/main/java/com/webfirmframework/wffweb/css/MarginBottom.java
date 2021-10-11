@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.css;
 
+import java.io.Serial;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,6 +42,7 @@ import com.webfirmframework.wffweb.util.StringUtil;
  */
 public class MarginBottom extends AbstractCssProperty<MarginBottom> {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     public static final String INITIAL = "initial";

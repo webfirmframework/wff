@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.tag.htmlwff;
 
+import java.io.Serial;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -42,6 +43,7 @@ public class NoTag extends AbstractHtml {
 
     // TODO This class needs to be tested properly
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     {

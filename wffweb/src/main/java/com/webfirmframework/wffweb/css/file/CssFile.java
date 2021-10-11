@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.css.file;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
@@ -39,6 +40,7 @@ import com.webfirmframework.wffweb.css.core.CssProperty;
  */
 public abstract class CssFile implements Serializable, Cloneable {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     private static final Logger LOGGER = Logger.getLogger(CssFile.class.getName());
@@ -57,6 +59,7 @@ public abstract class CssFile implements Serializable, Cloneable {
 
     private final Set<AbstractCssFileBlock> cssBlocks = new LinkedHashSet<AbstractCssFileBlock>() {
 
+        @Serial
         private static final long serialVersionUID = 1_0_0L;
 
         private final StringBuilder toStringBuilder = new StringBuilder();

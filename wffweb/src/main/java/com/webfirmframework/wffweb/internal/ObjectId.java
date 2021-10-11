@@ -52,12 +52,14 @@ public final class ObjectId implements Comparable<ObjectId>, Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o)
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
-        if (o == null || getClass() != o.getClass())
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
-        ObjectId objectId = (ObjectId) o;
+        }
+        final ObjectId objectId = (ObjectId) o;
         return order == objectId.order && mostSigBits == objectId.mostSigBits && leastSigBits == objectId.leastSigBits;
     }
 

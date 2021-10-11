@@ -16,6 +16,8 @@
  */
 package com.webfirmframework.wffweb.css.css3;
 
+import java.io.Serial;
+
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.css.CssColorName;
@@ -43,6 +45,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  */
 public class WebkitColumnRuleColor extends AbstractCssProperty<WebkitColumnRuleColor> {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     public static final String INITIAL = "initial";

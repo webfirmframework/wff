@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.tag.html;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Serial;
 import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.ArrayDeque;
@@ -87,6 +88,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
     // if this class' is refactored then SecurityClassConstants should be
     // updated.
 
+    @Serial
     private static final long serialVersionUID = 3_0_18L;
 
     private static final Security ACCESS_OBJECT;
@@ -172,6 +174,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
     // for security purpose, the class name should not be modified
     private static final class Security implements Serializable {
 
+        @Serial
         private static final long serialVersionUID = 1L;
 
         private Security() {
@@ -200,6 +203,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
         // Solved: children is surrounded by lock in its top outer method.
         children = new LinkedHashSet<AbstractHtml>() {
 
+            @Serial
             private static final long serialVersionUID = 1L;
 
             @Override

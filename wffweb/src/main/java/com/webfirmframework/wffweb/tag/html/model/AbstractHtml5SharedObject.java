@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.tag.html.model;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
@@ -55,6 +56,7 @@ import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
  */
 public final class AbstractHtml5SharedObject implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1_0_1L;
 
     private boolean childModified;

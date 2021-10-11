@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.tag.html;
 
+import java.io.Serial;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.settings.WffConfiguration;
@@ -32,6 +33,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.H6Attributable;
  */
 public class H6 extends AbstractHtml {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     private static final Logger LOGGER = Logger.getLogger(H6.class.getName());

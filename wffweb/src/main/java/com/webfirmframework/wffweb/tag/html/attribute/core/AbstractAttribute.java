@@ -17,6 +17,7 @@ package com.webfirmframework.wffweb.tag.html.attribute.core;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.Serial;
 import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -47,6 +48,7 @@ import com.webfirmframework.wffweb.util.StringBuilderUtil;
 
 public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
 
+    @Serial
     private static final long serialVersionUID = 1_1_1L;
 
     private static final Security ACCESS_OBJECT;
@@ -88,6 +90,7 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
     // for security purpose, the class name should not be modified
     private static final class Security implements Serializable {
 
+        @Serial
         private static final long serialVersionUID = 1L;
 
         private Security() {
