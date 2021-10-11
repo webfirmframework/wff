@@ -31,7 +31,7 @@ public final class ObjectId implements Comparable<ObjectId>, Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    //thread-safety not required, duplicate value is also fine
+    // thread-safety not required, duplicate value is also fine
     private static volatile long ORDER_COUNTER;
 
     private final long order;
@@ -43,7 +43,7 @@ public final class ObjectId implements Comparable<ObjectId>, Serializable {
     public ObjectId(final long mostSigBits, final long leastSigBits) {
         this.mostSigBits = mostSigBits;
         this.leastSigBits = leastSigBits;
-        //thread-safety not required, duplicate value is also fine
+        // thread-safety not required, duplicate value is also fine
         order = ++ORDER_COUNTER;
     }
 
@@ -53,8 +53,10 @@ public final class ObjectId implements Comparable<ObjectId>, Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         ObjectId objectId = (ObjectId) o;
         return order == objectId.order && mostSigBits == objectId.mostSigBits && leastSigBits == objectId.leastSigBits;
     }
@@ -68,9 +70,10 @@ public final class ObjectId implements Comparable<ObjectId>, Serializable {
     public int compareTo(final ObjectId that) {
         return (order < that.order ? -1
                 : order > that.order ? 1
-                : (mostSigBits < that.mostSigBits ? -1
-                : (mostSigBits > that.mostSigBits ? 1
-                : (leastSigBits < that.leastSigBits ? -1 : (leastSigBits > that.leastSigBits ? 1 : 0)))));
+                        : (mostSigBits < that.mostSigBits ? -1
+                                : (mostSigBits > that.mostSigBits ? 1
+                                        : (leastSigBits < that.leastSigBits ? -1
+                                                : (leastSigBits > that.leastSigBits ? 1 : 0)))));
     }
 
 }
