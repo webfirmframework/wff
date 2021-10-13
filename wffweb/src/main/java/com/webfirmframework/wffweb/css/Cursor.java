@@ -18,7 +18,6 @@ package com.webfirmframework.wffweb.css;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -497,7 +496,7 @@ public class Cursor extends AbstractCssProperty<Cursor> implements StateChangeIn
         if (urlCss3Values == null) {
             return null;
         }
-        return Collections.unmodifiableList(Arrays.asList(urlCss3Values));
+        return List.of(urlCss3Values);
     }
 
     /**

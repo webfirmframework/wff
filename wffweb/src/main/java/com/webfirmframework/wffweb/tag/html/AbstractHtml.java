@@ -2794,8 +2794,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
 
         final Lock lock = lockAndGetReadLock();
         try {
-
-            return Collections.unmodifiableList(new ArrayList<>(children));
+            return List.copyOf(children);
         } finally {
             lock.unlock();
         }

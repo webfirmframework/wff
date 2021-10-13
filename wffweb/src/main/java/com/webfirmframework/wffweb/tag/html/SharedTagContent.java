@@ -118,7 +118,7 @@ public class SharedTagContent<T> {
 
     private volatile Executor executor;
 
-    final Set<ApplicableTagGCTask<T>> applicableTagGCTasksCache = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    final Set<ApplicableTagGCTask<T>> applicableTagGCTasksCache = ConcurrentHashMap.newKeySet();
 
 //    final Set<InsertedTagDataGCTask<T>> insertedTagDataGCTasksCache = Collections
 //            .newSetFromMap(new ConcurrentHashMap<>());

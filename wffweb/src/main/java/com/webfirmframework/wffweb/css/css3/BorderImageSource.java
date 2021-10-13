@@ -17,7 +17,6 @@
 package com.webfirmframework.wffweb.css.css3;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -371,7 +370,7 @@ public class BorderImageSource extends AbstractCssProperty<BorderImageSource> im
         if (urlCss3Values == null) {
             return null;
         }
-        return Collections.unmodifiableList(Arrays.asList(urlCss3Values));
+        return List.of(urlCss3Values);
     }
 
     /**

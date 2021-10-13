@@ -18,7 +18,6 @@ package com.webfirmframework.wffweb.tag.html.attribute.core;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -35,7 +34,7 @@ public class AttributeIdGeneratorTest {
     @Test
     public void testNextId() throws InterruptedException, ExecutionException {
         
-        Set<Object> ids = Collections.newSetFromMap(new ConcurrentHashMap<>());
+        Set<Object> ids = ConcurrentHashMap.newKeySet();
         ExecutorService threadPool = Executors.newCachedThreadPool();
         
         List<CompletableFuture<Void>> tasks = new ArrayList<>(1000);
