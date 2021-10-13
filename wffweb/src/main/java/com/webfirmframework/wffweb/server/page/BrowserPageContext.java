@@ -103,7 +103,7 @@ public enum BrowserPageContext {
         heartbeatManagers = new ConcurrentHashMap<>();
         browserPageRQ = new ReferenceQueue<>();
         browserPageGCTasksQ = new ConcurrentLinkedQueue<>();
-        browserPageGCTasksCache = Collections.newSetFromMap(new ConcurrentHashMap<>(2));
+        browserPageGCTasksCache = ConcurrentHashMap.newKeySet(2);
 
         initConfig();
     }
