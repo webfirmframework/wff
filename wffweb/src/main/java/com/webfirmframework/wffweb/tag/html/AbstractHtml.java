@@ -5026,7 +5026,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      * @since 3.0.2 improved to handle NoTag with contentTypeHtml true
      */
     public static AbstractHtml getTagFromWffBMBytes(final byte[] bmMessageBytes) {
-        return getTagFromWffBMBytes(bmMessageBytes, Charset.defaultCharset());
+        return getTagFromWffBMBytes(bmMessageBytes, CommonConstants.DEFAULT_CHARSET);
     }
 
     /**

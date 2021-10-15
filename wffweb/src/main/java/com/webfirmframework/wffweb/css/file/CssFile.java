@@ -32,6 +32,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.css.core.CssProperty;
+import com.webfirmframework.wffweb.internal.constants.CommonConstants;
 
 /**
  *
@@ -351,7 +352,7 @@ public abstract class CssFile implements Serializable, Cloneable {
      * @author WFF
      */
     public void toOutputStream(final OutputStream os, final boolean rebuild) throws IOException {
-        toOutputStream(os, Charset.defaultCharset().name(), rebuild);
+        toOutputStream(os, CommonConstants.DEFAULT_CHARSET.name(), rebuild);
     }
 
     /**
@@ -383,7 +384,7 @@ public abstract class CssFile implements Serializable, Cloneable {
      * @author WFF
      */
     public void toOutputStream(final OutputStream os) throws IOException {
-        toOutputStream(os, Charset.defaultCharset().name(), false);
+        toOutputStream(os, CommonConstants.DEFAULT_CHARSET.name(), false);
     }
 
     /**
