@@ -1257,55 +1257,6 @@ public abstract class BrowserPage implements Serializable {
      * method because this method internally calls {@link BrowserPage#render()}
      * method.
      *
-     * @param charset the charset
-     * @return {@code String} equalent to the html string of the tag including the
-     *         child tags.
-     * @author WFF
-     */
-    public String toHtmlString(final String charset) {
-        initAbstractHtml();
-        wsWarningDisabled = true;
-        beforeToHtml(rootTag);
-        wsWarningDisabled = false;
-        final String htmlString = rootTag.toHtmlString(true, charset);
-        wsWarningDisabled = true;
-        afterToHtml(rootTag);
-        wsWarningDisabled = false;
-        return htmlString;
-    }
-
-    /**
-     * NB: this method should not be called under {@link BrowserPage#render()}
-     * method because this method internally calls {@link BrowserPage#render()}
-     * method. rebuilds the html string of the tag including the child tags/values
-     * if parameter is true, otherwise returns the html string prebuilt and kept in
-     * the cache.
-     *
-     * @param rebuild true to rebuild &amp; false to return previously built string.
-     * @param charset the charset to set for the returning value, eg:
-     *                {@code StandardCharsets.UTF_8.name()}
-     * @return {@code String} equalent to the html string of the tag including the
-     *         child tags.
-     * @author WFF
-     * @since 2.1.4
-     */
-    public String toHtmlString(final boolean rebuild, final String charset) {
-        initAbstractHtml();
-        wsWarningDisabled = true;
-        beforeToHtml(rootTag);
-        wsWarningDisabled = false;
-        final String htmlString = rootTag.toHtmlString(rebuild, charset);
-        wsWarningDisabled = true;
-        afterToHtml(rootTag);
-        wsWarningDisabled = false;
-        return htmlString;
-    }
-
-    /**
-     * NB: this method should not be called under {@link BrowserPage#render()}
-     * method because this method internally calls {@link BrowserPage#render()}
-     * method.
-     *
      * @param os the object of {@code OutputStream} to write to.
      * @return the total number of bytes written
      * @throws IOException

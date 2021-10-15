@@ -57,10 +57,10 @@ public class AttributeUtilTest {
         CustomAttribute ca = new CustomAttribute("custom-attr",
                 "testvalue1, testvalue2");
         
-        String attributeHtmlString = AttributeUtil.getAttributeHtmlString(true, StandardCharsets.UTF_8, style, ca);
+        String attributeHtmlString = AttributeUtil.getAttributeHtmlString(true, style, ca);
         assertEquals(" style=\"background:green;align:center;\" custom-attr=\"testvalue1, testvalue2\"", attributeHtmlString);
         
-        attributeHtmlString = AttributeUtil.getAttributeHtmlString(false, StandardCharsets.UTF_8, style, ca);
+        attributeHtmlString = AttributeUtil.getAttributeHtmlString(false, style, ca);
         assertEquals(" style=\"background:green;align:center;\" custom-attr=\"testvalue1, testvalue2\"", attributeHtmlString);
         
     }

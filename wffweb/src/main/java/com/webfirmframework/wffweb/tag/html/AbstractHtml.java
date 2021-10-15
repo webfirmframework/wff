@@ -48,6 +48,7 @@ import com.webfirmframework.wffweb.WffRuntimeException;
 import com.webfirmframework.wffweb.WffSecurityException;
 import com.webfirmframework.wffweb.clone.CloneUtil;
 import com.webfirmframework.wffweb.internal.InternalId;
+import com.webfirmframework.wffweb.internal.constants.CommonConstants;
 import com.webfirmframework.wffweb.internal.security.object.SecurityClassConstants;
 import com.webfirmframework.wffweb.internal.tag.html.listener.AttributeAddListener;
 import com.webfirmframework.wffweb.internal.tag.html.listener.AttributeRemoveListener;
@@ -148,8 +149,6 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
     private int wffSlotIndex = -1;
 
     private volatile DataWffId dataWffId;
-
-    private transient Charset charset = Charset.defaultCharset();
 
     // default must be TagType.OPENING_CLOSING
     private final TagType tagType;
@@ -3236,7 +3235,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
             // passed 2 instead of 1 because the load factor is 0.75f
             final Set<AbstractHtml> localChildren = new LinkedHashSet<>(2);
             localChildren.add(this);
-            recurChildrenToWffBinaryMessageOutputStream(localChildren, true);
+            recurChildrenToWffBinaryMessageOutputStream(localChildren, true, CommonConstants.DEFAULT_CHARSET);
         } finally {
             lock.unlock();
         }
@@ -3360,7 +3359,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      * @since 2.1.12
      */
     public int toBigOutputStream(final OutputStream os) throws IOException {
-        return writePrintStructureToOSWithoutRecursive(charset, os, true, false);
+        return writePrintStructureToOSWithoutRecursive(CommonConstants.DEFAULT_CHARSET, os, true, false);
     }
 
     /**
@@ -3402,7 +3401,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
         if (charset != null) {
             return writePrintStructureToOSWithoutRecursive(Charset.forName(charset), os, true, false);
         }
-        return writePrintStructureToOSWithoutRecursive(this.charset, os, true, false);
+        return writePrintStructureToOSWithoutRecursive(CommonConstants.DEFAULT_CHARSET, os, true, false);
     }
 
     /**
@@ -3421,7 +3420,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      * @since 2.1.12
      */
     public int toBigOutputStream(final OutputStream os, final boolean rebuild) throws IOException {
-        return writePrintStructureToOSWithoutRecursive(charset, os, rebuild, false);
+        return writePrintStructureToOSWithoutRecursive(CommonConstants.DEFAULT_CHARSET, os, rebuild, false);
     }
 
     /**
@@ -3443,7 +3442,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
     public int toBigOutputStream(final OutputStream os, final boolean rebuild, final Charset charset)
             throws IOException {
         if (charset == null) {
-            return writePrintStructureToOSWithoutRecursive(this.charset, os, rebuild, false);
+            return writePrintStructureToOSWithoutRecursive(CommonConstants.DEFAULT_CHARSET, os, rebuild, false);
         }
         return writePrintStructureToOSWithoutRecursive(charset, os, rebuild, false);
     }
@@ -3469,7 +3468,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
     public int toBigOutputStream(final OutputStream os, final boolean rebuild, final Charset charset,
             final boolean flushOnWrite) throws IOException {
         if (charset == null) {
-            return writePrintStructureToOSWithoutRecursive(this.charset, os, rebuild, flushOnWrite);
+            return writePrintStructureToOSWithoutRecursive(CommonConstants.DEFAULT_CHARSET, os, rebuild, flushOnWrite);
         }
         return writePrintStructureToOSWithoutRecursive(charset, os, rebuild, flushOnWrite);
     }
@@ -3494,7 +3493,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
             throws IOException {
 
         if (charset == null) {
-            return writePrintStructureToOSWithoutRecursive(this.charset, os, rebuild, false);
+            return writePrintStructureToOSWithoutRecursive(CommonConstants.DEFAULT_CHARSET, os, rebuild, false);
         }
         return writePrintStructureToOSWithoutRecursive(Charset.forName(charset), os, rebuild, false);
     }
@@ -3851,12 +3850,13 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      *
      * @param children
      * @param rebuild  TODO
+     * @param charset  TODO
      * @throws IOException
      * @author WFF
      * @since 2.0.0
      */
-    private void recurChildrenToWffBinaryMessageOutputStream(final Set<AbstractHtml> children, final boolean rebuild)
-            throws IOException {
+    private void recurChildrenToWffBinaryMessageOutputStream(final Set<AbstractHtml> children, final boolean rebuild,
+            final Charset charset) throws IOException {
         if (children != null && children.size() > 0) {
             for (final AbstractHtml child : children) {
                 child.setRebuild(rebuild);
@@ -3909,7 +3909,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
                 // final Set<AbstractHtml> childrenOfChildren = child.children;
                 // declaring a separate local variable childrenOfChildren will
                 // consume stack space so directly passed it as argument
-                recurChildrenToWffBinaryMessageOutputStream(child.children, rebuild);
+                recurChildrenToWffBinaryMessageOutputStream(child.children, rebuild, charset);
 
                 NameValue closingTagNameValue = new NameValue();
                 closingTagNameValue.setName(closingTagNameConvertedBytes);
@@ -3955,50 +3955,6 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
     /*
      * (non-Javadoc)
      *
-     * @see com.webfirmframework.wffweb.tag.core.TagBase#toHtmlString(java.nio.
-     * charset.Charset)
-     */
-    @Override
-    public String toHtmlString(final Charset charset) {
-        final Lock lock = lockAndGetWriteLock();
-        final Charset previousCharset = this.charset;
-        try {
-            this.charset = charset;
-            // assigning it to new variable is very important here as this
-            // line of code should invoke before finally block
-            final String htmlString = toHtmlString();
-            return htmlString;
-        } finally {
-            this.charset = previousCharset;
-            lock.unlock();
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.webfirmframework.wffweb.tag.core.TagBase#toHtmlString(java.lang.
-     * String)
-     */
-    @Override
-    public String toHtmlString(final String charset) {
-        final Lock lock = lockAndGetWriteLock();
-        final Charset previousCharset = this.charset;
-        try {
-            this.charset = Charset.forName(charset);
-            // assigning it to new variable is very important here as this
-            // line of code should invoke before finally block
-            final String htmlString = toHtmlString();
-            return htmlString;
-        } finally {
-            this.charset = previousCharset;
-            lock.unlock();
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     *
      * @see com.webfirmframework.wffweb.tag.TagBase#toHtmlString(boolean)
      *
      * @since 1.0.0
@@ -4008,50 +3964,6 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
     @Override
     public String toHtmlString(final boolean rebuild) {
         return getPrintStructure(rebuild);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.webfirmframework.wffweb.tag.core.TagBase#toHtmlString(boolean,
-     * java.nio.charset.Charset)
-     */
-    @Override
-    public String toHtmlString(final boolean rebuild, final Charset charset) {
-        final Lock lock = lockAndGetWriteLock();
-        final Charset previousCharset = this.charset;
-        try {
-            this.charset = charset;
-            // assigning it to new variable is very important here as this
-            // line of code should invoke before finally block
-            final String htmlString = toHtmlString(rebuild);
-            return htmlString;
-        } finally {
-            this.charset = previousCharset;
-            lock.unlock();
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.webfirmframework.wffweb.tag.core.TagBase#toHtmlString(boolean,
-     * java.lang.String)
-     */
-    @Override
-    public String toHtmlString(final boolean rebuild, final String charset) {
-        final Lock lock = lockAndGetWriteLock();
-        final Charset previousCharset = this.charset;
-        try {
-            this.charset = Charset.forName(charset);
-            // assigning it to new variable is very important here as this
-            // line of code should invoke before finally block
-            final String htmlString = toHtmlString(rebuild);
-            return htmlString;
-        } finally {
-            this.charset = previousCharset;
-            lock.unlock();
-        }
     }
 
     // TODO for future implementation
@@ -4090,7 +4002,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      * @throws IOException
      */
     public int toOutputStream(final OutputStream os) throws IOException {
-        return writePrintStructureToOutputStream(charset, os, true);
+        return writePrintStructureToOutputStream(CommonConstants.DEFAULT_CHARSET, os, true);
     }
 
     /**
@@ -4127,7 +4039,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
         if (charset != null) {
             return writePrintStructureToOutputStream(Charset.forName(charset), os, true);
         }
-        return writePrintStructureToOutputStream(this.charset, os, true);
+        return writePrintStructureToOutputStream(CommonConstants.DEFAULT_CHARSET, os, true);
     }
 
     /**
@@ -4137,7 +4049,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      * @throws IOException
      */
     public int toOutputStream(final OutputStream os, final boolean rebuild) throws IOException {
-        return writePrintStructureToOutputStream(charset, os, rebuild);
+        return writePrintStructureToOutputStream(CommonConstants.DEFAULT_CHARSET, os, rebuild);
     }
 
     /**
@@ -4151,7 +4063,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      */
     public int toOutputStream(final OutputStream os, final boolean rebuild, final boolean flushOnWrite)
             throws IOException {
-        return writePrintStructureToOutputStream(os, rebuild, charset, flushOnWrite);
+        return writePrintStructureToOutputStream(os, rebuild, CommonConstants.DEFAULT_CHARSET, flushOnWrite);
     }
 
     /**
@@ -4163,7 +4075,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      */
     public int toOutputStream(final OutputStream os, final boolean rebuild, final Charset charset) throws IOException {
         if (charset == null) {
-            return writePrintStructureToOutputStream(this.charset, os, rebuild);
+            return writePrintStructureToOutputStream(CommonConstants.DEFAULT_CHARSET, os, rebuild);
         }
         return writePrintStructureToOutputStream(charset, os, rebuild);
     }
@@ -4181,7 +4093,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
     public int toOutputStream(final OutputStream os, final boolean rebuild, final Charset charset,
             final boolean flushOnWrite) throws IOException {
         if (charset == null) {
-            return writePrintStructureToOutputStream(os, rebuild, this.charset, flushOnWrite);
+            return writePrintStructureToOutputStream(os, rebuild, CommonConstants.DEFAULT_CHARSET, flushOnWrite);
         }
         return writePrintStructureToOutputStream(os, rebuild, charset, flushOnWrite);
     }
@@ -4196,7 +4108,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
     public int toOutputStream(final OutputStream os, final boolean rebuild, final String charset) throws IOException {
 
         if (charset == null) {
-            return writePrintStructureToOutputStream(this.charset, os, rebuild);
+            return writePrintStructureToOutputStream(CommonConstants.DEFAULT_CHARSET, os, rebuild);
         }
         return writePrintStructureToOutputStream(Charset.forName(charset), os, rebuild);
     }
@@ -4246,8 +4158,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
         if (tagName != null) {
             // previously attributeHtmlString was used in append method
             // as argument.
-            htmlStartSB.append('<').append(tagName)
-                    .append(AttributeUtil.getAttributeHtmlString(rebuild, charset, attributes));
+            htmlStartSB.append('<').append(tagName).append(AttributeUtil.getAttributeHtmlString(rebuild, attributes));
             if (tagType == TagType.OPENING_CLOSING) {
                 htmlStartSB.append('>');
             } else if (tagType == TagType.SELF_CLOSING) {
@@ -4538,20 +4449,6 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * @return the charset
-     */
-    public Charset getCharset() {
-        return charset;
-    }
-
-    /**
-     * @param charset the charset to set
-     */
-    public void setCharset(final Charset charset) {
-        this.charset = charset;
-    }
-
-    /**
      * @param removedAbstractHtmls
      * @return the locks after locking
      */
@@ -4656,7 +4553,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      * @since 3.0.2 improved to handle NoTag with contentTypeHtml true
      */
     public byte[] toWffBMBytes() {
-        return toWffBMBytes(charset);
+        return toWffBMBytes(CommonConstants.DEFAULT_CHARSET);
     }
 
     /**

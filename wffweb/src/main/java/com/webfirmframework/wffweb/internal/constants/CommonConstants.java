@@ -15,6 +15,9 @@
  */
 package com.webfirmframework.wffweb.internal.constants;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+
 /**
  * @author WFF
  * @since 1.0.0
@@ -31,6 +34,8 @@ public final class CommonConstants {
     public static final long FFFFFFFF_HEX_VALUE = Long.parseLong("FFFFFFFF", 16);
 
     public static final long FFFFFF_HEX_VALUE = Long.parseLong("FFFFFF", 16);
+
+    public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
     /**
      *

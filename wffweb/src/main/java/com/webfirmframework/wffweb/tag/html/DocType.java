@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 
+import com.webfirmframework.wffweb.internal.constants.CommonConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.core.PreIndexedTagName;
 
@@ -122,7 +123,7 @@ public abstract class DocType extends AbstractHtml {
     public int toOutputStream(final OutputStream os) throws IOException {
         int docTypeTagLength = 0;
         if (prependDocType) {
-            final byte[] docTypeTagBytes = (docTypeTag + "\n").getBytes(getCharset());
+            final byte[] docTypeTagBytes = (docTypeTag + "\n").getBytes(CommonConstants.DEFAULT_CHARSET);
             os.write(docTypeTagBytes);
             docTypeTagLength = docTypeTagBytes.length;
         }
@@ -140,7 +141,7 @@ public abstract class DocType extends AbstractHtml {
     public int toOutputStream(final OutputStream os, final boolean rebuild) throws IOException {
         int docTypeTagLength = 0;
         if (prependDocType) {
-            final byte[] docTypeTagBytes = (docTypeTag + "\n").getBytes(getCharset());
+            final byte[] docTypeTagBytes = (docTypeTag + "\n").getBytes(CommonConstants.DEFAULT_CHARSET);
             os.write(docTypeTagBytes);
             docTypeTagLength = docTypeTagBytes.length;
         }
@@ -159,7 +160,7 @@ public abstract class DocType extends AbstractHtml {
             throws IOException {
         int docTypeTagLength = 0;
         if (prependDocType) {
-            final byte[] docTypeTagBytes = (docTypeTag + "\n").getBytes(getCharset());
+            final byte[] docTypeTagBytes = (docTypeTag + "\n").getBytes(CommonConstants.DEFAULT_CHARSET);
             os.write(docTypeTagBytes);
             docTypeTagLength = docTypeTagBytes.length;
             if (flushOnWrite) {
@@ -317,7 +318,7 @@ public abstract class DocType extends AbstractHtml {
     public int toBigOutputStream(final OutputStream os) throws IOException {
         int docTypeTagLength = 0;
         if (prependDocType) {
-            final byte[] docTypeTagBytes = (docTypeTag + "\n").getBytes(getCharset());
+            final byte[] docTypeTagBytes = (docTypeTag + "\n").getBytes(CommonConstants.DEFAULT_CHARSET);
             os.write(docTypeTagBytes);
             docTypeTagLength = docTypeTagBytes.length;
         }
@@ -335,7 +336,7 @@ public abstract class DocType extends AbstractHtml {
     public int toBigOutputStream(final OutputStream os, final boolean rebuild) throws IOException {
         int docTypeTagLength = 0;
         if (prependDocType) {
-            final byte[] docTypeTagBytes = (docTypeTag + "\n").getBytes(getCharset());
+            final byte[] docTypeTagBytes = (docTypeTag + "\n").getBytes(CommonConstants.DEFAULT_CHARSET);
             os.write(docTypeTagBytes);
             docTypeTagLength = docTypeTagBytes.length;
         }

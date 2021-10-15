@@ -87,40 +87,6 @@ public final class AttributeUtil {
      * @param rebuild
      * @param attributes
      * @param charset    the charset
-     * @return the attributes string starting with a space.
-     * @author WFF
-     * @since 1.0.0
-     */
-    public static String getAttributeHtmlString(final boolean rebuild, final Charset charset,
-            final AbstractAttribute... attributes) {
-        if (attributes != null) {
-
-            // prefix + total delimiters
-            // 1 + (attributes.length - 1)
-            // StringUtil.join for reference
-            int capacity = attributes.length;
-
-            final String[] htmlStrings = new String[attributes.length];
-            for (int i = 0; i < attributes.length; i++) {
-                final String htmlString = attributes[i].toHtmlString(rebuild, charset);
-                htmlStrings[i] = htmlString;
-                capacity += htmlString.length();
-            }
-
-            final StringBuilder attributeSB = new StringBuilder(capacity);
-            for (final String htmlString : htmlStrings) {
-                attributeSB.append(' ').append(htmlString);
-            }
-
-            return attributeSB.toString();
-        }
-        return "";
-    }
-
-    /**
-     * @param rebuild
-     * @param attributes
-     * @param charset    the charset
      * @return the attributes bytes array compressed by index
      * @author WFF
      * @throws IOException

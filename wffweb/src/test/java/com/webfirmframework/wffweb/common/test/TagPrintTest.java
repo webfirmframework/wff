@@ -456,11 +456,11 @@ public class TagPrintTest implements Serializable {
         final String expectedString4 = "<!DOCTYPE html>\n<html style=\"color:red;width:15px;\" hidden id=\"htmlId\"></html>";
         final String expectedString5 = "<!DOCTYPE html>\n<html style=\"color:red;width:15px;\" id=\"htmlId\" hidden></html>";
         
-        if (!expectedString.equals(html.toHtmlString(StandardCharsets.UTF_8))
-                && !expectedString2.equals(html.toHtmlString(StandardCharsets.UTF_8))
-                && !expectedString3.equals(html.toHtmlString(StandardCharsets.UTF_8))
-                && !expectedString4.equals(html.toHtmlString(StandardCharsets.UTF_8))
-                && !expectedString5.equals(html.toHtmlString(StandardCharsets.UTF_8))) {
+        if (!expectedString.equals(html.toHtmlString())
+                && !expectedString2.equals(html.toHtmlString())
+                && !expectedString3.equals(html.toHtmlString())
+                && !expectedString4.equals(html.toHtmlString())
+                && !expectedString5.equals(html.toHtmlString())) {
             
             Assert.fail("testToHtmlStringWithCharset1 could not match expectedString 1 to 5");
         }
@@ -480,11 +480,11 @@ public class TagPrintTest implements Serializable {
         final String expectedString4 = "<!DOCTYPE html>\n<html style=\"color:red;width:15px;\" hidden id=\"htmlId\"></html>";
         final String expectedString5 = "<!DOCTYPE html>\n<html style=\"color:red;width:15px;\" id=\"htmlId\" hidden></html>";
         
-        if (!expectedString.equals(html.toHtmlString(StandardCharsets.UTF_8.name()))
-                && !expectedString2.equals(html.toHtmlString(StandardCharsets.UTF_8.name()))
-                && !expectedString3.equals(html.toHtmlString(StandardCharsets.UTF_8.name()))
-                && !expectedString4.equals(html.toHtmlString(StandardCharsets.UTF_8.name()))
-                && !expectedString5.equals(html.toHtmlString(StandardCharsets.UTF_8.name()))) {
+        if (!expectedString.equals(html.toHtmlString())
+                && !expectedString2.equals(html.toHtmlString())
+                && !expectedString3.equals(html.toHtmlString())
+                && !expectedString4.equals(html.toHtmlString())
+                && !expectedString5.equals(html.toHtmlString())) {
             
             Assert.fail("testToHtmlStringWithCharset2 could not match expectedString 1 to 5");
         }
@@ -504,11 +504,11 @@ public class TagPrintTest implements Serializable {
         final String expectedString4 = "<!DOCTYPE html>\n<html style=\"color:red;width:15px;\" hidden id=\"htmlId\"></html>";
         final String expectedString5 = "<!DOCTYPE html>\n<html style=\"color:red;width:15px;\" id=\"htmlId\" hidden></html>";
         
-        if (!expectedString.equals(html.toHtmlString(true, StandardCharsets.UTF_8))
-                && !expectedString2.equals(html.toHtmlString(true, StandardCharsets.UTF_8))
-                && !expectedString3.equals(html.toHtmlString(true, StandardCharsets.UTF_8))
-                && !expectedString4.equals(html.toHtmlString(true, StandardCharsets.UTF_8))
-                && !expectedString5.equals(html.toHtmlString(true, StandardCharsets.UTF_8))) {
+        if (!expectedString.equals(html.toHtmlString(true))
+                && !expectedString2.equals(html.toHtmlString(true))
+                && !expectedString3.equals(html.toHtmlString(true))
+                && !expectedString4.equals(html.toHtmlString(true))
+                && !expectedString5.equals(html.toHtmlString(true))) {
             
             Assert.fail("testToHtmlStringWithCharset3 could not match expectedString 1 to 5");
         }
@@ -528,11 +528,11 @@ public class TagPrintTest implements Serializable {
         final String expectedString4 = "<!DOCTYPE html>\n<html style=\"color:red;width:15px;\" hidden id=\"htmlId\"></html>";
         final String expectedString5 = "<!DOCTYPE html>\n<html style=\"color:red;width:15px;\" id=\"htmlId\" hidden></html>";
         
-        if (!expectedString.equals(html.toHtmlString(true, StandardCharsets.UTF_8.name()))
-                && !expectedString2.equals(html.toHtmlString(true, StandardCharsets.UTF_8.name()))
-                && !expectedString3.equals(html.toHtmlString(true, StandardCharsets.UTF_8.name()))
-                && !expectedString4.equals(html.toHtmlString(true, StandardCharsets.UTF_8.name()))
-                && !expectedString5.equals(html.toHtmlString(true, StandardCharsets.UTF_8.name()))) {
+        if (!expectedString.equals(html.toHtmlString(true))
+                && !expectedString2.equals(html.toHtmlString(true))
+                && !expectedString3.equals(html.toHtmlString(true))
+                && !expectedString4.equals(html.toHtmlString(true))
+                && !expectedString5.equals(html.toHtmlString(true))) {
             
             Assert.fail("testToHtmlStringWithCharset3 could not match expectedString 1 to 5");
         }

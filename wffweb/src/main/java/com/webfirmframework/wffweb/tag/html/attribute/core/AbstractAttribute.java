@@ -39,6 +39,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import java.util.concurrent.locks.StampedLock;
 
 import com.webfirmframework.wffweb.internal.ObjectId;
+import com.webfirmframework.wffweb.internal.constants.CommonConstants;
 import com.webfirmframework.wffweb.internal.tag.html.listener.PushQueue;
 import com.webfirmframework.wffweb.tag.core.AbstractTagBase;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
@@ -74,8 +75,6 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
     // private AttributeValueChangeListener valueChangeListener;
 
     private volatile Set<AttributeValueChangeListener> valueChangeListeners;
-
-    private transient Charset charset = Charset.defaultCharset();
 
     private final boolean nullableAttrValueMapValue;
 
@@ -323,7 +322,7 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
      * @since 1.1.3
      */
     protected byte[] getBinaryStructureCompressedByIndex(final boolean rebuild) throws IOException {
-        return getBinaryStructureCompressedByIndex(rebuild, charset);
+        return getBinaryStructureCompressedByIndex(rebuild, CommonConstants.DEFAULT_CHARSET);
     }
 
     /**
@@ -486,40 +485,6 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
     /*
      * (non-Javadoc)
      *
-     * @see com.webfirmframework.wffweb.tag.core.TagBase#toHtmlString(java.nio.
-     * charset.Charset)
-     */
-    @Override
-    public String toHtmlString(final Charset charset) {
-        final Charset previousCharset = this.charset;
-        try {
-            this.charset = charset;
-            return toHtmlString();
-        } finally {
-            this.charset = previousCharset;
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.webfirmframework.wffweb.tag.core.TagBase#toHtmlString(java.lang.
-     * String)
-     */
-    @Override
-    public String toHtmlString(final String charset) {
-        final Charset previousCharset = this.charset;
-        try {
-            this.charset = Charset.forName(charset);
-            return toHtmlString();
-        } finally {
-            this.charset = previousCharset;
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     *
      * @see com.webfirmframework.wffweb.tag.Base#toHtmlString(boolean)
      *
      * @since 1.0.0
@@ -529,40 +494,6 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
     @Override
     public String toHtmlString(final boolean rebuild) {
         return getPrintStructure(rebuild);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.webfirmframework.wffweb.tag.core.TagBase#toHtmlString(boolean,
-     * java.nio.charset.Charset)
-     */
-    @Override
-    public String toHtmlString(final boolean rebuild, final Charset charset) {
-        final Charset previousCharset = this.charset;
-        try {
-            this.charset = charset;
-            return toHtmlString(rebuild);
-        } finally {
-            this.charset = previousCharset;
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.webfirmframework.wffweb.tag.core.TagBase#toHtmlString(boolean,
-     * java.lang.String)
-     */
-    @Override
-    public String toHtmlString(final boolean rebuild, final String charset) {
-        final Charset previousCharset = this.charset;
-        try {
-            this.charset = Charset.forName(charset);
-            return toHtmlString(rebuild);
-        } finally {
-            this.charset = previousCharset;
-        }
     }
 
     /*
@@ -1438,20 +1369,6 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
      */
     protected void beforePrintStructureCompressedByIndex() {
         // TODO override and use
-    }
-
-    /**
-     * @return the charset
-     */
-    public Charset getCharset() {
-        return charset;
-    }
-
-    /**
-     * @param charset the charset to set
-     */
-    public void setCharset(final Charset charset) {
-        this.charset = charset;
     }
 
     /**
