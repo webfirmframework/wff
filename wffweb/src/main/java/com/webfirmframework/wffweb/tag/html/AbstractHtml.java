@@ -3970,6 +3970,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * charset.Charset)
      */
     @Override
+    @Deprecated
     public String toHtmlString(final Charset charset) {
         final Lock lock = lockAndGetWriteLock();
         final Charset previousCharset = this.charset;
@@ -3992,6 +3993,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * String)
      */
     @Override
+    @Deprecated
     public String toHtmlString(final String charset) {
         final Lock lock = lockAndGetWriteLock();
         final Charset previousCharset = this.charset;
@@ -4027,6 +4029,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @see com.webfirmframework.wffweb.tag.core.TagBase#toHtmlString(boolean,
      * java.nio.charset.Charset)
      */
+    @Deprecated
     @Override
     public String toHtmlString(final boolean rebuild, final Charset charset) {
         final Lock lock = lockAndGetWriteLock();
@@ -4049,6 +4052,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @see com.webfirmframework.wffweb.tag.core.TagBase#toHtmlString(boolean,
      * java.lang.String)
      */
+    @Deprecated
     @Override
     public String toHtmlString(final boolean rebuild, final String charset) {
         final Lock lock = lockAndGetWriteLock();
@@ -4550,14 +4554,20 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     /**
      * @return the charset
+     * @deprecated not recommended since 3.0.19, it will be removed in future major
+     *             version.
      */
+    @Deprecated
     public Charset getCharset() {
         return charset;
     }
 
     /**
      * @param charset the charset to set
+     * @deprecated not recommended since 3.0.19, it will be removed in future major
+     *             version.
      */
+    @Deprecated
     public void setCharset(final Charset charset) {
         this.charset = charset;
     }

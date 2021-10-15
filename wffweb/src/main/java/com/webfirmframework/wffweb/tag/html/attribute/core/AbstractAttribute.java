@@ -487,6 +487,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * charset.Charset)
      */
     @Override
+    @Deprecated
     public String toHtmlString(final Charset charset) {
         final Charset previousCharset = this.charset;
         try {
@@ -504,6 +505,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * String)
      */
     @Override
+    @Deprecated
     public String toHtmlString(final String charset) {
         final Charset previousCharset = this.charset;
         try {
@@ -534,6 +536,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @see com.webfirmframework.wffweb.tag.core.TagBase#toHtmlString(boolean,
      * java.nio.charset.Charset)
      */
+    @Deprecated
     @Override
     public String toHtmlString(final boolean rebuild, final Charset charset) {
         final Charset previousCharset = this.charset;
@@ -551,6 +554,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @see com.webfirmframework.wffweb.tag.core.TagBase#toHtmlString(boolean,
      * java.lang.String)
      */
+    @Deprecated
     @Override
     public String toHtmlString(final boolean rebuild, final String charset) {
         final Charset previousCharset = this.charset;

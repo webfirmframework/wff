@@ -1277,7 +1277,9 @@ public abstract class BrowserPage implements Serializable {
      * @return {@code String} equalent to the html string of the tag including the
      *         child tags.
      * @author WFF
+     * @deprecated since 3.0.19 as it is unused in the internal implementation
      */
+    @Deprecated
     public String toHtmlString(final String charset) {
         initAbstractHtml();
         wsWarningDisabled = true;
@@ -1304,7 +1306,9 @@ public abstract class BrowserPage implements Serializable {
      *         child tags.
      * @author WFF
      * @since 2.1.4
+     * @deprecated since 3.0.19 as it is unused in the internal implementation
      */
+    @Deprecated
     public String toHtmlString(final boolean rebuild, final String charset) {
         initAbstractHtml();
         wsWarningDisabled = true;
