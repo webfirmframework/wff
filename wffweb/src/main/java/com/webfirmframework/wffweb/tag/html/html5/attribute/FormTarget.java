@@ -20,6 +20,8 @@ import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
 
+import java.io.Serial;
+
 /**
  *
  * <code>formtarget</code> attribute for the element.
@@ -34,6 +36,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
  */
 public class FormTarget extends AbstractAttribute implements InputAttributable {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     public static final String BLANK = "_blank";

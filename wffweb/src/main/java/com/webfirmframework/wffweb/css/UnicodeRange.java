@@ -21,6 +21,8 @@ import com.webfirmframework.wffweb.css.core.AbstractCssProperty;
 import com.webfirmframework.wffweb.util.StringBuilderUtil;
 import com.webfirmframework.wffweb.util.StringUtil;
 
+import java.io.Serial;
+
 /**
  * <pre>
  * unicode-range: <i>unicode-range</i>;
@@ -35,6 +37,7 @@ import com.webfirmframework.wffweb.util.StringUtil;
  */
 public class UnicodeRange extends AbstractCssProperty<UnicodeRange> {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     public static final String DEFAULT_VALUE = "U+0-10FFFF";

@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.css;
 
+import java.io.Serial;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -42,6 +43,7 @@ import com.webfirmframework.wffweb.util.StringUtil;
  */
 public class ListStyle extends AbstractCssProperty<ListStyle> implements StateChangeInformer<CssProperty> {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     private static final Logger LOGGER = Logger.getLogger(ListStyle.class.getName());

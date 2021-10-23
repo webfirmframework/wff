@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.css;
 
+import java.io.Serial;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -53,6 +54,7 @@ import com.webfirmframework.wffweb.util.StringUtil;
  */
 public class BackgroundImage extends AbstractCssProperty<BackgroundImage> implements StateChangeInformer<Bean> {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     public static final String INITIAL = "initial";
