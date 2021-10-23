@@ -673,7 +673,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * @param child
+     * @param firstChild
      * @since 3.0.18
      */
     private void removeFromSharedTagContent(final AbstractHtml firstChild) {

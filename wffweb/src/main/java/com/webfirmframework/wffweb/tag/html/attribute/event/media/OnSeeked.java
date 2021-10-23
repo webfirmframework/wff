@@ -16,6 +16,8 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute.event.media;
 
+import java.io.Serial;
+
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.attribute.event.AbstractEventAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.event.ServerAsyncMethod;
@@ -31,6 +33,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.event.ServerAsyncMethod;
  */
 public class OnSeeked extends AbstractEventAttribute {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;

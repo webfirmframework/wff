@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
+import java.io.Serial;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashSet;
@@ -29,6 +30,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
 
 public final class ChildTagRemoveListenerImpl implements ChildTagRemoveListener {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private static final Logger LOGGER = Logger.getLogger(ChildTagRemoveListenerImpl.class.getName());

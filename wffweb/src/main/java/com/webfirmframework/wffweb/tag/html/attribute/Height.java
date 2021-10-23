@@ -16,6 +16,8 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute;
 
+import java.io.Serial;
+
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.css.CssLengthUnit;
 import com.webfirmframework.wffweb.css.core.LengthUnit;
@@ -34,6 +36,7 @@ import com.webfirmframework.wffweb.util.CssLengthUtil;
  */
 public class Height extends AbstractAttribute implements InputAttributable, RectAttributable {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     private String htmlString;

@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.css;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -44,6 +45,7 @@ import com.webfirmframework.wffweb.util.StringUtil;
  */
 public class Cursor extends AbstractCssProperty<Cursor> implements StateChangeInformer<Bean> {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     public static final String ALIAS = "alias";
