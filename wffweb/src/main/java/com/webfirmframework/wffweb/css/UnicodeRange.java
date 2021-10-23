@@ -16,12 +16,12 @@
  */
 package com.webfirmframework.wffweb.css;
 
+import java.io.Serial;
+
 import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.css.core.AbstractCssProperty;
 import com.webfirmframework.wffweb.util.StringBuilderUtil;
 import com.webfirmframework.wffweb.util.StringUtil;
-
-import java.io.Serial;
 
 /**
  * <pre>

@@ -16,11 +16,11 @@
  */
 package com.webfirmframework.wffweb.tag.html.html5.attribute;
 
+import java.io.Serial;
+
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
-
-import java.io.Serial;
 
 /**
  *
