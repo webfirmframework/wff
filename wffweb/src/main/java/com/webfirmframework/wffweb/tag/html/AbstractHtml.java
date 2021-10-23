@@ -211,7 +211,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 //
 
                 if (removed) {
-                    sharedObject.setChildModified(removed);
+                    sharedObject.setChildModified(removed, ACCESS_OBJECT);
                 }
 
                 return removed;
@@ -221,7 +221,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             public boolean add(final AbstractHtml e) {
                 final boolean added = super.add(e);
                 if (added) {
-                    sharedObject.setChildModified(added);
+                    sharedObject.setChildModified(added, ACCESS_OBJECT);
                 }
                 return added;
             }
@@ -259,7 +259,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                                     new ChildTagRemoveListener.Event(AbstractHtml.this, removedAbstractHtmls));
                         }
 
-                        sharedObject.setChildModified(removedAll);
+                        sharedObject.setChildModified(removedAll, ACCESS_OBJECT);
                     } finally {
                         for (final Lock newSOLock : newSOLocks) {
                             newSOLock.unlock();
@@ -280,7 +280,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             @Override
             public void clear() {
                 if (super.size() > 0) {
-                    sharedObject.setChildModified(true);
+                    sharedObject.setChildModified(true, ACCESS_OBJECT);
                 }
                 super.clear();
             }
@@ -2258,7 +2258,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
         this.attributes = thisAttributes;
         setModified(true);
 
-        sharedObject.setChildModified(true);
+        sharedObject.setChildModified(true, ACCESS_OBJECT);
 
         // invokeListener
         if (updateClient) {
@@ -2442,7 +2442,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             if (removed) {
                 this.attributes = attributesMap.values().toArray(new AbstractAttribute[attributesMap.size()]);
                 setModified(true);
-                sharedObject.setChildModified(true);
+                sharedObject.setChildModified(true, ACCESS_OBJECT);
 
                 // invokeListener
                 if (updateClient) {
@@ -2502,7 +2502,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             attributes = thisAttributesMap.values().toArray(new AbstractAttribute[thisAttributesMap.size()]);
 
             setModified(true);
-            sharedObject.setChildModified(true);
+            sharedObject.setChildModified(true, ACCESS_OBJECT);
         }
 
         thisDataWffId = null;
@@ -2618,7 +2618,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             if (removed) {
                 attributes = attributesMap.values().toArray(new AbstractAttribute[attributesMap.size()]);
                 setModified(true);
-                sharedObject.setChildModified(true);
+                sharedObject.setChildModified(true, ACCESS_OBJECT);
 
                 // invokeListener
                 if (updateClient) {
@@ -3298,7 +3298,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             final String printStructure = getPrintStructureWithoutRecursive(getSharedObject().isChildModified());
 
             if (parent == null) {
-                sharedObject.setChildModified(false);
+                sharedObject.setChildModified(false, ACCESS_OBJECT);
             }
 
             return printStructure;
@@ -3954,7 +3954,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             final String printStructure = getPrintStructure(getSharedObject().isChildModified());
 
             if (parent == null) {
-                sharedObject.setChildModified(false);
+                sharedObject.setChildModified(false, ACCESS_OBJECT);
             }
 
             return printStructure;

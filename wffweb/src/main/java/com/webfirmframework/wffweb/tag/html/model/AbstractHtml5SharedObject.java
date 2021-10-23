@@ -90,7 +90,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
 
     private WffBMDataUpdateListener wffBMDataUpdateListener;
 
-    private PushQueue pushQueue;
+    private volatile PushQueue pushQueue;
 
     /**
      * no need to make it volatile. cannot declare as long to avoid maximum id
@@ -225,10 +225,30 @@ public final class AbstractHtml5SharedObject implements Serializable {
      * NB:- it's for internal use
      *
      * @param childModified the childModified to set
+     * @param accessObject TODO
      * @since 1.0.0
      * @author WFF
+     * @deprecated it does nothing since 3.0.19
      */
-    public void setChildModified(final boolean childModified) {
+    @Deprecated
+    public void setChildModified(final boolean childModified) {        
+    }
+    
+    /**
+     * set true if any of the children has been modified.<br>
+     * NB:- it's for internal use
+     *
+     * @param childModified the childModified to set
+     * @param accessObject access object
+     * @since 1.0.0
+     * @since 3.0.19 added accessObject param
+     * @author WFF
+     */
+    public void setChildModified(final boolean childModified, final Object accessObject) {
+        if (accessObject == null || !((SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName()))
+                || (SecurityClassConstants.ABSTRACT_ATTRIBUTE.equals(accessObject.getClass().getName())))) {
+            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
+        }
         this.childModified = childModified;
     }
 
