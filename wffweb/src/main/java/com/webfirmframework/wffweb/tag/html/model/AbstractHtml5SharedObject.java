@@ -225,7 +225,6 @@ public final class AbstractHtml5SharedObject implements Serializable {
      * NB:- it's for internal use
      *
      * @param childModified the childModified to set
-     * @param accessObject TODO
      * @since 1.0.0
      * @author WFF
      * @deprecated it does nothing since 3.0.19
@@ -240,8 +239,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
      *
      * @param childModified the childModified to set
      * @param accessObject access object
-     * @since 1.0.0
-     * @since 3.0.19 added accessObject param
+     * @since 3.0.19
      * @author WFF
      */
     public void setChildModified(final boolean childModified, final Object accessObject) {
