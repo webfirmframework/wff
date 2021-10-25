@@ -9,6 +9,12 @@ import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.SharedTagContent;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 
+/**
+ * Note: only for internal use.
+ *
+ * @since 12.0.0
+ *
+ */
 public sealed interface SecurityObject extends
         Serializable permits BrowserPage.Security,AbstractJsObject.Security,AbstractHtml.Security,SharedTagContent.Security,AbstractAttribute.Security {
     IndexedClassType forClassType();
