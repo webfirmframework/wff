@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
 import com.webfirmframework.wffweb.internal.tag.html.listener.WffBMDataDeleteListener;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.TagUtil;
@@ -36,21 +37,21 @@ public final class WffBMDataDeleteListenerImpl implements WffBMDataDeleteListene
 
     private final BrowserPage browserPage;
 
-    private final Object accessObject;
+    private final SecurityObject accessObject;
 
     @SuppressWarnings("unused")
     private WffBMDataDeleteListenerImpl() {
         throw new AssertionError();
     }
 
-    WffBMDataDeleteListenerImpl(final BrowserPage browserPage, final Object accessObject) {
+    WffBMDataDeleteListenerImpl(final BrowserPage browserPage, final SecurityObject accessObject) {
         this.browserPage = browserPage;
         this.accessObject = accessObject;
 
     }
 
     @Override
-    public void deletedWffData(final DeleteEvent event) {
+    public void deletedWffData(@SuppressWarnings("exports") final DeleteEvent event) {
         try {
 
             // @formatter:off

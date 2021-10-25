@@ -42,6 +42,8 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import com.webfirmframework.wffweb.internal.InternalId;
+import com.webfirmframework.wffweb.internal.constants.IndexedClassType;
+import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
 import com.webfirmframework.wffweb.internal.tag.html.listener.PushQueue;
 import com.webfirmframework.wffweb.server.page.ClientTasksWrapper;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
@@ -301,12 +303,22 @@ public class SharedTagContent<T> {
     }
 
     // for security purpose, the class name should not be modified
-    private static final class Security implements Serializable {
+    /**
+     * Note: Only for internal use.
+     *
+     */
+    public static final class Security implements SecurityObject {
 
         @Serial
         private static final long serialVersionUID = 1L;
 
         private Security() {
+        }
+
+        @SuppressWarnings("exports")
+        @Override
+        public IndexedClassType forClassType() {
+            return IndexedClassType.SHARED_TAG_CONTENT;
         }
     }
 

@@ -31,7 +31,8 @@ import java.util.stream.Stream;
 import com.webfirmframework.wffweb.InvalidTagException;
 import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.WffSecurityException;
-import com.webfirmframework.wffweb.internal.security.object.SecurityClassConstants;
+import com.webfirmframework.wffweb.internal.constants.IndexedClassType;
+import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
 import com.webfirmframework.wffweb.server.page.BrowserPage;
 import com.webfirmframework.wffweb.server.page.action.BrowserPageAction;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
@@ -77,11 +78,11 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      * @since 2.1.16
      * @author WFF
      */
-    public TagRepository(final Object accessObject, final BrowserPage browserPage,
+    public TagRepository(@SuppressWarnings("exports") final SecurityObject accessObject, final BrowserPage browserPage,
             final Map<String, AbstractHtml> tagByWffId, final AbstractHtml... rootTags) {
 
-        if (accessObject == null || !((SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName()))
-                || (SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName())))) {
+        if (accessObject == null || !((IndexedClassType.ABSTRACT_HTML.equals(accessObject.forClassType()))
+                || (IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType())))) {
             throw new WffSecurityException("Not allowed to consume this constructor. This method is for internal use.");
         }
 

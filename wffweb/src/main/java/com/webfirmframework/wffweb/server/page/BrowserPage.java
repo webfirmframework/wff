@@ -52,6 +52,8 @@ import com.webfirmframework.wffweb.NotRenderedException;
 import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.PushFailedException;
 import com.webfirmframework.wffweb.WffRuntimeException;
+import com.webfirmframework.wffweb.internal.constants.IndexedClassType;
+import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
 import com.webfirmframework.wffweb.internal.server.page.js.WffJsFile;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.Html;
@@ -195,12 +197,22 @@ public abstract class BrowserPage implements Serializable {
     // .withInitial(() -> new PayloadProcessor(this, true));
 
     // for security purpose, the class name should not be modified
-    private static final class Security implements Serializable {
+    /**
+     * Note: Only for internal use.
+     *
+     */
+    public static final class Security implements SecurityObject {
 
         @Serial
         private static final long serialVersionUID = 1L;
 
         private Security() {
+        }
+
+        @SuppressWarnings("exports")
+        @Override
+        public IndexedClassType forClassType() {
+            return IndexedClassType.BROWSER_PAGE;
         }
     }
 

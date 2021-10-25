@@ -27,7 +27,8 @@ import java.util.concurrent.locks.Lock;
 
 import com.webfirmframework.wffweb.WffSecurityException;
 import com.webfirmframework.wffweb.internal.ObjectId;
-import com.webfirmframework.wffweb.internal.security.object.SecurityClassConstants;
+import com.webfirmframework.wffweb.internal.constants.IndexedClassType;
+import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeUtil;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
@@ -105,10 +106,10 @@ public final class TagUtil {
      * @return bytes
      * @since 3.0.6
      */
-    public static byte[] getTagNameBytesCompressedByIndex(final Object accessObject, final AbstractHtml tag,
+    public static byte[] getTagNameBytesCompressedByIndex(@SuppressWarnings("exports") final SecurityObject accessObject, final AbstractHtml tag,
             final Charset charset) {
 
-        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName()))) {
+        if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
 
@@ -164,7 +165,7 @@ public final class TagUtil {
      * @return the collection of locks
      * @since 3.0.15
      */
-    static List<Lock> lockAndGetWriteLocks(final AbstractHtml currentTag, final Object accessObject,
+    static List<Lock> lockAndGetWriteLocks(final AbstractHtml currentTag, final SecurityObject accessObject,
             final AbstractHtml... foreignTags) {
 
         List<Lock> locks = null;
@@ -229,7 +230,8 @@ public final class TagUtil {
      * @return the locks
      * @since 3.0.15
      */
-    static List<Lock> lockAndGetNestedAttributeWriteLocks(final Object accessObject, final AbstractHtml... tags) {
+    static List<Lock> lockAndGetNestedAttributeWriteLocks(final SecurityObject accessObject,
+            final AbstractHtml... tags) {
         final Set<AbstractAttribute> allNestedAttributes = new HashSet<>();
         AbstractHtml.loopThroughAllNestedChildren(child -> {
 

@@ -18,7 +18,6 @@ package com.webfirmframework.wffweb.tag.html.attribute.core;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serial;
-import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,6 +39,8 @@ import java.util.concurrent.locks.StampedLock;
 
 import com.webfirmframework.wffweb.internal.ObjectId;
 import com.webfirmframework.wffweb.internal.constants.CommonConstants;
+import com.webfirmframework.wffweb.internal.constants.IndexedClassType;
+import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
 import com.webfirmframework.wffweb.internal.tag.html.listener.PushQueue;
 import com.webfirmframework.wffweb.tag.core.AbstractTagBase;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
@@ -87,12 +88,22 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
     private final ObjectId objectId;
 
     // for security purpose, the class name should not be modified
-    private static final class Security implements Serializable {
+    /**
+     * Note: Only for internal use.
+     *
+     */
+    public static final class Security implements SecurityObject {
 
         @Serial
         private static final long serialVersionUID = 1L;
 
         private Security() {
+        }
+
+        @SuppressWarnings("exports")
+        @Override
+        public IndexedClassType forClassType() {
+            return IndexedClassType.ABSTRACT_ATTRIBUTE;
         }
     }
 

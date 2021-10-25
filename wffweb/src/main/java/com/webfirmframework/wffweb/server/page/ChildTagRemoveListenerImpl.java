@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
 import com.webfirmframework.wffweb.internal.tag.html.listener.ChildTagRemoveListener;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
@@ -37,7 +38,7 @@ public final class ChildTagRemoveListenerImpl implements ChildTagRemoveListener 
 
     private final BrowserPage browserPage;
 
-    private final Object accessObject;
+    private final SecurityObject accessObject;
 
     private final Map<String, AbstractHtml> tagByWffId;
 
@@ -46,7 +47,7 @@ public final class ChildTagRemoveListenerImpl implements ChildTagRemoveListener 
         throw new AssertionError();
     }
 
-    ChildTagRemoveListenerImpl(final BrowserPage browserPage, final Object accessObject,
+    ChildTagRemoveListenerImpl(final BrowserPage browserPage, final SecurityObject accessObject,
             final Map<String, AbstractHtml> tagByWffId) {
         this.browserPage = browserPage;
         this.accessObject = accessObject;
@@ -88,7 +89,7 @@ public final class ChildTagRemoveListenerImpl implements ChildTagRemoveListener 
     }
 
     @Override
-    public void childRemoved(final Event event) {
+    public void childRemoved(@SuppressWarnings("exports") final Event event) {
 
         final AbstractHtml removedChildTag = event.removedChildTag();
 
@@ -145,12 +146,12 @@ public final class ChildTagRemoveListenerImpl implements ChildTagRemoveListener 
     }
 
     @Override
-    public void childrenRemoved(final Event event) {
+    public void childrenRemoved(@SuppressWarnings("exports") final Event event) {
         removeChildren(event.removedChildrenTags());
     }
 
     @Override
-    public void allChildrenRemoved(final Event event) {
+    public void allChildrenRemoved(@SuppressWarnings("exports") final Event event) {
 
         final AbstractHtml parentTag = event.parentTag();
 

@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
 import com.webfirmframework.wffweb.internal.tag.html.listener.WffBMDataUpdateListener;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.TagUtil;
@@ -38,20 +39,20 @@ public final class WffBMDataUpdateListenerImpl implements WffBMDataUpdateListene
 
     private final BrowserPage browserPage;
 
-    private final Object accessObject;
+    private final SecurityObject accessObject;
 
     @SuppressWarnings("unused")
     private WffBMDataUpdateListenerImpl() {
         throw new AssertionError();
     }
 
-    WffBMDataUpdateListenerImpl(final BrowserPage browserPage, final Object accessObject) {
+    WffBMDataUpdateListenerImpl(final BrowserPage browserPage, final SecurityObject accessObject) {
         this.browserPage = browserPage;
         this.accessObject = accessObject;
     }
 
     @Override
-    public void updatedWffData(final UpdateEvent event) {
+    public void updatedWffData(@SuppressWarnings("exports") final UpdateEvent event) {
 
         try {
 

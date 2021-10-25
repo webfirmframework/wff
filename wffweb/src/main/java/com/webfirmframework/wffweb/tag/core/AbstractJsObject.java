@@ -16,11 +16,12 @@
 package com.webfirmframework.wffweb.tag.core;
 
 import java.io.Serial;
-import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.webfirmframework.wffweb.InvalidTagException;
+import com.webfirmframework.wffweb.internal.constants.IndexedClassType;
+import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
 import com.webfirmframework.wffweb.internal.tag.html.listener.PushQueue;
 import com.webfirmframework.wffweb.internal.tag.html.listener.WffBMDataDeleteListener;
 import com.webfirmframework.wffweb.internal.tag.html.listener.WffBMDataUpdateListener;
@@ -47,11 +48,21 @@ public abstract sealed class AbstractJsObject extends AbstractTagBase permits Ab
     protected volatile Map<String, WffBMData> wffBMDatas;
 
     // for security purpose, the class name should not be modified
-    private static final class Security implements Serializable {
+    /**
+     * Note: Only for internal use.
+     *
+     */
+    public static final class Security implements SecurityObject {
 
         private static final long serialVersionUID = 1L;
 
         private Security() {
+        }
+
+        @SuppressWarnings("exports")
+        @Override
+        public IndexedClassType forClassType() {
+            return IndexedClassType.ABSTRACT_JS_OBJECT;
         }
     }
 

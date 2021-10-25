@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.InvalidTagException;
+import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
 import com.webfirmframework.wffweb.internal.server.page.js.WffJsFile;
 import com.webfirmframework.wffweb.internal.tag.html.listener.InsertAfterListener;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
@@ -45,7 +46,7 @@ public final class InsertAfterListenerImpl implements InsertAfterListener {
 
     private final BrowserPage browserPage;
 
-    private final Object accessObject;
+    private final SecurityObject accessObject;
 
     private final Map<String, AbstractHtml> tagByWffId;
 
@@ -54,7 +55,7 @@ public final class InsertAfterListenerImpl implements InsertAfterListener {
         throw new AssertionError();
     }
 
-    InsertAfterListenerImpl(final BrowserPage browserPage, final Object accessObject,
+    InsertAfterListenerImpl(final BrowserPage browserPage, final SecurityObject accessObject,
             final Map<String, AbstractHtml> tagByWffId) {
         this.browserPage = browserPage;
         this.accessObject = accessObject;
@@ -99,7 +100,7 @@ public final class InsertAfterListenerImpl implements InsertAfterListener {
     }
 
     @Override
-    public void insertedAfter(final AbstractHtml parentTag, final AbstractHtml afterTag, final Event... events) {
+    public void insertedAfter(final AbstractHtml parentTag, final AbstractHtml afterTag, @SuppressWarnings("exports") final Event... events) {
 
         // @formatter:off
         // removed all children tags task format :-

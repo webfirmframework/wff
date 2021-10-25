@@ -28,6 +28,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.InvalidTagException;
+import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
 import com.webfirmframework.wffweb.internal.server.page.js.WffJsFile;
 import com.webfirmframework.wffweb.internal.tag.html.listener.InnerHtmlAddListener;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
@@ -44,7 +45,7 @@ public final class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
 
     private final BrowserPage browserPage;
 
-    private final Object accessObject;
+    private final SecurityObject accessObject;
 
     private final Map<String, AbstractHtml> tagByWffId;
 
@@ -53,7 +54,7 @@ public final class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
         throw new AssertionError();
     }
 
-    InnerHtmlAddListenerImpl(final BrowserPage browserPage, final Object accessObject,
+    InnerHtmlAddListenerImpl(final BrowserPage browserPage, final SecurityObject accessObject,
             final Map<String, AbstractHtml> tagByWffId) {
         this.browserPage = browserPage;
         this.accessObject = accessObject;
@@ -98,7 +99,7 @@ public final class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
     }
 
     @Override
-    public ClientTasksWrapper innerHtmlsAdded(final AbstractHtml parentTag, final Event... events) {
+    public ClientTasksWrapper innerHtmlsAdded(final AbstractHtml parentTag, @SuppressWarnings("exports") final Event... events) {
 
         // @formatter:off
         // removed all children tags task format :-
@@ -196,7 +197,7 @@ public final class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
     }
 
     @Override
-    public void innerHtmlAdded(final Event event) {
+    public void innerHtmlAdded(@SuppressWarnings("exports") final Event event) {
         innerHtmlsAdded(event.parentTag(), event);
     }
 

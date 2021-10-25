@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
 import com.webfirmframework.wffweb.internal.tag.html.listener.AttributeAddListener;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
@@ -32,20 +33,20 @@ public final class AttributeAddListenerImpl implements AttributeAddListener {
 
     private final BrowserPage browserPage;
 
-    private final Object accessObject;
+    private final SecurityObject accessObject;
 
     @SuppressWarnings("unused")
     private AttributeAddListenerImpl() {
         throw new AssertionError();
     }
 
-    AttributeAddListenerImpl(final BrowserPage browserPage, final Object accessObject) {
+    AttributeAddListenerImpl(final BrowserPage browserPage, final SecurityObject accessObject) {
         this.browserPage = browserPage;
         this.accessObject = accessObject;
     }
 
     @Override
-    public void addedAttributes(final AddEvent event) {
+    public void addedAttributes(@SuppressWarnings("exports") final AddEvent event) {
 
         try {
 
