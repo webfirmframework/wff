@@ -42,8 +42,8 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import com.webfirmframework.wffweb.internal.InternalId;
-import com.webfirmframework.wffweb.internal.constants.IndexedClassType;
 import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
+import com.webfirmframework.wffweb.internal.security.object.SharedTagContentSecurity;
 import com.webfirmframework.wffweb.internal.tag.html.listener.PushQueue;
 import com.webfirmframework.wffweb.server.page.ClientTasksWrapper;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
@@ -91,7 +91,7 @@ public class SharedTagContent<T> {
 
     private static final Logger LOGGER = Logger.getLogger(SharedTagContent.class.getName());
 
-    private static final Security ACCESS_OBJECT;
+    private static final SecurityObject ACCESS_OBJECT;
 
     private final ContentFormatter<T> DEFAULT_CONTENT_FORMATTER = content -> new Content<>(
             String.valueOf(content.content), content.contentTypeHtml);
@@ -302,28 +302,21 @@ public class SharedTagContent<T> {
         public abstract Runnable detached(final DetachEvent<T> detachEvent);
     }
 
-    // for security purpose, the class name should not be modified
     /**
      * Note: Only for internal use.
      *
      */
-    public static final class Security implements SecurityObject {
-
-        @Serial
-        private static final long serialVersionUID = 1L;
-
+    // for security purpose, the class name should not be modified
+    private static final class Security {
         private Security() {
-        }
-
-        @SuppressWarnings("exports")
-        @Override
-        public IndexedClassType forClassType() {
-            return IndexedClassType.SHARED_TAG_CONTENT;
+            if (ACCESS_OBJECT != null) {
+                throw new AssertionError("Not allowed to call this constructor");
+            }
         }
     }
 
     static {
-        ACCESS_OBJECT = new Security();
+        ACCESS_OBJECT = new SharedTagContentSecurity(new Security());
     }
 
     /**

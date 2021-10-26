@@ -99,7 +99,8 @@ public final class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
     }
 
     @Override
-    public ClientTasksWrapper innerHtmlsAdded(final AbstractHtml parentTag, @SuppressWarnings("exports") final Event... events) {
+    public ClientTasksWrapper innerHtmlsAdded(final AbstractHtml parentTag,
+            @SuppressWarnings("exports") final Event... events) {
 
         // @formatter:off
         // removed all children tags task format :-

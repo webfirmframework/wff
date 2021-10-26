@@ -39,7 +39,7 @@ import java.util.concurrent.locks.StampedLock;
 
 import com.webfirmframework.wffweb.internal.ObjectId;
 import com.webfirmframework.wffweb.internal.constants.CommonConstants;
-import com.webfirmframework.wffweb.internal.constants.IndexedClassType;
+import com.webfirmframework.wffweb.internal.security.object.AbstractAttributeSecurity;
 import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
 import com.webfirmframework.wffweb.internal.tag.html.listener.PushQueue;
 import com.webfirmframework.wffweb.tag.core.AbstractTagBase;
@@ -53,7 +53,7 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
     @Serial
     private static final long serialVersionUID = 1_1_1L;
 
-    private static final Security ACCESS_OBJECT;
+    private static final SecurityObject ACCESS_OBJECT;
 
     private String attributeName;
 
@@ -87,23 +87,16 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
      */
     private final ObjectId objectId;
 
-    // for security purpose, the class name should not be modified
     /**
      * Note: Only for internal use.
      *
      */
-    public static final class Security implements SecurityObject {
-
-        @Serial
-        private static final long serialVersionUID = 1L;
-
+    // for security purpose, the class name should not be modified
+    private static final class Security {
         private Security() {
-        }
-
-        @SuppressWarnings("exports")
-        @Override
-        public IndexedClassType forClassType() {
-            return IndexedClassType.ABSTRACT_ATTRIBUTE;
+            if (ACCESS_OBJECT != null) {
+                throw new AssertionError("Not allowed to call this constructor");
+            }
         }
     }
 
@@ -157,7 +150,7 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
     }
 
     static {
-        ACCESS_OBJECT = new Security();
+        ACCESS_OBJECT = new AbstractAttributeSecurity(new Security());
     }
 
     {

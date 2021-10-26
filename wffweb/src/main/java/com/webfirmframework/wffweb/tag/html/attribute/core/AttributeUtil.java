@@ -265,7 +265,8 @@ public final class AttributeUtil {
      * @return
      * @since 3.0.6
      */
-    public static byte[] getAttrNameBytesCompressedByIndex(@SuppressWarnings("exports") final SecurityObject accessObject, final String attrName,
+    public static byte[] getAttrNameBytesCompressedByIndex(
+            @SuppressWarnings("exports") final SecurityObject accessObject, final String attrName,
             final Charset charset) {
 
         final PreIndexedAttributeName attr = PreIndexedAttributeName.forAttrName(attrName);
@@ -289,8 +290,9 @@ public final class AttributeUtil {
      * @return
      * @since 3.0.6
      */
-    public static byte[] getAttrNameBytesCompressedByIndex(@SuppressWarnings("exports") final SecurityObject accessObject,
-            final AbstractAttribute attr, final Charset charset) {
+    public static byte[] getAttrNameBytesCompressedByIndex(
+            @SuppressWarnings("exports") final SecurityObject accessObject, final AbstractAttribute attr,
+            final Charset charset) {
         return getAttrNameBytesCompressedByIndex(accessObject, attr.getAttributeName(), attr.getAttrNameIndexBytes(),
                 charset);
     }
@@ -378,7 +380,8 @@ public final class AttributeUtil {
      * @return the lock object
      * @since 3.0.15
      */
-    public static Lock lockAndGetWriteLock(@SuppressWarnings("exports") final SecurityObject accessObject, final AbstractAttribute attribute) {
+    public static Lock lockAndGetWriteLock(@SuppressWarnings("exports") final SecurityObject accessObject,
+            final AbstractAttribute attribute) {
 
         if (accessObject == null || !(IndexedClassType.ABSTRACT_HTML.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
@@ -399,8 +402,8 @@ public final class AttributeUtil {
      * @return
      * @since 3.0.15
      */
-    public static boolean unassignOwnerTag(@SuppressWarnings("exports") final SecurityObject accessObject, final AbstractAttribute attribute,
-            final AbstractHtml ownerTag) {
+    public static boolean unassignOwnerTag(@SuppressWarnings("exports") final SecurityObject accessObject,
+            final AbstractAttribute attribute, final AbstractHtml ownerTag) {
         if (accessObject == null || !(IndexedClassType.ABSTRACT_HTML.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
@@ -415,8 +418,8 @@ public final class AttributeUtil {
      * @param ownerTag
      * @since 3.0.15
      */
-    public static void assignOwnerTag(@SuppressWarnings("exports") final SecurityObject accessObject, final AbstractAttribute attribute,
-            final AbstractHtml ownerTag) {
+    public static void assignOwnerTag(@SuppressWarnings("exports") final SecurityObject accessObject,
+            final AbstractAttribute attribute, final AbstractHtml ownerTag) {
         if (accessObject == null || !(IndexedClassType.ABSTRACT_HTML.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }

@@ -100,7 +100,8 @@ public final class InsertAfterListenerImpl implements InsertAfterListener {
     }
 
     @Override
-    public void insertedAfter(final AbstractHtml parentTag, final AbstractHtml afterTag, @SuppressWarnings("exports") final Event... events) {
+    public void insertedAfter(final AbstractHtml parentTag, final AbstractHtml afterTag,
+            @SuppressWarnings("exports") final Event... events) {
 
         // @formatter:off
         // removed all children tags task format :-

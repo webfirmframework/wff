@@ -106,7 +106,8 @@ public final class TagUtil {
      * @return bytes
      * @since 3.0.6
      */
-    public static byte[] getTagNameBytesCompressedByIndex(@SuppressWarnings("exports") final SecurityObject accessObject, final AbstractHtml tag,
+    public static byte[] getTagNameBytesCompressedByIndex(
+            @SuppressWarnings("exports") final SecurityObject accessObject, final AbstractHtml tag,
             final Charset charset) {
 
         if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {

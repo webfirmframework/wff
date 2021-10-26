@@ -49,6 +49,7 @@ import com.webfirmframework.wffweb.clone.CloneUtil;
 import com.webfirmframework.wffweb.internal.InternalId;
 import com.webfirmframework.wffweb.internal.constants.CommonConstants;
 import com.webfirmframework.wffweb.internal.constants.IndexedClassType;
+import com.webfirmframework.wffweb.internal.security.object.AbstractHtmlSecurity;
 import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
 import com.webfirmframework.wffweb.internal.tag.html.listener.AttributeAddListener;
 import com.webfirmframework.wffweb.internal.tag.html.listener.AttributeRemoveListener;
@@ -92,7 +93,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
     @Serial
     private static final long serialVersionUID = 3_0_18L;
 
-    private static final Security ACCESS_OBJECT;
+    private static final SecurityObject ACCESS_OBJECT;
 
     // initial value must be -1 if not assigning any value if int
     // or null if byte[]
@@ -170,28 +171,21 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
         }
     }
 
-    // for security purpose, the class name should not be modified
     /**
      * Note: Only for internal use.
      *
      */
-    public static final class Security implements SecurityObject {
-
-        @Serial
-        private static final long serialVersionUID = 1L;
-
+    // for security purpose, the class name should not be modified
+    private static final class Security {
         private Security() {
-        }
-
-        @SuppressWarnings("exports")
-        @Override
-        public IndexedClassType forClassType() {
-            return IndexedClassType.ABSTRACT_HTML;
+            if (ACCESS_OBJECT != null) {
+                throw new AssertionError("Not allowed to call this constructor");
+            }
         }
     }
 
     static {
-        ACCESS_OBJECT = new Security();
+        ACCESS_OBJECT = new AbstractHtmlSecurity(new Security());
 
         // its length will be always 1
         INDEXED_AT_CHAR_BYTES = PreIndexedTagName.AT.internalIndexBytes(ACCESS_OBJECT);
@@ -1502,8 +1496,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      * @author WFF
      * @since 2.0.0
      */
-    public final boolean addChild(@SuppressWarnings("exports") final SecurityObject accessObject, final AbstractHtml child,
-            final boolean invokeListener) {
+    public final boolean addChild(@SuppressWarnings("exports") final SecurityObject accessObject,
+            final AbstractHtml child, final boolean invokeListener) {
         if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
@@ -2396,8 +2390,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      * @author WFF
      * @since 2.0.0
      */
-    public final boolean removeAttributes(@SuppressWarnings("exports") final SecurityObject accessObject, final boolean invokeListener,
-            final AbstractAttribute... attributes) {
+    public final boolean removeAttributes(@SuppressWarnings("exports") final SecurityObject accessObject,
+            final boolean invokeListener, final AbstractAttribute... attributes) {
 
         if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
@@ -2544,8 +2538,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      * @author WFF
      * @since 2.0.0
      */
-    public final boolean removeAttributes(@SuppressWarnings("exports") final SecurityObject accessObject, final boolean invokeListener,
-            final String... attributeNames) {
+    public final boolean removeAttributes(@SuppressWarnings("exports") final SecurityObject accessObject,
+            final boolean invokeListener, final String... attributeNames) {
         if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
 
@@ -3051,7 +3045,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      *         not a child in this tag's children then -1 will be returned.
      * @since 3.0.7
      */
-    public final int getIndexByChild(@SuppressWarnings("exports") final SecurityObject accessObject, final AbstractHtml child) {
+    public final int getIndexByChild(@SuppressWarnings("exports") final SecurityObject accessObject,
+            final AbstractHtml child) {
 
         // Lockless method to get child index
 
@@ -4606,7 +4601,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      * @since 3.0.2 improved to handle NoTag with contentTypeHtml true
      * @since 3.0.15 accessObject added
      */
-    public final byte[] toWffBMBytes(final Charset charset, @SuppressWarnings("exports") final SecurityObject accessObject) {
+    public final byte[] toWffBMBytes(final Charset charset,
+            @SuppressWarnings("exports") final SecurityObject accessObject) {
 
         final byte[] encodedBytesForAtChar = "@".getBytes(charset);
         final byte[] encodedByesForHashChar = "#".getBytes(charset);
@@ -4878,7 +4874,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      * @since 3.0.6
      * @since 3.0.15 accessObject added
      */
-    public final byte[] toCompressedWffBMBytesV2(final Charset charset, @SuppressWarnings("exports") final SecurityObject accessObject) {
+    public final byte[] toCompressedWffBMBytesV2(final Charset charset,
+            @SuppressWarnings("exports") final SecurityObject accessObject) {
 
         final Lock lock;
 

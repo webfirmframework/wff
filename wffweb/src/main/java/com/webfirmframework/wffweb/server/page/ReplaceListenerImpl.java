@@ -100,7 +100,8 @@ public final class ReplaceListenerImpl implements ReplaceListener {
     }
 
     @Override
-    public void replacedWith(final AbstractHtml parentTag, final AbstractHtml replacingTag, @SuppressWarnings("exports") final Event... events) {
+    public void replacedWith(final AbstractHtml parentTag, final AbstractHtml replacingTag,
+            @SuppressWarnings("exports") final Event... events) {
 
         // @formatter:off
         // removed all children tags task format :-

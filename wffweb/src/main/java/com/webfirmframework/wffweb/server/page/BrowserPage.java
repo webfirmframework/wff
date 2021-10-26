@@ -52,7 +52,7 @@ import com.webfirmframework.wffweb.NotRenderedException;
 import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.PushFailedException;
 import com.webfirmframework.wffweb.WffRuntimeException;
-import com.webfirmframework.wffweb.internal.constants.IndexedClassType;
+import com.webfirmframework.wffweb.internal.security.object.BrowserPageSecurity;
 import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
 import com.webfirmframework.wffweb.internal.server.page.js.WffJsFile;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
@@ -144,7 +144,7 @@ public abstract class BrowserPage implements Serializable {
     // NB: not all methods of Queue is implemented, ensure before using it.
     private final Queue<byte[]> taskFromClientQ = buildByteArrayQ("in");
 
-    private static final Security ACCESS_OBJECT = new Security();
+    private static final SecurityObject ACCESS_OBJECT = new BrowserPageSecurity(new Security());
 
     // by default the push queue should be enabled
     private volatile boolean pushQueueEnabled = true;
@@ -196,23 +196,16 @@ public abstract class BrowserPage implements Serializable {
     // ThreadLocal
     // .withInitial(() -> new PayloadProcessor(this, true));
 
-    // for security purpose, the class name should not be modified
     /**
      * Note: Only for internal use.
      *
      */
-    public static final class Security implements SecurityObject {
-
-        @Serial
-        private static final long serialVersionUID = 1L;
-
+    // for security purpose, the class name should not be modified
+    private static final class Security {
         private Security() {
-        }
-
-        @SuppressWarnings("exports")
-        @Override
-        public IndexedClassType forClassType() {
-            return IndexedClassType.BROWSER_PAGE;
+            if (ACCESS_OBJECT != null) {
+                throw new AssertionError("Not allowed to call this constructor");
+            }
         }
     }
 

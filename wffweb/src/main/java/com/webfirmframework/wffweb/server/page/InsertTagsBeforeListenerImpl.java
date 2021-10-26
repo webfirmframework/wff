@@ -100,7 +100,8 @@ public final class InsertTagsBeforeListenerImpl implements InsertTagsBeforeListe
     }
 
     @Override
-    public void insertedBefore(final AbstractHtml parentTag, final AbstractHtml beforeTag, @SuppressWarnings("exports") final Event... events) {
+    public void insertedBefore(final AbstractHtml parentTag, final AbstractHtml beforeTag,
+            @SuppressWarnings("exports") final Event... events) {
 
         // @formatter:off
         // removed all children tags task format :-

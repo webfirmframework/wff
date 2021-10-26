@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.webfirmframework.wffweb.InvalidTagException;
-import com.webfirmframework.wffweb.internal.constants.IndexedClassType;
+import com.webfirmframework.wffweb.internal.security.object.AbstractJsObjectSecurity;
 import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
 import com.webfirmframework.wffweb.internal.tag.html.listener.PushQueue;
 import com.webfirmframework.wffweb.internal.tag.html.listener.WffBMDataDeleteListener;
@@ -38,7 +38,7 @@ public abstract sealed class AbstractJsObject extends AbstractTagBase permits Ab
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private static final Security ACCESS_OBJECT;
+    private static final SecurityObject ACCESS_OBJECT;
 
     /**
      * should not be directly consumed as it may not have been initialized, instead
@@ -47,27 +47,21 @@ public abstract sealed class AbstractJsObject extends AbstractTagBase permits Ab
      */
     protected volatile Map<String, WffBMData> wffBMDatas;
 
-    // for security purpose, the class name should not be modified
     /**
      * Note: Only for internal use.
      *
      */
-    public static final class Security implements SecurityObject {
-
-        private static final long serialVersionUID = 1L;
-
+    // for security purpose, the class name should not be modified
+    private static final class Security {
         private Security() {
-        }
-
-        @SuppressWarnings("exports")
-        @Override
-        public IndexedClassType forClassType() {
-            return IndexedClassType.ABSTRACT_JS_OBJECT;
+            if (ACCESS_OBJECT != null) {
+                throw new AssertionError("Not allowed to call this constructor");
+            }
         }
     }
 
     static {
-        ACCESS_OBJECT = new Security();
+        ACCESS_OBJECT = new AbstractJsObjectSecurity(new Security());
     }
 
     public abstract AbstractHtml5SharedObject getSharedObject();
