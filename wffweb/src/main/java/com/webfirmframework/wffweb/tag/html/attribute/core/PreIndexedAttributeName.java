@@ -447,7 +447,7 @@ public enum PreIndexedAttributeName {
         index = ordinal();
         indexBytes = WffBinaryMessageUtil.getOptimizedBytesFromInt(index);
 
-        // should not use AttributeRegistry inside this class as it cause a
+        // should not use AttributeRegistry inside this class as it causes a
         // cyclic dependency
         // always returns null
         // final Map<String, Class<?>> map = AttributeRegistry
@@ -537,7 +537,7 @@ public enum PreIndexedAttributeName {
      * @return
      * @since 3.0.15
      */
-    static PreIndexedAttributeName[] alleventattributes() {
+    static PreIndexedAttributeName[] allEventAttributes() {
         return allEventAttributes;
     }
 

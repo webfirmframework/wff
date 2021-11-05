@@ -490,7 +490,7 @@ public class AttributeRegistry {
         // already sorted by length in ascending order and then by name in
         // ascending order in
         // PreIndexedAttributeName
-        for (final PreIndexedAttributeName each : PreIndexedAttributeName.alleventattributes()) {
+        for (final PreIndexedAttributeName each : PreIndexedAttributeName.allEventAttributes()) {
             tmpSortedEventAttrNames.add(each.attrName());
         }
 
