@@ -178,7 +178,7 @@ public class Opacity extends AbstractCssProperty<Opacity> {
                 value = null;
             } else {
                 try {
-                    final float tempValue = Float.valueOf(trimmedCssValue);
+                    final float tempValue = Float.parseFloat(trimmedCssValue);
                     if (tempValue < 0 || tempValue > 1) {
                         throw new InvalidValueException("The cssValue should be a number in between 0 to 1.");
                     }

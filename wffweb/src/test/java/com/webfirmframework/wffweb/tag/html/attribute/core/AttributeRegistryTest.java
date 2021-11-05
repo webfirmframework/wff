@@ -44,7 +44,7 @@ public class AttributeRegistryTest {
     public void testEventAttr() throws Exception {
         final Map<String, Class<?>> attributeClassByAttrName = AttributeRegistry.getAttributeClassByAttrName();
         for (final PreIndexedAttributeName each : PreIndexedAttributeName
-                .alleventattributes()) {
+                .allEventAttributes()) {
             if (each.eventAttr()) {
                 final Class<?> cls = attributeClassByAttrName
                         .get(each.attrName());
