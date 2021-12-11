@@ -17,23 +17,23 @@ package com.webfirmframework.wffweb.server.page;
 
 import java.io.Serializable;
 
-import com.webfirmframework.wffweb.tag.html.attribute.event.ServerAsyncMethod;
+import com.webfirmframework.wffweb.tag.html.attribute.event.ServerMethod;
 
 /**
  * @author WFF
  * @since 3.0.2
  * @since 3.0.19 renamed ServerMethod to ServerMethodWrapper
  */
-record ServerMethodWrapper(ServerAsyncMethod serverAsyncMethod, Object serverSideData) implements Serializable {
+record ServerMethodWrapper(ServerMethod serverMethod, Object serverSideData) implements Serializable {
 
     private static final long serialVersionUID = 12_0L;
 
     /**
-     * @return the serverAsyncMethod
+     * @return the serverMethod
      */
     @Override
-    public ServerAsyncMethod serverAsyncMethod() {
-        return serverAsyncMethod;
+    public ServerMethod serverMethod() {
+        return serverMethod;
     }
 
     /**

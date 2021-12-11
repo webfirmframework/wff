@@ -20,7 +20,7 @@ import java.io.Serial;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.attribute.event.AbstractEventAttribute;
-import com.webfirmframework.wffweb.tag.html.attribute.event.ServerAsyncMethod;
+import com.webfirmframework.wffweb.tag.html.attribute.event.ServerMethod;
 
 /**
  *
@@ -52,13 +52,13 @@ public class OnEnded extends AbstractEventAttribute {
     public OnEnded() {
     }
 
-    public OnEnded(final ServerAsyncMethod serverAsyncMethod) {
-        setServerAsyncMethod(null, serverAsyncMethod, null, null);
+    public OnEnded(final ServerMethod serverMethod) {
+        setServerMethod(null, serverMethod, null, null);
     }
 
-    public OnEnded(final String jsPreFunctionBody, final ServerAsyncMethod serverAsyncMethod,
+    public OnEnded(final String jsPreFunctionBody, final ServerMethod serverMethod,
             final String jsFilterFunctionBody, final String jsPostFunctionBody) {
-        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody);
+        setServerMethod(jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody);
     }
 
     public OnEnded(final String value) {
@@ -66,25 +66,25 @@ public class OnEnded extends AbstractEventAttribute {
     }
 
     /**
-     * @param serverAsyncMethod
+     * @param serverMethod
      * @param serverSideData
      * @since 3.0.2
      */
-    public OnEnded(final ServerAsyncMethod serverAsyncMethod, final Object serverSideData) {
-        setServerAsyncMethod(null, serverAsyncMethod, null, null, serverSideData);
+    public OnEnded(final ServerMethod serverMethod, final Object serverSideData) {
+        setServerMethod(null, serverMethod, null, null, serverSideData);
     }
 
     /**
      * @param jsPreFunctionBody
-     * @param serverAsyncMethod
+     * @param serverMethod
      * @param jsFilterFunctionBody
      * @param jsPostFunctionBody
      * @param serverSideData
      * @since 3.0.2
      */
-    public OnEnded(final String jsPreFunctionBody, final ServerAsyncMethod serverAsyncMethod,
+    public OnEnded(final String jsPreFunctionBody, final ServerMethod serverMethod,
             final String jsFilterFunctionBody, final String jsPostFunctionBody, final Object serverSideData) {
-        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody,
+        setServerMethod(jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody,
                 serverSideData);
     }
 

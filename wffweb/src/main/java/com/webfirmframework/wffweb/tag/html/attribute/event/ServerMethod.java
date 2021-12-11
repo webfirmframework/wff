@@ -22,10 +22,10 @@ import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
 
 @FunctionalInterface
-public interface ServerAsyncMethod extends Serializable {
+public interface ServerMethod extends Serializable {
 
     /**
-     * Contains event data for {@link ServerAsyncMethod#asyncMethod(Event)}.
+     * Contains event data for {@link ServerMethod#invoke(Event)}.
      *
      * @param sourceTag
      * @param sourceAttribute
@@ -86,6 +86,6 @@ public interface ServerAsyncMethod extends Serializable {
      *
      * @return
      */
-    public abstract WffBMObject asyncMethod(final Event event);
+    public abstract WffBMObject invoke(final Event event);
 
 }

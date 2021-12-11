@@ -37,7 +37,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
 
     private volatile boolean preventDefault;
 
-    private volatile ServerAsyncMethod serverAsyncMethod;
+    private volatile ServerMethod serverMethod;
 
     private volatile String jsFilterFunctionBody;
 
@@ -107,9 +107,9 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      * @param jsPreFunctionBody    It is the body part of JavaScript function
      *                             (without function declaration). It must return
      *                             true/false. This function will invoke at client
-     *                             side before {@code serverAsyncMethod}. If the
+     *                             side before {@code serverMethod}. If the
      *                             jsPrefunction returns true then only
-     *                             {@code serverAsyncMethod} method will invoke (if
+     *                             {@code serverMethod} method will invoke (if
      *                             it is implemented). It has implicit objects in
      *                             its scope. They are {@code event}, {@code source}
      *                             which gives the reference of the current tag and
@@ -117,7 +117,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      *                             object has a function named {@code perform()}
      *                             which can be used to invoke
      *                             {@code jsFilterFunctionBody} and
-     *                             {@code serverAsyncMethod} (it works just like
+     *                             {@code serverMethod} (it works just like
      *                             returning true in the {@code jsPreFunctionBody}).
      *                             If the {@code action.perform()} is called inside
      *                             {@code jsPreFunctionBody} then returning true in
@@ -139,7 +139,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      *                             attribute will be harmful as it will make an
      *                             infinite recursive call.
      *
-     * @param serverAsyncMethod    This method will invoke at server side with an
+     * @param serverMethod    This method will invoke at server side with an
      *                             argument {@code wffBMObject}. The
      *                             {@code wffBMObject} is the representational
      *                             javascript object returned by
@@ -147,7 +147,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      * @param jsFilterFunctionBody The body part of a javascript function (without
      *                             function declaration). It can return a javascript
      *                             object so that it will be available at server
-     *                             side in {@code serverAsyncMethod} as
+     *                             side in {@code serverMethod} as
      *                             {@code wffBMObject} parameter. There are implicit
      *                             objects {@code event} and {@code source} in the
      *                             scope.<br>
@@ -160,7 +160,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      *
      * @param jsPostFunctionBody   The body part of a javascript function (without
      *                             function declaration). The {@code wffBMObject}
-     *                             returned by {@code serverAsyncMethod} will be
+     *                             returned by {@code serverMethod} will be
      *                             available as an implicit object {@code jsObject}
      *                             in the scope. There are common implicit objects
      *                             {@code event} and {@code source} in the scope.
@@ -168,13 +168,13 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      * @since 2.0.0
      */
     protected AbstractEventAttribute(final String attributeName, final String jsPreFunctionBody,
-            final ServerAsyncMethod serverAsyncMethod, final String jsFilterFunctionBody,
+            final ServerMethod serverMethod, final String jsFilterFunctionBody,
             final String jsPostFunctionBody) {
         // NB: always trim attributeName to avoid starting with 0 value byte
         // because the first byte value is zero if sending its index bytes from
         // client.
         super.setAttributeName(attributeName != null ? attributeName.trim() : attributeName);
-        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody);
+        setServerMethod(jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody);
     }
 
     /**
@@ -182,9 +182,9 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      * @param jsPreFunctionBody    It is the body part of JavaScript function
      *                             (without function declaration). It must return
      *                             true/false. This function will invoke at client
-     *                             side before {@code serverAsyncMethod}. If the
+     *                             side before {@code serverMethod}. If the
      *                             jsPrefunction returns true then only
-     *                             {@code serverAsyncMethod} method will invoke (if
+     *                             {@code serverMethod} method will invoke (if
      *                             it is implemented). It has implicit objects in
      *                             its scope. They are {@code event}, {@code source}
      *                             which gives the reference of the current tag and
@@ -192,7 +192,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      *                             object has a function named {@code perform()}
      *                             which can be used to invoke
      *                             {@code jsFilterFunctionBody} and
-     *                             {@code serverAsyncMethod} (it works just like
+     *                             {@code serverMethod} (it works just like
      *                             returning true in the {@code jsPreFunctionBody}).
      *                             If the {@code action.perform()} is called inside
      *                             {@code jsPreFunctionBody} then returning true in
@@ -214,7 +214,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      *                             attribute will be harmful as it will make an
      *                             infinite recursive call.
      *
-     * @param serverAsyncMethod    This method will invoke at server side with an
+     * @param serverMethod    This method will invoke at server side with an
      *                             argument {@code wffBMObject}. The
      *                             {@code wffBMObject} is the representational
      *                             javascript object returned by
@@ -222,7 +222,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      * @param jsFilterFunctionBody The body part of a javascript function (without
      *                             function declaration). It can return a javascript
      *                             object so that it will be available at server
-     *                             side in {@code serverAsyncMethod} as
+     *                             side in {@code serverMethod} as
      *                             {@code wffBMObject} parameter. There are implicit
      *                             objects {@code event} and {@code source} in the
      *                             scope.<br>
@@ -235,23 +235,23 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      *
      * @param jsPostFunctionBody   The body part of a javascript function (without
      *                             function declaration). The {@code wffBMObject}
-     *                             returned by {@code serverAsyncMethod} will be
+     *                             returned by {@code serverMethod} will be
      *                             available as an implicit object {@code jsObject}
      *                             in the scope. There are common implicit objects
      *                             {@code event} and {@code source} in the scope.
      * @param serverSideData       this data will be available in the Event object
-     *                             of ServerAsyncMethod.asyncMethod method.
+     *                             of ServerMethod.invoke method.
      * @author WFF
      * @since 3.0.2
      */
     protected AbstractEventAttribute(final String attributeName, final String jsPreFunctionBody,
-            final ServerAsyncMethod serverAsyncMethod, final String jsFilterFunctionBody,
+            final ServerMethod serverMethod, final String jsFilterFunctionBody,
             final String jsPostFunctionBody, final Object serverSideData) {
         // NB: always trim attributeName to avoid starting with 0 value byte
         // because the first byte value is zero if sending its index bytes from
         // client.
         super.setAttributeName(attributeName != null ? attributeName.trim() : attributeName);
-        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody,
+        setServerMethod(jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody,
                 serverSideData);
     }
 
@@ -262,9 +262,9 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      * @param jsPreFunctionBody    It is the body part of JavaScript function
      *                             (without function declaration). It must return
      *                             true/false. This function will invoke at client
-     *                             side before {@code serverAsyncMethod}. If the
+     *                             side before {@code serverMethod}. If the
      *                             jsPrefunction returns true then only
-     *                             {@code serverAsyncMethod} method will invoke (if
+     *                             {@code serverMethod} method will invoke (if
      *                             it is implemented). It has implicit objects in
      *                             its scope. They are {@code event}, {@code source}
      *                             which gives the reference of the current tag and
@@ -272,7 +272,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      *                             object has a function named {@code perform()}
      *                             which can be used to invoke
      *                             {@code jsFilterFunctionBody} and
-     *                             {@code serverAsyncMethod} (it works just like
+     *                             {@code serverMethod} (it works just like
      *                             returning true in the {@code jsPreFunctionBody}).
      *                             If the {@code action.perform()} is called inside
      *                             {@code jsPreFunctionBody} then returning true in
@@ -294,7 +294,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      *                             attribute will be harmful as it will make an
      *                             infinite recursive call.
      *
-     * @param serverAsyncMethod    This method will invoke at server side with an
+     * @param serverMethod    This method will invoke at server side with an
      *                             argument {@code wffBMObject}. The
      *                             {@code wffBMObject} is the representational
      *                             javascript object returned by
@@ -302,7 +302,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      * @param jsFilterFunctionBody The body part of a javascript function (without
      *                             function declaration). It can return a javascript
      *                             object so that it will be available at server
-     *                             side in {@code serverAsyncMethod} as
+     *                             side in {@code serverMethod} as
      *                             {@code wffBMObject} parameter. There are implicit
      *                             objects {@code event} and {@code source} in the
      *                             scope.<br>
@@ -315,23 +315,23 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      *
      * @param jsPostFunctionBody   The body part of a javascript function (without
      *                             function declaration). The {@code wffBMObject}
-     *                             returned by {@code serverAsyncMethod} will be
+     *                             returned by {@code serverMethod} will be
      *                             available as an implicit object {@code jsObject}
      *                             in the scope. There are common implicit objects
      *                             {@code event} and {@code source} in the scope.
      * @param serverSideData       this data will be available in the Event object
-     *                             of ServerAsyncMethod.asyncMethod method.
+     *                             of ServerMethod.invoke method.
      * @author WFF
      * @since 3.0.15
      */
     protected AbstractEventAttribute(final String attributeName, final boolean preventDefault,
-            final String jsPreFunctionBody, final ServerAsyncMethod serverAsyncMethod,
+            final String jsPreFunctionBody, final ServerMethod serverMethod,
             final String jsFilterFunctionBody, final String jsPostFunctionBody, final Object serverSideData) {
         // NB: always trim attributeName to avoid starting with 0 value byte
         // because the first byte value is zero if sending its index bytes from
         // client.
         super.setAttributeName(attributeName != null ? attributeName.trim() : attributeName);
-        setServerAsyncMethod(preventDefault, jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody,
+        setServerMethod(preventDefault, jsPreFunctionBody, serverMethod, jsFilterFunctionBody,
                 jsPostFunctionBody, serverSideData);
     }
 
@@ -389,12 +389,12 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
     }
 
     /**
-     * @param serverAsyncMethod the {@code ServerAsyncMethod} object to set.
+     * @param serverMethod the {@code ServerMethod} object to set.
      * @author WFF
      */
-    public void setServerAsyncMethod(final ServerAsyncMethod serverAsyncMethod) {
-        if (serverAsyncMethod != null) {
-            setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody);
+    public void setServerMethod(final ServerMethod serverMethod) {
+        if (serverMethod != null) {
+            setServerMethod(jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody);
         }
     }
 
@@ -428,9 +428,9 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      * @param jsPreFunctionBody    It is the body part of JavaScript function
      *                             (without function declaration). It must return
      *                             true/false. This function will invoke at client
-     *                             side before {@code serverAsyncMethod}. If the
+     *                             side before {@code serverMethod}. If the
      *                             jsPrefunction returns true then only
-     *                             {@code serverAsyncMethod} method will invoke (if
+     *                             {@code serverMethod} method will invoke (if
      *                             it is implemented). It has implicit objects in
      *                             its scope. They are {@code event}, {@code source}
      *                             which gives the reference of the current tag and
@@ -438,7 +438,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      *                             object has a function named {@code perform()}
      *                             which can be used to invoke
      *                             {@code jsFilterFunctionBody} and
-     *                             {@code serverAsyncMethod} (it works just like
+     *                             {@code serverMethod} (it works just like
      *                             returning true in the {@code jsPreFunctionBody}).
      *                             If the {@code action.perform()} is called inside
      *                             {@code jsPreFunctionBody} then returning true in
@@ -460,7 +460,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      *                             attribute will be harmful as it will make an
      *                             infinite recursive call.
      *
-     * @param serverAsyncMethod    This method will invoke at server side with an
+     * @param serverMethod    This method will invoke at server side with an
      *                             argument {@code wffBMObject}. The
      *                             {@code wffBMObject} is the representational
      *                             javascript object returned by
@@ -468,7 +468,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      * @param jsFilterFunctionBody The body part of a javascript function (without
      *                             function declaration). It can return a javascript
      *                             object so that it will be available at server
-     *                             side in {@code serverAsyncMethod} as
+     *                             side in {@code serverMethod} as
      *                             {@code wffBMObject} parameter. There are implicit
      *                             objects {@code event} and {@code source} in the
      *                             scope.<br>
@@ -481,17 +481,17 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      *
      * @param jsPostFunctionBody   The body part of a javascript function (without
      *                             function declaration). The {@code wffBMObject}
-     *                             returned by {@code serverAsyncMethod} will be
+     *                             returned by {@code serverMethod} will be
      *                             available as an implicit object {@code jsObject}
      *                             in the scope. There are common implicit objects
      *                             {@code event} and {@code source} in the scope.
      * @author WFF
      * @since 2.0.0
      */
-    public void setServerAsyncMethod(final String jsPreFunctionBody, final ServerAsyncMethod serverAsyncMethod,
+    public void setServerMethod(final String jsPreFunctionBody, final ServerMethod serverMethod,
             final String jsFilterFunctionBody, final String jsPostFunctionBody) {
 
-        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody,
+        setServerMethod(jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody,
                 serverSideData);
     }
 
@@ -499,9 +499,9 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      * @param jsPreFunctionBody    It is the body part of JavaScript function
      *                             (without function declaration). It must return
      *                             true/false. This function will invoke at client
-     *                             side before {@code serverAsyncMethod}. If the
+     *                             side before {@code serverMethod}. If the
      *                             jsPrefunction returns true then only
-     *                             {@code serverAsyncMethod} method will invoke (if
+     *                             {@code serverMethod} method will invoke (if
      *                             it is implemented). It has implicit objects in
      *                             its scope. They are {@code event}, {@code source}
      *                             which gives the reference of the current tag and
@@ -509,7 +509,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      *                             object has a function named {@code perform()}
      *                             which can be used to invoke
      *                             {@code jsFilterFunctionBody} and
-     *                             {@code serverAsyncMethod} (it works just like
+     *                             {@code serverMethod} (it works just like
      *                             returning true in the {@code jsPreFunctionBody}).
      *                             If the {@code action.perform()} is called inside
      *                             {@code jsPreFunctionBody} then returning true in
@@ -531,7 +531,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      *                             attribute will be harmful as it will make an
      *                             infinite recursive call.
      *
-     * @param serverAsyncMethod    This method will invoke at server side with an
+     * @param serverMethod    This method will invoke at server side with an
      *                             argument {@code wffBMObject}. The
      *                             {@code wffBMObject} is the representational
      *                             javascript object returned by
@@ -539,7 +539,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      * @param jsFilterFunctionBody The body part of a javascript function (without
      *                             function declaration). It can return a javascript
      *                             object so that it will be available at server
-     *                             side in {@code serverAsyncMethod} as
+     *                             side in {@code serverMethod} as
      *                             {@code wffBMObject} parameter. There are implicit
      *                             objects {@code event} and {@code source} in the
      *                             scope.<br>
@@ -552,18 +552,18 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      *
      * @param jsPostFunctionBody   The body part of a javascript function (without
      *                             function declaration). The {@code wffBMObject}
-     *                             returned by {@code serverAsyncMethod} will be
+     *                             returned by {@code serverMethod} will be
      *                             available as an implicit object {@code jsObject}
      *                             in the scope. There are common implicit objects
      *                             {@code event} and {@code source} in the scope.
      * @param serverSideData       this data will be available in the Event object
-     *                             of ServerAsyncMethod.asyncMethod method.
+     *                             of ServerMethod.invoke method.
      * @author WFF
      * @since 3.0.2
      */
-    public void setServerAsyncMethod(final String jsPreFunctionBody, final ServerAsyncMethod serverAsyncMethod,
+    public void setServerMethod(final String jsPreFunctionBody, final ServerMethod serverMethod,
             final String jsFilterFunctionBody, final String jsPostFunctionBody, final Object serverSideData) {
-        setServerAsyncMethod(preventDefault, jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody,
+        setServerMethod(preventDefault, jsPreFunctionBody, serverMethod, jsFilterFunctionBody,
                 jsPostFunctionBody, serverSideData);
     }
 
@@ -572,9 +572,9 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      * @param jsPreFunctionBody    It is the body part of JavaScript function
      *                             (without function declaration). It must return
      *                             true/false. This function will invoke at client
-     *                             side before {@code serverAsyncMethod}. If the
+     *                             side before {@code serverMethod}. If the
      *                             jsPrefunction returns true then only
-     *                             {@code serverAsyncMethod} method will invoke (if
+     *                             {@code serverMethod} method will invoke (if
      *                             it is implemented). It has implicit objects in
      *                             its scope. They are {@code event}, {@code source}
      *                             which gives the reference of the current tag and
@@ -582,7 +582,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      *                             object has a function named {@code perform()}
      *                             which can be used to invoke
      *                             {@code jsFilterFunctionBody} and
-     *                             {@code serverAsyncMethod} (it works just like
+     *                             {@code serverMethod} (it works just like
      *                             returning true in the {@code jsPreFunctionBody}).
      *                             If the {@code action.perform()} is called inside
      *                             {@code jsPreFunctionBody} then returning true in
@@ -604,7 +604,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      *                             attribute will be harmful as it will make an
      *                             infinite recursive call.
      *
-     * @param serverAsyncMethod    This method will invoke at server side with an
+     * @param serverMethod    This method will invoke at server side with an
      *                             argument {@code wffBMObject}. The
      *                             {@code wffBMObject} is the representational
      *                             javascript object returned by
@@ -612,7 +612,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      * @param jsFilterFunctionBody The body part of a javascript function (without
      *                             function declaration). It can return a javascript
      *                             object so that it will be available at server
-     *                             side in {@code serverAsyncMethod} as
+     *                             side in {@code serverMethod} as
      *                             {@code wffBMObject} parameter. There are implicit
      *                             objects {@code event} and {@code source} in the
      *                             scope.<br>
@@ -623,24 +623,24 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      *                                                                                                return {buttonName: bName, author:'wff', dateOfYear: 2014};
      *                             </pre>
      *
-     * @param jsPostFunctionBody   The body part of a javascript function (without
+     * @param jsPostFunctionBody   The body part of a JavaScript function (without
      *                             function declaration). The {@code wffBMObject}
-     *                             returned by {@code serverAsyncMethod} will be
+     *                             returned by {@code serverMethod} will be
      *                             available as an implicit object {@code jsObject}
      *                             in the scope. There are common implicit objects
      *                             {@code event} and {@code source} in the scope.
      * @param serverSideData       this data will be available in the Event object
-     *                             of ServerAsyncMethod.asyncMethod method.
+     *                             of ServerMethod.invoke method.
      * @author WFF
      * @since 3.0.15
      */
-    protected void setServerAsyncMethod(final boolean preventDefault, final String jsPreFunctionBody,
-            final ServerAsyncMethod serverAsyncMethod, final String jsFilterFunctionBody,
+    protected void setServerMethod(final boolean preventDefault, final String jsPreFunctionBody,
+            final ServerMethod serverMethod, final String jsFilterFunctionBody,
             final String jsPostFunctionBody, final Object serverSideData) {
 
         this.serverSideData = serverSideData;
 
-        if (serverAsyncMethod != null) {
+        if (serverMethod != null) {
 
             final PreIndexedAttributeName preIndexedAttrName = this.preIndexedAttrName;
             final String attrIndexOrName = preIndexedAttrName != null && preIndexedAttrName.eventAttr()
@@ -702,10 +702,10 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
             this.jsPreFunctionBody = jsPreFunctionBody;
             this.jsFilterFunctionBody = jsFilterFunctionBody;
             this.jsPostFunctionBody = jsPostFunctionBody;
-            this.serverAsyncMethod = serverAsyncMethod;
+            this.serverMethod = serverMethod;
         } else {
             LOGGER.warning(
-                    "serverAsyncMethod is null so jsPreFunctionBody, jsFilterFunctionBody and jsPostFunctionBody are not also set.They are valid only if serverAsyncMethod is NOT null.");
+                    "serverMethod is null so jsPreFunctionBody, jsFilterFunctionBody and jsPostFunctionBody are not also set.They are valid only if serverMethod is NOT null.");
         }
     }
 
@@ -721,8 +721,8 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
     }
 
     @Override
-    public ServerAsyncMethod getServerAsyncMethod() {
-        return serverAsyncMethod;
+    public ServerMethod getServerMethod() {
+        return serverMethod;
     }
 
     @Override
@@ -750,7 +750,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
 
     /**
      * true to call event.preventDefault(); on event. It will set only if there is
-     * {@code ServerAsyncMethod}. This is applicable for some special attributes
+     * {@code ServerMethod}. This is applicable for some special attributes
      * like OnSubmit.
      *
      * @param preventDefault true to call event.preventDefault(); on event otherwise
@@ -758,7 +758,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      * @since 3.0.15
      */
     protected void setPreventDefault(final boolean preventDefault) {
-        setServerAsyncMethod(preventDefault, jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody,
+        setServerMethod(preventDefault, jsPreFunctionBody, serverMethod, jsFilterFunctionBody,
                 jsPostFunctionBody, serverSideData);
     }
 
@@ -769,19 +769,19 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      * @author WFF
      */
     public void setJsPostFunctionBody(final String jsPostFunctionBody) {
-        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody);
+        setServerMethod(jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody);
     }
 
     /**
      * Sets the pre function body JavaScript. It is the body part of JavaScript
      * function (without function declaration). It must return true/false. This
-     * function will invoke at client side before {@code serverAsyncMethod}. If the
-     * jsPrefunction returns true then only {@code serverAsyncMethod} method will
+     * function will invoke at client side before {@code serverMethod}. If the
+     * jsPrefunction returns true then only {@code serverMethod} method will
      * invoke (if it is implemented). It has implicit objects in its scope. They are
      * {@code event}, {@code source} which gives the reference of the current tag
      * and {@code action}. The {@code action} implicit object has a function named
      * {@code perform()} which can be used to invoke {@code jsFilterFunctionBody}
-     * and {@code serverAsyncMethod} (it works just like returning true in the
+     * and {@code serverMethod} (it works just like returning true in the
      * {@code jsPreFunctionBody}). If the {@code action.perform()} is called inside
      * {@code jsPreFunctionBody} then returning true in it has no effect. The
      * {@code action} implicit object is only available since 3.0.15.
@@ -796,7 +796,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      * @since 2.1.9
      */
     public void setJsPreFunctionBody(final String jsPreFunctionBody) {
-        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody);
+        setServerMethod(jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody);
     }
 
     /**
@@ -807,7 +807,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      * @since 2.1.9
      */
     public void setJsFilterFunctionBody(final String jsFilterFunctionBody) {
-        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody);
+        setServerMethod(jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody);
     }
 
     /**

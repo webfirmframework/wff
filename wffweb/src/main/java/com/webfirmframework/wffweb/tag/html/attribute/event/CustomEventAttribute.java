@@ -19,40 +19,40 @@ public class CustomEventAttribute extends AbstractEventAttribute {
 
     private static final long serialVersionUID = 1L;
 
-    public CustomEventAttribute(final String attributeName, final ServerAsyncMethod serverAsyncMethod) {
-        super(attributeName, null, serverAsyncMethod, null, null);
+    public CustomEventAttribute(final String attributeName, final ServerMethod serverMethod) {
+        super(attributeName, null, serverMethod, null, null);
     }
 
     public CustomEventAttribute(final String attributeName, final String jsPreFunctionBody,
-            final ServerAsyncMethod serverAsyncMethod, final String jsFilterFunctionBody,
+            final ServerMethod serverMethod, final String jsFilterFunctionBody,
             final String jsPostFunctionBody) {
-        super(attributeName, jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody);
+        super(attributeName, jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody);
     }
 
     /**
      * @param attributeName
-     * @param serverAsyncMethod
+     * @param serverMethod
      * @param serverSideData
      * @since 3.0.2
      */
-    public CustomEventAttribute(final String attributeName, final ServerAsyncMethod serverAsyncMethod,
+    public CustomEventAttribute(final String attributeName, final ServerMethod serverMethod,
             final Object serverSideData) {
-        super(attributeName, null, serverAsyncMethod, null, null, serverSideData);
+        super(attributeName, null, serverMethod, null, null, serverSideData);
     }
 
     /**
      * @param attributeName
      * @param jsPreFunctionBody
-     * @param serverAsyncMethod
+     * @param serverMethod
      * @param jsFilterFunctionBody
      * @param jsPostFunctionBody
      * @param serverSideData
      * @since 3.0.2
      */
     public CustomEventAttribute(final String attributeName, final String jsPreFunctionBody,
-            final ServerAsyncMethod serverAsyncMethod, final String jsFilterFunctionBody,
+            final ServerMethod serverMethod, final String jsFilterFunctionBody,
             final String jsPostFunctionBody, final Object serverSideData) {
-        super(attributeName, jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody,
+        super(attributeName, jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody,
                 serverSideData);
     }
 
@@ -62,16 +62,16 @@ public class CustomEventAttribute extends AbstractEventAttribute {
      *                             otherwise false. In almost all cases this may not
      *                             be required.
      * @param jsPreFunctionBody
-     * @param serverAsyncMethod
+     * @param serverMethod
      * @param jsFilterFunctionBody
      * @param jsPostFunctionBody
      * @param serverSideData
      * @since 3.0.15
      */
     public CustomEventAttribute(final String attributeName, final boolean preventDefault,
-            final String jsPreFunctionBody, final ServerAsyncMethod serverAsyncMethod,
+            final String jsPreFunctionBody, final ServerMethod serverMethod,
             final String jsFilterFunctionBody, final String jsPostFunctionBody, final Object serverSideData) {
-        super(attributeName, preventDefault, jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody,
+        super(attributeName, preventDefault, jsPreFunctionBody, serverMethod, jsFilterFunctionBody,
                 jsPostFunctionBody, serverSideData);
     }
 
@@ -81,15 +81,15 @@ public class CustomEventAttribute extends AbstractEventAttribute {
      *                             otherwise false. In almost all cases this may not
      *                             be required.
      * @param jsPreFunctionBody
-     * @param serverAsyncMethod
+     * @param serverMethod
      * @param jsFilterFunctionBody
      * @param jsPostFunctionBody
      * @since 3.0.15
      */
     public CustomEventAttribute(final String attributeName, final boolean preventDefault,
-            final String jsPreFunctionBody, final ServerAsyncMethod serverAsyncMethod,
+            final String jsPreFunctionBody, final ServerMethod serverMethod,
             final String jsFilterFunctionBody, final String jsPostFunctionBody) {
-        super(attributeName, preventDefault, jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody,
+        super(attributeName, preventDefault, jsPreFunctionBody, serverMethod, jsFilterFunctionBody,
                 jsPostFunctionBody, null);
     }
 

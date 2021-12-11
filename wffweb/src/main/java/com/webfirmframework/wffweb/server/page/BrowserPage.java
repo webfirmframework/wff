@@ -66,7 +66,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.Type;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeRegistry;
 import com.webfirmframework.wffweb.tag.html.attribute.event.EventAttribute;
-import com.webfirmframework.wffweb.tag.html.attribute.event.ServerAsyncMethod;
+import com.webfirmframework.wffweb.tag.html.attribute.event.ServerMethod;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.tag.html.programming.Script;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
@@ -796,9 +796,9 @@ public abstract class BrowserPage implements Serializable {
 
                     final EventAttribute eventAttr = (EventAttribute) attributeByName;
 
-                    final ServerAsyncMethod serverAsyncMethod = eventAttr.getServerAsyncMethod();
+                    final ServerMethod serverMethod = eventAttr.getServerMethod();
 
-                    final ServerAsyncMethod.Event event = new ServerAsyncMethod.Event(wffBMObject, methodTag,
+                    final ServerMethod.Event event = new ServerMethod.Event(wffBMObject, methodTag,
                             attributeByName, null, eventAttr.getServerSideData());
 
                     final WffBMObject returnedObject;
@@ -812,7 +812,7 @@ public abstract class BrowserPage implements Serializable {
                             // per
                             // java memory
                             // model
-                            returnedObject = serverAsyncMethod.asyncMethod(event);
+                            returnedObject = serverMethod.invoke(event);
                         }
 
                     } catch (final Exception e) {
@@ -914,7 +914,7 @@ public abstract class BrowserPage implements Serializable {
                     // per
                     // java memory
                     // model
-                    returnedObject = serverMethod.serverAsyncMethod().asyncMethod(new ServerAsyncMethod.Event(
+                    returnedObject = serverMethod.serverMethod().invoke(new ServerMethod.Event(
                             wffBMObject, null, null, methodName, serverMethod.serverSideData()));
                 }
 
@@ -948,7 +948,7 @@ public abstract class BrowserPage implements Serializable {
 
         } else {
             LOGGER.warning(methodName + " doesn't exist, please add it as browserPage.addServerMethod(\"" + methodName
-                    + "\", serverAsyncMethod)");
+                    + "\", serverMethod)");
         }
 
     }
@@ -1672,25 +1672,25 @@ public abstract class BrowserPage implements Serializable {
 
     /**
      * @param methodName
-     * @param serverAsyncMethod
+     * @param serverMethod
      * @author WFF
      * @since 2.1.0
      */
-    public final void addServerMethod(final String methodName, final ServerAsyncMethod serverAsyncMethod) {
-        serverMethods.put(methodName, new ServerMethodWrapper(serverAsyncMethod, null));
+    public final void addServerMethod(final String methodName, final ServerMethod serverMethod) {
+        serverMethods.put(methodName, new ServerMethodWrapper(serverMethod, null));
     }
 
     /**
      * @param methodName
-     * @param serverAsyncMethod
+     * @param serverMethod
      * @param serverSideData    this object will be available in the event of
-     *                          serverAsyncMethod.asyncMethod
+     *                          serverMethod.invoke
      * @author WFF
      * @since 3.0.2
      */
-    public final void addServerMethod(final String methodName, final ServerAsyncMethod serverAsyncMethod,
+    public final void addServerMethod(final String methodName, final ServerMethod serverMethod,
             final Object serverSideData) {
-        serverMethods.put(methodName, new ServerMethodWrapper(serverAsyncMethod, serverSideData));
+        serverMethods.put(methodName, new ServerMethodWrapper(serverMethod, serverSideData));
     }
 
     /**
@@ -2285,7 +2285,7 @@ public abstract class BrowserPage implements Serializable {
     }
 
     /**
-     * Sets the executor to run {@link ServerAsyncMethod#asyncMethod}, <br>
+     * Sets the executor to run {@link ServerMethod#invoke}, <br>
      *
      * <br>
      * NB: You may need only one copy of executor object for all browserPage
