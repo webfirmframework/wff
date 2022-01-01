@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 Web Firm Framework
+ * Copyright 2014-2022 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -292,24 +292,12 @@ public class BorderTopColor extends AbstractCssProperty<BorderTopColor> implemen
         final String trimmedCssValueLowerCase = TagStringUtil.toLowerCase(trimmedCssValue);
 
         if (INITIAL.equals(trimmedCssValueLowerCase) || INHERIT.equals(trimmedCssValueLowerCase)
-                || TRANSPARENT.equals(trimmedCssValueLowerCase)) {
+                || TRANSPARENT.equals(trimmedCssValueLowerCase) || CssColorName.isValid(trimmedCssValue)) {
             return true;
         }
 
-        if (CssColorName.isValid(trimmedCssValue)) {
-            return true;
-        }
-
-        if (RgbCssValue.isValid(trimmedCssValue)) {
-            return true;
-        }
-        if (RgbaCssValue.isValid(trimmedCssValue)) {
-            return true;
-        }
-        if (HslCssValue.isValid(trimmedCssValue)) {
-            return true;
-        }
-        if (HslaCssValue.isValid(trimmedCssValue)) {
+        if (RgbCssValue.isValid(trimmedCssValue) || RgbaCssValue.isValid(trimmedCssValue)
+                || HslCssValue.isValid(trimmedCssValue) || HslaCssValue.isValid(trimmedCssValue)) {
             return true;
         }
 

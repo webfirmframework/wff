@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 Web Firm Framework
+ * Copyright 2014-2022 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -211,7 +211,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 //
 
                 if (removed) {
-                    sharedObject.setChildModified(removed);
+                    sharedObject.setChildModified(removed, ACCESS_OBJECT);
                 }
 
                 return removed;
@@ -221,7 +221,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             public boolean add(final AbstractHtml e) {
                 final boolean added = super.add(e);
                 if (added) {
-                    sharedObject.setChildModified(added);
+                    sharedObject.setChildModified(added, ACCESS_OBJECT);
                 }
                 return added;
             }
@@ -259,7 +259,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                                     new ChildTagRemoveListener.Event(AbstractHtml.this, removedAbstractHtmls));
                         }
 
-                        sharedObject.setChildModified(removedAll);
+                        sharedObject.setChildModified(removedAll, ACCESS_OBJECT);
                     } finally {
                         for (final Lock newSOLock : newSOLocks) {
                             newSOLock.unlock();
@@ -280,7 +280,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             @Override
             public void clear() {
                 if (super.size() > 0) {
-                    sharedObject.setChildModified(true);
+                    sharedObject.setChildModified(true, ACCESS_OBJECT);
                 }
                 super.clear();
             }
@@ -678,7 +678,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             @SuppressWarnings("rawtypes")
             final SharedTagContent sharedTagContent = firstChild.sharedTagContent;
             if (sharedTagContent != null && firstChild instanceof NoTag) {
-                sharedTagContent.removeListenersLockless(this.internalId);
+                sharedTagContent.removeListenersLockless(internalId);
                 firstChild.sharedTagContent = null;
                 firstChild.cachedStcFormatter = null;
             }
@@ -2258,7 +2258,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
         this.attributes = thisAttributes;
         setModified(true);
 
-        sharedObject.setChildModified(true);
+        sharedObject.setChildModified(true, ACCESS_OBJECT);
 
         // invokeListener
         if (updateClient) {
@@ -2442,7 +2442,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             if (removed) {
                 this.attributes = attributesMap.values().toArray(new AbstractAttribute[attributesMap.size()]);
                 setModified(true);
-                sharedObject.setChildModified(true);
+                sharedObject.setChildModified(true, ACCESS_OBJECT);
 
                 // invokeListener
                 if (updateClient) {
@@ -2502,7 +2502,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             attributes = thisAttributesMap.values().toArray(new AbstractAttribute[thisAttributesMap.size()]);
 
             setModified(true);
-            sharedObject.setChildModified(true);
+            sharedObject.setChildModified(true, ACCESS_OBJECT);
         }
 
         thisDataWffId = null;
@@ -2618,7 +2618,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             if (removed) {
                 attributes = attributesMap.values().toArray(new AbstractAttribute[attributesMap.size()]);
                 setModified(true);
-                sharedObject.setChildModified(true);
+                sharedObject.setChildModified(true, ACCESS_OBJECT);
 
                 // invokeListener
                 if (updateClient) {
@@ -3298,7 +3298,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             final String printStructure = getPrintStructureWithoutRecursive(getSharedObject().isChildModified());
 
             if (parent == null) {
-                sharedObject.setChildModified(false);
+                sharedObject.setChildModified(false, ACCESS_OBJECT);
             }
 
             return printStructure;
@@ -3954,7 +3954,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             final String printStructure = getPrintStructure(getSharedObject().isChildModified());
 
             if (parent == null) {
-                sharedObject.setChildModified(false);
+                sharedObject.setChildModified(false, ACCESS_OBJECT);
             }
 
             return printStructure;
@@ -3970,6 +3970,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * charset.Charset)
      */
     @Override
+    @Deprecated
     public String toHtmlString(final Charset charset) {
         final Lock lock = lockAndGetWriteLock();
         final Charset previousCharset = this.charset;
@@ -3992,6 +3993,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * String)
      */
     @Override
+    @Deprecated
     public String toHtmlString(final String charset) {
         final Lock lock = lockAndGetWriteLock();
         final Charset previousCharset = this.charset;
@@ -4027,6 +4029,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @see com.webfirmframework.wffweb.tag.core.TagBase#toHtmlString(boolean,
      * java.nio.charset.Charset)
      */
+    @Deprecated
     @Override
     public String toHtmlString(final boolean rebuild, final Charset charset) {
         final Lock lock = lockAndGetWriteLock();
@@ -4049,6 +4052,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @see com.webfirmframework.wffweb.tag.core.TagBase#toHtmlString(boolean,
      * java.lang.String)
      */
+    @Deprecated
     @Override
     public String toHtmlString(final boolean rebuild, final String charset) {
         final Lock lock = lockAndGetWriteLock();
@@ -4550,14 +4554,20 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     /**
      * @return the charset
+     * @deprecated not recommended since 3.0.19, it will be removed in future major
+     *             version.
      */
+    @Deprecated
     public Charset getCharset() {
         return charset;
     }
 
     /**
      * @param charset the charset to set
+     * @deprecated not recommended since 3.0.19, it will be removed in future major
+     *             version.
      */
+    @Deprecated
     public void setCharset(final Charset charset) {
         this.charset = charset;
     }
@@ -6651,7 +6661,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     /**
      * Note: only for testing purpose
-     * 
+     *
      * @return
      */
     final Object getCachedStcFormatter() {

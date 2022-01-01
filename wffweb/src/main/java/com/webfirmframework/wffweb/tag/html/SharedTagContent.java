@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 Web Firm Framework
+ * Copyright 2014-2022 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -118,7 +118,7 @@ public class SharedTagContent<T> {
 
     private volatile Executor executor;
 
-    final Set<ApplicableTagGCTask<T>> applicableTagGCTasksCache = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    final Set<ApplicableTagGCTask<T>> applicableTagGCTasksCache = ConcurrentHashMap.newKeySet();
 
 //    final Set<InsertedTagDataGCTask<T>> insertedTagDataGCTasksCache = Collections
 //            .newSetFromMap(new ConcurrentHashMap<>());
@@ -422,15 +422,60 @@ public class SharedTagContent<T> {
             this.content = content;
         }
 
+        /**
+         * @return the source tag
+         * @deprecated As it is record class no need to use getter method instead use
+         *             {@link DetachEvent#sourceTag()}.This method will be removed in
+         *             future release.
+         */
+        @Deprecated
         public AbstractHtml getSourceTag() {
             return sourceTag;
         }
 
+        /**
+         * @return the source listener
+         * @deprecated As it is record class no need to use getter method instead use
+         *             {@link DetachEvent#sourceListener()}.This method will be removed
+         *             in future release.
+         */
+        @Deprecated
         public DetachListener<T> getSourceListener() {
             return sourceListener;
         }
 
+        /**
+         * @return the content
+         * @deprecated As it is record class no need to use getter method instead use
+         *             {@link DetachEvent#content()}.This method will be removed in
+         *             future release.
+         */
+        @Deprecated
         public Content<T> getContent() {
+            return content;
+        }
+
+        /**
+         * @return the source tag
+         * @since 3.0.19
+         */
+        public AbstractHtml sourceTag() {
+            return sourceTag;
+        }
+
+        /**
+         * @return the source listener
+         * @since 3.0.19
+         */
+        public DetachListener<T> sourceListener() {
+            return sourceListener;
+        }
+
+        /**
+         * @return the content
+         * @since 3.0.19
+         */
+        public Content<T> content() {
             return content;
         }
     }
@@ -1352,14 +1397,9 @@ public class SharedTagContent<T> {
 
                     final AbstractHtml parentTag = prevNoTag.getParent();
 
-                    if (parentTag == null) {
-                        ((AbstractHtml) prevNoTag).setCacheSTCFormatter(null, ACCESS_OBJECT);
-                        continue;
-                    }
-
                     // the condition isParentNullifiedOnce true means the parent
                     // of this tag has already been changed at least once
-                    if (((AbstractHtml) prevNoTag).isParentNullifiedOnce()) {
+                    if ((parentTag == null) || ((AbstractHtml) prevNoTag).isParentNullifiedOnce()) {
                         ((AbstractHtml) prevNoTag).setCacheSTCFormatter(null, ACCESS_OBJECT);
                         continue;
                     }
@@ -1398,7 +1438,7 @@ public class SharedTagContent<T> {
 
                 tagsGroupedBySO = null;
 
-                tagsGroupedBySOEntries.sort(Comparator.comparingLong(o -> o.getKey().objectId()));
+                tagsGroupedBySOEntries.sort(Comparator.comparing(o -> o.getKey().objectId()));
 
                 final List<ModifiedParentData<T>> modifiedParents = new ArrayList<>(4);
 
@@ -1929,14 +1969,9 @@ public class SharedTagContent<T> {
                 final InsertedTagData<T> insertedTagData = entry.getValue();
                 final AbstractHtml parentTag = prevNoTag.getParent();
 
-                if (parentTag == null) {
-                    ((AbstractHtml) prevNoTag).setCacheSTCFormatter(null, ACCESS_OBJECT);
-                    continue;
-                }
-
                 // the condition isParentNullifiedOnce true means the parent of
                 // this tag has already been changed at least once
-                if (((AbstractHtml) prevNoTag).isParentNullifiedOnce()) {
+                if ((parentTag == null) || ((AbstractHtml) prevNoTag).isParentNullifiedOnce()) {
                     ((AbstractHtml) prevNoTag).setCacheSTCFormatter(null, ACCESS_OBJECT);
                     continue;
                 }
@@ -1958,7 +1993,7 @@ public class SharedTagContent<T> {
 
             tagsGroupedBySO = null;
 
-            tagsGroupedBySOEntries.sort(Comparator.comparingLong(o -> o.getKey().objectId()));
+            tagsGroupedBySOEntries.sort(Comparator.comparing(o -> o.getKey().objectId()));
 
             final List<AbstractHtml> modifiedParents = new ArrayList<>(4);
 

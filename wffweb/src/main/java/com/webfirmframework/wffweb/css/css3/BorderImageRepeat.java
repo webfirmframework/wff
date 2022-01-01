@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 Web Firm Framework
+ * Copyright 2014-2022 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -292,10 +292,8 @@ public class BorderImageRepeat extends AbstractCssProperty<BorderImageRepeat> {
         boolean valid = false;
         for (final String each : cssValueParts) {
 
-            if (!PREDEFINED_CONSTANTS.contains(each)) {
-                return false;
-            }
-            if ((INITIAL.equals(each) || INHERIT.equals(each)) && cssValueParts.length == 2) {
+            if (!PREDEFINED_CONSTANTS.contains(each)
+                    || ((INITIAL.equals(each) || INHERIT.equals(each)) && cssValueParts.length == 2)) {
                 return false;
 
             }

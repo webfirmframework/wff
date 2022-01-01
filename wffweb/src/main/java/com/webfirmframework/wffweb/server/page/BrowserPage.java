@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 Web Firm Framework
+ * Copyright 2014-2022 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -150,7 +150,7 @@ public abstract class BrowserPage implements Serializable {
 
     private final AtomicInteger holdPush = new AtomicInteger(0);
 
-    private final Map<String, ServerMethod> serverMethods = new ConcurrentHashMap<>();
+    private final Map<String, ServerMethodWrapper> serverMethods = new ConcurrentHashMap<>();
 
     private boolean removeFromBrowserContextOnTabClose = true;
 
@@ -232,12 +232,12 @@ public abstract class BrowserPage implements Serializable {
      * @return the Queue
      * @since 3.0.18
      */
-    private Queue<byte[]> buildByteArrayQ(String subDirName) {
+    private Queue<byte[]> buildByteArrayQ(final String subDirName) {
 
         if (externalDrivePath != null) {
             try {
                 return new ExternalDriveByteArrayQueue(externalDrivePath, instanceId, subDirName);
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 LOGGER.severe(
                         "The given path by useExternalDrivePath is invalid or it doesn't have read/write permission.");
             }
@@ -254,7 +254,7 @@ public abstract class BrowserPage implements Serializable {
         if (externalDrivePath != null) {
             try {
                 return new ExternalDriveClientTasksWrapperDeque(externalDrivePath, instanceId, subDir);
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 LOGGER.severe(
                         "The given path by useExternalDrivePath is invalid or it doesn't have read/write permission.");
             }
@@ -271,7 +271,7 @@ public abstract class BrowserPage implements Serializable {
         if (externalDrivePath != null) {
             try {
                 return new ExternalDriveClientTasksWrapperQueue(externalDrivePath, instanceId, subDir);
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 LOGGER.severe(
                         "The given path by useExternalDrivePath is invalid or it doesn't have read/write permission.");
             }
@@ -290,7 +290,7 @@ public abstract class BrowserPage implements Serializable {
     private String useExternalDrivePathPvt() {
         try {
             return useExternalDrivePath();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             if (LOGGER.isLoggable(Level.WARNING)) {
                 LOGGER.log(Level.WARNING, "Unable get externalDrivePath from useExternalDrivePath method.", e);
             }
@@ -586,6 +586,7 @@ public abstract class BrowserPage implements Serializable {
      * {@code BrowserPage#afterRender(AbstractHtml)} is invoked before this method
      * (and just after the {@code BrowserPage#render()} method) regardless of the
      * client is able to communicate to the server or not.
+     *
      * @param rootTag the root of the {@code BrowserPage}
      * @since 3.0.18
      */
@@ -621,7 +622,7 @@ public abstract class BrowserPage implements Serializable {
             } else if (externalDrivePath != null) {
                 CompletableFuture.runAsync(this::executeTasksFromClientFromQ);
             } else {
-                this.executeTasksFromClientFromQ();
+                executeTasksFromClientFromQ();
             }
         }
 
@@ -806,8 +807,8 @@ public abstract class BrowserPage implements Serializable {
 
                     final ServerAsyncMethod serverAsyncMethod = eventAttr.getServerAsyncMethod();
 
-                    final ServerAsyncMethod.Event event = new ServerAsyncMethod.Event(methodTag, attributeByName,
-                            eventAttr.getServerSideData());
+                    final ServerAsyncMethod.Event event = new ServerAsyncMethod.Event(wffBMObject, methodTag,
+                            attributeByName, null, eventAttr.getServerSideData());
 
                     final WffBMObject returnedObject;
 
@@ -903,7 +904,7 @@ public abstract class BrowserPage implements Serializable {
         final NameValue methodNameAndArg = nameValues.get(1);
         final String methodName = new String(methodNameAndArg.getName(), StandardCharsets.UTF_8);
 
-        final ServerMethod serverMethod = serverMethods.get(methodName);
+        final ServerMethodWrapper serverMethod = serverMethods.get(methodName);
 
         if (serverMethod != null) {
 
@@ -922,8 +923,10 @@ public abstract class BrowserPage implements Serializable {
                     // per
                     // java memory
                     // model
-                    returnedObject = serverMethod.getServerAsyncMethod().asyncMethod(wffBMObject,
-                            new ServerAsyncMethod.Event(methodName, serverMethod.getServerSideData()));
+                    returnedObject = serverMethod.serverAsyncMethod().asyncMethod(wffBMObject,
+                            new ServerAsyncMethod.Event(wffBMObject, null, null, methodName,
+                                    serverMethod.serverSideData()));
+
                 }
 
             } catch (final Exception e) {
@@ -1274,7 +1277,9 @@ public abstract class BrowserPage implements Serializable {
      * @return {@code String} equalent to the html string of the tag including the
      *         child tags.
      * @author WFF
+     * @deprecated since 3.0.19 as it is unused in the internal implementation
      */
+    @Deprecated
     public String toHtmlString(final String charset) {
         initAbstractHtml();
         wsWarningDisabled = true;
@@ -1301,7 +1306,9 @@ public abstract class BrowserPage implements Serializable {
      *         child tags.
      * @author WFF
      * @since 2.1.4
+     * @deprecated since 3.0.19 as it is unused in the internal implementation
      */
+    @Deprecated
     public String toHtmlString(final boolean rebuild, final String charset) {
         initAbstractHtml();
         wsWarningDisabled = true;
@@ -1734,7 +1741,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.0
      */
     public final void addServerMethod(final String methodName, final ServerAsyncMethod serverAsyncMethod) {
-        serverMethods.put(methodName, new ServerMethod(serverAsyncMethod, null));
+        serverMethods.put(methodName, new ServerMethodWrapper(serverAsyncMethod, null));
     }
 
     /**
@@ -1747,7 +1754,7 @@ public abstract class BrowserPage implements Serializable {
      */
     public final void addServerMethod(final String methodName, final ServerAsyncMethod serverAsyncMethod,
             final Object serverSideData) {
-        serverMethods.put(methodName, new ServerMethod(serverAsyncMethod, serverSideData));
+        serverMethods.put(methodName, new ServerMethodWrapper(serverAsyncMethod, serverSideData));
     }
 
     /**

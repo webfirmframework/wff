@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 Web Firm Framework
+ * Copyright 2014-2022 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -202,11 +202,8 @@ public class WebkitColumnRuleColor extends AbstractCssProperty<WebkitColumnRuleC
 
         final String trimmedCssValueLowerCase = TagStringUtil.toLowerCase(trimmedCssValue);
 
-        if (INITIAL.equals(trimmedCssValueLowerCase) || INHERIT.equals(trimmedCssValueLowerCase)) {
-            return true;
-        }
-
-        if (CssColorName.isValid(trimmedCssValue)) {
+        if (INITIAL.equals(trimmedCssValueLowerCase) || INHERIT.equals(trimmedCssValueLowerCase)
+                || CssColorName.isValid(trimmedCssValue)) {
             return true;
         }
 

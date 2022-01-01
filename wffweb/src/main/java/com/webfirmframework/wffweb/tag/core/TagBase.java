@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 Web Firm Framework
+ * Copyright 2014-2022 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,10 @@ public interface TagBase extends Serializable, Cloneable {
      *         child tags.
      * @since 1.0.0
      * @author WFF
+     * @deprecated since 3.0.19 as it is unused in the internal implementation. It
+     *             will be removed in future major version.
      */
+    @Deprecated
     public abstract String toHtmlString(Charset charset);
 
     /**
@@ -57,7 +60,10 @@ public interface TagBase extends Serializable, Cloneable {
      *         child tags.
      * @since 1.0.0
      * @author WFF
+     * @deprecated since 3.0.19 as it is unused in the internal implementation. It
+     *             will be removed in future major version.
      */
+    @Deprecated
     public abstract String toHtmlString(String charset);
 
     /**
@@ -86,7 +92,10 @@ public interface TagBase extends Serializable, Cloneable {
      *
      * @since 1.0.0
      * @author WFF
+     * @deprecated since 3.0.19 as it is unused in the internal implementation. It
+     *             will be removed in future major version.
      */
+    @Deprecated
     public abstract String toHtmlString(boolean rebuild, Charset charset);
 
     /**
@@ -102,7 +111,10 @@ public interface TagBase extends Serializable, Cloneable {
      *
      * @since 1.0.0
      * @author WFF
+     * @deprecated since 3.0.19 as it is unused in the internal implementation. It
+     *             will be removed in future major version.
      */
+    @Deprecated
     public abstract String toHtmlString(boolean rebuild, String charset);
 
     /**

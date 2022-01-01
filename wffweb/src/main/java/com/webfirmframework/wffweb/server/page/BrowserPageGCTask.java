@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 Web Firm Framework
+ * Copyright 2014-2022 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,18 +27,18 @@ import com.webfirmframework.wffweb.util.FileUtil;
  */
 class BrowserPageGCTask extends WeakReference<BrowserPage> {
 
-	private final String externalDrivePath;
+    private final String externalDrivePath;
 
-	private final String subDirName;
+    private final String subDirName;
 
-	BrowserPageGCTask(final BrowserPage referent, final ReferenceQueue<? super BrowserPage> q) {
-		super(referent, q);
-		externalDrivePath = referent.getExternalDrivePath();
-		subDirName = referent.getInstanceId();
-	}
+    BrowserPageGCTask(final BrowserPage referent, final ReferenceQueue<? super BrowserPage> q) {
+        super(referent, q);
+        externalDrivePath = referent.getExternalDrivePath();
+        subDirName = referent.getInstanceId();
+    }
 
-	void run() {
-		FileUtil.removeDirRecursively(externalDrivePath, subDirName);
-	}
+    void run() {
+        FileUtil.removeDirRecursively(externalDrivePath, subDirName);
+    }
 
 }

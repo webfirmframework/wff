@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 Web Firm Framework
+ * Copyright 2014-2022 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -321,7 +321,7 @@ public class TagRegistry {
 
         TAG_CLASS_NAME_BY_TAG_NAME = Collections.unmodifiableMap(tagClassNameByTagName);
 
-        TAG_NAMES_SET = Collections.newSetFromMap(new ConcurrentHashMap<>(initialCapacity));
+        TAG_NAMES_SET = ConcurrentHashMap.newKeySet(initialCapacity);
 
         TAG_NAMES_SET.addAll(TAG_CLASS_NAME_BY_TAG_NAME.keySet());
 

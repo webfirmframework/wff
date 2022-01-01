@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 Web Firm Framework
+ * Copyright 2014-2022 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,12 +24,12 @@ import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.webfirmframework.wffweb.DataWffIdOutOfRangeError;
 import com.webfirmframework.wffweb.WffSecurityException;
+import com.webfirmframework.wffweb.internal.ObjectId;
 import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
 import com.webfirmframework.wffweb.tag.core.AbstractTagBase;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
@@ -90,7 +90,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
 
     private WffBMDataUpdateListener wffBMDataUpdateListener;
 
-    private PushQueue pushQueue;
+    private volatile PushQueue pushQueue;
 
     /**
      * no need to make it volatile. cannot declare as long to avoid maximum id
@@ -128,17 +128,15 @@ public final class AbstractHtml5SharedObject implements Serializable {
 
     private volatile boolean activeWSListener;
 
-    private static transient final AtomicLong OBJECT_ID_GENERATOR = new AtomicLong(0);
-
     /**
      * NB: do not generate equals and hashcode base on this as the deserialized
      * object can lead to bug.
      */
-    private final long objectId;
+    private final ObjectId objectId;
 
     public AbstractHtml5SharedObject(final AbstractHtml rootTag) {
         this.rootTag = rootTag;
-        objectId = OBJECT_ID_GENERATOR.incrementAndGet();
+        objectId = SharedObjectIdGenerator.nextId();
     }
 
     /**
@@ -229,8 +227,26 @@ public final class AbstractHtml5SharedObject implements Serializable {
      * @param childModified the childModified to set
      * @since 1.0.0
      * @author WFF
+     * @deprecated it does nothing since 3.0.19
      */
-    public void setChildModified(final boolean childModified) {
+    @Deprecated
+    public void setChildModified(final boolean childModified) {        
+    }
+    
+    /**
+     * set true if any of the children has been modified.<br>
+     * NB:- it's for internal use
+     *
+     * @param childModified the childModified to set
+     * @param accessObject access object
+     * @since 3.0.19
+     * @author WFF
+     */
+    public void setChildModified(final boolean childModified, final Object accessObject) {
+        if (accessObject == null || !((SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName()))
+                || (SecurityClassConstants.ABSTRACT_ATTRIBUTE.equals(accessObject.getClass().getName())))) {
+            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
+        }
         this.childModified = childModified;
     }
 
@@ -746,11 +762,14 @@ public final class AbstractHtml5SharedObject implements Serializable {
     }
 
     /**
+     * Note: only for internal use.
+     *
      * @return the object id for this object
      *
-     * @since 3.0.15
+     * @since 3.0.15 returns long value type
+     * @since 3.0.19 returns ObjectId value type
      */
-    public final long objectId() {
+    public final ObjectId objectId() {
         return objectId;
     }
 

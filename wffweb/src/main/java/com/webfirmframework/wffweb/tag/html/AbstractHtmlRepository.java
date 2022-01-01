@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 Web Firm Framework
+ * Copyright 2014-2022 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.stream.Stream;
 import java.util.stream.Stream.Builder;
 
+import com.webfirmframework.wffweb.internal.ObjectId;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 import com.webfirmframework.wffweb.wffbm.data.WffBMData;
@@ -40,7 +41,7 @@ public abstract class AbstractHtmlRepository {
 
     /**
      *
-     * @since 3.0.15
+     * @since 3.0.15 returns long value type
      *
      */
     private static final class TagContractRecord {
@@ -55,7 +56,12 @@ public abstract class AbstractHtmlRepository {
             this.sharedObject = sharedObject;
         }
 
-        private long objectId() {
+        /**
+         * @since 3.0.15 returns long value type
+         * @since 3.0.19 returns ObjectId value type
+         * @return objectId
+         */
+        private ObjectId objectId() {
             return sharedObject.objectId();
         }
 
@@ -155,7 +161,7 @@ public abstract class AbstractHtmlRepository {
                 tagContractRecords.add(new TagContractRecord(tag, sharedObject));
             }
 
-            tagContractRecords.sort(Comparator.comparingLong(TagContractRecord::objectId));
+            tagContractRecords.sort(Comparator.comparing(TagContractRecord::objectId));
 
             locks = new ArrayList<>(tagContractRecords.size());
 
@@ -215,7 +221,7 @@ public abstract class AbstractHtmlRepository {
 
         final List<AbstractHtml5SharedObject> sortedSharedObjects = new ArrayList<>(sharedObjectsSet);
 
-        sortedSharedObjects.sort(Comparator.comparingLong(AbstractHtml5SharedObject::objectId));
+        sortedSharedObjects.sort(Comparator.comparing(AbstractHtml5SharedObject::objectId));
 
         final List<Lock> readLocks = new ArrayList<>(sortedSharedObjects.size());
 

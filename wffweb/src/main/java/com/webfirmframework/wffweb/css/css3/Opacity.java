@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 Web Firm Framework
+ * Copyright 2014-2022 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -178,7 +178,7 @@ public class Opacity extends AbstractCssProperty<Opacity> {
                 value = null;
             } else {
                 try {
-                    final float tempValue = Float.valueOf(trimmedCssValue);
+                    final float tempValue = Float.parseFloat(trimmedCssValue);
                     if (tempValue < 0 || tempValue > 1) {
                         throw new InvalidValueException("The cssValue should be a number in between 0 to 1.");
                     }

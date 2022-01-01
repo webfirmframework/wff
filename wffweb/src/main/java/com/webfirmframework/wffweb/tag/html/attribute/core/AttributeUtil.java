@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 Web Firm Framework
+ * Copyright 2014-2022 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -353,7 +353,7 @@ public final class AttributeUtil {
 
         // lock should be called on the order of objectId otherwise there will be
         // deadlock
-        attributesList.sort(Comparator.comparingLong(AbstractAttribute::objectId));
+        attributesList.sort(Comparator.comparing(AbstractAttribute::objectId));
 
         final List<Lock> attrLocks = new ArrayList<Lock>(attributesList.size());
 
@@ -387,7 +387,7 @@ public final class AttributeUtil {
 
         // lock should be called on the order of objectId otherwise there will be
         // deadlock
-        attributesList.sort(Comparator.comparingLong(AbstractAttribute::objectId));
+        attributesList.sort(Comparator.comparing(AbstractAttribute::objectId));
 
         final List<Lock> attrLocks = new ArrayList<Lock>(attributesList.size());
 

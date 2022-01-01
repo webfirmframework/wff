@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 Web Firm Framework
+ * Copyright 2014-2022 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,32 +20,32 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 
 public class ClientTasksWrapper {
 
-	private volatile AtomicReferenceArray<ByteBuffer> tasks;
+    private volatile AtomicReferenceArray<ByteBuffer> tasks;
 
-	private final Long queueEntryId;
+    private final Long queueEntryId;
 
-	ClientTasksWrapper(final ByteBuffer... tasks) {
-		super();
-		this.tasks = new AtomicReferenceArray<>(tasks);
-		queueEntryId = null;
-	}
+    ClientTasksWrapper(final ByteBuffer... tasks) {
+        super();
+        this.tasks = new AtomicReferenceArray<>(tasks);
+        queueEntryId = null;
+    }
 
-	ClientTasksWrapper(final long queueEntryId, final ByteBuffer... tasks) {
-		super();
-		this.tasks = new AtomicReferenceArray<>(tasks);
-		this.queueEntryId = queueEntryId;
-	}
+    ClientTasksWrapper(final long queueEntryId, final ByteBuffer... tasks) {
+        super();
+        this.tasks = new AtomicReferenceArray<>(tasks);
+        this.queueEntryId = queueEntryId;
+    }
 
-	AtomicReferenceArray<ByteBuffer> tasks() {
-		return tasks;
-	}
+    AtomicReferenceArray<ByteBuffer> tasks() {
+        return tasks;
+    }
 
-	public void nullifyTasks() {
-		tasks = null;
-	}
+    public void nullifyTasks() {
+        tasks = null;
+    }
 
-	Long queueEntryId() {
-		return queueEntryId;
-	}
+    Long queueEntryId() {
+        return queueEntryId;
+    }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 Web Firm Framework
+ * Copyright 2014-2022 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.concurrent.locks.Lock;
 
 import com.webfirmframework.wffweb.WffSecurityException;
+import com.webfirmframework.wffweb.internal.ObjectId;
 import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeUtil;
@@ -55,7 +56,12 @@ public final class TagUtil {
             this.sharedObject = sharedObject;
         }
 
-        private long objectId() {
+        /**
+         * @since 3.0.15 returns long value type
+         * @since 3.0.19 returns ObjectId value type
+         * @return objectId
+         */
+        private ObjectId objectId() {
             return sharedObject.objectId();
         }
 
@@ -185,7 +191,7 @@ public final class TagUtil {
 
             // lock should be called on the order of objectId otherwise there will be
             // deadlock
-            tagContractRecords.sort(Comparator.comparingLong(TagContractRecord::objectId));
+            tagContractRecords.sort(Comparator.comparing(TagContractRecord::objectId));
 
             locks = new ArrayList<>(tagContractRecords.size());
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 Web Firm Framework
+ * Copyright 2014-2022 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,15 @@ import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
 
+/**
+ * Note: It is recommended to use event.data() method instead of first data
+ * (WffBMObject) parameter from
+ * {@link ServerAsyncMethod#asyncMethod(WffBMObject, Event)} method as the
+ * signature of the method will be changed to a single parameter method in next
+ * major version.
+ *
+ * @author WFF
+ */
 @FunctionalInterface
 public interface ServerAsyncMethod extends Serializable {
 
@@ -45,14 +54,32 @@ public interface ServerAsyncMethod extends Serializable {
 
         private final Object serverSideData;
 
+        private final WffBMObject data;
+
+        /**
+         * @param serverMethodName
+         * @since 3.0.19 deprecated
+         * @deprecated use {@link Event(WffBMObject, AbstractHtml, AbstractAttribute,
+         *             String, Object)}
+         */
+        @Deprecated
         public Event(final String serverMethodName) {
             this.serverMethodName = serverMethodName;
             serverMethodNameFinal = serverMethodName;
             sourceAttribute = null;
             serverSideData = null;
             srcTag = null;
+            data = null;
         }
 
+        /**
+         * @param sourceTag
+         * @param sourceAttribute
+         * @since 3.0.19 deprecated
+         * @deprecated use {@link Event(WffBMObject, AbstractHtml, AbstractAttribute,
+         *             String, Object)}
+         */
+        @Deprecated
         public Event(final AbstractHtml sourceTag, final AbstractAttribute sourceAttribute) {
             super();
             this.sourceTag = sourceTag;
@@ -60,19 +87,25 @@ public interface ServerAsyncMethod extends Serializable {
             this.sourceAttribute = sourceAttribute;
             serverSideData = null;
             serverMethodNameFinal = null;
+            data = null;
         }
 
         /**
          * @param serverMethodName
          * @param serverSideData
          * @since 3.0.2
+         * @since 3.0.19 deprecated
+         * @deprecated use {@link Event(WffBMObject, AbstractHtml, AbstractAttribute,
+         *             String, Object)}
          */
+        @Deprecated
         public Event(final String serverMethodName, final Object serverSideData) {
             sourceAttribute = null;
             srcTag = null;
             this.serverMethodName = serverMethodName;
             serverMethodNameFinal = serverMethodName;
             this.serverSideData = serverSideData;
+            data = null;
         }
 
         /**
@@ -80,7 +113,11 @@ public interface ServerAsyncMethod extends Serializable {
          * @param sourceAttribute
          * @param serverSideData
          * @since 3.0.2
+         * @since 3.0.19 deprecated
+         * @deprecated use {@link Event(WffBMObject, AbstractHtml, AbstractAttribute,
+         *             String, Object)}
          */
+        @Deprecated
         public Event(final AbstractHtml sourceTag, final AbstractAttribute sourceAttribute,
                 final Object serverSideData) {
             super();
@@ -89,6 +126,26 @@ public interface ServerAsyncMethod extends Serializable {
             this.sourceAttribute = sourceAttribute;
             this.serverSideData = serverSideData;
             serverMethodNameFinal = null;
+            data = null;
+        }
+
+        /**
+         * @param data
+         * @param sourceTag
+         * @param sourceAttribute
+         * @param serverMethodName
+         * @param serverSideData
+         * @since 3.0.19
+         */
+        public Event(final WffBMObject data, final AbstractHtml sourceTag, final AbstractAttribute sourceAttribute,
+                final String serverMethodName, final Object serverSideData) {
+            super();
+            this.sourceTag = sourceTag;
+            srcTag = sourceTag;
+            this.sourceAttribute = sourceAttribute;
+            this.serverSideData = serverSideData;
+            serverMethodNameFinal = null;
+            this.data = data;
         }
 
         /**
@@ -228,8 +285,32 @@ public interface ServerAsyncMethod extends Serializable {
             return serverMethodNameFinal;
         }
 
+        /**
+         * Use this method to get data instead of the first parameter from
+         * {@link ServerAsyncMethod#asyncMethod(WffBMObject, Event)} method, both
+         * contain the same object. But, it is recommended to use {@link Event#data()}
+         * method to get the same data as the signature of
+         * {@link ServerAsyncMethod#asyncMethod(WffBMObject, Event)} method will be
+         * changed to a single parameter method in next major version.
+         *
+         * @return the data
+         */
+        public WffBMObject data() {
+            return data;
+        }
+
     }
 
-    public abstract WffBMObject asyncMethod(WffBMObject data, Event event);
+    /**
+     * @param data  the data received from the consumer i.e usually client browser.
+     *              But, it is recommended to use {@link Event#data()} method to get
+     *              the same data as the signature of
+     *              {@link ServerAsyncMethod#asyncMethod(WffBMObject, Event)} method
+     *              will be changed to a single parameter method in next major
+     *              version.
+     * @param event
+     * @return the data to the consumer i.e usually client browser.
+     */
+    public abstract WffBMObject asyncMethod(final WffBMObject data, final Event event);
 
 }

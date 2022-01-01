@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 Web Firm Framework
+ * Copyright 2014-2022 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.identifier.BooleanAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
+import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
  * {@code <element hidden> }
@@ -69,23 +70,30 @@ public class Hidden extends AbstractAttribute implements GlobalAttributable, Boo
     /**
      *
      *
-     * @param value the value should be either true or false
+     * @param value the value should be hidden, true, empty string or null
      * @author WFF
      * @since 1.1.4
+     * @since 3.0.19 internal hidden property value will be set as false only if
+     *        false value is passed.
      */
     public Hidden(final String value) {
-        if ("hidden".equals(value) || value == null) {
+
+        if (AttributeNameConstants.HIDDEN.equals(value) || value == null || StringUtil.isBlank(value)) {
+            setAttributeValue(value);
             hidden = true;
         } else if ("true".equals(value) || "false".equals(value)) {
-            hidden = Boolean.parseBoolean(value);
+            final boolean yes = Boolean.parseBoolean(value);
+            setAttributeValue(yes ? AttributeNameConstants.HIDDEN : null);
+            hidden = yes;
         } else {
-            throw new InvalidValueException("the value should be either true or false");
+            throw new InvalidValueException("the value should be hidden, true, empty string or null");
         }
-        setAttributeValue(value);
+
     }
 
+    @Deprecated
     public Hidden(final boolean hidden) {
-        setAttributeValue(hidden ? "hidden" : String.valueOf(hidden));
+        setAttributeValue(hidden ? AttributeNameConstants.HIDDEN : "");
         this.hidden = hidden;
     }
 
@@ -103,7 +111,7 @@ public class Hidden extends AbstractAttribute implements GlobalAttributable, Boo
      * @return the hidden
      * @author WFF
      * @since 1.0.0
-     * @deprecated as there is no affect of boolean values for this attribute this
+     * @deprecated as there is no affect of boolean values for this attribute. this
      *             method will be removed later.
      */
     @Deprecated
@@ -115,7 +123,7 @@ public class Hidden extends AbstractAttribute implements GlobalAttributable, Boo
      * @param hidden the hidden to set. {@code null} will remove the value.
      * @author WFF
      * @since 1.0.0
-     * @deprecated as there is no affect of boolean values for this attribute this
+     * @deprecated as there is no affect of boolean values for this attribute. this
      *             method will be removed later.
      */
     @Deprecated

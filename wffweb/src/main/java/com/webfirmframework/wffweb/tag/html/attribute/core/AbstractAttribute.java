@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 Web Firm Framework
+ * Copyright 2014-2022 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,12 +32,12 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.WeakHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import java.util.concurrent.locks.StampedLock;
 
+import com.webfirmframework.wffweb.internal.ObjectId;
 import com.webfirmframework.wffweb.tag.core.AbstractTagBase;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attribute.listener.AttributeValueChangeListener;
@@ -79,13 +79,11 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
     private volatile byte[] compressedBytes;
 
-    private static transient final AtomicLong OBJECT_ID_GENERATOR = new AtomicLong(0);
-
     /**
      * NB: do not generate equals and hashcode base on this as the deserialized
      * object can lead to bug.
      */
-    private final long objectId;
+    private final ObjectId objectId;
 
     // for security purpose, the class name should not be modified
     private static final class Security implements Serializable {
@@ -131,7 +129,12 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             this.sharedObject = sharedObject;
         }
 
-        private long objectId() {
+        /**
+         * @since 3.0.15 returns long value type
+         * @since 3.0.19 returns ObjectId value type
+         * @return objectId
+         */
+        private ObjectId objectId() {
             return sharedObject.objectId();
         }
 
@@ -156,7 +159,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
     public AbstractAttribute() {
         nullableAttrValueMapValue = false;
-        objectId = OBJECT_ID_GENERATOR.incrementAndGet();
+        objectId = AttributeIdGenerator.nextId();
     }
 
     /**
@@ -167,7 +170,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected AbstractAttribute(final boolean nullableAttrValueMapValue) {
         this.nullableAttrValueMapValue = nullableAttrValueMapValue;
-        objectId = OBJECT_ID_GENERATOR.incrementAndGet();
+        objectId = AttributeIdGenerator.nextId();
     }
 
     /**
@@ -484,6 +487,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * charset.Charset)
      */
     @Override
+    @Deprecated
     public String toHtmlString(final Charset charset) {
         final Charset previousCharset = this.charset;
         try {
@@ -501,6 +505,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * String)
      */
     @Override
+    @Deprecated
     public String toHtmlString(final String charset) {
         final Charset previousCharset = this.charset;
         try {
@@ -531,6 +536,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @see com.webfirmframework.wffweb.tag.core.TagBase#toHtmlString(boolean,
      * java.nio.charset.Charset)
      */
+    @Deprecated
     @Override
     public String toHtmlString(final boolean rebuild, final Charset charset) {
         final Charset previousCharset = this.charset;
@@ -548,6 +554,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @see com.webfirmframework.wffweb.tag.core.TagBase#toHtmlString(boolean,
      * java.lang.String)
      */
+    @Deprecated
     @Override
     public String toHtmlString(final boolean rebuild, final String charset) {
         final Charset previousCharset = this.charset;
@@ -1130,7 +1137,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
             compressedBytes = null;
             for (final AbstractHtml ownerTag : ownerTags) {
                 ownerTag.setModified(modified);
-                ownerTag.getSharedObject().setChildModified(modified);
+                ownerTag.getSharedObject().setChildModified(modified, ACCESS_OBJECT);
             }
         }
     }
@@ -1556,7 +1563,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 tagContractRecords.add(new TagContractRecord(ownerTag, ownerTag.getSharedObject()));
             }
 
-            tagContractRecords.sort(Comparator.comparingLong(TagContractRecord::objectId));
+            tagContractRecords.sort(Comparator.comparing(TagContractRecord::objectId));
             capacity = tagContractRecords.size();
 
             writeLocks = new ArrayList<>(tagContractRecords.size() + 1);
@@ -1626,7 +1633,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                     tagContractRecords.add(new TagContractRecord(ownerTag, ownerTag.getSharedObject()));
                 }
 
-                tagContractRecords.sort(Comparator.comparingLong(TagContractRecord::objectId));
+                tagContractRecords.sort(Comparator.comparing(TagContractRecord::objectId));
                 capacity = tagContractRecords.size();
 
                 writeLocks = new ArrayList<>(tagContractRecords.size());
@@ -1698,7 +1705,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 tagContractRecords.add(new TagContractRecord(ownerTag, ownerTag.getSharedObject()));
             }
 
-            tagContractRecords.sort(Comparator.comparingLong(TagContractRecord::objectId));
+            tagContractRecords.sort(Comparator.comparing(TagContractRecord::objectId));
             capacity = tagContractRecords.size();
 
             readLocks = new ArrayList<>(tagContractRecords.size() + 1);
@@ -1768,7 +1775,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                     tagContractRecords.add(new TagContractRecord(ownerTag, ownerTag.getSharedObject()));
                 }
 
-                tagContractRecords.sort(Comparator.comparingLong(TagContractRecord::objectId));
+                tagContractRecords.sort(Comparator.comparing(TagContractRecord::objectId));
                 capacity = tagContractRecords.size();
 
                 readLocks = new ArrayList<>(tagContractRecords.size());
@@ -1830,7 +1837,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
             final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(sharedObjectsSet);
 
-            sharedObjects.sort(Comparator.comparingLong(AbstractHtml5SharedObject::objectId));
+            sharedObjects.sort(Comparator.comparing(AbstractHtml5SharedObject::objectId));
 
             final List<WriteLock> locks = new ArrayList<>(sharedObjects.size());
 
@@ -1872,7 +1879,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
             final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(sharedObjectsSet);
 
-            sharedObjects.sort(Comparator.comparingLong(AbstractHtml5SharedObject::objectId));
+            sharedObjects.sort(Comparator.comparing(AbstractHtml5SharedObject::objectId));
 
             final Collection<ReadLock> readLocks = new HashSet<>(sharedObjects.size());
 
@@ -1900,7 +1907,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @return the objectId
      * @since 3.0.15
      */
-    final long objectId() {
+    final ObjectId objectId() {
         return objectId;
     }
 

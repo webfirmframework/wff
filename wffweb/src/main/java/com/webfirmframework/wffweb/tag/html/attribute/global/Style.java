@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 Web Firm Framework
+ * Copyright 2014-2022 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package com.webfirmframework.wffweb.tag.html.attribute.global;
 import static com.webfirmframework.wffweb.css.CssConstants.IMPORTANT;
 import static com.webfirmframework.wffweb.css.CssConstants.IMPORTANT_UPPERCASE;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -1559,7 +1560,7 @@ public class Style extends AbstractAttribute implements GlobalAttributable, Stat
 
                 // must be set setCssValue before putting to
                 // abstractCssPropertyClassObjects
-                abstractCssProperty = (AbstractCssProperty<?>) classClass.newInstance();
+                abstractCssProperty = (AbstractCssProperty<?>) classClass.getConstructor().newInstance();
                 abstractCssProperty.setCssValue(value);
 
                 abstractCssPropertyClassObjects.put(cssName, abstractCssProperty);
@@ -1585,7 +1586,8 @@ public class Style extends AbstractAttribute implements GlobalAttributable, Stat
                 cssProperties.add(customCssProperty);
                 return customCssProperty;
 
-            } catch (InstantiationException | IllegalAccessException e) {
+            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+                    | InvocationTargetException | NoSuchMethodException | SecurityException e) {
                 LOGGER.severe(String.valueOf(e));
             }
         } else if ((value = super.getAttributeValueMap().get(cssName)) != null) {

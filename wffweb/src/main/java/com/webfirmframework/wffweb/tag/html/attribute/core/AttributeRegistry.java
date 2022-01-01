@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 Web Firm Framework
+ * Copyright 2014-2022 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -490,7 +490,7 @@ public class AttributeRegistry {
         // already sorted by length in ascending order and then by name in
         // ascending order in
         // PreIndexedAttributeName
-        for (final PreIndexedAttributeName each : PreIndexedAttributeName.alleventattributes()) {
+        for (final PreIndexedAttributeName each : PreIndexedAttributeName.allEventAttributes()) {
             tmpSortedEventAttrNames.add(each.attrName());
         }
 
@@ -788,6 +788,21 @@ public class AttributeRegistry {
                             "expectedHtmlString: " + expectedHtmlString + " actualHtmlString: " + actualHtmlString);
                 }
                 continue;
+            }
+
+            if (BooleanAttribute.class.isAssignableFrom(attrClass)) {
+                final String expectedAttrValue = "\"" + attrClass.getSimpleName().toLowerCase() + "\"";
+                final Object[] initargs = { attrClass.getSimpleName().toLowerCase() };
+                newInstance = (AbstractAttribute) attrClass.getConstructor(String.class).newInstance(initargs);
+                final String actualHtmlString = newInstance.toHtmlString();
+                final String expectedHtmlStringTmp = expectedHtmlString + expectedAttrValue;
+                if ((expectedHtmlStringTmp).equals(actualHtmlString)) {
+                    expectedHtmlString = expectedHtmlStringTmp;
+                    continue;
+                } else {
+                    throw new InvalidValueException(
+                            "expectedHtmlString: " + expectedHtmlStringTmp + " actualHtmlString: " + actualHtmlString);
+                }
             }
 
             try {
