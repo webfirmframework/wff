@@ -19,9 +19,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
+import com.webfirmframework.wffweb.internal.tag.html.listener.WffBMDataUpdateListener;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.TagUtil;
-import com.webfirmframework.wffweb.tag.html.listener.WffBMDataUpdateListener;
 import com.webfirmframework.wffweb.util.data.NameValue;
 import com.webfirmframework.wffweb.wffbm.data.BMType;
 import com.webfirmframework.wffweb.wffbm.data.WffBMData;
@@ -30,7 +31,7 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMData;
  * @author WFF
  * @since 2.1.8
  */
-final class WffBMDataUpdateListenerImpl implements WffBMDataUpdateListener {
+public final class WffBMDataUpdateListenerImpl implements WffBMDataUpdateListener {
 
     private static final long serialVersionUID = 1L;
 
@@ -38,20 +39,20 @@ final class WffBMDataUpdateListenerImpl implements WffBMDataUpdateListener {
 
     private final BrowserPage browserPage;
 
-    private final Object accessObject;
+    private final SecurityObject accessObject;
 
     @SuppressWarnings("unused")
     private WffBMDataUpdateListenerImpl() {
         throw new AssertionError();
     }
 
-    WffBMDataUpdateListenerImpl(final BrowserPage browserPage, final Object accessObject) {
+    WffBMDataUpdateListenerImpl(final BrowserPage browserPage, final SecurityObject accessObject) {
         this.browserPage = browserPage;
         this.accessObject = accessObject;
     }
 
     @Override
-    public void updatedWffData(final UpdateEvent event) {
+    public void updatedWffData(@SuppressWarnings("exports") final UpdateEvent event) {
 
         try {
 
@@ -63,8 +64,8 @@ final class WffBMDataUpdateListenerImpl implements WffBMDataUpdateListener {
             // bytes] }
             // @formatter:on
 
-            final AbstractHtml tag = event.getTag();
-            final WffBMData wffBMData = event.getWffData();
+            final AbstractHtml tag = event.tag();
+            final WffBMData wffBMData = event.wffData();
             final NameValue task;
 
             if (BMType.OBJECT.equals(wffBMData.getBMType())) {
@@ -85,7 +86,7 @@ final class WffBMDataUpdateListenerImpl implements WffBMDataUpdateListener {
 
             final byte[] dataWffIdBytes = DataWffIdUtil.getDataWffIdBytes(tag.getDataWffId().getValue());
 
-            nameValue.setValues(new byte[][] { dataWffIdBytes, event.getKey().getBytes(StandardCharsets.UTF_8),
+            nameValue.setValues(new byte[][] { dataWffIdBytes, event.key().getBytes(StandardCharsets.UTF_8),
                     wffBMData.buildBytes(true) });
 
             browserPage.push(nameValues);

@@ -18,7 +18,8 @@ package com.webfirmframework.wffweb.tag.html.core;
 import java.util.Arrays;
 
 import com.webfirmframework.wffweb.WffSecurityException;
-import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
+import com.webfirmframework.wffweb.internal.constants.IndexedClassType;
+import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 
@@ -349,9 +350,8 @@ public enum PreIndexedTagName {
      * @return optimized bytes of index
      * @since 3.0.6
      */
-    public byte[] internalIndexBytes(final Object accessObject) {
-        if (accessObject == null
-                || !((SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName())))) {
+    public byte[] internalIndexBytes(@SuppressWarnings("exports") final SecurityObject accessObject) {
+        if (accessObject == null || !((IndexedClassType.ABSTRACT_HTML.equals(accessObject.forClassType())))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
         return indexBytes;

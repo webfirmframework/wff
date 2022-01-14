@@ -32,7 +32,8 @@ import java.util.Set;
 import java.util.concurrent.locks.Lock;
 
 import com.webfirmframework.wffweb.WffSecurityException;
-import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
+import com.webfirmframework.wffweb.internal.constants.IndexedClassType;
+import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
@@ -69,40 +70,6 @@ public final class AttributeUtil {
             final String[] htmlStrings = new String[attributes.length];
             for (int i = 0; i < attributes.length; i++) {
                 final String htmlString = attributes[i].toHtmlString(rebuild);
-                htmlStrings[i] = htmlString;
-                capacity += htmlString.length();
-            }
-
-            final StringBuilder attributeSB = new StringBuilder(capacity);
-            for (final String htmlString : htmlStrings) {
-                attributeSB.append(' ').append(htmlString);
-            }
-
-            return attributeSB.toString();
-        }
-        return "";
-    }
-
-    /**
-     * @param rebuild
-     * @param attributes
-     * @param charset    the charset
-     * @return the attributes string starting with a space.
-     * @author WFF
-     * @since 1.0.0
-     */
-    public static String getAttributeHtmlString(final boolean rebuild, final Charset charset,
-            final AbstractAttribute... attributes) {
-        if (attributes != null) {
-
-            // prefix + total delimiters
-            // 1 + (attributes.length - 1)
-            // StringUtil.join for reference
-            int capacity = attributes.length;
-
-            final String[] htmlStrings = new String[attributes.length];
-            for (int i = 0; i < attributes.length; i++) {
-                final String htmlString = attributes[i].toHtmlString(rebuild, charset);
                 htmlStrings[i] = htmlString;
                 capacity += htmlString.length();
             }
@@ -249,10 +216,10 @@ public final class AttributeUtil {
      * @return
      * @since 3.0.6
      */
-    private static byte[] getAttrNameBytesCompressedByIndex(final Object accessObject, final String attrName,
+    private static byte[] getAttrNameBytesCompressedByIndex(final SecurityObject accessObject, final String attrName,
             final byte[] attrNameIndexBytes, final Charset charset) {
 
-        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName()))) {
+        if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
 
@@ -298,7 +265,8 @@ public final class AttributeUtil {
      * @return
      * @since 3.0.6
      */
-    public static byte[] getAttrNameBytesCompressedByIndex(final Object accessObject, final String attrName,
+    public static byte[] getAttrNameBytesCompressedByIndex(
+            @SuppressWarnings("exports") final SecurityObject accessObject, final String attrName,
             final Charset charset) {
 
         final PreIndexedAttributeName attr = PreIndexedAttributeName.forAttrName(attrName);
@@ -322,7 +290,8 @@ public final class AttributeUtil {
      * @return
      * @since 3.0.6
      */
-    public static byte[] getAttrNameBytesCompressedByIndex(final Object accessObject, final AbstractAttribute attr,
+    public static byte[] getAttrNameBytesCompressedByIndex(
+            @SuppressWarnings("exports") final SecurityObject accessObject, final AbstractAttribute attr,
             final Charset charset) {
         return getAttrNameBytesCompressedByIndex(accessObject, attr.getAttributeName(), attr.getAttrNameIndexBytes(),
                 charset);
@@ -334,9 +303,10 @@ public final class AttributeUtil {
      * @return
      * @since 3.0.15
      */
-    public static List<Lock> lockAndGetWriteLocks(final Object accessObject, final AbstractAttribute... attributes) {
+    public static List<Lock> lockAndGetWriteLocks(@SuppressWarnings("exports") final SecurityObject accessObject,
+            final AbstractAttribute... attributes) {
 
-        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName()))) {
+        if (accessObject == null || !(IndexedClassType.ABSTRACT_HTML.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
 
@@ -376,10 +346,10 @@ public final class AttributeUtil {
      * @return
      * @since 3.0.15
      */
-    public static List<Lock> lockAndGetWriteLocks(final Object accessObject,
+    public static List<Lock> lockAndGetWriteLocks(@SuppressWarnings("exports") final SecurityObject accessObject,
             final Collection<AbstractAttribute> attributes) {
 
-        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName()))) {
+        if (accessObject == null || !(IndexedClassType.ABSTRACT_HTML.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
 
@@ -410,9 +380,10 @@ public final class AttributeUtil {
      * @return the lock object
      * @since 3.0.15
      */
-    public static Lock lockAndGetWriteLock(final Object accessObject, final AbstractAttribute attribute) {
+    public static Lock lockAndGetWriteLock(@SuppressWarnings("exports") final SecurityObject accessObject,
+            final AbstractAttribute attribute) {
 
-        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName()))) {
+        if (accessObject == null || !(IndexedClassType.ABSTRACT_HTML.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
 
@@ -431,9 +402,9 @@ public final class AttributeUtil {
      * @return
      * @since 3.0.15
      */
-    public static boolean unassignOwnerTag(final Object accessObject, final AbstractAttribute attribute,
-            final AbstractHtml ownerTag) {
-        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName()))) {
+    public static boolean unassignOwnerTag(@SuppressWarnings("exports") final SecurityObject accessObject,
+            final AbstractAttribute attribute, final AbstractHtml ownerTag) {
+        if (accessObject == null || !(IndexedClassType.ABSTRACT_HTML.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
         return attribute.unsetOwnerTagLockless(ownerTag);
@@ -447,9 +418,9 @@ public final class AttributeUtil {
      * @param ownerTag
      * @since 3.0.15
      */
-    public static void assignOwnerTag(final Object accessObject, final AbstractAttribute attribute,
-            final AbstractHtml ownerTag) {
-        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName()))) {
+    public static void assignOwnerTag(@SuppressWarnings("exports") final SecurityObject accessObject,
+            final AbstractAttribute attribute, final AbstractHtml ownerTag) {
+        if (accessObject == null || !(IndexedClassType.ABSTRACT_HTML.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
         attribute.setOwnerTagLockless(ownerTag);

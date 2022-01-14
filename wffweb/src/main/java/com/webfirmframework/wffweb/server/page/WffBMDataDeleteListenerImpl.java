@@ -19,16 +19,17 @@ import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
+import com.webfirmframework.wffweb.internal.tag.html.listener.WffBMDataDeleteListener;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.TagUtil;
-import com.webfirmframework.wffweb.tag.html.listener.WffBMDataDeleteListener;
 import com.webfirmframework.wffweb.util.data.NameValue;
 
 /**
  * @author WFF
  * @since 2.1.8
  */
-final class WffBMDataDeleteListenerImpl implements WffBMDataDeleteListener {
+public final class WffBMDataDeleteListenerImpl implements WffBMDataDeleteListener {
 
     private static final long serialVersionUID = 1L;
 
@@ -36,21 +37,21 @@ final class WffBMDataDeleteListenerImpl implements WffBMDataDeleteListener {
 
     private final BrowserPage browserPage;
 
-    private final Object accessObject;
+    private final SecurityObject accessObject;
 
     @SuppressWarnings("unused")
     private WffBMDataDeleteListenerImpl() {
         throw new AssertionError();
     }
 
-    WffBMDataDeleteListenerImpl(final BrowserPage browserPage, final Object accessObject) {
+    WffBMDataDeleteListenerImpl(final BrowserPage browserPage, final SecurityObject accessObject) {
         this.browserPage = browserPage;
         this.accessObject = accessObject;
 
     }
 
     @Override
-    public void deletedWffData(final DeleteEvent event) {
+    public void deletedWffData(@SuppressWarnings("exports") final DeleteEvent event) {
         try {
 
             // @formatter:off
@@ -60,7 +61,7 @@ final class WffBMDataDeleteListenerImpl implements WffBMDataDeleteListener {
             // { "name": [tag name bytes], "values" : [[wff id bytes], [key bytes] }
             // @formatter:on
 
-            final AbstractHtml tag = event.getTag();
+            final AbstractHtml tag = event.tag();
             final NameValue task = Task.DEL_BM_OBJ_OR_ARR_FROM_TAG.getTaskNameValue();
 
             final NameValue nameValue = new NameValue();
@@ -73,7 +74,7 @@ final class WffBMDataDeleteListenerImpl implements WffBMDataDeleteListener {
 
             final byte[] dataWffIdBytes = DataWffIdUtil.getDataWffIdBytes(tag.getDataWffId().getValue());
 
-            nameValue.setValues(new byte[][] { dataWffIdBytes, event.getKey().getBytes(StandardCharsets.UTF_8) });
+            nameValue.setValues(new byte[][] { dataWffIdBytes, event.key().getBytes(StandardCharsets.UTF_8) });
 
             browserPage.push(nameValues);
 

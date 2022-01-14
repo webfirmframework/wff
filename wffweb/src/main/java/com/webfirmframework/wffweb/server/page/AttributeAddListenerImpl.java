@@ -19,12 +19,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
+import com.webfirmframework.wffweb.internal.tag.html.listener.AttributeAddListener;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.listener.AttributeAddListener;
 import com.webfirmframework.wffweb.util.data.NameValue;
 
-public class AttributeAddListenerImpl implements AttributeAddListener {
+public final class AttributeAddListenerImpl implements AttributeAddListener {
 
     private static final long serialVersionUID = 1L;
 
@@ -32,20 +33,20 @@ public class AttributeAddListenerImpl implements AttributeAddListener {
 
     private final BrowserPage browserPage;
 
-    private final Object accessObject;
+    private final SecurityObject accessObject;
 
     @SuppressWarnings("unused")
     private AttributeAddListenerImpl() {
         throw new AssertionError();
     }
 
-    AttributeAddListenerImpl(final BrowserPage browserPage, final Object accessObject) {
+    AttributeAddListenerImpl(final BrowserPage browserPage, final SecurityObject accessObject) {
         this.browserPage = browserPage;
         this.accessObject = accessObject;
     }
 
     @Override
-    public void addedAttributes(final AddEvent event) {
+    public void addedAttributes(@SuppressWarnings("exports") final AddEvent event) {
 
         try {
 
@@ -64,10 +65,10 @@ public class AttributeAddListenerImpl implements AttributeAddListener {
             // many attributes to one tag
             nameValue.setName(Task.MANY_TO_ONE.getValueByte());
 
-            final AbstractHtml addedToTag = event.getAddedToTag();
+            final AbstractHtml addedToTag = event.addedToTag();
             final byte[][] tagNameAndWffId = DataWffIdUtil.getIndexedTagNameAndWffId(accessObject, addedToTag);
 
-            final AbstractAttribute[] addedAttributes = event.getAddedAttributes();
+            final AbstractAttribute[] addedAttributes = event.addedAttributes();
 
             final int totalValues = addedAttributes.length + 2;
 

@@ -18,7 +18,7 @@ package com.webfirmframework.wffweb.tag.html.attribute.event.form;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.attribute.event.AbstractEventAttribute;
-import com.webfirmframework.wffweb.tag.html.attribute.event.ServerAsyncMethod;
+import com.webfirmframework.wffweb.tag.html.attribute.event.ServerMethod;
 import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
 
 /**
@@ -50,13 +50,13 @@ public class OnReset extends AbstractEventAttribute implements AAttributable {
     public OnReset() {
     }
 
-    public OnReset(final ServerAsyncMethod serverAsyncMethod) {
-        setServerAsyncMethod(null, serverAsyncMethod, null, null);
+    public OnReset(final ServerMethod serverMethod) {
+        setServerMethod(null, serverMethod, null, null);
     }
 
-    public OnReset(final String jsPreFunctionBody, final ServerAsyncMethod serverAsyncMethod,
+    public OnReset(final String jsPreFunctionBody, final ServerMethod serverMethod,
             final String jsFilterFunctionBody, final String jsPostFunctionBody) {
-        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody);
+        setServerMethod(jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody);
     }
 
     public OnReset(final String value) {
@@ -64,25 +64,25 @@ public class OnReset extends AbstractEventAttribute implements AAttributable {
     }
 
     /**
-     * @param serverAsyncMethod
+     * @param serverMethod
      * @param serverSideData
      * @since 3.0.2
      */
-    public OnReset(final ServerAsyncMethod serverAsyncMethod, final Object serverSideData) {
-        setServerAsyncMethod(null, serverAsyncMethod, null, null, serverSideData);
+    public OnReset(final ServerMethod serverMethod, final Object serverSideData) {
+        setServerMethod(null, serverMethod, null, null, serverSideData);
     }
 
     /**
      * @param jsPreFunctionBody
-     * @param serverAsyncMethod
+     * @param serverMethod
      * @param jsFilterFunctionBody
      * @param jsPostFunctionBody
      * @param serverSideData
      * @since 3.0.2
      */
-    public OnReset(final String jsPreFunctionBody, final ServerAsyncMethod serverAsyncMethod,
+    public OnReset(final String jsPreFunctionBody, final ServerMethod serverMethod,
             final String jsFilterFunctionBody, final String jsPostFunctionBody, final Object serverSideData) {
-        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody,
+        setServerMethod(jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody,
                 serverSideData);
     }
 

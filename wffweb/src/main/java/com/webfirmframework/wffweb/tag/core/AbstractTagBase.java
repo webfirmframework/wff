@@ -16,11 +16,13 @@
  */
 package com.webfirmframework.wffweb.tag.core;
 
+import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+
 /**
  * @author WFF
  *
  */
-public abstract class AbstractTagBase implements TagBase {
+public abstract sealed class AbstractTagBase implements TagBase permits AbstractJsObject,AbstractAttribute {
 
     private static final long serialVersionUID = 1_0_0L;
 

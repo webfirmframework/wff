@@ -15,15 +15,17 @@
  */
 package com.webfirmframework.wffweb.tag.core;
 
-import java.io.Serializable;
+import java.io.Serial;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.webfirmframework.wffweb.InvalidTagException;
+import com.webfirmframework.wffweb.internal.security.object.AbstractJsObjectSecurity;
+import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
+import com.webfirmframework.wffweb.internal.tag.html.listener.PushQueue;
+import com.webfirmframework.wffweb.internal.tag.html.listener.WffBMDataDeleteListener;
+import com.webfirmframework.wffweb.internal.tag.html.listener.WffBMDataUpdateListener;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
-import com.webfirmframework.wffweb.tag.html.listener.PushQueue;
-import com.webfirmframework.wffweb.tag.html.listener.WffBMDataDeleteListener;
-import com.webfirmframework.wffweb.tag.html.listener.WffBMDataUpdateListener;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 import com.webfirmframework.wffweb.wffbm.data.WffBMData;
 
@@ -31,11 +33,12 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMData;
  * @author WFF
  * @since 2.1.8
  */
-public abstract class AbstractJsObject extends AbstractTagBase {
+public abstract sealed class AbstractJsObject extends AbstractTagBase permits AbstractHtml {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
-    private static final Security ACCESS_OBJECT;
+    private static final SecurityObject ACCESS_OBJECT;
 
     /**
      * should not be directly consumed as it may not have been initialized, instead
@@ -44,17 +47,21 @@ public abstract class AbstractJsObject extends AbstractTagBase {
      */
     protected volatile Map<String, WffBMData> wffBMDatas;
 
+    /**
+     * Note: Only for internal use.
+     *
+     */
     // for security purpose, the class name should not be modified
-    private static final class Security implements Serializable {
-
-        private static final long serialVersionUID = 1L;
-
+    private static final class Security {
         private Security() {
+            if (ACCESS_OBJECT != null) {
+                throw new AssertionError("Not allowed to call this constructor");
+            }
         }
     }
 
     static {
-        ACCESS_OBJECT = new Security();
+        ACCESS_OBJECT = new AbstractJsObjectSecurity(new Security());
     }
 
     public abstract AbstractHtml5SharedObject getSharedObject();

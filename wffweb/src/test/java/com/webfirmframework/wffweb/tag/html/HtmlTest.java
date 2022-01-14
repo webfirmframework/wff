@@ -47,17 +47,17 @@ public class HtmlTest {
         Assert.assertEquals(expected, html.toHtmlString(true));
         Assert.assertEquals(expected, html.toHtmlString(false));
 
-        Assert.assertEquals(expected, html.toHtmlString(StandardCharsets.UTF_8));
+        Assert.assertEquals(expected, html.toHtmlString());
 
-        Assert.assertEquals(expected, html.toHtmlString(StandardCharsets.UTF_8.name()));
+        Assert.assertEquals(expected, html.toHtmlString());
 
-        Assert.assertEquals(expected, html.toHtmlString(true, StandardCharsets.UTF_8));
-        Assert.assertEquals(expected, html.toHtmlString(false, StandardCharsets.UTF_8));
+        Assert.assertEquals(expected, html.toHtmlString(true));
+        Assert.assertEquals(expected, html.toHtmlString(false));
 
         Assert.assertEquals(expected,
-                html.toHtmlString(true, StandardCharsets.UTF_8.name()));
+                html.toHtmlString(true));
         Assert.assertEquals(expected,
-                html.toHtmlString(false, StandardCharsets.UTF_8.name()));
+                html.toHtmlString(false));
 
         html.setPrependDocType(true);
 
@@ -69,20 +69,20 @@ public class HtmlTest {
         Assert.assertEquals(expected2, html.toHtmlString(true));
 
         Assert.assertEquals(expected2,
-                html.toHtmlString(StandardCharsets.UTF_8));
+                html.toHtmlString());
 
         Assert.assertEquals(expected2,
-                html.toHtmlString(StandardCharsets.UTF_8.name()));
+                html.toHtmlString());
 
         Assert.assertEquals(expected2,
-                html.toHtmlString(true, StandardCharsets.UTF_8));
+                html.toHtmlString(true));
         Assert.assertEquals(expected2,
-                html.toHtmlString(false, StandardCharsets.UTF_8));
+                html.toHtmlString(false));
 
         Assert.assertEquals(expected2,
-                html.toHtmlString(true, StandardCharsets.UTF_8.name()));
+                html.toHtmlString(true));
         Assert.assertEquals(expected2,
-                html.toHtmlString(false, StandardCharsets.UTF_8.name()));
+                html.toHtmlString(false));
 
         html.setPrependDocType(false);
 
@@ -90,17 +90,17 @@ public class HtmlTest {
         Assert.assertEquals(expected, html.toHtmlString());
         Assert.assertEquals(expected, html.toHtmlString(true));
 
-        Assert.assertEquals(expected, html.toHtmlString(StandardCharsets.UTF_8));
+        Assert.assertEquals(expected, html.toHtmlString());
 
-        Assert.assertEquals(expected, html.toHtmlString(StandardCharsets.UTF_8.name()));
+        Assert.assertEquals(expected, html.toHtmlString());
 
-        Assert.assertEquals(expected, html.toHtmlString(true, StandardCharsets.UTF_8));
-        Assert.assertEquals(expected, html.toHtmlString(false, StandardCharsets.UTF_8));
+        Assert.assertEquals(expected, html.toHtmlString(true));
+        Assert.assertEquals(expected, html.toHtmlString(false));
 
         Assert.assertEquals(expected,
-                html.toHtmlString(true, StandardCharsets.UTF_8.name()));
+                html.toHtmlString(true));
         Assert.assertEquals(expected,
-                html.toHtmlString(false, StandardCharsets.UTF_8.name()));
+                html.toHtmlString(false));
 
     }
 

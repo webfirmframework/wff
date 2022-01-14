@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.tag.htmlwff;
 
+import java.io.Serial;
 import java.util.Collection;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
@@ -32,6 +33,7 @@ public class Blank extends NoTag {
 
     // TODO This class needs to be tested properly
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     /**

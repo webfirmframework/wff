@@ -23,70 +23,9 @@ import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 
 public interface AttributeValueChangeListener extends Serializable {
 
-    public static class Event {
+    public static record Event(AbstractAttribute sourceAttribute, Set<AbstractHtml> ownerTags,
+            boolean changedByClient) {
 
-        private AbstractAttribute sourceAttribute;
-
-        private Set<AbstractHtml> ownerTags;
-
-        private boolean changedByClient;
-
-        public Event() {
-        }
-
-        public Event(final AbstractAttribute sourceAttribute, final Set<AbstractHtml> ownerTags) {
-            this.sourceAttribute = sourceAttribute;
-            this.ownerTags = ownerTags;
-        }
-
-        public Event(final AbstractAttribute sourceAttribute, final Set<AbstractHtml> ownerTags,
-                final boolean changedByClient) {
-            this.sourceAttribute = sourceAttribute;
-            this.ownerTags = ownerTags;
-            this.changedByClient = changedByClient;
-        }
-
-        /**
-         * @return the sourceAttribute
-         */
-        public AbstractAttribute getSourceAttribute() {
-            return sourceAttribute;
-        }
-
-        /**
-         * @param sourceAttribute the sourceAttribute to set
-         */
-        public void setSourceAttribute(final AbstractAttribute sourceAttribute) {
-            this.sourceAttribute = sourceAttribute;
-        }
-
-        /**
-         * @return the ownerTags
-         */
-        public Set<AbstractHtml> getOwnerTags() {
-            return ownerTags;
-        }
-
-        /**
-         * @param ownerTags the ownerTags to set
-         */
-        public void setOwnerTags(final Set<AbstractHtml> ownerTags) {
-            this.ownerTags = ownerTags;
-        }
-
-        /**
-         * @return the changedByClient
-         */
-        public boolean isChangedByClient() {
-            return changedByClient;
-        }
-
-        /**
-         * @param changedByClient the changedByClient to set
-         */
-        public void setChangedByClient(final boolean changedByClient) {
-            this.changedByClient = changedByClient;
-        }
     }
 
     public void valueChanged(Event event);

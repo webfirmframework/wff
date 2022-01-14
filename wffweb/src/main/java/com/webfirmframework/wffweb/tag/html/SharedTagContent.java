@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.tag.html;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
@@ -28,7 +29,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.CompletableFuture;
@@ -42,8 +42,10 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import com.webfirmframework.wffweb.internal.InternalId;
+import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
+import com.webfirmframework.wffweb.internal.security.object.SharedTagContentSecurity;
+import com.webfirmframework.wffweb.internal.tag.html.listener.PushQueue;
 import com.webfirmframework.wffweb.server.page.ClientTasksWrapper;
-import com.webfirmframework.wffweb.tag.html.listener.PushQueue;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 
@@ -89,7 +91,7 @@ public class SharedTagContent<T> {
 
     private static final Logger LOGGER = Logger.getLogger(SharedTagContent.class.getName());
 
-    private static final Security ACCESS_OBJECT;
+    private static final SecurityObject ACCESS_OBJECT;
 
     private final ContentFormatter<T> DEFAULT_CONTENT_FORMATTER = content -> new Content<>(
             String.valueOf(content.content), content.contentTypeHtml);
@@ -164,49 +166,15 @@ public class SharedTagContent<T> {
      * {@code SharedTagContent} object.
      *
      * @param <T>
+     * @param content         the content to be embedded in the consumer tags.
+     * @param contentTypeHtml true to treat the content as HTML when embedding in
+     *                        the consumer tags otherwise false. Default value is
+     *                        false.
      */
-    public static final class Content<T> implements Serializable {
+    public static final record Content<T> (T content, boolean contentTypeHtml) implements Serializable {
 
-        private static final long serialVersionUID = 1L;
-
-        private final T content;
-
-        private final boolean contentTypeHtml;
-
-        /**
-         * @param content         the content to be embedded in the consumer tags.
-         * @param contentTypeHtml true to treat the content as HTML when embedding in
-         *                        the consumer tags otherwise false. Default value is
-         *                        false.
-         */
-        public Content(final T content, final boolean contentTypeHtml) {
-            super();
-            this.content = content;
-            this.contentTypeHtml = contentTypeHtml;
-        }
-
-        /**
-         * @return the content
-         * @deprecated As it is record class no need to use getter method instead use
-         *             {@link Content#content()}.This method will be removed in future
-         *             release.
-         */
-        @Deprecated
-        public T getContent() {
-            return content;
-        }
-
-        /**
-         * @return true or false
-         * @deprecated As it is record class no need to use getter method instead use
-         *             {@link Content#contentTypeHtml()}. This method will be removed in
-         *             future release.
-         *
-         */
-        @Deprecated
-        public boolean isContentTypeHtml() {
-            return contentTypeHtml;
-        }
+        @Serial
+        private static final long serialVersionUID = 2L;
 
         /**
          * @return the content
@@ -227,22 +195,6 @@ public class SharedTagContent<T> {
             return contentTypeHtml;
         }
 
-        @Override
-        public boolean equals(final Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-            final Content<?> c = (Content<?>) o;
-            return contentTypeHtml == c.contentTypeHtml && Objects.equals(content, c.content);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(content, contentTypeHtml);
-        }
     }
 
     @FunctionalInterface
@@ -250,92 +202,9 @@ public class SharedTagContent<T> {
         public abstract Content<String> format(final Content<T> content);
     }
 
-    public static final class ChangeEvent<T> {
-
-        private final AbstractHtml sourceTag;
-        private final ContentChangeListener<T> sourceListener;
-        private final Content<T> contentBefore;
-        private final Content<T> contentAfter;
-        private final Content<String> contentApplied;
-        private final ContentFormatter<T> formatter;
-
-        private ChangeEvent(final AbstractHtml sourceTag, final ContentChangeListener<T> sourceListener,
-                final Content<T> contentBefore, final Content<T> contentAfter, final Content<String> contentApplied,
-                final ContentFormatter<T> formatter) {
-            super();
-            this.sourceTag = sourceTag;
-            this.sourceListener = sourceListener;
-            this.contentBefore = contentBefore;
-            this.contentAfter = contentAfter;
-            this.contentApplied = contentApplied;
-            this.formatter = formatter;
-        }
-
-        /**
-         * @return the source tag
-         * @deprecated As it is record class no need to use getter method instead use
-         *             {@link ChangeEvent#sourceTag()}.This method will be removed in
-         *             future release.
-         */
-        @Deprecated
-        public AbstractHtml getSourceTag() {
-            return sourceTag;
-        }
-
-        /**
-         * @return the sourceListener
-         * @deprecated As it is record class no need to use getter method instead use
-         *             {@link ChangeEvent#sourceListener()}.This method will be removed
-         *             in future release.
-         */
-        @Deprecated
-        public ContentChangeListener<T> getSourceListener() {
-            return sourceListener;
-        }
-
-        /**
-         * @return the content before change event
-         * @deprecated As it is record class no need to use getter method instead use
-         *             {@link ChangeEvent#contentBefore()}.This method will be removed
-         *             in future release.
-         */
-        @Deprecated
-        public Content<T> getContentBefore() {
-            return contentBefore;
-        }
-
-        /**
-         * @return the content after the change event
-         * @deprecated As it is record class no need to use getter method instead use
-         *             {@link ChangeEvent#contentAfter()}.This method will be removed in
-         *             future release.
-         */
-        @Deprecated
-        public Content<T> getContentAfter() {
-            return contentAfter;
-        }
-
-        /**
-         * @return the applied content on tag
-         * @deprecated As it is record class no need to use getter method instead use
-         *             {@link ChangeEvent#contentApplied()}.This method will be removed
-         *             in future release.
-         */
-        @Deprecated
-        public Content<String> getContentApplied() {
-            return contentApplied;
-        }
-
-        /**
-         * @return the formatter
-         * @deprecated As it is record class no need to use getter method instead use
-         *             {@link ChangeEvent#formatter()}.This method will be removed in
-         *             future release.
-         */
-        @Deprecated
-        public ContentFormatter<T> getFormatter() {
-            return formatter;
-        }
+    public static final record ChangeEvent<T> (AbstractHtml sourceTag, ContentChangeListener<T> sourceListener,
+            Content<T> contentBefore, Content<T> contentAfter, Content<String> contentApplied,
+            ContentFormatter<T> formatter) {
 
         /**
          * @return the source tag
@@ -408,6 +277,7 @@ public class SharedTagContent<T> {
         public abstract Runnable contentChanged(final ChangeEvent<T> changeEvent);
     }
 
+<<<<<<< HEAD
     public static final class DetachEvent<T> {
 
         private final AbstractHtml sourceTag;
@@ -478,6 +348,10 @@ public class SharedTagContent<T> {
         public Content<T> content() {
             return content;
         }
+=======
+    public static final record DetachEvent<T> (AbstractHtml sourceTag, DetachListener<T> sourceListener,
+            Content<T> content) {
+>>>>>>> refs/remotes/origin/incubator
     }
 
     /**
@@ -501,17 +375,21 @@ public class SharedTagContent<T> {
         public abstract Runnable detached(final DetachEvent<T> detachEvent);
     }
 
+    /**
+     * Note: Only for internal use.
+     *
+     */
     // for security purpose, the class name should not be modified
-    private static final class Security implements Serializable {
-
-        private static final long serialVersionUID = 1L;
-
+    private static final class Security {
         private Security() {
+            if (ACCESS_OBJECT != null) {
+                throw new AssertionError("Not allowed to call this constructor");
+            }
         }
     }
 
     static {
-        ACCESS_OBJECT = new Security();
+        ACCESS_OBJECT = new SharedTagContentSecurity(new Security());
     }
 
     /**

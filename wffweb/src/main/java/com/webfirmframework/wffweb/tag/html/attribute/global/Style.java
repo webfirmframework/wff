@@ -944,35 +944,6 @@ public class Style extends AbstractAttribute implements GlobalAttributable, Stat
     }
 
     /**
-     * adds each cssProperty from the given collection. <br>
-     * NB:- After using this method, adding or removing any value in the collection
-     * will not have any effect on {@code Style}, so this method may be removed
-     * later.
-     *
-     * @param cssProperties eg :-
-     *                      {@code addStyles(Arrays.asList(AlignContent.FLEX_END, AlignItems.FLEX_END))}
-     * @since 1.0.0
-     * @author WFF
-     * @return the added {@code CssProperty} objects as a {@code List<CssProperty>}.
-     * @deprecated After using this method, adding or removing any value in the
-     *             collection will not have any effect on {@code Style}, so this
-     *             method may be removed later.
-     */
-    @Deprecated
-    public List<CssProperty> addCssProperties(final Collection<? extends CssProperty> cssProperties) {
-        if (cssProperties == null) {
-            throw new NullValueException("cssProperties cannot be null");
-        }
-        final long stamp = lock.writeLock();
-        try {
-
-            return addCssPropertiesLockless(false, cssProperties.toArray(new CssProperty[cssProperties.size()]));
-        } finally {
-            lock.unlockWrite(stamp);
-        }
-    }
-
-    /**
      * @param cssProperty eg :- {@code addStyle(AlignContent.FLEX_END)}
      * @since 1.0.0
      * @author WFF
@@ -1250,44 +1221,6 @@ public class Style extends AbstractAttribute implements GlobalAttributable, Stat
             return cssProperties.contains(cssProperty);
         } finally {
             lock.unlockRead(stamp);
-        }
-    }
-
-    /**
-     * NB:- After using this method, adding or removing any value in the collection
-     * will not have any effect on {@code Style}, so this method may be removed
-     * later.
-     *
-     * @param cssProperties
-     * @return the {@code List<Boolean>} of status whether the corresponding object
-     *         has been removed.
-     * @since 1.0.0
-     * @author WFF
-     * @deprecated After using this method, adding or removing any value in the
-     *             collection will not have any effect on {@code Style}, so this
-     *             method may be removed later.
-     */
-    @Deprecated
-    public List<Boolean> removeCssProperties(final Collection<CssProperty> cssProperties) {
-        final long stamp = lock.writeLock();
-        try {
-
-            final String[] cssNamesToRemove = new String[cssProperties.size()];
-
-            final List<Boolean> removedStatus = new ArrayList<>(cssNamesToRemove.length);
-
-            int index = 0;
-
-            for (final CssProperty cssProperty : cssProperties) {
-                removedStatus.add(removeCssPropertyNotFromSuperLockless(cssProperty));
-                cssNamesToRemove[index] = cssProperty.getCssName();
-                index++;
-            }
-            super.removeFromAttributeValueMapByKeys(cssNamesToRemove);
-
-            return removedStatus;
-        } finally {
-            lock.unlockWrite(stamp);
         }
     }
 

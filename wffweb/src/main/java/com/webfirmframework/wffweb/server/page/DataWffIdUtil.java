@@ -21,6 +21,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
+import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.TagUtil;
@@ -97,17 +98,13 @@ final class DataWffIdUtil {
      * @param abstractHtml
      * @return array containing tagName bytes and dataWffIdBytes of the given
      *         argument or its parent.
-     * @throws UnsupportedEncodingException throwing this exception will be removed
-     *                                      in future version because its internal
-     *                                      implementation will never make this
-     *                                      exception due to the code changes since
-     *                                      3.0.1.
+     *
      * @since 2.0.0
      * @author WFF
      * @deprecated this method will be removed in future
      */
     @Deprecated
-    static byte[][] getTagNameAndWffId(final AbstractHtml abstractHtml) throws UnsupportedEncodingException {
+    static byte[][] getTagNameAndWffId(final AbstractHtml abstractHtml) {
 
         final Deque<AbstractHtml> parentStack = new ArrayDeque<>();
         parentStack.push(abstractHtml);
@@ -134,11 +131,11 @@ final class DataWffIdUtil {
     }
 
     /**
-     * @param childIndex
+     * @param noTag
      * @return { PreIndexedTagName.HASH.indexBytes(), childIndexBytes }
      * @since 3.0.7
      */
-    static byte[][] getIndexedTagNameAndChildIndexForNoTag(final Object accessObject, final NoTag noTag) {
+    static byte[][] getIndexedTagNameAndChildIndexForNoTag(final SecurityObject accessObject, final NoTag noTag) {
 
         final int childIndex = noTag.getParent().getIndexByChild(accessObject, noTag);
 
@@ -156,7 +153,7 @@ final class DataWffIdUtil {
      * @since 3.0.6 contains TagNameBytesCompressedByIndex
      * @author WFF
      */
-    static byte[][] getIndexedTagNameAndWffId(final Object accessObject, final AbstractHtml tag) {
+    static byte[][] getIndexedTagNameAndWffId(final SecurityObject accessObject, final AbstractHtml tag) {
 
         final Deque<AbstractHtml> parentStack = new ArrayDeque<>();
         parentStack.push(tag);

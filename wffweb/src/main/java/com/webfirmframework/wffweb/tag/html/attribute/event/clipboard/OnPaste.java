@@ -18,7 +18,7 @@ package com.webfirmframework.wffweb.tag.html.attribute.event.clipboard;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.attribute.event.AbstractEventAttribute;
-import com.webfirmframework.wffweb.tag.html.attribute.event.ServerAsyncMethod;
+import com.webfirmframework.wffweb.tag.html.attribute.event.ServerMethod;
 
 /**
  *
@@ -49,13 +49,13 @@ public class OnPaste extends AbstractEventAttribute {
     public OnPaste() {
     }
 
-    public OnPaste(final ServerAsyncMethod serverAsyncMethod) {
-        setServerAsyncMethod(null, serverAsyncMethod, null, null);
+    public OnPaste(final ServerMethod serverMethod) {
+        setServerMethod(null, serverMethod, null, null);
     }
 
-    public OnPaste(final String jsPreFunctionBody, final ServerAsyncMethod serverAsyncMethod,
+    public OnPaste(final String jsPreFunctionBody, final ServerMethod serverMethod,
             final String jsFilterFunctionBody, final String jsPostFunctionBody) {
-        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody);
+        setServerMethod(jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody);
     }
 
     public OnPaste(final String value) {
@@ -63,25 +63,25 @@ public class OnPaste extends AbstractEventAttribute {
     }
 
     /**
-     * @param serverAsyncMethod
+     * @param serverMethod
      * @param serverSideData
      * @since 3.0.2
      */
-    public OnPaste(final ServerAsyncMethod serverAsyncMethod, final Object serverSideData) {
-        setServerAsyncMethod(null, serverAsyncMethod, null, null, serverSideData);
+    public OnPaste(final ServerMethod serverMethod, final Object serverSideData) {
+        setServerMethod(null, serverMethod, null, null, serverSideData);
     }
 
     /**
      * @param jsPreFunctionBody
-     * @param serverAsyncMethod
+     * @param serverMethod
      * @param jsFilterFunctionBody
      * @param jsPostFunctionBody
      * @param serverSideData
      * @since 3.0.2
      */
-    public OnPaste(final String jsPreFunctionBody, final ServerAsyncMethod serverAsyncMethod,
+    public OnPaste(final String jsPreFunctionBody, final ServerMethod serverMethod,
             final String jsFilterFunctionBody, final String jsPostFunctionBody, final Object serverSideData) {
-        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody,
+        setServerMethod(jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody,
                 serverSideData);
     }
 

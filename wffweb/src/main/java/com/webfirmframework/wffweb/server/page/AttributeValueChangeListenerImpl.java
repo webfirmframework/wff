@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
+import java.io.Serial;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashSet;
@@ -28,8 +29,9 @@ import com.webfirmframework.wffweb.tag.html.attribute.listener.AttributeValueCha
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.util.data.NameValue;
 
-class AttributeValueChangeListenerImpl implements AttributeValueChangeListener {
+final class AttributeValueChangeListenerImpl implements AttributeValueChangeListener {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private static final Logger LOGGER = Logger.getLogger(AttributeValueChangeListenerImpl.class.getName());
@@ -66,7 +68,7 @@ class AttributeValueChangeListenerImpl implements AttributeValueChangeListener {
             final NameValue nameValue = new NameValue();
 
             // should be name=somevalue
-            // String attrNameValue = event.getSourceAttribute()
+            // String attrNameValue = event.sourceAttribute()
             // .toHtmlString(StandardCharsets.UTF_8)
             // .replaceFirst("[=][\"]", "=");
             // if (attrNameValue.charAt(attrNameValue.length() - 1) == '"') {
@@ -75,9 +77,9 @@ class AttributeValueChangeListenerImpl implements AttributeValueChangeListener {
             // }
             // nameValue.setName(attrNameValue.getBytes(StandardCharsets.UTF_8));
 
-            nameValue.setName(event.getSourceAttribute().toCompressedBytesByIndex(false, StandardCharsets.UTF_8));
+            nameValue.setName(event.sourceAttribute().toCompressedBytesByIndex(false, StandardCharsets.UTF_8));
 
-            final Set<AbstractHtml> ownerTags = new HashSet<>(event.getOwnerTags());
+            final Set<AbstractHtml> ownerTags = new HashSet<>(event.ownerTags());
 
             final Collection<AbstractHtml> uiTags = tagByWffId.values();
             if (uiTags.size() > 10) {

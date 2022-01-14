@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute;
 
+import java.io.Serial;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -41,6 +42,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.LinkAttributable;
  */
 public class Rel extends AbstractValueSetAttribute implements AAttributable, AreaAttributable, LinkAttributable {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     /**

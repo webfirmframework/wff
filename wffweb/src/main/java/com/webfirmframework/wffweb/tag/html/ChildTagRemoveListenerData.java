@@ -15,8 +15,8 @@
  */
 package com.webfirmframework.wffweb.tag.html;
 
-import com.webfirmframework.wffweb.tag.html.listener.ChildTagRemoveListener;
-import com.webfirmframework.wffweb.tag.html.listener.ChildTagRemoveListener.Event;
+import com.webfirmframework.wffweb.internal.tag.html.listener.ChildTagRemoveListener;
+import com.webfirmframework.wffweb.internal.tag.html.listener.ChildTagRemoveListener.Event;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 
 /**

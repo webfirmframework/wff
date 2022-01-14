@@ -17,7 +17,7 @@ package com.webfirmframework.wffweb.tag.html.attribute.core;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.Serializable;
+import java.io.Serial;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,18 +38,25 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import java.util.concurrent.locks.StampedLock;
 
 import com.webfirmframework.wffweb.internal.ObjectId;
+<<<<<<< HEAD
+=======
+import com.webfirmframework.wffweb.internal.constants.CommonConstants;
+import com.webfirmframework.wffweb.internal.security.object.AbstractAttributeSecurity;
+import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
+import com.webfirmframework.wffweb.internal.tag.html.listener.PushQueue;
+>>>>>>> refs/remotes/origin/incubator
 import com.webfirmframework.wffweb.tag.core.AbstractTagBase;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attribute.listener.AttributeValueChangeListener;
-import com.webfirmframework.wffweb.tag.html.listener.PushQueue;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 import com.webfirmframework.wffweb.util.StringBuilderUtil;
 
-public abstract class AbstractAttribute extends AbstractTagBase {
+public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
 
+    @Serial
     private static final long serialVersionUID = 1_1_1L;
 
-    private static final Security ACCESS_OBJECT;
+    private static final SecurityObject ACCESS_OBJECT;
 
     private String attributeName;
 
@@ -73,8 +80,6 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
     private volatile Set<AttributeValueChangeListener> valueChangeListeners;
 
-    private transient Charset charset = Charset.defaultCharset();
-
     private final boolean nullableAttrValueMapValue;
 
     private volatile byte[] compressedBytes;
@@ -85,12 +90,16 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     private final ObjectId objectId;
 
+    /**
+     * Note: Only for internal use.
+     *
+     */
     // for security purpose, the class name should not be modified
-    private static final class Security implements Serializable {
-
-        private static final long serialVersionUID = 1L;
-
+    private static final class Security {
         private Security() {
+            if (ACCESS_OBJECT != null) {
+                throw new AssertionError("Not allowed to call this constructor");
+            }
         }
     }
 
@@ -144,7 +153,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     }
 
     static {
-        ACCESS_OBJECT = new Security();
+        ACCESS_OBJECT = new AbstractAttributeSecurity(new Security());
     }
 
     {
@@ -320,7 +329,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      * @since 1.1.3
      */
     protected byte[] getBinaryStructureCompressedByIndex(final boolean rebuild) throws IOException {
-        return getBinaryStructureCompressedByIndex(rebuild, charset);
+        return getBinaryStructureCompressedByIndex(rebuild, CommonConstants.DEFAULT_CHARSET);
     }
 
     /**
@@ -483,6 +492,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     /*
      * (non-Javadoc)
      *
+<<<<<<< HEAD
      * @see com.webfirmframework.wffweb.tag.core.TagBase#toHtmlString(java.nio.
      * charset.Charset)
      */
@@ -519,6 +529,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     /*
      * (non-Javadoc)
      *
+=======
+>>>>>>> refs/remotes/origin/incubator
      * @see com.webfirmframework.wffweb.tag.Base#toHtmlString(boolean)
      *
      * @since 1.0.0
@@ -533,6 +545,7 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     /*
      * (non-Javadoc)
      *
+<<<<<<< HEAD
      * @see com.webfirmframework.wffweb.tag.core.TagBase#toHtmlString(boolean,
      * java.nio.charset.Charset)
      */
@@ -569,6 +582,8 @@ public abstract class AbstractAttribute extends AbstractTagBase {
     /*
      * (non-Javadoc)
      *
+=======
+>>>>>>> refs/remotes/origin/incubator
      * @see java.lang.Object#toString()
      */
     @Override
@@ -665,16 +680,16 @@ public abstract class AbstractAttribute extends AbstractTagBase {
                 // part, here
                 // skipped it making unmodifiable to gain
                 // performance
-                final AttributeValueChangeListener.Event event = new AttributeValueChangeListener.Event(this,
-                        ownerTags);
+                final AttributeValueChangeListener.Event event = new AttributeValueChangeListener.Event(this, ownerTags,
+                        false);
                 valueChangeListener.valueChanged(event);
             }
         }
 
         if (valueChangeListeners != null) {
             for (final AttributeValueChangeListener listener : valueChangeListeners) {
-                final AttributeValueChangeListener.Event event = new AttributeValueChangeListener.Event(this,
-                        ownerTags);
+                final AttributeValueChangeListener.Event event = new AttributeValueChangeListener.Event(this, ownerTags,
+                        false);
                 listener.valueChanged(event);
             }
         }
@@ -987,30 +1002,6 @@ public abstract class AbstractAttribute extends AbstractTagBase {
 
             }
             pushQueues(ownerTagsRecord.sharedObjects, listenerInvoked);
-        }
-    }
-
-    /**
-     * @return one of the ownerTags
-     * @author WFF
-     * @since 1.0.0
-     * @deprecated this method may be removed later as there could be multiple owner
-     *             tags.
-     */
-    @Deprecated
-    public AbstractHtml getOwnerTag() {
-
-        final long stamp = ownerTagsLock.readLock();
-        try {
-            final AbstractHtml tag;
-            if (ownerTags.iterator().hasNext()) {
-                tag = ownerTags.iterator().next();
-            } else {
-                tag = null;
-            }
-            return tag;
-        } finally {
-            ownerTagsLock.unlockRead(stamp);
         }
     }
 
@@ -1463,20 +1454,6 @@ public abstract class AbstractAttribute extends AbstractTagBase {
      */
     protected void beforePrintStructureCompressedByIndex() {
         // TODO override and use
-    }
-
-    /**
-     * @return the charset
-     */
-    public Charset getCharset() {
-        return charset;
-    }
-
-    /**
-     * @param charset the charset to set
-     */
-    public void setCharset(final Charset charset) {
-        this.charset = charset;
     }
 
     /**

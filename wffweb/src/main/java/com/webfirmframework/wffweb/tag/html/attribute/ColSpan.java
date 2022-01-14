@@ -16,6 +16,8 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute;
 
+import java.io.Serial;
+
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.identifier.TdAttributable;
@@ -33,6 +35,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.ThAttributable;
  */
 public class ColSpan extends AbstractAttribute implements ThAttributable, TdAttributable {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     private int value;

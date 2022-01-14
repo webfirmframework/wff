@@ -19,8 +19,6 @@
  */
 package com.webfirmframework.wffweb.view;
 
-import java.nio.charset.Charset;
-
 import com.webfirmframework.wffweb.io.OutputBuffer;
 
 /**
@@ -34,8 +32,6 @@ public abstract class AbstractHtmlView implements HtmlView {
     private static final long serialVersionUID = 1_0_0L;
 
     private boolean preserveOutputBufferContent;
-
-    private Charset charset = Charset.defaultCharset();
 
     private static final ThreadLocal<OutputBuffer> outputBufferTL = new ThreadLocal<OutputBuffer>() {
 
@@ -66,28 +62,6 @@ public abstract class AbstractHtmlView implements HtmlView {
     }
 
     @Override
-    public String toHtmlString(final Charset charset) {
-        final Charset previousCharset = this.charset;
-        try {
-            this.charset = charset;
-            return toHtmlString();
-        } finally {
-            this.charset = previousCharset;
-        }
-    }
-
-    @Override
-    public String toHtmlString(final String charset) {
-        final Charset previousCharset = this.charset;
-        try {
-            this.charset = Charset.forName(charset);
-            return toHtmlString();
-        } finally {
-            this.charset = previousCharset;
-        }
-    }
-
-    @Override
     public String toHtmlString(final boolean rebuild) {
         final OutputBuffer outputBuffer = outputBufferTL.get();
         outputBuffer.setRebuild(rebuild);
@@ -96,28 +70,6 @@ public abstract class AbstractHtmlView implements HtmlView {
         }
         develop(outputBuffer);
         return outputBuffer.toBuilderString();
-    }
-
-    @Override
-    public String toHtmlString(final boolean rebuild, final Charset charset) {
-        final Charset previousCharset = this.charset;
-        try {
-            this.charset = charset;
-            return toHtmlString(rebuild);
-        } finally {
-            this.charset = previousCharset;
-        }
-    }
-
-    @Override
-    public String toHtmlString(final boolean rebuild, final String charset) {
-        final Charset previousCharset = this.charset;
-        try {
-            this.charset = Charset.forName(charset);
-            return toHtmlString(rebuild);
-        } finally {
-            this.charset = previousCharset;
-        }
     }
 
     /*

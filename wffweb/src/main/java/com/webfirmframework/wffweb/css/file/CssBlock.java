@@ -16,6 +16,8 @@
  */
 package com.webfirmframework.wffweb.css.file;
 
+import java.io.Serial;
+
 /**
  *
  * @author WFF
@@ -23,6 +25,7 @@ package com.webfirmframework.wffweb.css.file;
  */
 public abstract class CssBlock extends AbstractCssFileBlock {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     public CssBlock(final String name) {

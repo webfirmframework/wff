@@ -38,8 +38,6 @@ public class Controls extends AbstractAttribute implements AudioAttributable, Bo
 
     private static final long serialVersionUID = 1_0_0L;
 
-    private Boolean controls;
-
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
 
     static {
@@ -65,15 +63,23 @@ public class Controls extends AbstractAttribute implements AudioAttributable, Bo
      */
     public Controls(final String value) {
 
+<<<<<<< HEAD
         if (AttributeNameConstants.CONTROLS.equals(value) || value == null || StringUtil.isBlank(value)) {
+=======
+        if (AttributeNameConstants.CONTROLS.equals(value) || value == null || value.isBlank()) {
+>>>>>>> refs/remotes/origin/incubator
             setAttributeValue(value);
-            controls = true;
         } else if ("true".equals(value) || "false".equals(value)) {
+<<<<<<< HEAD
             final boolean yes = Boolean.parseBoolean(value);
             setAttributeValue(yes ? AttributeNameConstants.CONTROLS : null);
             controls = yes;
+=======
+            setAttributeValue(Boolean.parseBoolean(value) ? AttributeNameConstants.CONTROLS : null);
+>>>>>>> refs/remotes/origin/incubator
         } else {
             throw new InvalidValueException("the value should be controls, true, empty string or null");
+<<<<<<< HEAD
         }
 
     }
@@ -89,8 +95,10 @@ public class Controls extends AbstractAttribute implements AudioAttributable, Bo
             setAttributeValue(null);
         } else {
             setAttributeValue(controls.booleanValue() ? "controls" : null);
+=======
+>>>>>>> refs/remotes/origin/incubator
         }
-        this.controls = controls;
+
     }
 
     /**
@@ -101,35 +109,6 @@ public class Controls extends AbstractAttribute implements AudioAttributable, Bo
      */
     protected void init() {
         // to override and use this method
-    }
-
-    /**
-     * @return the controls
-     * @author WFF
-     * @since 1.0.0
-     * @deprecated as there is no affect of boolean values for this attribute. this
-     *             method will be removed later.
-     */
-    @Deprecated
-    public boolean isControls() {
-        return controls == null || controls.booleanValue() ? true : false;
-    }
-
-    /**
-     * @param controls the controls to set. {@code null} will remove the value.
-     * @author WFF
-     * @since 1.0.0
-     * @deprecated as there is no affect of boolean values for this attribute. this
-     *             method will be removed later.
-     */
-    @Deprecated
-    public void setControls(final Boolean controls) {
-        if (controls == null) {
-            setAttributeValue(null);
-        } else {
-            setAttributeValue(String.valueOf(controls));
-        }
-        this.controls = controls;
     }
 
 }

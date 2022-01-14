@@ -15,7 +15,6 @@
  */
 package com.webfirmframework.wffweb.wffbm.data;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
@@ -260,27 +259,6 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
         } catch (final Exception e) {
             throw new WffRuntimeException("Could not build wff bm array bytes", e);
         }
-    }
-
-    /**
-     * NB: use buildBytes instead of this method.
-     *
-     * @param outer
-     * @return the bytes representation of the object
-     * @throws UnsupportedEncodingException throwing this exception will be removed
-     *                                      in future version because its internal
-     *                                      implementation will never make this
-     *                                      exception due to the code changes since
-     *                                      3.0.1.
-     * @since 1.1.5
-     * @deprecated building bytes implementation doesn't throw
-     *             UnsupportedEncodingException so deprecated this method. The same
-     *             goal can be achieved using buildBytes method.
-     */
-    @Deprecated
-    @Override
-    public byte[] build(final boolean outer) throws UnsupportedEncodingException {
-        return buildBytes(outer);
     }
 
     /**

@@ -15,8 +15,8 @@
  */
 package com.webfirmframework.wffweb.tag.html;
 
-import com.webfirmframework.wffweb.tag.html.listener.InnerHtmlAddListener;
-import com.webfirmframework.wffweb.tag.html.listener.InnerHtmlAddListener.Event;
+import com.webfirmframework.wffweb.internal.tag.html.listener.InnerHtmlAddListener;
+import com.webfirmframework.wffweb.internal.tag.html.listener.InnerHtmlAddListener.Event;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 
 /**

@@ -84,7 +84,7 @@ public class Html extends DocType {
      */
     // TODO should be removed later
     @Deprecated
-    public Html(final int id, final AbstractHtml base, final AbstractAttribute... attributes) {
+    protected Html(final int id, final AbstractHtml base, final AbstractAttribute... attributes) {
         // this is just for testing purpose so not indexing
         super(Html.class.getSimpleName().toLowerCase() + String.valueOf(id), base, attributes);
     }

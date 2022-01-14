@@ -16,9 +16,11 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute.event.mouse;
 
+import java.io.Serial;
+
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.attribute.event.AbstractEventAttribute;
-import com.webfirmframework.wffweb.tag.html.attribute.event.ServerAsyncMethod;
+import com.webfirmframework.wffweb.tag.html.attribute.event.ServerMethod;
 import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
 
 /**
@@ -32,6 +34,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
  */
 public class OnMouseLeave extends AbstractEventAttribute implements AAttributable {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
@@ -50,13 +53,13 @@ public class OnMouseLeave extends AbstractEventAttribute implements AAttributabl
     public OnMouseLeave() {
     }
 
-    public OnMouseLeave(final ServerAsyncMethod serverAsyncMethod) {
-        setServerAsyncMethod(null, serverAsyncMethod, null, null);
+    public OnMouseLeave(final ServerMethod serverMethod) {
+        setServerMethod(null, serverMethod, null, null);
     }
 
-    public OnMouseLeave(final String jsPreFunctionBody, final ServerAsyncMethod serverAsyncMethod,
+    public OnMouseLeave(final String jsPreFunctionBody, final ServerMethod serverMethod,
             final String jsFilterFunctionBody, final String jsPostFunctionBody) {
-        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody);
+        setServerMethod(jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody);
     }
 
     public OnMouseLeave(final String value) {
@@ -64,25 +67,25 @@ public class OnMouseLeave extends AbstractEventAttribute implements AAttributabl
     }
 
     /**
-     * @param serverAsyncMethod
+     * @param serverMethod
      * @param serverSideData
      * @since 3.0.2
      */
-    public OnMouseLeave(final ServerAsyncMethod serverAsyncMethod, final Object serverSideData) {
-        setServerAsyncMethod(null, serverAsyncMethod, null, null, serverSideData);
+    public OnMouseLeave(final ServerMethod serverMethod, final Object serverSideData) {
+        setServerMethod(null, serverMethod, null, null, serverSideData);
     }
 
     /**
      * @param jsPreFunctionBody
-     * @param serverAsyncMethod
+     * @param serverMethod
      * @param jsFilterFunctionBody
      * @param jsPostFunctionBody
      * @param serverSideData
      * @since 3.0.2
      */
-    public OnMouseLeave(final String jsPreFunctionBody, final ServerAsyncMethod serverAsyncMethod,
+    public OnMouseLeave(final String jsPreFunctionBody, final ServerMethod serverMethod,
             final String jsFilterFunctionBody, final String jsPostFunctionBody, final Object serverSideData) {
-        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody,
+        setServerMethod(jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody,
                 serverSideData);
     }
 

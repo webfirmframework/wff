@@ -16,9 +16,9 @@
  */
 package com.webfirmframework.wffweb.css;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -45,6 +45,7 @@ import com.webfirmframework.wffweb.util.StringUtil;
  */
 public class Cursor extends AbstractCssProperty<Cursor> implements StateChangeInformer<Bean> {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     public static final String ALIAS = "alias";
@@ -497,7 +498,7 @@ public class Cursor extends AbstractCssProperty<Cursor> implements StateChangeIn
         if (urlCss3Values == null) {
             return null;
         }
-        return Collections.unmodifiableList(Arrays.asList(urlCss3Values));
+        return List.of(urlCss3Values);
     }
 
     /**

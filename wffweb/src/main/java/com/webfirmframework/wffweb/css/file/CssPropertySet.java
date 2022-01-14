@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.css.file;
 
+import java.io.Serial;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -34,6 +35,7 @@ import com.webfirmframework.wffweb.css.core.CssProperty;
  */
 class CssPropertySet extends LinkedHashSet<CssProperty> {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

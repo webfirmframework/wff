@@ -25,11 +25,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.InvalidTagException;
-import com.webfirmframework.wffweb.server.page.js.WffJsFile;
+import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
+import com.webfirmframework.wffweb.internal.server.page.js.WffJsFile;
+import com.webfirmframework.wffweb.internal.tag.html.listener.InsertBeforeListener;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.TagUtil;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
-import com.webfirmframework.wffweb.tag.html.listener.InsertBeforeListener;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 import com.webfirmframework.wffweb.util.data.NameValue;
 
@@ -37,7 +38,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  * @author WFF
  * @since 2.1.1
  */
-final class InsertBeforeListenerImpl implements InsertBeforeListener {
+public final class InsertBeforeListenerImpl implements InsertBeforeListener {
 
     private static final long serialVersionUID = 1L;
 
@@ -45,7 +46,7 @@ final class InsertBeforeListenerImpl implements InsertBeforeListener {
 
     private final BrowserPage browserPage;
 
-    private final Object accessObject;
+    private final SecurityObject accessObject;
 
     private final Map<String, AbstractHtml> tagByWffId;
 
@@ -54,7 +55,7 @@ final class InsertBeforeListenerImpl implements InsertBeforeListener {
         throw new AssertionError();
     }
 
-    InsertBeforeListenerImpl(final BrowserPage browserPage, final Object accessObject,
+    InsertBeforeListenerImpl(final BrowserPage browserPage, final SecurityObject accessObject,
             final Map<String, AbstractHtml> tagByWffId) {
         this.browserPage = browserPage;
         this.accessObject = accessObject;
@@ -99,7 +100,7 @@ final class InsertBeforeListenerImpl implements InsertBeforeListener {
     }
 
     @Override
-    public void insertedBefore(final Event... events) {
+    public void insertedBefore(@SuppressWarnings("exports") final Event... events) {
 
         // @formatter:off
         // removed all children tags task format :-
@@ -117,13 +118,13 @@ final class InsertBeforeListenerImpl implements InsertBeforeListener {
 
         for (final Event event : events) {
 
-            final AbstractHtml parentTag = event.getParentTag();
+            final AbstractHtml parentTag = event.parentTag();
 
-            final AbstractHtml insertedTag = event.getInsertedTag();
+            final AbstractHtml insertedTag = event.insertedTag();
 
-            final AbstractHtml beforeTag = event.getBeforeTag();
+            final AbstractHtml beforeTag = event.beforeTag();
 
-            final AbstractHtml previousParentTag = event.getPreviousParentTag();
+            final AbstractHtml previousParentTag = event.previousParentTag();
 
             final DataWffId dataWffId = parentTag.getDataWffId();
 

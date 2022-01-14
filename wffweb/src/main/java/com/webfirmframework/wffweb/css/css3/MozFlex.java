@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.css.css3;
 
+import java.io.Serial;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -57,6 +58,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  */
 public class MozFlex extends AbstractCssProperty<MozFlex> implements StateChangeInformer<CssProperty> {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     // NB : it should not override equals and hashcode methods as its objects

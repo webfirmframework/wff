@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
+import java.io.Serial;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashSet;
@@ -22,20 +23,22 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
+import com.webfirmframework.wffweb.internal.tag.html.listener.ChildTagRemoveListener;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
-import com.webfirmframework.wffweb.tag.html.listener.ChildTagRemoveListener;
 import com.webfirmframework.wffweb.util.data.NameValue;
 
-final class ChildTagRemoveListenerImpl implements ChildTagRemoveListener {
+public final class ChildTagRemoveListenerImpl implements ChildTagRemoveListener {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private static final Logger LOGGER = Logger.getLogger(ChildTagRemoveListenerImpl.class.getName());
 
     private final BrowserPage browserPage;
 
-    private final Object accessObject;
+    private final SecurityObject accessObject;
 
     private final Map<String, AbstractHtml> tagByWffId;
 
@@ -44,7 +47,7 @@ final class ChildTagRemoveListenerImpl implements ChildTagRemoveListener {
         throw new AssertionError();
     }
 
-    ChildTagRemoveListenerImpl(final BrowserPage browserPage, final Object accessObject,
+    ChildTagRemoveListenerImpl(final BrowserPage browserPage, final SecurityObject accessObject,
             final Map<String, AbstractHtml> tagByWffId) {
         this.browserPage = browserPage;
         this.accessObject = accessObject;
@@ -86,9 +89,9 @@ final class ChildTagRemoveListenerImpl implements ChildTagRemoveListener {
     }
 
     @Override
-    public void childRemoved(final Event event) {
+    public void childRemoved(@SuppressWarnings("exports") final Event event) {
 
-        final AbstractHtml removedChildTag = event.getRemovedChildTag();
+        final AbstractHtml removedChildTag = event.removedChildTag();
 
         removeChildren(new AbstractHtml[] { removedChildTag });
 
@@ -143,14 +146,14 @@ final class ChildTagRemoveListenerImpl implements ChildTagRemoveListener {
     }
 
     @Override
-    public void childrenRemoved(final Event event) {
-        removeChildren(event.getRemovedChildrenTags());
+    public void childrenRemoved(@SuppressWarnings("exports") final Event event) {
+        removeChildren(event.removedChildrenTags());
     }
 
     @Override
-    public void allChildrenRemoved(final Event event) {
+    public void allChildrenRemoved(@SuppressWarnings("exports") final Event event) {
 
-        final AbstractHtml parentTag = event.getParentTag();
+        final AbstractHtml parentTag = event.parentTag();
 
         // @formatter:off
         // removed all children tags task format :-
@@ -179,7 +182,7 @@ final class ChildTagRemoveListenerImpl implements ChildTagRemoveListener {
 
             browserPage.push(task, nameValue);
 
-            for (final AbstractHtml each : event.getRemovedChildrenTags()) {
+            for (final AbstractHtml each : event.removedChildrenTags()) {
                 removeFromTagByWffIdMap(each);
             }
         } else {

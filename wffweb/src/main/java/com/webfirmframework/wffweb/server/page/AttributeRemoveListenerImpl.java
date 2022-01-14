@@ -21,13 +21,14 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
+import com.webfirmframework.wffweb.internal.tag.html.listener.AttributeRemoveListener;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeUtil;
-import com.webfirmframework.wffweb.tag.html.listener.AttributeRemoveListener;
 import com.webfirmframework.wffweb.util.data.NameValue;
 
-public class AttributeRemoveListenerImpl implements AttributeRemoveListener {
+public final class AttributeRemoveListenerImpl implements AttributeRemoveListener {
 
     private static final long serialVersionUID = 1L;
 
@@ -37,14 +38,14 @@ public class AttributeRemoveListenerImpl implements AttributeRemoveListener {
 
     private final Map<String, AbstractHtml> tagByWffId;
 
-    private final Object accessObject;
+    private final SecurityObject accessObject;
 
     @SuppressWarnings("unused")
     private AttributeRemoveListenerImpl() {
         throw new AssertionError();
     }
 
-    AttributeRemoveListenerImpl(final BrowserPage browserPage, final Object accessObject,
+    AttributeRemoveListenerImpl(final BrowserPage browserPage, final SecurityObject accessObject,
             final Map<String, AbstractHtml> tagByWffId) {
         this.browserPage = browserPage;
         this.accessObject = accessObject;
@@ -52,11 +53,11 @@ public class AttributeRemoveListenerImpl implements AttributeRemoveListener {
     }
 
     @Override
-    public void removedAttributes(final RemovedEvent event) {
+    public void removedAttributes(@SuppressWarnings("exports") final RemovedEvent event) {
 
         try {
 
-            final AbstractHtml removedFromTag = event.getRemovedFromTag();
+            final AbstractHtml removedFromTag = event.removedFromTag();
 
             if (removedFromTag.getDataWffId() == null
                     || !tagByWffId.containsKey(removedFromTag.getDataWffId().getValue())) {
@@ -80,7 +81,7 @@ public class AttributeRemoveListenerImpl implements AttributeRemoveListener {
 
             final byte[][] tagNameAndWffId = DataWffIdUtil.getIndexedTagNameAndWffId(accessObject, removedFromTag);
 
-            final List<AbstractAttribute> removedAttributes = event.getRemovedAttributes();
+            final List<AbstractAttribute> removedAttributes = event.removedAttributes();
 
             if (removedAttributes != null) {
 
@@ -104,7 +105,7 @@ public class AttributeRemoveListenerImpl implements AttributeRemoveListener {
                 nameValue.setValues(values);
 
             } else {
-                final String[] removedAttributeNames = event.getRemovedAttributeNames();
+                final String[] removedAttributeNames = event.removedAttributeNames();
 
                 final int totalValues = removedAttributeNames.length + 2;
 
@@ -158,7 +159,7 @@ public class AttributeRemoveListenerImpl implements AttributeRemoveListener {
     // final NameValue nameValue = new NameValue();
     //
     // // should be name
-    // String attrName = event.getSourceAttribute().getAttributeName();
+    // String attrName = event.sourceAttribute().getAttributeName();
     //
     // nameValue.setName(attrName.getBytes("UTF-8"));
     //

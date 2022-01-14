@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.tag.html.model;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
@@ -30,23 +31,28 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import com.webfirmframework.wffweb.DataWffIdOutOfRangeError;
 import com.webfirmframework.wffweb.WffSecurityException;
 import com.webfirmframework.wffweb.internal.ObjectId;
+<<<<<<< HEAD
 import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
+=======
+import com.webfirmframework.wffweb.internal.constants.IndexedClassType;
+import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
+import com.webfirmframework.wffweb.internal.tag.html.listener.AttributeAddListener;
+import com.webfirmframework.wffweb.internal.tag.html.listener.AttributeRemoveListener;
+import com.webfirmframework.wffweb.internal.tag.html.listener.ChildTagAppendListener;
+import com.webfirmframework.wffweb.internal.tag.html.listener.ChildTagRemoveListener;
+import com.webfirmframework.wffweb.internal.tag.html.listener.InnerHtmlAddListener;
+import com.webfirmframework.wffweb.internal.tag.html.listener.InsertAfterListener;
+import com.webfirmframework.wffweb.internal.tag.html.listener.InsertBeforeListener;
+import com.webfirmframework.wffweb.internal.tag.html.listener.InsertTagsBeforeListener;
+import com.webfirmframework.wffweb.internal.tag.html.listener.PushQueue;
+import com.webfirmframework.wffweb.internal.tag.html.listener.ReplaceListener;
+import com.webfirmframework.wffweb.internal.tag.html.listener.WffBMDataDeleteListener;
+import com.webfirmframework.wffweb.internal.tag.html.listener.WffBMDataUpdateListener;
+>>>>>>> refs/remotes/origin/incubator
 import com.webfirmframework.wffweb.tag.core.AbstractTagBase;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attribute.listener.AttributeValueChangeListener;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
-import com.webfirmframework.wffweb.tag.html.listener.AttributeAddListener;
-import com.webfirmframework.wffweb.tag.html.listener.AttributeRemoveListener;
-import com.webfirmframework.wffweb.tag.html.listener.ChildTagAppendListener;
-import com.webfirmframework.wffweb.tag.html.listener.ChildTagRemoveListener;
-import com.webfirmframework.wffweb.tag.html.listener.InnerHtmlAddListener;
-import com.webfirmframework.wffweb.tag.html.listener.InsertAfterListener;
-import com.webfirmframework.wffweb.tag.html.listener.InsertBeforeListener;
-import com.webfirmframework.wffweb.tag.html.listener.InsertTagsBeforeListener;
-import com.webfirmframework.wffweb.tag.html.listener.PushQueue;
-import com.webfirmframework.wffweb.tag.html.listener.ReplaceListener;
-import com.webfirmframework.wffweb.tag.html.listener.WffBMDataDeleteListener;
-import com.webfirmframework.wffweb.tag.html.listener.WffBMDataUpdateListener;
 
 /**
  *
@@ -55,6 +61,7 @@ import com.webfirmframework.wffweb.tag.html.listener.WffBMDataUpdateListener;
  */
 public final class AbstractHtml5SharedObject implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1_0_1L;
 
     private boolean childModified;
@@ -145,10 +152,10 @@ public final class AbstractHtml5SharedObject implements Serializable {
      * @since 2.0.0
      * @author WFF
      */
-    public DataWffId getNewDataWffId(final Object accessObject) {
+    public DataWffId getNewDataWffId(@SuppressWarnings("exports") final SecurityObject accessObject) {
 
-        if (accessObject == null || !((SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName()))
-                || (SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName())))) {
+        if (accessObject == null || !((IndexedClassType.ABSTRACT_HTML.equals(accessObject.forClassType()))
+                || (IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType())))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
 
@@ -193,19 +200,18 @@ public final class AbstractHtml5SharedObject implements Serializable {
      * @return the ReadWriteLock lock
      * @since 3.0.1
      */
-    public ReentrantReadWriteLock getLock(final Object accessObject) {
-        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName())
-                || SecurityClassConstants.ABSTRACT_ATTRIBUTE.equals(accessObject.getClass().getName())
-                || SecurityClassConstants.SHARED_TAG_CONTENT.equals(accessObject.getClass().getName()))) {
+    public ReentrantReadWriteLock getLock(@SuppressWarnings("exports") final SecurityObject accessObject) {
+        if (accessObject == null || !(IndexedClassType.ABSTRACT_HTML.equals(accessObject.forClassType())
+                || IndexedClassType.ABSTRACT_ATTRIBUTE.equals(accessObject.forClassType())
+                || IndexedClassType.SHARED_TAG_CONTENT.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
         return lock;
     }
 
-    public int getLastDataWffId(final Object accessObject) {
+    public int getLastDataWffId(@SuppressWarnings("exports") final SecurityObject accessObject) {
 
-        if (accessObject == null
-                || !((SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName())))) {
+        if (accessObject == null || !((IndexedClassType.ABSTRACT_HTML.equals(accessObject.forClassType())))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
         return dataWffId.get();
@@ -225,10 +231,13 @@ public final class AbstractHtml5SharedObject implements Serializable {
      * NB:- it's for internal use
      *
      * @param childModified the childModified to set
+     * @param accessObject  access object
      * @since 1.0.0
+     * @since 3.0.19 added accessObject param
      * @author WFF
      * @deprecated it does nothing since 3.0.19
      */
+<<<<<<< HEAD
     @Deprecated
     public void setChildModified(final boolean childModified) {        
     }
@@ -245,6 +254,12 @@ public final class AbstractHtml5SharedObject implements Serializable {
     public void setChildModified(final boolean childModified, final Object accessObject) {
         if (accessObject == null || !((SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName()))
                 || (SecurityClassConstants.ABSTRACT_ATTRIBUTE.equals(accessObject.getClass().getName())))) {
+=======
+    public void setChildModified(final boolean childModified,
+            @SuppressWarnings("exports") final SecurityObject accessObject) {
+        if (accessObject == null || !((IndexedClassType.ABSTRACT_HTML.equals(accessObject.forClassType()))
+                || (IndexedClassType.ABSTRACT_ATTRIBUTE.equals(accessObject.forClassType())))) {
+>>>>>>> refs/remotes/origin/incubator
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
         this.childModified = childModified;
@@ -263,10 +278,10 @@ public final class AbstractHtml5SharedObject implements Serializable {
      *             remove this method later.
      */
     @Deprecated
-    public Set<AbstractTagBase> getRebuiltTags(final Object accessObject) {
+    Set<AbstractTagBase> getRebuiltTags(final SecurityObject accessObject) {
 
         // TODO remove this method later
-        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName()))) {
+        if (accessObject == null || !(IndexedClassType.ABSTRACT_HTML.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
 
@@ -286,8 +301,9 @@ public final class AbstractHtml5SharedObject implements Serializable {
      * @param accessObject
      * @return the childTagAppendListener
      */
-    public ChildTagAppendListener getChildTagAppendListener(final Object accessObject) {
-        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName()))) {
+    @SuppressWarnings("exports")
+    public ChildTagAppendListener getChildTagAppendListener(final SecurityObject accessObject) {
+        if (accessObject == null || !(IndexedClassType.ABSTRACT_HTML.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
         return childTagAppendListener;
@@ -299,9 +315,10 @@ public final class AbstractHtml5SharedObject implements Serializable {
      * @param childTagAppendListener the childTagAppendListener to set
      * @param accessObject
      */
-    public void setChildTagAppendListener(final ChildTagAppendListener childTagAppendListener,
-            final Object accessObject) {
-        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName()))) {
+    public void setChildTagAppendListener(
+            @SuppressWarnings("exports") final ChildTagAppendListener childTagAppendListener,
+            @SuppressWarnings("exports") final SecurityObject accessObject) {
+        if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
         this.childTagAppendListener = childTagAppendListener;
@@ -313,8 +330,9 @@ public final class AbstractHtml5SharedObject implements Serializable {
      * @param accessObject
      * @return the childTagRemoveListener
      */
-    public ChildTagRemoveListener getChildTagRemoveListener(final Object accessObject) {
-        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName()))) {
+    @SuppressWarnings("exports")
+    public ChildTagRemoveListener getChildTagRemoveListener(final SecurityObject accessObject) {
+        if (accessObject == null || !(IndexedClassType.ABSTRACT_HTML.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
         return childTagRemoveListener;
@@ -326,9 +344,10 @@ public final class AbstractHtml5SharedObject implements Serializable {
      * @param childTagRemoveListener the childTagRemoveListener to set
      * @param accessObject
      */
-    public void setChildTagRemoveListener(final ChildTagRemoveListener childTagRemoveListener,
-            final Object accessObject) {
-        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName()))) {
+    public void setChildTagRemoveListener(
+            @SuppressWarnings("exports") final ChildTagRemoveListener childTagRemoveListener,
+            @SuppressWarnings("exports") final SecurityObject accessObject) {
+        if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
         this.childTagRemoveListener = childTagRemoveListener;
@@ -338,8 +357,9 @@ public final class AbstractHtml5SharedObject implements Serializable {
      * @param accessObject
      * @return the attributeAddListener
      */
-    public AttributeAddListener getAttributeAddListener(final Object accessObject) {
-        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName()))) {
+    @SuppressWarnings("exports")
+    public AttributeAddListener getAttributeAddListener(final SecurityObject accessObject) {
+        if (accessObject == null || !(IndexedClassType.ABSTRACT_HTML.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
         return attributeAddListener;
@@ -349,8 +369,9 @@ public final class AbstractHtml5SharedObject implements Serializable {
      * @param attributeAddListener the attributeAddListener to set
      * @param accessObject
      */
-    public void setAttributeAddListener(final AttributeAddListener attributeAddListener, final Object accessObject) {
-        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName()))) {
+    public void setAttributeAddListener(@SuppressWarnings("exports") final AttributeAddListener attributeAddListener,
+            @SuppressWarnings("exports") final SecurityObject accessObject) {
+        if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
         this.attributeAddListener = attributeAddListener;
@@ -360,8 +381,9 @@ public final class AbstractHtml5SharedObject implements Serializable {
      * @param accessObject
      * @return the attributeRemoveListener
      */
-    public AttributeRemoveListener getAttributeRemoveListener(final Object accessObject) {
-        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName()))) {
+    @SuppressWarnings("exports")
+    public AttributeRemoveListener getAttributeRemoveListener(final SecurityObject accessObject) {
+        if (accessObject == null || !(IndexedClassType.ABSTRACT_HTML.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
         return attributeRemoveListener;
@@ -371,9 +393,10 @@ public final class AbstractHtml5SharedObject implements Serializable {
      * @param attributeRemoveListener the attributeRemoveListener to set
      * @param accessObject
      */
+    @SuppressWarnings("exports")
     public void setAttributeRemoveListener(final AttributeRemoveListener attributeRemoveListener,
-            final Object accessObject) {
-        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName()))) {
+            final SecurityObject accessObject) {
+        if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
         this.attributeRemoveListener = attributeRemoveListener;
@@ -383,8 +406,9 @@ public final class AbstractHtml5SharedObject implements Serializable {
      * @param accessObject
      * @return the innerHtmlAddListener
      */
-    public InnerHtmlAddListener getInnerHtmlAddListener(final Object accessObject) {
-        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName()))) {
+    @SuppressWarnings("exports")
+    public InnerHtmlAddListener getInnerHtmlAddListener(final SecurityObject accessObject) {
+        if (accessObject == null || !(IndexedClassType.ABSTRACT_HTML.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
         return innerHtmlAddListener;
@@ -394,9 +418,11 @@ public final class AbstractHtml5SharedObject implements Serializable {
      * @param innerHtmlAddListener the innerHtmlAddListener to set
      * @param accessObject
      */
-    public void setInnerHtmlAddListener(final InnerHtmlAddListener innerHtmlAddListener, final Object accessObject) {
+    @SuppressWarnings("exports")
+    public void setInnerHtmlAddListener(final InnerHtmlAddListener innerHtmlAddListener,
+            final SecurityObject accessObject) {
 
-        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName()))) {
+        if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
         this.innerHtmlAddListener = innerHtmlAddListener;
@@ -408,9 +434,9 @@ public final class AbstractHtml5SharedObject implements Serializable {
      * @since 2.0.0
      * @author WFF
      */
-    public Map<String, AbstractHtml> getTagByWffId(final Object accessObject) {
-        if (accessObject == null || !((SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName()))
-                || (SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName())))) {
+    public Map<String, AbstractHtml> getTagByWffId(@SuppressWarnings("exports") final SecurityObject accessObject) {
+        if (accessObject == null || !((IndexedClassType.ABSTRACT_HTML.equals(accessObject.forClassType()))
+                || (IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType())))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
         return tagByWffId;
@@ -422,8 +448,8 @@ public final class AbstractHtml5SharedObject implements Serializable {
      * @author WFF
      * @return the map containing wffid and tag
      */
-    public Map<String, AbstractHtml> initTagByWffId(final Object accessObject) {
-        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName()))) {
+    public Map<String, AbstractHtml> initTagByWffId(@SuppressWarnings("exports") final SecurityObject accessObject) {
+        if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
         return tagByWffId;
@@ -436,9 +462,9 @@ public final class AbstractHtml5SharedObject implements Serializable {
      * @param accessObject access object of this method
      * @return the valueChangeListener
      */
-    public AttributeValueChangeListener getValueChangeListener(final Object accessObject) {
-        if (accessObject == null
-                || !(SecurityClassConstants.ABSTRACT_ATTRIBUTE.equals(accessObject.getClass().getName()))) {
+    public AttributeValueChangeListener getValueChangeListener(
+            @SuppressWarnings("exports") final SecurityObject accessObject) {
+        if (accessObject == null || !(IndexedClassType.ABSTRACT_ATTRIBUTE.equals(accessObject.forClassType()))) {
             throw new WffSecurityException(
                     "Not allowed to consume this method. Instead, use addValueChangeListener and getValueChangeListeners methods.");
         }
@@ -453,9 +479,9 @@ public final class AbstractHtml5SharedObject implements Serializable {
      * @param accessObject        access object of this method
      */
     public void setValueChangeListener(final AttributeValueChangeListener valueChangeListener,
-            final Object accessObject) {
+            @SuppressWarnings("exports") final SecurityObject accessObject) {
 
-        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName()))) {
+        if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
             throw new WffSecurityException(
                     "Not allowed to consume this method. Instead, use addValueChangeListener and getValueChangeListeners methods.");
         }
@@ -473,9 +499,9 @@ public final class AbstractHtml5SharedObject implements Serializable {
      *             with InsertTagsBeforeListener
      */
     @Deprecated
-    public InsertBeforeListener getInsertBeforeListener(final Object accessObject) {
+    InsertBeforeListener getInsertBeforeListener(final SecurityObject accessObject) {
 
-        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName()))) {
+        if (accessObject == null || !(IndexedClassType.ABSTRACT_HTML.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
 
@@ -492,9 +518,9 @@ public final class AbstractHtml5SharedObject implements Serializable {
      *             with InsertTagsBeforeListener
      */
     @Deprecated
-    public void setInsertBeforeListener(final InsertBeforeListener insertBeforeListener, final Object accessObject) {
+    void setInsertBeforeListener(final InsertBeforeListener insertBeforeListener, final SecurityObject accessObject) {
 
-        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName()))) {
+        if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
 
@@ -509,9 +535,10 @@ public final class AbstractHtml5SharedObject implements Serializable {
      *
      * @since 3.0.7
      */
-    public ReplaceListener getReplaceListener(final Object accessObject) {
+    @SuppressWarnings("exports")
+    public ReplaceListener getReplaceListener(final SecurityObject accessObject) {
 
-        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName()))) {
+        if (accessObject == null || !(IndexedClassType.ABSTRACT_HTML.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
 
@@ -525,9 +552,10 @@ public final class AbstractHtml5SharedObject implements Serializable {
      * @param accessObject
      * @since 3.0.7
      */
-    public void setReplaceListener(final ReplaceListener replaceListener, final Object accessObject) {
+    public void setReplaceListener(@SuppressWarnings("exports") final ReplaceListener replaceListener,
+            @SuppressWarnings("exports") final SecurityObject accessObject) {
 
-        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName()))) {
+        if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
 
@@ -542,9 +570,10 @@ public final class AbstractHtml5SharedObject implements Serializable {
      *
      * @since 3.0.7
      */
-    public InsertTagsBeforeListener getInsertTagsBeforeListener(final Object accessObject) {
+    @SuppressWarnings("exports")
+    public InsertTagsBeforeListener getInsertTagsBeforeListener(final SecurityObject accessObject) {
 
-        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName()))) {
+        if (accessObject == null || !(IndexedClassType.ABSTRACT_HTML.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
 
@@ -558,10 +587,11 @@ public final class AbstractHtml5SharedObject implements Serializable {
      * @param accessObject
      * @since 3.0.7
      */
-    public void setInsertTagsBeforeListener(final InsertTagsBeforeListener insertTagsBeforeListener,
-            final Object accessObject) {
+    public void setInsertTagsBeforeListener(
+            @SuppressWarnings("exports") final InsertTagsBeforeListener insertTagsBeforeListener,
+            @SuppressWarnings("exports") final SecurityObject accessObject) {
 
-        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName()))) {
+        if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
 
@@ -576,9 +606,10 @@ public final class AbstractHtml5SharedObject implements Serializable {
      *
      * @since 3.0.7
      */
-    public InsertAfterListener getInsertAfterListener(final Object accessObject) {
+    @SuppressWarnings("exports")
+    public InsertAfterListener getInsertAfterListener(final SecurityObject accessObject) {
 
-        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName()))) {
+        if (accessObject == null || !(IndexedClassType.ABSTRACT_HTML.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
 
@@ -592,9 +623,10 @@ public final class AbstractHtml5SharedObject implements Serializable {
      * @param accessObject
      * @since 3.0.7
      */
-    public void setInsertAfterListener(final InsertAfterListener insertAfterListener, final Object accessObject) {
+    public void setInsertAfterListener(@SuppressWarnings("exports") final InsertAfterListener insertAfterListener,
+            @SuppressWarnings("exports") final SecurityObject accessObject) {
 
-        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName()))) {
+        if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
 
@@ -608,9 +640,10 @@ public final class AbstractHtml5SharedObject implements Serializable {
      * @param accessObject
      * @since 2.1.8
      */
-    public void setWffBMDataDeleteListener(final WffBMDataDeleteListener wffBMDataDeleteListener,
-            final Object accessObject) {
-        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName()))) {
+    public void setWffBMDataDeleteListener(
+            @SuppressWarnings("exports") final WffBMDataDeleteListener wffBMDataDeleteListener,
+            @SuppressWarnings("exports") final SecurityObject accessObject) {
+        if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
         this.wffBMDataDeleteListener = wffBMDataDeleteListener;
@@ -623,9 +656,10 @@ public final class AbstractHtml5SharedObject implements Serializable {
      * @param accessObject
      * @since 2.1.8
      */
-    public void setWffBMDataUpdateListener(final WffBMDataUpdateListener wffBMDataUpdateListener,
-            final Object accessObject) {
-        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName()))) {
+    public void setWffBMDataUpdateListener(
+            @SuppressWarnings("exports") final WffBMDataUpdateListener wffBMDataUpdateListener,
+            @SuppressWarnings("exports") final SecurityObject accessObject) {
+        if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
         this.wffBMDataUpdateListener = wffBMDataUpdateListener;
@@ -639,10 +673,10 @@ public final class AbstractHtml5SharedObject implements Serializable {
      *
      * @since 2.1.8
      */
-    public WffBMDataDeleteListener getWffBMDataDeleteListener(final Object accessObject) {
+    @SuppressWarnings("exports")
+    public WffBMDataDeleteListener getWffBMDataDeleteListener(final SecurityObject accessObject) {
 
-        if (accessObject == null
-                || !(SecurityClassConstants.ABSTRACT_JS_OBJECT.equals(accessObject.getClass().getName()))) {
+        if (accessObject == null || !(IndexedClassType.ABSTRACT_JS_OBJECT.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
 
@@ -657,10 +691,10 @@ public final class AbstractHtml5SharedObject implements Serializable {
      *
      * @since 2.1.8
      */
-    public WffBMDataUpdateListener getWffBMDataUpdateListener(final Object accessObject) {
+    @SuppressWarnings("exports")
+    public WffBMDataUpdateListener getWffBMDataUpdateListener(final SecurityObject accessObject) {
 
-        if (accessObject == null
-                || !(SecurityClassConstants.ABSTRACT_JS_OBJECT.equals(accessObject.getClass().getName()))) {
+        if (accessObject == null || !(IndexedClassType.ABSTRACT_JS_OBJECT.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
 
@@ -716,8 +750,9 @@ public final class AbstractHtml5SharedObject implements Serializable {
      * @param pushQueue    the BrowserPage push queue to set
      * @param accessObject
      */
-    public void setPushQueue(final PushQueue pushQueue, final Object accessObject) {
-        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName()))) {
+    public void setPushQueue(@SuppressWarnings("exports") final PushQueue pushQueue,
+            @SuppressWarnings("exports") final SecurityObject accessObject) {
+        if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
         this.pushQueue = pushQueue;
@@ -728,11 +763,12 @@ public final class AbstractHtml5SharedObject implements Serializable {
      *
      * @return the the push queue of BrowserPage
      */
-    public PushQueue getPushQueue(final Object accessObject) {
-        if (accessObject == null || !(SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName())
-                || SecurityClassConstants.ABSTRACT_ATTRIBUTE.equals(accessObject.getClass().getName())
-                || SecurityClassConstants.ABSTRACT_JS_OBJECT.equals(accessObject.getClass().getName())
-                || SecurityClassConstants.SHARED_TAG_CONTENT.equals(accessObject.getClass().getName()))) {
+    @SuppressWarnings("exports")
+    public PushQueue getPushQueue(final SecurityObject accessObject) {
+        if (accessObject == null || !(IndexedClassType.ABSTRACT_HTML.equals(accessObject.forClassType())
+                || IndexedClassType.ABSTRACT_ATTRIBUTE.equals(accessObject.forClassType())
+                || IndexedClassType.ABSTRACT_JS_OBJECT.equals(accessObject.forClassType())
+                || IndexedClassType.SHARED_TAG_CONTENT.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
         return pushQueue;
@@ -745,8 +781,9 @@ public final class AbstractHtml5SharedObject implements Serializable {
      *                         false
      * @param accessObject
      */
-    public void setActiveWSListener(final boolean activeWSListener, final Object accessObject) {
-        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName()))) {
+    public void setActiveWSListener(final boolean activeWSListener,
+            @SuppressWarnings("exports") final SecurityObject accessObject) {
+        if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
         this.activeWSListener = activeWSListener;
@@ -769,6 +806,10 @@ public final class AbstractHtml5SharedObject implements Serializable {
      * @since 3.0.15 returns long value type
      * @since 3.0.19 returns ObjectId value type
      */
+<<<<<<< HEAD
+=======
+    @SuppressWarnings("exports")
+>>>>>>> refs/remotes/origin/incubator
     public final ObjectId objectId() {
         return objectId;
     }

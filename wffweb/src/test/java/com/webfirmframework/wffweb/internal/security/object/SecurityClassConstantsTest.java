@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.webfirmframework.wffweb.security.object;
+package com.webfirmframework.wffweb.internal.security.object;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -21,6 +21,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.junit.Test;
+
+import com.webfirmframework.wffweb.internal.security.object.SecurityClassConstants;
 
 public class SecurityClassConstantsTest {
     

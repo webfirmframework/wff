@@ -17,7 +17,6 @@
 package com.webfirmframework.wffweb.tag.core;
 
 import java.io.Serializable;
-import java.nio.charset.Charset;
 
 public interface TagBase extends Serializable, Cloneable {
     /**
@@ -32,6 +31,7 @@ public interface TagBase extends Serializable, Cloneable {
     public abstract String toHtmlString();
 
     /**
+<<<<<<< HEAD
      * gets the html string of the tag including the child tags/values using the
      * given charset. rebuilds the html string if the child tags/values or
      * attributes have been modified.
@@ -67,6 +67,8 @@ public interface TagBase extends Serializable, Cloneable {
     public abstract String toHtmlString(String charset);
 
     /**
+=======
+>>>>>>> refs/remotes/origin/incubator
      * rebuilds the html string of the tag including the child tags/values if
      * parameter is true, otherwise returns the html string prebuilt and kept in the
      * cache.
@@ -80,6 +82,7 @@ public interface TagBase extends Serializable, Cloneable {
     public abstract String toHtmlString(boolean rebuild);
 
     /**
+<<<<<<< HEAD
      * rebuilds the html string of the tag including the child tags/values if
      * parameter is true, otherwise returns the html string prebuilt and kept in the
      * cache.
@@ -118,6 +121,8 @@ public interface TagBase extends Serializable, Cloneable {
     public abstract String toHtmlString(boolean rebuild, String charset);
 
     /**
+=======
+>>>>>>> refs/remotes/origin/incubator
      * gets the html string of the tag including the child tags/values. rebuilds the
      * html string if the child tags/values or attributes have been modified.
      *

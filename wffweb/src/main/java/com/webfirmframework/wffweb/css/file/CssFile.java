@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.css.file;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
@@ -31,6 +32,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.css.core.CssProperty;
+import com.webfirmframework.wffweb.internal.constants.CommonConstants;
 
 /**
  *
@@ -39,6 +41,7 @@ import com.webfirmframework.wffweb.css.core.CssProperty;
  */
 public abstract class CssFile implements Serializable, Cloneable {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     private static final Logger LOGGER = Logger.getLogger(CssFile.class.getName());
@@ -57,6 +60,7 @@ public abstract class CssFile implements Serializable, Cloneable {
 
     private final Set<AbstractCssFileBlock> cssBlocks = new LinkedHashSet<AbstractCssFileBlock>() {
 
+        @Serial
         private static final long serialVersionUID = 1_0_0L;
 
         private final StringBuilder toStringBuilder = new StringBuilder();
@@ -348,7 +352,7 @@ public abstract class CssFile implements Serializable, Cloneable {
      * @author WFF
      */
     public void toOutputStream(final OutputStream os, final boolean rebuild) throws IOException {
-        toOutputStream(os, Charset.defaultCharset().name(), rebuild);
+        toOutputStream(os, CommonConstants.DEFAULT_CHARSET.name(), rebuild);
     }
 
     /**
@@ -380,7 +384,7 @@ public abstract class CssFile implements Serializable, Cloneable {
      * @author WFF
      */
     public void toOutputStream(final OutputStream os) throws IOException {
-        toOutputStream(os, Charset.defaultCharset().name(), false);
+        toOutputStream(os, CommonConstants.DEFAULT_CHARSET.name(), false);
     }
 
     /**

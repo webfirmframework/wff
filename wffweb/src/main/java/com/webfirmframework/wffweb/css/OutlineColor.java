@@ -16,16 +16,17 @@
  */
 package com.webfirmframework.wffweb.css;
 
+import java.io.Serial;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.clone.CloneUtil;
-import com.webfirmframework.wffweb.core.constants.CommonConstants;
 import com.webfirmframework.wffweb.css.core.AbstractCssProperty;
 import com.webfirmframework.wffweb.data.Bean;
 import com.webfirmframework.wffweb.informer.StateChangeInformer;
+import com.webfirmframework.wffweb.internal.constants.CommonConstants;
 import com.webfirmframework.wffweb.util.StringUtil;
 import com.webfirmframework.wffweb.util.TagStringUtil;
 
@@ -52,6 +53,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  */
 public class OutlineColor extends AbstractCssProperty<OutlineColor> implements StateChangeInformer<Bean> {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     private static final Logger LOGGER = Logger.getLogger(OutlineColor.class.getName());

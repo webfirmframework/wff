@@ -25,11 +25,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.InvalidTagException;
-import com.webfirmframework.wffweb.server.page.js.WffJsFile;
+import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
+import com.webfirmframework.wffweb.internal.server.page.js.WffJsFile;
+import com.webfirmframework.wffweb.internal.tag.html.listener.InsertAfterListener;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.TagUtil;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
-import com.webfirmframework.wffweb.tag.html.listener.InsertAfterListener;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 import com.webfirmframework.wffweb.util.data.NameValue;
 
@@ -37,7 +38,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  * @author WFF
  * @since 3.0.7
  */
-final class InsertAfterListenerImpl implements InsertAfterListener {
+public final class InsertAfterListenerImpl implements InsertAfterListener {
 
     private static final long serialVersionUID = 1L;
 
@@ -45,7 +46,7 @@ final class InsertAfterListenerImpl implements InsertAfterListener {
 
     private final BrowserPage browserPage;
 
-    private final Object accessObject;
+    private final SecurityObject accessObject;
 
     private final Map<String, AbstractHtml> tagByWffId;
 
@@ -54,7 +55,7 @@ final class InsertAfterListenerImpl implements InsertAfterListener {
         throw new AssertionError();
     }
 
-    InsertAfterListenerImpl(final BrowserPage browserPage, final Object accessObject,
+    InsertAfterListenerImpl(final BrowserPage browserPage, final SecurityObject accessObject,
             final Map<String, AbstractHtml> tagByWffId) {
         this.browserPage = browserPage;
         this.accessObject = accessObject;
@@ -99,7 +100,8 @@ final class InsertAfterListenerImpl implements InsertAfterListener {
     }
 
     @Override
-    public void insertedAfter(final AbstractHtml parentTag, final AbstractHtml afterTag, final Event... events) {
+    public void insertedAfter(final AbstractHtml parentTag, final AbstractHtml afterTag,
+            @SuppressWarnings("exports") final Event... events) {
 
         // @formatter:off
         // removed all children tags task format :-
@@ -147,9 +149,9 @@ final class InsertAfterListenerImpl implements InsertAfterListener {
             // inserted tags data
             for (final Event event : events) {
 
-                final AbstractHtml insertedTag = event.getInsertedTag();
+                final AbstractHtml insertedTag = event.insertedTag();
 
-                final AbstractHtml previousParentTag = event.getPreviousParentTag();
+                final AbstractHtml previousParentTag = event.previousParentTag();
 
                 final NameValue nameValue = new NameValue();
 

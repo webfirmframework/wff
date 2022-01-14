@@ -29,20 +29,21 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.InvalidTagException;
-import com.webfirmframework.wffweb.server.page.js.WffJsFile;
+import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
+import com.webfirmframework.wffweb.internal.server.page.js.WffJsFile;
+import com.webfirmframework.wffweb.internal.tag.html.listener.ChildTagAppendListener;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.TagUtil;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
-import com.webfirmframework.wffweb.tag.html.listener.ChildTagAppendListener;
 import com.webfirmframework.wffweb.util.data.NameValue;
 
-final class ChildTagAppendListenerImpl implements ChildTagAppendListener {
+public final class ChildTagAppendListenerImpl implements ChildTagAppendListener {
 
     private static final long serialVersionUID = 1L;
 
     private static final Logger LOGGER = Logger.getLogger(ChildTagRemoveListenerImpl.class.getName());
 
-    private final Object accessObject;
+    private final SecurityObject accessObject;
 
     private final BrowserPage browserPage;
 
@@ -53,7 +54,7 @@ final class ChildTagAppendListenerImpl implements ChildTagAppendListener {
         throw new AssertionError();
     }
 
-    ChildTagAppendListenerImpl(final BrowserPage browserPage, final Object accessObject,
+    ChildTagAppendListenerImpl(final BrowserPage browserPage, final SecurityObject accessObject,
             final Map<String, AbstractHtml> tagByWffId) {
         this.browserPage = browserPage;
         this.accessObject = accessObject;
@@ -61,12 +62,12 @@ final class ChildTagAppendListenerImpl implements ChildTagAppendListener {
     }
 
     @Override
-    public void childAppended(final Event event) {
+    public void childAppended(@SuppressWarnings("exports") final Event event) {
 
         try {
 
-            final AbstractHtml parentTag = event.getParentTag();
-            final AbstractHtml appendedChildTag = event.getAppendedChildTag();
+            final AbstractHtml parentTag = event.parentTag();
+            final AbstractHtml appendedChildTag = event.appendedChildTag();
 
             // add data-wff-id to all tags including nested tags
             final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
@@ -139,10 +140,10 @@ final class ChildTagAppendListenerImpl implements ChildTagAppendListener {
     }
 
     @Override
-    public void childrenAppended(final Event event) {
+    public void childrenAppended(@SuppressWarnings("exports") final Event event) {
 
-        final AbstractHtml parentTag = event.getParentTag();
-        final Collection<? extends AbstractHtml> appendedChildTags = event.getAppendedChildrenTags();
+        final AbstractHtml parentTag = event.parentTag();
+        final Collection<? extends AbstractHtml> appendedChildTags = event.appendedChildrenTags();
 
         // add data-wff-id to all tags including nested tags
         final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
@@ -262,7 +263,7 @@ final class ChildTagAppendListenerImpl implements ChildTagAppendListener {
     }
 
     @Override
-    public void childMoved(final ChildMovedEvent event) {
+    public void childMoved(@SuppressWarnings("exports") final ChildMovedEvent event) {
 
         // @formatter:off
         // moved children tags from some parents to another task format (in this method
@@ -274,8 +275,8 @@ final class ChildTagAppendListenerImpl implements ChildTagAppendListener {
         // "span"]}
         // @formatter:on
 
-        final AbstractHtml currentParentTag = event.getCurrentParentTag();
-        final AbstractHtml movedChildTag = event.getMovedChildTag();
+        final AbstractHtml currentParentTag = event.currentParentTag();
+        final AbstractHtml movedChildTag = event.movedChildTag();
 
         final NameValue task = Task.MOVED_CHILDREN_TAGS.getTaskNameValue();
 
@@ -314,7 +315,7 @@ final class ChildTagAppendListenerImpl implements ChildTagAppendListener {
     }
 
     @Override
-    public void childrendAppendedOrMoved(final Collection<ChildMovedEvent> events) {
+    public void childrendAppendedOrMoved(@SuppressWarnings("exports") final Collection<ChildMovedEvent> events) {
 
         // @formatter:off
         // moved children tags from some parents to another task format (in this method
@@ -338,9 +339,9 @@ final class ChildTagAppendListenerImpl implements ChildTagAppendListener {
                 // if previousParentTag == null it means it's appending a new
                 // child tag
                 // this checking is done at client side
-                final AbstractHtml previousParentTag = event.getPreviousParentTag();
-                final AbstractHtml currentParentTag = event.getCurrentParentTag();
-                final AbstractHtml movedChildTag = event.getMovedChildTag();
+                final AbstractHtml previousParentTag = event.previousParentTag();
+                final AbstractHtml currentParentTag = event.currentParentTag();
+                final AbstractHtml movedChildTag = event.movedChildTag();
 
                 final DataWffId currentParentDataWffIdAttr = currentParentTag.getDataWffId();
 

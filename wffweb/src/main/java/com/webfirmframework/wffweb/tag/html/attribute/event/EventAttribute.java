@@ -17,7 +17,7 @@ package com.webfirmframework.wffweb.tag.html.attribute.event;
 
 public interface EventAttribute {
 
-    public ServerAsyncMethod getServerAsyncMethod();
+    public ServerMethod getServerMethod();
 
     public String getJsPostFunctionBody();
 

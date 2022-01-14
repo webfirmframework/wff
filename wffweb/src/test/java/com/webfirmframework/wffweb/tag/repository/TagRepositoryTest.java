@@ -537,7 +537,7 @@ public class TagRepositoryTest {
     
     @Test (expected = WffSecurityException.class)
     public void testWffSecurityException() {
-        new TagRepository(null, null, new AbstractHtml[0]);
+        new TagRepository(null, null, null, new AbstractHtml[0]);
     }
     
     @Test (expected = InvalidTagException.class)

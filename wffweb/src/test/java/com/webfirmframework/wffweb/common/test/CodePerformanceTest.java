@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.webfirmframework.wffweb.common.performance.test;
+package com.webfirmframework.wffweb.common.test;
 
 import java.util.ArrayDeque;
 import java.util.Arrays;
@@ -131,6 +131,7 @@ public class CodePerformanceTest {
 
     }
     
+    @SuppressWarnings("unused")
     @Test
     public void testPerformanceOfLinkedListAndArrayDeque() throws Exception {
         final long difference1;
@@ -166,6 +167,7 @@ public class CodePerformanceTest {
         System.out.println("Additional ns taken by LinkedList than ArrayDeque: " + (difference1 - difference2));
     }
     
+    @SuppressWarnings("unused")
     @Test
     public void testPerformanceOfSmallByteArrayCopy() throws Exception {
         {

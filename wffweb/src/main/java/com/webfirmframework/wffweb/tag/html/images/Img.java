@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.tag.html.images;
 
+import java.io.Serial;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.settings.WffConfiguration;
@@ -33,6 +34,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.ImgAttributable;
  */
 public class Img extends AbstractHtml {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     private static final Logger LOGGER = Logger.getLogger(Img.class.getName());

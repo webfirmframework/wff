@@ -17,6 +17,7 @@ package com.webfirmframework.wffweb.server.page;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Serial;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
@@ -51,7 +52,9 @@ import com.webfirmframework.wffweb.NotRenderedException;
 import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.PushFailedException;
 import com.webfirmframework.wffweb.WffRuntimeException;
-import com.webfirmframework.wffweb.server.page.js.WffJsFile;
+import com.webfirmframework.wffweb.internal.security.object.BrowserPageSecurity;
+import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
+import com.webfirmframework.wffweb.internal.server.page.js.WffJsFile;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.Html;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
@@ -63,7 +66,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.Type;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeRegistry;
 import com.webfirmframework.wffweb.tag.html.attribute.event.EventAttribute;
-import com.webfirmframework.wffweb.tag.html.attribute.event.ServerAsyncMethod;
+import com.webfirmframework.wffweb.tag.html.attribute.event.ServerMethod;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.tag.html.programming.Script;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
@@ -83,6 +86,7 @@ public abstract class BrowserPage implements Serializable {
     // if this class' is refactored then SecurityClassConstants should be
     // updated.
 
+    @Serial
     private static final long serialVersionUID = 1_0_1L;
 
     private static final Logger LOGGER = Logger.getLogger(BrowserPage.class.getName());
@@ -140,7 +144,7 @@ public abstract class BrowserPage implements Serializable {
     // NB: not all methods of Queue is implemented, ensure before using it.
     private final Queue<byte[]> taskFromClientQ = buildByteArrayQ("in");
 
-    private static final Security ACCESS_OBJECT = new Security();
+    private static final SecurityObject ACCESS_OBJECT = new BrowserPageSecurity(new Security());
 
     // by default the push queue should be enabled
     private volatile boolean pushQueueEnabled = true;
@@ -186,21 +190,22 @@ public abstract class BrowserPage implements Serializable {
 
     private volatile long lastClientAccessedTime = System.currentTimeMillis();
 
-    // to make it GC friendly, it is made as static
-    private static final ThreadLocal<PayloadProcessor> PALYLOAD_PROCESSOR_TL = new ThreadLocal<>();
-
     // NB: this non-static initialization makes BrowserPage and PayloadProcessor
     // never to get GCd. It leads to memory leak. It seems to be a bug.
     // private final ThreadLocal<PayloadProcessor> PALYLOAD_PROCESSOR_TL =
     // ThreadLocal
     // .withInitial(() -> new PayloadProcessor(this, true));
 
+    /**
+     * Note: Only for internal use.
+     *
+     */
     // for security purpose, the class name should not be modified
-    private static final class Security implements Serializable {
-
-        private static final long serialVersionUID = 1L;
-
+    private static final class Security {
         private Security() {
+            if (ACCESS_OBJECT != null) {
+                throw new AssertionError("Not allowed to call this constructor");
+            }
         }
     }
 
@@ -541,20 +546,6 @@ public abstract class BrowserPage implements Serializable {
     }
 
     /**
-     * This method will be remove later. Use {@code webSocketMessaged}.
-     *
-     * @param message the bytes the received in onmessage
-     * @author WFF
-     * @since 2.0.0
-     * @deprecated alternative method webSocketMessaged is available for the same
-     *             job.
-     */
-    @Deprecated
-    public final void websocketMessaged(final byte[] message) {
-        webSocketMessaged(message);
-    }
-
-    /**
      * @return the time of websocket message received from client, websocket opened,
      *         or the object created time.
      * @since 3.0.16
@@ -805,9 +796,13 @@ public abstract class BrowserPage implements Serializable {
 
                     final EventAttribute eventAttr = (EventAttribute) attributeByName;
 
-                    final ServerAsyncMethod serverAsyncMethod = eventAttr.getServerAsyncMethod();
+                    final ServerMethod serverMethod = eventAttr.getServerMethod();
 
+<<<<<<< HEAD
                     final ServerAsyncMethod.Event event = new ServerAsyncMethod.Event(wffBMObject, methodTag,
+=======
+                    final ServerMethod.Event event = new ServerMethod.Event(wffBMObject, methodTag,
+>>>>>>> refs/remotes/origin/incubator
                             attributeByName, null, eventAttr.getServerSideData());
 
                     final WffBMObject returnedObject;
@@ -821,7 +816,7 @@ public abstract class BrowserPage implements Serializable {
                             // per
                             // java memory
                             // model
-                            returnedObject = serverAsyncMethod.asyncMethod(wffBMObject, event);
+                            returnedObject = serverMethod.invoke(event);
                         }
 
                     } catch (final Exception e) {
@@ -923,10 +918,15 @@ public abstract class BrowserPage implements Serializable {
                     // per
                     // java memory
                     // model
+<<<<<<< HEAD
                     returnedObject = serverMethod.serverAsyncMethod().asyncMethod(wffBMObject,
                             new ServerAsyncMethod.Event(wffBMObject, null, null, methodName,
                                     serverMethod.serverSideData()));
 
+=======
+                    returnedObject = serverMethod.serverMethod().invoke(new ServerMethod.Event(
+                            wffBMObject, null, null, methodName, serverMethod.serverSideData()));
+>>>>>>> refs/remotes/origin/incubator
                 }
 
             } catch (final Exception e) {
@@ -959,7 +959,7 @@ public abstract class BrowserPage implements Serializable {
 
         } else {
             LOGGER.warning(methodName + " doesn't exist, please add it as browserPage.addServerMethod(\"" + methodName
-                    + "\", serverAsyncMethod)");
+                    + "\", serverMethod)");
         }
 
     }
@@ -1273,6 +1273,7 @@ public abstract class BrowserPage implements Serializable {
      * method because this method internally calls {@link BrowserPage#render()}
      * method.
      *
+<<<<<<< HEAD
      * @param charset the charset
      * @return {@code String} equalent to the html string of the tag including the
      *         child tags.
@@ -1326,6 +1327,8 @@ public abstract class BrowserPage implements Serializable {
      * method because this method internally calls {@link BrowserPage#render()}
      * method.
      *
+=======
+>>>>>>> refs/remotes/origin/incubator
      * @param os the object of {@code OutputStream} to write to.
      * @return the total number of bytes written
      * @throws IOException
@@ -1736,25 +1739,34 @@ public abstract class BrowserPage implements Serializable {
 
     /**
      * @param methodName
-     * @param serverAsyncMethod
+     * @param serverMethod
      * @author WFF
      * @since 2.1.0
      */
+<<<<<<< HEAD
     public final void addServerMethod(final String methodName, final ServerAsyncMethod serverAsyncMethod) {
         serverMethods.put(methodName, new ServerMethodWrapper(serverAsyncMethod, null));
+=======
+    public final void addServerMethod(final String methodName, final ServerMethod serverMethod) {
+        serverMethods.put(methodName, new ServerMethodWrapper(serverMethod, null));
+>>>>>>> refs/remotes/origin/incubator
     }
 
     /**
      * @param methodName
-     * @param serverAsyncMethod
+     * @param serverMethod
      * @param serverSideData    this object will be available in the event of
-     *                          serverAsyncMethod.asyncMethod
+     *                          serverMethod.invoke
      * @author WFF
      * @since 3.0.2
      */
-    public final void addServerMethod(final String methodName, final ServerAsyncMethod serverAsyncMethod,
+    public final void addServerMethod(final String methodName, final ServerMethod serverMethod,
             final Object serverSideData) {
+<<<<<<< HEAD
         serverMethods.put(methodName, new ServerMethodWrapper(serverAsyncMethod, serverSideData));
+=======
+        serverMethods.put(methodName, new ServerMethodWrapper(serverMethod, serverSideData));
+>>>>>>> refs/remotes/origin/incubator
     }
 
     /**
@@ -2325,41 +2337,6 @@ public abstract class BrowserPage implements Serializable {
     }
 
     /**
-     * Gets the same instance of {@code PayloadProcessor} per caller thread for this
-     * browser page. This PayloadProcessor can process incoming partial bytes from
-     * WebSocket. To manually create new PayloadProcessor use <em>new
-     * PayloadProcessor(browserPage)</em>.
-     *
-     * @return new instance of PayloadProcessor/thread
-     * @since 3.0.2
-     * @deprecated this method call may make deadlock somewhere in the application
-     *             while using multiple threads. Use
-     *             {@code BrowserPage#newPayloadProcessor()}.
-     */
-    @Deprecated
-    public final PayloadProcessor getPayloadProcessor() {
-        PayloadProcessor payloadProcessor = PALYLOAD_PROCESSOR_TL.get();
-        if (payloadProcessor == null) {
-            payloadProcessor = new PayloadProcessor(this, true);
-            PALYLOAD_PROCESSOR_TL.set(payloadProcessor);
-        }
-        return payloadProcessor;
-    }
-
-    /**
-     * Removes the current instance of {@code PayloadProcessor} of this caller
-     * thread for this browser page and new instance will be reinitialized when
-     * calling {@link #getPayloadProcessor()} by the same thread.
-     *
-     * @since 3.0.2
-     * @deprecated this method call may make deadlock.
-     */
-    @Deprecated
-    public final void removePayloadProcessor() {
-        PALYLOAD_PROCESSOR_TL.remove();
-    }
-
-    /**
      * Creates and returns new instance of {@code PayloadProcessor} for this browser
      * page. This PayloadProcessor can process incoming partial bytes from
      * WebSocket. To manually create new PayloadProcessor use <em>new
@@ -2384,7 +2361,7 @@ public abstract class BrowserPage implements Serializable {
     }
 
     /**
-     * Sets the executor to run {@link ServerAsyncMethod#asyncMethod}, <br>
+     * Sets the executor to run {@link ServerMethod#invoke}, <br>
      *
      * <br>
      * NB: You may need only one copy of executor object for all browserPage

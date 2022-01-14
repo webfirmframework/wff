@@ -16,9 +16,11 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute.event.media;
 
+import java.io.Serial;
+
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.attribute.event.AbstractEventAttribute;
-import com.webfirmframework.wffweb.tag.html.attribute.event.ServerAsyncMethod;
+import com.webfirmframework.wffweb.tag.html.attribute.event.ServerMethod;
 
 /**
  *
@@ -31,6 +33,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.event.ServerAsyncMethod;
  */
 public class OnCanPlay extends AbstractEventAttribute {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
@@ -49,13 +52,13 @@ public class OnCanPlay extends AbstractEventAttribute {
     public OnCanPlay() {
     }
 
-    public OnCanPlay(final ServerAsyncMethod serverAsyncMethod) {
-        setServerAsyncMethod(null, serverAsyncMethod, null, null);
+    public OnCanPlay(final ServerMethod serverMethod) {
+        setServerMethod(null, serverMethod, null, null);
     }
 
-    public OnCanPlay(final String jsPreFunctionBody, final ServerAsyncMethod serverAsyncMethod,
+    public OnCanPlay(final String jsPreFunctionBody, final ServerMethod serverMethod,
             final String jsFilterFunctionBody, final String jsPostFunctionBody) {
-        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody);
+        setServerMethod(jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody);
     }
 
     public OnCanPlay(final String value) {
@@ -63,25 +66,25 @@ public class OnCanPlay extends AbstractEventAttribute {
     }
 
     /**
-     * @param serverAsyncMethod
+     * @param serverMethod
      * @param serverSideData
      * @since 3.0.2
      */
-    public OnCanPlay(final ServerAsyncMethod serverAsyncMethod, final Object serverSideData) {
-        setServerAsyncMethod(null, serverAsyncMethod, null, null, serverSideData);
+    public OnCanPlay(final ServerMethod serverMethod, final Object serverSideData) {
+        setServerMethod(null, serverMethod, null, null, serverSideData);
     }
 
     /**
      * @param jsPreFunctionBody
-     * @param serverAsyncMethod
+     * @param serverMethod
      * @param jsFilterFunctionBody
      * @param jsPostFunctionBody
      * @param serverSideData
      * @since 3.0.2
      */
-    public OnCanPlay(final String jsPreFunctionBody, final ServerAsyncMethod serverAsyncMethod,
+    public OnCanPlay(final String jsPreFunctionBody, final ServerMethod serverMethod,
             final String jsFilterFunctionBody, final String jsPostFunctionBody, final Object serverSideData) {
-        setServerAsyncMethod(jsPreFunctionBody, serverAsyncMethod, jsFilterFunctionBody, jsPostFunctionBody,
+        setServerMethod(jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody,
                 serverSideData);
     }
 

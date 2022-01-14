@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.css;
 
+import java.io.Serial;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -25,10 +26,10 @@ import java.util.logging.Logger;
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.clone.CloneUtil;
-import com.webfirmframework.wffweb.core.constants.CommonConstants;
 import com.webfirmframework.wffweb.css.core.AbstractCssProperty;
 import com.webfirmframework.wffweb.data.Bean;
 import com.webfirmframework.wffweb.informer.StateChangeInformer;
+import com.webfirmframework.wffweb.internal.constants.CommonConstants;
 import com.webfirmframework.wffweb.util.StringUtil;
 import com.webfirmframework.wffweb.util.TagStringUtil;
 
@@ -52,6 +53,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  */
 public class BorderLeftColor extends AbstractCssProperty<BorderLeftColor> implements StateChangeInformer<Bean> {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     private static final Logger LOGGER = Logger.getLogger(BorderLeftColor.class.getName());

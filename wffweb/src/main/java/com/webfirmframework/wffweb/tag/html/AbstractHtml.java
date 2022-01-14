@@ -18,7 +18,7 @@ package com.webfirmframework.wffweb.tag.html;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.Serializable;
+import java.io.Serial;
 import java.nio.charset.Charset;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -47,7 +47,20 @@ import com.webfirmframework.wffweb.WffRuntimeException;
 import com.webfirmframework.wffweb.WffSecurityException;
 import com.webfirmframework.wffweb.clone.CloneUtil;
 import com.webfirmframework.wffweb.internal.InternalId;
-import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
+import com.webfirmframework.wffweb.internal.constants.CommonConstants;
+import com.webfirmframework.wffweb.internal.constants.IndexedClassType;
+import com.webfirmframework.wffweb.internal.security.object.AbstractHtmlSecurity;
+import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
+import com.webfirmframework.wffweb.internal.tag.html.listener.AttributeAddListener;
+import com.webfirmframework.wffweb.internal.tag.html.listener.AttributeRemoveListener;
+import com.webfirmframework.wffweb.internal.tag.html.listener.ChildTagAppendListener;
+import com.webfirmframework.wffweb.internal.tag.html.listener.ChildTagAppendListener.ChildMovedEvent;
+import com.webfirmframework.wffweb.internal.tag.html.listener.ChildTagRemoveListener;
+import com.webfirmframework.wffweb.internal.tag.html.listener.InnerHtmlAddListener;
+import com.webfirmframework.wffweb.internal.tag.html.listener.InsertAfterListener;
+import com.webfirmframework.wffweb.internal.tag.html.listener.InsertTagsBeforeListener;
+import com.webfirmframework.wffweb.internal.tag.html.listener.PushQueue;
+import com.webfirmframework.wffweb.internal.tag.html.listener.ReplaceListener;
 import com.webfirmframework.wffweb.streamer.WffBinaryMessageOutputStreamer;
 import com.webfirmframework.wffweb.tag.core.AbstractJsObject;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
@@ -57,16 +70,6 @@ import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
 import com.webfirmframework.wffweb.tag.html.core.PreIndexedTagName;
 import com.webfirmframework.wffweb.tag.html.core.TagRegistry;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
-import com.webfirmframework.wffweb.tag.html.listener.AttributeAddListener;
-import com.webfirmframework.wffweb.tag.html.listener.AttributeRemoveListener;
-import com.webfirmframework.wffweb.tag.html.listener.ChildTagAppendListener;
-import com.webfirmframework.wffweb.tag.html.listener.ChildTagAppendListener.ChildMovedEvent;
-import com.webfirmframework.wffweb.tag.html.listener.ChildTagRemoveListener;
-import com.webfirmframework.wffweb.tag.html.listener.InnerHtmlAddListener;
-import com.webfirmframework.wffweb.tag.html.listener.InsertAfterListener;
-import com.webfirmframework.wffweb.tag.html.listener.InsertTagsBeforeListener;
-import com.webfirmframework.wffweb.tag.html.listener.PushQueue;
-import com.webfirmframework.wffweb.tag.html.listener.ReplaceListener;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 import com.webfirmframework.wffweb.tag.htmlwff.CustomTag;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
@@ -82,14 +85,15 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
  * @version 3.0.1
  * @since 1.0.0
  */
-public abstract class AbstractHtml extends AbstractJsObject {
+public abstract non-sealed class AbstractHtml extends AbstractJsObject {
 
     // if this class' is refactored then SecurityClassConstants should be
     // updated.
 
+    @Serial
     private static final long serialVersionUID = 3_0_18L;
 
-    private static final Security ACCESS_OBJECT;
+    private static final SecurityObject ACCESS_OBJECT;
 
     // initial value must be -1 if not assigning any value if int
     // or null if byte[]
@@ -147,8 +151,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
     private volatile DataWffId dataWffId;
 
-    private transient Charset charset = Charset.defaultCharset();
-
     // default must be TagType.OPENING_CLOSING
     private final TagType tagType;
 
@@ -169,17 +171,21 @@ public abstract class AbstractHtml extends AbstractJsObject {
         }
     }
 
+    /**
+     * Note: Only for internal use.
+     *
+     */
     // for security purpose, the class name should not be modified
-    private static final class Security implements Serializable {
-
-        private static final long serialVersionUID = 1L;
-
+    private static final class Security {
         private Security() {
+            if (ACCESS_OBJECT != null) {
+                throw new AssertionError("Not allowed to call this constructor");
+            }
         }
     }
 
     static {
-        ACCESS_OBJECT = new Security();
+        ACCESS_OBJECT = new AbstractHtmlSecurity(new Security());
 
         // its length will be always 1
         INDEXED_AT_CHAR_BYTES = PreIndexedTagName.AT.internalIndexBytes(ACCESS_OBJECT);
@@ -200,6 +206,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
         // Solved: children is surrounded by lock in its top outer method.
         children = new LinkedHashSet<AbstractHtml>() {
 
+            @Serial
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -256,7 +263,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                         if (listener != null) {
                             listener.childrenRemoved(
-                                    new ChildTagRemoveListener.Event(AbstractHtml.this, removedAbstractHtmls));
+                                    new ChildTagRemoveListener.Event(AbstractHtml.this, null, removedAbstractHtmls));
                         }
 
                         sharedObject.setChildModified(removedAll, ACCESS_OBJECT);
@@ -670,7 +677,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * @param child
+     * @param firstChild
      * @since 3.0.18
      */
     private void removeFromSharedTagContent(final AbstractHtml firstChild) {
@@ -709,7 +716,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
             final ChildTagRemoveListener listener = sharedObject.getChildTagRemoveListener(ACCESS_OBJECT);
             if (listener != null) {
-                listener.allChildrenRemoved(new ChildTagRemoveListener.Event(this, removedAbstractHtmls));
+                listener.allChildrenRemoved(new ChildTagRemoveListener.Event(this, null, removedAbstractHtmls));
                 listenerInvoked = true;
             }
 
@@ -751,7 +758,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 if (listener != null) {
 
                     final ChildTagRemoveListenerData listenerData = new ChildTagRemoveListenerData(sharedObject,
-                            listener, new ChildTagRemoveListener.Event(this, removedAbstractHtmls));
+                            listener, new ChildTagRemoveListener.Event(this, null, removedAbstractHtmls));
                     return listenerData;
                 }
             }
@@ -1291,7 +1298,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                                         .getChildTagRemoveListener(ACCESS_OBJECT);
                                 if (listener != null) {
                                     listener.allChildrenRemoved(
-                                            new ChildTagRemoveListener.Event(this, removedAbstractHtmls));
+                                            new ChildTagRemoveListener.Event(this, null, removedAbstractHtmls));
                                     listenerInvoked = true;
                                 }
                             } finally {
@@ -1399,7 +1406,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 final ChildTagRemoveListener listener = sharedObject.getChildTagRemoveListener(ACCESS_OBJECT);
 
                 if (listener != null) {
-                    listener.childRemoved(new ChildTagRemoveListener.Event(this, child));
+                    listener.childRemoved(new ChildTagRemoveListener.Event(this, child, null));
                     listenerInvoked = true;
                 }
 
@@ -1489,8 +1496,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @author WFF
      * @since 2.0.0
      */
-    public final boolean addChild(final Object accessObject, final AbstractHtml child, final boolean invokeListener) {
-        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName()))) {
+    public final boolean addChild(@SuppressWarnings("exports") final SecurityObject accessObject,
+            final AbstractHtml child, final boolean invokeListener) {
+        if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
 
@@ -1590,7 +1598,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
                     final ChildTagAppendListener listener = sharedObject.getChildTagAppendListener(ACCESS_OBJECT);
                     if (listener != null) {
-                        final ChildTagAppendListener.Event event = new ChildTagAppendListener.Event(this, child);
+                        final ChildTagAppendListener.Event event = new ChildTagAppendListener.Event(this, child, null);
                         listener.childAppended(event);
                     }
                 }
@@ -2264,9 +2272,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
         if (updateClient) {
             final AttributeAddListener attributeAddListener = sharedObject.getAttributeAddListener(ACCESS_OBJECT);
             if (attributeAddListener != null) {
-                final AttributeAddListener.AddEvent event = new AttributeAddListener.AddEvent();
-                event.setAddedToTag(this);
-                event.setAddedAttributes(attributes);
+                final AttributeAddListener.AddEvent event = new AttributeAddListener.AddEvent(this, attributes);
                 attributeAddListener.addedAttributes(event);
                 listenerInvoked = true;
             }
@@ -2384,10 +2390,10 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @author WFF
      * @since 2.0.0
      */
-    public final boolean removeAttributes(final Object accessObject, final boolean invokeListener,
-            final AbstractAttribute... attributes) {
+    public final boolean removeAttributes(@SuppressWarnings("exports") final SecurityObject accessObject,
+            final boolean invokeListener, final AbstractAttribute... attributes) {
 
-        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName()))) {
+        if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
 
         }
@@ -2449,7 +2455,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                     final AttributeRemoveListener listener = sharedObject.getAttributeRemoveListener(ACCESS_OBJECT);
                     if (listener != null) {
                         final AttributeRemoveListener.RemovedEvent event = new AttributeRemoveListener.RemovedEvent(
-                                this, removedAttributes);
+                                this, removedAttributes, null);
 
                         listener.removedAttributes(event);
                         listenerInvoked = true;
@@ -2532,9 +2538,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @author WFF
      * @since 2.0.0
      */
-    public final boolean removeAttributes(final Object accessObject, final boolean invokeListener,
-            final String... attributeNames) {
-        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName()))) {
+    public final boolean removeAttributes(@SuppressWarnings("exports") final SecurityObject accessObject,
+            final boolean invokeListener, final String... attributeNames) {
+        if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
 
         }
@@ -2625,7 +2631,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                     final AttributeRemoveListener listener = sharedObject.getAttributeRemoveListener(ACCESS_OBJECT);
                     if (listener != null) {
                         final AttributeRemoveListener.RemovedEvent event = new AttributeRemoveListener.RemovedEvent(
-                                this, removedAttributeNames.toArray(new String[removedAttributeNames.size()]));
+                                this, null, removedAttributeNames.toArray(new String[removedAttributeNames.size()]));
 
                         listener.removedAttributes(event);
                         listenerInvoked = true;
@@ -2784,18 +2790,6 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * @param parent
-     * @author WFF
-     * @since 2.0.0
-     * @deprecated This method is not allowed to use. It's not implemented.
-     */
-    @Deprecated
-    public void setParent(final AbstractHtml parent) {
-        throw new MethodNotImplementedException("This method is not implemented");
-        // this.parent = parent;
-    }
-
-    /**
      * @return the unmodifiable list of children
      * @author WFF
      * @since 2.0.0
@@ -2804,8 +2798,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
         final Lock lock = lockAndGetReadLock();
         try {
-
-            return Collections.unmodifiableList(new ArrayList<>(children));
+            return List.copyOf(children);
         } finally {
             lock.unlock();
         }
@@ -2819,9 +2812,9 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @author WFF
      * @since 2.0.0
      */
-    public final Set<AbstractHtml> getChildren(final Object accessObject) {
+    public final Set<AbstractHtml> getChildren(@SuppressWarnings("exports") final SecurityObject accessObject) {
 
-        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName()))) {
+        if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
         return children;
@@ -3052,11 +3045,12 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *         not a child in this tag's children then -1 will be returned.
      * @since 3.0.7
      */
-    public final int getIndexByChild(final Object accessObject, final AbstractHtml child) {
+    public final int getIndexByChild(@SuppressWarnings("exports") final SecurityObject accessObject,
+            final AbstractHtml child) {
 
         // Lockless method to get child index
 
-        if (accessObject == null || !(SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName()))) {
+        if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
 
@@ -3247,7 +3241,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             // passed 2 instead of 1 because the load factor is 0.75f
             final Set<AbstractHtml> localChildren = new LinkedHashSet<>(2);
             localChildren.add(this);
-            recurChildrenToWffBinaryMessageOutputStream(localChildren, true);
+            recurChildrenToWffBinaryMessageOutputStream(localChildren, true, CommonConstants.DEFAULT_CHARSET);
         } finally {
             lock.unlock();
         }
@@ -3371,7 +3365,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @since 2.1.12
      */
     public int toBigOutputStream(final OutputStream os) throws IOException {
-        return writePrintStructureToOSWithoutRecursive(charset, os, true, false);
+        return writePrintStructureToOSWithoutRecursive(CommonConstants.DEFAULT_CHARSET, os, true, false);
     }
 
     /**
@@ -3413,7 +3407,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
         if (charset != null) {
             return writePrintStructureToOSWithoutRecursive(Charset.forName(charset), os, true, false);
         }
-        return writePrintStructureToOSWithoutRecursive(this.charset, os, true, false);
+        return writePrintStructureToOSWithoutRecursive(CommonConstants.DEFAULT_CHARSET, os, true, false);
     }
 
     /**
@@ -3432,7 +3426,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @since 2.1.12
      */
     public int toBigOutputStream(final OutputStream os, final boolean rebuild) throws IOException {
-        return writePrintStructureToOSWithoutRecursive(charset, os, rebuild, false);
+        return writePrintStructureToOSWithoutRecursive(CommonConstants.DEFAULT_CHARSET, os, rebuild, false);
     }
 
     /**
@@ -3454,7 +3448,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     public int toBigOutputStream(final OutputStream os, final boolean rebuild, final Charset charset)
             throws IOException {
         if (charset == null) {
-            return writePrintStructureToOSWithoutRecursive(this.charset, os, rebuild, false);
+            return writePrintStructureToOSWithoutRecursive(CommonConstants.DEFAULT_CHARSET, os, rebuild, false);
         }
         return writePrintStructureToOSWithoutRecursive(charset, os, rebuild, false);
     }
@@ -3480,7 +3474,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     public int toBigOutputStream(final OutputStream os, final boolean rebuild, final Charset charset,
             final boolean flushOnWrite) throws IOException {
         if (charset == null) {
-            return writePrintStructureToOSWithoutRecursive(this.charset, os, rebuild, flushOnWrite);
+            return writePrintStructureToOSWithoutRecursive(CommonConstants.DEFAULT_CHARSET, os, rebuild, flushOnWrite);
         }
         return writePrintStructureToOSWithoutRecursive(charset, os, rebuild, flushOnWrite);
     }
@@ -3505,7 +3499,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
             throws IOException {
 
         if (charset == null) {
-            return writePrintStructureToOSWithoutRecursive(this.charset, os, rebuild, false);
+            return writePrintStructureToOSWithoutRecursive(CommonConstants.DEFAULT_CHARSET, os, rebuild, false);
         }
         return writePrintStructureToOSWithoutRecursive(Charset.forName(charset), os, rebuild, false);
     }
@@ -3862,12 +3856,13 @@ public abstract class AbstractHtml extends AbstractJsObject {
      *
      * @param children
      * @param rebuild  TODO
+     * @param charset  TODO
      * @throws IOException
      * @author WFF
      * @since 2.0.0
      */
-    private void recurChildrenToWffBinaryMessageOutputStream(final Set<AbstractHtml> children, final boolean rebuild)
-            throws IOException {
+    private void recurChildrenToWffBinaryMessageOutputStream(final Set<AbstractHtml> children, final boolean rebuild,
+            final Charset charset) throws IOException {
         if (children != null && children.size() > 0) {
             for (final AbstractHtml child : children) {
                 child.setRebuild(rebuild);
@@ -3920,7 +3915,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
                 // final Set<AbstractHtml> childrenOfChildren = child.children;
                 // declaring a separate local variable childrenOfChildren will
                 // consume stack space so directly passed it as argument
-                recurChildrenToWffBinaryMessageOutputStream(child.children, rebuild);
+                recurChildrenToWffBinaryMessageOutputStream(child.children, rebuild, charset);
 
                 NameValue closingTagNameValue = new NameValue();
                 closingTagNameValue.setName(closingTagNameConvertedBytes);
@@ -3966,6 +3961,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /*
      * (non-Javadoc)
      *
+<<<<<<< HEAD
      * @see com.webfirmframework.wffweb.tag.core.TagBase#toHtmlString(java.nio.
      * charset.Charset)
      */
@@ -4012,6 +4008,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
     /*
      * (non-Javadoc)
      *
+=======
+>>>>>>> refs/remotes/origin/incubator
      * @see com.webfirmframework.wffweb.tag.TagBase#toHtmlString(boolean)
      *
      * @since 1.0.0
@@ -4023,6 +4021,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
         return getPrintStructure(rebuild);
     }
 
+<<<<<<< HEAD
     /*
      * (non-Javadoc)
      *
@@ -4069,6 +4068,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
         }
     }
 
+=======
+>>>>>>> refs/remotes/origin/incubator
     // TODO for future implementation
 
     /**
@@ -4105,7 +4106,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @throws IOException
      */
     public int toOutputStream(final OutputStream os) throws IOException {
-        return writePrintStructureToOutputStream(charset, os, true);
+        return writePrintStructureToOutputStream(CommonConstants.DEFAULT_CHARSET, os, true);
     }
 
     /**
@@ -4142,7 +4143,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
         if (charset != null) {
             return writePrintStructureToOutputStream(Charset.forName(charset), os, true);
         }
-        return writePrintStructureToOutputStream(this.charset, os, true);
+        return writePrintStructureToOutputStream(CommonConstants.DEFAULT_CHARSET, os, true);
     }
 
     /**
@@ -4152,7 +4153,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @throws IOException
      */
     public int toOutputStream(final OutputStream os, final boolean rebuild) throws IOException {
-        return writePrintStructureToOutputStream(charset, os, rebuild);
+        return writePrintStructureToOutputStream(CommonConstants.DEFAULT_CHARSET, os, rebuild);
     }
 
     /**
@@ -4166,7 +4167,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     public int toOutputStream(final OutputStream os, final boolean rebuild, final boolean flushOnWrite)
             throws IOException {
-        return writePrintStructureToOutputStream(os, rebuild, charset, flushOnWrite);
+        return writePrintStructureToOutputStream(os, rebuild, CommonConstants.DEFAULT_CHARSET, flushOnWrite);
     }
 
     /**
@@ -4178,7 +4179,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      */
     public int toOutputStream(final OutputStream os, final boolean rebuild, final Charset charset) throws IOException {
         if (charset == null) {
-            return writePrintStructureToOutputStream(this.charset, os, rebuild);
+            return writePrintStructureToOutputStream(CommonConstants.DEFAULT_CHARSET, os, rebuild);
         }
         return writePrintStructureToOutputStream(charset, os, rebuild);
     }
@@ -4196,7 +4197,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     public int toOutputStream(final OutputStream os, final boolean rebuild, final Charset charset,
             final boolean flushOnWrite) throws IOException {
         if (charset == null) {
-            return writePrintStructureToOutputStream(os, rebuild, this.charset, flushOnWrite);
+            return writePrintStructureToOutputStream(os, rebuild, CommonConstants.DEFAULT_CHARSET, flushOnWrite);
         }
         return writePrintStructureToOutputStream(os, rebuild, charset, flushOnWrite);
     }
@@ -4211,7 +4212,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     public int toOutputStream(final OutputStream os, final boolean rebuild, final String charset) throws IOException {
 
         if (charset == null) {
-            return writePrintStructureToOutputStream(this.charset, os, rebuild);
+            return writePrintStructureToOutputStream(CommonConstants.DEFAULT_CHARSET, os, rebuild);
         }
         return writePrintStructureToOutputStream(Charset.forName(charset), os, rebuild);
     }
@@ -4261,8 +4262,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
         if (tagName != null) {
             // previously attributeHtmlString was used in append method
             // as argument.
-            htmlStartSB.append('<').append(tagName)
-                    .append(AttributeUtil.getAttributeHtmlString(rebuild, charset, attributes));
+            htmlStartSB.append('<').append(tagName).append(AttributeUtil.getAttributeHtmlString(rebuild, attributes));
             if (tagType == TagType.OPENING_CLOSING) {
                 htmlStartSB.append('>');
             } else if (tagType == TagType.SELF_CLOSING) {
@@ -4553,6 +4553,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
+<<<<<<< HEAD
      * @return the charset
      * @deprecated not recommended since 3.0.19, it will be removed in future major
      *             version.
@@ -4573,6 +4574,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
     }
 
     /**
+=======
+>>>>>>> refs/remotes/origin/incubator
      * @param removedAbstractHtmls
      * @return the locks after locking
      */
@@ -4677,7 +4680,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @since 3.0.2 improved to handle NoTag with contentTypeHtml true
      */
     public byte[] toWffBMBytes() {
-        return toWffBMBytes(charset);
+        return toWffBMBytes(CommonConstants.DEFAULT_CHARSET);
     }
 
     /**
@@ -4719,7 +4722,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @since 3.0.2 improved to handle NoTag with contentTypeHtml true
      * @since 3.0.15 accessObject added
      */
-    public final byte[] toWffBMBytes(final Charset charset, final Object accessObject) {
+    public final byte[] toWffBMBytes(final Charset charset,
+            @SuppressWarnings("exports") final SecurityObject accessObject) {
 
         final byte[] encodedBytesForAtChar = "@".getBytes(charset);
         final byte[] encodedByesForHashChar = "#".getBytes(charset);
@@ -4728,7 +4732,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
 
         if (accessObject != null) {
             lock = null;
-            if (!SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName())) {
+            if (!IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType())) {
                 throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
             }
 
@@ -4991,13 +4995,14 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @since 3.0.6
      * @since 3.0.15 accessObject added
      */
-    public final byte[] toCompressedWffBMBytesV2(final Charset charset, final Object accessObject) {
+    public final byte[] toCompressedWffBMBytesV2(final Charset charset,
+            @SuppressWarnings("exports") final SecurityObject accessObject) {
 
         final Lock lock;
 
         if (accessObject != null) {
             lock = null;
-            if (!SecurityClassConstants.BROWSER_PAGE.equals(accessObject.getClass().getName())) {
+            if (!IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType())) {
                 throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
             }
         } else {
@@ -5150,7 +5155,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @since 3.0.2 improved to handle NoTag with contentTypeHtml true
      */
     public static AbstractHtml getTagFromWffBMBytes(final byte[] bmMessageBytes) {
-        return getTagFromWffBMBytes(bmMessageBytes, Charset.defaultCharset());
+        return getTagFromWffBMBytes(bmMessageBytes, CommonConstants.DEFAULT_CHARSET);
     }
 
     /**
@@ -6639,7 +6644,7 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @return the unique id for this object.
      * @since 3.0.18
      */
-    public final InternalId internalId() {
+    final InternalId internalId() {
         return internalId;
     }
 
@@ -6652,8 +6657,8 @@ public abstract class AbstractHtml extends AbstractJsObject {
      * @since 3.0.18
      */
     final <T> void setCacheSTCFormatter(final SharedTagContent.ContentFormatter<T> contentFormatter,
-            final Object accessObject) {
-        if (!SecurityClassConstants.SHARED_TAG_CONTENT.equals(accessObject.getClass().getName())) {
+            final SecurityObject accessObject) {
+        if (!IndexedClassType.SHARED_TAG_CONTENT.equals(accessObject.forClassType())) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
         cachedStcFormatter = contentFormatter;
