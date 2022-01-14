@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 Web Firm Framework
+ * Copyright 2014-2021 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,12 +27,8 @@ import java.util.concurrent.locks.Lock;
 
 import com.webfirmframework.wffweb.WffSecurityException;
 import com.webfirmframework.wffweb.internal.ObjectId;
-<<<<<<< HEAD
-import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
-=======
 import com.webfirmframework.wffweb.internal.constants.IndexedClassType;
 import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
->>>>>>> refs/remotes/origin/incubator
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeUtil;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;

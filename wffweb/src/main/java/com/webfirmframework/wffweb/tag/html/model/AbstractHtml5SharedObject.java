@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 Web Firm Framework
+ * Copyright 2014-2021 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,9 +31,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import com.webfirmframework.wffweb.DataWffIdOutOfRangeError;
 import com.webfirmframework.wffweb.WffSecurityException;
 import com.webfirmframework.wffweb.internal.ObjectId;
-<<<<<<< HEAD
-import com.webfirmframework.wffweb.security.object.SecurityClassConstants;
-=======
 import com.webfirmframework.wffweb.internal.constants.IndexedClassType;
 import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
 import com.webfirmframework.wffweb.internal.tag.html.listener.AttributeAddListener;
@@ -48,7 +45,6 @@ import com.webfirmframework.wffweb.internal.tag.html.listener.PushQueue;
 import com.webfirmframework.wffweb.internal.tag.html.listener.ReplaceListener;
 import com.webfirmframework.wffweb.internal.tag.html.listener.WffBMDataDeleteListener;
 import com.webfirmframework.wffweb.internal.tag.html.listener.WffBMDataUpdateListener;
->>>>>>> refs/remotes/origin/incubator
 import com.webfirmframework.wffweb.tag.core.AbstractTagBase;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attribute.listener.AttributeValueChangeListener;
@@ -235,31 +231,11 @@ public final class AbstractHtml5SharedObject implements Serializable {
      * @since 1.0.0
      * @since 3.0.19 added accessObject param
      * @author WFF
-     * @deprecated it does nothing since 3.0.19
      */
-<<<<<<< HEAD
-    @Deprecated
-    public void setChildModified(final boolean childModified) {        
-    }
-    
-    /**
-     * set true if any of the children has been modified.<br>
-     * NB:- it's for internal use
-     *
-     * @param childModified the childModified to set
-     * @param accessObject access object
-     * @since 3.0.19
-     * @author WFF
-     */
-    public void setChildModified(final boolean childModified, final Object accessObject) {
-        if (accessObject == null || !((SecurityClassConstants.ABSTRACT_HTML.equals(accessObject.getClass().getName()))
-                || (SecurityClassConstants.ABSTRACT_ATTRIBUTE.equals(accessObject.getClass().getName())))) {
-=======
     public void setChildModified(final boolean childModified,
             @SuppressWarnings("exports") final SecurityObject accessObject) {
         if (accessObject == null || !((IndexedClassType.ABSTRACT_HTML.equals(accessObject.forClassType()))
                 || (IndexedClassType.ABSTRACT_ATTRIBUTE.equals(accessObject.forClassType())))) {
->>>>>>> refs/remotes/origin/incubator
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
         this.childModified = childModified;
@@ -806,10 +782,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
      * @since 3.0.15 returns long value type
      * @since 3.0.19 returns ObjectId value type
      */
-<<<<<<< HEAD
-=======
     @SuppressWarnings("exports")
->>>>>>> refs/remotes/origin/incubator
     public final ObjectId objectId() {
         return objectId;
     }

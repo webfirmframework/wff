@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 Web Firm Framework
+ * Copyright 2014-2021 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -190,14 +190,14 @@ public abstract class CssFile implements Serializable, Cloneable {
                 if (AbstractCssFileBlock.class.isAssignableFrom(field.getType())
                         && !field.isAnnotationPresent(ExcludeCssBlock.class)) {
 
-                    final boolean accessible = field.isAccessible();
+                    final boolean accessible = field.canAccess(this);
                     field.setAccessible(true);
                     final AbstractCssFileBlock abstractCssFileBlock = (AbstractCssFileBlock) field.get(this);
                     cssBlocks.add(abstractCssFileBlock);
                     field.setAccessible(accessible);
                 } else if (CssFile.class.isAssignableFrom(field.getType())
                         && field.isAnnotationPresent(ImportCssFile.class)) {
-                    final boolean accessible = field.isAccessible();
+                    final boolean accessible = field.canAccess(this);
                     field.setAccessible(true);
                     final CssFile cssFile = (CssFile) field.get(this);
 

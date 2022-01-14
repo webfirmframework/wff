@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 Web Firm Framework
+ * Copyright 2014-2021 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -654,20 +654,6 @@ public enum BrowserPageContext {
     }
 
     /**
-<<<<<<< HEAD
-     * this method should be called when the websocket is closed
-     *
-     * @param wffInstanceId the wffInstanceId which can be retried from the request
-     *                      parameter in websocket connection
-     * @author WFF
-     * @since 2.0.0
-     * @deprecated this method is for future development
-     */
-    @Deprecated
-    public void webSocketClosed(final String wffInstanceId) {
-        // NOP for future development
-    }
-=======
      * this method should be called when the websocket is closed.
      *
      * @param wffInstanceId the wffInstanceId which can be retried from the request
@@ -687,38 +673,10 @@ public enum BrowserPageContext {
                 instanceIdBPForWS.remove(wffInstanceId);
             }
         }
->>>>>>> refs/remotes/origin/incubator
 
-<<<<<<< HEAD
-    /**
-     * this method should be called when the websocket is closed.
-     *
-     * @param wffInstanceId the wffInstanceId which can be retried from the request
-     *                      parameter in websocket connection
-     * @param sessionId     the websocket session id, i.e. the unique id of the
-     *                      websocket session which is given in
-     *                      {@code BrowserPage#addWebSocketPushListener} method.
-     * @return browserPage instance associated with this wffInstanceId
-     * @author WFF
-     * @since 2.1.0
-     */
-    public BrowserPage webSocketClosed(final String wffInstanceId, final String sessionId) {
-        final BrowserPage bp = instanceIdBPForWS.get(wffInstanceId);
-        if (bp != null) {
-            bp.removeWebSocketPushListener(sessionId);
-            if (bp.getWsListener() == null) {
-                instanceIdBPForWS.remove(wffInstanceId);
-            }
-        }
-=======
         return bp;
     }
->>>>>>> refs/remotes/origin/incubator
 
-<<<<<<< HEAD
-        return bp;
-    }
-=======
     /**
      * should be called when the httpsession is closed. The closed http session id
      * should be passed as an argument.
@@ -728,29 +686,11 @@ public enum BrowserPageContext {
      * @since 2.0.0
      */
     public void httpSessionClosed(final String httpSessionId) {
->>>>>>> refs/remotes/origin/incubator
 
-<<<<<<< HEAD
-    /**
-     * should be called when the httpsession is closed. The closed http session id
-     * should be passed as an argument.
-     *
-     * @param httpSessionId
-     * @author WFF
-     * @since 2.0.0
-     */
-    public void httpSessionClosed(final String httpSessionId) {
-=======
         if (httpSessionId != null) {
             final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.remove(httpSessionId);
             if (browserPages != null) {
->>>>>>> refs/remotes/origin/incubator
 
-<<<<<<< HEAD
-        if (httpSessionId != null) {
-            final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.remove(httpSessionId);
-            if (browserPages != null) {
-=======
                 for (final String instanceId : browserPages.keySet()) {
                     instanceIdHttpSessionId.remove(instanceId);
                     final BrowserPage removedBrowserPage = instanceIdBrowserPage.remove(instanceId);
@@ -769,28 +709,7 @@ public enum BrowserPageContext {
                 }
                 browserPages.clear();
             }
->>>>>>> refs/remotes/origin/incubator
 
-<<<<<<< HEAD
-                for (final String instanceId : browserPages.keySet()) {
-                    instanceIdHttpSessionId.remove(instanceId);
-                    final BrowserPage removedBrowserPage = instanceIdBrowserPage.remove(instanceId);
-                    instanceIdBPForWS.remove(instanceId);
-                    if (removedBrowserPage != null) {
-                        try {
-                            removedBrowserPage.removedFromContext();
-                        } catch (final Throwable e) {
-                            if (LOGGER.isLoggable(Level.WARNING)) {
-                                LOGGER.log(Level.WARNING,
-                                        "The overridden method BrowserPage#removedFromContext threw an exception.", e);
-                            }
-                        }
-                        removedBrowserPage.clearWSListeners();
-                    }
-                }
-                browserPages.clear();
-            }
-=======
         } else {
             if (LOGGER.isLoggable(Level.WARNING)) {
                 LOGGER.warning("The associatd HttpSession is alread closed for the id");
@@ -798,17 +717,7 @@ public enum BrowserPageContext {
         }
         runAutoClean();
     }
->>>>>>> refs/remotes/origin/incubator
 
-<<<<<<< HEAD
-        } else {
-            if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.warning("The associatd HttpSession is alread closed for the id");
-            }
-        }
-        runAutoClean();
-    }
-=======
     /**
      * this method should be called when the websocket is messaged.
      *
@@ -819,62 +728,17 @@ public enum BrowserPageContext {
      * @since 2.1.0
      */
     public BrowserPage webSocketMessaged(final String wffInstanceId, final byte[] message) {
->>>>>>> refs/remotes/origin/incubator
 
-<<<<<<< HEAD
-    /**
-     * This method is will be removed in the next version. Use
-     * {@code webSocketMessaged} method instead of this method.
-     *
-     * @param wffInstanceId the wffInstanceId which can be retried from the request
-     *                      parameter in websocket connection.
-     * @param message       the message received from websocket
-     * @author WFF
-     * @since 2.0.0
-     * @deprecated use webSocketMessaged which does the same job.
-     */
-    @Deprecated
-    public BrowserPage websocketMessaged(final String wffInstanceId, final byte[] message) {
-        return webSocketMessaged(wffInstanceId, message);
-    }
-=======
         final BrowserPage browserPage = instanceIdBrowserPage.get(wffInstanceId);
->>>>>>> refs/remotes/origin/incubator
 
-<<<<<<< HEAD
-    /**
-     * this method should be called when the websocket is messaged.
-     *
-     * @param wffInstanceId the wffInstanceId which can be retried from the request
-     *                      parameter in websocket connection.
-     * @param message       the message received from websocket
-     * @author WFF
-     * @since 2.1.0
-     */
-    public BrowserPage webSocketMessaged(final String wffInstanceId, final byte[] message) {
-=======
         if (browserPage != null) {
             browserPage.webSocketMessaged(message);
         }
->>>>>>> refs/remotes/origin/incubator
 
-<<<<<<< HEAD
-        final BrowserPage browserPage = instanceIdBrowserPage.get(wffInstanceId);
-=======
         return browserPage;
->>>>>>> refs/remotes/origin/incubator
 
-<<<<<<< HEAD
-        if (browserPage != null) {
-            browserPage.webSocketMessaged(message);
-        }
-=======
     }
->>>>>>> refs/remotes/origin/incubator
 
-<<<<<<< HEAD
-        return browserPage;
-=======
     /**
      * removes browser page by the given instance id. This method is for internal
      * usage.
@@ -885,62 +749,23 @@ public enum BrowserPageContext {
      * @since 2.1.4
      */
     void removeBrowserPage(final String callerInstanceId, final String instanceId) {
->>>>>>> refs/remotes/origin/incubator
 
-<<<<<<< HEAD
-    }
-=======
         final String callerHttpSessionId = instanceIdHttpSessionId.get(callerInstanceId);
->>>>>>> refs/remotes/origin/incubator
 
-<<<<<<< HEAD
-    /**
-     * removes browser page by the given instance id. This method is for internal
-     * usage.
-     *
-     * @param callerInstanceId instance id of the caller browserPage instance.
-     * @param instanceId       the instance id of the browser page which is indented
-     *                         to be removed.
-     * @since 2.1.4
-     */
-    void removeBrowserPage(final String callerInstanceId, final String instanceId) {
-=======
         final String httpSessionId = instanceIdHttpSessionId.get(instanceId);
->>>>>>> refs/remotes/origin/incubator
 
-<<<<<<< HEAD
-        final String callerHttpSessionId = instanceIdHttpSessionId.get(callerInstanceId);
-=======
         if (httpSessionId != null) {
             // this is a security checking
             // the caller session id must be
             // same as the session id of the instanceId
             // otherwise it's considered as a hacking.
             if (httpSessionId.equals(callerHttpSessionId)) {
->>>>>>> refs/remotes/origin/incubator
 
-<<<<<<< HEAD
-        final String httpSessionId = instanceIdHttpSessionId.get(instanceId);
-=======
                 final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.get(httpSessionId);
                 if (browserPages != null) {
->>>>>>> refs/remotes/origin/incubator
 
-<<<<<<< HEAD
-        if (httpSessionId != null) {
-            // this is a security checking
-            // the caller session id must be
-            // same as the session id of the instanceId
-            // otherwise it's considered as a hacking.
-            if (httpSessionId.equals(callerHttpSessionId)) {
-=======
                     final AtomicReference<BrowserPage> bpRef = new AtomicReference<>();
->>>>>>> refs/remotes/origin/incubator
 
-<<<<<<< HEAD
-                final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.get(httpSessionId);
-                if (browserPages != null) {
-=======
                     browserPages.computeIfPresent(instanceId, (k, bp) -> {
                         instanceIdBrowserPage.remove(instanceId);
                         instanceIdHttpSessionId.remove(instanceId);
@@ -968,43 +793,9 @@ public enum BrowserPageContext {
                 }
             }
         }
->>>>>>> refs/remotes/origin/incubator
 
-<<<<<<< HEAD
-                    final AtomicReference<BrowserPage> bpRef = new AtomicReference<>();
-=======
     }
->>>>>>> refs/remotes/origin/incubator
 
-<<<<<<< HEAD
-                    browserPages.computeIfPresent(instanceId, (k, bp) -> {
-                        instanceIdBrowserPage.remove(instanceId);
-                        instanceIdHttpSessionId.remove(instanceId);
-                        instanceIdBPForWS.remove(instanceId);
-                        bpRef.set(bp);
-                        return null;
-                    });
-                    final BrowserPage bp = bpRef.get();
-                    if (bp != null) {
-                        try {
-                            bp.removedFromContext();
-                        } catch (final Throwable e) {
-                            if (LOGGER.isLoggable(Level.WARNING)) {
-                                LOGGER.log(Level.WARNING,
-                                        "The overridden method BrowserPage#removedFromContext threw an exception.", e);
-                            }
-                        }
-                        bp.clearWSListeners();
-                    }
-                }
-            } else {
-                if (DEBUG_MODE && LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.warning("The callerInstanceId " + callerInstanceId + " tried to remove instanceId "
-                            + instanceId + " from BrowserPageContext");
-                }
-            }
-        }
-=======
     /**
      * Checks the existence of {@code browserPage} in this context.
      *
@@ -1020,11 +811,7 @@ public enum BrowserPageContext {
         }
         return browserPage.equals(instanceIdBrowserPage.get(browserPage.getInstanceId()));
     }
->>>>>>> refs/remotes/origin/incubator
 
-<<<<<<< HEAD
-    }
-=======
     /**
      * Checks the existence of valid {@code browserPage} in this context.
      *
@@ -1047,25 +834,7 @@ public enum BrowserPageContext {
         if (browserPage == null) {
             throw new NullValueException("browserPage instance cannot be null");
         }
->>>>>>> refs/remotes/origin/incubator
 
-<<<<<<< HEAD
-    /**
-     * Checks the existence of {@code browserPage} in this context.
-     *
-     * @param browserPage
-     * @return true if the given browserPage exists in the BrowserPageContext.
-     * @throws NullValueException if the given browserPage instance is null
-     * @author WFF
-     * @since 2.1.13
-     */
-    public boolean exists(final BrowserPage browserPage) throws NullValueException {
-        if (browserPage == null) {
-            throw new NullValueException("browserPage instance cannot be null");
-        }
-        return browserPage.equals(instanceIdBrowserPage.get(browserPage.getInstanceId()));
-    }
-=======
         final MinIntervalExecutor autoCleanTaskExecutor = this.autoCleanTaskExecutor;
         if (autoCleanTaskExecutor != null) {
             if ((System.currentTimeMillis() - browserPage.getLastClientAccessedTime()) >= autoCleanTaskExecutor
@@ -1073,55 +842,7 @@ public enum BrowserPageContext {
                 return false;
             }
         }
->>>>>>> refs/remotes/origin/incubator
 
-<<<<<<< HEAD
-    /**
-     * Checks the existence of valid {@code browserPage} in this context.
-     *
-     * <br>
-     * Note: this operation is not atomic. The validity is time dependent, even if
-     * the method returns true {@code browserPage} could be invalid in the next
-     * moment. However, if it returns false it is trust worthy.
-     *
-     * @param browserPage
-     * @return true if the given browserPage exists in the BrowserPageContext and
-     *         has not expired. The {@code browserPage} instance will be considered
-     *         as invalid if the internal idle time of it is greater than or equal
-     *         to the time set by {@link BrowserPageContext#enableAutoClean}
-     *         methods.
-     * @throws NullValueException if the given browserPage instance is null
-     * @author WFF
-     * @since 3.0.16
-     */
-    public boolean existsAndValid(final BrowserPage browserPage) throws NullValueException {
-        if (browserPage == null) {
-            throw new NullValueException("browserPage instance cannot be null");
-        }
-=======
-        return browserPage.equals(instanceIdBrowserPage.get(browserPage.getInstanceId()));
-    }
->>>>>>> refs/remotes/origin/incubator
-
-<<<<<<< HEAD
-        final MinIntervalExecutor autoCleanTaskExecutor = this.autoCleanTaskExecutor;
-        if (autoCleanTaskExecutor != null) {
-            if ((System.currentTimeMillis() - browserPage.getLastClientAccessedTime()) >= autoCleanTaskExecutor
-                    .minInterval()) {
-                return false;
-            }
-        }
-=======
-    /**
-     * @return true if enabled otherwise false
-     * @since 3.0.18
-     */
-    public static boolean isDebugMode() {
-        return DEBUG_MODE;
-    }
->>>>>>> refs/remotes/origin/incubator
-
-<<<<<<< HEAD
         return browserPage.equals(instanceIdBrowserPage.get(browserPage.getInstanceId()));
     }
 
@@ -1133,8 +854,6 @@ public enum BrowserPageContext {
         return DEBUG_MODE;
     }
 
-=======
->>>>>>> refs/remotes/origin/incubator
     /**
      * @param enabled
      * @since 3.0.18

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 Web Firm Framework
+ * Copyright 2014-2021 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,13 +38,10 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import java.util.concurrent.locks.StampedLock;
 
 import com.webfirmframework.wffweb.internal.ObjectId;
-<<<<<<< HEAD
-=======
 import com.webfirmframework.wffweb.internal.constants.CommonConstants;
 import com.webfirmframework.wffweb.internal.security.object.AbstractAttributeSecurity;
 import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
 import com.webfirmframework.wffweb.internal.tag.html.listener.PushQueue;
->>>>>>> refs/remotes/origin/incubator
 import com.webfirmframework.wffweb.tag.core.AbstractTagBase;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attribute.listener.AttributeValueChangeListener;
@@ -492,45 +489,6 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
     /*
      * (non-Javadoc)
      *
-<<<<<<< HEAD
-     * @see com.webfirmframework.wffweb.tag.core.TagBase#toHtmlString(java.nio.
-     * charset.Charset)
-     */
-    @Override
-    @Deprecated
-    public String toHtmlString(final Charset charset) {
-        final Charset previousCharset = this.charset;
-        try {
-            this.charset = charset;
-            return toHtmlString();
-        } finally {
-            this.charset = previousCharset;
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.webfirmframework.wffweb.tag.core.TagBase#toHtmlString(java.lang.
-     * String)
-     */
-    @Override
-    @Deprecated
-    public String toHtmlString(final String charset) {
-        final Charset previousCharset = this.charset;
-        try {
-            this.charset = Charset.forName(charset);
-            return toHtmlString();
-        } finally {
-            this.charset = previousCharset;
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-=======
->>>>>>> refs/remotes/origin/incubator
      * @see com.webfirmframework.wffweb.tag.Base#toHtmlString(boolean)
      *
      * @since 1.0.0
@@ -545,45 +503,6 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
     /*
      * (non-Javadoc)
      *
-<<<<<<< HEAD
-     * @see com.webfirmframework.wffweb.tag.core.TagBase#toHtmlString(boolean,
-     * java.nio.charset.Charset)
-     */
-    @Deprecated
-    @Override
-    public String toHtmlString(final boolean rebuild, final Charset charset) {
-        final Charset previousCharset = this.charset;
-        try {
-            this.charset = charset;
-            return toHtmlString(rebuild);
-        } finally {
-            this.charset = previousCharset;
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.webfirmframework.wffweb.tag.core.TagBase#toHtmlString(boolean,
-     * java.lang.String)
-     */
-    @Deprecated
-    @Override
-    public String toHtmlString(final boolean rebuild, final String charset) {
-        final Charset previousCharset = this.charset;
-        try {
-            this.charset = Charset.forName(charset);
-            return toHtmlString(rebuild);
-        } finally {
-            this.charset = previousCharset;
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-=======
->>>>>>> refs/remotes/origin/incubator
      * @see java.lang.Object#toString()
      */
     @Override

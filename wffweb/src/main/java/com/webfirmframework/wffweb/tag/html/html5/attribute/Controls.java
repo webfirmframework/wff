@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 Web Firm Framework
+ * Copyright 2014-2021 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.html5.identifier.AudioAttributable;
 import com.webfirmframework.wffweb.tag.html.identifier.BooleanAttribute;
-import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
  * {@code <element controls> }
@@ -63,40 +62,12 @@ public class Controls extends AbstractAttribute implements AudioAttributable, Bo
      */
     public Controls(final String value) {
 
-<<<<<<< HEAD
-        if (AttributeNameConstants.CONTROLS.equals(value) || value == null || StringUtil.isBlank(value)) {
-=======
         if (AttributeNameConstants.CONTROLS.equals(value) || value == null || value.isBlank()) {
->>>>>>> refs/remotes/origin/incubator
             setAttributeValue(value);
         } else if ("true".equals(value) || "false".equals(value)) {
-<<<<<<< HEAD
-            final boolean yes = Boolean.parseBoolean(value);
-            setAttributeValue(yes ? AttributeNameConstants.CONTROLS : null);
-            controls = yes;
-=======
             setAttributeValue(Boolean.parseBoolean(value) ? AttributeNameConstants.CONTROLS : null);
->>>>>>> refs/remotes/origin/incubator
         } else {
             throw new InvalidValueException("the value should be controls, true, empty string or null");
-<<<<<<< HEAD
-        }
-
-    }
-
-    /**
-     * @param controls
-     * @deprecated as there is no affect of boolean values for this attribute. this
-     *             method will be removed later.
-     */
-    @Deprecated
-    public Controls(final Boolean controls) {
-        if (controls == null) {
-            setAttributeValue(null);
-        } else {
-            setAttributeValue(controls.booleanValue() ? "controls" : null);
-=======
->>>>>>> refs/remotes/origin/incubator
         }
 
     }

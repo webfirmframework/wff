@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 Web Firm Framework
+ * Copyright 2014-2021 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,10 +43,7 @@ public class NoTag extends AbstractHtml {
 
     // TODO This class needs to be tested properly
 
-<<<<<<< HEAD
-=======
     @Serial
->>>>>>> refs/remotes/origin/incubator
     private static final long serialVersionUID = 1_0_0L;
 
     {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 Web Firm Framework
+ * Copyright 2014-2021 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -798,11 +798,7 @@ public abstract class BrowserPage implements Serializable {
 
                     final ServerMethod serverMethod = eventAttr.getServerMethod();
 
-<<<<<<< HEAD
-                    final ServerAsyncMethod.Event event = new ServerAsyncMethod.Event(wffBMObject, methodTag,
-=======
                     final ServerMethod.Event event = new ServerMethod.Event(wffBMObject, methodTag,
->>>>>>> refs/remotes/origin/incubator
                             attributeByName, null, eventAttr.getServerSideData());
 
                     final WffBMObject returnedObject;
@@ -918,15 +914,8 @@ public abstract class BrowserPage implements Serializable {
                     // per
                     // java memory
                     // model
-<<<<<<< HEAD
-                    returnedObject = serverMethod.serverAsyncMethod().asyncMethod(wffBMObject,
-                            new ServerAsyncMethod.Event(wffBMObject, null, null, methodName,
-                                    serverMethod.serverSideData()));
-
-=======
                     returnedObject = serverMethod.serverMethod().invoke(new ServerMethod.Event(
                             wffBMObject, null, null, methodName, serverMethod.serverSideData()));
->>>>>>> refs/remotes/origin/incubator
                 }
 
             } catch (final Exception e) {
@@ -1273,62 +1262,6 @@ public abstract class BrowserPage implements Serializable {
      * method because this method internally calls {@link BrowserPage#render()}
      * method.
      *
-<<<<<<< HEAD
-     * @param charset the charset
-     * @return {@code String} equalent to the html string of the tag including the
-     *         child tags.
-     * @author WFF
-     * @deprecated since 3.0.19 as it is unused in the internal implementation
-     */
-    @Deprecated
-    public String toHtmlString(final String charset) {
-        initAbstractHtml();
-        wsWarningDisabled = true;
-        beforeToHtml(rootTag);
-        wsWarningDisabled = false;
-        final String htmlString = rootTag.toHtmlString(true, charset);
-        wsWarningDisabled = true;
-        afterToHtml(rootTag);
-        wsWarningDisabled = false;
-        return htmlString;
-    }
-
-    /**
-     * NB: this method should not be called under {@link BrowserPage#render()}
-     * method because this method internally calls {@link BrowserPage#render()}
-     * method. rebuilds the html string of the tag including the child tags/values
-     * if parameter is true, otherwise returns the html string prebuilt and kept in
-     * the cache.
-     *
-     * @param rebuild true to rebuild &amp; false to return previously built string.
-     * @param charset the charset to set for the returning value, eg:
-     *                {@code StandardCharsets.UTF_8.name()}
-     * @return {@code String} equalent to the html string of the tag including the
-     *         child tags.
-     * @author WFF
-     * @since 2.1.4
-     * @deprecated since 3.0.19 as it is unused in the internal implementation
-     */
-    @Deprecated
-    public String toHtmlString(final boolean rebuild, final String charset) {
-        initAbstractHtml();
-        wsWarningDisabled = true;
-        beforeToHtml(rootTag);
-        wsWarningDisabled = false;
-        final String htmlString = rootTag.toHtmlString(rebuild, charset);
-        wsWarningDisabled = true;
-        afterToHtml(rootTag);
-        wsWarningDisabled = false;
-        return htmlString;
-    }
-
-    /**
-     * NB: this method should not be called under {@link BrowserPage#render()}
-     * method because this method internally calls {@link BrowserPage#render()}
-     * method.
-     *
-=======
->>>>>>> refs/remotes/origin/incubator
      * @param os the object of {@code OutputStream} to write to.
      * @return the total number of bytes written
      * @throws IOException
@@ -1743,13 +1676,8 @@ public abstract class BrowserPage implements Serializable {
      * @author WFF
      * @since 2.1.0
      */
-<<<<<<< HEAD
-    public final void addServerMethod(final String methodName, final ServerAsyncMethod serverAsyncMethod) {
-        serverMethods.put(methodName, new ServerMethodWrapper(serverAsyncMethod, null));
-=======
     public final void addServerMethod(final String methodName, final ServerMethod serverMethod) {
         serverMethods.put(methodName, new ServerMethodWrapper(serverMethod, null));
->>>>>>> refs/remotes/origin/incubator
     }
 
     /**
@@ -1762,11 +1690,7 @@ public abstract class BrowserPage implements Serializable {
      */
     public final void addServerMethod(final String methodName, final ServerMethod serverMethod,
             final Object serverSideData) {
-<<<<<<< HEAD
-        serverMethods.put(methodName, new ServerMethodWrapper(serverAsyncMethod, serverSideData));
-=======
         serverMethods.put(methodName, new ServerMethodWrapper(serverMethod, serverSideData));
->>>>>>> refs/remotes/origin/incubator
     }
 
     /**

@@ -4,11 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.webfirmframework</groupId>
 	<artifactId>wffweb</artifactId>
-<<<<<<< HEAD
-	<version>3.0.19</version>
-=======
 	<version>12.0.0-SNAPSHOT</version>
->>>>>>> refs/remotes/origin/incubator
 
 	<properties>
 		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>

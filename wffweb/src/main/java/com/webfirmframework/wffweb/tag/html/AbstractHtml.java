@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 Web Firm Framework
+ * Copyright 2014-2021 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -3961,55 +3961,6 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
     /*
      * (non-Javadoc)
      *
-<<<<<<< HEAD
-     * @see com.webfirmframework.wffweb.tag.core.TagBase#toHtmlString(java.nio.
-     * charset.Charset)
-     */
-    @Override
-    @Deprecated
-    public String toHtmlString(final Charset charset) {
-        final Lock lock = lockAndGetWriteLock();
-        final Charset previousCharset = this.charset;
-        try {
-            this.charset = charset;
-            // assigning it to new variable is very important here as this
-            // line of code should invoke before finally block
-            final String htmlString = toHtmlString();
-            return htmlString;
-        } finally {
-            this.charset = previousCharset;
-            lock.unlock();
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.webfirmframework.wffweb.tag.core.TagBase#toHtmlString(java.lang.
-     * String)
-     */
-    @Override
-    @Deprecated
-    public String toHtmlString(final String charset) {
-        final Lock lock = lockAndGetWriteLock();
-        final Charset previousCharset = this.charset;
-        try {
-            this.charset = Charset.forName(charset);
-            // assigning it to new variable is very important here as this
-            // line of code should invoke before finally block
-            final String htmlString = toHtmlString();
-            return htmlString;
-        } finally {
-            this.charset = previousCharset;
-            lock.unlock();
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-=======
->>>>>>> refs/remotes/origin/incubator
      * @see com.webfirmframework.wffweb.tag.TagBase#toHtmlString(boolean)
      *
      * @since 1.0.0
@@ -4021,55 +3972,6 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
         return getPrintStructure(rebuild);
     }
 
-<<<<<<< HEAD
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.webfirmframework.wffweb.tag.core.TagBase#toHtmlString(boolean,
-     * java.nio.charset.Charset)
-     */
-    @Deprecated
-    @Override
-    public String toHtmlString(final boolean rebuild, final Charset charset) {
-        final Lock lock = lockAndGetWriteLock();
-        final Charset previousCharset = this.charset;
-        try {
-            this.charset = charset;
-            // assigning it to new variable is very important here as this
-            // line of code should invoke before finally block
-            final String htmlString = toHtmlString(rebuild);
-            return htmlString;
-        } finally {
-            this.charset = previousCharset;
-            lock.unlock();
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.webfirmframework.wffweb.tag.core.TagBase#toHtmlString(boolean,
-     * java.lang.String)
-     */
-    @Deprecated
-    @Override
-    public String toHtmlString(final boolean rebuild, final String charset) {
-        final Lock lock = lockAndGetWriteLock();
-        final Charset previousCharset = this.charset;
-        try {
-            this.charset = Charset.forName(charset);
-            // assigning it to new variable is very important here as this
-            // line of code should invoke before finally block
-            final String htmlString = toHtmlString(rebuild);
-            return htmlString;
-        } finally {
-            this.charset = previousCharset;
-            lock.unlock();
-        }
-    }
-
-=======
->>>>>>> refs/remotes/origin/incubator
     // TODO for future implementation
 
     /**
@@ -4553,29 +4455,6 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-<<<<<<< HEAD
-     * @return the charset
-     * @deprecated not recommended since 3.0.19, it will be removed in future major
-     *             version.
-     */
-    @Deprecated
-    public Charset getCharset() {
-        return charset;
-    }
-
-    /**
-     * @param charset the charset to set
-     * @deprecated not recommended since 3.0.19, it will be removed in future major
-     *             version.
-     */
-    @Deprecated
-    public void setCharset(final Charset charset) {
-        this.charset = charset;
-    }
-
-    /**
-=======
->>>>>>> refs/remotes/origin/incubator
      * @param removedAbstractHtmls
      * @return the locks after locking
      */

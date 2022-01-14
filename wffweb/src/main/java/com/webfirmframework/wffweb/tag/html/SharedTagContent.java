@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 Web Firm Framework
+ * Copyright 2014-2021 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -277,81 +277,8 @@ public class SharedTagContent<T> {
         public abstract Runnable contentChanged(final ChangeEvent<T> changeEvent);
     }
 
-<<<<<<< HEAD
-    public static final class DetachEvent<T> {
-
-        private final AbstractHtml sourceTag;
-        private final DetachListener<T> sourceListener;
-        private final Content<T> content;
-
-        private DetachEvent(final AbstractHtml sourceTag, final DetachListener<T> sourceListener,
-                final Content<T> content) {
-            super();
-            this.sourceListener = sourceListener;
-            this.sourceTag = sourceTag;
-            this.content = content;
-        }
-
-        /**
-         * @return the source tag
-         * @deprecated As it is record class no need to use getter method instead use
-         *             {@link DetachEvent#sourceTag()}.This method will be removed in
-         *             future release.
-         */
-        @Deprecated
-        public AbstractHtml getSourceTag() {
-            return sourceTag;
-        }
-
-        /**
-         * @return the source listener
-         * @deprecated As it is record class no need to use getter method instead use
-         *             {@link DetachEvent#sourceListener()}.This method will be removed
-         *             in future release.
-         */
-        @Deprecated
-        public DetachListener<T> getSourceListener() {
-            return sourceListener;
-        }
-
-        /**
-         * @return the content
-         * @deprecated As it is record class no need to use getter method instead use
-         *             {@link DetachEvent#content()}.This method will be removed in
-         *             future release.
-         */
-        @Deprecated
-        public Content<T> getContent() {
-            return content;
-        }
-
-        /**
-         * @return the source tag
-         * @since 3.0.19
-         */
-        public AbstractHtml sourceTag() {
-            return sourceTag;
-        }
-
-        /**
-         * @return the source listener
-         * @since 3.0.19
-         */
-        public DetachListener<T> sourceListener() {
-            return sourceListener;
-        }
-
-        /**
-         * @return the content
-         * @since 3.0.19
-         */
-        public Content<T> content() {
-            return content;
-        }
-=======
     public static final record DetachEvent<T> (AbstractHtml sourceTag, DetachListener<T> sourceListener,
             Content<T> content) {
->>>>>>> refs/remotes/origin/incubator
     }
 
     /**

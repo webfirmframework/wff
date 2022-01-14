@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 Web Firm Framework
+ * Copyright 2014-2021 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,44 +31,6 @@ public interface TagBase extends Serializable, Cloneable {
     public abstract String toHtmlString();
 
     /**
-<<<<<<< HEAD
-     * gets the html string of the tag including the child tags/values using the
-     * given charset. rebuilds the html string if the child tags/values or
-     * attributes have been modified.
-     *
-     * @param charset the charset to set for the returning value, eg:
-     *                {@code StandardCharsets.UTF_8}
-     * @return {@code String} equalent to the html string of the tag including the
-     *         child tags.
-     * @since 1.0.0
-     * @author WFF
-     * @deprecated since 3.0.19 as it is unused in the internal implementation. It
-     *             will be removed in future major version.
-     */
-    @Deprecated
-    public abstract String toHtmlString(Charset charset);
-
-    /**
-     * gets the html string of the tag including the child tags/values using the
-     * given charset. rebuilds the html string if the child tags/values or
-     * attributes have been modified.
-     *
-     * @param charset the charset to set for the returning value, eg:
-     *                {@code StandardCharsets.UTF_8.name()}
-     *
-     * @return {@code String} equalent to the html string of the tag including the
-     *         child tags.
-     * @since 1.0.0
-     * @author WFF
-     * @deprecated since 3.0.19 as it is unused in the internal implementation. It
-     *             will be removed in future major version.
-     */
-    @Deprecated
-    public abstract String toHtmlString(String charset);
-
-    /**
-=======
->>>>>>> refs/remotes/origin/incubator
      * rebuilds the html string of the tag including the child tags/values if
      * parameter is true, otherwise returns the html string prebuilt and kept in the
      * cache.
@@ -82,47 +44,6 @@ public interface TagBase extends Serializable, Cloneable {
     public abstract String toHtmlString(boolean rebuild);
 
     /**
-<<<<<<< HEAD
-     * rebuilds the html string of the tag including the child tags/values if
-     * parameter is true, otherwise returns the html string prebuilt and kept in the
-     * cache.
-     *
-     * @param rebuild true to rebuild &amp; false to return previously built string.
-     * @param charset the charset to set for the returning value, eg:
-     *                {@code StandardCharsets.UTF_8}
-     * @return {@code String} equalent to the html string of the tag including the
-     *         child tags.
-     *
-     * @since 1.0.0
-     * @author WFF
-     * @deprecated since 3.0.19 as it is unused in the internal implementation. It
-     *             will be removed in future major version.
-     */
-    @Deprecated
-    public abstract String toHtmlString(boolean rebuild, Charset charset);
-
-    /**
-     * rebuilds the html string of the tag including the child tags/values if
-     * parameter is true, otherwise returns the html string prebuilt and kept in the
-     * cache.
-     *
-     * @param rebuild true to rebuild &amp; false to return previously built string.
-     * @param charset the charset to set for the returning value, eg:
-     *                {@code StandardCharsets.UTF_8.name()}
-     * @return {@code String} equalent to the html string of the tag including the
-     *         child tags.
-     *
-     * @since 1.0.0
-     * @author WFF
-     * @deprecated since 3.0.19 as it is unused in the internal implementation. It
-     *             will be removed in future major version.
-     */
-    @Deprecated
-    public abstract String toHtmlString(boolean rebuild, String charset);
-
-    /**
-=======
->>>>>>> refs/remotes/origin/incubator
      * gets the html string of the tag including the child tags/values. rebuilds the
      * html string if the child tags/values or attributes have been modified.
      *

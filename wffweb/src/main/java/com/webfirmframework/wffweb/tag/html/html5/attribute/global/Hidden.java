@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 Web Firm Framework
+ * Copyright 2014-2021 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.identifier.BooleanAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
-import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
  * {@code <element hidden> }
@@ -76,16 +75,10 @@ public class Hidden extends AbstractAttribute implements GlobalAttributable, Boo
      */
     public Hidden(final String value) {
 
-        if (AttributeNameConstants.HIDDEN.equals(value) || value == null || StringUtil.isBlank(value)) {
+        if (AttributeNameConstants.HIDDEN.equals(value) || value == null || value.isBlank()) {
             setAttributeValue(value);
         } else if ("true".equals(value) || "false".equals(value)) {
-<<<<<<< HEAD
-            final boolean yes = Boolean.parseBoolean(value);
-            setAttributeValue(yes ? AttributeNameConstants.HIDDEN : null);
-            hidden = yes;
-=======
             setAttributeValue(Boolean.parseBoolean(value) ? AttributeNameConstants.HIDDEN : null);
->>>>>>> refs/remotes/origin/incubator
         } else {
             throw new InvalidValueException("the value should be hidden, true, empty string or null");
         }
