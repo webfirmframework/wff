@@ -32,12 +32,15 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import com.webfirmframework.wffweb.InvalidTagException;
@@ -61,6 +64,7 @@ import com.webfirmframework.wffweb.internal.tag.html.listener.InsertAfterListene
 import com.webfirmframework.wffweb.internal.tag.html.listener.InsertTagsBeforeListener;
 import com.webfirmframework.wffweb.internal.tag.html.listener.PushQueue;
 import com.webfirmframework.wffweb.internal.tag.html.listener.ReplaceListener;
+import com.webfirmframework.wffweb.server.page.BrowserPage;
 import com.webfirmframework.wffweb.streamer.WffBinaryMessageOutputStreamer;
 import com.webfirmframework.wffweb.tag.core.AbstractJsObject;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
@@ -163,6 +167,12 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
     private transient volatile SharedTagContent sharedTagContent;
 
     private final InternalId internalId = new InternalId();
+
+    private volatile Supplier<AbstractHtml[]> innerHtmlsForURLChange;
+
+    private volatile Predicate<String> urlPathPredicate;
+
+    private volatile TagActionType tagActionType;
 
     public static enum TagType {
         OPENING_CLOSING, SELF_CLOSING, NON_CLOSING;
@@ -6550,6 +6560,108 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      */
     final Object getCachedStcFormatter() {
         return cachedStcFormatter;
+    }
+
+    /**
+     * Adds the given tags by supplier if the predicate test returns true otherwise
+     * removes the existing children if
+     * {@link TagActionType#SET_OR_REMOVE_CHILDREN}. To remove the supplier object
+     * from this tag, call {@link AbstractHtml#removeUrlPathChangeAction()} method.
+     * To get the current url path inside the supplier object call
+     * {@link BrowserPage#getUrlPath()}. This action will be performed only after
+     * initial client ping.
+     *
+     * @param urlPathPredicate the predicate object to test, the argument of the
+     *                         test method is the changed url path, if the test
+     *                         method returns true then the given tags by supplier
+     *                         will be added as inner html to this tag. If test
+     *                         returns false, the existing children will be removed
+     *                         from this tag if actionType is
+     *                         {@link TagActionType#SET_OR_REMOVE_CHILDREN}.
+     * @param actionType       if {@link TagActionType#SET_OR_REMOVE_CHILDREN} and
+     *                         urlPathPredicate.test returns true then the supplied
+     *                         tags will be set as children, if test returns false
+     *                         the current children will be removed from the tag.
+     * @param tagsSupplier     the supplier object for child tags. If Supplier.get
+     *                         method returns null, no action will be done on the
+     *                         tag.
+     * @since 12.0.0-beta.1
+     */
+    public void whenUrlPath(final Predicate<String> urlPathPredicate, final TagActionType actionType,
+            final Supplier<AbstractHtml[]> tagsSupplier) {
+
+        final Lock lock = lockAndGetWriteLock();
+        try {
+            // sharedObject should be after locking
+            final AbstractHtml5SharedObject sharedObject = this.sharedObject;
+            innerHtmlsForURLChange = Objects.requireNonNull(tagsSupplier);
+            this.urlPathPredicate = Objects.requireNonNull(urlPathPredicate);
+            tagActionType = Objects.requireNonNull(actionType);
+            final String currentUrlPath = sharedObject.getURLPathChangeTagSupplier(ACCESS_OBJECT).supply(this);
+            changeInnerHtmlsForUrlPathChange(currentUrlPath);
+
+        } finally {
+            lock.unlock();
+        }
+
+    }
+
+    /**
+     * @since 12.0.0-beta.1
+     */
+    public void removeUrlPathChangeAction() {
+        innerHtmlsForURLChange = null;
+        urlPathPredicate = null;
+        tagActionType = null;
+    }
+
+    /**
+     * NB: only for internal use
+     *
+     * @param uri
+     * @param accessObject
+     * @return innerHtmls
+     * @since 12.0.0-beta.1
+     */
+    @SuppressWarnings("exports")
+    public final AbstractHtml[] changeInnerHtmlsForUrlPathChange(final String uri, final SecurityObject accessObject) {
+
+        if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
+            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
+        }
+
+        return changeInnerHtmlsForUrlPathChange(uri);
+    }
+
+    /**
+     * NB: only for internal use
+     *
+     * @param uri
+     * @return innerHtmls
+     * @since 12.0.0-beta.1
+     */
+    private AbstractHtml[] changeInnerHtmlsForUrlPathChange(final String uri) {
+
+        final Supplier<AbstractHtml[]> innerHtmlsForURLChange = this.innerHtmlsForURLChange;
+        final Predicate<String> urlPredicate = urlPathPredicate;
+        final TagActionType tagActionType = this.tagActionType;
+
+        if (innerHtmlsForURLChange != null && urlPredicate != null && tagActionType != null) {
+
+            if (urlPredicate.test(uri)) {
+                final AbstractHtml[] innerHtmls = innerHtmlsForURLChange.get();
+                if (innerHtmls != null) {
+                    // just to throw exception if it contains null or duplicate element
+                    Set.of(innerHtmls);
+                    addInnerHtmls(innerHtmls);
+                    return innerHtmls;
+                }
+            } else if (TagActionType.SET_OR_REMOVE_CHILDREN.equals(tagActionType)) {
+                removeAllChildren();
+            }
+
+        }
+        return null;
     }
 
 }

@@ -20,11 +20,14 @@ import java.io.OutputStream;
 import java.io.Serial;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.LinkedHashSet;
@@ -189,6 +192,10 @@ public abstract class BrowserPage implements Serializable {
     private volatile boolean onInitialClientPingInvoked;
 
     private volatile long lastClientAccessedTime = System.currentTimeMillis();
+
+    private final Set<Reference<AbstractHtml>> tagsForUrlChange = ConcurrentHashMap.newKeySet(1);
+
+    private volatile String urlPath;
 
     // NB: this non-static initialization makes BrowserPage and PayloadProcessor
     // never to get GCd. It leads to memory leak. It seems to be a bug.
@@ -798,8 +805,8 @@ public abstract class BrowserPage implements Serializable {
 
                     final ServerMethod serverMethod = eventAttr.getServerMethod();
 
-                    final ServerMethod.Event event = new ServerMethod.Event(wffBMObject, methodTag,
-                            attributeByName, null, eventAttr.getServerSideData());
+                    final ServerMethod.Event event = new ServerMethod.Event(wffBMObject, methodTag, attributeByName,
+                            null, eventAttr.getServerSideData());
 
                     final WffBMObject returnedObject;
 
@@ -914,8 +921,8 @@ public abstract class BrowserPage implements Serializable {
                     // per
                     // java memory
                     // model
-                    returnedObject = serverMethod.serverMethod().invoke(new ServerMethod.Event(
-                            wffBMObject, null, null, methodName, serverMethod.serverSideData()));
+                    returnedObject = serverMethod.serverMethod().invoke(
+                            new ServerMethod.Event(wffBMObject, null, null, methodName, serverMethod.serverSideData()));
                 }
 
             } catch (final Exception e) {
@@ -1599,6 +1606,7 @@ public abstract class BrowserPage implements Serializable {
                     addWffBMDataUpdateListener(rootTag);
                     addWffBMDataDeleteListener(rootTag);
                     addPushQueue(rootTag);
+                    addInnerHtmlsForURLChange(rootTag);
 
                     wsWarningDisabled = true;
                     afterRender(rootTag);
@@ -1683,8 +1691,8 @@ public abstract class BrowserPage implements Serializable {
     /**
      * @param methodName
      * @param serverMethod
-     * @param serverSideData    this object will be available in the event of
-     *                          serverMethod.invoke
+     * @param serverSideData this object will be available in the event of
+     *                       serverMethod.invoke
      * @author WFF
      * @since 3.0.2
      */
@@ -2313,6 +2321,71 @@ public abstract class BrowserPage implements Serializable {
      */
     protected final void setExecutor(final Executor executor) {
         this.executor = executor;
+    }
+
+    private void addInnerHtmlsForURLChange(final AbstractHtml rootTag) {
+        rootTag.getSharedObject().setURLPathChangeTagSupplier(tag -> {
+            tagsForUrlChange.add(new WeakReference<>(tag));
+            return urlPath;
+        }, ACCESS_OBJECT);
+    }
+
+    /**
+     * @param uri
+     * @since 12.0.0-beta.1
+     */
+    private void changeInnerHtmlsOnTagsForUrlChange(final String uri) {
+
+        // TODO call this method when the client sends url changed event
+        // currently client doesn't send events, it is to be done
+
+        final List<AbstractHtml> initialList = new ArrayList<>();
+        for (final Reference<AbstractHtml> each : tagsForUrlChange) {
+            final AbstractHtml tag = each.get();
+            if (tag != null) {
+                initialList.add(tag);
+            }
+        }
+
+        final Deque<List<AbstractHtml>> childrenStack = new ArrayDeque<>();
+        childrenStack.push(initialList);
+
+        List<AbstractHtml> children;
+        while ((children = childrenStack.poll()) != null) {
+            for (final AbstractHtml child : children) {
+
+                final AbstractHtml[] innerHtmls = child.changeInnerHtmlsForUrlPathChange(uri, ACCESS_OBJECT);
+
+                if (innerHtmls != null) {
+                    final List<AbstractHtml> subChildren = new ArrayList<>();
+                    for (final AbstractHtml innerHtml : innerHtmls) {
+                        subChildren.add(innerHtml);
+                    }
+                    if (subChildren != null && subChildren.size() > 0) {
+                        childrenStack.push(subChildren);
+                    }
+                }
+
+            }
+        }
+
+    }
+
+    /**
+     * @param url
+     * @since 12.0.0-beta.1
+     */
+    protected final void setUrlPath(final String url) {
+        urlPath = url;
+        changeInnerHtmlsOnTagsForUrlChange(url);
+    }
+    
+    /**
+     * @return the current url path only after initial client ping.
+     *  @since 12.0.0-beta.1
+     */
+    public String getUrlPath() {
+        return urlPath;
     }
 
 }
