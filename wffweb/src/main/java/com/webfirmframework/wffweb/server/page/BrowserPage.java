@@ -21,7 +21,6 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -2363,7 +2362,9 @@ public abstract class BrowserPage implements Serializable {
 
     private void addInnerHtmlsForURLChange(final AbstractHtml rootTag) {
         rootTag.getSharedObject().setURIChangeTagSupplier(tag -> {
-            tagsForUrlChange.add(new TagWeakReference(tag));
+            if (tag != null) {
+                tagsForUrlChange.add(new TagWeakReference(tag));
+            }
             return uri;
         }, ACCESS_OBJECT);
     }
@@ -2388,32 +2389,12 @@ public abstract class BrowserPage implements Serializable {
 
         elementsToRemove.forEach(tagsForUrlChange::remove);
 
-        final Deque<List<Reference<AbstractHtml>>> childrenStack = new ArrayDeque<>();
-        childrenStack.push(initialList);
-
-        List<Reference<AbstractHtml>> children;
-        while ((children = childrenStack.poll()) != null) {
-            for (final Reference<AbstractHtml> child : children) {
-
-                final AbstractHtml tag = child.get();
-
-                if (tag != null) {
-                    final AbstractHtml[] innerHtmls = tag.changeInnerHtmlsForURIChange(uri, rootTag.getSharedObject(),
-                            tagsForUrlChange, child, ACCESS_OBJECT);
-
-                    if (innerHtmls != null) {
-                        final List<Reference<AbstractHtml>> subChildren = new ArrayList<>();
-                        for (final AbstractHtml innerHtml : innerHtmls) {
-                            subChildren.add(new WeakReference<>(innerHtml));
-                        }
-                        if (subChildren.size() > 0) {
-                            childrenStack.push(subChildren);
-                        }
-                    }
-                } else {
-                    tagsForUrlChange.remove(child);
-                }
-
+        // NB: should not directly iterate from tagsForUrlChange
+        for (final Reference<AbstractHtml> tagRef : initialList) {
+            final AbstractHtml tag = tagRef.get();
+            if (tag != null) {
+                tag.changeInnerHtmlsForURIChange(uri, rootTag.getSharedObject(), tagsForUrlChange, tagRef,
+                        ACCESS_OBJECT);
             }
         }
 

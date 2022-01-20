@@ -65,6 +65,7 @@ import com.webfirmframework.wffweb.internal.tag.html.listener.InsertAfterListene
 import com.webfirmframework.wffweb.internal.tag.html.listener.InsertTagsBeforeListener;
 import com.webfirmframework.wffweb.internal.tag.html.listener.PushQueue;
 import com.webfirmframework.wffweb.internal.tag.html.listener.ReplaceListener;
+import com.webfirmframework.wffweb.internal.tag.html.listener.URIChangeTagSupplier;
 import com.webfirmframework.wffweb.server.page.BrowserPage;
 import com.webfirmframework.wffweb.streamer.WffBinaryMessageOutputStreamer;
 import com.webfirmframework.wffweb.tag.core.AbstractJsObject;
@@ -174,6 +175,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
     private volatile Predicate<String> uriPredicate;
 
     private volatile TagActionType tagActionType;
+
+    private volatile String lastURI;
 
     public static enum TagType {
         OPENING_CLOSING, SELF_CLOSING, NON_CLOSING;
@@ -823,6 +826,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
 
         // sharedObject should be after locking
         final AbstractHtml5SharedObject sharedObject = this.sharedObject;
+
+        supplyToURIChangeTagSupplier(sharedObject, innerHtmls);
+
         List<Lock> newSOLocks = null;
         try {
 
@@ -1521,6 +1527,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
         // sharedObject should be after locking
         final AbstractHtml5SharedObject sharedObject = this.sharedObject;
 
+        supplyToURIChangeTagSupplier(sharedObject, child);
+
         boolean result = false;
         try {
 
@@ -1894,6 +1902,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
         // sharedObject should be after locking
         final AbstractHtml5SharedObject sharedObject = this.sharedObject;
 
+        supplyToURIChangeTagSupplier(sharedObject, children);
+
 //        List<Lock> foreignLocks = TagUtil.lockAndGetWriteLocks(ACCESS_OBJECT, children);
 //        List<Lock> attrLocks = TagUtil.lockAndGetNestedAttributeWriteLocks(ACCESS_OBJECT, children);
 
@@ -2001,6 +2011,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
 
         // sharedObject should be after locking
         final AbstractHtml5SharedObject sharedObject = this.sharedObject;
+
+        supplyToURIChangeTagSupplier(sharedObject, children);
+
 //        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
 //        lock.lock();
 
@@ -5389,6 +5402,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
 
         final List<Lock> locks = lockAndGetWriteLocks(abstractHtmls);
 
+        supplyToURIChangeTagSupplier(sharedObject, abstractHtmls);
+
         // sharedObject should be after locking
         final AbstractHtml5SharedObject sharedObject = this.sharedObject;
 
@@ -5487,6 +5502,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
 
         // sharedObject should be after locking
         final AbstractHtml5SharedObject thisSharedObject = sharedObject;
+
+        supplyToURIChangeTagSupplier(sharedObject, tags);
+
         try {
             parent = this.parent;
             if (parent == null) {
@@ -6014,6 +6032,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
 
         // sharedObject should be after locking
         final AbstractHtml5SharedObject sharedObject = this.sharedObject;
+
+        supplyToURIChangeTagSupplier(sharedObject, abstractHtmls);
 
 //        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
 //        lock.lock();
@@ -6586,9 +6606,10 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      *                     current children will be removed from the tag.
      * @param tagsSupplier the supplier object for child tags. If Supplier.get
      *                     method returns null, no action will be done on the tag.
+     * @return
      * @since 12.0.0-beta.1
      */
-    public void whenURI(final Predicate<String> uriPredicate, final TagActionType actionType,
+    public AbstractHtml whenURI(final Predicate<String> uriPredicate, final TagActionType actionType,
             final Supplier<AbstractHtml[]> tagsSupplier) {
 
         final Lock lock = lockAndGetWriteLock();
@@ -6598,22 +6619,75 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
             innerHtmlsForURIChange = Objects.requireNonNull(tagsSupplier);
             this.uriPredicate = Objects.requireNonNull(uriPredicate);
             tagActionType = Objects.requireNonNull(actionType);
-            final String currentURI = sharedObject.getURIChangeTagSupplier(ACCESS_OBJECT).supply(this);
-            changeInnerHtmlsForURIChange(currentURI);
+            final URIChangeTagSupplier uriChangeTagSupplier = sharedObject.getURIChangeTagSupplier(ACCESS_OBJECT);
+            if (uriChangeTagSupplier != null) {
+                final String currentURI = uriChangeTagSupplier.supply(this);
+                changeInnerHtmlsForURIChange(currentURI);
+                sharedObject.getRootTag().lastURI = currentURI;
+            }
 
         } finally {
             lock.unlock();
         }
 
+        return this;
+    }
+
+    private static void supplyToURIChangeTagSupplier(final AbstractHtml5SharedObject sharedObject,
+            final AbstractHtml... children) {
+        final URIChangeTagSupplier uriChangeTagSupplier = sharedObject.getURIChangeTagSupplier(ACCESS_OBJECT);
+        if (uriChangeTagSupplier != null) {
+            final String currentURI = uriChangeTagSupplier.supply(null);
+            if (currentURI != null) {
+                for (final AbstractHtml tag : children) {
+                    final String lastURI = tag.getRootTag().lastURI;
+                    if (!currentURI.equals(lastURI) && executeWhenURIHierarchy(tag, currentURI)) {
+                        tag.getRootTag().lastURI = currentURI;
+                        uriChangeTagSupplier.supply(tag);
+                    }
+                }
+            }
+        }
+    }
+
+    private static boolean executeWhenURIHierarchy(final AbstractHtml tag, final String currentURI) {
+
+        if (tag.innerHtmlsForURIChange != null && tag.uriPredicate != null && tag.tagActionType != null) {
+            final Deque<List<AbstractHtml>> childrenStack = new ArrayDeque<>();
+            childrenStack.push(List.of(tag));
+
+            List<AbstractHtml> children;
+            while ((children = childrenStack.poll()) != null) {
+                for (final AbstractHtml child : children) {
+
+                    final AbstractHtml[] innerHtmls = child.changeInnerHtmlsForURIChange(currentURI);
+
+                    if (innerHtmls != null && innerHtmls.length > 0) {
+                        final List<AbstractHtml> subChildren = List.of(innerHtmls);
+                        childrenStack.push(subChildren);
+                    }
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
      * @since 12.0.0-beta.1
      */
     public void removeURIChangeAction() {
-        innerHtmlsForURIChange = null;
-        uriPredicate = null;
-        tagActionType = null;
+        final Lock lock = lockAndGetWriteLock();
+        try {
+            // sharedObject should be after locking
+            final AbstractHtml5SharedObject sharedObject = this.sharedObject;
+            innerHtmlsForURIChange = null;
+            uriPredicate = null;
+            tagActionType = null;
+            sharedObject.getRootTag().lastURI = null;
+        } finally {
+            lock.unlock();
+        }
     }
 
     /**
