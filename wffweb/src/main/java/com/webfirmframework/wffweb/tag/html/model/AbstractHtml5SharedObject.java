@@ -43,7 +43,7 @@ import com.webfirmframework.wffweb.internal.tag.html.listener.InsertBeforeListen
 import com.webfirmframework.wffweb.internal.tag.html.listener.InsertTagsBeforeListener;
 import com.webfirmframework.wffweb.internal.tag.html.listener.PushQueue;
 import com.webfirmframework.wffweb.internal.tag.html.listener.ReplaceListener;
-import com.webfirmframework.wffweb.internal.tag.html.listener.URLPathChangeTagSupplier;
+import com.webfirmframework.wffweb.internal.tag.html.listener.URIChangeTagSupplier;
 import com.webfirmframework.wffweb.internal.tag.html.listener.WffBMDataDeleteListener;
 import com.webfirmframework.wffweb.internal.tag.html.listener.WffBMDataUpdateListener;
 import com.webfirmframework.wffweb.tag.core.AbstractTagBase;
@@ -138,7 +138,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
      */
     private final ObjectId objectId;
 
-    private volatile URLPathChangeTagSupplier urlPathChangeTagSupplier;
+    private volatile URIChangeTagSupplier urlPathChangeTagSupplier;
 
     public AbstractHtml5SharedObject(final AbstractHtml rootTag) {
         this.rootTag = rootTag;
@@ -797,8 +797,8 @@ public final class AbstractHtml5SharedObject implements Serializable {
      * @param accessObject
      * @since 12.0.0-beta.1
      */
-    public void setURLPathChangeTagSupplier(
-            @SuppressWarnings("exports") final URLPathChangeTagSupplier urlPathChangeTagSupplier,
+    public void setURIChangeTagSupplier(
+            @SuppressWarnings("exports") final URIChangeTagSupplier urlPathChangeTagSupplier,
             @SuppressWarnings("exports") final SecurityObject accessObject) {
         if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
@@ -813,7 +813,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
      * @since 12.0.0-beta.1
      */
     @SuppressWarnings("exports")
-    public URLPathChangeTagSupplier getURLPathChangeTagSupplier(final SecurityObject accessObject) {
+    public URIChangeTagSupplier getURIChangeTagSupplier(final SecurityObject accessObject) {
         if (accessObject == null || !(IndexedClassType.ABSTRACT_HTML.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }

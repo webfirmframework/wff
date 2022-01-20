@@ -195,7 +195,7 @@ public abstract class BrowserPage implements Serializable {
 
     private final Set<Reference<AbstractHtml>> tagsForUrlChange = ConcurrentHashMap.newKeySet(1);
 
-    private volatile String urlPath;
+    private volatile String uri;
 
     // NB: this non-static initialization makes BrowserPage and PayloadProcessor
     // never to get GCd. It leads to memory leak. It seems to be a bug.
@@ -1000,6 +1000,13 @@ public abstract class BrowserPage implements Serializable {
                 if (!onInitialClientPingInvoked) {
                     try {
                         synchronized (this) {
+
+                            if (nameValues.size() > 1) {
+                                final NameValue pathnameNV = nameValues.get(1);
+                                final String urlPath = new String(pathnameNV.getName(), StandardCharsets.UTF_8);
+                                setURI(urlPath);
+                            }
+
                             onInitialClientPingInvoked = true;
                             onInitialClientPing(rootTag);
                         }
@@ -1007,6 +1014,40 @@ public abstract class BrowserPage implements Serializable {
                         if (LOGGER.isLoggable(Level.SEVERE)) {
                             LOGGER.log(Level.SEVERE, "Exception while executing onInitialWSOpen", e);
                         }
+                    }
+                }
+            } else if (taskValue == Task.CLIENT_PATHNAME_CHANGED.getValueByte()) {
+                try {
+                    if (nameValues.size() > 1) {
+                        final NameValue pathnameNV = nameValues.get(1);
+                        final String urlPath = new String(pathnameNV.getName(), StandardCharsets.UTF_8);
+                        synchronized (this) {
+                            setURI(urlPath);
+                        }
+
+                        String callbackFunId = null;
+
+                        if (nameValues.size() > 2) {
+                            final NameValue callbackFunNameValue = nameValues.get(2);
+                            callbackFunId = new String(callbackFunNameValue.getName(), StandardCharsets.UTF_8);
+                        }
+
+                        if (callbackFunId != null) {
+                            final NameValue invokeCallbackFuncTask = Task.INVOKE_CALLBACK_FUNCTION.getTaskNameValue();
+
+                            final NameValue nameValue = new NameValue();
+                            nameValue.setName(callbackFunId.getBytes(StandardCharsets.UTF_8));
+
+                            push(invokeCallbackFuncTask, nameValue);
+                            if (holdPush.get() == 0) {
+                                pushWffBMBytesQueue();
+                            }
+
+                        }
+                    }
+                } catch (final Exception e) {
+                    if (LOGGER.isLoggable(Level.SEVERE)) {
+                        LOGGER.log(Level.SEVERE, "Exception while executing setURI", e);
                     }
                 }
             }
@@ -1966,16 +2007,13 @@ public abstract class BrowserPage implements Serializable {
             throw new NullValueException("tag object in browserPage.contains(AbstractHtml tag) method cannot be null");
         }
 
-        if (tagByWffId == null) {
+        if (rootTag == null) {
             throw new NotRenderedException(
                     "Could not check its existance. Make sure that you have called browserPage#toHtmlString method atleast once in the life time.");
         }
 
-        final DataWffId dataWffId = tag.getDataWffId();
-        if (dataWffId == null) {
-            return false;
-        }
-        return tag.equals(tagByWffId.get(dataWffId.getValue()));
+        // this is better way to check, the rest of the code is old
+        return rootTag.getSharedObject().equals(tag.getSharedObject());
     }
 
     /**
@@ -2324,9 +2362,9 @@ public abstract class BrowserPage implements Serializable {
     }
 
     private void addInnerHtmlsForURLChange(final AbstractHtml rootTag) {
-        rootTag.getSharedObject().setURLPathChangeTagSupplier(tag -> {
-            tagsForUrlChange.add(new WeakReference<>(tag));
-            return urlPath;
+        rootTag.getSharedObject().setURIChangeTagSupplier(tag -> {
+            tagsForUrlChange.add(new TagWeakReference(tag));
+            return uri;
         }, ACCESS_OBJECT);
     }
 
@@ -2334,36 +2372,46 @@ public abstract class BrowserPage implements Serializable {
      * @param uri
      * @since 12.0.0-beta.1
      */
-    private void changeInnerHtmlsOnTagsForUrlChange(final String uri) {
+    private void changeInnerHtmlsOnTagsForURIChange(final String uri) {
 
-        // TODO call this method when the client sends url changed event
-        // currently client doesn't send events, it is to be done
+        final List<Reference<AbstractHtml>> initialList = new ArrayList<>();
+        final List<Reference<AbstractHtml>> elementsToRemove = new ArrayList<>();
 
-        final List<AbstractHtml> initialList = new ArrayList<>();
         for (final Reference<AbstractHtml> each : tagsForUrlChange) {
             final AbstractHtml tag = each.get();
             if (tag != null) {
-                initialList.add(tag);
+                initialList.add(each);
+            } else {
+                elementsToRemove.add(each);
             }
         }
 
-        final Deque<List<AbstractHtml>> childrenStack = new ArrayDeque<>();
+        elementsToRemove.forEach(tagsForUrlChange::remove);
+
+        final Deque<List<Reference<AbstractHtml>>> childrenStack = new ArrayDeque<>();
         childrenStack.push(initialList);
 
-        List<AbstractHtml> children;
+        List<Reference<AbstractHtml>> children;
         while ((children = childrenStack.poll()) != null) {
-            for (final AbstractHtml child : children) {
+            for (final Reference<AbstractHtml> child : children) {
 
-                final AbstractHtml[] innerHtmls = child.changeInnerHtmlsForUrlPathChange(uri, ACCESS_OBJECT);
+                final AbstractHtml tag = child.get();
 
-                if (innerHtmls != null) {
-                    final List<AbstractHtml> subChildren = new ArrayList<>();
-                    for (final AbstractHtml innerHtml : innerHtmls) {
-                        subChildren.add(innerHtml);
+                if (tag != null) {
+                    final AbstractHtml[] innerHtmls = tag.changeInnerHtmlsForURIChange(uri, rootTag.getSharedObject(),
+                            tagsForUrlChange, child, ACCESS_OBJECT);
+
+                    if (innerHtmls != null) {
+                        final List<Reference<AbstractHtml>> subChildren = new ArrayList<>();
+                        for (final AbstractHtml innerHtml : innerHtmls) {
+                            subChildren.add(new WeakReference<>(innerHtml));
+                        }
+                        if (subChildren.size() > 0) {
+                            childrenStack.push(subChildren);
+                        }
                     }
-                    if (subChildren != null && subChildren.size() > 0) {
-                        childrenStack.push(subChildren);
-                    }
+                } else {
+                    tagsForUrlChange.remove(child);
                 }
 
             }
@@ -2372,20 +2420,40 @@ public abstract class BrowserPage implements Serializable {
     }
 
     /**
-     * @param url
+     * @param uri
      * @since 12.0.0-beta.1
      */
-    protected final void setUrlPath(final String url) {
-        urlPath = url;
-        changeInnerHtmlsOnTagsForUrlChange(url);
+    protected final void setURI(final String uri) {
+        final String prevURI = this.uri;
+        if (prevURI == null || !prevURI.equals(uri)) {
+            if (uri != null) {
+                this.uri = uri;
+                uriChanged(uri);
+                if (rootTag != null) {
+                    changeInnerHtmlsOnTagsForURIChange(uri);
+                }
+            }
+        }
     }
-    
+
     /**
-     * @return the current url path only after initial client ping.
-     *  @since 12.0.0-beta.1
+     * @param uri
+     * @since 12.0.0-beta.1
      */
-    public String getUrlPath() {
-        return urlPath;
+    protected void uriChanged(final String uri) {
+
+    }
+
+    /**
+     * @return the current uri. If the path is not passed to browserPage at the time
+     *         of initial request then this method will return the uri only after
+     *         initial client ping. However, inside
+     *         {@link BrowserPage#onInitialClientPing(AbstractHtml)} this method
+     *         will return current uri.
+     * @since 12.0.0-beta.1
+     */
+    public final String getURI() {
+        return uri;
     }
 
 }

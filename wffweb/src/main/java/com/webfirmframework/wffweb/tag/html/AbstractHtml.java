@@ -19,6 +19,7 @@ package com.webfirmframework.wffweb.tag.html;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serial;
+import java.lang.ref.Reference;
 import java.nio.charset.Charset;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -168,9 +169,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
 
     private final InternalId internalId = new InternalId();
 
-    private volatile Supplier<AbstractHtml[]> innerHtmlsForURLChange;
+    private volatile Supplier<AbstractHtml[]> innerHtmlsForURIChange;
 
-    private volatile Predicate<String> urlPathPredicate;
+    private volatile Predicate<String> uriPredicate;
 
     private volatile TagActionType tagActionType;
 
@@ -6533,7 +6534,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      * @return the unique id for this object.
      * @since 3.0.18
      */
-    final InternalId internalId() {
+    @SuppressWarnings("exports")
+    public final InternalId internalId() {
         return internalId;
     }
 
@@ -6566,39 +6568,38 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      * Adds the given tags by supplier if the predicate test returns true otherwise
      * removes the existing children if
      * {@link TagActionType#SET_OR_REMOVE_CHILDREN}. To remove the supplier object
-     * from this tag, call {@link AbstractHtml#removeUrlPathChangeAction()} method.
-     * To get the current url path inside the supplier object call
-     * {@link BrowserPage#getUrlPath()}. This action will be performed only after
+     * from this tag, call {@link AbstractHtml#removeURIChangeAction()} method. To
+     * get the current uri inside the supplier object call
+     * {@link BrowserPage#getURI()}. This action will be performed only after
      * initial client ping.
      *
-     * @param urlPathPredicate the predicate object to test, the argument of the
-     *                         test method is the changed url path, if the test
-     *                         method returns true then the given tags by supplier
-     *                         will be added as inner html to this tag. If test
-     *                         returns false, the existing children will be removed
-     *                         from this tag if actionType is
-     *                         {@link TagActionType#SET_OR_REMOVE_CHILDREN}.
-     * @param actionType       if {@link TagActionType#SET_OR_REMOVE_CHILDREN} and
-     *                         urlPathPredicate.test returns true then the supplied
-     *                         tags will be set as children, if test returns false
-     *                         the current children will be removed from the tag.
-     * @param tagsSupplier     the supplier object for child tags. If Supplier.get
-     *                         method returns null, no action will be done on the
-     *                         tag.
+     * @param uriPredicate the predicate object to test, the argument of the test
+     *                     method is the changed uri, if the test method returns
+     *                     true then the given tags by supplier will be added as
+     *                     inner html to this tag. If test returns false, the
+     *                     existing children will be removed from this tag if
+     *                     actionType is
+     *                     {@link TagActionType#SET_OR_REMOVE_CHILDREN}.
+     * @param actionType   if {@link TagActionType#SET_OR_REMOVE_CHILDREN} and
+     *                     urlPathPredicate.test returns true then the supplied tags
+     *                     will be set as children, if test returns false the
+     *                     current children will be removed from the tag.
+     * @param tagsSupplier the supplier object for child tags. If Supplier.get
+     *                     method returns null, no action will be done on the tag.
      * @since 12.0.0-beta.1
      */
-    public void whenUrlPath(final Predicate<String> urlPathPredicate, final TagActionType actionType,
+    public void whenURI(final Predicate<String> uriPredicate, final TagActionType actionType,
             final Supplier<AbstractHtml[]> tagsSupplier) {
 
         final Lock lock = lockAndGetWriteLock();
         try {
             // sharedObject should be after locking
             final AbstractHtml5SharedObject sharedObject = this.sharedObject;
-            innerHtmlsForURLChange = Objects.requireNonNull(tagsSupplier);
-            this.urlPathPredicate = Objects.requireNonNull(urlPathPredicate);
+            innerHtmlsForURIChange = Objects.requireNonNull(tagsSupplier);
+            this.uriPredicate = Objects.requireNonNull(uriPredicate);
             tagActionType = Objects.requireNonNull(actionType);
-            final String currentUrlPath = sharedObject.getURLPathChangeTagSupplier(ACCESS_OBJECT).supply(this);
-            changeInnerHtmlsForUrlPathChange(currentUrlPath);
+            final String currentURI = sharedObject.getURIChangeTagSupplier(ACCESS_OBJECT).supply(this);
+            changeInnerHtmlsForURIChange(currentURI);
 
         } finally {
             lock.unlock();
@@ -6609,9 +6610,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
     /**
      * @since 12.0.0-beta.1
      */
-    public void removeUrlPathChangeAction() {
-        innerHtmlsForURLChange = null;
-        urlPathPredicate = null;
+    public void removeURIChangeAction() {
+        innerHtmlsForURIChange = null;
+        uriPredicate = null;
         tagActionType = null;
     }
 
@@ -6619,18 +6620,37 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      * NB: only for internal use
      *
      * @param uri
+     * @param expectedSO
+     * @param tagsForUrlChange
+     * @param tagRef
      * @param accessObject
      * @return innerHtmls
      * @since 12.0.0-beta.1
      */
     @SuppressWarnings("exports")
-    public final AbstractHtml[] changeInnerHtmlsForUrlPathChange(final String uri, final SecurityObject accessObject) {
+    public final AbstractHtml[] changeInnerHtmlsForURIChange(final String uri,
+            final AbstractHtml5SharedObject expectedSO, final Set<Reference<AbstractHtml>> tagsForUrlChange,
+            final Reference<AbstractHtml> tagRef, final SecurityObject accessObject) {
 
         if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
 
-        return changeInnerHtmlsForUrlPathChange(uri);
+        final Lock lock = lockAndGetWriteLock();
+        // sharedObject should be after locking
+        final AbstractHtml5SharedObject sharedObject = this.sharedObject;
+        try {
+            if (expectedSO.equals(sharedObject)) {
+                return changeInnerHtmlsForURIChange(uri);
+            } else {
+                tagsForUrlChange.remove(tagRef);
+            }
+
+        } finally {
+            lock.unlock();
+        }
+
+        return null;
     }
 
     /**
@@ -6640,20 +6660,20 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      * @return innerHtmls
      * @since 12.0.0-beta.1
      */
-    private AbstractHtml[] changeInnerHtmlsForUrlPathChange(final String uri) {
+    private AbstractHtml[] changeInnerHtmlsForURIChange(final String uri) {
 
-        final Supplier<AbstractHtml[]> innerHtmlsForURLChange = this.innerHtmlsForURLChange;
-        final Predicate<String> urlPredicate = urlPathPredicate;
+        final Supplier<AbstractHtml[]> innerHtmlsForURIChange = this.innerHtmlsForURIChange;
+        final Predicate<String> urlPredicate = uriPredicate;
         final TagActionType tagActionType = this.tagActionType;
 
-        if (innerHtmlsForURLChange != null && urlPredicate != null && tagActionType != null) {
+        if (innerHtmlsForURIChange != null && urlPredicate != null && tagActionType != null) {
 
             if (urlPredicate.test(uri)) {
-                final AbstractHtml[] innerHtmls = innerHtmlsForURLChange.get();
+                final AbstractHtml[] innerHtmls = innerHtmlsForURIChange.get();
                 if (innerHtmls != null) {
                     // just to throw exception if it contains null or duplicate element
                     Set.of(innerHtmls);
-                    addInnerHtmls(innerHtmls);
+                    addInnerHtmls(true, innerHtmls);
                     return innerHtmls;
                 }
             } else if (TagActionType.SET_OR_REMOVE_CHILDREN.equals(tagActionType)) {

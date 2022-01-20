@@ -105,6 +105,8 @@ public enum Task {
      * to delete WffBMObject or WffBMArray from tag
      */
     DEL_BM_OBJ_OR_ARR_FROM_TAG,
+    
+    CLIENT_PATHNAME_CHANGED
 
     ;
 

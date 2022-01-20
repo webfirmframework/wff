@@ -20,7 +20,7 @@ import java.io.Serializable;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 
 @FunctionalInterface
-public interface URLPathChangeTagSupplier extends Serializable {
+public interface URIChangeTagSupplier extends Serializable {
 
     public abstract String supply(final AbstractHtml tag);
 
