@@ -6614,7 +6614,6 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
             if (uriChangeTagSupplier != null) {
                 final String currentURI = uriChangeTagSupplier.supply(this);
                 changeInnerHtmlsForURIChange(currentURI, true);
-                lastURI = currentURI;
             }
 
         } finally {
@@ -6631,7 +6630,6 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
             if (tag.innerHtmlsForURIChange != null && tag.uriPredicate != null && tag.tagActionType != null
                     && !currentURI.equals(lastURI)) {
                 tag.changeInnerHtmlsForURIChange(currentURI, false);
-                tag.lastURI = currentURI;
                 uriChangeTagSupplier.supply(tag);
             }
         }
@@ -6697,7 +6695,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
         final Predicate<String> urlPredicate = uriPredicate;
         final TagActionType tagActionType = this.tagActionType;
 
-        if (innerHtmlsForURIChange != null && urlPredicate != null && tagActionType != null) {
+        if (innerHtmlsForURIChange != null && urlPredicate != null && tagActionType != null && uri != null) {
 
             if (urlPredicate.test(uri)) {
                 final AbstractHtml[] innerHtmls = innerHtmlsForURIChange.get();
@@ -6714,7 +6712,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
                 }
 
             }
-
+            lastURI = uri;
         }
     }
 
