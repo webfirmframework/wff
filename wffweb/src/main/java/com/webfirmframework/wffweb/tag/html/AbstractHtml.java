@@ -19,6 +19,7 @@ package com.webfirmframework.wffweb.tag.html;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serial;
+import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ import java.util.Deque;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -44,6 +46,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import com.webfirmframework.wffweb.InvalidTagException;
+import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.MethodNotImplementedException;
 import com.webfirmframework.wffweb.NoParentException;
 import com.webfirmframework.wffweb.WffRuntimeException;
@@ -169,17 +172,13 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
 
     private final InternalId internalId = new InternalId();
 
-    private volatile Supplier<AbstractHtml[]> innerHtmlsForURIChange;
-
-    private volatile Predicate<String> uriPredicate;
-
-    private volatile TagActionType tagActionType;
-
     private volatile String lastURI;
 
     volatile long hierarchyOrder;
 
     private long hierarchyOrderCounter;
+
+    private volatile List<URIChangeContent> uriChangeContents;
 
     public static enum TagType {
         OPENING_CLOSING, SELF_CLOSING, NON_CLOSING;
@@ -199,6 +198,10 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
                 throw new AssertionError("Not allowed to call this constructor");
             }
         }
+    }
+
+    private static record URIChangeContent(Predicate<String> uriPredicate, TagActionType tagActionType,
+            Supplier<AbstractHtml[]> innerHtmls) implements Serializable {
     }
 
     static {
@@ -6583,12 +6586,18 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
 
     /**
      * Adds the given tags by supplier if the predicate test returns true otherwise
-     * removes the existing children if
-     * {@link TagActionType#SET_OR_REMOVE_CHILDREN}. To remove the supplier object
-     * from this tag, call {@link AbstractHtml#removeURIChangeAction()} method. To
-     * get the current uri inside the supplier object call
-     * {@link BrowserPage#getURI()}. This action will be performed only after
-     * initial client ping.
+     * removes the existing children if {@link TagActionType#SET_OR_REMOVE_CHILDREN}
+     * is passed in the last call of {@code whenURI} method. To remove the supplier
+     * objects from this tag, call {@link AbstractHtml#removeURIChangeActions()}
+     * method. To get the current uri inside the supplier object call
+     * {@link BrowserPage#getURI()}. This action will be performed after initial
+     * client ping. You can call {@code whenURI} multiple times to set multiple
+     * actions, {@link AbstractHtml#removeURIChangeAction(int)} may be used to
+     * remove each action at the given index. If multiple actions are added by this
+     * method, only the first test passed {@code uriPredicate} action will be
+     * performed on uri change. The main intention of this method is to set children
+     * tags for this tag when the given {@code uriPredicate} test passes on URI
+     * change.
      *
      * @param uriPredicate the predicate object to test, the argument of the test
      *                     method is the changed uri, if the test method returns
@@ -6613,9 +6622,13 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
         try {
             // sharedObject should be after locking
             final AbstractHtml5SharedObject sharedObject = this.sharedObject;
-            innerHtmlsForURIChange = Objects.requireNonNull(tagsSupplier);
-            this.uriPredicate = Objects.requireNonNull(uriPredicate);
-            tagActionType = Objects.requireNonNull(actionType);
+
+            final URIChangeContent uriChangeContent = new URIChangeContent(Objects.requireNonNull(uriPredicate),
+                    Objects.requireNonNull(actionType), Objects.requireNonNull(tagsSupplier));
+
+            uriChangeContents = uriChangeContents != null ? uriChangeContents : new LinkedList<>();
+            uriChangeContents.add(uriChangeContent);
+
             final URIChangeTagSupplier uriChangeTagSupplier = sharedObject.getURIChangeTagSupplier(ACCESS_OBJECT);
             if (uriChangeTagSupplier != null) {
                 final String currentURI = uriChangeTagSupplier.supply(this);
@@ -6633,8 +6646,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
             final URIChangeTagSupplier uriChangeTagSupplier) {
         if (currentURI != null) {
             final String lastURI = tag.lastURI;
-            if (tag.innerHtmlsForURIChange != null && tag.uriPredicate != null && tag.tagActionType != null
-                    && !currentURI.equals(lastURI)) {
+            if (tag.uriChangeContents != null && !currentURI.equals(lastURI)) {
                 tag.changeInnerHtmlsForURIChange(currentURI, false);
                 uriChangeTagSupplier.supply(tag);
             }
@@ -6642,15 +6654,37 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
     }
 
     /**
+     * Removes all whenURI actions.
+     *
      * @since 12.0.0-beta.1
      */
-    public void removeURIChangeAction() {
+    public void removeURIChangeActions() {
         final Lock lock = lockAndGetWriteLock();
         try {
-            innerHtmlsForURIChange = null;
-            uriPredicate = null;
-            tagActionType = null;
+            uriChangeContents = null;
             lastURI = null;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * @param index the action to remove at the given index
+     * @since 12.0.0-beta.1
+     */
+    public void removeURIChangeAction(final int index) {
+        final Lock lock = lockAndGetWriteLock();
+        try {
+            if (uriChangeContents == null) {
+                throw new InvalidValueException("There is no existing whenURI action.");
+            }
+
+            uriChangeContents.remove(index);
+            if (uriChangeContents.isEmpty()) {
+                uriChangeContents = null;
+                lastURI = null;
+            }
+
         } finally {
             lock.unlock();
         }
@@ -6694,28 +6728,38 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      */
     private void changeInnerHtmlsForURIChange(final String uri, final boolean updateClient) {
 
-        final Supplier<AbstractHtml[]> innerHtmlsForURIChange = this.innerHtmlsForURIChange;
-        final Predicate<String> urlPredicate = uriPredicate;
-        final TagActionType tagActionType = this.tagActionType;
+        if (uriChangeContents != null && uri != null && !uri.equals(lastURI)) {
 
-        if (innerHtmlsForURIChange != null && urlPredicate != null && tagActionType != null && uri != null) {
+            URIChangeContent lastUriChangeContent = null;
 
-            if (urlPredicate.test(uri)) {
-                final AbstractHtml[] innerHtmls = innerHtmlsForURIChange.get();
-                if (innerHtmls != null) {
-                    // just to throw exception if it contains null or duplicate element
-                    Set.of(innerHtmls);
-                    addInnerHtmls(updateClient, innerHtmls);
+            boolean executed = false;
+
+            for (final URIChangeContent each : uriChangeContents) {
+                lastUriChangeContent = each;
+
+                if (each.uriPredicate.test(uri)) {
+                    final AbstractHtml[] innerHtmls = each.innerHtmls.get();
+                    if (innerHtmls != null) {
+                        // just to throw exception if it contains null or duplicate element
+                        Set.of(innerHtmls);
+                        addInnerHtmls(updateClient, innerHtmls);
+                    }
+                    executed = true;
+                    break;
                 }
-            } else if (TagActionType.SET_OR_REMOVE_CHILDREN.equals(tagActionType)) {
-                if (updateClient) {
-                    removeAllChildren();
-                } else {
-                    removeAllChildrenAndGetEventsLockless(updateClient);
-                }
-
             }
-            lastURI = uri;
+
+            if (lastUriChangeContent != null) {
+                if (!executed && TagActionType.SET_OR_REMOVE_CHILDREN.equals(lastUriChangeContent.tagActionType)) {
+                    if (updateClient) {
+                        removeAllChildren();
+                    } else {
+                        removeAllChildrenAndGetEventsLockless(updateClient);
+                    }
+                }
+
+                lastURI = uri;
+            }
         }
     }
 
