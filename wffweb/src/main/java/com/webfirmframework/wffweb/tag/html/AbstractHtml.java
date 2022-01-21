@@ -174,6 +174,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
 
     private volatile String lastURI;
 
+    private volatile boolean lastURIPredicateTest;
+
     volatile long hierarchyOrder;
 
     private long hierarchyOrderCounter;
@@ -6728,7 +6730,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      */
     private void changeInnerHtmlsForURIChange(final String uri, final boolean updateClient) {
 
-        if (uriChangeContents != null && uri != null && !uri.equals(lastURI)) {
+        if (uriChangeContents != null && uri != null && (!lastURIPredicateTest || !uri.equals(lastURI))) {
 
             URIChangeContent lastUriChangeContent = null;
 
@@ -6757,7 +6759,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
                         removeAllChildrenAndGetEventsLockless(updateClient);
                     }
                 }
-
+                lastURIPredicateTest = executed;
                 lastURI = uri;
             }
         }
