@@ -6613,7 +6613,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
             final URIChangeTagSupplier uriChangeTagSupplier = sharedObject.getURIChangeTagSupplier(ACCESS_OBJECT);
             if (uriChangeTagSupplier != null) {
                 final String currentURI = uriChangeTagSupplier.supply(this);
-                changeInnerHtmlsForURIChange(currentURI);
+                changeInnerHtmlsForURIChange(currentURI, true);
                 lastURI = currentURI;
             }
 
@@ -6630,7 +6630,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
             final String lastURI = tag.lastURI;
             if (tag.innerHtmlsForURIChange != null && tag.uriPredicate != null && tag.tagActionType != null
                     && !currentURI.equals(lastURI)) {
-                tag.changeInnerHtmlsForURIChange(currentURI);
+                tag.changeInnerHtmlsForURIChange(currentURI, false);
                 tag.lastURI = currentURI;
                 uriChangeTagSupplier.supply(tag);
             }
@@ -6674,7 +6674,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
         final Lock lock = lockAndGetWriteLock();
         try {
             if (expectedSO.equals(sharedObject)) {
-                changeInnerHtmlsForURIChange(uri);
+                changeInnerHtmlsForURIChange(uri, true);
             } else {
                 tagsForUrlChange.remove(tagRef);
             }
@@ -6688,9 +6688,10 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      * NB: only for internal use
      *
      * @param uri
+     * @param updateClient to push changes to the UI
      * @since 12.0.0-beta.1
      */
-    private void changeInnerHtmlsForURIChange(final String uri) {
+    private void changeInnerHtmlsForURIChange(final String uri, final boolean updateClient) {
 
         final Supplier<AbstractHtml[]> innerHtmlsForURIChange = this.innerHtmlsForURIChange;
         final Predicate<String> urlPredicate = uriPredicate;
@@ -6703,10 +6704,15 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
                 if (innerHtmls != null) {
                     // just to throw exception if it contains null or duplicate element
                     Set.of(innerHtmls);
-                    addInnerHtmls(true, innerHtmls);
+                    addInnerHtmls(updateClient, innerHtmls);
                 }
             } else if (TagActionType.SET_OR_REMOVE_CHILDREN.equals(tagActionType)) {
-                removeAllChildren();
+                if (updateClient) {
+                    removeAllChildren();
+                } else {
+                    removeAllChildrenAndGetEventsLockless(updateClient);
+                }
+
             }
 
         }
