@@ -29,6 +29,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -2375,28 +2376,36 @@ public abstract class BrowserPage implements Serializable {
      */
     private void changeInnerHtmlsOnTagsForURIChange(final String uri) {
 
-        final List<Reference<AbstractHtml>> initialList = new ArrayList<>();
-        final List<Reference<AbstractHtml>> elementsToRemove = new ArrayList<>();
+        tagsForUrlChange.removeIf(each -> each.get() == null);
 
-        for (final Reference<AbstractHtml> each : tagsForUrlChange) {
-            final AbstractHtml tag = each.get();
-            if (tag != null) {
-                initialList.add(each);
-            } else {
-                elementsToRemove.add(each);
+        TagUtil.runAtomically(rootTag, () -> {
+
+            int size = tagsForUrlChange.size();
+            final List<AbstractHtml> tempCachToPreventGC = new ArrayList<>(size);
+            final List<Reference<AbstractHtml>> initialList = new ArrayList<>(size);
+            for (final Reference<AbstractHtml> each : tagsForUrlChange) {
+                final AbstractHtml tag = each.get();
+                if (tag != null) {
+                    initialList.add(each);
+                    tempCachToPreventGC.add(tag);
+                }
             }
-        }
 
-        elementsToRemove.forEach(tagsForUrlChange::remove);
+            TagUtil.sortByHierarchyOrder(initialList);
 
-        // NB: should not directly iterate from tagsForUrlChange
-        for (final Reference<AbstractHtml> tagRef : initialList) {
-            final AbstractHtml tag = tagRef.get();
-            if (tag != null) {
-                tag.changeInnerHtmlsForURIChange(uri, rootTag.getSharedObject(), tagsForUrlChange, tagRef,
-                        ACCESS_OBJECT);
+            // NB: should not directly iterate from tagsForUrlChange
+            for (final Reference<AbstractHtml> tagRef : initialList) {
+                final AbstractHtml tag = tagRef.get();
+                if (tag != null) {
+                    final boolean sharedObjectsEqual = tag.changeInnerHtmlsForURIChange(uri, rootTag.getSharedObject(), ACCESS_OBJECT);
+
+                    if (!sharedObjectsEqual) {
+                        tagsForUrlChange.remove(tagRef);
+                    }
+
+                }
             }
-        }
+        }, true, ACCESS_OBJECT);
 
     }
 
@@ -2410,7 +2419,7 @@ public abstract class BrowserPage implements Serializable {
             if (uri != null) {
 
                 if (rootTag != null) {
-                    rootTag.runAtomically(() -> this.uri = uri, true, ACCESS_OBJECT);
+                    TagUtil.runAtomically(rootTag, () -> this.uri = uri, true, ACCESS_OBJECT);
                 } else {
                     this.uri = uri;
                 }
