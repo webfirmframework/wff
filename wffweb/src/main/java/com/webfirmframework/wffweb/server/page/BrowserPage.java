@@ -2414,19 +2414,34 @@ public abstract class BrowserPage implements Serializable {
                 } else {
                     this.uri = uri;
                 }
-                uriChanged(uri);
+                uriChangedBeforeUIUpdate(prevURI, uri);
                 if (rootTag != null) {
                     changeInnerHtmlsOnTagsForURIChange(uri);
+                    uriChangedAfterUIUpdate(prevURI, uri);
                 }
             }
         }
     }
 
     /**
-     * @param uri
+     * Override and use
+     *
+     * @param previousURI
+     * @param currentURI
      * @since 12.0.0-beta.1
      */
-    protected void uriChanged(final String uri) {
+    protected void uriChangedBeforeUIUpdate(final String previousURI, final String currentURI) {
+
+    }
+
+    /**
+     * Override and use
+     *
+     * @param previousURI
+     * @param currentURI
+     * @since 12.0.0-beta.1
+     */
+    protected void uriChangedAfterUIUpdate(final String previousURI, final String currentURI) {
 
     }
 
