@@ -6665,6 +6665,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
         try {
             uriChangeContents = null;
             lastURI = null;
+            lastURIPredicateTest = false;
         } finally {
             lock.unlock();
         }
@@ -6685,6 +6686,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
             if (uriChangeContents.isEmpty()) {
                 uriChangeContents = null;
                 lastURI = null;
+                lastURIPredicateTest = false;
             }
 
         } finally {
