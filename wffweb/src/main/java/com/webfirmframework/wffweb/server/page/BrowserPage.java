@@ -2408,7 +2408,12 @@ public abstract class BrowserPage implements Serializable {
         final String prevURI = this.uri;
         if (prevURI == null || !prevURI.equals(uri)) {
             if (uri != null) {
-                this.uri = uri;
+
+                if (rootTag != null) {
+                    rootTag.runAtomically(() -> this.uri = uri, true, ACCESS_OBJECT);
+                } else {
+                    this.uri = uri;
+                }
                 uriChanged(uri);
                 if (rootTag != null) {
                     changeInnerHtmlsOnTagsForURIChange(uri);

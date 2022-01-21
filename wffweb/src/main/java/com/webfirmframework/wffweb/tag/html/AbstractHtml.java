@@ -827,8 +827,6 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
         // sharedObject should be after locking
         final AbstractHtml5SharedObject sharedObject = this.sharedObject;
 
-        supplyToURIChangeTagSupplier(sharedObject, innerHtmls);
-
         List<Lock> newSOLocks = null;
         try {
 
@@ -1527,8 +1525,6 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
         // sharedObject should be after locking
         final AbstractHtml5SharedObject sharedObject = this.sharedObject;
 
-        supplyToURIChangeTagSupplier(sharedObject, child);
-
         boolean result = false;
         try {
 
@@ -1788,6 +1784,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      */
     private static void initSharedObject(final AbstractHtml child, final AbstractHtml5SharedObject sharedObject) {
 
+        final URIChangeTagSupplier uriChangeTagSupplier = sharedObject.getURIChangeTagSupplier(ACCESS_OBJECT);
+        final String currentURI = uriChangeTagSupplier != null ? uriChangeTagSupplier.supply(null) : null;
+
         final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
         // passed 2 instead of 1 because the load factor is 0.75f
         final Set<AbstractHtml> initialSet = new HashSet<>(2);
@@ -1800,6 +1799,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
             for (final AbstractHtml eachChild : children) {
 
                 eachChild.sharedObject = sharedObject;
+
+                supplyToURIChangeTagSupplier(currentURI, eachChild, uriChangeTagSupplier);
 
                 // no need to add data-wff-id if the tag is not rendered by
                 // BrowserPage (if it is rended by BrowserPage then
@@ -1901,8 +1902,6 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
 
         // sharedObject should be after locking
         final AbstractHtml5SharedObject sharedObject = this.sharedObject;
-
-        supplyToURIChangeTagSupplier(sharedObject, children);
 
 //        List<Lock> foreignLocks = TagUtil.lockAndGetWriteLocks(ACCESS_OBJECT, children);
 //        List<Lock> attrLocks = TagUtil.lockAndGetNestedAttributeWriteLocks(ACCESS_OBJECT, children);
@@ -2011,8 +2010,6 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
 
         // sharedObject should be after locking
         final AbstractHtml5SharedObject sharedObject = this.sharedObject;
-
-        supplyToURIChangeTagSupplier(sharedObject, children);
 
 //        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
 //        lock.lock();
@@ -5402,8 +5399,6 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
 
         final List<Lock> locks = lockAndGetWriteLocks(abstractHtmls);
 
-        supplyToURIChangeTagSupplier(sharedObject, abstractHtmls);
-
         // sharedObject should be after locking
         final AbstractHtml5SharedObject sharedObject = this.sharedObject;
 
@@ -5502,8 +5497,6 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
 
         // sharedObject should be after locking
         final AbstractHtml5SharedObject thisSharedObject = sharedObject;
-
-        supplyToURIChangeTagSupplier(sharedObject, tags);
 
         try {
             parent = this.parent;
@@ -6032,8 +6025,6 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
 
         // sharedObject should be after locking
         final AbstractHtml5SharedObject sharedObject = this.sharedObject;
-
-        supplyToURIChangeTagSupplier(sharedObject, abstractHtmls);
 
 //        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
 //        lock.lock();
@@ -6623,7 +6614,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
             if (uriChangeTagSupplier != null) {
                 final String currentURI = uriChangeTagSupplier.supply(this);
                 changeInnerHtmlsForURIChange(currentURI);
-                sharedObject.getRootTag().lastURI = currentURI;
+                lastURI = currentURI;
             }
 
         } finally {
@@ -6633,44 +6624,17 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
         return this;
     }
 
-    private static void supplyToURIChangeTagSupplier(final AbstractHtml5SharedObject sharedObject,
-            final AbstractHtml... children) {
-        final URIChangeTagSupplier uriChangeTagSupplier = sharedObject.getURIChangeTagSupplier(ACCESS_OBJECT);
-        if (uriChangeTagSupplier != null) {
-            final String currentURI = uriChangeTagSupplier.supply(null);
-            if (currentURI != null) {
-                for (final AbstractHtml tag : children) {
-                    final String lastURI = tag.getRootTag().lastURI;
-                    if (!currentURI.equals(lastURI) && executeWhenURIHierarchy(tag, currentURI)) {
-                        tag.getRootTag().lastURI = currentURI;
-                        uriChangeTagSupplier.supply(tag);
-                    }
-                }
+    private static void supplyToURIChangeTagSupplier(final String currentURI, final AbstractHtml tag,
+            final URIChangeTagSupplier uriChangeTagSupplier) {
+        if (currentURI != null) {
+            final String lastURI = tag.lastURI;
+            if (tag.innerHtmlsForURIChange != null && tag.uriPredicate != null && tag.tagActionType != null
+                    && !currentURI.equals(lastURI)) {
+                tag.changeInnerHtmlsForURIChange(currentURI);
+                tag.lastURI = currentURI;
+                uriChangeTagSupplier.supply(tag);
             }
         }
-    }
-
-    private static boolean executeWhenURIHierarchy(final AbstractHtml tag, final String currentURI) {
-
-        if (tag.innerHtmlsForURIChange != null && tag.uriPredicate != null && tag.tagActionType != null) {
-            final Deque<List<AbstractHtml>> childrenStack = new ArrayDeque<>();
-            childrenStack.push(List.of(tag));
-
-            List<AbstractHtml> children;
-            while ((children = childrenStack.poll()) != null) {
-                for (final AbstractHtml child : children) {
-
-                    final AbstractHtml[] innerHtmls = child.changeInnerHtmlsForURIChange(currentURI);
-
-                    if (innerHtmls != null && innerHtmls.length > 0) {
-                        final List<AbstractHtml> subChildren = List.of(innerHtmls);
-                        childrenStack.push(subChildren);
-                    }
-                }
-            }
-            return true;
-        }
-        return false;
     }
 
     /**
@@ -6679,12 +6643,10 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
     public void removeURIChangeAction() {
         final Lock lock = lockAndGetWriteLock();
         try {
-            // sharedObject should be after locking
-            final AbstractHtml5SharedObject sharedObject = this.sharedObject;
             innerHtmlsForURIChange = null;
             uriPredicate = null;
             tagActionType = null;
-            sharedObject.getRootTag().lastURI = null;
+            lastURI = null;
         } finally {
             lock.unlock();
         }
@@ -6698,24 +6660,21 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      * @param tagsForUrlChange
      * @param tagRef
      * @param accessObject
-     * @return innerHtmls
      * @since 12.0.0-beta.1
      */
     @SuppressWarnings("exports")
-    public final AbstractHtml[] changeInnerHtmlsForURIChange(final String uri,
-            final AbstractHtml5SharedObject expectedSO, final Set<Reference<AbstractHtml>> tagsForUrlChange,
-            final Reference<AbstractHtml> tagRef, final SecurityObject accessObject) {
+    public final void changeInnerHtmlsForURIChange(final String uri, final AbstractHtml5SharedObject expectedSO,
+            final Set<Reference<AbstractHtml>> tagsForUrlChange, final Reference<AbstractHtml> tagRef,
+            final SecurityObject accessObject) {
 
         if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
 
         final Lock lock = lockAndGetWriteLock();
-        // sharedObject should be after locking
-        final AbstractHtml5SharedObject sharedObject = this.sharedObject;
         try {
             if (expectedSO.equals(sharedObject)) {
-                return changeInnerHtmlsForURIChange(uri);
+                changeInnerHtmlsForURIChange(uri);
             } else {
                 tagsForUrlChange.remove(tagRef);
             }
@@ -6723,18 +6682,15 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
         } finally {
             lock.unlock();
         }
-
-        return null;
     }
 
     /**
      * NB: only for internal use
      *
      * @param uri
-     * @return innerHtmls
      * @since 12.0.0-beta.1
      */
-    private AbstractHtml[] changeInnerHtmlsForURIChange(final String uri) {
+    private void changeInnerHtmlsForURIChange(final String uri) {
 
         final Supplier<AbstractHtml[]> innerHtmlsForURIChange = this.innerHtmlsForURIChange;
         final Predicate<String> urlPredicate = uriPredicate;
@@ -6748,14 +6704,35 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
                     // just to throw exception if it contains null or duplicate element
                     Set.of(innerHtmls);
                     addInnerHtmls(true, innerHtmls);
-                    return innerHtmls;
                 }
             } else if (TagActionType.SET_OR_REMOVE_CHILDREN.equals(tagActionType)) {
                 removeAllChildren();
             }
 
         }
-        return null;
+    }
+
+    /**
+     * NB: only for internal use
+     *
+     * @param task         task to run atomically
+     * @param writeLock    true to execute under write lock or false to execute
+     *                     under read lock
+     * @param accessObject
+     * @since 12.0.0-beta.1
+     */
+    public final void runAtomically(final Runnable task, final boolean writeLock,
+            @SuppressWarnings("exports") final SecurityObject accessObject) {
+        if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
+            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
+        }
+        final Lock lock = writeLock ? lockAndGetWriteLock() : lockAndGetReadLock();
+        try {
+            task.run();
+        } finally {
+            lock.unlock();
+        }
+
     }
 
 }
