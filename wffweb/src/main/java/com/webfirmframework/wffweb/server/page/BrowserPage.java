@@ -29,7 +29,6 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -78,6 +77,7 @@ import com.webfirmframework.wffweb.util.HashUtil;
 import com.webfirmframework.wffweb.util.StringUtil;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 import com.webfirmframework.wffweb.util.data.NameValue;
+import com.webfirmframework.wffweb.wffbm.data.BMValueType;
 import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
 
 /**
@@ -1004,7 +1004,7 @@ public abstract class BrowserPage implements Serializable {
                             if (nameValues.size() > 1) {
                                 final NameValue pathnameNV = nameValues.get(1);
                                 final String urlPath = new String(pathnameNV.getName(), StandardCharsets.UTF_8);
-                                setURI(urlPath);
+                                setURI(false, urlPath);
                             }
 
                             onInitialClientPingInvoked = true;
@@ -1022,7 +1022,7 @@ public abstract class BrowserPage implements Serializable {
                         final NameValue pathnameNV = nameValues.get(1);
                         final String urlPath = new String(pathnameNV.getName(), StandardCharsets.UTF_8);
                         synchronized (this) {
-                            setURI(urlPath);
+                            setURI(false, urlPath);
                         }
 
                         String callbackFunId = null;
@@ -1054,6 +1054,19 @@ public abstract class BrowserPage implements Serializable {
 
         }
 
+    }
+
+    private void invokeAfterSetURIAtClient(final String uriBefore, final String uriAfter) {
+
+        final WffBMObject event = new WffBMObject();
+        event.put("uriBefore", BMValueType.STRING, uriBefore != null ? uriBefore : BMValueType.NULL);
+        event.put("uriAfter", BMValueType.STRING, uriAfter != null ? uriAfter : BMValueType.NULL);
+        event.put("origin", BMValueType.STRING, "server");
+        final NameValue taskNameValue = Task.AFTER_SET_URI.getTaskNameValue(event.buildBytes(true));
+        push(taskNameValue);
+        if (holdPush.get() == 0) {
+            pushWffBMBytesQueue();
+        }
     }
 
     private void addAttrValueChangeListener(final AbstractHtml abstractHtml) {
@@ -2371,86 +2384,105 @@ public abstract class BrowserPage implements Serializable {
     }
 
     /**
-     * @param uri
+     *
+     * @param updateClientURI
+     * @param uriBefore
+     * @param uriAfter        this is the current uri
      * @since 12.0.0-beta.1
      */
-    private void changeInnerHtmlsOnTagsForURIChange(final String uri) {
+    private void changeInnerHtmlsOnTagsForURIChange(final boolean updateClientURI, final String uriBefore,
+            final String uriAfter) {
 
-        tagsForUrlChange.removeIf(each -> each.get() == null);
-
-        TagUtil.runAtomically(rootTag, () -> {
-
-            int size = tagsForUrlChange.size();
-            final List<AbstractHtml> tempCachToPreventGC = new ArrayList<>(size);
-            final List<Reference<AbstractHtml>> initialList = new ArrayList<>(size);
-            for (final Reference<AbstractHtml> each : tagsForUrlChange) {
-                final AbstractHtml tag = each.get();
-                if (tag != null) {
-                    initialList.add(each);
-                    tempCachToPreventGC.add(tag);
-                }
-            }
-
-            TagUtil.sortByHierarchyOrder(initialList);
-
-            // NB: should not directly iterate from tagsForUrlChange
-            for (final Reference<AbstractHtml> tagRef : initialList) {
-                final AbstractHtml tag = tagRef.get();
-                if (tag != null) {
-                    final boolean sharedObjectsEqual = tag.changeInnerHtmlsForURIChange(uri, rootTag.getSharedObject(), ACCESS_OBJECT);
-
-                    if (!sharedObjectsEqual) {
-                        tagsForUrlChange.remove(tagRef);
+        boolean executed = false;
+        try {
+            TagUtil.runAtomically(rootTag, () -> {
+                uri = uriAfter;
+                final int size = tagsForUrlChange.size();
+                final List<AbstractHtml> tempCachToPreventGC = new ArrayList<>(size);
+                final List<Reference<AbstractHtml>> initialList = new ArrayList<>(size);
+                for (final Reference<AbstractHtml> each : tagsForUrlChange) {
+                    final AbstractHtml tag = each.get();
+                    if (tag != null) {
+                        initialList.add(each);
+                        tempCachToPreventGC.add(tag);
                     }
-
                 }
-            }
-        }, true, ACCESS_OBJECT);
 
+                TagUtil.sortByHierarchyOrder(initialList);
+
+                // NB: should not directly iterate from tagsForUrlChange
+                for (final Reference<AbstractHtml> tagRef : initialList) {
+                    final AbstractHtml tag = tagRef.get();
+                    if (tag != null) {
+                        final boolean sharedObjectsEqual = tag.changeInnerHtmlsForURIChange(uriAfter,
+                                rootTag.getSharedObject(), ACCESS_OBJECT);
+                        if (!sharedObjectsEqual) {
+                            tagsForUrlChange.remove(tagRef);
+                        }
+
+                    }
+                }
+
+                if (updateClientURI) {
+                    invokeAfterSetURIAtClient(uriBefore, uriAfter);
+                }
+
+            }, true, ACCESS_OBJECT);
+            executed = true;
+        } finally {
+            if (!executed && updateClientURI) {
+                invokeAfterSetURIAtClient(uriBefore, uriAfter);
+            }
+            tagsForUrlChange.removeIf(each -> each.get() == null);
+        }
     }
 
     /**
      * @param uri
      * @since 12.0.0-beta.1
      */
-    protected final void setURI(final String uri) {
-        final String prevURI = this.uri;
-        if (prevURI == null || !prevURI.equals(uri)) {
+    private final void setURI(final boolean updateClientURI, final String uri) {
+        final String uriBefore = this.uri;
+        if (uriBefore == null || !uriBefore.equals(uri)) {
             if (uri != null) {
-
+                beforeURIChange(uriBefore, uri);
                 if (rootTag != null) {
-                    TagUtil.runAtomically(rootTag, () -> this.uri = uri, true, ACCESS_OBJECT);
+                    changeInnerHtmlsOnTagsForURIChange(updateClientURI, uriBefore, uri);
+                    uriChanged(uriBefore, uri);
                 } else {
                     this.uri = uri;
-                }
-                uriChangedBeforeUIUpdate(prevURI, uri);
-                if (rootTag != null) {
-                    changeInnerHtmlsOnTagsForURIChange(uri);
-                    uriChangedAfterUIUpdate(prevURI, uri);
                 }
             }
         }
     }
 
     /**
-     * Override and use
-     *
-     * @param previousURI
-     * @param currentURI
+     * @param uri
      * @since 12.0.0-beta.1
      */
-    protected void uriChangedBeforeUIUpdate(final String previousURI, final String currentURI) {
+    public final void setURI(final String uri) {
+        setURI(true, uri);
+    }
+
+    /**
+     * Override and use
+     *
+     * @param uriBefore
+     * @param uriAfter
+     * @since 12.0.0-beta.1
+     */
+    protected void beforeURIChange(final String uriBefore, final String uriAfter) {
 
     }
 
     /**
      * Override and use
      *
-     * @param previousURI
-     * @param currentURI
+     * @param uriBefore
+     * @param uriAfter
      * @since 12.0.0-beta.1
      */
-    protected void uriChangedAfterUIUpdate(final String previousURI, final String currentURI) {
+    protected void uriChanged(final String uriBefore, final String uriAfter) {
 
     }
 

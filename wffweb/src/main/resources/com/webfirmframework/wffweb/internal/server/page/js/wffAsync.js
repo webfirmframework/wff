@@ -128,7 +128,7 @@ window.wffAsync = new function() {
 		history.pushState({}, document.title, uri);
 		var uriAfter = window.location.pathname
 		if (uriBefore !== uriAfter) {
-			var wffEvent = { uriBefore: uriBefore, uriAfter: uriAfter };
+			var wffEvent = { uriBefore: uriBefore, uriAfter: uriAfter, origin: "client" };
 
 			var callbackWrapper = afterSetURI;
 
@@ -137,7 +137,7 @@ window.wffAsync = new function() {
 					try {
 						wffGlobalListeners.onSetURI(wffEvent);
 					} catch (e) {
-						console.log("wffGlobalListeners.onSetURI threw exception when wffAsync.setURI is called", e);
+						wffLog("wffGlobalListeners.onSetURI threw exception when wffAsync.setURI is called", e);
 					}
 				}
 
@@ -145,16 +145,18 @@ window.wffAsync = new function() {
 					//NB: should be copied before using inside callbackWrapper
 					var afterSetURIGlobal = wffGlobalListeners.afterSetURI;
 					callbackWrapper = function() {
-						try {
-							afterSetURI(wffEvent);
-						} catch (e) {
-							console.log("The third argument threw exception when wffAsync.setURI is called", e);
+						if (afterSetURI) {
+							try {
+								afterSetURI(wffEvent);
+							} catch (e) {
+								wffLog("The third argument threw exception when wffAsync.setURI is called", e);
+							}
 						}
 
 						try {
 							afterSetURIGlobal(wffEvent);
 						} catch (e) {
-							console.log("wffGlobalListeners.afterSetURI threw exception when wffAsync.setURI is called", e);
+							wffLog("wffGlobalListeners.afterSetURI threw exception when wffAsync.setURI is called", e);
 						}
 
 					};
@@ -163,9 +165,11 @@ window.wffAsync = new function() {
 			}
 
 			try {
-				onSetURI(wffEvent);
+				if (onSetURI) {
+					onSetURI(wffEvent);
+				}
 			} catch (e) {
-				console.log("The second argument threw exception when wffAsync.setURI is called", e);
+				wffLog("The second argument threw exception when wffAsync.setURI is called", e);
 			}
 			//NB: should be uriAfter to be consistent with uri pattern
 			setServerURIWithCallback(uriAfter, callbackWrapper);

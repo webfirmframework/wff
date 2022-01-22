@@ -202,8 +202,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
         }
     }
 
-    private static record URIChangeContent(Predicate<String> uriPredicate, TagActionType tagActionType,
-            Supplier<AbstractHtml[]> innerHtmls) implements Serializable {
+    private static record URIChangeContent(Predicate<String> uriPredicate, Supplier<AbstractHtml[]> successTags,
+            Supplier<AbstractHtml[]> failTags) implements Serializable {
     }
 
     static {
@@ -6587,38 +6587,175 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * Adds the given tags by supplier if the predicate test returns true otherwise
-     * removes the existing children if {@link TagActionType#SET_OR_REMOVE_CHILDREN}
-     * is passed in the last call of {@code whenURI} method. To remove the supplier
-     * objects from this tag, call {@link AbstractHtml#removeURIChangeActions()}
-     * method. To get the current uri inside the supplier object call
-     * {@link BrowserPage#getURI()}. This action will be performed after initial
-     * client ping. You can call {@code whenURI} multiple times to set multiple
-     * actions, {@link AbstractHtml#removeURIChangeAction(int)} may be used to
-     * remove each action at the given index. If multiple actions are added by this
-     * method, only the first test passed {@code uriPredicate} action will be
-     * performed on uri change. The main intention of this method is to set children
-     * tags for this tag when the given {@code uriPredicate} test passes on URI
-     * change.
+     * Replaces the children of this tag with the tags supplied by
+     * {@code successTagsSupplier} if the predicate test returns true otherwise
+     * replaces the children with tags supplied by {@code failTagsSupplier} if no
+     * further {@code whenURI} conditions exist and if the {@code failTagsSupplier}
+     * is null the existing children of this tag will be removed. To remove the
+     * supplier objects from this tag, call
+     * {@link AbstractHtml#removeURIChangeActions()} method. To get the current uri
+     * inside the supplier object call {@link BrowserPage#getURI()}. This action
+     * will be performed after initial client ping. You can call {@code whenURI}
+     * multiple times to set multiple actions,
+     * {@link AbstractHtml#removeURIChangeAction(int)} may be used to remove each
+     * action at the given index. If multiple actions are added by this method, only
+     * the first {@code uriPredicate} test passed action will be performed on uri
+     * change. The main intention of this method is to set children tags for this
+     * tag when the given {@code uriPredicate} test passes on URI change. <br>
+     * Note: This method uses {@code null} for {@code failTagsSupplier}.
      *
-     * @param uriPredicate the predicate object to test, the argument of the test
-     *                     method is the changed uri, if the test method returns
-     *                     true then the given tags by supplier will be added as
-     *                     inner html to this tag. If test returns false, the
-     *                     existing children will be removed from this tag if
-     *                     actionType is
-     *                     {@link TagActionType#SET_OR_REMOVE_CHILDREN}.
-     * @param actionType   if {@link TagActionType#SET_OR_REMOVE_CHILDREN} and
-     *                     urlPathPredicate.test returns true then the supplied tags
-     *                     will be set as children, if test returns false the
-     *                     current children will be removed from the tag.
-     * @param tagsSupplier the supplier object for child tags. If Supplier.get
-     *                     method returns null, no action will be done on the tag.
-     * @return
+     * @param uriPredicate        the predicate object to test, the argument of the
+     *                            test method is the changed uri, if the test method
+     *                            returns true then the tags given by
+     *                            {@code successTagsSupplier} will be added as inner
+     *                            html to this tag. If test returns false, the tags
+     *                            given by {@code failTagsSupplier} will be added as
+     *                            * inner html to this tag and if the
+     *                            {@code failTagsSupplier} is null the existing
+     *                            children will be removed from this tag.
+     * @param successTagsSupplier the supplier object for child tags if
+     *                            {@code uriPredicate} test returns true. If
+     *                            {@code successTagsSupplier.get()} method returns
+     *                            null, no action will be done on the tag.
+     *
+     * @return this tag
      * @since 12.0.0-beta.1
      */
-    public AbstractHtml whenURI(final Predicate<String> uriPredicate, final TagActionType actionType,
-            final Supplier<AbstractHtml[]> tagsSupplier) {
+    public AbstractHtml whenURI(final Predicate<String> uriPredicate,
+            final Supplier<AbstractHtml[]> successTagsSupplier) {
+        return whenURI(uriPredicate, successTagsSupplier, null, -1);
+    }
+
+    /**
+     * Replaces the children of this tag with the tags supplied by
+     * {@code successTagsSupplier} if the predicate test returns true otherwise
+     * replaces the children with tags supplied by {@code failTagsSupplier} if no
+     * further {@code whenURI} conditions exist and if the {@code failTagsSupplier}
+     * is null the existing children of this tag will be removed. To remove the
+     * supplier objects from this tag, call
+     * {@link AbstractHtml#removeURIChangeActions()} method. To get the current uri
+     * inside the supplier object call {@link BrowserPage#getURI()}. This action
+     * will be performed after initial client ping. You can call {@code whenURI}
+     * multiple times to set multiple actions,
+     * {@link AbstractHtml#removeURIChangeAction(int)} may be used to remove each
+     * action at the given index. If multiple actions are added by this method, only
+     * the first {@code uriPredicate} test passed action will be performed on uri
+     * change. The main intention of this method is to set children tags for this
+     * tag when the given {@code uriPredicate} test passes on URI change. <br>
+     * Note: This method uses {@code null} for {@code failTagsSupplier}.
+     *
+     * @param uriPredicate        the predicate object to test, the argument of the
+     *                            test method is the changed uri, if the test method
+     *                            returns true then the tags given by
+     *                            {@code successTagsSupplier} will be added as inner
+     *                            html to this tag. If test returns false, the tags
+     *                            given by {@code failTagsSupplier} will be added as
+     *                            * inner html to this tag and if the
+     *                            {@code failTagsSupplier} is null the existing
+     *                            children will be removed from this tag.
+     * @param successTagsSupplier the supplier object for child tags if
+     *                            {@code uriPredicate} test returns true. If
+     *                            {@code successTagsSupplier.get()} method returns
+     *                            null, no action will be done on the tag.
+     *
+     * @param index               the index to replace the existing action with
+     *                            this. A value less than zero will add this
+     *                            condition to the last.
+     *
+     * @return this tag
+     * @since 12.0.0-beta.1
+     */
+    public AbstractHtml whenURI(final Predicate<String> uriPredicate,
+            final Supplier<AbstractHtml[]> successTagsSupplier, final int index) {
+        return whenURI(uriPredicate, successTagsSupplier, null, index);
+    }
+
+    /**
+     * Replaces the children of this tag with the tags supplied by
+     * {@code successTagsSupplier} if the predicate test returns true otherwise
+     * replaces the children with tags supplied by {@code failTagsSupplier} if no
+     * further {@code whenURI} conditions exist and if the {@code failTagsSupplier}
+     * is null the existing children of this tag will be removed. To remove the
+     * supplier objects from this tag, call
+     * {@link AbstractHtml#removeURIChangeActions()} method. To get the current uri
+     * inside the supplier object call {@link BrowserPage#getURI()}. This action
+     * will be performed after initial client ping. You can call {@code whenURI}
+     * multiple times to set multiple actions,
+     * {@link AbstractHtml#removeURIChangeAction(int)} may be used to remove each
+     * action at the given index. If multiple actions are added by this method, only
+     * the first {@code uriPredicate} test passed action will be performed on uri
+     * change. The main intention of this method is to set children tags for this
+     * tag when the given {@code uriPredicate} test passes on URI change.
+     *
+     * @param uriPredicate        the predicate object to test, the argument of the
+     *                            test method is the changed uri, if the test method
+     *                            returns true then the tags given by
+     *                            {@code successTagsSupplier} will be added as inner
+     *                            html to this tag. If test returns false, the tags
+     *                            given by {@code failTagsSupplier} will be added as
+     *                            * inner html to this tag and if the
+     *                            {@code failTagsSupplier} is null the existing
+     *                            children will be removed from this tag.
+     * @param successTagsSupplier the supplier object for child tags if
+     *                            {@code uriPredicate} test returns true. If
+     *                            {@code successTagsSupplier.get()} method returns
+     *                            null, no action will be done on the tag.
+     * @param failTagsSupplier    the supplier object for child tags if
+     *                            {@code uriPredicate} test returns false. If
+     *                            {@code failTagsSupplier.get()} * method returns
+     *                            null, no action will be done on the tag.
+     *
+     * @return this tag
+     * @since 12.0.0-beta.1
+     */
+    public AbstractHtml whenURI(final Predicate<String> uriPredicate,
+            final Supplier<AbstractHtml[]> successTagsSupplier, final Supplier<AbstractHtml[]> failTagsSupplier) {
+        return whenURI(uriPredicate, successTagsSupplier, failTagsSupplier, -1);
+    }
+
+    /**
+     * Replaces the children of this tag with the tags supplied by
+     * {@code successTagsSupplier} if the predicate test returns true otherwise
+     * replaces the children with tags supplied by {@code failTagsSupplier} if no
+     * further {@code whenURI} conditions exist and if the {@code failTagsSupplier}
+     * is null the existing children of this tag will be removed. To remove the
+     * supplier objects from this tag, call
+     * {@link AbstractHtml#removeURIChangeActions()} method. To get the current uri
+     * inside the supplier object call {@link BrowserPage#getURI()}. This action
+     * will be performed after initial client ping. You can call {@code whenURI}
+     * multiple times to set multiple actions,
+     * {@link AbstractHtml#removeURIChangeAction(int)} may be used to remove each
+     * action at the given index. If multiple actions are added by this method, only
+     * the first {@code uriPredicate} test passed action will be performed on uri
+     * change. The main intention of this method is to set children tags for this
+     * tag when the given {@code uriPredicate} test passes on URI change.
+     *
+     * @param uriPredicate        the predicate object to test, the argument of the
+     *                            test method is the changed uri, if the test method
+     *                            returns true then the tags given by
+     *                            {@code successTagsSupplier} will be added as inner
+     *                            html to this tag. If test returns false, the tags
+     *                            given by {@code failTagsSupplier} will be added as
+     *                            * inner html to this tag and if the
+     *                            {@code failTagsSupplier} is null the existing
+     *                            children will be removed from this tag.
+     * @param successTagsSupplier the supplier object for child tags if
+     *                            {@code uriPredicate} test returns true. If
+     *                            {@code successTagsSupplier.get()} method returns
+     *                            null, no action will be done on the tag.
+     * @param failTagsSupplier    the supplier object for child tags if
+     *                            {@code uriPredicate} test returns false. If
+     *                            {@code failTagsSupplier.get()} * method returns
+     *                            null, no action will be done on the tag.
+     * @param index               the index to replace the existing action with
+     *                            this. A value less than zero will add this
+     *                            condition to the last.
+     * @return this tag
+     * @since 12.0.0-beta.1
+     */
+    public AbstractHtml whenURI(final Predicate<String> uriPredicate,
+            final Supplier<AbstractHtml[]> successTagsSupplier, final Supplier<AbstractHtml[]> failTagsSupplier,
+            final int index) {
 
         final Lock lock = lockAndGetWriteLock();
         try {
@@ -6626,10 +6763,20 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
             final AbstractHtml5SharedObject sharedObject = this.sharedObject;
 
             final URIChangeContent uriChangeContent = new URIChangeContent(Objects.requireNonNull(uriPredicate),
-                    Objects.requireNonNull(actionType), Objects.requireNonNull(tagsSupplier));
+                    Objects.requireNonNull(successTagsSupplier), failTagsSupplier);
 
+            if (uriChangeContents == null && index >= 0) {
+                throw new InvalidValueException("There is no existing whenURI condition to replace");
+            }
             uriChangeContents = uriChangeContents != null ? uriChangeContents : new LinkedList<>();
-            uriChangeContents.add(uriChangeContent);
+            if (index < 0) {
+                uriChangeContents.add(uriChangeContent);
+            } else {
+                if (index >= uriChangeContents.size()) {
+                    throw new InvalidValueException("There is no existing whenURI condition at this index");
+                }
+                uriChangeContents.set(index, uriChangeContent);
+            }
 
             final URIChangeTagSupplier uriChangeTagSupplier = sharedObject.getURIChangeTagSupplier(ACCESS_OBJECT);
             if (uriChangeTagSupplier != null) {
@@ -6742,7 +6889,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
                 lastUriChangeContent = each;
 
                 if (each.uriPredicate.test(uri)) {
-                    final AbstractHtml[] innerHtmls = each.innerHtmls.get();
+                    final AbstractHtml[] innerHtmls = each.successTags.get();
                     if (innerHtmls != null) {
                         // just to throw exception if it contains null or duplicate element
                         Set.of(innerHtmls);
@@ -6754,12 +6901,24 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
             }
 
             if (lastUriChangeContent != null) {
-                if (!executed && TagActionType.SET_OR_REMOVE_CHILDREN.equals(lastUriChangeContent.tagActionType)) {
-                    if (updateClient) {
-                        removeAllChildren();
+
+                if (!executed) {
+                    final Supplier<AbstractHtml[]> failTags = lastUriChangeContent.failTags();
+                    if (failTags != null) {
+                        final AbstractHtml[] innerHtmls = failTags.get();
+                        if (innerHtmls != null) {
+                            // just to throw exception if it contains null or duplicate element
+                            Set.of(innerHtmls);
+                            addInnerHtmls(updateClient, innerHtmls);
+                        }
                     } else {
-                        removeAllChildrenAndGetEventsLockless(updateClient);
+                        if (updateClient) {
+                            removeAllChildren();
+                        } else {
+                            removeAllChildrenAndGetEventsLockless(updateClient);
+                        }
                     }
+
                 }
                 lastURIPredicateTest = executed;
                 lastURI = uri;
