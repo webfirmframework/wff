@@ -825,6 +825,21 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      * @since 2.1.15
      */
     protected void addInnerHtmls(final boolean updateClient, final AbstractHtml... innerHtmls) {
+        addInnerHtmls(false, updateClient, innerHtmls);
+    }
+
+    /**
+     * Removes all children and adds the given tags as children.
+     *
+     * @param updateClient true to update client browser page if it is available.
+     *                     The default value is true but it will be ignored if there
+     *                     is no client browser page.
+     * @param innerHtmls   the inner html tags to add
+     * @author WFF
+     * @since 12.0.0-beta.1
+     */
+    protected void addInnerHtmls(final boolean ignoreApplyURIChange, final boolean updateClient,
+            final AbstractHtml... innerHtmls) {
 
         boolean listenerInvoked = false;
 //        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
@@ -837,6 +852,12 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
 
         List<Lock> newSOLocks = null;
         try {
+
+            if (!ignoreApplyURIChange) {
+                for (final AbstractHtml each : innerHtmls) {
+                    each.applyURIChange(sharedObject);
+                }
+            }
 
             final Set<AbstractHtml> children = this.children;
             final AbstractHtml[] removedTags = children.toArray(new AbstractHtml[children.size()]);
@@ -1467,6 +1488,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
         boolean result = false;
         try {
 
+            child.applyURIChange(sharedObject);
+
             if (child.parent != null) {
                 if (child.parent.sharedObject.getChildTagAppendListener(ACCESS_OBJECT) == null) {
                     removeFromTagByWffIdMap(child, child.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
@@ -1491,6 +1514,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
     }
 
     private boolean addChildLockless(final AbstractHtml child) {
+
+        child.applyURIChange(sharedObject);
+
         boolean result = false;
         if (child.parent != null) {
             if (child.parent.sharedObject.getChildTagAppendListener(ACCESS_OBJECT) == null) {
@@ -1811,16 +1837,17 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
                 // NB: 0 for rootTag so first increment and assign
                 eachChild.hierarchyOrder = ++sharedObject.getRootTag().hierarchyOrderCounter;
 
-                supplyToURIChangeTagSupplier(currentURI, eachChild, uriChangeTagSupplier);
-
                 // no need to add data-wff-id if the tag is not rendered by
                 // BrowserPage (if it is rended by BrowserPage then
                 // getLastDataWffId will not be -1)
-                if (sharedObject.getLastDataWffId(ACCESS_OBJECT) != -1 && eachChild.dataWffId == null
-                        && eachChild.tagName != null && !eachChild.tagName.isEmpty()) {
+                if (sharedObject.getLastDataWffId(ACCESS_OBJECT) != -1 && eachChild.dataWffId == null) {
+                    if (eachChild.tagName != null && !eachChild.tagName.isEmpty()) {
+                        eachChild.initDataWffId(sharedObject);
+                        supplyToURIChangeTagSupplier(currentURI, eachChild, uriChangeTagSupplier);
+                    }
 
-                    eachChild.initDataWffId(sharedObject);
-
+                } else {
+                    supplyToURIChangeTagSupplier(currentURI, eachChild, uriChangeTagSupplier);
                 }
 
                 final Set<AbstractHtml> subChildren = eachChild.children;
@@ -1830,6 +1857,43 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
                 }
 
             }
+        }
+
+    }
+
+    /**
+     * @param sharedObject
+     * @since 12.0.0-beta.1 should be called only after lock and while
+     *        adding/append/prepend/whenURI etc.. this tag to another tag.
+     */
+    private final void applyURIChange(final AbstractHtml5SharedObject sharedObject) {
+        final URIChangeTagSupplier uriChangeTagSupplier = sharedObject.getURIChangeTagSupplier(ACCESS_OBJECT);
+        final String currentURI = uriChangeTagSupplier != null ? uriChangeTagSupplier.supply(null) : null;
+        applyURIChange(currentURI);
+    }
+
+    /**
+     * @param currentURI
+     * @since 12.0.0-beta.1 should be called only after lock and while
+     *        adding/append/prepend/whenURI etc.. this tag to another tag.
+     */
+    private final void applyURIChange(final String currentURI) {
+        if (currentURI != null) {
+            final Deque<List<AbstractHtml>> childrenStack = new ArrayDeque<>();
+            childrenStack.push(List.of(this));
+            List<AbstractHtml> children;
+            while ((children = childrenStack.poll()) != null) {
+
+                for (final AbstractHtml eachChild : children) {
+                    final AbstractHtml[] innerHtmls = eachChild.changeInnerHtmlsForURIChange(currentURI, false);
+                    if (innerHtmls != null && innerHtmls.length > 0) {
+                        childrenStack.push(List.of(innerHtmls));
+                    } else if (eachChild.children != null && eachChild.children.size() > 0) {
+                        childrenStack.push(new ArrayList<>(eachChild.children));
+                    }
+                }
+            }
+
         }
     }
 
@@ -1852,6 +1916,10 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
 //        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
 //        lock.lock();
         try {
+
+            for (final AbstractHtml each : children) {
+                each.applyURIChange(sharedObject);
+            }
 
             final Collection<ChildMovedEvent> movedOrAppended = new ArrayDeque<>(children.size());
 
@@ -1920,6 +1988,11 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
 //        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
 //        lock.lock();
         try {
+
+            for (final AbstractHtml each : children) {
+                each.applyURIChange(sharedObject);
+            }
+
             final Iterator<AbstractHtml> iterator = this.children.iterator();
             if (iterator.hasNext()) {
                 final AbstractHtml firstExistingChild = iterator.next();
@@ -1952,6 +2025,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
                 listener.childrendAppendedOrMoved(movedOrAppended);
                 listenerInvoked = true;
             }
+
         } finally {
 //            lock.unlock();
 //            for (final Lock attrLock : attrLocks) {
@@ -2026,6 +2100,10 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
 //        lock.lock();
 
         try {
+
+            for (final AbstractHtml each : children) {
+                each.applyURIChange(sharedObject);
+            }
 
             final Set<AbstractHtml> thisChildren = this.children;
             final Iterator<AbstractHtml> iterator = thisChildren.iterator();
@@ -2110,6 +2188,10 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
         // appendChildren(AbstractHtml... children)
 
         final AbstractHtml5SharedObject sharedObject = this.sharedObject;
+
+        for (final AbstractHtml child : children) {
+            child.applyURIChange(sharedObject);
+        }
 
         // inserted, listener invoked
         final boolean[] results = { false, false };
@@ -5418,6 +5500,10 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
 
         try {
 
+            for (final AbstractHtml each : children) {
+                each.applyURIChange(sharedObject);
+            }
+
             parent = this.parent;
             if (parent == null) {
                 if (skipException) {
@@ -5430,6 +5516,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
                     .toArray(new AbstractHtml[parent.children.size()]);
 
             results = insertBefore(removedParentChildren, abstractHtmls);
+
         } finally {
 //            lock.unlock();
             for (final Lock lck : locks) {
@@ -5510,6 +5597,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
         final AbstractHtml5SharedObject thisSharedObject = sharedObject;
 
         try {
+            for (final AbstractHtml each : tags) {
+                each.applyURIChange(thisSharedObject);
+            }
             parent = this.parent;
             if (parent == null) {
                 if (skipException) {
@@ -6042,6 +6132,10 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
 //
 
         try {
+
+            for (final AbstractHtml each : abstractHtmls) {
+                each.applyURIChange(sharedObject);
+            }
 
             parent = this.parent;
             if (parent == null) {
@@ -6781,7 +6875,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
             final URIChangeTagSupplier uriChangeTagSupplier = sharedObject.getURIChangeTagSupplier(ACCESS_OBJECT);
             if (uriChangeTagSupplier != null) {
                 final String currentURI = uriChangeTagSupplier.supply(this);
-                changeInnerHtmlsForURIChange(currentURI, true);
+                applyURIChange(currentURI);
             }
 
         } finally {
@@ -6791,15 +6885,13 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
         return this;
     }
 
-    private static void supplyToURIChangeTagSupplier(final String currentURI, final AbstractHtml tag,
+    private static boolean supplyToURIChangeTagSupplier(final String currentURI, final AbstractHtml tag,
             final URIChangeTagSupplier uriChangeTagSupplier) {
-        if (currentURI != null) {
-            final String lastURI = tag.lastURI;
-            if (tag.uriChangeContents != null && !currentURI.equals(lastURI)) {
-                tag.changeInnerHtmlsForURIChange(currentURI, false);
-                uriChangeTagSupplier.supply(tag);
-            }
+        if (tag.uriChangeContents != null && uriChangeTagSupplier != null) {
+            uriChangeTagSupplier.supply(tag);
+            return true;
         }
+        return false;
     }
 
     /**
@@ -6875,10 +6967,12 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      *
      * @param uri
      * @param updateClient to push changes to the UI
+     * @return
      * @since 12.0.0-beta.1
      */
-    private void changeInnerHtmlsForURIChange(final String uri, final boolean updateClient) {
+    private AbstractHtml[] changeInnerHtmlsForURIChange(final String uri, final boolean updateClient) {
 
+        AbstractHtml[] insertedHtmls = null;
         if (uriChangeContents != null && uri != null && (!lastURIPredicateTest || !uri.equals(lastURI))) {
 
             URIChangeContent lastUriChangeContent = null;
@@ -6893,7 +6987,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
                     if (innerHtmls != null) {
                         // just to throw exception if it contains null or duplicate element
                         Set.of(innerHtmls);
-                        addInnerHtmls(updateClient, innerHtmls);
+                        addInnerHtmls(true, updateClient, innerHtmls);
+                        insertedHtmls = innerHtmls;
                     }
                     executed = true;
                     break;
@@ -6909,7 +7004,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
                         if (innerHtmls != null) {
                             // just to throw exception if it contains null or duplicate element
                             Set.of(innerHtmls);
-                            addInnerHtmls(updateClient, innerHtmls);
+                            addInnerHtmls(true, updateClient, innerHtmls);
+                            insertedHtmls = innerHtmls;
                         }
                     } else {
                         if (updateClient) {
@@ -6924,6 +7020,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
                 lastURI = uri;
             }
         }
+
+        return insertedHtmls;
     }
 
 }
