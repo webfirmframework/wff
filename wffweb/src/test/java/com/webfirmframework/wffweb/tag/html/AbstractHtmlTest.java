@@ -19,11 +19,17 @@ import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.lang.ref.Reference;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,6 +38,7 @@ import com.webfirmframework.wffweb.InvalidTagException;
 import com.webfirmframework.wffweb.NoParentException;
 import com.webfirmframework.wffweb.css.Color;
 import com.webfirmframework.wffweb.server.page.BrowserPage;
+import com.webfirmframework.wffweb.server.page.BrowserPageTest;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.MaxLength;
 import com.webfirmframework.wffweb.tag.html.attribute.Name;
@@ -2372,6 +2379,8 @@ public class AbstractHtmlTest {
     @Test
     public void testWhenURI1() throws Exception {
 
+        Set<AbstractHtml> expectedTagsForURIChange = new HashSet<>();
+
         Html html = new Html(null);
 
         BrowserPage browserPage = new BrowserPage() {
@@ -2412,13 +2421,18 @@ public class AbstractHtmlTest {
 
                         return new AbstractHtml[] { new NoTag(null, "plain text") };
                     }, null);
+                    expectedTagsForURIChange.add(p);
                 });
 
                 return new AbstractHtml[] { pParent };
             }, null);
 
+            expectedTagsForURIChange.add(span);
+
             return new AbstractHtml[] { span };
         }, null);
+
+        expectedTagsForURIChange.add(div1);
 
         html.appendChild(div1);
 
@@ -2432,12 +2446,28 @@ public class AbstractHtmlTest {
         assertEquals(
                 "<div data-wff-id=\"S2\"><span data-wff-id=\"S3\"><p-parent data-wff-id=\"S4\"><p data-wff-id=\"S5\">plain text</p></p-parent></span></div>",
                 div1.toBigHtmlString());
+
+        Set<AbstractHtml> tagsForURIChange = new HashSet<>();
+
+        for (Reference<AbstractHtml> each : BrowserPageTest.getTagsForURIChangeForTest(browserPage)) {
+            tagsForURIChange.add(each.get());
+        }
+
+        List<AbstractHtml> expectedTagsForURIChangeSorted = 
+                expectedTagsForURIChange.stream().sorted(Comparator.comparingInt(Object::hashCode)).collect(Collectors.toList());
+        
+        List<AbstractHtml> tagsForURIChangeSorted = 
+                tagsForURIChange.stream().sorted(Comparator.comparingInt(Object::hashCode)).collect(Collectors.toList());
+        
+        assertArrayEquals(expectedTagsForURIChangeSorted.toArray(), tagsForURIChangeSorted.toArray());
 
     }
 
     @Test
     public void testWhenURI2() throws Exception {
 
+        Set<AbstractHtml> expectedTagsForURIChange = new HashSet<>();
+
         Html html = new Html(null);
 
         BrowserPage browserPage = new BrowserPage() {
@@ -2479,16 +2509,20 @@ public class AbstractHtmlTest {
 
                             return new AbstractHtml[] { new NoTag(null, "plain text") };
                         }, null);
+                        expectedTagsForURIChange.add(p);
                     }
                 };
 
                 return new AbstractHtml[] { pParent };
             }, null);
 
+            expectedTagsForURIChange.add(span);
+
             return new AbstractHtml[] { span };
         }, null);
 
         html.appendChild(div1);
+        expectedTagsForURIChange.add(div1);
 
         assertEquals("""
                 div1.whenURI
@@ -2501,10 +2535,26 @@ public class AbstractHtmlTest {
                 "<div data-wff-id=\"S2\"><span data-wff-id=\"S3\"><p-parent data-wff-id=\"S4\"><p data-wff-id=\"S5\">plain text</p></p-parent></span></div>",
                 div1.toBigHtmlString());
 
+        Set<AbstractHtml> tagsForURIChange = new HashSet<>();
+
+        for (Reference<AbstractHtml> each : BrowserPageTest.getTagsForURIChangeForTest(browserPage)) {
+            tagsForURIChange.add(each.get());
+        }
+
+        List<AbstractHtml> expectedTagsForURIChangeSorted = 
+                expectedTagsForURIChange.stream().sorted(Comparator.comparingInt(Object::hashCode)).collect(Collectors.toList());
+        
+        List<AbstractHtml> tagsForURIChangeSorted = 
+                tagsForURIChange.stream().sorted(Comparator.comparingInt(Object::hashCode)).collect(Collectors.toList());
+        
+        assertArrayEquals(expectedTagsForURIChangeSorted.toArray(), tagsForURIChangeSorted.toArray());
+
     }
 
     @Test
     public void testWhenURI3() throws Exception {
+        
+        Set<AbstractHtml> expectedTagsForURIChange = new HashSet<>();
 
         Html html = new Html(null);
 
@@ -2547,14 +2597,18 @@ public class AbstractHtmlTest {
 
                             return new AbstractHtml[] { new NoTag(null, "plain text") };
                         }, null);
+                        expectedTagsForURIChange.add(p);
                     }
                 };
 
                 return new AbstractHtml[] { pParent };
             }, null);
+            expectedTagsForURIChange.add(span);
 
             return new AbstractHtml[] { span };
         }, null);
+        
+        expectedTagsForURIChange.add(div1);
 
         html.appendChild(div1);
 
@@ -2579,14 +2633,19 @@ public class AbstractHtmlTest {
 
                             return new AbstractHtml[] { new NoTag(null, "plain text") };
                         }, null);
+                        expectedTagsForURIChange.add(p);
                     }
                 };
 
                 return new AbstractHtml[] { pParent };
             }, null);
+            
+            expectedTagsForURIChange.add(span);
 
             return new AbstractHtml[] { span };
         }, null);
+        
+        expectedTagsForURIChange.add(div2);
 
         assertEquals("""
                 div1.whenURI
@@ -2603,8 +2662,7 @@ public class AbstractHtmlTest {
         assertEquals(
                 "<div data-wff-id=\"S6\"><span data-wff-id=\"S7\"><p-parent data-wff-id=\"S8\"><p data-wff-id=\"S9\">plain text</p></p-parent></span></div>",
                 div2.toBigHtmlString());
-        
-        
+
         AbstractHtml div3 = new Div(html);
         div3.whenURI(uri -> true, () -> {
 
@@ -2625,14 +2683,19 @@ public class AbstractHtmlTest {
 
                             return new AbstractHtml[] { new NoTag(null, "plain text") };
                         }, null);
+                        
+                        expectedTagsForURIChange.add(p);
                     }
                 };
 
                 return new AbstractHtml[] { pParent };
             }, null);
+            expectedTagsForURIChange.add(span);
 
             return new AbstractHtml[] { span };
         }, null);
+        
+        expectedTagsForURIChange.add(div3);
 
         assertEquals("""
                 div1.whenURI
@@ -2654,6 +2717,23 @@ public class AbstractHtmlTest {
         assertEquals(
                 "<div data-wff-id=\"S10\"><span data-wff-id=\"S11\"><p-parent data-wff-id=\"S12\"><p data-wff-id=\"S13\">plain text</p></p-parent></span></div>",
                 div3.toBigHtmlString());
+        
+        Set<AbstractHtml> tagsForURIChange = new HashSet<>();
+
+        for (Reference<AbstractHtml> each : BrowserPageTest.getTagsForURIChangeForTest(browserPage)) {
+            tagsForURIChange.add(each.get());
+        }
+
+        assertEquals(expectedTagsForURIChange.size(), tagsForURIChange.size());
+        
+        
+        List<AbstractHtml> expectedTagsForURIChangeSorted = 
+                expectedTagsForURIChange.stream().sorted(Comparator.comparingInt(Object::hashCode)).collect(Collectors.toList());
+        
+        List<AbstractHtml> tagsForURIChangeSorted = 
+                tagsForURIChange.stream().sorted(Comparator.comparingInt(Object::hashCode)).collect(Collectors.toList());
+        
+        assertArrayEquals(expectedTagsForURIChangeSorted.toArray(), tagsForURIChangeSorted.toArray());
 
     }
 

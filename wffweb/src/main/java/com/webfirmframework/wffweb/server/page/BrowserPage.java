@@ -193,7 +193,7 @@ public abstract class BrowserPage implements Serializable {
 
     private volatile long lastClientAccessedTime = System.currentTimeMillis();
 
-    private final Set<Reference<AbstractHtml>> tagsForUrlChange = ConcurrentHashMap.newKeySet(1);
+    private final Set<Reference<AbstractHtml>> tagsForURIChange = ConcurrentHashMap.newKeySet(1);
 
     private volatile String uri;
 
@@ -2377,7 +2377,7 @@ public abstract class BrowserPage implements Serializable {
     private void addInnerHtmlsForURLChange(final AbstractHtml rootTag) {
         rootTag.getSharedObject().setURIChangeTagSupplier(tag -> {
             if (tag != null) {
-                tagsForUrlChange.add(new TagWeakReference(tag));
+                tagsForURIChange.add(new TagWeakReference(tag));
             }
             return uri;
         }, ACCESS_OBJECT);
@@ -2397,10 +2397,10 @@ public abstract class BrowserPage implements Serializable {
         try {
             TagUtil.runAtomically(rootTag, () -> {
                 uri = uriAfter;
-                final int size = tagsForUrlChange.size();
+                final int size = tagsForURIChange.size();
                 final List<AbstractHtml> tempCachToPreventGC = new ArrayList<>(size);
                 final List<Reference<AbstractHtml>> initialList = new ArrayList<>(size);
-                for (final Reference<AbstractHtml> each : tagsForUrlChange) {
+                for (final Reference<AbstractHtml> each : tagsForURIChange) {
                     final AbstractHtml tag = each.get();
                     if (tag != null) {
                         initialList.add(each);
@@ -2417,7 +2417,7 @@ public abstract class BrowserPage implements Serializable {
                         final boolean sharedObjectsEqual = tag.changeInnerHtmlsForURIChange(uriAfter,
                                 rootTag.getSharedObject(), ACCESS_OBJECT);
                         if (!sharedObjectsEqual) {
-                            tagsForUrlChange.remove(tagRef);
+                            tagsForURIChange.remove(tagRef);
                         }
 
                     }
@@ -2433,7 +2433,7 @@ public abstract class BrowserPage implements Serializable {
             if (!executed && updateClientURI) {
                 invokeAfterSetURIAtClient(uriBefore, uriAfter);
             }
-            tagsForUrlChange.removeIf(each -> each.get() == null);
+            tagsForURIChange.removeIf(each -> each.get() == null);
         }
     }
 
@@ -2496,6 +2496,15 @@ public abstract class BrowserPage implements Serializable {
      */
     public final String getURI() {
         return uri;
+    }
+
+    /**
+     * NB: only for testing
+     * 
+     * @return
+     */
+    final Set<Reference<AbstractHtml>> getTagsForURIChangeForTest() {
+        return tagsForURIChange;
     }
 
 }

@@ -1818,9 +1818,6 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      */
     private static void initSharedObject(final AbstractHtml child, final AbstractHtml5SharedObject sharedObject) {
 
-        final URIChangeTagSupplier uriChangeTagSupplier = sharedObject.getURIChangeTagSupplier(ACCESS_OBJECT);
-        final String currentURI = uriChangeTagSupplier != null ? uriChangeTagSupplier.supply(null) : null;
-
         final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
         // passed 2 instead of 1 because the load factor is 0.75f
         final Set<AbstractHtml> initialSet = new HashSet<>(2);
@@ -1840,14 +1837,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
                 // no need to add data-wff-id if the tag is not rendered by
                 // BrowserPage (if it is rended by BrowserPage then
                 // getLastDataWffId will not be -1)
-                if (sharedObject.getLastDataWffId(ACCESS_OBJECT) != -1 && eachChild.dataWffId == null) {
-                    if (eachChild.tagName != null && !eachChild.tagName.isEmpty()) {
-                        eachChild.initDataWffId(sharedObject);
-                        supplyToURIChangeTagSupplier(currentURI, eachChild, uriChangeTagSupplier);
-                    }
-
-                } else {
-                    supplyToURIChangeTagSupplier(currentURI, eachChild, uriChangeTagSupplier);
+                if (sharedObject.getLastDataWffId(ACCESS_OBJECT) != -1 && eachChild.dataWffId == null
+                        && eachChild.tagName != null && !eachChild.tagName.isEmpty()) {
+                    eachChild.initDataWffId(sharedObject);
                 }
 
                 final Set<AbstractHtml> subChildren = eachChild.children;
@@ -1868,16 +1860,18 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      */
     private final void applyURIChange(final AbstractHtml5SharedObject sharedObject) {
         final URIChangeTagSupplier uriChangeTagSupplier = sharedObject.getURIChangeTagSupplier(ACCESS_OBJECT);
-        final String currentURI = uriChangeTagSupplier != null ? uriChangeTagSupplier.supply(null) : null;
-        applyURIChange(currentURI);
+        applyURIChange(uriChangeTagSupplier);
     }
 
     /**
-     * @param currentURI
+     * @param uriChangeTagSupplier
      * @since 12.0.0-beta.1 should be called only after lock and while
      *        adding/append/prepend/whenURI etc.. this tag to another tag.
      */
-    private final void applyURIChange(final String currentURI) {
+    private final void applyURIChange(final URIChangeTagSupplier uriChangeTagSupplier) {
+
+        final String currentURI = uriChangeTagSupplier != null ? uriChangeTagSupplier.supply(null) : null;
+
         if (currentURI != null) {
             final Deque<List<AbstractHtml>> childrenStack = new ArrayDeque<>();
             childrenStack.push(List.of(this));
@@ -1891,9 +1885,14 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
                     } else if (eachChild.children != null && eachChild.children.size() > 0) {
                         childrenStack.push(new ArrayList<>(eachChild.children));
                     }
+                    if (eachChild.uriChangeContents != null) {
+                        uriChangeTagSupplier.supply(eachChild);
+                    }
                 }
             }
 
+        } else if (uriChangeContents != null && uriChangeTagSupplier != null) {
+            uriChangeTagSupplier.supply(this);
         }
     }
 
@@ -6873,25 +6872,13 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
             }
 
             final URIChangeTagSupplier uriChangeTagSupplier = sharedObject.getURIChangeTagSupplier(ACCESS_OBJECT);
-            if (uriChangeTagSupplier != null) {
-                final String currentURI = uriChangeTagSupplier.supply(this);
-                applyURIChange(currentURI);
-            }
+            applyURIChange(uriChangeTagSupplier);
 
         } finally {
             lock.unlock();
         }
 
         return this;
-    }
-
-    private static boolean supplyToURIChangeTagSupplier(final String currentURI, final AbstractHtml tag,
-            final URIChangeTagSupplier uriChangeTagSupplier) {
-        if (tag.uriChangeContents != null && uriChangeTagSupplier != null) {
-            uriChangeTagSupplier.supply(tag);
-            return true;
-        }
-        return false;
     }
 
     /**
