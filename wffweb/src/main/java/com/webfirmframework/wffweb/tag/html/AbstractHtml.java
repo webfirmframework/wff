@@ -1860,15 +1860,16 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      */
     private final void applyURIChange(final AbstractHtml5SharedObject sharedObject) {
         final URIChangeTagSupplier uriChangeTagSupplier = sharedObject.getURIChangeTagSupplier(ACCESS_OBJECT);
-        applyURIChange(uriChangeTagSupplier);
+        applyURIChange(uriChangeTagSupplier, false);
     }
 
     /**
      * @param uriChangeTagSupplier
+     * @param updateClient
      * @since 12.0.0-beta.1 should be called only after lock and while
      *        adding/append/prepend/whenURI etc.. this tag to another tag.
      */
-    private final void applyURIChange(final URIChangeTagSupplier uriChangeTagSupplier) {
+    private final void applyURIChange(final URIChangeTagSupplier uriChangeTagSupplier, final boolean updateClient) {
 
         final String currentURI = uriChangeTagSupplier != null ? uriChangeTagSupplier.supply(null) : null;
 
@@ -1879,7 +1880,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
             while ((children = childrenStack.poll()) != null) {
 
                 for (final AbstractHtml eachChild : children) {
-                    final AbstractHtml[] innerHtmls = eachChild.changeInnerHtmlsForURIChange(currentURI, false);
+                    final AbstractHtml[] innerHtmls = eachChild.changeInnerHtmlsForURIChange(currentURI, updateClient);
                     if (innerHtmls != null && innerHtmls.length > 0) {
                         childrenStack.push(List.of(innerHtmls));
                     } else if (eachChild.children != null && eachChild.children.size() > 0) {
@@ -6872,7 +6873,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
             }
 
             final URIChangeTagSupplier uriChangeTagSupplier = sharedObject.getURIChangeTagSupplier(ACCESS_OBJECT);
-            applyURIChange(uriChangeTagSupplier);
+            applyURIChange(uriChangeTagSupplier, true);
 
         } finally {
             lock.unlock();
