@@ -2453,12 +2453,12 @@ public class AbstractHtmlTest {
             tagsForURIChange.add(each.get());
         }
 
-        List<AbstractHtml> expectedTagsForURIChangeSorted = 
-                expectedTagsForURIChange.stream().sorted(Comparator.comparingInt(Object::hashCode)).collect(Collectors.toList());
-        
-        List<AbstractHtml> tagsForURIChangeSorted = 
-                tagsForURIChange.stream().sorted(Comparator.comparingInt(Object::hashCode)).collect(Collectors.toList());
-        
+        List<AbstractHtml> expectedTagsForURIChangeSorted = expectedTagsForURIChange.stream()
+                .sorted(Comparator.comparingInt(Object::hashCode)).collect(Collectors.toList());
+
+        List<AbstractHtml> tagsForURIChangeSorted = tagsForURIChange.stream()
+                .sorted(Comparator.comparingInt(Object::hashCode)).collect(Collectors.toList());
+
         assertArrayEquals(expectedTagsForURIChangeSorted.toArray(), tagsForURIChangeSorted.toArray());
 
     }
@@ -2541,19 +2541,19 @@ public class AbstractHtmlTest {
             tagsForURIChange.add(each.get());
         }
 
-        List<AbstractHtml> expectedTagsForURIChangeSorted = 
-                expectedTagsForURIChange.stream().sorted(Comparator.comparingInt(Object::hashCode)).collect(Collectors.toList());
-        
-        List<AbstractHtml> tagsForURIChangeSorted = 
-                tagsForURIChange.stream().sorted(Comparator.comparingInt(Object::hashCode)).collect(Collectors.toList());
-        
+        List<AbstractHtml> expectedTagsForURIChangeSorted = expectedTagsForURIChange.stream()
+                .sorted(Comparator.comparingInt(Object::hashCode)).collect(Collectors.toList());
+
+        List<AbstractHtml> tagsForURIChangeSorted = tagsForURIChange.stream()
+                .sorted(Comparator.comparingInt(Object::hashCode)).collect(Collectors.toList());
+
         assertArrayEquals(expectedTagsForURIChangeSorted.toArray(), tagsForURIChangeSorted.toArray());
 
     }
 
     @Test
     public void testWhenURI3() throws Exception {
-        
+
         Set<AbstractHtml> expectedTagsForURIChange = new HashSet<>();
 
         Html html = new Html(null);
@@ -2607,7 +2607,7 @@ public class AbstractHtmlTest {
 
             return new AbstractHtml[] { span };
         }, null);
-        
+
         expectedTagsForURIChange.add(div1);
 
         html.appendChild(div1);
@@ -2639,12 +2639,12 @@ public class AbstractHtmlTest {
 
                 return new AbstractHtml[] { pParent };
             }, null);
-            
+
             expectedTagsForURIChange.add(span);
 
             return new AbstractHtml[] { span };
         }, null);
-        
+
         expectedTagsForURIChange.add(div2);
 
         assertEquals("""
@@ -2683,7 +2683,7 @@ public class AbstractHtmlTest {
 
                             return new AbstractHtml[] { new NoTag(null, "plain text") };
                         }, null);
-                        
+
                         expectedTagsForURIChange.add(p);
                     }
                 };
@@ -2694,7 +2694,7 @@ public class AbstractHtmlTest {
 
             return new AbstractHtml[] { span };
         }, null);
-        
+
         expectedTagsForURIChange.add(div3);
 
         assertEquals("""
@@ -2717,7 +2717,7 @@ public class AbstractHtmlTest {
         assertEquals(
                 "<div data-wff-id=\"S10\"><span data-wff-id=\"S11\"><p-parent data-wff-id=\"S12\"><p data-wff-id=\"S13\">plain text</p></p-parent></span></div>",
                 div3.toBigHtmlString());
-        
+
         Set<AbstractHtml> tagsForURIChange = new HashSet<>();
 
         for (Reference<AbstractHtml> each : BrowserPageTest.getTagsForURIChangeForTest(browserPage)) {
@@ -2725,14 +2725,109 @@ public class AbstractHtmlTest {
         }
 
         assertEquals(expectedTagsForURIChange.size(), tagsForURIChange.size());
-        
-        
-        List<AbstractHtml> expectedTagsForURIChangeSorted = 
-                expectedTagsForURIChange.stream().sorted(Comparator.comparingInt(Object::hashCode)).collect(Collectors.toList());
-        
-        List<AbstractHtml> tagsForURIChangeSorted = 
-                tagsForURIChange.stream().sorted(Comparator.comparingInt(Object::hashCode)).collect(Collectors.toList());
-        
+
+        List<AbstractHtml> expectedTagsForURIChangeSorted = expectedTagsForURIChange.stream()
+                .sorted(Comparator.comparingInt(Object::hashCode)).collect(Collectors.toList());
+
+        List<AbstractHtml> tagsForURIChangeSorted = tagsForURIChange.stream()
+                .sorted(Comparator.comparingInt(Object::hashCode)).collect(Collectors.toList());
+
+        assertArrayEquals(expectedTagsForURIChangeSorted.toArray(), tagsForURIChangeSorted.toArray());
+
+    }
+
+    @Test
+    public void testWhenURI4() throws Exception {
+
+        Set<AbstractHtml> expectedTagsForURIChange = new HashSet<>();
+
+        Html html = new Html(null);
+
+        BrowserPage browserPage = new BrowserPage() {
+
+            @Override
+            public String webSocketUrl() {
+                // TODO Auto-generated method stub
+                return "wss://wffweb";
+            }
+
+            @Override
+            public AbstractHtml render() {
+                super.setURI("/someuri");
+
+                return html;
+            }
+
+        };
+        browserPage.toHtmlString();
+        String uri1 = "/user";
+
+        String uri11 = "/user/dashboard";
+
+        String uri111 = "/user/dashboard/items";
+
+        StringBuilder controlFlow = new StringBuilder();
+
+        AbstractHtml div1 = new Div(null).whenURI((uri) -> uri.startsWith(uri1), () -> {
+
+            controlFlow.append("div1.whenURI\n");
+
+            AbstractHtml span = new Span(null).whenURI((uri) -> uri.startsWith(uri11), () -> {
+
+                controlFlow.append("span.whenURI\n");
+
+                AbstractHtml pParent = new CustomTag("p-parent", null).give(custom -> {
+                    controlFlow.append("pParent.give\n");
+                    AbstractHtml p = new P(custom).whenURI((uri) -> uri.startsWith(uri111), () -> {
+
+                        controlFlow.append("p.whenURI\n");
+
+                        controlFlow.append("NoTag plain text\n");
+
+                        return new AbstractHtml[] { new NoTag(null, "plain text") };
+                    }, null);
+                    expectedTagsForURIChange.add(p);
+                });
+
+                return new AbstractHtml[] { pParent };
+            }, null);
+
+            expectedTagsForURIChange.add(span);
+
+            return new AbstractHtml[] { span };
+        }, null);
+
+        expectedTagsForURIChange.add(div1);
+
+        html.appendChild(div1);
+
+        assertEquals("", controlFlow.toString());
+
+        browserPage.setURI(uri111);
+
+        assertEquals("""
+                div1.whenURI
+                span.whenURI
+                pParent.give
+                p.whenURI
+                NoTag plain text
+                """, controlFlow.toString());
+        assertEquals(
+                "<div data-wff-id=\"S2\"><span data-wff-id=\"S3\"><p-parent data-wff-id=\"S4\"><p data-wff-id=\"S5\">plain text</p></p-parent></span></div>",
+                div1.toBigHtmlString());
+
+        Set<AbstractHtml> tagsForURIChange = new HashSet<>();
+
+        for (Reference<AbstractHtml> each : BrowserPageTest.getTagsForURIChangeForTest(browserPage)) {
+            tagsForURIChange.add(each.get());
+        }
+
+        List<AbstractHtml> expectedTagsForURIChangeSorted = expectedTagsForURIChange.stream()
+                .sorted(Comparator.comparingInt(Object::hashCode)).collect(Collectors.toList());
+
+        List<AbstractHtml> tagsForURIChangeSorted = tagsForURIChange.stream()
+                .sorted(Comparator.comparingInt(Object::hashCode)).collect(Collectors.toList());
+
         assertArrayEquals(expectedTagsForURIChangeSorted.toArray(), tagsForURIChangeSorted.toArray());
 
     }

@@ -6941,7 +6941,26 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
         final Lock lock = lockAndGetWriteLock();
         try {
             if (expectedSO.equals(sharedObject)) {
-                changeInnerHtmlsForURIChange(uri, true);
+
+                final URIChangeTagSupplier uriChangeTagSupplier = expectedSO.getURIChangeTagSupplier(ACCESS_OBJECT);
+
+                final Deque<List<AbstractHtml>> childrenStack = new ArrayDeque<>();
+                childrenStack.push(List.of(this));
+                List<AbstractHtml> children;
+                while ((children = childrenStack.poll()) != null) {
+                    for (final AbstractHtml eachChild : children) {
+                        final AbstractHtml[] innerHtmls = eachChild.changeInnerHtmlsForURIChange(uri, true);
+                        if (innerHtmls != null && innerHtmls.length > 0) {
+                            childrenStack.push(List.of(innerHtmls));
+                        } else if (eachChild.children != null && eachChild.children.size() > 0) {
+                            childrenStack.push(new ArrayList<>(eachChild.children));
+                        }
+                        if (eachChild.uriChangeContents != null) {
+                            uriChangeTagSupplier.supply(eachChild);
+                        }
+                    }
+                }
+
                 return true;
             }
         } finally {
