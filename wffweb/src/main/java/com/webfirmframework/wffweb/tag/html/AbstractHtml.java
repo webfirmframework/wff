@@ -6915,6 +6915,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      * @param index           the position at which this action be the index to
      *                        replace the existing action with this. A value less
      *                        than zero will add this condition to the last.
+     * @since 12.0.0-beta.1
      */
     @SuppressWarnings("unchecked")
     public <T extends AbstractHtml> T whenURI(final Predicate<String> uriPredicate,
@@ -6933,6 +6934,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      * @param failConsumer    the consumer to execute if {@code uriPredicate.test()}
      *                        returns false. {@code null} can be passed if there is
      *                        no {@code failConsumer}.
+     * @since 12.0.0-beta.1
      */
     public <T extends AbstractHtml> T whenURI(final Predicate<String> uriPredicate,
             final Consumer<TagEvent> successConsumer, final Consumer<TagEvent> failConsumer) {
@@ -6944,7 +6946,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      * @param uriPredicate
      * @param successConsumer the consumer to execute if {@code uriPredicate.test()}
      *                        returns true
-     *
+     * @since 12.0.0-beta.1
      */
     public <T extends AbstractHtml> T whenURI(final Predicate<String> uriPredicate,
             final Consumer<TagEvent> successConsumer) {
