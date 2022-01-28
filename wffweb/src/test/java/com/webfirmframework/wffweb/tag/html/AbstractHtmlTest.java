@@ -2927,6 +2927,21 @@ public class AbstractHtmlTest {
                 .sorted(Comparator.comparingInt(Object::hashCode)).collect(Collectors.toList());
 
         assertArrayEquals(expectedTagsForURIChangeSorted.toArray(), tagsForURIChangeSorted.toArray());
+        
+        
+        StringBuilder controlFlow2 = new StringBuilder();
+        Div div2 = new Div(null);
+        div2.whenURI(uri -> false, () -> {
+            controlFlow2.append("inside success supplier");
+            return new AbstractHtml[] {};
+        }, event -> {
+            controlFlow2.append("inside fail consumer");
+        });
+        
+        div1.appendChild(div2);
+        
+        
+        assertEquals("inside fail consumer", controlFlow2.toString());
 
     }
 

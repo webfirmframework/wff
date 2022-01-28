@@ -6880,7 +6880,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
         Objects.requireNonNull(uriPredicate, "uriPredicate cannot be null in whenURI method");
         Objects.requireNonNull(successTagsSupplier, "successTagsSupplier cannot be null in whenURI method");
-        return whenURI(uriPredicate, successTagsSupplier, null, WhenURIMethodType.SUCCESS_SUPPLIER_FAIL_SUPPLIER, null,
+        return whenURI(uriPredicate, successTagsSupplier, null, WhenURIMethodType.SUCCESS_SUPPLIER_FAIL_CONSUMER, null,
                 failConsumer, index);
     }
 
@@ -6890,7 +6890,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
         Objects.requireNonNull(uriPredicate, "uriPredicate cannot be null in whenURI method");
         Objects.requireNonNull(successTagsSupplier, "successTagsSupplier cannot be null in whenURI method");
-        return whenURI(uriPredicate, successTagsSupplier, null, WhenURIMethodType.SUCCESS_SUPPLIER_FAIL_SUPPLIER, null,
+        return whenURI(uriPredicate, successTagsSupplier, null, WhenURIMethodType.SUCCESS_SUPPLIER_FAIL_CONSUMER, null,
                 failConsumer, -1);
     }
 
@@ -6900,7 +6900,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
         Objects.requireNonNull(uriPredicate, "uriPredicate cannot be null in whenURI method");
         Objects.requireNonNull(successConsumer, "successConsumer cannot be null in whenURI method");
-        return whenURI(uriPredicate, null, failTagsSupplier, WhenURIMethodType.SUCCESS_SUPPLIER_FAIL_SUPPLIER,
+        return whenURI(uriPredicate, null, failTagsSupplier, WhenURIMethodType.SUCCESS_CONSUMER_FAIL_SUPPLIER,
                 successConsumer, null, index);
     }
 
@@ -6910,7 +6910,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
         Objects.requireNonNull(uriPredicate, "uriPredicate cannot be null in whenURI method");
         Objects.requireNonNull(successConsumer, "successConsumer cannot be null in whenURI method");
-        return whenURI(uriPredicate, null, failTagsSupplier, WhenURIMethodType.SUCCESS_SUPPLIER_FAIL_SUPPLIER,
+        return whenURI(uriPredicate, null, failTagsSupplier, WhenURIMethodType.SUCCESS_CONSUMER_FAIL_SUPPLIER,
                 successConsumer, null, -1);
     }
 
@@ -7151,7 +7151,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 if (!executed) {
                     if (lastUriChangeContent.methodType.equals(WhenURIMethodType.SUCCESS_CONSUMER_FAIL_CONSUMER)
                             || lastUriChangeContent.methodType
-                                    .equals(WhenURIMethodType.SUCCESS_CONSUMER_FAIL_SUPPLIER)) {
+                                    .equals(WhenURIMethodType.SUCCESS_SUPPLIER_FAIL_CONSUMER)) {
                         if (lastUriChangeContent.failConsumer != null) {
                             lastUriChangeContent.failConsumer.accept(new TagEvent(this, uri));
                         }
