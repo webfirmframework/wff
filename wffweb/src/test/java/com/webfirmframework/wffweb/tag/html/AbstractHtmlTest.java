@@ -28,6 +28,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.Set;
 
@@ -2829,6 +2831,139 @@ public class AbstractHtmlTest {
                 .sorted(Comparator.comparingInt(Object::hashCode)).collect(Collectors.toList());
 
         assertArrayEquals(expectedTagsForURIChangeSorted.toArray(), tagsForURIChangeSorted.toArray());
+
+    }
+    
+    @Test
+    public void testWhenURIWithConsumer4() throws Exception {
+
+        Set<AbstractHtml> expectedTagsForURIChange = new HashSet<>();
+
+        Html html = new Html(null);
+
+        BrowserPage browserPage = new BrowserPage() {
+
+            @Override
+            public String webSocketUrl() {
+                // TODO Auto-generated method stub
+                return "wss://wffweb";
+            }
+
+            @Override
+            public AbstractHtml render() {
+                super.setURI("/someuri");
+
+                return html;
+            }
+
+        };
+        browserPage.toHtmlString();
+        String uri1 = "/user";
+
+        String uri11 = "/user/dashboard";
+
+        String uri111 = "/user/dashboard/items";
+
+        StringBuilder controlFlow = new StringBuilder();
+
+        AbstractHtml div1 = new Div(null).whenURI((uri) -> uri.startsWith(uri1), (event) -> {
+
+            controlFlow.append("div1.whenURI\n");
+
+            AbstractHtml span = new Span(null).whenURI((uri) -> uri.startsWith(uri11), (event1) -> {
+
+                controlFlow.append("span.whenURI\n");
+
+                AbstractHtml pParent = new CustomTag("p-parent", null).give(custom -> {
+                    controlFlow.append("pParent.give\n");
+                    AbstractHtml p = new P(custom).whenURI((uri) -> uri.startsWith(uri111), (event2) -> {
+
+                        controlFlow.append("p.whenURI\n");
+
+                        controlFlow.append("NoTag plain text\n");
+
+                        event2.sourceTag().addInnerHtmls(new AbstractHtml[] { new NoTag(null, "plain text") });
+                    }, null);
+                    expectedTagsForURIChange.add(p);
+                });
+
+                event1.sourceTag().addInnerHtmls(new AbstractHtml[] { pParent });
+            }, null);
+
+            expectedTagsForURIChange.add(span);
+
+            event.sourceTag().addInnerHtmls(new AbstractHtml[] { span });
+        }, null);
+
+        expectedTagsForURIChange.add(div1);
+
+        html.appendChild(div1);
+
+        assertEquals("", controlFlow.toString());
+
+        browserPage.setURI(uri111);
+
+        assertEquals("""
+                div1.whenURI
+                span.whenURI
+                pParent.give
+                p.whenURI
+                NoTag plain text
+                """, controlFlow.toString());
+        assertEquals(
+                "<div data-wff-id=\"S2\"><span data-wff-id=\"S3\"><p-parent data-wff-id=\"S4\"><p data-wff-id=\"S5\">plain text</p></p-parent></span></div>",
+                div1.toBigHtmlString());
+
+        Set<AbstractHtml> tagsForURIChange = new HashSet<>();
+
+        for (Reference<AbstractHtml> each : BrowserPageTest.getTagsForURIChangeForTest(browserPage)) {
+            tagsForURIChange.add(each.get());
+        }
+
+        List<AbstractHtml> expectedTagsForURIChangeSorted = expectedTagsForURIChange.stream()
+                .sorted(Comparator.comparingInt(Object::hashCode)).collect(Collectors.toList());
+
+        List<AbstractHtml> tagsForURIChangeSorted = tagsForURIChange.stream()
+                .sorted(Comparator.comparingInt(Object::hashCode)).collect(Collectors.toList());
+
+        assertArrayEquals(expectedTagsForURIChangeSorted.toArray(), tagsForURIChangeSorted.toArray());
+
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testWhenURI5ThrowsException1() {
+
+        Div div = new Div(null);
+        
+        div.whenURI(null, event -> {});
+
+    }
+    
+    @Test(expected = NullPointerException.class)
+    public void testWhenURI5ThrowsException2() {
+
+        Div div = new Div(null);
+        
+        Consumer<TagEvent> cosumer = null;
+        div.whenURI(uri -> true, cosumer);
+
+    }
+    
+    @Test(expected = NullPointerException.class)
+    public void testWhenURI5ThrowsException3() {
+
+        Div div = new Div(null);
+        
+        div.whenURI(null, () -> new AbstractHtml[] {});
+    }
+    
+    @Test(expected = NullPointerException.class)
+    public void testWhenURI5ThrowsException4() {
+
+        Div div = new Div(null);
+        
+        Supplier<AbstractHtml[]> cosumer = null;
+        div.whenURI(uri -> true, cosumer);
 
     }
 

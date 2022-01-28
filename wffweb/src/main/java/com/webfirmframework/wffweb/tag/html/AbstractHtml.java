@@ -203,7 +203,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
     }
 
     private static record URIChangeContent(Predicate<String> uriPredicate, Supplier<AbstractHtml[]> successTags,
-            Supplier<AbstractHtml[]> failTags) implements Serializable {
+            Supplier<AbstractHtml[]> failTags, Consumer<TagEvent> successConsumer, Consumer<TagEvent> failConsumer,
+            boolean invokeAsConsumer) implements Serializable {
     }
 
     static {
@@ -6851,13 +6852,34 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
             final Supplier<AbstractHtml[]> successTagsSupplier, final Supplier<AbstractHtml[]> failTagsSupplier,
             final int index) {
 
+        Objects.requireNonNull(uriPredicate, "uriPredicate cannot be null in whenURI method");
+        Objects.requireNonNull(successTagsSupplier, "successTagsSupplier cannot be null in whenURI method");
+        return whenURI(uriPredicate, successTagsSupplier, failTagsSupplier, false, null, null, index);
+    }
+
+    /**
+     * @param uriPredicate
+     * @param successTagsSupplier
+     * @param failTagsSupplier
+     * @param invokeAsConsumer
+     * @param successConsumer
+     * @param failConsumer
+     * @param index
+     * @return
+     * @since 12.0.0-beta.1
+     */
+    private <T extends AbstractHtml> AbstractHtml whenURI(final Predicate<String> uriPredicate,
+            final Supplier<AbstractHtml[]> successTagsSupplier, final Supplier<AbstractHtml[]> failTagsSupplier,
+            final boolean invokeAsConsumer, final Consumer<TagEvent> successConsumer,
+            final Consumer<TagEvent> failConsumer, final int index) {
+
         final Lock lock = lockAndGetWriteLock();
         try {
             // sharedObject should be after locking
             final AbstractHtml5SharedObject sharedObject = this.sharedObject;
 
-            final URIChangeContent uriChangeContent = new URIChangeContent(Objects.requireNonNull(uriPredicate),
-                    Objects.requireNonNull(successTagsSupplier), failTagsSupplier);
+            final URIChangeContent uriChangeContent = new URIChangeContent(uriPredicate, successTagsSupplier,
+                    failTagsSupplier, successConsumer, failConsumer, invokeAsConsumer);
 
             if (uriChangeContents == null && index >= 0) {
                 throw new InvalidValueException("There is no existing whenURI condition to replace");
@@ -6880,6 +6902,53 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
         }
 
         return this;
+    }
+
+    /**
+     * @param <T>
+     * @param uriPredicate
+     * @param successConsumer the consumer to execute if {@code uriPredicate.test()}
+     *                        returns true
+     * @param failConsumer    the consumer to execute if {@code uriPredicate.test()}
+     *                        returns false. {@code null} can be passed if there is
+     *                        no {@code failConsumer}.
+     * @param index           the position at which this action be the index to
+     *                        replace the existing action with this. A value less
+     *                        than zero will add this condition to the last.
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends AbstractHtml> T whenURI(final Predicate<String> uriPredicate,
+            final Consumer<TagEvent> successConsumer, final Consumer<TagEvent> failConsumer, final int index) {
+
+        Objects.requireNonNull(uriPredicate, "uriPredicate cannot be null in whenURI method");
+        Objects.requireNonNull(successConsumer, "successConsumer cannot be null in whenURI method");
+        return (T) whenURI(uriPredicate, null, null, true, successConsumer, failConsumer, index);
+    }
+
+    /**
+     * @param <T>
+     * @param uriPredicate
+     * @param successConsumer the consumer to execute if {@code uriPredicate.test()}
+     *                        returns true
+     * @param failConsumer    the consumer to execute if {@code uriPredicate.test()}
+     *                        returns false. {@code null} can be passed if there is
+     *                        no {@code failConsumer}.
+     */
+    public <T extends AbstractHtml> T whenURI(final Predicate<String> uriPredicate,
+            final Consumer<TagEvent> successConsumer, final Consumer<TagEvent> failConsumer) {
+        return whenURI(uriPredicate, successConsumer, failConsumer, -1);
+    }
+
+    /**
+     * @param <T>
+     * @param uriPredicate
+     * @param successConsumer the consumer to execute if {@code uriPredicate.test()}
+     *                        returns true
+     *
+     */
+    public <T extends AbstractHtml> T whenURI(final Predicate<String> uriPredicate,
+            final Consumer<TagEvent> successConsumer) {
+        return whenURI(uriPredicate, successConsumer, null, -1);
     }
 
     /**
@@ -6926,12 +6995,10 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      *
      * @param uri
      * @param expectedSO
-     * @param accessObject
      * @since 12.0.0-beta.1
      * @return true if sharedObjects are equals
      */
-    final boolean changeInnerHtmlsForURIChange(final String uri, final AbstractHtml5SharedObject expectedSO,
-            final SecurityObject accessObject) {
+    final boolean changeInnerHtmlsForURIChange(final String uri, final AbstractHtml5SharedObject expectedSO) {
 
         final Lock lock = lockAndGetWriteLock();
         try {
@@ -6985,13 +7052,18 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
                 lastUriChangeContent = each;
 
                 if (each.uriPredicate.test(uri)) {
-                    final AbstractHtml[] innerHtmls = each.successTags.get();
-                    if (innerHtmls != null) {
-                        // just to throw exception if it contains null or duplicate element
-                        Set.of(innerHtmls);
-                        addInnerHtmls(true, updateClient, innerHtmls);
-                        insertedHtmls = innerHtmls;
+                    if (each.invokeAsConsumer) {
+                        each.successConsumer.accept(new TagEvent(this, uri));
+                    } else {
+                        final AbstractHtml[] innerHtmls = each.successTags.get();
+                        if (innerHtmls != null) {
+                            // just to throw exception if it contains null or duplicate element
+                            Set.of(innerHtmls);
+                            addInnerHtmls(true, updateClient, innerHtmls);
+                            insertedHtmls = innerHtmls;
+                        }
                     }
+
                     executed = true;
                     break;
                 }
@@ -7000,23 +7072,28 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
             if (lastUriChangeContent != null) {
 
                 if (!executed) {
-                    final Supplier<AbstractHtml[]> failTags = lastUriChangeContent.failTags();
-                    if (failTags != null) {
-                        final AbstractHtml[] innerHtmls = failTags.get();
-                        if (innerHtmls != null) {
-                            // just to throw exception if it contains null or duplicate element
-                            Set.of(innerHtmls);
-                            addInnerHtmls(true, updateClient, innerHtmls);
-                            insertedHtmls = innerHtmls;
+                    if (lastUriChangeContent.invokeAsConsumer) {
+                        if (lastUriChangeContent.failConsumer != null) {
+                            lastUriChangeContent.failConsumer.accept(new TagEvent(this, uri));
                         }
                     } else {
-                        if (updateClient) {
-                            removeAllChildren();
+                        final Supplier<AbstractHtml[]> failTags = lastUriChangeContent.failTags();
+                        if (failTags != null) {
+                            final AbstractHtml[] innerHtmls = failTags.get();
+                            if (innerHtmls != null) {
+                                // just to throw exception if it contains null or duplicate element
+                                Set.of(innerHtmls);
+                                addInnerHtmls(true, updateClient, innerHtmls);
+                                insertedHtmls = innerHtmls;
+                            }
                         } else {
-                            removeAllChildrenAndGetEventsLockless(updateClient);
+                            if (updateClient) {
+                                removeAllChildren();
+                            } else {
+                                removeAllChildrenAndGetEventsLockless(updateClient);
+                            }
                         }
                     }
-
                 }
                 lastURIPredicateTest = executed;
                 lastURI = uri;

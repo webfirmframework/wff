@@ -294,7 +294,7 @@ public final class TagUtil {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
 
-        return tag.changeInnerHtmlsForURIChange(uri, expectedSO, accessObject);
+        return tag.changeInnerHtmlsForURIChange(uri, expectedSO);
     }
 
 }
