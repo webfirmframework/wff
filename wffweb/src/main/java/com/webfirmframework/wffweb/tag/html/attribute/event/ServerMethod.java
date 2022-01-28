@@ -31,10 +31,11 @@ public interface ServerMethod extends Serializable {
      * @param sourceAttribute
      * @param serverMethodName
      * @param serverSideData
+     * @param uri
      *
      */
     public static record Event(WffBMObject data, AbstractHtml sourceTag, AbstractAttribute sourceAttribute,
-            String serverMethodName, Object serverSideData) {
+            String serverMethodName, Object serverSideData, String uri) {
 
         /**
          * @return the sourceTag

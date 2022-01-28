@@ -6930,13 +6930,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      * @since 12.0.0-beta.1
      * @return true if sharedObjects are equals
      */
-    @SuppressWarnings("exports")
-    public final boolean changeInnerHtmlsForURIChange(final String uri, final AbstractHtml5SharedObject expectedSO,
+    final boolean changeInnerHtmlsForURIChange(final String uri, final AbstractHtml5SharedObject expectedSO,
             final SecurityObject accessObject) {
-
-        if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
-            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
-        }
 
         final Lock lock = lockAndGetWriteLock();
         try {

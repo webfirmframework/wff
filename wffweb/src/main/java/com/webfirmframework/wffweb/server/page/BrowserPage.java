@@ -806,7 +806,7 @@ public abstract class BrowserPage implements Serializable {
                     final ServerMethod serverMethod = eventAttr.getServerMethod();
 
                     final ServerMethod.Event event = new ServerMethod.Event(wffBMObject, methodTag, attributeByName,
-                            null, eventAttr.getServerSideData());
+                            null, eventAttr.getServerSideData(), uri);
 
                     final WffBMObject returnedObject;
 
@@ -921,8 +921,8 @@ public abstract class BrowserPage implements Serializable {
                     // per
                     // java memory
                     // model
-                    returnedObject = serverMethod.serverMethod().invoke(
-                            new ServerMethod.Event(wffBMObject, null, null, methodName, serverMethod.serverSideData()));
+                    returnedObject = serverMethod.serverMethod().invoke(new ServerMethod.Event(wffBMObject, null, null,
+                            methodName, serverMethod.serverSideData(), uri));
                 }
 
             } catch (final Exception e) {
@@ -2414,7 +2414,7 @@ public abstract class BrowserPage implements Serializable {
                 for (final Reference<AbstractHtml> tagRef : initialList) {
                     final AbstractHtml tag = tagRef.get();
                     if (tag != null) {
-                        final boolean sharedObjectsEqual = tag.changeInnerHtmlsForURIChange(uriAfter,
+                        final boolean sharedObjectsEqual = TagUtil.changeInnerHtmlsForURIChange(tag, uriAfter,
                                 rootTag.getSharedObject(), ACCESS_OBJECT);
                         if (!sharedObjectsEqual) {
                             tagsForURIChange.remove(tagRef);
@@ -2500,7 +2500,7 @@ public abstract class BrowserPage implements Serializable {
 
     /**
      * NB: only for testing
-     * 
+     *
      * @return
      */
     final Set<Reference<AbstractHtml>> getTagsForURIChangeForTest() {
