@@ -93,7 +93,7 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
  * @version 3.0.1
  * @since 1.0.0
  */
-public abstract non-sealed class AbstractHtml extends AbstractJsObject {
+public abstract non-sealed class AbstractHtml extends AbstractJsObject implements URIStateSwitch {
 
     // if this class' is refactored then SecurityClassConstants should be
     // updated.
@@ -202,9 +202,20 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
         }
     }
 
+    private enum WhenURIMethodType {
+
+        SUCCESS_SUPPLIER_FAIL_CONSUMER,
+
+        SUCCESS_CONSUMER_FAIL_SUPPLIER,
+
+        SUCCESS_SUPPLIER_FAIL_SUPPLIER,
+
+        SUCCESS_CONSUMER_FAIL_CONSUMER;
+    }
+
     private static record URIChangeContent(Predicate<String> uriPredicate, Supplier<AbstractHtml[]> successTags,
             Supplier<AbstractHtml[]> failTags, Consumer<TagEvent> successConsumer, Consumer<TagEvent> failConsumer,
-            boolean invokeAsConsumer) implements Serializable {
+            WhenURIMethodType methodType) implements Serializable {
     }
 
     static {
@@ -6713,12 +6724,13 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      *                            {@code successTagsSupplier.get()} method returns
      *                            null, no action will be done on the tag.
      *
-     * @return this tag
+     * @return URIStateSwitch
      * @since 12.0.0-beta.1
      */
-    public AbstractHtml whenURI(final Predicate<String> uriPredicate,
+    @Override
+    public URIStateSwitch whenURI(final Predicate<String> uriPredicate,
             final Supplier<AbstractHtml[]> successTagsSupplier) {
-        return whenURI(uriPredicate, successTagsSupplier, null, -1);
+        return whenURI(uriPredicate, successTagsSupplier, (Supplier<AbstractHtml[]>) null, -1);
     }
 
     /**
@@ -6757,12 +6769,13 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      *                            this. A value less than zero will add this
      *                            condition to the last.
      *
-     * @return this tag
+     * @return URIStateSwitch
      * @since 12.0.0-beta.1
      */
-    public AbstractHtml whenURI(final Predicate<String> uriPredicate,
+    @Override
+    public URIStateSwitch whenURI(final Predicate<String> uriPredicate,
             final Supplier<AbstractHtml[]> successTagsSupplier, final int index) {
-        return whenURI(uriPredicate, successTagsSupplier, null, index);
+        return whenURI(uriPredicate, successTagsSupplier, (Supplier<AbstractHtml[]>) null, index);
     }
 
     /**
@@ -6800,10 +6813,11 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      *                            {@code failTagsSupplier.get()} * method returns
      *                            null, no action will be done on the tag.
      *
-     * @return this tag
+     * @return URIStateSwitch
      * @since 12.0.0-beta.1
      */
-    public AbstractHtml whenURI(final Predicate<String> uriPredicate,
+    @Override
+    public URIStateSwitch whenURI(final Predicate<String> uriPredicate,
             final Supplier<AbstractHtml[]> successTagsSupplier, final Supplier<AbstractHtml[]> failTagsSupplier) {
         return whenURI(uriPredicate, successTagsSupplier, failTagsSupplier, -1);
     }
@@ -6845,32 +6859,139 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      * @param index               the index to replace the existing action with
      *                            this. A value less than zero will add this
      *                            condition to the last.
-     * @return this tag
+     * @return URIStateSwitch
      * @since 12.0.0-beta.1
      */
-    public AbstractHtml whenURI(final Predicate<String> uriPredicate,
+    @Override
+    public URIStateSwitch whenURI(final Predicate<String> uriPredicate,
             final Supplier<AbstractHtml[]> successTagsSupplier, final Supplier<AbstractHtml[]> failTagsSupplier,
             final int index) {
 
         Objects.requireNonNull(uriPredicate, "uriPredicate cannot be null in whenURI method");
         Objects.requireNonNull(successTagsSupplier, "successTagsSupplier cannot be null in whenURI method");
-        return whenURI(uriPredicate, successTagsSupplier, failTagsSupplier, false, null, null, index);
+        return whenURI(uriPredicate, successTagsSupplier, failTagsSupplier,
+                WhenURIMethodType.SUCCESS_SUPPLIER_FAIL_SUPPLIER, null, null, index);
+    }
+
+    @Override
+    public URIStateSwitch whenURI(final Predicate<String> uriPredicate,
+            final Supplier<AbstractHtml[]> successTagsSupplier, final Consumer<TagEvent> failConsumer,
+            final int index) {
+
+        Objects.requireNonNull(uriPredicate, "uriPredicate cannot be null in whenURI method");
+        Objects.requireNonNull(successTagsSupplier, "successTagsSupplier cannot be null in whenURI method");
+        return whenURI(uriPredicate, successTagsSupplier, null, WhenURIMethodType.SUCCESS_SUPPLIER_FAIL_SUPPLIER, null,
+                failConsumer, index);
+    }
+
+    @Override
+    public URIStateSwitch whenURI(final Predicate<String> uriPredicate,
+            final Supplier<AbstractHtml[]> successTagsSupplier, final Consumer<TagEvent> failConsumer) {
+
+        Objects.requireNonNull(uriPredicate, "uriPredicate cannot be null in whenURI method");
+        Objects.requireNonNull(successTagsSupplier, "successTagsSupplier cannot be null in whenURI method");
+        return whenURI(uriPredicate, successTagsSupplier, null, WhenURIMethodType.SUCCESS_SUPPLIER_FAIL_SUPPLIER, null,
+                failConsumer, -1);
+    }
+
+    @Override
+    public URIStateSwitch whenURI(final Predicate<String> uriPredicate, final Consumer<TagEvent> successConsumer,
+            final Supplier<AbstractHtml[]> failTagsSupplier, final int index) {
+
+        Objects.requireNonNull(uriPredicate, "uriPredicate cannot be null in whenURI method");
+        Objects.requireNonNull(successConsumer, "successConsumer cannot be null in whenURI method");
+        return whenURI(uriPredicate, null, failTagsSupplier, WhenURIMethodType.SUCCESS_SUPPLIER_FAIL_SUPPLIER,
+                successConsumer, null, index);
+    }
+
+    @Override
+    public URIStateSwitch whenURI(final Predicate<String> uriPredicate, final Consumer<TagEvent> successConsumer,
+            final Supplier<AbstractHtml[]> failTagsSupplier) {
+
+        Objects.requireNonNull(uriPredicate, "uriPredicate cannot be null in whenURI method");
+        Objects.requireNonNull(successConsumer, "successConsumer cannot be null in whenURI method");
+        return whenURI(uriPredicate, null, failTagsSupplier, WhenURIMethodType.SUCCESS_SUPPLIER_FAIL_SUPPLIER,
+                successConsumer, null, -1);
+    }
+
+    /**
+     *
+     * @param uriPredicate
+     * @param successConsumer the consumer to execute if {@code uriPredicate.test()}
+     *                        returns true
+     * @param failConsumer    the consumer to execute if {@code uriPredicate.test()}
+     *                        returns false. {@code null} can be passed if there is
+     *                        no {@code failConsumer}.
+     * @param index           the position at which this action be the index to
+     *                        replace the existing action with this. A value less
+     *                        than zero will add this condition to the last.
+     * @return URIStateSwitch
+     * @since 12.0.0-beta.1
+     */
+    @Override
+    public URIStateSwitch whenURI(final Predicate<String> uriPredicate, final Consumer<TagEvent> successConsumer,
+            final Consumer<TagEvent> failConsumer, final int index) {
+
+        Objects.requireNonNull(uriPredicate, "uriPredicate cannot be null in whenURI method");
+        Objects.requireNonNull(successConsumer, "successConsumer cannot be null in whenURI method");
+        return whenURI(uriPredicate, null, null, WhenURIMethodType.SUCCESS_CONSUMER_FAIL_CONSUMER, successConsumer,
+                failConsumer, index);
+    }
+
+    /**
+     *
+     * @param uriPredicate
+     * @param successConsumer the consumer to execute if {@code uriPredicate.test()}
+     *                        returns true
+     * @param failConsumer    the consumer to execute if {@code uriPredicate.test()}
+     *                        returns false. {@code null} can be passed if there is
+     *                        no {@code failConsumer}.
+     * @return URIStateSwitch
+     * @since 12.0.0-beta.1
+     */
+    @Override
+    public URIStateSwitch whenURI(final Predicate<String> uriPredicate, final Consumer<TagEvent> successConsumer,
+            final Consumer<TagEvent> failConsumer) {
+        return whenURI(uriPredicate, successConsumer, failConsumer, -1);
+    }
+
+    @Override
+    public URIStateSwitch whenURI(final Predicate<String> uriPredicate, final Consumer<TagEvent> successConsumer,
+            final int index) {
+
+        Objects.requireNonNull(uriPredicate, "uriPredicate cannot be null in whenURI method");
+        Objects.requireNonNull(successConsumer, "successConsumer cannot be null in whenURI method");
+        return whenURI(uriPredicate, null, null, WhenURIMethodType.SUCCESS_CONSUMER_FAIL_CONSUMER, successConsumer,
+                null, index);
+    }
+
+    /**
+     *
+     * @param uriPredicate
+     * @param successConsumer the consumer to execute if {@code uriPredicate.test()}
+     *                        returns true
+     * @return URIStateSwitch
+     * @since 12.0.0-beta.1
+     */
+    @Override
+    public URIStateSwitch whenURI(final Predicate<String> uriPredicate, final Consumer<TagEvent> successConsumer) {
+        return whenURI(uriPredicate, successConsumer, (Consumer<TagEvent>) null, -1);
     }
 
     /**
      * @param uriPredicate
      * @param successTagsSupplier
      * @param failTagsSupplier
-     * @param invokeAsConsumer
+     * @param methodType
      * @param successConsumer
      * @param failConsumer
      * @param index
-     * @return
+     * @return AbstractHtml
      * @since 12.0.0-beta.1
      */
-    private <T extends AbstractHtml> AbstractHtml whenURI(final Predicate<String> uriPredicate,
+    private AbstractHtml whenURI(final Predicate<String> uriPredicate,
             final Supplier<AbstractHtml[]> successTagsSupplier, final Supplier<AbstractHtml[]> failTagsSupplier,
-            final boolean invokeAsConsumer, final Consumer<TagEvent> successConsumer,
+            final WhenURIMethodType methodType, final Consumer<TagEvent> successConsumer,
             final Consumer<TagEvent> failConsumer, final int index) {
 
         final Lock lock = lockAndGetWriteLock();
@@ -6879,7 +7000,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
             final AbstractHtml5SharedObject sharedObject = this.sharedObject;
 
             final URIChangeContent uriChangeContent = new URIChangeContent(uriPredicate, successTagsSupplier,
-                    failTagsSupplier, successConsumer, failConsumer, invokeAsConsumer);
+                    failTagsSupplier, successConsumer, failConsumer, methodType);
 
             if (uriChangeContents == null && index >= 0) {
                 throw new InvalidValueException("There is no existing whenURI condition to replace");
@@ -6905,59 +7026,11 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
     }
 
     /**
-     * @param <T>
-     * @param uriPredicate
-     * @param successConsumer the consumer to execute if {@code uriPredicate.test()}
-     *                        returns true
-     * @param failConsumer    the consumer to execute if {@code uriPredicate.test()}
-     *                        returns false. {@code null} can be passed if there is
-     *                        no {@code failConsumer}.
-     * @param index           the position at which this action be the index to
-     *                        replace the existing action with this. A value less
-     *                        than zero will add this condition to the last.
-     * @since 12.0.0-beta.1
-     */
-    @SuppressWarnings("unchecked")
-    public <T extends AbstractHtml> T whenURI(final Predicate<String> uriPredicate,
-            final Consumer<TagEvent> successConsumer, final Consumer<TagEvent> failConsumer, final int index) {
-
-        Objects.requireNonNull(uriPredicate, "uriPredicate cannot be null in whenURI method");
-        Objects.requireNonNull(successConsumer, "successConsumer cannot be null in whenURI method");
-        return (T) whenURI(uriPredicate, null, null, true, successConsumer, failConsumer, index);
-    }
-
-    /**
-     * @param <T>
-     * @param uriPredicate
-     * @param successConsumer the consumer to execute if {@code uriPredicate.test()}
-     *                        returns true
-     * @param failConsumer    the consumer to execute if {@code uriPredicate.test()}
-     *                        returns false. {@code null} can be passed if there is
-     *                        no {@code failConsumer}.
-     * @since 12.0.0-beta.1
-     */
-    public <T extends AbstractHtml> T whenURI(final Predicate<String> uriPredicate,
-            final Consumer<TagEvent> successConsumer, final Consumer<TagEvent> failConsumer) {
-        return whenURI(uriPredicate, successConsumer, failConsumer, -1);
-    }
-
-    /**
-     * @param <T>
-     * @param uriPredicate
-     * @param successConsumer the consumer to execute if {@code uriPredicate.test()}
-     *                        returns true
-     * @since 12.0.0-beta.1
-     */
-    public <T extends AbstractHtml> T whenURI(final Predicate<String> uriPredicate,
-            final Consumer<TagEvent> successConsumer) {
-        return whenURI(uriPredicate, successConsumer, null, -1);
-    }
-
-    /**
      * Removes all whenURI actions.
      *
      * @since 12.0.0-beta.1
      */
+    @Override
     public void removeURIChangeActions() {
         final Lock lock = lockAndGetWriteLock();
         try {
@@ -6973,6 +7046,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
      * @param index the action to remove at the given index
      * @since 12.0.0-beta.1
      */
+    @Override
     public void removeURIChangeAction(final int index) {
         final Lock lock = lockAndGetWriteLock();
         try {
@@ -7054,7 +7128,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
                 lastUriChangeContent = each;
 
                 if (each.uriPredicate.test(uri)) {
-                    if (each.invokeAsConsumer) {
+                    if (each.methodType.equals(WhenURIMethodType.SUCCESS_CONSUMER_FAIL_CONSUMER)
+                            || each.methodType.equals(WhenURIMethodType.SUCCESS_CONSUMER_FAIL_SUPPLIER)) {
                         each.successConsumer.accept(new TagEvent(this, uri));
                     } else {
                         final AbstractHtml[] innerHtmls = each.successTags.get();
@@ -7074,7 +7149,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject {
             if (lastUriChangeContent != null) {
 
                 if (!executed) {
-                    if (lastUriChangeContent.invokeAsConsumer) {
+                    if (lastUriChangeContent.methodType.equals(WhenURIMethodType.SUCCESS_CONSUMER_FAIL_CONSUMER)
+                            || lastUriChangeContent.methodType
+                                    .equals(WhenURIMethodType.SUCCESS_CONSUMER_FAIL_SUPPLIER)) {
                         if (lastUriChangeContent.failConsumer != null) {
                             lastUriChangeContent.failConsumer.accept(new TagEvent(this, uri));
                         }

@@ -2422,17 +2422,17 @@ public class AbstractHtmlTest {
                         controlFlow.append("NoTag plain text\n");
 
                         return new AbstractHtml[] { new NoTag(null, "plain text") };
-                    }, null);
+                    }).currentAs();
                     expectedTagsForURIChange.add(p);
                 });
 
                 return new AbstractHtml[] { pParent };
-            }, null);
+            }).currentAs();
 
             expectedTagsForURIChange.add(span);
 
             return new AbstractHtml[] { span };
-        }, null);
+        }).currentAs();
 
         expectedTagsForURIChange.add(div1);
 
@@ -2510,18 +2510,18 @@ public class AbstractHtmlTest {
                             controlFlow.append("NoTag plain text\n");
 
                             return new AbstractHtml[] { new NoTag(null, "plain text") };
-                        }, null);
+                        }).currentAs();
                         expectedTagsForURIChange.add(p);
                     }
                 };
 
                 return new AbstractHtml[] { pParent };
-            }, null);
+            }).currentAs();
 
             expectedTagsForURIChange.add(span);
 
             return new AbstractHtml[] { span };
-        }, null);
+        }).currentAs();
 
         html.appendChild(div1);
         expectedTagsForURIChange.add(div1);
@@ -2598,17 +2598,17 @@ public class AbstractHtmlTest {
                             controlFlow.append("NoTag plain text\n");
 
                             return new AbstractHtml[] { new NoTag(null, "plain text") };
-                        }, null);
+                        }).currentAs();
                         expectedTagsForURIChange.add(p);
                     }
                 };
 
                 return new AbstractHtml[] { pParent };
-            }, null);
+            }).currentAs();
             expectedTagsForURIChange.add(span);
 
             return new AbstractHtml[] { span };
-        }, null);
+        }).currentAs();
 
         expectedTagsForURIChange.add(div1);
 
@@ -2634,18 +2634,18 @@ public class AbstractHtmlTest {
                             controlFlow.append("2 NoTag plain text\n");
 
                             return new AbstractHtml[] { new NoTag(null, "plain text") };
-                        }, null);
+                        }).currentAs();
                         expectedTagsForURIChange.add(p);
                     }
                 };
 
                 return new AbstractHtml[] { pParent };
-            }, null);
+            }).currentAs();
 
             expectedTagsForURIChange.add(span);
 
             return new AbstractHtml[] { span };
-        }, null);
+        });
 
         expectedTagsForURIChange.add(div2);
 
@@ -2684,18 +2684,18 @@ public class AbstractHtmlTest {
                             controlFlow.append("3 NoTag plain text\n");
 
                             return new AbstractHtml[] { new NoTag(null, "plain text") };
-                        }, null);
+                        }).currentAs();
 
                         expectedTagsForURIChange.add(p);
                     }
                 };
 
                 return new AbstractHtml[] { pParent };
-            }, null);
+            }).currentAs();
             expectedTagsForURIChange.add(span);
 
             return new AbstractHtml[] { span };
-        }, null);
+        });
 
         expectedTagsForURIChange.add(div3);
 
@@ -2787,17 +2787,17 @@ public class AbstractHtmlTest {
                         controlFlow.append("NoTag plain text\n");
 
                         return new AbstractHtml[] { new NoTag(null, "plain text") };
-                    }, null);
+                    }).currentAs();
                     expectedTagsForURIChange.add(p);
                 });
 
                 return new AbstractHtml[] { pParent };
-            }, null);
+            }).currentAs();
 
             expectedTagsForURIChange.add(span);
 
             return new AbstractHtml[] { span };
-        }, null);
+        }).currentAs();
 
         expectedTagsForURIChange.add(div1);
 
@@ -2883,17 +2883,17 @@ public class AbstractHtmlTest {
                         controlFlow.append("NoTag plain text\n");
 
                         event2.sourceTag().addInnerHtmls(new AbstractHtml[] { new NoTag(null, "plain text") });
-                    }, null);
+                    }).currentAs();
                     expectedTagsForURIChange.add(p);
                 });
 
                 event1.sourceTag().addInnerHtmls(new AbstractHtml[] { pParent });
-            }, null);
+            }).currentAs();
 
             expectedTagsForURIChange.add(span);
 
             event.sourceTag().addInnerHtmls(new AbstractHtml[] { span });
-        }, null);
+        }).currentAs();
 
         expectedTagsForURIChange.add(div1);
 
@@ -2964,6 +2964,7 @@ public class AbstractHtmlTest {
         
         Supplier<AbstractHtml[]> cosumer = null;
         div.whenURI(uri -> true, cosumer);
+
 
     }
 
