@@ -142,6 +142,7 @@ import com.webfirmframework.wffweb.tag.html.AbstractHtmlTest;
 import com.webfirmframework.wffweb.tag.html.HrTest;
 import com.webfirmframework.wffweb.tag.html.HtmlTest;
 import com.webfirmframework.wffweb.tag.html.SharedTagContentTest;
+import com.webfirmframework.wffweb.tag.html.WhenURIUseCaseTest;
 import com.webfirmframework.wffweb.tag.html.attribute.CheckedTest;
 import com.webfirmframework.wffweb.tag.html.attribute.RelTest;
 import com.webfirmframework.wffweb.tag.html.attribute.SelectedTest;
@@ -216,7 +217,8 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObjectArrayTest;
         SharedTagContentTest.class, CssColorNameTest.class, TaskTest.class, WffJsFileTest.class,
         StringBuilderUtilTest.class, SecurityClassConstantsTest.class, ReentrantStampedLockTest.class,
         UnicodeStringTest.class, ExternalDriveByteArrayQueueTest.class, ExternalDriveClientTasksWrapperDequeTest.class,
-        ExternalDriveClientTasksWrapperQueueTest.class, AttributeIdGeneratorTest.class, SharedObjectIdGeneratorTest.class })
+        ExternalDriveClientTasksWrapperQueueTest.class, AttributeIdGeneratorTest.class,
+        SharedObjectIdGeneratorTest.class, WhenURIUseCaseTest.class })
 public class AllTests {
 
 }
