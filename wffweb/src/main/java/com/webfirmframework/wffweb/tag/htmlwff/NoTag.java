@@ -21,10 +21,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import com.webfirmframework.wffweb.MethodNotImplementedException;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.SharedTagContent;
+import com.webfirmframework.wffweb.tag.html.TagEvent;
+import com.webfirmframework.wffweb.tag.html.URIStateSwitch;
 import com.webfirmframework.wffweb.tag.html.SharedTagContent.ContentFormatter;
 import com.webfirmframework.wffweb.util.StringUtil;
 
@@ -242,6 +246,80 @@ public class NoTag extends AbstractHtml {
     @Override
     public <R extends AbstractHtml, C> R give(final BiFunction<R, C, R> consumer, final C input) {
         throw new MethodNotImplementedException("give is not allowed to use in NoTag or Blank tag");
+    }
+
+    /**
+     * @deprecated this method is not allowed in NoTag or Blank class.
+     */
+    @Deprecated(since = "12.0.0-beta.1")
+    public URIStateSwitch whenURI(final Predicate<String> uriPredicate,
+            final Supplier<AbstractHtml[]> successTagsSupplier) {
+        throw new MethodNotImplementedException("This method is not allowed in NoTag");
+    }
+
+    /**
+     * @deprecated this method is not allowed in NoTag or Blank class.
+     */
+    @Deprecated(since = "12.0.0-beta.1")
+    public URIStateSwitch whenURI(final Predicate<String> uriPredicate,
+            final Supplier<AbstractHtml[]> successTagsSupplier, final int index) {
+        throw new MethodNotImplementedException("This method is not allowed in NoTag");
+    }
+
+    /**
+     * @deprecated this method is not allowed in NoTag or Blank class.
+     */
+    @Deprecated(since = "12.0.0-beta.1")
+    public URIStateSwitch whenURI(final Predicate<String> uriPredicate,
+            final Supplier<AbstractHtml[]> successTagsSupplier, final Supplier<AbstractHtml[]> failTagsSupplier) {
+        throw new MethodNotImplementedException("This method is not allowed in NoTag");
+    }
+
+    /**
+     * @deprecated this method is not allowed in NoTag or Blank class.
+     */
+    @Deprecated(since = "12.0.0-beta.1")
+    public URIStateSwitch whenURI(final Predicate<String> uriPredicate,
+            final Supplier<AbstractHtml[]> successTagsSupplier, final Supplier<AbstractHtml[]> failTagsSupplier,
+            final int index) {
+        throw new MethodNotImplementedException("This method is not allowed in NoTag");
+    }
+
+    /**
+     * @deprecated this method is not allowed in NoTag or Blank class.
+     */
+    @Deprecated(since = "12.0.0-beta.1")
+    public URIStateSwitch whenURI(final Predicate<String> uriPredicate,
+            final Supplier<AbstractHtml[]> successTagsSupplier, final Consumer<TagEvent> failConsumer,
+            final int index) {
+        throw new MethodNotImplementedException("This method is not allowed in NoTag");
+    }
+
+    /**
+     * @deprecated this method is not allowed in NoTag or Blank class.
+     */
+    @Deprecated(since = "12.0.0-beta.1")
+    public URIStateSwitch whenURI(final Predicate<String> uriPredicate,
+            final Supplier<AbstractHtml[]> successTagsSupplier, final Consumer<TagEvent> failConsumer) {
+        throw new MethodNotImplementedException("This method is not allowed in NoTag");
+    }
+
+    /**
+     * @deprecated this method is not allowed in NoTag or Blank class.
+     */
+    @Deprecated(since = "12.0.0-beta.1")
+    public URIStateSwitch whenURI(final Predicate<String> uriPredicate, final Consumer<TagEvent> successConsumer,
+            final Supplier<AbstractHtml[]> failTagsSupplier, final int index) {
+        throw new MethodNotImplementedException("This method is not allowed in NoTag");
+    }
+
+    /**
+     * @deprecated this method is not allowed in NoTag or Blank class.
+     */
+    @Deprecated(since = "12.0.0-beta.1")
+    public URIStateSwitch whenURI(final Predicate<String> uriPredicate, final Consumer<TagEvent> successConsumer,
+            final Supplier<AbstractHtml[]> failTagsSupplier) {
+        throw new MethodNotImplementedException("This method is not allowed in NoTag");
     }
 
 }

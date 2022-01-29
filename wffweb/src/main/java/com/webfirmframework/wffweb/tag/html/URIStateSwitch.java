@@ -274,7 +274,6 @@ public sealed interface URIStateSwitch permits AbstractHtml {
      */
     @SuppressWarnings("unchecked")
     default <T extends AbstractHtml> T currentAs() {
-
         return (T) this;
     }
 }

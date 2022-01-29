@@ -28,7 +28,7 @@ import com.webfirmframework.wffweb.tag.html.AbstractHtml;
  * @since 1.0.0
  * @deprecated use {@link NoTag} instead of this class.
  */
-@Deprecated
+@Deprecated(forRemoval = true, since = "12.0.0-beta.1")
 public class Blank extends NoTag {
 
     // TODO This class needs to be tested properly
