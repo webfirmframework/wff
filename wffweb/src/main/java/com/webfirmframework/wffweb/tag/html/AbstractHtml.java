@@ -7136,7 +7136,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                         if (innerHtmls != null) {
                             // just to throw exception if it contains null or duplicate element
                             Set.of(innerHtmls);
-                            addInnerHtmls(true, updateClient, innerHtmls);
+                            if (children == null || !Arrays.equals(children.toArray(), innerHtmls)) {
+                                addInnerHtmls(true, updateClient, innerHtmls);
+                            }
                             insertedHtmls = innerHtmls;
                         }
                     }
@@ -7162,7 +7164,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                             if (innerHtmls != null) {
                                 // just to throw exception if it contains null or duplicate element
                                 Set.of(innerHtmls);
-                                addInnerHtmls(true, updateClient, innerHtmls);
+                                if (children == null || !Arrays.equals(children.toArray(), innerHtmls)) {
+                                    addInnerHtmls(true, updateClient, innerHtmls);
+                                }
                                 insertedHtmls = innerHtmls;
                             }
                         } else {
