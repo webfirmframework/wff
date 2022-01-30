@@ -61,21 +61,29 @@ var wffBMClientEvents = new function() {
 		
 		sessionStorage.setItem('WFF_INSTANCE_ID', wffGlobal.INSTANCE_ID);
 	};
-	
+
 	this.wffInitialWSOpen = function() {
 		var nameValues = [];
 
 		//taskNameValue
 		var tnv = wffTaskUtil.getTaskNameValue(
-				wffGlobal.taskValues.TASK,
-				wffGlobal.taskValues.INITIAL_WS_OPEN);
+			wffGlobal.taskValues.TASK,
+			wffGlobal.taskValues.INITIAL_WS_OPEN);
 
 		nameValues.push(tnv);
+
+		if (window.location && window.location.pathname) {
+			var pthNV = {
+				'name': encoder.encode(window.location.pathname),
+				'values': []
+			};
+			nameValues.push(pthNV);
+		}
 
 		var wffBM = wffBMUtil.getWffBinaryMessageBytes(nameValues);
 
 		wffWS.send(wffBM);
 	};
-	
-	
+
+
 };

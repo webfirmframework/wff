@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 Web Firm Framework
+ * Copyright 2014-2022 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,13 @@ import java.io.OutputStream;
 import java.io.Serial;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.lang.ref.Reference;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.LinkedHashSet;
@@ -75,6 +77,7 @@ import com.webfirmframework.wffweb.util.HashUtil;
 import com.webfirmframework.wffweb.util.StringUtil;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 import com.webfirmframework.wffweb.util.data.NameValue;
+import com.webfirmframework.wffweb.wffbm.data.BMValueType;
 import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
 
 /**
@@ -189,6 +192,10 @@ public abstract class BrowserPage implements Serializable {
     private volatile boolean onInitialClientPingInvoked;
 
     private volatile long lastClientAccessedTime = System.currentTimeMillis();
+
+    private final Set<Reference<AbstractHtml>> tagsForURIChange = ConcurrentHashMap.newKeySet(1);
+
+    private volatile String uri;
 
     // NB: this non-static initialization makes BrowserPage and PayloadProcessor
     // never to get GCd. It leads to memory leak. It seems to be a bug.
@@ -798,8 +805,8 @@ public abstract class BrowserPage implements Serializable {
 
                     final ServerMethod serverMethod = eventAttr.getServerMethod();
 
-                    final ServerMethod.Event event = new ServerMethod.Event(wffBMObject, methodTag,
-                            attributeByName, null, eventAttr.getServerSideData());
+                    final ServerMethod.Event event = new ServerMethod.Event(wffBMObject, methodTag, attributeByName,
+                            null, eventAttr.getServerSideData(), uri);
 
                     final WffBMObject returnedObject;
 
@@ -914,8 +921,8 @@ public abstract class BrowserPage implements Serializable {
                     // per
                     // java memory
                     // model
-                    returnedObject = serverMethod.serverMethod().invoke(new ServerMethod.Event(
-                            wffBMObject, null, null, methodName, serverMethod.serverSideData()));
+                    returnedObject = serverMethod.serverMethod().invoke(new ServerMethod.Event(wffBMObject, null, null,
+                            methodName, serverMethod.serverSideData(), uri));
                 }
 
             } catch (final Exception e) {
@@ -993,6 +1000,13 @@ public abstract class BrowserPage implements Serializable {
                 if (!onInitialClientPingInvoked) {
                     try {
                         synchronized (this) {
+
+                            if (nameValues.size() > 1) {
+                                final NameValue pathnameNV = nameValues.get(1);
+                                final String urlPath = new String(pathnameNV.getName(), StandardCharsets.UTF_8);
+                                setURI(false, urlPath);
+                            }
+
                             onInitialClientPingInvoked = true;
                             onInitialClientPing(rootTag);
                         }
@@ -1002,10 +1016,57 @@ public abstract class BrowserPage implements Serializable {
                         }
                     }
                 }
+            } else if (taskValue == Task.CLIENT_PATHNAME_CHANGED.getValueByte()) {
+                try {
+                    if (nameValues.size() > 1) {
+                        final NameValue pathnameNV = nameValues.get(1);
+                        final String urlPath = new String(pathnameNV.getName(), StandardCharsets.UTF_8);
+                        synchronized (this) {
+                            setURI(false, urlPath);
+                        }
+
+                        String callbackFunId = null;
+
+                        if (nameValues.size() > 2) {
+                            final NameValue callbackFunNameValue = nameValues.get(2);
+                            callbackFunId = new String(callbackFunNameValue.getName(), StandardCharsets.UTF_8);
+                        }
+
+                        if (callbackFunId != null) {
+                            final NameValue invokeCallbackFuncTask = Task.INVOKE_CALLBACK_FUNCTION.getTaskNameValue();
+
+                            final NameValue nameValue = new NameValue();
+                            nameValue.setName(callbackFunId.getBytes(StandardCharsets.UTF_8));
+
+                            push(invokeCallbackFuncTask, nameValue);
+                            if (holdPush.get() == 0) {
+                                pushWffBMBytesQueue();
+                            }
+
+                        }
+                    }
+                } catch (final Exception e) {
+                    if (LOGGER.isLoggable(Level.SEVERE)) {
+                        LOGGER.log(Level.SEVERE, "Exception while executing setURI", e);
+                    }
+                }
             }
 
         }
 
+    }
+
+    private void invokeAfterSetURIAtClient(final String uriBefore, final String uriAfter) {
+
+        final WffBMObject event = new WffBMObject();
+        event.put("uriBefore", BMValueType.STRING, uriBefore != null ? uriBefore : BMValueType.NULL);
+        event.put("uriAfter", BMValueType.STRING, uriAfter != null ? uriAfter : BMValueType.NULL);
+        event.put("origin", BMValueType.STRING, "server");
+        final NameValue taskNameValue = Task.AFTER_SET_URI.getTaskNameValue(event.buildBytes(true));
+        push(taskNameValue);
+        if (holdPush.get() == 0) {
+            pushWffBMBytesQueue();
+        }
     }
 
     private void addAttrValueChangeListener(final AbstractHtml abstractHtml) {
@@ -1599,6 +1660,7 @@ public abstract class BrowserPage implements Serializable {
                     addWffBMDataUpdateListener(rootTag);
                     addWffBMDataDeleteListener(rootTag);
                     addPushQueue(rootTag);
+                    addInnerHtmlsForURLChange(rootTag);
 
                     wsWarningDisabled = true;
                     afterRender(rootTag);
@@ -1683,8 +1745,8 @@ public abstract class BrowserPage implements Serializable {
     /**
      * @param methodName
      * @param serverMethod
-     * @param serverSideData    this object will be available in the event of
-     *                          serverMethod.invoke
+     * @param serverSideData this object will be available in the event of
+     *                       serverMethod.invoke
      * @author WFF
      * @since 3.0.2
      */
@@ -1958,16 +2020,13 @@ public abstract class BrowserPage implements Serializable {
             throw new NullValueException("tag object in browserPage.contains(AbstractHtml tag) method cannot be null");
         }
 
-        if (tagByWffId == null) {
+        if (rootTag == null) {
             throw new NotRenderedException(
                     "Could not check its existance. Make sure that you have called browserPage#toHtmlString method atleast once in the life time.");
         }
 
-        final DataWffId dataWffId = tag.getDataWffId();
-        if (dataWffId == null) {
-            return false;
-        }
-        return tag.equals(tagByWffId.get(dataWffId.getValue()));
+        // this is better way to check, the rest of the code is old
+        return rootTag.getSharedObject().equals(tag.getSharedObject());
     }
 
     /**
@@ -2313,6 +2372,140 @@ public abstract class BrowserPage implements Serializable {
      */
     protected final void setExecutor(final Executor executor) {
         this.executor = executor;
+    }
+
+    private void addInnerHtmlsForURLChange(final AbstractHtml rootTag) {
+        rootTag.getSharedObject().setURIChangeTagSupplier(tag -> {
+            if (tag != null) {
+                tagsForURIChange.add(new TagWeakReference(tag));
+            }
+            return uri;
+        }, ACCESS_OBJECT);
+    }
+
+    /**
+     *
+     * @param updateClientURI
+     * @param uriBefore
+     * @param uriAfter        this is the current uri
+     * @since 12.0.0-beta.1
+     */
+    private void changeInnerHtmlsOnTagsForURIChange(final boolean updateClientURI, final String uriBefore,
+            final String uriAfter) {
+
+        boolean executed = false;
+        try {
+            TagUtil.runAtomically(rootTag, () -> {
+                uri = uriAfter;
+                final int size = tagsForURIChange.size();
+                final List<AbstractHtml> tempCachToPreventGC = new ArrayList<>(size);
+                final List<Reference<AbstractHtml>> initialList = new ArrayList<>(size);
+                for (final Reference<AbstractHtml> each : tagsForURIChange) {
+                    final AbstractHtml tag = each.get();
+                    if (tag != null) {
+                        initialList.add(each);
+                        tempCachToPreventGC.add(tag);
+                    }
+                }
+
+                TagUtil.sortByHierarchyOrder(initialList);
+
+                // NB: should not directly iterate from tagsForUrlChange
+                for (final Reference<AbstractHtml> tagRef : initialList) {
+                    final AbstractHtml tag = tagRef.get();
+                    if (tag != null) {
+                        final boolean sharedObjectsEqual = TagUtil.changeInnerHtmlsForURIChange(tag, uriAfter,
+                                rootTag.getSharedObject(), ACCESS_OBJECT);
+                        if (!sharedObjectsEqual) {
+                            tagsForURIChange.remove(tagRef);
+                        }
+
+                    }
+                }
+
+                if (updateClientURI) {
+                    invokeAfterSetURIAtClient(uriBefore, uriAfter);
+                }
+
+            }, true, ACCESS_OBJECT);
+            executed = true;
+        } finally {
+            if (!executed && updateClientURI) {
+                invokeAfterSetURIAtClient(uriBefore, uriAfter);
+            }
+            tagsForURIChange.removeIf(each -> each.get() == null);
+        }
+    }
+
+    /**
+     * @param updateClientURI
+     * @param uri
+     * @since 12.0.0-beta.1
+     */
+    private final void setURI(final boolean updateClientURI, final String uri) {
+        final String uriBefore = this.uri;
+        if (uriBefore == null || !uriBefore.equals(uri)) {
+            if (uri != null) {
+                beforeURIChange(uriBefore, uri);
+                if (rootTag != null) {
+                    changeInnerHtmlsOnTagsForURIChange(updateClientURI, uriBefore, uri);
+                    uriChanged(uriBefore, uri);
+                } else {
+                    this.uri = uri;
+                }
+            }
+        }
+    }
+
+    /**
+     * @param uri
+     * @since 12.0.0-beta.1
+     */
+    public final void setURI(final String uri) {
+        setURI(true, uri);
+    }
+
+    /**
+     * Override and use
+     *
+     * @param uriBefore
+     * @param uriAfter
+     * @since 12.0.0-beta.1
+     */
+    protected void beforeURIChange(final String uriBefore, final String uriAfter) {
+
+    }
+
+    /**
+     * Override and use
+     *
+     * @param uriBefore
+     * @param uriAfter
+     * @since 12.0.0-beta.1
+     */
+    protected void uriChanged(final String uriBefore, final String uriAfter) {
+
+    }
+
+    /**
+     * @return the current uri. If the path is not passed to browserPage at the time
+     *         of initial request then this method will return the uri only after
+     *         initial client ping. However, inside
+     *         {@link BrowserPage#onInitialClientPing(AbstractHtml)} this method
+     *         will return current uri.
+     * @since 12.0.0-beta.1
+     */
+    public final String getURI() {
+        return uri;
+    }
+
+    /**
+     * NB: only for testing
+     *
+     * @return
+     */
+    final Set<Reference<AbstractHtml>> getTagsForURIChangeForTest() {
+        return tagsForURIChange;
     }
 
 }

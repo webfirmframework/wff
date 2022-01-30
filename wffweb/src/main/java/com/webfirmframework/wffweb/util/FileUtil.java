@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 Web Firm Framework
+ * Copyright 2014-2022 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
  * @since 3.0.18
  *
  */
-public class FileUtil {
+public final class FileUtil {
 
     private static final Logger LOGGER = Logger.getLogger(FileUtil.class.getName());
 
@@ -47,7 +47,7 @@ public class FileUtil {
      * @return true if the basePath directory is deleted
      * @since 3.0.18
      */
-    public static final boolean removeDirRecursively(final String basePath, final String... more) {
+    public static boolean removeDirRecursively(final String basePath, final String... more) {
         final Path dirPath = Paths.get(basePath, more);
         boolean deleted = false;
         try {

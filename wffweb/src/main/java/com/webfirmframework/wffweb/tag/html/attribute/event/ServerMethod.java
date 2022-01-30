@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 Web Firm Framework
+ * Copyright 2014-2022 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,10 +31,11 @@ public interface ServerMethod extends Serializable {
      * @param sourceAttribute
      * @param serverMethodName
      * @param serverSideData
+     * @param uri
      *
      */
     public static record Event(WffBMObject data, AbstractHtml sourceTag, AbstractAttribute sourceAttribute,
-            String serverMethodName, Object serverSideData) {
+            String serverMethodName, Object serverSideData, String uri) {
 
         /**
          * @return the sourceTag

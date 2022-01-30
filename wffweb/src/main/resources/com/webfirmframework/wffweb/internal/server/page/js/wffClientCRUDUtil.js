@@ -463,6 +463,18 @@ var wffClientCRUDUtil = new function() {
 				eval(js);
 			}
 			
+		} else if (taskValue == wffGlobal.taskValues.AFTER_SET_URI) {
+			var jsObject = new JsObjectFromBMBytes(taskNameValue.values[1], true);
+			if (jsObject.uriAfter && jsObject.uriAfter !== jsObject.uriBefore) {
+				history.pushState({}, document.title, jsObject.uriAfter);
+				if (typeof wffGlobalListeners !== "undefined" && wffGlobalListeners.afterSetURI) {
+					try {
+						wffGlobalListeners.afterSetURI(jsObject);
+					} catch (e) {
+						wffLog("wffGlobalListeners.afterSetURI threw exception when the setURI method in the server is called.", e);
+					}
+				}
+			}
 		} else if (taskValue == wffGlobal.taskValues.COPY_INNER_TEXT_TO_VALUE) {
 			
 			console.log('wffGlobal.taskValues.COPY_INNER_TEXT_TO_VALUE');

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 Web Firm Framework
+ * Copyright 2014-2022 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import com.webfirmframework.wffweb.tag.html.AbstractHtml;
  * @since 1.0.0
  * @deprecated use {@link NoTag} instead of this class.
  */
-@Deprecated
+@Deprecated(forRemoval = true, since = "12.0.0-beta.1")
 public class Blank extends NoTag {
 
     // TODO This class needs to be tested properly

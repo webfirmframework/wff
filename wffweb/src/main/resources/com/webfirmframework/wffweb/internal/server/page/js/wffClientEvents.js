@@ -47,6 +47,12 @@ document.addEventListener("DOMContentLoaded",
 				window.addEventListener("unload", onWffWindowClose, false);
 			}
 			
+			if (isWffWindowEventSupported('popstate')) {
+				window.addEventListener('popstate', function(event) {
+					wffAsync.setServerURI(window.location.pathname);					
+				});
+			}
+
 			MutationObserver = window.MutationObserver
 					|| window.WebKitMutationObserver;
 
