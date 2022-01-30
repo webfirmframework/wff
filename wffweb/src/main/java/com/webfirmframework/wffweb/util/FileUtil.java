@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
  * @since 3.0.18
  *
  */
-public class FileUtil {
+public final class FileUtil {
 
     private static final Logger LOGGER = Logger.getLogger(FileUtil.class.getName());
 
@@ -47,7 +47,7 @@ public class FileUtil {
      * @return true if the basePath directory is deleted
      * @since 3.0.18
      */
-    public static final boolean removeDirRecursively(final String basePath, final String... more) {
+    public static boolean removeDirRecursively(final String basePath, final String... more) {
         final Path dirPath = Paths.get(basePath, more);
         boolean deleted = false;
         try {
