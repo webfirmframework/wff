@@ -2438,6 +2438,7 @@ public abstract class BrowserPage implements Serializable {
     }
 
     /**
+     * @param updateClientURI
      * @param uri
      * @since 12.0.0-beta.1
      */
