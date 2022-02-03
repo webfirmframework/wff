@@ -464,12 +464,16 @@ var wffClientCRUDUtil = new function() {
 			}
 			
 		} else if (taskValue == wffGlobal.taskValues.AFTER_SET_URI) {
-			var jsObject = new JsObjectFromBMBytes(taskNameValue.values[1], true);
-			if (jsObject.uriAfter && jsObject.uriAfter !== jsObject.uriBefore) {
-				history.pushState({}, document.title, jsObject.uriAfter);
+			var jsObj = new JsObjectFromBMBytes(taskNameValue.values[1], true);
+			if (jsObj.uriAfter && jsObj.uriAfter !== jsObj.uriBefore) {
+				history.pushState({}, document.title, jsObj.uriAfter);
 				if (typeof wffGlobalListeners !== "undefined" && wffGlobalListeners.afterSetURI) {
 					try {
-						wffGlobalListeners.afterSetURI(jsObject);
+						var vnt = {};
+						for (k in jsObj) {
+							vnt[k] = jsObj[k];
+						}
+						wffGlobalListeners.afterSetURI(vnt);
 					} catch (e) {
 						wffLog("wffGlobalListeners.afterSetURI threw exception when the setURI method in the server is called.", e);
 					}

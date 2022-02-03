@@ -431,10 +431,12 @@ public class WffJsFileTest {
             window.execScript(js);}else{
             eval(js);}
             }else if(taskValue == wffGlobal.taskValues.AFTER_SET_URI){
-            var jsObject = new JsObjectFromBMBytes(v46.values[1], true);if(jsObject.uriAfter && jsObject.uriAfter !== jsObject.uriBefore){
-            history.pushState({}, document.title, jsObject.uriAfter);if(typeof wffGlobalListeners !== "undefined" && wffGlobalListeners.afterSetURI){
+            var jsObj = new JsObjectFromBMBytes(v46.values[1], true);if(jsObj.uriAfter && jsObj.uriAfter !== jsObj.uriBefore){
+            history.pushState({}, document.title, jsObj.uriAfter);if(typeof wffGlobalListeners !== "undefined" && wffGlobalListeners.afterSetURI){
             try {
-            wffGlobalListeners.afterSetURI(jsObject);} catch (e){
+            var vnt = {};for (k in jsObj){
+            vnt[k] = jsObj[k];}
+            wffGlobalListeners.afterSetURI(vnt);} catch (e){
             wffLog("wffGlobalListeners.afterSetURI threw exception when the setURI method in the server is called.", e);}
             }
             }
