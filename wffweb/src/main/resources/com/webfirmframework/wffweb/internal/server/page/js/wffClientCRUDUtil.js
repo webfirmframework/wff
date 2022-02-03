@@ -6,6 +6,8 @@ var wffClientCRUDUtil = new function() {
 
 	var encoder = wffGlobal.encoder;
 	var decoder = wffGlobal.decoder;
+	
+	var uriChangeQ = [];
 
 	var getStringFromBytes = function(utf8Bytes) {
 		return decoder.decode(new Uint8Array(utf8Bytes));
@@ -463,22 +465,28 @@ var wffClientCRUDUtil = new function() {
 				eval(js);
 			}
 			
-		} else if (taskValue == wffGlobal.taskValues.AFTER_SET_URI) {
+		} else if (taskValue == wffGlobal.taskValues.SET_URI) {
 			var jsObj = new JsObjectFromBMBytes(taskNameValue.values[1], true);
 			if (jsObj.uriAfter && jsObj.uriAfter !== jsObj.uriBefore) {
 				history.pushState({}, document.title, jsObj.uriAfter);
-				if (typeof wffGlobalListeners !== "undefined" && wffGlobalListeners.afterSetURI) {
+				uriChangeQ.push(jsObj);
+			}
+		} else if (taskValue == wffGlobal.taskValues.AFTER_SET_URI) {
+			if (typeof wffGlobalListeners !== "undefined" && wffGlobalListeners.afterSetURI) {
+				for (var i = 0; i < uriChangeQ.length; i++) {
+					var jsObj = uriChangeQ[i];
+					var vnt = {};
+					for (k in jsObj) {
+						vnt[k] = jsObj[k];
+					}
 					try {
-						var vnt = {};
-						for (k in jsObj) {
-							vnt[k] = jsObj[k];
-						}
 						wffGlobalListeners.afterSetURI(vnt);
 					} catch (e) {
 						wffLog("wffGlobalListeners.afterSetURI threw exception when the setURI method in the server is called.", e);
 					}
 				}
 			}
+			uriChangeQ = [];
 		} else if (taskValue == wffGlobal.taskValues.COPY_INNER_TEXT_TO_VALUE) {
 			
 			console.log('wffGlobal.taskValues.COPY_INNER_TEXT_TO_VALUE');
