@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 Web Firm Framework
+ * Copyright 2014-2022 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,14 @@
  */
 package com.webfirmframework.wffweb.tag.html;
 
+import java.lang.ref.Reference;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 
@@ -242,6 +244,57 @@ public final class TagUtil {
         }, true, tags);
 
         return AttributeUtil.lockAndGetWriteLocks(accessObject, allNestedAttributes);
+    }
+
+    /**
+     * NB: only for internal use
+     *
+     * @param task         task to run atomically
+     * @param writeLock    true to execute under write lock or false to execute
+     *                     under read lock
+     * @param accessObject
+     * @since 12.0.0-beta.1
+     */
+    public static void runAtomically(final AbstractHtml tag, final Runnable task, final boolean writeLock,
+            @SuppressWarnings("exports") final SecurityObject accessObject) {
+        if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
+            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
+        }
+        final Lock lock = writeLock ? tag.lockAndGetWriteLock() : tag.lockAndGetReadLock();
+        try {
+            task.run();
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * @param tags the list of tags to order by its hierarchy order
+     * @since 12.0.0-beta.1
+     */
+    public static void sortByHierarchyOrder(final List<Reference<AbstractHtml>> tags) {
+        tags.sort(Comparator.comparingLong(o -> Objects.requireNonNull(o.get()).hierarchyOrder));
+    }
+
+    /**
+     * NB: only for internal use
+     *
+     * @param tag
+     * @param uri
+     * @param expectedSO
+     * @param accessObject
+     * @since 12.0.0-beta.1
+     * @return true if sharedObjects are equals
+     */
+    @SuppressWarnings("exports")
+    public static boolean changeInnerHtmlsForURIChange(final AbstractHtml tag, final String uri,
+            final AbstractHtml5SharedObject expectedSO, final SecurityObject accessObject) {
+
+        if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
+            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
+        }
+
+        return tag.changeInnerHtmlsForURIChange(uri, expectedSO);
     }
 
 }

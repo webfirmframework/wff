@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 Web Firm Framework
+ * Copyright 2014-2022 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -106,7 +106,12 @@ public enum Task {
      */
     DEL_BM_OBJ_OR_ARR_FROM_TAG,
 
-    ;
+    CLIENT_PATHNAME_CHANGED,
+
+    /**
+     * To execute afterSetURI method in the client if it is available
+     */
+    AFTER_SET_URI;
 
     private final String shortName;
 
@@ -143,6 +148,32 @@ public enum Task {
         final NameValue task = new NameValue();
         task.setName(Task.TASK.getValueByte());
         task.setValues(new byte[][] { new byte[] { getValueByte() } });
+        return task;
+    }
+
+    /**
+     * @param additionalValues the additional values to be added in
+     *                         nameValue.values, nameValue.values[0] will be
+     *                         taskValueByte and nameValue.values[1],
+     *                         nameValue.values[2].. will be the the given
+     *                         additionalValues
+     * @return nameValue with name as TASK byte value and values as the the current
+     *         task/object byte value.
+     * @since 12.0.0-beta.1
+     * @author WFF
+     */
+    public NameValue getTaskNameValue(final byte[]... additionalValues) {
+        final NameValue task = new NameValue();
+        task.setName(Task.TASK.getValueByte());
+
+        final byte[][] values = new byte[additionalValues.length + 1][];
+        values[0] = new byte[] { getValueByte() };
+
+        for (int i = 1; i < values.length; i++) {
+            values[i] = additionalValues[i - 1];
+        }
+
+        task.setValues(values);
         return task;
     }
 

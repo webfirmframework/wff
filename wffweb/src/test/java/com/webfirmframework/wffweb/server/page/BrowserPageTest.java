@@ -17,10 +17,12 @@ package com.webfirmframework.wffweb.server.page;
 
 import static org.junit.Assert.*;
 
+import java.lang.ref.Reference;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -240,6 +242,10 @@ public class BrowserPageTest {
         
         System.out.println("-----------");
         
+    }
+    
+    public static Set<Reference<AbstractHtml>> getTagsForURIChangeForTest(BrowserPage browserPage) {
+        return browserPage.getTagsForURIChangeForTest();
     }
         
 
