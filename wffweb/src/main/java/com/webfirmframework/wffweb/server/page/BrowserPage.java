@@ -2022,16 +2022,13 @@ public abstract class BrowserPage implements Serializable {
             throw new NullValueException("tag object in browserPage.contains(AbstractHtml tag) method cannot be null");
         }
 
-        if (tagByWffId == null) {
+        if (rootTag == null) {
             throw new NotRenderedException(
                     "Could not check its existance. Make sure that you have called browserPage#toHtmlString method atleast once in the life time.");
         }
 
-        final DataWffId dataWffId = tag.getDataWffId();
-        if (dataWffId == null) {
-            return false;
-        }
-        return tag.equals(tagByWffId.get(dataWffId.getValue()));
+        // this is better way to check, the rest of the code is old
+        return rootTag.getSharedObject().equals(tag.getSharedObject());
     }
 
     /**
