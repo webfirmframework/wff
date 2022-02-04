@@ -228,7 +228,7 @@ public class AttributeRegistry {
 
     private static final List<Class<?>> INDEXED_ATTR_CLASSES = new ArrayList<>();
 
-    private static Map<String, Class<?>> attributeClassByAttrNameTmp;
+    private static volatile Map<String, Class<?>> attributeClassByAttrNameTmp;
 
     private static final List<String> SORTED_BOOLEAN_ATTR_NAMES;
 

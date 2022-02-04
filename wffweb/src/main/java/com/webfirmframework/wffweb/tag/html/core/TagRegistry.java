@@ -172,7 +172,7 @@ public class TagRegistry {
 
     private static final List<Class<?>> INDEXED_TAG_CLASSES = new ArrayList<>();
 
-    private static Map<String, Class<?>> tagClassByTagNameTmp;
+    private static volatile Map<String, Class<?>> tagClassByTagNameTmp;
 
     static {
 
