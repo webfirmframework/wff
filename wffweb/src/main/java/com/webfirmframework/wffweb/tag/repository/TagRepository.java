@@ -40,7 +40,6 @@ import com.webfirmframework.wffweb.server.page.action.BrowserPageAction;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.AbstractHtmlRepository;
 import com.webfirmframework.wffweb.tag.html.Body;
-import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.TitleTag;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
@@ -70,6 +69,10 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
     private final Map<String, AbstractHtml> tagByWffId;
 
     private volatile Reference<TitleTag> titleTagRef;
+
+    private volatile Reference<Body> bodyTagRef;
+
+    private volatile Reference<Head> headTagRef;
 
     /**
      * This constructor is only for internal use. To get an object of
@@ -2323,7 +2326,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      * @author WFF
      */
     public Body findBodyTag() {
-        return (Body) findOneTagByTagName(false, TagNameConstants.BODY);
+        return findBodyTag(false);
     }
 
     /**
@@ -2343,7 +2346,26 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      * @author WFF
      */
     public Body findBodyTag(final boolean parallel) {
-        return (Body) findOneTagByTagName(parallel, TagNameConstants.BODY);
+
+        final Reference<Body> bodyTagRef = this.bodyTagRef;
+        if (bodyTagRef != null) {
+            final Body bodyTag = bodyTagRef.get();
+            if (bodyTag != null) {
+                for (final AbstractHtml rootTag : rootTags) {
+                    if (bodyTag.getRootTag().equals(rootTag)) {
+                        return bodyTag;
+                    }
+                }
+            }
+        }
+        final Body bodyTag = findOneTagAssignableToTag(parallel, Body.class);
+        if (bodyTag != null) {
+            this.bodyTagRef = new WeakReference<Body>(bodyTag);
+        } else {
+            this.bodyTagRef = null;
+        }
+        return bodyTag;
+
     }
 
     /**
@@ -2356,7 +2378,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      * @author WFF
      */
     public Head findHeadTag() {
-        return (Head) findOneTagByTagName(false, TagNameConstants.HEAD);
+        return findHeadTag(false);
     }
 
     /**
@@ -2376,7 +2398,24 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      * @author WFF
      */
     public Head findHeadTag(final boolean parallel) {
-        return (Head) findOneTagByTagName(parallel, TagNameConstants.HEAD);
+        final Reference<Head> headTagRef = this.headTagRef;
+        if (headTagRef != null) {
+            final Head headTag = headTagRef.get();
+            if (headTag != null) {
+                for (final AbstractHtml rootTag : rootTags) {
+                    if (headTag.getRootTag().equals(rootTag)) {
+                        return headTag;
+                    }
+                }
+            }
+        }
+        final Head headTag = findOneTagAssignableToTag(parallel, Head.class);
+        if (headTag != null) {
+            this.headTagRef = new WeakReference<Head>(headTag);
+        } else {
+            this.headTagRef = null;
+        }
+        return headTag;
     }
 
     /**
@@ -2420,7 +2459,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
                 }
             }
         }
-        final TitleTag titleTag = (TitleTag) findOneTagByTagName(parallel, TagNameConstants.TITLE_TAG);
+        final TitleTag titleTag = findOneTagAssignableToTag(parallel, TitleTag.class);
         if (titleTag != null) {
             this.titleTagRef = new WeakReference<TitleTag>(titleTag);
         } else {
