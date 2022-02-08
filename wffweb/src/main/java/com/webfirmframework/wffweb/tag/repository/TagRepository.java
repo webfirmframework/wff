@@ -16,6 +16,8 @@
 package com.webfirmframework.wffweb.tag.repository;
 
 import java.io.Serializable;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
@@ -66,6 +68,8 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
     private final AbstractHtml[] rootTags;
 
     private final Map<String, AbstractHtml> tagByWffId;
+
+    private volatile Reference<TitleTag> titleTagRef;
 
     /**
      * This constructor is only for internal use. To get an object of
@@ -2385,7 +2389,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      * @author WFF
      */
     public TitleTag findTitleTag() {
-        return (TitleTag) findOneTagByTagName(false, TagNameConstants.TITLE_TAG);
+        return findTitleTag(false);
     }
 
     /**
@@ -2405,7 +2409,24 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      * @author WFF
      */
     public TitleTag findTitleTag(final boolean parallel) {
-        return (TitleTag) findOneTagByTagName(parallel, TagNameConstants.TITLE_TAG);
+        final Reference<TitleTag> titleTagRef = this.titleTagRef;
+        if (titleTagRef != null) {
+            final TitleTag titleTag = titleTagRef.get();
+            if (titleTag != null) {
+                for (final AbstractHtml rootTag : rootTags) {
+                    if (titleTag.getRootTag().equals(rootTag)) {
+                        return titleTag;
+                    }
+                }
+            }
+        }
+        final TitleTag titleTag = (TitleTag) findOneTagByTagName(parallel, TagNameConstants.TITLE_TAG);
+        if (titleTag != null) {
+            this.titleTagRef = new WeakReference<TitleTag>(titleTag);
+        } else {
+            this.titleTagRef = null;
+        }
+        return titleTag;
     }
 
     /**
