@@ -15,6 +15,8 @@
  */
 package com.webfirmframework.wffweb.util;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,9 +50,7 @@ public final class URIUtil {
             throw new InvalidValueException("The pattern doesn't match with the uri");
         }
 
-        final String[] uriBuilderArray = new String[urlParts.length];
-
-        final Map<String, String> variableNameValue = new HashMap<>(Math.min(uriBuilderArray.length, 16));
+        final Map<String, String> variableNameValue = new HashMap<>(Math.min(urlParts.length, 16));
 
         for (int i = 0; i < patternParts.length; i++) {
             final String patternPart = patternParts[i];
@@ -61,22 +61,18 @@ public final class URIUtil {
 
                 final String variableName = patternPart.substring(1, patternPart.length() - 1);
 
-                final String previous = variableNameValue.put(variableName, uriValue);
+                final String uriValueDecoded = URLDecoder.decode(uriValue, StandardCharsets.UTF_8);
+                final String previous = variableNameValue.put(variableName, uriValueDecoded);
 
                 if (previous != null) {
                     throw new InvalidValueException("duplicate variable name found in the uri pattern");
                 }
 
-                uriBuilderArray[i] = uriValue;
             } else {
-                uriBuilderArray[i] = patternPart;
+                if (!patternPart.equals(uriValue)) {
+                    throw new InvalidValueException("The pattern doesn't match with the uri");
+                }
             }
-        }
-
-        final String builtURI = String.join("/", uriBuilderArray);
-
-        if (!builtURI.equals(uri)) {
-            throw new InvalidValueException("The pattern doesn't match with the uri");
         }
 
         return Map.copyOf(variableNameValue);
@@ -109,9 +105,7 @@ public final class URIUtil {
             return false;
         }
 
-        final String[] uriBuilderArray = new String[patternParts.length];
-
-        final Map<String, String> variableNameValue = new HashMap<>(Math.min(uriBuilderArray.length, 16));
+        final Map<String, String> variableNameValue = new HashMap<>(Math.min(patternParts.length, 16));
 
         for (int i = 0; i < patternParts.length; i++) {
             final String patternPart = patternParts[i];
@@ -128,19 +122,14 @@ public final class URIUtil {
                     throw new InvalidValueException("duplicate variable name found in the uri pattern");
                 }
 
-                uriBuilderArray[i] = uriValue;
             } else {
-                uriBuilderArray[i] = patternPart;
+                if (!patternPart.equals(uriValue)) {
+                    return false;
+                }
             }
         }
 
-        final String builtURI = String.join("/", uriBuilderArray);
-
-        if (builtURI.length() < uri.length()) {
-            return uri.substring(0, builtURI.length()).equals(builtURI);
-        }
-
-        return builtURI.equals(uri);
+        return true;
     }
 
 }

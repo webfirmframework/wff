@@ -2,6 +2,8 @@ package com.webfirmframework.wffweb.util;
 
 import static org.junit.Assert.*;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import org.junit.Test;
@@ -31,6 +33,11 @@ public class URIUtilTest {
         assertEquals(2, variableNameValues.size());
         assertEquals("123", variableNameValues.get("itemId"));
         assertEquals("1", variableNameValues.get("userId"));
+        
+        variableNameValues = URIUtil.parseValues("/some/uri/pathparam/{symbols}/gap",
+                "/some/uri/pathparam/" + URLEncoder.encode("{}[]!@#$%^&*", StandardCharsets.UTF_8) + "/gap");
+        assertEquals(1, variableNameValues.size());
+        assertEquals("{}[]!@#$%^&*", variableNameValues.get("symbols"));
     }
     
     @Test(expected = InvalidValueException.class)
