@@ -136,15 +136,11 @@ public final class URIUtil {
 
         final String builtURI = String.join("/", uriBuilderArray);
 
-        if (builtURI.equals(uri)) {
-            return true;
-        }
-
         if (builtURI.length() < uri.length()) {
             return uri.substring(0, builtURI.length()).equals(builtURI);
         }
 
-        return false;
+        return builtURI.equals(uri);
     }
 
 }
