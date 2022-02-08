@@ -58,4 +58,17 @@ public class URIUtilTest {
         URIUtil.parseValues("/some/uri/pathparam/{itemId}/yes", "/some/uri/pathparam/123/yes").put("some", "someValue");
     }
 
+    @Test
+    public void testPatternMatchesBase() {
+        assertTrue(URIUtil.patternMatchesBase("/some/uri/user/{userId}", "/some/uri/user/123/item/456"));
+        assertTrue(URIUtil.patternMatchesBase("/some/uri/user/{userId}/item/{itemId}", "/some/uri/user/123/item/456"));
+        assertTrue(URIUtil.patternMatchesBase("some/uri/user/{userId}/item/{itemId}", "some/uri/user/123/item/456"));
+        assertTrue(URIUtil.patternMatchesBase("/some/uri/user", "/some/uri/user/123/item/456"));
+        
+        assertFalse(URIUtil.patternMatchesBase("/some/uri/user/{userId}/item/{itemId}", "/some/uri/user/123"));
+        assertFalse(URIUtil.patternMatchesBase("/some/uri/user/{userId}/item/{itemId}", "/some/uri/user/123/item2/456"));
+        assertFalse(URIUtil.patternMatchesBase("some/uri/user/{userId}/item/{itemId}", "/some/uri/user/123/item/456"));
+        assertFalse(URIUtil.patternMatchesBase("/some/uri/user/{userId}/item/{itemId}", "some/uri/user/123/item/456"));
+        
+    }
 }
