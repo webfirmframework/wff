@@ -78,4 +78,18 @@ public class URIUtilTest {
         assertFalse(URIUtil.patternMatchesBase("/some/uri/user/{userId}/item/{itemId}", "some/uri/user/123/item/456"));
         
     }
+    
+    @Test
+    public void testPatternMatches() {
+        assertTrue(URIUtil.patternMatches("/some/uri/user/{userId}", "/some/uri/user/123"));
+        assertTrue(URIUtil.patternMatches("/some/uri/user/{userId}/item/{itemId}", "/some/uri/user/123/item/456"));
+        assertTrue(URIUtil.patternMatches("some/uri/user/{userId}/item/{itemId}", "some/uri/user/123/item/456"));
+        assertTrue(URIUtil.patternMatches("/some/uri/user", "/some/uri/user"));
+        
+        assertFalse(URIUtil.patternMatches("/some/uri/user/{userId}/item/{itemId}", "/some/uri/user/123"));
+        assertFalse(URIUtil.patternMatches("/some/uri/user/{userId}/item/{itemId}", "/some/uri/user/123/item2/456"));
+        assertFalse(URIUtil.patternMatches("some/uri/user/{userId}/item/{itemId}", "/some/uri/user/123/item/456"));
+        assertFalse(URIUtil.patternMatches("/some/uri/user/{userId}/item/{itemId}", "some/uri/user/123/item/456"));
+        
+    }
 }

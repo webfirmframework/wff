@@ -86,7 +86,42 @@ public final class URIUtil {
      * @since 12.0.0-beta.2
      */
     public static boolean patternMatches(final String pattern, final String uri) {
-        return parseValues(pattern, uri).size() > 0;
+        if (pattern.equals(uri)) {
+            return true;
+        }
+        final String[] patternParts = StringUtil.split(pattern, '/');
+        final String[] urlParts = StringUtil.split(uri, '/');
+
+        if (patternParts.length != urlParts.length) {
+            return false;
+        }
+
+        final Map<String, String> variableNameValue = new HashMap<>(Math.min(urlParts.length, 16));
+
+        for (int i = 0; i < patternParts.length; i++) {
+            final String patternPart = patternParts[i];
+            final String uriValue = urlParts[i];
+
+            if (patternPart.length() > 1 && patternPart.indexOf('{') == 0
+                    && patternPart.indexOf('}') == patternPart.length() - 1) {
+
+                final String variableName = patternPart.substring(1, patternPart.length() - 1);
+
+                final String uriValueDecoded = URLDecoder.decode(uriValue, StandardCharsets.UTF_8);
+                final String previous = variableNameValue.put(variableName, uriValueDecoded);
+
+                if (previous != null) {
+                    throw new InvalidValueException("duplicate variable name found in the uri pattern");
+                }
+
+            } else {
+                if (!patternPart.equals(uriValue)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -97,6 +132,10 @@ public final class URIUtil {
      * @since 12.0.0-beta.2
      */
     public static boolean patternMatchesBase(final String pattern, final String uri) {
+
+        if (pattern.equals(uri)) {
+            return true;
+        }
 
         final String[] patternParts = StringUtil.split(pattern, '/');
         final String[] urlParts = StringUtil.split(uri, '/');
