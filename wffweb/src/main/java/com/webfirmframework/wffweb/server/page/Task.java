@@ -111,7 +111,12 @@ public enum Task {
     /**
      * To execute afterSetURI method in the client if it is available
      */
-    AFTER_SET_URI;
+    AFTER_SET_URI,
+    
+    /**
+     * To execute history.pushState in the client if it is available
+     */
+    SET_URI;
 
     private final String shortName;
 

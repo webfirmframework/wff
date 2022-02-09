@@ -171,6 +171,7 @@ import com.webfirmframework.wffweb.util.HashUtilTest;
 import com.webfirmframework.wffweb.util.ObjectUtilTest;
 import com.webfirmframework.wffweb.util.StringBuilderUtilTest;
 import com.webfirmframework.wffweb.util.StringUtilTest;
+import com.webfirmframework.wffweb.util.URIUtilTest;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtilTest;
 import com.webfirmframework.wffweb.wffbm.data.WffBMObjectArrayTest;
 
@@ -218,7 +219,7 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObjectArrayTest;
         StringBuilderUtilTest.class, SecurityClassConstantsTest.class, ReentrantStampedLockTest.class,
         UnicodeStringTest.class, ExternalDriveByteArrayQueueTest.class, ExternalDriveClientTasksWrapperDequeTest.class,
         ExternalDriveClientTasksWrapperQueueTest.class, AttributeIdGeneratorTest.class,
-        SharedObjectIdGeneratorTest.class, WhenURIUseCaseTest.class })
+        SharedObjectIdGeneratorTest.class, WhenURIUseCaseTest.class, URIUtilTest.class })
 public class AllTests {
 
 }
