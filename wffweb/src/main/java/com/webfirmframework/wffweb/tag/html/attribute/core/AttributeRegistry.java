@@ -228,7 +228,7 @@ public class AttributeRegistry {
 
     private static final List<Class<?>> INDEXED_ATTR_CLASSES = new ArrayList<>();
 
-    private static Map<String, Class<?>> attributeClassByAttrNameTmp;
+    private static volatile Map<String, Class<?>> attributeClassByAttrNameTmp;
 
     private static final List<String> SORTED_BOOLEAN_ATTR_NAMES;
 
@@ -591,27 +591,30 @@ public class AttributeRegistry {
      */
     public static void loadAllAttributeClasses() {
 
-        final Map<String, Class<?>> unloadedClasses = new HashMap<>();
+        if (attributeClassByAttrNameTmp != null) {
+            final Map<String, Class<?>> unloadedClasses = new HashMap<>();
 
-        for (final Entry<String, Class<?>> entry : attributeClassByAttrNameTmp.entrySet()) {
-            try {
+            for (final Entry<String, Class<?>> entry : attributeClassByAttrNameTmp.entrySet()) {
+                try {
 
-                Class.forName(entry.getValue().getName());
+                    Class.forName(entry.getValue().getName());
 
-            } catch (final ClassNotFoundException e) {
-                unloadedClasses.put(entry.getKey(), entry.getValue());
-                if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.warning("Could not load attribute class " + entry.getValue().getName());
+                } catch (final ClassNotFoundException e) {
+                    unloadedClasses.put(entry.getKey(), entry.getValue());
+                    if (LOGGER.isLoggable(Level.WARNING)) {
+                        LOGGER.warning("Could not load attribute class " + entry.getValue().getName());
+                    }
+
                 }
-
+            }
+            attributeClassByAttrNameTmp.clear();
+            if (unloadedClasses.size() > 0) {
+                attributeClassByAttrNameTmp.putAll(unloadedClasses);
+            } else {
+                attributeClassByAttrNameTmp = null;
             }
         }
-        attributeClassByAttrNameTmp.clear();
-        if (unloadedClasses.size() > 0) {
-            attributeClassByAttrNameTmp.putAll(unloadedClasses);
-        } else {
-            attributeClassByAttrNameTmp = null;
-        }
+
     }
 
     /**

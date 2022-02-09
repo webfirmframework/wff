@@ -1057,12 +1057,20 @@ public abstract class BrowserPage implements Serializable {
     }
 
     private void invokeAfterSetURIAtClient(final String uriBefore, final String uriAfter) {
+        final NameValue taskNameValue = Task.AFTER_SET_URI.getTaskNameValue();
+        push(taskNameValue);
+        if (holdPush.get() == 0) {
+            pushWffBMBytesQueue();
+        }
+    }
+
+    private void invokeSetURIAtClient(final String uriBefore, final String uriAfter) {
 
         final WffBMObject event = new WffBMObject();
         event.put("uriBefore", BMValueType.STRING, uriBefore != null ? uriBefore : BMValueType.NULL);
         event.put("uriAfter", BMValueType.STRING, uriAfter != null ? uriAfter : BMValueType.NULL);
         event.put("origin", BMValueType.STRING, "server");
-        final NameValue taskNameValue = Task.AFTER_SET_URI.getTaskNameValue(event.buildBytes(true));
+        final NameValue taskNameValue = Task.SET_URI.getTaskNameValue(event.buildBytes(true));
         push(taskNameValue);
         if (holdPush.get() == 0) {
             pushWffBMBytesQueue();
@@ -2393,10 +2401,16 @@ public abstract class BrowserPage implements Serializable {
     private void changeInnerHtmlsOnTagsForURIChange(final boolean updateClientURI, final String uriBefore,
             final String uriAfter) {
 
-        boolean executed = false;
+        final boolean setURIAndAfterSetURI[] = { false, false };
         try {
             TagUtil.runAtomically(rootTag, () -> {
                 uri = uriAfter;
+
+                if (updateClientURI) {
+                    invokeSetURIAtClient(uriBefore, uriAfter);
+                    setURIAndAfterSetURI[0] = true;
+                }
+
                 final int size = tagsForURIChange.size();
                 final List<AbstractHtml> tempCachToPreventGC = new ArrayList<>(size);
                 final List<Reference<AbstractHtml>> initialList = new ArrayList<>(size);
@@ -2425,13 +2439,19 @@ public abstract class BrowserPage implements Serializable {
 
                 if (updateClientURI) {
                     invokeAfterSetURIAtClient(uriBefore, uriAfter);
+                    setURIAndAfterSetURI[1] = true;
                 }
 
             }, true, ACCESS_OBJECT);
-            executed = true;
+
         } finally {
-            if (!executed && updateClientURI) {
-                invokeAfterSetURIAtClient(uriBefore, uriAfter);
+            if (updateClientURI) {
+                if (!setURIAndAfterSetURI[0]) {
+                    invokeSetURIAtClient(uriBefore, uriAfter);
+                }
+                if (!setURIAndAfterSetURI[1]) {
+                    invokeAfterSetURIAtClient(uriBefore, uriAfter);
+                }
             }
             tagsForURIChange.removeIf(each -> each.get() == null);
         }

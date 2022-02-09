@@ -172,7 +172,7 @@ public class TagRegistry {
 
     private static final List<Class<?>> INDEXED_TAG_CLASSES = new ArrayList<>();
 
-    private static Map<String, Class<?>> tagClassByTagNameTmp;
+    private static volatile Map<String, Class<?>> tagClassByTagNameTmp;
 
     static {
 
@@ -415,27 +415,30 @@ public class TagRegistry {
      */
     public static void loadAllTagClasses() {
 
-        final Map<String, Class<?>> unloadedClasses = new HashMap<>();
+        if (tagClassByTagNameTmp != null) {
+            final Map<String, Class<?>> unloadedClasses = new HashMap<>();
 
-        for (final Entry<String, Class<?>> entry : tagClassByTagNameTmp.entrySet()) {
-            try {
+            for (final Entry<String, Class<?>> entry : tagClassByTagNameTmp.entrySet()) {
+                try {
 
-                Class.forName(entry.getValue().getName());
+                    Class.forName(entry.getValue().getName());
 
-            } catch (final ClassNotFoundException e) {
-                unloadedClasses.put(entry.getKey(), entry.getValue());
-                if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.warning("Could not load tag class " + entry.getValue().getName());
+                } catch (final ClassNotFoundException e) {
+                    unloadedClasses.put(entry.getKey(), entry.getValue());
+                    if (LOGGER.isLoggable(Level.WARNING)) {
+                        LOGGER.warning("Could not load tag class " + entry.getValue().getName());
+                    }
+
                 }
-
+            }
+            tagClassByTagNameTmp.clear();
+            if (unloadedClasses.size() > 0) {
+                tagClassByTagNameTmp.putAll(unloadedClasses);
+            } else {
+                tagClassByTagNameTmp = null;
             }
         }
-        tagClassByTagNameTmp.clear();
-        if (unloadedClasses.size() > 0) {
-            tagClassByTagNameTmp.putAll(unloadedClasses);
-        } else {
-            tagClassByTagNameTmp = null;
-        }
+
     }
 
     /**

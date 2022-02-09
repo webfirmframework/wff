@@ -57,7 +57,7 @@ import com.webfirmframework.wffweb.wffbm.data.BMValueType;
 import com.webfirmframework.wffweb.wffbm.data.WffBMArray;
 import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
 
-@SuppressWarnings({ "serial", "deprecation" })
+@SuppressWarnings({ "serial", "removal" })
 public class TagRepositoryTest {  
     
     @Test
