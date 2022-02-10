@@ -434,9 +434,9 @@ public class WffJsFileTest {
             var jsObj = new JsObjectFromBMBytes(v46.values[1], true);if(jsObj.uriAfter && jsObj.uriAfter !== jsObj.uriBefore){
             if(jsObj.origin === 'S'){
             jsObj.origin = 'server';}
-            history.pushState({}, document.title, jsObj.uriAfter);uriChangeQ.push(jsObj);if(typeof wffGlobalListeners !== "undefined" && wffGlobalListeners.onSetURI && jsObj.origin === 'server'){
-            for (k in jsObj){
+            var vnt = {};for (k in jsObj){
             vnt[k] = jsObj[k];}
+            history.pushState({}, document.title, jsObj.uriAfter);uriChangeQ.push(vnt);if(typeof wffGlobalListeners !== "undefined" && wffGlobalListeners.onSetURI && jsObj.origin === 'server'){
             try {
             wffGlobalListeners.onSetURI(vnt);} catch (e){
             wffLog("wffGlobalListeners.onSetURI threw exception when browserPage.setURI is called", e);}
@@ -445,9 +445,7 @@ public class WffJsFileTest {
             }else if(taskValue == wffGlobal.taskValues.AFTER_SET_URI){
             if(typeof wffGlobalListeners !== "undefined" && wffGlobalListeners.afterSetURI){
             for (var i = 0; i < uriChangeQ.length; i++){
-            var jsObj = uriChangeQ[i];var vnt = {};for (k in jsObj){
-            vnt[k] = jsObj[k];}
-            try {
+            var vnt = uriChangeQ[i];try {
             wffGlobalListeners.afterSetURI(vnt);} catch (e){
             wffLog("wffGlobalListeners.afterSetURI threw exception when the setURI method in the server is called.", e);}
             }

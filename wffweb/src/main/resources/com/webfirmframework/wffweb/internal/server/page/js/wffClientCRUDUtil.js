@@ -471,12 +471,13 @@ var wffClientCRUDUtil = new function() {
 				if (jsObj.origin === 'S') {
 					jsObj.origin = 'server';
 				} 
+				var vnt = {};
+				for (k in jsObj) {
+					vnt[k] = jsObj[k];
+				}
 				history.pushState({}, document.title, jsObj.uriAfter);
-				uriChangeQ.push(jsObj);
+				uriChangeQ.push(vnt);
 				if (typeof wffGlobalListeners !== "undefined" && wffGlobalListeners.onSetURI && jsObj.origin === 'server') {
-					for (k in jsObj) {
-						vnt[k] = jsObj[k];
-					}
 					try {
 						wffGlobalListeners.onSetURI(vnt);
 					} catch (e) {
@@ -487,11 +488,7 @@ var wffClientCRUDUtil = new function() {
 		} else if (taskValue == wffGlobal.taskValues.AFTER_SET_URI) {
 			if (typeof wffGlobalListeners !== "undefined" && wffGlobalListeners.afterSetURI) {
 				for (var i = 0; i < uriChangeQ.length; i++) {
-					var jsObj = uriChangeQ[i];
-					var vnt = {};
-					for (k in jsObj) {
-						vnt[k] = jsObj[k];
-					}
+					var vnt = uriChangeQ[i];					
 					try {
 						wffGlobalListeners.afterSetURI(vnt);
 					} catch (e) {
