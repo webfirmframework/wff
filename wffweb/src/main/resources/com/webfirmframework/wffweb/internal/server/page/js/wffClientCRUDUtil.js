@@ -468,8 +468,18 @@ var wffClientCRUDUtil = new function() {
 		} else if (taskValue == wffGlobal.taskValues.SET_URI) {
 			var jsObj = new JsObjectFromBMBytes(taskNameValue.values[1], true);
 			if (jsObj.uriAfter && jsObj.uriAfter !== jsObj.uriBefore) {
+				if (jsObj.origin === 'S') {
+					jsObj.origin = 'server';
+				} 
 				history.pushState({}, document.title, jsObj.uriAfter);
 				uriChangeQ.push(jsObj);
+				if (typeof wffGlobalListeners !== "undefined" && wffGlobalListeners.onSetURI && jsObj.origin === 'server') {
+					try {
+						wffGlobalListeners.onSetURI(jsObj);
+					} catch (e) {
+						wffLog("wffGlobalListeners.onSetURI threw exception when browserPage.setURI is called", e);
+					}
+				}
 			}
 		} else if (taskValue == wffGlobal.taskValues.AFTER_SET_URI) {
 			if (typeof wffGlobalListeners !== "undefined" && wffGlobalListeners.afterSetURI) {

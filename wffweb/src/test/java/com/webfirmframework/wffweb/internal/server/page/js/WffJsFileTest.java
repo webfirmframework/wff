@@ -432,7 +432,14 @@ public class WffJsFileTest {
             eval(js);}
             }else if(taskValue == wffGlobal.taskValues.SET_URI){
             var jsObj = new JsObjectFromBMBytes(v46.values[1], true);if(jsObj.uriAfter && jsObj.uriAfter !== jsObj.uriBefore){
-            history.pushState({}, document.title, jsObj.uriAfter);uriChangeQ.push(jsObj);}
+            if(jsObj.origin === 'S'){
+            jsObj.origin = 'server';}
+            history.pushState({}, document.title, jsObj.uriAfter);uriChangeQ.push(jsObj);if(typeof wffGlobalListeners !== "undefined" && wffGlobalListeners.onSetURI && jsObj.origin === 'server'){
+            try {
+            wffGlobalListeners.onSetURI(jsObj);} catch (e){
+            wffLog("wffGlobalListeners.onSetURI threw exception when browserPage.setURI is called", e);}
+            }
+            }
             }else if(taskValue == wffGlobal.taskValues.AFTER_SET_URI){
             if(typeof wffGlobalListeners !== "undefined" && wffGlobalListeners.afterSetURI){
             for (var i = 0; i < uriChangeQ.length; i++){
@@ -771,9 +778,7 @@ public class WffJsFileTest {
             throwInvalidSetURIArgException();}
             if(typeof afterSetURI !== "undefined" && typeof afterSetURI !== "function"){
             throwInvalidSetURIArgException();}
-            var uriBefore = window.location.pathname
-            history.pushState({}, document.title, uri);var uriAfter = window.location.pathname
-            if(uriBefore !== uriAfter){
+            var uriBefore = window.location.pathname;history.pushState({}, document.title, uri);var uriAfter = window.location.pathname;if(uriBefore !== uriAfter){
             var wffEvent = { uriBefore: uriBefore, uriAfter: uriAfter, origin: "client" };var callbackWrapper = afterSetURI;if(typeof wffGlobalListeners !== "undefined"){
             if(wffGlobalListeners.onSetURI){
             try {

@@ -124,9 +124,9 @@ window.wffAsync = new function() {
 			throwInvalidSetURIArgException();
 		}
 
-		var uriBefore = window.location.pathname
+		var uriBefore = window.location.pathname;
 		history.pushState({}, document.title, uri);
-		var uriAfter = window.location.pathname
+		var uriAfter = window.location.pathname;
 		if (uriBefore !== uriAfter) {
 			var wffEvent = { uriBefore: uriBefore, uriAfter: uriAfter, origin: "client" };
 
