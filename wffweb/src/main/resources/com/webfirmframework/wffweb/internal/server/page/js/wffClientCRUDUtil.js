@@ -474,8 +474,11 @@ var wffClientCRUDUtil = new function() {
 				history.pushState({}, document.title, jsObj.uriAfter);
 				uriChangeQ.push(jsObj);
 				if (typeof wffGlobalListeners !== "undefined" && wffGlobalListeners.onSetURI && jsObj.origin === 'server') {
+					for (k in jsObj) {
+						vnt[k] = jsObj[k];
+					}
 					try {
-						wffGlobalListeners.onSetURI(jsObj);
+						wffGlobalListeners.onSetURI(vnt);
 					} catch (e) {
 						wffLog("wffGlobalListeners.onSetURI threw exception when browserPage.setURI is called", e);
 					}
