@@ -176,6 +176,10 @@ public class SharedTagContent<T> {
         @Serial
         private static final long serialVersionUID = 2L;
 
+        public Content(T content) {
+            this(content, false);
+        }
+
         /**
          * @return the content
          * @since 3.0.15
