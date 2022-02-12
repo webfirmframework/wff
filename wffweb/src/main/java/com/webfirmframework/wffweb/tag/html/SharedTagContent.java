@@ -184,6 +184,16 @@ public class SharedTagContent<T> {
             this.content = content;
             this.contentTypeHtml = contentTypeHtml;
         }
+        
+        /**
+         * Note: {@code contentTypeHtml} will be set as {@code false}
+         *
+         * @param content the content to be embedded in the consumer tags as plain text.
+         * @since 3.1.0
+         */
+        public Content(final T content) {
+            this(content, false);
+        }
 
         /**
          * @return the content
