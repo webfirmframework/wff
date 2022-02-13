@@ -470,6 +470,7 @@ var wffClientCRUDUtil = new function() {
 			if (jsObj.uriAfter && jsObj.uriAfter !== jsObj.uriBefore) {
 				if (jsObj.origin === 'S') {
 					jsObj.origin = 'server';
+					jsObj.initiator = 'serverCode';
 				} 
 				var vnt = {};
 				for (k in jsObj) {

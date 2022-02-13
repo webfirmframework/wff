@@ -49,7 +49,37 @@ document.addEventListener("DOMContentLoaded",
 			
 			if (isWffWindowEventSupported('popstate')) {
 				window.addEventListener('popstate', function(event) {
-					wffAsync.setServerURI(window.location.pathname);					
+					var uriAfter = window.location.pathname;
+
+					if (typeof wffGlobalListeners !== "undefined") {
+
+						var wffEvent = { uriAfter: uriAfter, origin: "client", initiator: 'browser' };
+
+						if (wffGlobalListeners.onSetURI) {
+							try {
+								wffGlobalListeners.onSetURI(wffEvent);
+							} catch (e) {
+								wffLog("wffGlobalListeners.onSetURI threw exception on browser navigation", e);
+							}
+						}
+
+						//NB: should be copied before using inside callbackWrapper
+						var afterSetURIGlobal = wffGlobalListeners.afterSetURI;
+						var callbackWrapper = undefined;
+						if (afterSetURIGlobal) {
+							callbackWrapper = function() {
+								try {
+									afterSetURIGlobal(wffEvent);
+								} catch (e) {
+									wffLog("wffGlobalListeners.afterSetURI threw exception on browser navigation", e);
+								}
+							};
+						}
+
+						wffAsync.setServerURIWithCallback(uriAfter, callbackWrapper);
+					} else {
+						wffAsync.setServerURI(uriAfter);
+					}
 				});
 			}
 
