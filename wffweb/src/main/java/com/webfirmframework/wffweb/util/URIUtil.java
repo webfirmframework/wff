@@ -37,7 +37,7 @@ public final class URIUtil {
      *
      * <pre>
      * <code>
-     * Map<String, String> pathParams = URIUtil.parseValues("/user/itemGroups/{itemGroupId}/items/view/{itemId}", "/user/itemGroups/1/items/view/2");
+     * Map&lt;String, String&gt; pathParams = URIUtil.parseValues("/user/itemGroups/{itemGroupId}/items/view/{itemId}", "/user/itemGroups/1/items/view/2");
      * Here, pathParams is {itemGroupId=1, itemId=2}.
      * </code>
      * </pre>
