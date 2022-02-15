@@ -468,17 +468,28 @@ var wffClientCRUDUtil = new function() {
 		} else if (taskValue == wffGlobal.taskValues.SET_URI) {
 			var jsObj = new JsObjectFromBMBytes(taskNameValue.values[1], true);
 			if (jsObj.uriAfter && jsObj.uriAfter !== jsObj.uriBefore) {
+				if (jsObj.origin === 'S') {
+					jsObj.origin = 'server';
+					jsObj.initiator = 'serverCode';
+				} 
+				var vnt = {};
+				for (k in jsObj) {
+					vnt[k] = jsObj[k];
+				}
 				history.pushState({}, document.title, jsObj.uriAfter);
-				uriChangeQ.push(jsObj);
+				uriChangeQ.push(vnt);
+				if (typeof wffGlobalListeners !== "undefined" && wffGlobalListeners.onSetURI && jsObj.origin === 'server') {
+					try {
+						wffGlobalListeners.onSetURI(vnt);
+					} catch (e) {
+						wffLog("wffGlobalListeners.onSetURI threw exception when browserPage.setURI is called", e);
+					}
+				}
 			}
 		} else if (taskValue == wffGlobal.taskValues.AFTER_SET_URI) {
 			if (typeof wffGlobalListeners !== "undefined" && wffGlobalListeners.afterSetURI) {
 				for (var i = 0; i < uriChangeQ.length; i++) {
-					var jsObj = uriChangeQ[i];
-					var vnt = {};
-					for (k in jsObj) {
-						vnt[k] = jsObj[k];
-					}
+					var vnt = uriChangeQ[i];					
 					try {
 						wffGlobalListeners.afterSetURI(vnt);
 					} catch (e) {

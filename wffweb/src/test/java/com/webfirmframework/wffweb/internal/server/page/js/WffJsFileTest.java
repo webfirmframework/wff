@@ -432,13 +432,20 @@ public class WffJsFileTest {
             eval(js);}
             }else if(taskValue == wffGlobal.taskValues.SET_URI){
             var jsObj = new JsObjectFromBMBytes(v46.values[1], true);if(jsObj.uriAfter && jsObj.uriAfter !== jsObj.uriBefore){
-            history.pushState({}, document.title, jsObj.uriAfter);uriChangeQ.push(jsObj);}
+            if(jsObj.origin === 'S'){
+            jsObj.origin = 'server';jsObj.initiator = 'serverCode';}
+            var vnt = {};for (k in jsObj){
+            vnt[k] = jsObj[k];}
+            history.pushState({}, document.title, jsObj.uriAfter);uriChangeQ.push(vnt);if(typeof wffGlobalListeners !== "undefined" && wffGlobalListeners.onSetURI && jsObj.origin === 'server'){
+            try {
+            wffGlobalListeners.onSetURI(vnt);} catch (e){
+            wffLog("wffGlobalListeners.onSetURI threw exception when browserPage.setURI is called", e);}
+            }
+            }
             }else if(taskValue == wffGlobal.taskValues.AFTER_SET_URI){
             if(typeof wffGlobalListeners !== "undefined" && wffGlobalListeners.afterSetURI){
             for (var i = 0; i < uriChangeQ.length; i++){
-            var jsObj = uriChangeQ[i];var vnt = {};for (k in jsObj){
-            vnt[k] = jsObj[k];}
-            try {
+            var vnt = uriChangeQ[i];try {
             wffGlobalListeners.afterSetURI(vnt);} catch (e){
             wffLog("wffGlobalListeners.afterSetURI threw exception when the setURI method in the server is called.", e);}
             }
@@ -762,7 +769,7 @@ public class WffJsFileTest {
             'name': encoder.encode(v47),
             'values': []
             };v76.push(v15);}
-            var wffBM = wffBMUtil.f13(v76);wffWS.send(wffBM);};this.setServerURI = function(uri){ setServerURIWithCallback(uri, undefined); };var throwInvalidSetURIArgException = function(){
+            var wffBM = wffBMUtil.f13(v76);wffWS.send(wffBM);};this.setServerURIWithCallback = setServerURIWithCallback;this.setServerURI = function(uri){ setServerURIWithCallback(uri, undefined); };var throwInvalidSetURIArgException = function(){
             throw "Invalid argument found in setURI function call. " +
             "Eg: wffAsync.setURI('/sampleuri', function(e){}, function(e){});, " +
             "wffAsync.setURI('/sampleuri', function(e){}); or " +
@@ -771,17 +778,15 @@ public class WffJsFileTest {
             throwInvalidSetURIArgException();}
             if(typeof afterSetURI !== "undefined" && typeof afterSetURI !== "function"){
             throwInvalidSetURIArgException();}
-            var uriBefore = window.location.pathname
-            history.pushState({}, document.title, uri);var uriAfter = window.location.pathname
-            if(uriBefore !== uriAfter){
-            var wffEvent = { uriBefore: uriBefore, uriAfter: uriAfter, origin: "client" };var callbackWrapper = afterSetURI;if(typeof wffGlobalListeners !== "undefined"){
+            var uriBefore = window.location.pathname;history.pushState({}, document.title, uri);var uriAfter = window.location.pathname;if(uriBefore !== uriAfter){
+            var wffEvent = { uriBefore: uriBefore, uriAfter: uriAfter, origin: "client", initiator: 'clientCode' };var callbackWrapper = afterSetURI;if(typeof wffGlobalListeners !== "undefined"){
             if(wffGlobalListeners.onSetURI){
             try {
             wffGlobalListeners.onSetURI(wffEvent);} catch (e){
             wffLog("wffGlobalListeners.onSetURI threw exception when wffAsync.setURI is called", e);}
             }
-            if(wffGlobalListeners.afterSetURI){
-            var afterSetURIGlobal = wffGlobalListeners.afterSetURI;callbackWrapper = function(){
+            var afterSetURIGlobal = wffGlobalListeners.afterSetURI;if(afterSetURIGlobal){
+            callbackWrapper = function(){
             if(afterSetURI){
             try {
             afterSetURI(wffEvent);} catch (e){
@@ -901,7 +906,21 @@ public class WffJsFileTest {
             window.addEventListener("unload", f36, false);}
             if(f11('popstate')){
             window.addEventListener('popstate', function(event){
-            wffAsync.setServerURI(window.location.pathname);});}
+            var uriAfter = window.location.pathname;if(typeof wffGlobalListeners !== "undefined"){
+            var wffEvent = { uriAfter: uriAfter, origin: "client", initiator: 'browser' };if(wffGlobalListeners.onSetURI){
+            try {
+            wffGlobalListeners.onSetURI(wffEvent);} catch (e){
+            wffLog("wffGlobalListeners.onSetURI threw exception on browser navigation", e);}
+            }
+            var afterSetURIGlobal = wffGlobalListeners.afterSetURI;var callbackWrapper = undefined;if(afterSetURIGlobal){
+            callbackWrapper = function(){
+            try {
+            afterSetURIGlobal(wffEvent);} catch (e){
+            wffLog("wffGlobalListeners.afterSetURI threw exception on browser navigation", e);}
+            };}
+            wffAsync.setServerURIWithCallback(uriAfter, callbackWrapper);}else{
+            wffAsync.setServerURI(uriAfter);}
+            });}
             MutationObserver = window.MutationObserver
             || window.WebKitMutationObserver;var attrObserver = new MutationObserver(function(mutations,
             observer){

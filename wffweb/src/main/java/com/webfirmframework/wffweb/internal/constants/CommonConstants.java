@@ -33,8 +33,6 @@ public final class CommonConstants {
      */
     public static final long FFFFFFFF_HEX_VALUE = Long.parseLong("FFFFFFFF", 16);
 
-    public static final long FFFFFF_HEX_VALUE = Long.parseLong("FFFFFF", 16);
-
     public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
     /**
