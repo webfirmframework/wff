@@ -34,6 +34,14 @@ public final class URIUtil {
     }
 
     /**
+     *
+     * <pre>
+     * <code>
+     * Map&lt;String, String&gt; pathParams = URIUtil.parseValues("/user/itemGroups/{itemGroupId}/items/view/{itemId}", "/user/itemGroups/1/items/view/2");
+     * Here, pathParams is {itemGroupId=1, itemId=2}.
+     * </code>
+     * </pre>
+     *
      * @param pattern
      * @param uri
      * @return map containing the variable name and its corresponding value parsed
@@ -79,6 +87,35 @@ public final class URIUtil {
     }
 
     /**
+     *
+     * <pre>
+     * <code>
+     * boolean matches = URIUtil.patternMatches("/user/items/view/{itemId}", "/user/items/view/123");
+     * Here, matches is true.
+     * </code>
+     * </pre>
+     *
+     * <pre>
+     * <code>
+     * boolean matches = URIUtil.patternMatches("/user/items/view/123", "/user/items/view/123");
+     * Here, matches is true.
+     * </code>
+     * </pre>
+     *
+     * <pre>
+     * <code>
+     * boolean matches = URIUtil.patternMatches("/user/items/edit/{itemId}", "/user/items/view/123");
+     * Here, matches is false.
+     * </code>
+     * </pre>
+     *
+     * <pre>
+     * <code>
+     * boolean matches = URIUtil.patternMatches("/user/items/view", "/user/items/view/123");
+     * Here, matches is false.
+     * </code>
+     * </pre>
+     *
      * @param pattern
      * @param uri
      * @return true if the path of the uri matches with the pattern
@@ -125,6 +162,43 @@ public final class URIUtil {
     }
 
     /**
+     * Eg:
+     *
+     * <pre>
+     * <code>
+     * boolean matches = URIUtil.patternMatchesBase("/user/items/view/{itemId}", "/user/items/view/123");
+     * Here, matches is true.
+     * </code>
+     * </pre>
+     *
+     * <pre>
+     * <code>
+     * boolean matches = URIUtil.patternMatchesBase("/user/items/view/123", "/user/items/view/123");
+     * Here, matches is true.
+     * </code>
+     * </pre>
+     *
+     * <pre>
+     * <code>
+     * boolean matches = URIUtil.patternMatchesBase("/user/items/view", "/user/items/view/123");
+     * Here, matches is true.
+     * </code>
+     * </pre>
+     *
+     * <pre>
+     * <code>
+     * boolean matches = URIUtil.patternMatchesBase("/user/items", "/user/items/view/123");
+     * Here, matches is true.
+     * </code>
+     * </pre>
+     *
+     * <pre>
+     * <code>
+     * boolean matches = URIUtil.patternMatchesBase("/user/items/edit/{itemId}", "/user/items/view/123");
+     * Here, matches is false.
+     * </code>
+     * </pre>
+     *
      * @param pattern
      * @param uri
      * @return true if the base path of the uri matches with the pattern

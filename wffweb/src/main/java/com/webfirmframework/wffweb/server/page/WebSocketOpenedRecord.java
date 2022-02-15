@@ -17,26 +17,8 @@ package com.webfirmframework.wffweb.server.page;
 
 /**
  * @since 3.0.16
- *
  */
-public class WebSocketOpenedRecord {
-
-    private final BrowserPage browserPage;
-
-    private final HeartbeatManager heartbeatManager;
-
-    public WebSocketOpenedRecord(final BrowserPage browserPage, final HeartbeatManager heartbeatManager) {
-        super();
-        this.browserPage = browserPage;
-        this.heartbeatManager = heartbeatManager;
-    }
-
-    public BrowserPage browserPage() {
-        return browserPage;
-    }
-
-    public HeartbeatManager heartbeatManager() {
-        return heartbeatManager;
-    }
+public record WebSocketOpenedRecord(BrowserPage browserPage,
+                                    HeartbeatManager heartbeatManager) {
 
 }

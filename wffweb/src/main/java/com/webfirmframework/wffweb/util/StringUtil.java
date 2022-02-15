@@ -1132,21 +1132,23 @@ public final class StringUtil {
      *         whitespace.
      * @since 3.0.1 initial implementation.
      * @since 3.0.15 it is unicode aware.
+     * @since 12.0.0-beta.3 it is String.isBlank.
      */
     public static boolean isBlank(final String s) {
         if (s.length() == 0) {
             return true;
         }
 
-        final int[] codePoints = s.codePoints().toArray();
-        for (int i = 0; i < codePoints.length; i++) {
-            final int codePoint = codePoints[i];
-            if (!isWhitespace(codePoint)) {
-                return false;
-            }
-        }
+        // old implementation as String.isBlank was not available in Java 8
+//        final int[] codePoints = s.codePoints().toArray();
+//        for (int i = 0; i < codePoints.length; i++) {
+//            final int codePoint = codePoints[i];
+//            if (!isWhitespace(codePoint)) {
+//                return false;
+//            }
+//        }
 
-        return true;
+        return s.isBlank();
     }
 
     /**
@@ -1156,6 +1158,7 @@ public final class StringUtil {
      * @return the striped string
      * @since 3.0.1 initial implementation.
      * @since 3.0.15 it is unicode aware.
+     * @since 12.0.0-beta.3 it is String.strip.
      */
     public static String strip(final String s) {
 
@@ -1163,31 +1166,34 @@ public final class StringUtil {
             return s;
         }
 
-        int first;
-        int last;
+        // old implementation as String.strip was not available in Java 8
+//        int first;
+//        int last;
+//
+//        final int[] codePoints = s.codePoints().toArray();
+//        for (first = 0; first < codePoints.length; first++) {
+//            if (!isWhitespace(codePoints[first])) {
+//                break;
+//            }
+//        }
+//
+//        for (last = codePoints.length; last > first; last--) {
+//            if (!isWhitespace(codePoints[last - 1])) {
+//                break;
+//            }
+//        }
+//
+//        if (first == 0 && last == codePoints.length) {
+//            return s;
+//        }
+//
+//        final int lastRemovedCount = codePoints.length - last;
+//
+//        final int codePointsCount = codePoints.length - (first + lastRemovedCount);
+//
+//        return new String(codePoints, first, codePointsCount);
 
-        final int[] codePoints = s.codePoints().toArray();
-        for (first = 0; first < codePoints.length; first++) {
-            if (!isWhitespace(codePoints[first])) {
-                break;
-            }
-        }
-
-        for (last = codePoints.length; last > first; last--) {
-            if (!isWhitespace(codePoints[last - 1])) {
-                break;
-            }
-        }
-
-        if (first == 0 && last == codePoints.length) {
-            return s;
-        }
-
-        final int lastRemovedCount = codePoints.length - last;
-
-        final int codePointsCount = codePoints.length - (first + lastRemovedCount);
-
-        return new String(codePoints, first, codePointsCount);
+        return s.strip();
     }
 
     /**

@@ -105,6 +105,8 @@ window.wffAsync = new function() {
 		wffWS.send(wffBM);
 	};
 
+	this.setServerURIWithCallback = setServerURIWithCallback;
+
 	this.setServerURI = function(uri) { setServerURIWithCallback(uri, undefined); };
 
 	var throwInvalidSetURIArgException = function() {
@@ -124,11 +126,11 @@ window.wffAsync = new function() {
 			throwInvalidSetURIArgException();
 		}
 
-		var uriBefore = window.location.pathname
+		var uriBefore = window.location.pathname;
 		history.pushState({}, document.title, uri);
-		var uriAfter = window.location.pathname
+		var uriAfter = window.location.pathname;
 		if (uriBefore !== uriAfter) {
-			var wffEvent = { uriBefore: uriBefore, uriAfter: uriAfter, origin: "client" };
+			var wffEvent = { uriBefore: uriBefore, uriAfter: uriAfter, origin: "client", initiator: 'clientCode' };
 
 			var callbackWrapper = afterSetURI;
 
@@ -140,10 +142,11 @@ window.wffAsync = new function() {
 						wffLog("wffGlobalListeners.onSetURI threw exception when wffAsync.setURI is called", e);
 					}
 				}
+				//NB: should be copied before using inside callbackWrapper
+				var afterSetURIGlobal = wffGlobalListeners.afterSetURI;
 
-				if (wffGlobalListeners.afterSetURI) {
-					//NB: should be copied before using inside callbackWrapper
-					var afterSetURIGlobal = wffGlobalListeners.afterSetURI;
+				if (afterSetURIGlobal) {
+					
 					callbackWrapper = function() {
 						if (afterSetURI) {
 							try {

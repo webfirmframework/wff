@@ -177,6 +177,16 @@ public class SharedTagContent<T> {
         private static final long serialVersionUID = 2L;
 
         /**
+         * Note: {@code contentTypeHtml} will be set as {@code false}
+         *
+         * @param content the content to be embedded in the consumer tags as plain text.
+         * @since 12.0.0-beta.3
+         */
+        public Content(final T content) {
+            this(content, false);
+        }
+
+        /**
          * @return the content
          * @since 3.0.15
          */
