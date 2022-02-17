@@ -376,7 +376,7 @@ public enum BrowserPageContext {
         final BrowserPage bp = bpRef.get();
         if (bp != null) {
             try {
-                bp.removedFromContext();
+                bp.informRemovedFromContext();
             } catch (final Throwable e) {
                 if (LOGGER.isLoggable(Level.WARNING)) {
                     LOGGER.log(Level.WARNING,
@@ -442,7 +442,7 @@ public enum BrowserPageContext {
                     final BrowserPage bp = bpRef.get();
                     if (bp != null) {
                         try {
-                            bp.removedFromContext();
+                            bp.informRemovedFromContext();
                         } catch (final Throwable e) {
                             if (LOGGER.isLoggable(Level.WARNING)) {
                                 LOGGER.log(Level.WARNING,
@@ -697,7 +697,7 @@ public enum BrowserPageContext {
                     instanceIdBPForWS.remove(instanceId);
                     if (removedBrowserPage != null) {
                         try {
-                            removedBrowserPage.removedFromContext();
+                            removedBrowserPage.informRemovedFromContext();
                         } catch (final Throwable e) {
                             if (LOGGER.isLoggable(Level.WARNING)) {
                                 LOGGER.log(Level.WARNING,
@@ -776,7 +776,7 @@ public enum BrowserPageContext {
                     final BrowserPage bp = bpRef.get();
                     if (bp != null) {
                         try {
-                            bp.removedFromContext();
+                            bp.informRemovedFromContext();
                         } catch (final Throwable e) {
                             if (LOGGER.isLoggable(Level.WARNING)) {
                                 LOGGER.log(Level.WARNING,

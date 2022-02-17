@@ -1069,7 +1069,7 @@ public abstract class BrowserPage implements Serializable {
         final WffBMObject event = new WffBMObject();
         event.put("uriBefore", BMValueType.STRING, uriBefore != null ? uriBefore : BMValueType.NULL);
         event.put("uriAfter", BMValueType.STRING, uriAfter != null ? uriAfter : BMValueType.NULL);
-        //S for server
+        // S for server
         event.put("origin", BMValueType.STRING, "S");
         final NameValue taskNameValue = Task.SET_URI.getTaskNameValue(event.buildBytes(true));
         push(taskNameValue);
@@ -1992,6 +1992,14 @@ public abstract class BrowserPage implements Serializable {
      */
     String getExternalDrivePath() {
         return externalDrivePath;
+    }
+
+    /**
+     * @since 12.0.0-beta.4
+     */
+    void informRemovedFromContext() {
+        wsWarningDisabled = true;
+        removedFromContext();
     }
 
     /**
