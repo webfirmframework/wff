@@ -20,6 +20,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.webfirmframework.wffweb.common.EventInitiatorTest;
 import com.webfirmframework.wffweb.concurrent.ReentrantStampedLockTest;
 import com.webfirmframework.wffweb.css.BackgroundColorTest;
 import com.webfirmframework.wffweb.css.BackgroundImageTest;
@@ -132,7 +133,6 @@ import com.webfirmframework.wffweb.internal.security.object.SecurityClassConstan
 import com.webfirmframework.wffweb.internal.server.page.js.WffJsFileTest;
 import com.webfirmframework.wffweb.js.JsUtilTest;
 import com.webfirmframework.wffweb.lang.UnicodeStringTest;
-import com.webfirmframework.wffweb.server.page.EventInitiatorTest;
 import com.webfirmframework.wffweb.server.page.ExternalDriveByteArrayQueueTest;
 import com.webfirmframework.wffweb.server.page.ExternalDriveClientTasksWrapperDequeTest;
 import com.webfirmframework.wffweb.server.page.ExternalDriveClientTasksWrapperQueueTest;

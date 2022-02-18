@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.webfirmframework.wffweb.server.page;
+package com.webfirmframework.wffweb.common;
 
 /**
  * @since 12.0.0-beta.4
  *
  */
-public enum EventInitiator {
+public enum URIEventInitiator {
 
     SERVER_CODE,
 
@@ -31,9 +31,9 @@ public enum EventInitiator {
 
     private static String jsObjectString;
 
-    private static final EventInitiator[] ALL = EventInitiator.values();
+    private static final URIEventInitiator[] ALL = URIEventInitiator.values();
 
-    private EventInitiator() {
+    private URIEventInitiator() {
         jsNameValue = name().concat(":").concat(String.valueOf(ordinal()));
     }
 
@@ -50,18 +50,18 @@ public enum EventInitiator {
         }
 
         // StringBuilder builder = new StringBuilder();
-        // EventInitiator.values().length - 1 for , (comma)
+        // URIEventInitiator.values().length - 1 for , (comma)
         // 2 for opening + closing curly brace
-        // (EventInitiator.values().length - 1) + 2;
-        // when reduced it becomes EventInitiator.values().length + 1
+        // (URIEventInitiator.values().length - 1) + 2;
+        // when reduced it becomes URIEventInitiator.values().length + 1
         int totalLength = ALL.length + 1;
-        for (final EventInitiator initiator : ALL) {
+        for (final URIEventInitiator initiator : ALL) {
             totalLength += initiator.jsNameValue.length();
         }
 
         final StringBuilder builder = new StringBuilder(totalLength);
         builder.append('{');
-        for (final EventInitiator initiator : ALL) {
+        for (final URIEventInitiator initiator : ALL) {
             builder.append(initiator.jsNameValue).append(',');
         }
 
@@ -73,7 +73,7 @@ public enum EventInitiator {
         return jsObjectString;
     }
 
-    public static EventInitiator get(final byte index) {
+    public static URIEventInitiator get(final byte index) {
         return ALL[index];
     }
 }

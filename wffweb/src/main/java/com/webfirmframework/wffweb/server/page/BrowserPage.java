@@ -54,6 +54,7 @@ import com.webfirmframework.wffweb.NotRenderedException;
 import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.PushFailedException;
 import com.webfirmframework.wffweb.WffRuntimeException;
+import com.webfirmframework.wffweb.common.URIEventInitiator;
 import com.webfirmframework.wffweb.internal.security.object.BrowserPageSecurity;
 import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
 import com.webfirmframework.wffweb.internal.server.page.js.WffJsFile;
@@ -1003,7 +1004,7 @@ public abstract class BrowserPage implements Serializable {
                             if (nameValues.size() > 1) {
                                 final NameValue pathnameNV = nameValues.get(1);
                                 final String urlPath = new String(pathnameNV.getName(), StandardCharsets.UTF_8);
-                                final EventInitiator eventInitiator = EventInitiator.get(pathnameNV.getValues()[0][0]);
+                                final URIEventInitiator eventInitiator = URIEventInitiator.get(pathnameNV.getValues()[0][0]);
                                 setURI(false, urlPath, eventInitiator);
                             }
 
@@ -1021,7 +1022,7 @@ public abstract class BrowserPage implements Serializable {
                     if (nameValues.size() > 1) {
                         final NameValue pathnameNV = nameValues.get(1);
                         final String urlPath = new String(pathnameNV.getName(), StandardCharsets.UTF_8);
-                        final EventInitiator eventInitiator = EventInitiator.get(pathnameNV.getValues()[0][0]);
+                        final URIEventInitiator eventInitiator = URIEventInitiator.get(pathnameNV.getValues()[0][0]);
                         synchronized (this) {
                             setURI(false, urlPath, eventInitiator);
                         }
@@ -2477,7 +2478,7 @@ public abstract class BrowserPage implements Serializable {
      * @param initiator
      * @since 12.0.0-beta.1
      */
-    private final void setURI(final boolean updateClientURI, final String uri, final EventInitiator initiator) {
+    private final void setURI(final boolean updateClientURI, final String uri, final URIEventInitiator initiator) {
         final String uriBefore = this.uri;
         if (uriBefore == null || !uriBefore.equals(uri)) {
             if (uri != null) {
@@ -2498,7 +2499,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 12.0.0-beta.1
      */
     public final void setURI(final String uri) {
-        setURI(true, uri, EventInitiator.SERVER_CODE);
+        setURI(true, uri, URIEventInitiator.SERVER_CODE);
     }
 
     /**
@@ -2521,7 +2522,7 @@ public abstract class BrowserPage implements Serializable {
      * @param initiator
      * @since 12.0.0-beta.1
      */
-    protected void beforeURIChange(final String uriBefore, final String uriAfter, final EventInitiator initiator) {
+    protected void beforeURIChange(final String uriBefore, final String uriAfter, final URIEventInitiator initiator) {
 
     }
 
@@ -2533,7 +2534,7 @@ public abstract class BrowserPage implements Serializable {
      * @param initiator
      * @since 12.0.0-beta.4
      */
-    protected void afterURIChange(final String uriBefore, final String uriAfter, final EventInitiator initiator) {
+    protected void afterURIChange(final String uriBefore, final String uriAfter, final URIEventInitiator initiator) {
 
     }
 
