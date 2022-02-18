@@ -141,6 +141,7 @@ public enum BrowserPageContext {
         browserPages.computeIfAbsent(browserPage.getInstanceId(), k -> {
             instanceIdBrowserPage.put(browserPage.getInstanceId(), browserPage);
             instanceIdHttpSessionId.put(browserPage.getInstanceId(), httpSessionId);
+            browserPage.informRemovedFromContext(false);
             return browserPage;
         });
 
@@ -376,7 +377,7 @@ public enum BrowserPageContext {
         final BrowserPage bp = bpRef.get();
         if (bp != null) {
             try {
-                bp.informRemovedFromContext();
+                bp.informRemovedFromContext(true);
             } catch (final Throwable e) {
                 if (LOGGER.isLoggable(Level.WARNING)) {
                     LOGGER.log(Level.WARNING,
@@ -442,7 +443,7 @@ public enum BrowserPageContext {
                     final BrowserPage bp = bpRef.get();
                     if (bp != null) {
                         try {
-                            bp.informRemovedFromContext();
+                            bp.informRemovedFromContext(true);
                         } catch (final Throwable e) {
                             if (LOGGER.isLoggable(Level.WARNING)) {
                                 LOGGER.log(Level.WARNING,
@@ -697,7 +698,7 @@ public enum BrowserPageContext {
                     instanceIdBPForWS.remove(instanceId);
                     if (removedBrowserPage != null) {
                         try {
-                            removedBrowserPage.informRemovedFromContext();
+                            removedBrowserPage.informRemovedFromContext(true);
                         } catch (final Throwable e) {
                             if (LOGGER.isLoggable(Level.WARNING)) {
                                 LOGGER.log(Level.WARNING,
@@ -776,7 +777,7 @@ public enum BrowserPageContext {
                     final BrowserPage bp = bpRef.get();
                     if (bp != null) {
                         try {
-                            bp.informRemovedFromContext();
+                            bp.informRemovedFromContext(true);
                         } catch (final Throwable e) {
                             if (LOGGER.isLoggable(Level.WARNING)) {
                                 LOGGER.log(Level.WARNING,

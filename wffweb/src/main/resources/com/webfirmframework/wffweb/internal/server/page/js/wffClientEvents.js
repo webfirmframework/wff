@@ -76,9 +76,9 @@ document.addEventListener("DOMContentLoaded",
 							};
 						}
 
-						wffAsync.setServerURIWithCallback(uriAfter, callbackWrapper);
+						wffAsync.setServerURIWithCallback(uriAfter, callbackWrapper, wffGlobal.eventInitiatorValues.BROWSER);
 					} else {
-						wffAsync.setServerURI(uriAfter);
+						wffAsync.setServerURIWithCallback(uriAfter, undefined, wffGlobal.eventInitiatorValues.BROWSER);
 					}
 				});
 			}

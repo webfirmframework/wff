@@ -79,7 +79,7 @@ window.wffAsync = new function() {
 	};
 
 
-	var setServerURIWithCallback = function(uri, callback) {
+	var setServerURIWithCallback = function(uri, callback, initiator) {
 
 		var taskNameValue = wffTaskUtil.getTaskNameValue(
 			wffGlobal.taskValues.TASK,
@@ -88,6 +88,13 @@ window.wffAsync = new function() {
 			'name': encoder.encode(uri),
 			'values': []
 		};
+		//NB: should be checked as undefined as its value could be zero
+		if (typeof initiator !== "undefined" && initiator >= 0 && initiator < wffGlobal.eventInitiatorValues.size) {
+			nameValue.values.push([initiator]);
+		} else {
+			nameValue.values.push([wffGlobal.eventInitiatorValues.CLIENT_CODE]);
+		}
+			
 		var nameValues = [taskNameValue, nameValue];
 
 		if (callback) {
@@ -98,6 +105,7 @@ window.wffAsync = new function() {
 				'name': encoder.encode(callbackFunId),
 				'values': []
 			};
+			
 			nameValues.push(nameValueCallbackFun);
 		}
 
@@ -107,7 +115,7 @@ window.wffAsync = new function() {
 
 	this.setServerURIWithCallback = setServerURIWithCallback;
 
-	this.setServerURI = function(uri) { setServerURIWithCallback(uri, undefined); };
+	this.setServerURI = function(uri) { setServerURIWithCallback(uri, undefined, wffGlobal.eventInitiatorValues.CLIENT_CODE); };
 
 	var throwInvalidSetURIArgException = function() {
 		throw "Invalid argument found in setURI function call. " +
@@ -175,7 +183,7 @@ window.wffAsync = new function() {
 				wffLog("The second argument threw exception when wffAsync.setURI is called", e);
 			}
 			//NB: should be uriAfter to be consistent with uri pattern
-			setServerURIWithCallback(uriAfter, callbackWrapper);
+			setServerURIWithCallback(uriAfter, callbackWrapper, wffGlobal.eventInitiatorValues.CLIENT_CODE);
 		}
 	};
 

@@ -132,6 +132,7 @@ import com.webfirmframework.wffweb.internal.security.object.SecurityClassConstan
 import com.webfirmframework.wffweb.internal.server.page.js.WffJsFileTest;
 import com.webfirmframework.wffweb.js.JsUtilTest;
 import com.webfirmframework.wffweb.lang.UnicodeStringTest;
+import com.webfirmframework.wffweb.server.page.EventInitiatorTest;
 import com.webfirmframework.wffweb.server.page.ExternalDriveByteArrayQueueTest;
 import com.webfirmframework.wffweb.server.page.ExternalDriveClientTasksWrapperDequeTest;
 import com.webfirmframework.wffweb.server.page.ExternalDriveClientTasksWrapperQueueTest;
@@ -219,7 +220,7 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObjectArrayTest;
         StringBuilderUtilTest.class, SecurityClassConstantsTest.class, ReentrantStampedLockTest.class,
         UnicodeStringTest.class, ExternalDriveByteArrayQueueTest.class, ExternalDriveClientTasksWrapperDequeTest.class,
         ExternalDriveClientTasksWrapperQueueTest.class, AttributeIdGeneratorTest.class,
-        SharedObjectIdGeneratorTest.class, WhenURIUseCaseTest.class, URIUtilTest.class })
+        SharedObjectIdGeneratorTest.class, WhenURIUseCaseTest.class, URIUtilTest.class, EventInitiatorTest.class })
 public class AllTests {
 
 }

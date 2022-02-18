@@ -1000,11 +1000,11 @@ public abstract class BrowserPage implements Serializable {
                 if (!onInitialClientPingInvoked) {
                     try {
                         synchronized (this) {
-
                             if (nameValues.size() > 1) {
                                 final NameValue pathnameNV = nameValues.get(1);
                                 final String urlPath = new String(pathnameNV.getName(), StandardCharsets.UTF_8);
-                                setURI(false, urlPath);
+                                final EventInitiator eventInitiator = EventInitiator.get(pathnameNV.getValues()[0][0]);
+                                setURI(false, urlPath, eventInitiator);
                             }
 
                             onInitialClientPingInvoked = true;
@@ -1021,8 +1021,9 @@ public abstract class BrowserPage implements Serializable {
                     if (nameValues.size() > 1) {
                         final NameValue pathnameNV = nameValues.get(1);
                         final String urlPath = new String(pathnameNV.getName(), StandardCharsets.UTF_8);
+                        final EventInitiator eventInitiator = EventInitiator.get(pathnameNV.getValues()[0][0]);
                         synchronized (this) {
-                            setURI(false, urlPath);
+                            setURI(false, urlPath, eventInitiator);
                         }
 
                         String callbackFunId = null;
@@ -1996,15 +1997,19 @@ public abstract class BrowserPage implements Serializable {
 
     /**
      * @since 12.0.0-beta.4
+     * @param removed
      */
-    void informRemovedFromContext() {
-        wsWarningDisabled = true;
-        removedFromContext();
+    void informRemovedFromContext(final boolean removed) {
+        // NB: should not write compute intensive code when removed is false
+        wsWarningDisabled = removed;
+        if (removed) {
+            removedFromContext();
+        }
     }
 
     /**
      * Invokes when this browser page instance is removed from browser page context.
-     * Override and use this method to stop long running tasks / threads.
+     * Override and use this method to stop long-running tasks / threads.
      *
      * @author WFF
      * @since 2.1.4
@@ -2469,19 +2474,21 @@ public abstract class BrowserPage implements Serializable {
     /**
      * @param updateClientURI
      * @param uri
+     * @param initiator
      * @since 12.0.0-beta.1
      */
-    private final void setURI(final boolean updateClientURI, final String uri) {
+    private final void setURI(final boolean updateClientURI, final String uri, final EventInitiator initiator) {
         final String uriBefore = this.uri;
         if (uriBefore == null || !uriBefore.equals(uri)) {
             if (uri != null) {
-                beforeURIChange(uriBefore, uri);
+                beforeURIChange(uriBefore, uri, initiator);
                 if (rootTag != null) {
                     changeInnerHtmlsOnTagsForURIChange(updateClientURI, uriBefore, uri);
                     uriChanged(uriBefore, uri);
                 } else {
                     this.uri = uri;
                 }
+                afterURIChange(uriBefore, uri, initiator);
             }
         }
     }
@@ -2491,7 +2498,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 12.0.0-beta.1
      */
     public final void setURI(final String uri) {
-        setURI(true, uri);
+        setURI(true, uri, EventInitiator.SERVER_CODE);
     }
 
     /**
@@ -2501,6 +2508,7 @@ public abstract class BrowserPage implements Serializable {
      * @param uriAfter
      * @since 12.0.0-beta.1
      */
+    @Deprecated(forRemoval = true)
     protected void beforeURIChange(final String uriBefore, final String uriAfter) {
 
     }
@@ -2510,8 +2518,36 @@ public abstract class BrowserPage implements Serializable {
      *
      * @param uriBefore
      * @param uriAfter
+     * @param initiator
      * @since 12.0.0-beta.1
      */
+    protected void beforeURIChange(final String uriBefore, final String uriAfter, final EventInitiator initiator) {
+
+    }
+
+    /**
+     * Override and use
+     *
+     * @param uriBefore
+     * @param uriAfter
+     * @param initiator
+     * @since 12.0.0-beta.4
+     */
+    protected void afterURIChange(final String uriBefore, final String uriAfter, final EventInitiator initiator) {
+
+    }
+
+    /**
+     * Override and use
+     *
+     * @param uriBefore
+     * @param uriAfter
+     * @since 12.0.0-beta.1
+     * @deprecated override and use
+     *             {@link BrowserPage#afterURIChange(String, String, SetURICaller)}
+     *             instead of this method.
+     */
+    @Deprecated(forRemoval = true)
     protected void uriChanged(final String uriBefore, final String uriAfter) {
 
     }
@@ -2535,6 +2571,14 @@ public abstract class BrowserPage implements Serializable {
      */
     final Set<Reference<AbstractHtml>> getTagsForURIChangeForTest() {
         return tagsForURIChange;
+    }
+
+    /**
+     * @return the logger object
+     * @since 12.0.0-beta.4
+     */
+    protected final static Logger getBrowserPageLogger() {
+        return LOGGER;
     }
 
 }

@@ -112,7 +112,7 @@ public enum Task {
      * To execute afterSetURI method in the client if it is available
      */
     AFTER_SET_URI,
-    
+
     /**
      * To execute history.pushState in the client if it is available
      */
@@ -213,14 +213,15 @@ public enum Task {
         // 2 for opening + closing curly brace
         // (Task.values().length - 1) + 2;
         // when reduced it becomes Task.values().length + 1
-        int totalLength = Task.values().length + 1;
-        for (final Task task : Task.values()) {
+        final Task[] allTasks = Task.values();
+        int totalLength = allTasks.length + 1;
+        for (final Task task : allTasks) {
             totalLength += task.jsNameValue.length();
         }
 
         final StringBuilder builder = new StringBuilder(totalLength);
         builder.append('{');
-        for (final Task task : Task.values()) {
+        for (final Task task : allTasks) {
             builder.append(task.jsNameValue).append(',');
         }
 

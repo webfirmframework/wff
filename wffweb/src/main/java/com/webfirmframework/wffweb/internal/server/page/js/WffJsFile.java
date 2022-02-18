@@ -30,6 +30,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.WffRuntimeException;
+import com.webfirmframework.wffweb.server.page.EventInitiator;
 import com.webfirmframework.wffweb.server.page.Task;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeRegistry;
 import com.webfirmframework.wffweb.tag.html.core.TagRegistry;
@@ -626,6 +627,9 @@ public enum WffJsFile {
                 String.valueOf(removePrevBPOnInitTab));
 
         StringBuilderUtil.replaceFirst(globalContentBuider, "\"${TASK_VALUES}\"", Task.getJsObjectString());
+
+        StringBuilderUtil.replaceFirst(globalContentBuider, "\"${EVENT_INITIATOR_VALUES}\"",
+                EventInitiator.getJsObjectString());
 
         StringBuilderUtil.replaceFirst(globalContentBuider, "\"${WS_RECON}\"", String.valueOf(wsReconnectInterval));
 
