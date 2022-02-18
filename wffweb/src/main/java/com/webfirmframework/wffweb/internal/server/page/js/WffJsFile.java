@@ -628,7 +628,7 @@ public enum WffJsFile {
 
         StringBuilderUtil.replaceFirst(globalContentBuider, "\"${TASK_VALUES}\"", Task.getJsObjectString());
 
-        StringBuilderUtil.replaceFirst(globalContentBuider, "\"${EVENT_INITIATOR_VALUES}\"",
+        StringBuilderUtil.replaceFirst(globalContentBuider, "\"${URI_EVENT_INITIATOR_VALUES}\"",
                 URIEventInitiator.getJsObjectString());
 
         StringBuilderUtil.replaceFirst(globalContentBuider, "\"${WS_RECON}\"", String.valueOf(wsReconnectInterval));
