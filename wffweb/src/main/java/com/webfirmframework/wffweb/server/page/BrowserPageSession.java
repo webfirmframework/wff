@@ -24,6 +24,38 @@ public sealed interface BrowserPageSession permits BrowserPageContext.BrowserPag
 
     String httpSessionId();
 
+    /**
+     * The saved object will be prevented from being garbage collected so manually
+     * remove it after use.
+     *
+     * @return the map to save user properties
+     * @since 12.0.0-beta.4
+     */
     Map<String, Object> userProperties();
+
+    /**
+     * Note: This will not prevent the saved object from being garbage collected.
+     *
+     * @param key      the key
+     * @param property the value object
+     * @return the previously associated object.
+     * @since 12.0.0-beta.4
+     */
+    Object setWeakProperty(final String key, final Object property);
+
+    /**
+     * @param key the key to get the saved property
+     * @return the property if exists otherwise null. It will also return null if
+     *         the saved object is garbage collected.
+     * @since 12.0.0-beta.4
+     */
+    Object getWeakProperty(final String key);
+
+    /**
+     * @param key
+     * @return the previously associated object.
+     * @since 12.0.0-beta.4
+     */
+    Object removeWeakProperty(final String key);
 
 }

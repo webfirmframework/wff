@@ -17,6 +17,7 @@ package com.webfirmframework.wffweb.server.page;
 
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
+import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -111,6 +112,8 @@ public enum BrowserPageContext {
 
         private final Map<String, Object> userProperties = new ConcurrentHashMap<>(2);
 
+        private final Map<String, WeakReference<Object>> weakProperties = new ConcurrentHashMap<>(2);
+
         private BrowserPageSessionImpl(final String httpSessionId) {
             this.httpSessionId = httpSessionId;
         }
@@ -123,6 +126,26 @@ public enum BrowserPageContext {
         @Override
         public Map<String, Object> userProperties() {
             return userProperties;
+        }
+
+        @Override
+        public Object setWeakProperty(final String key, final Object property) {
+            final WeakReference<Object> ref = weakProperties.put(key, new WeakReference<>(property));
+            return ref != null ? ref.get() : null;
+        }
+
+        @Override
+        public Object getWeakProperty(final String key) {
+            // to remove entry if property is GCed
+            final WeakReference<Object> ref = weakProperties.computeIfPresent(key,
+                    (k, v) -> v.get() == null ? null : v);
+            return ref != null ? ref.get() : null;
+        }
+
+        @Override
+        public Object removeWeakProperty(final String key) {
+            final WeakReference<Object> ref = weakProperties.remove(key);
+            return ref != null ? ref.get() : null;
         }
     }
 
@@ -934,7 +957,6 @@ public enum BrowserPageContext {
     /**
      * @param httpSessionId
      * @return the {@code BrowserPageSession} object
-     *
      */
     public BrowserPageSession getSession(final String httpSessionId) {
         return httpSessionIdSession.get(httpSessionId);
