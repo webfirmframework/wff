@@ -956,9 +956,25 @@ public enum BrowserPageContext {
 
     /**
      * @param httpSessionId
-     * @return the {@code BrowserPageSession} object
+     * @return the {@code BrowserPageSession} object or null if not exists
+     * @since 12.0.0-beta.4
      */
     public BrowserPageSession getSession(final String httpSessionId) {
+        return httpSessionIdSession.get(httpSessionId);
+    }
+
+    /**
+     * @param httpSessionId
+     * @param create        creates new session if not exists
+     * @return the {@code BrowserPageSession} object
+     * @since 12.0.0-beta.4
+     */
+    public BrowserPageSession getSession(final String httpSessionId, final boolean create) {
+        if (create) {
+            return httpSessionIdSession.computeIfAbsent(httpSessionId,
+                    key -> new BrowserPageSessionImpl(httpSessionId));
+        }
+
         return httpSessionIdSession.get(httpSessionId);
     }
 
