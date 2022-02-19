@@ -974,8 +974,20 @@ public enum BrowserPageContext {
             return httpSessionIdSession.computeIfAbsent(httpSessionId,
                     key -> new BrowserPageSessionImpl(httpSessionId));
         }
-
         return httpSessionIdSession.get(httpSessionId);
+    }
+
+    /**
+     * @param instanceId the instaceId of browserPage object.
+     * @return the {@code BrowserPageSession} object if exists otherwise null.
+     * @since 12.0.0-beta.4
+     */
+    public BrowserPageSession getSessionByInstanceId(final String instanceId) {
+        final String httpSessionId = instanceIdHttpSessionId.get(instanceId);
+        if (httpSessionId != null) {
+            return httpSessionIdSession.get(httpSessionId);
+        }
+        return null;
     }
 
 }
