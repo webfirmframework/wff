@@ -15,10 +15,15 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
+import java.util.Map;
+
 /**
- * @since 3.0.16
+ * @since 12.0.0-beta.4
  */
-public record WebSocketOpenedRecord(BrowserPage browserPage, BrowserPageSession session,
-                                    HeartbeatManager heartbeatManager) {
+public sealed interface BrowserPageSession permits BrowserPageContext.BrowserPageSessionImpl {
+
+    String httpSessionId();
+
+    Map<String, Object> userProperties();
 
 }

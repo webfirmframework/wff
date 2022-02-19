@@ -52,10 +52,15 @@ public enum BrowserPageContext {
 
     private static volatile boolean DEBUG_MODE = false;
 
+//    /**
+//     * key httpSessionId, value : (key: instanceId, value: BrowserPage)
+//     */
+//    private final Map<String, Map<String, BrowserPage>> httpSessionIdBrowserPages;
+
     /**
-     * key httpSessionId, value : (key: instanceId, value: BrowserPage)
+     * key httpSessionId, value : BrowserPageSessionImpl
      */
-    private final Map<String, Map<String, BrowserPage>> httpSessionIdBrowserPages;
+    private final Map<String, BrowserPageSessionImpl> httpSessionIdSession;
 
     /**
      * key:- unique id for BrowserPage (AKA wff instance id in terms of wff) value:-
@@ -95,8 +100,35 @@ public enum BrowserPageContext {
     // also remove it from this cache when polled from browserPageRQ
     private transient final Set<BrowserPageGCTask> browserPageGCTasksCache;
 
+    /**
+     * @since 12.0.0-beta.4
+     */
+    static final class BrowserPageSessionImpl implements BrowserPageSession {
+
+        private final String httpSessionId;
+
+        private final Map<String, BrowserPage> browserPages = new ConcurrentHashMap<>(4);
+
+        private final Map<String, Object> userProperties = new ConcurrentHashMap<>(2);
+
+        private BrowserPageSessionImpl(final String httpSessionId) {
+            this.httpSessionId = httpSessionId;
+        }
+
+        @Override
+        public String httpSessionId() {
+            return httpSessionId;
+        }
+
+        @Override
+        public Map<String, Object> userProperties() {
+            return userProperties;
+        }
+    }
+
     BrowserPageContext() {
-        httpSessionIdBrowserPages = new ConcurrentHashMap<>();
+//        httpSessionIdBrowserPages = new ConcurrentHashMap<>();
+        httpSessionIdSession = new ConcurrentHashMap<>();
         instanceIdBrowserPage = new ConcurrentHashMap<>();
         instanceIdBPForWS = new ConcurrentHashMap<>();
         instanceIdHttpSessionId = new ConcurrentHashMap<>();
@@ -129,14 +161,19 @@ public enum BrowserPageContext {
      * @param browserPage
      * @return the instance id (unique) of the browser page.
      * @author WFF
-     * @since 2.0.0
+     * @since 2.0.0 it returns browserPage instance id till 12.0.0-beta.3
+     * @since 12.0.0-beta.4 it returns {@code BrowserPageSession}
      */
-    public String addBrowserPage(final String httpSessionId, final BrowserPage browserPage) {
+    public BrowserPageSession addBrowserPage(final String httpSessionId, final BrowserPage browserPage) {
+
+        final BrowserPageSessionImpl session = httpSessionIdSession.computeIfAbsent(httpSessionId,
+                key -> new BrowserPageSessionImpl(httpSessionId));
+
+        final Map<String, BrowserPage> browserPages = session.browserPages;
 
         // passed 4 instead of 1 because the load factor is 0.75f
-
-        final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.computeIfAbsent(httpSessionId,
-                key -> new ConcurrentHashMap<>(4));
+//        final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.computeIfAbsent(httpSessionId,
+//                key -> new ConcurrentHashMap<>(4));
 
         browserPages.computeIfAbsent(browserPage.getInstanceId(), k -> {
             instanceIdBrowserPage.put(browserPage.getInstanceId(), browserPage);
@@ -154,7 +191,7 @@ public enum BrowserPageContext {
 
         runAutoClean();
 
-        return browserPage.getInstanceId();
+        return session;
     }
 
     /**
@@ -166,8 +203,10 @@ public enum BrowserPageContext {
      */
     public BrowserPage getBrowserPage(final String httpSessionId, final String instanceId) {
 
-        final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.get(httpSessionId);
-        if (browserPages != null) {
+//        final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.get(httpSessionId);
+        final BrowserPageSessionImpl session = httpSessionIdSession.get(httpSessionId);
+        if (session != null) {
+            final Map<String, BrowserPage> browserPages = session.browserPages;
             return browserPages.get(instanceId);
         }
         return null;
@@ -191,18 +230,24 @@ public enum BrowserPageContext {
      */
     public BrowserPage getBrowserPageIfValid(final String httpSessionId, final String instanceId) {
 
-        final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.get(httpSessionId);
-        if (browserPages != null) {
+//        final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.get(httpSessionId);
+        final BrowserPageSessionImpl session = httpSessionIdSession.get(httpSessionId);
+        if (session != null) {
+            final Map<String, BrowserPage> browserPages = session.browserPages;
             final BrowserPage browserPage = browserPages.get(instanceId);
-            final MinIntervalExecutor autoCleanTaskExecutor = this.autoCleanTaskExecutor;
-            if (autoCleanTaskExecutor != null) {
-                if ((System.currentTimeMillis() - browserPage.getLastClientAccessedTime()) >= autoCleanTaskExecutor
-                        .minInterval()) {
-                    return null;
+            if (browserPage != null) {
+                final MinIntervalExecutor autoCleanTaskExecutor = this.autoCleanTaskExecutor;
+                if (autoCleanTaskExecutor != null) {
+                    if ((System.currentTimeMillis() - browserPage.getLastClientAccessedTime()) >= autoCleanTaskExecutor
+                            .minInterval()) {
+                        return null;
+                    }
                 }
+                return browserPage;
             }
-            return browserPage;
+
         }
+
         return null;
     }
 
@@ -260,12 +305,12 @@ public enum BrowserPageContext {
      */
     public Map<String, BrowserPage> getBrowserPages(final String httpSessionId) {
 
-        final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.get(httpSessionId);
-
-        if (browserPages == null) {
-            return null;
+//        final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.get(httpSessionId);
+        final BrowserPageSessionImpl session = httpSessionIdSession.get(httpSessionId);
+        if (session != null) {
+            return Collections.unmodifiableMap(session.browserPages);
         }
-        return Collections.unmodifiableMap(browserPages);
+        return null;
     }
 
     /**
@@ -284,25 +329,35 @@ public enum BrowserPageContext {
      *
      * @param wffInstanceId the wffInstanceId which can be retried from the request
      *                      parameter in websocket connection
-     * @return the {@code BrowserPage} object associated with this instance id, if
-     *         the instanceId is associated with a closed http session it will
-     *         return null.
+     * @return the {@code WebSocketOpenedRecord} object associated with this
+     *         instance id, if the instanceId is associated with a closed http
+     *         session it will return null. The {@code heartbeatManager} in the
+     *         returned object could be null as its creation functional object is
+     *         not passed in this object so it is not recommended to use it.
      * @author WFF
      * @since 2.0.0
+     * @since 12.0.0-beta.4 it returns {@code WebSocketOpenedRecord}
      */
-    public BrowserPage webSocketOpened(final String wffInstanceId) {
+    public WebSocketOpenedRecord webSocketOpened(final String wffInstanceId) {
 
         final String httpSessionId = instanceIdHttpSessionId.get(wffInstanceId);
 
         if (httpSessionId != null) {
-            final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.get(httpSessionId);
-            if (browserPages != null) {
+//            final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.get(httpSessionId);
+            final BrowserPageSessionImpl session = httpSessionIdSession.get(httpSessionId);
+            if (session != null) {
+                final Map<String, BrowserPage> browserPages = session.browserPages;
                 final BrowserPage browserPage = browserPages.get(wffInstanceId);
+                final long lastAccessedTime = System.currentTimeMillis();
                 if (browserPage != null) {
                     instanceIdBPForWS.put(browserPage.getInstanceId(), browserPage);
-                    browserPage.setLastClientAccessedTime(System.currentTimeMillis());
+                    browserPage.setLastClientAccessedTime(lastAccessedTime);
                 }
-                return browserPage;
+                final HeartbeatManager hbManager = heartbeatManagers.get(httpSessionId);
+                if (hbManager != null) {
+                    hbManager.setLastAccessedTime(lastAccessedTime);
+                }
+                return new WebSocketOpenedRecord(browserPage, session, hbManager);
             }
         }
 
@@ -335,8 +390,10 @@ public enum BrowserPageContext {
         final String httpSessionId = instanceIdHttpSessionId.get(wffInstanceId);
 
         if (httpSessionId != null) {
-            final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.get(httpSessionId);
-            if (browserPages != null) {
+//            final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.get(httpSessionId);
+            final BrowserPageSessionImpl session = httpSessionIdSession.get(httpSessionId);
+            if (session != null) {
+                final Map<String, BrowserPage> browserPages = session.browserPages;
                 final BrowserPage browserPage = browserPages.get(wffInstanceId);
                 if (browserPage != null) {
                     instanceIdBPForWS.put(browserPage.getInstanceId(), browserPage);
@@ -345,7 +402,7 @@ public enum BrowserPageContext {
                     final HeartbeatManager hbManager = heartbeatManagers.computeIfAbsent(httpSessionId,
                             k -> computeHeartbeatManager.apply(k));
                     hbManager.setLastAccessedTime(lastAccessedTime);
-                    return new WebSocketOpenedRecord(browserPage, hbManager);
+                    return new WebSocketOpenedRecord(browserPage, session, hbManager);
                 }
             }
         }
@@ -364,27 +421,33 @@ public enum BrowserPageContext {
 
         final String httpSessionId = instanceIdHttpSessionId.get(wffInstanceId);
 
-        final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.get(httpSessionId);
+        if (httpSessionId != null) {
+//        final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.get(httpSessionId);
+            final BrowserPageSessionImpl session = httpSessionIdSession.get(httpSessionId);
+            if (session != null) {
+                final Map<String, BrowserPage> browserPages = session.browserPages;
 
-        final AtomicReference<BrowserPage> bpRef = new AtomicReference<>();
-        browserPages.computeIfPresent(wffInstanceId, (k, bp) -> {
-            instanceIdHttpSessionId.remove(wffInstanceId);
-            instanceIdBrowserPage.remove(wffInstanceId);
-            instanceIdBPForWS.remove(wffInstanceId);
-            bpRef.set(bp);
-            return null;
-        });
-        final BrowserPage bp = bpRef.get();
-        if (bp != null) {
-            try {
-                bp.informRemovedFromContext(true);
-            } catch (final Throwable e) {
-                if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.log(Level.WARNING,
-                            "The overridden method BrowserPage#removedFromContext threw an exception.", e);
+                final AtomicReference<BrowserPage> bpRef = new AtomicReference<>();
+                browserPages.computeIfPresent(wffInstanceId, (k, bp) -> {
+                    instanceIdHttpSessionId.remove(wffInstanceId);
+                    instanceIdBrowserPage.remove(wffInstanceId);
+                    instanceIdBPForWS.remove(wffInstanceId);
+                    bpRef.set(bp);
+                    return null;
+                });
+                final BrowserPage bp = bpRef.get();
+                if (bp != null) {
+                    try {
+                        bp.informRemovedFromContext(true);
+                    } catch (final Throwable e) {
+                        if (LOGGER.isLoggable(Level.WARNING)) {
+                            LOGGER.log(Level.WARNING,
+                                    "The overridden method BrowserPage#removedFromContext threw an exception.", e);
+                        }
+                    }
+                    bp.clearWSListeners();
                 }
             }
-            bp.clearWSListeners();
         }
 
     }
@@ -406,7 +469,7 @@ public enum BrowserPageContext {
 
         final long currentTime = System.currentTimeMillis();
 
-        for (final Entry<String, Map<String, BrowserPage>> entry : httpSessionIdBrowserPages.entrySet()) {
+        for (final Entry<String, BrowserPageSessionImpl> entry : httpSessionIdSession.entrySet()) {
 
             final String httpSessionId = entry.getKey();
 
@@ -414,7 +477,7 @@ public enum BrowserPageContext {
 
             if (heartbeatManager == null || heartbeatManager.minInterval() < maxIdleTimeout) {
 
-                final Map<String, BrowserPage> browserPages = entry.getValue();
+                final Map<String, BrowserPage> browserPages = entry.getValue().browserPages;
 
                 final List<String> expiredWffInstanceIds = new LinkedList<>();
                 boolean hbmExpired = true;
@@ -689,8 +752,10 @@ public enum BrowserPageContext {
     public void httpSessionClosed(final String httpSessionId) {
 
         if (httpSessionId != null) {
-            final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.remove(httpSessionId);
-            if (browserPages != null) {
+            final BrowserPageSessionImpl session = httpSessionIdSession.remove(httpSessionId);
+            if (session != null) {
+//                final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.remove(httpSessionId);
+                final Map<String, BrowserPage> browserPages = session.browserPages;
 
                 for (final String instanceId : browserPages.keySet()) {
                     instanceIdHttpSessionId.remove(instanceId);
@@ -762,8 +827,11 @@ public enum BrowserPageContext {
             // otherwise it's considered as a hacking.
             if (httpSessionId.equals(callerHttpSessionId)) {
 
-                final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.get(httpSessionId);
-                if (browserPages != null) {
+                final BrowserPageSessionImpl session = httpSessionIdSession.get(httpSessionId);
+
+                if (session != null) {
+//                    final Map<String, BrowserPage> browserPages = httpSessionIdBrowserPages.get(httpSessionId);
+                    final Map<String, BrowserPage> browserPages = session.browserPages;
 
                     final AtomicReference<BrowserPage> bpRef = new AtomicReference<>();
 
@@ -861,6 +929,15 @@ public enum BrowserPageContext {
      */
     public static void setDebugMode(final boolean enabled) {
         DEBUG_MODE = enabled;
+    }
+
+    /**
+     * @param httpSessionId
+     * @return the {@code BrowserPageSession} object
+     *
+     */
+    public BrowserPageSession getSession(final String httpSessionId) {
+        return httpSessionIdSession.get(httpSessionId);
     }
 
 }
