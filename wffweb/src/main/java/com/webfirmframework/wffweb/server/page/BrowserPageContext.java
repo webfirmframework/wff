@@ -150,7 +150,7 @@ public enum BrowserPageContext {
     /**
      * @since 12.0.0-beta.4
      */
-    static final class BrowserPageSessionWrapper {
+    private static final class BrowserPageSessionWrapper {
         // passed 4 instead of 1 because the load factor is 0.75f
         private final Map<String, BrowserPage> browserPages = new ConcurrentHashMap<>(4);
 
