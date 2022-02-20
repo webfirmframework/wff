@@ -18,6 +18,8 @@ package com.webfirmframework.wffweb.server.page;
 import java.util.Map;
 
 /**
+ * There will be one {@code BrowserPageSession} object per httpSessionId
+ *
  * @since 12.0.0-beta.4
  */
 public sealed interface BrowserPageSession permits BrowserPageContext.BrowserPageSessionImpl {
@@ -26,7 +28,8 @@ public sealed interface BrowserPageSession permits BrowserPageContext.BrowserPag
 
     /**
      * The saved object will be prevented from being garbage collected so manually
-     * remove it after use.
+     * remove it after use. The return map is thread-safe and atomic operations can
+     * be performed with it.
      *
      * @return the map to save user properties
      * @since 12.0.0-beta.4
@@ -35,6 +38,7 @@ public sealed interface BrowserPageSession permits BrowserPageContext.BrowserPag
 
     /**
      * Note: This will not prevent the saved object from being garbage collected.
+     * This is a thread-safe method.
      *
      * @param key      the key
      * @param property the value object
@@ -44,6 +48,8 @@ public sealed interface BrowserPageSession permits BrowserPageContext.BrowserPag
     Object setWeakProperty(final String key, final Object property);
 
     /**
+     * This is a thread-safe method.
+     *
      * @param key the key to get the saved property
      * @return the property if exists otherwise null. It will also return null if
      *         the saved object is garbage collected.
@@ -52,8 +58,11 @@ public sealed interface BrowserPageSession permits BrowserPageContext.BrowserPag
     Object getWeakProperty(final String key);
 
     /**
+     * This is a thread-safe method.
+     *
      * @param key
-     * @return the previously associated object.
+     * @return the previously associated object or null no mapping found. It will
+     *         also return null if the saved object is garbage collected.
      * @since 12.0.0-beta.4
      */
     Object removeWeakProperty(final String key);

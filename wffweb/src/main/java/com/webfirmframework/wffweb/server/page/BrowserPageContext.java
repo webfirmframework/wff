@@ -148,6 +148,8 @@ public enum BrowserPageContext {
     }
 
     /**
+     * Note: Only for internal use.
+     *
      * @since 12.0.0-beta.4
      */
     private static final class BrowserPageSessionWrapper {
