@@ -564,10 +564,11 @@ public enum BrowserPageContext {
                 if (hbmExpired) {
                     // to atomically remove hbm if expired
                     sessionWrapper.heartbeatManagerRef.updateAndGet(hbm -> {
-                        if ((currentTime - hbm.getLastAccessedTime()) >= maxIdleTimeout
+                        if (hbm != null && (currentTime - hbm.getLastAccessedTime()) >= maxIdleTimeout
                                 && hbm.minInterval() < maxIdleTimeout) {
                             return null;
                         }
+
                         return hbm;
                     });
                 }
@@ -750,16 +751,19 @@ public enum BrowserPageContext {
         final BrowserPageSessionWrapper sessionWrapper = httpSessionIdSession.get(httpSessionId);
         if (sessionWrapper != null) {
             return sessionWrapper.heartbeatManagerRef.updateAndGet(hbm -> {
-                final MinIntervalExecutor autoCleanTaskExecutor = this.autoCleanTaskExecutor;
-                final long currentTime = System.currentTimeMillis();
-                if (autoCleanTaskExecutor != null) {
-                    final long maxIdleTimeout = autoCleanTaskExecutor.minInterval();
-                    if ((currentTime - hbm.getLastAccessedTime()) >= maxIdleTimeout
-                            && hbm.minInterval() < maxIdleTimeout) {
-                        return null;
+                if (hbm != null) {
+                    final MinIntervalExecutor autoCleanTaskExecutor = this.autoCleanTaskExecutor;
+                    final long currentTime = System.currentTimeMillis();
+                    if (autoCleanTaskExecutor != null) {
+                        final long maxIdleTimeout = autoCleanTaskExecutor.minInterval();
+                        if ((currentTime - hbm.getLastAccessedTime()) >= maxIdleTimeout
+                                && hbm.minInterval() < maxIdleTimeout) {
+                            return null;
+                        }
                     }
+                    hbm.setLastAccessedTime(currentTime);
                 }
-                hbm.setLastAccessedTime(currentTime);
+
                 return hbm;
             });
         }
