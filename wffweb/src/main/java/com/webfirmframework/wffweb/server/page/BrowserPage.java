@@ -1168,8 +1168,8 @@ public abstract class BrowserPage implements Serializable {
     private void invokeSetURIAtClient(final String uriBefore, final String uriAfter) {
 
         final WffBMObject event = new WffBMObject();
-        event.put("uriBefore", BMValueType.STRING, uriBefore != null ? uriBefore : BMValueType.NULL);
-        event.put("uriAfter", BMValueType.STRING, uriAfter != null ? uriAfter : BMValueType.NULL);
+        event.put("uriBefore", uriBefore != null ? BMValueType.STRING : BMValueType.NULL, uriBefore);
+        event.put("uriAfter", uriAfter != null ? BMValueType.STRING : BMValueType.NULL, uriAfter);
         // S for server
         event.put("origin", BMValueType.STRING, "S");
         final NameValue taskNameValue = Task.SET_URI.getTaskNameValue(event.buildBytes(true));
@@ -1182,7 +1182,7 @@ public abstract class BrowserPage implements Serializable {
     private void invokeSetLocalStorageItemAtClient(final String id, final String key, final String value,
             final long writeTime) {
         final WffBMObject event = new WffBMObject();
-        event.put("id", BMValueType.STRING, id);
+        event.put("id", id != null ? BMValueType.STRING : BMValueType.NULL, id);
         // k for key
         event.put("k", BMValueType.STRING, key);
         // v for value
@@ -1210,7 +1210,7 @@ public abstract class BrowserPage implements Serializable {
 
     private void invokeRemoveLocalStorageItemAtClient(final String id, final String key, final long writeTime) {
         final WffBMObject event = new WffBMObject();
-        event.put("id", BMValueType.STRING, id);
+        event.put("id", id != null ? BMValueType.STRING : BMValueType.NULL, id);
         // k for key
         event.put("k", BMValueType.STRING, key);
         // wt for write time
@@ -1238,7 +1238,7 @@ public abstract class BrowserPage implements Serializable {
 
     private void invokeClearLocalStorageItemsAtClient(final String id, final long writeTime) {
         final WffBMObject event = new WffBMObject();
-        event.put("id", BMValueType.STRING, id);
+        event.put("id", id != null ? BMValueType.STRING : BMValueType.NULL, id);
         // wt for write time
         event.put("wt", BMValueType.STRING, String.valueOf(writeTime));
         final NameValue taskNameValue = Task.CLEAR_LS.getTaskNameValue(event.buildBytes(true));

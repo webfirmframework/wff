@@ -451,7 +451,7 @@ public class WffJsFileTest {
             }
             }
             uriChangeQ = [];}else if(taskValue == wffGlobal.taskValues.SET_LS_ITEM){
-            var jsObj = new JsObjectFromBMBytes(v46.values[1], true);if(typeof localStorage !== "undefined" && jsObj.id && jsObj.k && jsObj.v && jsObj.wt){
+            var jsObj = new JsObjectFromBMBytes(v46.values[1], true);if(typeof localStorage !== "undefined" && jsObj.k && jsObj.v && jsObj.wt){
             var wt = parseInt(jsObj.wt);var prev = localStorage.getItem(jsObj.k + '_wff_data');var lstWT = 0;if(prev){
             try {
             lstWT = parseInt(JSON.parse(prev).wt);} catch (e){
@@ -459,12 +459,14 @@ public class WffJsFileTest {
             }
             if(wt >= lstWT){
             var itemVal = JSON.stringify({ v: jsObj.v, wt: jsObj.wt });localStorage.setItem(jsObj.k + '_wff_data', itemVal);}
+            if(jsObj.id){
             var v46 = wffTaskUtil.f34(
             wffGlobal.taskValues.TASK,
             taskValue);var v84 = {
             'name': encoder.encode(jsObj.id),
             'values': []
             };var v76 = [v46, v84];var wffBM = wffBMUtil.f13(v76);wffWS.send(wffBM);}
+            }
             }else if(taskValue == wffGlobal.taskValues.GET_LS_ITEM){
             var jsObj = new JsObjectFromBMBytes(v46.values[1], true);if(typeof localStorage !== "undefined" && jsObj.id && jsObj.k){
             var itemJSON = localStorage.getItem(jsObj.k + '_wff_data');var itemObj;if(itemJSON){
@@ -483,7 +485,7 @@ public class WffJsFileTest {
             v84.values = [encoder.encode(itemObj.v), encoder.encode(itemObj.wt)];}
             var v76 = [v46, v84];var wffBM = wffBMUtil.f13(v76);wffWS.send(wffBM);}
             }else if(taskValue == wffGlobal.taskValues.REMOVE_LS_ITEM || taskValue == wffGlobal.taskValues.REMOVE_AND_GET_LS_ITEM){
-            var jsObj = new JsObjectFromBMBytes(v46.values[1], true);if(typeof localStorage !== "undefined" && jsObj.id && jsObj.k && jsObj.wt){
+            var jsObj = new JsObjectFromBMBytes(v46.values[1], true);if(typeof localStorage !== "undefined" && jsObj.k && jsObj.wt){
             var itemJSON = localStorage.getItem(jsObj.k + '_wff_data');var itemObj;if(itemJSON){
             try {
             itemObj = JSON.parse(itemJSON);} catch (e){
@@ -494,6 +496,7 @@ public class WffJsFileTest {
             if(parseInt(jsObj.wt) >= parseInt(itemObj.wt)){
             localStorage.removeItem(jsObj.k + '_wff_data');}
             }
+            if(jsObj.id){
             var v46 = wffTaskUtil.f34(
             wffGlobal.taskValues.TASK,
             taskValue);var v84 = {
@@ -502,8 +505,9 @@ public class WffJsFileTest {
             };if(taskValue == wffGlobal.taskValues.REMOVE_AND_GET_LS_ITEM && itemObj.v && itemObj.wt){
             v84.values = [encoder.encode(itemObj.v), encoder.encode(itemObj.wt)];}
             var v76 = [v46, v84];var wffBM = wffBMUtil.f13(v76);wffWS.send(wffBM);}
+            }
             }else if(taskValue == wffGlobal.taskValues.CLEAR_LS){
-            var jsObj = new JsObjectFromBMBytes(v46.values[1], true);if(typeof localStorage !== "undefined" && jsObj.id && jsObj.wt){
+            var jsObj = new JsObjectFromBMBytes(v46.values[1], true);if(typeof localStorage !== "undefined" && jsObj.wt){
             for (var k in localStorage){
             if(k.endsWith('_wff_data')){
             try {
@@ -513,12 +517,14 @@ public class WffJsFileTest {
             wffLog(e);}
             }
             }
+            if(jsObj.id){
             var v46 = wffTaskUtil.f34(
             wffGlobal.taskValues.TASK,
             taskValue);var v84 = {
             'name': encoder.encode(jsObj.id),
             'values': []
             };var v76 = [v46, v84];var wffBM = wffBMUtil.f13(v76);wffWS.send(wffBM);}
+            }
             }else if(taskValue == wffGlobal.taskValues.COPY_INNER_TEXT_TO_VALUE){
             var tagName = wffTagUtil.f5(v76[1].name);var v98 = wffTagUtil
             .f23(v76[1].values[0]);var parentTag = wffTagUtil.f16(tagName,

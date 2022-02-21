@@ -501,7 +501,7 @@ var wffClientCRUDUtil = new function() {
 		} else if (taskValue == wffGlobal.taskValues.SET_LS_ITEM) {
 			var jsObj = new JsObjectFromBMBytes(taskNameValue.values[1], true);
 			// k for key, v for value, wt for write time
-			if (typeof localStorage !== "undefined" && jsObj.id && jsObj.k && jsObj.v && jsObj.wt) {
+			if (typeof localStorage !== "undefined" && jsObj.k && jsObj.v && jsObj.wt) {
 				var wt = parseInt(jsObj.wt);
 				var prev = localStorage.getItem(jsObj.k + '_wff_data');
 				var lstWT = 0;
@@ -516,16 +516,20 @@ var wffClientCRUDUtil = new function() {
 					var itemVal = JSON.stringify({ v: jsObj.v, wt: jsObj.wt });
 					localStorage.setItem(jsObj.k + '_wff_data', itemVal);
 				}
-				var taskNameValue = wffTaskUtil.getTaskNameValue(
-					wffGlobal.taskValues.TASK,
-					taskValue);
-				var nameValue = {
-					'name': encoder.encode(jsObj.id),
-					'values': []
-				};
-				var nameValues = [taskNameValue, nameValue];
-				var wffBM = wffBMUtil.getWffBinaryMessageBytes(nameValues);
-				wffWS.send(wffBM);
+
+				if (jsObj.id) {
+					var taskNameValue = wffTaskUtil.getTaskNameValue(
+						wffGlobal.taskValues.TASK,
+						taskValue);
+					var nameValue = {
+						'name': encoder.encode(jsObj.id),
+						'values': []
+					};
+					var nameValues = [taskNameValue, nameValue];
+					var wffBM = wffBMUtil.getWffBinaryMessageBytes(nameValues);
+					wffWS.send(wffBM);
+				}
+
 			}
 		} else if (taskValue == wffGlobal.taskValues.GET_LS_ITEM) {
 			var jsObj = new JsObjectFromBMBytes(taskNameValue.values[1], true);
@@ -561,7 +565,7 @@ var wffClientCRUDUtil = new function() {
 		} else if (taskValue == wffGlobal.taskValues.REMOVE_LS_ITEM || taskValue == wffGlobal.taskValues.REMOVE_AND_GET_LS_ITEM) {
 			var jsObj = new JsObjectFromBMBytes(taskNameValue.values[1], true);
 			// k for key, v for value, wt for write time
-			if (typeof localStorage !== "undefined" && jsObj.id && jsObj.k && jsObj.wt) {
+			if (typeof localStorage !== "undefined" && jsObj.k && jsObj.wt) {
 				//string
 				var itemJSON = localStorage.getItem(jsObj.k + '_wff_data');
 				var itemObj;
@@ -579,24 +583,27 @@ var wffClientCRUDUtil = new function() {
 						localStorage.removeItem(jsObj.k + '_wff_data');
 					}
 				}
-				var taskNameValue = wffTaskUtil.getTaskNameValue(
-					wffGlobal.taskValues.TASK,
-					taskValue);
-				var nameValue = {
-					'name': encoder.encode(jsObj.id),
-					'values': []
-				};
-				if (taskValue == wffGlobal.taskValues.REMOVE_AND_GET_LS_ITEM && itemObj.v && itemObj.wt) {
-					nameValue.values = [encoder.encode(itemObj.v), encoder.encode(itemObj.wt)];
+				if (jsObj.id) {
+					var taskNameValue = wffTaskUtil.getTaskNameValue(
+						wffGlobal.taskValues.TASK,
+						taskValue);
+					var nameValue = {
+						'name': encoder.encode(jsObj.id),
+						'values': []
+					};
+					if (taskValue == wffGlobal.taskValues.REMOVE_AND_GET_LS_ITEM && itemObj.v && itemObj.wt) {
+						nameValue.values = [encoder.encode(itemObj.v), encoder.encode(itemObj.wt)];
+					}
+					var nameValues = [taskNameValue, nameValue];
+					var wffBM = wffBMUtil.getWffBinaryMessageBytes(nameValues);
+					wffWS.send(wffBM);
 				}
-				var nameValues = [taskNameValue, nameValue];
-				var wffBM = wffBMUtil.getWffBinaryMessageBytes(nameValues);
-				wffWS.send(wffBM);
+
 			}
 		} else if (taskValue == wffGlobal.taskValues.CLEAR_LS) {
 			var jsObj = new JsObjectFromBMBytes(taskNameValue.values[1], true);
 			// wt for write time
-			if (typeof localStorage !== "undefined" && jsObj.id && jsObj.wt) {
+			if (typeof localStorage !== "undefined" && jsObj.wt) {
 
 				for (var k in localStorage) {
 					if (k.endsWith('_wff_data')) {
@@ -611,17 +618,19 @@ var wffClientCRUDUtil = new function() {
 					}
 				}
 
-				var taskNameValue = wffTaskUtil.getTaskNameValue(
-					wffGlobal.taskValues.TASK,
-					taskValue);
-				var nameValue = {
-					'name': encoder.encode(jsObj.id),
-					'values': []
-				};
+				if (jsObj.id) {
+					var taskNameValue = wffTaskUtil.getTaskNameValue(
+						wffGlobal.taskValues.TASK,
+						taskValue);
+					var nameValue = {
+						'name': encoder.encode(jsObj.id),
+						'values': []
+					};
 
-				var nameValues = [taskNameValue, nameValue];
-				var wffBM = wffBMUtil.getWffBinaryMessageBytes(nameValues);
-				wffWS.send(wffBM);
+					var nameValues = [taskNameValue, nameValue];
+					var wffBM = wffBMUtil.getWffBinaryMessageBytes(nameValues);
+					wffWS.send(wffBM);
+				}
 			}
 		} else if (taskValue == wffGlobal.taskValues.COPY_INNER_TEXT_TO_VALUE) {
 			

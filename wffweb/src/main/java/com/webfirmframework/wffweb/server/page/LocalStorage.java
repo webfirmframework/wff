@@ -38,11 +38,17 @@ public sealed interface LocalStorage permits LocalStorageImpl {
 
     void setItem(String key, String value, Consumer<Event> successConsumer);
 
+    void setItem(String key, String value);
+
     void getItem(String key, Consumer<Event> consumer);
 
     void removeItem(String key, Consumer<Event> consumer);
 
+    void removeItem(String key);
+
     void removeAndGetItem(String key, Consumer<Event> consumer);
 
     void clear(Consumer<Event> consumer);
+
+    void clear();
 }
