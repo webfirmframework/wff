@@ -36,6 +36,8 @@ public sealed interface BrowserPageSession permits BrowserPageContext.BrowserPag
      */
     Map<String, Object> userProperties();
 
+    LocalStorage localStorage();
+
     /**
      * Note: This will not prevent the saved object from being garbage collected.
      * This is a thread-safe method.

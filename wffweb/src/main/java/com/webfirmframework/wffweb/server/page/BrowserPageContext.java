@@ -107,10 +107,13 @@ public enum BrowserPageContext {
 
         private final Map<String, WeakReference<Object>> weakProperties;
 
-        private BrowserPageSessionImpl(final String httpSessionId) {
+        private final LocalStorageImpl localStorage;
+
+        private BrowserPageSessionImpl(final String httpSessionId, final Map<String, BrowserPage> browserPages) {
             this.httpSessionId = httpSessionId;
             userProperties = new ConcurrentHashMap<>(2);
             weakProperties = new ConcurrentHashMap<>(2);
+            localStorage = new LocalStorageImpl(browserPages);
         }
 
         @Override
@@ -121,6 +124,11 @@ public enum BrowserPageContext {
         @Override
         public Map<String, Object> userProperties() {
             return userProperties;
+        }
+
+        @Override
+        public LocalStorage localStorage() {
+            return localStorage;
         }
 
         @Override
@@ -153,9 +161,6 @@ public enum BrowserPageContext {
         // passed 4 instead of 1 because the load factor is 0.75f
         private transient final Map<String, BrowserPage> browserPages = new ConcurrentHashMap<>(4);
 
-        /**
-         * key:- httpSessionId value:- HeartbeatManager
-         */
         private transient final AtomicReference<HeartbeatManager> heartbeatManagerRef = new AtomicReference<>();
 
         private final BrowserPageSessionImpl session;
@@ -163,7 +168,7 @@ public enum BrowserPageContext {
         private volatile long lastClientAccessedTime;
 
         private BrowserPageSessionWrapper(final String httpSessionId) {
-            session = new BrowserPageSessionImpl(httpSessionId);
+            session = new BrowserPageSessionImpl(httpSessionId, browserPages);
             lastClientAccessedTime = System.currentTimeMillis();
         }
     }

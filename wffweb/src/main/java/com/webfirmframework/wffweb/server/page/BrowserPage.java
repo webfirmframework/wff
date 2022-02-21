@@ -198,6 +198,14 @@ public abstract class BrowserPage implements Serializable {
 
     private volatile String uri;
 
+    private volatile Map<Integer, LSConsumerEventRecord> localStorageSetItemConsumers;
+
+    private volatile Map<Integer, LSConsumerEventRecord> localStorageGetItemConsumers;
+
+    private volatile Map<Integer, LSConsumerEventRecord> localStorageRemoveItemConsumers;
+
+    private volatile Map<Integer, LSConsumerEventRecord> localStorageClearItemsConsumers;
+
     // NB: this non-static initialization makes BrowserPage and PayloadProcessor
     // never to get GCd. It leads to memory leak. It seems to be a bug.
     // private final ThreadLocal<PayloadProcessor> PALYLOAD_PROCESSOR_TL =
@@ -1004,7 +1012,8 @@ public abstract class BrowserPage implements Serializable {
                             if (nameValues.size() > 1) {
                                 final NameValue pathnameNV = nameValues.get(1);
                                 final String urlPath = new String(pathnameNV.getName(), StandardCharsets.UTF_8);
-                                final URIEventInitiator eventInitiator = URIEventInitiator.get(pathnameNV.getValues()[0][0]);
+                                final URIEventInitiator eventInitiator = URIEventInitiator
+                                        .get(pathnameNV.getValues()[0][0]);
                                 setURI(false, urlPath, eventInitiator);
                             }
 
@@ -1052,8 +1061,98 @@ public abstract class BrowserPage implements Serializable {
                         LOGGER.log(Level.SEVERE, "Exception while executing setURI", e);
                     }
                 }
+            } else if (taskValue == Task.SET_LS_ITEM.getValueByte()) {
+                try {
+                    if (nameValues.size() > 1) {
+                        final NameValue nameValue = nameValues.get(1);
+                        final LSConsumerEventRecord lsEventRecord = localStorageSetItemConsumers
+                                .remove(Integer.parseInt(new String(nameValue.getName(), StandardCharsets.UTF_8)));
+                        if (lsEventRecord != null) {
+                            lsEventRecord.consumer().accept(lsEventRecord.event());
+                        }
+                    }
+                } catch (final Exception e) {
+                    if (LOGGER.isLoggable(Level.SEVERE)) {
+                        LOGGER.log(Level.SEVERE, "Exception while executing setURI", e);
+                    }
+                }
+
+            } else if (taskValue == Task.GET_LS_ITEM.getValueByte()) {
+                try {
+                    if (nameValues.size() > 1) {
+                        final NameValue nameValue = nameValues.get(1);
+                        final LSConsumerEventRecord lsEventRecord = localStorageGetItemConsumers
+                                .remove(Integer.parseInt(new String(nameValue.getName(), StandardCharsets.UTF_8)));
+                        if (lsEventRecord != null) {
+                            final LocalStorage.Event event;
+                            final byte[][] values = nameValue.getValues();
+                            if (values.length > 1) {
+                                final String value = new String(values[0], StandardCharsets.UTF_8);
+                                final long updatedTimeMillis = Long
+                                        .parseLong(new String(values[1], StandardCharsets.UTF_8));
+                                event = new LocalStorage.Event(lsEventRecord.event().key(),
+                                        lsEventRecord.event().operationTimeMillis(),
+                                        new LocalStorage.Item(value, updatedTimeMillis));
+
+                            } else {
+                                event = lsEventRecord.event();
+                            }
+                            lsEventRecord.consumer().accept(event);
+                        }
+                    }
+                } catch (final Exception e) {
+                    if (LOGGER.isLoggable(Level.SEVERE)) {
+                        LOGGER.log(Level.SEVERE, "Exception while executing setURI", e);
+                    }
+                }
+
+            } else if (taskValue == Task.REMOVE_LS_ITEM.getValueByte()
+                    || taskValue == Task.REMOVE_AND_GET_LS_ITEM.getValueByte()) {
+                try {
+                    if (nameValues.size() > 1) {
+                        final NameValue nameValue = nameValues.get(1);
+                        final LSConsumerEventRecord lsEventRecord = localStorageRemoveItemConsumers
+                                .remove(Integer.parseInt(new String(nameValue.getName(), StandardCharsets.UTF_8)));
+                        if (lsEventRecord != null) {
+                            LocalStorage.Event event = null;
+                            if (taskValue == Task.REMOVE_AND_GET_LS_ITEM.getValueByte()) {
+                                final byte[][] values = nameValue.getValues();
+                                if (values.length > 1) {
+                                    final String value = new String(values[0], StandardCharsets.UTF_8);
+                                    final long updatedTimeMillis = Long
+                                            .parseLong(new String(values[1], StandardCharsets.UTF_8));
+                                    event = new LocalStorage.Event(lsEventRecord.event().key(),
+                                            lsEventRecord.event().operationTimeMillis(),
+                                            new LocalStorage.Item(value, updatedTimeMillis));
+                                }
+                            } else {
+                                event = lsEventRecord.event();
+                            }
+                            lsEventRecord.consumer().accept(event);
+                        }
+                    }
+                } catch (final Exception e) {
+                    if (LOGGER.isLoggable(Level.SEVERE)) {
+                        LOGGER.log(Level.SEVERE, "Exception while executing setURI", e);
+                    }
+                }
             }
 
+        } else if (taskValue == Task.CLEAR_LS.getValueByte()) {
+            try {
+                if (nameValues.size() > 1) {
+                    final NameValue nameValue = nameValues.get(1);
+                    final LSConsumerEventRecord lsEventRecord = localStorageClearItemsConsumers
+                            .remove(Integer.parseInt(new String(nameValue.getName(), StandardCharsets.UTF_8)));
+                    if (lsEventRecord != null) {
+                        lsEventRecord.consumer().accept(lsEventRecord.event());
+                    }
+                }
+            } catch (final Exception e) {
+                if (LOGGER.isLoggable(Level.SEVERE)) {
+                    LOGGER.log(Level.SEVERE, "Exception while executing setURI", e);
+                }
+            }
         }
 
     }
@@ -1074,6 +1173,75 @@ public abstract class BrowserPage implements Serializable {
         // S for server
         event.put("origin", BMValueType.STRING, "S");
         final NameValue taskNameValue = Task.SET_URI.getTaskNameValue(event.buildBytes(true));
+        push(taskNameValue);
+        if (holdPush.get() == 0) {
+            pushWffBMBytesQueue();
+        }
+    }
+
+    private void invokeSetLocalStorageItemAtClient(final String id, final String key, final String value,
+            final long writeTime) {
+        final WffBMObject event = new WffBMObject();
+        event.put("id", BMValueType.STRING, id);
+        // k for key
+        event.put("k", BMValueType.STRING, key);
+        // v for value
+        event.put("v", BMValueType.STRING, value);
+        // wt for write time
+        event.put("wt", BMValueType.STRING, String.valueOf(writeTime));
+        final NameValue taskNameValue = Task.SET_LS_ITEM.getTaskNameValue(event.buildBytes(true));
+        push(taskNameValue);
+        if (holdPush.get() == 0) {
+            pushWffBMBytesQueue();
+        }
+    }
+
+    private void invokeGetLocalStorageItemAtClient(final String id, final String key) {
+        final WffBMObject event = new WffBMObject();
+        event.put("id", BMValueType.STRING, id);
+        // k for key
+        event.put("k", BMValueType.STRING, key);
+        final NameValue taskNameValue = Task.GET_LS_ITEM.getTaskNameValue(event.buildBytes(true));
+        push(taskNameValue);
+        if (holdPush.get() == 0) {
+            pushWffBMBytesQueue();
+        }
+    }
+
+    private void invokeRemoveLocalStorageItemAtClient(final String id, final String key, final long writeTime) {
+        final WffBMObject event = new WffBMObject();
+        event.put("id", BMValueType.STRING, id);
+        // k for key
+        event.put("k", BMValueType.STRING, key);
+        // wt for write time
+        event.put("wt", BMValueType.STRING, String.valueOf(writeTime));
+        final NameValue taskNameValue = Task.REMOVE_LS_ITEM.getTaskNameValue(event.buildBytes(true));
+        push(taskNameValue);
+        if (holdPush.get() == 0) {
+            pushWffBMBytesQueue();
+        }
+    }
+
+    private void invokeRemoveAndGetLocalStorageItemAtClient(final String id, final String key, final long writeTime) {
+        final WffBMObject event = new WffBMObject();
+        event.put("id", BMValueType.STRING, id);
+        // k for key
+        event.put("k", BMValueType.STRING, key);
+        // wt for write time
+        event.put("wt", BMValueType.STRING, String.valueOf(writeTime));
+        final NameValue taskNameValue = Task.REMOVE_AND_GET_LS_ITEM.getTaskNameValue(event.buildBytes(true));
+        push(taskNameValue);
+        if (holdPush.get() == 0) {
+            pushWffBMBytesQueue();
+        }
+    }
+
+    private void invokeClearLocalStorageItemsAtClient(final String id, final long writeTime) {
+        final WffBMObject event = new WffBMObject();
+        event.put("id", BMValueType.STRING, id);
+        // wt for write time
+        event.put("wt", BMValueType.STRING, String.valueOf(writeTime));
+        final NameValue taskNameValue = Task.CLEAR_LS.getTaskNameValue(event.buildBytes(true));
         push(taskNameValue);
         if (holdPush.get() == 0) {
             pushWffBMBytesQueue();
@@ -2545,7 +2713,7 @@ public abstract class BrowserPage implements Serializable {
      * @param uriAfter
      * @since 12.0.0-beta.1
      * @deprecated override and use
-     *             {@link BrowserPage#afterURIChange(String, String, SetURICaller)}
+     *             {@link BrowserPage#afterURIChange(String, String, URIEventInitiator)}
      *             instead of this method.
      */
     @Deprecated(forRemoval = true)
@@ -2580,6 +2748,41 @@ public abstract class BrowserPage implements Serializable {
      */
     protected final static Logger getBrowserPageLogger() {
         return LOGGER;
+    }
+
+    void setLocalStorageItem(final String id, final String key, final String value, final long writeTime,
+            final Map<Integer, LSConsumerEventRecord> localStorageSetItemConsumers) {
+
+        this.localStorageSetItemConsumers = localStorageSetItemConsumers;
+        invokeSetLocalStorageItemAtClient(id, key, value, writeTime);
+    }
+
+    void getLocalStorageItem(final String id, final String key,
+            final Map<Integer, LSConsumerEventRecord> localStorageGetItemConsumers) {
+
+        this.localStorageGetItemConsumers = localStorageGetItemConsumers;
+        invokeGetLocalStorageItemAtClient(id, key);
+    }
+
+    void removeLocalStorageItem(final String id, final String key, final long operationTimeMillis,
+            final Map<Integer, LSConsumerEventRecord> localStorageRemoveItemConsumers) {
+
+        this.localStorageRemoveItemConsumers = localStorageRemoveItemConsumers;
+        invokeRemoveLocalStorageItemAtClient(id, key, operationTimeMillis);
+    }
+
+    void removeAndGetLocalStorageItem(final String id, final String key, final long operationTimeMillis,
+            final Map<Integer, LSConsumerEventRecord> localStorageRemoveItemConsumers) {
+
+        this.localStorageRemoveItemConsumers = localStorageRemoveItemConsumers;
+        invokeRemoveAndGetLocalStorageItemAtClient(id, key, operationTimeMillis);
+    }
+
+    void clearLocalStorageItems(final String id, final long operationTimeMillis,
+            final Map<Integer, LSConsumerEventRecord> localStorageClearItemsConsumers) {
+
+        this.localStorageClearItemsConsumers = localStorageClearItemsConsumers;
+        invokeClearLocalStorageItemsAtClient(id, operationTimeMillis);
     }
 
 }

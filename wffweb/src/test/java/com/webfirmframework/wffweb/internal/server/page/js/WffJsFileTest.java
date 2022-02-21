@@ -51,7 +51,7 @@ public class WffJsFileTest {
             k += 1;}
             A.length = len;return A;};}());}window.wffGlobal = new function() {
             var wffId = -1;this.getUniqueWffIntId = function() {
-            return ++wffId;};this.CPRSD_DATA = true;this.NDXD_TGS = ["#","@","a","b","i","p","q","s","u","br","dd","dl","dt","em","h1","h2","h3","h4","h5","h6","hr","li","ol","rp","rt","td","th","tr","ul","bdi","bdo","col","del","dfn","div","img","ins","kbd","map","nav","pre","qfn","sub","sup","svg","var","wbr","abbr","area","base","body","cite","code","data","form","head","html","line","link","main","mark","math","menu","meta","path","rect","ruby","samp","span","text","time","aside","audio","embed","input","label","meter","param","small","style","table","tbody","tfoot","thead","title","track","video","button","canvas","circle","dialog","figure","footer","header","hgroup","iframe","keygen","legend","object","option","output","script","select","source","strong","address","article","caption","details","ellipse","picture","polygon","section","summary","basefont","colgroup","datalist","fieldset","menuitem","noscript","optgroup","polyline","progress","template","textarea","blockquote","figcaption"];this.NDXD_ATRBS = ["id","alt","dir","for","low","max","min","rel","rev","src","cols","face","form","high","href","lang","list","loop","name","open","role","rows","size","step","type","wrap","align","async","class","color","defer","ismap","media","muted","nonce","oncut","scope","shape","sizes","style","title","value","width","accept","action","border","coords","height","hidden","method","nohref","onblur","oncopy","ondrag","ondrop","onload","onplay","onshow","poster","sorted","srcset","target","usemap","charset","checked","colspan","content","default","dirname","enctype","headers","onabort","onclick","onended","onerror","onfocus","oninput","onkeyup","onpaste","onpause","onreset","onwheel","optimum","pattern","preload","rowspan","sandbox","autoplay","controls","datetime","disabled","download","dropzone","hreflang","multiple","onchange","ononline","onresize","onscroll","onsearch","onseeked","onselect","onsubmit","ontoggle","onunload","readonly","required","reversed","selected","tabindex","accesskey","autofocus","draggable","maxlength","minlength","oncanplay","ondragend","onemptied","onfocusin","oninvalid","onkeydown","onmouseup","onoffline","onplaying","onseeking","onstalled","onstorage","onsuspend","onwaiting","translate","formaction","formmethod","formtarget","http-equiv","ondblclick","ondragover","onfocusout","onkeypress","onmouseout","onpagehide","onpageshow","onpopstate","onprogress","ontouchend","spellcheck","cellpadding","cellspacing","contextmenu","data-wff-id","formenctype","ondragenter","ondragleave","ondragstart","onloadstart","onmousedown","onmousemove","onmouseover","ontouchmove","placeholder","animationend","autocomplete","onafterprint","onhashchange","onloadeddata","onmouseenter","onmouseleave","onratechange","ontimeupdate","ontouchstart","onbeforeprint","oncontextmenu","ontouchcancel","transitionend","accept-charset","animationstart","formnovalidate","onbeforeunload","onvolumechange","contenteditable","oncanplaythrough","ondurationchange","onloadedmetadata","animationiteration"];this.NDXD_VNT_ATRBS = ["oncut","onblur","oncopy","ondrag","ondrop","onload","onplay","onshow","onabort","onclick","onended","onerror","onfocus","oninput","onkeyup","onpaste","onpause","onreset","onwheel","onchange","ononline","onresize","onscroll","onsearch","onseeked","onselect","onsubmit","ontoggle","onunload","oncanplay","ondragend","onemptied","onfocusin","oninvalid","onkeydown","onmouseup","onoffline","onplaying","onseeking","onstalled","onstorage","onsuspend","onwaiting","ondblclick","ondragover","onfocusout","onkeypress","onmouseout","onpagehide","onpageshow","onpopstate","onprogress","ontouchend","ondragenter","ondragleave","ondragstart","onloadstart","onmousedown","onmousemove","onmouseover","ontouchmove","onafterprint","onhashchange","onloadeddata","onmouseenter","onmouseleave","onratechange","ontimeupdate","ontouchstart","onbeforeprint","oncontextmenu","ontouchcancel","onbeforeunload","onvolumechange","oncanplaythrough","ondurationchange","onloadedmetadata"];this.NDXD_BLN_ATRBS = ["open","async","defer","ismap","hidden","checked","default","controls","disabled","multiple","readonly","reversed","selected"];this.taskValues = {INITIAL_WS_OPEN:0,INVOKE_ASYNC_METHOD:1,ATTRIBUTE_UPDATED:2,TASK:3,APPENDED_CHILD_TAG:4,REMOVED_TAGS:5,APPENDED_CHILDREN_TAGS:6,REMOVED_ALL_CHILDREN_TAGS:7,MOVED_CHILDREN_TAGS:8,INSERTED_BEFORE_TAG:9,INSERTED_AFTER_TAG:10,REPLACED_WITH_TAGS:11,REMOVED_ATTRIBUTES:12,ADDED_ATTRIBUTES:13,MANY_TO_ONE:14,ONE_TO_MANY:15,MANY_TO_MANY:16,ONE_TO_ONE:17,ADDED_INNER_HTML:18,INVOKE_POST_FUNCTION:19,EXEC_JS:20,RELOAD_BROWSER:21,RELOAD_BROWSER_FROM_CACHE:22,INVOKE_CALLBACK_FUNCTION:23,INVOKE_CUSTOM_SERVER_METHOD:24,TASK_OF_TASKS:25,COPY_INNER_TEXT_TO_VALUE:26,REMOVE_BROWSER_PAGE:27,SET_BM_OBJ_ON_TAG:28,SET_BM_ARR_ON_TAG:29,DEL_BM_OBJ_OR_ARR_FROM_TAG:30,CLIENT_PATHNAME_CHANGED:31,AFTER_SET_URI:32,SET_URI:33};this.uriEventInitiator = {SERVER_CODE:0,CLIENT_CODE:1,BROWSER:2,size:3};this.WS_URL = "ws://webfirmframework.com";this.INSTANCE_ID = "instance-id-1234585-451";this.REMOVE_PREV_BP_ON_INITTAB = true;this.REMOVE_PREV_BP_ON_TABCLOSE = true;this.WS_RECON = 2000;if ((typeof TextEncoder) === "undefined") {
+            return ++wffId;};this.CPRSD_DATA = true;this.NDXD_TGS = ["#","@","a","b","i","p","q","s","u","br","dd","dl","dt","em","h1","h2","h3","h4","h5","h6","hr","li","ol","rp","rt","td","th","tr","ul","bdi","bdo","col","del","dfn","div","img","ins","kbd","map","nav","pre","qfn","sub","sup","svg","var","wbr","abbr","area","base","body","cite","code","data","form","head","html","line","link","main","mark","math","menu","meta","path","rect","ruby","samp","span","text","time","aside","audio","embed","input","label","meter","param","small","style","table","tbody","tfoot","thead","title","track","video","button","canvas","circle","dialog","figure","footer","header","hgroup","iframe","keygen","legend","object","option","output","script","select","source","strong","address","article","caption","details","ellipse","picture","polygon","section","summary","basefont","colgroup","datalist","fieldset","menuitem","noscript","optgroup","polyline","progress","template","textarea","blockquote","figcaption"];this.NDXD_ATRBS = ["id","alt","dir","for","low","max","min","rel","rev","src","cols","face","form","high","href","lang","list","loop","name","open","role","rows","size","step","type","wrap","align","async","class","color","defer","ismap","media","muted","nonce","oncut","scope","shape","sizes","style","title","value","width","accept","action","border","coords","height","hidden","method","nohref","onblur","oncopy","ondrag","ondrop","onload","onplay","onshow","poster","sorted","srcset","target","usemap","charset","checked","colspan","content","default","dirname","enctype","headers","onabort","onclick","onended","onerror","onfocus","oninput","onkeyup","onpaste","onpause","onreset","onwheel","optimum","pattern","preload","rowspan","sandbox","autoplay","controls","datetime","disabled","download","dropzone","hreflang","multiple","onchange","ononline","onresize","onscroll","onsearch","onseeked","onselect","onsubmit","ontoggle","onunload","readonly","required","reversed","selected","tabindex","accesskey","autofocus","draggable","maxlength","minlength","oncanplay","ondragend","onemptied","onfocusin","oninvalid","onkeydown","onmouseup","onoffline","onplaying","onseeking","onstalled","onstorage","onsuspend","onwaiting","translate","formaction","formmethod","formtarget","http-equiv","ondblclick","ondragover","onfocusout","onkeypress","onmouseout","onpagehide","onpageshow","onpopstate","onprogress","ontouchend","spellcheck","cellpadding","cellspacing","contextmenu","data-wff-id","formenctype","ondragenter","ondragleave","ondragstart","onloadstart","onmousedown","onmousemove","onmouseover","ontouchmove","placeholder","animationend","autocomplete","onafterprint","onhashchange","onloadeddata","onmouseenter","onmouseleave","onratechange","ontimeupdate","ontouchstart","onbeforeprint","oncontextmenu","ontouchcancel","transitionend","accept-charset","animationstart","formnovalidate","onbeforeunload","onvolumechange","contenteditable","oncanplaythrough","ondurationchange","onloadedmetadata","animationiteration"];this.NDXD_VNT_ATRBS = ["oncut","onblur","oncopy","ondrag","ondrop","onload","onplay","onshow","onabort","onclick","onended","onerror","onfocus","oninput","onkeyup","onpaste","onpause","onreset","onwheel","onchange","ononline","onresize","onscroll","onsearch","onseeked","onselect","onsubmit","ontoggle","onunload","oncanplay","ondragend","onemptied","onfocusin","oninvalid","onkeydown","onmouseup","onoffline","onplaying","onseeking","onstalled","onstorage","onsuspend","onwaiting","ondblclick","ondragover","onfocusout","onkeypress","onmouseout","onpagehide","onpageshow","onpopstate","onprogress","ontouchend","ondragenter","ondragleave","ondragstart","onloadstart","onmousedown","onmousemove","onmouseover","ontouchmove","onafterprint","onhashchange","onloadeddata","onmouseenter","onmouseleave","onratechange","ontimeupdate","ontouchstart","onbeforeprint","oncontextmenu","ontouchcancel","onbeforeunload","onvolumechange","oncanplaythrough","ondurationchange","onloadedmetadata"];this.NDXD_BLN_ATRBS = ["open","async","defer","ismap","hidden","checked","default","controls","disabled","multiple","readonly","reversed","selected"];this.taskValues = {INITIAL_WS_OPEN:0,INVOKE_ASYNC_METHOD:1,ATTRIBUTE_UPDATED:2,TASK:3,APPENDED_CHILD_TAG:4,REMOVED_TAGS:5,APPENDED_CHILDREN_TAGS:6,REMOVED_ALL_CHILDREN_TAGS:7,MOVED_CHILDREN_TAGS:8,INSERTED_BEFORE_TAG:9,INSERTED_AFTER_TAG:10,REPLACED_WITH_TAGS:11,REMOVED_ATTRIBUTES:12,ADDED_ATTRIBUTES:13,MANY_TO_ONE:14,ONE_TO_MANY:15,MANY_TO_MANY:16,ONE_TO_ONE:17,ADDED_INNER_HTML:18,INVOKE_POST_FUNCTION:19,EXEC_JS:20,RELOAD_BROWSER:21,RELOAD_BROWSER_FROM_CACHE:22,INVOKE_CALLBACK_FUNCTION:23,INVOKE_CUSTOM_SERVER_METHOD:24,TASK_OF_TASKS:25,COPY_INNER_TEXT_TO_VALUE:26,REMOVE_BROWSER_PAGE:27,SET_BM_OBJ_ON_TAG:28,SET_BM_ARR_ON_TAG:29,DEL_BM_OBJ_OR_ARR_FROM_TAG:30,CLIENT_PATHNAME_CHANGED:31,AFTER_SET_URI:32,SET_URI:33,SET_LS_ITEM:34,GET_LS_ITEM:35,REMOVE_LS_ITEM:36,REMOVE_AND_GET_LS_ITEM:37,CLEAR_LS:38};this.uriEventInitiator = {SERVER_CODE:0,CLIENT_CODE:1,BROWSER:2,size:3};this.WS_URL = "ws://webfirmframework.com";this.INSTANCE_ID = "instance-id-1234585-451";this.REMOVE_PREV_BP_ON_INITTAB = true;this.REMOVE_PREV_BP_ON_TABCLOSE = true;this.WS_RECON = 2000;if ((typeof TextEncoder) === "undefined") {
             this.encoder = new function TextEncoder(charset) {
             if (charset === "utf-8") {
             this.encode = function(text) {
@@ -295,11 +295,11 @@ public class WffJsFileTest {
             .encode(attribute.name);}
             values.push(v13);}
             var v84 = {
-            'name' : f15(v61),
+            'name' : wffBMUtil.f15(v61),
             'values' : values
             };v76.push(v84);}else{
             var v44 = encoder.encode(tag.nodeValue);var values = [ encodedBytesForHash, v44 ];var v84 = {
-            'name' : f15(v61),
+            'name' : wffBMUtil.f15(v61),
             'values' : values
             };v76.push(v84);}
             v61++;for (var i = 0; i < tag.childNodes.length; i++){
@@ -450,7 +450,76 @@ public class WffJsFileTest {
             wffLog("wffGlobalListeners.afterSetURI threw exception when the setURI method in the server is called.", e);}
             }
             }
-            uriChangeQ = [];}else if(taskValue == wffGlobal.taskValues.COPY_INNER_TEXT_TO_VALUE){
+            uriChangeQ = [];}else if(taskValue == wffGlobal.taskValues.SET_LS_ITEM){
+            var jsObj = new JsObjectFromBMBytes(v46.values[1], true);if(typeof localStorage !== "undefined" && jsObj.id && jsObj.k && jsObj.v && jsObj.wt){
+            var wt = parseInt(jsObj.wt);var prev = localStorage.getItem(jsObj.k + '_wff_data');var lstWT = 0;if(prev){
+            try {
+            lstWT = parseInt(JSON.parse(prev).wt);} catch (e){
+            wffLog(e);}
+            }
+            if(wt >= lstWT){
+            var itemVal = JSON.stringify({ v: jsObj.v, wt: jsObj.wt });localStorage.setItem(jsObj.k + '_wff_data', itemVal);}
+            var v46 = wffTaskUtil.f34(
+            wffGlobal.taskValues.TASK,
+            taskValue);var v84 = {
+            'name': encoder.encode(jsObj.id),
+            'values': []
+            };var v76 = [v46, v84];var wffBM = wffBMUtil.f13(v76);wffWS.send(wffBM);}
+            }else if(taskValue == wffGlobal.taskValues.GET_LS_ITEM){
+            var jsObj = new JsObjectFromBMBytes(v46.values[1], true);if(typeof localStorage !== "undefined" && jsObj.id && jsObj.k){
+            var itemJSON = localStorage.getItem(jsObj.k + '_wff_data');var itemObj;if(itemJSON){
+            try {
+            itemObj = JSON.parse(itemJSON);} catch (e){
+            wffLog(e);}
+            }
+            if(!itemObj || !itemObj.v || !itemObj.wt){
+            itemObj = { id: jsObj.id };}
+            var v46 = wffTaskUtil.f34(
+            wffGlobal.taskValues.TASK,
+            taskValue);var v84 = {
+            'name': encoder.encode(jsObj.id),
+            'values': []
+            };if(itemObj.v && itemObj.wt){
+            v84.values = [encoder.encode(itemObj.v), encoder.encode(itemObj.wt)];}
+            var v76 = [v46, v84];var wffBM = wffBMUtil.f13(v76);wffWS.send(wffBM);}
+            }else if(taskValue == wffGlobal.taskValues.REMOVE_LS_ITEM || taskValue == wffGlobal.taskValues.REMOVE_AND_GET_LS_ITEM){
+            var jsObj = new JsObjectFromBMBytes(v46.values[1], true);if(typeof localStorage !== "undefined" && jsObj.id && jsObj.k && jsObj.wt){
+            var itemJSON = localStorage.getItem(jsObj.k + '_wff_data');var itemObj;if(itemJSON){
+            try {
+            itemObj = JSON.parse(itemJSON);} catch (e){
+            wffLog(e);}
+            }
+            if(!itemObj || !itemObj.v || !itemObj.wt){
+            itemObj = { id: jsObj.id };}else{
+            if(parseInt(jsObj.wt) >= parseInt(itemObj.wt)){
+            localStorage.removeItem(jsObj.k + '_wff_data');}
+            }
+            var v46 = wffTaskUtil.f34(
+            wffGlobal.taskValues.TASK,
+            taskValue);var v84 = {
+            'name': encoder.encode(jsObj.id),
+            'values': []
+            };if(taskValue == wffGlobal.taskValues.REMOVE_AND_GET_LS_ITEM && itemObj.v && itemObj.wt){
+            v84.values = [encoder.encode(itemObj.v), encoder.encode(itemObj.wt)];}
+            var v76 = [v46, v84];var wffBM = wffBMUtil.f13(v76);wffWS.send(wffBM);}
+            }else if(taskValue == wffGlobal.taskValues.CLEAR_LS){
+            var jsObj = new JsObjectFromBMBytes(v46.values[1], true);if(typeof localStorage !== "undefined" && jsObj.id && jsObj.wt){
+            for (var k in localStorage){
+            if(k.endsWith('_wff_data')){
+            try {
+            var itemObj = JSON.parse(localStorage[k]);if(itemObj && itemObj.wt && parseInt(jsObj.wt) >= parseInt(itemObj.wt)){
+            localStorage.removeItem(k);}
+            } catch (e){
+            wffLog(e);}
+            }
+            }
+            var v46 = wffTaskUtil.f34(
+            wffGlobal.taskValues.TASK,
+            taskValue);var v84 = {
+            'name': encoder.encode(jsObj.id),
+            'values': []
+            };var v76 = [v46, v84];var wffBM = wffBMUtil.f13(v76);wffWS.send(wffBM);}
+            }else if(taskValue == wffGlobal.taskValues.COPY_INNER_TEXT_TO_VALUE){
             var tagName = wffTagUtil.f5(v76[1].name);var v98 = wffTagUtil
             .f23(v76[1].values[0]);var parentTag = wffTagUtil.f16(tagName,
             v98);var d = document.createElement('div');d.innerHTML = parentTag.outerHTML;parentTag.value = d.childNodes[0].innerText;}else if(taskValue == wffGlobal.taskValues.SET_BM_OBJ_ON_TAG

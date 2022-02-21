@@ -116,7 +116,37 @@ public enum Task {
     /**
      * To execute history.pushState in the client if it is available
      */
-    SET_URI;
+    SET_URI,
+
+    /**
+     * To set localStorage item.
+     * LS stands for localStorage
+     */
+    SET_LS_ITEM,
+
+    /**
+     * To get localStorage item.
+     * LS stands for localStorage
+     */
+    GET_LS_ITEM,
+
+    /**
+     * To remove localStorage item.
+     * LS stands for localStorage
+     */
+    REMOVE_LS_ITEM,
+
+    /**
+     * To remove localStorage item.
+     * LS stands for localStorage
+     */
+    REMOVE_AND_GET_LS_ITEM,
+    
+    /**
+     * To clear localStorage.
+     * LS stands for localStorage
+     */
+    CLEAR_LS;
 
     private final String shortName;
 
