@@ -633,7 +633,10 @@ public enum BrowserPageContext {
      *                       objects. It is usually equal to the
      *                       {@code maxIdleTimeout} of websocket session. It should
      *                       be greater than the minInterval given in the
-     *                       {@code HeartbeatManager}.
+     *                       {@code HeartbeatManager}. It should be equal to the
+     *                       http session timeout value (maxInvactiveInterval) in
+     *                       its milliseconds if the session tracking is enabled and
+     *                       the app depends on the session tracking.
      * @since 3.0.16
      */
     public void enableAutoClean(final long maxIdleTimeout) {
@@ -654,7 +657,10 @@ public enum BrowserPageContext {
      *                       objects. It is usually equal to the
      *                       {@code maxIdleTimeout} of websocket session. It should
      *                       be greater than the minInterval given in the
-     *                       {@code HeartbeatManager}.
+     *                       {@code HeartbeatManager}. It should be equal to the
+     *                       http session timeout value (maxInvactiveInterval) in
+     *                       its milliseconds if the session tracking is enabled and
+     *                       the app depends on the session tracking.
      * @param executor       the executor object from which the thread will be
      *                       obtained to run the clean process.
      * @since 3.0.16
