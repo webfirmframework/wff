@@ -79,6 +79,7 @@ import com.webfirmframework.wffweb.util.StringUtil;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 import com.webfirmframework.wffweb.util.data.NameValue;
 import com.webfirmframework.wffweb.wffbm.data.BMValueType;
+import com.webfirmframework.wffweb.wffbm.data.WffBMByteArray;
 import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
 
 /**
@@ -1066,14 +1067,14 @@ public abstract class BrowserPage implements Serializable {
                     if (nameValues.size() > 1) {
                         final NameValue nameValue = nameValues.get(1);
                         final LSConsumerEventRecord lsEventRecord = localStorageSetItemConsumers
-                                .remove(Integer.parseInt(new String(nameValue.getName(), StandardCharsets.UTF_8)));
+                                .remove(WffBinaryMessageUtil.getIntFromOptimizedBytes(nameValue.getName()));
                         if (lsEventRecord != null) {
                             lsEventRecord.consumer().accept(lsEventRecord.event());
                         }
                     }
                 } catch (final Exception e) {
                     if (LOGGER.isLoggable(Level.SEVERE)) {
-                        LOGGER.log(Level.SEVERE, "Exception while executing setURI", e);
+                        LOGGER.log(Level.SEVERE, "Exception while executing localStorage.setItem", e);
                     }
                 }
 
@@ -1082,7 +1083,7 @@ public abstract class BrowserPage implements Serializable {
                     if (nameValues.size() > 1) {
                         final NameValue nameValue = nameValues.get(1);
                         final LSConsumerEventRecord lsEventRecord = localStorageGetItemConsumers
-                                .remove(Integer.parseInt(new String(nameValue.getName(), StandardCharsets.UTF_8)));
+                                .remove(WffBinaryMessageUtil.getIntFromOptimizedBytes(nameValue.getName()));
                         if (lsEventRecord != null) {
                             final LocalStorage.Event event;
                             final byte[][] values = nameValue.getValues();
@@ -1102,7 +1103,7 @@ public abstract class BrowserPage implements Serializable {
                     }
                 } catch (final Exception e) {
                     if (LOGGER.isLoggable(Level.SEVERE)) {
-                        LOGGER.log(Level.SEVERE, "Exception while executing setURI", e);
+                        LOGGER.log(Level.SEVERE, "Exception while executing localStorage.getItem", e);
                     }
                 }
 
@@ -1112,7 +1113,7 @@ public abstract class BrowserPage implements Serializable {
                     if (nameValues.size() > 1) {
                         final NameValue nameValue = nameValues.get(1);
                         final LSConsumerEventRecord lsEventRecord = localStorageRemoveItemConsumers
-                                .remove(Integer.parseInt(new String(nameValue.getName(), StandardCharsets.UTF_8)));
+                                .remove(WffBinaryMessageUtil.getIntFromOptimizedBytes(nameValue.getName()));
                         if (lsEventRecord != null) {
                             LocalStorage.Event event = null;
                             if (taskValue == Task.REMOVE_AND_GET_LS_ITEM.getValueByte()) {
@@ -1133,28 +1134,29 @@ public abstract class BrowserPage implements Serializable {
                     }
                 } catch (final Exception e) {
                     if (LOGGER.isLoggable(Level.SEVERE)) {
-                        LOGGER.log(Level.SEVERE, "Exception while executing setURI", e);
+                        final String methodName = taskValue == Task.REMOVE_LS_ITEM.getValueByte() ? "removeItem"
+                                : "removeAndGetItem";
+                        LOGGER.log(Level.SEVERE, "Exception while executing localStorage." + methodName, e);
+                    }
+                }
+            } else if (taskValue == Task.CLEAR_LS.getValueByte()) {
+                try {
+                    if (nameValues.size() > 1) {
+                        final NameValue nameValue = nameValues.get(1);
+                        final LSConsumerEventRecord lsEventRecord = localStorageClearItemsConsumers
+                                .remove(WffBinaryMessageUtil.getIntFromOptimizedBytes(nameValue.getName()));
+                        if (lsEventRecord != null) {
+                            lsEventRecord.consumer().accept(lsEventRecord.event());
+                        }
+                    }
+                } catch (final Exception e) {
+                    if (LOGGER.isLoggable(Level.SEVERE)) {
+                        LOGGER.log(Level.SEVERE, "Exception while executing localStorage.clear", e);
                     }
                 }
             }
 
-        } else if (taskValue == Task.CLEAR_LS.getValueByte()) {
-            try {
-                if (nameValues.size() > 1) {
-                    final NameValue nameValue = nameValues.get(1);
-                    final LSConsumerEventRecord lsEventRecord = localStorageClearItemsConsumers
-                            .remove(Integer.parseInt(new String(nameValue.getName(), StandardCharsets.UTF_8)));
-                    if (lsEventRecord != null) {
-                        lsEventRecord.consumer().accept(lsEventRecord.event());
-                    }
-                }
-            } catch (final Exception e) {
-                if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.log(Level.SEVERE, "Exception while executing setURI", e);
-                }
-            }
         }
-
     }
 
     private void invokeAfterSetURIAtClient(final String uriBefore, final String uriAfter) {
@@ -1168,10 +1170,11 @@ public abstract class BrowserPage implements Serializable {
     private void invokeSetURIAtClient(final String uriBefore, final String uriAfter) {
 
         final WffBMObject event = new WffBMObject();
-        event.put("uriBefore", uriBefore != null ? BMValueType.STRING : BMValueType.NULL, uriBefore);
-        event.put("uriAfter", uriAfter != null ? BMValueType.STRING : BMValueType.NULL, uriAfter);
+        // ua for uriAfter, ub for uriBefore, o for origin
+        event.put("ub", uriBefore != null ? BMValueType.STRING : BMValueType.NULL, uriBefore);
+        event.put("ua", uriAfter != null ? BMValueType.STRING : BMValueType.NULL, uriAfter);
         // S for server
-        event.put("origin", BMValueType.STRING, "S");
+        event.put("o", BMValueType.STRING, "S");
         final NameValue taskNameValue = Task.SET_URI.getTaskNameValue(event.buildBytes(true));
         push(taskNameValue);
         if (holdPush.get() == 0) {
@@ -1179,10 +1182,24 @@ public abstract class BrowserPage implements Serializable {
         }
     }
 
-    private void invokeSetLocalStorageItemAtClient(final String id, final String key, final String value,
+    private static void putId(final WffBMObject event, final Integer id) {
+        if (id != null) {
+            final WffBMByteArray idBytes = new WffBMByteArray();
+            try {
+                idBytes.write(WffBinaryMessageUtil.getOptimizedBytesFromInt(id));
+                event.put("id", BMValueType.BM_BYTE_ARRAY, idBytes);
+            } catch (final IOException e) {
+                event.put("id", BMValueType.NULL, null);
+            }
+        } else {
+            event.put("id", BMValueType.NULL, null);
+        }
+    }
+
+    private void invokeSetLocalStorageItemAtClient(final Integer id, final String key, final String value,
             final long writeTime) {
         final WffBMObject event = new WffBMObject();
-        event.put("id", id != null ? BMValueType.STRING : BMValueType.NULL, id);
+        putId(event, id);
         // k for key
         event.put("k", BMValueType.STRING, key);
         // v for value
@@ -1196,9 +1213,9 @@ public abstract class BrowserPage implements Serializable {
         }
     }
 
-    private void invokeGetLocalStorageItemAtClient(final String id, final String key) {
+    private void invokeGetLocalStorageItemAtClient(final int id, final String key) {
         final WffBMObject event = new WffBMObject();
-        event.put("id", BMValueType.STRING, id);
+        putId(event, id);
         // k for key
         event.put("k", BMValueType.STRING, key);
         final NameValue taskNameValue = Task.GET_LS_ITEM.getTaskNameValue(event.buildBytes(true));
@@ -1208,9 +1225,9 @@ public abstract class BrowserPage implements Serializable {
         }
     }
 
-    private void invokeRemoveLocalStorageItemAtClient(final String id, final String key, final long writeTime) {
+    private void invokeRemoveLocalStorageItemAtClient(final Integer id, final String key, final long writeTime) {
         final WffBMObject event = new WffBMObject();
-        event.put("id", id != null ? BMValueType.STRING : BMValueType.NULL, id);
+        putId(event, id);
         // k for key
         event.put("k", BMValueType.STRING, key);
         // wt for write time
@@ -1222,9 +1239,9 @@ public abstract class BrowserPage implements Serializable {
         }
     }
 
-    private void invokeRemoveAndGetLocalStorageItemAtClient(final String id, final String key, final long writeTime) {
+    private void invokeRemoveAndGetLocalStorageItemAtClient(final int id, final String key, final long writeTime) {
         final WffBMObject event = new WffBMObject();
-        event.put("id", BMValueType.STRING, id);
+        putId(event, id);
         // k for key
         event.put("k", BMValueType.STRING, key);
         // wt for write time
@@ -1236,9 +1253,9 @@ public abstract class BrowserPage implements Serializable {
         }
     }
 
-    private void invokeClearLocalStorageItemsAtClient(final String id, final long writeTime) {
+    private void invokeClearLocalStorageItemsAtClient(final Integer id, final long writeTime) {
         final WffBMObject event = new WffBMObject();
-        event.put("id", id != null ? BMValueType.STRING : BMValueType.NULL, id);
+        putId(event, id);
         // wt for write time
         event.put("wt", BMValueType.STRING, String.valueOf(writeTime));
         final NameValue taskNameValue = Task.CLEAR_LS.getTaskNameValue(event.buildBytes(true));
@@ -2766,35 +2783,35 @@ public abstract class BrowserPage implements Serializable {
         return LOGGER;
     }
 
-    void setLocalStorageItem(final String id, final String key, final String value, final long writeTime,
+    void setLocalStorageItem(final Integer id, final String key, final String value, final long writeTime,
             final Map<Integer, LSConsumerEventRecord> localStorageSetItemConsumers) {
 
         this.localStorageSetItemConsumers = localStorageSetItemConsumers;
         invokeSetLocalStorageItemAtClient(id, key, value, writeTime);
     }
 
-    void getLocalStorageItem(final String id, final String key,
+    void getLocalStorageItem(final int id, final String key,
             final Map<Integer, LSConsumerEventRecord> localStorageGetItemConsumers) {
 
         this.localStorageGetItemConsumers = localStorageGetItemConsumers;
         invokeGetLocalStorageItemAtClient(id, key);
     }
 
-    void removeLocalStorageItem(final String id, final String key, final long operationTimeMillis,
+    void removeLocalStorageItem(final Integer id, final String key, final long operationTimeMillis,
             final Map<Integer, LSConsumerEventRecord> localStorageRemoveItemConsumers) {
 
         this.localStorageRemoveItemConsumers = localStorageRemoveItemConsumers;
         invokeRemoveLocalStorageItemAtClient(id, key, operationTimeMillis);
     }
 
-    void removeAndGetLocalStorageItem(final String id, final String key, final long operationTimeMillis,
+    void removeAndGetLocalStorageItem(final int id, final String key, final long operationTimeMillis,
             final Map<Integer, LSConsumerEventRecord> localStorageRemoveItemConsumers) {
 
         this.localStorageRemoveItemConsumers = localStorageRemoveItemConsumers;
         invokeRemoveAndGetLocalStorageItemAtClient(id, key, operationTimeMillis);
     }
 
-    void clearLocalStorageItems(final String id, final long operationTimeMillis,
+    void clearLocalStorageItems(final Integer id, final long operationTimeMillis,
             final Map<Integer, LSConsumerEventRecord> localStorageClearItemsConsumers) {
 
         this.localStorageClearItemsConsumers = localStorageClearItemsConsumers;

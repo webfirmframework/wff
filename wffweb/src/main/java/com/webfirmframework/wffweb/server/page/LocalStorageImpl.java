@@ -66,20 +66,19 @@ final class LocalStorageImpl implements LocalStorage {
             removeAndGetItem(key, successConsumer);
             return;
         }
-        final String idString;
+        final Integer id;
         final long operationTimeMillis = System.currentTimeMillis();
         if (successConsumer != null) {
-            final int id = setItemIdGenerator.incrementAndGet();
-            idString = String.valueOf(id);
+            id = setItemIdGenerator.incrementAndGet();
             final LSConsumerEventRecord record = new LSConsumerEventRecord(successConsumer,
                     new LocalStorage.Event(key, operationTimeMillis, new Item(value, operationTimeMillis)));
             setItemConsumers.put(id, record);
         } else {
-            idString = null;
+            id = null;
         }
 
         for (final BrowserPage browserPage : browserPages.values()) {
-            browserPage.setLocalStorageItem(idString, key, value, operationTimeMillis, setItemConsumers);
+            browserPage.setLocalStorageItem(id, key, value, operationTimeMillis, setItemConsumers);
         }
     }
 
@@ -88,12 +87,11 @@ final class LocalStorageImpl implements LocalStorage {
         Objects.requireNonNull(consumer);
         final int id = getItemIdGenerator.incrementAndGet();
         final long operationTimeMillis = System.currentTimeMillis();
-        final String idString = String.valueOf(id);
         final LSConsumerEventRecord record = new LSConsumerEventRecord(consumer,
                 new LocalStorage.Event(key, operationTimeMillis));
         getItemConsumers.put(id, record);
         for (final BrowserPage browserPage : browserPages.values()) {
-            browserPage.getLocalStorageItem(idString, key, getItemConsumers);
+            browserPage.getLocalStorageItem(id, key, getItemConsumers);
         }
     }
 
@@ -105,22 +103,21 @@ final class LocalStorageImpl implements LocalStorage {
     @Override
     public void removeItem(final String key, final Consumer<Event> consumer) {
 
-        final String idString;
+        final Integer id;
         final long operationTimeMillis = System.currentTimeMillis();
 
         if (consumer != null) {
-            final int id = removeItemIdGenerator.incrementAndGet();
+            id = removeItemIdGenerator.incrementAndGet();
 
-            idString = String.valueOf(id);
             final LSConsumerEventRecord record = new LSConsumerEventRecord(consumer,
                     new LocalStorage.Event(key, operationTimeMillis));
             removeItemConsumers.put(id, record);
         } else {
-            idString = null;
+            id = null;
         }
 
         for (final BrowserPage browserPage : browserPages.values()) {
-            browserPage.removeLocalStorageItem(idString, key, operationTimeMillis, removeItemConsumers);
+            browserPage.removeLocalStorageItem(id, key, operationTimeMillis, removeItemConsumers);
         }
     }
 
@@ -129,12 +126,11 @@ final class LocalStorageImpl implements LocalStorage {
         Objects.requireNonNull(consumer);
         final int id = removeItemIdGenerator.incrementAndGet();
         final long operationTimeMillis = System.currentTimeMillis();
-        final String idString = String.valueOf(id);
         final LSConsumerEventRecord record = new LSConsumerEventRecord(consumer,
                 new LocalStorage.Event(key, operationTimeMillis));
         removeItemConsumers.put(id, record);
         for (final BrowserPage browserPage : browserPages.values()) {
-            browserPage.removeAndGetLocalStorageItem(idString, key, operationTimeMillis, removeItemConsumers);
+            browserPage.removeAndGetLocalStorageItem(id, key, operationTimeMillis, removeItemConsumers);
         }
     }
 
@@ -146,19 +142,18 @@ final class LocalStorageImpl implements LocalStorage {
     @Override
     public void clear(final Consumer<Event> consumer) {
 
-        final String idString;
+        final Integer id;
         final long operationTimeMillis = System.currentTimeMillis();
         if (consumer != null) {
-            final int id = clearItemsIdGenerator.incrementAndGet();
-            idString = String.valueOf(id);
+            id = clearItemsIdGenerator.incrementAndGet();
             final LSConsumerEventRecord record = new LSConsumerEventRecord(consumer,
                     new LocalStorage.Event(operationTimeMillis));
             clearItemsConsumers.put(id, record);
         } else {
-            idString = null;
+            id = null;
         }
         for (final BrowserPage browserPage : browserPages.values()) {
-            browserPage.clearLocalStorageItems(idString, operationTimeMillis, clearItemsConsumers);
+            browserPage.clearLocalStorageItems(id, operationTimeMillis, clearItemsConsumers);
         }
     }
 }

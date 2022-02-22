@@ -467,6 +467,12 @@ var wffClientCRUDUtil = new function() {
 			
 		} else if (taskValue == wffGlobal.taskValues.SET_URI) {
 			var jsObj = new JsObjectFromBMBytes(taskNameValue.values[1], true);
+			jsObj.uriAfter = jsObj.ua;
+			jsObj.uriBefore = jsObj.ub;
+			jsObj.origin = jsObj.o;
+			delete jsObj.ua;
+			delete jsObj.ub;
+			delete jsObj.o;
 			if (jsObj.uriAfter && jsObj.uriAfter !== jsObj.uriBefore) {
 				if (jsObj.origin === 'S') {
 					jsObj.origin = 'server';
@@ -522,7 +528,7 @@ var wffClientCRUDUtil = new function() {
 						wffGlobal.taskValues.TASK,
 						taskValue);
 					var nameValue = {
-						'name': encoder.encode(jsObj.id),
+						'name': jsObj.id,
 						'values': []
 					};
 					var nameValues = [taskNameValue, nameValue];
@@ -546,13 +552,13 @@ var wffClientCRUDUtil = new function() {
 					}
 				}
 				if (!itemObj || !itemObj.v || !itemObj.wt) {
-					itemObj = { id: jsObj.id };
+					itemObj = {};
 				}
 				var taskNameValue = wffTaskUtil.getTaskNameValue(
 					wffGlobal.taskValues.TASK,
 					taskValue);
 				var nameValue = {
-					'name': encoder.encode(jsObj.id),
+					'name': jsObj.id,
 					'values': []
 				};
 				if (itemObj.v && itemObj.wt) {
@@ -577,7 +583,7 @@ var wffClientCRUDUtil = new function() {
 					}
 				}
 				if (!itemObj || !itemObj.v || !itemObj.wt) {
-					itemObj = { id: jsObj.id };
+					itemObj = {};
 				} else {
 					if (parseInt(jsObj.wt) >= parseInt(itemObj.wt)) {
 						localStorage.removeItem(jsObj.k + '_wff_data');
@@ -588,7 +594,7 @@ var wffClientCRUDUtil = new function() {
 						wffGlobal.taskValues.TASK,
 						taskValue);
 					var nameValue = {
-						'name': encoder.encode(jsObj.id),
+						'name': jsObj.id,
 						'values': []
 					};
 					if (taskValue == wffGlobal.taskValues.REMOVE_AND_GET_LS_ITEM && itemObj.v && itemObj.wt) {
@@ -617,13 +623,12 @@ var wffClientCRUDUtil = new function() {
 						}
 					}
 				}
-
 				if (jsObj.id) {
 					var taskNameValue = wffTaskUtil.getTaskNameValue(
 						wffGlobal.taskValues.TASK,
 						taskValue);
 					var nameValue = {
-						'name': encoder.encode(jsObj.id),
+						'name': jsObj.id,
 						'values': []
 					};
 

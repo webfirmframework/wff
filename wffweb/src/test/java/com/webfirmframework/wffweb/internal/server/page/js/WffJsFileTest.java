@@ -431,7 +431,7 @@ public class WffJsFileTest {
             window.execScript(js);}else{
             eval(js);}
             }else if(taskValue == wffGlobal.taskValues.SET_URI){
-            var jsObj = new JsObjectFromBMBytes(v46.values[1], true);if(jsObj.uriAfter && jsObj.uriAfter !== jsObj.uriBefore){
+            var jsObj = new JsObjectFromBMBytes(v46.values[1], true);jsObj.uriAfter = jsObj.ua;jsObj.uriBefore = jsObj.ub;jsObj.origin = jsObj.o;delete jsObj.ua;delete jsObj.ub;delete jsObj.o;if(jsObj.uriAfter && jsObj.uriAfter !== jsObj.uriBefore){
             if(jsObj.origin === 'S'){
             jsObj.origin = 'server';jsObj.initiator = 'serverCode';}
             var vnt = {};for (k in jsObj){
@@ -463,7 +463,7 @@ public class WffJsFileTest {
             var v46 = wffTaskUtil.f34(
             wffGlobal.taskValues.TASK,
             taskValue);var v84 = {
-            'name': encoder.encode(jsObj.id),
+            'name': jsObj.id,
             'values': []
             };var v76 = [v46, v84];var wffBM = wffBMUtil.f13(v76);wffWS.send(wffBM);}
             }
@@ -475,11 +475,11 @@ public class WffJsFileTest {
             wffLog(e);}
             }
             if(!itemObj || !itemObj.v || !itemObj.wt){
-            itemObj = { id: jsObj.id };}
+            itemObj = {};}
             var v46 = wffTaskUtil.f34(
             wffGlobal.taskValues.TASK,
             taskValue);var v84 = {
-            'name': encoder.encode(jsObj.id),
+            'name': jsObj.id,
             'values': []
             };if(itemObj.v && itemObj.wt){
             v84.values = [encoder.encode(itemObj.v), encoder.encode(itemObj.wt)];}
@@ -492,7 +492,7 @@ public class WffJsFileTest {
             wffLog(e);}
             }
             if(!itemObj || !itemObj.v || !itemObj.wt){
-            itemObj = { id: jsObj.id };}else{
+            itemObj = {};}else{
             if(parseInt(jsObj.wt) >= parseInt(itemObj.wt)){
             localStorage.removeItem(jsObj.k + '_wff_data');}
             }
@@ -500,7 +500,7 @@ public class WffJsFileTest {
             var v46 = wffTaskUtil.f34(
             wffGlobal.taskValues.TASK,
             taskValue);var v84 = {
-            'name': encoder.encode(jsObj.id),
+            'name': jsObj.id,
             'values': []
             };if(taskValue == wffGlobal.taskValues.REMOVE_AND_GET_LS_ITEM && itemObj.v && itemObj.wt){
             v84.values = [encoder.encode(itemObj.v), encoder.encode(itemObj.wt)];}
@@ -521,7 +521,7 @@ public class WffJsFileTest {
             var v46 = wffTaskUtil.f34(
             wffGlobal.taskValues.TASK,
             taskValue);var v84 = {
-            'name': encoder.encode(jsObj.id),
+            'name': jsObj.id,
             'values': []
             };var v76 = [v46, v84];var wffBM = wffBMUtil.f13(v76);wffWS.send(wffBM);}
             }
