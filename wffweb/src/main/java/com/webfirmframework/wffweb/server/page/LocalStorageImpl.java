@@ -61,6 +61,11 @@ final class LocalStorageImpl implements LocalStorage {
 
     @Override
     public void setItem(final String key, final String value, final Consumer<LocalStorage.Event> successConsumer) {
+
+        if (value == null) {
+            removeAndGetItem(key, successConsumer);
+            return;
+        }
         final String idString;
         final long operationTimeMillis = System.currentTimeMillis();
         if (successConsumer != null) {

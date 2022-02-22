@@ -17,7 +17,6 @@ package com.webfirmframework.wffweb.server.page;
 
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
-import java.lang.ref.WeakReference;
 import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -94,74 +93,15 @@ public enum BrowserPageContext {
     private transient final Set<BrowserPageGCTask> browserPageGCTasksCache;
 
     /**
-     * It should contain only publically accessible features. BrowserPageContext
-     * specific code should be written inside BrowserPageSessionWrapper.
-     *
-     * @since 12.0.0-beta.4
-     */
-    static final class BrowserPageSessionImpl implements BrowserPageSession {
-
-        private final String httpSessionId;
-
-        private final Map<String, Object> userProperties;
-
-        private final Map<String, WeakReference<Object>> weakProperties;
-
-        private final LocalStorageImpl localStorage;
-
-        private BrowserPageSessionImpl(final String httpSessionId, final Map<String, BrowserPage> browserPages) {
-            this.httpSessionId = httpSessionId;
-            userProperties = new ConcurrentHashMap<>(2);
-            weakProperties = new ConcurrentHashMap<>(2);
-            localStorage = new LocalStorageImpl(browserPages);
-        }
-
-        @Override
-        public String httpSessionId() {
-            return httpSessionId;
-        }
-
-        @Override
-        public Map<String, Object> userProperties() {
-            return userProperties;
-        }
-
-        @Override
-        public LocalStorage localStorage() {
-            return localStorage;
-        }
-
-        @Override
-        public Object setWeakProperty(final String key, final Object property) {
-            final WeakReference<Object> ref = weakProperties.put(key, new WeakReference<>(property));
-            return ref != null ? ref.get() : null;
-        }
-
-        @Override
-        public Object getWeakProperty(final String key) {
-            // to remove entry if property is GCed
-            final WeakReference<Object> ref = weakProperties.computeIfPresent(key,
-                    (k, v) -> v.get() == null ? null : v);
-            return ref != null ? ref.get() : null;
-        }
-
-        @Override
-        public Object removeWeakProperty(final String key) {
-            final WeakReference<Object> ref = weakProperties.remove(key);
-            return ref != null ? ref.get() : null;
-        }
-    }
-
-    /**
      * Note: Only for internal use.
      *
      * @since 12.0.0-beta.4
      */
     private static final class BrowserPageSessionWrapper {
         // passed 4 instead of 1 because the load factor is 0.75f
-        private transient final Map<String, BrowserPage> browserPages = new ConcurrentHashMap<>(4);
+        private final Map<String, BrowserPage> browserPages = new ConcurrentHashMap<>(4);
 
-        private transient final AtomicReference<HeartbeatManager> heartbeatManagerRef = new AtomicReference<>();
+        private final AtomicReference<HeartbeatManager> heartbeatManagerRef = new AtomicReference<>();
 
         private final BrowserPageSessionImpl session;
 

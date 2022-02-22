@@ -1583,6 +1583,22 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.8 int toOutputStream
      */
     public int toOutputStream(final OutputStream os, final String charset) throws IOException {
+        return toOutputStream(os, Charset.forName(charset));
+    }
+
+    /**
+     * NB: this method should not be called under {@link BrowserPage#render()}
+     * method because this method internally calls {@link BrowserPage#render()}
+     * method.
+     *
+     * @param os      the object of {@code OutputStream} to write to.
+     * @param charset the charset
+     * @return the total number of bytes written
+     * @throws IOException
+     * @since 2.1.4 void toOutputStream
+     * @since 12.0.0-beta.4
+     */
+    public int toOutputStream(final OutputStream os, final Charset charset) throws IOException {
         initAbstractHtml();
         wsWarningDisabled = true;
         beforeToHtml(rootTag);

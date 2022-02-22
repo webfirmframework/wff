@@ -18,8 +18,41 @@ package com.webfirmframework.wffweb.server.page;
 import java.util.function.Consumer;
 
 /**
- * @since 12.0.0-beta.4
+ * The operations are strongly consistent in the same node but eventually
+ * consistent in multiple nodes. Eg: The following code will print
+ * <em>value1</em> as they are executed in the same node.
  *
+ * <pre>
+ * <code>
+ *     localStorage.setItem("key1", "value1");
+ *     localStorage.getItem("key1");
+ * </code>
+ * </pre>
+ * <p>
+ * Eg: Suppose the setItem and getItem methods are executed on different nodes
+ * as follows it may not print <em>value1</em> as the data is eventually
+ * consistent across multiple nodes. <br>
+ * <br>
+ * first, executed code on node1
+ *
+ * <pre>
+ * <code>
+ *     localStorage.setItem("key1", "value1");
+ * </code>
+ * </pre>
+ *
+ * second, executed code on node2
+ *
+ * <pre>
+ * <code>
+ *     localStorage.getItem("key1");
+ * </code>
+ * </pre>
+ *
+ * It may print <em>value1</em> but not guaranteed. It will be eventually
+ * available.
+ *
+ * @since 12.0.0-beta.4
  */
 public sealed interface LocalStorage permits LocalStorageImpl {
 
@@ -36,19 +69,76 @@ public sealed interface LocalStorage permits LocalStorageImpl {
         }
     }
 
+    /**
+     * This is an asynchronous method. The consumer will be invoked asynchronously.
+     *
+     * @param key             the key for the value.
+     * @param value           the value to set. If there is an existing value it
+     *                        will be overwritten with this new value. If null is
+     *                        passed the existing item will be removed.
+     * @param successConsumer to invoke the consumer if writing is successful.
+     * @since 12.0.0-beta.4
+     */
     void setItem(String key, String value, Consumer<Event> successConsumer);
 
+    /**
+     * This is an asynchronous method.
+     *
+     * @param key   the key for the value.
+     * @param value the value to set. If there is an existing value it will be
+     *              overwritten with this new value. If null is passed the existing
+     *              item will be removed.
+     * @since 12.0.0-beta.4
+     */
     void setItem(String key, String value);
 
+    /**
+     * This is an asynchronous method. The consumer will be invoked asynchronously.
+     *
+     * @param key      the key to get the value.
+     * @param consumer the consumer to get the value.
+     * @since 12.0.0-beta.4
+     */
     void getItem(String key, Consumer<Event> consumer);
 
+    /**
+     * This is an asynchronous method. The consumer will be invoked asynchronously.
+     *
+     * @param key      the key to remove the value.
+     * @param consumer the consumer to invoked after successful removal.
+     * @since 12.0.0-beta.4
+     */
     void removeItem(String key, Consumer<Event> consumer);
 
+    /**
+     * This is an asynchronous method.
+     *
+     * @param key the key to remove the value.
+     * @since 12.0.0-beta.4
+     */
     void removeItem(String key);
 
+    /**
+     * This is an asynchronous method.
+     *
+     * @param key      the key to remove the value
+     * @param consumer the consumer to invoke after the successful removal, the
+     *                 removed item details will be available in the consumer.
+     * @since 12.0.0-beta.4
+     */
     void removeAndGetItem(String key, Consumer<Event> consumer);
 
+    /**
+     * This is an asynchronous method. It clears only the wffweb related items from
+     * localStorage.
+     *
+     * @param consumer the consumer to invoke after the successful clearing.
+     */
     void clear(Consumer<Event> consumer);
 
+    /**
+     * This is an asynchronous method. It clears only the wffweb related items from
+     * localStorage.
+     */
     void clear();
 }

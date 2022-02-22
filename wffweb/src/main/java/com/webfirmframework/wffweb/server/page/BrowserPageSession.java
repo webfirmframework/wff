@@ -22,9 +22,12 @@ import java.util.Map;
  *
  * @since 12.0.0-beta.4
  */
-public sealed interface BrowserPageSession permits BrowserPageContext.BrowserPageSessionImpl {
+public sealed interface BrowserPageSession permits BrowserPageSessionImpl {
 
-    String httpSessionId();
+    /**
+     * @return the http session id
+     */
+    String id();
 
     /**
      * The saved object will be prevented from being garbage collected so manually
