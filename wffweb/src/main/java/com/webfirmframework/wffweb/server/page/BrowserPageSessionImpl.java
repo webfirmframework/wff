@@ -33,7 +33,7 @@ final class BrowserPageSessionImpl implements BrowserPageSession {
 
     private final Map<String, WeakReference<Object>> weakProperties;
 
-    private final LocalStorageImpl localStorage;
+    final LocalStorageImpl localStorage;
 
     BrowserPageSessionImpl(final String id, final Map<String, BrowserPage> browserPages) {
         this.id = id;

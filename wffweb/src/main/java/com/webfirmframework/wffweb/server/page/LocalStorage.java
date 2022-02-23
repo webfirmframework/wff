@@ -56,7 +56,10 @@ import java.util.function.Consumer;
  */
 public sealed interface LocalStorage permits LocalStorageImpl {
 
-    record Item(String value, long updatedTimeMillis) {
+    sealed interface Item permits ItemData,TokenData {
+        String value();
+
+        long updatedTimeMillis();
     }
 
     record Event(String key, long operationTimeMillis, Item item) {
@@ -141,4 +144,18 @@ public sealed interface LocalStorage permits LocalStorageImpl {
      * localStorage.
      */
     void clear();
+
+    void clearItems();
+
+    void clearTokens();
+
+    void clearItems(Consumer<Event> consumer);
+
+    void clearTokens(Consumer<Event> consumer);
+
+    void setToken(String key, String token);
+
+    Item getToken(String key);
+
+    void removeToken(String key);
 }

@@ -20,11 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -70,6 +66,8 @@ public enum WffJsFile {
     WFF_CLIENT_EVENTS("wffClientEvents.js");
 
     private static final String AUTOREMOVE_PARENT_SCRIPT = "document.currentScript.parentNode.removeChild(document.currentScript);";
+
+    private static final String NODE_ID = UUID.randomUUID().toString();
 
     private static final Logger LOGGER = Logger.getLogger(WffJsFile.class.getName());
 
@@ -619,6 +617,8 @@ public enum WffJsFile {
         StringBuilderUtil.replaceFirst(globalContentBuider, "${WS_URL}", wsUrl);
 
         StringBuilderUtil.replaceFirst(globalContentBuider, "${INSTANCE_ID}", instanceId);
+
+        StringBuilderUtil.replaceFirst(globalContentBuider, "${NODE_ID}", NODE_ID);
 
         StringBuilderUtil.replaceFirst(globalContentBuider, "\"${REMOVE_PREV_BP_ON_TABCLOSE}\"",
                 String.valueOf(removePrevBPOnClosetTab));

@@ -51,7 +51,7 @@ public class WffJsFileTest {
             k += 1;}
             A.length = len;return A;};}());}window.wffGlobal = new function() {
             var wffId = -1;this.getUniqueWffIntId = function() {
-            return ++wffId;};this.CPRSD_DATA = true;this.NDXD_TGS = ["#","@","a","b","i","p","q","s","u","br","dd","dl","dt","em","h1","h2","h3","h4","h5","h6","hr","li","ol","rp","rt","td","th","tr","ul","bdi","bdo","col","del","dfn","div","img","ins","kbd","map","nav","pre","qfn","sub","sup","svg","var","wbr","abbr","area","base","body","cite","code","data","form","head","html","line","link","main","mark","math","menu","meta","path","rect","ruby","samp","span","text","time","aside","audio","embed","input","label","meter","param","small","style","table","tbody","tfoot","thead","title","track","video","button","canvas","circle","dialog","figure","footer","header","hgroup","iframe","keygen","legend","object","option","output","script","select","source","strong","address","article","caption","details","ellipse","picture","polygon","section","summary","basefont","colgroup","datalist","fieldset","menuitem","noscript","optgroup","polyline","progress","template","textarea","blockquote","figcaption"];this.NDXD_ATRBS = ["id","alt","dir","for","low","max","min","rel","rev","src","cols","face","form","high","href","lang","list","loop","name","open","role","rows","size","step","type","wrap","align","async","class","color","defer","ismap","media","muted","nonce","oncut","scope","shape","sizes","style","title","value","width","accept","action","border","coords","height","hidden","method","nohref","onblur","oncopy","ondrag","ondrop","onload","onplay","onshow","poster","sorted","srcset","target","usemap","charset","checked","colspan","content","default","dirname","enctype","headers","onabort","onclick","onended","onerror","onfocus","oninput","onkeyup","onpaste","onpause","onreset","onwheel","optimum","pattern","preload","rowspan","sandbox","autoplay","controls","datetime","disabled","download","dropzone","hreflang","multiple","onchange","ononline","onresize","onscroll","onsearch","onseeked","onselect","onsubmit","ontoggle","onunload","readonly","required","reversed","selected","tabindex","accesskey","autofocus","draggable","maxlength","minlength","oncanplay","ondragend","onemptied","onfocusin","oninvalid","onkeydown","onmouseup","onoffline","onplaying","onseeking","onstalled","onstorage","onsuspend","onwaiting","translate","formaction","formmethod","formtarget","http-equiv","ondblclick","ondragover","onfocusout","onkeypress","onmouseout","onpagehide","onpageshow","onpopstate","onprogress","ontouchend","spellcheck","cellpadding","cellspacing","contextmenu","data-wff-id","formenctype","ondragenter","ondragleave","ondragstart","onloadstart","onmousedown","onmousemove","onmouseover","ontouchmove","placeholder","animationend","autocomplete","onafterprint","onhashchange","onloadeddata","onmouseenter","onmouseleave","onratechange","ontimeupdate","ontouchstart","onbeforeprint","oncontextmenu","ontouchcancel","transitionend","accept-charset","animationstart","formnovalidate","onbeforeunload","onvolumechange","contenteditable","oncanplaythrough","ondurationchange","onloadedmetadata","animationiteration"];this.NDXD_VNT_ATRBS = ["oncut","onblur","oncopy","ondrag","ondrop","onload","onplay","onshow","onabort","onclick","onended","onerror","onfocus","oninput","onkeyup","onpaste","onpause","onreset","onwheel","onchange","ononline","onresize","onscroll","onsearch","onseeked","onselect","onsubmit","ontoggle","onunload","oncanplay","ondragend","onemptied","onfocusin","oninvalid","onkeydown","onmouseup","onoffline","onplaying","onseeking","onstalled","onstorage","onsuspend","onwaiting","ondblclick","ondragover","onfocusout","onkeypress","onmouseout","onpagehide","onpageshow","onpopstate","onprogress","ontouchend","ondragenter","ondragleave","ondragstart","onloadstart","onmousedown","onmousemove","onmouseover","ontouchmove","onafterprint","onhashchange","onloadeddata","onmouseenter","onmouseleave","onratechange","ontimeupdate","ontouchstart","onbeforeprint","oncontextmenu","ontouchcancel","onbeforeunload","onvolumechange","oncanplaythrough","ondurationchange","onloadedmetadata"];this.NDXD_BLN_ATRBS = ["open","async","defer","ismap","hidden","checked","default","controls","disabled","multiple","readonly","reversed","selected"];this.taskValues = {INITIAL_WS_OPEN:0,INVOKE_ASYNC_METHOD:1,ATTRIBUTE_UPDATED:2,TASK:3,APPENDED_CHILD_TAG:4,REMOVED_TAGS:5,APPENDED_CHILDREN_TAGS:6,REMOVED_ALL_CHILDREN_TAGS:7,MOVED_CHILDREN_TAGS:8,INSERTED_BEFORE_TAG:9,INSERTED_AFTER_TAG:10,REPLACED_WITH_TAGS:11,REMOVED_ATTRIBUTES:12,ADDED_ATTRIBUTES:13,MANY_TO_ONE:14,ONE_TO_MANY:15,MANY_TO_MANY:16,ONE_TO_ONE:17,ADDED_INNER_HTML:18,INVOKE_POST_FUNCTION:19,EXEC_JS:20,RELOAD_BROWSER:21,RELOAD_BROWSER_FROM_CACHE:22,INVOKE_CALLBACK_FUNCTION:23,INVOKE_CUSTOM_SERVER_METHOD:24,TASK_OF_TASKS:25,COPY_INNER_TEXT_TO_VALUE:26,REMOVE_BROWSER_PAGE:27,SET_BM_OBJ_ON_TAG:28,SET_BM_ARR_ON_TAG:29,DEL_BM_OBJ_OR_ARR_FROM_TAG:30,CLIENT_PATHNAME_CHANGED:31,AFTER_SET_URI:32,SET_URI:33,SET_LS_ITEM:34,GET_LS_ITEM:35,REMOVE_LS_ITEM:36,REMOVE_AND_GET_LS_ITEM:37,CLEAR_LS:38};this.uriEventInitiator = {SERVER_CODE:0,CLIENT_CODE:1,BROWSER:2,size:3};this.WS_URL = "ws://webfirmframework.com";this.INSTANCE_ID = "instance-id-1234585-451";this.REMOVE_PREV_BP_ON_INITTAB = true;this.REMOVE_PREV_BP_ON_TABCLOSE = true;this.WS_RECON = 2000;if ((typeof TextEncoder) === "undefined") {
+            return ++wffId;};this.CPRSD_DATA = true;this.NDXD_TGS = ["#","@","a","b","i","p","q","s","u","br","dd","dl","dt","em","h1","h2","h3","h4","h5","h6","hr","li","ol","rp","rt","td","th","tr","ul","bdi","bdo","col","del","dfn","div","img","ins","kbd","map","nav","pre","qfn","sub","sup","svg","var","wbr","abbr","area","base","body","cite","code","data","form","head","html","line","link","main","mark","math","menu","meta","path","rect","ruby","samp","span","text","time","aside","audio","embed","input","label","meter","param","small","style","table","tbody","tfoot","thead","title","track","video","button","canvas","circle","dialog","figure","footer","header","hgroup","iframe","keygen","legend","object","option","output","script","select","source","strong","address","article","caption","details","ellipse","picture","polygon","section","summary","basefont","colgroup","datalist","fieldset","menuitem","noscript","optgroup","polyline","progress","template","textarea","blockquote","figcaption"];this.NDXD_ATRBS = ["id","alt","dir","for","low","max","min","rel","rev","src","cols","face","form","high","href","lang","list","loop","name","open","role","rows","size","step","type","wrap","align","async","class","color","defer","ismap","media","muted","nonce","oncut","scope","shape","sizes","style","title","value","width","accept","action","border","coords","height","hidden","method","nohref","onblur","oncopy","ondrag","ondrop","onload","onplay","onshow","poster","sorted","srcset","target","usemap","charset","checked","colspan","content","default","dirname","enctype","headers","onabort","onclick","onended","onerror","onfocus","oninput","onkeyup","onpaste","onpause","onreset","onwheel","optimum","pattern","preload","rowspan","sandbox","autoplay","controls","datetime","disabled","download","dropzone","hreflang","multiple","onchange","ononline","onresize","onscroll","onsearch","onseeked","onselect","onsubmit","ontoggle","onunload","readonly","required","reversed","selected","tabindex","accesskey","autofocus","draggable","maxlength","minlength","oncanplay","ondragend","onemptied","onfocusin","oninvalid","onkeydown","onmouseup","onoffline","onplaying","onseeking","onstalled","onstorage","onsuspend","onwaiting","translate","formaction","formmethod","formtarget","http-equiv","ondblclick","ondragover","onfocusout","onkeypress","onmouseout","onpagehide","onpageshow","onpopstate","onprogress","ontouchend","spellcheck","cellpadding","cellspacing","contextmenu","data-wff-id","formenctype","ondragenter","ondragleave","ondragstart","onloadstart","onmousedown","onmousemove","onmouseover","ontouchmove","placeholder","animationend","autocomplete","onafterprint","onhashchange","onloadeddata","onmouseenter","onmouseleave","onratechange","ontimeupdate","ontouchstart","onbeforeprint","oncontextmenu","ontouchcancel","transitionend","accept-charset","animationstart","formnovalidate","onbeforeunload","onvolumechange","contenteditable","oncanplaythrough","ondurationchange","onloadedmetadata","animationiteration"];this.NDXD_VNT_ATRBS = ["oncut","onblur","oncopy","ondrag","ondrop","onload","onplay","onshow","onabort","onclick","onended","onerror","onfocus","oninput","onkeyup","onpaste","onpause","onreset","onwheel","onchange","ononline","onresize","onscroll","onsearch","onseeked","onselect","onsubmit","ontoggle","onunload","oncanplay","ondragend","onemptied","onfocusin","oninvalid","onkeydown","onmouseup","onoffline","onplaying","onseeking","onstalled","onstorage","onsuspend","onwaiting","ondblclick","ondragover","onfocusout","onkeypress","onmouseout","onpagehide","onpageshow","onpopstate","onprogress","ontouchend","ondragenter","ondragleave","ondragstart","onloadstart","onmousedown","onmousemove","onmouseover","ontouchmove","onafterprint","onhashchange","onloadeddata","onmouseenter","onmouseleave","onratechange","ontimeupdate","ontouchstart","onbeforeprint","oncontextmenu","ontouchcancel","onbeforeunload","onvolumechange","oncanplaythrough","ondurationchange","onloadedmetadata"];this.NDXD_BLN_ATRBS = ["open","async","defer","ismap","hidden","checked","default","controls","disabled","multiple","readonly","reversed","selected"];this.taskValues = {INITIAL_WS_OPEN:0,INVOKE_ASYNC_METHOD:1,ATTRIBUTE_UPDATED:2,TASK:3,APPENDED_CHILD_TAG:4,REMOVED_TAGS:5,APPENDED_CHILDREN_TAGS:6,REMOVED_ALL_CHILDREN_TAGS:7,MOVED_CHILDREN_TAGS:8,INSERTED_BEFORE_TAG:9,INSERTED_AFTER_TAG:10,REPLACED_WITH_TAGS:11,REMOVED_ATTRIBUTES:12,ADDED_ATTRIBUTES:13,MANY_TO_ONE:14,ONE_TO_MANY:15,MANY_TO_MANY:16,ONE_TO_ONE:17,ADDED_INNER_HTML:18,INVOKE_POST_FUNCTION:19,EXEC_JS:20,RELOAD_BROWSER:21,RELOAD_BROWSER_FROM_CACHE:22,INVOKE_CALLBACK_FUNCTION:23,INVOKE_CUSTOM_SERVER_METHOD:24,TASK_OF_TASKS:25,COPY_INNER_TEXT_TO_VALUE:26,REMOVE_BROWSER_PAGE:27,SET_BM_OBJ_ON_TAG:28,SET_BM_ARR_ON_TAG:29,DEL_BM_OBJ_OR_ARR_FROM_TAG:30,CLIENT_PATHNAME_CHANGED:31,AFTER_SET_URI:32,SET_URI:33,SET_LS_ITEM:34,SET_LS_TOKEN:35,GET_LS_ITEM:36,REMOVE_LS_ITEM:37,REMOVE_LS_TOKEN:38,REMOVE_AND_GET_LS_ITEM:39,CLEAR_LS:40};this.uriEventInitiator = {SERVER_CODE:0,CLIENT_CODE:1,BROWSER:2,size:3};this.WS_URL = "ws://webfirmframework.com";this.INSTANCE_ID = "instance-id-1234585-451";this.NODE_ID = "b4541542-d29c-4cd8-bb17-5bf48b4e624c";this.REMOVE_PREV_BP_ON_INITTAB = true;this.REMOVE_PREV_BP_ON_TABCLOSE = true;this.WS_RECON = 2000;if ((typeof TextEncoder) === "undefined") {
             this.encoder = new function TextEncoder(charset) {
             if (charset === "utf-8") {
             this.encode = function(text) {
@@ -93,7 +93,10 @@ public class WffJsFileTest {
             return text;};}
             }("utf-8");} else {
             this.decoder = new TextDecoder("utf-8");}
-            };var wffBMUtil = new function(){
+            this.freeze = function(obj) {
+            if ((typeof Object) !== "undefined" && Object.freeze) {
+            Object.freeze(obj);}
+            };};wffGlobal.freeze(wffGlobal);var wffBMUtil = new function(){
 
             this.f13 = function(v76){
             var v34 = 0;var v22 = 0;for (var i = 0; i < v76.length; i++){
@@ -451,15 +454,17 @@ public class WffJsFileTest {
             }
             }
             uriChangeQ = [];}else if(taskValue == wffGlobal.taskValues.SET_LS_ITEM){
-            var jsObj = new JsObjectFromBMBytes(v46.values[1], true);if(typeof localStorage !== "undefined" && jsObj.k && jsObj.v && jsObj.wt){
-            var wt = parseInt(jsObj.wt);var prev = localStorage.getItem(jsObj.k + '_wff_data');var lstWT = 0;if(prev){
+            var jsObj = new JsObjectFromBMBytes(v46.values[1], true);if(typeof localStorage !== "undefined" && jsObj.k && jsObj.wt && jsObj.id){
+            var wt = parseInt(jsObj.wt);var prev = localStorage.getItem(jsObj.k + '_wff_data');var lstWT = 0;var lstId = 0;if(prev){
             try {
-            lstWT = parseInt(JSON.parse(prev).wt);} catch (e){
+            var itemObj = JSON.parse(prev);lstWT = parseInt(itemObj.wt);lstId = itemObj.id;} catch (e){
             wffLog(e);}
             }
             if(wt >= lstWT){
-            var itemVal = JSON.stringify({ v: jsObj.v, wt: jsObj.wt });localStorage.setItem(jsObj.k + '_wff_data', itemVal);}
-            if(jsObj.id){
+            var id = wffBMUtil.f14(jsObj.id);if(wt > lstWT || (wt == lstWT && id > lstId)){
+            var itemVal = JSON.stringify({ v: jsObj.v, wt: jsObj.wt, id: id });localStorage.setItem(jsObj.k + '_wff_data', itemVal);}
+            }
+            if(jsObj.cb){
             var v46 = wffTaskUtil.f34(
             wffGlobal.taskValues.TASK,
             taskValue);var v84 = {
@@ -474,56 +479,89 @@ public class WffJsFileTest {
             itemObj = JSON.parse(itemJSON);} catch (e){
             wffLog(e);}
             }
-            if(!itemObj || !itemObj.v || !itemObj.wt){
+            if(!itemObj || !itemObj.wt){
             itemObj = {};}
             var v46 = wffTaskUtil.f34(
             wffGlobal.taskValues.TASK,
             taskValue);var v84 = {
             'name': jsObj.id,
             'values': []
-            };if(itemObj.v && itemObj.wt){
+            };if(itemObj.wt){
             v84.values = [encoder.encode(itemObj.v), encoder.encode(itemObj.wt)];}
             var v76 = [v46, v84];var wffBM = wffBMUtil.f13(v76);wffWS.send(wffBM);}
             }else if(taskValue == wffGlobal.taskValues.REMOVE_LS_ITEM || taskValue == wffGlobal.taskValues.REMOVE_AND_GET_LS_ITEM){
-            var jsObj = new JsObjectFromBMBytes(v46.values[1], true);if(typeof localStorage !== "undefined" && jsObj.k && jsObj.wt){
+            var jsObj = new JsObjectFromBMBytes(v46.values[1], true);if(typeof localStorage !== "undefined" && jsObj.k && jsObj.wt && jsObj.id){
             var itemJSON = localStorage.getItem(jsObj.k + '_wff_data');var itemObj;if(itemJSON){
             try {
             itemObj = JSON.parse(itemJSON);} catch (e){
             wffLog(e);}
             }
-            if(!itemObj || !itemObj.v || !itemObj.wt){
+            if(!itemObj || !itemObj.wt || !itemObj.id){
             itemObj = {};}else{
-            if(parseInt(jsObj.wt) >= parseInt(itemObj.wt)){
+            var jsObjWT = parseInt(jsObj.wt);var itemObjWT = parseInt(itemObj.wt);if(jsObjWT >= itemObjWT){
+            var id = wffBMUtil.f14(jsObj.id);if(jsObjWT > itemObjWT || (jsObjWT == itemObjWT && id > itemObj.id)){
             localStorage.removeItem(jsObj.k + '_wff_data');}
             }
-            if(jsObj.id){
+            }
+            if(jsObj.cb){
             var v46 = wffTaskUtil.f34(
             wffGlobal.taskValues.TASK,
             taskValue);var v84 = {
             'name': jsObj.id,
             'values': []
-            };if(taskValue == wffGlobal.taskValues.REMOVE_AND_GET_LS_ITEM && itemObj.v && itemObj.wt){
+            };if(taskValue == wffGlobal.taskValues.REMOVE_AND_GET_LS_ITEM && itemObj.wt){
             v84.values = [encoder.encode(itemObj.v), encoder.encode(itemObj.wt)];}
             var v76 = [v46, v84];var wffBM = wffBMUtil.f13(v76);wffWS.send(wffBM);}
             }
             }else if(taskValue == wffGlobal.taskValues.CLEAR_LS){
-            var jsObj = new JsObjectFromBMBytes(v46.values[1], true);if(typeof localStorage !== "undefined" && jsObj.wt){
+            var jsObj = new JsObjectFromBMBytes(v46.values[1], true);if(typeof localStorage !== "undefined" && jsObj.wt && jsObj.tp && jsObj.id){
             for (var k in localStorage){
-            if(k.endsWith('_wff_data')){
+            if((k.endsWith('_wff_data') && (jsObj.tp === 'D' || jsObj.tp === 'DT'))
+            || (k.endsWith('_wff_token') && (jsObj.tp === 'T' || jsObj.tp === 'DT'))){
             try {
-            var itemObj = JSON.parse(localStorage[k]);if(itemObj && itemObj.wt && parseInt(jsObj.wt) >= parseInt(itemObj.wt)){
+            var itemObj = JSON.parse(localStorage.getItem(k));if(itemObj && itemObj.wt && itemObj.id){
+            var jsObjWT = parseInt(jsObj.wt);var itemObjWT = parseInt(itemObj.wt);if(jsObjWT >= itemObjWT){
+            var id = wffBMUtil.f14(jsObj.id);if(jsObjWT > itemObjWT || (jsObjWT == itemObjWT && id > itemObj.id)){
             localStorage.removeItem(k);}
+            }
+            }
             } catch (e){
             wffLog(e);}
             }
             }
-            if(jsObj.id){
+            if(jsObj.cb){
             var v46 = wffTaskUtil.f34(
             wffGlobal.taskValues.TASK,
             taskValue);var v84 = {
             'name': jsObj.id,
             'values': []
             };var v76 = [v46, v84];var wffBM = wffBMUtil.f13(v76);wffWS.send(wffBM);}
+            }
+            }else if(taskValue == wffGlobal.taskValues.SET_LS_TOKEN){
+            var jsObj = new JsObjectFromBMBytes(v46.values[1], true);if(typeof localStorage !== "undefined" && jsObj.k && jsObj.wt && jsObj.id){
+            var tknNm = jsObj.k + '_wff_token';var wt = parseInt(jsObj.wt);var prev = localStorage.getItem(tknNm);var lstWT = 0;var lstId = 0;if(prev){
+            try {
+            var itemObj = JSON.parse(prev);lstWT = parseInt(itemObj.wt);lstId = itemObj.id;} catch (e){
+            wffLog(e);}
+            }
+            if(wt >= lstWT){
+            var id = wffBMUtil.f14(jsObj.id);if(wt > lstWT || (wt == lstWT && id > lstId)){
+            var itemVal = JSON.stringify({ v: jsObj.v, wt: jsObj.wt, nid: wffGlobal.NODE_ID, id: id });localStorage.setItem(tknNm, itemVal);}
+            }
+            }
+            }else if(taskValue == wffGlobal.taskValues.REMOVE_LS_TOKEN){
+            var jsObj = new JsObjectFromBMBytes(v46.values[1], true);if(typeof localStorage !== "undefined" && jsObj.k && jsObj.wt && jsObj.id){
+            var tknNm = jsObj.k + '_wff_token';var itemJSON = localStorage.getItem(tknNm);var itemObj;if(itemJSON){
+            try {
+            itemObj = JSON.parse(itemJSON);} catch (e){
+            wffLog(e);}
+            }
+            if(itemObj && itemObj.wt && itemObj.id){
+            var jsObjWT = parseInt(jsObj.wt);var itemObjWT = parseInt(itemObj.wt);if(jsObjWT >= itemObjWT){
+            var id = wffBMUtil.f14(jsObj.id);if(jsObjWT >= itemObjWT || (jsObjWT == itemObjWT && id > itemObj.id)){
+            itemObj.removed = true;itemObj.id = id;itemObj.wt = jsObj.wt;localStorage.setItem(tknNm, JSON.stringify(itemObj));localStorage.removeItem(tknNm);}
+            }
+            }
             }
             }else if(taskValue == wffGlobal.taskValues.COPY_INNER_TEXT_TO_VALUE){
             var tagName = wffTagUtil.f5(v76[1].name);var v98 = wffTagUtil
@@ -901,9 +939,23 @@ public class WffJsFileTest {
             wffGlobal.taskValues.TASK,
             wffGlobal.taskValues.INITIAL_WS_OPEN);v76.push(tnv);if(window.location && window.location.pathname){
             var pthNV = {
-            'name': encoder.encode(window.location.pathname),
-            'values': [[wffGlobal.uriEventInitiator.BROWSER]]
+            'name': [wffGlobal.taskValues.SET_URI],
+            'values': [[wffGlobal.uriEventInitiator.BROWSER], encoder.encode(window.location.pathname)]
             };v76.push(pthNV);}
+            if(typeof localStorage !== "undefined"){
+            var itms = [];for (var k in localStorage){
+            var ndx = k.lastIndexOf('_wff_token');if(ndx > -1){
+            try {
+            var itemObj = JSON.parse(localStorage.getItem(k));itms.push({ k: k.substring(0, ndx), v: itemObj.v, id: itemObj.id, wt: itemObj.wt });} catch (e){
+            wffLog('corrupted token data found in localStorage', e);}
+            }
+            }
+            if(itms.length > 0){
+            var bmBts = new WffBMArray(itms).getBMBytes();var nv = {
+            'name': [wffGlobal.taskValues.SET_LS_TOKEN],
+            'values': [bmBts]
+            };v76.push(nv);}
+            }
             var wffBM = wffBMUtil.f13(v76);wffWS.send(wffBM);};};
             var wffWS = new function(){
             var encoder = wffGlobal.encoder;var decoder = wffGlobal.decoder;var prevIntvl = null;var webSocket = null;var inDataQ = [];var sendQData = null;this.openSocket = function(wsUrl){
@@ -970,7 +1022,7 @@ public class WffJsFileTest {
             return -1;};};
             document.addEventListener("DOMContentLoaded",
             function(event){
-            if(typeof window.f37Invoked === 'undefined'){
+            var encoder = wffGlobal.encoder;if(typeof window.f37Invoked === 'undefined'){
             window.f37Invoked = true;wffBMClientEvents.f37();}
             wffWS.openSocket(wffGlobal.WS_URL);window.v30 = false;var f36 = function(){
             if(!window.v30){
@@ -999,6 +1051,29 @@ public class WffJsFileTest {
             wffAsync.setServerURIWithCallback(uriAfter, callbackWrapper, wffGlobal.uriEventInitiator.BROWSER);}else{
             wffAsync.setServerURIWithCallback(uriAfter, undefined, wffGlobal.uriEventInitiator.BROWSER);}
             });}
+            if(f11('storage') && typeof localStorage !== "undefined"){
+            window.addEventListener('storage', function(event){
+            if(event && event.key && event.key.endsWith('_wff_token') && event.newValue){
+            var itemObj;try {
+            itemObj = JSON.parse(event.newValue);} catch (e){
+            wffLog(e);}
+            if(itemObj && itemObj.id && itemObj.wt && itemObj.nid !== wffGlobal.NODE_ID){
+            var id = wffBMUtil.f15(itemObj.id);var v76;if(itemObj.removed){
+            var v46 = wffTaskUtil.f34(
+            wffGlobal.taskValues.TASK,
+            wffGlobal.taskValues.REMOVE_LS_TOKEN);var v84 = {
+            'name': id,
+            'values': [encoder.encode(event.key), encoder.encode(itemObj.wt)]
+            };v76 = [v46, v84];}else{
+            var v46 = wffTaskUtil.f34(
+            wffGlobal.taskValues.TASK,
+            wffGlobal.taskValues.REMOVE_LS_TOKEN);var v84 = {
+            'name': id,
+            'values': [encoder.encode(event.key), encoder.encode(itemObj.v), encoder.encode(itemObj.wt)]
+            };v76 = [v46, v84];}
+            var wffBM = wffBMUtil.f13(v76);wffWS.send(wffBM);}
+            }
+            });}
             MutationObserver = window.MutationObserver
             || window.WebKitMutationObserver;var attrObserver = new MutationObserver(function(mutations,
             observer){
@@ -1021,9 +1096,12 @@ public class WffJsFileTest {
 
     @Test
     public void testGetAllOptimizedContent() {
+        int indexOfNodeId = expectedContent.indexOf("this.NODE_ID = \"");
+        int endOfNodeId = expectedContent.indexOf(";", indexOfNodeId);
+        String expectedContentDynamicValueAdjusted = expectedContent.replace(expectedContent.substring(indexOfNodeId, endOfNodeId + 1), "this.NODE_ID = \"xxxxxxxxxxxxxxx\";");
         String allContent = WffJsFile.getAllOptimizedContent("ws://webfirmframework.com", "instance-id-1234585-451",
                 true, true, 1000, 2000, false);
-        assertEquals(expectedContent, allContent);
+        assertEquals(expectedContentDynamicValueAdjusted, allContent.replace(allContent.substring(indexOfNodeId, endOfNodeId + 1), "this.NODE_ID = \"xxxxxxxxxxxxxxx\";"));
     }
 
 }

@@ -5,6 +5,8 @@ document.addEventListener("DOMContentLoaded",
 		function(event) {
 			console.log('DOMContentLoaded');
 			
+			var encoder = wffGlobal.encoder;
+			
 			if (typeof window.wffInitialWSOpenInvoked === 'undefined') {
 			    window.wffInitialWSOpenInvoked = true;
 			    wffBMClientEvents.wffInitialWSOpen();
@@ -79,6 +81,45 @@ document.addEventListener("DOMContentLoaded",
 						wffAsync.setServerURIWithCallback(uriAfter, callbackWrapper, wffGlobal.uriEventInitiator.BROWSER);
 					} else {
 						wffAsync.setServerURIWithCallback(uriAfter, undefined, wffGlobal.uriEventInitiator.BROWSER);
+					}
+				});
+			}
+			
+			if (isWffWindowEventSupported('storage') && typeof localStorage !== "undefined") {
+				//event.key, event.oldValue, event.newValue
+				window.addEventListener('storage', function(event) {
+					if (event && event.key && event.key.endsWith('_wff_token') && event.newValue) {
+						var itemObj;
+						try {
+							itemObj = JSON.parse(event.newValue);
+						} catch (e) {
+							wffLog(e);
+						}
+						if (itemObj && itemObj.id && itemObj.wt && itemObj.nid !== wffGlobal.NODE_ID) {
+							var id = wffBMUtil.getOptimizedBytesFromInt(itemObj.id);
+							var nameValues;
+							if (itemObj.removed) {
+								var taskNameValue = wffTaskUtil.getTaskNameValue(
+									wffGlobal.taskValues.TASK,
+									wffGlobal.taskValues.REMOVE_LS_TOKEN);
+								var nameValue = {
+									'name': id,
+									'values': [encoder.encode(event.key), encoder.encode(itemObj.wt)]
+								};
+								nameValues = [taskNameValue, nameValue];
+							} else {
+								var taskNameValue = wffTaskUtil.getTaskNameValue(
+									wffGlobal.taskValues.TASK,
+									wffGlobal.taskValues.REMOVE_LS_TOKEN);
+								var nameValue = {
+									'name': id,
+									'values': [encoder.encode(event.key), encoder.encode(itemObj.v), encoder.encode(itemObj.wt)]
+								};
+								nameValues = [taskNameValue, nameValue];
+							}
+							var wffBM = wffBMUtil.getWffBinaryMessageBytes(nameValues);
+							wffWS.send(wffBM);
+						}
 					}
 				});
 			}

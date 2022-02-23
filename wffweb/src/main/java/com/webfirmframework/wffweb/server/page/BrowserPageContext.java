@@ -160,6 +160,7 @@ public enum BrowserPageContext {
             instanceIdBrowserPage.put(browserPage.getInstanceId(), browserPage);
             instanceIdHttpSessionId.put(browserPage.getInstanceId(), httpSessionId);
             browserPage.informRemovedFromContext(false);
+            browserPage.setSession(sessionWrapper.session);
             return browserPage;
         });
 
@@ -983,6 +984,10 @@ public enum BrowserPageContext {
      * @since 12.0.0-beta.4
      */
     public BrowserPageSession getSessionByInstanceId(final String instanceId) {
+        return getSessionImplByInstanceId(instanceId);
+    }
+
+    BrowserPageSessionImpl getSessionImplByInstanceId(final String instanceId) {
         final String httpSessionId = instanceIdHttpSessionId.get(instanceId);
         if (httpSessionId != null) {
             final BrowserPageSessionWrapper sessionWrapper = httpSessionIdSession.get(httpSessionId);
