@@ -19,14 +19,12 @@ import java.util.function.Consumer;
 
 /**
  * The operations are strongly consistent in the same node but eventually
- * consistent in multiple nodes. Eg: The following code will print
- * <em>value1</em> as they are executed in the same node.
+ * consistent in multiple nodes as there is a network latency. Eg: The following
+ * code will print <em>value1</em> as they are executed in the same node.
  *
  * <pre>
- * <code>
- *     localStorage.setItem("key1", "value1");
- *     localStorage.getItem("key1");
- * </code>
+ * localStorage.setItem("key1", "value1");
+ * localStorage.getItem("key1", System.out::println);
  * </pre>
  * <p>
  * Eg: Suppose the setItem and getItem methods are executed on different nodes
@@ -36,33 +34,46 @@ import java.util.function.Consumer;
  * first, executed code on node1
  *
  * <pre>
- * <code>
- *     localStorage.setItem("key1", "value1");
- * </code>
+ * localStorage.setItem("key1", "value1");
  * </pre>
- *
+ * <p>
  * second, executed code on node2
  *
  * <pre>
- * <code>
- *     localStorage.getItem("key1");
- * </code>
+ * localStorage.getItem("key1", System.out::println);
  * </pre>
- *
+ * <p>
  * It may print <em>value1</em> but not guaranteed. It will be eventually
- * available.
+ * available. {@code setItem} doesn't cache any data at server side. In the
+ * above code, the consumer objects are executed asynchronously. <br>
+ * <br>
+ * To save token use {@code setToken} method. It also caches the data in all
+ * nodes at server side so can get the value as follows
+ *
+ * <pre>
+ * localStorage.setToken("token1", "tokenvalue");
+ * String token = localStorage.getToken("token1");
+ * </pre>
  *
  * @since 12.0.0-beta.4
  */
 public sealed interface LocalStorage permits LocalStorageImpl {
 
+    /**
+     * @since 12.0.0-beta.4
+     */
     sealed interface Item permits ItemData,TokenData {
+
         String value();
 
         long updatedTimeMillis();
     }
 
+    /**
+     * @since 12.0.0-beta.4
+     */
     record Event(String key, long operationTimeMillis, Item item) {
+
         public Event(final String key, final long operationTimeMillis) {
             this(key, operationTimeMillis, null);
         }
@@ -136,26 +147,68 @@ public sealed interface LocalStorage permits LocalStorageImpl {
      * localStorage.
      *
      * @param consumer the consumer to invoke after the successful clearing.
+     * @since 12.0.0-beta.4
      */
     void clear(Consumer<Event> consumer);
 
     /**
-     * This is an asynchronous method. It clears only the wffweb related items from
-     * localStorage.
+     * This is an asynchronous method. It clears only the wffweb related items and
+     * tokens from localStorage.
+     *
+     * @since 12.0.0-beta.4
      */
     void clear();
 
+    /**
+     * This is an asynchronous method. It clears only the wffweb related items from
+     * localStorage.
+     *
+     * @since 12.0.0-beta.4
+     */
     void clearItems();
 
+    /**
+     * It clears only the wffweb related tokens from localStorage.
+     *
+     * @since 12.0.0-beta.4
+     */
     void clearTokens();
 
+    /**
+     * This is an asynchronous method.
+     *
+     * @param consumer invokes after successful clear.
+     * @since 12.0.0-beta.4
+     */
     void clearItems(Consumer<Event> consumer);
 
+    /**
+     * This is an asynchronous method.
+     *
+     * @param consumer invokes after successful clear.
+     * @since 12.0.0-beta.4
+     */
     void clearTokens(Consumer<Event> consumer);
 
-    void setToken(String key, String token);
+    /**
+     * @param key   key for the token
+     * @param value value for the token
+     * @since 12.0.0-beta.4
+     */
+    void setToken(String key, String value);
 
+    /**
+     * @param key the key to get the token
+     * @return the Item object containing token value.
+     * @since 12.0.0-beta.4
+     */
     Item getToken(String key);
 
+    /**
+     * Removes the token for the key.
+     *
+     * @param key the key to remove the token.
+     * @since 12.0.0-beta.4
+     */
     void removeToken(String key);
 }
