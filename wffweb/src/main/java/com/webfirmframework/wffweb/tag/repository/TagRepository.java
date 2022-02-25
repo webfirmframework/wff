@@ -2263,21 +2263,18 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      * browserPage.performBrowserPageAction(
      *         BrowserPageAction.getActionByteBufferForExecuteJS("alert('This is an alert');"));
      * </pre>
-     * <p>
+     * 
+     * <br>
+     * <br>
      * Eg:-
      *
      * <pre>
      * tagRepository.executeJs("alert('This is an alert');");
      * </pre>
-     * </p>
+     * 
      * This shows an alert in the browser: <b><i>This is an alert</i></b>.
      *
      * @param js the JavaScript to be executed at the client browser page.
-     * @return true if the given js string is in a supported encoding otherwise
-     *         false. Returning true DOESN'T mean the given js string is valid ,
-     *         successfully sent to the client browser to execute or executed
-     *         successfully.
-     * @author WFF
      * @since 2.1.11 initial implementation.
      * @since 12.0.0-beta.4 the method is modified to void type.
      */
@@ -2294,14 +2291,17 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      * <pre>
      * browserPage.performBrowserPageAction(
      *         BrowserPageAction.getActionByteBufferForExecuteJS("alert('This is an alert');", true));
+     * 
      * </pre>
-     * <p>
+     * 
+     * <br>
+     * <br>
      * Eg:-
      *
      * <pre>
      * tagRepository.executeJsOnlyOnOtherPages("alert('This is an alert');");
      * </pre>
-     * </p>
+     * 
      * This shows an alert in the browser: <b><i>This is an alert</i></b>.
      *
      * @param js the JavaScript to be executed at the client browser page. *
