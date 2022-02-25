@@ -2308,7 +2308,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      * @author WFF
      * @since 12.0.0-beta.4 initial implementation.
      */
-    public void executeJsOnlyOnOtherPages(final String js) {
+    public void executeJsOnOtherPages(final String js) {
         browserPage.performBrowserPageAction(BrowserPageAction.getActionByteBufferForExecuteJS(js, true));
     }
 
