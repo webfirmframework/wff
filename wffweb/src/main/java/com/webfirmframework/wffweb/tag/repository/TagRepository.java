@@ -2299,7 +2299,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      * Eg:-
      *
      * <pre>
-     * tagRepository.executeJsInOtherPages("alert('This is an alert');");
+     * tagRepository.executeJsInOtherBrowserPages("alert('This is an alert');");
      * </pre>
      * 
      * This shows an alert in the browser: <b><i>This is an alert</i></b>.
@@ -2308,7 +2308,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      * @author WFF
      * @since 12.0.0-beta.4 initial implementation.
      */
-    public void executeJsInOtherPages(final String js) {
+    public void executeJsInOtherBrowserPages(final String js) {
         browserPage.performBrowserPageAction(BrowserPageAction.getActionByteBufferForExecuteJS(js, true));
     }
 

@@ -87,7 +87,7 @@ public enum BrowserPageAction {
      * Gets the action {@code ByteBuffer} for executing the given JavaScript.
      *
      * @param js               JavaScript to execute in the browser
-     * @param onlyInOtherPages true to execute the js only on the other pages not on
+     * @param onlyInOtherBrowserPages true to execute the js only on the other pages not on
      *                         the page on which the the action is performed (i.e.
      *                         {@code browserPage.performBrowserPageAction} is
      *                         called). Other pages include all other pages opened
@@ -98,8 +98,8 @@ public enum BrowserPageAction {
      *         the browser.
      * @since 12.0.0-beta.4
      */
-    public static ByteBuffer getActionByteBufferForExecuteJS(final String js, final boolean onlyInOtherPages) {
-        return ByteBuffer.wrap(getActionBytesForExecuteJS(js, onlyInOtherPages));
+    public static ByteBuffer getActionByteBufferForExecuteJS(final String js, final boolean onlyInOtherBrowserPages) {
+        return ByteBuffer.wrap(getActionBytesForExecuteJS(js, onlyInOtherBrowserPages));
     }
 
     /**
@@ -121,7 +121,7 @@ public enum BrowserPageAction {
      * Gets the action bytes for executing the given JavaScript in the browser.
      *
      * @param js               JavaScript to execute in the browser
-     * @param onlyOnOtherPages true to execute the js only on the other pages not on
+     * @param onlyInOtherBrowserPages true to execute the js only on the other pages not on
      *                         the page on which the the action is performed (i.e.
      *                         {@code browserPage.performBrowserPageAction} is
      *                         called). Other pages include all other pages opened
@@ -131,7 +131,7 @@ public enum BrowserPageAction {
      * @return the action bytes for executing the given JavaScript in the browser.
      * @since 12.0.0-beta.4
      */
-    private static byte[] getActionBytesForExecuteJS(final String js, final boolean onlyOnOtherPages) {
+    private static byte[] getActionBytesForExecuteJS(final String js, final boolean onlyInOtherBrowserPages) {
 
         // this method will never throw UnsupportedEncodingException
         // but not changing the method signature to keep consistency of this
@@ -152,7 +152,7 @@ public enum BrowserPageAction {
         // script is huge the client browser page might get frozen.
         values[taskValue.length] = StringUtil.strip(js).getBytes(StandardCharsets.UTF_8);
 
-        values[taskValue.length + 1] = onlyOnOtherPages ? new byte[] { 1 } : new byte[] { 0 };
+        values[taskValue.length + 1] = onlyInOtherBrowserPages ? new byte[] { 1 } : new byte[] { 0 };
 
         taskNameValue.setValues(values);
 
