@@ -456,15 +456,19 @@ var wffClientCRUDUtil = new function() {
 		} else if (taskValue == wffGlobal.taskValues.RELOAD_BROWSER_FROM_CACHE) {
 			location.reload();
 		} else if (taskValue == wffGlobal.taskValues.EXEC_JS) {
-			
 			var js = getStringFromBytes(taskNameValue.values[1]);
-			
-			if (window.execScript) {
-				window.execScript(js);
+			//only on other pages
+			var op = taskNameValue.values[2][0];
+			if (op == 1) {
+				localStorage.setItem('WFF_EXEC_JS', JSON.stringify({ js: js, instanceId: wffGlobal.INSTANCE_ID }));
+				localStorage.removeItem('WFF_EXEC_JS');
 			} else {
-				eval(js);
+				if (window.execScript) {
+					window.execScript(js);
+				} else {
+					eval(js);
+				}
 			}
-			
 		} else if (taskValue == wffGlobal.taskValues.SET_URI) {
 			var jsObj = new JsObjectFromBMBytes(taskNameValue.values[1], true);
 			jsObj.uriAfter = jsObj.ua;

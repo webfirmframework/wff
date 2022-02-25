@@ -80,7 +80,26 @@ public enum BrowserPageAction {
      * @author WFF
      */
     public static ByteBuffer getActionByteBufferForExecuteJS(final String js) {
-        return ByteBuffer.wrap(getActionBytesForExecuteJS(js));
+        return ByteBuffer.wrap(getActionBytesForExecuteJS(js, false));
+    }
+
+    /**
+     * Gets the action {@code ByteBuffer} for executing the given JavaScript.
+     *
+     * @param js               JavaScript to execute in the browser
+     * @param onlyOnOtherPages true to execute the js only on the other pages not on
+     *                         the page on which the the action is performed (i.e.
+     *                         {@code browserPage.performBrowserPageAction} is
+     *                         called). Other pages include all other pages opened
+     *                         in other tabs even if they are loaded from different
+     *                         nodes. false to execute the js only on the action
+     *                         performed browser page not on other pages.
+     * @return the action {@code ByteBuffer} for executing the given JavaScript in
+     *         the browser.
+     * @since 12.0.0-beta.4
+     */
+    public static ByteBuffer getActionByteBufferForExecuteJS(final String js, final boolean onlyOnOtherPages) {
+        return ByteBuffer.wrap(getActionBytesForExecuteJS(js, onlyOnOtherPages));
     }
 
     /**
@@ -95,6 +114,24 @@ public enum BrowserPageAction {
      * @author WFF
      */
     public static byte[] getActionBytesForExecuteJS(final String js) {
+        return getActionBytesForExecuteJS(js, false);
+    }
+
+    /**
+     * Gets the action bytes for executing the given JavaScript in the browser.
+     *
+     * @param js               JavaScript to execute in the browser
+     * @param onlyOnOtherPages true to execute the js only on the other pages not on
+     *                         the page on which the the action is performed (i.e.
+     *                         {@code browserPage.performBrowserPageAction} is
+     *                         called). Other pages include all other pages opened
+     *                         in other tabs even if they are loaded from different
+     *                         nodes. false to execute the js only on the action
+     *                         performed browser page not on other pages.
+     * @return the action bytes for executing the given JavaScript in the browser.
+     * @since 12.0.0-beta.4
+     */
+    private static byte[] getActionBytesForExecuteJS(final String js, final boolean onlyOnOtherPages) {
 
         // this method will never throw UnsupportedEncodingException
         // but not changing the method signature to keep consistency of this
@@ -102,7 +139,7 @@ public enum BrowserPageAction {
 
         final NameValue taskNameValue = Task.EXEC_JS.getTaskNameValue();
         final byte[][] taskValue = taskNameValue.getValues();
-        final byte[][] values = new byte[taskValue.length + 1][0];
+        final byte[][] values = new byte[taskValue.length + 2][0];
 
         System.arraycopy(taskValue, 0, values, 0, taskValue.length);
 
@@ -114,6 +151,8 @@ public enum BrowserPageAction {
         // handling JsUtil.toDynamicJs at server side is much better otherwise if the
         // script is huge the client browser page might get frozen.
         values[taskValue.length] = StringUtil.strip(js).getBytes(StandardCharsets.UTF_8);
+
+        values[taskValue.length + 1] = onlyOnOtherPages ? new byte[] { 1 } : new byte[] { 0 };
 
         taskNameValue.setValues(values);
 

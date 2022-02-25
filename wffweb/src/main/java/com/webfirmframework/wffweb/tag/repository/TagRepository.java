@@ -2260,25 +2260,16 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      * to calling <br>
      *
      * <pre>
-     * <code>
-     * try {
-     *      browserPage.performBrowserPageAction(
-     *              BrowserPageAction.getActionByteBufferForExecuteJS(js));
-     *      return true;
-     *  } catch (final UnsupportedEncodingException e) {
-     *      e.printStackTrace();
-     *  }
-     * </code>
+     * browserPage.performBrowserPageAction(
+     *         BrowserPageAction.getActionByteBufferForExecuteJS("alert('This is an alert');"));
      * </pre>
-     *
+     * <p>
      * Eg:-
      *
      * <pre>
-     * <code>
      * tagRepository.executeJs("alert('This is an alert');");
-     * </code>
      * </pre>
-     *
+     * <p>
      * This shows an alert in the browser: <b><i>This is an alert</i></b>.
      *
      * @param js the JavaScript to be executed at the client browser page.
@@ -2286,12 +2277,39 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      *         false. Returning true DOESN'T mean the given js string is valid ,
      *         successfully sent to the client browser to execute or executed
      *         successfully.
-     * @since 2.1.11
      * @author WFF
+     * @since 2.1.11 initial implementation.
+     * @since 12.0.0-beta.4 the method is modified to void type.
      */
-    public boolean executeJs(final String js) {
-        browserPage.performBrowserPageAction(BrowserPageAction.getActionByteBufferForExecuteJS(js));
-        return true;
+    public void executeJs(final String js) {
+        browserPage.performBrowserPageAction(BrowserPageAction.getActionByteBufferForExecuteJS(js, false));
+    }
+
+    /**
+     * Executes the given JavaScript only on the other pages not on the page from
+     * which the {@code tagRepository} object is obtained. Other pages include all
+     * other pages opened in other tabs even if they are loaded from different
+     * nodes. This method is equalent to calling <br>
+     *
+     * <pre>
+     * browserPage.performBrowserPageAction(
+     *         BrowserPageAction.getActionByteBufferForExecuteJS("alert('This is an alert');", true));
+     * </pre>
+     * <p>
+     * Eg:-
+     *
+     * <pre>
+     * tagRepository.executeJsOnlyOnOtherPages("alert('This is an alert');");
+     * </pre>
+     * <p>
+     * This shows an alert in the browser: <b><i>This is an alert</i></b>.
+     *
+     * @param js the JavaScript to be executed at the client browser page. *
+     * @author WFF
+     * @since 12.0.0-beta.4 initial implementation.
+     */
+    public void executeJsOnlyOnOtherPages(final String js) {
+        browserPage.performBrowserPageAction(BrowserPageAction.getActionByteBufferForExecuteJS(js, true));
     }
 
     /**
