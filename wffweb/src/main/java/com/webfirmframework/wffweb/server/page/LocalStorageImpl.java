@@ -218,7 +218,7 @@ final class LocalStorageImpl implements LocalStorage {
         if (key == null) {
             return;
         }
-        final long operationTimeMillis = System.currentTimeMillis();
+
         if (value != null) {
             final TokenWrapper tokenWrapper = tokenWrapperByKey.computeIfAbsent(key, k -> new TokenWrapper());
             final long stamp = tokenWrapper.lock.writeLock();
@@ -228,6 +228,7 @@ final class LocalStorageImpl implements LocalStorage {
                     final Collection<BrowserPage> bps = browserPages.values();
                     if (bps.size() > 0) {
                         final int id = setTokenIdGenerator.incrementAndGet();
+                        final long operationTimeMillis = System.currentTimeMillis();
                         final boolean updated = tokenWrapper.setTokenAndWriteTime(value, null, operationTimeMillis, id);
                         if (updated) {
                             for (final BrowserPage browserPage : bps) {
@@ -248,6 +249,7 @@ final class LocalStorageImpl implements LocalStorage {
                         final Collection<BrowserPage> bps = browserPages.values();
                         if (bps.size() > 0 && tokenWrapperByKey.remove(key) != null) {
                             final int id = setTokenIdGenerator.incrementAndGet();
+                            final long operationTimeMillis = System.currentTimeMillis();
                             final boolean updated = tokenWrapper.setTokenAndWriteTime(null, null, operationTimeMillis,
                                     id, key, tokenWrapperByKey);
                             if (updated) {
@@ -260,7 +262,6 @@ final class LocalStorageImpl implements LocalStorage {
                 } finally {
                     tokenWrapper.lock.unlockWrite(stamp);
                 }
-
             }
         }
     }
@@ -268,8 +269,15 @@ final class LocalStorageImpl implements LocalStorage {
     @Override
     public Item getToken(final String key) {
         final TokenWrapper tokenWrapper = tokenWrapperByKey.get(key);
-        return tokenWrapper != null ? new TokenData(tokenWrapper.getValue(), tokenWrapper.getUpdatedTimeMillis())
-                : null;
+        if (tokenWrapper != null) {
+            final long stamp = tokenWrapper.lock.readLock();
+            try {
+                return new TokenData(tokenWrapper.getValue(), tokenWrapper.getUpdatedTimeMillis());
+            } finally {
+                tokenWrapper.lock.unlockRead(stamp);
+            }
+        }
+        return null;
     }
 
     @Override
