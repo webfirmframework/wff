@@ -87,7 +87,7 @@ public enum BrowserPageAction {
      * Gets the action {@code ByteBuffer} for executing the given JavaScript.
      *
      * @param js               JavaScript to execute in the browser
-     * @param onlyOnOtherPages true to execute the js only on the other pages not on
+     * @param onlyInOtherPages true to execute the js only on the other pages not on
      *                         the page on which the the action is performed (i.e.
      *                         {@code browserPage.performBrowserPageAction} is
      *                         called). Other pages include all other pages opened
@@ -98,8 +98,8 @@ public enum BrowserPageAction {
      *         the browser.
      * @since 12.0.0-beta.4
      */
-    public static ByteBuffer getActionByteBufferForExecuteJS(final String js, final boolean onlyOnOtherPages) {
-        return ByteBuffer.wrap(getActionBytesForExecuteJS(js, onlyOnOtherPages));
+    public static ByteBuffer getActionByteBufferForExecuteJS(final String js, final boolean onlyInOtherPages) {
+        return ByteBuffer.wrap(getActionBytesForExecuteJS(js, onlyInOtherPages));
     }
 
     /**
