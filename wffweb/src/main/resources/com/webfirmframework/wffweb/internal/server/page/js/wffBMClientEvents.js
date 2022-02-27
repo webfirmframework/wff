@@ -84,7 +84,7 @@ var wffBMClientEvents = new function() {
 			var itms = [];
 			for (var k in localStorage) {
 				var ndx = k.lastIndexOf('_wff_token');
-				if (ndx > -1) {
+				if (ndx > -1 && k.endsWith('_wff_token')) {
 					try {
 						var itemObj = JSON.parse(localStorage.getItem(k));
 						itms.push({ k: k.substring(0, ndx), v: itemObj.v, id: itemObj.id, wt: itemObj.wt });

@@ -625,7 +625,6 @@ var wffClientCRUDUtil = new function() {
 			var jsObj = new JsObjectFromBMBytes(taskNameValue.values[1], true);
 			// wt for write time, D for data, T for token, tp for type, cb for callback
 			if (typeof localStorage !== "undefined" && jsObj.wt && jsObj.tp && jsObj.id) {
-
 				for (var k in localStorage) {
 					if ((k.endsWith('_wff_data') && (jsObj.tp === 'D' || jsObj.tp === 'DT'))
 						|| (k.endsWith('_wff_token') && (jsObj.tp === 'T' || jsObj.tp === 'DT'))) {
@@ -637,11 +636,17 @@ var wffClientCRUDUtil = new function() {
 								if (jsObjWT >= itemObjWT) {
 									var id = wffBMUtil.getIntFromOptimizedBytes(jsObj.id);
 									if (jsObjWT > itemObjWT || (jsObjWT == itemObjWT && id > itemObj.id)) {
+										if (k.endsWith('_wff_token')) {
+											//this is to handle case in storage event, id is required for deleting from multiple nodes,  
+											itemObj.removed = true;
+											itemObj.id = id;
+											itemObj.wt = jsObj.wt;
+											localStorage.setItem(k, JSON.stringify(itemObj));
+										}
 										localStorage.removeItem(k);
 									}
 								}
 							}
-
 						} catch (e) {
 							wffLog(e);
 						}
@@ -655,7 +660,6 @@ var wffClientCRUDUtil = new function() {
 						'name': jsObj.id,
 						'values': []
 					};
-
 					var nameValues = [taskNameValue, nameValue];
 					var wffBM = wffBMUtil.getWffBinaryMessageBytes(nameValues);
 					wffWS.send(wffBM);

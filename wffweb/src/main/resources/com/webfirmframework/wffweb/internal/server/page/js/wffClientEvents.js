@@ -89,7 +89,8 @@ document.addEventListener("DOMContentLoaded",
 				//event.key, event.oldValue, event.newValue
 				window.addEventListener('storage', function(event) {
 					if (event && event.key && event.newValue) {
-						if (event.key.endsWith('_wff_token')) {
+						var ndx = event.key.lastIndexOf('_wff_token')
+						if (ndx > -1 && event.key.endsWith('_wff_token')) {
 							var itemObj;
 							try {
 								itemObj = JSON.parse(event.newValue);
@@ -97,6 +98,8 @@ document.addEventListener("DOMContentLoaded",
 								wffLog(e);
 							}
 							if (itemObj && itemObj.id && itemObj.wt && itemObj.nid !== wffGlobal.NODE_ID) {
+								var ky = encoder.encode(event.key.substring(0, ndx));
+								var wtBts = encoder.encode(itemObj.wt);
 								var id = wffBMUtil.getOptimizedBytesFromInt(itemObj.id);
 								var nameValues;
 								if (itemObj.removed) {
@@ -105,16 +108,16 @@ document.addEventListener("DOMContentLoaded",
 										wffGlobal.taskValues.REMOVE_LS_TOKEN);
 									var nameValue = {
 										'name': id,
-										'values': [encoder.encode(event.key), encoder.encode(itemObj.wt)]
+										'values': [ky, wtBts]
 									};
 									nameValues = [taskNameValue, nameValue];
 								} else {
 									var taskNameValue = wffTaskUtil.getTaskNameValue(
 										wffGlobal.taskValues.TASK,
-										wffGlobal.taskValues.REMOVE_LS_TOKEN);
+										wffGlobal.taskValues.SET_LS_TOKEN);
 									var nameValue = {
 										'name': id,
-										'values': [encoder.encode(event.key), encoder.encode(itemObj.v), encoder.encode(itemObj.wt)]
+										'values': [ky, encoder.encode(itemObj.v), wtBts]
 									};
 									nameValues = [taskNameValue, nameValue];
 								}
