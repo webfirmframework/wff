@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.server.page;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.util.ArrayDeque;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -996,6 +997,26 @@ public enum BrowserPageContext {
             }
         }
         return null;
+    }
+
+    /**
+     * @return all session ids
+     * @since 12.0.0-beta.4
+     */
+    public Set<String> getSessionIds() {
+        return Set.copyOf(httpSessionIdSession.keySet());
+    }
+
+    /**
+     * @return all browser page sessions
+     * @since 12.0.0-beta.4
+     */
+    public Set<BrowserPageSession> getSessions() {
+        final Collection<BrowserPageSession> sessions = new LinkedList<>();
+        for (final BrowserPageSessionWrapper each : httpSessionIdSession.values()) {
+            sessions.add(each.session);
+        }
+        return Set.copyOf(sessions);
     }
 
 }
