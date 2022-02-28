@@ -214,9 +214,9 @@ final class LocalStorageImpl implements LocalStorage {
     }
 
     @Override
-    public synchronized void setToken(final String key, final String value) {
+    public boolean setToken(final String key, final String value) {
         if (key == null) {
-            return;
+            return false;
         }
 
         if (value != null) {
@@ -234,6 +234,7 @@ final class LocalStorageImpl implements LocalStorage {
                             for (final BrowserPage browserPage : bps) {
                                 browserPage.setLocalStorageToken(id, key, value, operationTimeMillis);
                             }
+                            return true;
                         }
                     }
                 }
@@ -256,6 +257,7 @@ final class LocalStorageImpl implements LocalStorage {
                                 for (final BrowserPage browserPage : bps) {
                                     browserPage.removeLocalStorageToken(id, key, operationTimeMillis);
                                 }
+                                return true;
                             }
                         }
                     }
@@ -264,6 +266,8 @@ final class LocalStorageImpl implements LocalStorage {
                 }
             }
         }
+
+        return false;
     }
 
     @Override
@@ -281,7 +285,7 @@ final class LocalStorageImpl implements LocalStorage {
     }
 
     @Override
-    public void removeToken(final String key) {
-        setToken(key, null);
+    public boolean removeToken(final String key) {
+        return setToken(key, null);
     }
 }

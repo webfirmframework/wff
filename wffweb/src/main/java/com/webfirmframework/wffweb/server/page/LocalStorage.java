@@ -194,8 +194,9 @@ public sealed interface LocalStorage permits LocalStorageImpl {
      * @param key   key for the token
      * @param value value for the token
      * @since 12.0.0-beta.4
+     * @return true if successfully changed otherwise false
      */
-    void setToken(String key, String value);
+    boolean setToken(String key, String value);
 
     /**
      * @param key the key to get the token
@@ -209,6 +210,7 @@ public sealed interface LocalStorage permits LocalStorageImpl {
      *
      * @param key the key to remove the token.
      * @since 12.0.0-beta.4
+     * @return true if successfully removed otherwise false
      */
-    void removeToken(String key);
+    boolean removeToken(String key);
 }
