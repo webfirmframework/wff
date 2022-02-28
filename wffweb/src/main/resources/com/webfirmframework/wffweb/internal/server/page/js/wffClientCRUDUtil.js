@@ -641,6 +641,7 @@ var wffClientCRUDUtil = new function() {
 											itemObj.removed = true;
 											itemObj.id = id;
 											itemObj.wt = jsObj.wt;
+											itemObj.nid = wffGlobal.NODE_ID;
 											localStorage.setItem(k, JSON.stringify(itemObj));
 										}
 										localStorage.removeItem(k);
