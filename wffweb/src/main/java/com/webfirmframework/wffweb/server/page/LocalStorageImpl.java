@@ -290,24 +290,20 @@ final class LocalStorageImpl implements LocalStorage {
             if (tokenWrapper != null) {
                 final long stamp = tokenWrapper.lock.writeLock();
                 try {
+                    final Collection<BrowserPage> bps = browserPages.values();
+                    if (bps.size() == 0) {
+                        throw new BrowserPageNotFoundException(
+                                "There is no active browser page in the session to remove the token");
+                    }
                     final ItemData previousItem = new ItemData(tokenWrapper.getValue(),
                             tokenWrapper.getUpdatedTimeMillis());
-                    if (tokenWrapper.getValue() != null) {
-                        final Collection<BrowserPage> bps = browserPages.values();
-                        if (bps.size() == 0) {
-                            throw new BrowserPageNotFoundException(
-                                    "There is no active browser page in the session to remove the token");
-                        }
-                        if (tokenWrapperByKey.remove(key) != null) {
-                            final int id = setTokenIdGenerator.incrementAndGet();
-                            final long operationTimeMillis = System.currentTimeMillis();
-                            final boolean updated = tokenWrapper.setTokenAndWriteTime(null, null, operationTimeMillis,
-                                    id, key, tokenWrapperByKey);
-                            if (updated) {
-                                for (final BrowserPage browserPage : bps) {
-                                    browserPage.removeLocalStorageToken(id, key, operationTimeMillis);
-                                }
-                            }
+                    final int id = setTokenIdGenerator.incrementAndGet();
+                    final long operationTimeMillis = System.currentTimeMillis();
+                    final boolean updated = tokenWrapper.setTokenAndWriteTime(null, null, operationTimeMillis, id, key,
+                            tokenWrapperByKey);
+                    if (updated) {
+                        for (final BrowserPage browserPage : bps) {
+                            browserPage.removeLocalStorageToken(id, key, operationTimeMillis);
                         }
                     }
                     return previousItem;

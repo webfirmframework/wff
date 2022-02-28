@@ -1219,7 +1219,7 @@ public abstract class BrowserPage implements Serializable {
                     if (nameValues.size() > 1) {
                         final NameValue nameValue = nameValues.get(1);
                         final byte[][] values = nameValue.getValues();
-                        if (values.length > 0) {
+                        if (values.length > 1) {
                             final String key = new String(values[0], StandardCharsets.UTF_8);
                             final LocalStorageImpl localStorage = getLocalStorage();
                             final TokenWrapper tokenWrapper = localStorage != null
