@@ -17,6 +17,8 @@ package com.webfirmframework.wffweb.server.page;
 
 import java.util.function.Consumer;
 
+import com.webfirmframework.wffweb.BrowserPageNotFoundException;
+
 /**
  * The operations are strongly consistent in the same node but eventually
  * consistent in multiple nodes as there is a network latency. Eg: The following
@@ -91,6 +93,8 @@ public sealed interface LocalStorage permits LocalStorageImpl {
      *                        will be overwritten with this new value. If null is
      *                        passed the existing item will be removed.
      * @param successConsumer to invoke the consumer if writing is successful.
+     * @throws BrowserPageNotFoundException if there is no active browser page in
+     *                                      the session.
      * @since 12.0.0-beta.4
      */
     void setItem(String key, String value, Consumer<Event> successConsumer);
@@ -102,6 +106,8 @@ public sealed interface LocalStorage permits LocalStorageImpl {
      * @param value the value to set. If there is an existing value it will be
      *              overwritten with this new value. If null is passed the existing
      *              item will be removed.
+     * @throws BrowserPageNotFoundException if there is no active browser page in
+     *                                      the session.
      * @since 12.0.0-beta.4
      */
     void setItem(String key, String value);
@@ -111,6 +117,8 @@ public sealed interface LocalStorage permits LocalStorageImpl {
      *
      * @param key      the key to get the value.
      * @param consumer the consumer to get the value.
+     * @throws BrowserPageNotFoundException if there is no active browser page in
+     *                                      the session.
      * @since 12.0.0-beta.4
      */
     void getItem(String key, Consumer<Event> consumer);
@@ -120,6 +128,8 @@ public sealed interface LocalStorage permits LocalStorageImpl {
      *
      * @param key      the key to remove the value.
      * @param consumer the consumer to invoked after successful removal.
+     * @throws BrowserPageNotFoundException if there is no active browser page in
+     *                                      the session.
      * @since 12.0.0-beta.4
      */
     void removeItem(String key, Consumer<Event> consumer);
@@ -128,6 +138,8 @@ public sealed interface LocalStorage permits LocalStorageImpl {
      * This is an asynchronous method.
      *
      * @param key the key to remove the value.
+     * @throws BrowserPageNotFoundException if there is no active browser page in
+     *                                      the session.
      * @since 12.0.0-beta.4
      */
     void removeItem(String key);
@@ -138,6 +150,8 @@ public sealed interface LocalStorage permits LocalStorageImpl {
      * @param key      the key to remove the value
      * @param consumer the consumer to invoke after the successful removal, the
      *                 removed item details will be available in the consumer.
+     * @throws BrowserPageNotFoundException if there is no active browser page in
+     *                                      the session.
      * @since 12.0.0-beta.4
      */
     void removeAndGetItem(String key, Consumer<Event> consumer);
@@ -147,6 +161,8 @@ public sealed interface LocalStorage permits LocalStorageImpl {
      * localStorage.
      *
      * @param consumer the consumer to invoke after the successful clearing.
+     * @throws BrowserPageNotFoundException if there is no active browser page in
+     *                                      the session.
      * @since 12.0.0-beta.4
      */
     void clear(Consumer<Event> consumer);
@@ -155,6 +171,8 @@ public sealed interface LocalStorage permits LocalStorageImpl {
      * This is an asynchronous method. It clears only the wffweb related items and
      * tokens from localStorage.
      *
+     * @throws BrowserPageNotFoundException if there is no active browser page in
+     *                                      the session.
      * @since 12.0.0-beta.4
      */
     void clear();
@@ -178,6 +196,8 @@ public sealed interface LocalStorage permits LocalStorageImpl {
      * This is an asynchronous method.
      *
      * @param consumer invokes after successful clear.
+     * @throws BrowserPageNotFoundException if there is no active browser page in
+     *                                      the session.
      * @since 12.0.0-beta.4
      */
     void clearItems(Consumer<Event> consumer);
@@ -193,8 +213,10 @@ public sealed interface LocalStorage permits LocalStorageImpl {
     /**
      * @param key   key for the token
      * @param value value for the token
-     * @since 12.0.0-beta.4
      * @return the previously associated token if there is any otherwise null
+     * @throws BrowserPageNotFoundException if there is no active browser page in
+     *                                      the session.
+     * @since 12.0.0-beta.4
      */
     Item setToken(String key, String value);
 
@@ -209,8 +231,10 @@ public sealed interface LocalStorage permits LocalStorageImpl {
      * Removes the token for the key.
      *
      * @param key the key to remove the token.
-     * @since 12.0.0-beta.4
      * @return the previously associated token if there is any otherwise null
+     * @throws BrowserPageNotFoundException if there is no active browser page in
+     *                                      the session.
+     * @since 12.0.0-beta.4
      */
     Item removeToken(String key);
 }

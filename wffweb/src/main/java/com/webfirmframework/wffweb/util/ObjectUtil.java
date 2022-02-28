@@ -17,6 +17,8 @@ package com.webfirmframework.wffweb.util;
 
 import java.util.Objects;
 
+import com.webfirmframework.wffweb.InvalidValueException;
+
 /**
  *
  * @author WFF
@@ -68,6 +70,17 @@ public final class ObjectUtil {
      */
     public static boolean isEqual(final Object object1, final Object object2) {
         return Objects.equals(object1, object2);
+    }
+
+    /**
+     * @param o
+     * @param msg
+     * @since 12.0.0-beta.4
+     */
+    public static void requireNonNull(final Object o, final String msg) {
+        if (o == null) {
+            throw new InvalidValueException(msg);
+        }
     }
 
 }
