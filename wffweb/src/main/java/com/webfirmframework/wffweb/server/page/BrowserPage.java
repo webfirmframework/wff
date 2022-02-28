@@ -1192,7 +1192,8 @@ public abstract class BrowserPage implements Serializable {
                         final byte[][] values = nameValue.getValues();
                         if (values.length > 2) {
                             final String key = new String(values[0], StandardCharsets.UTF_8);
-                            final TokenWrapper tokenWrapper = getTokenWrapper(key, false);
+                            // create should be true as the initial value in a new node could be null
+                            final TokenWrapper tokenWrapper = getTokenWrapper(key, true);
                             if (tokenWrapper != null) {
                                 final long stamp = tokenWrapper.lock.writeLock();
                                 try {
