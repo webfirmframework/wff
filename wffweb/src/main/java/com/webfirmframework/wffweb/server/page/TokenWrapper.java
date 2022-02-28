@@ -32,6 +32,12 @@ final class TokenWrapper {
 
     private volatile int updatedId;
 
+    final String key;
+
+    TokenWrapper(final String key) {
+        this.key = key;
+    }
+
     /**
      * To set token pass token or token bytes. To remove token pass token and
      * orTokenBytes as null.

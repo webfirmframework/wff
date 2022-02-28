@@ -1253,7 +1253,7 @@ public abstract class BrowserPage implements Serializable {
     private TokenWrapper getTokenWrapper(final String key, final boolean create) {
         final LocalStorageImpl localStorage = getLocalStorage();
         return localStorage != null
-                ? (create ? localStorage.tokenWrapperByKey.computeIfAbsent(key, k -> new TokenWrapper())
+                ? (create ? localStorage.tokenWrapperByKey.computeIfAbsent(key, TokenWrapper::new)
                         : localStorage.tokenWrapperByKey.get(key))
                 : null;
     }

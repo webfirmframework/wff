@@ -33,20 +33,14 @@ import com.webfirmframework.wffweb.util.ObjectUtil;
  */
 final class LocalStorageImpl implements LocalStorage {
 
-    private final AtomicInteger getItemIdGenerator = new AtomicInteger(0);
+    private final AtomicInteger itemIdGenerator = new AtomicInteger(0);
 
-    private final AtomicInteger setItemIdGenerator = new AtomicInteger(0);
-
-    private final AtomicInteger setTokenIdGenerator = new AtomicInteger(0);
-
-    private final AtomicInteger removeItemIdGenerator = new AtomicInteger(0);
-
-    private final AtomicInteger clearItemsIdGenerator = new AtomicInteger(0);
+    private final AtomicInteger tokenIdGenerator = new AtomicInteger(0);
 
     // key: id by setItemIdGenerator
     final Map<Integer, LSConsumerEventRecord> setItemConsumers = new ConcurrentHashMap<>(2);
 
-    // key: id by getItemIdGenerator
+    // key: id by itemIdGenerator
     final Map<Integer, LSConsumerEventRecord> getItemConsumers = new ConcurrentHashMap<>(2);
 
     // key: id by removeItemIdGenerator
@@ -83,7 +77,7 @@ final class LocalStorageImpl implements LocalStorage {
         if (bps.size() == 0) {
             throw new BrowserPageNotFoundException("There is no active browser page in the session to set item");
         }
-        final int id = setItemIdGenerator.incrementAndGet();
+        final int id = itemIdGenerator.incrementAndGet();
         final long operationTimeMillis = System.currentTimeMillis();
         final boolean callback = successConsumer != null;
         if (callback) {
@@ -105,7 +99,7 @@ final class LocalStorageImpl implements LocalStorage {
         if (bps.size() == 0) {
             throw new BrowserPageNotFoundException("There is no active browser page in the session to get item");
         }
-        final int id = getItemIdGenerator.incrementAndGet();
+        final int id = itemIdGenerator.incrementAndGet();
         final long operationTimeMillis = System.currentTimeMillis();
         final LSConsumerEventRecord record = new LSConsumerEventRecord(consumer,
                 new LocalStorage.Event(key, operationTimeMillis));
@@ -129,7 +123,7 @@ final class LocalStorageImpl implements LocalStorage {
             throw new BrowserPageNotFoundException("There is no active browser page in the session to remove item");
         }
 
-        final int id = removeItemIdGenerator.incrementAndGet();
+        final int id = itemIdGenerator.incrementAndGet();
         final long operationTimeMillis = System.currentTimeMillis();
 
         final boolean callback = consumer != null;
@@ -153,7 +147,7 @@ final class LocalStorageImpl implements LocalStorage {
             throw new BrowserPageNotFoundException(
                     "There is no active browser page in the session to remove and get item");
         }
-        final int id = removeItemIdGenerator.incrementAndGet();
+        final int id = itemIdGenerator.incrementAndGet();
         final long operationTimeMillis = System.currentTimeMillis();
         final LSConsumerEventRecord record = new LSConsumerEventRecord(consumer,
                 new LocalStorage.Event(key, operationTimeMillis));
@@ -185,7 +179,7 @@ final class LocalStorageImpl implements LocalStorage {
             throw new BrowserPageNotFoundException(
                     "There is no active browser page in the session to clear items and tokens");
         }
-        final int id = clearItemsIdGenerator.incrementAndGet();
+        final int id = itemIdGenerator.incrementAndGet();
         final long operationTimeMillis = System.currentTimeMillis();
         final boolean callback = consumer != null;
         if (callback) {
@@ -202,15 +196,24 @@ final class LocalStorageImpl implements LocalStorage {
     }
 
     private void removeAllTokens(final long operationTimeMillis) {
-        final Queue<String> toRemoveTokens = new ArrayDeque<>();
+
+        final Queue<TokenWrapper> toRemoveTokens = new ArrayDeque<>();
         for (final Map.Entry<String, TokenWrapper> entry : tokenWrapperByKey.entrySet()) {
-            if (operationTimeMillis >= entry.getValue().getUpdatedTimeMillis()) {
-                toRemoveTokens.add(entry.getKey());
-            }
+            toRemoveTokens.add(entry.getValue());
         }
-        String key = null;
-        while ((key = toRemoveTokens.poll()) != null) {
-            tokenWrapperByKey.remove(key);
+
+        final int id = toRemoveTokens.peek() != null ? tokenIdGenerator.incrementAndGet() : 0;
+
+        TokenWrapper tokenWrapper = null;
+        while ((tokenWrapper = toRemoveTokens.poll()) != null) {
+            final long stamp = tokenWrapper.lock.writeLock();
+            try {
+                tokenWrapper.setTokenAndWriteTime(null, null, operationTimeMillis, id, tokenWrapper.key,
+                        tokenWrapperByKey);
+            } finally {
+                tokenWrapper.lock.unlockWrite(stamp);
+            }
+
         }
     }
 
@@ -220,7 +223,7 @@ final class LocalStorageImpl implements LocalStorage {
         if (bps.size() == 0) {
             throw new BrowserPageNotFoundException("There is no active browser page in the session to clear items");
         }
-        final int id = clearItemsIdGenerator.incrementAndGet();
+        final int id = itemIdGenerator.incrementAndGet();
         final long operationTimeMillis = System.currentTimeMillis();
         final boolean callback = consumer != null;
         if (callback) {
@@ -239,7 +242,7 @@ final class LocalStorageImpl implements LocalStorage {
         if (bps.size() == 0) {
             throw new BrowserPageNotFoundException("There is no active browser page in the session to clear tokens");
         }
-        final int id = clearItemsIdGenerator.incrementAndGet();
+        final int id = itemIdGenerator.incrementAndGet();
         final long operationTimeMillis = System.currentTimeMillis();
         final boolean callback = consumer != null;
         if (consumer != null) {
@@ -260,7 +263,7 @@ final class LocalStorageImpl implements LocalStorage {
         }
 
         if (value != null) {
-            final TokenWrapper tokenWrapper = tokenWrapperByKey.computeIfAbsent(key, k -> new TokenWrapper());
+            final TokenWrapper tokenWrapper = tokenWrapperByKey.computeIfAbsent(key, TokenWrapper::new);
             final long stamp = tokenWrapper.lock.writeLock();
             try {
                 final ItemData previousItem = new ItemData(tokenWrapper.getValue(),
@@ -272,7 +275,7 @@ final class LocalStorageImpl implements LocalStorage {
                         throw new BrowserPageNotFoundException(
                                 "There is no active browser page in the session to remove the token");
                     }
-                    final int id = setTokenIdGenerator.incrementAndGet();
+                    final int id = tokenIdGenerator.incrementAndGet();
                     final long operationTimeMillis = System.currentTimeMillis();
                     final boolean updated = tokenWrapper.setTokenAndWriteTime(value, null, operationTimeMillis, id);
                     if (updated) {
@@ -298,10 +301,10 @@ final class LocalStorageImpl implements LocalStorage {
                     final ItemData previousItem = new ItemData(tokenWrapper.getValue(),
                             tokenWrapper.getUpdatedTimeMillis());
                     if (tokenWrapperByKey.remove(key) != null) {
-                        final int id = setTokenIdGenerator.incrementAndGet();
+                        final int id = tokenIdGenerator.incrementAndGet();
                         final long operationTimeMillis = System.currentTimeMillis();
-                        final boolean updated = tokenWrapper.setTokenAndWriteTime(null, null, operationTimeMillis,
-                                id, key, tokenWrapperByKey);
+                        final boolean updated = tokenWrapper.setTokenAndWriteTime(null, null, operationTimeMillis, id,
+                                key, tokenWrapperByKey);
                         if (updated) {
                             for (final BrowserPage browserPage : bps) {
                                 browserPage.removeLocalStorageToken(id, key, operationTimeMillis);
