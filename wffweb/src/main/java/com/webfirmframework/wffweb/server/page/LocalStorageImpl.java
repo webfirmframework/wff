@@ -297,13 +297,15 @@ final class LocalStorageImpl implements LocalStorage {
                     }
                     final ItemData previousItem = new ItemData(tokenWrapper.getValue(),
                             tokenWrapper.getUpdatedTimeMillis());
-                    final int id = setTokenIdGenerator.incrementAndGet();
-                    final long operationTimeMillis = System.currentTimeMillis();
-                    final boolean updated = tokenWrapper.setTokenAndWriteTime(null, null, operationTimeMillis, id, key,
-                            tokenWrapperByKey);
-                    if (updated) {
-                        for (final BrowserPage browserPage : bps) {
-                            browserPage.removeLocalStorageToken(id, key, operationTimeMillis);
+                    if (tokenWrapperByKey.remove(key) != null) {
+                        final int id = setTokenIdGenerator.incrementAndGet();
+                        final long operationTimeMillis = System.currentTimeMillis();
+                        final boolean updated = tokenWrapper.setTokenAndWriteTime(null, null, operationTimeMillis,
+                                id, key, tokenWrapperByKey);
+                        if (updated) {
+                            for (final BrowserPage browserPage : bps) {
+                                browserPage.removeLocalStorageToken(id, key, operationTimeMillis);
+                            }
                         }
                     }
                     return previousItem;
