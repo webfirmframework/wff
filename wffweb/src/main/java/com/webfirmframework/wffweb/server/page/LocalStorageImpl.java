@@ -214,9 +214,9 @@ final class LocalStorageImpl implements LocalStorage {
     }
 
     @Override
-    public boolean setToken(final String key, final String value) {
+    public Item setToken(final String key, final String value) {
         if (key == null) {
-            return false;
+            return null;
         }
 
         if (value != null) {
@@ -234,7 +234,7 @@ final class LocalStorageImpl implements LocalStorage {
                             for (final BrowserPage browserPage : bps) {
                                 browserPage.setLocalStorageToken(id, key, value, operationTimeMillis);
                             }
-                            return true;
+                            return new ItemData(tokenWrapper.getValue(), tokenWrapper.getUpdatedTimeMillis());
                         }
                     }
                 }
@@ -257,7 +257,7 @@ final class LocalStorageImpl implements LocalStorage {
                                 for (final BrowserPage browserPage : bps) {
                                     browserPage.removeLocalStorageToken(id, key, operationTimeMillis);
                                 }
-                                return true;
+                                return new ItemData(tokenWrapper.getValue(), tokenWrapper.getUpdatedTimeMillis());
                             }
                         }
                     }
@@ -267,7 +267,7 @@ final class LocalStorageImpl implements LocalStorage {
             }
         }
 
-        return false;
+        return null;
     }
 
     @Override
@@ -285,7 +285,7 @@ final class LocalStorageImpl implements LocalStorage {
     }
 
     @Override
-    public boolean removeToken(final String key) {
+    public Item removeToken(final String key) {
         return setToken(key, null);
     }
 }
