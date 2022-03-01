@@ -154,7 +154,7 @@ public sealed interface LocalStorage permits LocalStorageImpl {
      *                                      the session.
      * @since 12.0.0-beta.4
      */
-    void removeAndGetItem(String key, Consumer<Event> consumer);
+    void getAndRemoveItem(String key, Consumer<Event> consumer);
 
     /**
      * This is an asynchronous method. It clears only the wffweb related items from

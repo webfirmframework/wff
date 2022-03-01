@@ -66,7 +66,7 @@ final class LocalStorageImpl implements LocalStorage {
     public void setItem(final String key, final String value, final Consumer<LocalStorage.Event> successConsumer) {
         if (value == null) {
             if (successConsumer != null) {
-                removeAndGetItem(key, successConsumer);
+                getAndRemoveItem(key, successConsumer);
             } else {
                 removeItem(key);
             }
@@ -139,7 +139,7 @@ final class LocalStorageImpl implements LocalStorage {
     }
 
     @Override
-    public void removeAndGetItem(final String key, final Consumer<Event> consumer) {
+    public void getAndRemoveItem(final String key, final Consumer<Event> consumer) {
         ObjectUtil.requireNonNull(key, "key cannot be null");
         ObjectUtil.requireNonNull(consumer, "consumer cannot be null");
         final Collection<BrowserPage> bps = browserPages.values();

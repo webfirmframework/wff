@@ -1163,7 +1163,7 @@ public abstract class BrowserPage implements Serializable {
                 } catch (final Exception e) {
                     if (LOGGER.isLoggable(Level.SEVERE)) {
                         final String methodName = taskValue == Task.REMOVE_LS_ITEM.getValueByte() ? "removeItem"
-                                : "removeAndGetItem";
+                                : "getAndRemoveItem";
                         LOGGER.log(Level.SEVERE, "Exception while executing localStorage." + methodName, e);
                     }
                 }
