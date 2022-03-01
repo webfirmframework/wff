@@ -5,6 +5,8 @@ document.addEventListener("DOMContentLoaded",
 		function(event) {
 			console.log('DOMContentLoaded');
 			
+			var encoder = wffGlobal.encoder;
+			
 			if (typeof window.wffInitialWSOpenInvoked === 'undefined') {
 			    window.wffInitialWSOpenInvoked = true;
 			    wffBMClientEvents.wffInitialWSOpen();
@@ -76,10 +78,67 @@ document.addEventListener("DOMContentLoaded",
 							};
 						}
 
-						wffAsync.setServerURIWithCallback(uriAfter, callbackWrapper);
+						wffAsync.setServerURIWithCallback(uriAfter, callbackWrapper, wffGlobal.uriEventInitiator.BROWSER);
 					} else {
-						wffAsync.setServerURI(uriAfter);
+						wffAsync.setServerURIWithCallback(uriAfter, undefined, wffGlobal.uriEventInitiator.BROWSER);
 					}
+				});
+			}
+			
+			if (isWffWindowEventSupported('storage') && typeof localStorage !== "undefined") {
+				//event.key, event.oldValue, event.newValue
+				window.addEventListener('storage', function(event) {
+					if (event && event.key && event.newValue) {
+						var ndx = event.key.lastIndexOf('_wff_token')
+						if (ndx > -1 && event.key.endsWith('_wff_token')) {
+							var itemObj;
+							try {
+								itemObj = JSON.parse(event.newValue);
+							} catch (e) {
+								wffLog(e);
+							}
+							if (itemObj && itemObj.id && itemObj.wt && itemObj.nid !== wffGlobal.NODE_ID) {
+								var ky = encoder.encode(event.key.substring(0, ndx));
+								var wtBts = encoder.encode(itemObj.wt);
+								var id = wffBMUtil.getOptimizedBytesFromInt(itemObj.id);
+								var nameValues;
+								if (itemObj.removed) {
+									var taskNameValue = wffTaskUtil.getTaskNameValue(
+										wffGlobal.taskValues.TASK,
+										wffGlobal.taskValues.REMOVE_LS_TOKEN);
+									var nameValue = {
+										'name': id,
+										'values': [ky, wtBts]
+									};
+									nameValues = [taskNameValue, nameValue];
+								} else {
+									var taskNameValue = wffTaskUtil.getTaskNameValue(
+										wffGlobal.taskValues.TASK,
+										wffGlobal.taskValues.SET_LS_TOKEN);
+									var nameValue = {
+										'name': id,
+										'values': [ky, encoder.encode(itemObj.v), wtBts]
+									};
+									nameValues = [taskNameValue, nameValue];
+								}
+								var wffBM = wffBMUtil.getWffBinaryMessageBytes(nameValues);
+								wffWS.send(wffBM);
+							}
+						} else if (event.key === 'WFF_EXEC_JS') {
+							var json = JSON.parse(event.newValue);
+							// no need to check instanceId as this listener will not invoke on the same tab 
+							// on which the localStorage.setItem is called but just for extra safety this checking is good
+							if (json.js && json.instanceId && json.instanceId !== wffGlobal.INSTANCE_ID) {
+								if (window.execScript) {
+									window.execScript(json.js);
+								} else {
+									eval(json.js);
+								}
+							}
+
+						}
+					}
+
 				});
 			}
 

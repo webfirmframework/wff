@@ -74,10 +74,34 @@ var wffBMClientEvents = new function() {
 
 		if (window.location && window.location.pathname) {
 			var pthNV = {
-				'name': encoder.encode(window.location.pathname),
-				'values': []
+				'name': [wffGlobal.taskValues.SET_URI],
+				'values': [[wffGlobal.uriEventInitiator.BROWSER], encoder.encode(window.location.pathname)]
 			};
 			nameValues.push(pthNV);
+		}
+
+		if (typeof localStorage !== "undefined") {
+			var itms = [];
+			for (var k in localStorage) {
+				var ndx = k.lastIndexOf('_wff_token');
+				if (ndx > -1 && k.endsWith('_wff_token')) {
+					try {
+						var itemObj = JSON.parse(localStorage.getItem(k));
+						itms.push({ k: k.substring(0, ndx), v: itemObj.v, id: itemObj.id, wt: itemObj.wt });
+					} catch (e) {
+						wffLog('corrupted token data found in localStorage', e);
+					}
+				}
+			}
+			if (itms.length > 0) {
+				var bmBts = new WffBMArray(itms).getBMBytes();
+				var nv = {
+					'name': [wffGlobal.taskValues.SET_LS_TOKEN],
+					'values': [bmBts]
+				};
+				nameValues.push(nv);
+			}
+
 		}
 
 		var wffBM = wffBMUtil.getWffBinaryMessageBytes(nameValues);

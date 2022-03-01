@@ -15,10 +15,12 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
-/**
- * @since 3.0.16
- */
-public record WebSocketOpenedRecord(BrowserPage browserPage, BrowserPageSession session,
-                                    HeartbeatManager heartbeatManager) {
+import java.util.function.Consumer;
 
+/**
+ * Note: only for internal use.
+ *
+ * @since 12.0.0-beta.4
+ */
+record LSConsumerEventRecord(Consumer<LocalStorage.Event> consumer, LocalStorage.Event event) {
 }
