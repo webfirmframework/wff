@@ -16,8 +16,10 @@ window.wffGlobal = new function() {
 	this.NDXD_VNT_ATRBS = "${NDXD_VNT_ATRBS}";
 	this.NDXD_BLN_ATRBS = "${NDXD_BLN_ATRBS}";
 	this.taskValues = "${TASK_VALUES}";
+	this.uriEventInitiator = "${URI_EVENT_INITIATOR_VALUES}";
 	this.WS_URL = "${WS_URL}";
 	this.INSTANCE_ID = "${INSTANCE_ID}";
+	this.NODE_ID = "${NODE_ID}";
 	this.REMOVE_PREV_BP_ON_INITTAB = "${REMOVE_PREV_BP_ON_INITTAB}";
 	this.REMOVE_PREV_BP_ON_TABCLOSE = "${REMOVE_PREV_BP_ON_TABCLOSE}";
 	//reconnect time interval for WebSocket
@@ -112,4 +114,10 @@ window.wffGlobal = new function() {
 		this.decoder = new TextDecoder("utf-8");
 	}
 
+	this.freeze = function(obj) {
+		if ((typeof Object) !== "undefined" && Object.freeze) {
+			Object.freeze(obj);
+		}
+	};
 };
+wffGlobal.freeze(wffGlobal);

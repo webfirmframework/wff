@@ -93,7 +93,7 @@ var wffBMCRUIDUtil = new function() {
 			}
 
 			var nameValue = {
-				'name' : getOptimizedBytesFromInt(parentIndex),
+				'name' : wffBMUtil.getOptimizedBytesFromInt(parentIndex),
 				'values' : values
 			};
 
@@ -104,7 +104,7 @@ var wffBMCRUIDUtil = new function() {
 			var nodeValueBytes = encoder.encode(tag.nodeValue);
 			var values = [ encodedBytesForHash, nodeValueBytes ];
 			var nameValue = {
-				'name' : getOptimizedBytesFromInt(parentIndex),
+				'name' : wffBMUtil.getOptimizedBytesFromInt(parentIndex),
 				'values' : values
 			};
 

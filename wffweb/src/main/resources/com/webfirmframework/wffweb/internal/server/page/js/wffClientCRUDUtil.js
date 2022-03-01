@@ -456,17 +456,27 @@ var wffClientCRUDUtil = new function() {
 		} else if (taskValue == wffGlobal.taskValues.RELOAD_BROWSER_FROM_CACHE) {
 			location.reload();
 		} else if (taskValue == wffGlobal.taskValues.EXEC_JS) {
-			
 			var js = getStringFromBytes(taskNameValue.values[1]);
-			
-			if (window.execScript) {
-				window.execScript(js);
+			//only on other pages
+			var op = taskNameValue.values[2][0];
+			if (op == 1) {
+				localStorage.setItem('WFF_EXEC_JS', JSON.stringify({ js: js, instanceId: wffGlobal.INSTANCE_ID }));
+				localStorage.removeItem('WFF_EXEC_JS');
 			} else {
-				eval(js);
+				if (window.execScript) {
+					window.execScript(js);
+				} else {
+					eval(js);
+				}
 			}
-			
 		} else if (taskValue == wffGlobal.taskValues.SET_URI) {
 			var jsObj = new JsObjectFromBMBytes(taskNameValue.values[1], true);
+			jsObj.uriAfter = jsObj.ua;
+			jsObj.uriBefore = jsObj.ub;
+			jsObj.origin = jsObj.o;
+			delete jsObj.ua;
+			delete jsObj.ub;
+			delete jsObj.o;
 			if (jsObj.uriAfter && jsObj.uriAfter !== jsObj.uriBefore) {
 				if (jsObj.origin === 'S') {
 					jsObj.origin = 'server';
@@ -498,18 +508,236 @@ var wffClientCRUDUtil = new function() {
 				}
 			}
 			uriChangeQ = [];
+		} else if (taskValue == wffGlobal.taskValues.SET_LS_ITEM) {
+			var jsObj = new JsObjectFromBMBytes(taskNameValue.values[1], true);
+			// k for key, v for value, wt for write time, cb callback
+			if (typeof localStorage !== "undefined" && jsObj.k && jsObj.wt && jsObj.id) {
+				var wt = parseInt(jsObj.wt);
+				var prev = localStorage.getItem(jsObj.k + '_wff_data');
+				var lstWT = 0;
+				var lstId = 0;
+				if (prev) {
+					try {
+						var itemObj = JSON.parse(prev);
+						lstWT = parseInt(itemObj.wt);
+						lstId = itemObj.id;
+					} catch (e) {
+						wffLog(e);
+					}
+				}
+				if (wt >= lstWT) {
+					var id = wffBMUtil.getIntFromOptimizedBytes(jsObj.id);
+					if (wt > lstWT || (wt == lstWT && id > lstId)) {
+						var itemVal = JSON.stringify({ v: jsObj.v, wt: jsObj.wt, id: id });
+						localStorage.setItem(jsObj.k + '_wff_data', itemVal);
+					}
+				}
+
+				if (jsObj.cb) {
+					var taskNameValue = wffTaskUtil.getTaskNameValue(
+						wffGlobal.taskValues.TASK,
+						taskValue);
+					var nameValue = {
+						'name': jsObj.id,
+						'values': []
+					};
+					var nameValues = [taskNameValue, nameValue];
+					var wffBM = wffBMUtil.getWffBinaryMessageBytes(nameValues);
+					wffWS.send(wffBM);
+				}
+
+			}
+		} else if (taskValue == wffGlobal.taskValues.GET_LS_ITEM) {
+			var jsObj = new JsObjectFromBMBytes(taskNameValue.values[1], true);
+			// k for key, v for value, wt for write time
+			if (typeof localStorage !== "undefined" && jsObj.id && jsObj.k) {
+				//string
+				var itemJSON = localStorage.getItem(jsObj.k + '_wff_data');
+				var itemObj;
+				if (itemJSON) {
+					try {
+						itemObj = JSON.parse(itemJSON);
+					} catch (e) {
+						wffLog(e);
+					}
+				}
+				if (!itemObj || !itemObj.wt) {
+					itemObj = {};
+				}
+				var taskNameValue = wffTaskUtil.getTaskNameValue(
+					wffGlobal.taskValues.TASK,
+					taskValue);
+				var nameValue = {
+					'name': jsObj.id,
+					'values': []
+				};
+				if (itemObj.wt) {
+					nameValue.values = [encoder.encode(itemObj.v), encoder.encode(itemObj.wt)];
+				}
+				var nameValues = [taskNameValue, nameValue];
+				var wffBM = wffBMUtil.getWffBinaryMessageBytes(nameValues);
+				wffWS.send(wffBM);
+			}
+		} else if (taskValue == wffGlobal.taskValues.REMOVE_LS_ITEM || taskValue == wffGlobal.taskValues.REMOVE_AND_GET_LS_ITEM) {
+			var jsObj = new JsObjectFromBMBytes(taskNameValue.values[1], true);
+			// k for key, v for value, wt for write time, cb for callback
+			if (typeof localStorage !== "undefined" && jsObj.k && jsObj.wt && jsObj.id) {
+				//string
+				var itemJSON = localStorage.getItem(jsObj.k + '_wff_data');
+				var itemObj;
+				if (itemJSON) {
+					try {
+						itemObj = JSON.parse(itemJSON);
+					} catch (e) {
+						wffLog(e);
+					}
+				}
+				if (!itemObj || !itemObj.wt || !itemObj.id) {
+					itemObj = {};
+				} else {
+					var jsObjWT = parseInt(jsObj.wt);
+					var itemObjWT = parseInt(itemObj.wt);
+					if (jsObjWT >= itemObjWT) {
+						var id = wffBMUtil.getIntFromOptimizedBytes(jsObj.id);
+						if (jsObjWT > itemObjWT || (jsObjWT == itemObjWT && id > itemObj.id)) {
+							localStorage.removeItem(jsObj.k + '_wff_data');
+						}
+					}
+				}
+				if (jsObj.cb) {
+					var taskNameValue = wffTaskUtil.getTaskNameValue(
+						wffGlobal.taskValues.TASK,
+						taskValue);
+					var nameValue = {
+						'name': jsObj.id,
+						'values': []
+					};
+					if (taskValue == wffGlobal.taskValues.REMOVE_AND_GET_LS_ITEM && itemObj.wt) {
+						nameValue.values = [encoder.encode(itemObj.v), encoder.encode(itemObj.wt)];
+					}
+					var nameValues = [taskNameValue, nameValue];
+					var wffBM = wffBMUtil.getWffBinaryMessageBytes(nameValues);
+					wffWS.send(wffBM);
+				}
+
+			}
+		} else if (taskValue == wffGlobal.taskValues.CLEAR_LS) {
+			var jsObj = new JsObjectFromBMBytes(taskNameValue.values[1], true);
+			// wt for write time, D for data, T for token, tp for type, cb for callback
+			if (typeof localStorage !== "undefined" && jsObj.wt && jsObj.tp && jsObj.id) {
+				for (var k in localStorage) {
+					if ((k.endsWith('_wff_data') && (jsObj.tp === 'D' || jsObj.tp === 'DT'))
+						|| (k.endsWith('_wff_token') && (jsObj.tp === 'T' || jsObj.tp === 'DT'))) {
+						try {
+							var itemObj = JSON.parse(localStorage.getItem(k));
+							if (itemObj && itemObj.wt && itemObj.id) {
+								var jsObjWT = parseInt(jsObj.wt);
+								var itemObjWT = parseInt(itemObj.wt);
+								if (jsObjWT >= itemObjWT) {
+									var id = wffBMUtil.getIntFromOptimizedBytes(jsObj.id);
+									if (jsObjWT > itemObjWT || (jsObjWT == itemObjWT && id > itemObj.id)) {
+										if (k.endsWith('_wff_token')) {
+											//this is to handle case in storage event, id is required for deleting from multiple nodes,  
+											itemObj.removed = true;
+											itemObj.id = id;
+											itemObj.wt = jsObj.wt;
+											itemObj.nid = wffGlobal.NODE_ID;
+											localStorage.setItem(k, JSON.stringify(itemObj));
+										}
+										localStorage.removeItem(k);
+									}
+								}
+							}
+						} catch (e) {
+							wffLog(e);
+						}
+					}
+				}
+				if (jsObj.cb) {
+					var taskNameValue = wffTaskUtil.getTaskNameValue(
+						wffGlobal.taskValues.TASK,
+						taskValue);
+					var nameValue = {
+						'name': jsObj.id,
+						'values': []
+					};
+					var nameValues = [taskNameValue, nameValue];
+					var wffBM = wffBMUtil.getWffBinaryMessageBytes(nameValues);
+					wffWS.send(wffBM);
+				}
+			}
+		} else if (taskValue == wffGlobal.taskValues.SET_LS_TOKEN) {
+			var jsObj = new JsObjectFromBMBytes(taskNameValue.values[1], true);
+			// k for key, v for value, wt for write time, id for write id
+			if (typeof localStorage !== "undefined" && jsObj.k && jsObj.wt && jsObj.id) {
+				var tknNm = jsObj.k + '_wff_token';
+				var wt = parseInt(jsObj.wt);
+				var prev = localStorage.getItem(tknNm);
+				var lstWT = 0;
+				var lstId = 0;
+				if (prev) {
+					try {
+						var itemObj = JSON.parse(prev);
+						lstWT = parseInt(itemObj.wt);
+						lstId = itemObj.id;
+					} catch (e) {
+						wffLog(e);
+					}
+				}
+				if (wt >= lstWT) {
+					var id = wffBMUtil.getIntFromOptimizedBytes(jsObj.id);
+					if (wt > lstWT || (wt == lstWT && id > lstId)) {
+						var itemVal = JSON.stringify({ v: jsObj.v, wt: jsObj.wt, nid: wffGlobal.NODE_ID, id: id });
+						localStorage.setItem(tknNm, itemVal);
+					}
+				}
+			}
+		} else if (taskValue == wffGlobal.taskValues.REMOVE_LS_TOKEN) {
+			var jsObj = new JsObjectFromBMBytes(taskNameValue.values[1], true);
+			// k for key, v for value, wt for write time
+			if (typeof localStorage !== "undefined" && jsObj.k && jsObj.wt && jsObj.id) {
+				var tknNm = jsObj.k + '_wff_token';
+				//string
+				var itemJSON = localStorage.getItem(tknNm);
+				var itemObj;
+				if (itemJSON) {
+					try {
+						itemObj = JSON.parse(itemJSON);
+					} catch (e) {
+						wffLog(e);
+					}
+				}
+				if (itemObj && itemObj.wt && itemObj.id) {
+					var jsObjWT = parseInt(jsObj.wt);
+					var itemObjWT = parseInt(itemObj.wt);
+					if (jsObjWT >= itemObjWT) {
+						var id = wffBMUtil.getIntFromOptimizedBytes(jsObj.id);
+						if (jsObjWT >= itemObjWT || (jsObjWT == itemObjWT && id > itemObj.id)) {
+							//this is to handle case in storage event, id is required for deleting from multiple nodes,  
+							itemObj.removed = true;
+							itemObj.id = id;
+							itemObj.wt = jsObj.wt;
+							itemObj.nid = wffGlobal.NODE_ID;
+							localStorage.setItem(tknNm, JSON.stringify(itemObj));
+							localStorage.removeItem(tknNm);
+						}
+
+					}
+
+				}
+			}
 		} else if (taskValue == wffGlobal.taskValues.COPY_INNER_TEXT_TO_VALUE) {
-			
+
 			console.log('wffGlobal.taskValues.COPY_INNER_TEXT_TO_VALUE');
-			
+
 			var tagName = wffTagUtil.getTagNameFromCompressedBytes(nameValues[1].name);
-			
+
 			var wffId = wffTagUtil
-					.getWffIdFromWffIdBytes(nameValues[1].values[0]);
-			
+				.getWffIdFromWffIdBytes(nameValues[1].values[0]);
+
 			var parentTag = wffTagUtil.getTagByTagNameAndWffId(tagName,
-					wffId);
-			
+				wffId);
+
 			var d = document.createElement('div');
 			d.innerHTML = parentTag.outerHTML;
 			parentTag.value = d.childNodes[0].innerText;

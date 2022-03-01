@@ -15,10 +15,5 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
-/**
- * @since 3.0.16
- */
-public record WebSocketOpenedRecord(BrowserPage browserPage, BrowserPageSession session,
-                                    HeartbeatManager heartbeatManager) {
-
+final record ItemData(String value, long updatedTimeMillis) implements LocalStorage.Item {
 }

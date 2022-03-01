@@ -23,6 +23,7 @@ import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.NullValueException;
 
 /**
@@ -75,7 +76,7 @@ public final class HeartbeatManager {
             throw new NullValueException("task cannot be null");
         }
         if (minInterval < 0) {
-            throw new IllegalArgumentException("minInterval cannot be less than 0");
+            throw new InvalidValueException("minInterval cannot be less than 0");
         }
     }
 
@@ -93,7 +94,7 @@ public final class HeartbeatManager {
             throw new NullValueException("task cannot be null");
         }
         if (minInterval < 0) {
-            throw new IllegalArgumentException("minInterval cannot be less than 0");
+            throw new InvalidValueException("minInterval cannot be less than 0");
         }
     }
 

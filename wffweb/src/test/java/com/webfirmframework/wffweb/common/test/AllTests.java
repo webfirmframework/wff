@@ -20,6 +20,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.webfirmframework.wffweb.common.EventInitiatorTest;
 import com.webfirmframework.wffweb.concurrent.ReentrantStampedLockTest;
 import com.webfirmframework.wffweb.css.BackgroundColorTest;
 import com.webfirmframework.wffweb.css.BackgroundImageTest;
@@ -219,7 +220,7 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObjectArrayTest;
         StringBuilderUtilTest.class, SecurityClassConstantsTest.class, ReentrantStampedLockTest.class,
         UnicodeStringTest.class, ExternalDriveByteArrayQueueTest.class, ExternalDriveClientTasksWrapperDequeTest.class,
         ExternalDriveClientTasksWrapperQueueTest.class, AttributeIdGeneratorTest.class,
-        SharedObjectIdGeneratorTest.class, WhenURIUseCaseTest.class, URIUtilTest.class })
+        SharedObjectIdGeneratorTest.class, WhenURIUseCaseTest.class, URIUtilTest.class, EventInitiatorTest.class })
 public class AllTests {
 
 }

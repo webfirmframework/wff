@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.css.core.CssEnumUtil;
 import com.webfirmframework.wffweb.util.TagStringUtil;
 
@@ -376,7 +377,7 @@ public enum CssColorName {
         this.colorName = colorName;
         this.hex = hex;
         if (hex.length() > 7) {
-            throw new IllegalArgumentException("Invalid hex value");
+            throw new InvalidValueException("Invalid hex value");
         }
         r = Integer.parseInt(hex.substring(1, 3), 16);
         g = Integer.parseInt(hex.substring(3, 5), 16);
@@ -500,7 +501,7 @@ public enum CssColorName {
         } else if (hex.length() == 7 || hex.length() == 4) {
             return 1.0F;
         }
-        throw new IllegalArgumentException("Invalid hex value. A valid hex value is #FFFFFF80");
+        throw new InvalidValueException("Invalid hex value. A valid hex value is #FFFFFF80");
     }
 
 }

@@ -112,11 +112,50 @@ public enum Task {
      * To execute afterSetURI method in the client if it is available
      */
     AFTER_SET_URI,
-    
+
     /**
      * To execute history.pushState in the client if it is available
      */
-    SET_URI;
+    SET_URI,
+
+    /**
+     * To set localStorage item. LS stands for localStorage
+     */
+    SET_LS_ITEM,
+
+    /**
+     * To set localStorage token item. only one token can be set i.e. multiple token
+     * entries are not allowed. It should always replace the same. It should always
+     * use the same key. LS stands for localStorage
+     */
+    SET_LS_TOKEN,
+
+    /**
+     * To get localStorage item. LS stands for localStorage
+     */
+    GET_LS_ITEM,
+
+    /**
+     * To remove localStorage item. LS stands for localStorage
+     */
+    REMOVE_LS_ITEM,
+
+    /**
+     * To remove localStorage token item. only one token can be set so there will be
+     * only one entry for token and the key will always be the same. LS stands for
+     * localStorage
+     */
+    REMOVE_LS_TOKEN,
+
+    /**
+     * To remove localStorage item. LS stands for localStorage
+     */
+    REMOVE_AND_GET_LS_ITEM,
+
+    /**
+     * To clear localStorage. LS stands for localStorage
+     */
+    CLEAR_LS;
 
     private final String shortName;
 
@@ -213,14 +252,15 @@ public enum Task {
         // 2 for opening + closing curly brace
         // (Task.values().length - 1) + 2;
         // when reduced it becomes Task.values().length + 1
-        int totalLength = Task.values().length + 1;
-        for (final Task task : Task.values()) {
+        final Task[] allTasks = Task.values();
+        int totalLength = allTasks.length + 1;
+        for (final Task task : allTasks) {
             totalLength += task.jsNameValue.length();
         }
 
         final StringBuilder builder = new StringBuilder(totalLength);
         builder.append('{');
-        for (final Task task : Task.values()) {
+        for (final Task task : allTasks) {
             builder.append(task.jsNameValue).append(',');
         }
 

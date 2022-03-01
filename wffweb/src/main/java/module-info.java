@@ -4,6 +4,7 @@ module com.webfirmframework.wffweb {
     requires java.logging;
 
     exports com.webfirmframework.wffweb;
+    exports com.webfirmframework.wffweb.common;
     exports com.webfirmframework.wffweb.clone;
     exports com.webfirmframework.wffweb.concurrent;
     exports com.webfirmframework.wffweb.css;
