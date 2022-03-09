@@ -188,7 +188,7 @@ window.wffAsync = new function() {
 	};
 
 };
-
+wffGlobal.frz(window.wffAsync, false);
 // sample usage
 //
 // wffAsync.serverMethod('methodName', {'key1':'hi'}).invoke(function(obj) {
