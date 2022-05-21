@@ -73,7 +73,7 @@ public class WhenURIUseCaseTest {
 
         StringBuilder controlFlow = new StringBuilder();
 
-        AbstractHtml div1 = new Div(null).whenURI((uri) -> uri.startsWith(initialUri), () -> {
+        AbstractHtml div1 = new Div(null).whenURI((uriEvent) -> uriEvent.uriAfter().startsWith(initialUri), () -> {
 
             controlFlow.append("div1.whenURI\n");
 
@@ -99,7 +99,7 @@ public class WhenURIUseCaseTest {
 
         StringBuilder controlFlow = new StringBuilder();
 
-        AbstractHtml div1 = new Div(null).whenURI(uri -> uri.startsWith(initialUri), (event) -> {
+        AbstractHtml div1 = new Div(null).whenURI(uriEvent -> uriEvent.uriAfter().startsWith(initialUri), (event) -> {
 
             controlFlow.append("div1.whenURI\n");
 
@@ -127,14 +127,14 @@ public class WhenURIUseCaseTest {
         StringBuilder controlFlow = new StringBuilder();
         
         AbstractHtml div3 = new Div(null, new Name("div3-" + counter.incrementAndGet()));
-        div3.whenURI(uri -> uri.startsWith(uri111), () -> {
+        div3.whenURI(uriEvent -> uriEvent.uriAfter().startsWith(uri111), () -> {
 
             controlFlow.append("div3.whenURI1+");
 
             return new AbstractHtml[] {new NoTag(null, "somecontent1 uri111")};
         }).currentAs();
         
-        div3.whenURI(uri -> uri.startsWith(uri112), () -> {
+        div3.whenURI(uriEvent -> uriEvent.uriAfter().startsWith(uri112), () -> {
 
             controlFlow.append("div3.whenURI2+");
 
@@ -142,7 +142,7 @@ public class WhenURIUseCaseTest {
         }).currentAs();
         
         
-        AbstractHtml div2 = new Div(null, new Name("div2-" + counter.incrementAndGet())).whenURI(uri -> uri.startsWith(uri11), () -> {
+        AbstractHtml div2 = new Div(null, new Name("div2-" + counter.incrementAndGet())).whenURI(uriEvent -> uriEvent.uriAfter().startsWith(uri11), () -> {
 
             controlFlow.append("div2.whenURI+");
 
@@ -150,7 +150,7 @@ public class WhenURIUseCaseTest {
         }).currentAs();
         
         
-        AbstractHtml div1 = new Div(null, new Name("div1-" + counter.incrementAndGet())).whenURI(uri -> uri.startsWith(uri1), () -> {
+        AbstractHtml div1 = new Div(null, new Name("div1-" + counter.incrementAndGet())).whenURI(uriEvent -> uriEvent.uriAfter().startsWith(uri1), () -> {
 
             controlFlow.append("div1.whenURI+");
 
@@ -241,5 +241,41 @@ public class WhenURIUseCaseTest {
             } 
         }
        
+    }
+    
+    @Test
+    public void testUsage4() {
+
+        StringBuilder controlFlow = new StringBuilder();
+        
+        AbstractHtml someWrapper = new Div(null).give(dv -> {
+            AbstractHtml div1 = new Div(dv).whenURI(uriEvent -> uriEvent.uriAfter().startsWith("unmatched"), event -> {
+
+                controlFlow.append("success.whenURI\n");
+
+                event.sourceTag().addInnerHtmls(new AbstractHtml[] { new NoTag(null, "somecontent1") });
+            }, event -> {
+
+                controlFlow.append("fail.whenURI\n");
+
+                event.sourceTag().addInnerHtmls(new AbstractHtml[] { new NoTag(null, "somecontent2") });
+            }).currentAs();
+            
+        });
+
+        
+
+        mainDiv.appendChild(someWrapper);
+        assertEquals("fail.whenURI\n", controlFlow.toString());
+//        assertEquals("<div data-wff-id=\"S3\">somecontent2</div>", div1.toBigHtmlString());
+
+        browserPage.setURI(uri1);
+
+        assertEquals("fail.whenURI\nfail.whenURI\n", controlFlow.toString());
+//        assertEquals("<div data-wff-id=\"S3\">somecontent2</div>", div1.toBigHtmlString());
+        
+        browserPage.setURI("changeduri");
+        assertEquals("fail.whenURI\nfail.whenURI\nfail.whenURI\n", controlFlow.toString());
+
     }
 }

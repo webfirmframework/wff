@@ -2770,17 +2770,17 @@ public class AbstractHtmlTest {
 
         StringBuilder controlFlow = new StringBuilder();
 
-        AbstractHtml div1 = new Div(null).whenURI((uri) -> uri.startsWith(uri1), () -> {
+        AbstractHtml div1 = new Div(null).whenURI((uriEvent) -> uriEvent.uriAfter().startsWith(uri1), () -> {
 
             controlFlow.append("div1.whenURI\n");
 
-            AbstractHtml span = new Span(null).whenURI((uri) -> uri.startsWith(uri11), () -> {
+            AbstractHtml span = new Span(null).whenURI((uriEvent) -> uriEvent.uriAfter().startsWith(uri11), () -> {
 
                 controlFlow.append("span.whenURI\n");
 
                 AbstractHtml pParent = new CustomTag("p-parent", null).give(custom -> {
                     controlFlow.append("pParent.give\n");
-                    AbstractHtml p = new P(custom).whenURI((uri) -> uri.startsWith(uri111), () -> {
+                    AbstractHtml p = new P(custom).whenURI((uriEvent) -> uriEvent.uriAfter().startsWith(uri111), () -> {
 
                         controlFlow.append("p.whenURI\n");
 
@@ -2866,17 +2866,17 @@ public class AbstractHtmlTest {
 
         StringBuilder controlFlow = new StringBuilder();
 
-        AbstractHtml div1 = new Div(null).whenURI((uri) -> uri.startsWith(uri1), (event) -> {
+        AbstractHtml div1 = new Div(null).whenURI((uriEvent) -> uriEvent.uriAfter().startsWith(uri1), (event) -> {
 
             controlFlow.append("div1.whenURI\n");
 
-            AbstractHtml span = new Span(null).whenURI((uri) -> uri.startsWith(uri11), (event1) -> {
+            AbstractHtml span = new Span(null).whenURI((uriEvent) -> uriEvent.uriAfter().startsWith(uri11), (event1) -> {
 
                 controlFlow.append("span.whenURI\n");
 
                 AbstractHtml pParent = new CustomTag("p-parent", null).give(custom -> {
                     controlFlow.append("pParent.give\n");
-                    AbstractHtml p = new P(custom).whenURI((uri) -> uri.startsWith(uri111), (event2) -> {
+                    AbstractHtml p = new P(custom).whenURI((uriEvent) -> uriEvent.uriAfter().startsWith(uri111), (event2) -> {
 
                         controlFlow.append("p.whenURI\n");
 

@@ -15,5 +15,7 @@
  */
 package com.webfirmframework.wffweb.tag.html;
 
-public record TagEvent(AbstractHtml sourceTag, String uri) {
+import com.webfirmframework.wffweb.common.URIEvent;
+
+public record TagEvent(AbstractHtml sourceTag, URIEvent uriEvent) {
 }

@@ -15,8 +15,6 @@
  */
 package com.webfirmframework.wffweb.common;
 
-import com.webfirmframework.wffweb.common.URIEventInitiator;
-
 /**
  * @since 12.0.0-beta.5
  */

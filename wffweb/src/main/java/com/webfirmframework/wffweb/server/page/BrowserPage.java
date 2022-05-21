@@ -200,7 +200,7 @@ public abstract class BrowserPage implements Serializable {
 
     private final Set<Reference<AbstractHtml>> tagsForURIChange = ConcurrentHashMap.newKeySet(1);
 
-    private volatile String uri;
+    private volatile URIEvent uriEvent;
 
     private volatile Reference<BrowserPageSessionImpl> sessionRef;
 
@@ -813,7 +813,7 @@ public abstract class BrowserPage implements Serializable {
                     final ServerMethod serverMethod = eventAttr.getServerMethod();
 
                     final ServerMethod.Event event = new ServerMethod.Event(wffBMObject, methodTag, attributeByName,
-                            null, eventAttr.getServerSideData(), uri);
+                            null, eventAttr.getServerSideData(), uriEvent.uriAfter());
 
                     final WffBMObject returnedObject;
 
@@ -929,7 +929,7 @@ public abstract class BrowserPage implements Serializable {
                     // java memory
                     // model
                     returnedObject = serverMethod.serverMethod().invoke(new ServerMethod.Event(wffBMObject, null, null,
-                            methodName, serverMethod.serverSideData(), uri));
+                            methodName, serverMethod.serverSideData(), uriEvent.uriAfter()));
                 }
 
             } catch (final Exception e) {
@@ -2770,29 +2770,26 @@ public abstract class BrowserPage implements Serializable {
             if (tag != null) {
                 tagsForURIChange.add(new TagWeakReference(tag));
             }
-            return uri;
+            return uriEvent;
         }, ACCESS_OBJECT);
     }
 
     /**
      *
      * @param updateClientURI
-     * @param uriBefore
-     * @param uriAfter        this is the current uri
-     * @param replace
+     * @param uriEvent
      * @since 12.0.0-beta.1
      * @since 12.0.0-beta.5 replace param added
      */
-    private void changeInnerHtmlsOnTagsForURIChange(final boolean updateClientURI, final String uriBefore,
-            final String uriAfter, final boolean replace) {
+    private void changeInnerHtmlsOnTagsForURIChange(final boolean updateClientURI,  final URIEvent uriEvent) {
 
         final boolean setURIAndAfterSetURI[] = { false, false };
         try {
             TagUtil.runAtomically(rootTag, () -> {
-                uri = uriAfter;
+                this.uriEvent = uriEvent;
 
                 if (updateClientURI) {
-                    invokeSetURIAtClient(uriBefore, uriAfter, replace);
+                    invokeSetURIAtClient(uriEvent.uriBefore(), uriEvent.uriAfter(), uriEvent.replace());
                     setURIAndAfterSetURI[0] = true;
                 }
 
@@ -2813,7 +2810,7 @@ public abstract class BrowserPage implements Serializable {
                 for (final Reference<AbstractHtml> tagRef : initialList) {
                     final AbstractHtml tag = tagRef.get();
                     if (tag != null) {
-                        final boolean sharedObjectsEqual = TagUtil.changeInnerHtmlsForURIChange(tag, uriAfter,
+                        final boolean sharedObjectsEqual = TagUtil.changeInnerHtmlsForURIChange(tag, uriEvent,
                                 rootTag.getSharedObject(), ACCESS_OBJECT);
                         if (!sharedObjectsEqual) {
                             tagsForURIChange.remove(tagRef);
@@ -2832,7 +2829,7 @@ public abstract class BrowserPage implements Serializable {
         } finally {
             if (updateClientURI) {
                 if (!setURIAndAfterSetURI[0]) {
-                    invokeSetURIAtClient(uriBefore, uriAfter, replace);
+                    invokeSetURIAtClient(uriEvent.uriBefore(), uriEvent.uriAfter(), uriEvent.replace());
                 }
                 if (!setURIAndAfterSetURI[1]) {
                     invokeAfterSetURIAtClient();
@@ -2853,16 +2850,19 @@ public abstract class BrowserPage implements Serializable {
     private void setURI(final boolean updateClientURI, final String uri, final URIEventInitiator initiator,
             final boolean replace) {
 
-        final String uriBefore = this.uri;
-        if (uriBefore == null || !uriBefore.equals(uri)) {
+
+        final URIEvent uriEvent = this.uriEvent;
+        final String lastURI = uriEvent != null ? uriEvent.uriAfter() : null;
+        if (lastURI == null || !lastURI.equals(uri)) {
             if (uri != null) {
-                beforeURIChange(new URIEvent(uriBefore, uri, initiator, replace));
+                final URIEvent event = new URIEvent(lastURI, uri, initiator, replace);
+                beforeURIChange(event);
                 if (rootTag != null) {
-                    changeInnerHtmlsOnTagsForURIChange(updateClientURI, uriBefore, uri, replace);
+                    changeInnerHtmlsOnTagsForURIChange(updateClientURI, event);
                 } else {
-                    this.uri = uri;
+                    this.uriEvent = event;
                 }
-                afterURIChange(new URIEvent(uriBefore, uri, initiator, replace));
+                afterURIChange(event);
             }
         }
     }
@@ -2943,7 +2943,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 12.0.0-beta.1
      */
     public final String getURI() {
-        return uri;
+        return uriEvent.uriAfter();
     }
 
     /**
