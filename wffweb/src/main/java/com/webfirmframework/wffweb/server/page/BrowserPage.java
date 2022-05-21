@@ -55,6 +55,7 @@ import com.webfirmframework.wffweb.NotRenderedException;
 import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.PushFailedException;
 import com.webfirmframework.wffweb.WffRuntimeException;
+import com.webfirmframework.wffweb.common.URIEvent;
 import com.webfirmframework.wffweb.common.URIEventInitiator;
 import com.webfirmframework.wffweb.internal.security.object.BrowserPageSecurity;
 import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
@@ -1014,7 +1015,7 @@ public abstract class BrowserPage implements Serializable {
                                         final URIEventInitiator eventInitiator = URIEventInitiator
                                                 .get(nm.getValues()[0][0]);
                                         final String urlPath = new String(nm.getValues()[1], StandardCharsets.UTF_8);
-                                        setURI(false, urlPath, eventInitiator);
+                                        setURI(false, urlPath, eventInitiator, false);
                                     } else if (nm.getName()[0] == Task.SET_LS_TOKEN.getValueByte()) {
                                         final WffBMArray bmArray = new WffBMArray(nm.getValues()[0]);
                                         for (final Object each : bmArray) {
@@ -1058,8 +1059,9 @@ public abstract class BrowserPage implements Serializable {
                         final NameValue pathnameNV = nameValues.get(1);
                         final String urlPath = new String(pathnameNV.getName(), StandardCharsets.UTF_8);
                         final URIEventInitiator eventInitiator = URIEventInitiator.get(pathnameNV.getValues()[0][0]);
+                        final boolean replace = pathnameNV.getValues()[0][1] == 1;
                         synchronized (this) {
-                            setURI(false, urlPath, eventInitiator);
+                            setURI(false, urlPath, eventInitiator, replace);
                         }
 
                         String callbackFunId = null;
@@ -1283,14 +1285,15 @@ public abstract class BrowserPage implements Serializable {
         }
     }
 
-    private void invokeSetURIAtClient(final String uriBefore, final String uriAfter) {
+    private void invokeSetURIAtClient(final String uriBefore, final String uriAfter, final boolean replace) {
 
         final WffBMObject event = new WffBMObject();
-        // ua for uriAfter, ub for uriBefore, o for origin
+        // ua for uriAfter, ub for uriBefore, o for origin, r for replace
         event.put("ub", uriBefore != null ? BMValueType.STRING : BMValueType.NULL, uriBefore);
         event.put("ua", uriAfter != null ? BMValueType.STRING : BMValueType.NULL, uriAfter);
         // S for server
         event.put("o", BMValueType.STRING, "S");
+        event.put("r", BMValueType.BOOLEAN, replace);
         final NameValue taskNameValue = Task.SET_URI.getTaskNameValue(event.buildBytes(true));
         push(taskNameValue);
         if (holdPush.get() == 0) {
@@ -2776,10 +2779,12 @@ public abstract class BrowserPage implements Serializable {
      * @param updateClientURI
      * @param uriBefore
      * @param uriAfter        this is the current uri
+     * @param replace
      * @since 12.0.0-beta.1
+     * @since 12.0.0-beta.5 replace param added
      */
     private void changeInnerHtmlsOnTagsForURIChange(final boolean updateClientURI, final String uriBefore,
-            final String uriAfter) {
+            final String uriAfter, final boolean replace) {
 
         final boolean setURIAndAfterSetURI[] = { false, false };
         try {
@@ -2787,7 +2792,7 @@ public abstract class BrowserPage implements Serializable {
                 uri = uriAfter;
 
                 if (updateClientURI) {
-                    invokeSetURIAtClient(uriBefore, uriAfter);
+                    invokeSetURIAtClient(uriBefore, uriAfter, replace);
                     setURIAndAfterSetURI[0] = true;
                 }
 
@@ -2827,7 +2832,7 @@ public abstract class BrowserPage implements Serializable {
         } finally {
             if (updateClientURI) {
                 if (!setURIAndAfterSetURI[0]) {
-                    invokeSetURIAtClient(uriBefore, uriAfter);
+                    invokeSetURIAtClient(uriBefore, uriAfter, replace);
                 }
                 if (!setURIAndAfterSetURI[1]) {
                     invokeAfterSetURIAtClient();
@@ -2841,20 +2846,23 @@ public abstract class BrowserPage implements Serializable {
      * @param updateClientURI
      * @param uri
      * @param initiator
+     * @param replace
      * @since 12.0.0-beta.1
+     * @since 12.0.0-beta.5 replace param added
      */
-    private final void setURI(final boolean updateClientURI, final String uri, final URIEventInitiator initiator) {
+    private void setURI(final boolean updateClientURI, final String uri, final URIEventInitiator initiator,
+            final boolean replace) {
+
         final String uriBefore = this.uri;
         if (uriBefore == null || !uriBefore.equals(uri)) {
             if (uri != null) {
-                beforeURIChange(uriBefore, uri, initiator);
+                beforeURIChange(new URIEvent(uriBefore, uri, initiator, replace));
                 if (rootTag != null) {
-                    changeInnerHtmlsOnTagsForURIChange(updateClientURI, uriBefore, uri);
-                    uriChanged(uriBefore, uri);
+                    changeInnerHtmlsOnTagsForURIChange(updateClientURI, uriBefore, uri, replace);
                 } else {
                     this.uri = uri;
                 }
-                afterURIChange(uriBefore, uri, initiator);
+                afterURIChange(new URIEvent(uriBefore, uri, initiator, replace));
             }
         }
     }
@@ -2864,19 +2872,16 @@ public abstract class BrowserPage implements Serializable {
      * @since 12.0.0-beta.1
      */
     public final void setURI(final String uri) {
-        setURI(true, uri, URIEventInitiator.SERVER_CODE);
+        setURI(true, uri, URIEventInitiator.SERVER_CODE, false);
     }
 
     /**
-     * Override and use
-     *
-     * @param uriBefore
-     * @param uriAfter
-     * @since 12.0.0-beta.1
+     * @param uri
+     * @param replace true to replace the given uri in the browser history
+     * @since 12.0.0-beta.5
      */
-    @Deprecated(forRemoval = true)
-    protected void beforeURIChange(final String uriBefore, final String uriAfter) {
-
+    public final void setURI(final String uri, final boolean replace) {
+        setURI(true, uri, URIEventInitiator.SERVER_CODE, replace);
     }
 
     /**
@@ -2886,7 +2891,10 @@ public abstract class BrowserPage implements Serializable {
      * @param uriAfter
      * @param initiator
      * @since 12.0.0-beta.1
+     * @deprecated override and use {@link BrowserPage#beforeURIChange(URIEvent)}
+     *             instead of this method.
      */
+    @Deprecated(forRemoval = true)
     protected void beforeURIChange(final String uriBefore, final String uriAfter, final URIEventInitiator initiator) {
 
     }
@@ -2898,7 +2906,10 @@ public abstract class BrowserPage implements Serializable {
      * @param uriAfter
      * @param initiator
      * @since 12.0.0-beta.4
+     * @deprecated override and use {@link BrowserPage#afterURIChange(URIEvent)}
+     *             instead of this method.
      */
+    @Deprecated(forRemoval = true)
     protected void afterURIChange(final String uriBefore, final String uriAfter, final URIEventInitiator initiator) {
 
     }
@@ -2906,16 +2917,21 @@ public abstract class BrowserPage implements Serializable {
     /**
      * Override and use
      *
-     * @param uriBefore
-     * @param uriAfter
-     * @since 12.0.0-beta.1
-     * @deprecated override and use
-     *             {@link BrowserPage#afterURIChange(String, String, URIEventInitiator)}
-     *             instead of this method.
+     * @param uriEvent
+     * @since 12.0.0-beta.5
      */
-    @Deprecated(forRemoval = true)
-    protected void uriChanged(final String uriBefore, final String uriAfter) {
+    protected void beforeURIChange(final URIEvent uriEvent) {
+        beforeURIChange(uriEvent.uriBefore(), uriEvent.uriAfter(), uriEvent.initiator());
+    }
 
+    /**
+     * Override and use
+     *
+     * @param uriEvent
+     * @since 12.0.0-beta.5
+     */
+    protected void afterURIChange(final URIEvent uriEvent) {
+        afterURIChange(uriEvent.uriBefore(), uriEvent.uriAfter(), uriEvent.initiator());
     }
 
     /**
