@@ -7014,8 +7014,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                     throw new InvalidValueException("There is no existing whenURI condition at this index");
                 }
                 uriChangeContents.set(index, uriChangeContent);
-            }
-            lastURIPredicateTest = false;
+            }            
 
             final URIChangeTagSupplier uriChangeTagSupplier = sharedObject.getURIChangeTagSupplier(ACCESS_OBJECT);
             applyURIChange(uriChangeTagSupplier, true);
