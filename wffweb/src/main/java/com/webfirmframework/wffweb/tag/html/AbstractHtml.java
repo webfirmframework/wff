@@ -175,7 +175,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
     private volatile URIEvent lastURIEvent;
 
-    private volatile boolean lastURIPredicateTest;
+    private volatile Boolean lastURIPredicateTest = null;
 
     volatile long hierarchyOrder;
 
@@ -7037,7 +7037,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         try {
             uriChangeContents = null;
             lastURIEvent = null;
-            lastURIPredicateTest = false;
+            lastURIPredicateTest = null;
         } finally {
             lock.unlock();
         }
@@ -7059,7 +7059,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             if (uriChangeContents.isEmpty()) {
                 uriChangeContents = null;
                 lastURIEvent = null;
-                lastURIPredicateTest = false;
+                lastURIPredicateTest = null;
             }
 
         } finally {
@@ -7120,7 +7120,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
         AbstractHtml[] insertedHtmls = null;
         final String lastURI = lastURIEvent != null ? lastURIEvent.uriAfter() : null;
-        if (uriChangeContents != null && uriEvent != null && uriEvent.uriAfter() != null && (!lastURIPredicateTest || !uriEvent.uriAfter().equals(lastURI))) {
+        if (uriChangeContents != null && uriEvent != null && uriEvent.uriAfter() != null
+                && ((lastURIPredicateTest != null && !lastURIPredicateTest) || !uriEvent.uriAfter().equals(lastURI))) {
 
             URIChangeContent lastUriChangeContent = null;
 
@@ -7182,7 +7183,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                         }
                     }
                 }
-                
+
                 lastURIEvent = uriEvent;
             }
         }
