@@ -813,7 +813,7 @@ public abstract class BrowserPage implements Serializable {
                     final ServerMethod serverMethod = eventAttr.getServerMethod();
 
                     final ServerMethod.Event event = new ServerMethod.Event(wffBMObject, methodTag, attributeByName,
-                            null, eventAttr.getServerSideData(), uriEvent.uriAfter());
+                            null, eventAttr.getServerSideData(), uriEvent != null ? uriEvent.uriAfter() : null);
 
                     final WffBMObject returnedObject;
 
@@ -929,7 +929,7 @@ public abstract class BrowserPage implements Serializable {
                     // java memory
                     // model
                     returnedObject = serverMethod.serverMethod().invoke(new ServerMethod.Event(wffBMObject, null, null,
-                            methodName, serverMethod.serverSideData(), uriEvent.uriAfter()));
+                            methodName, serverMethod.serverSideData(), uriEvent != null ? uriEvent.uriAfter() : null));
                 }
 
             } catch (final Exception e) {
@@ -2781,7 +2781,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 12.0.0-beta.1
      * @since 12.0.0-beta.5 replace param added
      */
-    private void changeInnerHtmlsOnTagsForURIChange(final boolean updateClientURI,  final URIEvent uriEvent) {
+    private void changeInnerHtmlsOnTagsForURIChange(final boolean updateClientURI, final URIEvent uriEvent) {
 
         final boolean setURIAndAfterSetURI[] = { false, false };
         try {
@@ -2849,7 +2849,6 @@ public abstract class BrowserPage implements Serializable {
      */
     private void setURI(final boolean updateClientURI, final String uri, final URIEventInitiator initiator,
             final boolean replace) {
-
 
         final URIEvent uriEvent = this.uriEvent;
         final String lastURI = uriEvent != null ? uriEvent.uriAfter() : null;
@@ -2943,7 +2942,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 12.0.0-beta.1
      */
     public final String getURI() {
-        return uriEvent.uriAfter();
+        return uriEvent != null ? uriEvent.uriAfter() : null;
     }
 
     /**
