@@ -1,6 +1,7 @@
 package com.webfirmframework.wffweb.tag.html;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -277,5 +278,28 @@ public class WhenURIUseCaseTest {
         browserPage.setURI("changeduri");
         assertEquals("fail.whenURI\nfail.whenURI\nfail.whenURI\n", controlFlow.toString());
 
+    }
+    
+    @Test
+    public void testGetURI() {
+        
+        BrowserPage browserPage = new BrowserPage() {
+
+            @Override
+            public String webSocketUrl() {
+                // TODO Auto-generated method stub
+                return "wss://wffweb";
+            }
+
+            @Override
+            public AbstractHtml render() {
+                return new Html(null);
+            }
+
+        };
+        assertNull(browserPage.getURI());
+        browserPage.toHtmlString();
+        assertNull(browserPage.getURI());
+        
     }
 }
