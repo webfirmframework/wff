@@ -17,5 +17,21 @@ package com.webfirmframework.wffweb.tag.html;
 
 import com.webfirmframework.wffweb.common.URIEvent;
 
-public record TagEvent(AbstractHtml sourceTag, URIEvent uriEvent) {
+public record TagEvent(AbstractHtml sourceTag, String uri, URIEvent uriEvent) {
+
+    TagEvent(final AbstractHtml sourceTag, final URIEvent uriEvent) {
+        this(sourceTag, uriEvent.uriAfter(), uriEvent);
+    }
+
+    /**
+     * @return the uri
+     * @deprecated This method will be removed in the next release, use
+     *             {@link #uriEvent()} and get the {@link URIEvent#uriAfter()}, i.e.
+     *             the current uri.
+     */
+    @Deprecated(forRemoval = true, since = "12.0.0-beta.5")
+    @Override
+    public String uri() {
+        return uri;
+    }
 }

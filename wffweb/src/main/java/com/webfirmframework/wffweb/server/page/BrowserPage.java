@@ -2893,7 +2893,7 @@ public abstract class BrowserPage implements Serializable {
      * @deprecated override and use {@link BrowserPage#beforeURIChange(URIEvent)}
      *             instead of this method.
      */
-    @Deprecated(forRemoval = true)
+    @Deprecated(forRemoval = true, since = "12.0.0-beta.5")
     protected void beforeURIChange(final String uriBefore, final String uriAfter, final URIEventInitiator initiator) {
 
     }
@@ -2908,7 +2908,7 @@ public abstract class BrowserPage implements Serializable {
      * @deprecated override and use {@link BrowserPage#afterURIChange(URIEvent)}
      *             instead of this method.
      */
-    @Deprecated(forRemoval = true)
+    @Deprecated(forRemoval = true, since = "12.0.0-beta.5")
     protected void afterURIChange(final String uriBefore, final String uriAfter, final URIEventInitiator initiator) {
 
     }
