@@ -17,11 +17,7 @@ package com.webfirmframework.wffweb.tag.html;
 
 import com.webfirmframework.wffweb.common.URIEvent;
 
-public record TagEvent(AbstractHtml sourceTag, String uri, URIEvent uriEvent) {
-
-    TagEvent(final AbstractHtml sourceTag, final URIEvent uriEvent) {
-        this(sourceTag, uriEvent != null ? uriEvent.uriAfter() : null, uriEvent);
-    }
+public record TagEvent(AbstractHtml sourceTag, URIEvent uriEvent) {
 
     /**
      * @return the uri
@@ -30,8 +26,7 @@ public record TagEvent(AbstractHtml sourceTag, String uri, URIEvent uriEvent) {
      *             the current uri.
      */
     @Deprecated(forRemoval = true, since = "12.0.0-beta.5")
-    @Override
     public String uri() {
-        return uri;
+        return uriEvent.uriAfter();
     }
 }
