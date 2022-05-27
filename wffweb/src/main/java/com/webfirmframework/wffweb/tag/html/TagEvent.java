@@ -20,7 +20,7 @@ import com.webfirmframework.wffweb.common.URIEvent;
 public record TagEvent(AbstractHtml sourceTag, String uri, URIEvent uriEvent) {
 
     TagEvent(final AbstractHtml sourceTag, final URIEvent uriEvent) {
-        this(sourceTag, uriEvent.uriAfter(), uriEvent);
+        this(sourceTag, uriEvent != null ? uriEvent.uriAfter() : null, uriEvent);
     }
 
     /**
