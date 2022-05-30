@@ -33,6 +33,7 @@ import java.util.Deque;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
@@ -57,6 +58,7 @@ import com.webfirmframework.wffweb.PushFailedException;
 import com.webfirmframework.wffweb.WffRuntimeException;
 import com.webfirmframework.wffweb.common.URIEvent;
 import com.webfirmframework.wffweb.common.URIEventInitiator;
+import com.webfirmframework.wffweb.common.URIEventMask;
 import com.webfirmframework.wffweb.internal.security.object.BrowserPageSecurity;
 import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
 import com.webfirmframework.wffweb.internal.server.page.js.WffJsFile;
@@ -2854,8 +2856,11 @@ public abstract class BrowserPage implements Serializable {
         final String lastURI = uriEvent != null ? uriEvent.uriAfter() : null;
         if (lastURI == null || !lastURI.equals(uri)) {
             if (uri != null) {
-                final URIEvent event = new URIEvent(lastURI, uri, initiator, replace);
-                beforeURIChange(event);
+                URIEvent event = new URIEvent(lastURI, uri, initiator, replace);
+                final URIEventMask uriEventMask = beforeURIChange(event);
+                event = uriEventMask != null && !Objects.equals(uriEventMask.uriBefore(), lastURI)
+                        ? new URIEvent(uriEventMask.uriBefore(), uri, initiator, replace)
+                        : event;
                 if (rootTag != null) {
                     changeInnerHtmlsOnTagsForURIChange(updateClientURI, event);
                 } else {
@@ -2919,8 +2924,9 @@ public abstract class BrowserPage implements Serializable {
      * @param uriEvent
      * @since 12.0.0-beta.5
      */
-    protected void beforeURIChange(final URIEvent uriEvent) {
+    protected URIEventMask beforeURIChange(final URIEvent uriEvent) {
         beforeURIChange(uriEvent.uriBefore(), uriEvent.uriAfter(), uriEvent.initiator());
+        return null;
     }
 
     /**
