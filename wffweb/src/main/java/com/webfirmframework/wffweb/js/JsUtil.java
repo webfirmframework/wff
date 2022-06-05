@@ -364,7 +364,10 @@ public final class JsUtil {
      * @return the returned string will be striped and all lines will be replaced by
      *         {@code \n} .
      * @since 3.0.15
+     * @deprecated use {@link JsUtil#toDynamicJsString(String)} instead of this
+     *             method. It does the same job.
      */
+    @Deprecated(forRemoval = true, since = "12.0.0-beta.5")
     public static String toDynamicJs(final String s) {
 
         final int[] codePoints = strip(s.codePoints().toArray());
@@ -402,7 +405,8 @@ public final class JsUtil {
 
     /**
      * It replaces all new lines by {@code \n} so that it can be used as a dynamic
-     * JavaScript string in event attributes js function body. It is unicode aware.
+     * JavaScript string variable value in js function body of event attributes. It
+     * is unicode aware.
      *
      * @param s
      * @return the string having all lines replaced by {@code \n} .
