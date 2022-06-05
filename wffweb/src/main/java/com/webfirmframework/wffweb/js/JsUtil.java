@@ -361,7 +361,7 @@ public final class JsUtil {
      * This method is mainly for internal use.
      *
      * @param s
-     * @return the returned string will be striped and all lines will be replace by
+     * @return the returned string will be striped and all lines will be replaced by
      *         {@code \n} .
      * @since 3.0.15
      */
