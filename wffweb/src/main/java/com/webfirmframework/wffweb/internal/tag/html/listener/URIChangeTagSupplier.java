@@ -17,11 +17,12 @@ package com.webfirmframework.wffweb.internal.tag.html.listener;
 
 import java.io.Serializable;
 
+import com.webfirmframework.wffweb.common.URIEvent;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 
 @FunctionalInterface
 public interface URIChangeTagSupplier extends Serializable {
 
-    public abstract String supply(final AbstractHtml tag);
+    public abstract URIEvent supply(final AbstractHtml tag);
 
 }

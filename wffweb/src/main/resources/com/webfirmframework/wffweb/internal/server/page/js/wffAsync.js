@@ -79,7 +79,7 @@ window.wffAsync = new function() {
 	};
 
 
-	var setServerURIWithCallback = function(uri, callback, initiator) {
+	var setServerURIWithCallbackPvt = function(uri, callback, initiator, rplc) {
 
 		var taskNameValue = wffTaskUtil.getTaskNameValue(
 			wffGlobal.taskValues.TASK,
@@ -88,13 +88,14 @@ window.wffAsync = new function() {
 			'name': encoder.encode(uri),
 			'values': []
 		};
+		var rplcByt = rplc ? 1 : 0;
 		//NB: should be checked as undefined as its value could be zero
 		if (typeof initiator !== "undefined" && initiator >= 0 && initiator < wffGlobal.uriEventInitiator.size) {
-			nameValue.values.push([initiator]);
+			nameValue.values.push([initiator, rplcByt]);
 		} else {
-			nameValue.values.push([wffGlobal.uriEventInitiator.CLIENT_CODE]);
+			nameValue.values.push([wffGlobal.uriEventInitiator.CLIENT_CODE, rplcByt]);
 		}
-			
+
 		var nameValues = [taskNameValue, nameValue];
 
 		if (callback) {
@@ -105,7 +106,7 @@ window.wffAsync = new function() {
 				'name': encoder.encode(callbackFunId),
 				'values': []
 			};
-			
+
 			nameValues.push(nameValueCallbackFun);
 		}
 
@@ -113,32 +114,41 @@ window.wffAsync = new function() {
 		wffWS.send(wffBM);
 	};
 
-	this.setServerURIWithCallback = setServerURIWithCallback;
+	this.setServerURIWithCallback = function(uri, callback, initiator) {setServerURIWithCallbackPvt(uri, callback, initiator, false);};
 
-	this.setServerURI = function(uri) { setServerURIWithCallback(uri, undefined, wffGlobal.uriEventInitiator.CLIENT_CODE); };
+	this.setServerURI = function(uri) { setServerURIWithCallbackPvt(uri, undefined, wffGlobal.uriEventInitiator.CLIENT_CODE, false); };
 
 	var throwInvalidSetURIArgException = function() {
 		throw "Invalid argument found in setURI function call. " +
-		"Eg: wffAsync.setURI('/sampleuri', function(e){console.log('uri changed');}, function(e){console.log('uri changed, after server change');});, " +
-		"wffAsync.setURI('/sampleuri', function(e){console.log('uri changed');}); or " +
-		"wffAsync.setURI('/sampleuri');";
+		"Eg: wffAsync.setURI('/sampleuri', function(e){console.log('uri changed');}, function(e){console.log('uri changed, after server change');}, false);, " +
+		"wffAsync.setURI('/sampleuri', function(e){console.log('uri changed');}, function(e){console.log('uri changed, after server change');});, " +
+		"wffAsync.setURI('/sampleuri', function(e){console.log('uri changed');});, " +
+		"wffAsync.setURI('/sampleuri'); or " +
+		"wffAsync.setURI('/sampleuri', null, null, false);";
 	};
 
-	this.setURI = function(uri, onSetURI, afterSetURI) {
+	this.setURI = function(uri, onSetURI, afterSetURI, replace) {
 
-		if (typeof onSetURI !== "undefined" && typeof onSetURI !== "function") {
+		if (typeof onSetURI !== "undefined" && onSetURI !== null && typeof onSetURI !== "function") {
 			throwInvalidSetURIArgException();
 		}
-
-		if (typeof afterSetURI !== "undefined" && typeof afterSetURI !== "function") {
+		if (typeof afterSetURI !== "undefined" && afterSetURI !== null && typeof afterSetURI !== "function") {
+			throwInvalidSetURIArgException();
+		}
+		if (typeof replace !== "undefined" && replace !== null && typeof replace !== "boolean") {
 			throwInvalidSetURIArgException();
 		}
 
 		var uriBefore = window.location.pathname;
-		history.pushState({}, document.title, uri);
+		if (replace) {
+			history.replaceState({}, document.title, uri);
+		} else {
+			history.pushState({}, document.title, uri);
+		}
+
 		var uriAfter = window.location.pathname;
 		if (uriBefore !== uriAfter) {
-			var wffEvent = { uriBefore: uriBefore, uriAfter: uriAfter, origin: "client", initiator: 'clientCode' };
+			var wffEvent = { uriBefore: uriBefore, uriAfter: uriAfter, origin: "client", initiator: 'clientCode', replace: replace ? true : false };
 
 			var callbackWrapper = afterSetURI;
 
@@ -154,7 +164,6 @@ window.wffAsync = new function() {
 				var afterSetURIGlobal = wffGlobalListeners.afterSetURI;
 
 				if (afterSetURIGlobal) {
-					
 					callbackWrapper = function() {
 						if (afterSetURI) {
 							try {
@@ -169,7 +178,6 @@ window.wffAsync = new function() {
 						} catch (e) {
 							wffLog("wffGlobalListeners.afterSetURI threw exception when wffAsync.setURI is called", e);
 						}
-
 					};
 				}
 
@@ -183,12 +191,12 @@ window.wffAsync = new function() {
 				wffLog("The second argument threw exception when wffAsync.setURI is called", e);
 			}
 			//NB: should be uriAfter to be consistent with uri pattern
-			setServerURIWithCallback(uriAfter, callbackWrapper, wffGlobal.uriEventInitiator.CLIENT_CODE);
+			setServerURIWithCallbackPvt(uriAfter, callbackWrapper, wffGlobal.uriEventInitiator.CLIENT_CODE, replace);
 		}
 	};
 
 };
-
+wffGlobal.frz(window.wffAsync, false);
 // sample usage
 //
 // wffAsync.serverMethod('methodName', {'key1':'hi'}).invoke(function(obj) {

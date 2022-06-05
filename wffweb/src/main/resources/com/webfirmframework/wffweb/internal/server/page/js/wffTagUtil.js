@@ -368,3 +368,4 @@ var wffTagUtil = new function() {
 	};
 	
 };
+wffGlobal.frz(wffTagUtil, false);

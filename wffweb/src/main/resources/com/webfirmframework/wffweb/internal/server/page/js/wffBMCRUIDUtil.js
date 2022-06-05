@@ -142,3 +142,5 @@ var wffBMCRUIDUtil = new function() {
 	
 
 };
+
+wffGlobal.frz(wffBMCRUIDUtil, false);

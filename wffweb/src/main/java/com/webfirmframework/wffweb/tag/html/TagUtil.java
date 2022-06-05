@@ -28,6 +28,7 @@ import java.util.Set;
 import java.util.concurrent.locks.Lock;
 
 import com.webfirmframework.wffweb.WffSecurityException;
+import com.webfirmframework.wffweb.common.URIEvent;
 import com.webfirmframework.wffweb.internal.ObjectId;
 import com.webfirmframework.wffweb.internal.constants.IndexedClassType;
 import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
@@ -280,21 +281,21 @@ public final class TagUtil {
      * NB: only for internal use
      *
      * @param tag
-     * @param uri
+     * @param uriEvent
      * @param expectedSO
      * @param accessObject
-     * @since 12.0.0-beta.1
+     * @since 12.0.0-beta.5
      * @return true if sharedObjects are equals
      */
     @SuppressWarnings("exports")
-    public static boolean changeInnerHtmlsForURIChange(final AbstractHtml tag, final String uri,
+    public static boolean changeInnerHtmlsForURIChange(final AbstractHtml tag, final URIEvent uriEvent,
             final AbstractHtml5SharedObject expectedSO, final SecurityObject accessObject) {
 
         if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
 
-        return tag.changeInnerHtmlsForURIChange(uri, expectedSO);
+        return tag.changeInnerHtmlsForURIChange(uriEvent, expectedSO);
     }
 
 }

@@ -1,7 +1,3 @@
-/**
- * 
- */
-
 var wffClientCRUDUtil = new function() {
 
 	var encoder = wffGlobal.encoder;
@@ -474,19 +470,25 @@ var wffClientCRUDUtil = new function() {
 			jsObj.uriAfter = jsObj.ua;
 			jsObj.uriBefore = jsObj.ub;
 			jsObj.origin = jsObj.o;
+			jsObj.replace = jsObj.r;
 			delete jsObj.ua;
 			delete jsObj.ub;
 			delete jsObj.o;
+			delete jsObj.r;
 			if (jsObj.uriAfter && jsObj.uriAfter !== jsObj.uriBefore) {
 				if (jsObj.origin === 'S') {
 					jsObj.origin = 'server';
 					jsObj.initiator = 'serverCode';
-				} 
+				}
 				var vnt = {};
 				for (k in jsObj) {
 					vnt[k] = jsObj[k];
 				}
-				history.pushState({}, document.title, jsObj.uriAfter);
+				if (jsObj.replace) {
+					history.replaceState({}, document.title, jsObj.uriAfter);
+				} else {
+					history.pushState({}, document.title, jsObj.uriAfter);
+				}
 				uriChangeQ.push(vnt);
 				if (typeof wffGlobalListeners !== "undefined" && wffGlobalListeners.onSetURI && jsObj.origin === 'server') {
 					try {
@@ -499,7 +501,7 @@ var wffClientCRUDUtil = new function() {
 		} else if (taskValue == wffGlobal.taskValues.AFTER_SET_URI) {
 			if (typeof wffGlobalListeners !== "undefined" && wffGlobalListeners.afterSetURI) {
 				for (var i = 0; i < uriChangeQ.length; i++) {
-					var vnt = uriChangeQ[i];					
+					var vnt = uriChangeQ[i];
 					try {
 						wffGlobalListeners.afterSetURI(vnt);
 					} catch (e) {
@@ -850,3 +852,4 @@ var wffClientCRUDUtil = new function() {
 	};
 
 };
+wffGlobal.frz(wffClientCRUDUtil, false);

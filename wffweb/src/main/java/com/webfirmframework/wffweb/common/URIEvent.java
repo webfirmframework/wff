@@ -13,20 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.webfirmframework.wffweb.tag.html;
+package com.webfirmframework.wffweb.common;
 
-import com.webfirmframework.wffweb.common.URIEvent;
-
-public record TagEvent(AbstractHtml sourceTag, URIEvent uriEvent) {
-
-    /**
-     * @return the uri
-     * @deprecated This method will be removed in the next release, use
-     *             {@link #uriEvent()} and get the {@link URIEvent#uriAfter()}, i.e.
-     *             the current uri.
-     */
-    @Deprecated(forRemoval = true, since = "12.0.0-beta.5")
-    public String uri() {
-        return uriEvent.uriAfter();
-    }
+/**
+ * @since 12.0.0-beta.5
+ */
+public record URIEvent(String uriBefore, String uriAfter, URIEventInitiator initiator, boolean replace) {
 }

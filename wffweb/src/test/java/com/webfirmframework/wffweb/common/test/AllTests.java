@@ -153,6 +153,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeRegistryTest
 import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeUtilTest;
 import com.webfirmframework.wffweb.tag.html.attribute.global.ClassAttributeTest;
 import com.webfirmframework.wffweb.tag.html.attribute.global.StyleTest;
+import com.webfirmframework.wffweb.tag.html.attributewff.ImmutableCustomAttributeTest;
 import com.webfirmframework.wffweb.tag.html.core.TagRegistryTest;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.FormTest;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.InputTest;
@@ -220,7 +221,8 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObjectArrayTest;
         StringBuilderUtilTest.class, SecurityClassConstantsTest.class, ReentrantStampedLockTest.class,
         UnicodeStringTest.class, ExternalDriveByteArrayQueueTest.class, ExternalDriveClientTasksWrapperDequeTest.class,
         ExternalDriveClientTasksWrapperQueueTest.class, AttributeIdGeneratorTest.class,
-        SharedObjectIdGeneratorTest.class, WhenURIUseCaseTest.class, URIUtilTest.class, EventInitiatorTest.class })
+        SharedObjectIdGeneratorTest.class, WhenURIUseCaseTest.class, URIUtilTest.class, EventInitiatorTest.class,
+        ImmutableCustomAttributeTest.class })
 public class AllTests {
 
 }
