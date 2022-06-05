@@ -177,6 +177,7 @@ public enum WffJsFile {
             functionNameList.add("invokeAsyncWithPreFilterFunPD");
             functionNameList.add("extractValuesFromValueBytes");
             functionNameList.add("getDoubleFromOptimizedBytes");
+            functionNameList.add("setServerURIWithCallbackPvt");
             functionNameList.add("parseWffBinaryMessageBytes");
             functionNameList.add("invokeAsyncWithFilterFunPD");
             functionNameList.add("getAttrUpdatedWffBMBytes");
@@ -325,6 +326,7 @@ public enum WffJsFile {
             variableNameList.add("tgNamNdx");
             variableNameList.add("allTags");
             variableNameList.add("allTags");
+            variableNameList.add("rplcByt");
             variableNameList.add("wffIds");
             variableNameList.add("wffId");
             variableNameList.add("intId");

@@ -52,6 +52,7 @@ import com.webfirmframework.wffweb.NoParentException;
 import com.webfirmframework.wffweb.WffRuntimeException;
 import com.webfirmframework.wffweb.WffSecurityException;
 import com.webfirmframework.wffweb.clone.CloneUtil;
+import com.webfirmframework.wffweb.common.URIEvent;
 import com.webfirmframework.wffweb.internal.InternalId;
 import com.webfirmframework.wffweb.internal.constants.CommonConstants;
 import com.webfirmframework.wffweb.internal.constants.IndexedClassType;
@@ -172,9 +173,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
     private final InternalId internalId = new InternalId();
 
-    private volatile String lastURI;
+    private volatile URIEvent lastURIEvent;
 
-    private volatile boolean lastURIPredicateTest;
+    private volatile Boolean lastURIPredicateTest = null;
 
     volatile long hierarchyOrder;
 
@@ -213,7 +214,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         SUCCESS_CONSUMER_FAIL_CONSUMER;
     }
 
-    private static record URIChangeContent(Predicate<String> uriPredicate, Supplier<AbstractHtml[]> successTags,
+    private static record URIChangeContent(Predicate<URIEvent> uriEventPredicate, Supplier<AbstractHtml[]> successTags,
             Supplier<AbstractHtml[]> failTags, Consumer<TagEvent> successConsumer, Consumer<TagEvent> failConsumer,
             WhenURIMethodType methodType) implements Serializable {
     }
@@ -1883,16 +1884,17 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      */
     private final void applyURIChange(final URIChangeTagSupplier uriChangeTagSupplier, final boolean updateClient) {
 
-        final String currentURI = uriChangeTagSupplier != null ? uriChangeTagSupplier.supply(null) : null;
+        final URIEvent currentURIEvent = uriChangeTagSupplier != null ? uriChangeTagSupplier.supply(null) : null;
 
-        if (currentURI != null) {
+        if (currentURIEvent != null) {
             final Deque<List<AbstractHtml>> childrenStack = new ArrayDeque<>();
             childrenStack.push(List.of(this));
             List<AbstractHtml> children;
             while ((children = childrenStack.poll()) != null) {
 
                 for (final AbstractHtml eachChild : children) {
-                    final AbstractHtml[] innerHtmls = eachChild.changeInnerHtmlsForURIChange(currentURI, updateClient);
+                    final AbstractHtml[] innerHtmls = eachChild.changeInnerHtmlsForURIChange(currentURIEvent,
+                            updateClient);
                     if (innerHtmls != null && innerHtmls.length > 0) {
                         childrenStack.push(List.of(innerHtmls));
                     } else if (eachChild.children != null && eachChild.children.size() > 0) {
@@ -6705,14 +6707,15 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * multiple times to set multiple actions,
      * {@link AbstractHtml#removeURIChangeAction(int)} may be used to remove each
      * action at the given index. If multiple actions are added by this method, only
-     * the first {@code uriPredicate} test passed action will be performed on uri
-     * change. The main intention of this method is to set children tags for this
-     * tag when the given {@code uriPredicate} test passes on URI change. <br>
+     * the first {@code uriEventPredicate} test passed action will be performed on
+     * uri change. The main intention of this method is to set children tags for
+     * this tag when the given {@code uriEventPredicate} test passes on URI change.
+     * <br>
      * Note: This method uses {@code null} for {@code failTagsSupplier}.
      *
-     * @param uriPredicate        the predicate object to test, the argument of the
-     *                            test method is the changed uri, if the test method
-     *                            returns true then the tags given by
+     * @param uriEventPredicate   the predicate object to test, the argument of the
+     *                            test method is the changed uri details, if the
+     *                            test method returns true then the tags given by
      *                            {@code successTagsSupplier} will be added as inner
      *                            html to this tag. If test returns false, the tags
      *                            given by {@code failTagsSupplier} will be added as
@@ -6720,7 +6723,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      *                            {@code failTagsSupplier} is null the existing
      *                            children will be removed from this tag.
      * @param successTagsSupplier the supplier object for child tags if
-     *                            {@code uriPredicate} test returns true. If
+     *                            {@code uriEventPredicate} test returns true. If
      *                            {@code successTagsSupplier.get()} method returns
      *                            null, no action will be done on the tag.
      *
@@ -6728,9 +6731,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * @since 12.0.0-beta.1
      */
     @Override
-    public URIStateSwitch whenURI(final Predicate<String> uriPredicate,
+    public URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate,
             final Supplier<AbstractHtml[]> successTagsSupplier) {
-        return whenURI(uriPredicate, successTagsSupplier, (Supplier<AbstractHtml[]>) null, -1);
+        return whenURI(uriEventPredicate, successTagsSupplier, (Supplier<AbstractHtml[]>) null, -1);
     }
 
     /**
@@ -6746,14 +6749,15 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * multiple times to set multiple actions,
      * {@link AbstractHtml#removeURIChangeAction(int)} may be used to remove each
      * action at the given index. If multiple actions are added by this method, only
-     * the first {@code uriPredicate} test passed action will be performed on uri
-     * change. The main intention of this method is to set children tags for this
-     * tag when the given {@code uriPredicate} test passes on URI change. <br>
+     * the first {@code uriEventPredicate} test passed action will be performed on
+     * uri change. The main intention of this method is to set children tags for
+     * this tag when the given {@code uriEventPredicate} test passes on URI change.
+     * <br>
      * Note: This method uses {@code null} for {@code failTagsSupplier}.
      *
-     * @param uriPredicate        the predicate object to test, the argument of the
-     *                            test method is the changed uri, if the test method
-     *                            returns true then the tags given by
+     * @param uriEventPredicate   the predicate object to test, the argument of the
+     *                            test method is the changed uri details, if the
+     *                            test method returns true then the tags given by
      *                            {@code successTagsSupplier} will be added as inner
      *                            html to this tag. If test returns false, the tags
      *                            given by {@code failTagsSupplier} will be added as
@@ -6761,7 +6765,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      *                            {@code failTagsSupplier} is null the existing
      *                            children will be removed from this tag.
      * @param successTagsSupplier the supplier object for child tags if
-     *                            {@code uriPredicate} test returns true. If
+     *                            {@code uriEventPredicate} test returns true. If
      *                            {@code successTagsSupplier.get()} method returns
      *                            null, no action will be done on the tag.
      *
@@ -6773,9 +6777,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * @since 12.0.0-beta.1
      */
     @Override
-    public URIStateSwitch whenURI(final Predicate<String> uriPredicate,
+    public URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate,
             final Supplier<AbstractHtml[]> successTagsSupplier, final int index) {
-        return whenURI(uriPredicate, successTagsSupplier, (Supplier<AbstractHtml[]>) null, index);
+        return whenURI(uriEventPredicate, successTagsSupplier, (Supplier<AbstractHtml[]>) null, index);
     }
 
     /**
@@ -6791,13 +6795,13 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * multiple times to set multiple actions,
      * {@link AbstractHtml#removeURIChangeAction(int)} may be used to remove each
      * action at the given index. If multiple actions are added by this method, only
-     * the first {@code uriPredicate} test passed action will be performed on uri
-     * change. The main intention of this method is to set children tags for this
-     * tag when the given {@code uriPredicate} test passes on URI change.
+     * the first {@code uriEventPredicate} test passed action will be performed on
+     * uri change. The main intention of this method is to set children tags for
+     * this tag when the given {@code uriEventPredicate} test passes on URI change.
      *
-     * @param uriPredicate        the predicate object to test, the argument of the
-     *                            test method is the changed uri, if the test method
-     *                            returns true then the tags given by
+     * @param uriEventPredicate   the predicate object to test, the argument of the
+     *                            test method is the changed uri details, if the
+     *                            test method returns true then the tags given by
      *                            {@code successTagsSupplier} will be added as inner
      *                            html to this tag. If test returns false, the tags
      *                            given by {@code failTagsSupplier} will be added as
@@ -6805,11 +6809,11 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      *                            {@code failTagsSupplier} is null the existing
      *                            children will be removed from this tag.
      * @param successTagsSupplier the supplier object for child tags if
-     *                            {@code uriPredicate} test returns true. If
+     *                            {@code uriEventPredicate} test returns true. If
      *                            {@code successTagsSupplier.get()} method returns
      *                            null, no action will be done on the tag.
      * @param failTagsSupplier    the supplier object for child tags if
-     *                            {@code uriPredicate} test returns false. If
+     *                            {@code uriEventPredicate} test returns false. If
      *                            {@code failTagsSupplier.get()} * method returns
      *                            null, no action will be done on the tag.
      *
@@ -6817,9 +6821,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * @since 12.0.0-beta.1
      */
     @Override
-    public URIStateSwitch whenURI(final Predicate<String> uriPredicate,
+    public URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate,
             final Supplier<AbstractHtml[]> successTagsSupplier, final Supplier<AbstractHtml[]> failTagsSupplier) {
-        return whenURI(uriPredicate, successTagsSupplier, failTagsSupplier, -1);
+        return whenURI(uriEventPredicate, successTagsSupplier, failTagsSupplier, -1);
     }
 
     /**
@@ -6835,13 +6839,13 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * multiple times to set multiple actions,
      * {@link AbstractHtml#removeURIChangeAction(int)} may be used to remove each
      * action at the given index. If multiple actions are added by this method, only
-     * the first {@code uriPredicate} test passed action will be performed on uri
-     * change. The main intention of this method is to set children tags for this
-     * tag when the given {@code uriPredicate} test passes on URI change.
+     * the first {@code uriEventPredicate} test passed action will be performed on
+     * uri change. The main intention of this method is to set children tags for
+     * this tag when the given {@code uriEventPredicate} test passes on URI change.
      *
-     * @param uriPredicate        the predicate object to test, the argument of the
-     *                            test method is the changed uri, if the test method
-     *                            returns true then the tags given by
+     * @param uriEventPredicate   the predicate object to test, the argument of the
+     *                            test method is the changed uri details, if the
+     *                            test method returns true then the tags given by
      *                            {@code successTagsSupplier} will be added as inner
      *                            html to this tag. If test returns false, the tags
      *                            given by {@code failTagsSupplier} will be added as
@@ -6849,11 +6853,11 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      *                            {@code failTagsSupplier} is null the existing
      *                            children will be removed from this tag.
      * @param successTagsSupplier the supplier object for child tags if
-     *                            {@code uriPredicate} test returns true. If
+     *                            {@code uriEventPredicate} test returns true. If
      *                            {@code successTagsSupplier.get()} method returns
      *                            null, no action will be done on the tag.
      * @param failTagsSupplier    the supplier object for child tags if
-     *                            {@code uriPredicate} test returns false. If
+     *                            {@code uriEventPredicate} test returns false. If
      *                            {@code failTagsSupplier.get()} * method returns
      *                            null, no action will be done on the tag.
      * @param index               the index to replace the existing action with
@@ -6863,123 +6867,126 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * @since 12.0.0-beta.1
      */
     @Override
-    public URIStateSwitch whenURI(final Predicate<String> uriPredicate,
+    public URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate,
             final Supplier<AbstractHtml[]> successTagsSupplier, final Supplier<AbstractHtml[]> failTagsSupplier,
             final int index) {
 
-        Objects.requireNonNull(uriPredicate, "uriPredicate cannot be null in whenURI method");
+        Objects.requireNonNull(uriEventPredicate, "uriEventPredicate cannot be null in whenURI method");
         Objects.requireNonNull(successTagsSupplier, "successTagsSupplier cannot be null in whenURI method");
-        return whenURI(uriPredicate, successTagsSupplier, failTagsSupplier,
+        return whenURI(uriEventPredicate, successTagsSupplier, failTagsSupplier,
                 WhenURIMethodType.SUCCESS_SUPPLIER_FAIL_SUPPLIER, null, null, index);
     }
 
     @Override
-    public URIStateSwitch whenURI(final Predicate<String> uriPredicate,
+    public URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate,
             final Supplier<AbstractHtml[]> successTagsSupplier, final Consumer<TagEvent> failConsumer,
             final int index) {
 
-        Objects.requireNonNull(uriPredicate, "uriPredicate cannot be null in whenURI method");
+        Objects.requireNonNull(uriEventPredicate, "uriEventPredicate cannot be null in whenURI method");
         Objects.requireNonNull(successTagsSupplier, "successTagsSupplier cannot be null in whenURI method");
-        return whenURI(uriPredicate, successTagsSupplier, null, WhenURIMethodType.SUCCESS_SUPPLIER_FAIL_CONSUMER, null,
-                failConsumer, index);
+        return whenURI(uriEventPredicate, successTagsSupplier, null, WhenURIMethodType.SUCCESS_SUPPLIER_FAIL_CONSUMER,
+                null, failConsumer, index);
     }
 
     @Override
-    public URIStateSwitch whenURI(final Predicate<String> uriPredicate,
+    public URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate,
             final Supplier<AbstractHtml[]> successTagsSupplier, final Consumer<TagEvent> failConsumer) {
 
-        Objects.requireNonNull(uriPredicate, "uriPredicate cannot be null in whenURI method");
+        Objects.requireNonNull(uriEventPredicate, "uriEventPredicate cannot be null in whenURI method");
         Objects.requireNonNull(successTagsSupplier, "successTagsSupplier cannot be null in whenURI method");
-        return whenURI(uriPredicate, successTagsSupplier, null, WhenURIMethodType.SUCCESS_SUPPLIER_FAIL_CONSUMER, null,
-                failConsumer, -1);
+        return whenURI(uriEventPredicate, successTagsSupplier, null, WhenURIMethodType.SUCCESS_SUPPLIER_FAIL_CONSUMER,
+                null, failConsumer, -1);
     }
 
     @Override
-    public URIStateSwitch whenURI(final Predicate<String> uriPredicate, final Consumer<TagEvent> successConsumer,
+    public URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate, final Consumer<TagEvent> successConsumer,
             final Supplier<AbstractHtml[]> failTagsSupplier, final int index) {
 
-        Objects.requireNonNull(uriPredicate, "uriPredicate cannot be null in whenURI method");
+        Objects.requireNonNull(uriEventPredicate, "uriEventPredicate cannot be null in whenURI method");
         Objects.requireNonNull(successConsumer, "successConsumer cannot be null in whenURI method");
-        return whenURI(uriPredicate, null, failTagsSupplier, WhenURIMethodType.SUCCESS_CONSUMER_FAIL_SUPPLIER,
+        return whenURI(uriEventPredicate, null, failTagsSupplier, WhenURIMethodType.SUCCESS_CONSUMER_FAIL_SUPPLIER,
                 successConsumer, null, index);
     }
 
     @Override
-    public URIStateSwitch whenURI(final Predicate<String> uriPredicate, final Consumer<TagEvent> successConsumer,
+    public URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate, final Consumer<TagEvent> successConsumer,
             final Supplier<AbstractHtml[]> failTagsSupplier) {
 
-        Objects.requireNonNull(uriPredicate, "uriPredicate cannot be null in whenURI method");
+        Objects.requireNonNull(uriEventPredicate, "uriEventPredicate cannot be null in whenURI method");
         Objects.requireNonNull(successConsumer, "successConsumer cannot be null in whenURI method");
-        return whenURI(uriPredicate, null, failTagsSupplier, WhenURIMethodType.SUCCESS_CONSUMER_FAIL_SUPPLIER,
+        return whenURI(uriEventPredicate, null, failTagsSupplier, WhenURIMethodType.SUCCESS_CONSUMER_FAIL_SUPPLIER,
                 successConsumer, null, -1);
     }
 
     /**
      *
-     * @param uriPredicate
-     * @param successConsumer the consumer to execute if {@code uriPredicate.test()}
-     *                        returns true
-     * @param failConsumer    the consumer to execute if {@code uriPredicate.test()}
-     *                        returns false. {@code null} can be passed if there is
-     *                        no {@code failConsumer}.
-     * @param index           the position at which this action be the index to
-     *                        replace the existing action with this. A value less
-     *                        than zero will add this condition to the last.
+     * @param uriEventPredicate
+     * @param successConsumer   the consumer to execute if
+     *                          {@code uriEventPredicate.test()} returns true
+     * @param failConsumer      the consumer to execute if
+     *                          {@code uriEventPredicate.test()} returns false.
+     *                          {@code null} can be passed if there is no
+     *                          {@code failConsumer}.
+     * @param index             the position at which this action be the index to
+     *                          replace the existing action with this. A value less
+     *                          than zero will add this condition to the last.
      * @return URIStateSwitch
      * @since 12.0.0-beta.1
      */
     @Override
-    public URIStateSwitch whenURI(final Predicate<String> uriPredicate, final Consumer<TagEvent> successConsumer,
+    public URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate, final Consumer<TagEvent> successConsumer,
             final Consumer<TagEvent> failConsumer, final int index) {
 
-        Objects.requireNonNull(uriPredicate, "uriPredicate cannot be null in whenURI method");
+        Objects.requireNonNull(uriEventPredicate, "uriEventPredicate cannot be null in whenURI method");
         Objects.requireNonNull(successConsumer, "successConsumer cannot be null in whenURI method");
-        return whenURI(uriPredicate, null, null, WhenURIMethodType.SUCCESS_CONSUMER_FAIL_CONSUMER, successConsumer,
+        return whenURI(uriEventPredicate, null, null, WhenURIMethodType.SUCCESS_CONSUMER_FAIL_CONSUMER, successConsumer,
                 failConsumer, index);
     }
 
     /**
      *
-     * @param uriPredicate
-     * @param successConsumer the consumer to execute if {@code uriPredicate.test()}
-     *                        returns true
-     * @param failConsumer    the consumer to execute if {@code uriPredicate.test()}
-     *                        returns false. {@code null} can be passed if there is
-     *                        no {@code failConsumer}.
+     * @param uriEventPredicate
+     * @param successConsumer   the consumer to execute if
+     *                          {@code uriEventPredicate.test()} returns true
+     * @param failConsumer      the consumer to execute if
+     *                          {@code uriEventPredicate.test()} returns false.
+     *                          {@code null} can be passed if there is no
+     *                          {@code failConsumer}.
      * @return URIStateSwitch
      * @since 12.0.0-beta.1
      */
     @Override
-    public URIStateSwitch whenURI(final Predicate<String> uriPredicate, final Consumer<TagEvent> successConsumer,
+    public URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate, final Consumer<TagEvent> successConsumer,
             final Consumer<TagEvent> failConsumer) {
-        return whenURI(uriPredicate, successConsumer, failConsumer, -1);
+        return whenURI(uriEventPredicate, successConsumer, failConsumer, -1);
     }
 
     @Override
-    public URIStateSwitch whenURI(final Predicate<String> uriPredicate, final Consumer<TagEvent> successConsumer,
+    public URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate, final Consumer<TagEvent> successConsumer,
             final int index) {
 
-        Objects.requireNonNull(uriPredicate, "uriPredicate cannot be null in whenURI method");
+        Objects.requireNonNull(uriEventPredicate, "uriEventPredicate cannot be null in whenURI method");
         Objects.requireNonNull(successConsumer, "successConsumer cannot be null in whenURI method");
-        return whenURI(uriPredicate, null, null, WhenURIMethodType.SUCCESS_CONSUMER_FAIL_CONSUMER, successConsumer,
+        return whenURI(uriEventPredicate, null, null, WhenURIMethodType.SUCCESS_CONSUMER_FAIL_CONSUMER, successConsumer,
                 null, index);
     }
 
     /**
      *
-     * @param uriPredicate
-     * @param successConsumer the consumer to execute if {@code uriPredicate.test()}
-     *                        returns true
+     * @param uriEventPredicate
+     * @param successConsumer   the consumer to execute if
+     *                          {@code uriEventPredicate.test()} returns true
      * @return URIStateSwitch
      * @since 12.0.0-beta.1
      */
     @Override
-    public URIStateSwitch whenURI(final Predicate<String> uriPredicate, final Consumer<TagEvent> successConsumer) {
-        return whenURI(uriPredicate, successConsumer, (Consumer<TagEvent>) null, -1);
+    public URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate,
+            final Consumer<TagEvent> successConsumer) {
+        return whenURI(uriEventPredicate, successConsumer, (Consumer<TagEvent>) null, -1);
     }
 
     /**
-     * @param uriPredicate
+     * @param uriEventPredicate
      * @param successTagsSupplier
      * @param failTagsSupplier
      * @param methodType
@@ -6989,7 +6996,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * @return AbstractHtml
      * @since 12.0.0-beta.1
      */
-    private AbstractHtml whenURI(final Predicate<String> uriPredicate,
+    private AbstractHtml whenURI(final Predicate<URIEvent> uriEventPredicate,
             final Supplier<AbstractHtml[]> successTagsSupplier, final Supplier<AbstractHtml[]> failTagsSupplier,
             final WhenURIMethodType methodType, final Consumer<TagEvent> successConsumer,
             final Consumer<TagEvent> failConsumer, final int index) {
@@ -6999,7 +7006,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             // sharedObject should be after locking
             final AbstractHtml5SharedObject sharedObject = this.sharedObject;
 
-            final URIChangeContent uriChangeContent = new URIChangeContent(uriPredicate, successTagsSupplier,
+            final URIChangeContent uriChangeContent = new URIChangeContent(uriEventPredicate, successTagsSupplier,
                     failTagsSupplier, successConsumer, failConsumer, methodType);
 
             if (uriChangeContents == null && index >= 0) {
@@ -7035,8 +7042,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         final Lock lock = lockAndGetWriteLock();
         try {
             uriChangeContents = null;
-            lastURI = null;
-            lastURIPredicateTest = false;
+            lastURIEvent = null;
+            lastURIPredicateTest = null;
         } finally {
             lock.unlock();
         }
@@ -7057,8 +7064,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             uriChangeContents.remove(index);
             if (uriChangeContents.isEmpty()) {
                 uriChangeContents = null;
-                lastURI = null;
-                lastURIPredicateTest = false;
+                lastURIEvent = null;
+                lastURIPredicateTest = null;
             }
 
         } finally {
@@ -7069,12 +7076,12 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     /**
      * NB: only for internal use
      *
-     * @param uri
+     * @param uriEvent
      * @param expectedSO
      * @since 12.0.0-beta.1
      * @return true if sharedObjects are equals
      */
-    final boolean changeInnerHtmlsForURIChange(final String uri, final AbstractHtml5SharedObject expectedSO) {
+    final boolean changeInnerHtmlsForURIChange(final URIEvent uriEvent, final AbstractHtml5SharedObject expectedSO) {
 
         final Lock lock = lockAndGetWriteLock();
         try {
@@ -7087,7 +7094,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 List<AbstractHtml> children;
                 while ((children = childrenStack.poll()) != null) {
                     for (final AbstractHtml eachChild : children) {
-                        final AbstractHtml[] innerHtmls = eachChild.changeInnerHtmlsForURIChange(uri, true);
+                        final AbstractHtml[] innerHtmls = eachChild.changeInnerHtmlsForURIChange(uriEvent, true);
                         if (innerHtmls != null && innerHtmls.length > 0) {
                             childrenStack.push(List.of(innerHtmls));
                         } else if (eachChild.children != null && eachChild.children.size() > 0) {
@@ -7110,15 +7117,17 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     /**
      * NB: only for internal use
      *
-     * @param uri
+     * @param uriEvent
      * @param updateClient to push changes to the UI
      * @return
      * @since 12.0.0-beta.1
      */
-    private AbstractHtml[] changeInnerHtmlsForURIChange(final String uri, final boolean updateClient) {
+    private AbstractHtml[] changeInnerHtmlsForURIChange(final URIEvent uriEvent, final boolean updateClient) {
 
         AbstractHtml[] insertedHtmls = null;
-        if (uriChangeContents != null && uri != null && (!lastURIPredicateTest || !uri.equals(lastURI))) {
+        final String lastURI = lastURIEvent != null ? lastURIEvent.uriAfter() : null;
+        if (uriChangeContents != null && uriEvent != null && uriEvent.uriAfter() != null
+                && ((lastURIPredicateTest != null && !lastURIPredicateTest) || !uriEvent.uriAfter().equals(lastURI))) {
 
             URIChangeContent lastUriChangeContent = null;
 
@@ -7127,10 +7136,10 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             for (final URIChangeContent each : uriChangeContents) {
                 lastUriChangeContent = each;
 
-                if (each.uriPredicate.test(uri)) {
+                if (each.uriEventPredicate.test(uriEvent)) {
                     if (each.methodType.equals(WhenURIMethodType.SUCCESS_CONSUMER_FAIL_CONSUMER)
                             || each.methodType.equals(WhenURIMethodType.SUCCESS_CONSUMER_FAIL_SUPPLIER)) {
-                        each.successConsumer.accept(new TagEvent(this, uri));
+                        each.successConsumer.accept(new TagEvent(this, uriEvent));
                     } else {
                         final AbstractHtml[] innerHtmls = each.successTags.get();
                         if (innerHtmls != null) {
@@ -7149,13 +7158,14 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             }
 
             if (lastUriChangeContent != null) {
-
+                lastURIPredicateTest = executed;
                 if (!executed) {
                     if (lastUriChangeContent.methodType.equals(WhenURIMethodType.SUCCESS_CONSUMER_FAIL_CONSUMER)
                             || lastUriChangeContent.methodType
                                     .equals(WhenURIMethodType.SUCCESS_SUPPLIER_FAIL_CONSUMER)) {
                         if (lastUriChangeContent.failConsumer != null) {
-                            lastUriChangeContent.failConsumer.accept(new TagEvent(this, uri));
+                            lastUriChangeContent.failConsumer.accept(new TagEvent(this, uriEvent));
+                            lastURIPredicateTest = true;
                         }
                     } else {
                         final Supplier<AbstractHtml[]> failTags = lastUriChangeContent.failTags();
@@ -7169,6 +7179,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                                 }
                                 insertedHtmls = innerHtmls;
                             }
+                            lastURIPredicateTest = true;
                         } else {
                             if (updateClient) {
                                 removeAllChildren();
@@ -7178,8 +7189,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                         }
                     }
                 }
-                lastURIPredicateTest = executed;
-                lastURI = uri;
+
+                lastURIEvent = uriEvent;
             }
         }
 

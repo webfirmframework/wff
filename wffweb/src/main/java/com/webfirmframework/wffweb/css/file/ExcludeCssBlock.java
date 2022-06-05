@@ -14,9 +14,6 @@
  * limitations under the License.
  * @author WFF
  */
-/**
- *
- */
 package com.webfirmframework.wffweb.css.file;
 
 import java.lang.annotation.ElementType;

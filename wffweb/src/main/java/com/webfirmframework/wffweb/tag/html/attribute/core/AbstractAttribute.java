@@ -1003,7 +1003,9 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
      * @return true if the given ownerTag is an owner of the attribute.
      * @author WFF
      * @since 2.0.0
+     * @deprecated it is only for the internal purpose
      */
+    @Deprecated(forRemoval = true, since = "12.0.0-beta.5")
     public boolean unsetOwnerTag(final AbstractHtml ownerTag) {
         final long stamp = ownerTagsLock.writeLock();
         final boolean result;

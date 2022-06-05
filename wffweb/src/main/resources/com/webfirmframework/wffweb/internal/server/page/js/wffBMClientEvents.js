@@ -1,4 +1,3 @@
-
 var wffBMClientEvents = new function() {
 
 	window.wffRemovePrevBPInstanceInvoked = false;
@@ -109,5 +108,5 @@ var wffBMClientEvents = new function() {
 		wffWS.send(wffBM);
 	};
 
-
 };
+wffGlobal.frz(wffBMClientEvents, false);

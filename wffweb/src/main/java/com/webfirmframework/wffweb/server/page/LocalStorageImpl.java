@@ -266,7 +266,7 @@ final class LocalStorageImpl implements LocalStorage {
             final TokenWrapper tokenWrapper = tokenWrapperByKey.computeIfAbsent(key, TokenWrapper::new);
             final long stamp = tokenWrapper.lock.writeLock();
             try {
-                final ItemData previousItem = new ItemData(tokenWrapper.getValue(),
+                final TokenData previousItem = new TokenData(tokenWrapper.getValue(),
                         tokenWrapper.getUpdatedTimeMillis());
                 final String localToken = tokenWrapper.getValue();
                 if (!value.equals(localToken)) {
@@ -298,7 +298,7 @@ final class LocalStorageImpl implements LocalStorage {
                         throw new BrowserPageNotFoundException(
                                 "There is no active browser page in the session to remove the token");
                     }
-                    final ItemData previousItem = new ItemData(tokenWrapper.getValue(),
+                    final TokenData previousItem = new TokenData(tokenWrapper.getValue(),
                             tokenWrapper.getUpdatedTimeMillis());
                     if (tokenWrapperByKey.remove(key) != null) {
                         final int id = tokenIdGenerator.incrementAndGet();
