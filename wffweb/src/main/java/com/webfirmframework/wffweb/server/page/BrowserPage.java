@@ -1008,36 +1008,34 @@ public abstract class BrowserPage implements Serializable {
             } else if (taskValue == Task.INITIAL_WS_OPEN.getValueByte()) {
                 if (!onInitialClientPingInvoked) {
                     try {
-                        synchronized (this) {
-                            if (nameValues.size() > 1) {
 
-                                for (int i = 1; i < nameValues.size(); i++) {
-                                    final NameValue nm = nameValues.get(i);
-                                    if (nm.getName()[0] == Task.SET_URI.getValueByte()) {
-                                        final URIEventInitiator eventInitiator = URIEventInitiator
-                                                .get(nm.getValues()[0][0]);
-                                        final String urlPath = new String(nm.getValues()[1], StandardCharsets.UTF_8);
-                                        setURI(false, urlPath, eventInitiator, false);
-                                    } else if (nm.getName()[0] == Task.SET_LS_TOKEN.getValueByte()) {
-                                        final WffBMArray bmArray = new WffBMArray(nm.getValues()[0]);
-                                        for (final Object each : bmArray) {
-                                            if (each instanceof final WffBMObject bmObj) {
-                                                final String key = (String) bmObj.getValue("k");
-                                                final String value = (String) bmObj.getValue("v");
-                                                final String wt = (String) bmObj.getValue("wt");
-                                                final int id = ((Double) bmObj.getValue("id")).intValue();
-                                                final TokenWrapper tokenWrapper = getTokenWrapper(key, true);
-                                                if (tokenWrapper != null) {
-                                                    final long stamp = tokenWrapper.lock.writeLock();
-                                                    try {
-                                                        final long writeTime = Long.parseLong(wt);
-                                                        tokenWrapper.setTokenAndWriteTime(value, null, writeTime, id);
-                                                    } finally {
-                                                        tokenWrapper.lock.unlockWrite(stamp);
-                                                    }
+                        if (nameValues.size() > 1) {
+
+                            for (int i = 1; i < nameValues.size(); i++) {
+                                final NameValue nm = nameValues.get(i);
+                                if (nm.getName()[0] == Task.SET_URI.getValueByte()) {
+                                    final URIEventInitiator eventInitiator = URIEventInitiator
+                                            .get(nm.getValues()[0][0]);
+                                    final String urlPath = new String(nm.getValues()[1], StandardCharsets.UTF_8);
+                                    setURI(false, urlPath, eventInitiator, false);
+                                } else if (nm.getName()[0] == Task.SET_LS_TOKEN.getValueByte()) {
+                                    final WffBMArray bmArray = new WffBMArray(nm.getValues()[0]);
+                                    for (final Object each : bmArray) {
+                                        if (each instanceof final WffBMObject bmObj) {
+                                            final String key = (String) bmObj.getValue("k");
+                                            final String value = (String) bmObj.getValue("v");
+                                            final String wt = (String) bmObj.getValue("wt");
+                                            final int id = ((Double) bmObj.getValue("id")).intValue();
+                                            final TokenWrapper tokenWrapper = getTokenWrapper(key, true);
+                                            if (tokenWrapper != null) {
+                                                final long stamp = tokenWrapper.lock.writeLock();
+                                                try {
+                                                    final long writeTime = Long.parseLong(wt);
+                                                    tokenWrapper.setTokenAndWriteTime(value, null, writeTime, id);
+                                                } finally {
+                                                    tokenWrapper.lock.unlockWrite(stamp);
                                                 }
                                             }
-
                                         }
 
                                     }
@@ -1046,6 +1044,9 @@ public abstract class BrowserPage implements Serializable {
 
                             }
 
+                        }
+
+                        synchronized (this) {
                             onInitialClientPingInvoked = true;
                             onInitialClientPing(rootTag);
                         }
@@ -1062,9 +1063,8 @@ public abstract class BrowserPage implements Serializable {
                         final String urlPath = new String(pathnameNV.getName(), StandardCharsets.UTF_8);
                         final URIEventInitiator eventInitiator = URIEventInitiator.get(pathnameNV.getValues()[0][0]);
                         final boolean replace = pathnameNV.getValues()[0][1] == 1;
-                        synchronized (this) {
-                            setURI(false, urlPath, eventInitiator, replace);
-                        }
+
+                        setURI(false, urlPath, eventInitiator, replace);
 
                         String callbackFunId = null;
 
@@ -2851,22 +2851,25 @@ public abstract class BrowserPage implements Serializable {
      */
     private void setURI(final boolean updateClientURI, final String uri, final URIEventInitiator initiator,
             final boolean replace) {
-
-        final URIEvent uriEvent = this.uriEvent;
-        final String lastURI = uriEvent != null ? uriEvent.uriAfter() : null;
-        if (lastURI == null || !lastURI.equals(uri)) {
-            if (uri != null) {
-                URIEvent event = new URIEvent(lastURI, uri, initiator, replace);
-                final URIEventMask uriEventMask = beforeURIChange(event);
-                event = uriEventMask != null && !Objects.equals(uriEventMask.uriBefore(), lastURI)
-                        ? new URIEvent(uriEventMask.uriBefore(), uri, initiator, replace)
-                        : event;
-                if (rootTag != null) {
-                    changeInnerHtmlsOnTagsForURIChange(updateClientURI, event);
-                } else {
-                    this.uriEvent = event;
+        // NB: should be a synchronized block as method level synchronization is not
+        // good
+        synchronized (this) {
+            final URIEvent uriEvent = this.uriEvent;
+            final String lastURI = uriEvent != null ? uriEvent.uriAfter() : null;
+            if (lastURI == null || !lastURI.equals(uri)) {
+                if (uri != null) {
+                    URIEvent event = new URIEvent(lastURI, uri, initiator, replace);
+                    final URIEventMask uriEventMask = beforeURIChange(event);
+                    event = uriEventMask != null && !Objects.equals(uriEventMask.uriBefore(), lastURI)
+                            ? new URIEvent(uriEventMask.uriBefore(), uri, initiator, replace)
+                            : event;
+                    if (rootTag != null) {
+                        changeInnerHtmlsOnTagsForURIChange(updateClientURI, event);
+                    } else {
+                        this.uriEvent = event;
+                    }
+                    afterURIChange(event);
                 }
-                afterURIChange(event);
             }
         }
     }
