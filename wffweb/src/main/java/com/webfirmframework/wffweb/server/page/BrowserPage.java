@@ -47,6 +47,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 import java.util.concurrent.atomic.LongAdder;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -189,6 +191,19 @@ public abstract class BrowserPage implements Serializable {
     // false and fairness may decrease the lock time
     // only one thread is allowed to gain lock so permit should be 1
     private final transient Semaphore unholdPushLock = new Semaphore(1, false);
+
+    // fair may be false
+    // lock to replace synchronized block. (scenario: if a virtual thread is
+    // executing a synchronized block it cannot be detached from the OS thread until
+    // it exits the synchronized block, ReentrantLock will solve this issue)
+    // to execute only one UI update at a time as setURI method can also be called
+    // from server side
+    // To read up to date value from main memory and to flush modification to main
+    // memory synchronized/ReentrantLock
+    // will do it as per java memory model,
+    // synchronized block cannot be used as it will prevent virtual thread from
+    // being detached from its OS thread
+    private final transient Lock commonLock = new ReentrantLock(false);
 
     private final AtomicReference<Thread> waitingThreadRef = new AtomicReference<>();
 
@@ -801,76 +816,75 @@ public abstract class BrowserPage implements Serializable {
             wffBMObject = null;
         }
 
-        final AbstractHtml methodTag = tagByWffId.get(wffTagId);
-        if (methodTag != null) {
+        // NB: see javadoc on its declaration
+        commonLock.lock();
 
-            final AbstractAttribute attributeByName = methodTag.getAttributeByName(eventAttrName);
+        try {
 
-            if (attributeByName != null) {
+            final AbstractHtml methodTag = tagByWffId.get(wffTagId);
+            if (methodTag != null) {
 
-                if (attributeByName instanceof EventAttribute) {
+                final AbstractAttribute attributeByName = methodTag.getAttributeByName(eventAttrName);
 
-                    final EventAttribute eventAttr = (EventAttribute) attributeByName;
+                if (attributeByName != null) {
 
-                    final ServerMethod serverMethod = eventAttr.getServerMethod();
+                    if (attributeByName instanceof EventAttribute) {
 
-                    final ServerMethod.Event event = new ServerMethod.Event(wffBMObject, methodTag, attributeByName,
-                            null, eventAttr.getServerSideData(), uriEvent != null ? uriEvent.uriAfter() : null);
+                        final EventAttribute eventAttr = (EventAttribute) attributeByName;
 
-                    final WffBMObject returnedObject;
+                        final ServerMethod serverMethod = eventAttr.getServerMethod();
 
-                    try {
-                        synchronized (this) {
-                            // to read up to date value from
-                            // main memory and to flush
-                            // modification to main memory
-                            // synchronized will do it as
-                            // per
-                            // java memory
-                            // model
+                        final ServerMethod.Event event = new ServerMethod.Event(wffBMObject, methodTag, attributeByName,
+                                null, eventAttr.getServerSideData(), uriEvent != null ? uriEvent.uriAfter() : null);
+
+                        final WffBMObject returnedObject;
+
+                        try {
                             returnedObject = serverMethod.invoke(event);
+                        } catch (final Exception e) {
+                            throw new WffRuntimeException(e.getMessage(), e);
                         }
 
-                    } catch (final Exception e) {
-                        throw new WffRuntimeException(e.getMessage(), e);
-                    }
+                        final String jsPostFunctionBody = eventAttr.getJsPostFunctionBody();
 
-                    final String jsPostFunctionBody = eventAttr.getJsPostFunctionBody();
+                        if (jsPostFunctionBody != null) {
 
-                    if (jsPostFunctionBody != null) {
+                            final NameValue invokePostFunTask = Task.INVOKE_POST_FUNCTION.getTaskNameValue();
+                            final NameValue nameValue = new NameValue();
+                            // name as function body string and value at
+                            // zeroth index as
+                            // wffBMObject bytes
 
-                        final NameValue invokePostFunTask = Task.INVOKE_POST_FUNCTION.getTaskNameValue();
-                        final NameValue nameValue = new NameValue();
-                        // name as function body string and value at
-                        // zeroth index as
-                        // wffBMObject bytes
+                            // handling JsUtil.toDynamicJs at server side is much better otherwise if the
+                            // script is huge the client browser page might get frozen.
+                            nameValue.setName(StringUtil.strip(jsPostFunctionBody).getBytes(StandardCharsets.UTF_8));
 
-                        // handling JsUtil.toDynamicJs at server side is much better otherwise if the
-                        // script is huge the client browser page might get frozen.
-                        nameValue.setName(StringUtil.strip(jsPostFunctionBody).getBytes(StandardCharsets.UTF_8));
+                            if (returnedObject != null) {
+                                nameValue.setValues(new byte[][] { returnedObject.buildBytes(true) });
+                            }
 
-                        if (returnedObject != null) {
-                            nameValue.setValues(new byte[][] { returnedObject.buildBytes(true) });
+                            push(invokePostFunTask, nameValue);
+                            if (holdPush.get() == 0) {
+                                pushWffBMBytesQueue();
+                            }
                         }
 
-                        push(invokePostFunTask, nameValue);
-                        if (holdPush.get() == 0) {
-                            pushWffBMBytesQueue();
-                        }
+                    } else {
+                        LOGGER.severe(attributeByName + " is NOT instanceof EventAttribute");
                     }
 
                 } else {
-                    LOGGER.severe(attributeByName + " is NOT instanceof EventAttribute");
+                    LOGGER.severe("no event attribute found for " + attributeByName);
                 }
 
             } else {
-                LOGGER.severe("no event attribute found for " + attributeByName);
+                if (!PRODUCTION_MODE) {
+                    LOGGER.severe("No tag found for wffTagId " + wffTagId);
+                }
             }
 
-        } else {
-            if (!PRODUCTION_MODE) {
-                LOGGER.severe("No tag found for wffTagId " + wffTagId);
-            }
+        } finally {
+            commonLock.unlock();
         }
     }
 
@@ -911,60 +925,58 @@ public abstract class BrowserPage implements Serializable {
         final NameValue methodNameAndArg = nameValues.get(1);
         final String methodName = new String(methodNameAndArg.getName(), StandardCharsets.UTF_8);
 
-        final ServerMethodWrapper serverMethod = serverMethods.get(methodName);
+        // NB: see javadoc on its declaration
+        commonLock.lock();
+        try {
 
-        if (serverMethod != null) {
+            final ServerMethodWrapper serverMethod = serverMethods.get(methodName);
 
-            final byte[][] values = methodNameAndArg.getValues();
+            if (serverMethod != null) {
 
-            final WffBMObject wffBMObject = values.length > 0 ? new WffBMObject(values[0], true) : null;
+                final byte[][] values = methodNameAndArg.getValues();
 
-            final WffBMObject returnedObject;
-            try {
+                final WffBMObject wffBMObject = values.length > 0 ? new WffBMObject(values[0], true) : null;
 
-                synchronized (this) {
-                    // to read up to date value from
-                    // main memory and to flush
-                    // modification to main memory
-                    // synchronized will do it as
-                    // per
-                    // java memory
-                    // model
+                final WffBMObject returnedObject;
+                try {
+
                     returnedObject = serverMethod.serverMethod().invoke(new ServerMethod.Event(wffBMObject, null, null,
                             methodName, serverMethod.serverSideData(), uriEvent != null ? uriEvent.uriAfter() : null));
+
+                } catch (final Exception e) {
+                    throw new WffRuntimeException(e.getMessage(), e);
                 }
 
-            } catch (final Exception e) {
-                throw new WffRuntimeException(e.getMessage(), e);
-            }
+                String callbackFunId = null;
 
-            String callbackFunId = null;
-
-            if (nameValues.size() > 2) {
-                final NameValue callbackFunNameValue = nameValues.get(2);
-                callbackFunId = new String(callbackFunNameValue.getName(), StandardCharsets.UTF_8);
-            }
-
-            if (callbackFunId != null) {
-                final NameValue invokeCallbackFuncTask = Task.INVOKE_CALLBACK_FUNCTION.getTaskNameValue();
-
-                final NameValue nameValue = new NameValue();
-                nameValue.setName(callbackFunId.getBytes(StandardCharsets.UTF_8));
-
-                if (returnedObject != null) {
-                    nameValue.setValues(new byte[][] { returnedObject.buildBytes(true) });
+                if (nameValues.size() > 2) {
+                    final NameValue callbackFunNameValue = nameValues.get(2);
+                    callbackFunId = new String(callbackFunNameValue.getName(), StandardCharsets.UTF_8);
                 }
 
-                push(invokeCallbackFuncTask, nameValue);
-                if (holdPush.get() == 0) {
-                    pushWffBMBytesQueue();
+                if (callbackFunId != null) {
+                    final NameValue invokeCallbackFuncTask = Task.INVOKE_CALLBACK_FUNCTION.getTaskNameValue();
+
+                    final NameValue nameValue = new NameValue();
+                    nameValue.setName(callbackFunId.getBytes(StandardCharsets.UTF_8));
+
+                    if (returnedObject != null) {
+                        nameValue.setValues(new byte[][] { returnedObject.buildBytes(true) });
+                    }
+
+                    push(invokeCallbackFuncTask, nameValue);
+                    if (holdPush.get() == 0) {
+                        pushWffBMBytesQueue();
+                    }
+
                 }
 
+            } else {
+                LOGGER.warning(methodName + " doesn't exist, please add it as browserPage.addServerMethod(\""
+                        + methodName + "\", serverMethod)");
             }
-
-        } else {
-            LOGGER.warning(methodName + " doesn't exist, please add it as browserPage.addServerMethod(\"" + methodName
-                    + "\", serverMethod)");
+        } finally {
+            commonLock.unlock();
         }
 
     }
@@ -1007,10 +1019,10 @@ public abstract class BrowserPage implements Serializable {
 
             } else if (taskValue == Task.INITIAL_WS_OPEN.getValueByte()) {
                 if (!onInitialClientPingInvoked) {
-                    try {
-
-                        if (nameValues.size() > 1) {
-
+                    if (nameValues.size() > 1) {
+                        // NB: see javadoc on its declaration
+                        commonLock.lock();
+                        try {
                             for (int i = 1; i < nameValues.size(); i++) {
                                 final NameValue nm = nameValues.get(i);
                                 if (nm.getName()[0] == Task.SET_URI.getValueByte()) {
@@ -1043,22 +1055,24 @@ public abstract class BrowserPage implements Serializable {
                                 }
 
                             }
-
-                        }
-
-                        synchronized (this) {
                             onInitialClientPingInvoked = true;
                             onInitialClientPing(rootTag);
-                        }
-                    } catch (final Exception e) {
-                        if (LOGGER.isLoggable(Level.SEVERE)) {
-                            LOGGER.log(Level.SEVERE, "Exception while executing onInitialWSOpen", e);
+                        } catch (final Exception e) {
+                            if (LOGGER.isLoggable(Level.SEVERE)) {
+                                LOGGER.log(Level.SEVERE, "Exception while executing onInitialWSOpen", e);
+                            }
+                        } finally {
+                            commonLock.unlock();
                         }
                     }
                 }
             } else if (taskValue == Task.CLIENT_PATHNAME_CHANGED.getValueByte()) {
-                try {
-                    if (nameValues.size() > 1) {
+
+                if (nameValues.size() > 1) {
+
+                    // NB: see javadoc on its declaration
+                    commonLock.lock();
+                    try {
                         final NameValue pathnameNV = nameValues.get(1);
                         final String urlPath = new String(pathnameNV.getName(), StandardCharsets.UTF_8);
                         final URIEventInitiator eventInitiator = URIEventInitiator.get(pathnameNV.getValues()[0][0]);
@@ -1085,12 +1099,16 @@ public abstract class BrowserPage implements Serializable {
                             }
 
                         }
-                    }
-                } catch (final Exception e) {
-                    if (LOGGER.isLoggable(Level.SEVERE)) {
-                        LOGGER.log(Level.SEVERE, "Exception while executing setURI", e);
+
+                    } catch (final Exception e) {
+                        if (LOGGER.isLoggable(Level.SEVERE)) {
+                            LOGGER.log(Level.SEVERE, "Exception while executing setURI", e);
+                        }
+                    } finally {
+                        commonLock.unlock();
                     }
                 }
+
             } else if (taskValue == Task.SET_LS_ITEM.getValueByte()) {
                 try {
                     final LocalStorageImpl localStorage = getLocalStorage();
@@ -2009,7 +2027,9 @@ public abstract class BrowserPage implements Serializable {
 
         if (rootTag == null) {
 
-            synchronized (this) {
+            // NB: see javadoc on its declaration
+            commonLock.lock();
+            try {
                 if (rootTag == null) {
                     if (renderInvoked) {
                         throw new InvalidUsageException(
@@ -2057,6 +2077,8 @@ public abstract class BrowserPage implements Serializable {
                     }
 
                 }
+            } finally {
+                commonLock.unlock();
             }
 
         } else {
@@ -2548,10 +2570,14 @@ public abstract class BrowserPage implements Serializable {
     public final TagRepository getTagRepository() {
 
         if (tagRepository == null && rootTag != null) {
-            synchronized (this) {
+            // NB: see javadoc on its declaration
+            commonLock.lock();
+            try {
                 if (tagRepository == null) {
                     tagRepository = new TagRepository(ACCESS_OBJECT, this, tagByWffId, rootTag);
                 }
+            } finally {
+                commonLock.unlock();
             }
         }
 
@@ -2851,25 +2877,21 @@ public abstract class BrowserPage implements Serializable {
      */
     private void setURI(final boolean updateClientURI, final String uri, final URIEventInitiator initiator,
             final boolean replace) {
-        // NB: should be a synchronized block as method level synchronization is not
-        // good
-        synchronized (this) {
-            final URIEvent uriEvent = this.uriEvent;
-            final String lastURI = uriEvent != null ? uriEvent.uriAfter() : null;
-            if (lastURI == null || !lastURI.equals(uri)) {
-                if (uri != null) {
-                    URIEvent event = new URIEvent(lastURI, uri, initiator, replace);
-                    final URIEventMask uriEventMask = beforeURIChange(event);
-                    event = uriEventMask != null && !Objects.equals(uriEventMask.uriBefore(), lastURI)
-                            ? new URIEvent(uriEventMask.uriBefore(), uri, initiator, replace)
-                            : event;
-                    if (rootTag != null) {
-                        changeInnerHtmlsOnTagsForURIChange(updateClientURI, event);
-                    } else {
-                        this.uriEvent = event;
-                    }
-                    afterURIChange(event);
+        final URIEvent uriEvent = this.uriEvent;
+        final String lastURI = uriEvent != null ? uriEvent.uriAfter() : null;
+        if (lastURI == null || !lastURI.equals(uri)) {
+            if (uri != null) {
+                URIEvent event = new URIEvent(lastURI, uri, initiator, replace);
+                final URIEventMask uriEventMask = beforeURIChange(event);
+                event = uriEventMask != null && !Objects.equals(uriEventMask.uriBefore(), lastURI)
+                        ? new URIEvent(uriEventMask.uriBefore(), uri, initiator, replace)
+                        : event;
+                if (rootTag != null) {
+                    changeInnerHtmlsOnTagsForURIChange(updateClientURI, event);
+                } else {
+                    this.uriEvent = event;
                 }
+                afterURIChange(event);
             }
         }
     }
@@ -2879,7 +2901,13 @@ public abstract class BrowserPage implements Serializable {
      * @since 12.0.0-beta.1
      */
     public final void setURI(final String uri) {
-        setURI(true, uri, URIEventInitiator.SERVER_CODE, false);
+        // NB: see javadoc on its declaration
+        commonLock.lock();
+        try {
+            setURI(true, uri, URIEventInitiator.SERVER_CODE, false);
+        } finally {
+            commonLock.unlock();
+        }
     }
 
     /**
@@ -2888,7 +2916,13 @@ public abstract class BrowserPage implements Serializable {
      * @since 12.0.0-beta.5
      */
     public final void setURI(final String uri, final boolean replace) {
-        setURI(true, uri, URIEventInitiator.SERVER_CODE, replace);
+        // NB: see javadoc on its declaration
+        commonLock.lock();
+        try {
+            setURI(true, uri, URIEventInitiator.SERVER_CODE, replace);
+        } finally {
+            commonLock.unlock();
+        }
     }
 
     /**
