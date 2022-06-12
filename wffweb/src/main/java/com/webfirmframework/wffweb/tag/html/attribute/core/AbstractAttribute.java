@@ -517,10 +517,13 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
      */
     protected Map<String, String> getAttributeValueMap() {
         if (attributeValueMap == null) {
-            synchronized (this) {
+            commonLock().lock();
+            try {
                 if (attributeValueMap == null) {
                     setAttributeValueMap(new LinkedHashMap<String, String>());
                 }
+            } finally {
+                commonLock().unlock();
             }
         }
         return attributeValueMap;
@@ -1064,11 +1067,14 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
      */
     protected Set<String> getAttributeValueSet() {
         if (attributeValueSet == null) {
-            synchronized (this) {
+            commonLock().lock();
+            try {
                 if (attributeValueSet == null) {
                     // because the load factor is 0.75f
                     attributeValueSet = new LinkedHashSet<>(2);
                 }
+            } finally {
+                commonLock().unlock();
             }
         }
         return attributeValueSet;
@@ -1387,12 +1393,15 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
     public void addValueChangeListener(final AttributeValueChangeListener valueChangeListener) {
         Set<AttributeValueChangeListener> valueChangeListeners = this.valueChangeListeners;
         if (valueChangeListeners == null) {
-            synchronized (this) {
+            commonLock().lock();
+            try {
                 valueChangeListeners = this.valueChangeListeners;
                 if (valueChangeListeners == null) {
                     valueChangeListeners = new LinkedHashSet<>();
                     this.valueChangeListeners = valueChangeListeners;
                 }
+            } finally {
+                commonLock().unlock();
             }
         }
 
