@@ -50,7 +50,6 @@ import com.webfirmframework.wffweb.tag.html.tables.TBody;
 import com.webfirmframework.wffweb.tag.html.tables.Table;
 import com.webfirmframework.wffweb.tag.html.tables.Td;
 import com.webfirmframework.wffweb.tag.html.tables.Tr;
-import com.webfirmframework.wffweb.tag.htmlwff.Blank;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 import com.webfirmframework.wffweb.tag.htmlwff.TagContent;
 import com.webfirmframework.wffweb.wffbm.data.BMValueType;
@@ -653,7 +652,7 @@ public class TagRepositoryTest {
         };
         browserPage.toHtmlString();
         TagRepository tagRepository = browserPage.getTagRepository();
-        tagRepository.upsert(new Blank(null, "test"), "somekey", new WffBMObject());
+        tagRepository.upsert(new NoTag(null, "test"), "somekey", new WffBMObject());
     }
     
     @Test (expected = InvalidTagException.class)
@@ -682,7 +681,7 @@ public class TagRepositoryTest {
         };
         browserPage.toHtmlString();
         TagRepository tagRepository = browserPage.getTagRepository();
-        tagRepository.upsert(new Blank(null, "test"), "somekey", new WffBMArray(BMValueType.STRING));
+        tagRepository.upsert(new NoTag(null, "test"), "somekey", new WffBMArray(BMValueType.STRING));
     }
     
     @Test (expected = InvalidTagException.class)
@@ -711,7 +710,7 @@ public class TagRepositoryTest {
         };
         browserPage.toHtmlString();
         TagRepository tagRepository = browserPage.getTagRepository();
-        tagRepository.delete(new Blank(null, "test"), "somekey");
+        tagRepository.delete(new NoTag(null, "test"), "somekey");
     }
     
     @Test
@@ -786,7 +785,7 @@ public class TagRepositoryTest {
         }}; 
         html.appendChild(new Div(null));
         
-        TagRepository.findOneTagAssignableToTag(Blank.class, html);
+        TagRepository.findOneTagAssignableToTag(NoTag.class, html);
     }
     
     @Test
@@ -860,7 +859,7 @@ public class TagRepositoryTest {
             }};
         }};
         
-        TagRepository.findTagsAssignableToTag(Blank.class, html);
+        TagRepository.findTagsAssignableToTag(NoTag.class, html);
     }
     
 

@@ -1005,27 +1005,6 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
      * @param ownerTag the ownerTag to unset
      * @return true if the given ownerTag is an owner of the attribute.
      * @author WFF
-     * @since 2.0.0
-     * @deprecated it is only for the internal purpose
-     */
-    @Deprecated(forRemoval = true, since = "12.0.0-beta.5")
-    public boolean unsetOwnerTag(final AbstractHtml ownerTag) {
-        final long stamp = ownerTagsLock.writeLock();
-        final boolean result;
-        try {
-            result = ownerTags.remove(ownerTag);
-        } finally {
-            ownerTagsLock.unlockWrite(stamp);
-        }
-        return result;
-    }
-
-    /**
-     * NB:- this method is used for internal purpose, so it should not be consumed.
-     *
-     * @param ownerTag the ownerTag to unset
-     * @return true if the given ownerTag is an owner of the attribute.
-     * @author WFF
      * @since 3.0.15
      */
     final boolean unsetOwnerTagLockless(final AbstractHtml ownerTag) {

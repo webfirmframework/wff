@@ -2928,41 +2928,10 @@ public abstract class BrowserPage implements Serializable {
     /**
      * Override and use
      *
-     * @param uriBefore
-     * @param uriAfter
-     * @param initiator
-     * @since 12.0.0-beta.1
-     * @deprecated override and use {@link BrowserPage#beforeURIChange(URIEvent)}
-     *             instead of this method.
-     */
-    @Deprecated(forRemoval = true, since = "12.0.0-beta.5")
-    protected void beforeURIChange(final String uriBefore, final String uriAfter, final URIEventInitiator initiator) {
-
-    }
-
-    /**
-     * Override and use
-     *
-     * @param uriBefore
-     * @param uriAfter
-     * @param initiator
-     * @since 12.0.0-beta.4
-     * @deprecated override and use {@link BrowserPage#afterURIChange(URIEvent)}
-     *             instead of this method.
-     */
-    @Deprecated(forRemoval = true, since = "12.0.0-beta.5")
-    protected void afterURIChange(final String uriBefore, final String uriAfter, final URIEventInitiator initiator) {
-
-    }
-
-    /**
-     * Override and use
-     *
      * @param uriEvent
      * @since 12.0.0-beta.5
      */
     protected URIEventMask beforeURIChange(final URIEvent uriEvent) {
-        beforeURIChange(uriEvent.uriBefore(), uriEvent.uriAfter(), uriEvent.initiator());
         return null;
     }
 
@@ -2973,7 +2942,6 @@ public abstract class BrowserPage implements Serializable {
      * @since 12.0.0-beta.5
      */
     protected void afterURIChange(final URIEvent uriEvent) {
-        afterURIChange(uriEvent.uriBefore(), uriEvent.uriAfter(), uriEvent.initiator());
     }
 
     /**
