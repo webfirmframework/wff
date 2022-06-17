@@ -3038,7 +3038,6 @@ public abstract class BrowserPage implements Serializable {
                             "The given path by useExternalDrivePath is invalid or it doesn't have read/write permission.");
                 }
             }
-
         }
 
         return tempDirPath;
