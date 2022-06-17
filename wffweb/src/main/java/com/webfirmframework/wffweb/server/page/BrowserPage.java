@@ -3033,6 +3033,7 @@ public abstract class BrowserPage implements Serializable {
                 try {
                     Files.createDirectories(dirPath);
                     tempDirPath = dirPath;
+                    return dirPath;
                 } catch (final IOException e) {
                     LOGGER.severe(
                             "The given path by useExternalDrivePath is invalid or it doesn't have read/write permission.");
