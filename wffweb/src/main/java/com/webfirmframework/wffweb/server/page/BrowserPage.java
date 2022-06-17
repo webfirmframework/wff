@@ -249,7 +249,7 @@ public abstract class BrowserPage implements Serializable {
      * To specify (by removeFromContext method) when to remove {@code BrowserPage}
      * instance from {@code BrowserPageContext}.
      *
-     * @author WFF
+     *
      * @since 2.1.4
      */
     public enum On {
@@ -352,7 +352,7 @@ public abstract class BrowserPage implements Serializable {
 
     /**
      * @param wsListener
-     * @author WFF
+     *
      * @since 2.0.0
      */
     public final void setWebSocketPushListener(final WebSocketPushListener wsListener) {
@@ -370,7 +370,7 @@ public abstract class BrowserPage implements Serializable {
      *
      * @param sessionId  the unique id of WebSocket session
      * @param wsListener
-     * @author WFF
+     *
      * @since 2.1.0
      */
     public final void addWebSocketPushListener(final String sessionId, final WebSocketPushListener wsListener) {
@@ -396,7 +396,7 @@ public abstract class BrowserPage implements Serializable {
      * removes the WebSocket listener added for this WebSocket session
      *
      * @param sessionId the unique id of WebSocket session
-     * @author WFF
+     *
      * @since 2.1.0
      */
     public final void removeWebSocketPushListener(final String sessionId) {
@@ -415,7 +415,7 @@ public abstract class BrowserPage implements Serializable {
     /**
      * removes all WebSocket listeners added
      *
-     * @author WFF
+     *
      * @since 3.0.16
      */
     final void clearWSListeners() {
@@ -623,7 +623,7 @@ public abstract class BrowserPage implements Serializable {
 
     /**
      * @param message the bytes the received in onmessage
-     * @author WFF
+     *
      * @since 2.1.0
      */
     public final void webSocketMessaged(final byte[] message) {
@@ -733,7 +733,7 @@ public abstract class BrowserPage implements Serializable {
      *
      * @return the object of {@link Html} class which needs to be displayed in the
      *         client browser page.
-     * @author WFF
+     *
      */
     public abstract AbstractHtml render();
 
@@ -997,7 +997,7 @@ public abstract class BrowserPage implements Serializable {
      *                                      implementation will never make this
      *                                      exception due to the code changes since
      *                                      3.0.1.
-     * @author WFF
+     *
      * @since 2.0.0
      */
     private void executeWffBMTask(final byte[] message) throws UnsupportedEncodingException {
@@ -1667,7 +1667,7 @@ public abstract class BrowserPage implements Serializable {
      *
      * @return {@code String} equalent to the html string of the tag including the
      *         child tags.
-     * @author WFF
+     *
      */
     public String toHtmlString() {
         initAbstractHtml();
@@ -1691,7 +1691,7 @@ public abstract class BrowserPage implements Serializable {
      * @param rebuild true to rebuild &amp; false to return previously built string.
      * @return {@code String} equalent to the html string of the tag including the
      *         child tags.
-     * @author WFF
+     *
      * @since 2.1.4
      */
     public String toHtmlString(final boolean rebuild) {
@@ -2111,7 +2111,7 @@ public abstract class BrowserPage implements Serializable {
 
     /**
      * @return a unique id for this instance
-     * @author WFF
+     *
      * @since 2.0.0
      */
     public final String getInstanceId() {
@@ -2143,7 +2143,7 @@ public abstract class BrowserPage implements Serializable {
     /**
      * @param methodName
      * @param serverMethod
-     * @author WFF
+     *
      * @since 2.1.0
      */
     public final void addServerMethod(final String methodName, final ServerMethod serverMethod) {
@@ -2155,7 +2155,7 @@ public abstract class BrowserPage implements Serializable {
      * @param serverMethod
      * @param serverSideData this object will be available in the event of
      *                       serverMethod.invoke
-     * @author WFF
+     *
      * @since 3.0.2
      */
     public final void addServerMethod(final String methodName, final ServerMethod serverMethod,
@@ -2167,7 +2167,7 @@ public abstract class BrowserPage implements Serializable {
      * removes the method from
      *
      * @param methodName
-     * @author WFF
+     *
      * @since 2.1.0
      */
     public final void removeServerMethod(final String methodName) {
@@ -2180,7 +2180,7 @@ public abstract class BrowserPage implements Serializable {
      * @param actionByteBuffer The ByteBuffer object taken from
      *                         {@code BrowserPageAction} .Eg:-
      *                         {@code BrowserPageAction.RELOAD.getActionByteBuffer();}
-     * @author WFF
+     *
      * @since 2.1.0
      */
     public final void performBrowserPageAction(final ByteBuffer actionByteBuffer) {
@@ -2236,7 +2236,7 @@ public abstract class BrowserPage implements Serializable {
      * }
      * </pre>
      *
-     * @author WFF
+     *
      * @since 2.1.3
      */
     public final void holdPush() {
@@ -2259,7 +2259,7 @@ public abstract class BrowserPage implements Serializable {
      * }
      * </pre>
      *
-     * @author WFF
+     *
      * @since 2.1.3
      */
     public final void unholdPush() {
@@ -2353,7 +2353,7 @@ public abstract class BrowserPage implements Serializable {
      * updates from server when the pushQueueSize exceeds a particular limit.
      *
      * @return the size of internal push queue.
-     * @author WFF
+     *
      * @since 2.1.4
      */
     public final int getPushQueueSize() {
@@ -2372,7 +2372,7 @@ public abstract class BrowserPage implements Serializable {
      * @param enable
      * @param ons    the instance of On to represent on which browser event the
      *               browser page needs to be removed.
-     * @author WFF
+     *
      * @since 2.1.4
      */
     public final void removeFromContext(final boolean enable, final On... ons) {
@@ -2409,7 +2409,7 @@ public abstract class BrowserPage implements Serializable {
      * Invokes when this browser page instance is removed from browser page context.
      * Override and use this method to stop long-running tasks / threads.
      *
-     * @author WFF
+     *
      * @since 2.1.4
      */
     protected void removedFromContext() {
@@ -2431,7 +2431,7 @@ public abstract class BrowserPage implements Serializable {
      *                              {@code browserPage#toHtmlString} or
      *                              {@code browserPage#toOutputStream} was NOT
      *                              called at least once in the life time.
-     * @author WFF
+     *
      * @since 2.1.7
      */
     public final boolean contains(final AbstractHtml tag) throws NullValueException, NotRenderedException {
@@ -2461,7 +2461,7 @@ public abstract class BrowserPage implements Serializable {
      *
      * @param milliseconds the heartbeat ping interval of webSocket client in
      *                     milliseconds. Give -1 to disable it.
-     * @author WFF
+     *
      * @since 2.1.8
      */
     protected final void setWebSocketHeartbeatInterval(final int milliseconds) {
@@ -2471,7 +2471,7 @@ public abstract class BrowserPage implements Serializable {
     /**
      * @return the interval value set by
      *         {@code BrowserPage#setWebSocketHeartbeatInterval(int)} method.
-     * @author WFF
+     *
      * @since 2.1.8
      */
     public final int getWebSocketHeartbeatInterval() {
@@ -2487,7 +2487,7 @@ public abstract class BrowserPage implements Serializable {
      *
      * @param milliseconds the heartbeat ping interval of webSocket client in
      *                     milliseconds. Give -1 to disable it
-     * @author WFF
+     *
      * @since 2.1.8
      * @since 2.1.9 the default value is 25000ms i.e. 25 seconds.
      */
@@ -2498,7 +2498,7 @@ public abstract class BrowserPage implements Serializable {
     /**
      * @return the interval value set by {@code setWebSocketDefultHeartbeatInterval}
      *         method.
-     * @author WFF
+     *
      * @since 2.1.8
      */
     public static final int getWebSocketDefultHeartbeatInterval() {
@@ -2513,7 +2513,7 @@ public abstract class BrowserPage implements Serializable {
      *
      * @param milliseconds the reconnect interval of webSocket client in
      *                     milliseconds. It must be greater than 0.
-     * @author WFF
+     *
      * @since 2.1.8
      */
     public static final void setWebSocketDefultReconnectInterval(final int milliseconds) {
@@ -2526,7 +2526,7 @@ public abstract class BrowserPage implements Serializable {
     /**
      * @return the interval value set by {@code setWebSocketDefultReconnectInterval}
      *         method.
-     * @author WFF
+     *
      * @since 2.1.8
      */
     public static final int getWebSocketDefultReconnectInterval() {
@@ -2545,7 +2545,7 @@ public abstract class BrowserPage implements Serializable {
      *
      * @param milliseconds the reconnect interval of webSocket client in
      *                     milliseconds. Give -1 to disable it.
-     * @author WFF
+     *
      * @since 2.1.8
      */
     protected final void setWebSocketReconnectInterval(final int milliseconds) {
@@ -2555,7 +2555,7 @@ public abstract class BrowserPage implements Serializable {
     /**
      * @return the interval value set by
      *         {@code BrowserPage#setWebSocketReconnectInterval(int)} method.
-     * @author WFF
+     *
      * @since 2.1.8
      */
     public final int getWebSocketReconnectInterval() {
@@ -2569,7 +2569,7 @@ public abstract class BrowserPage implements Serializable {
      * @return the TagRepository object to do different tag operations. Or null if
      *         any one of the BrowserPage#toString or BrowserPage#toOutputStream
      *         methods is not called.
-     * @author WFF
+     *
      * @since 2.1.8
      */
     public final TagRepository getTagRepository() {
@@ -3020,8 +3020,8 @@ public abstract class BrowserPage implements Serializable {
      * It will provide you a unique temporary directory path for this BrowserPage
      * instance. This temp directory and all of its sub-directories/files will be
      * deleted after this BrowserPage instance is garbage collected. You should
-     * override {@code useExternalDrivePath()} and return a valid path in it. The
-     * returned path should have read & write permission.
+     * override {@link #useExternalDrivePath()} and return a valid path in it. The
+     * returned path should have read &amp; write permission.
      *
      * @return the temporary directory if useExternalDrivePath is set
      * @since 12.0.0-beta.6
