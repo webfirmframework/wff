@@ -395,4 +395,3 @@ var wffBMUtil = new function() {
 	this.getDoubleFromOptimizedBytes = getDoubleFromOptimizedBytes;
 
 };
-wffGlobal.frz(wffBMUtil, false);

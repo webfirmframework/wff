@@ -852,4 +852,3 @@ var wffClientCRUDUtil = new function() {
 	};
 
 };
-wffGlobal.frz(wffClientCRUDUtil, false);

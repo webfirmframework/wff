@@ -114,18 +114,5 @@ window.wffGlobal = new function() {
 		this.decoder = new TextDecoder("utf-8");
 	}
 
-	//args: obj, deep freeze
-	var frz = ((typeof Object) !== "undefined" && Object.freeze) ? function(obj, d) {
-		if (d) {
-			for (var k in obj) {
-				var v = obj[k];
-				if (v && typeof v === "object") {
-					frz(v, d);
-				}
-			}
-		}
-		return Object.freeze(obj);
-	} : function(o, d) { };
-	this.frz = frz;
 };
-wffGlobal.frz(wffGlobal, true);
+

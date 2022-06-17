@@ -185,4 +185,4 @@ var wffWS = new function() {
 		return -1;
 	};
 };
-wffGlobal.frz(wffWS, false);
+

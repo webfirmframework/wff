@@ -199,8 +199,3 @@ var wffServerMethods = new function () {
 };
 //never ever rename ia
 var wffSM = wffServerMethods;
-
-wffGlobal.frz(wffTaskUtil, false);
-wffGlobal.frz(wffSM, false);
-
-
