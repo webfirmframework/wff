@@ -25,6 +25,9 @@ import java.lang.ref.WeakReference;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -145,6 +148,8 @@ public abstract class BrowserPage implements Serializable {
     // on benchmark
     // NB: not all methods of Queue is implemented, ensure before using it.
     private final Queue<ClientTasksWrapper> wffBMBytesHoldPushQueue = buildClientTasksWrapperQueue("out_hp");
+
+    private volatile Path tempDirPath = null;
 
     // there will be only one thread waiting for the lock so fairness must be
     // false and fairness may decrease the lock time
@@ -3009,6 +3014,33 @@ public abstract class BrowserPage implements Serializable {
 
     void removeLocalStorageToken(final int id, final String key, final long operationTimeMillis) {
         invokeRemoveLocalStorageTokenAtClient(id, key, operationTimeMillis);
+    }
+
+    /**
+     * It will provide you a unique temporary directory path for this BrowserPage
+     * instance. This temp directory and all of its sub-directories/files will be
+     * deleted after this BrowserPage instance is garbage collected. You should
+     * override {@code useExternalDrivePath()} and return a valid path in it. The
+     * returned path should have read & write permission.
+     *
+     * @return the temporary directory if useExternalDrivePath is set
+     * @since 12.0.0-beta.6
+     */
+    public Path getTempDirectory() {
+        if (externalDrivePath != null && tempDirPath != null) {
+            final Path dirPath = Paths.get(externalDrivePath, instanceId, "temp");
+            if (Files.notExists(dirPath)) {
+                try {
+                    Files.createDirectories(dirPath);
+                } catch (final IOException e) {
+                    LOGGER.severe(
+                            "The given path by useExternalDrivePath is invalid or it doesn't have read/write permission.");
+                }
+            }
+            tempDirPath = dirPath;
+        }
+
+        return tempDirPath;
     }
 
 }
