@@ -3027,7 +3027,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 12.0.0-beta.6
      */
     public Path getTempDirectory() {
-        if (externalDrivePath != null && tempDirPath != null) {
+        if (tempDirPath == null && externalDrivePath != null) {
             final Path dirPath = Paths.get(externalDrivePath, instanceId, "temp");
             if (Files.notExists(dirPath)) {
                 try {
@@ -3038,6 +3038,7 @@ public abstract class BrowserPage implements Serializable {
                             "The given path by useExternalDrivePath is invalid or it doesn't have read/write permission.");
                 }
             }
+
         }
 
         return tempDirPath;
