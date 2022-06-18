@@ -265,11 +265,13 @@ public enum BrowserPageContext {
      */
     public BrowserPage getBrowserPageIfValid(final String instanceId) {
         final BrowserPage browserPage = instanceIdBrowserPage.get(instanceId);
-        final MinIntervalExecutor autoCleanTaskExecutor = this.autoCleanTaskExecutor;
-        if (autoCleanTaskExecutor != null) {
-            if ((System.currentTimeMillis() - browserPage.getLastClientAccessedTime()) >= autoCleanTaskExecutor
-                    .minInterval()) {
-                return null;
+        if (browserPage != null) {
+            final MinIntervalExecutor autoCleanTaskExecutor = this.autoCleanTaskExecutor;
+            if (autoCleanTaskExecutor != null) {
+                if ((System.currentTimeMillis() - browserPage.getLastClientAccessedTime()) >= autoCleanTaskExecutor
+                        .minInterval()) {
+                    return null;
+                }
             }
         }
         return browserPage;
