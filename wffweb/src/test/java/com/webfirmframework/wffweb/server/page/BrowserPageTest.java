@@ -282,6 +282,8 @@ public class BrowserPageTest {
         final String uri = "/user";
         final String customServerMethodName1 = "customServerMethod1";
         final Object serverSideData = new String("someserversidedata");
+        
+        WffBMObject returnedResult = null;
 
         browserPage.addServerMethod(customServerMethodName1, event -> {
 
@@ -299,7 +301,8 @@ public class BrowserPageTest {
             return result;
         }, serverSideData);
 
-        browserPage.invokeServerMethod(customServerMethodName1, data, uri, inputStream, outputStream);
+        returnedResult = browserPage.invokeServerMethod(customServerMethodName1, data, uri, inputStream, outputStream);
+        assertEquals(result, returnedResult);
 
         browserPage.addServerMethod(customServerMethodName1, event -> {
 
@@ -318,7 +321,8 @@ public class BrowserPageTest {
             return result;
         });
 
-        browserPage.invokeServerMethod(customServerMethodName1, data, uri, inputStream, outputStream);
+        returnedResult = browserPage.invokeServerMethod(customServerMethodName1, data, uri, inputStream, outputStream);
+        assertEquals(result, returnedResult);
 
         final String customServerMethodName2 = "customServerMethod2";
 
@@ -338,7 +342,8 @@ public class BrowserPageTest {
             return result;
         });
 
-        browserPage.invokeServerMethod(customServerMethodName1, data, uri, inputStream, outputStream);
+        returnedResult = browserPage.invokeServerMethod(customServerMethodName1, data, uri, inputStream, outputStream);
+        assertEquals(result, returnedResult);
 
         browserPage.addServerMethod(customServerMethodName1, event -> {
 
@@ -356,7 +361,8 @@ public class BrowserPageTest {
             return result;
         }, serverSideData);
 
-        browserPage.invokeServerMethod(customServerMethodName1, data, uri, inputStream, outputStream);
+        returnedResult = browserPage.invokeServerMethod(customServerMethodName1, data, uri, inputStream, outputStream);
+        assertEquals(result, returnedResult);
 
     }
         
