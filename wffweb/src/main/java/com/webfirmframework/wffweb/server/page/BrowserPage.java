@@ -2149,7 +2149,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.0
      */
     public final void addServerMethod(final String methodName, final ServerMethod serverMethod) {
-        serverMethods.put(methodName, new ServerMethodWrapper(serverMethod, null));
+        addServerMethod(methodName, serverMethod, null);
     }
 
     /**
