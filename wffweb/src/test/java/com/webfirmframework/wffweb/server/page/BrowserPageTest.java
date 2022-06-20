@@ -282,7 +282,6 @@ public class BrowserPageTest {
         }
 
         final WffBMObject result = new WffBMObject();
-        final WffBMObject data = new WffBMObject();
         final InputStream inputStream = new ByteArrayInputStream(new byte[0]);
         final OutputStream outputStream = new ByteArrayOutputStream();
         final String uri = "/user";
