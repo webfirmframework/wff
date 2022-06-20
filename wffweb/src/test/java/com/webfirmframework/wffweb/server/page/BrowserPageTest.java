@@ -25,11 +25,13 @@ import java.lang.ref.Reference;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
+import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import com.webfirmframework.wffweb.tag.html.attribute.event.ServerMethod;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -275,6 +277,10 @@ public class BrowserPageTest {
             }
         };
 
+        record RecordData(InputStream inputStream, OutputStream outputStream) {
+
+        }
+
         final WffBMObject result = new WffBMObject();
         final WffBMObject data = new WffBMObject();
         final InputStream inputStream = new ByteArrayInputStream(new byte[0]);
@@ -282,38 +288,43 @@ public class BrowserPageTest {
         final String uri = "/user";
         final String customServerMethodName1 = "customServerMethod1";
         final Object serverSideData = new String("someserversidedata");
-        
+
+        final RecordData recordData = new RecordData(inputStream, outputStream);
+
         WffBMObject returnedResult = null;
 
         browserPage.addServerMethod(customServerMethodName1, event -> {
 
             assertNotNull(event);
-            assertEquals(data, event.data());
-            assertEquals(inputStream, event.inputStream());
-            assertEquals(outputStream, event.outputStream());
+
+            RecordData recordDataObj = (RecordData) event.recordData();
+            assertEquals(inputStream, recordDataObj.inputStream());
+            assertEquals(outputStream, recordDataObj.outputStream());
             assertEquals(uri, event.uri());
             assertEquals(customServerMethodName1, event.serverMethodName());
             assertEquals(serverSideData, event.serverSideData());
 
+            assertNull(event.data());
             assertNull(event.sourceTag());
             assertNull(event.sourceAttribute());
 
             return result;
         }, serverSideData);
 
-        returnedResult = browserPage.invokeServerMethod(customServerMethodName1, data, uri, inputStream, outputStream);
+        returnedResult = browserPage.invokeServerMethod(customServerMethodName1, recordData, uri);
         assertEquals(result, returnedResult);
 
         browserPage.addServerMethod(customServerMethodName1, event -> {
 
             assertNotNull(event);
-            assertEquals(data, event.data());
-            assertEquals(inputStream, event.inputStream());
-            assertEquals(outputStream, event.outputStream());
+            RecordData recordDataObj = (RecordData) event.recordData();
+            assertEquals(inputStream, recordDataObj.inputStream());
+            assertEquals(outputStream, recordDataObj.outputStream());
             assertEquals(uri, event.uri());
             assertEquals(customServerMethodName1, event.serverMethodName());
             assertEquals(customServerMethodName1, event.serverMethodName());
 
+            assertNull(event.data());
             assertNull(event.serverSideData());
             assertNull(event.sourceTag());
             assertNull(event.sourceAttribute());
@@ -321,7 +332,7 @@ public class BrowserPageTest {
             return result;
         });
 
-        returnedResult = browserPage.invokeServerMethod(customServerMethodName1, data, uri, inputStream, outputStream);
+        returnedResult = browserPage.invokeServerMethod(customServerMethodName1, recordData, uri);
         assertEquals(result, returnedResult);
 
         final String customServerMethodName2 = "customServerMethod2";
@@ -329,39 +340,41 @@ public class BrowserPageTest {
         browserPage.addServerMethod(customServerMethodName2, event -> {
 
             assertNotNull(event);
-            assertEquals(data, event.data());
-            assertEquals(inputStream, event.inputStream());
-            assertEquals(outputStream, event.outputStream());
+            RecordData recordDataObj = (RecordData) event.recordData();
+            assertEquals(inputStream, recordDataObj.inputStream());
+            assertEquals(outputStream, recordDataObj.outputStream());
             assertEquals(uri, event.uri());
             assertEquals(customServerMethodName2, event.serverMethodName());
             assertNull(event.serverSideData());
 
+            assertNull(event.data());
             assertNull(event.sourceTag());
             assertNull(event.sourceAttribute());
 
             return result;
         });
 
-        returnedResult = browserPage.invokeServerMethod(customServerMethodName1, data, uri, inputStream, outputStream);
+        returnedResult = browserPage.invokeServerMethod(customServerMethodName1, recordData, uri);
         assertEquals(result, returnedResult);
 
         browserPage.addServerMethod(customServerMethodName1, event -> {
 
             assertNotNull(event);
-            assertEquals(data, event.data());
-            assertEquals(inputStream, event.inputStream());
-            assertEquals(outputStream, event.outputStream());
+            RecordData recordDataObj = (RecordData) event.recordData();
+            assertEquals(inputStream, recordDataObj.inputStream());
+            assertEquals(outputStream, recordDataObj.outputStream());
             assertEquals(uri, event.uri());
             assertEquals(customServerMethodName1, event.serverMethodName());
             assertEquals(serverSideData, event.serverSideData());
 
+            assertNull(event.data());
             assertNull(event.sourceTag());
             assertNull(event.sourceAttribute());
 
             return result;
         }, serverSideData);
 
-        returnedResult = browserPage.invokeServerMethod(customServerMethodName1, data, uri, inputStream, outputStream);
+        returnedResult = browserPage.invokeServerMethod(customServerMethodName1, recordData, uri);
         assertEquals(result, returnedResult);
 
     }

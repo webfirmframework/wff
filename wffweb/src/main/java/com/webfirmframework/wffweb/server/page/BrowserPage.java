@@ -16,7 +16,6 @@
 package com.webfirmframework.wffweb.server.page;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serial;
 import java.io.Serializable;
@@ -2153,23 +2152,20 @@ public abstract class BrowserPage implements Serializable {
     }
 
     /**
-     * @param methodName   the method to invoke
-     * @param data         the data to be found in the event argument or null
-     * @param uri          the uri or null
-     * @param inputStream  the inputStream object or null
-     * @param outputStream the outputStream object or null
+     * @param methodName the method to invoke
+     * @param recordData the recordData to be found in the event argument or null
+     * @param uri        the uri or null
      * @return the object returned by
      *         {@link ServerMethod#invoke(ServerMethod.Event)} method.
      * @since 12.0.0-beta.6
      */
-    public final WffBMObject invokeServerMethod(final String methodName, final WffBMObject data, final String uri,
-            final InputStream inputStream, final OutputStream outputStream) {
+    public final WffBMObject invokeServerMethod(final String methodName, final Record recordData, final String uri) {
         final ServerMethodWrapper serverMethodWrapper = serverMethods.get(methodName);
         if (serverMethodWrapper != null) {
             final ServerMethod serverMethod = serverMethodWrapper.serverMethod();
             if (serverMethod != null) {
-                return serverMethod.invoke(new ServerMethod.Event(data, methodName,
-                        serverMethodWrapper.serverSideData(), uri, inputStream, outputStream));
+                return serverMethod.invoke(
+                        new ServerMethod.Event(methodName, serverMethodWrapper.serverSideData(), uri, recordData));
             }
         }
         throw new MethodNotImplementedException(methodName + " is not added by browserPage.addServerMethod method");
