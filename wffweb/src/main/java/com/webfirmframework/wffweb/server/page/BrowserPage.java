@@ -16,6 +16,7 @@
 package com.webfirmframework.wffweb.server.page;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serial;
 import java.io.Serializable;
@@ -57,6 +58,7 @@ import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.InvalidUsageException;
 import com.webfirmframework.wffweb.InvalidValueException;
+import com.webfirmframework.wffweb.MethodNotImplementedException;
 import com.webfirmframework.wffweb.NotRenderedException;
 import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.PushFailedException;
@@ -2148,6 +2150,29 @@ public abstract class BrowserPage implements Serializable {
      */
     public final void addServerMethod(final String methodName, final ServerMethod serverMethod) {
         serverMethods.put(methodName, new ServerMethodWrapper(serverMethod, null));
+    }
+
+    /**
+     * @param methodName   the method to invoke
+     * @param data         the data to be found in the event argument or null
+     * @param uri          the uri or null
+     * @param inputStream  the inputStream object or null
+     * @param outputStream the outputStream object or null
+     * @return the object returned by
+     *         {@link ServerMethod#invoke(ServerMethod.Event)} method.
+     * @since 12.0.0-beta.6
+     */
+    public final WffBMObject invokeServerMethod(final String methodName, final WffBMObject data, final String uri,
+            final InputStream inputStream, final OutputStream outputStream) {
+        final ServerMethodWrapper serverMethodWrapper = serverMethods.get(methodName);
+        if (serverMethodWrapper != null) {
+            final ServerMethod serverMethod = serverMethodWrapper.serverMethod();
+            if (serverMethod != null) {
+                return serverMethod.invoke(new ServerMethod.Event(data, methodName,
+                        serverMethodWrapper.serverSideData(), uri, inputStream, outputStream));
+            }
+        }
+        throw new MethodNotImplementedException(methodName + " is not added by browserPage.addServerMethod method");
     }
 
     /**
