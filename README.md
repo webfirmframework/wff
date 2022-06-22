@@ -1,7 +1,7 @@
 [![Build Status](https://img.shields.io/badge/build-passing-greensvg?style=flat)](https://app.circleci.com/pipelines/github/webfirmframework/wff?branch=master&filter=all)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/410601e16dc54b0a973c03845ad790c2)](https://www.codacy.com/app/webfirm-framework/wff?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=webfirmframework/wff&amp;utm_campaign=Badge_Grade)
 [![Stackoverflow](https://img.shields.io/badge/stackoverflow-wffweb-orange.svg)](https://stackoverflow.com/questions/tagged/wffweb)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.webfirmframework/wffweb/badge.svg)](https://search.maven.org/#artifactdetails%7Ccom.webfirmframework%7Cwffweb%7C12.0.0-beta.5%7Cjar)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.webfirmframework/wffweb/badge.svg)](https://search.maven.org/#artifactdetails%7Ccom.webfirmframework%7Cwffweb%7C12.0.0-beta.6%7Cjar)
 [![javadoc](https://img.shields.io/:wffweb-javadoc-blue.svg)](https://webfirmframework.github.io/wffweb/wffweb-javadoc)
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
 [![twitter](https://img.shields.io/badge/twitter-@wffweb-blue.svg)](https://webfirmframework.com/twitter)
@@ -22,7 +22,7 @@ To support us please donate anything you wish to the author of this framework!
 ##### [check out wffweb-3.x.x sample projects](https://github.com/webfirmframework/minimal-production-ready-projects)
 
 
-##### check out this demo app deployed at [https://webfirmframework.com/demo/](https://webfirmframework.com/demo/)
+##### check out [this sample project](https://github.com/webfirmframework/wffweb-demo-deployment) deployed at [https://webfirmframework.com/demo/](https://webfirmframework.com/demo/)
 
 
 (For the survival of this framework, some ads are shown in [webfirmframework.github.io](https://webfirmframework.github.io) and [webfirmframework.com](https://webfirmframework.com) web sites. These are temporary ads and will be removed soon. We are really sorry if it causes any inconvenience to your surfing.)   
