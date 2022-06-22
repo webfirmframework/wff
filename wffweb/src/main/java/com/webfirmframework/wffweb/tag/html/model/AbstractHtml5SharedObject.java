@@ -18,10 +18,7 @@ package com.webfirmframework.wffweb.tag.html.model;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.Map;
-import java.util.Set;
-import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -46,7 +43,6 @@ import com.webfirmframework.wffweb.internal.tag.html.listener.ReplaceListener;
 import com.webfirmframework.wffweb.internal.tag.html.listener.URIChangeTagSupplier;
 import com.webfirmframework.wffweb.internal.tag.html.listener.WffBMDataDeleteListener;
 import com.webfirmframework.wffweb.internal.tag.html.listener.WffBMDataUpdateListener;
-import com.webfirmframework.wffweb.tag.core.AbstractTagBase;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attribute.listener.AttributeValueChangeListener;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
@@ -62,8 +58,6 @@ public final class AbstractHtml5SharedObject implements Serializable {
     private static final long serialVersionUID = 1_0_1L;
 
     private boolean childModified;
-
-    private transient volatile Set<AbstractTagBase> rebuiltTags;
 
     private ChildTagAppendListener childTagAppendListener;
 
@@ -242,36 +236,6 @@ public final class AbstractHtml5SharedObject implements Serializable {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
         this.childModified = childModified;
-    }
-
-    /**
-     * gets the set containing the objects which are rebuilt after modified by its
-     * {@code AbstractTagBase} method. NB:- only for internal use. currently it's
-     * not used anywhere
-     *
-     * @param accessObject
-     * @return the rebuiltTags
-     * @since 1.0.0
-     * @author WFF
-     * @deprecated only for internal use currently it's not used anywhere. Needs to
-     *             remove this method later.
-     */
-    @Deprecated
-    Set<AbstractTagBase> getRebuiltTags(final SecurityObject accessObject) {
-
-        // TODO remove this method later
-        if (accessObject == null || !(IndexedClassType.ABSTRACT_HTML.equals(accessObject.forClassType()))) {
-            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
-        }
-
-        if (rebuiltTags == null) {
-            synchronized (this) {
-                if (rebuiltTags == null) {
-                    rebuiltTags = Collections.newSetFromMap(new WeakHashMap<AbstractTagBase, Boolean>());
-                }
-            }
-        }
-        return rebuiltTags;
     }
 
     /**

@@ -73,10 +73,13 @@ public abstract sealed class AbstractJsObject extends AbstractTagBase permits Ab
      */
     private Map<String, WffBMData> getWffDatas() {
         if (wffBMDatas == null) {
-            synchronized (this) {
+            commonLock().lock();
+            try {
                 if (wffBMDatas == null) {
                     wffBMDatas = new ConcurrentHashMap<>();
                 }
+            } finally {
+                commonLock().unlock();
             }
         }
         return wffBMDatas;

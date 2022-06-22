@@ -368,7 +368,7 @@ public final class JsUtil {
      *             method. It does the same job.
      */
     @Deprecated(forRemoval = true, since = "12.0.0-beta.5")
-    public static String toDynamicJs(final String s) {
+    static String toDynamicJs(final String s) {
 
         final int[] codePoints = strip(s.codePoints().toArray());
 

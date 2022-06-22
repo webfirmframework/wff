@@ -27,15 +27,43 @@ public interface ServerMethod extends Serializable {
     /**
      * Contains event data for {@link ServerMethod#invoke(Event)}.
      *
+     * @param data
      * @param sourceTag
      * @param sourceAttribute
      * @param serverMethodName
      * @param serverSideData
      * @param uri
-     *
+     * @param recordData
      */
     public static record Event(WffBMObject data, AbstractHtml sourceTag, AbstractAttribute sourceAttribute,
-            String serverMethodName, Object serverSideData, String uri) {
+            String serverMethodName, Object serverSideData, String uri, Record recordData) {
+
+        /**
+         * @param data
+         * @param sourceTag
+         * @param sourceAttribute
+         * @param serverMethodName
+         * @param serverSideData
+         * @param uri
+         */
+        public Event(final WffBMObject data, final AbstractHtml sourceTag, final AbstractAttribute sourceAttribute,
+                final String serverMethodName, final Object serverSideData, final String uri) {
+            this(data, sourceTag, sourceAttribute, serverMethodName, serverSideData, uri, null);
+        }
+
+        /**
+         * Note: only for internal use.
+         *
+         * @param serverMethodName
+         * @param serverSideData
+         * @param uri
+         * @param recordData
+         * @since 12.0.0-beta.6
+         */
+        public Event(final String serverMethodName, final Object serverSideData, final String uri,
+                final Record recordData) {
+            this(null, null, null, serverMethodName, serverSideData, uri, recordData);
+        }
 
         /**
          * @return the sourceTag

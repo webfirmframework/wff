@@ -17,15 +17,21 @@ package com.webfirmframework.wffweb.server.page;
 
 import static org.junit.Assert.*;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.ref.Reference;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
+import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import com.webfirmframework.wffweb.tag.html.attribute.event.ServerMethod;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -36,6 +42,7 @@ import com.webfirmframework.wffweb.tag.html.Body;
 import com.webfirmframework.wffweb.tag.html.Html;
 import com.webfirmframework.wffweb.tag.html.metainfo.Head;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
+import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
 
 @SuppressWarnings("serial")
 public class BrowserPageTest {
@@ -246,6 +253,129 @@ public class BrowserPageTest {
     
     public static Set<Reference<AbstractHtml>> getTagsForURIChangeForTest(BrowserPage browserPage) {
         return browserPage.getTagsForURIChangeForTest();
+    }
+    
+    @Test
+    public void testInvokeServerMethod() {
+        BrowserPage browserPage = new BrowserPage() {
+
+            @Override
+            public String webSocketUrl() {
+                return "wss://webfirmframework.com/ws-con";
+            }
+
+            @Override
+            public AbstractHtml render() {
+                Html html = new Html(null) {
+                    {
+                        new Head(this);
+                        new Body(this);
+                    }
+                };
+                html.setPrependDocType(true);
+                return html;
+            }
+        };
+
+        record RecordData(InputStream inputStream, OutputStream outputStream) {
+
+        }
+
+        final WffBMObject result = new WffBMObject();
+        final InputStream inputStream = new ByteArrayInputStream(new byte[0]);
+        final OutputStream outputStream = new ByteArrayOutputStream();
+        final String uri = "/user";
+        final String customServerMethodName1 = "customServerMethod1";
+        final Object serverSideData = new String("someserversidedata");
+
+        final RecordData recordData = new RecordData(inputStream, outputStream);
+
+        WffBMObject returnedResult = null;
+
+        browserPage.addServerMethod(customServerMethodName1, event -> {
+
+            assertNotNull(event);
+
+            RecordData recordDataObj = (RecordData) event.recordData();
+            assertEquals(inputStream, recordDataObj.inputStream());
+            assertEquals(outputStream, recordDataObj.outputStream());
+            assertEquals(uri, event.uri());
+            assertEquals(customServerMethodName1, event.serverMethodName());
+            assertEquals(serverSideData, event.serverSideData());
+
+            assertNull(event.data());
+            assertNull(event.sourceTag());
+            assertNull(event.sourceAttribute());
+
+            return result;
+        }, serverSideData);
+
+        returnedResult = browserPage.invokeServerMethod(customServerMethodName1, recordData, uri);
+        assertEquals(result, returnedResult);
+
+        browserPage.addServerMethod(customServerMethodName1, event -> {
+
+            assertNotNull(event);
+            RecordData recordDataObj = (RecordData) event.recordData();
+            assertEquals(inputStream, recordDataObj.inputStream());
+            assertEquals(outputStream, recordDataObj.outputStream());
+            assertEquals(uri, event.uri());
+            assertEquals(customServerMethodName1, event.serverMethodName());
+            assertEquals(customServerMethodName1, event.serverMethodName());
+
+            assertNull(event.data());
+            assertNull(event.serverSideData());
+            assertNull(event.sourceTag());
+            assertNull(event.sourceAttribute());
+
+            return result;
+        });
+
+        returnedResult = browserPage.invokeServerMethod(customServerMethodName1, recordData, uri);
+        assertEquals(result, returnedResult);
+
+        final String customServerMethodName2 = "customServerMethod2";
+
+        browserPage.addServerMethod(customServerMethodName2, event -> {
+
+            assertNotNull(event);
+            RecordData recordDataObj = (RecordData) event.recordData();
+            assertEquals(inputStream, recordDataObj.inputStream());
+            assertEquals(outputStream, recordDataObj.outputStream());
+            assertEquals(uri, event.uri());
+            assertEquals(customServerMethodName2, event.serverMethodName());
+            assertNull(event.serverSideData());
+
+            assertNull(event.data());
+            assertNull(event.sourceTag());
+            assertNull(event.sourceAttribute());
+
+            return result;
+        });
+
+        returnedResult = browserPage.invokeServerMethod(customServerMethodName1, recordData, uri);
+        assertEquals(result, returnedResult);
+
+        browserPage.addServerMethod(customServerMethodName1, event -> {
+
+            assertNotNull(event);
+            RecordData recordDataObj = (RecordData) event.recordData();
+            assertEquals(inputStream, recordDataObj.inputStream());
+            assertEquals(outputStream, recordDataObj.outputStream());
+            assertEquals(uri, event.uri());
+            assertEquals(customServerMethodName1, event.serverMethodName());
+            assertEquals(serverSideData, event.serverSideData());
+
+            assertNull(event.data());
+            assertNull(event.sourceTag());
+            assertNull(event.sourceAttribute());
+
+            return result;
+        }, serverSideData);
+
+        returnedResult = browserPage.invokeServerMethod(customServerMethodName1, recordData, uri);
+        assertEquals(result, returnedResult);
+
     }
         
 

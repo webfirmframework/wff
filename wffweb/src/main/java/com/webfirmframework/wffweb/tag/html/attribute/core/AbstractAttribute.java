@@ -517,10 +517,13 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
      */
     protected Map<String, String> getAttributeValueMap() {
         if (attributeValueMap == null) {
-            synchronized (this) {
+            commonLock().lock();
+            try {
                 if (attributeValueMap == null) {
                     setAttributeValueMap(new LinkedHashMap<String, String>());
                 }
+            } finally {
+                commonLock().unlock();
             }
         }
         return attributeValueMap;
@@ -1002,27 +1005,6 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
      * @param ownerTag the ownerTag to unset
      * @return true if the given ownerTag is an owner of the attribute.
      * @author WFF
-     * @since 2.0.0
-     * @deprecated it is only for the internal purpose
-     */
-    @Deprecated(forRemoval = true, since = "12.0.0-beta.5")
-    public boolean unsetOwnerTag(final AbstractHtml ownerTag) {
-        final long stamp = ownerTagsLock.writeLock();
-        final boolean result;
-        try {
-            result = ownerTags.remove(ownerTag);
-        } finally {
-            ownerTagsLock.unlockWrite(stamp);
-        }
-        return result;
-    }
-
-    /**
-     * NB:- this method is used for internal purpose, so it should not be consumed.
-     *
-     * @param ownerTag the ownerTag to unset
-     * @return true if the given ownerTag is an owner of the attribute.
-     * @author WFF
      * @since 3.0.15
      */
     final boolean unsetOwnerTagLockless(final AbstractHtml ownerTag) {
@@ -1064,11 +1046,14 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
      */
     protected Set<String> getAttributeValueSet() {
         if (attributeValueSet == null) {
-            synchronized (this) {
+            commonLock().lock();
+            try {
                 if (attributeValueSet == null) {
                     // because the load factor is 0.75f
                     attributeValueSet = new LinkedHashSet<>(2);
                 }
+            } finally {
+                commonLock().unlock();
             }
         }
         return attributeValueSet;
@@ -1387,12 +1372,15 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
     public void addValueChangeListener(final AttributeValueChangeListener valueChangeListener) {
         Set<AttributeValueChangeListener> valueChangeListeners = this.valueChangeListeners;
         if (valueChangeListeners == null) {
-            synchronized (this) {
+            commonLock().lock();
+            try {
                 valueChangeListeners = this.valueChangeListeners;
                 if (valueChangeListeners == null) {
                     valueChangeListeners = new LinkedHashSet<>();
                     this.valueChangeListeners = valueChangeListeners;
                 }
+            } finally {
+                commonLock().unlock();
             }
         }
 
