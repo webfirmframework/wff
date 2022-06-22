@@ -25,6 +25,23 @@ jobs:
           name: Test
           command: mvn test
 
+  build-and-test-openjdk-18:  
+    docker:
+      - image: cimg/openjdk:18.0
+    working_directory: ~/wff/wffweb
+    steps:
+      # Checkout the code as the first step.
+      - checkout:
+          path: ~/wff
+      # Use mvn clean and package as the standard maven build phase
+      - run:
+          name: Build
+          command: mvn -B -DskipTests clean package
+      # Then run your tests!
+      - run:
+          name: Test
+          command: mvn test
+
 
 workflows:
   # Below is the definition of your workflow.
@@ -34,3 +51,4 @@ workflows:
   sample: 
     jobs:
       - build-and-test-openjdk-17
+      - build-and-test-openjdk-18
