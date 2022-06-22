@@ -29,7 +29,7 @@ import com.webfirmframework.wffweb.tag.html.AbstractHtml;
  * @deprecated use {@link NoTag} instead of this class.
  */
 @Deprecated(forRemoval = true, since = "12.0.0-beta.1")
-public class Blank extends NoTag {
+class Blank extends NoTag {
 
     // TODO This class needs to be tested properly
 
@@ -43,7 +43,7 @@ public class Blank extends NoTag {
      *
      * @since 1.0.0
      */
-    public Blank(final AbstractHtml base, final AbstractHtml... children) {
+    Blank(final AbstractHtml base, final AbstractHtml... children) {
         super(base, children);
     }
 

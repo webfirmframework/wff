@@ -2361,12 +2361,15 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
         Map<String, AbstractAttribute> attributesMap = this.attributesMap;
         if (attributesMap == null) {
-            synchronized (this) {
+            commonLock().lock();
+            try {
                 attributesMap = this.attributesMap;
                 if (attributesMap == null) {
                     attributesMap = new ConcurrentHashMap<>(attributes.length);
                     this.attributesMap = attributesMap;
                 }
+            } finally {
+                commonLock().unlock();
             }
         }
 
@@ -4361,10 +4364,13 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      */
     protected StringBuilder getHtmlMiddleSB() {
         if (htmlMiddleSB == null) {
-            synchronized (this) {
+            commonLock().lock();
+            try {
                 if (htmlMiddleSB == null) {
                     htmlMiddleSB = new StringBuilder();
                 }
+            } finally {
+                commonLock().unlock();
             }
         }
         return htmlMiddleSB;
@@ -5409,12 +5415,15 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
     private void initDataWffId(final AbstractHtml5SharedObject sharedObject) {
         if (dataWffId == null) {
-            synchronized (this) {
+            commonLock().lock();
+            try {
                 if (dataWffId == null) {
                     final DataWffId newDataWffId = sharedObject.getNewDataWffId(ACCESS_OBJECT);
                     addAttributesLockless(false, newDataWffId);
                     dataWffId = newDataWffId;
                 }
+            } finally {
+                commonLock().unlock();
             }
         } else {
             throw new WffRuntimeException("dataWffId already exists");
@@ -5436,7 +5445,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      */
     public void setDataWffId(final DataWffId dataWffId) {
         if (this.dataWffId == null) {
-            synchronized (this) {
+            commonLock().lock();
+            try {
                 if (this.dataWffId == null) {
 
                     final Lock lock = lockAndGetWriteLock();
@@ -5448,6 +5458,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                     }
 
                 }
+            } finally {
+                commonLock().unlock();
             }
         } else {
             throw new WffRuntimeException("dataWffId already exists");

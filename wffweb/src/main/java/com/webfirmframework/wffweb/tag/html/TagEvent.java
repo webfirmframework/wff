@@ -17,16 +17,10 @@ package com.webfirmframework.wffweb.tag.html;
 
 import com.webfirmframework.wffweb.common.URIEvent;
 
+/**
+ * @param sourceTag
+ * @param uriEvent
+ * @since 12.0.0-beta.5
+ */
 public record TagEvent(AbstractHtml sourceTag, URIEvent uriEvent) {
-
-    /**
-     * @return the uri
-     * @deprecated This method will be removed in the next release, use
-     *             {@link #uriEvent()} and get the {@link URIEvent#uriAfter()}, i.e.
-     *             the current uri.
-     */
-    @Deprecated(forRemoval = true, since = "12.0.0-beta.5")
-    public String uri() {
-        return uriEvent.uriAfter();
-    }
 }

@@ -20,6 +20,8 @@ import java.nio.ByteBuffer;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * PayloadProcessor for BrowserPage WebSocket's incoming bytes
@@ -33,7 +35,7 @@ public class PayloadProcessor implements Serializable {
 
     // ByteBuffer will be useful if we are planning for any memory optimization
     // for the saved bytes
-    private transient final Queue<ByteBuffer> wsMessageChunks = new ConcurrentLinkedQueue<>();
+    private final transient Queue<ByteBuffer> wsMessageChunks = new ConcurrentLinkedQueue<>();
 
     private final AtomicInteger wsMessageChunksTotalCapacity = new AtomicInteger(0);
 
@@ -41,9 +43,12 @@ public class PayloadProcessor implements Serializable {
 
     private final boolean singleThreaded;
 
+    private final transient Lock commonLock;
+
     public PayloadProcessor(final BrowserPage browserPage) {
         this.browserPage = browserPage;
         singleThreaded = false;
+        commonLock = singleThreaded ? null : new ReentrantLock(true);
     }
 
     /**
@@ -54,6 +59,7 @@ public class PayloadProcessor implements Serializable {
     public PayloadProcessor(final BrowserPage browserPage, final boolean singleThreaded) {
         this.browserPage = browserPage;
         this.singleThreaded = singleThreaded;
+        commonLock = singleThreaded ? null : new ReentrantLock(true);
     }
 
     /**
@@ -105,8 +111,11 @@ public class PayloadProcessor implements Serializable {
             if (singleThreaded) {
                 transferToBrowserPageWS(messagePart, last);
             } else {
-                synchronized (this) {
+                commonLock.lock();
+                try {
                     transferToBrowserPageWS(messagePart, last);
+                } finally {
+                    commonLock.unlock();
                 }
             }
 

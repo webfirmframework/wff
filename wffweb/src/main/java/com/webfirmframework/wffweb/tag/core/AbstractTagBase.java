@@ -16,15 +16,23 @@
  */
 package com.webfirmframework.wffweb.tag.core;
 
+import java.util.concurrent.locks.ReentrantLock;
+
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 
 /**
  * @author WFF
  *
  */
-public abstract sealed class AbstractTagBase implements TagBase permits AbstractJsObject,AbstractAttribute {
+public abstract sealed class AbstractTagBase implements TagBase permits AbstractJsObject, AbstractAttribute {
 
     private static final long serialVersionUID = 1_0_0L;
+
+    /**
+     * replacement lock for synchronized block. i.e. synchronized (this) may be
+     * replaced with this lock
+     */
+    private final ReentrantLock commonLock = new ReentrantLock();
 
     private volatile boolean rebuild = true;
 
@@ -105,4 +113,14 @@ public abstract sealed class AbstractTagBase implements TagBase permits Abstract
         this.data = data;
     }
 
+    /**
+     * replacement lock for synchronized block. i.e. synchronized (this) may be
+     * replaced with this lock
+     *
+     * @return ReentrantLock
+     * @since 12.0.0-beta.6
+     */
+    protected final ReentrantLock commonLock() {
+        return commonLock;
+    }
 }

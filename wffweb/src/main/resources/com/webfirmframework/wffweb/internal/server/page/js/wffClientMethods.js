@@ -70,4 +70,3 @@ var wffClientMethods = new function() {
 		return true;
 	};
 };
-wffGlobal.frz(wffClientMethods, false);

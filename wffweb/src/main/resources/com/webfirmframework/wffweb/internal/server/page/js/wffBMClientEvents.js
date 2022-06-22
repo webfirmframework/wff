@@ -109,4 +109,3 @@ var wffBMClientEvents = new function() {
 	};
 
 };
-wffGlobal.frz(wffBMClientEvents, false);
