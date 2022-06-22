@@ -51,3 +51,4 @@ workflows:
   sample: 
     jobs:
       - build-and-test-openjdk-17
+      - build-and-test-openjdk-18
