@@ -175,6 +175,12 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
     private volatile URIEvent lastURIEvent;
 
+    private volatile int lastWhenURIIndex = -1;
+
+    private volatile boolean lastWhenURISuccess = false;
+
+    private volatile URIChangeContent lastURIChangeContent = null;
+
     private volatile Boolean lastURIPredicateTest = null;
 
     volatile long hierarchyOrder;
@@ -216,7 +222,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
     private static record URIChangeContent(Predicate<URIEvent> uriEventPredicate, Supplier<AbstractHtml[]> successTags,
             Supplier<AbstractHtml[]> failTags, Consumer<TagEvent> successConsumer, Consumer<TagEvent> failConsumer,
-            WhenURIMethodType methodType) implements Serializable {
+            WhenURIMethodType methodType, WhenURIProperties whenURIProperties) implements Serializable {
     }
 
     static {
@@ -7019,7 +7025,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             final AbstractHtml5SharedObject sharedObject = this.sharedObject;
 
             final URIChangeContent uriChangeContent = new URIChangeContent(uriEventPredicate, successTagsSupplier,
-                    failTagsSupplier, successConsumer, failConsumer, methodType);
+                    failTagsSupplier, successConsumer, failConsumer, methodType, new WhenURIProperties());
 
             if (uriChangeContents == null && index >= 0) {
                 throw new InvalidValueException("There is no existing whenURI condition to replace");
@@ -7056,6 +7062,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             uriChangeContents = null;
             lastURIEvent = null;
             lastURIPredicateTest = null;
+            lastWhenURIIndex = -1;
+            lastURIChangeContent = null;
         } finally {
             lock.unlock();
         }
@@ -7078,6 +7086,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 uriChangeContents = null;
                 lastURIEvent = null;
                 lastURIPredicateTest = null;
+                lastWhenURIIndex = -1;
+                lastURIChangeContent = null;
             }
 
         } finally {
@@ -7145,44 +7155,34 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
             boolean executed = false;
 
+            int index = 0;
+
+            int uriChangeContentIndex = index;
+
+            final int lastWhenURIIndexLocal = lastWhenURIIndex;
+
             for (final URIChangeContent each : uriChangeContents) {
                 lastUriChangeContent = each;
+                lastURIChangeContent = each;
+                uriChangeContentIndex = index;
+                lastWhenURIIndex = uriChangeContentIndex;
+                index++;
 
                 if (each.uriEventPredicate.test(uriEvent)) {
+                    final WhenURIProperties whenURIProperties = each.whenURIProperties();
                     if (each.methodType.equals(WhenURIMethodType.SUCCESS_CONSUMER_FAIL_CONSUMER)
                             || each.methodType.equals(WhenURIMethodType.SUCCESS_CONSUMER_FAIL_SUPPLIER)) {
-                        each.successConsumer.accept(new TagEvent(this, uriEvent));
-                    } else {
-                        final AbstractHtml[] innerHtmls = each.successTags.get();
-                        if (innerHtmls != null) {
-                            // just to throw exception if it contains null or duplicate element
-                            Set.of(innerHtmls);
-                            if (children == null || !Arrays.equals(children.toArray(), innerHtmls)) {
-                                addInnerHtmls(true, updateClient, innerHtmls);
-                            }
-                            insertedHtmls = innerHtmls;
-                        }
-                    }
-
-                    executed = true;
-                    break;
-                }
-            }
-
-            if (lastUriChangeContent != null) {
-                lastURIPredicateTest = executed;
-                if (!executed) {
-                    if (lastUriChangeContent.methodType.equals(WhenURIMethodType.SUCCESS_CONSUMER_FAIL_CONSUMER)
-                            || lastUriChangeContent.methodType
-                                    .equals(WhenURIMethodType.SUCCESS_SUPPLIER_FAIL_CONSUMER)) {
-                        if (lastUriChangeContent.failConsumer != null) {
-                            lastUriChangeContent.failConsumer.accept(new TagEvent(this, uriEvent));
-                            lastURIPredicateTest = true;
+                        if (whenURIProperties == null || lastWhenURIIndexLocal == -1
+                                || !whenURIProperties.duplicateSuccessPrevented
+                                || lastWhenURIIndexLocal != uriChangeContentIndex || !lastWhenURISuccess) {
+                            each.successConsumer.accept(new TagEvent(this, uriEvent));
+                            lastWhenURISuccess = true;
                         }
                     } else {
-                        final Supplier<AbstractHtml[]> failTags = lastUriChangeContent.failTags();
-                        if (failTags != null) {
-                            final AbstractHtml[] innerHtmls = failTags.get();
+                        if (whenURIProperties == null || lastWhenURIIndexLocal == -1
+                                || !whenURIProperties.duplicateSuccessPrevented
+                                || lastWhenURIIndexLocal != uriChangeContentIndex || !lastWhenURISuccess) {
+                            final AbstractHtml[] innerHtmls = each.successTags.get();
                             if (innerHtmls != null) {
                                 // just to throw exception if it contains null or duplicate element
                                 Set.of(innerHtmls);
@@ -7191,22 +7191,106 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                                 }
                                 insertedHtmls = innerHtmls;
                             }
+                            lastWhenURISuccess = true;
+                        }
+                    }
+
+                    executed = true;
+                    break;
+                }
+
+            }
+
+            if (lastUriChangeContent != null) {
+                lastURIPredicateTest = executed;
+                if (!executed) {
+                    final WhenURIProperties whenURIProperties = lastUriChangeContent.whenURIProperties();
+                    if (lastUriChangeContent.methodType.equals(WhenURIMethodType.SUCCESS_CONSUMER_FAIL_CONSUMER)
+                            || lastUriChangeContent.methodType
+                                    .equals(WhenURIMethodType.SUCCESS_SUPPLIER_FAIL_CONSUMER)) {
+                        if (lastUriChangeContent.failConsumer != null) {
+                            if (whenURIProperties == null || lastWhenURIIndexLocal == -1
+                                    || !whenURIProperties.duplicateFailPrevented
+                                    || lastWhenURIIndexLocal != uriChangeContentIndex || lastWhenURISuccess) {
+                                lastUriChangeContent.failConsumer.accept(new TagEvent(this, uriEvent));
+                                lastWhenURISuccess = false;
+                            }
                             lastURIPredicateTest = true;
+                        }
+                    } else {
+                        final Supplier<AbstractHtml[]> failTags = lastUriChangeContent.failTags();
+                        if (failTags != null) {
+                            if (whenURIProperties == null || lastWhenURIIndexLocal == -1
+                                    || !whenURIProperties.duplicateFailPrevented
+                                    || lastWhenURIIndexLocal != uriChangeContentIndex || lastWhenURISuccess) {
+                                final AbstractHtml[] innerHtmls = failTags.get();
+                                if (innerHtmls != null) {
+                                    // just to throw exception if it contains null or duplicate element
+                                    Set.of(innerHtmls);
+                                    if (children == null || !Arrays.equals(children.toArray(), innerHtmls)) {
+                                        addInnerHtmls(true, updateClient, innerHtmls);
+                                    }
+                                    insertedHtmls = innerHtmls;
+                                }
+                                lastWhenURISuccess = false;
+                            }
+                            lastURIPredicateTest = true;
+
                         } else {
-                            if (updateClient) {
-                                removeAllChildren();
-                            } else {
-                                removeAllChildrenAndGetEventsLockless(updateClient);
+                            if (whenURIProperties == null || lastWhenURIIndexLocal == -1
+                                    || !whenURIProperties.duplicateFailPrevented
+                                    || lastWhenURIIndexLocal != uriChangeContentIndex || lastWhenURISuccess) {
+                                if (updateClient) {
+                                    removeAllChildren();
+                                } else {
+                                    removeAllChildrenAndGetEventsLockless(updateClient);
+                                }
+                                lastWhenURISuccess = false;
                             }
                         }
                     }
                 }
 
                 lastURIEvent = uriEvent;
+                lastURIChangeContent = null;
             }
+
         }
 
         return insertedHtmls;
+    }
+
+    @Override
+    public WhenURIProperties getCurrentWhenURIProperties() {
+        final Lock lock = lockAndGetReadLock();
+        try {
+            // lastURIChangeContent is just to check if this method is called inside
+            // predicate, success or fail object's methods.
+            final URIChangeContent lastURIChangeContent = this.lastURIChangeContent;
+            if (lastURIChangeContent != null) {
+                return lastURIChangeContent.whenURIProperties();
+            }
+        } finally {
+            lock.unlock();
+        }
+        return null;
+    }
+
+    @Override
+    public WhenURIProperties getWhenURIProperties(final int index) {
+        final Lock lock = lockAndGetReadLock();
+        try {
+            final List<URIChangeContent> uriChangeContents = this.uriChangeContents;
+            if (uriChangeContents != null) {
+                final URIChangeContent uriChangeContent = uriChangeContents.get(index);
+                if (uriChangeContent != null) {
+                    return uriChangeContent.whenURIProperties();
+                }
+            }
+        } finally {
+            lock.unlock();
+        }
+        return null;
     }
 
 }

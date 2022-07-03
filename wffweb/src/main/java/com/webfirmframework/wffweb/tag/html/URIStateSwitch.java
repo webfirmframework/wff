@@ -41,14 +41,15 @@ public sealed interface URIStateSwitch permits AbstractHtml {
      * multiple times to set multiple actions,
      * {@link AbstractHtml#removeURIChangeAction(int)} may be used to remove each
      * action at the given index. If multiple actions are added by this method, only
-     * the first {@code uriEventPredicate} test passed action will be performed on uri
-     * change. The main intention of this method is to set children tags for this
-     * tag when the given {@code uriEventPredicate} test passes on URI change. <br>
+     * the first {@code uriEventPredicate} test passed action will be performed on
+     * uri change. The main intention of this method is to set children tags for
+     * this tag when the given {@code uriEventPredicate} test passes on URI change.
+     * <br>
      * Note: This method uses {@code null} for {@code failTagsSupplier}.
      *
-     * @param uriEventPredicate        the predicate object to test, the argument of the
-     *                            test method is the changed uri details, if the test method
-     *                            returns true then the tags given by
+     * @param uriEventPredicate   the predicate object to test, the argument of the
+     *                            test method is the changed uri details, if the
+     *                            test method returns true then the tags given by
      *                            {@code successTagsSupplier} will be added as inner
      *                            html to this tag. If test returns false, the tags
      *                            given by {@code failTagsSupplier} will be added as
@@ -63,7 +64,8 @@ public sealed interface URIStateSwitch permits AbstractHtml {
      * @return URIStateSwitch
      * @since 12.0.0-beta.1
      */
-    URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate, final Supplier<AbstractHtml[]> successTagsSupplier);
+    URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate,
+            final Supplier<AbstractHtml[]> successTagsSupplier);
 
     /**
      * Replaces the children of this tag with the tags supplied by
@@ -78,14 +80,15 @@ public sealed interface URIStateSwitch permits AbstractHtml {
      * multiple times to set multiple actions,
      * {@link AbstractHtml#removeURIChangeAction(int)} may be used to remove each
      * action at the given index. If multiple actions are added by this method, only
-     * the first {@code uriEventPredicate} test passed action will be performed on uri
-     * change. The main intention of this method is to set children tags for this
-     * tag when the given {@code uriEventPredicate} test passes on URI change. <br>
+     * the first {@code uriEventPredicate} test passed action will be performed on
+     * uri change. The main intention of this method is to set children tags for
+     * this tag when the given {@code uriEventPredicate} test passes on URI change.
+     * <br>
      * Note: This method uses {@code null} for {@code failTagsSupplier}.
      *
-     * @param uriEventPredicate        the predicate object to test, the argument of the
-     *                            test method is the changed uri details, if the test method
-     *                            returns true then the tags given by
+     * @param uriEventPredicate   the predicate object to test, the argument of the
+     *                            test method is the changed uri details, if the
+     *                            test method returns true then the tags given by
      *                            {@code successTagsSupplier} will be added as inner
      *                            html to this tag. If test returns false, the tags
      *                            given by {@code failTagsSupplier} will be added as
@@ -104,8 +107,8 @@ public sealed interface URIStateSwitch permits AbstractHtml {
      * @return URIStateSwitch
      * @since 12.0.0-beta.1
      */
-    URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate, final Supplier<AbstractHtml[]> successTagsSupplier,
-            final int index);
+    URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate,
+            final Supplier<AbstractHtml[]> successTagsSupplier, final int index);
 
     /**
      * Replaces the children of this tag with the tags supplied by
@@ -120,13 +123,13 @@ public sealed interface URIStateSwitch permits AbstractHtml {
      * multiple times to set multiple actions,
      * {@link AbstractHtml#removeURIChangeAction(int)} may be used to remove each
      * action at the given index. If multiple actions are added by this method, only
-     * the first {@code uriEventPredicate} test passed action will be performed on uri
-     * change. The main intention of this method is to set children tags for this
-     * tag when the given {@code uriEventPredicate} test passes on URI change.
+     * the first {@code uriEventPredicate} test passed action will be performed on
+     * uri change. The main intention of this method is to set children tags for
+     * this tag when the given {@code uriEventPredicate} test passes on URI change.
      *
-     * @param uriEventPredicate        the predicate object to test, the argument of the
-     *                            test method is the changed uri details, if the test method
-     *                            returns true then the tags given by
+     * @param uriEventPredicate   the predicate object to test, the argument of the
+     *                            test method is the changed uri details, if the
+     *                            test method returns true then the tags given by
      *                            {@code successTagsSupplier} will be added as inner
      *                            html to this tag. If test returns false, the tags
      *                            given by {@code failTagsSupplier} will be added as
@@ -145,8 +148,8 @@ public sealed interface URIStateSwitch permits AbstractHtml {
      * @return URIStateSwitch
      * @since 12.0.0-beta.1
      */
-    URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate, final Supplier<AbstractHtml[]> successTagsSupplier,
-            final Supplier<AbstractHtml[]> failTagsSupplier);
+    URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate,
+            final Supplier<AbstractHtml[]> successTagsSupplier, final Supplier<AbstractHtml[]> failTagsSupplier);
 
     /**
      * Replaces the children of this tag with the tags supplied by
@@ -161,13 +164,13 @@ public sealed interface URIStateSwitch permits AbstractHtml {
      * multiple times to set multiple actions,
      * {@link AbstractHtml#removeURIChangeAction(int)} may be used to remove each
      * action at the given index. If multiple actions are added by this method, only
-     * the first {@code uriEventPredicate} test passed action will be performed on uri
-     * change. The main intention of this method is to set children tags for this
-     * tag when the given {@code uriEventPredicate} test passes on URI change.
+     * the first {@code uriEventPredicate} test passed action will be performed on
+     * uri change. The main intention of this method is to set children tags for
+     * this tag when the given {@code uriEventPredicate} test passes on URI change.
      *
-     * @param uriEventPredicate        the predicate object to test, the argument of the
-     *                            test method is the changed uri details, if the test method
-     *                            returns true then the tags given by
+     * @param uriEventPredicate   the predicate object to test, the argument of the
+     *                            test method is the changed uri details, if the
+     *                            test method returns true then the tags given by
      *                            {@code successTagsSupplier} will be added as inner
      *                            html to this tag. If test returns false, the tags
      *                            given by {@code failTagsSupplier} will be added as
@@ -188,14 +191,15 @@ public sealed interface URIStateSwitch permits AbstractHtml {
      * @return URIStateSwitch
      * @since 12.0.0-beta.1
      */
-    URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate, final Supplier<AbstractHtml[]> successTagsSupplier,
-            final Supplier<AbstractHtml[]> failTagsSupplier, final int index);
+    URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate,
+            final Supplier<AbstractHtml[]> successTagsSupplier, final Supplier<AbstractHtml[]> failTagsSupplier,
+            final int index);
 
-    URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate, final Supplier<AbstractHtml[]> successTagsSupplier,
-            final Consumer<TagEvent> failConsumer, final int index);
+    URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate,
+            final Supplier<AbstractHtml[]> successTagsSupplier, final Consumer<TagEvent> failConsumer, final int index);
 
-    URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate, final Supplier<AbstractHtml[]> successTagsSupplier,
-            final Consumer<TagEvent> failConsumer);
+    URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate,
+            final Supplier<AbstractHtml[]> successTagsSupplier, final Consumer<TagEvent> failConsumer);
 
     URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate, final Consumer<TagEvent> successConsumer,
             final Supplier<AbstractHtml[]> failTagsSupplier, final int index);
@@ -206,14 +210,15 @@ public sealed interface URIStateSwitch permits AbstractHtml {
     /**
      *
      * @param uriEventPredicate
-     * @param successConsumer the consumer to execute if {@code uriEventPredicate.test()}
-     *                        returns true
-     * @param failConsumer    the consumer to execute if {@code uriEventPredicate.test()}
-     *                        returns false. {@code null} can be passed if there is
-     *                        no {@code failConsumer}.
-     * @param index           the position at which this action be the index to
-     *                        replace the existing action with this. A value less
-     *                        than zero will add this condition to the last.
+     * @param successConsumer   the consumer to execute if
+     *                          {@code uriEventPredicate.test()} returns true
+     * @param failConsumer      the consumer to execute if
+     *                          {@code uriEventPredicate.test()} returns false.
+     *                          {@code null} can be passed if there is no
+     *                          {@code failConsumer}.
+     * @param index             the position at which this action be the index to
+     *                          replace the existing action with this. A value less
+     *                          than zero will add this condition to the last.
      * @return URIStateSwitch
      * @since 12.0.0-beta.1
      */
@@ -222,11 +227,12 @@ public sealed interface URIStateSwitch permits AbstractHtml {
 
     /**
      * @param uriEventPredicate
-     * @param successConsumer the consumer to execute if {@code uriEventPredicate.test()}
-     *                        returns true
-     * @param failConsumer    the consumer to execute if {@code uriEventPredicate.test()}
-     *                        returns false. {@code null} can be passed if there is
-     *                        no {@code failConsumer}.
+     * @param successConsumer   the consumer to execute if
+     *                          {@code uriEventPredicate.test()} returns true
+     * @param failConsumer      the consumer to execute if
+     *                          {@code uriEventPredicate.test()} returns false.
+     *                          {@code null} can be passed if there is no
+     *                          {@code failConsumer}.
      * @return URIStateSwitch
      * @since 12.0.0-beta.1
      */
@@ -236,11 +242,11 @@ public sealed interface URIStateSwitch permits AbstractHtml {
     /**
      *
      * @param uriEventPredicate
-     * @param successConsumer the consumer to execute if {@code uriEventPredicate.test()}
-     *                        returns true *
-     * @param index           the position at which this action be the index to
-     *                        replace the existing action with this. A value less
-     *                        than zero will add this condition to the last.
+     * @param successConsumer   the consumer to execute if
+     *                          {@code uriEventPredicate.test()} returns true *
+     * @param index             the position at which this action be the index to
+     *                          replace the existing action with this. A value less
+     *                          than zero will add this condition to the last.
      * @return URIStateSwitch
      * @since 12.0.0-beta.1
      */
@@ -249,8 +255,8 @@ public sealed interface URIStateSwitch permits AbstractHtml {
 
     /**
      * @param uriEventPredicate
-     * @param successConsumer the consumer to execute if {@code uriEventPredicate.test()}
-     *                        returns true
+     * @param successConsumer   the consumer to execute if
+     *                          {@code uriEventPredicate.test()} returns true
      * @return URIStateSwitch
      * @since 12.0.0-beta.1
      */
@@ -268,6 +274,21 @@ public sealed interface URIStateSwitch permits AbstractHtml {
      * @since 12.0.0-beta.1
      */
     void removeURIChangeAction(final int index);
+
+    /**
+     * @return the object of WhenURIProperties only if it is called inside the
+     *         uriEventPredicate, success object's method or fail object's method.
+     * @since 12.0.0
+     */
+    public WhenURIProperties getCurrentWhenURIProperties();
+
+    /**
+     * @param index the index at which the WhenURIProperties should be obtained.
+     * @return the object of WhenURIProperties only if it is available at specified
+     *         index.
+     * @since 12.0.0
+     */
+    public WhenURIProperties getWhenURIProperties(final int index);
 
     /**
      * @param <T> the Tag class
