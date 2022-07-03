@@ -421,6 +421,18 @@ public class WhenURIUseCaseTest {
                 div2.whenURI success
                 div2.whenURI fail
                 """, controlFlow.toString());
+        
+        browserPage.setURI("/user/items/view/123");
+
+        assertEquals("<div data-wff-id=\"S3\">successcontent<div data-wff-id=\"S4\"></div></div>", div1.toBigHtmlString());
+        
+        assertEquals("""
+                div1.whenURI fail
+                div1.whenURI success
+                div2.whenURI success
+                div2.whenURI fail
+                div2.whenURI success
+                """, controlFlow.toString());
 
         
     }
