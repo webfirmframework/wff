@@ -448,7 +448,8 @@ public class StringUtilTest {
         int deli = Character.codePointAt(";", 0);
         
         assertEquals("one;two;three", StringUtil.split("one;two;three", ':')[0]);
-        
+        assertArrayEquals(new String[]{"", "some", "uri", "pathparam", "[pathUri]", "gap", "{userId}"}, StringUtil.split("/some/uri/pathparam/[pathUri]/gap/{userId}", '/'));
+
         assertEquals("without", StringUtil.split("without", deli)[0]);
         
         assertEquals("", StringUtil.split("", deli)[0]);

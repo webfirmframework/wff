@@ -25,7 +25,6 @@ import com.webfirmframework.wffweb.InvalidValueException;
 /**
  * @author WFF
  * @since 12.0.0-beta.2
- *
  */
 public final class URIUtil {
 
@@ -34,7 +33,6 @@ public final class URIUtil {
     }
 
     /**
-     *
      * <pre>
      * <code>
      * Map&lt;String, String&gt; pathParams = URIUtil.parseValues("/user/itemGroups/{itemGroupId}/items/view/{itemId}", "/user/itemGroups/1/items/view/2");
@@ -46,10 +44,13 @@ public final class URIUtil {
      * @param uri
      * @return map containing the variable name and its corresponding value parsed
      *         from the uri.
-     *
      * @since 12.0.0-beta.2
      */
     public static Map<String, String> parseValues(final String pattern, final String uri) {
+        return parseValuesWithURIPartVariable(pattern, uri);
+    }
+
+    private static Map<String, String> parseValuesOld(final String pattern, final String uri) {
 
         final String[] patternParts = StringUtil.split(pattern, '/');
         final String[] urlParts = StringUtil.split(uri, '/');
@@ -86,8 +87,170 @@ public final class URIUtil {
         return Map.copyOf(variableNameValue);
     }
 
+    private static boolean startsWithCurlyBracket(final String s) {
+        if (s.length() == 0) {
+            return false;
+        }
+        return s.codePointAt(0) == '{';
+    }
+
+    private static boolean endsWithCurlyBracket(final String s) {
+        if (s.length() == 0) {
+            return false;
+        }
+        return s.codePointAt(s.length() - 1) == '}';
+    }
+
+    private static boolean startsWithSquareBracket(final String s) {
+        if (s.length() == 0) {
+            return false;
+        }
+        return s.codePointAt(0) == '[';
+    }
+
+    private static boolean endsWithSquareBracket(final String s) {
+        if (s.length() == 0) {
+            return false;
+        }
+        return s.codePointAt(s.length() - 1) == ']';
+    }
+
+    private static Map<String, String> parseValuesWithURIPartVariable(final String pattern, final String uri) {
+
+        final String[] patternParts = StringUtil.split(pattern, '/');
+        final String[] urlParts = StringUtil.split(uri, '/');
+
+        if (pattern.indexOf('[') < pattern.indexOf(']')) {
+            if (patternParts.length > urlParts.length) {
+                throw new InvalidValueException("The pattern doesn't match with the uri");
+            }
+        } else {
+            if (patternParts.length != urlParts.length) {
+                throw new InvalidValueException("The pattern doesn't match with the uri");
+            }
+        }
+        if (uri.startsWith("/") && !pattern.startsWith("/")) {
+            throw new InvalidValueException("The pattern doesn't match with the uri");
+        }
+
+        final Map<String, String> variableNameValue = new HashMap<>(Math.min(urlParts.length, 16));
+
+        for (int i = 0, j = 0; i < patternParts.length; i++, j++) {
+
+            final String patternPart = patternParts[i];
+            if (j >= urlParts.length) {
+                throw new InvalidValueException("The pattern doesn't match with the uri");
+            }
+            final String uriValue = urlParts[j];
+
+            if (patternPart.length() > 1 && startsWithCurlyBracket(patternPart) && endsWithCurlyBracket(patternPart)) {
+
+                if (i == (patternParts.length - 1) && j < (urlParts.length - 1)) {
+                    throw new InvalidValueException("The pattern doesn't match with the uri");
+                }
+
+                final String variableName = patternPart.substring(1, patternPart.length() - 1);
+
+                final String uriValueDecoded = URLDecoder.decode(uriValue, StandardCharsets.UTF_8);
+                final String previous = variableNameValue.put(variableName, uriValueDecoded);
+
+                if (previous != null) {
+                    throw new InvalidValueException(
+                            "duplicate variable name %s found in the uri pattern".formatted(variableName));
+                }
+
+            } else if (patternPart.length() > 1 && startsWithSquareBracket(patternPart)
+                    && endsWithSquareBracket(patternPart)) {
+
+                final String variableName = patternPart.substring(1, patternPart.length() - 1);
+
+                if ((i + 1) < patternParts.length) {
+                    final String nextPatternPart = patternParts[i + 1];
+                    if ((startsWithCurlyBracket(nextPatternPart) && endsWithCurlyBracket(nextPatternPart))
+                            || (startsWithSquareBracket(nextPatternPart) && endsWithSquareBracket(nextPatternPart))) {
+                        final int lastIndex = patternParts.length - (i + 1);
+                        final String[] uriPartsForJoin = new String[(urlParts.length - lastIndex) - j];
+                        final int initialK = j;
+                        for (int k = initialK; k < urlParts.length - lastIndex; k++) {
+                            final String uriValueTmp = urlParts[k];
+                            final String uriValueDecoded = URLDecoder.decode(uriValueTmp, StandardCharsets.UTF_8);
+                            uriPartsForJoin[k - initialK] = uriValueDecoded;
+                            j = k;
+                        }
+                        variableNameValue.put(variableName, String.join("/", uriPartsForJoin));
+                    } else {
+                        for (int k = j; k < urlParts.length; k++) {
+                            final String uriValueTmp = urlParts[k];
+                            if (!uriValueTmp.equals(nextPatternPart)) {
+                                final String uriValueDecoded = URLDecoder.decode(uriValueTmp, StandardCharsets.UTF_8);
+                                variableNameValue.merge(variableName, uriValueDecoded, (a, b) -> a + '/' + b);
+                                j = k;
+                            } else {
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    final int initialK = j;
+                    final String[] uriPartsForJoin = new String[urlParts.length - initialK];
+                    for (int k = initialK; k < urlParts.length; k++) {
+                        final String uriValueTmp = urlParts[k];
+                        final String uriValueDecoded = URLDecoder.decode(uriValueTmp, StandardCharsets.UTF_8);
+                        uriPartsForJoin[k - initialK] = uriValueDecoded;
+                        j = k;
+                    }
+                    variableNameValue.put(variableName, String.join("/", uriPartsForJoin));
+                }
+            } else {
+                if (!patternPart.equals(uriValue)) {
+                    throw new InvalidValueException("The pattern doesn't match with the uri");
+                }
+            }
+        }
+
+        return Map.copyOf(variableNameValue);
+    }
+
+    private static boolean patternMatchesOld(final String pattern, final String uri) {
+        if (pattern.equals(uri)) {
+            return true;
+        }
+        final String[] patternParts = StringUtil.split(pattern, '/');
+        final String[] urlParts = StringUtil.split(uri, '/');
+
+        if (patternParts.length != urlParts.length) {
+            return false;
+        }
+
+        final Map<String, String> variableNameValue = new HashMap<>(Math.min(urlParts.length, 16));
+
+        for (int i = 0; i < patternParts.length; i++) {
+            final String patternPart = patternParts[i];
+            final String uriValue = urlParts[i];
+
+            if (patternPart.length() > 1 && patternPart.indexOf('{') == 0
+                    && patternPart.indexOf('}') == patternPart.length() - 1) {
+
+                final String variableName = patternPart.substring(1, patternPart.length() - 1);
+
+                final String uriValueDecoded = URLDecoder.decode(uriValue, StandardCharsets.UTF_8);
+                final String previous = variableNameValue.put(variableName, uriValueDecoded);
+
+                if (previous != null) {
+                    throw new InvalidValueException("duplicate variable name found in the uri pattern");
+                }
+
+            } else {
+                if (!patternPart.equals(uriValue)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
     /**
-     *
      * <pre>
      * <code>
      * boolean matches = URIUtil.patternMatches("/user/items/view/{itemId}", "/user/items/view/123");
@@ -119,7 +282,6 @@ public final class URIUtil {
      * @param pattern
      * @param uri
      * @return true if the path of the uri matches with the pattern
-     *
      * @since 12.0.0-beta.2
      */
     public static boolean patternMatches(final String pattern, final String uri) {
@@ -129,11 +291,93 @@ public final class URIUtil {
         final String[] patternParts = StringUtil.split(pattern, '/');
         final String[] urlParts = StringUtil.split(uri, '/');
 
-        if (patternParts.length != urlParts.length) {
+        if (pattern.indexOf('[') < pattern.indexOf(']')) {
+            if (patternParts.length > urlParts.length) {
+                return false;
+            }
+        } else {
+            if (patternParts.length != urlParts.length) {
+                return false;
+            }
+        }
+        if (uri.startsWith("/") && !pattern.startsWith("/")) {
             return false;
         }
 
         final Map<String, String> variableNameValue = new HashMap<>(Math.min(urlParts.length, 16));
+
+        for (int i = 0, j = 0; i < patternParts.length; i++, j++) {
+
+            final String patternPart = patternParts[i];
+            if (j >= urlParts.length) {
+                return false;
+            }
+            final String uriValue = urlParts[j];
+
+            if (patternPart.length() > 1 && startsWithCurlyBracket(patternPart) && endsWithCurlyBracket(patternPart)) {
+
+                if (i == (patternParts.length - 1) && j < (urlParts.length - 1)) {
+                    return false;
+                }
+
+                final String variableName = patternPart.substring(1, patternPart.length() - 1);
+
+                final String uriValueDecoded = URLDecoder.decode(uriValue, StandardCharsets.UTF_8);
+                final String previous = variableNameValue.put(variableName, uriValueDecoded);
+
+                if (previous != null) {
+                    throw new InvalidValueException(
+                            "duplicate variable name %s found in the uri pattern".formatted(variableName));
+                }
+            } else if (patternPart.length() > 1 && startsWithSquareBracket(patternPart)
+                    && endsWithSquareBracket(patternPart)) {
+
+                if ((i + 1) < patternParts.length) {
+                    final String nextPatternPart = patternParts[i + 1];
+                    if ((startsWithCurlyBracket(nextPatternPart) && endsWithCurlyBracket(nextPatternPart))
+                            || (startsWithSquareBracket(nextPatternPart) && endsWithSquareBracket(nextPatternPart))) {
+                        final int lastIndex = patternParts.length - (i + 1);
+                        final int initialK = j;
+                        for (int k = initialK; k < urlParts.length - lastIndex; k++) {
+                            j = k;
+                        }
+                    } else {
+                        for (int k = j; k < urlParts.length; k++) {
+                            final String uriValueTmp = urlParts[k];
+                            if (!uriValueTmp.equals(nextPatternPart)) {
+                                j = k;
+                            } else {
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    j = urlParts.length - 1;
+                }
+            } else {
+                if (!patternPart.equals(uriValue)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private static boolean patternMatchesBaseOld(final String pattern, final String uri) {
+
+        if (pattern.equals(uri)) {
+            return true;
+        }
+
+        final String[] patternParts = StringUtil.split(pattern, '/');
+        final String[] urlParts = StringUtil.split(uri, '/');
+
+        if (patternParts.length > urlParts.length) {
+            return false;
+        }
+
+        final Map<String, String> variableNameValue = new HashMap<>(Math.min(patternParts.length, 16));
 
         for (int i = 0; i < patternParts.length; i++) {
             final String patternPart = patternParts[i];
@@ -144,8 +388,7 @@ public final class URIUtil {
 
                 final String variableName = patternPart.substring(1, patternPart.length() - 1);
 
-                final String uriValueDecoded = URLDecoder.decode(uriValue, StandardCharsets.UTF_8);
-                final String previous = variableNameValue.put(variableName, uriValueDecoded);
+                final String previous = variableNameValue.put(variableName, uriValue);
 
                 if (previous != null) {
                     throw new InvalidValueException("duplicate variable name found in the uri pattern");
@@ -202,7 +445,6 @@ public final class URIUtil {
      * @param pattern
      * @param uri
      * @return true if the base path of the uri matches with the pattern
-     *
      * @since 12.0.0-beta.2
      */
     public static boolean patternMatchesBase(final String pattern, final String uri) {
@@ -214,31 +456,65 @@ public final class URIUtil {
         final String[] patternParts = StringUtil.split(pattern, '/');
         final String[] urlParts = StringUtil.split(uri, '/');
 
-        if (patternParts.length > urlParts.length) {
+        if ((pattern.indexOf('[') == pattern.indexOf(']') && patternParts.length > urlParts.length)
+                || (uri.startsWith("/") && !pattern.startsWith("/"))) {
             return false;
         }
 
-        final Map<String, String> variableNameValue = new HashMap<>(Math.min(patternParts.length, 16));
+        final Map<String, String> variableNameValue = new HashMap<>(Math.min(urlParts.length, 16));
 
-        for (int i = 0; i < patternParts.length; i++) {
+        for (int i = 0, j = 0; i < patternParts.length; i++, j++) {
+
             final String patternPart = patternParts[i];
-            final String uriValue = urlParts[i];
+            if (j >= urlParts.length) {
+                return false;
+            }
+            final String uriValue = urlParts[j];
 
-            if (patternPart.length() > 1 && patternPart.indexOf('{') == 0
-                    && patternPart.indexOf('}') == patternPart.length() - 1) {
+            if (patternPart.length() > 1 && startsWithCurlyBracket(patternPart) && endsWithCurlyBracket(patternPart)) {
 
                 final String variableName = patternPart.substring(1, patternPart.length() - 1);
 
-                final String previous = variableNameValue.put(variableName, uriValue);
+                final String uriValueDecoded = URLDecoder.decode(uriValue, StandardCharsets.UTF_8);
+                final String previous = variableNameValue.put(variableName, uriValueDecoded);
 
                 if (previous != null) {
-                    throw new InvalidValueException("duplicate variable name found in the uri pattern");
+                    throw new InvalidValueException(
+                            "duplicate variable name %s found in the uri pattern".formatted(variableName));
                 }
+            } else if (patternPart.length() > 1 && startsWithSquareBracket(patternPart)
+                    && endsWithSquareBracket(patternPart)) {
 
+                if ((i + 1) < patternParts.length) {
+                    final String nextPatternPart = patternParts[i + 1];
+                    if ((startsWithCurlyBracket(nextPatternPart) && endsWithCurlyBracket(nextPatternPart))
+                            || (startsWithSquareBracket(nextPatternPart) && endsWithSquareBracket(nextPatternPart))) {
+                        final int lastIndex = patternParts.length - (i + 1);
+                        final int initialK = j;
+                        for (int k = initialK; k < urlParts.length - lastIndex; k++) {
+                            j = k;
+                        }
+                    } else {
+                        for (int k = j; k < urlParts.length; k++) {
+                            final String uriValueTmp = urlParts[k];
+                            if (!uriValueTmp.equals(nextPatternPart)) {
+                                j = k;
+                            } else {
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    j = urlParts.length - 1;
+                }
             } else {
                 if (!patternPart.equals(uriValue)) {
                     return false;
                 }
+            }
+
+            if (i == (patternParts.length - 1)) {
+                return true;
             }
         }
 
