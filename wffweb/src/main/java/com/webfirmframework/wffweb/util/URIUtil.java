@@ -33,10 +33,39 @@ public final class URIUtil {
     }
 
     /**
+     *
      * <pre>
      * <code>
      * Map&lt;String, String&gt; pathParams = URIUtil.parseValues("/user/itemGroups/{itemGroupId}/items/view/{itemId}", "/user/itemGroups/1/items/view/2");
      * Here, pathParams is {itemGroupId=1, itemId=2}.
+     * </code>
+     * </pre>
+     *
+     * <pre>
+     * <code>
+     * Map&lt;String, String&gt; pathParams = URIUtil.parseValues("/user/itemGroups/{itemGroupId}/[uriAsParam]", "/user/itemGroups/1/items/view/2");
+     * Here, pathParams is {itemGroupId=1, uriAsParam=items/view/2}.
+     * </code>
+     * </pre>
+     *
+     * <pre>
+     * <code>
+     * Map&lt;String, String&gt; pathParams = URIUtil.parseValues("/user/itemGroups/{itemGroupId}/[uriAsParam]/item/{itemId}", "/user/itemGroups/1/items/view/item/2");
+     * Here, pathParams is {itemGroupId=1, uriAsParam=items/view, itemId=2}.
+     * </code>
+     * </pre>
+     *
+     * <pre>
+     * <code>
+     * Map&lt;String, String&gt; pathParams = URIUtil.parseValues("/user/itemGroups/{itemGroupId}/[uriAsParam1]/item/{itemId}/[uriAsParam2]", "/user/itemGroups/1/items/view/item/2/details/yes");
+     * Here, pathParams is {itemGroupId=1, uriAsParam1=items/view, itemId=2, uriAsParam2=details/yes}.
+     * </code>
+     * </pre>
+     *
+     * <pre>
+     * <code>
+     * Map&lt;String, String&gt; pathParams = URIUtil.parseValues("/user/itemGroups/{itemGroupId}/[uriAsParam]/{itemId}", "/user/itemGroups/1/items/view/2");
+     * Here, pathParams is {itemGroupId=1, uriAsParam=items/view, itemId=2}.
      * </code>
      * </pre>
      *
@@ -45,6 +74,7 @@ public final class URIUtil {
      * @return map containing the variable name and its corresponding value parsed
      *         from the uri.
      * @since 12.0.0-beta.2
+     * @since 12.0.0-beta.7 Supports [uriAsParam] type variables
      */
     public static Map<String, String> parseValues(final String pattern, final String uri) {
 
@@ -198,6 +228,13 @@ public final class URIUtil {
      *
      * <pre>
      * <code>
+     * boolean matches = URIUtil.patternMatches("/user/items/view/{itemId}/[uriAsParam]", "/user/items/view/123/details/full");
+     * Here, matches is true.
+     * </code>
+     * </pre>
+     *
+     * <pre>
+     * <code>
      * boolean matches = URIUtil.patternMatches("/user/items/view/123", "/user/items/view/123");
      * Here, matches is true.
      * </code>
@@ -221,6 +258,7 @@ public final class URIUtil {
      * @param uri
      * @return true if the path of the uri matches with the pattern
      * @since 12.0.0-beta.2
+     * @since 12.0.0-beta.7 Supports [uriAsParam] type variables
      */
     public static boolean patternMatches(final String pattern, final String uri) {
         if (pattern.equals(uri)) {
@@ -314,6 +352,13 @@ public final class URIUtil {
      *
      * <pre>
      * <code>
+     * boolean matches = URIUtil.patternMatchesBase("/user/items/view/{itemId}/[uriAsParam]", "/user/items/view/123/basic-details/yes/other-details/yes");
+     * Here, matches is true.
+     * </code>
+     * </pre>
+     *
+     * <pre>
+     * <code>
      * boolean matches = URIUtil.patternMatchesBase("/user/items/view/123", "/user/items/view/123");
      * Here, matches is true.
      * </code>
@@ -344,6 +389,7 @@ public final class URIUtil {
      * @param uri
      * @return true if the base path of the uri matches with the pattern
      * @since 12.0.0-beta.2
+     * @since 12.0.0-beta.7 Supports [uriAsParam] type variables
      */
     public static boolean patternMatchesBase(final String pattern, final String uri) {
 
