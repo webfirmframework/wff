@@ -227,6 +227,26 @@ public class URIUtilTest {
     public void testParseValuesException13() {
         URIUtil.parseValues("/some/uri/pathparam/{userId}/[pathUri]/[pathUri]/", "/some/uri/pathparam/1/path1/path2/path3/2");
     }
+    
+    @Test(expected = InvalidValueException.class)
+    public void testParseValuesException14() {
+        URIUtil.parseValues("/some/uri/pathparam/[pathUri]/gap/{userId}", "/some/uri/pathparam/path1/path2/path3/gap1/1");
+    }
+    
+    @Test(expected = InvalidValueException.class)
+    public void testParseValuesException15() {
+        URIUtil.parseValues("/some/uri/pathparam/[pathUri]/gap", "/some/uri/pathparam/path1/path2/path3");
+    }
+    
+    @Test(expected = InvalidValueException.class)
+    public void testParseValuesException16() {
+        URIUtil.parseValues("/some/uri/pathparam/[pathUri]/gap", "/some/uri/pathparam/path1/path2/path3/");
+    }
+    
+    @Test(expected = InvalidValueException.class)
+    public void testParseValuesException17() {
+        URIUtil.parseValues("/some/uri/pathparam/[pathUri]/gap/", "/some/uri/pathparam/path1/path2/path3");
+    }
 
     @Test
     public void testPatternMatchesBase() {
