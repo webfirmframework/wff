@@ -2983,4 +2983,24 @@ public class AbstractHtmlTest {
 
     }
 
+    @Test()
+    public void testWhenURIUsed() {
+
+        Div div = new Div(null);
+
+        div.whenURI(uri -> true, () -> new AbstractHtml[]{});
+
+        assertTrue(div.getSharedObject().isWhenURIUsed());
+
+        Div div2 = new Div(null);
+
+        div2.appendChild(div);
+
+        assertTrue(div2.getSharedObject().isWhenURIUsed());
+
+        div2.removeChild(div);
+
+        assertTrue(div.getSharedObject().isWhenURIUsed());
+    }
+
 }

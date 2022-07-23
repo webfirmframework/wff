@@ -298,4 +298,27 @@ public final class TagUtil {
         return tag.changeInnerHtmlsForURIChange(uriEvent, expectedSO);
     }
 
+    /**
+     * NB: only for internal use
+     *
+     * @param tag          the tag object
+     * @param sharedObject
+     * @param accessObject
+     * @since 12.0.0-beta.7
+     */
+    public static void applyURIChange(final AbstractHtml tag, final AbstractHtml5SharedObject sharedObject,
+            final SecurityObject accessObject) {
+        if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
+            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
+        }
+        final Lock lock = tag.lockAndGetWriteLock();
+        try {
+            // nullableURIEventAllowed is true only if called from
+            // browserPage.initAbstractHtml method
+            tag.applyURIChange(sharedObject, true);
+        } finally {
+            lock.unlock();
+        }
+    }
+
 }

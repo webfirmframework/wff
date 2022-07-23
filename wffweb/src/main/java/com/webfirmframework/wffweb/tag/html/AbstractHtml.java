@@ -1850,6 +1850,10 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
                 eachChild.sharedObject = sharedObject;
 
+                if (eachChild.uriChangeContents != null && !eachChild.sharedObject.isWhenURIUsed()) {
+                    eachChild.sharedObject.whenURIUsed(ACCESS_OBJECT);
+                }
+
                 // NB: 0 for rootTag so first increment and assign
                 eachChild.hierarchyOrder = ++sharedObject.getRootTag().hierarchyOrderCounter;
 
@@ -1877,22 +1881,30 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * @since 12.0.0-beta.1 should be called only after lock and while
      *        adding/append/prepend/whenURI etc.. this tag to another tag.
      */
-    private final void applyURIChange(final AbstractHtml5SharedObject sharedObject) {
+    private void applyURIChange(final AbstractHtml5SharedObject sharedObject) {
         final URIChangeTagSupplier uriChangeTagSupplier = sharedObject.getURIChangeTagSupplier(ACCESS_OBJECT);
-        applyURIChange(uriChangeTagSupplier, false);
+        applyURIChange(uriChangeTagSupplier, false, false);
+    }
+
+    void applyURIChange(final AbstractHtml5SharedObject sharedObject, final boolean nullableURIEventAllowed) {
+        final URIChangeTagSupplier uriChangeTagSupplier = sharedObject.getURIChangeTagSupplier(ACCESS_OBJECT);
+        applyURIChange(uriChangeTagSupplier, nullableURIEventAllowed, false);
     }
 
     /**
      * @param uriChangeTagSupplier
+     * @param nullableURIEventAllowed
      * @param updateClient
+     * @return
      * @since 12.0.0-beta.1 should be called only after lock and while
      *        adding/append/prepend/whenURI etc.. this tag to another tag.
      */
-    private final void applyURIChange(final URIChangeTagSupplier uriChangeTagSupplier, final boolean updateClient) {
+    private void applyURIChange(final URIChangeTagSupplier uriChangeTagSupplier, final boolean nullableURIEventAllowed,
+            final boolean updateClient) {
 
         final URIEvent currentURIEvent = uriChangeTagSupplier != null ? uriChangeTagSupplier.supply(null) : null;
 
-        if (currentURIEvent != null) {
+        if (currentURIEvent != null || nullableURIEventAllowed) {
             final Deque<List<AbstractHtml>> childrenStack = new ArrayDeque<>();
             childrenStack.push(List.of(this));
             List<AbstractHtml> children;
@@ -4678,6 +4690,10 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
                 stackChild.sharedObject = newSharedObject;
 
+                if (stackChild.uriChangeContents != null && !stackChild.sharedObject.isWhenURIUsed()) {
+                    stackChild.sharedObject.whenURIUsed(ACCESS_OBJECT);
+                }
+
                 final Set<AbstractHtml> subChildren = stackChild.children;
 
                 if (subChildren != null && subChildren.size() > 0) {
@@ -7040,8 +7056,10 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 uriChangeContents.set(index, uriChangeContent);
             }
 
+            sharedObject.whenURIUsed(ACCESS_OBJECT);
+
             final URIChangeTagSupplier uriChangeTagSupplier = sharedObject.getURIChangeTagSupplier(ACCESS_OBJECT);
-            applyURIChange(uriChangeTagSupplier, true);
+            applyURIChange(uriChangeTagSupplier, false, true);
 
         } finally {
             lock.unlock();

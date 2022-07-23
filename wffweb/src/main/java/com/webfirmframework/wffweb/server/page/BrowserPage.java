@@ -1029,14 +1029,11 @@ public abstract class BrowserPage implements Serializable {
                         // NB: see javadoc on its declaration
                         commonLock.lock();
                         try {
-                            for (int i = 1; i < nameValues.size(); i++) {
+                            // NB: should be in reverse order as the token should be set first then only the
+                            // setURI is to be called.
+                            for (int i = nameValues.size() - 1; i > 0; i--) {
                                 final NameValue nm = nameValues.get(i);
-                                if (nm.getName()[0] == Task.SET_URI.getValueByte()) {
-                                    final URIEventInitiator eventInitiator = URIEventInitiator
-                                            .get(nm.getValues()[0][0]);
-                                    final String urlPath = new String(nm.getValues()[1], StandardCharsets.UTF_8);
-                                    setURI(false, urlPath, eventInitiator, false);
-                                } else if (nm.getName()[0] == Task.SET_LS_TOKEN.getValueByte()) {
+                                if (nm.getName()[0] == Task.SET_LS_TOKEN.getValueByte()) {
                                     final WffBMArray bmArray = new WffBMArray(nm.getValues()[0]);
                                     for (final Object each : bmArray) {
                                         if (each instanceof final WffBMObject bmObj) {
@@ -1055,11 +1052,13 @@ public abstract class BrowserPage implements Serializable {
                                                 }
                                             }
                                         }
-
                                     }
-
+                                } else if (nm.getName()[0] == Task.SET_URI.getValueByte()) {
+                                    final URIEventInitiator eventInitiator = URIEventInitiator
+                                            .get(nm.getValues()[0][0]);
+                                    final String urlPath = new String(nm.getValues()[1], StandardCharsets.UTF_8);
+                                    setURI(false, urlPath, eventInitiator, false);
                                 }
-
                             }
                             onInitialClientPingInvoked = true;
                             onInitialClientPing(rootTag);
@@ -2051,6 +2050,7 @@ public abstract class BrowserPage implements Serializable {
                     }
 
                     tagByWffId = rootTag.getSharedObject().initTagByWffId(ACCESS_OBJECT);
+                    addInnerHtmlsForURLChange(rootTag);
 
                     addDataWffIdAttribute(rootTag);
                     // attribute value change listener
@@ -2067,7 +2067,11 @@ public abstract class BrowserPage implements Serializable {
                     addWffBMDataUpdateListener(rootTag);
                     addWffBMDataDeleteListener(rootTag);
                     addPushQueue(rootTag);
-                    addInnerHtmlsForURLChange(rootTag);
+
+                    if (rootTag.getSharedObject().isWhenURIUsed()) {
+                        TagUtil.applyURIChange(rootTag, rootTag.getSharedObject(), ACCESS_OBJECT);
+                        addDataWffIdAttribute(rootTag);
+                    }
 
                     wsWarningDisabled = true;
                     afterRender(rootTag);
