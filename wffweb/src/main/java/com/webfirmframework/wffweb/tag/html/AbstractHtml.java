@@ -1882,29 +1882,26 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      *        adding/append/prepend/whenURI etc.. this tag to another tag.
      */
     private void applyURIChange(final AbstractHtml5SharedObject sharedObject) {
-        final URIChangeTagSupplier uriChangeTagSupplier = sharedObject.getURIChangeTagSupplier(ACCESS_OBJECT);
-        applyURIChange(uriChangeTagSupplier, false, false);
-    }
-
-    void applyURIChange(final AbstractHtml5SharedObject sharedObject, final boolean nullableURIEventAllowed) {
-        final URIChangeTagSupplier uriChangeTagSupplier = sharedObject.getURIChangeTagSupplier(ACCESS_OBJECT);
-        applyURIChange(uriChangeTagSupplier, nullableURIEventAllowed, false);
+        applyURIChange(sharedObject, null, false);
     }
 
     /**
-     * @param uriChangeTagSupplier
-     * @param nullableURIEventAllowed
+     * @param sharedObject
+     * @param tagByWffId   it is required only if calling from
+     *                     browserPage.initAbstractHtml method otherwise null.
      * @param updateClient
      * @return
      * @since 12.0.0-beta.1 should be called only after lock and while
      *        adding/append/prepend/whenURI etc.. this tag to another tag.
      */
-    private void applyURIChange(final URIChangeTagSupplier uriChangeTagSupplier, final boolean nullableURIEventAllowed,
+    void applyURIChange(final AbstractHtml5SharedObject sharedObject, final Map<String, AbstractHtml> tagByWffId,
             final boolean updateClient) {
+
+        final URIChangeTagSupplier uriChangeTagSupplier = sharedObject.getURIChangeTagSupplier(ACCESS_OBJECT);
 
         final URIEvent currentURIEvent = uriChangeTagSupplier != null ? uriChangeTagSupplier.supply(null) : null;
 
-        if (currentURIEvent != null || nullableURIEventAllowed) {
+        if (currentURIEvent != null || tagByWffId != null) {
             final Deque<List<AbstractHtml>> childrenStack = new ArrayDeque<>();
             childrenStack.push(List.of(this));
             List<AbstractHtml> children;
@@ -1920,6 +1917,12 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                     }
                     if (eachChild.uriChangeContents != null) {
                         uriChangeTagSupplier.supply(eachChild);
+                        if (tagByWffId != null && TagUtil.isTagged(eachChild)) {
+                            if (eachChild.dataWffId == null) {
+                                eachChild.setDataWffId(sharedObject.getNewDataWffId(ACCESS_OBJECT));
+                            }
+                            tagByWffId.put(eachChild.dataWffId.getValue(), eachChild);
+                        }
                     }
                 }
             }
@@ -7058,8 +7061,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
             sharedObject.whenURIUsed(ACCESS_OBJECT);
 
-            final URIChangeTagSupplier uriChangeTagSupplier = sharedObject.getURIChangeTagSupplier(ACCESS_OBJECT);
-            applyURIChange(uriChangeTagSupplier, false, true);
+            applyURIChange(sharedObject, null, true);
 
         } finally {
             lock.unlock();

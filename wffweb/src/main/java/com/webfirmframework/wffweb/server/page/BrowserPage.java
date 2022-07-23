@@ -2069,8 +2069,8 @@ public abstract class BrowserPage implements Serializable {
                     addPushQueue(rootTag);
 
                     if (rootTag.getSharedObject().isWhenURIUsed()) {
-                        TagUtil.applyURIChange(rootTag, rootTag.getSharedObject(), ACCESS_OBJECT);
-                        addDataWffIdAttribute(rootTag);
+                        TagUtil.applyURIChangeAndAddDataWffIdAttribute(rootTag, rootTag.getSharedObject(), tagByWffId,
+                                ACCESS_OBJECT);
                     }
 
                     wsWarningDisabled = true;
