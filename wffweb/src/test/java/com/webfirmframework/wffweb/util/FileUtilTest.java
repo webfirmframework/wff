@@ -39,10 +39,10 @@ public class FileUtilTest {
         Path path = Paths.get(basePath, "dir1", "dir2");
 		Files.createDirectories(path);
 		
-		Path textFilePath = Paths.get(path.toString() + "/somefile.txt");
-        Files.write(textFilePath, "somevalue".getBytes(StandardCharsets.UTF_8));
+		Path textFilePath = Paths.get(path + "/somefile.txt");
+        Files.writeString(textFilePath, "somevalue");
 		
-		assertEquals("somevalue", new String(Files.readAllBytes(textFilePath), StandardCharsets.UTF_8));
+		assertEquals("somevalue", Files.readString(textFilePath));
 		
 		String baseDir = basePath.substring(0, basePath.length() - "basePath".length());
 
@@ -52,7 +52,7 @@ public class FileUtilTest {
 		
 		assertTrue(textFilePath.toString().endsWith("/dir1/dir2/somefile.txt"));
 		
-		try (Stream<Path> list = Files.list(Path.of(baseDir));) {
+		try (Stream<Path> list = Files.list(Path.of(baseDir))) {
 		    List<Path> filesUnderBaseDir = list.toList();
 		    assertEquals(0, filesUnderBaseDir.size());
 		}
