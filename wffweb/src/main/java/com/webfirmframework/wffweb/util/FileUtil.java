@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author WFF
@@ -52,25 +53,28 @@ public class FileUtil {
         boolean deleted = false;
         try {
             if (Files.exists(dirPath)) {
-                final Deque<Path> q = Files.list(dirPath).collect(Collectors.toCollection(ArrayDeque::new));
-                Path each;
-                while ((each = q.poll()) != null) {
-                    if (Files.isDirectory(each)) {
-                        final List<Path> paths = Files.list(each).collect(Collectors.toList());
-                        if (paths.size() > 0) {
-                            for (final Path path : paths) {
-                                q.addFirst(path);
+                try (Stream<Path> pathsUnderDirPath = Files.list(dirPath)) {
+                    final Deque<Path> q = pathsUnderDirPath.collect(Collectors.toCollection(ArrayDeque::new));
+                    Path each;
+                    while ((each = q.poll()) != null) {
+                        if (Files.isDirectory(each)) {
+                            try (Stream<Path> pathsOfEach = Files.list(each)) {
+                                final List<Path> paths = pathsOfEach.collect(Collectors.toList());
+                                if (paths.size() > 0) {
+                                    for (final Path path : paths) {
+                                        q.addFirst(path);
+                                    }
+                                    q.addLast(each);
+                                } else {
+                                    Files.deleteIfExists(each);
+                                }
                             }
-                            q.addLast(each);
                         } else {
                             Files.deleteIfExists(each);
                         }
-
-                    } else {
-                        Files.deleteIfExists(each);
                     }
+                    deleted = Files.deleteIfExists(dirPath);
                 }
-                deleted = Files.deleteIfExists(dirPath);
             }
         } catch (final IOException e) {
             // NOP

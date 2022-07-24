@@ -15,12 +15,19 @@
  */
 package com.webfirmframework.wffweb.util;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.Test;
 
@@ -29,12 +36,35 @@ public class FileUtilTest {
 	@Test
 	public void testRemoveDirRecursively() throws IOException {
 
-		Path path = Paths.get(Files.createTempDirectory("testpath").toString(), "dir1", "dir2");
+		String basePath = Paths.get(Files.createTempDirectory("testpath").toString(), "basePath").toString();
+        Path path = Paths.get(basePath, "dir1", "dir2");
 		Files.createDirectories(path);
 
-		boolean removed = FileUtil.removeDirRecursively(path.toString());
+		Path textFilePath = Paths.get(path.toString() + "/somefile.txt");
+        Files.write(textFilePath, "somevalue".getBytes(StandardCharsets.UTF_8));
+
+		assertEquals("somevalue", new String(Files.readAllBytes(textFilePath), StandardCharsets.UTF_8));
+
+		String baseDir = basePath.substring(0, basePath.length() - "basePath".length());
+
+		boolean removed = FileUtil.removeDirRecursively(baseDir, "basePath");
 		
 		assertTrue(removed);
+
+		assertTrue(textFilePath.toString().endsWith("/dir1/dir2/somefile.txt"));
+
+		try (Stream<Path> list = Files.list(Paths.get(baseDir))) {
+		    List<Path> filesUnderBaseDir = list.collect(Collectors.toList());
+		    assertEquals(0, filesUnderBaseDir.size());
+		}
+
+		try {
+		    Files.readAllBytes(textFilePath);
+		    fail("File is not deleted");
+		} catch (NoSuchFileException e) {
+            //NOP
+        }
+
 	}
 
 }
