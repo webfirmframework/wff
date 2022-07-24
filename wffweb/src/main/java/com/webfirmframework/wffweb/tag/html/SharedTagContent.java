@@ -39,7 +39,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.StampedLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import com.webfirmframework.wffweb.internal.InternalId;
 import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
@@ -1193,7 +1192,7 @@ public class SharedTagContent<T> {
                 // this.executor = executor;
 
                 final List<Map.Entry<NoTag, InsertedTagData<T>>> insertedTagsEntries = insertedTags.entrySet().stream()
-                        .sorted(Map.Entry.comparingByValue()).collect(Collectors.toList());
+                        .sorted(Map.Entry.comparingByValue()).toList();
 
                 insertedTags.clear();
 

@@ -47,8 +47,7 @@ public class CodePerformanceTest {
     @Test
     public void testPerformanceOfArrayToListJava8Syntax() {
         @SuppressWarnings("unused")
-        final List<String> asList = Stream.of(ARRAY)
-                .collect(Collectors.toList());
+        final List<String> asList = Stream.of(ARRAY).toList();
     }
 
     @SuppressWarnings("unused")
@@ -62,8 +61,7 @@ public class CodePerformanceTest {
         long first = after - before;
 
         before = System.nanoTime();
-        final List<String> asList2 = Stream.of(ARRAY)
-                .collect(Collectors.toList());
+        final List<String> asList2 = Stream.of(ARRAY).toList();
         after = System.nanoTime();
 
         long second = after - before;

@@ -2456,10 +2456,10 @@ public class AbstractHtmlTest {
         }
 
         List<AbstractHtml> expectedTagsForURIChangeSorted = expectedTagsForURIChange.stream()
-                .sorted(Comparator.comparingInt(Object::hashCode)).collect(Collectors.toList());
+                .sorted(Comparator.comparingInt(Object::hashCode)).toList();
 
         List<AbstractHtml> tagsForURIChangeSorted = tagsForURIChange.stream()
-                .sorted(Comparator.comparingInt(Object::hashCode)).collect(Collectors.toList());
+                .sorted(Comparator.comparingInt(Object::hashCode)).toList();
 
         assertArrayEquals(expectedTagsForURIChangeSorted.toArray(), tagsForURIChangeSorted.toArray());
 
@@ -2544,10 +2544,10 @@ public class AbstractHtmlTest {
         }
 
         List<AbstractHtml> expectedTagsForURIChangeSorted = expectedTagsForURIChange.stream()
-                .sorted(Comparator.comparingInt(Object::hashCode)).collect(Collectors.toList());
+                .sorted(Comparator.comparingInt(Object::hashCode)).toList();
 
         List<AbstractHtml> tagsForURIChangeSorted = tagsForURIChange.stream()
-                .sorted(Comparator.comparingInt(Object::hashCode)).collect(Collectors.toList());
+                .sorted(Comparator.comparingInt(Object::hashCode)).toList();
 
         assertArrayEquals(expectedTagsForURIChangeSorted.toArray(), tagsForURIChangeSorted.toArray());
 
@@ -2729,10 +2729,10 @@ public class AbstractHtmlTest {
         assertEquals(expectedTagsForURIChange.size(), tagsForURIChange.size());
 
         List<AbstractHtml> expectedTagsForURIChangeSorted = expectedTagsForURIChange.stream()
-                .sorted(Comparator.comparingInt(Object::hashCode)).collect(Collectors.toList());
+                .sorted(Comparator.comparingInt(Object::hashCode)).toList();
 
         List<AbstractHtml> tagsForURIChangeSorted = tagsForURIChange.stream()
-                .sorted(Comparator.comparingInt(Object::hashCode)).collect(Collectors.toList());
+                .sorted(Comparator.comparingInt(Object::hashCode)).toList();
 
         assertArrayEquals(expectedTagsForURIChangeSorted.toArray(), tagsForURIChangeSorted.toArray());
 
@@ -2825,10 +2825,10 @@ public class AbstractHtmlTest {
         }
 
         List<AbstractHtml> expectedTagsForURIChangeSorted = expectedTagsForURIChange.stream()
-                .sorted(Comparator.comparingInt(Object::hashCode)).collect(Collectors.toList());
+                .sorted(Comparator.comparingInt(Object::hashCode)).toList();
 
         List<AbstractHtml> tagsForURIChangeSorted = tagsForURIChange.stream()
-                .sorted(Comparator.comparingInt(Object::hashCode)).collect(Collectors.toList());
+                .sorted(Comparator.comparingInt(Object::hashCode)).toList();
 
         assertArrayEquals(expectedTagsForURIChangeSorted.toArray(), tagsForURIChangeSorted.toArray());
 
@@ -2921,10 +2921,10 @@ public class AbstractHtmlTest {
         }
 
         List<AbstractHtml> expectedTagsForURIChangeSorted = expectedTagsForURIChange.stream()
-                .sorted(Comparator.comparingInt(Object::hashCode)).collect(Collectors.toList());
+                .sorted(Comparator.comparingInt(Object::hashCode)).toList();
 
         List<AbstractHtml> tagsForURIChangeSorted = tagsForURIChange.stream()
-                .sorted(Comparator.comparingInt(Object::hashCode)).collect(Collectors.toList());
+                .sorted(Comparator.comparingInt(Object::hashCode)).toList();
 
         assertArrayEquals(expectedTagsForURIChangeSorted.toArray(), tagsForURIChangeSorted.toArray());
         
