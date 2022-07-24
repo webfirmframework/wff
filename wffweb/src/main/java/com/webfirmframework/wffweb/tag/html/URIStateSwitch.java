@@ -34,7 +34,7 @@ public sealed interface URIStateSwitch permits AbstractHtml {
      * replaces the children with tags supplied by {@code failTagsSupplier} if no
      * further {@code whenURI} conditions exist and if the {@code failTagsSupplier}
      * is null the existing children of this tag will be removed. To remove the
-     * supplier objects from this tag, call
+     * whenURI actions from this tag, call
      * {@link AbstractHtml#removeURIChangeActions()} method. To get the current uri
      * inside the supplier object call {@link BrowserPage#getURI()}. This action
      * will be performed after initial client ping. You can call {@code whenURI}
@@ -73,7 +73,7 @@ public sealed interface URIStateSwitch permits AbstractHtml {
      * replaces the children with tags supplied by {@code failTagsSupplier} if no
      * further {@code whenURI} conditions exist and if the {@code failTagsSupplier}
      * is null the existing children of this tag will be removed. To remove the
-     * supplier objects from this tag, call
+     * whenURI actions from this tag, call
      * {@link AbstractHtml#removeURIChangeActions()} method. To get the current uri
      * inside the supplier object call {@link BrowserPage#getURI()}. This action
      * will be performed after initial client ping. You can call {@code whenURI}
@@ -116,7 +116,7 @@ public sealed interface URIStateSwitch permits AbstractHtml {
      * replaces the children with tags supplied by {@code failTagsSupplier} if no
      * further {@code whenURI} conditions exist and if the {@code failTagsSupplier}
      * is null the existing children of this tag will be removed. To remove the
-     * supplier objects from this tag, call
+     * whenURI actions from this tag, call
      * {@link AbstractHtml#removeURIChangeActions()} method. To get the current uri
      * inside the supplier object call {@link BrowserPage#getURI()}. This action
      * will be performed after initial client ping. You can call {@code whenURI}
@@ -157,7 +157,7 @@ public sealed interface URIStateSwitch permits AbstractHtml {
      * replaces the children with tags supplied by {@code failTagsSupplier} if no
      * further {@code whenURI} conditions exist and if the {@code failTagsSupplier}
      * is null the existing children of this tag will be removed. To remove the
-     * supplier objects from this tag, call
+     * whenURI actions from this tag, call
      * {@link AbstractHtml#removeURIChangeActions()} method. To get the current uri
      * inside the supplier object call {@link BrowserPage#getURI()}. This action
      * will be performed after initial client ping. You can call {@code whenURI}
@@ -195,15 +195,170 @@ public sealed interface URIStateSwitch permits AbstractHtml {
             final Supplier<AbstractHtml[]> successTagsSupplier, final Supplier<AbstractHtml[]> failTagsSupplier,
             final int index);
 
+    /**
+     * Replaces the children of this tag with the tags supplied by
+     * {@code successTagsSupplier} if the predicate test returns true otherwise
+     * invokes {@code failConsumer} if no further {@code whenURI} conditions exist
+     * and if the {@code failConsumer} is null the existing children of this tag
+     * will be removed. To remove the whenURI actions from this tag, call
+     * {@link AbstractHtml#removeURIChangeActions()} method. To get the current uri
+     * inside the supplier object call {@link BrowserPage#getURI()}. This action
+     * will be performed after initial client ping. You can call {@code whenURI}
+     * multiple times to set multiple actions,
+     * {@link AbstractHtml#removeURIChangeAction(int)} may be used to remove each
+     * action at the given index. If multiple actions are added by this method, only
+     * the first {@code uriEventPredicate} test passed action will be performed on
+     * uri change. The main intention of this method is to set children tags for
+     * this tag when the given {@code uriEventPredicate} test passes on URI change.
+     *
+     * @param uriEventPredicate   the predicate object to test, the argument of the
+     *                            test method is the changed uri details, if the
+     *                            test method returns true then the tags given by
+     *                            {@code successTagsSupplier} will be added as inner
+     *                            html to this tag. If test returns false, the tags
+     *                            given by {@code failTagsSupplier} will be added as
+     *                            * inner html to this tag and if the
+     *                            {@code failTagsSupplier} is null the existing
+     *                            children will be removed from this tag.
+     * @param successTagsSupplier the supplier object for child tags if
+     *                            {@code uriEventPredicate} test returns true. If
+     *                            {@code successTagsSupplier.get()} method returns
+     *                            null, no action will be done on the tag.
+     * @param failConsumer        the consumer to execute if
+     *                            {@code uriEventPredicate.test()} returns false.
+     *                            {@code null} can be passed if there is no
+     *                            {@code failConsumer}.
+     * @param index               the index to replace the existing action with
+     *                            this. A value less than zero will add this
+     *                            condition to the last.
+     * @return URIStateSwitch
+     * @since 12.0.0-beta.1
+     */
     URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate,
             final Supplier<AbstractHtml[]> successTagsSupplier, final Consumer<TagEvent> failConsumer, final int index);
 
+    /**
+     * Replaces the children of this tag with the tags supplied by
+     * {@code successTagsSupplier} if the predicate test returns true otherwise
+     * invokes {@code failConsumer} if no further {@code whenURI} conditions exist
+     * and if the {@code failConsumer} is null the existing children of this tag
+     * will be removed. To remove the whenURI actions from this tag, call
+     * {@link AbstractHtml#removeURIChangeActions()} method. To get the current uri
+     * inside the supplier object call {@link BrowserPage#getURI()}. This action
+     * will be performed after initial client ping. You can call {@code whenURI}
+     * multiple times to set multiple actions,
+     * {@link AbstractHtml#removeURIChangeAction(int)} may be used to remove each
+     * action at the given index. If multiple actions are added by this method, only
+     * the first {@code uriEventPredicate} test passed action will be performed on
+     * uri change. The main intention of this method is to set children tags for
+     * this tag when the given {@code uriEventPredicate} test passes on URI change.
+     *
+     * @param uriEventPredicate   the predicate object to test, the argument of the
+     *                            test method is the changed uri details, if the
+     *                            test method returns true then the tags given by
+     *                            {@code successTagsSupplier} will be added as inner
+     *                            html to this tag. If test returns false, the tags
+     *                            given by {@code failTagsSupplier} will be added as
+     *                            * inner html to this tag and if the
+     *                            {@code failTagsSupplier} is null the existing
+     *                            children will be removed from this tag.
+     * @param successTagsSupplier the supplier object for child tags if
+     *                            {@code uriEventPredicate} test returns true. If
+     *                            {@code successTagsSupplier.get()} method returns
+     *                            null, no action will be done on the tag.
+     * @param failConsumer        the consumer to execute if
+     *                            {@code uriEventPredicate.test()} returns false.
+     *                            {@code null} can be passed if there is no
+     *                            {@code failConsumer}.
+     *
+     * @return URIStateSwitch
+     * @since 12.0.0-beta.1
+     */
     URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate,
             final Supplier<AbstractHtml[]> successTagsSupplier, final Consumer<TagEvent> failConsumer);
 
+    /**
+     * Invokes {@code successConsumer} if the predicate test returns true otherwise
+     * replaces the children of this tag with the tags supplied by
+     * {@code failTagsSupplier} if no further {@code whenURI} conditions exist and
+     * if the {@code successConsumer} is null the existing children of this tag will
+     * be removed if predicate test returns true. To remove the whenURI actions from
+     * this tag, call {@link AbstractHtml#removeURIChangeActions()} method. To get
+     * the current uri inside the supplier object call {@link BrowserPage#getURI()}.
+     * This action will be performed after initial client ping. You can call
+     * {@code whenURI} multiple times to set multiple actions,
+     * {@link AbstractHtml#removeURIChangeAction(int)} may be used to remove each
+     * action at the given index. If multiple actions are added by this method, only
+     * the first {@code uriEventPredicate} test passed action will be performed on
+     * uri change. The main intention of this method is to set children tags for
+     * this tag when the given {@code uriEventPredicate} test passes on URI change.
+     *
+     * @param uriEventPredicate the predicate object to test, the argument of the
+     *                          test method is the changed uri details, if the test
+     *                          method returns true then the tags given by
+     *                          {@code successTagsSupplier} will be added as inner
+     *                          html to this tag. If test returns false, the tags
+     *                          given by {@code failTagsSupplier} will be added as *
+     *                          inner html to this tag and if the
+     *                          {@code failTagsSupplier} is null the existing
+     *                          children will be removed from this tag.
+     * @param successConsumer   the consumer object to invoke if
+     *                          {@code uriEventPredicate} test returns true, no
+     *                          changes will be done on the tag.
+     * @param failTagsSupplier  the supplier object to supply child tags for the tag
+     *                          if {@code uriEventPredicate.test()} returns false.
+     *                          {@code null} can be passed if there is no
+     *                          {@code failTagsSupplier} in such case the existing
+     *                          children will be removed.
+     *
+     * @param index             the index to replace the existing action with this.
+     *                          A value less than zero will add this condition to
+     *                          the last.
+     *
+     * @return URIStateSwitch
+     * @since 12.0.0-beta.1
+     */
     URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate, final Consumer<TagEvent> successConsumer,
             final Supplier<AbstractHtml[]> failTagsSupplier, final int index);
 
+    /**
+     * Invokes {@code successConsumer} if the predicate test returns true otherwise
+     * replaces the children of this tag with the tags supplied by
+     * {@code failTagsSupplier} if no further {@code whenURI} conditions exist and
+     * if the {@code successConsumer} is null the existing children of this tag will
+     * be removed if predicate test returns true. To remove the whenURI actions from
+     * this tag, call {@link AbstractHtml#removeURIChangeActions()} method. To get
+     * the current uri inside the supplier object call {@link BrowserPage#getURI()}.
+     * This action will be performed after initial client ping. You can call
+     * {@code whenURI} multiple times to set multiple actions,
+     * {@link AbstractHtml#removeURIChangeAction(int)} may be used to remove each
+     * action at the given index. If multiple actions are added by this method, only
+     * the first {@code uriEventPredicate} test passed action will be performed on
+     * uri change. The main intention of this method is to set children tags for
+     * this tag when the given {@code uriEventPredicate} test passes on URI change.
+     *
+     * @param uriEventPredicate the predicate object to test, the argument of the
+     *                          test method is the changed uri details, if the test
+     *                          method returns true then the tags given by
+     *                          {@code successTagsSupplier} will be added as inner
+     *                          html to this tag. If test returns false, the tags
+     *                          given by {@code failTagsSupplier} will be added as *
+     *                          inner html to this tag and if the
+     *                          {@code failTagsSupplier} is null the existing
+     *                          children will be removed from this tag.
+     * @param successConsumer   the consumer object to invoke if
+     *                          {@code uriEventPredicate} test returns true, no
+     *                          changes will be done on the tag.
+     * @param failTagsSupplier  the supplier object to supply child tags for the tag
+     *                          if {@code uriEventPredicate.test()} returns false.
+     *                          {@code null} can be passed if there is no
+     *                          {@code failTagsSupplier} in such case the existing
+     *                          children will be removed.
+     *
+     *
+     * @return URIStateSwitch
+     * @since 12.0.0-beta.1
+     */
     URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate, final Consumer<TagEvent> successConsumer,
             final Supplier<AbstractHtml[]> failTagsSupplier);
 
