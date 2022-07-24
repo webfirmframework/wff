@@ -15,10 +15,6 @@
  */
 package com.webfirmframework.wffweb.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -29,6 +25,8 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class FileUtilTest {
 
@@ -41,7 +39,7 @@ public class FileUtilTest {
 		
 		Path textFilePath = Paths.get(path + "/somefile.txt");
         Files.writeString(textFilePath, "somevalue");
-		
+
 		assertEquals("somevalue", Files.readString(textFilePath));
 		
 		String baseDir = basePath.substring(0, basePath.length() - "basePath".length());
@@ -56,7 +54,7 @@ public class FileUtilTest {
 		    List<Path> filesUnderBaseDir = list.toList();
 		    assertEquals(0, filesUnderBaseDir.size());
 		}
-		
+		assertFalse(Files.exists(textFilePath));
 		try {
 		    Files.readAllBytes(textFilePath);
 		    fail("File is not deleted");
@@ -64,6 +62,40 @@ public class FileUtilTest {
             //NOP
         }
 		
+	}
+
+	@Test
+	public void testRemoveDirRecursivelyByWalk() throws IOException {
+
+		String basePath = Paths.get(Files.createTempDirectory("testpath").toString(), "basePath").toString();
+		Path path = Paths.get(basePath, "dir1", "dir2");
+		Files.createDirectories(path);
+
+		Path textFilePath = Paths.get(path + "/somefile.txt");
+		Files.writeString(textFilePath, "somevalue");
+
+		assertEquals("somevalue", Files.readString(textFilePath));
+
+		String baseDir = basePath.substring(0, basePath.length() - "basePath".length());
+
+		boolean removed = FileUtil.removeDirRecursivelyByWalk(baseDir, "basePath");
+
+		assertTrue(removed);
+
+		assertTrue(textFilePath.toString().endsWith("/dir1/dir2/somefile.txt"));
+
+		try (Stream<Path> list = Files.list(Path.of(baseDir))) {
+			List<Path> filesUnderBaseDir = list.toList();
+			assertEquals(0, filesUnderBaseDir.size());
+		}
+		assertFalse(Files.exists(textFilePath));
+		try {
+			Files.readAllBytes(textFilePath);
+			fail("File is not deleted");
+		} catch (NoSuchFileException e) {
+			//NOP
+		}
+
 	}
 
 }

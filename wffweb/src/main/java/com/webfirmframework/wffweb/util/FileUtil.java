@@ -20,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayDeque;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.List;
 import java.util.logging.Level;
@@ -50,7 +51,10 @@ public final class FileUtil {
      */
     public static boolean removeDirRecursively(final String basePath, final String... more) {
         final Path dirPath = Paths.get(basePath, more);
-        boolean deleted = false;
+
+        // even if it is false it should proceed
+        boolean deleted = removeFilesRecursivelyByWalk(dirPath);
+
         try {
             if (Files.exists(dirPath)) {
                 try (Stream<Path> pathsUnderDirPath = Files.list(dirPath)) {
@@ -81,6 +85,45 @@ public final class FileUtil {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
         return deleted;
+    }
+
+    private static void deleteIfExists(final Path path) {
+        try {
+            Files.deleteIfExists(path);
+        } catch (final IOException e) {
+            // NOP
+        }
+    }
+
+    /**
+     * Deletes the basePath directory even if it is not empty.
+     *
+     * @param basePath
+     * @param more     sub-directories
+     * @return true if the basePath directory is deleted
+     * @since 12.0.0-beta.7
+     */
+    public static boolean removeDirRecursivelyByWalk(final String basePath, final String... more) {
+        final Path dirPath = Paths.get(basePath, more);
+        removeFilesRecursivelyByWalk(dirPath);
+
+        try (Stream<Path> walk = Files.walk(dirPath)) {
+            walk.sorted(Comparator.reverseOrder()).forEach(FileUtil::deleteIfExists);
+        } catch (final IOException e) {
+            // NOP
+        }
+
+        return !Files.exists(dirPath);
+    }
+
+    private static boolean removeFilesRecursivelyByWalk(final Path dirPath) {
+        try (Stream<Path> walk = Files.walk(dirPath)) {
+            walk.filter(Files::isRegularFile).forEach(FileUtil::deleteIfExists);
+            return true;
+        } catch (final IOException e) {
+            // NOP
+        }
+        return false;
     }
 
 }
