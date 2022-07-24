@@ -7347,18 +7347,17 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 index++;
 
                 if (each.uriEventPredicate.test(uriEvent)) {
-                    final WhenURIProperties whenURIProperties = each.whenURIProperties();
                     if (each.methodType.equals(WhenURIMethodType.SUCCESS_CONSUMER_FAIL_CONSUMER)
                             || each.methodType.equals(WhenURIMethodType.SUCCESS_CONSUMER_FAIL_SUPPLIER)) {
-                        if (whenURIProperties == null || lastWhenURIIndexLocal == -1
-                                || !whenURIProperties.duplicateSuccessPrevented
+                        if (each.whenURIProperties == null || lastWhenURIIndexLocal == -1
+                                || !each.whenURIProperties.duplicateSuccessPrevented
                                 || lastWhenURIIndexLocal != uriChangeContentIndex || !lastWhenURISuccess) {
                             each.successConsumer.accept(new TagEvent(this, uriEvent));
                             lastWhenURISuccess = true;
                         }
                     } else {
-                        if (whenURIProperties == null || lastWhenURIIndexLocal == -1
-                                || !whenURIProperties.duplicateSuccessPrevented
+                        if (each.whenURIProperties == null || lastWhenURIIndexLocal == -1
+                                || !each.whenURIProperties.duplicateSuccessPrevented
                                 || lastWhenURIIndexLocal != uriChangeContentIndex || !lastWhenURISuccess) {
                             final AbstractHtml[] innerHtmls = each.successTags.get();
                             if (innerHtmls != null) {
@@ -7382,13 +7381,12 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             if (lastUriChangeContent != null) {
                 lastURIPredicateTest = executed;
                 if (!executed) {
-                    final WhenURIProperties whenURIProperties = lastUriChangeContent.whenURIProperties();
                     if (lastUriChangeContent.methodType.equals(WhenURIMethodType.SUCCESS_CONSUMER_FAIL_CONSUMER)
                             || lastUriChangeContent.methodType
                                     .equals(WhenURIMethodType.SUCCESS_SUPPLIER_FAIL_CONSUMER)) {
                         if (lastUriChangeContent.failConsumer != null) {
-                            if (whenURIProperties == null || lastWhenURIIndexLocal == -1
-                                    || !whenURIProperties.duplicateFailPrevented
+                            if (lastUriChangeContent.whenURIProperties == null || lastWhenURIIndexLocal == -1
+                                    || !lastUriChangeContent.whenURIProperties.duplicateFailPrevented
                                     || lastWhenURIIndexLocal != uriChangeContentIndex || lastWhenURISuccess) {
                                 lastUriChangeContent.failConsumer.accept(new TagEvent(this, uriEvent));
                                 lastWhenURISuccess = false;
@@ -7396,12 +7394,11 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                             lastURIPredicateTest = true;
                         }
                     } else {
-                        final Supplier<AbstractHtml[]> failTags = lastUriChangeContent.failTags();
-                        if (failTags != null) {
-                            if (whenURIProperties == null || lastWhenURIIndexLocal == -1
-                                    || !whenURIProperties.duplicateFailPrevented
+                        if (lastUriChangeContent.failTags != null) {
+                            if (lastUriChangeContent.whenURIProperties == null || lastWhenURIIndexLocal == -1
+                                    || !lastUriChangeContent.whenURIProperties.duplicateFailPrevented
                                     || lastWhenURIIndexLocal != uriChangeContentIndex || lastWhenURISuccess) {
-                                final AbstractHtml[] innerHtmls = failTags.get();
+                                final AbstractHtml[] innerHtmls = lastUriChangeContent.failTags.get();
                                 if (innerHtmls != null) {
                                     // just to throw exception if it contains null or duplicate element
                                     Set.of(innerHtmls);
@@ -7415,8 +7412,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                             lastURIPredicateTest = true;
 
                         } else {
-                            if (whenURIProperties == null || lastWhenURIIndexLocal == -1
-                                    || !whenURIProperties.duplicateFailPrevented
+                            if (lastUriChangeContent.whenURIProperties == null || lastWhenURIIndexLocal == -1
+                                    || !lastUriChangeContent.whenURIProperties.duplicateFailPrevented
                                     || lastWhenURIIndexLocal != uriChangeContentIndex || lastWhenURISuccess) {
                                 if (updateClient) {
                                     removeAllChildren();
@@ -7446,7 +7443,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             // predicate, success or fail object's methods.
             final URIChangeContent lastURIChangeContent = this.lastURIChangeContent;
             if (lastURIChangeContent != null) {
-                return lastURIChangeContent.whenURIProperties();
+                return lastURIChangeContent.whenURIProperties;
             }
         } finally {
             lock.unlock();
@@ -7462,7 +7459,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             if (uriChangeContents != null) {
                 final URIChangeContent uriChangeContent = uriChangeContents.get(index);
                 if (uriChangeContent != null) {
-                    return uriChangeContent.whenURIProperties();
+                    return uriChangeContent.whenURIProperties;
                 }
             }
         } finally {

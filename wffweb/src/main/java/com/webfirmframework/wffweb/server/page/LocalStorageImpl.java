@@ -81,9 +81,9 @@ final class LocalStorageImpl implements LocalStorage {
         final long operationTimeMillis = System.currentTimeMillis();
         final boolean callback = successConsumer != null;
         if (callback) {
-            final LSConsumerEventRecord record = new LSConsumerEventRecord(successConsumer,
+            final LSConsumerEventRecord eventRecord = new LSConsumerEventRecord(successConsumer,
                     new LocalStorage.Event(key, operationTimeMillis, new ItemData(value, operationTimeMillis)));
-            setItemConsumers.put(id, record);
+            setItemConsumers.put(id, eventRecord);
         }
 
         for (final BrowserPage browserPage : bps) {
@@ -101,9 +101,9 @@ final class LocalStorageImpl implements LocalStorage {
         }
         final int id = itemIdGenerator.incrementAndGet();
         final long operationTimeMillis = System.currentTimeMillis();
-        final LSConsumerEventRecord record = new LSConsumerEventRecord(consumer,
-                new LocalStorage.Event(key, operationTimeMillis));
-        getItemConsumers.put(id, record);
+        final LSConsumerEventRecord eventRecord = new LSConsumerEventRecord(consumer,
+                new Event(key, operationTimeMillis));
+        getItemConsumers.put(id, eventRecord);
         for (final BrowserPage browserPage : bps) {
             browserPage.getLocalStorageItem(id, key);
         }
@@ -128,9 +128,9 @@ final class LocalStorageImpl implements LocalStorage {
 
         final boolean callback = consumer != null;
         if (callback) {
-            final LSConsumerEventRecord record = new LSConsumerEventRecord(consumer,
+            final LSConsumerEventRecord eventRecord = new LSConsumerEventRecord(consumer,
                     new LocalStorage.Event(key, operationTimeMillis));
-            removeItemConsumers.put(id, record);
+            removeItemConsumers.put(id, eventRecord);
         }
 
         for (final BrowserPage browserPage : bps) {
@@ -149,9 +149,9 @@ final class LocalStorageImpl implements LocalStorage {
         }
         final int id = itemIdGenerator.incrementAndGet();
         final long operationTimeMillis = System.currentTimeMillis();
-        final LSConsumerEventRecord record = new LSConsumerEventRecord(consumer,
+        final LSConsumerEventRecord eventRecord = new LSConsumerEventRecord(consumer,
                 new LocalStorage.Event(key, operationTimeMillis));
-        removeItemConsumers.put(id, record);
+        removeItemConsumers.put(id, eventRecord);
         for (final BrowserPage browserPage : bps) {
             browserPage.removeAndGetLocalStorageItem(id, key, operationTimeMillis);
         }
@@ -183,9 +183,9 @@ final class LocalStorageImpl implements LocalStorage {
         final long operationTimeMillis = System.currentTimeMillis();
         final boolean callback = consumer != null;
         if (callback) {
-            final LSConsumerEventRecord record = new LSConsumerEventRecord(consumer,
+            final LSConsumerEventRecord eventRecord = new LSConsumerEventRecord(consumer,
                     new LocalStorage.Event(operationTimeMillis));
-            clearItemsConsumers.put(id, record);
+            clearItemsConsumers.put(id, eventRecord);
         }
 
         removeAllTokens(operationTimeMillis);
@@ -227,9 +227,9 @@ final class LocalStorageImpl implements LocalStorage {
         final long operationTimeMillis = System.currentTimeMillis();
         final boolean callback = consumer != null;
         if (callback) {
-            final LSConsumerEventRecord record = new LSConsumerEventRecord(consumer,
+            final LSConsumerEventRecord eventRecord = new LSConsumerEventRecord(consumer,
                     new LocalStorage.Event(operationTimeMillis));
-            clearItemsConsumers.put(id, record);
+            clearItemsConsumers.put(id, eventRecord);
         }
         for (final BrowserPage browserPage : bps) {
             browserPage.clearLocalStorageItems(id, operationTimeMillis, callback);
@@ -246,9 +246,9 @@ final class LocalStorageImpl implements LocalStorage {
         final long operationTimeMillis = System.currentTimeMillis();
         final boolean callback = consumer != null;
         if (consumer != null) {
-            final LSConsumerEventRecord record = new LSConsumerEventRecord(consumer,
+            final LSConsumerEventRecord eventRecord = new LSConsumerEventRecord(consumer,
                     new LocalStorage.Event(operationTimeMillis));
-            clearItemsConsumers.put(id, record);
+            clearItemsConsumers.put(id, eventRecord);
         }
         removeAllTokens(operationTimeMillis);
         for (final BrowserPage browserPage : bps) {
