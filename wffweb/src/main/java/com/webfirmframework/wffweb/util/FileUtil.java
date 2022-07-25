@@ -48,6 +48,7 @@ public final class FileUtil {
      * @param more     sub-directories
      * @return true if the basePath directory is deleted
      * @since 3.0.18
+     * @since 12.0.0-beta.7 memory optimization improvements
      */
     public static boolean removeDirRecursively(final String basePath, final String... more) {
         final Path dirPath = Paths.get(basePath, more);
