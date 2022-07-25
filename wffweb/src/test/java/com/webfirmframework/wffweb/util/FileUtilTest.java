@@ -27,6 +27,7 @@ import java.util.stream.Stream;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 public class FileUtilTest {
 
@@ -41,7 +42,11 @@ public class FileUtilTest {
         Files.writeString(textFilePath, "somevalue");
 
 		assertEquals("somevalue", Files.readString(textFilePath));
-		
+
+		assertFalse(FileUtil.removeDirRecursively(textFilePath.toString()));
+
+		assertTrue(Files.exists(textFilePath));
+
 		String baseDir = basePath.substring(0, basePath.length() - "basePath".length());
 
 		boolean removed = FileUtil.removeDirRecursively(baseDir, "basePath");

@@ -52,11 +52,11 @@ public final class FileUtil {
     public static boolean removeDirRecursively(final String basePath, final String... more) {
         final Path dirPath = Paths.get(basePath, more);
 
-        // even if it is false it should proceed
-        boolean deleted = removeFilesRecursivelyByWalk(dirPath);
-
-        try {
-            if (Files.exists(dirPath)) {
+        boolean deleted = false;
+        if (Files.exists(dirPath) && Files.isDirectory(dirPath)) {
+            // even if it is false it should proceed
+            try {
+                removeFilesRecursivelyByWalk(dirPath);
                 try (Stream<Path> pathsUnderDirPath = Files.list(dirPath)) {
                     final Deque<Path> q = pathsUnderDirPath.collect(Collectors.toCollection(ArrayDeque::new));
                     Path each;
@@ -79,11 +79,12 @@ public final class FileUtil {
                     }
                     deleted = Files.deleteIfExists(dirPath);
                 }
+            } catch (final IOException e) {
+                // NOP
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
-        } catch (final IOException e) {
-            // NOP
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
+
         return deleted;
     }
 
@@ -105,25 +106,24 @@ public final class FileUtil {
      */
     public static boolean removeDirRecursivelyByWalk(final String basePath, final String... more) {
         final Path dirPath = Paths.get(basePath, more);
-        removeFilesRecursivelyByWalk(dirPath);
-
-        try (Stream<Path> walk = Files.walk(dirPath)) {
-            walk.sorted(Comparator.reverseOrder()).forEach(FileUtil::deleteIfExists);
-        } catch (final IOException e) {
-            // NOP
+        if (Files.exists(dirPath) && Files.isDirectory(dirPath)) {
+            try {
+                removeFilesRecursivelyByWalk(dirPath);
+                try (Stream<Path> walk = Files.walk(dirPath)) {
+                    walk.sorted(Comparator.reverseOrder()).forEach(FileUtil::deleteIfExists);
+                }
+            } catch (final IOException e) {
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            }
         }
 
         return !Files.exists(dirPath);
     }
 
-    private static boolean removeFilesRecursivelyByWalk(final Path dirPath) {
+    private static void removeFilesRecursivelyByWalk(final Path dirPath) throws IOException {
         try (Stream<Path> walk = Files.walk(dirPath)) {
             walk.filter(Files::isRegularFile).forEach(FileUtil::deleteIfExists);
-            return true;
-        } catch (final IOException e) {
-            // NOP
         }
-        return false;
     }
 
 }
