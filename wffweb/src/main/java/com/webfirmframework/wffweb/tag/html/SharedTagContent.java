@@ -45,6 +45,7 @@ import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
 import com.webfirmframework.wffweb.internal.security.object.SharedTagContentSecurity;
 import com.webfirmframework.wffweb.internal.tag.html.listener.PushQueue;
 import com.webfirmframework.wffweb.server.page.ClientTasksWrapper;
+import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 
@@ -1476,10 +1477,11 @@ public class SharedTagContent<T> {
         }
 
         if (pushQueues.size() > 1) {
+            final Executor activeExecutor = executor != null ? executor : WffConfiguration.getVirtualThreadExecutor();
             if (UpdateClientNature.ALLOW_ASYNC_PARALLEL.equals(updateClientNature)) {
-                if (executor != null) {
+                if (activeExecutor != null) {
                     for (final PushQueue pushQueue : pushQueues) {
-                        executor.execute(pushQueue::push);
+                        activeExecutor.execute(pushQueue::push);
                     }
                 } else {
                     for (final PushQueue pushQueue : pushQueues) {
@@ -1488,14 +1490,13 @@ public class SharedTagContent<T> {
                 }
 
             } else if (UpdateClientNature.ALLOW_PARALLEL.equals(updateClientNature)) {
-
-                if (executor != null) {
+                if (activeExecutor != null) {
                     final List<CompletableFuture<Boolean>> cfList = new ArrayList<>(pushQueues.size());
                     for (final PushQueue pushQueue : pushQueues) {
                         final CompletableFuture<Boolean> cf = CompletableFuture.supplyAsync(() -> {
                             pushQueue.push();
                             return true;
-                        }, executor);
+                        }, activeExecutor);
                         cfList.add(cf);
                     }
 

@@ -68,6 +68,7 @@ import com.webfirmframework.wffweb.common.URIEventMask;
 import com.webfirmframework.wffweb.internal.security.object.BrowserPageSecurity;
 import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
 import com.webfirmframework.wffweb.internal.server.page.js.WffJsFile;
+import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.Html;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
@@ -645,8 +646,9 @@ public abstract class BrowserPage implements Serializable {
 
         if (!taskFromClientQ.isEmpty()) {
             final Executor executor = this.executor;
-            if (executor != null) {
-                executor.execute(this::executeTasksFromClientFromQ);
+            final Executor activeExecutor = executor != null ? executor : WffConfiguration.getVirtualThreadExecutor();
+            if (activeExecutor != null) {
+                activeExecutor.execute(this::executeTasksFromClientFromQ);
             } else if (externalDrivePath != null) {
                 CompletableFuture.runAsync(this::executeTasksFromClientFromQ);
             } else {
