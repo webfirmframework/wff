@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.util;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.junit.Test;
@@ -637,6 +638,16 @@ public class StringUtilTest {
             final String join = StringUtil.join(' ',
                     Arrays.asList("one", "two", "three", "four"));
             assertEquals("one two three four", join);
+        }
+        {
+            final String join = StringUtil.join(' ',
+                    List.of());
+            assertEquals("", join);
+        }
+        {
+            final String join = StringUtil.join(' ',
+                    List.of("one"));
+            assertEquals("one", join);
         }
     }
     
