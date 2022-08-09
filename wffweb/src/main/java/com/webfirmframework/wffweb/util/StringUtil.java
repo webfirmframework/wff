@@ -1077,6 +1077,9 @@ public final class StringUtil {
 
         // total delimiters: items.length -1
         int capacity = (items.length - 1);
+        if (capacity < 0) {
+            return "";
+        }
         for (final String item : items) {
             capacity += item.length();
         }
