@@ -619,9 +619,20 @@ public class StringUtilTest {
 
     @Test
     public void testJoin2() throws Exception {
-        final String join = StringUtil.join(',', "one", "two", "three", "four");
-
-        assertEquals("one,two,three,four", join);
+        {
+            final String join = StringUtil.join(',', "one", "two", "three", "four");
+            assertEquals("one,two,three,four", join);
+        }
+        {
+            final String join = StringUtil.join(' ', new String[0]
+                    );
+            assertEquals("", join);
+        }
+        {
+            final String join = StringUtil.join(' ',
+                    "one");
+            assertEquals("one", join);
+        }
 
     }
 
@@ -636,6 +647,16 @@ public class StringUtilTest {
             final String join = StringUtil.join(' ',
                     Arrays.asList("one", "two", "three", "four"));
             assertEquals("one two three four", join);
+        }
+        {
+            final String join = StringUtil.join(' ',
+                    Arrays.asList());
+            assertEquals("", join);
+        }
+        {
+            final String join = StringUtil.join(' ',
+                    Arrays.asList("one"));
+            assertEquals("one", join);
         }
     }
     
