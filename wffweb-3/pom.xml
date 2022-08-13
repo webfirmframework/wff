@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.webfirmframework</groupId>
 	<artifactId>wffweb</artifactId>
-	<version>3.1.0-SNAPSHOT</version>
+	<version>3.0.20</version>
 
 	<properties>
 		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
@@ -57,7 +57,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>1.6</version>
+						<version>3.0.1</version>
 						<configuration>
 							<arguments>-Dgpg.passphrase=${gpg.passphrase}</arguments>
 						</configuration>
@@ -89,7 +89,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-javadoc-plugin</artifactId>
-						<version>3.2.0</version>
+						<version>3.4.0</version>
 						<executions>
 							<execution>
 								<id>attach-javadocs</id>
@@ -140,7 +140,7 @@
 		<dependency>
 			<groupId>de.undercouch</groupId>
 			<artifactId>bson4jackson</artifactId>
-			<version>2.13.0</version>
+			<version>2.13.1</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
