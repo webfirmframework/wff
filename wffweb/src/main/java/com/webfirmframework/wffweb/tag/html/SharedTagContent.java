@@ -1234,7 +1234,7 @@ public class SharedTagContent<T> {
                         } else {
                             noTag = prevNoTag;
                         }
-                    } catch (final RuntimeException e) {
+                    } catch (final Exception e) {
                         contentApplied = new Content<>("", false);
                         ((AbstractHtml) prevNoTag).setCacheSTCFormatter(null, ACCESS_OBJECT);
                         noTag = new NoTag(null, contentApplied.content, contentApplied.contentTypeHtml);
@@ -1389,7 +1389,7 @@ public class SharedTagContent<T> {
                                     if (runnable != null) {
                                         runnables.add(runnable);
                                     }
-                                } catch (final RuntimeException e) {
+                                } catch (final Exception e) {
                                     LOGGER.log(Level.SEVERE, "Exception while ContentChangeListener.contentChanged", e);
                                 }
                             }
@@ -1408,7 +1408,7 @@ public class SharedTagContent<T> {
                 for (final Runnable runnable : runnables) {
                     try {
                         runnable.run();
-                    } catch (final RuntimeException e) {
+                    } catch (final Exception e) {
                         LOGGER.log(Level.SEVERE,
                                 "Exception while Runnable.run returned by ContentChangeListener.contentChanged", e);
                     }
@@ -1598,7 +1598,7 @@ public class SharedTagContent<T> {
                     noTag = new NoTag(null, "", false);
                 }
 
-            } catch (final RuntimeException e) {
+            } catch (final Exception e) {
                 noTag = new NoTag(null, "", false);
                 LOGGER.log(Level.SEVERE, "Exception while ContentFormatter.format", e);
             }
@@ -1913,7 +1913,7 @@ public class SharedTagContent<T> {
                                 if (runnable != null) {
                                     runnables.add(runnable);
                                 }
-                            } catch (final RuntimeException e) {
+                            } catch (final Exception e) {
                                 LOGGER.log(Level.SEVERE, "Exception while DetachListener.detached", e);
                             }
                         }
@@ -1939,7 +1939,7 @@ public class SharedTagContent<T> {
             for (final Runnable runnable : runnables) {
                 try {
                     runnable.run();
-                } catch (final RuntimeException e) {
+                } catch (final Exception e) {
                     LOGGER.log(Level.SEVERE, "Exception while Runnable.run returned by DetachListener.detached", e);
                 }
             }
