@@ -348,10 +348,12 @@ public class TagRegistry {
     /**
      * @return the list of tag names sorted in the ascending order of its length
      * @since 1.1.3
+     * @since 12.0.0-beta.7
+     * immutable list
      * @author WFF
      */
     public static List<String> getTagNames() {
-        return new ArrayList<>(IndexedTagName.INSTANCE.sortedTagNames());
+        return List.copyOf(IndexedTagName.INSTANCE.sortedTagNames());
     }
 
     /**

@@ -1433,7 +1433,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * @since 3.0.1
      */
     public boolean removeChildren(final AbstractHtml... children) {
-        return removeChildren(Arrays.asList(children));
+        return removeChildren(List.of(children));
     }
 
     /**
@@ -1913,7 +1913,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                     if (innerHtmls != null && innerHtmls.length > 0) {
                         childrenStack.push(List.of(innerHtmls));
                     } else if (eachChild.children != null && eachChild.children.size() > 0) {
-                        childrenStack.push(new ArrayList<>(eachChild.children));
+                        childrenStack.push(List.copyOf(eachChild.children));
                     }
                     if (eachChild.uriChangeContents != null) {
                         // null checking is not required if uriChangeTagSupplier == null then both
@@ -2765,7 +2765,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 return false;
             }
 
-            final List<String> removedAttributeNames = new ArrayList<String>(attributesToRemove.size());
+            final List<String> removedAttributeNames = new ArrayList<>(attributesToRemove.size());
 
             for (final AbstractAttribute attribute : attributesToRemove) {
                 if (AttributeUtil.unassignOwnerTag(ACCESS_OBJECT, attribute, this)
@@ -3693,7 +3693,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 break;
             }
 
-            final List<AbstractHtml> childrenHoldingBottomChild = new ArrayList<>(bottomChild.parent.children);
+            final List<AbstractHtml> childrenHoldingBottomChild = List.copyOf(bottomChild.parent.children);
 
             final int indexOfNextToBottomChild = childrenHoldingBottomChild.indexOf(bottomChild) + 1;
 
@@ -3707,7 +3707,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                     break;
                 }
 
-                final List<AbstractHtml> childrenHoldingParent = new ArrayList<>(bottomChild.parent.parent.children);
+                final List<AbstractHtml> childrenHoldingParent = List.copyOf(bottomChild.parent.parent.children);
 
                 final int indexOfNextToBottomParent = childrenHoldingParent.indexOf(bottomChild.parent) + 1;
 
@@ -3768,7 +3768,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 }
             }
 
-            final List<AbstractHtml> childrenHoldingBottomChild = new ArrayList<>(bottomChild.parent.children);
+            final List<AbstractHtml> childrenHoldingBottomChild = List.copyOf(bottomChild.parent.children);
 
             final int indexOfNextToBottomChild = childrenHoldingBottomChild.indexOf(bottomChild) + 1;
 
@@ -3791,7 +3791,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                     }
                 }
 
-                final List<AbstractHtml> childrenHoldingParent = new ArrayList<>(bottomChild.parent.parent.children);
+                final List<AbstractHtml> childrenHoldingParent = List.copyOf(bottomChild.parent.parent.children);
 
                 final int indexOfNextToBottomParent = childrenHoldingParent.indexOf(bottomChild.parent) + 1;
 
@@ -3904,7 +3904,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
             if (child.parent != null) {
 
-                final List<AbstractHtml> childrenHoldingChild = new ArrayList<>(child.parent.children);
+                final List<AbstractHtml> childrenHoldingChild = List.copyOf(child.parent.children);
                 final int nextIndexOfChild = childrenHoldingChild.indexOf(child) + 1;
                 if (nextIndexOfChild < childrenHoldingChild.size()) {
                     return childrenHoldingChild.get(nextIndexOfChild);
@@ -3933,7 +3933,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             current = null;
 
             if (child.parent != null) {
-                final List<AbstractHtml> childrenHoldingChild = new ArrayList<>(child.parent.children);
+                final List<AbstractHtml> childrenHoldingChild = List.copyOf(child.parent.children);
 
                 final int nextIndexOfChild = childrenHoldingChild.indexOf(child) + 1;
                 if (nextIndexOfChild < childrenHoldingChild.size()) {
@@ -4618,7 +4618,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      */
     private List<Lock> initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(
             final AbstractHtml[] removedAbstractHtmls) {
-        final List<Lock> locks = new ArrayList<Lock>(removedAbstractHtmls.length);
+        final List<Lock> locks = new ArrayList<>(removedAbstractHtmls.length);
         for (final AbstractHtml abstractHtml : removedAbstractHtmls) {
             final Lock lock = initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(abstractHtml, true);
             locks.add(lock);
@@ -6002,7 +6002,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
             int count = 0;
 
-            final List<Lock> newSOLocks = new ArrayList<Lock>(1);
+            final List<Lock> newSOLocks = new ArrayList<>(1);
 
             try {
 
@@ -7298,7 +7298,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                         if (innerHtmls != null && innerHtmls.length > 0) {
                             childrenStack.push(List.of(innerHtmls));
                         } else if (eachChild.children != null && eachChild.children.size() > 0) {
-                            childrenStack.push(new ArrayList<>(eachChild.children));
+                            childrenStack.push(List.copyOf(eachChild.children));
                         }
                         if (eachChild.uriChangeContents != null) {
                             uriChangeTagSupplier.supply(eachChild);
