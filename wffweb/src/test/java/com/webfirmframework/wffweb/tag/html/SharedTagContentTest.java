@@ -2084,8 +2084,9 @@ public class SharedTagContentTest {
         stc.setContent("some stc content");
         
         assertNotNull(div.getFirstChild().getCachedStcFormatter());
-        assertEquals(formatter, div.getFirstChild().getCachedStcFormatter());        
-        
+        assertEquals(formatter, div.getFirstChild().getCachedStcFormatter());
+
+        AbstractHtml firstChildBefore = div.getFirstChild();
         formatter = new ContentFormatter<String>() {
 
             @Override
@@ -2094,11 +2095,16 @@ public class SharedTagContentTest {
             }
         };
         div.subscribeTo(stc, formatter);
-        
+
+        assertNotEquals(firstChildBefore, div.getFirstChild());
+
+        firstChildBefore = div.getFirstChild();
+
         stc.setContent("some stc content");
         
         assertNotNull(div.getFirstChild().getCachedStcFormatter());
         assertEquals(formatter, div.getFirstChild().getCachedStcFormatter());
+        assertEquals(firstChildBefore, div.getFirstChild());
         
     }
             
