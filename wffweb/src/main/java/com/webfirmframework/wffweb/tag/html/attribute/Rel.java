@@ -279,4 +279,16 @@ public class Rel extends AbstractValueSetAttribute implements AAttributable, Are
         super.setAttributeValue(updateClient, value);
     }
 
+    /**
+     * @param value the value to set again even if the existing value is same at
+     *              server side, the assigned value will be reflected in the UI.
+     *              Sometimes we may modify the value only at client side (not
+     *              server side), {@code setValue} will change only if the passed
+     *              value is different from existing value at server side.
+     * @since 12.0.0-beta.7
+     */
+    public void assignValue(final String value) {
+        super.assignAttributeValue(value);
+    }
+
 }
