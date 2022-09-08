@@ -497,15 +497,7 @@ public abstract class BrowserPage implements Serializable {
 
                 final Thread taskThread = Thread.currentThread();
                 waitingThreadRef.getAndSet(taskThread);
-                try {
-                    pushWffBMBytesQueueLock.acquire();
-                } catch (final InterruptedException e) {
-                    waitingThreadRef.compareAndSet(taskThread, null);
-                    if (LOGGER.isLoggable(Level.SEVERE)) {
-                        LOGGER.log(Level.SEVERE, "Thread InterruptedException", e);
-                    }
-                    return;
-                }
+                pushWffBMBytesQueueLock.acquireUninterruptibly();
 
                 try {
 
@@ -2304,15 +2296,7 @@ public abstract class BrowserPage implements Serializable {
         boolean copied = false;
 
         if (!unholdPushLock.hasQueuedThreads()) {
-            try {
-                unholdPushLock.acquire();
-            } catch (final InterruptedException e) {
-                // NOP
-                if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.log(Level.SEVERE, "Thread InterruptedException", e);
-                }
-                return false;
-            }
+            unholdPushLock.acquireUninterruptibly();
 
             try {
 
